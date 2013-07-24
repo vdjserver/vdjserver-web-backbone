@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+#    RewriteRule ^app/(.*)$ dist/release/$1 [NC,L]
+#    RewriteRule ^assets/js/libs/(.*)$ dist/release/$1 [NC,L]
+#    RewriteRule ^assets/css/(.*)$ dist/release/$1 [NC,L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !index
+    RewriteRule (.*) index.html [L]
+</IfModule>

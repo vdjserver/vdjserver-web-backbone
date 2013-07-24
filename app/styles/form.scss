@@ -1,0 +1,23 @@
+@import "compass/css3";
+@import "settings";
+
+.field {
+  label {
+    font-weight: bold;
+  }
+}
+
+label.checkbox, label.radio {
+  display: inline-block;
+}
+
+.param-required {
+  label {
+    font-weight: bold;
+    &::after {
+      content: " (required)";
+      font-weight: normal;
+      color: #ff0000;
+    }
+  }
+}

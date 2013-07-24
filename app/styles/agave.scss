@@ -1,0 +1,93 @@
+@import "settings";
+
+.token {
+    padding: .5em;
+    margin-bottom: 1em;
+}
+
+.token-current {
+    background-color: lighten($lightGrey, 15%);
+    border: 1px solid $lightGrey;
+    &::after {
+        content: "Login token; cannot delete";
+        font-style: italic;
+        font-size: .8em;
+        color: $grey;
+        float: right;
+        margin-top: -1.5em;
+    }
+}
+
+.io-listing {
+  padding: .25em 0;
+  border-bottom: 1px solid #eee;
+
+  &::after, &::before {
+    content: "";
+    display: table;
+    line-height: 0;
+  }
+
+  &::after {
+    clear: both;
+  }
+}
+
+.actions {
+  margin-top: -5px;
+}
+
+.io-name {
+  line-height: 2.5em;
+}
+
+.io-last-modified {
+  line-height: 3.2em;
+  margin-left: 1em;
+  color: $grey;
+  font-size: .8em;
+}
+
+.icon-dir-previous::before {
+  content: "\f07c";
+}
+
+.icon-dir::before {
+  content: "\f07b";
+}
+
+.icon-rename::before {
+  content: "\f031";
+}
+
+.icon-create-dir::before {
+  content: "\f07b";
+}
+
+.icon-delete::before {
+  content: "\f00d";
+}
+
+.io-chooser {
+  overflow-y: scroll;
+  border: 1px solid #ddd;
+  max-height: 262px;
+}
+
+.io-chooser-item {
+  padding: 3px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #eee;
+  }
+
+  &.active {
+    background-color: $green;
+    color: $white;
+  }
+}
+
+.io-chooser-actions {
+  margin-top: 1em;
+}

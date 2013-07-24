@@ -1,0 +1,17 @@
+{
+  "name": "vdjserver-backbone",
+  "version": "0.0.1",
+  "dependencies": {
+    "sass-bootstrap": "~2.3.2",
+    "requirejs": "~2.1.8",
+    "jquery": "~1.10.2",
+    "underscore": "~1.5.1",
+    "backbone": "~1.0.0",
+    "modernizr": "~2.6.2",
+    "layoutmanager": "~0.8.8",
+    "handlebars": "~1.0.0",
+    "moment": "~2.1.0",
+    "font-awesome": "~3.2.1"
+  },
+  "devDependencies": {}
+}
