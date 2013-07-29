@@ -1,19 +1,24 @@
 define(['app'], function(App) {
   var DefaultRouter = Backbone.Router.extend({
     routes: {
-      '': 'index',
-      'auth': 'authIndex',
-      'auth/login': 'authLogin',
-      'auth/new': 'authNew',
-      'auth/check': 'authCheck',
+
+      '' : 'index',
+      
+      'auth'       : 'authIndex',
+      'auth/login' : 'authLogin',
+      'auth/new'   : 'authNew',
+      'auth/check' : 'authCheck',
       'auth/active': 'authListActive',
       'auth/logout': 'authLogout',
+
       'apps/public': 'appsPublicList',
       'apps/shared': 'appsSharedList',
-      'apps/:id': 'appsView',
-      'io': 'ioBrowser',
-      'io/:owner': 'ioBrowser',
+      'apps/:id'   : 'appsView',
+      
+      'io'         : 'ioBrowser',
+      'io/:owner'  : 'ioBrowser',
       'io/:owner/*path': 'ioBrowser'
+
     },
 
     index: function() {
@@ -66,7 +71,7 @@ define(['app'], function(App) {
 
     ioBrowser: function(owner, path) {
       App.Layouts.main.template = 'one-col';
-      var fullPath = owner || App.Agave.token().get('username');
+      var fullPath = owner || App.Agave.token().get('internalUsername');
       if (path) {
         fullPath += '/' + path;
       }

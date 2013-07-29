@@ -39,8 +39,10 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
         clearTimeout(this.error);
         var token = App.Agave.token(), logoutWarningDialog;
         if (token.isValid()) {
+
           window.localStorage.setItem('Agave.Token', JSON.stringify(token.toJSON()));
           this.warn = setTimeout(function() {
+            console.log("this.warn is running");
             logoutWarningDialog = new App.Views.Util.ModalView({
               model: new App.Models.MessageModel({header:'Your login session is about to expire!'})
             }),
@@ -50,6 +52,8 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
             renewView.cleanup = function() {
               logoutWarningDialog.close();
               if (token.expiresIn() > 300000) {
+
+                console.log("weird token if statement");
                 // it was renewed, rewatch token
                 watchToken();
               }
@@ -59,11 +63,15 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
               logoutWarningDialog.remove();
               logoutWarningDialog = null;
             });
+            console.log("about to render logoutWarning");
             logoutWarningDialog.render();
+            console.log("finished rendering logoutWarning");
           }, Math.max(0, token.expiresIn() - 300000));
-
           this.error = setTimeout(function() {
+              console.log("token.expiresIn is: " + token.expiresIn());
+              console.log("token expires math function is: " + Math.max(0, token.expiresIn()));
             if (logoutWarningDialog) {
+              console.log("logoutWarning close");
               logoutWarningDialog.close();
             }
             alert('Your Session has expired.  You have been logged out.');

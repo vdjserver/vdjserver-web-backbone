@@ -3,7 +3,7 @@ define(['app'], function(App){
     template: 'auth/new-token-form',
     serialize: function() {
       return {
-        'username': this.model.get('username')
+        'internalUsername': this.model.get('internalUsername')
       };
     },
     events: {
@@ -11,9 +11,9 @@ define(['app'], function(App){
     },
     submitForm: function(e) {
       e.preventDefault();
-      var username = this.$el.find('#username').val(),
+      var internalUsername = this.$el.find('#internalUsername').val(),
         password = this.$el.find('#password').val();
-      if (username && password) {
+      if (internalUsername && password) {
         var message = new Util.Message({
           'header': 'Getting token',
           'body': '<p>Please wait while we authenticate you...</p>'
@@ -28,7 +28,7 @@ define(['app'], function(App){
         modal.$el.on('shown', function() {
           that.$el.find('.alert-error').remove();
           that.model.save({
-            username: username,
+            internalUsername: internalUsername,
             expires: null,
             token: null
           }, {

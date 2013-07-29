@@ -70,7 +70,7 @@ define(['app', 'fileSaver'], function(App){
     initialize: function() {
       var type = this.options.file.get('type'),
         perms = this.model.get('permissions'),
-        perm = _.findWhere(perms, {'username':'you'});
+        perm = _.findWhere(perms, {'internalUsername':'you'});
       if (perm.permission.read && type === 'file') {
         this.insertView(new AgaveIO.IOAction({
           model: this.options.file,
@@ -120,7 +120,7 @@ define(['app', 'fileSaver'], function(App){
           var that = this;
           var dir = new Backbone.Agave.IO.File({
             path: that.model.directoryPath() + dirName,
-            owner: App.Agave.token().get('username'),
+            owner: App.Agave.token().get('internalUsername'),
             name: dirName,
             type: 'dir'
           });
@@ -273,7 +273,7 @@ define(['app', 'fileSaver'], function(App){
             this.insertView('.dropdown-menu', new AgaveIO.IOAction({model:this.model, action:'delete',label:'Delete',tagName:'li'}));
           }
 
-          if (perms.username === 'you' || perms.username === App.Agave.token().get('username')) {
+          if (perms.username === 'you' || perms.username === App.Agave.token().get('internalUsername')) {
             // share
             // this.insertView('.dropdown-menu', new AgaveIO.IOAction({model:this.model, action:'share',label:'Share',tagName:'li'}));
           }
@@ -320,7 +320,7 @@ define(['app', 'fileSaver'], function(App){
 
   AgaveIO.FileChooserDialog = Backbone.View.extend({
     initialize: function() {
-      this.collection = new Backbone.Agave.IO.Listing([], {path: App.Agave.token().get('username')});
+      this.collection = new Backbone.Agave.IO.Listing([], {path: App.Agave.token().get('internalUsername')});
       this.listenTo(this.collection, 'reset', this.render);
       this.collection.fetch({reset:true});
     },
