@@ -127,11 +127,11 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
         }
       });
     },
-    Layouts: {},
-    Views: {},
-    Models: {},
+    Layouts:     {},
+    Views:       {},
+    Models:      {},
     Collections: {},
-    Routers: {}
+    Routers:     {}
   };
   return _.extend(App, {
     isLoggedIn: function() {

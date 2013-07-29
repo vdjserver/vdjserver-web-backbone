@@ -1,12 +1,13 @@
 require.config({
   paths: {
-    'jquery': '../components/jquery/jquery',
-    'underscore': '../components/underscore/underscore',
     'backbone': '../components/backbone/backbone',
-    'layoutmanager': '../components/layoutmanager/backbone.layoutmanager',
     'bootstrap': 'vendor/bootstrap',
-    'moment': '../components/moment/moment',
     'handlebars': '../components/handlebars/handlebars',
+    'jquery': '../components/jquery/jquery',
+    'layoutmanager': '../components/layoutmanager/backbone.layoutmanager',
+    'moment': '../components/moment/moment',
+    'underscore': '../components/underscore/underscore',
+
     'backbone-agave': 'vendor/backbone-agave/backbone-agave',
     'backbone-agave-apps': 'vendor/backbone-agave/backbone-agave-apps',
     'backbone-agave-jobs': 'vendor/backbone-agave/backbone-agave-jobs',
@@ -61,15 +62,21 @@ define([
   'backbone-agave-io',
   'backbone-agave-jobs',
   'backbone-agave-apps',
+  
   'models/message',
   'models/form',
+  'models/account',
+
   'views/app-views',
   'views/form-views',
   'views/util-views',
   'views/agave-auth',
   'views/agave-io',
   'views/agave-apps',
+  'views/account-views',
+
   'routers/default'
+
 ], function(App) {
   App.start();
 });

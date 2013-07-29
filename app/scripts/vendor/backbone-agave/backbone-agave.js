@@ -55,7 +55,7 @@
     });
 
     Agave.agaveApiRoot = 'https://iplant-dev.tacc.utexas.edu/v2';
-    Agave.vdjAuthRoot  = 'http://localhost:8443/token';
+    Agave.vdjApiRoot  = 'http://localhost:8443';
 
     // Custom sync function to handle Agave token auth
     Agave.sync = function(method, model, options) {
@@ -143,17 +143,16 @@
             var password;
 
             if (method === 'create') {
-                options.url = Agave.vdjAuthRoot;
+                options.url = Agave.vdjApiRoot + '/token';
 
                 username = model.get('internalUsername');
                 password = options.password;
-
             }
             else {
                 options.url = Agave.agaveApiRoot;
 
                 username = model.get('username');
-                password = token;
+                password = model.get('token');
             }
         
             options.beforeSend = function(xhr) {
@@ -178,6 +177,7 @@
                 // Convert human readable dates to unix time
                 response.result.expires = moment(response.result.expires).unix();
                 response.result.created = moment(response.result.created).unix();
+                response.result.renewed = moment(response.result.renewed).unix();
 
                 return response.result;
             }

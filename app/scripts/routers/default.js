@@ -3,7 +3,7 @@ define(['app'], function(App) {
     routes: {
 
       '' : 'index',
-      
+
       'auth'       : 'authIndex',
       'auth/login' : 'authLogin',
       'auth/new'   : 'authNew',
@@ -11,22 +11,28 @@ define(['app'], function(App) {
       'auth/active': 'authListActive',
       'auth/logout': 'authLogout',
 
+      'account/new': 'accountNew',
+
       'apps/public': 'appsPublicList',
       'apps/shared': 'appsSharedList',
       'apps/:id'   : 'appsView',
-      
+
       'io'         : 'ioBrowser',
       'io/:owner'  : 'ioBrowser',
       'io/:owner/*path': 'ioBrowser'
 
     },
 
+
+    // Index
     index: function() {
       App.Layouts.main.template = 'one-col';
       App.Layouts.main.setView('.content', new App.Views.AppViews.Home());
       App.Layouts.main.render();
     },
 
+
+    // Auth
     authLogin: function() {
       App.Layouts.main.template = 'one-col';
       App.Layouts.main.setView('.content', new App.Views.AgaveAuth.NewTokenForm({model: App.Agave.token()}));
@@ -51,6 +57,16 @@ define(['app'], function(App) {
       App.router.navigate('', {trigger:true});
     },
 
+
+    // Account
+    accountNew: function() {
+      App.Layouts.main.template = 'one-col';
+      App.Layouts.main.setView('.content', new App.Views.Account.NewAccountForm({model: new App.Models.Account.NewAccount()}));
+      App.Layouts.main.render();
+    },
+
+
+    // Apps
     appsPublicList: function() {
       App.Layouts.main.template = 'two-col';
       App.Layouts.main.setView('.sidebar', new App.Views.AgaveApps.AppList({collection: new Backbone.Agave.Apps.PublicApplications()}));
@@ -69,6 +85,8 @@ define(['app'], function(App) {
       App.Layouts.main.render();
     },
 
+
+    // IO
     ioBrowser: function(owner, path) {
       App.Layouts.main.template = 'one-col';
       var fullPath = owner || App.Agave.token().get('internalUsername');
@@ -79,6 +97,7 @@ define(['app'], function(App) {
       App.Layouts.main.render();
     }
   });
+
 
   App.Routers.DefaultRouter = DefaultRouter;
   return DefaultRouter;
