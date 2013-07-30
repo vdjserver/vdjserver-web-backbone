@@ -34,10 +34,14 @@ define(['app'], function(App) {
                 });
                 
                 that = this;
+
+                console.log("about to do model save append");
                 
                 $('<div class="login-modal">').appendTo(this.el);
                 modal.$el.on('shown', function() {
                     that.$el.find('.alert-error').remove();
+                    console.log("saving model from view. internalUsername is: " + internalUsername);
+                    console.log("also, model is: " + JSON.stringify(that.model));
                     that.model.save(
                         {
                             internalUsername: internalUsername,
@@ -93,9 +97,9 @@ define(['app'], function(App) {
             return json;
         },
         events: {
-            'click .btn-renew': 'renewToken',
+            'click .btn-renew':    'renewToken',
             'click .btn-validate': 'validateToken',
-            'click .btn-delete': 'deleteToken'
+            'click .btn-delete':   'deleteToken'
         },
         renewToken: function(e) {
             var modalWrap = new UtilViews.ModalView({
@@ -122,10 +126,10 @@ define(['app'], function(App) {
                 silent: true,
                 success: function(resp) {
                     btn.popover({
-                        content: 'This token is <span class="label label-success">Valid</span>.',
-                        html: true,
+                        content:   'This token is <span class="label label-success">Valid</span>.',
+                        html:      true,
                         placement: 'top',
-                        trigger: 'manual'
+                        trigger:   'manual'
                     }).popover('show');
                     setTimeout(function() {
                         btn.popover('destroy');
@@ -146,7 +150,7 @@ define(['app'], function(App) {
         template: 'auth/renew-token-form',
         events: {
             'submit .renew-form': 'renewToken',
-            'click .btn-cancel': 'dismiss'
+            'click .btn-cancel':  'dismiss'
         },
         renewToken: function(e) {
             var password = this.$el.find('#password').val(),
@@ -176,25 +180,23 @@ define(['app'], function(App) {
     AgaveAuth.ActiveTokens = Backbone.View.extend({
         template: 'auth/active-tokens',
         initialize: function() {
-            this.collection.on('add', function(token) {
-                if (token.id === App.Agave.token().id) {
-                    token = App.Agave.token();
-                }
-                var view = new AgaveAuth.TokenView({model: token});
-                this.insertView('.tokens', view);
-                view.render();
-            }, this);
-            if (App.Agave.token().isValid()) {
-                this.collection.add(App.Agave.token());
-                this.collection.fetch();
-            }
+            
+            console.log("init ok");
+            var view = new AgaveAuth.TokenView({model: this.model});
+            this.insertView('.tokens', view);
+            view.render();
+            
+            console.log("after view render");
         },
         afterRender: function() {
-            if (this.collection.length === 0) {
+            if (!this.model.isValid()) {
                 this.$el.find('.tokens').html(
-                $('<p class="alert alert-warning">').html('<i class="icon-warning-sign"></i> You have no active tokens.'));
+                    $('<p class="alert alert-warning">').html('<i class="icon-warning-sign"></i> You have no active tokens.')
+                );
             }
-        },
+        }
+    /*
+            ,
         events: {
             'click .btn-new-token': 'getNewToken'
         },
@@ -209,6 +211,7 @@ define(['app'], function(App) {
                 });
             }
         }
+        */
     });
 
     App.Views.AgaveAuth = AgaveAuth;

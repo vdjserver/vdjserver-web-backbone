@@ -55,7 +55,7 @@
     });
 
     Agave.agaveApiRoot = 'https://iplant-dev.tacc.utexas.edu/v2';
-    Agave.vdjApiRoot  = 'http://localhost:8443';
+    Agave.vdjApiRoot   = 'http://localhost:8443';
 
     // Custom sync function to handle Agave token auth
     Agave.sync = function(method, model, options) {
@@ -142,14 +142,31 @@
             var username;
             var password;
 
+            console.log("syncing agave token model");
+
             if (method === 'create') {
+
+                console.log("method is create");
                 options.url = Agave.vdjApiRoot + '/token';
 
                 username = model.get('internalUsername');
                 password = options.password;
             }
+            else if (method === 'update') {
+
+                console.log("method is update");
+                options.url = Agave.vdjApiRoot + '/token' 
+                                               + '/' + model.get('token');
+
+                username = model.get('internalUsername');
+                password = options.password;
+            }
             else {
-                options.url = Agave.agaveApiRoot;
+
+                console.log("method is other");
+                options.url = Agave.agaveApiRoot + '/auth' 
+                                                 + '/tokens' 
+                                                 + '/' + model.get('token');
 
                 username = model.get('username');
                 password = model.get('token');
@@ -160,13 +177,12 @@
             };
 
 
-            console.log("method is: " + JSON.stringify(method));
-            console.log("model is: " + JSON.stringify(model));
+            console.log("method is: "   + JSON.stringify(method));
+            console.log("model is: "    + JSON.stringify(model));
             console.log("options are: " + JSON.stringify(model));
         
             // Call default sync
             return Backbone.sync(method, model, options);
-
         },
         parse: function(response) {
 
@@ -186,7 +202,7 @@
             
             var errors = {};
             options = _.extend({}, options);
-            if (! attrs.username) {
+            if (! attrs.internalUsername) {
                 console.log("token expire 1");
                 errors.username = 'Username is required';
             }
@@ -211,7 +227,7 @@
             return btoa(this.get('username') + ':' + this.id);
         }
     }),
-
+/*
     Auth.ActiveTokens = Agave.Collection.extend({
         model: Auth.Token,
         url: '/auth-v1/list',
@@ -219,7 +235,7 @@
                 return -token.get('created');
         }
     });
-
+*/
     Backbone.Agave = Agave;
     return Agave;
 })(this);

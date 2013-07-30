@@ -47,7 +47,7 @@ define(['app'], function(App) {
 
     authListActive: function() {
       App.Layouts.main.template = 'one-col';
-      App.Layouts.main.setView('.content', new App.Views.AgaveAuth.ActiveTokens({collection: new Backbone.Agave.Auth.ActiveTokens()}));
+      App.Layouts.main.setView('.content', new App.Views.AgaveAuth.ActiveTokens({model: App.Agave.token()}));
       App.Layouts.main.render();
     },
 

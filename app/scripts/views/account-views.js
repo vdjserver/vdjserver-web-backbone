@@ -43,11 +43,17 @@ define(['app'], function(App) {
                         {
                             password: password,
                             success: function() {
-                                message.set('body', message.get('body') + '<p>Success!</p>');
-                                modal.close();
-                                App.router.navigate('auth/login', {
-                                    trigger: true
+                                message.set('body', message.get('body') + '<p>Success!</p> <button class="btn btn-default btn-block newAccountSuccess">Continue to Login Screen</button>');
+                                $('.newAccountSuccess').click(function() {
+
+                                    console.log("click. it happened.");
+                                    modal.close();
+                                    App.router.navigate('auth/login', {
+                                        trigger: true
+                                    });
+
                                 });
+
                             },
                             error: function(model, xhr, options) {
                                 that.$el.prepend($('<div class="alert alert-error">').text('Account creation failed.  Please check your username, password and email.').fadeIn());
