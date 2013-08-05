@@ -13,43 +13,38 @@ define(['app'], function(App) {
             'submit form': 'submitForm'
         },
         submitForm: function(e) {
-            
+
             e.preventDefault();
 
-            var internalUsername = this.$el.find('#internalUsername').val();
-            var password         = this.$el.find('#password').val();
+            var formData = Backbone.Syphon.serialize(this);
 
+            if (formData.internalUsername && formData.password) {
 
-            if (internalUsername && password) {
-                
                 var message = new App.Models.MessageModel({
                     'header': 'Getting token',
                     'body':   '<p>Please wait while we authenticate you...</p>'
                 });
-                
+
                 var modal = new UtilViews.ModalMessage({
                     model:    message,
                     backdrop: 'static',
                     keyboard: false
                 });
-                
+
                 that = this;
 
                 console.log("about to do model save append");
-                
+
                 $('<div class="login-modal">').appendTo(this.el);
                 modal.$el.on('shown', function() {
                     that.$el.find('.alert-error').remove();
                     console.log("saving model from view. internalUsername is: " + internalUsername);
                     console.log("also, model is: " + JSON.stringify(that.model));
                     that.model.save(
+                            formData
+                        ,
                         {
-                            internalUsername: internalUsername,
-                            expires: null,
-                            token: null
-                        },
-                        {
-                            password: password,
+                            password: formData.password,
                             success: function() {
                                 message.set('body', message.get('body') + '<p>Success!</p>');
                                 modal.close();
@@ -64,6 +59,7 @@ define(['app'], function(App) {
                             }
                         }
                     );
+                    console.log("after model save");
                 });
                 modal.$el.on('hidden', function() {
                     modal.remove();
@@ -180,12 +176,12 @@ define(['app'], function(App) {
     AgaveAuth.ActiveTokens = Backbone.View.extend({
         template: 'auth/active-tokens',
         initialize: function() {
-            
+
             console.log("init ok");
             var view = new AgaveAuth.TokenView({model: this.model});
             this.insertView('.tokens', view);
             view.render();
-            
+
             console.log("after view render");
         },
         afterRender: function() {

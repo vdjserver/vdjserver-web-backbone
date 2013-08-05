@@ -1,6 +1,7 @@
 define(['app'], function(App) {
 
-    var Account = {}, UtilViews = App.Views.Util;
+    var Account   = {};
+    var UtilViews = App.Views.Util;
 
     Account.NewAccountForm = Backbone.View.extend({
         template: 'account/new-account-form',
@@ -11,12 +12,18 @@ define(['app'], function(App) {
 
             e.preventDefault();
 
-            var internalUsername = this.$el.find('#internalUsername').val();
-            var password         = this.$el.find('#password').val();
-            var email            = this.$el.find('#email').val();
+            /*
+             should return:
+                internalusername
+                password
+                email
+             */
+            var formData = Backbone.Syphon.serialize(this);
 
-
-            if (internalUsername && password && email) {
+            if (formData.internalUsername &&
+                formData.password         &&
+                formData.email)
+            {
 
                 var message = new App.Models.MessageModel({
                     'header': 'Creating new account',
@@ -35,13 +42,9 @@ define(['app'], function(App) {
                 modal.$el.on('shown', function() {
                     that.$el.find('.alert-error').remove();
                     that.model.save(
+                            formData
+                        ,
                         {
-                            internalUsername: internalUsername,
-                            password:         password,
-                            email:            email
-                        },
-                        {
-                            password: password,
                             success: function() {
                                 message.set('body', message.get('body') + '<p>Success!</p> <button class="btn btn-default btn-block newAccountSuccess">Continue to Login Screen</button>');
                                 $('.newAccountSuccess').click(function() {
@@ -76,6 +79,68 @@ define(['app'], function(App) {
         }
     });
 
+    Account.ProfileForm = Backbone.View.extend({
+        template: 'account/profile-form',
+        events: {
+            'submit form': 'submitForm'
+        },
+        submitForm: function(e) {
+
+            e.preventDefault();
+
+            var formData = Backbone.Syphon.serialize(this);
+
+            if (formData.email) {
+
+                var message = new App.Models.MessageModel({
+                    'header': 'Updating profile',
+                    'body':   '<p>Please wait while your profile is being updated...</p>'
+                });
+
+                var modal = new UtilViews.ModalMessage({
+                    model:    message,
+                    backdrop: 'static',
+                    keyboard: false
+                });
+
+                var that = this;
+
+                $('<div class="update-profile-modal">').appendTo(this.el);
+                modal.$el.on('shown', function() {
+                    that.$el.find('.alert-error').remove();
+                    that.model.save(
+                            formData
+                        ,
+                        {
+                            success: function() {
+                                message.set('body', message.get('body') + '<p>Success!</p> <button class="btn btn-default btn-block successMessage">Close</button>');
+                                $('.successMessage').click(function() {
+
+                                    console.log("click. it happened.");
+                                    modal.close();
+
+                                });
+
+                            },
+                            error: function(model, xhr, options) {
+                                that.$el.prepend($('<div class="alert alert-error">').text('Profile update failed. Please try again.').fadeIn());
+                                modal.close();
+                            }
+                        }
+                    );
+                });
+                modal.$el.on('hidden', function() {
+                    modal.remove();
+                });
+                this.setView('.update-profile-modal', modal);
+                modal.render();
+            }
+            else {
+                this.$el.find('.alert-error').remove().end().prepend($('<div class="alert alert-error">').text('Email is required.').fadeIn());
+            }
+            return false;
+        }
+    });
 
     App.Views.Account = Account;
     return Account;

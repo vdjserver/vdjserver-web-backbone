@@ -11,7 +11,8 @@ define(['app'], function(App) {
       'auth/active': 'authListActive',
       'auth/logout': 'authLogout',
 
-      'account/new': 'accountNew',
+      'account/new'    : 'accountNew',
+      'account/profile': 'accountProfile',
 
       'apps/public': 'appsPublicList',
       'apps/shared': 'appsSharedList',
@@ -63,6 +64,12 @@ define(['app'], function(App) {
       App.Layouts.main.template = 'one-col';
       App.Layouts.main.setView('.content', new App.Views.Account.NewAccountForm({model: new App.Models.Account.NewAccount()}));
       App.Layouts.main.render();
+    },
+
+    accountProfile: function() {
+        App.Layouts.main.template = 'one-col';
+        App.Layouts.main.setView('.content', new App.Views.Account.ProfileForm({model: new App.Models.Account.Profile()}));
+        App.Layouts.main.render();
     },
 
 
