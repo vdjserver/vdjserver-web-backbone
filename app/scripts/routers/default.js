@@ -19,6 +19,7 @@ define(['app'], function(App) {
       'apps/:id'   : 'appsView',
 
       'io'         : 'ioBrowser',
+      'io/upload'  : 'ioUpload',
       'io/:owner'  : 'ioBrowser',
       'io/:owner/*path': 'ioBrowser'
 
@@ -94,6 +95,12 @@ define(['app'], function(App) {
 
 
     // IO
+    ioUpload: function() {
+        App.Layouts.main.template = 'one-col';
+        //App.Layouts.main.setView('.content', new App.Views.AgaveApps.AppView({model: new Backbone.Agave.Apps.Application({id:id})}));
+        App.Layouts.main.render();
+    },
+
     ioBrowser: function(owner, path) {
       App.Layouts.main.template = 'one-col';
       var fullPath = owner || App.Agave.token().get('internalUsername');

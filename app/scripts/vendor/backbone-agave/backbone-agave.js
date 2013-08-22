@@ -202,6 +202,8 @@
             
             var errors = {};
             options = _.extend({}, options);
+
+
             if (! attrs.internalUsername) {
                 console.log("token expire 1");
                 errors.username = 'Username is required';
@@ -210,10 +212,12 @@
                 console.log("token expire 2");
                 errors.token = 'A Token or Password is required';
             }
-            if (attrs.expires && (attrs.expires * 1000 - Date.now() <= 0)) {
+            if (attrs.expires && (attrs.expires * 1000 - Date.now() <= 0)) 
+            {
                 console.log("token expire 3");
                 errors.expires = 'Token is expired';
             }
+
             if (! _.isEmpty(errors)) {
                 console.log("token expire 4");
                 return errors;

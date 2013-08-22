@@ -16,7 +16,7 @@ require.config({
         'fileSaver':           'vendor/fileSaver'
     },
     shim: {
-        backbone: {
+        'backbone': {
             deps: ['jquery', 'underscore'],
             exports: 'Backbone'
         },
@@ -71,6 +71,8 @@ define([
     'backbone-agave-io',
     'backbone-agave-jobs',
     'backbone-agave-apps',
+
+    'vendor/backbone-vdj/backbone-vdj',
 
     'models/message',
     'models/form',

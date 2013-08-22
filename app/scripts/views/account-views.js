@@ -20,9 +20,11 @@ define(['app'], function(App) {
              */
             var formData = Backbone.Syphon.serialize(this);
 
-            if (formData.internalUsername &&
-                formData.password         &&
-                formData.email)
+            if (
+                    formData.internalUsername &&
+                    formData.password         &&
+                    formData.email
+               )
             {
 
                 var message = new App.Models.MessageModel({

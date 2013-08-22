@@ -17,7 +17,7 @@ define(['app'], function(App){
     });
 
 
-    AccountModels.Profile = Backbone.Model.extend({
+    AccountModels.Profile = App.Vdj.Model.extend({
         defaults: {
             firstName: "",
             lastName:  "",
@@ -26,7 +26,7 @@ define(['app'], function(App){
             state:     ""
         },
         url: function() {
-            return Backbone.Agave.vdjApiRoot + '/user/profile';
+            return '/user/profile';
         },
         parse: function(response) {
             console.log("account response is: " + JSON.stringify(response));

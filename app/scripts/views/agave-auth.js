@@ -38,14 +38,18 @@ define(['app'], function(App) {
                 $('<div class="login-modal">').appendTo(this.el);
                 modal.$el.on('shown', function() {
                     that.$el.find('.alert-error').remove();
-                    console.log("saving model from view. internalUsername is: " + internalUsername);
+                    console.log("saving model from view. internalUsername is: " + formData.internalUsername);
+                    console.log("formdata is: " + JSON.stringify(formData));
                     console.log("also, model is: " + JSON.stringify(that.model));
+
                     that.model.save(
                             formData
                         ,
                         {
                             password: formData.password,
                             success: function() {
+                                console.log("save success");
+                                App.Vdj.password = formData.password;
                                 message.set('body', message.get('body') + '<p>Success!</p>');
                                 modal.close();
                                 App.router.navigate('auth/active', {
@@ -53,6 +57,7 @@ define(['app'], function(App) {
                                 });
                             },
                             error: function(model, xhr, options) {
+                                console.log("save error");
                                 that.$el.prepend($('<div class="alert alert-error">').text('Authentication failed.  Please check your username and password.').fadeIn());
                                 $('#password').val('');
                                 modal.close();
