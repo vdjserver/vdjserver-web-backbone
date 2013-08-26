@@ -83,6 +83,15 @@ define(['app'], function(App) {
 
     Account.ProfileForm = Backbone.View.extend({
         template: 'account/profile-form',
+        initialize: function() {
+            this.listenTo(this.model, 'change', this.render);
+            this.model.fetch();
+        },
+        serialize: function() {
+            return {
+                profileData: this.model.toJSON()
+            };
+        },
         events: {
             'submit form': 'submitForm'
         },
