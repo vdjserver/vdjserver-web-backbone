@@ -105,14 +105,6 @@ module.exports = function(grunt) {
                 'test/spec/{,*/}*.js'
             ]
         },
-        buster: {
-            test: {
-                config: 'test/buster.js'
-            },
-            server: {
-                port: 1111
-            }
-        },
         coffee: {
             dist: {
                 files: [{
@@ -304,8 +296,14 @@ module.exports = function(grunt) {
             all: {
                 rjsConfig: '<%= yeoman.app %>/scripts/main.js'
             }
+        },
+        mocha: {
+            all: ['tests/index.html']
         }
     });
+
+    grunt.loadNpmTasks('grunt-mocha');
+
 
     grunt.renameTask('regarde', 'watch');
 
