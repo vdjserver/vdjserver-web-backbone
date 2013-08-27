@@ -1,19 +1,20 @@
 /**
- * Backbone Agave Data
- * Version 0.1
- *
- */
+  * Backbone Agave Data
+  * Version 0.1
+  *
+  */
 (function (window) {
 
-"use strict";
+    'use strict';
 
-var Backbone = window.Backbone;
-var $ = window.$;
-var _ = window._;
+    var Backbone = window.Backbone;
+    //var $ = window.$;
+    //var _ = window._;
 
-var Agave = Backbone.Agave;
+    var Agave = Backbone.Agave;
 
-var Data = Agave.Data = {};
+    var Data = Agave.Data = {};
 
-return Data;
+    return Data;
+
 })(this);

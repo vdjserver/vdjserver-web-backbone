@@ -4,10 +4,12 @@
   *
   */
 define(['app'], function(App){
+
+    'use strict';
     
     var Vdj = {};
 
-    console.log("backbone vdj is included");
+    console.log('backbone vdj is included');
 
     Vdj.password = '';
 

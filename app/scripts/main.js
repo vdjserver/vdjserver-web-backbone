@@ -1,3 +1,6 @@
+
+'use strict';
+
 require.config({
     paths: {
         'backbone':         '../components/backbone/backbone',
@@ -21,8 +24,8 @@ require.config({
             exports: 'Backbone'
         },
         'backbone.syphon': {
-                deps: ['backbone'],
-                exports: 'Backbone'
+            deps: ['backbone'],
+            exports: 'Backbone'
         },
         'bootstrap': {
             deps: ['jquery'],

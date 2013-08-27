@@ -1,5 +1,7 @@
 define(['app'], function(App) {
-    
+
+    'use strict';
+
     var DefaultRouter = Backbone.Router.extend({
 
         routes: {
@@ -66,9 +68,9 @@ define(['app'], function(App) {
         },
 
         accountProfile: function() {
-                App.Layouts.main.template = 'one-col';
-                App.Layouts.main.setView('.content', new App.Views.Account.ProfileForm({model: new App.Models.Account.Profile()}));
-                App.Layouts.main.render();
+            App.Layouts.main.template = 'one-col';
+            App.Layouts.main.setView('.content', new App.Views.Account.ProfileForm({model: new App.Models.Account.Profile()}));
+            App.Layouts.main.render();
         },
 
 
@@ -95,9 +97,9 @@ define(['app'], function(App) {
         // IO
 
         ioBrowser: function(path) {
-            
-            console.log("ioBrowser - oh no. path is: " + JSON.stringify(path));
-            
+
+            console.log('ioBrowser - oh no. path is: ' + JSON.stringify(path));
+
             App.Layouts.main.template = 'one-col';
 
             // TEMP

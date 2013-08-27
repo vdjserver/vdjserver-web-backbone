@@ -4,39 +4,42 @@
   *
   */
 (function (window) {
+
     'use strict';
-    
-    var Backbone = window.Backbone,
-        _ = window._,
-        Agave = function(options) {
-            var defaults = _.extend({primary: true}, options),
-                token = this._token = new Agave.Auth.Token({});
 
-            this.listenTo(token, 'change', function() {
-                this.trigger('Agave:tokenChanged');
-            }, this);
+    var Backbone = window.Backbone;
+    var _ = window._;
+    var Agave = function(options) {
 
-            this.listenTo(token, 'destroy', function() {
-                this.token().clear();
-                this.trigger('Agave:tokenDestroy');
+        var defaults = _.extend({primary: true}, options),
+            token = this._token = new Agave.Auth.Token({});
+
+        this.listenTo(token, 'change', function() {
+            this.trigger('Agave:tokenChanged');
+        }, this);
+
+        this.listenTo(token, 'destroy', function() {
+            this.token().clear();
+            this.trigger('Agave:tokenDestroy');
+        });
+
+        if (defaults.token) {
+            this.token(defaults.token);
+        }
+
+        // look for token in global variable
+        else if (window.AGAVE_TOKEN && window.AGAVE_USERNAME) {
+            this.setToken({
+                'token': window.AGAVE_TOKEN,
+                'internalUsername': window.AGAVE_USERNAME
             });
+        }
 
-            if (defaults.token) {
-                this.token(defaults.token);
-            }
+        if (defaults.primary) {
+            Agave.instance = this;
+        }
 
-            // look for token in global variable
-            else if (window.AGAVE_TOKEN && window.AGAVE_USERNAME) {
-                this.setToken({
-                    'token': window.AGAVE_TOKEN,
-                    'internalUsername': window.AGAVE_USERNAME
-                });
-            }
-
-            if (defaults.primary) {
-                Agave.instance = this;
-            }
-        };
+    };
 
     _.extend(Agave.prototype, Backbone.Events, {
 
@@ -137,16 +140,16 @@
         idAttribute: 'token',
 
         sync: function(method, model, options) {
-            
+
             // Credentials for Basic Authentication
             var username;
             var password;
 
-            console.log("syncing agave token model");
+            console.log('syncing agave token model');
 
             if (method === 'create') {
 
-                console.log("method is create");
+                console.log('method is create');
                 options.url = Agave.vdjApiRoot + '/token';
 
                 username = model.get('internalUsername');
@@ -154,8 +157,8 @@
             }
             else if (method === 'update') {
 
-                console.log("method is update");
-                options.url = Agave.vdjApiRoot + '/token' 
+                console.log('method is update');
+                options.url = Agave.vdjApiRoot + '/token'
                                                + '/' + model.get('token');
 
                 username = model.get('internalUsername');
@@ -163,33 +166,33 @@
             }
             else {
 
-                console.log("method is other");
-                options.url = Agave.agaveApiRoot + '/auth' 
-                                                 + '/tokens' 
+                console.log('method is other');
+                options.url = Agave.agaveApiRoot + '/auth'
+                                                 + '/tokens'
                                                  + '/' + model.get('token');
 
                 username = model.get('username');
                 password = model.get('token');
             }
-        
+
             options.beforeSend = function(xhr) {
                 xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username + ':' + password));
             };
 
 
-            console.log("method is: "   + JSON.stringify(method));
-            console.log("model is: "    + JSON.stringify(model));
-            console.log("options are: " + JSON.stringify(model));
-        
+            console.log('method is: '   + JSON.stringify(method));
+            console.log('model is: '    + JSON.stringify(model));
+            console.log('options are: '  + JSON.stringify(model));
+
             // Call default sync
             return Backbone.sync(method, model, options);
         },
         parse: function(response) {
 
-            console.log("response is: " + JSON.stringify(response));
-            
-            if (response && response.status === "success") {
-                    
+            console.log('response is: ' + JSON.stringify(response));
+
+            if (response && response.status === 'success') {
+
                 // Convert human readable dates to unix time
                 response.result.expires = moment(response.result.expires).unix();
                 response.result.created = moment(response.result.created).unix();
@@ -199,30 +202,30 @@
             }
         },
         validate: function(attrs, options) {
-            
+
             var errors = {};
             options = _.extend({}, options);
 
 
             if (! attrs.internalUsername) {
-                console.log("token expire 1");
+                console.log('token expire 1');
                 errors.username = 'Username is required';
             }
             if (!(attrs.token || options.token || options.password)) {
-                console.log("token expire 2");
+                console.log('token expire 2');
                 errors.token = 'A Token or Password is required';
             }
-            if (attrs.expires && (attrs.expires * 1000 - Date.now() <= 0)) 
+            if (attrs.expires && (attrs.expires * 1000 - Date.now() <= 0))
             {
-                console.log("token expire 3");
+                console.log('token expire 3');
                 errors.expires = 'Token is expired';
             }
 
             if (! _.isEmpty(errors)) {
-                console.log("token expire 4");
+                console.log('token expire 4');
                 return errors;
             }
-            
+
         },
         expiresIn: function() {
             return Math.max(0, this.get('expires') * 1000 - Date.now());
@@ -241,5 +244,6 @@
     });
 */
     Backbone.Agave = Agave;
+
     return Agave;
 })(this);

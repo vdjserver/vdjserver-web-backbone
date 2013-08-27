@@ -1,4 +1,6 @@
 define(['app'], function(App){
+    'use strict';
+
     var Util = {};
 
     Util.Message = Backbone.View.extend({

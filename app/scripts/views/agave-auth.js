@@ -1,5 +1,7 @@
 define(['app'], function(App) {
 
+    'use strict';
+
     var AgaveAuth = {}, UtilViews = App.Views.Util;
 
     AgaveAuth.NewTokenForm = Backbone.View.extend({
@@ -31,24 +33,23 @@ define(['app'], function(App) {
                     keyboard: false
                 });
 
-                that = this;
+                var that = this;
 
-                console.log("about to do model save append");
+                console.log('about to do model save append');
 
                 $('<div class="login-modal">').appendTo(this.el);
                 modal.$el.on('shown', function() {
                     that.$el.find('.alert-error').remove();
-                    console.log("saving model from view. internalUsername is: " + formData.internalUsername);
-                    console.log("formdata is: " + JSON.stringify(formData));
-                    console.log("also, model is: " + JSON.stringify(that.model));
+                    console.log('saving model from view. internalUsername is: ' + formData.internalUsername);
+                    console.log('formdata is: ' + JSON.stringify(formData));
+                    console.log('also, model is: ' + JSON.stringify(that.model));
 
                     that.model.save(
-                            formData
-                        ,
+                        formData,
                         {
                             password: formData.password,
                             success: function() {
-                                console.log("save success");
+                                console.log('save success');
                                 App.Vdj.password = formData.password;
                                 message.set('body', message.get('body') + '<p>Success!</p>');
                                 modal.close();
@@ -56,15 +57,16 @@ define(['app'], function(App) {
                                     trigger: true
                                 });
                             },
-                            error: function(model, xhr, options) {
-                                console.log("save error");
+                            //error: function(model, xhr, options) {
+                            error: function() {
+                                console.log('save error');
                                 that.$el.prepend($('<div class="alert alert-error">').text('Authentication failed.  Please check your username and password.').fadeIn());
                                 $('#password').val('');
                                 modal.close();
                             }
                         }
                     );
-                    console.log("after model save");
+                    console.log('after model save');
                 });
                 modal.$el.on('hidden', function() {
                     modal.remove();
@@ -92,6 +94,7 @@ define(['app'], function(App) {
         },
         serialize: function() {
             var json = this.model.toJSON();
+            console.log('authtokenView json is: ' + json);
             json.created_date = moment.unix(json.created).format('YYYY-MM-DD HH:mm');
             json.expires_date = moment.unix(json.expires).format('YYYY-MM-DD HH:mm');
             json.canDelete = this.model.id !== App.Agave.token().id;
@@ -102,7 +105,7 @@ define(['app'], function(App) {
             'click .btn-validate': 'validateToken',
             'click .btn-delete':   'deleteToken'
         },
-        renewToken: function(e) {
+        renewToken: function() {
             var modalWrap = new UtilViews.ModalView({
                 model: new App.Models.MessageModel({
                     header: 'Renew Token'
@@ -125,7 +128,7 @@ define(['app'], function(App) {
             var btn = $(e.currentTarget);
             this.model.fetch({
                 silent: true,
-                success: function(resp) {
+                success: function() {
                     btn.popover({
                         content:   'This token is <span class="label label-success">Valid</span>.',
                         html:      true,
@@ -141,7 +144,7 @@ define(['app'], function(App) {
                 }
             });
         },
-        deleteToken: function(e) {
+        deleteToken: function() {
             this.model.destroy();
             this.remove();
         }
@@ -153,7 +156,7 @@ define(['app'], function(App) {
             'submit .renew-form': 'renewToken',
             'click .btn-cancel':  'dismiss'
         },
-        renewToken: function(e) {
+        renewToken: function() {
             var password = this.$el.find('#password').val(),
                 that = this;
             this.$el.find('alert-error').remove();
@@ -172,7 +175,7 @@ define(['app'], function(App) {
             });
             return false;
         },
-        dismiss: function(e) {
+        dismiss: function() {
             this.remove();
             return false;
         }
@@ -182,12 +185,12 @@ define(['app'], function(App) {
         template: 'auth/active-tokens',
         initialize: function() {
 
-            console.log("init ok");
+            console.log('init ok');
             var view = new AgaveAuth.TokenView({model: this.model});
             this.insertView('.tokens', view);
             view.render();
 
-            console.log("after view render");
+            console.log('after view render');
         },
         afterRender: function() {
             if (!this.model.isValid()) {

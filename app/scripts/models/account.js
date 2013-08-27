@@ -1,12 +1,14 @@
 define(['app'], function(App){
 
+    'use strict';
+
     var AccountModels = {};
 
     AccountModels.NewAccount = Backbone.Model.extend({
         defaults: {
-            internalUsername: "",
-            password: "",
-            email:    ""
+            internalUsername: '',
+            password: '',
+            email:    ''
         },
         url: function() {
             return Backbone.Agave.vdjApiRoot + '/user';
@@ -19,17 +21,17 @@ define(['app'], function(App){
 
     AccountModels.Profile = App.Vdj.Model.extend({
         defaults: {
-            firstName: "",
-            lastName:  "",
-            email:     "",
-            city:      "",
-            state:     ""
+            firstName: '',
+            lastName:  '',
+            email:     '',
+            city:      '',
+            state:     ''
         },
         url: function() {
             return '/user/profile';
         },
         parse: function(response) {
-            console.log("account response is: " + JSON.stringify(response));
+            console.log('account response is: ' + JSON.stringify(response));
             return response.result;
         }
     });

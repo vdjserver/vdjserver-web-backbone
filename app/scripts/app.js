@@ -1,5 +1,8 @@
 define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
-    App = {
+
+    'use strict';
+
+    var App = {
         root: '/',
         init: function() {
             var JST = window.JST = window.JST || {};
@@ -35,25 +38,35 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
             // setup agave
             App.Agave = new Backbone.Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
             var watchToken = function() {
-                clearTimeout(this.warn);
-                clearTimeout(this.error);
-                var token = App.Agave.token(), logoutWarningDialog;
+                var warn;
+                var error;
+
+                clearTimeout(warn);
+                clearTimeout(error);
+
+                var token = App.Agave.token();
+                var logoutWarningDialog;
+                var renewView;
+                
                 if (token.isValid()) {
 
                     window.localStorage.setItem('Agave.Token', JSON.stringify(token.toJSON()));
-                    this.warn = setTimeout(function() {
-                        console.log("this.warn is running");
+                    warn = setTimeout(function() {
+                        console.log('this.warn is running');
+
                         logoutWarningDialog = new App.Views.Util.ModalView({
                             model: new App.Models.MessageModel({header:'Your login session is about to expire!'})
-                        }),
+                        });
+                        
                         renewView = new App.Views.AgaveAuth.RenewTokenForm({
                             model: App.Agave.token()
                         });
+                        
                         renewView.cleanup = function() {
                             logoutWarningDialog.close();
                             if (token.expiresIn() > 300000) {
 
-                                console.log("weird token if statement");
+                                console.log('weird token if statement');
                                 // it was renewed, rewatch token
                                 watchToken();
                             }
@@ -63,17 +76,20 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                             logoutWarningDialog.remove();
                             logoutWarningDialog = null;
                         });
-                        console.log("about to render logoutWarning");
+                        console.log('about to render logoutWarning');
                         logoutWarningDialog.render();
-                        console.log("finished rendering logoutWarning");
+                        console.log('finished rendering logoutWarning');
                     }, Math.max(0, token.expiresIn() - 300000));
-                    this.error = setTimeout(function() {
-                            console.log("token.expiresIn is: " + token.expiresIn());
-                            console.log("token expires math function is: " + Math.max(0, token.expiresIn()));
+
+                    error = setTimeout(function() {
+                        console.log('token.expiresIn is: ' + token.expiresIn());
+                        console.log('token expires math function is: ' + Math.max(0, token.expiresIn()));
+                        
                         if (logoutWarningDialog) {
-                            console.log("logoutWarning close");
+                            console.log('logoutWarning close');
                             logoutWarningDialog.close();
                         }
+                        
                         alert('Your Session has expired.  You have been logged out.');
                         App.Agave.destroyToken();
                         window.localStorage.removeItem('Agave.Token');

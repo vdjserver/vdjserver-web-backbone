@@ -1,18 +1,19 @@
 /**
- * Backbone Agave PostIt
- * Version 0.1
- *
- */
+  * Backbone Agave PostIt
+  * Version 0.1
+  *
+  */
 (function (window) {
-  "use strict";
 
-  var Backbone = window.Backbone;
-  var $ = window.$;
-  var _ = window._;
+    'use strict';
 
-  var Agave = Backbone.Agave;
+    var Backbone = window.Backbone;
+    //var $ = window.$;
+    //var _ = window._;
 
-  var PostIt = Agave.PostIt = {};
+    var Agave = Backbone.Agave;
 
-  return PostIt;
+    var PostIt = Agave.PostIt = {};
+
+    return PostIt;
 })(this);

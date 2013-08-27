@@ -1,6 +1,8 @@
 define(['app'], function(App){
-  var HeaderLayoutView = Backbone.View.extend();
+    'use strict';
 
-  App.Views.HeaderLayoutView = HeaderLayoutView;
-  return HeaderLayoutView;
+    var HeaderLayoutView = Backbone.View.extend();
+
+    App.Views.HeaderLayoutView = HeaderLayoutView;
+    return HeaderLayoutView;
 });

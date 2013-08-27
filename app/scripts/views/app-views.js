@@ -1,4 +1,6 @@
 define(['app'], function(App){
+    'use strict';
+
     var AppViews = {};
 
     // layouts

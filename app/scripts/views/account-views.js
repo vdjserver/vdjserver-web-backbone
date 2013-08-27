@@ -1,5 +1,7 @@
 define(['app'], function(App) {
 
+    'use strict';
+
     var Account   = {};
     var UtilViews = App.Views.Util;
 
@@ -38,20 +40,19 @@ define(['app'], function(App) {
                     keyboard: false
                 });
 
-                that = this;
+                var that = this;
 
                 $('<div class="create-account-modal">').appendTo(this.el);
                 modal.$el.on('shown', function() {
                     that.$el.find('.alert-error').remove();
                     that.model.save(
-                            formData
-                        ,
+                        formData,
                         {
                             success: function() {
                                 message.set('body', message.get('body') + '<p>Success!</p> <button class="btn btn-default btn-block newAccountSuccess">Continue to Login Screen</button>');
                                 $('.newAccountSuccess').click(function() {
 
-                                    console.log("click. it happened.");
+                                    console.log('click. it happened.');
                                     modal.close();
                                     App.router.navigate('auth/login', {
                                         trigger: true
@@ -60,7 +61,8 @@ define(['app'], function(App) {
                                 });
 
                             },
-                            error: function(model, xhr, options) {
+                            //error: function(model, xhr, options) {
+                            error: function() {
                                 that.$el.prepend($('<div class="alert alert-error">').text('Account creation failed.  Please check your username, password and email.').fadeIn());
                                 $('#password').val('');
                                 modal.close();
@@ -120,20 +122,17 @@ define(['app'], function(App) {
                 modal.$el.on('shown', function() {
                     that.$el.find('.alert-error').remove();
                     that.model.save(
-                            formData
-                        ,
+                        formData,
                         {
                             success: function() {
                                 message.set('body', message.get('body') + '<p>Success!</p> <button class="btn btn-default btn-block successMessage">Close</button>');
                                 $('.successMessage').click(function() {
-
-                                    console.log("click. it happened.");
                                     modal.close();
-
                                 });
 
                             },
-                            error: function(model, xhr, options) {
+                            //error: function(model, xhr, options) {
+                            error: function() {
                                 that.$el.prepend($('<div class="alert alert-error">').text('Profile update failed. Please try again.').fadeIn());
                                 modal.close();
                             }

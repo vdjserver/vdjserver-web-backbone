@@ -1,4 +1,7 @@
 define(['app', 'fileSaver'], function(App){
+    
+    'use strict';
+
     var AgaveIO = {}, UtilViews = App.Views.Util;
 
 
@@ -17,13 +20,13 @@ define(['app', 'fileSaver'], function(App){
 
                 this.collection.on('reset', function() {
 
-                    //console.log("collection reset. collection is: " + JSON.stringify(this.collection));
+                    //console.log('collection reset. collection is: ' + JSON.stringify(this.collection));
 
                     this.setView('.io-files', new AgaveIO.FileList({collection: this.collection}));
 /*
                     var perms = new Backbone.Agave.IO.FilePermissions({path: this.collection.at(0).id});
                     perms.on('change', function() {
-                        console.log("perms change ok");
+                        console.log('perms change ok');
                         var view = new AgaveIO.ListActions({model: perms, file: this.collection.at(0)});
                         this.setView('.actions', view);
                         view.render();
@@ -65,7 +68,7 @@ define(['app', 'fileSaver'], function(App){
                     });
                 }
 
-                console.log("pathParts is: " + JSON.stringify(pathParts));
+                console.log('pathParts is: ' + JSON.stringify(pathParts));
 
                 return { path: { parts: pathParts } };
             }
@@ -93,15 +96,12 @@ define(['app', 'fileSaver'], function(App){
         tagName: 'span',
         initialize: function() {
 
-            console.log("listActions init ok. this options is: " + JSON.stringify(this.options));
-
-            var perm;
-
-            /*
+            console.log('listActions init ok. this options is: ' + JSON.stringify(this.options));
+            
             var type = this.options.file.get('type'),
                 perms = this.model.get('permissions'),
                 perm = _.findWhere(perms, {'internalUsername':'you'});
-    */
+    
 /*
             if (perm.permission.read && type === 'file') {
                 this.insertView(new AgaveIO.IOAction({
@@ -114,10 +114,10 @@ define(['app', 'fileSaver'], function(App){
             }
 */
             // NOTE: this really needs to be reenabled once permissions are working properly
-            //if (perm.permission.write && type === 'dir') {
-            console.log("pre listAction insertView. this.options is: " + JSON.stringify(this.options));
-            console.log("listAction insertView. model is: " + JSON.stringify(this.model));
-            this.options.file = 'dir';
+            if (perm.permission.write && type === 'dir') {
+                console.log('pre listAction insertView. this.options is: ' + JSON.stringify(this.options));
+                console.log('listAction insertView. model is: ' + JSON.stringify(this.model));
+                this.options.file = 'dir';
 
                 this.insertView(new AgaveIO.IOAction({
                     model: this.options.file,
@@ -133,33 +133,32 @@ define(['app', 'fileSaver'], function(App){
                     'tagName': 'span',
                     'button': true
                 }));
-            console.log("post listAction insertView");
-            //}
+            }
         }
     });
 
     AgaveIO.IOAction = Backbone.View.extend({
         template: 'io/action',
         initialize: function() {
-            console.log("ioAction init ok. this.options is: " + JSON.stringify(this.options));
+            console.log('ioAction init ok. this.options is: ' + JSON.stringify(this.options));
         },
         events: {
             'click .io-action':'doAction'
         },
         serialize: function() {
-            console.log("ioAction serialize. this.options is: " + JSON.stringify(this.options));
+            console.log('ioAction serialize. this.options is: ' + JSON.stringify(this.options));
             var toReturn = {
                 'action':this.options.action,
                 'label':this.options.label,
                 'button':this.options.button? 'btn' : false
             };
 
-            console.log("toReturn is: " + JSON.stringify(toReturn));
+            console.log('toReturn is: ' + JSON.stringify(toReturn));
             return toReturn;
         },
         doAction: function(e) {
             e.preventDefault();
-            console.log("ioAction options are: " + JSON.stringify(this.options));
+            console.log('ioAction options are: ' + JSON.stringify(this.options));
             switch (this.options.action) {
             case 'create-dir':
                 var dirName = prompt('Please provide a name for the new directory.');
@@ -193,7 +192,7 @@ define(['app', 'fileSaver'], function(App){
                 xhr.open('get', this.model.downloadUrl());
                 xhr.responseType = 'blob';
                 xhr.setRequestHeader('Authorization', 'Basic ' + App.Agave.token().getBase64());
-                xhr.onload = function(e) {
+                xhr.onload = function() {
                     if (this.status === 200) {
                         saveAs(new Blob([this.response]), file.get('name'));
                     }
@@ -202,7 +201,7 @@ define(['app', 'fileSaver'], function(App){
                 break;
 
             case 'upload':
-                console.log("upload view ok");
+                console.log('upload view ok');
                 var view = new UtilViews.ModalView({model: new App.Models.MessageModel({header:'Upload file'})}),
                     form = new AgaveIO.UploadForm({model: this.model});
                 form.cleanup = function() {
@@ -234,7 +233,7 @@ define(['app', 'fileSaver'], function(App){
     AgaveIO.UploadForm = Backbone.View.extend({
         template: 'io/upload',
         initialize: function() {
-            console.log("uploadForm init ok");
+            console.log('uploadForm init ok');
         },
         tagName: 'form',
         events: {
@@ -252,7 +251,7 @@ define(['app', 'fileSaver'], function(App){
                 xhr.open('POST', url , true);
                 xhr.setRequestHeader('Authorization', 'Basic ' + App.Agave.token().getBase64());
                 var that = this;
-                xhr.onload = function(e) {
+                xhr.onload = function() {
                     if (this.status === 200) {
                         that.remove();
                         var responseJson = JSON.parse(this.response);
@@ -278,7 +277,7 @@ define(['app', 'fileSaver'], function(App){
     AgaveIO.File = Backbone.View.extend({
         template: 'io/listing',
         initialize: function() {
-            //console.log("agaveIO.file init. model is: " + JSON.stringify(this.model));
+            //console.log('agaveIO.file init. model is: ' + JSON.stringify(this.model));
         },
         attributes: function() {
             var that = this;
@@ -299,31 +298,31 @@ define(['app', 'fileSaver'], function(App){
         events: {
             'click .io-actions': 'showActions'
         },
-        showActions: function(e) {
+        showActions: function() {
 
-            console.log("showActions model is: " + JSON.stringify(this.model));
+            console.log('showActions model is: ' + JSON.stringify(this.model));
 
-            //if (! this.permissions) {
+            if (! this.permissions) {
                 this.permissions = new Backbone.Agave.IO.FilePermissions({'path':this.model.id});
 
-                console.log("permissions are: " + JSON.stringify(this.permissions));
+                console.log('permissions are: ' + JSON.stringify(this.permissions));
 
                 this.permissions.on('change', function() {
                 
-                    console.log("post fetch permissions are: " + JSON.stringify(this.permissions));
+                    console.log('post fetch permissions are: ' + JSON.stringify(this.permissions));
                     
                     var perms = _.findWhere(this.permissions.get('permissions'), {'username':'you'});
                     var type  = this.model.get('type');
 
-                    console.log("post fetch perms are: " + JSON.stringify(perms));
-                    console.log("post fetch type  is:  " + JSON.stringify(type));
+                    console.log('post fetch perms are: ' + JSON.stringify(perms));
+                    console.log('post fetch type  is:  ' + JSON.stringify(type));
 
-                    console.log("post fetch perm permission is: " + JSON.stringify(perms.permission));
+                    console.log('post fetch perm permission is: ' + JSON.stringify(perms.permission));
 
                     this.$el.find('.dropdown-menu').empty();
                     if (perms.permission.read) {
                         if (type === 'file') {
-                            console.log("type match. insert will happen.");
+                            console.log('type match. insert will happen.');
                             this.insertView('.dropdown-menu', new AgaveIO.IOAction({model:this.model, action:'download',label:'Download file',tagName:'li'}));
                         }
                     }
@@ -350,7 +349,7 @@ define(['app', 'fileSaver'], function(App){
                     this.getViews('.dropdown-menu').each(function(view) { view.render(); });
                 }, this);
                 this.permissions.fetch();
-            //}
+            }
         },
         serialize: function() {
             var model = this.model;

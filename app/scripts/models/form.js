@@ -1,8 +1,11 @@
 define(['app'], function(App){
-  var FormModel = Backbone.Model.extend({
+    
+    'use strict';
 
-  });
+    var FormModel = Backbone.Model.extend({
 
-  App.Models.FormModel = FormModel;
-  return FormModel;
+    });
+
+    App.Models.FormModel = FormModel;
+    return FormModel;
 });
