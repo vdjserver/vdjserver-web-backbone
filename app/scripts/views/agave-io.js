@@ -19,7 +19,8 @@ define(['app', 'fileSaver'], function(App){
                 }));
 
                 this.collection.on('reset', function() {
-
+                    
+                    this.collection.removeDotDirectory();
                     //console.log('collection reset. collection is: ' + JSON.stringify(this.collection));
 
                     this.setView('.io-files', new AgaveIO.FileList({collection: this.collection}));
@@ -356,6 +357,8 @@ define(['app', 'fileSaver'], function(App){
             var json  = model.toJSON();
 
             json.lastModified = moment(json.lastModified, 'YYYY-MM-DDTHH:mm:ssZ').format('YYYY-MM-DD hh:mm:ss');
+            //console.log("json is: " + JSON.stringify(json));
+
 
             return json;
         }

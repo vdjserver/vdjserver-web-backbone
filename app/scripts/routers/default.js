@@ -22,7 +22,8 @@ define(['app'], function(App) {
             'apps/:id'   : 'appsView',
 
             'io'      : 'ioBrowser',
-            'io/*path': 'ioBrowser'
+            'io/:owner': 'ioBrowser',
+            'io/:owner/*path': 'ioBrowser'
         },
 
 
@@ -96,23 +97,22 @@ define(['app'], function(App) {
 
         // IO
 
-        ioBrowser: function(path) {
-
-            console.log('ioBrowser - oh no. path is: ' + JSON.stringify(path));
+        ioBrowser: function(owner, path) {
 
             App.Layouts.main.template = 'one-col';
-
-            // TEMP
-            //var fullPath = owner || App.Agave.token().get('internalUsername');
-            var fullPath = App.Agave.token().get('username');
+            var fullPath = owner || App.Agave.token().get('username');
 
             if (path) {
                 fullPath += '/' + path;
             }
 
+            console.log('ioBrowser - oh no. path is: ' + JSON.stringify(path));
+
             App.Layouts.main.setView('.content',new App.Views.AgaveIO.Browser({collection: new Backbone.Agave.IO.Listing([], {path: fullPath})}));
             App.Layouts.main.render();
         }
+
+
     });
 
 

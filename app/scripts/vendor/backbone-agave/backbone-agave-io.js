@@ -23,13 +23,16 @@
         idAttribute: 'path',
         urlRoot: '/io-v1/io',
         url: function() {
+            console.log("returning url");
             return '/io-v1/io' + this.id;
         },
         modelUrl: function() {
-            return '/io-v1/io' + this.id;
+            console.log("returning modelUrl");
+            return '/files/media/' + this.id;
         },
         downloadUrl: function() {
-            return Agave.agaveApiRoot + '/io-v1/io' + this.id;
+            console.log("returning downloadUrl");
+            return Agave.agaveApiRoot + '/files/media/' + this.id;
         },
         directoryPath: function() {
             var path = this.get('path');
@@ -40,6 +43,8 @@
             } else {
                 path = path.substring(0, path.lastIndexOf('/') + 1);
             }
+
+            console.log("IO.file return path is: " + JSON.stringify(path));
             return path;
         },
         parentDirectoryPath: function() {
@@ -59,7 +64,7 @@
         //   return this.get('permissions') === 'OWN';
         // },
         parse: function(resp) {
-           
+
             var result = resp;
             if (resp.result) {
                 result = resp.result;
@@ -69,7 +74,7 @@
             } else {
                 return result;
             }
-            
+
         }
     });
 
@@ -86,13 +91,23 @@
         model: IO.File,
         initialize: function(models, options) {
             this.path = options.path;
-            //console.log('IO.Listing options are: ' + JSON.stringify(options));
+            console.log('IO.Listing options are: ' + JSON.stringify(options));
         },
         url: function() {
             return '/files/listings/' + this.path;
         },
         comparator: function(model) {
             return [model.get('type'), model.get('name')];
+        },
+        removeDotDirectory: function() {
+
+            /*
+                Basically, Agave v2 seems to be returning a '.' file (unix style)
+                to show the current directory. For the purposes of this app
+                that isn't really necessary, so we remove it here.
+             */
+            var dotDirectory = this.where({name: '.'});
+            this.remove(dotDirectory);
         }
     });
 
