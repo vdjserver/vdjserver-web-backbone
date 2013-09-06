@@ -1,5 +1,5 @@
 define(['app', 'fileSaver'], function(App){
-    
+
     'use strict';
 
     var AgaveIO = {}, UtilViews = App.Views.Util;
@@ -19,21 +19,24 @@ define(['app', 'fileSaver'], function(App){
                 }));
 
                 this.collection.on('reset', function() {
-                    
-                    this.collection.removeDotDirectory();
+
+                    //this.collection.removeDotDirectory();
                     //console.log('collection reset. collection is: ' + JSON.stringify(this.collection));
 
                     this.setView('.io-files', new AgaveIO.FileList({collection: this.collection}));
-/*
+
                     var perms = new Backbone.Agave.IO.FilePermissions({path: this.collection.at(0).id});
                     perms.on('change', function() {
-                        console.log('perms change ok');
-                        var view = new AgaveIO.ListActions({model: perms, file: this.collection.at(0)});
+
+                        var currentDirectory = this.collection.where({name: '.'});
+                        currentDirectory = currentDirectory[0];
+
+                        var view = new AgaveIO.ListActions({model: perms, file: currentDirectory});
                         this.setView('.actions', view);
                         view.render();
                     }, this);
                     perms.fetch();
-*/
+
 
                     this.render();
 
@@ -98,12 +101,16 @@ define(['app', 'fileSaver'], function(App){
         initialize: function() {
 
             console.log('listActions init ok. this options is: ' + JSON.stringify(this.options));
-            
-            var type = this.options.file.get('type'),
-                perms = this.model.get('permissions'),
-                perm = _.findWhere(perms, {'internalUsername':'you'});
-    
-/*
+
+            var type  = this.options.file.get('format');
+            var perms = this.model.get('permissions');
+            var perm  = _.findWhere(perms, {'username':'you'});
+
+            console.log("type is: " + JSON.stringify(type));
+            console.log("perms is: " + JSON.stringify(perms));
+            console.log("perm is: " + JSON.stringify(perm));
+            console.log("this model is: " + JSON.stringify(this.model));
+
             if (perm.permission.read && type === 'file') {
                 this.insertView(new AgaveIO.IOAction({
                     model: this.options.file,
@@ -113,26 +120,24 @@ define(['app', 'fileSaver'], function(App){
                     'button': true
                 }));
             }
-*/
-            // NOTE: this really needs to be reenabled once permissions are working properly
-            if (perm.permission.write && type === 'dir') {
+
+            if (perm.permission.write && type === 'folder') {
                 console.log('pre listAction insertView. this.options is: ' + JSON.stringify(this.options));
                 console.log('listAction insertView. model is: ' + JSON.stringify(this.model));
-                this.options.file = 'dir';
 
                 this.insertView(new AgaveIO.IOAction({
-                    model: this.options.file,
-                    'action': 'upload',
-                    'label': 'Upload file',
+                    model:     this.options.file,
+                    'action':  'upload',
+                    'label':   'Upload file',
                     'tagName': 'span',
-                    'button': true
+                    'button':  true
                 }));
                 this.insertView(new AgaveIO.IOAction({
-                    model: this.options.file,
-                    'action': 'create-dir',
-                    'label': 'Create directory',
+                    model:     this.options.file,
+                    'action':  'create-dir',
+                    'label':   'Create directory',
                     'tagName': 'span',
-                    'button': true
+                    'button':  true
                 }));
             }
         }
@@ -140,92 +145,87 @@ define(['app', 'fileSaver'], function(App){
 
     AgaveIO.IOAction = Backbone.View.extend({
         template: 'io/action',
-        initialize: function() {
-            console.log('ioAction init ok. this.options is: ' + JSON.stringify(this.options));
-        },
         events: {
             'click .io-action':'doAction'
         },
         serialize: function() {
-            console.log('ioAction serialize. this.options is: ' + JSON.stringify(this.options));
-            var toReturn = {
+            return {
                 'action':this.options.action,
-                'label':this.options.label,
-                'button':this.options.button? 'btn' : false
+                'label': this.options.label,
+                'button':this.options.button ? 'btn' : false
             };
-
-            console.log('toReturn is: ' + JSON.stringify(toReturn));
-            return toReturn;
         },
         doAction: function(e) {
             e.preventDefault();
             console.log('ioAction options are: ' + JSON.stringify(this.options));
+
             switch (this.options.action) {
-            case 'create-dir':
-                var dirName = prompt('Please provide a name for the new directory.');
-                if (dirName) {
-                    var that = this;
-                    var dir = new Backbone.Agave.IO.File({
-                        path: that.model.directoryPath() + dirName,
-                        owner: App.Agave.token().get('internalUsername'),
-                        name: dirName,
-                        type: 'dir'
-                    });
-                    dir.save({}, {
-                        success: function() {
-                            dir.fetch();
-                            that.model.collection.add(dir);
-                        },
-                        url: this.model.modelUrl(),
-                        type: 'PUT',
-                        emulateJSON: true,
-                        data: {
-                            dirName: dirName,
-                            action: 'mkdir'
-                        }
-                    });
-                }
-                break;
-
-            case 'download':
-                var file = this.model;
-                var xhr = new XMLHttpRequest();
-                xhr.open('get', this.model.downloadUrl());
-                xhr.responseType = 'blob';
-                xhr.setRequestHeader('Authorization', 'Basic ' + App.Agave.token().getBase64());
-                xhr.onload = function() {
-                    if (this.status === 200) {
-                        saveAs(new Blob([this.response]), file.get('name'));
+                case 'create-dir':
+                    var dirName = prompt('Please provide a name for the new directory.');
+                    if (dirName) {
+                        var that = this;
+                        var dir = new Backbone.Agave.IO.File({
+                            path:  dirName,
+                            owner: App.Agave.token().get('internalUsername'),
+                            name:  dirName,
+                            type:  'dir'
+                        });
+                        dir.save({}, {
+                            success: function() {
+                                //dir.fetch();
+                                console.log("that model is: " + JSON.stringify(that.model));
+                                that.model.collection.add(dir);
+                            },
+                            //url: this.model.modelUrl(),
+                            type: 'PUT',
+                            emulateJSON: true,
+                            data: {
+                                path:   dirName,
+                                action: 'mkdir'
+                            }
+                        });
                     }
-                };
-                xhr.send();
-                break;
+                    break;
 
-            case 'upload':
-                console.log('upload view ok');
-                var view = new UtilViews.ModalView({model: new App.Models.MessageModel({header:'Upload file'})}),
-                    form = new AgaveIO.UploadForm({model: this.model});
-                form.cleanup = function() {
-                    view.close();
-                };
-                view.insertView('.child-view', form);
-                view.$el.on('hidden', function() {
-                    view.remove();
-                    view = null;
-                });
-                view.render();
-                break;
+                case 'download':
+                    var file = this.model;
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('get', this.model.downloadUrl());
+                    xhr.responseType = 'blob';
+                    xhr.setRequestHeader('Authorization', 'Basic ' + App.Agave.token().getBase64());
+                    xhr.onload = function() {
+                        if (this.status === 200) {
+                            saveAs(new Blob([this.response]), file.get('name'));
+                        }
+                    };
+                    xhr.send();
+                    break;
 
-            case 'delete':
-                var message = 'Are you sure you want to delete the ' + this.model.get('type') +' "' + this.model.get('name') + '"? This operation cannot be undone.';
-                if (this.model.get('type') === 'dir') {
-                    message += ' Any files in this dir will also be deleted!';
-                }
-                if (confirm(message)) {
-                    this.model.collection.remove(this.model);
-                    this.model.destroy({url:this.model.modelUrl()});
-                }
-                break;
+                case 'upload':
+                    console.log('upload view ok. model is: ' + JSON.stringify(this.model));
+                    var view = new UtilViews.ModalView({model: new App.Models.MessageModel({header:'Upload file'})}),
+                        form = new AgaveIO.UploadForm({model: this.model});
+                    form.cleanup = function() {
+                        view.close();
+                    };
+                    view.insertView('.child-view', form);
+                    view.$el.on('hidden', function() {
+                        view.remove();
+                        view = null;
+                    });
+                    view.render();
+                    break;
+
+                case 'delete':
+                    var message = 'Are you sure you want to delete the ' + this.model.get('type') +' "' + this.model.get('name') + '"? This operation cannot be undone.';
+                    if (this.model.get('type') === 'dir') {
+                        message += ' Any files in this dir will also be deleted!';
+                    }
+                    if (confirm(message)) {
+                        this.model.collection.remove(this.model);
+                        this.model.destroy({url:this.model.modelUrl()});
+                    }
+                    break;
             }
             return false;
         }
@@ -309,9 +309,9 @@ define(['app', 'fileSaver'], function(App){
                 console.log('permissions are: ' + JSON.stringify(this.permissions));
 
                 this.permissions.on('change', function() {
-                
+
                     console.log('post fetch permissions are: ' + JSON.stringify(this.permissions));
-                    
+
                     var perms = _.findWhere(this.permissions.get('permissions'), {'username':'you'});
                     var type  = this.model.get('type');
 

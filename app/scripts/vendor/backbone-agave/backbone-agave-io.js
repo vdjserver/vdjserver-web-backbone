@@ -21,10 +21,13 @@
             'path': null
         },
         idAttribute: 'path',
-        urlRoot: '/io-v1/io',
+        urlRoot: function() {
+            console.log("returning urlRoot");
+            return '/files/media/';
+        },
         url: function() {
             console.log("returning url");
-            return '/io-v1/io' + this.id;
+            return '/files/media/wscarbor';
         },
         modelUrl: function() {
             console.log("returning modelUrl");
