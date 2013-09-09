@@ -11,7 +11,7 @@
         "modernizr":        "~2.6.x",
         "moment":           "~2.1.x",
         "requirejs":        "~2.1.x",
-        "sass-bootstrap":   "~3.0.x",
+        "sass-bootstrap":   "~2.3.x",
         "underscore":       "~1.5.x"
     },
     "devDependencies": {}
