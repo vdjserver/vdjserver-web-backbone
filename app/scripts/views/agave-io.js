@@ -256,11 +256,10 @@ define(['app', 'fileSaver'], function(App){
                     if (this.status === 200) {
                         that.remove();
                         var responseJson = JSON.parse(this.response);
-                        // bug
-                        if (responseJson.result.path.indexOf('/') !== 0) {
-                            responseJson.result.path = '/' + responseJson.result.path;
-                        }
+
                         var file = new Backbone.Agave.IO.File(responseJson.result);
+
+                        console.log("file is: " + JSON.stringify(file));
                         that.model.collection.add(file);
                     }
                 };
