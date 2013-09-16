@@ -1,23 +1,41 @@
 <!doctype html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Mocha Spec Runner</title>
-    <link rel="stylesheet" href="lib/mocha/mocha.css">
-</head>
-<body>
-    <div id="mocha"></div>
-    <script src="lib/mocha/mocha.js"></script>
-    <script>mocha.setup('bdd')</script>
-    <!-- assertion framework -->
-    <script src="lib/chai.js"></script>
-    <script>var expect = chai.expect</script>
 
-    <!-- include source files here... -->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="../.tmp/styles/main.css">
 
-    <!-- include spec files here... -->
-    <script src="spec/test.js"></script>
+        <title>Mocha Spec Runner</title>
 
-    <script>mocha.run()</script>
-</body>
-</html>
+        <!-- mocha dependencies -->
+        <link rel="stylesheet" href="../node_modules/grunt-mocha/node_modules/mocha/mocha.css">
+        <script src="../node_modules/grunt-mocha/node_modules/mocha/mocha.js"></script>
+
+        <!-- assertion framework -->
+        <script src="../node_modules/chai/chai.js"></script>
+        <script>
+            var should = chai.should();
+        </script>
+
+    </head>
+    <body>
+
+        <!-- mocha setup -->
+        <div id="mocha"></div>
+        <script>
+            mocha.setup({
+                ui: 'bdd',
+                reporter: 'Spec',
+                ignoreLeaks: true
+            });
+        </script>
+
+        <script></script>
+
+        <!-- include source files here... -->
+        <script data-main="spec/config" src="../app/components/requirejs/require.js"></script>
+
+    </body>
+    </html>

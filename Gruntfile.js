@@ -13,7 +13,7 @@ var mountFolder = function (connect, dir) {
 // 'test/spec/**/*.js'
 
 module.exports = function(grunt) {
-  
+
     // show elapsed time at the end
     require('time-grunt')(grunt);
 
@@ -28,6 +28,17 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         yeoman: yeomanConfig,
+        /*
+        shell: {
+            'mocha-phantomjs': {
+                command: 'mocha-phantomjs -R dot http://localhost:<%= connect.options.port %>/test/testRunner.html',
+                options: {
+                    stdout: true,
+                    stderr: true
+                }
+            }
+        },
+        */
         watch: {
             options: {
                 nospawn: true
@@ -70,7 +81,8 @@ module.exports = function(grunt) {
                         return [
                             lrSnippet,
                             mountFolder(connect, '.tmp'),
-                            mountFolder(connect, yeomanConfig.app)
+                            mountFolder(connect, yeomanConfig.app),
+                            mountFolder(connect, '.')
                         ];
                     }
                 }
@@ -80,7 +92,7 @@ module.exports = function(grunt) {
                     middleware: function(connect) {
                         return [
                             mountFolder(connect, '.tmp'),
-                            mountFolder(connect, 'test')
+                            mountFolder(connect, '.')
                         ];
                     }
                 }
@@ -100,6 +112,15 @@ module.exports = function(grunt) {
                 path: 'http://localhost:<%= connect.options.port %>'
             }
         },
+        mocha: {
+            all: {
+                options: {
+                    run: false,
+                    reporter: 'Spec',
+                    urls: ['http://localhost:<%= connect.options.port %>/test/index.html']
+                }
+            }
+        },
         clean: {
             dist: ['.tmp', '<%= yeoman.dist %>/*'],
             server: '.tmp'
@@ -114,14 +135,6 @@ module.exports = function(grunt) {
                 '!<%= yeoman.app %>/scripts/vendor/*',
                 'test/spec/{,*/}*.js'
             ]
-        },
-        mocha: {
-            all: {
-                options: {
-                    run: true,
-                    urls: ['http://localhost:<%= connect.options.port %>/index.html']
-                }
-            }
         },
         coffee: {
             dist: {
@@ -189,13 +202,17 @@ module.exports = function(grunt) {
                 // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
                 options: {
                     // `name` and `out` is set by grunt-usemin
-                    baseUrl: '.tmp/scripts',
+                    //baseUrl: '.tmp/scripts',
+                    baseUrl: yeomanConfig.app +'/scripts',
                     optimize: 'none',
                     // TODO: Figure out how to make sourcemaps work with grunt-usemin
                     // https://github.com/yeoman/grunt-usemin/issues/30
                     //generateSourceMaps: true,
                     // required to support SourceMaps
                     // http://requirejs.org/docs/errors.html#sourcemapcomments
+                    //include: '../../node_modules/requirejs/require.js',
+                    mainConfigFile: yeomanConfig.app + '/scripts/config.js',
+                    out: yeomanConfig.dist + '/scripts/app.min.js',
                     preserveLicenseComments: false,
                     useStrict: true,
                     wrap: true,
@@ -301,7 +318,7 @@ module.exports = function(grunt) {
                 exclude: ['modernizr']
             },
             all: {
-                rjsConfig: '<%= yeoman.app %>/scripts/main.js'
+                rjsConfig: '<%= yeoman.app %>/scripts/config.js'
             }
         }
     });
@@ -327,7 +344,7 @@ module.exports = function(grunt) {
         'clean:server',
         'coffee',
         'compass',
-        'jshint',
+        //'jshint',
         'connect:test',
         'mocha'
     ]);
