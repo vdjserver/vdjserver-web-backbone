@@ -7,6 +7,9 @@ define(['app'], function(App) {
 
     Account.NewAccountForm = Backbone.View.extend({
         template: 'account/new-account-form',
+        initialize: function() {
+            window.scrollTo(0,0);
+        },
         events: {
             'submit form': 'submitForm'
         },
@@ -84,8 +87,11 @@ define(['app'], function(App) {
     });
 
     Account.ProfileForm = Backbone.View.extend({
-        template: 'account/profile-form',
+        template: 'profile/profile-form',
         initialize: function() {
+
+            window.scrollTo(0,0);
+
             this.listenTo(this.model, 'change', this.render);
             this.model.fetch();
         },

@@ -14,13 +14,13 @@ require.config({
         'underscore':       '../components/underscore/underscore',
 
         'backbone-agave':      'vendor/backbone-agave/backbone-agave',
-        'backbone-agave-apps': 'vendor/backbone-agave/backbone-agave-apps',
-        'backbone-agave-jobs': 'vendor/backbone-agave/backbone-agave-jobs',
-        'backbone-agave-io':   'vendor/backbone-agave/backbone-agave-io',
+        'backbone-agave-apps': 'vendor/backbone-agave/models/backbone-agave-apps',
+        'backbone-agave-jobs': 'vendor/backbone-agave/models/backbone-agave-jobs',
+        'backbone-agave-io':   'vendor/backbone-agave/models/backbone-agave-io',
 
         'backbone-vdj':          'vendor/backbone-vdj/backbone-vdj',
-        'backbone-vdj-account':  'vendor/backbone-vdj/backbone-vdj-account',
-        'backbone-vdj-projects': 'vendor/backbone-vdj/backbone-vdj-projects',
+        'backbone-vdj-account':  'vendor/backbone-vdj/models/backbone-vdj-account',
+        'backbone-vdj-projects': 'vendor/backbone-vdj/models/backbone-vdj-projects',
 
         'fileSaver':           'vendor/fileSaver'
     },

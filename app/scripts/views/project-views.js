@@ -243,6 +243,6 @@ define(['app'], function(App){
         }
     });
 
-    App.Views.AgaveApps = AgaveApps;
-    return AgaveApps;
+    App.Views.Projects = Projects;
+    return Projects;
 });

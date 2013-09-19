@@ -10,11 +10,9 @@ define(['app'], function(App) {
             'auth'       : 'authIndex',
             'auth/login' : 'authLogin',
             'auth/new'   : 'authNew',
-            'auth/check' : 'authCheck',
-            'auth/active': 'authListActive',
             'auth/logout': 'authLogout',
 
-            'account/new'    : 'accountNew',
+            'account'        : 'accountCreate',
             'account/profile': 'accountProfile',
 
             'apps/public': 'appsPublicList',
@@ -50,26 +48,20 @@ define(['app'], function(App) {
             App.Layouts.main.render();
         },
 
-        authListActive: function() {
-            App.Layouts.main.template = 'one-col';
-            App.Layouts.main.setView('.content', new App.Views.AgaveAuth.ActiveTokens({model: App.Agave.token()}));
-            App.Layouts.main.render();
-        },
-
         authLogout: function() {
             App.Agave.destroyToken();
             window.localStorage.removeItem('Agave.Token');
             App.router.navigate('', {trigger:true});
         },
 
-
         // Account
-        accountNew: function() {
+        accountCreate: function() {
             App.Layouts.main.template = 'one-col';
             App.Layouts.main.setView('.content', new App.Views.Account.NewAccountForm({model: new Backbone.Vdj.Account.New()}));
             App.Layouts.main.render();
         },
 
+        // Profile
         accountProfile: function() {
             App.Layouts.main.template = 'one-col';
             App.Layouts.main.setView('.content', new App.Views.Account.ProfileForm({model: new Backbone.Vdj.Account.Profile()}));
