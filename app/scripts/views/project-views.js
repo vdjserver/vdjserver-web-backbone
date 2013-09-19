@@ -4,6 +4,28 @@ define(['app'], function(App){
 
     var Projects = {};
 
+    Projects.New = Backbone.View.extend({
+        template: 'projects/new-project-form',
+        initialize: function() {
+            window.scrollTo(0,0);
+        },
+        events: {
+            'submit form': 'submitForm'
+        },
+        submitForm: function(e) {
+
+            e.preventDefault();
+
+            /*
+             should return:
+                name
+                members
+                categories
+             */
+            var formData = Backbone.Syphon.serialize(this);
+        }
+    });
+
     Projects.ProjectView = Backbone.View.extend({
         template: 'projects/view',
         initialize: function() {

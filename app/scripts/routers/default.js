@@ -19,11 +19,13 @@ define(['app'], function(App) {
             'apps/shared': 'appsSharedList',
             'apps/:id'   : 'appsView',
 
-            'io'       : 'ioBrowser',
-            'io/:owner': 'ioBrowser',
+            'io'             : 'ioBrowser',
+            'io/:owner'      : 'ioBrowser',
             'io/:owner/*path': 'ioBrowser',
 
-            'project' : 'projectList'
+            'project'     : 'projectList',
+            'project/new' : 'projectNew'
+
         },
 
 
@@ -109,6 +111,12 @@ define(['app'], function(App) {
         project: function() {
             App.Layouts.main.template = 'two-col';
             App.Layouts.main.setView('.content', new App.Views.AgaveApps.AppList({collection: new Backbone.Agave.Apps.PublicApplications()}));
+            App.Layouts.main.render();
+        },
+
+        projectNew: function() {
+            App.Layouts.main.template = 'one-col';
+            App.Layouts.main.setView('.content', new App.Views.Projects.New({model: new Backbone.Vdj.Project()}));
             App.Layouts.main.render();
         }
 

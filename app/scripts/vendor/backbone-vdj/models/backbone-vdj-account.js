@@ -1,6 +1,5 @@
 (function (window) { 
 
-
     'use strict';
     
     var Backbone = window.Backbone;                                           
@@ -11,17 +10,14 @@
                                                                               
     var Account = Vdj.Account = {}; 
 
-    Account.New = Backbone.Model.extend({
+    Account.New = Vdj.Model.extend({
         defaults: {
             internalUsername: '',
             password: '',
             email:    ''
         },
         url: function() {
-            return Backbone.Agave.vdjApiRoot + '/user';
-        },
-        parse: function(response) {
-            return response.result;
+            return '/user';
         }
     });
 
@@ -36,13 +32,9 @@
         },
         url: function() {
             return '/user/profile';
-        },
-        parse: function(response) {
-            console.log('account response is: ' + JSON.stringify(response));
-            return response.result;
         }
     });
 
-
     return Account;                                                              
+
 })(this);
