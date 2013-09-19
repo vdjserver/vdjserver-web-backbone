@@ -50,7 +50,7 @@ define(['app'], function(App) {
                             password: formData.password,
                             success: function() {
                                 console.log('save success');
-                                App.Vdj.password = formData.password;
+                                Backbone.Vdj.password = formData.password;
                                 message.set('body', message.get('body') + '<p>Success!</p>');
                                 modal.close();
                                 App.router.navigate('auth/active', {

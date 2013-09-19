@@ -35,6 +35,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 }
             });
 
+
             // setup agave
             App.Agave = new Backbone.Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
             var watchToken = function() {
@@ -100,6 +101,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
             App.listenTo(App.Agave, 'Agave:tokenChanged', watchToken, this);
             App.listenTo(App.Agave, 'Agave:tokenDestroy', watchToken, this);
             watchToken();
+
 
             // initialize router, views, data and layouts
             App.Layouts.header = new App.Views.AppViews.HeaderLayout({

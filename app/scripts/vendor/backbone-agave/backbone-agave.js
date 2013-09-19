@@ -9,6 +9,8 @@
 
     var Backbone = window.Backbone;
     var _ = window._;
+    var Vdj = Backbone.Vdj;
+
     var Agave = function(options) {
 
         var defaults = _.extend({primary: true}, options),
@@ -62,7 +64,7 @@
 
     // Custom sync function to handle Agave token auth
     Agave.sync = function(method, model, options) {
-        options.url = Agave.agaveApiRoot + (options.url || _.result(model, 'url'));
+        options.url = model.apiRoot + (options.url || _.result(model, 'url'));
 
         if (model.requiresAuth) {
             var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
@@ -96,6 +98,7 @@
             }
             Backbone.Model.apply(this, arguments);
         },
+        apiRoot: Agave.agaveApiRoot,
         sync: Agave.sync,
         requiresAuth: true,
         parse: function(resp) {
@@ -114,6 +117,7 @@
             }
             Backbone.Collection.apply(this, arguments);
         },
+        apiRoot: Agave.agaveApiRoot,
         sync: Agave.sync,
         requiresAuth: true,
         parse: function(resp) {

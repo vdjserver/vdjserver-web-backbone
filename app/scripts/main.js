@@ -12,11 +12,12 @@ define([
     'backbone-agave-jobs',
     'backbone-agave-apps',
 
-    'vendor/backbone-vdj/backbone-vdj',
+    'backbone-vdj',
+    'backbone-vdj-account',
+    'backbone-vdj-projects',
 
     'models/message',
     'models/form',
-    'models/account',
 
     'views/app-views',
     'views/form-views',

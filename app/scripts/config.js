@@ -17,6 +17,11 @@ require.config({
         'backbone-agave-apps': 'vendor/backbone-agave/backbone-agave-apps',
         'backbone-agave-jobs': 'vendor/backbone-agave/backbone-agave-jobs',
         'backbone-agave-io':   'vendor/backbone-agave/backbone-agave-io',
+
+        'backbone-vdj':          'vendor/backbone-vdj/backbone-vdj',
+        'backbone-vdj-account':  'vendor/backbone-vdj/backbone-vdj-account',
+        'backbone-vdj-projects': 'vendor/backbone-vdj/backbone-vdj-projects',
+
         'fileSaver':           'vendor/fileSaver'
     },
     shim: {
@@ -59,6 +64,20 @@ require.config({
         'backbone-agave-apps': {
             deps: ['backbone', 'backbone-agave', 'backbone-agave-io', 'backbone-agave-jobs'],
             exports: 'Backbone.Agave.Apps'
+        },
+
+
+        'backbone-vdj': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Vdj'
+        },
+        'backbone-vdj-account': {
+            deps: ['backbone', 'backbone-vdj'],
+            exports: 'Backbone.Vdj.Account'
+        },
+        'backbone-vdj-projects': {
+            deps: ['backbone', 'backbone-vdj'],
+            exports: 'Backbone.Vdj.Projects'
         }
     }
 });

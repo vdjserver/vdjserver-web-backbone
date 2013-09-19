@@ -21,9 +21,11 @@ define(['app'], function(App) {
             'apps/shared': 'appsSharedList',
             'apps/:id'   : 'appsView',
 
-            'io'      : 'ioBrowser',
+            'io'       : 'ioBrowser',
             'io/:owner': 'ioBrowser',
-            'io/:owner/*path': 'ioBrowser'
+            'io/:owner/*path': 'ioBrowser',
+
+            'project' : 'projectList'
         },
 
 
@@ -64,13 +66,13 @@ define(['app'], function(App) {
         // Account
         accountNew: function() {
             App.Layouts.main.template = 'one-col';
-            App.Layouts.main.setView('.content', new App.Views.Account.NewAccountForm({model: new App.Models.Account.NewAccount()}));
+            App.Layouts.main.setView('.content', new App.Views.Account.NewAccountForm({model: new Backbone.Vdj.Account.New()}));
             App.Layouts.main.render();
         },
 
         accountProfile: function() {
             App.Layouts.main.template = 'one-col';
-            App.Layouts.main.setView('.content', new App.Views.Account.ProfileForm({model: new App.Models.Account.Profile()}));
+            App.Layouts.main.setView('.content', new App.Views.Account.ProfileForm({model: new Backbone.Vdj.Account.Profile()}));
             App.Layouts.main.render();
         },
 
@@ -96,7 +98,6 @@ define(['app'], function(App) {
 
 
         // IO
-
         ioBrowser: function(owner, path) {
 
             App.Layouts.main.template = 'one-col';
@@ -110,8 +111,14 @@ define(['app'], function(App) {
 
             App.Layouts.main.setView('.content',new App.Views.AgaveIO.Browser({collection: new Backbone.Agave.IO.Listing([], {path: fullPath})}));
             App.Layouts.main.render();
-        }
+        },
 
+        // Projects
+        project: function() {
+            App.Layouts.main.template = 'two-col';
+            App.Layouts.main.setView('.content', new App.Views.AgaveApps.AppList({collection: new Backbone.Agave.Apps.PublicApplications()}));
+            App.Layouts.main.render();
+        }
 
     });
 
