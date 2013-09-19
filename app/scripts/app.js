@@ -108,9 +108,8 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 el: '#header',
                 views: {
                     '': [
-                        //new App.Views.AppViews.Nav({model: App.Agave.token()}),
-                        new App.Views.AppViews.Nav(),
-                        new App.Views.AppViews.Header({model: App.Agave.token()})
+                        new App.Views.AppViews.Nav({model: App.Agave.token()}),
+                        new App.Views.AppViews.Header()
                     ]
                 }
             });

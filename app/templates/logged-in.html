@@ -1,3 +1,11 @@
-<span><i class="icon icon-user"></i> You are logged in as {{internalUsername}}.</span>
-<br />
-<a href="#auth/logout"><i class="icon icon-signout"></i> Log out</a>
+<ul class="nav">
+    <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown">
+            <span><i class="icon icon-user"></i>{{internalUsername}}.</span>
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <li><a href="#auth/logout"><i class="icon icon-signout"></i> Log out</a></li>
+        </ul>
+    </li>
+</ul>

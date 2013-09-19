@@ -15,7 +15,10 @@ define(['app'], function(App){
     AppViews.Nav = Backbone.View.extend({
         tagName: 'nav',
         template: 'nav',
-        className: 'navbar navbar-fixed-top'
+        className: 'navbar navbar-fixed-top',
+        initialize: function() {
+            this.setView('.login-state', new AppViews.LoginState({model: this.model}));
+        }
     /*
         serialize: function() {
             json = this.model.toJSON();
@@ -47,10 +50,7 @@ define(['app'], function(App){
 
     AppViews.Header = Backbone.View.extend({
         template: 'header',
-        className: 'header',
-        initialize: function() {
-            this.setView('.login-state', new AppViews.LoginState({model: this.model}));
-        }
+        className: 'header'
     });
 
     AppViews.Home = Backbone.View.extend({

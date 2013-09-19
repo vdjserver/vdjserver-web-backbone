@@ -34,9 +34,11 @@ body {
   }
 }
 
-.navigation {
 
+.btn-group.open .btn.dropdown-toggle {
+  background-color: #fff;
 }
+
 
 .dropdown-toggle {
     cursor: pointer;
@@ -45,6 +47,7 @@ body {
 .navbar-fixed-top {
     margin-bottom: 0;
 }
+
 
 .header {
     color: white;
@@ -57,7 +60,7 @@ body {
     a {
         color: $white;
         &:hover {
-            color: lighten($green, 20%);
+           color: lighten($green, 20%);
         }
     }
 
@@ -94,6 +97,9 @@ body {
 @media (min-width: 980px) {
     body {
         padding-top: 40px;
+    }
+    .login-state {
+        float: right;
     }
 }
 
