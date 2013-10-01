@@ -26,6 +26,7 @@ define([
     'views/agave-io',
     'views/agave-apps',
     'views/account-views',
+    'views/project-views',
 
     'routers/default'
 

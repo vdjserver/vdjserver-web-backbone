@@ -4,53 +4,13 @@ define(['app'], function(App){
 
     var Projects = {};
 
-    Projects.New = Backbone.View.extend({
-        template: 'projects/new-project-form',
+    Projects.Index = Backbone.View.extend({
+        template: 'project/index',
         initialize: function() {
-            window.scrollTo(0,0);
-        },
-        events: {
-            'submit form': 'submitForm'
-        },
-        submitForm: function(e) {
 
-            e.preventDefault();
+            window.scrollTo(0.0);
 
             /*
-             should return:
-                name
-                members
-                categories
-             */
-            var formData = Backbone.Syphon.serialize(this);
-        }
-    });
-
-    Projects.ProjectView = Backbone.View.extend({
-        template: 'projects/view',
-        initialize: function() {
-            this.model.on('change', this.render, this);
-            if (! this.model.collection) {
-                this.model.fetch();
-            }
-        },
-        serialize: function() {
-            var json = this.model.toJSON();
-            if (this.model.collection) {
-                json.hasCollection = true;
-            }
-            return json;
-        },
-        events: {
-            'click .back-to-list': 'backToCollection',
-            'click .btn-show-form': 'showForm'
-        },
-        backToCollection: function(e) {
-            e.preventDefault();
-            this.remove();
-            return false;
-        },
-        showForm: function(e) {
             if (App.Agave.token().isValid()) {
                 new AgaveApps.AppForm({
                     model: this.model,
@@ -60,9 +20,81 @@ define(['app'], function(App){
             } else {
                 alert('You must be logged in to use applications.');
             }
+            */
+
+            var that = this;
+            this.collection.on('reset', function() {
+                var view = new App.Views.Projects.List({collection: that.collection});
+                App.Layouts.main.setView('.sidebar', view);
+                view.render();
+            }, this);
+
+            this.collection.fetch({reset:true});
+
+        }
+    /*
+    ,
+        serialize: function() {
+            return {
+                projects: this.collection.toJSON();
+            }
+        }
+    */
+    });
+
+    Projects.List = Backbone.View.extend({
+        template: 'project/list',
+        initialize: function() {
+
+            /*
+            var that = this;
+            this.collection.on('reset', function() {
+                window.scrollTo(0.0);
+                var view = new App.Views.Projects.Index({collection: that.collection});
+                App.Layouts.main.setView('.content', view);
+                view.render();
+                this.render();
+            }, this);
+
+            this.collection.fetch({reset:true});
+            */
+        },
+        serialize: function() {
+            return {
+                projects: this.collection.toJSON()
+            };
+        },
+        events: {
+            'click .view-project': 'viewProject'
+        },
+        viewProject: function(e) {
+            e.preventDefault();
+            var models = this.collection.where({id: e.target.dataset.id});
+            if (models) {
+                var view = new App.Views.Projects.Detail({model: models[0]});
+                App.Layouts.main.setView('.content', view);
+                view.render();
+                App.router.navigate('#project/' + models[0].id);
+                $('html,body').animate({scrollTop:view.$el.position().top - 100});
+            }
+            return false;
         }
     });
 
+    Projects.Create = Backbone.View.extend({
+        template: 'project/create',
+        initialize: function() {
+        
+        }
+    });
+
+    Projects.Detail = Backbone.View.extend({
+        template: 'project/detail',
+        initialize: function() {
+        }
+    });
+
+    /*
     AgaveApps.AppForm = Backbone.View.extend({
         template: 'apps/form',
         events: {
@@ -236,7 +268,7 @@ define(['app'], function(App){
             return false;
         }
     });
-
+    
     Projects.ProjectList = Backbone.View.extend({
         template: 'projects/list',
         initialize: function() {
@@ -264,6 +296,7 @@ define(['app'], function(App){
             return false;
         }
     });
+    */
 
     App.Views.Projects = Projects;
     return Projects;

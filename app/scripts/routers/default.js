@@ -22,9 +22,9 @@ define(['app'], function(App) {
             'io/:owner'      : 'ioBrowser',
             'io/:owner/*path': 'ioBrowser',
 
-            'project'     : 'projectList',
-            'project/new' : 'projectNew'
-
+            'project'       : 'projectIndex',
+            'project/create': 'projectCreate',
+            'project/:id'   : 'projectDetail'
         },
 
 
@@ -101,18 +101,22 @@ define(['app'], function(App) {
         },
 
         // Projects
-        project: function() {
+        projectIndex: function() {
             App.Layouts.main.template = 'two-col';
-            App.Layouts.main.setView('.content', new App.Views.AgaveApps.AppList({collection: new Backbone.Agave.Apps.PublicApplications()}));
+            App.Layouts.main.setView('.content', new App.Views.Projects.Index({collection: new Backbone.Vdj.Projects.UserProjects()}));
+            //App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({collection: new Backbone.Vdj.Projects.UserProjects()}));
             App.Layouts.main.render();
         },
-
-        projectNew: function() {
-            App.Layouts.main.template = 'one-col';
-            App.Layouts.main.setView('.content', new App.Views.Projects.New({model: new Backbone.Vdj.Project()}));
+        projectCreate: function() {
+            App.Layouts.main.template = 'two-col';
+            App.Layouts.main.setView('.content', new App.Views.Projects.Create({model: new Backbone.Vdj.Projects.Project()}));
+            App.Layouts.main.render();
+        },
+        projectDetail: function(id) {
+            App.Layouts.main.template = 'two-col';
+            App.Layouts.main.setView('.content', new App.Views.Projects.Detail({model: new Backbone.Vdj.Projects.Project({id:id})}));
             App.Layouts.main.render();
         }
-
     });
 
 

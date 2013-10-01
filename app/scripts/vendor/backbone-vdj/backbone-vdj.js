@@ -9,8 +9,8 @@
 
     var Backbone = window.Backbone;
     var Agave = Backbone.Agave;
-    var $ = window.$;                                                       
-    var _ = window._;                                                       
+    var $ = window.$;
+    var _ = window._;
     var Vdj = {};
 
 

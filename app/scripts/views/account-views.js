@@ -138,6 +138,7 @@ define(['app'], function(App) {
                                 $('.modalViewSuccess').click(function() {
                                     console.log("dot click happened");
                                     modal.close();
+                                    $('html,body').animate({scrollTop:0});
                                 });
                             },
                             //error: function(model, xhr, options) {
