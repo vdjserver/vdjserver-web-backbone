@@ -103,6 +103,7 @@
         requiresAuth: true,
         parse: function(resp) {
             if (resp.result) {
+                console.log("agave model resp.result is: " + JSON.stringify(resp.result));
                 return resp.result;
             }
             return resp;

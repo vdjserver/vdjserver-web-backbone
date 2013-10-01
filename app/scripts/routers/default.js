@@ -9,7 +9,6 @@ define(['app'], function(App) {
 
             'auth'       : 'authIndex',
             'auth/login' : 'authLogin',
-            'auth/new'   : 'authNew',
             'auth/logout': 'authLogout',
 
             'account'        : 'accountCreate',
@@ -41,12 +40,6 @@ define(['app'], function(App) {
         authLogin: function() {
             App.Layouts.main.template = 'one-col';
             App.Layouts.main.setView('.content', new App.Views.AgaveAuth.NewTokenForm({model: App.Agave.token()}));
-            App.Layouts.main.render();
-        },
-
-        authNew: function() {
-            App.Layouts.main.template = 'one-col';
-            App.Layouts.main.setView('.content', new App.Views.AgaveAuth.NewTokenForm({model: new Backbone.Agave.Auth.Token()}));
             App.Layouts.main.render();
         },
 
