@@ -2,17 +2,17 @@
     "name": "vdjserver-backbone",
     "version": "0.0.1",
     "dependencies": {
-        "backbone":         "~1.0.x",
-        "backbone.syphon":  "~0.4.x",
-        "font-awesome":     "~3.0.2",
-        "handlebars":       "~1.0.x",
-        "jquery":           "~2.0.x",
-        "layoutmanager":    "~0.8.x",
-        "modernizr":        "~2.6.x",
-        "moment":           "~2.1.x",
-        "requirejs":        "~2.1.x",
-        "sass-bootstrap":   "~2.3.x",
-        "underscore":       "~1.5.x"
+        "backbone":         "1.0.x",
+        "backbone.syphon":  "0.4.x",
+        "font-awesome":     "3.0.2",
+        "handlebars":       "1.0.x",
+        "jquery":           "2.0.x",
+        "layoutmanager":    "0.9.x",
+        "modernizr":        "2.6.x",
+        "moment":           "2.3.x",
+        "requirejs":        "2.1.x",
+        "sass-bootstrap":   "2.3.x",
+        "underscore":       "1.5.x"
     },
     "devDependencies": {}
 }

@@ -7,7 +7,6 @@ define(['app'], function(App) {
         routes: {
             '' : 'index',
 
-            'auth'       : 'authIndex',
             'auth/login' : 'authLogin',
             'auth/logout': 'authLogout',
 

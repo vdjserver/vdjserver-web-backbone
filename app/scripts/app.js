@@ -13,7 +13,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
                 prefix: 'templates/',
 
-                fetch: function(path) {
+                fetchTemplate: function(path) {
                     // Concatenate the file extension.
                     path = path + '.html';
 
@@ -30,7 +30,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                         done(JST[path] = Handlebars.compile(contents));
                     });
                 },
-                render: function(tmpl, context) {
+                renderTemplate: function(tmpl, context) {
                     return tmpl(context);
                 }
             });
