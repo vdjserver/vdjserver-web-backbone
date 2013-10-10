@@ -7,11 +7,11 @@ define([
     'backbone.syphon',
     'moment',
 
+    // Agave
     'backbone-agave',
     'backbone-agave-io',
-    'backbone-agave-jobs',
-    'backbone-agave-apps',
 
+    // VDJ
     'backbone-vdj',
     'backbone-vdj-account',
     'backbone-vdj-projects',
@@ -19,16 +19,17 @@ define([
     'models/message',
     'models/form',
 
-    'views/app-views',
-    'views/form-views',
-    'views/util-views',
-    'views/agave-auth',
-    'views/agave-io',
-    'views/agave-apps',
-    'views/account-views',
-    'views/project-views',
+    // Views
+    'app-views',
+    'form-views',
+    'util-views',
+    'agave-auth',
+    'agave-io',
+    'account-views',
+    'project-views',
 
-    'routers/default'
+    // Routers
+    'router'
 
 ], function(App) {
     App.start();

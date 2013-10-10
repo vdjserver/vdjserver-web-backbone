@@ -2,7 +2,8 @@ define(['app'], function(App) {
 
     'use strict';
 
-    var AgaveAuth = {}, UtilViews = App.Views.Util;
+    var UtilViews = App.Views.Util;
+    var AgaveAuth = {};
 
     AgaveAuth.NewTokenForm = Backbone.View.extend({
         template: 'auth/new-token-form',
@@ -40,9 +41,6 @@ define(['app'], function(App) {
                 $('<div class="login-modal">').appendTo(this.el);
                 modal.$el.on('shown', function() {
                     that.$el.find('.alert-error').remove();
-                    console.log('saving model from view. internalUsername is: ' + formData.internalUsername);
-                    console.log('formdata is: ' + JSON.stringify(formData));
-                    console.log('also, model is: ' + JSON.stringify(that.model));
 
                     that.model.save(
                         formData,

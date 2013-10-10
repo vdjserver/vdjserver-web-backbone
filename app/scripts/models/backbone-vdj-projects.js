@@ -13,10 +13,12 @@
     Projects.Project = Vdj.Model.extend({
         defaults: {
             name:       '',
-            members:    [],
+            members:    []
+            /*
             categories: [],
             created:    '',
             modified:   ''
+            */
         },
         url: function() {
             return '/project';

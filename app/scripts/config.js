@@ -13,16 +13,32 @@ require.config({
         'moment':           '../components/moment/moment',
         'underscore':       '../components/underscore/underscore',
 
-        'backbone-agave':      'vendor/backbone-agave/backbone-agave',
-        'backbone-agave-apps': 'vendor/backbone-agave/models/backbone-agave-apps',
-        'backbone-agave-jobs': 'vendor/backbone-agave/models/backbone-agave-jobs',
-        'backbone-agave-io':   'vendor/backbone-agave/models/backbone-agave-io',
+        // Backbone Extensions
+        'backbone-agave':  'vendor/backbone-agave/backbone-agave',
+        'backbone-vdj':    'vendor/backbone-vdj/backbone-vdj',
 
-        'backbone-vdj':          'vendor/backbone-vdj/backbone-vdj',
-        'backbone-vdj-account':  'vendor/backbone-vdj/models/backbone-vdj-account',
-        'backbone-vdj-projects': 'vendor/backbone-vdj/models/backbone-vdj-projects',
+        // Models - Agave
+        'backbone-agave-io': 'models/backbone-agave-io',
 
-        'fileSaver':           'vendor/fileSaver'
+        // Models - VDJ
+        'backbone-vdj-account':  'models/backbone-vdj-account',
+        'backbone-vdj-projects': 'models/backbone-vdj-projects',
+
+        // Misc.
+        'fileSaver': 'vendor/fileSaver',
+
+        // Views
+        'app-views': 'views/app/app-views',
+        'form-views': 'views/app/form-views',
+        'util-views': 'views/app/util-views',
+        'agave-auth': 'views/agave-auth',
+        'agave-io': 'views/agave-io',
+        'account-views': 'views/account-views',
+        'project-views': 'views/project-views',
+
+        // Routers
+        'router': 'routers/default'
+
     },
     shim: {
         'backbone': {
@@ -56,14 +72,6 @@ require.config({
         'backbone-agave-io': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.IO'
-        },
-        'backbone-agave-jobs': {
-            deps: ['backbone', 'backbone-agave', 'backbone-agave-io'],
-            exports: 'Backbone.Agave.Jobs'
-        },
-        'backbone-agave-apps': {
-            deps: ['backbone', 'backbone-agave', 'backbone-agave-io', 'backbone-agave-jobs'],
-            exports: 'Backbone.Agave.Apps'
         },
 
 
