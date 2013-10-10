@@ -37,7 +37,7 @@ require.config({
         'project-views': 'views/project-views',
 
         // Routers
-        'router': 'routers/default'
+        'router': 'routers/router'
 
     },
     shim: {

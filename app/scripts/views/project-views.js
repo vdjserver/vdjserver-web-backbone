@@ -160,7 +160,8 @@ define(['app'], function(App) {
 
     Projects.Detail = Backbone.View.extend({
         template: 'project/detail',
-        initialize: function() {
+        initialize: function(projectId) {
+            console.log("proj id is: " + JSON.stringify(projectId));
         }
     });
 

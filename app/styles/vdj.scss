@@ -1,0 +1,14 @@
+@import "settings";
+
+.view-project {
+
+  & a:focus {
+    background-color: #000;
+  }
+/*
+  &.active {
+    background-color: $green;
+    color: $white;
+  }
+*/
+}

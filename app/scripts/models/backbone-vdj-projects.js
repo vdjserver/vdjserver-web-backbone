@@ -12,6 +12,7 @@
 
     Projects.Project = Vdj.Model.extend({
         defaults: {
+            id:         '',
             name:       '',
             members:    []
             /*
