@@ -2,7 +2,7 @@
     <li><a class="create-project" href="#project/create">Create Project</a></li>
     {{#if projects}}
         {{#projects}}
-            <li><a class="view-project" data-id="{{_id}}" href="#project/{{_id}}">{{name}}</a></li>
+        <li><a id="{{_id}}" class="view-project" data-id="{{_id}}">{{name}}</a></li>
         {{/projects}}
     {{else}}
         You don't have any projects yet.

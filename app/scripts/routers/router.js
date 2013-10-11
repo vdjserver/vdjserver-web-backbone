@@ -111,9 +111,8 @@ define(['app'], function(App) {
         },
 
         projectDetail: function(id) {
-            console.log("projectDetail id is: " + id);
             App.Layouts.main.template = 'two-col';
-            App.Layouts.main.setView('.content', new App.Views.Projects.Detail({model: new Backbone.Vdj.Projects.Project({id:id})}));
+            App.Layouts.main.setView('.content', new App.Views.Projects.Detail({model: new Backbone.Vdj.Projects.Project({_id:id})}));
             App.Layouts.main.render();
         }
     });

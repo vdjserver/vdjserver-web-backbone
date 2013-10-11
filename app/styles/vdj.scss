@@ -1,14 +1,18 @@
 @import "settings";
 
+// Note: this is currently broken
 .view-project {
-
-  & a:focus {
-    background-color: #000;
-  }
+    //background-color: #000;
+    &:hover {
+        background-color: #000;
+    }
 /*
-  &.active {
-    background-color: $green;
-    color: $white;
-  }
+    a:hover {
+        background-color: #fff;
+    }
+    a {
+        background-color: #000;
+    }
 */
 }
+
