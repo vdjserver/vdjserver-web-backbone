@@ -14,8 +14,6 @@ define(['app'], function(App) {
             window.scrollTo(0.0);
 
             var that = this;
-            //this.collection.on('set', function() {
-            //}, this);
 
             this.collection.fetch({success: function(collection) {
 
@@ -36,8 +34,8 @@ define(['app'], function(App) {
             var that = this;
             projectCollection.on('change add remove destroy', function() {
 
-                console.log("collection change re-render for list");
-                that.render;
+                console.log("collection change re-render for list. collection is: " + JSON.stringify(projectCollection));
+                that.render();
             });
         },
         serialize: function() {
@@ -139,12 +137,15 @@ define(['app'], function(App) {
 
     Projects.Detail = Backbone.View.extend({
         template: 'project/detail',
-        initialize: function() {
+        initialize: function(parameters) {
+
+            console.log("id is: " + JSON.stringify(parameters));
+            this.model = new Backbone.Vdj.Projects.Project({_id:parameters._id}, {collection: projectCollection});
 
             var that = this;
             this.model.fetch({success: function(model) {
                 //App.Views.Projects.List.collection.add(model);
-                projectCollection.add(that.model, {merge: true});
+                //projectCollection.add(that.model, {merge: true});
                 console.log("collection is: " + JSON.stringify(projectCollection));
                 that.render();
             }});
@@ -156,24 +157,14 @@ define(['app'], function(App) {
         deleteProject: function(e) {
             e.preventDefault();
 
-            console.log("about to destroy model. hold on!");
-            projectCollection.add(this.model, {merge: true});
-            console.log("pre delete collection check: " + JSON.stringify(projectCollection.toJSON()));
-            
-            this.model.trigger('destroy', this.model);
-
-            console.log("post delete collection check: " + JSON.stringify(projectCollection.toJSON()));
-            /*
+            var that = this;
             this.model.destroy({success: function() {
 
-                console.log("model destroyed. proj col is: " + JSON.stringify(projectCollection.toJSON()));
-                /*
-                App.router.navigate('/project', {
-                    trigger: true
-                });
-                */
-           // }});
-            
+                // Events aren't bubbling up to the collection - not sure why yet.
+                // So we'll do this manually for now.
+                projectCollection.remove(that.model);
+            }});
+
         }
     });
 
