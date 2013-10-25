@@ -58,7 +58,7 @@ define(['app'], function(App) {
         // Profile
         accountProfile: function() {
             App.Layouts.main.template = 'one-col';
-            App.Layouts.main.setView('.content', new App.Views.Account.ProfileForm({model: new Backbone.Vdj.Account.Profile()}));
+            App.Layouts.main.setView('.content', new App.Views.Account.ProfileForm({model: new Backbone.Agave.Model.Profile()}));
             App.Layouts.main.render();
         },
 

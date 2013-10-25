@@ -5,7 +5,7 @@ require.config({
     deps: ['runner'],
     paths: {
         spec: '../../test/spec',
-        runner: '../../test/spec/runner',
+        runner: '../../test/config/runner',
         appConfig: '../../app/scripts/config'
     },
     shim: {

@@ -6,11 +6,11 @@
     //var $ = window.$;
     //var _ = window._;
 
-    var Vdj = Backbone.Vdj;
+    var Agave = Backbone.Agave;
+                                                                              
+    var Project = {};
 
-    var Projects = Vdj.Projects = {};
-
-    Projects.Project = Vdj.Model.extend({
+    Project = Agave.Model.extend({
         idAttribute: '_id',
         defaults: {
             name:       '',
@@ -31,13 +31,6 @@
         }
     });
 
-    Projects.UserProjects = Vdj.Collection.extend({
-        model: Projects.Project,
-        url: function() {
-            return '/user/projects';
-        }
-    });
-
-    return Projects;
-
+    Agave.Model.Project = Project;
+    return Project;
 })(this);

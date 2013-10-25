@@ -19,15 +19,15 @@ define(['app'], function(App) {
 
             /*
              should return:
-                internalusername
+                username
                 password
                 email
              */
             var formData = Backbone.Syphon.serialize(this);
 
             if (
-                    formData.internalUsername &&
-                    formData.password         &&
+                    formData.username  &&
+                    formData.password  &&
                     formData.email
                )
             {

@@ -80,9 +80,9 @@ define(['app'], function(App) {
 
             if (formData.name) {
 
-                var internalUsername = App.Agave.token().get('internalUsername');
+                var username = App.Agave.token().get('username');
                 formData.members = [];
-                formData.members.push(internalUsername);
+                formData.members.push(username);
 
                 var message = new App.Models.MessageModel({
                     'header': 'Creating Project',

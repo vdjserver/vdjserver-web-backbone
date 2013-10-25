@@ -1,5 +1,4 @@
-/**
-  * Backbone VDJ
+/** * Backbone VDJ
   * Version 0.0.1
   *
   */
@@ -23,7 +22,7 @@
 
             // Credentials for Basic Authentication
             // Use credentials provided in options first; otherwise used current session creds.
-            var username = options.username || (agaveToken ? agaveToken.get('internalUsername') : '');
+            var username = options.username || (agaveToken ? agaveToken.get('username') : '');
             var password = options.password || (agaveToken ? agaveToken.id : '');
 
             // Allow user-provided before send, but protect ours, too.

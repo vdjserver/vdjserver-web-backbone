@@ -9,12 +9,13 @@ define([
 
     // Agave
     'backbone-agave',
-    'backbone-agave-io',
+    'agave-io',
+    'agave-profile',
+    'agave-project',
+    'agave-projects',
 
     // VDJ
     'backbone-vdj',
-    'backbone-vdj-account',
-    'backbone-vdj-projects',
 
     'models/message',
     'models/form',
@@ -23,8 +24,8 @@ define([
     'app-views',
     'form-views',
     'util-views',
-    'agave-auth',
-    'agave-io',
+    'agave-auth-views',
+    'agave-io-views',
     'account-views',
     'project-views',
 

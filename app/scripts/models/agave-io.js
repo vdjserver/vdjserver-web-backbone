@@ -1,8 +1,3 @@
-/**
-  * Backbone Agave I/O
-  * Version 0.1
-  *
-  */
 (function (window) {
 
     'use strict';
@@ -15,7 +10,7 @@
 
     console.log("backbone agave io. agave is: " + JSON.stringify(Agave));
 
-    var IO = Agave.IO = {};
+    var IO = {};
 
     IO.File = Agave.Model.extend({
         defaults: {
@@ -24,19 +19,19 @@
         },
         idAttribute: 'path',
         urlRoot: function() {
-            console.log("returning urlRoot");
+            //console.log("returning urlRoot");
             return '/files/media/';
         },
         url: function() {
-            console.log("returning url");
+            //console.log("returning url");
             return '/files/media/wscarbor';
         },
         modelUrl: function() {
-            console.log("returning modelUrl");
+            //console.log("returning modelUrl");
             return '/files/media/' + this.id;
         },
         downloadUrl: function() {
-            console.log("returning downloadUrl");
+            //console.log("returning downloadUrl");
             return Agave.agaveApiRoot + '/files/media/' + this.id;
         },
         directoryPath: function() {
@@ -49,7 +44,7 @@
                 path = path.substring(0, path.lastIndexOf('/') + 1);
             }
 
-            console.log("IO.file return path is: " + JSON.stringify(path));
+            //console.log("IO.file return path is: " + JSON.stringify(path));
             return path;
         },
         parentDirectoryPath: function() {
@@ -95,8 +90,10 @@
     IO.Listing = Agave.Collection.extend({
         model: IO.File,
         initialize: function(models, options) {
-            this.path = options.path;
-            console.log('IO.Listing options are: ' + JSON.stringify(options));
+            if (options && options.path) {
+                this.path = options.path;
+            }
+            //console.log('IO.Listing options are: ' + JSON.stringify(options));
         },
         url: function() {
             return '/files/listings/' + this.path;
@@ -118,7 +115,9 @@
 
     IO.Share = Agave.Model.extend({
         initialize: function(attributes, options) {
-            this.file = options.file;
+            if (options && options.file) {
+                this.file = options.file;
+            }
         },
         url: function() {
             var owner = this.file.get('owner'),
@@ -134,5 +133,6 @@
         }
     });
 
+    Agave.IO = IO;
     return IO;
 })(this);

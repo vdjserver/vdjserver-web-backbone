@@ -11,6 +11,8 @@
     var _ = window._;
     var Vdj = Backbone.Vdj;
 
+    console.log("initing backbone agave");
+
     var Agave = function(options) {
 
         var defaults = _.extend({primary: true}, options),
@@ -33,7 +35,7 @@
         else if (window.AGAVE_TOKEN && window.AGAVE_USERNAME) {
             this.setToken({
                 'token': window.AGAVE_TOKEN,
-                'internalUsername': window.AGAVE_USERNAME
+                'username': window.AGAVE_USERNAME
             });
         }
 
@@ -59,12 +61,12 @@
         }
     });
 
-    Agave.agaveApiRoot = 'https://iplant-dev.tacc.utexas.edu/v2';
+    Agave.apiRoot = 'https://iplant-dev.tacc.utexas.edu/v2';
     Agave.vdjApiRoot   = 'http://localhost:8443';
 
     // Custom sync function to handle Agave token auth
     Agave.sync = function(method, model, options) {
-        options.url = model.apiRoot + (options.url || _.result(model, 'url'));
+        options.url = Agave.apiRoot + (options.url || _.result(model, 'url'));
 
         if (model.requiresAuth) {
             var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
@@ -86,6 +88,8 @@
             };
         }
 
+        console.log("agave sync url is: " + options.url);
+
         // Call default sync
         return Backbone.sync(method, model, options);
     };
@@ -98,7 +102,6 @@
             }
             Backbone.Model.apply(this, arguments);
         },
-        apiRoot: Agave.agaveApiRoot,
         sync: Agave.sync,
         requiresAuth: true,
         parse: function(resp) {
@@ -118,7 +121,6 @@
             }
             Backbone.Collection.apply(this, arguments);
         },
-        apiRoot: Agave.agaveApiRoot,
         sync: Agave.sync,
         requiresAuth: true,
         parse: function(resp) {
@@ -132,69 +134,42 @@
     // Required Auth package
     var Auth = Agave.Auth = {};
 
-    Auth.Token = Backbone.Model.extend({
+    Auth.Token = Agave.Model.extend({
         defaults: {
             'token':    null,
             'username': null,
             'created':  null,
             'expires':  null,
             'renewed':  null,
-            'internalUsername': null,
             'remainingUses':    null
         },
         idAttribute: 'token',
-
+        url: '/auth/',
+        requiresAuth: true,
         sync: function(method, model, options) {
 
-            // Credentials for Basic Authentication
-            var username;
-            var password;
+            switch (method) {
 
-            console.log('syncing agave token model');
+                case 'create':
+                    options.url = model.url
+                    options.type = 'POST';
+                    break;
 
-            if (method === 'create') {
+                case 'update':
+                    options.url = model.url + '/tokens/' + model.get('token');
+                    options.type = 'PUT';
+                    break;
 
-                console.log('method is create');
-                options.url = Agave.vdjApiRoot + '/token';
-
-                username = model.get('internalUsername');
-                password = options.password;
+                case 'delete':
+                    options.url = model.url + '/tokens/' + model.get('token');
+                    options.type = 'DELETE';
+                    break;
             }
-            else if (method === 'update') {
-
-                console.log('method is update');
-                options.url = Agave.vdjApiRoot + '/token'
-                                               + '/' + model.get('token');
-
-                username = model.get('internalUsername');
-                password = options.password;
-            }
-            else {
-
-                console.log('method is other');
-                options.url = Agave.agaveApiRoot + '/auth'
-                                                 + '/tokens'
-                                                 + '/' + model.get('token');
-
-                username = model.get('username');
-                password = model.get('token');
-            }
-
-            options.beforeSend = function(xhr) {
-                xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username + ':' + password));
-            };
-
-
-            console.log('method is: '   + JSON.stringify(method));
-            console.log('model is: '    + JSON.stringify(model));
-            console.log('options are: '  + JSON.stringify(model));
 
             // Call default sync
-            return Backbone.sync(method, model, options);
+            return Agave.sync(method, model, options);
         },
         parse: function(response) {
-
-            console.log('response is: ' + JSON.stringify(response));
 
             if (response && response.status === 'success') {
 
@@ -212,7 +187,7 @@
             options = _.extend({}, options);
 
 
-            if (! attrs.internalUsername) {
+            if (! attrs.username) {
                 console.log('token expire 1');
                 errors.username = 'Username is required';
             }
@@ -236,19 +211,11 @@
             return Math.max(0, this.get('expires') * 1000 - Date.now());
         },
         getBase64: function() {
-            return btoa(this.get('username') + ':' + this.id);
+            return btoa(this.get('username') + ':' + this.token);
         }
     }),
-/*
-    Auth.ActiveTokens = Agave.Collection.extend({
-        model: Auth.Token,
-        url: '/auth-v1/list',
-        comparator: function(token) {
-                return -token.get('created');
-        }
-    });
-*/
-    Backbone.Agave = Agave;
 
+    Backbone.Agave = Agave;
     return Agave;
+
 })(this);

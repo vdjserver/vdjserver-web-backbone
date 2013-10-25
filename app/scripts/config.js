@@ -17,12 +17,15 @@ require.config({
         'backbone-agave':  'vendor/backbone-agave/backbone-agave',
         'backbone-vdj':    'vendor/backbone-vdj/backbone-vdj',
 
-        // Models - Agave
-        'backbone-agave-io': 'models/backbone-agave-io',
+        // Agave - Models
+        'agave-io':      'models/agave-io',
+        'agave-profile': 'models/agave-profile',
+        'agave-project': 'models/agave-project',
 
-        // Models - VDJ
-        'backbone-vdj-account':  'models/backbone-vdj-account',
-        'backbone-vdj-projects': 'models/backbone-vdj-projects',
+        // Agave - Collections
+        'agave-projects': 'collections/agave-projects',
+
+
 
         // Misc.
         'fileSaver': 'vendor/fileSaver',
@@ -31,8 +34,8 @@ require.config({
         'app-views': 'views/app/app-views',
         'form-views': 'views/app/form-views',
         'util-views': 'views/app/util-views',
-        'agave-auth': 'views/agave-auth',
-        'agave-io': 'views/agave-io',
+        'agave-auth-views': 'views/agave-auth-views',
+        'agave-io-views': 'views/agave-io-views',
         'account-views': 'views/account-views',
         'project-views': 'views/project-views',
 
@@ -65,27 +68,37 @@ require.config({
         },
 
 
+        // Agave
         'backbone-agave': {
             deps: ['backbone'],
             exports: 'Backbone.Agave'
         },
-        'backbone-agave-io': {
+
+        // Agave - Models
+        'agave-io': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.IO'
         },
+        'agave-profile': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.Profile'
+        },
+        'agave-project': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.Project'
+        },
+
+        // Agave - Collections
+        'agave-projects': {
+            deps: ['backbone', 'backbone-agave', 'agave-project'],
+            exports: 'Backbone.Agave.Collection.Projects'
+        },
 
 
+        // VDJ
         'backbone-vdj': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Vdj'
-        },
-        'backbone-vdj-account': {
-            deps: ['backbone', 'backbone-vdj'],
-            exports: 'Backbone.Vdj.Account'
-        },
-        'backbone-vdj-projects': {
-            deps: ['backbone', 'backbone-vdj'],
-            exports: 'Backbone.Vdj.Projects'
         }
     }
 });

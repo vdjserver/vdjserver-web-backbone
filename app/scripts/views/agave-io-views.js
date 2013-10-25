@@ -166,7 +166,7 @@ define(['app', 'fileSaver'], function(App){
                         var that = this;
                         var dir = new Backbone.Agave.IO.File({
                             path:  dirName,
-                            owner: App.Agave.token().get('internalUsername'),
+                            owner: App.Agave.token().get('username'),
                             name:  dirName,
                             type:  'dir'
                         });
@@ -342,7 +342,7 @@ define(['app', 'fileSaver'], function(App){
                         this.insertView('.dropdown-menu', new AgaveIO.IOAction({model:this.model, action:'delete',label:'Delete',tagName:'li'}));
                     }
 
-                    if (perms.username === 'you' || perms.username === App.Agave.token().get('internalUsername')) {
+                    if (perms.username === 'you' || perms.username === App.Agave.token().get('username')) {
                         // share
                         // this.insertView('.dropdown-menu', new AgaveIO.IOAction({model:this.model, action:'share',label:'Share',tagName:'li'}));
                     }
@@ -394,7 +394,7 @@ define(['app', 'fileSaver'], function(App){
 
     AgaveIO.FileChooserDialog = Backbone.View.extend({
         initialize: function() {
-            this.collection = new Backbone.Agave.IO.Listing([], {path: App.Agave.token().get('internalUsername')});
+            this.collection = new Backbone.Agave.IO.Listing([], {path: App.Agave.token().get('username')});
             this.listenTo(this.collection, 'reset', this.render);
             this.collection.fetch({reset:true});
         },

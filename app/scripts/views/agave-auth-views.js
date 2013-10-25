@@ -9,7 +9,7 @@ define(['app'], function(App) {
         template: 'auth/new-token-form',
         serialize: function() {
             return {
-                'internalUsername': this.model.get('internalUsername')
+                'username': this.model.get('username')
             };
         },
         events: {
@@ -17,11 +17,12 @@ define(['app'], function(App) {
         },
         submitForm: function(e) {
 
+            console.log("submitting auth form");
             e.preventDefault();
 
             var formData = Backbone.Syphon.serialize(this);
 
-            if (formData.internalUsername && formData.password) {
+            if (formData.username && formData.password) {
 
                 var message = new App.Models.MessageModel({
                     'header': 'Getting token',
@@ -48,7 +49,6 @@ define(['app'], function(App) {
                             password: formData.password,
                             success: function() {
                                 console.log('save success');
-                                Backbone.Vdj.password = formData.password;
                                 message.set('body', message.get('body') + '<p>Success!</p>');
                                 modal.close();
                                 App.router.navigate('/', {
