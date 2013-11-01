@@ -4,14 +4,15 @@
     "dependencies": {
         "backbone":         "1.1.x",
         "backbone.syphon":  "0.4.x",
-        "font-awesome":     "3.0.2",
+        "backbone.analytics": "*",
+        "font-awesome":     "4.0.x",
         "handlebars":       "1.0.x",
         "jquery":           "2.0.x",
         "layoutmanager":    "0.9.x",
         "modernizr":        "2.6.x",
         "moment":           "2.3.x",
         "requirejs":        "2.1.x",
-        "sass-bootstrap":   "2.3.x",
+        "sass-bootstrap":   "3.0.x",
         "underscore":       "1.5.x"
     },
     "devDependencies": {}

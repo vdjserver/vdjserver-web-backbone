@@ -27,4 +27,4 @@ define(['app', 'agave-io'], function() {
         });
     });
 
-})();
+});

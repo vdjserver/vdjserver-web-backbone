@@ -13,4 +13,4 @@ define(['app', 'agave-projects'], function() {
 
     });
 
-})();
+});

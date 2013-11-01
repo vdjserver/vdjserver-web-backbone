@@ -9,6 +9,7 @@ define([
 
     // Agave
     'backbone-agave',
+    'agave-account',
     'agave-io',
     'agave-profile',
     'agave-project',

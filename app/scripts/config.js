@@ -4,20 +4,21 @@
 require.config({
     deps: ['main'],
     paths: {
-        'backbone':         '../components/backbone/backbone',
-        'backbone.syphon':  '../components/backbone.syphon/lib/backbone.syphon',
-        'bootstrap':        'vendor/bootstrap',
-        'handlebars':       '../components/handlebars/handlebars',
-        'jquery':           '../components/jquery/jquery',
-        'layoutmanager':    '../components/layoutmanager/backbone.layoutmanager',
-        'moment':           '../components/moment/moment',
-        'underscore':       '../components/underscore/underscore',
+        'backbone':         '../bower_components/backbone/backbone',
+        'backbone.syphon':  '../bower_components/backbone.syphon/lib/backbone.syphon',
+        'bootstrap':        '../bower_components/sass-bootstrap/dist/js/bootstrap',
+        'handlebars':       '../bower_components/handlebars/handlebars',
+        'jquery':           '../bower_components/jquery/jquery',
+        'layoutmanager':    '../bower_components/layoutmanager/backbone.layoutmanager',
+        'moment':           '../bower_components/moment/moment',
+        'underscore':       '../bower_components/underscore/underscore',
 
         // Backbone Extensions
         'backbone-agave':  'vendor/backbone-agave/backbone-agave',
         'backbone-vdj':    'vendor/backbone-vdj/backbone-vdj',
 
         // Agave - Models
+        'agave-account': 'models/agave-account',
         'agave-io':      'models/agave-io',
         'agave-profile': 'models/agave-profile',
         'agave-project': 'models/agave-project',
@@ -75,6 +76,10 @@ require.config({
         },
 
         // Agave - Models
+        'agave-account': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.Account'
+        },
         'agave-io': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.IO'

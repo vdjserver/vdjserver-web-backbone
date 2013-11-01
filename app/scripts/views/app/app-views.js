@@ -8,27 +8,14 @@ define(['app'], function(App){
     AppViews.MainLayout   = Backbone.Layout.extend();
     AppViews.FooterLayout = Backbone.Layout.extend();
 
-    // Handlebars Helpers
-    //Handlebars.registerHelper("LoginStatus", function(resource) {})
-
     // app views
     AppViews.Nav = Backbone.View.extend({
-        tagName: 'nav',
+        //tagName: 'nav',
         template: 'nav',
-        className: 'navbar navbar-fixed-top',
+        //className: 'navbar navbar-fixed-top',
         initialize: function() {
             this.setView('.login-state', new AppViews.LoginState({model: this.model}));
         }
-    /*
-        serialize: function() {
-            json = this.model.toJSON();
-            return json;
-        }
-    ,
-        initialize: function() {
-            App.listenTo(App.Agave, 'Agave:tokenChanged', this.render());
-        }
-    */
     });
 
     AppViews.LoginState = Backbone.View.extend({
@@ -46,11 +33,6 @@ define(['app'], function(App){
         serialize: function() {
             return this.model.toJSON();
         }
-    });
-
-    AppViews.Header = Backbone.View.extend({
-        template: 'header',
-        className: 'header'
     });
 
     AppViews.Home = Backbone.View.extend({

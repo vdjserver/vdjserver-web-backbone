@@ -1,6 +1,6 @@
 /*global describe, it */
 
-define(['app'], function(App) {
+define(['app', 'backbone-agave'], function() {
 
     'use strict';
 
@@ -18,4 +18,4 @@ define(['app'], function(App) {
 
     });
 
-})();
+});

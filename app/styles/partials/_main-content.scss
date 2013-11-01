@@ -1,0 +1,14 @@
+@import "modules/settings";
+
+/*
+    These styles offset main content from the navbar.
+    They were adapted from an external css file in: http://getbootstrap.com/examples/starter-template/
+*/
+
+body {
+    padding-top: 50px;
+}
+
+.main-content {
+    padding: 40px 15px;
+}

@@ -1,6 +1,6 @@
 /*global describe, it */
 
-define(['app'], function(App) {
+define(['app', 'handlebars', 'layoutmanager', 'backbone', 'jquery'], function(App) {
 
     'use strict';
 
@@ -12,4 +12,4 @@ define(['app'], function(App) {
 
     });
 
-})();
+});

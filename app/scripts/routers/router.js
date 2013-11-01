@@ -29,7 +29,7 @@ define(['app'], function(App) {
 
         // Index
         index: function() {
-            App.Layouts.main.template = 'one-col';
+            App.Layouts.main.template = 'layouts/standard';
             App.Layouts.main.setView('.content', new App.Views.AppViews.Home());
             App.Layouts.main.render();
         },
@@ -37,7 +37,7 @@ define(['app'], function(App) {
 
         // Auth
         authLogin: function() {
-            App.Layouts.main.template = 'one-col';
+            App.Layouts.main.template = 'layouts/standard';
             App.Layouts.main.setView('.content', new App.Views.AgaveAuth.NewTokenForm({model: App.Agave.token()}));
             App.Layouts.main.render();
         },
@@ -50,14 +50,14 @@ define(['app'], function(App) {
 
         // Account
         accountCreate: function() {
-            App.Layouts.main.template = 'one-col';
+            App.Layouts.main.template = 'layouts/standard';
             App.Layouts.main.setView('.content', new App.Views.Account.NewAccountForm({model: new Backbone.Vdj.Account.New()}));
             App.Layouts.main.render();
         },
 
         // Profile
         accountProfile: function() {
-            App.Layouts.main.template = 'one-col';
+            App.Layouts.main.template = 'layouts/standard';
             App.Layouts.main.setView('.content', new App.Views.Account.ProfileForm({model: new Backbone.Agave.Model.Profile()}));
             App.Layouts.main.render();
         },
@@ -65,19 +65,19 @@ define(['app'], function(App) {
 
         // Apps
         appsPublicList: function() {
-            App.Layouts.main.template = 'two-col';
-            App.Layouts.main.setView('.sidebar', new App.Views.AgaveApps.AppList({collection: new Backbone.Agave.Apps.PublicApplications()}));
+            App.Layouts.main.template = 'layouts/standard';
+            App.Layouts.main.setView('.content', new App.Views.AgaveApps.AppList({collection: new Backbone.Agave.Apps.PublicApplications()}));
             App.Layouts.main.render();
         },
 
         appsSharedList: function() {
-            App.Layouts.main.template = 'two-col';
-            App.Layouts.main.setView('.sidebar', new App.Views.AgaveApps.AppList({collection: new Backbone.Agave.Apps.SharedApplications()}));
+            App.Layouts.main.template = 'layouts/standard';
+            App.Layouts.main.setView('.content', new App.Views.AgaveApps.AppList({collection: new Backbone.Agave.Apps.SharedApplications()}));
             App.Layouts.main.render();
         },
 
         appsView: function(id) {
-            App.Layouts.main.template = 'one-col';
+            App.Layouts.main.template = 'layouts/standard';
             App.Layouts.main.setView('.content', new App.Views.AgaveApps.AppView({model: new Backbone.Agave.Apps.Application({id:id})}));
             App.Layouts.main.render();
         },
@@ -86,7 +86,7 @@ define(['app'], function(App) {
         // IO
         ioBrowser: function(owner, path) {
 
-            App.Layouts.main.template = 'one-col';
+            App.Layouts.main.template = 'layouts/standard';
             var fullPath = owner || App.Agave.token().get('username');
 
             if (path) {
@@ -99,19 +99,19 @@ define(['app'], function(App) {
 
         // Projects
         projectIndex: function() {
-            App.Layouts.main.template = 'two-col';
+            App.Layouts.main.template = 'layouts/standard';
             App.Layouts.main.setView('.content', new App.Views.Projects.Index({collection: new Backbone.Vdj.Projects.UserProjects()}));
             App.Layouts.main.render();
         },
 
         projectCreate: function() {
-            App.Layouts.main.template = 'two-col';
+            App.Layouts.main.template = 'layouts/standard';
             App.Layouts.main.setView('.content', new App.Views.Projects.Create({model: new Backbone.Vdj.Projects.Project()}));
             App.Layouts.main.render();
         },
 
         projectDetail: function(id) {
-            App.Layouts.main.template = 'two-col';
+            App.Layouts.main.template = 'layouts/standard';
             App.Layouts.main.setView('.content', new App.Views.Projects.Detail({_id:id}));
             App.Layouts.main.render();
         }

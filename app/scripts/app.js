@@ -6,6 +6,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
         root: '/',
         init: function() {
             var JST = window.JST = window.JST || {};
+
             // Configure LayoutManager with Backbone Boilerplate defaults.
             Backbone.Layout.configure({
                 // Allow LayoutManager to augment Backbone.View.prototype.
@@ -14,6 +15,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 prefix: 'templates/',
 
                 fetchTemplate: function(path) {
+
                     // Concatenate the file extension.
                     path = path + '.html';
 
@@ -29,6 +31,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                     $.get(App.root + path, function(contents) {
                         done(JST[path] = Handlebars.compile(contents));
                     });
+
                 },
                 renderTemplate: function(tmpl, context) {
                     return tmpl(context);
@@ -46,51 +49,23 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 clearTimeout(error);
 
                 var token = App.Agave.token();
-                var logoutWarningDialog;
-                var renewView;
-                
+
                 if (token.isValid()) {
 
                     window.localStorage.setItem('Agave.Token', JSON.stringify(token.toJSON()));
                     warn = setTimeout(function() {
-                        console.log('this.warn is running');
 
-                        logoutWarningDialog = new App.Views.Util.ModalView({
-                            model: new App.Models.MessageModel({header:'Your login session is about to expire!'})
-                        });
-                        
-                        renewView = new App.Views.AgaveAuth.RenewTokenForm({
-                            model: App.Agave.token()
-                        });
-                        
-                        renewView.cleanup = function() {
-                            logoutWarningDialog.close();
-                            if (token.expiresIn() > 300000) {
+                        // TODO: RENEW TOKEN HERE BY SAVING MODEL
 
-                                console.log('weird token if statement');
-                                // it was renewed, rewatch token
-                                watchToken();
-                            }
-                        };
-                        logoutWarningDialog.setView('.child-view', renewView);
-                        logoutWarningDialog.$el.on('hidden', function() {
-                            logoutWarningDialog.remove();
-                            logoutWarningDialog = null;
-                        });
-                        console.log('about to render logoutWarning');
-                        logoutWarningDialog.render();
-                        console.log('finished rendering logoutWarning');
+                        if (token.expiresIn() > 300000) {
+
+                            // it was renewed, rewatch token
+                            watchToken();
+                        }
                     }, Math.max(0, token.expiresIn() - 300000));
 
                     error = setTimeout(function() {
-                        console.log('token.expiresIn is: ' + token.expiresIn());
-                        console.log('token expires math function is: ' + Math.max(0, token.expiresIn()));
-                        
-                        if (logoutWarningDialog) {
-                            console.log('logoutWarning close');
-                            logoutWarningDialog.close();
-                        }
-                        
+
                         alert('Your Session has expired.  You have been logged out.');
                         App.Agave.destroyToken();
                         window.localStorage.removeItem('Agave.Token');
@@ -108,8 +83,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 el: '#header',
                 views: {
                     '': [
-                        new App.Views.AppViews.Nav({model: App.Agave.token()}),
-                        new App.Views.AppViews.Header()
+                        new App.Views.AppViews.Nav({model: App.Agave.token()})
                     ]
                 }
             });
@@ -134,7 +108,6 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
         },
         start: function() {
             App.init();
-            // Backbone.history.start();
             Backbone.history.start({pushState: true, root: App.root});
             $(document).on('click', 'a[href]:not([data-bypass])', function(evt) {
                 var href = { prop: $(this).prop('href'), attr: $(this).attr('href') };

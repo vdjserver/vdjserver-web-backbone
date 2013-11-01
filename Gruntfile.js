@@ -164,7 +164,7 @@ module.exports = function(grunt) {
                 imagesDir: '<%= yeoman.app %>/images',
                 javascriptsDir: '<%= yeoman.app %>/scripts',
                 fontsDir: '<%= yeoman.app %>/styles/fonts',
-                importPath: 'app/components',
+                importPath: 'app/bower_components',
                 relativeAssets: true
             },
             dist: {},
@@ -307,7 +307,7 @@ module.exports = function(grunt) {
                     cwd: '<%= yeoman.app %>',
                     dest: '.tmp',
                     src: [
-                        'components/{,*/}*.js',
+                        'bower_components/{,*/}*.js',
                         'scripts/{,**/}*.js'
                     ]
                 }]
