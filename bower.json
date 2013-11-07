@@ -6,11 +6,11 @@
         "backbone.syphon":  "0.4.x",
         "backbone.analytics": "*",
         "font-awesome":     "4.0.x",
-        "handlebars":       "1.0.x",
+        "handlebars":       "1.1.x",
         "jquery":           "2.0.x",
         "layoutmanager":    "0.9.x",
         "modernizr":        "2.6.x",
-        "moment":           "2.3.x",
+        "moment":           "2.4.x",
         "requirejs":        "2.1.x",
         "sass-bootstrap":   "3.0.x",
         "underscore":       "1.5.x"
