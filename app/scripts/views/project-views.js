@@ -13,7 +13,7 @@ define(['app'], function(App) {
 
             window.scrollTo(0.0);
 
-            var that = this;
+            //var that = this;
 
             this.collection.fetch({success: function(collection) {
 
@@ -34,7 +34,7 @@ define(['app'], function(App) {
             var that = this;
             projectCollection.on('change add remove destroy', function() {
 
-                console.log("collection change re-render for list. collection is: " + JSON.stringify(projectCollection));
+                console.log('collection change re-render for list. collection is: ' + JSON.stringify(projectCollection));
                 that.render();
             });
         },
@@ -139,16 +139,19 @@ define(['app'], function(App) {
         template: 'project/detail',
         initialize: function(parameters) {
 
-            console.log("id is: " + JSON.stringify(parameters));
+            console.log('id is: ' + JSON.stringify(parameters));
             this.model = new Backbone.Vdj.Projects.Project({_id:parameters._id}, {collection: projectCollection});
 
             var that = this;
-            this.model.fetch({success: function(model) {
-                //App.Views.Projects.List.collection.add(model);
-                //projectCollection.add(that.model, {merge: true});
-                console.log("collection is: " + JSON.stringify(projectCollection));
-                that.render();
-            }});
+            this.model.fetch({
+
+                success: function() {
+                    //App.Views.Projects.List.collection.add(model);
+                    //projectCollection.add(that.model, {merge: true});
+                    console.log('collection is: ' + JSON.stringify(projectCollection));
+                    that.render();
+                }
+            });
 
         },
         events: {

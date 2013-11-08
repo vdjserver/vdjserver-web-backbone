@@ -332,7 +332,7 @@ module.exports = function(grunt) {
 
         grunt.task.run([
             'clean:server',
-            'coffee:dist',
+            //'coffee:dist',
             'compass:server',
             'connect:livereload',
             'open',
@@ -342,16 +342,16 @@ module.exports = function(grunt) {
 
     grunt.registerTask('test', [
         'clean:server',
-        'coffee',
+        //'coffee',
+        'jshint',
         'compass',
-        //'jshint',
         'connect:test',
         'mocha'
     ]);
 
     grunt.registerTask('build', [
         'clean:dist',
-        'coffee',
+        //'coffee',
         'compass:dist',
         'handlebars',
         'useminPrepare',

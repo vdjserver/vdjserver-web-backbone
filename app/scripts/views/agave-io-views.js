@@ -106,10 +106,10 @@ define(['app', 'fileSaver'], function(App){
             var perms = this.model.get('permissions');
             var perm  = _.findWhere(perms, {'username':'you'});
 
-            console.log("type is: " + JSON.stringify(type));
-            console.log("perms is: " + JSON.stringify(perms));
-            console.log("perm is: " + JSON.stringify(perm));
-            console.log("this model is: " + JSON.stringify(this.model));
+            console.log('type is: ' + JSON.stringify(type));
+            console.log('perms is: ' + JSON.stringify(perms));
+            console.log('perm is: ' + JSON.stringify(perm));
+            console.log('this model is: ' + JSON.stringify(this.model));
 
             if (perm.permission.read && type === 'file') {
                 this.insertView(new AgaveIO.IOAction({
@@ -173,7 +173,7 @@ define(['app', 'fileSaver'], function(App){
                         dir.save({}, {
                             success: function() {
                                 //dir.fetch();
-                                console.log("that model is: " + JSON.stringify(that.model));
+                                console.log('that model is: ' + JSON.stringify(that.model));
                                 that.model.collection.add(dir);
                             },
                             //url: this.model.modelUrl(),
@@ -259,7 +259,7 @@ define(['app', 'fileSaver'], function(App){
 
                         var file = new Backbone.Agave.IO.File(responseJson.result);
 
-                        console.log("file is: " + JSON.stringify(file));
+                        console.log('file is: ' + JSON.stringify(file));
                         that.model.collection.add(file);
                     }
                 };
@@ -356,8 +356,6 @@ define(['app', 'fileSaver'], function(App){
             var json  = model.toJSON();
 
             json.lastModified = moment(json.lastModified, 'YYYY-MM-DDTHH:mm:ssZ').format('YYYY-MM-DD hh:mm:ss');
-            //console.log("json is: " + JSON.stringify(json));
-
 
             return json;
         }

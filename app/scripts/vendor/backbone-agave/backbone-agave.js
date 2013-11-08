@@ -9,9 +9,8 @@
 
     var Backbone = window.Backbone;
     var _ = window._;
-    var Vdj = Backbone.Vdj;
 
-    console.log("initing backbone agave");
+    console.log('initing backbone agave');
 
     var Agave = function(options) {
 
@@ -88,7 +87,7 @@
             };
         }
 
-        console.log("agave sync url is: " + options.url);
+        console.log('agave sync url is: ' + options.url);
 
         // Call default sync
         return Backbone.sync(method, model, options);
@@ -106,7 +105,7 @@
         requiresAuth: true,
         parse: function(resp) {
             if (resp.result) {
-                console.log("agave model resp.result is: " + JSON.stringify(resp.result));
+                console.log('agave model resp.result is: ' + JSON.stringify(resp.result));
                 return resp.result;
             }
             return resp;
@@ -151,7 +150,7 @@
             switch (method) {
 
                 case 'create':
-                    options.url = model.url
+                    options.url = model.url;
                     options.type = 'POST';
                     break;
 

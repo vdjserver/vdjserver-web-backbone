@@ -23,10 +23,10 @@
         },
         url: function() {
             if (this.id) {
-                console.log("url scenario A. this is: " + JSON.stringify(this));
+                console.log('url scenario A. this is: ' + JSON.stringify(this));
                 return '/project/' + this.id;
             }
-            console.log("url scenario B. self is: " + JSON.stringify(this));
+            console.log('url scenario B. self is: ' + JSON.stringify(this));
             return '/project';
         }
     });

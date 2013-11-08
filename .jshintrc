@@ -33,6 +33,7 @@
         "moment":   true,
         "prompt":   true,
         "saveAs":   true,
-        "Util":     true
+        "Util":     true,
+        "should":   true
     }
 }
