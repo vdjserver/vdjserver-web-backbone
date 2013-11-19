@@ -10,20 +10,7 @@ define(['app'], function(App) {
     Projects.Index = Backbone.View.extend({
         template: 'project/index',
         initialize: function() {
-
             window.scrollTo(0.0);
-
-            //var that = this;
-
-            this.collection.fetch({success: function(collection) {
-
-                projectCollection = collection;
-
-                var view = new App.Views.Projects.List({collection: projectCollection});
-                App.Layouts.main.setView('.sidebar', view);
-                view.render();
-            }});
-
         }
     });
 
@@ -31,16 +18,18 @@ define(['app'], function(App) {
         template: 'project/list',
         initialize: function() {
 
-            var that = this;
-            projectCollection.on('change add remove destroy', function() {
+            this.collection = new Backbone.Agave.Collection.Projects();
 
-                console.log('collection change re-render for list. collection is: ' + JSON.stringify(projectCollection));
+            var that = this;
+            this.collection.on('change add remove destroy', function() {
                 that.render();
             });
+
+            this.collection.fetch();
         },
         serialize: function() {
             return {
-                projects: projectCollection.toJSON()
+                projects: this.collection.toJSON()
             };
         },
         events: {
@@ -50,29 +39,21 @@ define(['app'], function(App) {
             e.preventDefault();
             var projectId = e.target.dataset.id;
 
-            //$('.view-project[data-id=' + projectId + ']').addClass('selected-project');
-            //console.log("selectProject - new id is: " + projectId);
-
             App.router.navigate('/project/' + projectId , {
                 trigger: true
             });
-
-            /*
-            $('.view-project').removeClass('selected-project');
-            $('#' + projectId).addClass('selected-project');
-            */
         }
     });
 
     Projects.Create = Backbone.View.extend({
         template: 'project/create',
         initialize: function() {
-
+            this.collection = new Backbone.Agave.Model.Project();
         },
         events: {
-            'click .create-project': 'createProject'
+            'submit form': 'submitForm'
         },
-        createProject: function(e) {
+        submitForm: function(e) {
 
             e.preventDefault();
 

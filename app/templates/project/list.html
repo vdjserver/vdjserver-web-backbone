@@ -1,10 +1,12 @@
-<ul>
-    <li><a class="create-project" href="#project/create">Create Project</a></li>
-    {{#if projects}}
-        {{#projects}}
-        <li><a id="{{_id}}" class="view-project" data-id="{{_id}}">{{name}}</a></li>
-        {{/projects}}
-    {{else}}
-        You don't have any projects yet.
-    {{/if}}
-</ul>
+<div class="bs-sidebar affix">
+    <ul class="nav bs-sidenav">
+        <li><a class="create-project" href="#project/create">Create Project</a></li>
+        {{#if projects}}
+            {{#projects}}
+                <li><a id="{{_id}}" class="view-project" data-id="{{_id}}">{{name}}</a></li>
+            {{/projects}}
+        {{else}}
+            You don't have any projects yet.
+        {{/if}}
+    </ul>
+</div>

@@ -43,7 +43,9 @@ define(['app'], function(App) {
 
             e.preventDefault();
 
-            this.$el.find('.alert-danger').remove();
+            this.$el.find('.alert-danger').fadeOut(function() {
+                this.remove();
+            });
 
             var formData = Backbone.Syphon.serialize(this);
 
@@ -71,7 +73,7 @@ define(['app'], function(App) {
                             },
                             error: function() {
 
-                                that.$el.prepend($('<div class="alert alert-danger">').text('Authentication failed.  Please check your username and password.').fadeIn());
+                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Authentication failed.  Please check your username and password.').fadeIn());
                                 $('#password').val('');
                                 $('#modal-message').modal('hide');
                             }

@@ -2,11 +2,19 @@
     <i class="fa fa-info-circle"></i> Create a new VDJ project.
 </div>
 
-<form method="post">
-    <fieldset>
-        <label for="name">Name</label>
-        <input type="text" placeholder="Name" name="name" id="name">
-    </fieldset>
+<form method="post" class="form-horizontal" role="form">
 
-    <input type="submit" value="Create New Project" class="create-project btn btn-success">
+    <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-10">
+            <input type="text" placeholder="Name" name="name" id="name">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <input type="submit" value="Create New Project" class="btn btn-success btn-block">
+        </div>
+    </div>
+
 </form>

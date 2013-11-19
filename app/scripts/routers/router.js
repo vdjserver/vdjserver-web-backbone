@@ -58,7 +58,7 @@ define(['app'], function(App) {
         // Profile
         accountProfile: function() {
             App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.Account.ProfileForm({model: new Backbone.Agave.Model.Profile()}));
+            App.Layouts.main.setView('.content', new App.Views.Profile.Form());
             App.Layouts.main.render();
         },
 
@@ -99,20 +99,36 @@ define(['app'], function(App) {
 
         // Projects
         projectIndex: function() {
-            App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.Projects.Index({collection: new Backbone.Vdj.Projects.UserProjects()}));
+            App.Layouts.main.template = 'layouts/project-standard';
+            App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+            App.Layouts.main.setView('.content', new App.Views.Projects.Index());
             App.Layouts.main.render();
         },
 
         projectCreate: function() {
-            App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.Projects.Create({model: new Backbone.Vdj.Projects.Project()}));
+            if (App.Layouts.main.template === 'layouts/project-standard') {
+                App.Layouts.main.setView('.content', new App.Views.Projects.Create());
+            }
+            else {
+                App.Layouts.main.template = 'layouts/project-standard';
+                App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+                App.Layouts.main.setView('.content', new App.Views.Projects.Create());
+            }
+
             App.Layouts.main.render();
         },
 
         projectDetail: function(id) {
-            App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.Projects.Detail({_id:id}));
+            if (App.Layouts.main.template === 'layouts/project-standard') {
+                App.Layouts.main.setView('.content', new App.Views.Projects.Detail());
+            }
+            else {
+                App.Layouts.main.template = 'layouts/project-standard';
+                App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+                App.Layouts.main.setView('.content', new App.Views.Projects.Detail());
+            }
+
+            //App.Layouts.main.setView('.content', new App.Views.Projects.Detail({_id:id}));
             App.Layouts.main.render();
         }
     });

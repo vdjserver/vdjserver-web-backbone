@@ -2,14 +2,24 @@
     <i class="fa fa-info-circle"></i> Use your VDJ credentials to login.
 </div>
 
-<form method="post">
-    <fieldset>
-        <label for="username">Username</label>
-        <input type="text" placeholder="Username" name="username" id="username" value="{{username}}">
-    </fieldset>
-    <fieldset>
-        <label for="password">Password</label>
-        <input type="password" placeholder="Password" name="password" id="password">
-    </fieldset>
-    <input type="submit" value="Get Token" class="btn btn-success">
+<form method="post" class="form-horizontal" role="form">
+
+    <div class="form-group">
+        <label for="username" class="col-sm-2 control-label">Username</label>
+        <div class="col-sm-10">
+            <input type="text" placeholder="Username" name="username" id="username" value="{{username}}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password" class="col-sm-2 control-label">Password</label>
+        <div class="col-sm-10">
+            <input type="password" placeholder="Password" name="password" id="password">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <input type="submit" value="Log In" class="btn btn-success btn-block">
+        </div>
+    </div>
 </form>

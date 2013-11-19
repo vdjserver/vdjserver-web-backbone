@@ -2,104 +2,54 @@ define(['app'], function(App) {
 
     'use strict';
 
-    var Account   = {};
     var UtilViews = App.Views.Util;
+    var Profile   = {};
 
-    Account.NewAccountForm = Backbone.View.extend({
-        template: 'account/new-account-form',
-        initialize: function() {
-            window.scrollTo(0,0);
-        },
-        events: {
-            'submit form': 'submitForm'
-        },
-        submitForm: function(e) {
-
-            e.preventDefault();
-
-            /*
-             should return:
-                username
-                password
-                email
-             */
-            var formData = Backbone.Syphon.serialize(this);
-
-            if (
-                    formData.username  &&
-                    formData.password  &&
-                    formData.email
-               )
-            {
-
-                var message = new App.Models.MessageModel({
-                    'header': 'Creating new account',
-                    'body':   '<p>Please wait while your new account is being made...</p>'
-                });
-
-                var modal = new UtilViews.ModalMessage({
-                    model:    message,
-                    backdrop: 'static',
-                    keyboard: false
-                });
-
-                var that = this;
-
-                $('<div class="create-account-modal">').appendTo(this.el);
-                modal.$el.on('shown', function() {
-                    that.$el.find('.alert-error').remove();
-                    that.model.save(
-                        formData,
-                        {
-                            success: function() {
-                                message.set('body', message.get('body') + '<p>Success!</p> <button class="btn btn-default btn-block newAccountSuccess">Continue to Login Screen</button>');
-                                $('.newAccountSuccess').click(function() {
-
-                                    console.log('click. it happened.');
-                                    modal.close();
-                                    App.router.navigate('auth/login', {
-                                        trigger: true
-                                    });
-
-                                });
-
-                            },
-                            //error: function(model, xhr, options) {
-                            error: function() {
-                                that.$el.prepend($('<div class="alert alert-error">').text('Account creation failed.  Please check your username, password and email.').fadeIn());
-                                $('#password').val('');
-                                modal.close();
-                            }
-                        }
-                    );
-                });
-                modal.$el.on('hidden', function() {
-                    modal.remove();
-                });
-                //this.setView('.create-account-modal', modal);
-                modal.render();
-            }
-            else {
-                this.$el.find('.alert-error').remove().end().prepend($('<div class="alert alert-error">').text('Username, Password and Email are all required.').fadeIn());
-            }
-            return false;
-        }
-    });
-
-    Account.ProfileForm = Backbone.View.extend({
+    Profile.Form = Backbone.View.extend({
         template: 'profile/profile-form',
         initialize: function() {
-
-            console.log('view initialize');
             window.scrollTo(0,0);
 
-            this.listenTo(this.model, 'change', this.render);
-            this.model.fetch();
+            this.model = new Backbone.Agave.Model.Profile();
+
+            console.log('model is: ' + JSON.stringify(this.model));
+
+            var that = this;
+            this.model.fetch({
+                success: function() {
+                    console.log('profile model fetched - model is: ' + JSON.stringify(that.model));
+
+                    that.render();
+                },
+                error: function() {
+                    console.log('fetch error');
+                }
+            });
         },
         serialize: function() {
             return {
-                profileData: this.model.toJSON()
+                profileData: this.model.get("value")
             };
+        },
+        afterRender: function() {
+            this.setupModalView();
+        },
+        setupModalView: function() {
+
+            var message = new App.Models.MessageModel({
+                'header': 'Getting token',
+                'body':   '<p>Please wait while we authenticate you...</p>'
+            });
+
+            var modal = new UtilViews.ModalMessage({
+                model:    message
+            });
+
+            $('<div id="modal-view">').appendTo(this.el);
+
+            this.setView('#modal-view', modal);
+            modal.render();
+
         },
         events: {
             'submit form': 'submitForm'
@@ -108,64 +58,61 @@ define(['app'], function(App) {
 
             e.preventDefault();
 
-            var formData = Backbone.Syphon.serialize(this);
+            this.$el.find('.alert-danger').fadeOut(function() {
+                this.remove();
+            });
 
-            if (formData.email) {
+            var formData = {
+                value: Backbone.Syphon.serialize(this)
+            };
 
-                var message = new App.Models.MessageModel({
-                    'header': 'Updating profile',
-                    'body':   '<p>Please wait while your profile is being updated...</p>'
-                });
+            console.log('formData is: ' + JSON.stringify(formData));
 
-                var modal = new UtilViews.ModalMessage({
-                    model:    message,
-                    backdrop: 'static',
-                    keyboard: false
-                });
+            if (formData.value.email) {
 
                 var that = this;
 
-                $('<div class="modal-view">').appendTo(this.el);
-                modal.$el.on('shown', function() {
-                    that.$el.find('.alert-error').remove();
-                    console.log('about to save profile');
+                $('#modal-message').on('shown.bs.modal', function() {
+
                     that.model.save(
                         formData,
                         {
+                            password: formData.password,
+                            url: that.model.getSaveUrl(),
                             success: function() {
-                                console.log('profile save success');
-                                message.set('body', message.get('body') + '<p>Success!</p> <button class="btn btn-default btn-block modalViewSuccess">Close</button>');
-                                $('.modalViewSuccess').click(function() {
-                                    console.log('dot click happened');
-                                    modal.close();
-                                    $('html,body').animate({scrollTop:0});
+
+                                $('#modal-message').on('hidden.bs.modal', function() {
+                                    console.log('updated ok');
+/*
+                                    App.router.navigate('/', {
+                                        trigger: true
+                                    });
+*/
                                 });
+
+                                $('#modal-message').modal('hide');
                             },
-                            //error: function(model, xhr, options) {
                             error: function() {
-                                console.log('profile save error');
-                                that.$el.prepend($('<div class="alert alert-error">').text('Profile update failed. Please try again.').fadeIn());
-                                modal.close();
+
+                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Profile update failed. Please try again.').fadeIn());
+                                $('#password').val('');
+                                $('#modal-message').modal('hide');
                             }
                         }
                     );
                 });
-                    
-                modal.$el.on('hidden', function() {
-                    modal.remove();
-                });
-                
-                //this.setView('.create-account-modal', modal);
-                modal.render();
-                console.log('view is set and modal is supposedly rendering');
+
+                $('#modal-message').modal('show');
             }
             else {
-                this.$el.find('.alert-error').remove().end().prepend($('<div class="alert alert-error">').text('Email is required.').fadeIn());
+                console.log("ran into else...");
+                this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Profile update failed. Please try again.').fadeIn());
             }
             return false;
         }
     });
 
-    App.Views.Account = Account;
-    return Account;
+
+    App.Views.Profile = Profile;
+    return Profile;
 });

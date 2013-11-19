@@ -10,8 +10,6 @@
     var Backbone = window.Backbone;
     var _ = window._;
 
-    console.log('initing backbone agave');
-
     var Agave = function(options) {
 
         var defaults = _.extend({primary: true}, options),
@@ -60,8 +58,8 @@
         }
     });
 
-    Agave.apiRoot = 'https://iplant-dev.tacc.utexas.edu/v2';
-    Agave.vdjApiRoot   = 'http://localhost:8443';
+    Agave.apiRoot    = 'https://iplant-dev.tacc.utexas.edu/v2';
+    Agave.vdjApiRoot = 'http://localhost:8443';
 
     // Custom sync function to handle Agave token auth
     Agave.sync = function(method, model, options) {
@@ -87,10 +85,128 @@
             };
         }
 
-        console.log('agave sync url is: ' + options.url);
-
         // Call default sync
         return Backbone.sync(method, model, options);
+    };
+
+
+    // This is a complete replacement for backbone.sync
+    // and is mostly the same as that whenever possible
+    Agave.metadataSync = function(method, model, options) {
+
+        options.url = Agave.apiRoot + (options.url || _.result(model, 'url'));
+
+        if (model.requiresAuth) {
+            var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
+
+            // Credentials for Basic Authentication
+            // Use credentials provided in options first; otherwise used current session creds.
+            var username = options.username || (agaveToken ? agaveToken.get('username') : '');
+            var password = options.password || (agaveToken ? agaveToken.id : '');
+
+            // Allow user-provided before send, but protect ours, too.
+            if (options.beforeSend) {
+                options._beforeSend = options.beforeSend;
+            }
+            options.beforeSend = function(xhr) {
+                if (options._beforeSend) {
+                    options._beforeSend(xhr);
+                }
+                xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username + ':' + password));
+            };
+        }
+
+
+
+
+        options.emulateJSON = true;
+
+
+        // Begin mostly original backbone sync method
+
+
+        // Map from CRUD to HTTP for our default `Backbone.sync` implementation.
+        var methodMap = {
+            'create': 'POST',
+            'update': 'PUT',
+            'patch':  'PATCH',
+            'delete': 'DELETE',
+            'read':   'GET'
+        };
+
+        var type = methodMap[method];
+
+        // Default options, unless specified.
+        _.defaults(options || (options = {}), {
+            emulateHTTP: Backbone.emulateHTTP,
+            emulateJSON: Backbone.emulateJSON
+        });
+
+        // Default JSON-request options.
+        var params = {type: type, dataType: 'json'};
+
+        // Ensure that we have a URL.
+        if (!options.url) {
+            params.url = _.result(model, 'url') || urlError();
+        }
+
+        // Ensure that we have the appropriate request data.
+        if (options.data == null && model && (method === 'create' || method === 'update' || method === 'patch')) {
+            params.contentType = 'application/json';
+            params.data = JSON.stringify(options.attrs || model.toJSON(options));
+        }
+
+        if (params.data) {
+            console.log("params data is: " + params.data);
+            params.data = JSON.parse(params.data);
+            params.data = {
+                'uuid': params.data.uuid,
+                'name': params.data.name,
+                'value': JSON.stringify(params.data.value)
+            }
+        }
+
+        console.log("params data final is: " + JSON.stringify(params.data));
+
+
+
+
+        // For older servers, emulate JSON by encoding the request into an HTML-form.
+        if (options.emulateJSON) {
+            params.contentType = 'application/x-www-form-urlencoded';
+            params.data = params.data ? params.data : {}; // AGAVE NOTE TO SELF: change this line
+        }
+
+        // For older servers, emulate HTTP by mimicking the HTTP method with `_method`
+        // And an `X-HTTP-Method-Override` header.
+        if (options.emulateHTTP && (type === 'PUT' || type === 'DELETE' || type === 'PATCH')) {
+            params.type = 'POST';
+            if (options.emulateJSON) params.data._method = type;
+            var beforeSend = options.beforeSend;
+            options.beforeSend = function(xhr) {
+                xhr.setRequestHeader('X-HTTP-Method-Override', type);
+                if (beforeSend) return beforeSend.apply(this, arguments);
+            };
+        }
+
+        // Don't process data on a non-GET request.
+        if (params.type !== 'GET' && !options.emulateJSON) {
+            params.processData = false;
+        }
+
+        // If we're sending a `PATCH` request, and we're in an old Internet Explorer
+        // that still has ActiveX enabled by default, override jQuery to use that
+        // for XHR instead. Remove this line when jQuery supports `PATCH` on IE8.
+        if (params.type === 'PATCH' && noXhrPatch) {
+            params.xhr = function() {
+                return new ActiveXObject("Microsoft.XMLHTTP");
+            };
+        }
+
+        // Make the request, allowing the user to override any Ajax options.
+        var xhr = options.xhr = Backbone.ajax(_.extend(params, options));
+        model.trigger('request', model, xhr, options);
+        return xhr;
     };
 
     // Agave extension of default Backbone.Model that uses Agave sync
@@ -103,12 +219,12 @@
         },
         sync: Agave.sync,
         requiresAuth: true,
-        parse: function(resp) {
-            if (resp.result) {
-                console.log('agave model resp.result is: ' + JSON.stringify(resp.result));
-                return resp.result;
+        parse: function(response) {
+            if (response.result) {
+                console.log('agave model response.result is: ' + JSON.stringify(response.result));
+                return response.result;
             }
-            return resp;
+            return response;
         }
     });
 
@@ -122,13 +238,83 @@
         },
         sync: Agave.sync,
         requiresAuth: true,
-        parse: function(resp) {
-            if (resp.result) {
-                return resp.result;
+        parse: function(response) {
+            if (response.result) {
+                return response.result;
             }
-            return resp;
+            return response;
         }
     });
+
+    Agave.MetadataModel = Agave.Model.extend({
+        constructor: function(attributes, options) {
+            if (options && options.agaveToken) {
+                this.agaveToken = options.agaveToken;
+            }
+            else {
+                this.agaveToken = Agave.instance.token();
+            }
+
+            Backbone.Model.apply(this, arguments);
+        },
+        defaults: {
+            uuid: '',
+            name: '',
+            value: {}
+        },
+        sync: Agave.metadataSync,
+        getSaveUrl: function() {
+            return '/meta/data/' + this.get('uuid');
+        },
+        parse: function(response) {
+
+            if (response.status === 'success' && response.result) {
+
+                if (response.result.length > 0) {
+
+                    return response.result[0];
+                }
+
+                return response.result;
+            }
+
+            return response;
+        }
+    });
+
+    // Agave extension of default Backbone.Model that uses Agave sync
+    Agave.MetadataCollection = Agave.Model.extend({
+        constructor: function(attributes, options) {
+            if (options && options.agaveToken) {
+                this.agaveToken = options.agaveToken;
+            }
+            else {
+                this.agaveToken = Agave.instance.token();
+            }
+
+            Backbone.Model.apply(this, arguments);
+        },
+        defaults: {
+            uuid: '',
+            name: '',
+            value: {}
+        },
+        sync: Agave.metadataSync,
+        getSaveUrl: function() {
+            return '/meta/data/' + this.get('uuid');
+        },
+        parse: function(response) {
+
+            if (response.status === 'success' && response.result) {
+
+                return response.result;
+            }
+
+            return response;
+        }
+    });
+
+
 
     // Required Auth package
     var Auth = Agave.Auth = {};

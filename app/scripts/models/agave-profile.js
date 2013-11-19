@@ -10,16 +10,23 @@
 
     var Profile = {};
 
-    Profile = Agave.Model.extend({
-        defaults: {
-            firstName: '',
-            lastName:  '',
-            email:     '',
-            city:      '',
-            state:     ''
-        },
+    Profile = Agave.MetadataModel.extend({
+        defaults: _.extend(
+            {}, 
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'profile',
+                value: {
+                    firstName: '',
+                    lastName:  '',
+                    email:     '',
+                    city:      '',
+                    state:     ''
+                }
+            }
+        ),
         url: function() {
-            return '/user/profile';
+            return '/meta/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"profile"}');
         }
     });
 

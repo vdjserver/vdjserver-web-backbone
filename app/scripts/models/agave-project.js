@@ -7,30 +7,29 @@
     //var _ = window._;
 
     var Agave = Backbone.Agave;
-                                                                              
+
     var Project = {};
 
-    Project = Agave.Model.extend({
-        idAttribute: '_id',
-        defaults: {
-            name:       '',
-            members:    []
-            /*
-            categories: [],
-            created:    '',
-            modified:   ''
-            */
-        },
-        url: function() {
-            if (this.id) {
-                console.log('url scenario A. this is: ' + JSON.stringify(this));
-                return '/project/' + this.id;
+    Project = Agave.MetadataModel.extend({
+        defaults: _.extend(
+            {}, 
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'project',
+                value: {
+                    firstName: '',
+                    lastName:  '',
+                    email:     '',
+                    city:      '',
+                    state:     ''
+                }
             }
-            console.log('url scenario B. self is: ' + JSON.stringify(this));
-            return '/project';
+        ),
+        url: function() {
+            return '/meta/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"project"}');
         }
     });
 
-    Agave.Model.Project = Project;
+    Backbone.Agave.Model.Project = Project;
     return Project;
 })(this);

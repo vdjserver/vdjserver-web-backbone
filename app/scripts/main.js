@@ -10,6 +10,7 @@ define([
 
     // Agave
     'backbone-agave',
+    'agave-uuid', // Order matters here. Don't change it.
     'agave-account',
     'agave-io',
     'agave-profile',
@@ -26,9 +27,10 @@ define([
     'app-views',
     'form-views',
     'util-views',
+
     'agave-auth-views',
     'agave-io-views',
-    'account-views',
+    'profile-views',
     'project-views',
 
     // Routers

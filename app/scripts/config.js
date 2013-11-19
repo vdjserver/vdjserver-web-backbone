@@ -22,10 +22,10 @@ require.config({
         'agave-io':      'models/agave-io',
         'agave-profile': 'models/agave-profile',
         'agave-project': 'models/agave-project',
+        'agave-uuid':    'models/agave-uuid',
 
         // Agave - Collections
         'agave-projects': 'collections/agave-projects',
-
 
 
         // Misc.
@@ -35,9 +35,10 @@ require.config({
         'app-views': 'views/app/app-views',
         'form-views': 'views/app/form-views',
         'util-views': 'views/app/util-views',
+
         'agave-auth-views': 'views/agave-auth-views',
         'agave-io-views': 'views/agave-io-views',
-        'account-views': 'views/account-views',
+        'profile-views': 'views/profile-views',
         'project-views': 'views/project-views',
 
         // Routers
@@ -76,6 +77,10 @@ require.config({
         },
 
         // Agave - Models
+        'agave-uuid': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.Uuid'
+        },
         'agave-account': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.Account'
@@ -85,7 +90,7 @@ require.config({
             exports: 'Backbone.Agave.IO'
         },
         'agave-profile': {
-            deps: ['backbone', 'backbone-agave'],
+            deps: ['backbone', 'backbone-agave', 'agave-uuid'],
             exports: 'Backbone.Agave.Model.Profile'
         },
         'agave-project': {
