@@ -128,8 +128,14 @@
 
         // Map from CRUD to HTTP for our default `Backbone.sync` implementation.
         var methodMap = {
+            //'create': 'POST',
+            //'update': 'PUT',
+            //'patch':  'PATCH',
+            //'delete': 'DELETE',
+            //'read':   'GET'
+
             'create': 'POST',
-            'update': 'PUT',
+            'update': 'POST',
             'patch':  'PATCH',
             'delete': 'DELETE',
             'read':   'GET'
@@ -152,7 +158,7 @@
         }
 
         // Ensure that we have the appropriate request data.
-        if (options.data === null && model && (method === 'create' || method === 'update' || method === 'patch')) {
+        if (options.data === (null || undefined) && model && (method === 'create' || method === 'update' || method === 'patch')) {
             params.contentType = 'application/json';
             params.data = JSON.stringify(options.attrs || model.toJSON(options));
         }
@@ -163,6 +169,16 @@
                 params.data = JSON.parse(params.data);
                 params.data = {
                     'uuid': params.data.uuid,
+                    'name': params.data.name,
+                    'value': JSON.stringify(params.data.value)
+                };
+            }
+        }
+        else if (type === 'POST') {
+
+            if (params.data) {
+                params.data = JSON.parse(params.data);
+                params.data = {
                     'name': params.data.name,
                     'value': JSON.stringify(params.data.value)
                 };
@@ -181,9 +197,9 @@
         // For older servers, emulate HTTP by mimicking the HTTP method with `_method`
         // And an `X-HTTP-Method-Override` header.
         if (options.emulateHTTP && (type === 'PUT' || type === 'DELETE' || type === 'PATCH')) {
-            
+
             params.type = 'POST';
-            
+
             if (options.emulateJSON) {
                 params.data._method = type;
             }

@@ -8,8 +8,6 @@
 
     var Agave = Backbone.Agave;
 
-    console.log('backbone agave io. agave is: ' + JSON.stringify(Agave));
-
     var IO = {};
 
     IO.File = Agave.Model.extend({

@@ -27,6 +27,7 @@
                 }
             );
         },
+        idAttribute: 'uuid',
         url: function() {
             return '/meta/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"profile"}');
         }
