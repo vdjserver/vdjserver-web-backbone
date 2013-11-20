@@ -122,6 +122,7 @@
         options.emulateJSON = true;
 
 
+
         // Begin mostly original backbone sync method
 
 
@@ -147,26 +148,26 @@
 
         // Ensure that we have a URL.
         if (!options.url) {
-            params.url = _.result(model, 'url') || urlError();
+            params.url = _.result(model, 'url');
         }
 
         // Ensure that we have the appropriate request data.
-        if (options.data == null && model && (method === 'create' || method === 'update' || method === 'patch')) {
+        if (options.data === null && model && (method === 'create' || method === 'update' || method === 'patch')) {
             params.contentType = 'application/json';
             params.data = JSON.stringify(options.attrs || model.toJSON(options));
         }
 
-        if (params.data) {
-            console.log("params data is: " + params.data);
-            params.data = JSON.parse(params.data);
-            params.data = {
-                'uuid': params.data.uuid,
-                'name': params.data.name,
-                'value': JSON.stringify(params.data.value)
+        if (type === 'GET') {
+
+            if (params.data) {
+                params.data = JSON.parse(params.data);
+                params.data = {
+                    'uuid': params.data.uuid,
+                    'name': params.data.name,
+                    'value': JSON.stringify(params.data.value)
+                };
             }
         }
-
-        console.log("params data final is: " + JSON.stringify(params.data));
 
 
 
@@ -180,12 +181,19 @@
         // For older servers, emulate HTTP by mimicking the HTTP method with `_method`
         // And an `X-HTTP-Method-Override` header.
         if (options.emulateHTTP && (type === 'PUT' || type === 'DELETE' || type === 'PATCH')) {
+            
             params.type = 'POST';
-            if (options.emulateJSON) params.data._method = type;
+            
+            if (options.emulateJSON) {
+                params.data._method = type;
+            }
+
             var beforeSend = options.beforeSend;
             options.beforeSend = function(xhr) {
                 xhr.setRequestHeader('X-HTTP-Method-Override', type);
-                if (beforeSend) return beforeSend.apply(this, arguments);
+                if (beforeSend) {
+                    return beforeSend.apply(this, arguments);
+                }
             };
         }
 
@@ -194,14 +202,6 @@
             params.processData = false;
         }
 
-        // If we're sending a `PATCH` request, and we're in an old Internet Explorer
-        // that still has ActiveX enabled by default, override jQuery to use that
-        // for XHR instead. Remove this line when jQuery supports `PATCH` on IE8.
-        if (params.type === 'PATCH' && noXhrPatch) {
-            params.xhr = function() {
-                return new ActiveXObject("Microsoft.XMLHTTP");
-            };
-        }
 
         // Make the request, allowing the user to override any Ajax options.
         var xhr = options.xhr = Backbone.ajax(_.extend(params, options));
@@ -221,7 +221,6 @@
         requiresAuth: true,
         parse: function(response) {
             if (response.result) {
-                console.log('agave model response.result is: ' + JSON.stringify(response.result));
                 return response.result;
             }
             return response;
@@ -266,6 +265,9 @@
         getSaveUrl: function() {
             return '/meta/data/' + this.get('uuid');
         },
+        getCreateUrl: function() {
+            return '/meta/data';
+        },
         parse: function(response) {
 
             if (response.status === 'success' && response.result) {
@@ -283,7 +285,7 @@
     });
 
     // Agave extension of default Backbone.Model that uses Agave sync
-    Agave.MetadataCollection = Agave.Model.extend({
+    Agave.MetadataCollection = Agave.Collection.extend({
         constructor: function(attributes, options) {
             if (options && options.agaveToken) {
                 this.agaveToken = options.agaveToken;
@@ -292,24 +294,16 @@
                 this.agaveToken = Agave.instance.token();
             }
 
-            Backbone.Model.apply(this, arguments);
-        },
-        defaults: {
-            uuid: '',
-            name: '',
-            value: {}
+            Backbone.Collection.apply(this, arguments);
         },
         sync: Agave.metadataSync,
         getSaveUrl: function() {
             return '/meta/data/' + this.get('uuid');
         },
         parse: function(response) {
-
             if (response.status === 'success' && response.result) {
-
                 return response.result;
             }
-
             return response;
         }
     });

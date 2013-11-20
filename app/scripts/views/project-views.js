@@ -7,29 +7,30 @@ define(['app'], function(App) {
 
     var projectCollection;
 
-    Projects.Index = Backbone.View.extend({
-        template: 'project/index',
-        initialize: function() {
-            window.scrollTo(0.0);
-        }
-    });
-
     Projects.List = Backbone.View.extend({
         template: 'project/list',
         initialize: function() {
 
-            this.collection = new Backbone.Agave.Collection.Projects();
+            projectCollection = new Backbone.Agave.Collection.Projects();
 
             var that = this;
-            this.collection.on('change add remove destroy', function() {
-                that.render();
-            });
 
-            this.collection.fetch();
+            projectCollection.fetch({
+                success: function() {
+                    projectCollection.on('change add remove destroy', function() {
+                        that.render();
+                    });
+
+                    that.render();
+                },
+                error: function() {
+
+                }
+            });
         },
         serialize: function() {
             return {
-                projects: this.collection.toJSON()
+                projects: projectCollection.toJSON()
             };
         },
         events: {
@@ -45,10 +46,38 @@ define(['app'], function(App) {
         }
     });
 
+    Projects.Index = Backbone.View.extend({
+        template: 'project/index',
+        initialize: function() {
+            window.scrollTo(0.0);
+        }
+    });
+
     Projects.Create = Backbone.View.extend({
         template: 'project/create',
         initialize: function() {
-            this.collection = new Backbone.Agave.Model.Project();
+            this.model = new Backbone.Agave.Model.Project();
+            this.model.unset('uuid');
+        },
+        afterRender: function() {
+            this.setupModalView();
+        },
+        setupModalView: function() {
+
+            var message = new App.Models.MessageModel({
+                'header': 'Creating Project',
+                'body':   '<p>Please wait while your project is created.</p>'
+            });
+
+            var modal = new UtilViews.ModalMessage({
+                model: message
+            });
+
+            $('<div id="modal-view">').appendTo(this.el);
+
+            this.setView('#modal-view', modal);
+            modal.render();
+
         },
         events: {
             'submit form': 'submitForm'
@@ -57,83 +86,71 @@ define(['app'], function(App) {
 
             e.preventDefault();
 
-            var formData = Backbone.Syphon.serialize(this);
+            this.$el.find('.alert-danger').fadeOut(function() {
+                this.remove();
+            });
 
-            if (formData.name) {
+            var formData = {
+                value: Backbone.Syphon.serialize(this)
+            };
+
+            if (formData.value.name) {
 
                 var username = App.Agave.token().get('username');
                 formData.members = [];
                 formData.members.push(username);
 
-                var message = new App.Models.MessageModel({
-                    'header': 'Creating Project',
-                    'body':   '<p>Please wait while we create your project...</p>'
-                });
-
-                var modal = new UtilViews.ModalMessage({
-                    model:    message,
-                    backdrop: 'static',
-                    keyboard: false
-                });
 
                 var that = this;
 
-                $('<div class="create-project-modal">').appendTo(this.el);
-                modal.$el.on('shown', function() {
-                    that.$el.find('.alert-error').remove();
+                $('#modal-message').on('shown.bs.modal', function() {
 
                     that.model.save(
                         formData,
                         {
+                            url: that.model.getCreateUrl(),
                             success: function(model) {
-                                message.set('body', message.get('body') + '<p>Success!</p>');
-                                modal.close();
 
-                                projectCollection.add(model, {merge: true});
-                                App.router.navigate('/project/' + model.get('_id'), {
-                                    trigger: true
+                                $('#modal-message').on('hidden.bs.modal', function() {
+                                    projectCollection.add(model, {merge: true});
+
+                                    App.router.navigate('/project/' + model.get('uuid'), {
+                                        trigger: true
+                                    });
                                 });
+
+                                $('#modal-message').modal('hide');
                             },
-                            //error: function(model, xhr, options) {
-                            error: function() {
-                                console.log('project save error');
-                                that.$el.prepend($('<div class="alert alert-error">').text('There was a problem saving your project. Please try again.').fadeIn());
-                                modal.close();
+                            error: function(/* model, xhr, options */) {
+                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
+                                $('#modal-message').modal('hide');
                             }
                         }
                     );
                 });
-                modal.$el.on('hidden', function() {
-                    modal.remove();
-                });
-                this.setView('.create-project-modal', modal);
-                modal.render();
-            } else {
-                this.$el.find('.alert-error').remove().end().prepend($('<div class="alert alert-error">').text('There was a problem saving your project. Please try saving it again.').fadeIn());
-            }
-            return false;
 
+                $('#modal-message').modal('show');
+            }
+            else {
+                this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
+            }
+
+            return false;
         }
     });
 
     Projects.Detail = Backbone.View.extend({
         template: 'project/detail',
         initialize: function(parameters) {
-
-            console.log('id is: ' + JSON.stringify(parameters));
-            this.model = new Backbone.Vdj.Projects.Project({_id:parameters._id}, {collection: projectCollection});
-
-            var that = this;
-            this.model.fetch({
-
-                success: function() {
-                    //App.Views.Projects.List.collection.add(model);
-                    //projectCollection.add(that.model, {merge: true});
-                    console.log('collection is: ' + JSON.stringify(projectCollection));
-                    that.render();
-                }
-            });
-
+            this.modelId = parameters.projectId;
+            this.model = projectCollection.get(this.modelId);
+        },
+        serialize: function() {
+            if (this.model) {
+                return {
+                    projectDetail: this.model.toJSON()
+                };
+            }
         },
         events: {
             'click .delete-project': 'deleteProject'
@@ -141,14 +158,20 @@ define(['app'], function(App) {
         deleteProject: function(e) {
             e.preventDefault();
 
-            var that = this;
-            this.model.destroy({success: function() {
+            this.model.destroy({
 
-                // Events aren't bubbling up to the collection - not sure why yet.
-                // So we'll do this manually for now.
-                projectCollection.remove(that.model);
-            }});
-
+                success: function() {
+                    App.router.navigate('/project', {
+                        trigger: true
+                    });
+                },
+                error: function() {
+                    // Agave currently returns what backbone considers to be the 'wrong' http status code
+                    App.router.navigate('/project', {
+                        trigger: true
+                    });
+                }
+            });
         }
     });
 

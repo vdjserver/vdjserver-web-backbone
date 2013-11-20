@@ -12,13 +12,9 @@ define(['app'], function(App) {
 
             this.model = new Backbone.Agave.Model.Profile();
 
-            console.log('model is: ' + JSON.stringify(this.model));
-
             var that = this;
             this.model.fetch({
                 success: function() {
-                    console.log('profile model fetched - model is: ' + JSON.stringify(that.model));
-
                     that.render();
                 },
                 error: function() {
@@ -28,7 +24,7 @@ define(['app'], function(App) {
         },
         serialize: function() {
             return {
-                profileData: this.model.get("value")
+                profileData: this.model.get('value')
             };
         },
         afterRender: function() {
@@ -37,12 +33,11 @@ define(['app'], function(App) {
         setupModalView: function() {
 
             var message = new App.Models.MessageModel({
-                'header': 'Getting token',
-                'body':   '<p>Please wait while we authenticate you...</p>'
+                'header': 'Updating Profile'
             });
 
             var modal = new UtilViews.ModalMessage({
-                model:    message
+                model: message
             });
 
             $('<div id="modal-view">').appendTo(this.el);
@@ -66,8 +61,6 @@ define(['app'], function(App) {
                 value: Backbone.Syphon.serialize(this)
             };
 
-            console.log('formData is: ' + JSON.stringify(formData));
-
             if (formData.value.email) {
 
                 var that = this;
@@ -82,7 +75,6 @@ define(['app'], function(App) {
                             success: function() {
 
                                 $('#modal-message').on('hidden.bs.modal', function() {
-                                    console.log('updated ok');
 /*
                                     App.router.navigate('/', {
                                         trigger: true
@@ -105,9 +97,10 @@ define(['app'], function(App) {
                 $('#modal-message').modal('show');
             }
             else {
-                console.log("ran into else...");
+                console.log('ran into else...');
                 this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Profile update failed. Please try again.').fadeIn());
             }
+
             return false;
         }
     });

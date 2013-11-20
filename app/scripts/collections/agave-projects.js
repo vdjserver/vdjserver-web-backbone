@@ -11,14 +11,7 @@
     var Projects = {};
 
     Projects = Agave.MetadataCollection.extend({
-        defaults: _.extend(
-            {},
-            Agave.MetadataCollection.prototype.defaults,
-            {
-                name: 'project',
-                value: {}
-            }
-        ),
+        model: Agave.Model.Project,
         url: function() {
             return '/meta/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"project"}');
         }

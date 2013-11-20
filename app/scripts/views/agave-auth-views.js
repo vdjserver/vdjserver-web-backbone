@@ -25,11 +25,7 @@ define(['app'], function(App) {
             var modal = new UtilViews.ModalMessage({
                 model:    message
             });
-/*
-            modal.$el.on('hidden', function() {
-                modal.remove();
-            });
-*/
+
             $('<div id="modal-view">').appendTo(this.el);
 
             this.setView('#modal-view', modal);

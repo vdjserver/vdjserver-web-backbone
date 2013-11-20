@@ -10,7 +10,6 @@ define([
 
     // Agave
     'backbone-agave',
-    'agave-uuid', // Order matters here. Don't change it.
     'agave-account',
     'agave-io',
     'agave-profile',

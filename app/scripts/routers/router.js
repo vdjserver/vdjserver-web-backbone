@@ -99,36 +99,37 @@ define(['app'], function(App) {
 
         // Projects
         projectIndex: function() {
-            App.Layouts.main.template = 'layouts/project-standard';
-            App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+            if (App.Layouts.main.template !== 'layouts/project-standard') {
+                App.Layouts.main.template = 'layouts/project-standard';
+                App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+            }
+
             App.Layouts.main.setView('.content', new App.Views.Projects.Index());
+
             App.Layouts.main.render();
         },
 
         projectCreate: function() {
-            if (App.Layouts.main.template === 'layouts/project-standard') {
-                App.Layouts.main.setView('.content', new App.Views.Projects.Create());
-            }
-            else {
+
+            if (App.Layouts.main.template !== 'layouts/project-standard') {
                 App.Layouts.main.template = 'layouts/project-standard';
                 App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
-                App.Layouts.main.setView('.content', new App.Views.Projects.Create());
             }
+
+            App.Layouts.main.setView('.content', new App.Views.Projects.Create());
 
             App.Layouts.main.render();
         },
 
-        projectDetail: function(id) {
-            if (App.Layouts.main.template === 'layouts/project-standard') {
-                App.Layouts.main.setView('.content', new App.Views.Projects.Detail());
-            }
-            else {
+        projectDetail: function(projectId) {
+
+            if (App.Layouts.main.template !== 'layouts/project-standard') {
                 App.Layouts.main.template = 'layouts/project-standard';
                 App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
-                App.Layouts.main.setView('.content', new App.Views.Projects.Detail());
             }
 
-            //App.Layouts.main.setView('.content', new App.Views.Projects.Detail({_id:id}));
+            App.Layouts.main.setView('.content', new App.Views.Projects.Detail({projectId: projectId}));
+
             App.Layouts.main.render();
         }
     });

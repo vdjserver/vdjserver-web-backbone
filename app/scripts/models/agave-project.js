@@ -4,29 +4,28 @@
 
     var Backbone = window.Backbone;
     //var $ = window.$;
-    //var _ = window._;
+    var _ = window._;
 
     var Agave = Backbone.Agave;
 
     var Project = {};
 
     Project = Agave.MetadataModel.extend({
-        defaults: _.extend(
-            {}, 
-            Agave.MetadataModel.prototype.defaults,
-            {
-                name: 'project',
-                value: {
-                    firstName: '',
-                    lastName:  '',
-                    email:     '',
-                    city:      '',
-                    state:     ''
+        defaults: function() {
+            return _.extend(
+                {},
+                Agave.MetadataModel.prototype.defaults,
+                {
+                    name: 'project',
+                    value: {
+                        'name': ''
+                    }
                 }
-            }
-        ),
+            );
+        },
+        idAttribute: 'uuid',
         url: function() {
-            return '/meta/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"project"}');
+            return '/meta/data/' + this.get('uuid');
         }
     });
 
