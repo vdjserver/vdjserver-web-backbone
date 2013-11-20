@@ -5,6 +5,13 @@ define(['app'], function(App) {
     var UtilViews = App.Views.Util;
     var Profile   = {};
 
+    Profile.Login = Backbone.View.extend({
+        template: 'profile/login',
+        initialize: function() {
+            window.scrollTo(0.0);
+        }
+    });
+
     Profile.Form = Backbone.View.extend({
         template: 'profile/profile-form',
         initialize: function() {

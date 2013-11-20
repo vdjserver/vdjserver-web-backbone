@@ -275,7 +275,9 @@
         defaults: {
             uuid: '',
             name: '',
-            value: {}
+            value: {},
+            created: '',
+            lastUpdated: ''
         },
         sync: Agave.metadataSync,
         getSaveUrl: function() {
@@ -286,7 +288,14 @@
         },
         parse: function(response) {
 
+            console.log('model parse running');
+
             if (response.status === 'success' && response.result) {
+
+                //console.log("result is: " + JSON.stringify(response));
+
+                response.result = this.parseDate(response.result);
+                console.log("result after is: " + JSON.stringify(response));
 
                 if (response.result.length > 0) {
 
@@ -297,6 +306,26 @@
             }
 
             return response;
+        },
+        parseDate: function(result) {
+
+            var dateFormat = 'YYYY-MM-DD HH:mm:ss.SSSZZ';
+
+            for (var i = 0; i < result.length; i++) {
+                var created = result[i].created;
+                var createdUnixTime = moment(created, dateFormat);
+                result[i].created = createdUnixTime;
+
+                var lastModified = result[i].lastModified;
+                var lastModifiedUnixTime = moment(lastModified, dateFormat);
+                result[i].lastModified = lastModifiedUnixTime;
+                
+                console.log("loop running: " + result[i].lastModified);
+            };
+
+            console.log("parseDate result is: " + JSON.stringify(result));
+
+            return result;
         }
     });
 

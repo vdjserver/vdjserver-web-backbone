@@ -1,12 +1,8 @@
 <div class="bs-sidebar affix">
     <ul class="nav bs-sidenav">
         <li><a class="create-project" href="#project/create">Create Project</a></li>
-        {{#if projects}}
-            {{#projects}}
-                <li><a id="{{uuid}}" class="view-project" data-id="{{uuid}}">{{value.name}}</a></li>
-            {{/projects}}
-        {{else}}
-            You don't have any projects yet.
-        {{/if}}
+        {{#projects}}
+            <li><a id="{{uuid}}" class="view-project" data-id="{{uuid}}">{{value.name}}</a></li>
+        {{/projects}}
     </ul>
 </div>

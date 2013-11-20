@@ -2,7 +2,7 @@ define(['app', 'fileSaver'], function(App){
 
     'use strict';
 
-    var AgaveIO = {}, UtilViews = App.Views.Util;
+    var AgaveIO = {};
 
 
     AgaveIO.Browser = Backbone.View.extend({
@@ -13,7 +13,7 @@ define(['app', 'fileSaver'], function(App){
 
                 this.collection.fetch({reset:true});
 
-                this.setView('.io-files', new UtilViews.Alert({
+                this.setView('.io-files', new App.Views.Util.Alert({
                     model: new App.Models.MessageModel({body:'Loading your files...'}),
                     type: 'info'
                 }));
@@ -49,7 +49,7 @@ define(['app', 'fileSaver'], function(App){
 
             }
             else {
-                this.setView('.io-files', new UtilViews.Alert({
+                this.setView('.io-files', new App.Views.Util.Alert({
                     model: new App.Models.MessageModel({body:'You must be logged in to view your Data.'}),
                     type: 'error'
                 }));
@@ -203,8 +203,13 @@ define(['app', 'fileSaver'], function(App){
 
                 case 'upload':
                     console.log('upload view ok. model is: ' + JSON.stringify(this.model));
-                    var view = new UtilViews.ModalView({model: new App.Models.MessageModel({header:'Upload file'})}),
-                        form = new AgaveIO.UploadForm({model: this.model});
+                    
+                    var view = new App.Views.Util.ModalMessage({
+                        model: new App.Models.MessageModel({header:'Upload file'})
+                    });
+
+                    var form = new AgaveIO.UploadForm({model: this.model});
+                    
                     form.cleanup = function() {
                         view.close();
                     };
@@ -371,7 +376,7 @@ define(['app', 'fileSaver'], function(App){
         },
         chooseFile: function(e) {
             e.preventDefault();
-            var view = this, chooser = new UtilViews.ModalView({model: new App.Models.MessageModel({
+            var view = this, chooser = new App.Views.Util.ModalView({model: new App.Models.MessageModel({
                 header: 'Choose ' + this.model.get('label'),
                 body: this.model.get('help')
             })});
@@ -398,7 +403,7 @@ define(['app', 'fileSaver'], function(App){
         },
         beforeRender: function() {
             if (this.collection.size() === 0 && ! this.__manager__.hasRendered) {
-                this.insertView(new UtilViews.Alert({model: new App.Models.MessageModel({body: 'Loading your files...'})}));
+                this.insertView(new App.Views.Util.Alert({model: new App.Models.MessageModel({body: 'Loading your files...'})}));
             } else {
                 this.template = 'io/filechooser-dialog';
                 this.collection.each(function(item) {

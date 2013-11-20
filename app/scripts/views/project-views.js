@@ -7,6 +7,13 @@ define(['app'], function(App) {
 
     var projectCollection;
 
+    Projects.Login = Backbone.View.extend({
+        template: 'project/login',
+        initialize: function() {
+            window.scrollTo(0.0);
+        }
+    });
+
     Projects.List = Backbone.View.extend({
         template: 'project/list',
         initialize: function() {
@@ -144,6 +151,7 @@ define(['app'], function(App) {
         initialize: function(parameters) {
             this.modelId = parameters.projectId;
             this.model = projectCollection.get(this.modelId);
+            console.log("model is: " + JSON.stringify(this.model));
         },
         serialize: function() {
             if (this.model) {

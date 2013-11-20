@@ -57,8 +57,16 @@ define(['app'], function(App) {
 
         // Profile
         accountProfile: function() {
-            App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.Profile.Form());
+
+            if (!App.isLoggedIn()) {
+                App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.setView('.content', new App.Views.Profile.Login());
+            }
+            else {
+                App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.setView('.content', new App.Views.Profile.Form());
+            }
+
             App.Layouts.main.render();
         },
 
@@ -99,36 +107,58 @@ define(['app'], function(App) {
 
         // Projects
         projectIndex: function() {
-            if (App.Layouts.main.template !== 'layouts/project-standard') {
-                App.Layouts.main.template = 'layouts/project-standard';
-                App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
-            }
 
-            App.Layouts.main.setView('.content', new App.Views.Projects.Index());
+            if (!App.isLoggedIn()) {
+                App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
+            }
+            else {
+
+                if (App.Layouts.main.template !== 'layouts/project-standard') {
+                    App.Layouts.main.template = 'layouts/project-standard';
+                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+                }
+
+                App.Layouts.main.setView('.content', new App.Views.Projects.Index());
+            }
 
             App.Layouts.main.render();
         },
 
         projectCreate: function() {
 
-            if (App.Layouts.main.template !== 'layouts/project-standard') {
-                App.Layouts.main.template = 'layouts/project-standard';
-                App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+            if (!App.isLoggedIn()) {
+                App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
             }
+            else {
 
-            App.Layouts.main.setView('.content', new App.Views.Projects.Create());
+                if (App.Layouts.main.template !== 'layouts/project-standard') {
+                    App.Layouts.main.template = 'layouts/project-standard';
+                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+                }
+
+                App.Layouts.main.setView('.content', new App.Views.Projects.Create());
+            }
 
             App.Layouts.main.render();
         },
 
         projectDetail: function(projectId) {
 
-            if (App.Layouts.main.template !== 'layouts/project-standard') {
-                App.Layouts.main.template = 'layouts/project-standard';
-                App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+            if (!App.isLoggedIn()) {
+                App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
             }
+            else {
 
-            App.Layouts.main.setView('.content', new App.Views.Projects.Detail({projectId: projectId}));
+                if (App.Layouts.main.template !== 'layouts/project-standard') {
+                    App.Layouts.main.template = 'layouts/project-standard';
+                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+                }
+
+                App.Layouts.main.setView('.content', new App.Views.Projects.Detail({projectId: projectId}));
+            }
 
             App.Layouts.main.render();
         }
