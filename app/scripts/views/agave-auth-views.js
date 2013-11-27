@@ -22,7 +22,7 @@ define(['app'], function(App) {
                 'body':   '<p>Please wait while we authenticate you...</p>'
             });
 
-            var modal = new UtilViews.ModalMessage({
+            var modal = new App.Views.Util.ModalMessage({
                 model:    message
             });
 
