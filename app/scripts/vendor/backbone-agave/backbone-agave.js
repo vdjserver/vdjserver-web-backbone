@@ -59,11 +59,12 @@
     });
 
     Agave.apiRoot    = 'https://iplant-dev.tacc.utexas.edu/v2';
+    Agave.authRoot   = 'http://localhost:8443';
     Agave.vdjApiRoot = 'http://localhost:8443';
 
     // Custom sync function to handle Agave token auth
     Agave.sync = function(method, model, options) {
-        options.url = Agave.apiRoot + (options.url || _.result(model, 'url'));
+        options.url = model.apiRoot + (options.url || _.result(model, 'url'));
 
         if (model.requiresAuth) {
             var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
@@ -233,6 +234,7 @@
             }
             Backbone.Model.apply(this, arguments);
         },
+        apiRoot: Agave.apiRoot,
         sync: Agave.sync,
         requiresAuth: true,
         parse: function(response) {
@@ -251,6 +253,7 @@
             }
             Backbone.Collection.apply(this, arguments);
         },
+        apiRoot: Agave.apiRoot,
         sync: Agave.sync,
         requiresAuth: true,
         parse: function(response) {
@@ -319,7 +322,7 @@
                 var lastModified = result[i].lastModified;
                 var lastModifiedUnixTime = moment(lastModified, dateFormat);
                 result[i].lastModified = lastModifiedUnixTime;
-                
+
                 console.log("loop running: " + result[i].lastModified);
             };
 
@@ -360,32 +363,31 @@
 
     Auth.Token = Agave.Model.extend({
         defaults: {
-            'token':    null,
-            'username': null,
-            'created':  null,
-            'expires':  null,
-            'renewed':  null,
-            'remainingUses':    null
+            'token_type': null,
+            'expires_in': null,
+            'refresh_token': null,
+            'access_token':  null
         },
-        idAttribute: 'token',
-        url: '/auth/',
+        idAttribute: 'refresh_token',
+        apiRoot: Agave.authRoot,
+        url: '/token',
         requiresAuth: true,
         sync: function(method, model, options) {
 
             switch (method) {
 
                 case 'create':
-                    options.url = model.url;
+                    //options.url = model.url;
                     options.type = 'POST';
                     break;
 
                 case 'update':
-                    options.url = model.url + '/tokens/' + model.get('token');
+                    options.url = model.url + '/' + model.get('refresh_token');
                     options.type = 'PUT';
                     break;
 
                 case 'delete':
-                    options.url = model.url + '/tokens/' + model.get('token');
+                    options.url = model.url + '/' + model.get('refresh_token');
                     options.type = 'DELETE';
                     break;
             }
@@ -395,33 +397,40 @@
         },
         parse: function(response) {
 
+            console.log("response is: " + JSON.stringify(response));
             if (response && response.status === 'success') {
 
                 // Convert human readable dates to unix time
-                response.result.expires = moment(response.result.expires).unix();
-                response.result.created = moment(response.result.created).unix();
-                response.result.renewed = moment(response.result.renewed).unix();
+                //response.result.expires = moment(response.result.expires).unix();
+                //response.result.created = moment(response.result.created).unix();
+                //response.result.renewed = moment(response.result.renewed).unix();
 
                 return response.result;
             }
+
+            return;
         },
+        /*
         validate: function(attrs, options) {
 
             var errors = {};
             options = _.extend({}, options);
 
-
-            if (! attrs.username) {
-                console.log('token expire 1');
-                errors.username = 'Username is required';
+            if (!attrs.access_token) {
+                console.log('token expire 1 and attrs is: ' + JSON.stringify(attrs));
+                errors.username = 'Access Token is required';
             }
-            if (!(attrs.token || options.token || options.password)) {
-                console.log('token expire 2');
-                errors.token = 'A Token or Password is required';
+            if (!attrs.refresh_token) {
+                console.log('token expire 2 and attrs is: ' + JSON.stringify(attrs));
+                errors.token = 'Refresh Token is required';
             }
-            if (attrs.expires && (attrs.expires * 1000 - Date.now() <= 0))
+            if (!attrs.token_type) {
+                console.log('token expire 2.5 and attrs is: ' + JSON.stringify(attrs));
+                errors.token = 'Token type is required';
+            }
+            if (attrs.expires_in && (attrs.expires_in * 1000 - Date.now() <= 0))
             {
-                console.log('token expire 3');
+                console.log('token expire 3 and attrs is: ' + JSON.stringify(attrs));
                 errors.expires = 'Token is expired';
             }
 
@@ -431,6 +440,7 @@
             }
 
         },
+        */
         expiresIn: function() {
             return Math.max(0, this.get('expires') * 1000 - Date.now());
         },
