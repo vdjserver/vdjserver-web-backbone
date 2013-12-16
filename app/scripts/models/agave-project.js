@@ -18,7 +18,9 @@
                 {
                     name: 'project',
                     value: {
-                        'name': ''
+                        'name':  '',
+                        'users': [],
+                        'files': []
                     }
                 }
             );
