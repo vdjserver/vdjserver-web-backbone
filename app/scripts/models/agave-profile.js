@@ -29,7 +29,7 @@
         },
         idAttribute: 'uuid',
         url: function() {
-            return '/meta/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"profile"}');
+            return '/meta/2.0/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"profile"}');
         }
     });
 

@@ -41,7 +41,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
             // setup agave
             App.Agave = new Backbone.Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
-            /*
+
             var watchToken = function() {
                 var warn;
                 var error;
@@ -54,30 +54,37 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 if (token.isValid()) {
 
                     window.localStorage.setItem('Agave.Token', JSON.stringify(token.toJSON()));
+
                     warn = setTimeout(function() {
 
                         // TODO: RENEW TOKEN HERE BY SAVING MODEL
 
-                        if (token.expiresIn() > 300000) {
+                        console.log("token.expires is: " + token.get('expires'));
+                        console.log("date now madness is: " + Date.now() / 1000);
+
+                        if (token.expiresIn() > 300) {
+                            console.log("token expire renew");
 
                             // it was renewed, rewatch token
                             watchToken();
                         }
-                    }, Math.max(0, token.expiresIn() - 300000));
-
+                    }, Math.max(0, token.get('expires') - 300));
+/*
                     error = setTimeout(function() {
 
+                        console.log("token exp is: " + token.expiresIn());
                         alert('Your Session has expired.  You have been logged out.');
                         App.Agave.destroyToken();
                         window.localStorage.removeItem('Agave.Token');
-                        App.router.navigate('', {'trigger':true});
+                        //App.router.navigate('', {'trigger':true});
                     }, Math.max(0, token.expiresIn()));
+*/
                 }
             };
             App.listenTo(App.Agave, 'Agave:tokenChanged', watchToken, this);
             App.listenTo(App.Agave, 'Agave:tokenDestroy', watchToken, this);
             watchToken();
-*/
+
 
             // initialize router, views, data and layouts
             App.Layouts.header = new App.Views.AppViews.HeaderLayout({

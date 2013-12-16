@@ -58,12 +58,12 @@
         }
     });
 
-    Agave.apiRoot    = 'https://iplant-dev.tacc.utexas.edu/v2';
+    Agave.apiRoot    = 'https://agave.iplantc.org';
     Agave.authRoot   = 'http://localhost:8443';
     Agave.vdjApiRoot = 'http://localhost:8443';
 
     // Custom sync function to handle Agave token auth
-    Agave.sync = function(method, model, options) {
+    Agave.tokenSync = function(method, model, options) {
         options.url = model.apiRoot + (options.url || _.result(model, 'url'));
 
         if (model.requiresAuth) {
@@ -90,20 +90,11 @@
         return Backbone.sync(method, model, options);
     };
 
-
-    // This is a complete replacement for backbone.sync
-    // and is mostly the same as that whenever possible
-    Agave.metadataSync = function(method, model, options) {
-
-        options.url = Agave.apiRoot + (options.url || _.result(model, 'url'));
+    Agave.sync = function(method, model, options) {
+        options.url = model.apiRoot + (options.url || _.result(model, 'url'));
 
         if (model.requiresAuth) {
             var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
-
-            // Credentials for Basic Authentication
-            // Use credentials provided in options first; otherwise used current session creds.
-            var username = options.username || (agaveToken ? agaveToken.get('username') : '');
-            var password = options.password || (agaveToken ? agaveToken.id : '');
 
             // Allow user-provided before send, but protect ours, too.
             if (options.beforeSend) {
@@ -113,7 +104,33 @@
                 if (options._beforeSend) {
                     options._beforeSend(xhr);
                 }
-                xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username + ':' + password));
+                xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
+            };
+        }
+
+        // Call default sync
+        return Backbone.sync(method, model, options);
+    };
+
+
+    // This is a complete replacement for backbone.sync
+    // and is mostly the same as that whenever possible
+    Agave.metadataSync = function(method, model, options) {
+
+        options.url = model.apiRoot + (options.url || _.result(model, 'url'));
+
+        if (model.requiresAuth) {
+            var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
+
+            // Allow user-provided before send, but protect ours, too.
+            if (options.beforeSend) {
+                options._beforeSend = options.beforeSend;
+            }
+            options.beforeSend = function(xhr) {
+                if (options._beforeSend) {
+                    options._beforeSend(xhr);
+                }
+                xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
             };
         }
 
@@ -121,7 +138,6 @@
 
 
         options.emulateJSON = true;
-
 
 
         // Begin mostly original backbone sync method
@@ -284,10 +300,10 @@
         },
         sync: Agave.metadataSync,
         getSaveUrl: function() {
-            return '/meta/data/' + this.get('uuid');
+            return '/meta/2.0/data/' + this.get('uuid');
         },
         getCreateUrl: function() {
-            return '/meta/data';
+            return '/meta/2.0/data';
         },
         parse: function(response) {
 
@@ -346,7 +362,7 @@
         },
         sync: Agave.metadataSync,
         getSaveUrl: function() {
-            return '/meta/data/' + this.get('uuid');
+            return '/meta/2.0/data/' + this.get('uuid');
         },
         parse: function(response) {
             if (response.status === 'success' && response.result) {
@@ -356,7 +372,7 @@
         }
     });
 
-
+console.log("date is: " + Date.now());
 
     // Required Auth package
     var Auth = Agave.Auth = {};
@@ -365,8 +381,9 @@
         defaults: {
             'token_type': null,
             'expires_in': null,
+            'expires':    0,
             'refresh_token': null,
-            'access_token':  null
+            'access_token':  null,
         },
         idAttribute: 'refresh_token',
         apiRoot: Agave.authRoot,
@@ -393,7 +410,7 @@
             }
 
             // Call default sync
-            return Agave.sync(method, model, options);
+            return Agave.tokenSync(method, model, options);
         },
         parse: function(response) {
 
@@ -405,31 +422,19 @@
                 //response.result.created = moment(response.result.created).unix();
                 //response.result.renewed = moment(response.result.renewed).unix();
 
+                response.result.expires = response.result.expires_in + (Date.now() / 1000);
+                console.log("resp result exp is: " + response.result.expires);
                 return response.result;
             }
 
             return;
         },
-        /*
         validate: function(attrs, options) {
 
             var errors = {};
             options = _.extend({}, options);
 
-            if (!attrs.access_token) {
-                console.log('token expire 1 and attrs is: ' + JSON.stringify(attrs));
-                errors.username = 'Access Token is required';
-            }
-            if (!attrs.refresh_token) {
-                console.log('token expire 2 and attrs is: ' + JSON.stringify(attrs));
-                errors.token = 'Refresh Token is required';
-            }
-            if (!attrs.token_type) {
-                console.log('token expire 2.5 and attrs is: ' + JSON.stringify(attrs));
-                errors.token = 'Token type is required';
-            }
-            if (attrs.expires_in && (attrs.expires_in * 1000 - Date.now() <= 0))
-            {
+            if (attrs.expires && attrs.expires - (Date.now() / 1000) <= 0) {
                 console.log('token expire 3 and attrs is: ' + JSON.stringify(attrs));
                 errors.expires = 'Token is expired';
             }
@@ -440,9 +445,10 @@
             }
 
         },
-        */
         expiresIn: function() {
-            return Math.max(0, this.get('expires') * 1000 - Date.now());
+            console.log("expiresIn check 1 is: " + this.get('expires'));
+            console.log("expiresIn check is: " + Math.max(0, this.get('expires') - (Date.now() / 1000)));
+            return Math.max(0, this.get('expires') - (Date.now() / 1000));
         },
         getBase64: function() {
             return btoa(this.get('username') + ':' + this.token);

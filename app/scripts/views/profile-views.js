@@ -19,9 +19,11 @@ define(['app'], function(App) {
 
             this.model = new Backbone.Agave.Model.Profile();
 
+            console.log("about to fetch profile");
             var that = this;
             this.model.fetch({
                 success: function() {
+                    console.log("profile get ok");
                     that.render();
                 },
                 error: function() {

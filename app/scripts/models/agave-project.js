@@ -25,7 +25,7 @@
         },
         idAttribute: 'uuid',
         url: function() {
-            return '/meta/data/' + this.get('uuid');
+            return '/meta/2.0/data/' + this.get('uuid');
         }
     });
 

@@ -13,7 +13,7 @@
     Projects = Agave.MetadataCollection.extend({
         model: Agave.Model.Project,
         url: function() {
-            return '/meta/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"project"}');
+            return '/meta/2.0/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"project"}');
         }
     });
 
