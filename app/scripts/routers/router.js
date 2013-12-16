@@ -10,7 +10,7 @@ define(['app'], function(App) {
             'auth/login' : 'authLogin',
             'auth/logout': 'authLogout',
 
-            'account'        : 'accountCreate',
+            'account'        : 'createAccount',
             'account/profile': 'accountProfile',
 
             'apps/public': 'appsPublicList',
@@ -49,9 +49,9 @@ define(['app'], function(App) {
         },
 
         // Account
-        accountCreate: function() {
+        createAccount: function() {
             App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.Account.NewAccountForm({model: new Backbone.Vdj.Account.New()}));
+            App.Layouts.main.setView('.content', new App.Views.CreateAccount.Form());
             App.Layouts.main.render();
         },
 

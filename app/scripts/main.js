@@ -10,7 +10,7 @@ define([
 
     // Agave
     'backbone-agave',
-    'agave-account',
+    'agave-new-account',
     'agave-io',
     'agave-profile',
     'agave-project',
@@ -27,6 +27,7 @@ define([
     'form-views',
     'util-views',
 
+    'create-account-views',
     'agave-auth-views',
     'agave-io-views',
     'profile-views',

@@ -8,19 +8,20 @@
 
     var Agave = Backbone.Agave;
 
-    var Account = {};
+    var NewAccount = {};
 
-    Account = Agave.Model.extend({
+    NewAccount = Agave.Model.extend({
         defaults: {
             username:  '',
             password:  '',
             email:     ''
         },
         url: function() {
-            return '/auth';
-        }
+            return '/user';
+        },
+        requiresAuth: false
     });
 
-    Backbone.Agave.Model.Account = Account;
-    return Account;
+    Backbone.Agave.Model.NewAccount = NewAccount;
+    return NewAccount;
 })(this);

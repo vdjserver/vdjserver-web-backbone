@@ -18,7 +18,7 @@ require.config({
         'backbone-vdj':    'vendor/backbone-vdj/backbone-vdj',
 
         // Agave - Models
-        'agave-account': 'models/agave-account',
+        'agave-new-account': 'models/agave-new-account',
         'agave-io':      'models/agave-io',
         'agave-profile': 'models/agave-profile',
         'agave-project': 'models/agave-project',
@@ -35,6 +35,7 @@ require.config({
         'form-views': 'views/app/form-views',
         'util-views': 'views/app/util-views',
 
+        'create-account-views': 'views/create-account-views',
         'agave-auth-views': 'views/agave-auth-views',
         'agave-io-views': 'views/agave-io-views',
         'profile-views': 'views/profile-views',
@@ -76,9 +77,9 @@ require.config({
         },
 
         // Agave - Models
-        'agave-account': {
+        'agave-new-account': {
             deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.Account'
+            exports: 'Backbone.Agave.Model.NewAccount'
         },
         'agave-io': {
             deps: ['backbone', 'backbone-agave'],
