@@ -2,7 +2,6 @@ define(['app'], function(App) {
 
     'use strict';
 
-    var UtilViews = App.Views.Util;
     var Profile   = {};
 
     Profile.Login = Backbone.View.extend({
@@ -15,25 +14,38 @@ define(['app'], function(App) {
     Profile.Form = Backbone.View.extend({
         template: 'profile/profile-form',
         initialize: function() {
-            window.scrollTo(0,0);
+
+            $('html,body').animate({scrollTop:0});
 
             this.model = new Backbone.Agave.Model.Profile();
 
-            console.log("about to fetch profile");
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView(loadingView);
+
+            this.fetchComplete = false;
+
             var that = this;
             this.model.fetch({
                 success: function() {
-                    console.log("profile get ok");
+
+                    loadingView.remove();
+
+                    that.fetchComplete = true;
+
                     that.render();
                 },
                 error: function() {
                     console.log('fetch error');
+                    that.fetchComplete = true;
+                    that.render();
                 }
             });
         },
         serialize: function() {
+
             return {
-                profileData: this.model.get('value')
+                profileData: this.model.get('value'),
+                fetchComplete: this.fetchComplete
             };
         },
         afterRender: function() {
@@ -45,7 +57,7 @@ define(['app'], function(App) {
                 'header': 'Updating Profile'
             });
 
-            var modal = new UtilViews.ModalMessage({
+            var modal = new App.Views.Util.ModalMessage({
                 model: message
             });
 

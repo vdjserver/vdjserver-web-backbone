@@ -51,7 +51,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
                 var token = App.Agave.token();
 
-                if (token.isValid()) {
+                if (token.isActive()) {
 
                     window.localStorage.setItem('Agave.Token', JSON.stringify(token.toJSON()));
 
@@ -60,7 +60,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                         // TODO: RENEW TOKEN HERE BY SAVING MODEL
 
                         console.log("token.expires is: " + token.get('expires'));
-                        console.log("date now madness is: " + Date.now() / 1000);
+                        //console.log("date now madness is: " + Date.now() / 1000);
 
                         if (token.expiresIn() > 300) {
                             console.log("token expire renew");
@@ -68,17 +68,14 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                             // it was renewed, rewatch token
                             watchToken();
                         }
-                    }, Math.max(0, token.get('expires') - 300));
-/*
-                    error = setTimeout(function() {
 
-                        console.log("token exp is: " + token.expiresIn());
+                    }, Math.max(0, token.get('expires') - 300));
+                    error = setTimeout(function() {
                         alert('Your Session has expired.  You have been logged out.');
                         App.Agave.destroyToken();
                         window.localStorage.removeItem('Agave.Token');
-                        //App.router.navigate('', {'trigger':true});
-                    }, Math.max(0, token.expiresIn()));
-*/
+                        App.router.navigate('', {'trigger':true});
+                    }, Math.max(0, token.get('expires')));
                 }
             };
             App.listenTo(App.Agave, 'Agave:tokenChanged', watchToken, this);
@@ -113,6 +110,37 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
             App.router = new App.Routers.DefaultRouter();
             App.router.navigate('');
+
+            App.Datastore = {};
+            App.Datastore.Model = {};
+            App.Datastore.Collection = {};
+        },
+        setMessage: function(message, timeout) {
+
+            var timeout = timeout || 5000;
+
+            (function(msg, t) {
+                var m = $(msg).appendTo('.alerts');
+                setTimeout(function() {
+                    m.fadeOut(function() {
+                        m.remove();
+                    });
+                }, t);
+            })(message, timeout);
+
+
+            console.log("message set");
+            return this;
+        },
+        setStandardErrorMessage: function(message) {
+
+            message = '<div class="alert-error">' + message + '</div>';
+
+            return App.setMessage(message);
+        },
+        clearMessage: function() {
+            $('.alerts').empty();
+            return this;
         },
         start: function() {
             App.init();
@@ -134,7 +162,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
     };
     return _.extend(App, {
         isLoggedIn: function() {
-            return this.Agave.token().isValid();
+            return this.Agave.token().isActive();
         }
     }, Backbone.Events);
 });

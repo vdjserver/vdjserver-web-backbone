@@ -58,7 +58,8 @@
         }
     });
 
-    Agave.apiRoot    = 'https://agave.iplantc.org';
+    //Agave.apiRoot    = 'https://129.114.60.212'; // VDJ tenant
+    Agave.apiRoot    = 'https://agave.iplantc.org'; // iplant tenant
     Agave.authRoot   = 'http://localhost:8443';
     Agave.vdjApiRoot = 'http://localhost:8443';
 
@@ -378,6 +379,7 @@ console.log("date is: " + Date.now());
     var Auth = Agave.Auth = {};
 
     Auth.Token = Agave.Model.extend({
+        idAttribute: 'refresh_token',
         defaults: {
             'token_type': null,
             'expires_in': null,
@@ -385,7 +387,6 @@ console.log("date is: " + Date.now());
             'refresh_token': null,
             'access_token':  null,
         },
-        idAttribute: 'refresh_token',
         apiRoot: Agave.authRoot,
         url: '/token',
         requiresAuth: true,
@@ -418,9 +419,8 @@ console.log("date is: " + Date.now());
             if (response && response.status === 'success') {
 
                 // Convert human readable dates to unix time
-                //response.result.expires = moment(response.result.expires).unix();
-                //response.result.created = moment(response.result.created).unix();
-                //response.result.renewed = moment(response.result.renewed).unix();
+
+                this.isFetched = true;
 
                 response.result.expires = response.result.expires_in + (Date.now() / 1000);
                 console.log("resp result exp is: " + response.result.expires);
@@ -429,21 +429,54 @@ console.log("date is: " + Date.now());
 
             return;
         },
+        /*
         validate: function(attrs, options) {
 
             var errors = {};
             options = _.extend({}, options);
+            
+            if (this.isFetched === true) {}
 
-            if (attrs.expires && attrs.expires - (Date.now() / 1000) <= 0) {
+            if (! attrs.username) {
+                console.log("proto match");
+            }
+
+            if (attrs.expires && (attrs.expires - (Date.now() / 1000) <= 0) || (attrs.expires)) {
                 console.log('token expire 3 and attrs is: ' + JSON.stringify(attrs));
                 errors.expires = 'Token is expired';
             }
 
+            if (! attrs.access_token && attrs.expires === 0) {
+            
+            }
+
             if (! _.isEmpty(errors)) {
                 console.log('token expire 4');
+                //return errors;
                 return errors;
             }
 
+        },
+        */
+        isActive: function() {
+
+            var expires = this.get('expires');
+            var errors = {};
+
+            if (!expires) {
+                errors.expires = true;
+            }
+            else if (expires && (expires - (Date.now() / 1000) <= 0)) {
+                errors.expires = true;
+            }
+
+            if (! _.isEmpty(errors)) {
+                console.log('token expired');
+                return false;
+            }
+            else {
+                return true;
+            }
         },
         expiresIn: function() {
             console.log("expiresIn check 1 is: " + this.get('expires'));

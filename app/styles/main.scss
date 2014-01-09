@@ -1,17 +1,17 @@
 // CSS is organized according to SASS recommendations
 // http://thesassway.com/beginner/how-to-structure-a-sass-project
 
-// Modules
-@import 'modules/settings';
-
 // Vendor
 @import 'compass/css3';
 @import 'sass-bootstrap/lib/bootstrap';
 @import 'font-awesome/scss/font-awesome';
 
+// Modules
+@import 'modules/colors';
+@import 'modules/font';
+@import 'modules/layout';
+
 // Partials
-@import 'partials/main-content';
-//@import 'partials/app';
-//@import 'partials/agave';
-//@import 'partials/vdj';
-//@import 'partials/form';
+@import 'partials/buttons';
+@import 'partials/alerts';
+@import 'partials/icons';

@@ -2,10 +2,7 @@ define(['app'], function(App) {
 
     'use strict';
 
-    var UtilViews = App.Views.Util;
     var Projects = {};
-
-    var projectCollection;
 
     Projects.Login = Backbone.View.extend({
         template: 'project/login',
@@ -18,13 +15,15 @@ define(['app'], function(App) {
         template: 'project/list',
         initialize: function() {
 
-            projectCollection = new Backbone.Agave.Collection.Projects();
+            App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects();
+            
 
             var that = this;
 
-            projectCollection.fetch({
+            App.Datastore.Collection.ProjectCollection.fetch({
                 success: function() {
-                    projectCollection.on('change add remove destroy', function() {
+                    App.Datastore.Collection.ProjectCollection.on('change add remove destroy', function() {
+
                         that.render();
                     });
 
@@ -37,7 +36,7 @@ define(['app'], function(App) {
         },
         serialize: function() {
             return {
-                projects: projectCollection.toJSON()
+                projects: App.Datastore.Collection.ProjectCollection.toJSON()
             };
         },
         events: {
@@ -76,7 +75,7 @@ define(['app'], function(App) {
                 'body':   '<p>Please wait while your project is created.</p>'
             });
 
-            var modal = new UtilViews.ModalMessage({
+            var modal = new App.Views.Util.ModalMessage({
                 model: message
             });
 
@@ -101,12 +100,14 @@ define(['app'], function(App) {
                 value: Backbone.Syphon.serialize(this)
             };
 
-            if (formData.value.name) {
+            if (!formData.value.name) {
+                App.clearMessage().setStandardErrorMessage('There was a problem creating your project. Please try again.');
+            }
+            else {
 
                 var username = App.Agave.token().get('username');
                 formData.members = [];
                 formData.members.push(username);
-
 
                 var that = this;
 
@@ -119,7 +120,7 @@ define(['app'], function(App) {
                             success: function(model) {
 
                                 $('#modal-message').on('hidden.bs.modal', function() {
-                                    projectCollection.add(model, {merge: true});
+                                    App.Datastore.Collection.ProjectCollection.add(model, {merge: true});
 
                                     App.router.navigate('/project/' + model.get('uuid'), {
                                         trigger: true
@@ -138,9 +139,6 @@ define(['app'], function(App) {
 
                 $('#modal-message').modal('show');
             }
-            else {
-                this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
-            }
 
             return false;
         }
@@ -150,7 +148,7 @@ define(['app'], function(App) {
         template: 'project/detail',
         initialize: function(parameters) {
             this.modelId = parameters.projectId;
-            this.model = projectCollection.get(this.modelId);
+            this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
             console.log("model is: " + JSON.stringify(this.model));
         },
         serialize: function() {
@@ -161,7 +159,8 @@ define(['app'], function(App) {
             }
         },
         events: {
-            'click .delete-project': 'deleteProject'
+            'click .delete-project': 'deleteProject',
+            'click #file-upload': 'fileUpload'
         },
         deleteProject: function(e) {
             e.preventDefault();
@@ -181,6 +180,30 @@ define(['app'], function(App) {
                 }
             });
         }
+    /*
+    ,
+        fileUpload: function(e) {
+            e.preventDefault();
+
+            var fileInput = document.getElementById('file-input');
+            var file = fileInput.files[0];
+
+            var reader = new FileReader();
+
+            var that = this;
+
+            reader.onload = function() {
+
+                image.src = reader.result;
+
+                // Remove other elements
+                //$('#file-input').hide();
+                //$('#file-input-button').hide();
+            };
+
+            reader.readAsDataURL(file);
+        },
+        */
     });
 
     App.Views.Projects = Projects;

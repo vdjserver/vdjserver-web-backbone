@@ -1,0 +1,11 @@
+@import 'sass-bootstrap/lib/bootstrap';
+
+.alert-info {
+    @extend .alert;
+    @extend .alert-info;
+}
+
+.alert-danger {
+    @extend .alert;
+    @extend .alert-danger;
+}

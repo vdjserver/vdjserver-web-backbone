@@ -1,0 +1,6 @@
+@import 'font-awesome/scss/font-awesome';
+
+.icon-info {
+    @extend .fa;
+    @extend .fa-info-circle;
+}

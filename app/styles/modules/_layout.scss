@@ -1,0 +1,41 @@
+/*
+    These styles offset main content from the navbar.
+    They were adapted from an external css file in: http://getbootstrap.com/examples/starter-template/
+*/
+
+body {
+    padding-top: 50px;
+}
+
+.navbar {
+    @extend .navbar; 
+    @extend .navbar-inverse;
+    @extend .navbar-fixed-top;
+}
+
+.navbar-content {
+    @extend .container;
+}
+
+.navbar-header {
+    @extend .navbar-header;
+}
+
+.navbar-three-bar-control {
+    @extend .navbar-toggle;
+}
+
+.navbar-vdj-logo {
+    @extend .navbar-brand;
+}
+
+.navbar-items {
+    @extend .navbar-collapse;
+    @extend .collapse;
+}
+
+
+.main-content {
+    @extend .container;
+    padding: 40px 15px;
+}

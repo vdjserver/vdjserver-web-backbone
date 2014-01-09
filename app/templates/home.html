@@ -1,27 +1,35 @@
-<h2>Auth</h2>
-<ul class="nav nav-pills nav-stacked">
-    <li><a href="#auth/login">Log in</a></li>
-    <li><a href="#auth/logout">Log out</a></li>
-    <li><a href="#account">Create New Account</a></li>
-</ul>
+{{#if this}}
+    <h2>Auth</h2>
+    <ul class="nav nav-pills nav-stacked">
+        <li><a href="#auth/logout">Log out</a></li>
+    </ul>
 
-<h2>Profile</h2>
-<ul class="nav nav-pills nav-stacked">
-    <li><a href="#account/profile">Profile</a></li>
-</ul>
+    <h2>Profile</h2>
+    <ul class="nav nav-pills nav-stacked">
+        <li><a href="#account/profile">Profile</a></li>
+    </ul>
 
-<h2>Projects</h2>
-<ul class="nav nav-pills nav-stacked">
-    <li><a href="#project">Projects</a></li>
-</ul>
+    <h2>Projects</h2>
+    <ul class="nav nav-pills nav-stacked">
+        <li><a href="#project">Projects</a></li>
+    </ul>
 
-<h2>Community Data</h2>
-<ul class="nav nav-pills nav-stacked">
-    <li><a href="#community">Community Data</a></li>
-</ul>
+    <h2>Community Data</h2>
+    <ul class="nav nav-pills nav-stacked">
+        <li><a href="#community">Community Data</a></li>
+    </ul>
 
 
-<h2>File Manager</h2>
-<ul class="nav nav-pills nav-stacked">
-    <li><a href="#io">File Manager</a></li>
-</ul>
+    <h2>File Manager</h2>
+    <ul class="nav nav-pills nav-stacked">
+        <li><a href="#io">File Manager</a></li>
+    </ul>
+{{else}}
+    <p>
+        <a class="button-primary" href="#auth/login">Log in</a>
+    </p>
+
+    <p>
+        <a class="button-success" href="#account">Create New Account</a>
+    </p>
+{{/if}}

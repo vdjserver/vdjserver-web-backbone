@@ -10,11 +10,13 @@ define(['app'], function(App){
 
     // app views
     AppViews.Nav = Backbone.View.extend({
-        //tagName: 'nav',
         template: 'nav',
-        //className: 'navbar navbar-fixed-top',
         initialize: function() {
             this.setView('.login-state', new AppViews.LoginState({model: this.model}));
+        },
+        serialize: function() {
+            console.log("login status is: " + App.isLoggedIn());
+            return App.isLoggedIn();
         }
     });
 
@@ -36,7 +38,10 @@ define(['app'], function(App){
     });
 
     AppViews.Home = Backbone.View.extend({
-        template: 'home'
+        template: 'home',
+        serialize: function() {
+            return App.isLoggedIn();
+        }
     });
 
     AppViews.Footer = Backbone.View.extend({
