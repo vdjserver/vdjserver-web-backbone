@@ -19,27 +19,26 @@ define(['app'], function(App) {
 
             this.model = new Backbone.Agave.Model.Profile();
 
-            var loadingView = new App.Views.Util.Loading({keep: true});
-            this.insertView(loadingView);
+            this.loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView(this.loadingView);
 
             this.fetchComplete = false;
 
             var that = this;
             this.model.fetch({
                 success: function() {
-
-                    loadingView.remove();
-
-                    that.fetchComplete = true;
-
-                    that.render();
+                    that.setupViews();
                 },
                 error: function() {
                     console.log('fetch error');
-                    that.fetchComplete = true;
-                    that.render();
+                    that.setupViews();
                 }
             });
+        },
+        setupViews: function() {
+            this.fetchComplete = true;
+            this.loadingView.remove();
+            this.render();
         },
         serialize: function() {
 

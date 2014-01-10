@@ -64,6 +64,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
                         if (token.expiresIn() > 300) {
                             console.log("token expire renew");
+                            token.save();
 
                             // it was renewed, rewatch token
                             watchToken();

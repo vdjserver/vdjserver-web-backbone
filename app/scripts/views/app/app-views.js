@@ -12,12 +12,15 @@ define(['app'], function(App){
     AppViews.Nav = Backbone.View.extend({
         template: 'nav',
         initialize: function() {
-            this.setView('.login-state', new AppViews.LoginState({model: this.model}));
+            //this.setView('.login-state', new AppViews.LoginState({model: this.model}));
             this.model.on('change', this.render, this);
         },
         serialize: function() {
             console.log("login status is: " + App.isLoggedIn());
-            return App.isLoggedIn();
+            return {
+                isLoggedIn: App.isLoggedIn(),
+                account: this.model.toJSON()
+            }
         }
     });
 

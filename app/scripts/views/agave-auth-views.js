@@ -59,7 +59,7 @@ define(['app'], function(App) {
 
                                 $('#modal-message').on('hidden.bs.modal', function() {
 
-                                    App.router.navigate('/', {
+                                    App.router.navigate('/project', {
                                         trigger: true
                                     });
 

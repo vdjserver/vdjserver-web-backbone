@@ -16,6 +16,7 @@
             password:  '',
             email:     ''
         },
+        apiRoot: Agave.authRoot,
         url: function() {
             return '/user';
         },

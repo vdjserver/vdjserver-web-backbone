@@ -58,8 +58,8 @@
         }
     });
 
-    //Agave.apiRoot    = 'https://129.114.60.212'; // VDJ tenant
-    Agave.apiRoot    = 'https://agave.iplantc.org'; // iplant tenant
+    Agave.apiRoot    = 'https://wso2-elb.tacc.utexas.edu'; // VDJ tenant
+    //Agave.apiRoot    = 'https://agave.iplantc.org'; // iplant tenant
     Agave.authRoot   = 'http://localhost:8443';
     Agave.vdjApiRoot = 'http://localhost:8443';
 
@@ -73,7 +73,23 @@
             // Credentials for Basic Authentication
             // Use credentials provided in options first; otherwise used current session creds.
             var username = options.username || (agaveToken ? agaveToken.get('username') : '');
-            var password = options.password || (agaveToken ? agaveToken.id : '');
+            var password;
+
+            switch (method) {
+
+                case 'create':
+                    password = options.password;
+                    break;
+
+                case 'update':
+                    password = agaveToken.get('refresh_token');
+                    break;
+
+                case 'delete':
+                    password = agaveToken.get('access_token');
+                    break;
+            }
+
 
             // Allow user-provided before send, but protect ours, too.
             if (options.beforeSend) {
@@ -400,12 +416,14 @@ console.log("date is: " + Date.now());
                     break;
 
                 case 'update':
+                    console.log("sync method is PUT");
                     options.url = model.url + '/' + model.get('refresh_token');
                     options.type = 'PUT';
                     break;
 
                 case 'delete':
-                    options.url = model.url + '/' + model.get('refresh_token');
+                    console.log("sync method is DELETE");
+                    options.url = model.url + '/' + model.get('access_token');
                     options.type = 'DELETE';
                     break;
             }
@@ -429,35 +447,6 @@ console.log("date is: " + Date.now());
 
             return;
         },
-        /*
-        validate: function(attrs, options) {
-
-            var errors = {};
-            options = _.extend({}, options);
-            
-            if (this.isFetched === true) {}
-
-            if (! attrs.username) {
-                console.log("proto match");
-            }
-
-            if (attrs.expires && (attrs.expires - (Date.now() / 1000) <= 0) || (attrs.expires)) {
-                console.log('token expire 3 and attrs is: ' + JSON.stringify(attrs));
-                errors.expires = 'Token is expired';
-            }
-
-            if (! attrs.access_token && attrs.expires === 0) {
-            
-            }
-
-            if (! _.isEmpty(errors)) {
-                console.log('token expire 4');
-                //return errors;
-                return errors;
-            }
-
-        },
-        */
         isActive: function() {
 
             var expires = this.get('expires');
