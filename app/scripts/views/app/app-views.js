@@ -13,6 +13,7 @@ define(['app'], function(App){
         template: 'nav',
         initialize: function() {
             this.setView('.login-state', new AppViews.LoginState({model: this.model}));
+            this.model.on('change', this.render, this);
         },
         serialize: function() {
             console.log("login status is: " + App.isLoggedIn());
