@@ -36,7 +36,7 @@ require.config({
         'util-views': 'views/app/util-views',
 
         'create-account-views': 'views/create-account-views',
-        'agave-auth-views': 'views/agave-auth-views',
+        'auth-views': 'views/auth-views',
         'agave-io-views': 'views/agave-io-views',
         'profile-views': 'views/profile-views',
         'project-views': 'views/project-views',

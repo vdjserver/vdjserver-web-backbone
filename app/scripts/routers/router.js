@@ -38,7 +38,7 @@ define(['app'], function(App) {
         // Auth
         authLogin: function() {
             App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.AgaveAuth.NewTokenForm({model: App.Agave.token()}));
+            App.Layouts.main.setView('.content', new App.Views.Auth.Login({model: App.Agave.token()}));
             App.Layouts.main.render();
         },
 

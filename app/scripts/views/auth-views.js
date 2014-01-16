@@ -3,10 +3,24 @@ define(['app'], function(App) {
     'use strict';
 
     var UtilViews = App.Views.Util;
-    var AgaveAuth = {};
+    var Auth = {};
 
-    AgaveAuth.NewTokenForm = Backbone.View.extend({
-        template: 'auth/new-token-form',
+    Auth.Login = Backbone.View.extend({
+        template: 'auth/login',
+        initialize: function() {
+
+            var that = this;
+            this.model.destroy({
+                success: function() {
+                    console.log("destroyed token ok");
+                    that.render();
+                },
+                error: function() {
+                    console.log("destroyed token fail");
+                    that.render();
+                }
+            });
+        },
         serialize: function() {
             return {
                 'username': this.model.get('username')
@@ -86,6 +100,6 @@ define(['app'], function(App) {
         }
     });
 
-    App.Views.AgaveAuth = AgaveAuth;
-    return AgaveAuth;
+    App.Views.Auth = Auth;
+    return Auth;
 });

@@ -28,7 +28,7 @@ define([
     'util-views',
 
     'create-account-views',
-    'agave-auth-views',
+    'auth-views',
     'agave-io-views',
     'profile-views',
     'project-views',
