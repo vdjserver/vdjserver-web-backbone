@@ -26,7 +26,6 @@ require.config({
         // Agave - Collections
         'agave-projects': 'collections/agave-projects',
 
-
         // Misc.
         'fileSaver': 'vendor/fileSaver',
 
@@ -37,7 +36,7 @@ require.config({
 
         'create-account-views': 'views/create-account-views',
         'auth-views': 'views/auth-views',
-        'agave-io-views': 'views/agave-io-views',
+        'io-views': 'views/io-views',
         'profile-views': 'views/profile-views',
         'project-views': 'views/project-views',
 

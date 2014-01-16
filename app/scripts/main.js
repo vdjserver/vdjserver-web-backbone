@@ -29,7 +29,7 @@ define([
 
     'create-account-views',
     'auth-views',
-    'agave-io-views',
+    'io-views',
     'profile-views',
     'project-views',
 

@@ -4,7 +4,6 @@ define(['app', 'fileSaver'], function(App){
 
     var AgaveIO = {};
 
-
     AgaveIO.Browser = Backbone.View.extend({
         template: 'io/browser',
         initialize: function() {
@@ -203,13 +202,13 @@ define(['app', 'fileSaver'], function(App){
 
                 case 'upload':
                     console.log('upload view ok. model is: ' + JSON.stringify(this.model));
-                    
+
                     var view = new App.Views.Util.ModalMessage({
                         model: new App.Models.MessageModel({header:'Upload file'})
                     });
 
                     var form = new AgaveIO.UploadForm({model: this.model});
-                    
+
                     form.cleanup = function() {
                         view.close();
                     };
