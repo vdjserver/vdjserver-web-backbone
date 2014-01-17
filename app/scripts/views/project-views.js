@@ -16,7 +16,6 @@ define(['app'], function(App) {
         initialize: function() {
 
             App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects();
-            
 
             var that = this;
 
@@ -40,15 +39,45 @@ define(['app'], function(App) {
             };
         },
         events: {
-            'click .view-project': 'selectProject'
+            'click .view-project': 'selectProject',
+            'click .manage-users': 'manageUsers'
         },
         selectProject: function(e) {
             e.preventDefault();
             var projectId = e.target.dataset.id;
 
+            this.setProjectActive(projectId);
+            this.openProjectSubmenu(projectId);
+
             App.router.navigate('/project/' + projectId , {
-                trigger: true
+                trigger: false
             });
+
+            var detailView = new Projects.Detail({projectId: projectId});
+            App.Layouts.main.setView('.content', detailView);
+            detailView.render();
+
+        },
+        manageUsers: function(e) {
+            e.preventDefault();
+
+            var projectId = e.target.dataset.id;
+
+            App.router.navigate('/project/' + projectId + '/users', {
+                trigger: false
+            });
+
+            var manageUsersView = new Projects.ManageUsers({projectId: projectId});
+            App.Layouts.main.setView('.content', manageUsersView);
+            manageUsersView.render();
+        },
+        setProjectActive: function(projectId) {
+            $('.list-group-item').removeClass('active');
+            $('#' + projectId).addClass('active');
+        },
+        openProjectSubmenu: function(projectId) {
+            $('.project-submenu').addClass('hidden');
+            $('#' + projectId + '-submenu').removeClass('hidden');
         }
     });
 
@@ -67,6 +96,11 @@ define(['app'], function(App) {
         },
         afterRender: function() {
             this.setupModalView();
+            this.highlightList();
+        },
+        highlightList: function() {
+            $('.list-group-item').removeClass('active');
+            $('.create-project').addClass('active');
         },
         setupModalView: function() {
 
@@ -204,6 +238,22 @@ define(['app'], function(App) {
             reader.readAsDataURL(file);
         },
         */
+    });
+
+    Projects.ManageUsers = Backbone.View.extend({
+        template: 'project/manage-users',
+        initialize: function(parameters) {
+
+            this.modelId = parameters.projectId;
+            this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
+        },
+        serialize: function() {
+            if (this.model) {
+                return {
+                    projectDetail: this.model.toJSON()
+                };
+            }
+        }
     });
 
     App.Views.Projects = Projects;

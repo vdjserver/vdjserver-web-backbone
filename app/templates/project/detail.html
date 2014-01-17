@@ -1,7 +1,7 @@
 <div class="page-header">
     <div class="row">
         <div class="col-md-6">
-            <table>
+            <table class="table-without-border">
                 <tbody>
                     <tr>
                         <td>
@@ -21,7 +21,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <strong>Last Modified</strong>
+                            <strong>Last Modified test test test</strong>
                         </td>
                         <td>
                             modifiedPlaceholder
@@ -31,7 +31,7 @@
             </table>
         </div>
         <div class="col-md-6">
-            <table>
+            <table class="table-without-border">
                 <tbody>
                     <tr>
                         <td>
@@ -62,29 +62,41 @@
     </div>
  </div>
 
-<div class="page-header">
-    <div class="row">
-        <div class="col-md-6">
-            <ul class="list-inline">
+<div class="row">
+    <div class="col-md-6">
+        <ul class="list-inline">
 
-                <li><button class="btn" id="file-upload"><i class="fa fa-upload"></i></button></li>
-                <!--                <input type="file" id="file-input"> -->
+            <li><button class="btn" id="file-upload"><i class="fa fa-upload"></i></button></li>
+            <!--                <input type="file" id="file-input"> -->
 
-                <li><button class="btn"><i class="fa fa-file"></i></button></li>
-                <li><button class="btn btn-info">Share</button></li>
-                <li><button class="btn btn-primary">Actions <i class="fa fa-caret-down"></i></button></li>
-            </ul>
-        </div>
-        <div class="col-md-2 col-md-offset-4">
-            <ul class="list-inline">
-                <li><button class="btn btn-danger delete-project">Delete</button></li>
-            </ul>
-        </div>
+            <li><button class="btn"><i class="fa fa-file"></i></button></li>
+            <!-- <li><button class="btn btn-info">Share</button></li> -->
+
+            <li>
+                <div class="btn-group">
+                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        Actions 
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Action 1</a></li>
+                        <li><a href="#">Action 2</a></li>
+                        <li><a href="#">Action 3</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-2 col-md-offset-4">
+        <ul class="list-inline">
+            <li><button class="btn btn-danger delete-project">Delete</button></li>
+        </ul>
     </div>
 </div>
 
-<div class="page-header">
-    <div>
+
+<div class="row">
+    <div class="col-md-12 table-responsive">
         <table class="table table-bordered">
             <thead>
                 <tr>

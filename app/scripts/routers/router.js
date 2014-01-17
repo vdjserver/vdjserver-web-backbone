@@ -5,25 +5,26 @@ define(['app'], function(App) {
     var DefaultRouter = Backbone.Router.extend({
 
         routes: {
-            '' : 'index',
+            '': 'index',
 
-            'auth/login' : 'authLogin',
+            'auth/login':  'authLogin',
             'auth/logout': 'authLogout',
 
-            'account'        : 'createAccount',
+            'account':         'createAccount',
             'account/profile': 'accountProfile',
 
             'apps/public': 'appsPublicList',
             'apps/shared': 'appsSharedList',
-            'apps/:id'   : 'appsView',
+            'apps/:id':    'appsView',
 
-            'io'             : 'ioBrowser',
-            'io/:owner'      : 'ioBrowser',
+            'io':              'ioBrowser',
+            'io/:owner':       'ioBrowser',
             'io/:owner/*path': 'ioBrowser',
 
-            'project'       : 'projectIndex',
-            'project/create': 'projectCreate',
-            'project/:id'   : 'projectDetail'
+            'project':           'projectIndex',
+            'project/create':    'projectCreate',
+            'project/:id':       'projectDetail',
+            'project/:id/users': 'projectManageUsers'
         },
 
 
@@ -161,9 +162,28 @@ define(['app'], function(App) {
             }
 
             App.Layouts.main.render();
-        }
-    });
+        },
 
+        projectManageUsers: function(projectId) {
+
+            if (!App.isLoggedIn()) {
+                App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
+            }
+            else {
+
+                if (App.Layouts.main.template !== 'layouts/project-standard') {
+                    App.Layouts.main.template = 'layouts/project-standard';
+                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+                }
+
+                App.Layouts.main.setView('.content', new App.Views.Projects.ManageUsers({projectId: projectId}));
+            }
+
+            App.Layouts.main.render();
+        }
+
+    });
 
     App.Routers.DefaultRouter = DefaultRouter;
     return DefaultRouter;
