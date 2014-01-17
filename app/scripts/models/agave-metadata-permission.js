@@ -20,7 +20,7 @@
             username: ''
         },
         url: function() {
-            return '/meta/2.0/data/' + this.get('uuid') + '/pems/' + this.get('username');
+            return '/meta/v2/data/' + this.get('uuid') + '/pems/' + this.get('username');
         }
     });
 

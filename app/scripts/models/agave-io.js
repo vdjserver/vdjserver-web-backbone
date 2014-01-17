@@ -18,19 +18,19 @@
         idAttribute: 'path',
         urlRoot: function() {
             //console.log("returning urlRoot");
-            return '/files/2.0/media/';
+            return '/files/v2/media/';
         },
         url: function() {
             //console.log("returning url");
-            return '/files/2.0/media/' + this.agaveToken.get('username');
+            return '/files/v2/media/' + this.agaveToken.get('username');
         },
         modelUrl: function() {
             //console.log("returning modelUrl");
-            return '/files/2.0/media/' + this.id;
+            return '/files/v2/media/' + this.id;
         },
         downloadUrl: function() {
             //console.log("returning downloadUrl");
-            return Agave.agaveApiRoot + '/files/2.0/media/' + this.id;
+            return Agave.agaveApiRoot + '/files/v2/media/' + this.id;
         },
         directoryPath: function() {
             var path = this.get('path');
@@ -80,7 +80,7 @@
     IO.FilePermissions = Agave.Model.extend({
         idAttribute: 'path',
         url: function() {
-            return '/files/2.0/pems/' + this.id;
+            return '/files/v2/pems/' + this.id;
         }
     });
 
@@ -94,7 +94,7 @@
             //console.log('IO.Listing options are: ' + JSON.stringify(options));
         },
         url: function() {
-            return '/files/2.0/listings/' + this.path;
+            return '/files/v2/listings/' + this.path;
         },
         comparator: function(model) {
             return [model.get('type'), model.get('name')];

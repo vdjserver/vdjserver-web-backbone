@@ -26,7 +26,7 @@
             );
         },
         url: function() {
-            return '/meta/2.0/data/' + this.get('uuid');
+            return '/meta/v2/data/' + this.get('uuid');
         },
         addUserToProject: function(username) {
 

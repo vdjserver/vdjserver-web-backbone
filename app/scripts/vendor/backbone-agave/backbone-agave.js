@@ -137,7 +137,7 @@
         if (method === 'update') {
             method = 'create';
         }
-        
+
         return Agave.sync(method, model, options);
     };
 
@@ -200,10 +200,10 @@
         },
         sync: Agave.metadataSync,
         getSaveUrl: function() {
-            return '/meta/2.0/data/' + this.get('uuid');
+            return '/meta/v2/data/' + this.get('uuid');
         },
         getCreateUrl: function() {
-            return '/meta/2.0/data';
+            return '/meta/v2/data';
         },
         parse: function(response) {
 
@@ -262,7 +262,7 @@
         },
         sync: Agave.metadataSync,
         getSaveUrl: function() {
-            return '/meta/2.0/data/' + this.get('uuid');
+            return '/meta/v2/data/' + this.get('uuid');
         },
         parse: function(response) {
             if (response.status === 'success' && response.result) {

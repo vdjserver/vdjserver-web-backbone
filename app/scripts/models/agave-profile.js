@@ -28,7 +28,7 @@
             );
         },
         url: function() {
-            return '/meta/2.0/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"profile"}');
+            return '/meta/v2/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"profile"}');
         }
     });
 

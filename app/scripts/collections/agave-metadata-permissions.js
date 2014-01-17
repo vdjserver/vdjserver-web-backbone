@@ -13,7 +13,7 @@
     MetadataPermissions = Agave.MetadataCollection.extend({
         model: Agave.Model.MetadataPermission,
         url: function() {
-            //return '/meta/2.0/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"project"}');
+            //return '/meta/v2/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"project"}');
         }
     });
 
