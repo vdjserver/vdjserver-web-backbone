@@ -134,129 +134,11 @@
     // and is mostly the same as that whenever possible
     Agave.metadataSync = function(method, model, options) {
 
-        options.url = model.apiRoot + (options.url || _.result(model, 'url'));
-
-        if (model.requiresAuth) {
-            var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
-
-            // Allow user-provided before send, but protect ours, too.
-            if (options.beforeSend) {
-                options._beforeSend = options.beforeSend;
-            }
-            options.beforeSend = function(xhr) {
-                if (options._beforeSend) {
-                    options._beforeSend(xhr);
-                }
-                xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
-            };
+        if (method === 'update') {
+            method = 'create';
         }
-
-
-
-
-        options.emulateJSON = true;
-
-
-        // Begin mostly original backbone sync method
-
-
-        // Map from CRUD to HTTP for our default `Backbone.sync` implementation.
-        var methodMap = {
-            //'create': 'POST',
-            //'update': 'PUT',
-            //'patch':  'PATCH',
-            //'delete': 'DELETE',
-            //'read':   'GET'
-
-            'create': 'POST',
-            'update': 'POST',
-            'patch':  'PATCH',
-            'delete': 'DELETE',
-            'read':   'GET'
-        };
-
-        var type = methodMap[method];
-
-        // Default options, unless specified.
-        _.defaults(options || (options = {}), {
-            emulateHTTP: Backbone.emulateHTTP,
-            emulateJSON: Backbone.emulateJSON
-        });
-
-        // Default JSON-request options.
-        var params = {type: type, dataType: 'json'};
-
-        // Ensure that we have a URL.
-        if (!options.url) {
-            params.url = _.result(model, 'url');
-        }
-
-        // Ensure that we have the appropriate request data.
-        if (options.data === (null || undefined) && model && (method === 'create' || method === 'update' || method === 'patch')) {
-            params.contentType = 'application/json';
-            params.data = JSON.stringify(options.attrs || model.toJSON(options));
-        }
-
-        if (type === 'GET') {
-
-            if (params.data) {
-                params.data = JSON.parse(params.data);
-                params.data = {
-                    'uuid': params.data.uuid,
-                    'name': params.data.name,
-                    'value': JSON.stringify(params.data.value)
-                };
-            }
-        }
-        else if (type === 'POST') {
-
-            if (params.data) {
-                params.data = JSON.parse(params.data);
-                params.data = {
-                    'name': params.data.name,
-                    'value': JSON.stringify(params.data.value)
-                };
-            }
-        }
-
-
-
-
-        // For older servers, emulate JSON by encoding the request into an HTML-form.
-        if (options.emulateJSON) {
-            params.contentType = 'application/x-www-form-urlencoded';
-            params.data = params.data ? params.data : {}; // AGAVE NOTE TO SELF: change this line
-        }
-
-        // For older servers, emulate HTTP by mimicking the HTTP method with `_method`
-        // And an `X-HTTP-Method-Override` header.
-        if (options.emulateHTTP && (type === 'PUT' || type === 'DELETE' || type === 'PATCH')) {
-
-            params.type = 'POST';
-
-            if (options.emulateJSON) {
-                params.data._method = type;
-            }
-
-            var beforeSend = options.beforeSend;
-            options.beforeSend = function(xhr) {
-                xhr.setRequestHeader('X-HTTP-Method-Override', type);
-                if (beforeSend) {
-                    return beforeSend.apply(this, arguments);
-                }
-            };
-        }
-
-        // Don't process data on a non-GET request.
-        if (params.type !== 'GET' && !options.emulateJSON) {
-            params.processData = false;
-        }
-
-
-        // Make the request, allowing the user to override any Ajax options.
-        var xhr = options.xhr = Backbone.ajax(_.extend(params, options));
-        model.trigger('request', model, xhr, options);
-        return xhr;
+        
+        return Agave.sync(method, model, options);
     };
 
     // Agave extension of default Backbone.Model that uses Agave sync
@@ -308,6 +190,7 @@
 
             Backbone.Model.apply(this, arguments);
         },
+        idAttribute: 'uuid',
         defaults: {
             uuid: '',
             name: '',
