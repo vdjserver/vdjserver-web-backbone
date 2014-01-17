@@ -27,6 +27,30 @@
         },
         url: function() {
             return '/meta/2.0/data/' + this.get('uuid');
+        },
+        addUserToProject: function(username) {
+
+            //var users = _.uniq(this.get('users'));
+            var users = this.get('users');
+
+            if (! _.contains(users, username)) {
+                users.push(username);
+
+                this.set('users', users);
+            }
+
+
+
+        },
+        removeUserFromProject: function(username) {
+
+            var users = this.get('users');
+
+            if (_.contains(users, username)) {
+                users = _.without(users, username);
+
+                this.set('users', users);
+            }
         }
     });
 

@@ -246,13 +246,45 @@ define(['app'], function(App) {
 
             this.modelId = parameters.projectId;
             this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
+
         },
         serialize: function() {
+            console.log("model check: " + JSON.stringify(this.model.toJSON()));
             if (this.model) {
                 return {
-                    projectDetail: this.model.toJSON()
+                    project: this.model.toJSON()
                 };
             }
+        },
+        events: {
+            'submit form': 'addUserToProject',
+            'click .remove-user-from-project': 'removeUserFromProject'
+        },
+        addUserToProject: function(e) {
+            e.preventDefault();
+
+            var username = $('#add-username').val();
+            console.log("username is: " + username);
+
+            this.model.addUserToProject(username);
+
+
+        },
+        removeUserFromProject: function(e) {
+            e.preventDefault();
+
+            /*
+            this.setProjectActive(projectId);
+            this.openProjectSubmenu(projectId);
+
+            App.router.navigate('/project/' + projectId , {
+                trigger: false
+            });
+
+            var detailView = new Projects.Detail({projectId: projectId});
+            App.Layouts.main.setView('.content', detailView);
+            detailView.render();
+            */
         }
     });
 

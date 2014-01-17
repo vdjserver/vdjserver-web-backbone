@@ -20,10 +20,15 @@ require.config({
         // Agave - Models
         'agave-new-account': 'models/agave-new-account',
         'agave-io':      'models/agave-io',
+
+        // Agave - Metadata Models
+        'agave-metadata-permission':  'models/agave-metadata-permission',
+        'agave-metadata-permissions': 'collections/agave-metadata-permissions',
+
         'agave-profile': 'models/agave-profile',
         'agave-project': 'models/agave-project',
 
-        // Agave - Collections
+        // Agave - Metadata Collections
         'agave-projects': 'collections/agave-projects',
 
         // Misc.
@@ -84,16 +89,27 @@ require.config({
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.IO'
         },
+
+        // Agave - Metadata Models
+        'agave-metadata-permission': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.MetadataPermission'
+        },
         'agave-profile': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.Profile'
         },
+
+
+        // Projects
+        'agave-metadata-permissions': {
+            deps: ['backbone', 'backbone-agave', 'agave-metadata-permission'],
+            exports: 'Backbone.Agave.Collection.MetadataPermissions'
+        },
         'agave-project': {
-            deps: ['backbone', 'backbone-agave'],
+            deps: ['backbone', 'backbone-agave', 'agave-metadata-permissions'],
             exports: 'Backbone.Agave.Model.Project'
         },
-
-        // Agave - Collections
         'agave-projects': {
             deps: ['backbone', 'backbone-agave', 'agave-project'],
             exports: 'Backbone.Agave.Collection.Projects'

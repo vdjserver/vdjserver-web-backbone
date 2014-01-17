@@ -1,37 +1,16 @@
 <div class="row">
-    <div class="col-md-6">
-        <ul class="list-inline">
-
-            <li><button class="btn" id="file-upload"><i class="fa fa-upload"></i></button></li>
-            <!--                <input type="file" id="file-input"> -->
-
-            <li><button class="btn"><i class="fa fa-file"></i></button></li>
-            <!-- <li><button class="btn btn-info">Share</button></li> -->
-
-            <li>
-                <div class="btn-group">
-                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                        Actions 
-                        <i class="fa fa-caret-down"></i>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Action 1</a></li>
-                        <li><a href="#">Action 2</a></li>
-                        <li><a href="#">Action 3</a></li>
-                    </ul>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <div class="col-md-2 col-md-offset-4">
-        <ul class="list-inline">
-            <li><button class="btn btn-danger delete-project">Delete</button></li>
-        </ul>
+    <div class="col-md-12">
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <label class="sr-only" for="add-username">Username</label>
+                    <input type="text" id="add-username" class="form-control" placeholder="Enter username...">
+            </div>
+            <button type="submit" class="btn btn-success">Add user to project</button>
+        </form>
     </div>
 </div>
 
-
-<div class="row">
+<div class="row-with-spacer">
     <div class="col-md-12 table-responsive">
         <table class="table table-bordered">
             <thead>
@@ -45,25 +24,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    {{#each users}}
-                    <td>
-                        checkmarkPlaceholder
-                    </td>
-
-                    <td>
-                        titlePlaceholder
-                    </td>
-                    <td>
-                        lastModifiedPlaceholder
-                    </td>
-                    <td>
-                        userFieldPlaceholder
-                    </td>
-                    <td>
-                        recentActivityPlaceholder
-                    </td>
-                </tr>
+                {{#each project.users}}
+                    <tr>
+                        <td>
+                            {{this}}
+                        </td>
+                        <td>
+                            <button class="btn btn-danger remove-user-from-project">Delete</button>
+                        </td>
+                    </tr>
+                {{/each}}
             </tbody>
         </table>
     </div>
