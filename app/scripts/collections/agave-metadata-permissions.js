@@ -6,12 +6,10 @@
     //var $ = window.$;
     //var _ = window._;
 
-    var Agave = Backbone.Agave;
-
     var MetadataPermissions = {};
 
-    MetadataPermissions = Agave.MetadataCollection.extend({
-        model: Agave.Model.MetadataPermission,
+    MetadataPermissions = Backbone.Agave.MetadataCollection.extend({
+        model: Backbone.Agave.Model.MetadataPermission,
         url: function() {
             //return '/meta/v2/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"project"}');
         }

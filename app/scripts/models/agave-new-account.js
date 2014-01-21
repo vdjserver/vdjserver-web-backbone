@@ -6,17 +6,15 @@
     //var $ = window.$;
     //var _ = window._;
 
-    var Agave = Backbone.Agave;
-
     var NewAccount = {};
 
-    NewAccount = Agave.Model.extend({
+    NewAccount = Backbone.Agave.Model.extend({
         defaults: {
             username:  '',
             password:  '',
             email:     ''
         },
-        apiRoot: Agave.authRoot,
+        apiRoot: Backbone.Agave.authRoot,
         url: function() {
             return '/user';
         },

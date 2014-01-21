@@ -6,11 +6,9 @@
     //var $ = window.$;
     //var _ = window._;
 
-    var Agave = Backbone.Agave;
-
     var MetadataPermission = {};
 
-    MetadataPermission = Agave.Model.extend({
+    MetadataPermission = Backbone.Agave.Model.extend({
         defaults: {
             uuid: '',
             permission: {

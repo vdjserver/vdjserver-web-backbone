@@ -6,11 +6,9 @@
     //var $ = window.$;
     var _ = window._;
 
-    var Agave = Backbone.Agave;
-
     var IO = {};
 
-    IO.File = Agave.Model.extend({
+    IO.File = Backbone.Agave.Model.extend({
         defaults: {
             'owner': null,
             'path': null
@@ -30,7 +28,7 @@
         },
         downloadUrl: function() {
             //console.log("returning downloadUrl");
-            return Agave.agaveApiRoot + '/files/v2/media/' + this.id;
+            return Backbone.Agave.agaveApiRoot + '/files/v2/media/' + this.id;
         },
         directoryPath: function() {
             var path = this.get('path');
@@ -77,7 +75,7 @@
     });
 
 
-    IO.FilePermissions = Agave.Model.extend({
+    IO.FilePermissions = Backbone.Agave.Model.extend({
         idAttribute: 'path',
         url: function() {
             return '/files/v2/pems/' + this.id;
@@ -85,7 +83,7 @@
     });
 
 
-    IO.Listing = Agave.Collection.extend({
+    IO.Listing = Backbone.Agave.Collection.extend({
         model: IO.File,
         initialize: function(models, options) {
             if (options && options.path) {
@@ -102,7 +100,7 @@
         removeDotDirectory: function() {
 
             /*
-                Basically, Agave v2 seems to be returning a '.' file (unix style)
+                Basically, Backbone.Agave v2 seems to be returning a '.' file (unix style)
                 to show the current directory. For the purposes of this app
                 that isn't really necessary, so we remove it here.
              */
@@ -112,7 +110,7 @@
     });
 
 /*
-    IO.Share = Agave.Model.extend({
+    IO.Share = Backbone.Agave.Model.extend({
         initialize: function(attributes, options) {
             if (options && options.file) {
                 this.file = options.file;
@@ -127,12 +125,12 @@
         },
         shareLink: function() {
             if (this.isPublic()) {
-                return Agave.agaveApiRoot + '/io-v1/io/download/' + this.file.get('owner') + this.file.get('path');
+                return Backbone.Agave.agaveApiRoot + '/io-v1/io/download/' + this.file.get('owner') + this.file.get('path');
             }
         }
     });
 */
 
-    Agave.IO = IO;
+    Backbone.Agave.IO = IO;
     return IO;
 })(this);

@@ -6,24 +6,24 @@
     //var $ = window.$;
     var _ = window._;
 
-    var Agave = Backbone.Agave;
-
     var Project = {};
 
-    Project = Agave.MetadataModel.extend({
+    Project = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
             return _.extend(
                 {},
-                Agave.MetadataModel.prototype.defaults,
+                Backbone.Agave.MetadataModel.prototype.defaults,
                 {
                     name: 'project',
                     value: {
                         'name':  '',
-                        'users': [],
                         'files': []
                     }
                 }
             );
+        },
+        initialize: function() {
+            this.users = new Backbone.Agave.Collection.Permissions();
         },
         url: function() {
             return '/meta/v2/data/' + this.get('uuid');

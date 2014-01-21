@@ -6,15 +6,13 @@
     //var $ = window.$;
     var _ = window._;
 
-    var Agave = Backbone.Agave;
-
     var Profile = {};
 
-    Profile = Agave.MetadataModel.extend({
+    Profile = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
             return _.extend(
                 {},
-                Agave.MetadataModel.prototype.defaults,
+                Backbone.Agave.MetadataModel.prototype.defaults,
                 {
                     name: 'profile',
                     value: {
