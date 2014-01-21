@@ -143,6 +143,7 @@ define(['app'], function(App) {
                 formData.members = [];
                 formData.members.push(username);
 
+                this.setupModalView();
                 var that = this;
 
                 $('#modal-message').on('shown.bs.modal', function() {

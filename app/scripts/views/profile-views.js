@@ -83,6 +83,7 @@ define(['app'], function(App) {
 
             if (formData.value.email) {
 
+                this.setupModalView();
                 var that = this;
 
                 $('#modal-message').on('shown.bs.modal', function() {

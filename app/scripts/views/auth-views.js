@@ -61,6 +61,8 @@ define(['app'], function(App) {
 
             if (formData.username && formData.password) {
 
+                this.setupModalView();
+
                 var that = this;
 
                 $('#modal-message').on('shown.bs.modal', function() {
