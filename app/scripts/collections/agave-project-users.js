@@ -22,35 +22,21 @@
         url: function() {
             return '/meta/v2/data/' + this.uuid + '/pems';
         },
-        addUserToProject: function(username) {
+        parse: function(response) {
+           console.log("response is: " + JSON.stringify(response));
 
-            var newUser = new Backbone.Agave.Model.ProjectUser();
-            newUser.set({username: username});
-            
+            if (response.result) {
+                for (var i = 0; i < response.result.length; i++) {
+                    response.result[i].uuid = this.uuid;
+                };
 
-
-
-
-            //var users = _.uniq(this.get('users'));
-            var users = this.get('users');
-
-            if (! _.contains(users, username)) {
-                users.push(username);
-
-                this.set('users', users);
+                response = response.result;
             }
 
-        },
-        removeUserFromProject: function(username) {
 
-            var users = this.get('users');
-
-            if (_.contains(users, username)) {
-                users = _.without(users, username);
-
-                this.set('users', users);
-            }
+            return response;
         }
+
     });
 
     Backbone.Agave.Collection.ProjectUsers = ProjectUsers;

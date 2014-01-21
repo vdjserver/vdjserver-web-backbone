@@ -298,18 +298,21 @@ define(['app'], function(App) {
         removeUserFromProject: function(e) {
             e.preventDefault();
 
-            /*
-            this.setProjectActive(projectId);
-            this.openProjectSubmenu(projectId);
+            var username = e.target.dataset.id;
+            console.log("username is: " + username);
 
-            App.router.navigate('/project/' + projectId , {
-                trigger: false
+            var user = this.model.users.findWhere({username: username});
+
+            var that = this;
+            user.destroy({
+                success: function() {
+                    console.log('user destroy ok');
+                    that.render();
+                },
+                error: function() {
+                    console.log("user destroy fail");
+                }
             });
-
-            var detailView = new Projects.Detail({projectId: projectId});
-            App.Layouts.main.setView('.content', detailView);
-            detailView.render();
-            */
         }
     });
 
