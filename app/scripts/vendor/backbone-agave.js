@@ -61,51 +61,7 @@
     Agave.apiRoot    = 'https://wso2-elb.tacc.utexas.edu'; // VDJ tenant
     //Agave.apiRoot    = 'https://agave.iplantc.org'; // iplant tenant
     Agave.authRoot   = 'http://localhost:8443';
-    Agave.vdjApiRoot = 'http://localhost:8443';
 
-    // Custom sync function to handle Agave token auth
-    Agave.tokenSync = function(method, model, options) {
-        options.url = model.apiRoot + (options.url || _.result(model, 'url'));
-
-        if (model.requiresAuth) {
-            var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
-
-            // Credentials for Basic Authentication
-            // Use credentials provided in options first; otherwise used current session creds.
-            var username = options.username || (agaveToken ? agaveToken.get('username') : '');
-            var password;
-
-            switch (method) {
-
-                case 'create':
-                    password = options.password;
-                    break;
-
-                case 'update':
-                    password = agaveToken.get('refresh_token');
-                    break;
-
-                case 'delete':
-                    password = agaveToken.get('access_token');
-                    break;
-            }
-
-
-            // Allow user-provided before send, but protect ours, too.
-            if (options.beforeSend) {
-                options._beforeSend = options.beforeSend;
-            }
-            options.beforeSend = function(xhr) {
-                if (options._beforeSend) {
-                    options._beforeSend(xhr);
-                }
-                xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username + ':' + password));
-            };
-        }
-
-        // Call default sync
-        return Backbone.sync(method, model, options);
-    };
 
     Agave.sync = function(method, model, options) {
         options.url = model.apiRoot + (options.url || _.result(model, 'url'));
@@ -214,7 +170,6 @@
                 //console.log("result is: " + JSON.stringify(response));
 
                 response.result = this.parseDate(response.result);
-                console.log("result after is: " + JSON.stringify(response));
 
                 if (response.result.length > 0) {
 
@@ -238,11 +193,7 @@
                 var lastModified = result[i].lastModified;
                 var lastModifiedUnixTime = moment(lastModified, dateFormat);
                 result[i].lastModified = lastModifiedUnixTime;
-
-                console.log("loop running: " + result[i].lastModified);
             };
-
-            console.log("parseDate result is: " + JSON.stringify(result));
 
             return result;
         }
@@ -272,7 +223,6 @@
         }
     });
 
-console.log("date is: " + Date.now());
 
     // Required Auth package
     var Auth = Agave.Auth = {};
@@ -288,31 +238,50 @@ console.log("date is: " + Date.now());
         },
         apiRoot: Agave.authRoot,
         url: '/token',
-        requiresAuth: true,
         sync: function(method, model, options) {
+
+            options.url = model.apiRoot + (options.url || _.result(model, 'url'));
+            var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
+
+            // Credentials for Basic Authentication
+            // Use credentials provided in options first; otherwise used current session creds.
+            var username = options.username || (agaveToken ? agaveToken.get('username') : '');
+            var password;
 
             switch (method) {
 
                 case 'create':
-                    //options.url = model.url;
                     options.type = 'POST';
+                    password = options.password;
                     break;
 
                 case 'update':
-                    console.log("sync method is PUT");
                     options.url = model.url + '/' + model.get('refresh_token');
                     options.type = 'PUT';
+                    password = agaveToken.get('refresh_token');
                     break;
 
                 case 'delete':
-                    console.log("sync method is DELETE");
                     options.url = model.url + '/' + model.get('access_token');
                     options.type = 'DELETE';
+                    password = agaveToken.get('access_token');
                     break;
             }
 
+            // Allow user-provided before send, but protect ours, too.
+            if (options.beforeSend) {
+                options._beforeSend = options.beforeSend;
+            }
+
+            options.beforeSend = function(xhr) {
+                if (options._beforeSend) {
+                    options._beforeSend(xhr);
+                }
+                xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username + ':' + password));
+            };
+
             // Call default sync
-            return Agave.tokenSync(method, model, options);
+            return Backbone.sync(method, model, options);
         },
         parse: function(response) {
 
