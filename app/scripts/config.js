@@ -15,7 +15,6 @@ require.config({
 
         // Backbone Extensions
         'backbone-agave':  'vendor/backbone-agave/backbone-agave',
-        'backbone-vdj':    'vendor/backbone-vdj/backbone-vdj',
 
         // Agave - Models
         'agave-new-account': 'models/agave-new-account',
@@ -111,13 +110,6 @@ require.config({
         'agave-projects': {
             deps: ['backbone', 'backbone-agave', 'agave-project'],
             exports: 'Backbone.Agave.Collection.Projects'
-        },
-
-
-        // VDJ
-        'backbone-vdj': {
-            deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Vdj'
         }
     }
 });

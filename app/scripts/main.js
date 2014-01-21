@@ -21,7 +21,6 @@ define([
     'agave-profile',
 
     // VDJ
-    'backbone-vdj',
     'models/message',
     'models/form',
 
