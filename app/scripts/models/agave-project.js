@@ -23,34 +23,19 @@
             );
         },
         initialize: function() {
-            this.users = new Backbone.Agave.Collection.Permissions();
+            this.users = new Backbone.Agave.Collection.ProjectUsers();
+
+            var that = this;
+            this.on('change add', function() {
+
+                var uuid = that.get('uuid');
+                if (uuid) {
+                    that.users.setUuid(uuid);
+                }
+            });
         },
         url: function() {
             return '/meta/v2/data/' + this.get('uuid');
-        },
-        addUserToProject: function(username) {
-
-            //var users = _.uniq(this.get('users'));
-            var users = this.get('users');
-
-            if (! _.contains(users, username)) {
-                users.push(username);
-
-                this.set('users', users);
-            }
-
-
-
-        },
-        removeUserFromProject: function(username) {
-
-            var users = this.get('users');
-
-            if (_.contains(users, username)) {
-                users = _.without(users, username);
-
-                this.set('users', users);
-            }
         }
     });
 

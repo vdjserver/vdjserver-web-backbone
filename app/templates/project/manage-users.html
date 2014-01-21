@@ -24,16 +24,16 @@
                 </tr>
             </thead>
             <tbody>
-                {{#each project.users}}
+                {{#users}}
                     <tr>
                         <td>
-                            {{this}}
+                            {{this.username}}
                         </td>
                         <td>
                             <button class="btn btn-danger remove-user-from-project">Delete</button>
                         </td>
                     </tr>
-                {{/each}}
+                {{/users}}
             </tbody>
         </table>
     </div>

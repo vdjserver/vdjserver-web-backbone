@@ -11,7 +11,7 @@
     Projects = Backbone.Agave.MetadataCollection.extend({
         model: Backbone.Agave.Model.Project,
         url: function() {
-            return '/meta/v2/data?q=' + encodeURIComponent('{"owner":' + '"' + this.agaveToken.get('username') + '","name":"project"}');
+            return '/meta/v2/data?q=' + encodeURIComponent('{"name":"project"}');
         }
     });
 

@@ -247,14 +247,23 @@ define(['app'], function(App) {
             this.modelId = parameters.projectId;
             this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
 
+            var that = this;
+            this.model.users.fetch({
+                success: function() {
+
+                    console.log('users are: ' + JSON.stringify(that.model.users.toJSON()));
+                    that.render();
+                },
+                error: function() {
+                    console.log("user fetch fail");
+                }
+            });
+
         },
         serialize: function() {
-            console.log("model check: " + JSON.stringify(this.model.toJSON()));
-            if (this.model) {
-                return {
-                    project: this.model.toJSON()
-                };
-            }
+            return {
+                users: this.model.users.toJSON()
+            };
         },
         events: {
             'submit form': 'addUserToProject',
@@ -266,8 +275,23 @@ define(['app'], function(App) {
             var username = $('#add-username').val();
             console.log("username is: " + username);
 
-            this.model.addUserToProject(username);
-
+            var that = this;
+            var newUser = this.model.users.create(
+                {
+                    username: username,
+                    uuid: this.model.get('uuid')
+                },
+                {
+                    success: function() {
+                        console.log("save success");
+                        that.model.users.add(newUser);
+                        that.render();
+                    },
+                    error: function() {
+                        console.log("save error");
+                    }
+                }
+            );
 
         },
         removeUserFromProject: function(e) {

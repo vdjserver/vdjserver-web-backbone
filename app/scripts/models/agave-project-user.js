@@ -11,14 +11,16 @@
     ProjectUser = Backbone.Agave.Model.extend({
         defaults: {
             uuid: '',
-            permission: {
-                read:  false,
-                write: false
-            },
-            username: ''
+            username: '',
+            permission: 'READ_WRITE'
         },
         url: function() {
             return '/meta/v2/data/' + this.get('uuid') + '/pems/' + this.get('username');
+        },
+        sync: function(method, model, options) {
+            
+            options.emulateHTTP = true;
+            return Backbone.Agave.sync(method, model, options);
         }
     });
 
