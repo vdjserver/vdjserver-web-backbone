@@ -13,11 +13,12 @@ define([
     'agave-new-account',
     'agave-io',
 
-    'agave-metadata-permission',
-    'agave-metadata-permissions',
-    'agave-profile',
+    'agave-project-user',
+    'agave-project-users',
     'agave-project',
     'agave-projects',
+
+    'agave-profile',
 
     // VDJ
     'backbone-vdj',

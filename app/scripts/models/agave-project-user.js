@@ -6,9 +6,9 @@
     //var $ = window.$;
     //var _ = window._;
 
-    var MetadataPermission = {};
+    var ProjectUser = {};
 
-    MetadataPermission = Backbone.Agave.Model.extend({
+    ProjectUser = Backbone.Agave.Model.extend({
         defaults: {
             uuid: '',
             permission: {
@@ -22,6 +22,6 @@
         }
     });
 
-    Backbone.Agave.Model.MetadataPermission = MetadataPermission;
-    return MetadataPermission;
+    Backbone.Agave.Model.ProjectUser = ProjectUser;
+    return ProjectUser;
 })(this);
