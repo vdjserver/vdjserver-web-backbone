@@ -7,7 +7,7 @@ define(['app'], function(App) {
     Profile.Login = Backbone.View.extend({
         template: 'profile/login',
         initialize: function() {
-            window.scrollTo(0.0);
+            $('html,body').animate({scrollTop:0});
         }
     });
 

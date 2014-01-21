@@ -7,7 +7,7 @@ define(['app'], function(App) {
     Projects.Login = Backbone.View.extend({
         template: 'project/login',
         initialize: function() {
-            window.scrollTo(0.0);
+            $('html,body').animate({scrollTop:0});
         }
     });
 
@@ -84,7 +84,7 @@ define(['app'], function(App) {
     Projects.Index = Backbone.View.extend({
         template: 'project/index',
         initialize: function() {
-            window.scrollTo(0.0);
+            $('html,body').animate({scrollTop:0});
         }
     });
 
