@@ -9,6 +9,7 @@ define(['app'], function(App) {
         template: 'account/create-account-form',
         initialize: function() {
             this.model = new Backbone.Agave.Model.NewAccount();
+            this.modalIsShowing = false;
         },
         afterRender: function() {
             this.setupModalView();
@@ -56,29 +57,39 @@ define(['app'], function(App) {
 
                 $('#modal-message').on('shown.bs.modal', function() {
 
-                    that.model.save(
-                        formData,
-                        {
-                            success: function() {
+                    if (that.modalIsShowing === false) {
+                        that.modalIsShowing = true;
+                        that.model.save(
+                            formData,
+                            {
+                                success: function() {
 
-                                $('#modal-message').on('hidden.bs.modal', function() {
+                                    $('#modal-message').on('hidden.bs.modal', function() {
 
-                                    App.router.navigate('/auth/login', {
-                                        trigger: true
+                                        that.modalIsShowing = false;
+
+                                        App.router.navigate('/auth/login', {
+                                            trigger: true
+                                        });
+
                                     });
 
-                                });
+                                    $('#modal-message').modal('hide');
+                                },
+                                error: function() {
 
-                                $('#modal-message').modal('hide');
-                            },
-                            error: function() {
-
-                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
-                                $('#password').val('');
-                                $('#modal-message').modal('hide');
+                                    that.model.destroy({
+                                        success: function() {
+                                            that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
+                                            $('#password').val('');
+                                            $('#modal-message').modal('hide');
+                                            that.modalIsShowing = false;
+                                        }
+                                    });
+                                }
                             }
-                        }
-                    );
+                        );
+                    }
                 });
 
                 $('#modal-message').modal('show');
@@ -86,7 +97,7 @@ define(['app'], function(App) {
             else {
                 this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Username and Password are required.').fadeIn());
             }
-            return false;
+
         }
     });
 
