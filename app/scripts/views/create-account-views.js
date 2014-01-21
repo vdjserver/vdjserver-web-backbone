@@ -9,7 +9,6 @@ define(['app'], function(App) {
         template: 'account/create-account-form',
         initialize: function() {
             this.model = new Backbone.Agave.Model.NewAccount();
-            this.modalIsShowing = false;
         },
         afterRender: function() {
             this.setupModalView();
@@ -49,47 +48,38 @@ define(['app'], function(App) {
                 return false;
             }
 
-            delete formData.passwordCheck;
-
             if (formData.username && formData.password && formData.email) {
 
+                this.setupModalView();
                 var that = this;
 
                 $('#modal-message').on('shown.bs.modal', function() {
 
-                    if (that.modalIsShowing === false) {
-                        that.modalIsShowing = true;
-                        that.model.save(
-                            formData,
-                            {
-                                success: function() {
+                    that.model.save(
+                        {
+                            username: formData.username,
+                            password: formData.password,
+                            email:    formData.email
+                        },
+                        {
+                            success: function() {
 
-                                    $('#modal-message').on('hidden.bs.modal', function() {
+                                $('#modal-message').on('hidden.bs.modal', function() {
 
-                                        that.modalIsShowing = false;
-
-                                        App.router.navigate('/auth/login', {
-                                            trigger: true
-                                        });
-
+                                    App.router.navigate('/auth/login', {
+                                        trigger: true
                                     });
 
-                                    $('#modal-message').modal('hide');
-                                },
-                                error: function() {
+                                });
 
-                                    that.model.destroy({
-                                        success: function() {
-                                            that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
-                                            $('#password').val('');
-                                            $('#modal-message').modal('hide');
-                                            that.modalIsShowing = false;
-                                        }
-                                    });
-                                }
+                                $('#modal-message').modal('hide');
+                            },
+                            error: function() {
+                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
+                                $('#modal-message').modal('hide');
                             }
-                        );
-                    }
+                        }
+                    );
                 });
 
                 $('#modal-message').modal('show');
@@ -97,7 +87,6 @@ define(['app'], function(App) {
             else {
                 this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Username and Password are required.').fadeIn());
             }
-
         }
     });
 
