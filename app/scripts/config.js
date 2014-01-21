@@ -14,7 +14,7 @@ require.config({
         'underscore':       '../bower_components/underscore/underscore',
 
         // Backbone Extensions
-        'backbone-agave':  'vendor/backbone-agave/backbone-agave',
+        'backbone-agave':  'vendor/backbone-agave',
 
         // Agave - Models
         'agave-new-account': 'models/agave-new-account',
