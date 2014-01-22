@@ -33,60 +33,91 @@ define(['app'], function(App) {
         events: {
             'submit form': 'submitForm'
         },
+        validateForm: function(formData) {
+
+            this.model.set(formData);
+
+            this.model.isValid()
+            var errors = this.model.validationError;
+
+            return errors;
+        },
+        displayFormErrors: function(formErrors) {
+
+            // Clear out old errors
+            //this.$el.find('.alert-danger').fadeOut(function() {
+            $('.alert-danger').fadeOut(function() {
+                this.remove();
+            });
+
+            $('.form-group').removeClass('has-error');
+
+            // Display any new errors
+            if (_.isArray(formErrors)) {
+
+                for (var i = 0; i < formErrors.length; i++) {
+                    var message = formErrors[i].message;
+                    var type    = formErrors[i].type;
+
+                    this.$el.find('.alerts').end().before($('<div class="alert alert-danger">').text(message).fadeIn());
+                    $('#' + type + '-container').addClass('has-error');
+                };
+            }
+        },
         submitForm: function(e) {
 
             e.preventDefault();
 
-            this.$el.find('.alert-danger').fadeOut(function() {
-                this.remove();
-            });
-
             var formData = Backbone.Syphon.serialize(this);
+            var formErrors = this.validateForm(formData);
 
-            if (formData.password !== formData.passwordCheck) {
-                this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Passwords do not match.').fadeIn());
+            this.displayFormErrors(formErrors);
+
+            if (_.isArray(formErrors)) {
                 return false;
             }
 
-            if (formData.username && formData.password && formData.email) {
+            console.log("passwordCheck 3");
 
-                this.setupModalView();
-                var that = this;
+            // Reset modal view - otherwise it inadvertently gets duplicated
+            this.setupModalView();
 
-                $('#modal-message').on('shown.bs.modal', function() {
+            var that = this;
 
-                    that.model.save(
-                        {
-                            username: formData.username,
-                            password: formData.password,
-                            email:    formData.email
-                        },
-                        {
-                            success: function() {
+            $('#modal-message').on('shown.bs.modal', function() {
 
-                                $('#modal-message').on('hidden.bs.modal', function() {
+                that.model.save(
+                    {
+                        username: formData.username,
+                        password: formData.password,
+                        email:    formData.email
+                    },
+                    {
+                        success: function() {
 
-                                    App.router.navigate('/auth/login', {
-                                        trigger: true
-                                    });
+                            console.log("model save ok");
+                            $('#modal-message').on('hidden.bs.modal', function() {
 
+                                console.log("modal internal ok");
+
+                                App.router.navigate('/auth/login', {
+                                    trigger: true
                                 });
 
-                                $('#modal-message').modal('hide');
-                            },
-                            error: function() {
-                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
-                                $('#modal-message').modal('hide');
-                            }
-                        }
-                    );
-                });
+                            });
 
-                $('#modal-message').modal('show');
-            }
-            else {
-                this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Username and Password are required.').fadeIn());
-            }
+                            $('#modal-message').modal('hide');
+                            console.log("modal hide ok");
+                        },
+                        error: function() {
+                            that.$el.find('.alerts').remove().end().before($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
+                            $('#modal-message').modal('hide');
+                        }
+                    }
+                );
+            });
+
+            $('#modal-message').modal('show');
         }
     });
 
