@@ -276,6 +276,12 @@ define(['app'], function(App) {
             var username = $('#add-username').val();
             console.log("username is: " + username);
 
+            // Check that username exists
+            
+
+            // Check that username isn't already on project
+
+
             var that = this;
             var newUser = this.model.users.create(
                 {

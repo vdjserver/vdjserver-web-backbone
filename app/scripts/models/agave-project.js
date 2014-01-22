@@ -15,6 +15,7 @@
                 Backbone.Agave.MetadataModel.prototype.defaults,
                 {
                     name: 'project',
+                    owner: '',
                     value: {
                         'name':  '',
                         'files': []
@@ -29,8 +30,10 @@
             this.on('change add', function() {
 
                 var uuid = that.get('uuid');
+                var owner = that.get('owner');
                 if (uuid) {
                     that.users.setUuid(uuid);
+                    that.users.setOwner(owner);
                 }
             });
         },
