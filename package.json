@@ -26,6 +26,7 @@
         "grunt-open":      "0.2.x",
         "grunt-requirejs": "0.4.x",
         "grunt-usemin":    "0.1.x",
+        "jshint-stylish":  "0.1.x",
         "load-grunt-tasks": "0.2.x",
         "time-grunt": "0.2.x"
     },
