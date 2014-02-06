@@ -61,8 +61,6 @@
                 });
             }
 
-            console.log("substr check is: " + attributes.username.indexOf(attributes.password));
-
             if (attributes.username.length > 0 &&
                 attributes.password.length > 0 &&
                 attributes.username.indexOf(attributes.password) >= 0)

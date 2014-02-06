@@ -91,7 +91,6 @@ define(['app'], function(App) {
                     that.model.save(
                         formData,
                         {
-                            password: formData.password,
                             url: that.model.getSaveUrl(),
                             success: function() {
 
@@ -108,7 +107,6 @@ define(['app'], function(App) {
                             error: function() {
 
                                 that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Profile update failed. Please try again.').fadeIn());
-                                $('#password').val('');
                                 $('#modal-message').modal('hide');
                             }
                         }
