@@ -13,12 +13,15 @@ require.config({
         'moment':           '../bower_components/moment/moment',
         'underscore':       '../bower_components/underscore/underscore',
 
+        // Config
+        'environment-config': 'config/environment-config',
+
         // Backbone Extensions
         'backbone-agave':  'vendor/backbone-agave',
 
         // Agave - Models
         'agave-new-account': 'models/agave-new-account',
-        'agave-io':      'models/agave-io',
+        'agave-io': 'models/agave-io',
 
         // Agave - Metadata Models
         'agave-project-user':  'models/agave-project-user',
@@ -73,7 +76,7 @@ require.config({
 
         // Agave
         'backbone-agave': {
-            deps: ['backbone'],
+            deps: ['backbone', 'environment-config'],
             exports: 'Backbone.Agave'
         },
 

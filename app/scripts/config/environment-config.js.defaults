@@ -1,0 +1,6 @@
+var config = {};
+
+config.agaveRoot   = 'https://wso2-elb.tacc.utexas.edu';
+config.vdjauthRoot = 'https://vdj-dev.tacc.utexas.edu:8443';
+
+module.exports = config;

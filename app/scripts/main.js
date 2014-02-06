@@ -8,6 +8,9 @@ define([
     'backbone.syphon',
     'moment',
 
+    // Config
+    'environment-config',
+
     // Agave
     'backbone-agave',
     'agave-new-account',

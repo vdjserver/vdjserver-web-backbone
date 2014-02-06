@@ -58,10 +58,8 @@
         }
     });
 
-    Agave.apiRoot    = 'https://wso2-elb.tacc.utexas.edu'; // VDJ tenant
-    //Agave.apiRoot    = 'https://agave.iplantc.org'; // iplant tenant
-    Agave.authRoot   = 'http://localhost:8443';
-
+    Agave.apiRoot     = EnvironmentConfig.agaveRoot;
+    Agave.vdjauthRoot = EnvironmentConfig.vdjauthRoot;
 
     Agave.sync = function(method, model, options) {
         options.url = model.apiRoot + (options.url || _.result(model, 'url'));
@@ -236,7 +234,7 @@
             'refresh_token': null,
             'access_token':  null,
         },
-        apiRoot: Agave.authRoot,
+        apiRoot: Agave.vdjauthRoot,
         url: '/token',
         sync: function(method, model, options) {
 
