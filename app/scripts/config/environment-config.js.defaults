@@ -1,3 +1,6 @@
+
+'use strict';
+
 var EnvironmentConfig = {};
 
 EnvironmentConfig.agaveRoot   = 'https://wso2-elb.tacc.utexas.edu';
