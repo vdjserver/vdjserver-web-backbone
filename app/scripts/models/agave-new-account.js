@@ -15,7 +15,7 @@
             passwordCheck: '',
             email:     ''
         },
-        apiRoot: Backbone.Agave.authRoot,
+        apiRoot: Backbone.Agave.vdjauthRoot,
         url: function() {
             return '/user';
         },
