@@ -2,7 +2,7 @@
     "name": "vdjserver-backbone",
     "version": "1.0.0",
     "dependencies": {
-        "backbone":         "1.1.x",
+        "backbone":         "1.1.0",
         "backbone.analytics": "*",
         "backbone.syphon":  "0.4.x",
         "font-awesome":     "4.0.x",
