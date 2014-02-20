@@ -2,6 +2,15 @@ define(['app'], function(App) {
 
     'use strict';
 
+    Handlebars.registerHelper('ManageUsersShouldDisableDelete', function(data, options) {
+
+        if (data.username === 'VDJAuth' || data.isOwner) {
+            return options.fn();
+        }
+
+        return options.inverse();
+    });
+
     var Projects = {};
 
     Projects.Login = Backbone.View.extend({
@@ -21,6 +30,7 @@ define(['app'], function(App) {
 
             App.Datastore.Collection.ProjectCollection.fetch({
                 success: function() {
+
                     App.Datastore.Collection.ProjectCollection.on('change add remove destroy', function() {
 
                         that.render();
@@ -139,10 +149,6 @@ define(['app'], function(App) {
             }
             else {
 
-                var username = App.Agave.token().get('username');
-                formData.members = [];
-                formData.members.push(username);
-
                 this.setupModalView();
                 var that = this;
 
@@ -154,15 +160,29 @@ define(['app'], function(App) {
                             url: that.model.getCreateUrl(),
                             success: function(model) {
 
-                                $('#modal-message').on('hidden.bs.modal', function() {
-                                    App.Datastore.Collection.ProjectCollection.add(model, {merge: true});
+                                // Set VDJAuth Permissions
+                                model.users.create(
+                                    model.users.getVDJAuthPermissions(),
+                                    {
+                                        success: function() {
 
-                                    App.router.navigate('/project/' + model.get('uuid'), {
-                                        trigger: true
-                                    });
-                                });
+                                            $('#modal-message')
+                                                .modal('hide')
+                                                .on('hidden.bs.modal', function() {
+                                                    App.Datastore.Collection.ProjectCollection.add(model, {merge: true});
 
-                                $('#modal-message').modal('hide');
+                                                    App.router.navigate('/project/' + model.get('uuid'), {
+                                                        trigger: true
+                                                    });
+                                                });
+                                        },
+                                        error: function() {
+                                            $('#modal-message').modal('hide');
+                                        }
+                                    }
+                                );
+
+
                             },
                             error: function(/* model, xhr, options */) {
                                 that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
@@ -184,7 +204,9 @@ define(['app'], function(App) {
         initialize: function(parameters) {
             this.modelId = parameters.projectId;
             this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
-            console.log("model is: " + JSON.stringify(this.model));
+
+            // Set VDJAuth Permissions
+            this.model.users.create(this.model.users.getVDJAuthPermissions());
         },
         serialize: function() {
             if (this.model) {
@@ -251,8 +273,6 @@ define(['app'], function(App) {
             var that = this;
             this.model.users.fetch({
                 success: function() {
-
-                    console.log('users are: ' + JSON.stringify(that.model.users.toJSON()));
                     that.render();
                 },
                 error: function() {
@@ -277,7 +297,7 @@ define(['app'], function(App) {
             console.log("username is: " + username);
 
             // Check that username exists
-            
+
 
             // Check that username isn't already on project
 

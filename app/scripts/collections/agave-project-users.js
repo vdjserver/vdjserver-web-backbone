@@ -21,10 +21,16 @@
             this.uuid = uuid;
         },
         getOwner: function() {
-            return this.owner; 
+            return this.owner;
         },
         setOwner: function(owner) {
             this.owner = owner;
+        },
+        getVDJAuthPermissions: function() {
+            return {
+                username: 'VDJAuth',
+                uuid: this.getUuid()
+            };
         },
         model: Backbone.Agave.Model.ProjectUser,
         url: function() {

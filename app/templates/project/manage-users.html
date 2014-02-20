@@ -30,11 +30,11 @@
                             {{this.username}}
                         </td>
                         <td>
-                            {{#if isOwner}}
+                            {{#ManageUsersShouldDisableDelete this}}
                                 <button class="btn btn-danger remove-user-from-project" data-id="{{username}}" disabled="disabled">Delete</button>
                             {{else}}
                                 <button class="btn btn-danger remove-user-from-project" data-id="{{username}}">Delete</button>
-                            {{/if}}
+                            {{/ManageUsersShouldDisableDelete}}
                         </td>
                     </tr>
                 {{/users}}
