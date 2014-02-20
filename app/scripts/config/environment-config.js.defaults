@@ -3,5 +3,5 @@
 
 var EnvironmentConfig = {};
 
-EnvironmentConfig.agaveRoot   = 'https://wso2-elb.tacc.utexas.edu';
+EnvironmentConfig.agaveRoot   = 'https://agave-vdj.tacc.utexas.edu';
 EnvironmentConfig.vdjauthRoot = 'https://vdj-dev.tacc.utexas.edu:8443';
