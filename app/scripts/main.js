@@ -27,6 +27,9 @@ define([
     'models/message',
     'models/form',
 
+    // Handlebars Helpers
+    'handlebars-utilities',
+
     // Views
     'app-views',
     'form-views',

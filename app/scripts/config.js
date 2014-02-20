@@ -34,6 +34,9 @@ require.config({
         // Misc.
         'fileSaver': 'vendor/fileSaver',
 
+        // Handlebars Helpers
+        'handlebars-utilities':   'views/handlebars-helpers/handlebars-utilities',
+
         // Views
         'app-views': 'views/app/app-views',
         'form-views': 'views/app/form-views',

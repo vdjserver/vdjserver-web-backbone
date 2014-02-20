@@ -156,7 +156,9 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
             });
         },
         Layouts:     {},
-        Views:       {},
+        Views:       {
+            HandlebarsHelpers: {}
+        },
         Models:      {},
         Collections: {},
         Routers:     {}
