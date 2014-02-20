@@ -152,47 +152,47 @@ define(['app'], function(App) {
                 this.setupModalView();
                 var that = this;
 
-                $('#modal-message').on('shown.bs.modal', function() {
+                $('#modal-message')
+                    .modal('show')
+                    .on('shown.bs.modal', function() {
 
-                    that.model.save(
-                        formData,
-                        {
-                            url: that.model.getCreateUrl(),
-                            success: function(model) {
+                        that.model.save(
+                            formData,
+                            {
+                                url: that.model.getCreateUrl(),
+                                success: function(model) {
 
-                                // Set VDJAuth Permissions
-                                model.users.create(
-                                    model.users.getVDJAuthPermissions(),
-                                    {
-                                        success: function() {
+                                    // Set VDJAuth Permissions
+                                    model.users.create(
+                                        model.users.getVDJAuthPermissions(),
+                                        {
+                                            success: function() {
 
-                                            $('#modal-message')
-                                                .modal('hide')
-                                                .on('hidden.bs.modal', function() {
-                                                    App.Datastore.Collection.ProjectCollection.add(model, {merge: true});
+                                                $('#modal-message')
+                                                    .modal('hide')
+                                                    .on('hidden.bs.modal', function() {
+                                                        App.Datastore.Collection.ProjectCollection.add(model, {merge: true});
 
-                                                    App.router.navigate('/project/' + model.get('uuid'), {
-                                                        trigger: true
+                                                        App.router.navigate('/project/' + model.get('uuid'), {
+                                                            trigger: true
+                                                        });
                                                     });
-                                                });
-                                        },
-                                        error: function() {
-                                            $('#modal-message').modal('hide');
+                                            },
+                                            error: function() {
+                                                $('#modal-message').modal('hide');
+                                            }
                                         }
-                                    }
-                                );
+                                    );
 
 
-                            },
-                            error: function(/* model, xhr, options */) {
-                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
-                                $('#modal-message').modal('hide');
+                                },
+                                error: function(/* model, xhr, options */) {
+                                    that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
+                                    $('#modal-message').modal('hide');
+                                }
                             }
-                        }
-                    );
-                });
-
-                $('#modal-message').modal('show');
+                        );
+                    });
             }
 
             return false;

@@ -65,35 +65,35 @@ define(['app'], function(App) {
 
                 var that = this;
 
-                $('#modal-message').on('shown.bs.modal', function() {
+                $('#modal-message')
+                    .modal('show')
+                    .on('shown.bs.modal', function() {
 
-                    that.model.save(
-                        formData,
-                        {
-                            password: formData.password,
-                            success: function() {
+                        that.model.save(
+                            formData,
+                            {
+                                password: formData.password,
+                                success: function() {
 
-                                $('#modal-message').on('hidden.bs.modal', function() {
+                                    $('#modal-message')
+                                        .modal('hide')
+                                        .on('hidden.bs.modal', function() {
 
-                                    App.router.navigate('/project', {
-                                        trigger: true
-                                    });
+                                            App.router.navigate('/project', {
+                                                trigger: true
+                                            });
 
-                                });
+                                        });
+                                },
+                                error: function() {
 
-                                $('#modal-message').modal('hide');
-                            },
-                            error: function() {
-
-                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Authentication failed.  Please check your username and password.').fadeIn());
-                                $('#password').val('');
-                                $('#modal-message').modal('hide');
+                                    that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Authentication failed.  Please check your username and password.').fadeIn());
+                                    $('#password').val('');
+                                    $('#modal-message').modal('hide');
+                                }
                             }
-                        }
-                    );
-                });
-
-                $('#modal-message').modal('show');
+                        );
+                    });
             }
             else {
                 this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Username and Password are required.').fadeIn());

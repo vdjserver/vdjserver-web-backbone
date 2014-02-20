@@ -86,34 +86,25 @@ define(['app'], function(App) {
                 this.setupModalView();
                 var that = this;
 
-                $('#modal-message').on('shown.bs.modal', function() {
+                $('#modal-message')
+                    .modal('show')
+                    .on('shown.bs.modal', function() {
 
-                    that.model.save(
-                        formData,
-                        {
-                            url: that.model.getSaveUrl(),
-                            success: function() {
+                        that.model.save(
+                            formData,
+                            {
+                                url: that.model.getSaveUrl(),
+                                success: function() {
+                                    $('#modal-message').modal('hide');
+                                },
+                                error: function() {
 
-                                $('#modal-message').on('hidden.bs.modal', function() {
-/*
-                                    App.router.navigate('/', {
-                                        trigger: true
-                                    });
-*/
-                                });
-
-                                $('#modal-message').modal('hide');
-                            },
-                            error: function() {
-
-                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Profile update failed. Please try again.').fadeIn());
-                                $('#modal-message').modal('hide');
+                                    that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Profile update failed. Please try again.').fadeIn());
+                                    $('#modal-message').modal('hide');
+                                }
                             }
-                        }
-                    );
-                });
-
-                $('#modal-message').modal('show');
+                        );
+                    });
             }
             else {
                 console.log('ran into else...');

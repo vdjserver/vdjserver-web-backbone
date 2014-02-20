@@ -84,40 +84,40 @@ define(['app'], function(App) {
 
             var that = this;
 
-            $('#modal-message').on('shown.bs.modal', function() {
+            $('#modal-message')
+                .modal('show')
+                .on('shown.bs.modal', function() {
 
-                that.model.save(
-                    {
-                        username: formData.username,
-                        password: formData.password,
-                        email:    formData.email
-                    },
-                    {
-                        success: function() {
-
-                            console.log("model save ok");
-                            $('#modal-message').on('hidden.bs.modal', function() {
-
-                                console.log("modal internal ok");
-
-                                App.router.navigate('/auth/login', {
-                                    trigger: true
-                                });
-
-                            });
-
-                            $('#modal-message').modal('hide');
-                            console.log("modal hide ok");
+                    that.model.save(
+                        {
+                            username: formData.username,
+                            password: formData.password,
+                            email:    formData.email
                         },
-                        error: function() {
-                            that.$el.find('.alerts').remove().end().before($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
-                            $('#modal-message').modal('hide');
-                        }
-                    }
-                );
-            });
+                        {
+                            success: function() {
 
-            $('#modal-message').modal('show');
+                                console.log("model save ok");
+                                $('#modal-message')
+                                    .modal('hide')
+                                    .on('hidden.bs.modal', function() {
+
+                                        console.log("modal internal ok");
+
+                                        App.router.navigate('/auth/login', {
+                                            trigger: true
+                                        });
+
+                                    });
+
+                            },
+                            error: function() {
+                                that.$el.find('.alerts').remove().end().before($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
+                                $('#modal-message').modal('hide');
+                            }
+                        }
+                    );
+                });
         }
     });
 
