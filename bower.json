@@ -13,7 +13,7 @@
         "moment":           "2.5.x",
         "requirejs":        "2.1.x",
         "sass-bootstrap":   "3.0.x",
-        "underscore":       "1.5.x"
+        "underscore":       "1.6.x"
     },
     "devDependencies": {}
 }

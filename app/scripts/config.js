@@ -69,10 +69,6 @@ require.config({
             deps: ['backbone'],
             exports: 'layoutmanager'
         },
-        'underscore': {
-            exports: '_'
-        },
-
 
         // Agave
         'backbone-agave': {
