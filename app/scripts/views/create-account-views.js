@@ -77,8 +77,6 @@ define(['app'], function(App) {
                 return false;
             }
 
-            console.log("passwordCheck 3");
-
             // Reset modal view - otherwise it inadvertently gets duplicated
             this.setupModalView();
 
@@ -97,12 +95,9 @@ define(['app'], function(App) {
                         {
                             success: function() {
 
-                                console.log("model save ok");
                                 $('#modal-message')
                                     .modal('hide')
                                     .on('hidden.bs.modal', function() {
-
-                                        console.log("modal internal ok");
 
                                         App.router.navigate('/auth/login', {
                                             trigger: true

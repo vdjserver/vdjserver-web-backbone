@@ -11,6 +11,7 @@ require.config({
         'jquery':           '../bower_components/jquery/dist/jquery',
         'layoutmanager':    '../bower_components/layoutmanager/backbone.layoutmanager',
         'moment':           '../bower_components/moment/moment',
+        'typeahead':        '../bower_components/typeahead.js/dist/typeahead.bundle',
         'underscore':       '../bower_components/underscore/underscore',
 
         // Config
@@ -22,6 +23,8 @@ require.config({
         // Agave - Models
         'agave-new-account': 'models/agave-new-account',
         'agave-io': 'models/agave-io',
+        'agave-user': 'models/agave-user',
+        'agave-users': 'collections/agave-users',
 
         // Agave - Metadata Models
         'agave-project-user':  'models/agave-project-user',
@@ -58,12 +61,11 @@ require.config({
             exports: 'Backbone'
         },
         'backbone.syphon': {
-            deps: ['backbone'],
-            exports: 'Backbone'
+            deps: ['backbone']
+            //exports: 'Backbone'
         },
         'bootstrap': {
-            deps: ['jquery'],
-            exports: 'jquery'
+            deps: ['jquery']
         },
         'handlebars': {
             exports: 'Handlebars'
@@ -71,6 +73,9 @@ require.config({
         'layoutmanager': {
             deps: ['backbone'],
             exports: 'layoutmanager'
+        },
+        'typeahead': {
+            deps: ['jquery']
         },
 
         // Agave
@@ -87,6 +92,15 @@ require.config({
         'agave-io': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.IO'
+        },
+
+        'agave-user': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.User'
+        },
+        'agave-users': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Collection.Users'
         },
 
         // Agave - Metadata Models

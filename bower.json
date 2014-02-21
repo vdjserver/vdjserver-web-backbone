@@ -12,8 +12,12 @@
         "modernizr":        "2.7.x",
         "moment":           "2.5.x",
         "requirejs":        "2.1.x",
+        "typeahead.js":     "0.10.x",
         "sass-bootstrap":   "3.0.x",
         "underscore":       "1.6.x"
     },
-    "devDependencies": {}
+    "devDependencies": {},
+    "resolutions": {
+        "jquery": "2.1.x"
+    }
 }

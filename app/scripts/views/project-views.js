@@ -5,10 +5,10 @@ define(['app'], function(App) {
     Handlebars.registerHelper('ManageUsersShouldDisableDelete', function(data, options) {
 
         if (data.username === 'VDJAuth' || data.isOwner) {
-            return options.fn();
+            return options.fn(data);
         }
 
-        return options.inverse();
+        return options.inverse(data);
     });
 
     var Projects = {};
@@ -272,13 +272,59 @@ define(['app'], function(App) {
 
             var that = this;
             this.model.users.fetch({
-                success: function() {
+                success: function(projectUsers) {
                     that.render();
+
+                    that.vdjUsers = new Backbone.Agave.Collection.Users();
+                    that.vdjUsers.fetch({
+                        success: function(vdjUsers) {
+                            that.usernameTypeahead(projectUsers, vdjUsers);
+                        }
+                    });
                 },
                 error: function() {
                     console.log("user fetch fail");
                 }
             });
+        },
+        usernameTypeahead: function(projectUsers, vdjUsers) {
+
+            // Prune users that shouldn't be in typeahead.
+            var vdjUsernames = vdjUsers.pluck('username');
+            var projectUsernames = projectUsers.pluck('username');
+
+            vdjUsernames = _.difference(vdjUsernames, projectUsernames);
+
+            // Instantiate the bloodhound suggestion engine
+            var usernameSuggestionEngine = new Bloodhound({
+                datumTokenizer: function(data) {
+                    return Bloodhound.tokenizers.whitespace(data);
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                local: vdjUsernames
+            });
+
+            // Initialize the bloodhound suggestion engine
+            usernameSuggestionEngine.initialize()
+                .done(function() {
+
+                    // Instantiate the typeahead UI
+                    $('#add-username').typeahead(
+                        {
+                            minLength: 1,
+                            highlight: true
+                        },
+                        {
+                            displayKey: function(value) {
+                                return value;
+                            },
+                            source: usernameSuggestionEngine.ttAdapter()
+                        }
+                    );
+                })
+                .fail(function() {
+                    // Do or do not do, there is no try
+                });
 
         },
         serialize: function() {
@@ -294,12 +340,8 @@ define(['app'], function(App) {
             e.preventDefault();
 
             var username = $('#add-username').val();
-            console.log("username is: " + username);
 
-            // Check that username exists
-
-
-            // Check that username isn't already on project
+            // TODO: Check that username exists
 
 
             var that = this;
@@ -313,6 +355,7 @@ define(['app'], function(App) {
                         console.log("save success");
                         that.model.users.add(newUser);
                         that.render();
+                        that.usernameTypeahead(that.model.users, that.vdjUsers);
                     },
                     error: function() {
                         console.log("save error");
@@ -334,6 +377,7 @@ define(['app'], function(App) {
                 success: function() {
                     console.log('user destroy ok');
                     that.render();
+                    that.usernameTypeahead(that.model.users, that.vdjUsers);
                 },
                 error: function() {
                     console.log("user destroy fail");

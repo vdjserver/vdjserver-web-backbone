@@ -6,7 +6,8 @@ define([
     'jquery',
     'bootstrap',
     'backbone.syphon',
-    'moment',
+    //'moment',
+    'typeahead',
 
     // Config
     'environment-config',
@@ -15,6 +16,9 @@ define([
     'backbone-agave',
     'agave-new-account',
     'agave-io',
+
+    'agave-user',
+    'agave-users',
 
     'agave-project-user',
     'agave-project-users',

@@ -161,11 +161,7 @@
         },
         parse: function(response) {
 
-            console.log('model parse running');
-
             if (response.status === 'success' && response.result) {
-
-                //console.log("result is: " + JSON.stringify(response));
 
                 response.result = this.parseDate(response.result);
 
@@ -283,7 +279,6 @@
         },
         parse: function(response) {
 
-            console.log("response is: " + JSON.stringify(response));
             if (response && response.status === 'success') {
 
                 // Convert human readable dates to unix time
@@ -291,7 +286,6 @@
                 this.isFetched = true;
 
                 response.result.expires = response.result.expires_in + (Date.now() / 1000);
-                console.log("resp result exp is: " + response.result.expires);
                 return response.result;
             }
 
