@@ -6,6 +6,7 @@ define([
     'jquery',
     'bootstrap',
     'backbone.syphon',
+    'flow',
     //'moment',
     'typeahead',
 
