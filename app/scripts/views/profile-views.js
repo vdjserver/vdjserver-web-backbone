@@ -25,15 +25,14 @@ define(['app'], function(App) {
             this.fetchComplete = false;
 
             var that = this;
-            this.model.fetch({
-                success: function() {
+            this.model.fetch()
+                .done(function() {
                     that.setupViews();
-                },
-                error: function() {
+                })
+                .fail(function() {
                     console.log('fetch error');
                     that.setupViews();
-                }
-            });
+                });
         },
         setupViews: function() {
             this.fetchComplete = true;
@@ -90,20 +89,15 @@ define(['app'], function(App) {
                     .modal('show')
                     .on('shown.bs.modal', function() {
 
-                        that.model.save(
-                            formData,
-                            {
-                                url: that.model.getSaveUrl(),
-                                success: function() {
-                                    $('#modal-message').modal('hide');
-                                },
-                                error: function() {
-
-                                    that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Profile update failed. Please try again.').fadeIn());
-                                    $('#modal-message').modal('hide');
-                                }
-                            }
-                        );
+                        that.model
+                            .save(formData, {url: that.model.getSaveUrl()})
+                            .done(function() {
+                                $('#modal-message').modal('hide');
+                            })
+                            .fail(function() {
+                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Profile update failed. Please try again.').fadeIn());
+                                $('#modal-message').modal('hide');
+                            });
                     });
             }
             else {

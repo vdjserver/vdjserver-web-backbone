@@ -28,8 +28,8 @@ define(['app'], function(App) {
 
             var that = this;
 
-            App.Datastore.Collection.ProjectCollection.fetch({
-                success: function() {
+            App.Datastore.Collection.ProjectCollection.fetch()
+                .done(function() {
 
                     App.Datastore.Collection.ProjectCollection.on('change add remove destroy', function() {
 
@@ -37,11 +37,10 @@ define(['app'], function(App) {
                     });
 
                     that.render();
-                },
-                error: function() {
+                })
+                .fail(function() {
 
-                }
-            });
+                });
         },
         serialize: function() {
             return {
@@ -156,42 +155,27 @@ define(['app'], function(App) {
                     .modal('show')
                     .on('shown.bs.modal', function() {
 
-                        that.model.save(
-                            formData,
-                            {
-                                url: that.model.getCreateUrl(),
-                                success: function(model) {
+                        that.model
+                            .save(formData, {url: that.model.getCreateUrl()})
+                            .done(function() {
 
-                                    // Set VDJAuth Permissions
-                                    model.users.create(
-                                        model.users.getVDJAuthPermissions(),
-                                        {
-                                            success: function() {
+                                // Set VDJAuth Permissions - no need to verify for success because this is self-healing
+                                var vdjAuthPermissions = that.model.users.create(that.model.users.getVDJAuthPermissions());
 
-                                                $('#modal-message')
-                                                    .modal('hide')
-                                                    .on('hidden.bs.modal', function() {
-                                                        App.Datastore.Collection.ProjectCollection.add(model, {merge: true});
+                                $('#modal-message')
+                                    .modal('hide')
+                                    .on('hidden.bs.modal', function() {
+                                        App.Datastore.Collection.ProjectCollection.add(that.model, {merge: true});
 
-                                                        App.router.navigate('/project/' + model.get('uuid'), {
-                                                            trigger: true
-                                                        });
-                                                    });
-                                            },
-                                            error: function() {
-                                                $('#modal-message').modal('hide');
-                                            }
-                                        }
-                                    );
-
-
-                                },
-                                error: function(/* model, xhr, options */) {
-                                    that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
-                                    $('#modal-message').modal('hide');
-                                }
-                            }
-                        );
+                                        App.router.navigate('/project/' + that.model.get('uuid'), {
+                                            trigger: true
+                                        });
+                                    });
+                            })
+                            .fail(function() {
+                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
+                                $('#modal-message').modal('hide');
+                            });
                     });
             }
 
@@ -222,20 +206,18 @@ define(['app'], function(App) {
         deleteProject: function(e) {
             e.preventDefault();
 
-            this.model.destroy({
-
-                success: function() {
+            this.model.destroy()
+                .done(function() {
                     App.router.navigate('/project', {
                         trigger: true
                     });
-                },
-                error: function() {
+                })
+                .fail(function() {
                     // Agave currently returns what backbone considers to be the 'wrong' http status code
                     App.router.navigate('/project', {
                         trigger: true
                     });
-                }
-            });
+                });
         }
     /*
     ,
@@ -271,21 +253,19 @@ define(['app'], function(App) {
             this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
 
             var that = this;
-            this.model.users.fetch({
-                success: function(projectUsers) {
+            this.model.users.fetch()
+                .done(function() {
                     that.render();
 
                     that.vdjUsers = new Backbone.Agave.Collection.Users();
-                    that.vdjUsers.fetch({
-                        success: function(vdjUsers) {
-                            that.usernameTypeahead(projectUsers, vdjUsers);
-                        }
-                    });
-                },
-                error: function() {
+                    that.vdjUsers.fetch()
+                        .done(function() {
+                            that.usernameTypeahead(that.model.users, that.vdjUsers);
+                        });
+                })
+                .fail(function() {
                     console.log("user fetch fail");
-                }
-            });
+                });
         },
         usernameTypeahead: function(projectUsers, vdjUsers) {
 
@@ -373,16 +353,15 @@ define(['app'], function(App) {
             var user = this.model.users.findWhere({username: username});
 
             var that = this;
-            user.destroy({
-                success: function() {
+            user.destroy()
+                .done(function() {
                     console.log('user destroy ok');
                     that.render();
                     that.usernameTypeahead(that.model.users, that.vdjUsers);
-                },
-                error: function() {
+                })
+                .fail(function() {
                     console.log("user destroy fail");
-                }
-            });
+                });
         }
     });
 

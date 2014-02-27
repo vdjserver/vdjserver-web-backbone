@@ -9,17 +9,22 @@ define(['app'], function(App) {
         template: 'auth/login',
         initialize: function() {
 
+            this.model.destroy();
+            this.render;
+
+            /*
             var that = this;
-            this.model.destroy({
-                success: function() {
+
+            this.model.destroy()
+                .done(function() {
                     console.log("destroyed token ok");
                     that.render();
-                },
-                error: function() {
+                })
+                .fail(function() {
                     console.log("destroyed token fail");
                     that.render();
-                }
-            });
+                });
+                */
         },
         serialize: function() {
             return {
@@ -69,30 +74,24 @@ define(['app'], function(App) {
                     .modal('show')
                     .on('shown.bs.modal', function() {
 
-                        that.model.save(
-                            formData,
-                            {
-                                password: formData.password,
-                                success: function() {
+                        that.model
+                            .save(formData, {password: formData.password})
+                            .done(function() {
+                                $('#modal-message')
+                                    .modal('hide')
+                                    .on('hidden.bs.modal', function() {
 
-                                    $('#modal-message')
-                                        .modal('hide')
-                                        .on('hidden.bs.modal', function() {
-
-                                            App.router.navigate('/project', {
-                                                trigger: true
-                                            });
-
+                                        App.router.navigate('/project', {
+                                            trigger: true
                                         });
-                                },
-                                error: function() {
 
-                                    that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Authentication failed.  Please check your username and password.').fadeIn());
-                                    $('#password').val('');
-                                    $('#modal-message').modal('hide');
-                                }
-                            }
-                        );
+                                    });
+                            })
+                            .fail(function() {
+                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Authentication failed.  Please check your username and password.').fadeIn());
+                                $('#password').val('');
+                                $('#modal-message').modal('hide');
+                            });
                     });
             }
             else {

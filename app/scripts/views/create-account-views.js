@@ -86,32 +86,29 @@ define(['app'], function(App) {
                 .modal('show')
                 .on('shown.bs.modal', function() {
 
-                    that.model.save(
-                        {
+                    that.model
+                        .save({
                             username: formData.username,
                             password: formData.password,
                             email:    formData.email
-                        },
-                        {
-                            success: function() {
+                        })
+                        .done(function() {
 
-                                $('#modal-message')
-                                    .modal('hide')
-                                    .on('hidden.bs.modal', function() {
+                            $('#modal-message')
+                                .modal('hide')
+                                .on('hidden.bs.modal', function() {
 
-                                        App.router.navigate('/auth/login', {
-                                            trigger: true
-                                        });
-
+                                    App.router.navigate('/auth/login', {
+                                        trigger: true
                                     });
 
-                            },
-                            error: function() {
-                                that.$el.find('.alerts').remove().end().before($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
-                                $('#modal-message').modal('hide');
-                            }
-                        }
-                    );
+                                });
+
+                        })
+                        .fail(function() {
+                            that.$el.find('.alerts').remove().end().before($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
+                            $('#modal-message').modal('hide');
+                        });
                 });
         }
     });
