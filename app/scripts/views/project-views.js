@@ -191,6 +191,7 @@ define(['app'], function(App) {
 
             // Set VDJAuth Permissions
             this.model.users.create(this.model.users.getVDJAuthPermissions());
+
         },
         serialize: function() {
             if (this.model) {
@@ -199,9 +200,22 @@ define(['app'], function(App) {
                 };
             }
         },
+        afterRender: function() {
+            console.log("calling afterRender");
+/*
+            // File Drop
+            var dropZone = document.getElementById('file-drop');
+            dropZone.addEventListener('dragover', this.fileDrag, false);
+            dropZone.addEventListener('drop', this.fileDrop, false);
+*/
+            var flow = new Flow();
+            flow.assignBrowse(document.getElementById('file-drop'));
+            flow.assignDrop(document.getElementById('file-drop'));
+
+            flow.on('fileAdded', this.flowAddFile);
+        },
         events: {
-            'click .delete-project': 'deleteProject',
-            'click #file-upload': 'fileUpload'
+            'click .delete-project': 'deleteProject'
         },
         deleteProject: function(e) {
             e.preventDefault();
@@ -218,7 +232,22 @@ define(['app'], function(App) {
                         trigger: true
                     });
                 });
+        },
+        flowAddFile: function(file, event) {
+            console.log("fileAdded!");
         }
+        /*
+        fileDrag: function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+        },
+        fileDrop: function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            console.log("fileDrop ok!");
+        }
+        */
     /*
     ,
         fileUpload: function(e) {
