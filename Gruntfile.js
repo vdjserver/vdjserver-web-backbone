@@ -1,12 +1,18 @@
+
 'use strict';
 
 var LIVERELOAD_PORT  = 35730;
 var SERVER_PORT      = 9001;
 var TEST_SERVER_PORT = 9002;
+
+// modRewrite for livereload
+var modRewrite = require('connect-modrewrite');
+
 var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
 var mountFolder = function (connect, dir) {
     return connect.static(require('path').resolve(dir));
 };
+
 
 // # Globbing
 // for performance reasons we're only matching one level down:
@@ -21,6 +27,7 @@ module.exports = function(grunt) {
 
     // load all grunt tasks
     require('load-grunt-tasks')(grunt);
+
 
     // configurable paths
     var yeomanConfig = {
@@ -70,7 +77,11 @@ module.exports = function(grunt) {
             livereload: {
                 options: {
                     middleware: function(connect) {
+
                         return [
+                            modRewrite([
+                                '!\\.eot|\\.svg|\\.otf|\\.jpg|\\.ttf|\\.ico|\\.woff|\\.html|\\.js|\\.css|\\.png$ /index.html [L]'
+                            ]),
                             lrSnippet,
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, yeomanConfig.app)
@@ -105,30 +116,17 @@ module.exports = function(grunt) {
                 path: 'http://localhost:<%= connect.options.port %>'
             }
         },
+
+
+
+        bower: {
+            all: {
+                rjsConfig: '<%= yeoman.app %>/scripts/config.js'
+            }
+        },
         clean: {
             dist: ['.tmp', '<%= yeoman.dist %>/*'],
             server: '.tmp'
-        },
-        jshint: {
-            options: {
-                jshintrc: '.jshintrc',
-                reporter: require('jshint-stylish')
-            },
-            all: [
-                'Gruntfile.js',
-                '{.tmp,<%= yeoman.app %>}/scripts/**/*.js',
-                '!<%= yeoman.app %>/scripts/vendor/*',
-                'test/spec/{,*/}*.js'
-            ]
-        },
-        mocha: {
-            all: {
-                options: {
-                    run: true,
-                    reporter: 'Spec',
-                    urls: ['http://localhost:<%= connect.options.port %>/test/index.html']
-                }
-            }
         },
         coffee: {
             dist: {
@@ -160,12 +158,53 @@ module.exports = function(grunt) {
                 javascriptsDir: '<%= yeoman.app %>/scripts',
                 fontsDir: '<%= yeoman.app %>/styles/fonts',
                 importPath: '<%= yeoman.app %>/bower_components',
+                httpImagesPath: '/images',
                 relativeAssets: true
             },
             dist: {},
             server: {
                 options: {
                     debugInfo: true
+                }
+            }
+        },
+        concat: {
+            dist: {
+                src: [
+                    '<%= yeoman.dist %>/scripts/main.js',
+                    '<%= yeoman.dist %>/scripts/templates.js'
+                ],
+                dest: '<%= yeoman.dist %>/scripts/main.js',
+                separator: ';'
+            }
+        },
+        copy: {
+            dist: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>',
+                        dest: '<%= yeoman.dist %>',
+                        src: [
+                            '*.{ico,txt}',
+                            '.htaccess',
+                            'images/{,*/}*.{webp,gif}',
+                            'styles/fonts/*',
+                            'templates/**',
+                            'bower_components/font-awesome/fonts/*'
+                        ]
+                    }
+                ]
+            }
+        },
+        cssmin: {
+            dist: {
+                files: {
+                    '<%= yeoman.dist %>/styles/main.css': [
+                        '.tmp/styles/{,*/}*.css',
+                        '<%= yeoman.app %>/styles/{,*/}*.css'
+                    ]
                 }
             }
         },
@@ -182,14 +221,58 @@ module.exports = function(grunt) {
                 }
             }
         },
-        concat: {
+        htmlmin: {
             dist: {
-                src: [
-                    '<%= yeoman.dist %>/scripts/main.js',
-                    '<%= yeoman.dist %>/scripts/templates.js'
-                ],
-                dest: '<%= yeoman.dist %>/scripts/main.js',
-                separator: ';'
+                options: {
+                    /*removeCommentsFromCDATA: true,
+                    // https://github.com/yeoman/grunt-usemin/issues/44
+                    //collapseWhitespace: true,
+                    collapseBooleanAttributes: true,
+                    removeAttributeQuotes: true,
+                    removeRedundantAttributes: true,
+                    useShortDoctype: true,
+                    removeEmptyAttributes: true,
+                    removeOptionalTags: true*/
+                },
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>',
+                    src: '*.html',
+                    dest: '<%= yeoman.dist %>'
+                }]
+            }
+        },
+        imagemin: {
+            dist: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>/images',
+                        dest: '<%= yeoman.dist %>/images',
+                        src: '{,*/}*.{png,jpg,jpeg}'
+                    }
+                ]
+            }
+        },
+        jshint: {
+            options: {
+                jshintrc: '.jshintrc',
+                reporter: require('jshint-stylish')
+            },
+            all: [
+                'Gruntfile.js',
+                '{.tmp,<%= yeoman.app %>}/scripts/**/*.js',
+                '!<%= yeoman.app %>/scripts/vendor/*',
+                'test/spec/{,*/}*.js'
+            ]
+        },
+        mocha: {
+            all: {
+                options: {
+                    run: true,
+                    reporter: 'Spec',
+                    urls: ['http://localhost:<%= connect.options.port %>/test/index.html']
+                }
             }
         },
         requirejs: {
@@ -223,74 +306,7 @@ module.exports = function(grunt) {
             html: ['<%= yeoman.dist %>/{,*/}*.html'],
             css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
             options: {
-                dirs: ['<%= yeoman.dist %>']
-            }
-        },
-        imagemin: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>/images',
-                    src: '{,*/}*.{png,jpg,jpeg}',
-                    dest: '<%= yeoman.dist %>/images'
-                }]
-            }
-        },
-        cssmin: {
-            dist: {
-                files: {
-                    '<%= yeoman.dist %>/styles/main.css': [
-                        '.tmp/styles/{,*/}*.css',
-                        '<%= yeoman.app %>/styles/{,*/}*.css'
-                    ]
-                }
-            }
-        },
-        htmlmin: {
-            dist: {
-                options: {
-                    /*removeCommentsFromCDATA: true,
-                    // https://github.com/yeoman/grunt-usemin/issues/44
-                    //collapseWhitespace: true,
-                    collapseBooleanAttributes: true,
-                    removeAttributeQuotes: true,
-                    removeRedundantAttributes: true,
-                    useShortDoctype: true,
-                    removeEmptyAttributes: true,
-                    removeOptionalTags: true*/
-                },
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>',
-                    src: '*.html',
-                    dest: '<%= yeoman.dist %>'
-                }]
-            }
-        },
-        // Put files not handled in other tasks here
-        copy: {
-            dist: {
-                files: [
-                    {
-                        expand: true,
-                        dot: true,
-                        cwd: '<%= yeoman.app %>',
-                        dest: '<%= yeoman.dist %>',
-                        src: [
-                            '*.{ico,txt}',
-                            '.htaccess',
-                            'images/{,*/}*.{webp,gif}',
-                            'styles/fonts/*',
-                            'bower_components/font-awesome/fonts/*',
-                            'templates/**'
-                        ]
-                    }
-                ]
-            }
-        },
-        bower: {
-            all: {
-                rjsConfig: '<%= yeoman.app %>/scripts/config.js'
+                assetsDirs: ['<%= yeoman.dist %>','<%= yeoman.dist %>/images']
             }
         }
     });
