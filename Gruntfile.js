@@ -169,13 +169,49 @@ module.exports = function(grunt) {
             }
         },
         concat: {
+            options: {
+                separator: ';'
+            },
+            bootstrapDev: {
+                src: [
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/affix.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/alert.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/button.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/carousel.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/dropdown.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/transition.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/modal.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/tooltip.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/popover.js'
+                ],
+                dest: '<%= yeoman.app %>/scripts/vendor/bootstrap.js'
+            },
+            bootstrapDist: {
+                src: [
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/affix.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/alert.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/button.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/carousel.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/dropdown.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/transition.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/modal.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/tooltip.js',
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/popover.js'
+                ],
+                dest: '<%= yeoman.dist %>/scripts/vendor/bootstrap.js'
+            },
             dist: {
                 src: [
                     '<%= yeoman.dist %>/scripts/main.js',
                     '<%= yeoman.dist %>/scripts/templates.js'
                 ],
-                dest: '<%= yeoman.dist %>/scripts/main.js',
-                separator: ';'
+                dest: '<%= yeoman.dist %>/scripts/main.js'
             }
         },
         copy: {
@@ -327,6 +363,7 @@ module.exports = function(grunt) {
 
         grunt.task.run([
             'clean:server',
+            'concat:bootstrapDev',
             'coffee:dist',
             'compass:server',
             'connect:livereload',
@@ -346,6 +383,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
+        'concat:bootstrapDist',
         'coffee',
         'compass:dist',
         'handlebars',
@@ -353,7 +391,7 @@ module.exports = function(grunt) {
         'requirejs',
         'imagemin',
         'htmlmin',
-        'concat',
+        'concat:dist',
         'cssmin',
         'uglify',
         'copy',

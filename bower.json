@@ -14,7 +14,7 @@
         "moment":           "2.5.x",
         "requirejs":        "2.1.x",
         "typeahead.js":     "0.10.x",
-        "sass-bootstrap":   "3.0.x",
+        "twbs-bootstrap-sass": "3.1.x",
         "underscore":       "1.6.x"
     },
     "devDependencies": {},

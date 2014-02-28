@@ -6,7 +6,7 @@ require.config({
     paths: {
         'backbone':         '../bower_components/backbone/backbone',
         'backbone.syphon':  '../bower_components/backbone.syphon/lib/backbone.syphon',
-        'bootstrap':        '../bower_components/sass-bootstrap/dist/js/bootstrap',
+        'bootstrap':        'vendor/bootstrap',
         'flow':             '../bower_components/flow.js/src/flow',
         'handlebars':       '../bower_components/handlebars/handlebars',
         'jquery':           '../bower_components/jquery/dist/jquery',

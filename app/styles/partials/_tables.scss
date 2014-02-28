@@ -1,14 +1,14 @@
-@import 'sass-bootstrap/lib/bootstrap';
+@import 'twbs-bootstrap-sass/vendor/assets/stylesheets/bootstrap.scss';
 
 .table-without-border {
     @extend .table;
 
-    thead>tr>th, 
-    tbody>tr>th, 
-    tfoot>tr>th, 
-    thead>tr>td, 
-    tbody>tr>td, 
+    thead>tr>th,
+    tbody>tr>th,
+    tfoot>tr>th,
+    thead>tr>td,
+    tbody>tr>td,
     tfoot>tr>td {
-        border-top: none; 
+        border-top: none;
     }
 }
