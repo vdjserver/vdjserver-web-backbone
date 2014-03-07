@@ -2,6 +2,13 @@ define(['app'], function(App) {
 
     'use strict';
 
+    Handlebars.registerHelper('FormatAgaveDate', function(data, options) {
+
+        var formattedDate = moment(data/*, 'YYYY-MM-DDTHH:mm:ssZ'*/).format('D-MMM-YYYY hh:mm');
+
+        return formattedDate;
+    });
+
     Handlebars.registerHelper('ManageUsersShouldDisableDelete', function(data, options) {
 
         if (data.username === 'VDJAuth' || data.isOwner) {
@@ -192,6 +199,8 @@ define(['app'], function(App) {
             // Set VDJAuth Permissions
             this.model.users.create(this.model.users.getVDJAuthPermissions());
 
+            // File Animation Mutex
+            this.firstFileHasBeenAdded = false;
         },
         serialize: function() {
             if (this.model) {
@@ -208,11 +217,7 @@ define(['app'], function(App) {
             dropZone.addEventListener('dragover', this.fileDrag, false);
             dropZone.addEventListener('drop', this.fileDrop, false);
 */
-            var flow = new Flow();
-            flow.assignBrowse(document.getElementById('file-drop'));
-            flow.assignDrop(document.getElementById('file-drop'));
-
-            flow.on('fileAdded', this.flowAddFile);
+            this.setupFlow();
         },
         events: {
             'click .delete-project': 'deleteProject'
@@ -233,8 +238,53 @@ define(['app'], function(App) {
                     });
                 });
         },
-        flowAddFile: function(file, event) {
-            console.log("fileAdded!");
+        setupFlow: function() {
+
+            this.flow = new Flow({
+                target: 'http://localhost:8443'
+            });
+            this.flow.assignBrowse(document.getElementById('file-drop'));
+            this.flow.assignDrop(document.getElementById('file-drop'));
+
+            if (! this.firstFileHasBeenAdded) {
+            
+                var that = this;
+                this.flow.on('fileAdded', function(file, event) {
+
+                    $('#drag-and-drop-box').animate(
+                        {width: '50%'},
+                        2000,
+                        function() {
+
+                            $('#drag-and-drop-box').toggleClass('col-md-12 col-md-6');
+                            $('#file-staging').addClass('col-md-6');
+
+                            that.addStagedFileView(file);
+                        }
+                    );
+                    console.log("file id is: " + file.uniqueIdentifier);
+                    console.log("file is: " + file.name);
+                    console.log("file size is: " + file.size);
+                });
+            }
+            /*
+            this.flow.on('fileSuccess', this.flowSuccess);
+            this.flow.on('fileError',   this.flowError);
+            this.flow.on('progress', function(progress) {
+                console.log("flow progress is: " + progress);
+            });
+            */
+        },
+        addStagedFileView: function(file) {
+
+            var stagedFile = new Backbone.Agave.Model.ProjectFile({
+                name: file.name,
+                length: file.size
+            });
+
+            var fileTransferView = new Projects.FileTransfer({model: stagedFile});
+            this.insertView('#file-staging', fileTransferView);
+            fileTransferView.render();
         }
         /*
         fileDrag: function(e) {
@@ -248,30 +298,16 @@ define(['app'], function(App) {
             console.log("fileDrop ok!");
         }
         */
-    /*
-    ,
-        fileUpload: function(e) {
-            e.preventDefault();
+    });
 
-            var fileInput = document.getElementById('file-input');
-            var file = fileInput.files[0];
+    Projects.FileTransfer = Backbone.View.extend({
+        template: 'project/file-transfer',
+        initialize: function(parameters) {
 
-            var reader = new FileReader();
-
-            var that = this;
-
-            reader.onload = function() {
-
-                image.src = reader.result;
-
-                // Remove other elements
-                //$('#file-input').hide();
-                //$('#file-input-button').hide();
-            };
-
-            reader.readAsDataURL(file);
         },
-        */
+        serialize: function() {
+            return this.model.toJSON()
+        }
     });
 
     Projects.ManageUsers = Backbone.View.extend({

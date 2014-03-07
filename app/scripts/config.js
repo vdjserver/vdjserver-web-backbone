@@ -10,6 +10,7 @@ require.config({
         'flow':             '../bower_components/flow.js/src/flow',
         'handlebars':       '../bower_components/handlebars/handlebars',
         'jquery':           '../bower_components/jquery/dist/jquery',
+        'jquery-ui':        '../bower_components/jquery-ui/ui/jquery-ui',
         'layoutmanager':    '../bower_components/layoutmanager/backbone.layoutmanager',
         'moment':           '../bower_components/moment/moment',
         'typeahead':        '../bower_components/typeahead.js/dist/typeahead.bundle',
@@ -21,11 +22,14 @@ require.config({
         // Backbone Extensions
         'backbone-agave':  'vendor/backbone-agave',
 
+        // Regular Models
+
         // Agave - Models
         'agave-new-account': 'models/agave-new-account',
         'agave-io': 'models/agave-io',
         'agave-user': 'models/agave-user',
         'agave-users': 'collections/agave-users',
+        'agave-project-file': 'models/agave-project-file',
 
         // Agave - Metadata Models
         'agave-project-user':  'models/agave-project-user',
@@ -67,6 +71,10 @@ require.config({
         },
         'bootstrap': {
             deps: ['jquery']
+        },
+        'jquery-ui': {
+            deps: ['jquery'],
+            exports: '$'
         },
         'handlebars': {
             exports: 'Handlebars'
@@ -112,6 +120,10 @@ require.config({
 
 
         // Projects
+        'agave-project-file': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.ProjectFile'
+        },
         'agave-project-user': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.ProjectUser'

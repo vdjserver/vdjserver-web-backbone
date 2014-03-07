@@ -9,6 +9,7 @@
         "font-awesome":     "4.0.x",
         "handlebars":       "1.3.x",
         "jquery":           "2.1.x",
+        "jquery-ui":        "1.10.x",
         "layoutmanager":    "0.9.x",
         "modernizr":        "2.7.x",
         "moment":           "2.5.x",

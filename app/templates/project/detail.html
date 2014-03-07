@@ -16,7 +16,7 @@
                             <strong>Created:</strong>
                         </td>
                         <td>
-                            createdPlaceholder
+                            {{FormatAgaveDate projectDetail.created}}
                         </td>
                     </tr>
                     <tr>
@@ -24,7 +24,7 @@
                             <strong>Last Modified:</strong>
                         </td>
                         <td>
-                            modifiedPlaceholder
+                            {{FormatAgaveDate projectDetail.lastUpdated}}
                         </td>
                     </tr>
                 </tbody>
@@ -142,23 +142,30 @@
         </div>
     </div>
 {{else}}
-    <div class="drag-and-drop-box">
+    <div id="file-container" class="row">
+        <div id="drag-and-drop-box" class="drag-and-drop-box col-md-12">
 
-        <div id="file-drop">
+            <div id="file-drop">
 
-            <span class="background-icon fa fa-upload"></span>
+                <span class="background-icon fa fa-upload"></span>
 
-            Let's Get Started!
-            <div class="">
-                Drag and Drop to Upload Data
+                <h2>Let's Get Started!</h2>
+                <p>
+                    <div class="">
+                        Drag and Drop to Upload Data
+                    </div>
+                    <div>
+                        Or Just Click Here
+                    </div>
+
+                    <div>
+                        (.fastq, .img, .raw, .txt)
+                    </div>
+                </p>
             </div>
-            <div>
-                Or Just Click Here
-            </div>
+        </div>
+        <div id="file-staging">
 
-            <div>
-                (.fastq, .img, .raw, .txt)
-            </div>
         </div>
     </div>
 {{/if}}

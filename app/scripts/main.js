@@ -4,6 +4,7 @@ define([
     'app',
     'handlebars',
     'jquery',
+    'jquery-ui',
     'bootstrap',
     'backbone.syphon',
     'flow',
@@ -23,12 +24,13 @@ define([
 
     'agave-project-user',
     'agave-project-users',
+    'agave-project-file',
     'agave-project',
     'agave-projects',
 
     'agave-profile',
 
-    // VDJ
+    // Regular Models
     'models/message',
     'models/form',
 
