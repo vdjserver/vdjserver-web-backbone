@@ -1,6 +1,12 @@
+# Grunt/npm Files
 node_modules
 .tmp
 dist
 .sass-cache
 app/bower_components
+
+# OS X Noise
 .DS_Store
+
+# App Specific Files
+app/scripts/vendor/bootstrap.js
