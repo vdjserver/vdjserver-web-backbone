@@ -42,6 +42,12 @@
         }
     });
 
+    Project.DirectorySetup = Backbone.Agave.Model.extend({
+        defaults: {
+            projectId: ''
+        }
+    });
+
     Backbone.Agave.Model.Project = Project;
     return Project;
 })(this);

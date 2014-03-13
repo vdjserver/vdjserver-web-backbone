@@ -4,11 +4,13 @@
 
     var Backbone = window.Backbone;
 
-    var ProjectFile = Backbone.Agave.Model.extend({
+    var ProjectFile = Backbone.Agave.FileModel.extend({
         defaults: {
             name: '',
-            length: ''
-        }
+            size: '',
+            fileReference: ''
+        },
+        url: '/files/v2/'
     });
 
     Backbone.Agave.Model.ProjectFile = ProjectFile;

@@ -7,7 +7,6 @@ require.config({
         'backbone':         '../bower_components/backbone/backbone',
         'backbone.syphon':  '../bower_components/backbone.syphon/lib/backbone.syphon',
         'bootstrap':        'vendor/bootstrap',
-        'flow':             '../bower_components/flow.js/src/flow',
         'handlebars':       '../bower_components/handlebars/handlebars',
         'jquery':           '../bower_components/jquery/dist/jquery',
         'jquery-ui':        '../bower_components/jquery-ui/ui/jquery-ui',

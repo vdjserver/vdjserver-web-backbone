@@ -133,6 +133,10 @@
         }
     });
 
+    Agave.FileModel = Agave.Model.extend({
+        sync: Agave.fileSync
+    });
+
     Agave.MetadataModel = Agave.Model.extend({
         constructor: function(attributes, options) {
             if (options && options.agaveToken) {

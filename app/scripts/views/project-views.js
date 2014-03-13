@@ -178,6 +178,8 @@ define(['app'], function(App) {
                                             trigger: true
                                         });
                                     });
+
+                                
                             })
                             .fail(function() {
                                 that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
@@ -209,18 +211,10 @@ define(['app'], function(App) {
                 };
             }
         },
-        afterRender: function() {
-            console.log("calling afterRender");
-/*
-            // File Drop
-            var dropZone = document.getElementById('file-drop');
-            dropZone.addEventListener('dragover', this.fileDrag, false);
-            dropZone.addEventListener('drop', this.fileDrop, false);
-*/
-            this.setupFlow();
-        },
         events: {
-            'click .delete-project': 'deleteProject'
+            'click .delete-project': 'deleteProject',
+            'click #drag-and-drop-box': 'clickFilesSelectorWrapper',
+            'change #files-selector': 'changeFilesSelector'
         },
         deleteProject: function(e) {
             e.preventDefault();
@@ -238,66 +232,75 @@ define(['app'], function(App) {
                     });
                 });
         },
-        setupFlow: function() {
+        afterRender: function() {
+            var dropZone = document.getElementById('drag-and-drop-box');
+            dropZone.addEventListener('dragover', this.fileContainerDrag, false);
 
-            this.flow = new Flow({
-                target: 'http://localhost:8443'
-            });
-            this.flow.assignBrowse(document.getElementById('file-drop'));
-            this.flow.assignDrop(document.getElementById('file-drop'));
-
-            if (! this.firstFileHasBeenAdded) {
-            
-                var that = this;
-                this.flow.on('fileAdded', function(file, event) {
-
-                    $('#drag-and-drop-box').animate(
-                        {width: '50%'},
-                        2000,
-                        function() {
-
-                            $('#drag-and-drop-box').toggleClass('col-md-12 col-md-6');
-                            $('#file-staging').addClass('col-md-6');
-
-                            that.addStagedFileView(file);
-                        }
-                    );
-                    console.log("file id is: " + file.uniqueIdentifier);
-                    console.log("file is: " + file.name);
-                    console.log("file size is: " + file.size);
-                });
-            }
-            /*
-            this.flow.on('fileSuccess', this.flowSuccess);
-            this.flow.on('fileError',   this.flowError);
-            this.flow.on('progress', function(progress) {
-                console.log("flow progress is: " + progress);
-            });
-            */
+            // Using fancy bind trick to keep 'this' context
+            // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener
+            dropZone.addEventListener('drop', this.fileContainerDrop.bind(this), false);
         },
-        addStagedFileView: function(file) {
-
-            var stagedFile = new Backbone.Agave.Model.ProjectFile({
-                name: file.name,
-                length: file.size
-            });
-
-            var fileTransferView = new Projects.FileTransfer({model: stagedFile});
-            this.insertView('#file-staging', fileTransferView);
-            fileTransferView.render();
-        }
-        /*
-        fileDrag: function(e) {
+        clickFilesSelectorWrapper: function(e) {
+            document.getElementById('files-selector').click();
+        },
+        changeFilesSelector: function(e) {
+            var files = e.target.files;
+            this.parseFiles(files);
+        },
+        fileContainerDrag: function(e) {
             e.stopPropagation();
             e.preventDefault();
             e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
         },
-        fileDrop: function(e) {
+        fileContainerDrop: function(e) {
             e.stopPropagation();
             e.preventDefault();
-            console.log("fileDrop ok!");
+
+            var files = e.dataTransfer.files;
+            this.parseFiles(files);
+        },
+        parseFiles: function(files) {
+
+            console.log("running parseFiles: " + JSON.stringify(files));
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                var stagedFile = new Backbone.Agave.Model.ProjectFile({
+                    name: file.name,
+                    size: file.size,
+                    fileReference: file
+                });
+
+                this.addStagedFileView(stagedFile);
+            };
+        },
+        addStagedFileView: function(stagedFile) {
+
+            var fileTransferView = new Projects.FileTransfer({model: stagedFile});
+            
+            if (! this.firstFileHasBeenAdded) {
+                this.firstFileHasBeenAdded = true;
+            
+                var that = this;
+                $('#drag-and-drop-box').animate(
+                    {width: '50%'},
+                    2000,
+                    function() {
+
+                        $('#drag-and-drop-box').toggleClass('col-md-12 col-md-6');
+                        $('#file-staging').addClass('col-md-6');
+
+                        that.insertView('#file-staging', fileTransferView);
+                        fileTransferView.render();
+                    }
+                );
+            }
+            else {
+                this.insertView('#file-staging', fileTransferView);
+                fileTransferView.render();
+            }
         }
-        */
     });
 
     Projects.FileTransfer = Backbone.View.extend({
@@ -307,6 +310,18 @@ define(['app'], function(App) {
         },
         serialize: function() {
             return this.model.toJSON()
+        },
+        events: {
+            'click .cancelUpload': 'cancelUpload',
+            'click .startUpload':  'startUpload'
+        },
+        cancelUpload: function(e) {
+            this.remove();
+        },
+        startUpload: function(e) {
+            console.log("start!");
+
+          
         }
     });
 
