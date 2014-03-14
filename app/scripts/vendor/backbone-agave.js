@@ -95,6 +95,35 @@
         return Agave.sync(method, model, options);
     };
 
+    Agave.fileSync = function(method, model, options) {
+        if (method !== 'create') {
+            return Agave.sync(method, model, options);
+        }
+        else {
+            var url = model.apiRoot + (options.url || _.result(model, 'url'));
+            var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
+
+            var formData = new FormData();
+            formData.append('fileToUpload', model.get('fileReference'));
+
+            var xhr = options.xhr || new XMLHttpRequest();
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
+
+
+            // Listen to the upload progress.
+            xhr.upload.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    var uploadProgress = (e.loaded / e.total) * 100;
+                    model.trigger('uploadProgress', uploadProgress);
+                }
+            };
+
+            xhr.send(formData);
+            return xhr;
+        }
+    };
+
     // Agave extension of default Backbone.Model that uses Agave sync
     Agave.Model = Backbone.Model.extend({
         constructor: function(attributes, options) {

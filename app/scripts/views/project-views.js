@@ -306,7 +306,8 @@ define(['app'], function(App) {
     Projects.FileTransfer = Backbone.View.extend({
         template: 'project/file-transfer',
         initialize: function(parameters) {
-
+            var file = this.model.get('fileReference');
+            console.log("file is: " + JSON.stringify(file));
         },
         serialize: function() {
             return this.model.toJSON()
@@ -319,9 +320,34 @@ define(['app'], function(App) {
             this.remove();
         },
         startUpload: function(e) {
-            console.log("start!");
+            console.log("url is: " + this.model.url);
 
+            var that = this;
+            this.model.on('uploadProgress', function(percentCompleted) {
+                that.uploadProgress(percentCompleted);
+            });
 
+            this.model.save();
+            // TODO: replace w/ promise!
+        },
+        uploadProgress: function(percentCompleted) {
+            percentCompleted = percentCompleted.toFixed(2);
+            percentCompleted += '%';
+
+            $('.progress-bar').width(percentCompleted);
+            $('.progress-bar').text(percentCompleted);
+
+            if (percentCompleted === '100.00%') {
+                this.saveCompleted();
+            }
+
+        },
+        saveCompleted: function() {
+            $('.progress').removeClass('progress-striped active');
+            $('.progress-bar').addClass('progress-bar-success');
+
+            // TODO: update file metadata w/ project metadata
+            // TODO: link file metadata w/ project metadata
         }
     });
 
