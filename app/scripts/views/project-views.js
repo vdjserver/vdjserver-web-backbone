@@ -179,7 +179,7 @@ define(['app'], function(App) {
                                         });
                                     });
 
-                                
+
                             })
                             .fail(function() {
                                 that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
@@ -278,10 +278,10 @@ define(['app'], function(App) {
         addStagedFileView: function(stagedFile) {
 
             var fileTransferView = new Projects.FileTransfer({model: stagedFile});
-            
+
             if (! this.firstFileHasBeenAdded) {
                 this.firstFileHasBeenAdded = true;
-            
+
                 var that = this;
                 $('#drag-and-drop-box').animate(
                     {width: '50%'},
@@ -321,7 +321,7 @@ define(['app'], function(App) {
         startUpload: function(e) {
             console.log("start!");
 
-          
+
         }
     });
 
