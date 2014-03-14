@@ -305,10 +305,6 @@ define(['app'], function(App) {
 
     Projects.FileTransfer = Backbone.View.extend({
         template: 'project/file-transfer',
-        initialize: function(parameters) {
-            var file = this.model.get('fileReference');
-            console.log("file is: " + JSON.stringify(file));
-        },
         serialize: function() {
             return this.model.toJSON()
         },
@@ -320,7 +316,6 @@ define(['app'], function(App) {
             this.remove();
         },
         startUpload: function(e) {
-            console.log("url is: " + this.model.url);
 
             var that = this;
             this.model.on('uploadProgress', function(percentCompleted) {
