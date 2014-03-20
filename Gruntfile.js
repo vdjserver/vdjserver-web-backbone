@@ -189,29 +189,12 @@ module.exports = function(grunt) {
                 ],
                 dest: '<%= yeoman.app %>/scripts/vendor/bootstrap.js'
             },
-            bootstrapDist: {
-                src: [
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/affix.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/alert.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/button.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/carousel.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/dropdown.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/transition.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/modal.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/tooltip.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/popover.js'
-                ],
-                dest: '<%= yeoman.dist %>/scripts/vendor/bootstrap.js'
-            },
             dist: {
-                src: [
+                '<%= yeoman.dist %>/scripts/main.js': [
                     '<%= yeoman.dist %>/scripts/main.js',
                     '<%= yeoman.dist %>/scripts/templates.js'
                 ],
-                dest: '<%= yeoman.dist %>/scripts/main.js'
+                '<%= yeoman.dist %>/scripts/vendor/bootstrap.js': ['<%= yeoman.app %>/scripts/vendor/bootstrap.js']
             }
         },
         copy: {
@@ -332,6 +315,11 @@ module.exports = function(grunt) {
                 }
             }
         },
+        /* Note: this isn't working yet
+        uglify: {
+            'dist/scripts/vendor/bootstrap.js': ['dist/scripts/vendor/bootstrap.js']
+        },
+        */
         useminPrepare: {
             html: '<%= yeoman.app %>/index.html',
             options: {
@@ -383,7 +371,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'concat:bootstrapDist',
         'coffee',
         'compass:dist',
         'handlebars',
@@ -391,7 +378,7 @@ module.exports = function(grunt) {
         'requirejs',
         'imagemin',
         'htmlmin',
-        'concat:dist',
+        'concat',
         'cssmin',
         'uglify',
         'copy',
