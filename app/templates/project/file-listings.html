@@ -1,0 +1,81 @@
+{{#if fileListings}}
+    <div id="file-staging"></div>
+    <div class="row">
+        <div class="col-md-12 table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            Checkmark
+                        </th>
+                        <th>
+                            Title
+                        </th>
+                        <th>
+                            Last Modified
+                        </th>
+                        <th>
+                            Size
+                        </th>
+                        <th>
+                            Type
+                        </th>
+                        <th>
+                            Recent Activity
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each fileListings}}
+                        <tr>
+                            <td>
+                                checkmarkPlaceholder
+                            </td>
+                            <td>
+                                {{name}}
+                            </td>
+                            <td>
+                                {{lastModified}}
+                            </td>
+                            <td>
+                                {{length}}
+                            </td>
+                            <td>
+                                {{mimeType}}
+                            </td>
+                            <td>
+                                recentActivityPlaceholder
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{{else}}
+    <div id="file-container" class="row">
+        <div id="drag-and-drop-box" class="drag-and-drop-box col-md-12">
+
+            <div id="file-drop">
+                <!--<input type="file" id="files-selector" name="files[]" multiple class="hidden" />-->
+
+                <span class="background-icon fa fa-upload"></span>
+
+                <h2>Let's Get Started!</h2>
+                <p>
+                    <div class="">
+                        Drag and Drop to Upload Data
+                    </div>
+                    <div>
+                        Or Just Click Here
+                    </div>
+
+                    <div>
+                        (.fastq, .img, .raw, .txt)
+                    </div>
+                </p>
+            </div>
+        </div>
+        <div id="file-staging"></div>
+    </div>
+{{/if}}

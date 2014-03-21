@@ -195,31 +195,64 @@ define(['app'], function(App) {
     Projects.Detail = Backbone.View.extend({
         template: 'project/detail',
         initialize: function(parameters) {
-            this.modelId = parameters.projectId;
-            this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
+
+            this.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectId);
 
             // Set VDJAuth Permissions
-            this.model.users.create(this.model.users.getVDJAuthPermissions());
+            this.projectModel.users.create(this.projectModel.users.getVDJAuthPermissions());
 
-            // File Animation Mutex
-            this.firstFileHasBeenAdded = false;
+            this.fileListings = new Backbone.Agave.Collection.Files();
+            this.fetchAndRenderFileListings();
+        },
+        fetchAndRenderFileListings: function() {
+
+            // Get File Listings
+            this.loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView('.file-listings', this.loadingView);
+            this.render();
+
+            var that = this;
+            this.fileListings.fetch()
+                .done(function() {
+                    var fileListingsView = new Projects.FileListings({fileListings: that.fileListings});
+
+                    // listen to events on fileListingsView
+                    that.fileListingsViewEvents(fileListingsView);
+
+                    that.insertView('.file-listings', fileListingsView);
+                    that.loadingView.remove();
+
+                    that.render();
+                })
+                .fail(function() {
+                    console.log("file listings failure");
+                });
         },
         serialize: function() {
-            if (this.model) {
+            if (this.projectModel && this.fileListings) {
                 return {
-                    projectDetail: this.model.toJSON()
+                    projectDetail: this.projectModel.toJSON(),
+                    fileListings: this.fileListings.toJSON()
                 };
             }
         },
+        fileListingsViewEvents: function(fileListingsView) {
+
+            var that = this;
+
+            fileListingsView.on('fileDragDrop', function(files) {
+                that.parseFiles(files);
+            });
+        },
         events: {
             'click .delete-project': 'deleteProject',
-            'click #drag-and-drop-box': 'clickFilesSelectorWrapper',
-            'change #files-selector': 'changeFilesSelector'
+            'click #file-upload': 'clickFilesSelectorWrapper',
+            'change #file-dialog': 'changeFilesSelector'
         },
         deleteProject: function(e) {
             e.preventDefault();
 
-            this.model.destroy()
+            this.projectModel.destroy()
                 .done(function() {
                     App.router.navigate('/project', {
                         trigger: true
@@ -232,20 +265,93 @@ define(['app'], function(App) {
                     });
                 });
         },
-        afterRender: function() {
-            var dropZone = document.getElementById('drag-and-drop-box');
-            dropZone.addEventListener('dragover', this.fileContainerDrag, false);
-
-            // Using fancy bind trick to keep 'this' context
-            // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener
-            dropZone.addEventListener('drop', this.fileContainerDrop.bind(this), false);
-        },
         clickFilesSelectorWrapper: function(e) {
-            document.getElementById('files-selector').click();
+            document.getElementById('file-dialog').click();
         },
         changeFilesSelector: function(e) {
             var files = e.target.files;
             this.parseFiles(files);
+        },
+        parseFiles: function(files) {
+
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                var stagedFile = new Backbone.Agave.Model.File({
+                    name: file.name,
+                    length: file.size,
+                    mimeType: file.type,
+                    lastModified: file.lastModifiedDate,
+                    fileReference: file
+                });
+
+                var fileTransferView = new Projects.FileTransfer({model: stagedFile});
+                this.insertView('#file-staging', fileTransferView);
+                fileTransferView.render();
+
+                // listen to events on fileTransferView
+                this.fileTransferViewEvents(fileTransferView);
+            };
+        },
+        fileTransferViewEvents: function(fileTransferView) {
+
+            var that = this;
+
+            fileTransferView.on('viewFinished', function(newFile) {
+
+                $('#file-staging').fadeOut('5000', function() {
+                    fileTransferView.remove();
+
+                    newFile.set({path: '/' + newFile.name});
+                    that.fileListings.add(newFile);
+
+                    var fileListingsView = that.getView('.file-listings');
+                    fileListingsView.fileListings = that.fileListings;
+                    fileListingsView.render();
+                });
+
+            });
+        }
+    });
+
+    Projects.FileListings = Backbone.View.extend({
+        template: 'project/file-listings',
+        initialize: function(parameters) {
+
+
+            // File Animation Mutex
+            this.firstFileHasBeenAdded = false;
+        },
+        serialize: function() {
+            return {
+                fileListings: this.fileListings.toJSON()
+            };
+        },
+        events: {
+            'click #drag-and-drop-box': 'clickFilesSelectorWrapper'
+            //,
+            //'change #files-selector': 'changeFilesSelector'
+        },
+        afterRender: function() {
+            if (this.fileListings.models.length === 0) {
+
+                var dropZone = document.getElementById('drag-and-drop-box');
+                dropZone.addEventListener('dragover', this.fileContainerDrag, false);
+
+                // Using fancy bind trick to keep 'this' context
+                // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener
+                dropZone.addEventListener('drop', this.fileContainerDrop.bind(this), false);
+            }
+        },
+        clickFilesSelectorWrapper: function(e) {
+            /*
+                This actually fires off an event that the parent view will catch.
+                The advantage of doing it this way is that the same file handling
+                logic can be reused no matter how the user is actually uploading
+                the file.
+            */
+            document.getElementById('file-dialog').click();
         },
         fileContainerDrag: function(e) {
             e.stopPropagation();
@@ -257,24 +363,14 @@ define(['app'], function(App) {
             e.preventDefault();
 
             var files = e.dataTransfer.files;
-            this.parseFiles(files);
-        },
-        parseFiles: function(files) {
 
-            console.log("running parseFiles: " + JSON.stringify(files));
+            //Hand off these file handlers to the parent view through this event.
 
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
+            this.trigger("fileDragDrop", files);
+        }
 
-                var stagedFile = new Backbone.Agave.Model.ProjectFile({
-                    name: file.name,
-                    size: file.size,
-                    fileReference: file
-                });
-
-                this.addStagedFileView(stagedFile);
-            };
-        },
+        /*
+        ,
         addStagedFileView: function(stagedFile) {
 
             var fileTransferView = new Projects.FileTransfer({model: stagedFile});
@@ -297,10 +393,12 @@ define(['app'], function(App) {
                 );
             }
             else {
+
                 this.insertView('#file-staging', fileTransferView);
                 fileTransferView.render();
             }
         }
+        */
     });
 
     Projects.FileTransfer = Backbone.View.extend({
@@ -309,8 +407,8 @@ define(['app'], function(App) {
             return this.model.toJSON()
         },
         events: {
-            'click .cancelUpload': 'cancelUpload',
-            'click .startUpload':  'startUpload'
+            'click .cancel-upload': 'cancelUpload',
+            'click .start-upload':  'startUpload'
         },
         cancelUpload: function(e) {
             this.remove();
@@ -322,8 +420,11 @@ define(['app'], function(App) {
                 that.uploadProgress(percentCompleted);
             });
 
+            this.model.on('uploadComplete', function() {
+                that.saveCompleted();
+            });
+
             this.model.save();
-            // TODO: replace w/ promise!
         },
         uploadProgress: function(percentCompleted) {
             percentCompleted = percentCompleted.toFixed(2);
@@ -331,18 +432,15 @@ define(['app'], function(App) {
 
             $('.progress-bar').width(percentCompleted);
             $('.progress-bar').text(percentCompleted);
-
-            if (percentCompleted === '100.00%') {
-                this.saveCompleted();
-            }
-
         },
         saveCompleted: function() {
             $('.progress').removeClass('progress-striped active');
             $('.progress-bar').addClass('progress-bar-success');
 
-            // TODO: update file metadata w/ project metadata
-            // TODO: link file metadata w/ project metadata
+            $('.start-upload').remove();
+            $('.cancel-upload').remove();
+
+            this.trigger('viewFinished', this.model);
         }
     });
 
@@ -433,7 +531,6 @@ define(['app'], function(App) {
                 },
                 {
                     success: function() {
-                        console.log("save success");
                         that.model.users.add(newUser);
                         that.render();
                         that.usernameTypeahead(that.model.users, that.vdjUsers);
@@ -449,7 +546,6 @@ define(['app'], function(App) {
             e.preventDefault();
 
             var username = e.target.dataset.id;
-            console.log("username is: " + username);
 
             var user = this.model.users.findWhere({username: username});
 

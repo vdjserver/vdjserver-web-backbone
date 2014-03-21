@@ -23,11 +23,13 @@ define([
 
     'agave-project-user',
     'agave-project-users',
-    'agave-project-file',
     'agave-project',
     'agave-projects',
 
     'agave-profile',
+
+    'agave-file',
+    'agave-files',
 
     // Regular Models
     'models/message',

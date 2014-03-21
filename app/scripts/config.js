@@ -23,14 +23,16 @@ require.config({
 
         // Regular Models
 
-        // Agave - Models
+        // Agave - Models/Collections
         'agave-new-account': 'models/agave-new-account',
         'agave-io': 'models/agave-io',
         'agave-user': 'models/agave-user',
         'agave-users': 'collections/agave-users',
-        'agave-project-file': 'models/agave-project-file',
 
-        // Agave - Metadata Models
+        'agave-file': 'models/agave-file',
+        'agave-files': 'collections/agave-files',
+
+        // Agave - Metadata Models/Collections
         'agave-project-user':  'models/agave-project-user',
         'agave-project-users': 'collections/agave-project-users',
         'agave-project': 'models/agave-project',
@@ -110,6 +112,14 @@ require.config({
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Collection.Users'
         },
+        'agave-file': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.File'
+        },
+        'agave-files': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Collection.Files'
+        },
 
         // Agave - Metadata Models
         'agave-profile': {
@@ -119,10 +129,6 @@ require.config({
 
 
         // Projects
-        'agave-project-file': {
-            deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.ProjectFile'
-        },
         'agave-project-user': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.ProjectUser'

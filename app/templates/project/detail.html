@@ -60,17 +60,24 @@
             </table>
         </div>
     </div>
- </div>
+</div>
 
 <div class="row">
     <div class="col-md-6">
         <ul class="list-inline">
 
-            <li><button class="btn" id="file-upload"><i class="fa fa-upload"></i></button></li>
-            <!--                <input type="file" id="file-input"> -->
+            <li>
+                <button class="btn" id="file-upload">
+                    <i class="fa fa-upload"></i>
+                    <input type="file" id="file-dialog" name="files[]" multiple class="hidden" />
+                </button>
+            </li>
 
-            <li><button class="btn"><i class="fa fa-file"></i></button></li>
-            <!-- <li><button class="btn btn-info">Share</button></li> -->
+            <li>
+                <button class="btn">
+                    <i class="fa fa-file"></i>
+                </button>
+            </li>
 
             <li>
                 <div class="btn-group">
@@ -94,79 +101,4 @@
     </div>
 </div>
 
-{{#if data}}
-    <div class="row">
-        <div class="col-md-12 table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>
-                            Checkmark
-                        </th>
-                        <th>
-                            Title
-                        </th>
-                        <th>
-                            Last Modified
-                        </th>
-                        <th>
-                            Size
-                        </th>
-                        <th>
-                            Recent Activity
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each data}}
-                        <tr>
-                            <td>
-                                checkmarkPlaceholder
-                            </td>
-                            <td>
-                                titlePlaceholder
-                            </td>
-                            <td>
-                                lastModifiedPlaceholder
-                            </td>
-                            <td>
-                                sizeFieldPlaceholder
-                            </td>
-                            <td>
-                                recentActivityPlaceholder
-                            </td>
-                        </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
-    </div>
-{{else}}
-    <div id="file-container" class="row">
-        <div id="drag-and-drop-box" class="drag-and-drop-box col-md-12">
-
-            <div id="file-drop">
-            <input type="file" id="files-selector" name="files[]" multiple class="hidden" />
-
-                <span class="background-icon fa fa-upload"></span>
-
-                <h2>Let's Get Started!</h2>
-                <p>
-                    <div class="">
-                        Drag and Drop to Upload Data
-                    </div>
-                    <div>
-                        Or Just Click Here
-                    </div>
-
-                    <div>
-                        (.fastq, .img, .raw, .txt)
-                    </div>
-                </p>
-            </div>
-        </div>
-        <div id="file-staging">
-
-        </div>
-    </div>
-{{/if}}
+<div class="file-listings"></div>

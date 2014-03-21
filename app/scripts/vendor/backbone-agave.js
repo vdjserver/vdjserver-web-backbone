@@ -96,7 +96,8 @@
     };
 
     Agave.fileSync = function(method, model, options) {
-        if (method !== 'create') {
+
+        if (method !== 'create' && method !== 'update') {
             return Agave.sync(method, model, options);
         }
         else {
@@ -118,6 +119,10 @@
                     model.trigger('uploadProgress', uploadProgress);
                 }
             };
+
+            xhr.upload.addEventListener('loadend', function(e) {
+                model.trigger('uploadComplete');
+            });
 
             xhr.send(formData);
             return xhr;
