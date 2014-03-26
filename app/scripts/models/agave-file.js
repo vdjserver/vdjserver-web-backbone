@@ -20,7 +20,7 @@
             system: '',
             type: ''
         },
-        url: '/files/v2/media/system/vdjIrods6'
+        url: '/files/v2/media/system/vdjIrods7'
     });
 
     Backbone.Agave.Model.File = File;

@@ -10,7 +10,7 @@
         model: Backbone.Agave.Model.File,
         comparator: 'name',
         url: function() {
-            return '/files/v2/listings/system/vdjIrods6'
+            return '/files/v2/listings/system/vdjIrods7'
         },
         parse: function(response) {
             if (response.result) {
