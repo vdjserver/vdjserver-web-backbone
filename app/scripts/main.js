@@ -18,11 +18,11 @@ define([
     'agave-new-account',
     'agave-io',
 
-    'agave-user',
-    'agave-users',
+    'agave-tenant-user',
+    'agave-tenant-users',
 
-    'agave-project-user',
-    'agave-project-users',
+    'agave-permission',
+    'agave-permissions',
     'agave-project',
     'agave-projects',
 

@@ -108,9 +108,11 @@ define(['app'], function(App) {
         template: 'project/create',
         initialize: function() {
             this.model = new Backbone.Agave.Model.Project();
-            this.model.unset('uuid');
+            console.log("model is: " + this.model);
+            //this.model.unset('uuid');
         },
         afterRender: function() {
+            // TODO: these can probably be moved out to global listening events for this file
             this.setupModalView();
             this.highlightList();
         },
@@ -133,7 +135,6 @@ define(['app'], function(App) {
 
             this.setView('#modal-view', modal);
             modal.render();
-
         },
         events: {
             'submit form': 'submitForm'
@@ -163,11 +164,8 @@ define(['app'], function(App) {
                     .on('shown.bs.modal', function() {
 
                         that.model
-                            .save(formData, {url: that.model.getCreateUrl()})
+                            .save(formData)
                             .done(function() {
-
-                                // Set VDJAuth Permissions - no need to verify for success because this is self-healing
-                                var vdjAuthPermissions = that.model.users.create(that.model.users.getVDJAuthPermissions());
 
                                 $('#modal-message')
                                     .modal('hide')
@@ -178,8 +176,6 @@ define(['app'], function(App) {
                                             trigger: true
                                         });
                                     });
-
-
                             })
                             .fail(function() {
                                 that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
@@ -198,9 +194,7 @@ define(['app'], function(App) {
 
             this.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectId);
 
-            // Set VDJAuth Permissions
-            this.projectModel.users.create(this.projectModel.users.getVDJAuthPermissions());
-
+            // TODO: replace this w/ file metadata fetch via query
             this.fileListings = new Backbone.Agave.Collection.Files();
             this.fetchAndRenderFileListings();
         },
@@ -274,6 +268,7 @@ define(['app'], function(App) {
         },
         parseFiles: function(files) {
 
+            var projectId = this.projectModel.get('uuid');
 
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
@@ -283,6 +278,8 @@ define(['app'], function(App) {
                     length: file.size,
                     mimeType: file.type,
                     lastModified: file.lastModifiedDate,
+                    //permissions: 
+                    projectId: projectId,
                     fileReference: file
                 });
 
@@ -421,7 +418,7 @@ define(['app'], function(App) {
             });
 
             this.model.on('uploadComplete', function() {
-                that.saveCompleted();
+                that.fileUploadCompleted();
             });
 
             this.model.save();
@@ -433,7 +430,8 @@ define(['app'], function(App) {
             $('.progress-bar').width(percentCompleted);
             $('.progress-bar').text(percentCompleted);
         },
-        saveCompleted: function() {
+        fileUploadCompleted: function() {
+            /*
             $('.progress').removeClass('progress-striped active');
             $('.progress-bar').addClass('progress-bar-success');
 
@@ -441,6 +439,9 @@ define(['app'], function(App) {
             $('.cancel-upload').remove();
 
             this.trigger('viewFinished', this.model);
+            */
+
+
         }
     });
 
@@ -451,26 +452,30 @@ define(['app'], function(App) {
             this.modelId = parameters.projectId;
             this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
 
+            this.permissions = new Backbone.Agave.Collection.Permissions({uuid: this.modelId});
+
             var that = this;
-            this.model.users.fetch()
+            this.permissions.fetch()
                 .done(function() {
                     that.render();
 
-                    that.vdjUsers = new Backbone.Agave.Collection.Users();
-                    that.vdjUsers.fetch()
+                    console.log("pems are: " + JSON.stringify(that.permissions));
+                    that.tenantUsers = new Backbone.Agave.Collection.TenantUsers();
+                    that.tenantUsers.fetch()
                         .done(function() {
-                            that.usernameTypeahead(that.model.users, that.vdjUsers);
+                            //console.log("tenantUsers are: " + JSON.stringify(that.tenantUsers));
+                            that.usernameTypeahead(that.permissions, that.tenantUsers);
                         });
                 })
                 .fail(function() {
                     console.log("user fetch fail");
                 });
         },
-        usernameTypeahead: function(projectUsers, vdjUsers) {
+        usernameTypeahead: function(permissions, tenantUsers) {
 
             // Prune users that shouldn't be in typeahead.
-            var vdjUsernames = vdjUsers.pluck('username');
-            var projectUsernames = projectUsers.pluck('username');
+            var vdjUsernames = tenantUsers.pluck('username');
+            var projectUsernames = permissions.pluck('username');
 
             vdjUsernames = _.difference(vdjUsernames, projectUsernames);
 
@@ -508,7 +513,7 @@ define(['app'], function(App) {
         },
         serialize: function() {
             return {
-                users: this.model.users.toJSON()
+                users: this.permissions.toJSON()
             };
         },
         events: {
@@ -524,16 +529,17 @@ define(['app'], function(App) {
 
 
             var that = this;
-            var newUser = this.model.users.create(
+            var newUser = this.permissions.create(
                 {
                     username: username,
-                    uuid: this.model.get('uuid')
+                    permission: 'READ_WRITE',
+                    uuid: this.permissions.uuid
                 },
                 {
                     success: function() {
-                        that.model.users.add(newUser);
+                        that.permissions.add(newUser);
                         that.render();
-                        that.usernameTypeahead(that.model.users, that.vdjUsers);
+                        that.usernameTypeahead(that.permissions, that.tenantUsers);
                     },
                     error: function() {
                         console.log("save error");
@@ -547,14 +553,14 @@ define(['app'], function(App) {
 
             var username = e.target.dataset.id;
 
-            var user = this.model.users.findWhere({username: username});
+            var user = this.permissions.findWhere({username: username});
 
             var that = this;
             user.destroy()
                 .done(function() {
                     console.log('user destroy ok');
                     that.render();
-                    that.usernameTypeahead(that.model.users, that.vdjUsers);
+                    that.usernameTypeahead(that.permissions, that.tenantUsers);
                 })
                 .fail(function() {
                     console.log("user destroy fail");

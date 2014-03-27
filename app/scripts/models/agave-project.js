@@ -3,8 +3,6 @@
     'use strict';
 
     var Backbone = window.Backbone;
-    //var $ = window.$;
-    var _ = window._;
 
     var Project = {};
 
@@ -17,13 +15,13 @@
                     name: 'project',
                     owner: '',
                     value: {
-                        'name':  '',
-                        'files': []
+                        'name':  ''
                     }
                 }
             );
         },
         initialize: function() {
+            /*
             this.users = new Backbone.Agave.Collection.ProjectUsers();
 
             var that = this;
@@ -36,15 +34,29 @@
                     that.users.setOwner(owner);
                 }
             });
+            */
         },
         url: function() {
             return '/meta/v2/data/' + this.get('uuid');
-        }
-    });
+        },
+        sync: function(method, model, options) {
 
-    Project.DirectorySetup = Backbone.Agave.Model.extend({
-        defaults: {
-            projectId: ''
+            if (this.get('uuid') === '') {
+               options.apiRoot = Backbone.Agave.vdjauthRoot;
+               options.url = '/projects';
+
+               var value = this.get('value');
+               var projectName = value['name'];
+               var username    = this.agaveToken.get('username');
+
+               this.clear();
+               this.set({
+                   username: username,
+                   projectName: projectName
+               });
+            }
+
+            return Backbone.Agave.MetadataSync(method, this, options);
         }
     });
 

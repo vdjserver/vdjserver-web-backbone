@@ -62,7 +62,12 @@
     Agave.vdjauthRoot = EnvironmentConfig.vdjauthRoot;
 
     Agave.sync = function(method, model, options) {
-        options.url = model.apiRoot + (options.url || _.result(model, 'url'));
+        
+        var apiRoot = model.apiRoot
+        if (options.apiRoot) {
+            apiRoot = options.apiRoot;
+        }
+        options.url = apiRoot + (options.url || _.result(model, 'url'));
 
         if (model.requiresAuth) {
             var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
@@ -86,7 +91,7 @@
 
     // This is a complete replacement for backbone.sync
     // and is mostly the same as that whenever possible
-    Agave.metadataSync = function(method, model, options) {
+    Agave.MetadataSync = function(method, model, options) {
 
         if (method === 'update') {
             method = 'create';
@@ -119,6 +124,20 @@
                     model.trigger('uploadProgress', uploadProgress);
                 }
             };
+
+/*
+            xhr.upload.addEventListener('error', function(e) {
+                console.log("file error");
+            });
+
+            xhr.upload.addEventListener('abort', function(e) {
+                console.log("file aborted");
+            });
+
+            xhr.upload.addEventListener('load', function(e) {
+                console.log("file complete");
+            });
+*/
 
             xhr.upload.addEventListener('loadend', function(e) {
                 model.trigger('uploadComplete');
@@ -190,7 +209,7 @@
             created: '',
             lastUpdated: ''
         },
-        sync: Agave.metadataSync,
+        sync: Agave.MetadataSync,
         getSaveUrl: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },
@@ -243,7 +262,7 @@
 
             Backbone.Collection.apply(this, arguments);
         },
-        sync: Agave.metadataSync,
+        sync: Agave.MetadataSync,
         getSaveUrl: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },

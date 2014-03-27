@@ -17,10 +17,13 @@
             name: '',
             path: '',
             permissions: '',
+            projectId: '',
             system: '',
             type: ''
         },
-        url: '/files/v2/media/system/vdjIrods7'
+        url: function() {
+            return '/files/v2/media/system/vdjIrods7/' + this.get('projectId') + '/files/';
+        }
     });
 
     Backbone.Agave.Model.File = File;
