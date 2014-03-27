@@ -198,6 +198,37 @@ module.exports = function(grunt) {
             }
         },
         copy: {
+            distImages: {
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        cwd: '<%= yeoman.app %>/bower_components',
+                        dest: '<%= yeoman.dist %>/images',
+                        src: [
+                            '{,*/}*.{png,jpg,jpeg,gif}'
+                        ]
+                    }
+                ]
+            },
+            distStyles: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        flatten: true,
+                        cwd: '<%= yeoman.app %>/bower_components',
+                        dest: '.tmp/styles',
+                        src: [
+                            /* 
+                             * Bower styles can all go here!
+                             * e.g.
+                             *'jcrop/css/jquery.Jcrop.css'
+                             */
+                        ]
+                    }
+                ]
+            },
             dist: {
                 files: [
                     {
@@ -269,6 +300,19 @@ module.exports = function(grunt) {
                         cwd: '<%= yeoman.app %>/images',
                         dest: '<%= yeoman.dist %>/images',
                         src: '{,*/}*.{png,jpg,jpeg}'
+                    },
+                    {
+                        expand: true,
+                        flatten: true,
+                        cwd: '<%= yeoman.app %>/bower_components',
+                        dest: '<%= yeoman.dist %>/images',
+                        src: [
+                            /* 
+                             * Bower images can all go here!
+                             * e.g.
+                             * 'bootstrap-calendar/img/*.{png,jpg,jpeg,gif}',
+                             */
+                        ]
                     }
                 ]
             }
@@ -371,17 +415,20 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
+        'concat:bootstrapDist',
         'coffee',
-        'compass:dist',
+        'copy:distStyles',
+        'compass',
         'handlebars',
         'useminPrepare',
         'requirejs',
         'imagemin',
         'htmlmin',
-        'concat',
+        'concat:dist',
         'cssmin',
         'uglify',
-        'copy',
+        'copy:dist',
+        'copy:distImages',
         'usemin'
     ]);
 
