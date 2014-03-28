@@ -56,7 +56,8 @@ define(['app'], function(App) {
         },
         events: {
             'click .view-project': 'selectProject',
-            'click .manage-users': 'manageUsers'
+            'click .manage-users': 'manageUsers', 
+  //          'click .select-analyses' : 'selectAnalyses'
         },
         selectProject: function(e) {
             e.preventDefault();
@@ -87,6 +88,21 @@ define(['app'], function(App) {
             App.Layouts.main.setView('.content', manageUsersView);
             manageUsersView.render();
         },
+/*        
+        selectAnalyses: function(e) {
+            e.preventDefault();
+			
+            var projectId = e.target.dataset.id;
+
+            App.router.navigate('/project/' + projectId + '/analyses', {
+                trigger: false
+            });
+
+            var selectAnalysesView = new Projects.SelectAnalyses({projectId: projectId});
+            App.Layouts.main.setView('.content', selectAnalysesView);
+            selectAnalysesView.render();
+        },        
+*/
         setProjectActive: function(projectId) {
             $('.list-group-item').removeClass('active');
             $('#' + projectId).addClass('active');
@@ -202,7 +218,7 @@ define(['app'], function(App) {
             this.projectModel.users.create(this.projectModel.users.getVDJAuthPermissions());
 
             this.fileListings = new Backbone.Agave.Collection.Files();
-            this.fetchAndRenderFileListings();
+            //this.fetchAndRenderFileListings(); //Steve -- don't commit this. Temp fix.
         },
         fetchAndRenderFileListings: function() {
 
@@ -561,6 +577,8 @@ define(['app'], function(App) {
                 });
         }
     });
+   
+ //   Projects.SelectAnalyses = Backbone.View.extend({});    
 
     App.Views.Projects = Projects;
     return Projects;

@@ -225,6 +225,7 @@ module.exports = function(grunt) {
                              * e.g.
                              *'jcrop/css/jquery.Jcrop.css'
                              */
+                             'nvd3/nv.d3.css'
                         ]
                     }
                 ]

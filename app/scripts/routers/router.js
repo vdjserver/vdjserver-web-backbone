@@ -21,10 +21,13 @@ define(['app'], function(App) {
             'io/:owner':       'ioBrowser',
             'io/:owner/*path': 'ioBrowser',
 
-            'project':           'projectIndex',
-            'project/create':    'projectCreate',
-            'project/:id':       'projectDetail',
-            'project/:id/users': 'projectManageUsers'
+            'project':              'projectIndex',
+            'project/create':       'projectCreate',
+            'project/:id':          'projectDetail',
+//            'project/:id/analyses': 'projectSelectAnalyses',
+            'project/:id/users':    'projectManageUsers',
+            
+            'analyses/:id':				'selectAnalyses'
         },
 
 
@@ -181,8 +184,19 @@ define(['app'], function(App) {
             }
 
             App.Layouts.main.render();
+        },
+        
+        selectAnalyses: function(projectId) {
+          if (!App.isLoggedIn()) {
+                //App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
+            }
+            else {
+            	var selectAnalysesView = new App.Views.Analyses.SelectAnalyses({projectId: projectId});
+                App.Layouts.main.setView('.content', selectAnalysesView);
+                selectAnalysesView.render();
+            }            
         }
-
     });
 
     App.Routers.DefaultRouter = DefaultRouter;

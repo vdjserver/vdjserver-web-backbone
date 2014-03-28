@@ -12,6 +12,10 @@ define([
 
     // Config
     'environment-config',
+    
+    //d3 and nvd3 libs for JS visualization
+    'd3',
+    'nvd3',
 
     // Agave
     'backbone-agave',
@@ -48,6 +52,7 @@ define([
     'io-views',
     'profile-views',
     'project-views',
+    'analyses-views',
 
     // Routers
     'router'

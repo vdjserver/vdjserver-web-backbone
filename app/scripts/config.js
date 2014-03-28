@@ -14,6 +14,8 @@ require.config({
         'moment':           '../bower_components/moment/moment',
         'typeahead':        '../bower_components/typeahead.js/dist/typeahead.bundle',
         'underscore':       '../bower_components/underscore/underscore',
+        'd3':               '../bower_components/d3/d3.min',
+        'nvd3':             '../bower_components/nvd3/nv.d3.min',
 
         // Config
         'environment-config': 'config/environment-config',
@@ -56,6 +58,7 @@ require.config({
         'io-views': 'views/io-views',
         'profile-views': 'views/profile-views',
         'project-views': 'views/project-views',
+        'analyses-views': 'views/analyses-views',
 
         // Routers
         'router': 'routers/router'
@@ -83,6 +86,10 @@ require.config({
         'layoutmanager': {
             deps: ['backbone'],
             exports: 'layoutmanager'
+        },
+        'nvd3': {
+            deps:['d3'],
+            exports: 'nv'
         },
         'typeahead': {
             deps: ['jquery']
@@ -144,6 +151,12 @@ require.config({
         'agave-projects': {
             deps: ['backbone', 'backbone-agave', 'agave-project'],
             exports: 'Backbone.Agave.Collection.Projects'
-        }
+        },
+        
+        //Analyses
+        'agave-analyses': {
+            deps: ['backbone', 'backbone-agave', 'agave-project'],
+            exports: 'Backbone.Agave.Collection.Analyses'
+        }        
     }
 });

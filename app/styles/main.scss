@@ -5,6 +5,7 @@
 @import 'compass/css3';
 @import 'twbs-bootstrap-sass/vendor/assets/stylesheets/bootstrap.scss';
 @import 'font-awesome/scss/font-awesome';
+@import '/bower_components/nvd3/nv.d3.min.css';
 
 // Modules
 @import 'modules/colors';
@@ -18,3 +19,4 @@
 @import 'partials/icons';
 @import 'partials/tables';
 @import 'partials/boxes';
+@import 'partials/charts';
