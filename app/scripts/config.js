@@ -29,6 +29,9 @@ require.config({
         'agave-tenant-user': 'models/agave-tenant-user',
         'agave-tenant-users': 'collections/agave-tenant-users',
 
+        'agave-file-metadata': 'models/agave-file-metadata',
+        'agave-file-metadatas': 'collections/agave-file-metadatas',
+
         'agave-file': 'models/agave-file',
         'agave-files': 'collections/agave-files',
 
@@ -109,19 +112,29 @@ require.config({
             exports: 'Backbone.Agave.Model.TenantUser'
         },
         'agave-tenant-users': {
-            deps: ['backbone', 'backbone-agave'],
+            deps: ['backbone', 'backbone-agave', 'agave-tenant-user'],
             exports: 'Backbone.Agave.Collection.TenantUsers'
         },
+
+        'agave-file-metadata': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.FileMetadata'
+        },
+        'agave-file-metadatas': {
+            deps: ['backbone', 'backbone-agave', 'agave-file-metadata'],
+            exports: 'Backbone.Agave.Collection.FileMetadatas'
+        },
+
         'agave-file': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.File'
         },
         'agave-files': {
-            deps: ['backbone', 'backbone-agave'],
+            deps: ['backbone', 'backbone-agave', 'agave-file'],
             exports: 'Backbone.Agave.Collection.Files'
         },
 
-        // Agave - Metadata Models
+        // TODO - reorganize these. alphabetically?
         'agave-profile': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.Profile'

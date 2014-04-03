@@ -60,16 +60,16 @@ define(['app'], function(App) {
         },
         selectProject: function(e) {
             e.preventDefault();
-            var projectId = e.target.dataset.id;
+            var projectUuid = e.target.dataset.id;
 
-            this.setProjectActive(projectId);
-            this.openProjectSubmenu(projectId);
+            this.setProjectActive(projectUuid);
+            this.openProjectSubmenu(projectUuid);
 
-            App.router.navigate('/project/' + projectId , {
+            App.router.navigate('/project/' + projectUuid , {
                 trigger: false
             });
 
-            var detailView = new Projects.Detail({projectId: projectId});
+            var detailView = new Projects.Detail({projectUuid: projectUuid});
             App.Layouts.main.setView('.content', detailView);
             detailView.render();
 
@@ -77,23 +77,23 @@ define(['app'], function(App) {
         manageUsers: function(e) {
             e.preventDefault();
 
-            var projectId = e.target.dataset.id;
+            var projectUuid = e.target.dataset.id;
 
-            App.router.navigate('/project/' + projectId + '/users', {
+            App.router.navigate('/project/' + projectUuid + '/users', {
                 trigger: false
             });
 
-            var manageUsersView = new Projects.ManageUsers({projectId: projectId});
+            var manageUsersView = new Projects.ManageUsers({projectUuid: projectUuid});
             App.Layouts.main.setView('.content', manageUsersView);
             manageUsersView.render();
         },
-        setProjectActive: function(projectId) {
+        setProjectActive: function(projectUuid) {
             $('.list-group-item').removeClass('active');
-            $('#' + projectId).addClass('active');
+            $('#' + projectUuid).addClass('active');
         },
-        openProjectSubmenu: function(projectId) {
+        openProjectSubmenu: function(projectUuid) {
             $('.project-submenu').addClass('hidden');
-            $('#' + projectId + '-submenu').removeClass('hidden');
+            $('#' + projectUuid + '-submenu').removeClass('hidden');
         }
     });
 
@@ -108,8 +108,6 @@ define(['app'], function(App) {
         template: 'project/create',
         initialize: function() {
             this.model = new Backbone.Agave.Model.Project();
-            console.log("model is: " + this.model);
-            //this.model.unset('uuid');
         },
         afterRender: function() {
             // TODO: these can probably be moved out to global listening events for this file
@@ -192,10 +190,11 @@ define(['app'], function(App) {
         template: 'project/detail',
         initialize: function(parameters) {
 
-            this.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectId);
+            this.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
 
             // TODO: replace this w/ file metadata fetch via query
-            this.fileListings = new Backbone.Agave.Collection.Files();
+            //this.fileListings = new Backbone.Agave.Collection.Files();
+            this.fileListings = new Backbone.Agave.Collection.FileMetadatas({projectUuid: parameters.projectUuid});
             this.fetchAndRenderFileListings();
         },
         fetchAndRenderFileListings: function() {
@@ -208,6 +207,7 @@ define(['app'], function(App) {
             var that = this;
             this.fileListings.fetch()
                 .done(function() {
+
                     var fileListingsView = new Projects.FileListings({fileListings: that.fileListings});
 
                     // listen to events on fileListingsView
@@ -268,7 +268,7 @@ define(['app'], function(App) {
         },
         parseFiles: function(files) {
 
-            var projectId = this.projectModel.get('uuid');
+            var projectUuid = this.projectModel.get('uuid');
 
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
@@ -278,12 +278,12 @@ define(['app'], function(App) {
                     length: file.size,
                     mimeType: file.type,
                     lastModified: file.lastModifiedDate,
-                    //permissions: 
-                    projectId: projectId,
+                    //permissions:
+                    projectUuid: projectUuid,
                     fileReference: file
                 });
 
-                var fileTransferView = new Projects.FileTransfer({model: stagedFile});
+                var fileTransferView = new Projects.FileTransfer({model: stagedFile, projectUuid: this.projectModel.get('uuid')});
                 this.insertView('#file-staging', fileTransferView);
                 fileTransferView.render();
 
@@ -300,12 +300,15 @@ define(['app'], function(App) {
                 $('#file-staging').fadeOut('5000', function() {
                     fileTransferView.remove();
 
-                    newFile.set({path: '/' + newFile.name});
+                    console.log("newFile is: " + JSON.stringify(newFile));
                     that.fileListings.add(newFile);
 
                     var fileListingsView = that.getView('.file-listings');
                     fileListingsView.fileListings = that.fileListings;
+                    console.log("that.fileListings is: " + JSON.stringify(that.fileListings));
+                    console.log("fileListingsView listings is: " + JSON.stringify(fileListingsView.fileListings));
                     fileListingsView.render();
+                    console.log("just called fileListingsView render");
                 });
 
             });
@@ -318,7 +321,7 @@ define(['app'], function(App) {
 
 
             // File Animation Mutex
-            this.firstFileHasBeenAdded = false;
+            //this.firstFileHasBeenAdded = false;
         },
         serialize: function() {
             return {
@@ -365,41 +368,15 @@ define(['app'], function(App) {
 
             this.trigger("fileDragDrop", files);
         }
-
-        /*
-        ,
-        addStagedFileView: function(stagedFile) {
-
-            var fileTransferView = new Projects.FileTransfer({model: stagedFile});
-
-            if (! this.firstFileHasBeenAdded) {
-                this.firstFileHasBeenAdded = true;
-
-                var that = this;
-                $('#drag-and-drop-box').animate(
-                    {width: '50%'},
-                    2000,
-                    function() {
-
-                        $('#drag-and-drop-box').toggleClass('col-md-12 col-md-6');
-                        $('#file-staging').addClass('col-md-6');
-
-                        that.insertView('#file-staging', fileTransferView);
-                        fileTransferView.render();
-                    }
-                );
-            }
-            else {
-
-                this.insertView('#file-staging', fileTransferView);
-                fileTransferView.render();
-            }
-        }
-        */
     });
 
     Projects.FileTransfer = Backbone.View.extend({
         template: 'project/file-transfer',
+        initialize: function(parameters) {
+            if (parameters && parameters.projectUuid) {
+                this.projectUuid = parameters.projectUuid;
+            }
+        },
         serialize: function() {
             return this.model.toJSON()
         },
@@ -413,15 +390,31 @@ define(['app'], function(App) {
         startUpload: function(e) {
 
             var that = this;
+
             this.model.on('uploadProgress', function(percentCompleted) {
                 that.uploadProgress(percentCompleted);
             });
 
+            /*
             this.model.on('uploadComplete', function() {
                 that.fileUploadCompleted();
             });
+            */
 
-            this.model.save();
+            this.model.save()
+                .done(function(response) {
+
+                    // A quick hack until I figure out how to do this in my custom FileSync function
+                    var parsedJSON = JSON.parse(response);
+                    parsedJSON = parsedJSON['result'];
+                    that.model.set(parsedJSON);
+
+                    that.fileUploadCompleted();
+                })
+                .fail(function() {
+                    console.log("upload fail");
+                });
+
         },
         uploadProgress: function(percentCompleted) {
             percentCompleted = percentCompleted.toFixed(2);
@@ -431,17 +424,62 @@ define(['app'], function(App) {
             $('.progress-bar').text(percentCompleted);
         },
         fileUploadCompleted: function() {
-            /*
-            $('.progress').removeClass('progress-striped active');
-            $('.progress-bar').addClass('progress-bar-success');
 
-            $('.start-upload').remove();
-            $('.cancel-upload').remove();
+            console.log("entering fileUploadCompleted");
+            console.log("model agaveToken is: " + JSON.stringify(this.model.agaveToken));
 
-            this.trigger('viewFinished', this.model);
-            */
+            // VDJAuth saves the day by fixing file pems
+            this.model.syncFilePermissionsWithProjectPermissions()
+                .done(function() {
+                    console.log("filePems save done");
+                })
+                .fail(function() {
+                    console.log("filePems save fail");
+                });
 
+            var associationId = this.model.getAssociationId();
 
+            // Setup file metadata
+            var fileMetadata = new Backbone.Agave.Model.FileMetadata();
+
+            var initialMetadata = {
+                associationIds: [ associationId ],
+                value: {
+                    projectUuid: this.projectUuid,
+                    type: 'uploaded',
+                    name: this.model.get('name'),
+                    length: this.model.get('length'),
+                    mimeType: this.model.get('mimeType')
+                }
+            };
+
+            var that = this;
+            fileMetadata.save(initialMetadata)
+                .done(function() {
+                    console.log("save ok: " + JSON.stringify(fileMetadata));
+
+                    // VDJAuth saves the day by fixing metadata pems
+                    fileMetadata.syncMetadataPermissionsWithProjectPermissions()
+                        .done(function() {
+                            console.log("metadata pems saved");
+                        })
+                        .fail(function() {
+
+                            console.log("metadata pems fail");
+                        });
+
+                    $('.progress').removeClass('progress-striped active');
+                    $('.progress-bar').addClass('progress-bar-success');
+
+                    $('.start-upload').remove();
+                    $('.cancel-upload').remove();
+
+                    that.trigger('viewFinished', fileMetadata);
+
+                })
+                .fail(function() {
+                    console.log("save fail");
+                });
         }
     });
 
@@ -449,7 +487,7 @@ define(['app'], function(App) {
         template: 'project/manage-users',
         initialize: function(parameters) {
 
-            this.modelId = parameters.projectId;
+            this.modelId = parameters.projectUuid;
             this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
 
             this.permissions = new Backbone.Agave.Collection.Permissions({uuid: this.modelId});

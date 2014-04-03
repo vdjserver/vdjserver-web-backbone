@@ -62,7 +62,7 @@
     Agave.vdjauthRoot = EnvironmentConfig.vdjauthRoot;
 
     Agave.sync = function(method, model, options) {
-        
+
         var apiRoot = model.apiRoot
         if (options.apiRoot) {
             apiRoot = options.apiRoot;
@@ -112,6 +112,8 @@
             var formData = new FormData();
             formData.append('fileToUpload', model.get('fileReference'));
 
+            var deferred = $.Deferred();
+
             var xhr = options.xhr || new XMLHttpRequest();
             xhr.open('POST', url, true);
             xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
@@ -126,25 +128,51 @@
             };
 
 /*
-            xhr.upload.addEventListener('error', function(e) {
-                console.log("file error");
-            });
-
-            xhr.upload.addEventListener('abort', function(e) {
-                console.log("file aborted");
-            });
-
-            xhr.upload.addEventListener('load', function(e) {
-                console.log("file complete");
-            });
-*/
-
             xhr.upload.addEventListener('loadend', function(e) {
                 model.trigger('uploadComplete');
             });
+*/
+            xhr.addEventListener('load', function() {
+
+                if (xhr.status = 200) {
+                    var parsedJSON = JSON.parse(xhr.response);
+                    //console.log("parsedJSON is: " + JSON.stringify(parsedJSON));
+                    //model.set(parsedJSON['success']);
+                    deferred.resolve(xhr.response);
+                }
+                else {
+                    deferred.reject('HTTP Error: ' + xhr.status)
+                }
+            }, false);
 
             xhr.send(formData);
-            return xhr;
+            return deferred;
+
+/*
+console.log("about to jxhr");
+
+            var jxhr = $.ajax({
+                url: url,
+                headers: {
+                    'Authorization': 'Bearer' + agaveToken.get('access_token')
+                },
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: 'POST',
+                success: function() {
+                    console.log("success");
+                },
+                error: function() {
+                    console.log("error");
+                }
+            });
+
+console.log("jxhr ok: " + JSON.stringify(jxhr));
+jxhr.submit();
+            return jxhr;
+            */
         }
     };
 
@@ -154,6 +182,7 @@
             if (options && options.agaveToken) {
                 this.agaveToken = options.agaveToken;
             }
+
             Backbone.Model.apply(this, arguments);
         },
         apiRoot: Agave.apiRoot,
@@ -173,6 +202,7 @@
             if (options && options.agaveToken) {
                 this.agaveToken = options.agaveToken;
             }
+
             Backbone.Collection.apply(this, arguments);
         },
         apiRoot: Agave.apiRoot,

@@ -9,9 +9,6 @@
     Files = Backbone.Agave.Collection.extend({
         model: Backbone.Agave.Model.File,
         comparator: 'name',
-        setProjectId: function(projectId) {
-            this.projectId = projectId;
-        },
         url: function() {
             return '/files/v2/listings/system/vdjIrods7'
         },

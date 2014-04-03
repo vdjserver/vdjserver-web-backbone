@@ -415,7 +415,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'concat:bootstrapDist',
+        'concat:bootstrapDev',
         'coffee',
         'copy:distStyles',
         'compass',
