@@ -300,15 +300,11 @@ define(['app'], function(App) {
                 $('#file-staging').fadeOut('5000', function() {
                     fileTransferView.remove();
 
-                    console.log("newFile is: " + JSON.stringify(newFile));
                     that.fileListings.add(newFile);
 
                     var fileListingsView = that.getView('.file-listings');
                     fileListingsView.fileListings = that.fileListings;
-                    console.log("that.fileListings is: " + JSON.stringify(that.fileListings));
-                    console.log("fileListingsView listings is: " + JSON.stringify(fileListingsView.fileListings));
                     fileListingsView.render();
-                    console.log("just called fileListingsView render");
                 });
 
             });
@@ -425,9 +421,6 @@ define(['app'], function(App) {
         },
         fileUploadCompleted: function() {
 
-            console.log("entering fileUploadCompleted");
-            console.log("model agaveToken is: " + JSON.stringify(this.model.agaveToken));
-
             // VDJAuth saves the day by fixing file pems
             this.model.syncFilePermissionsWithProjectPermissions()
                 .done(function() {
@@ -456,7 +449,7 @@ define(['app'], function(App) {
             var that = this;
             fileMetadata.save(initialMetadata)
                 .done(function() {
-                    console.log("save ok: " + JSON.stringify(fileMetadata));
+                    console.log("fileMetadata initial save ok");
 
                     // VDJAuth saves the day by fixing metadata pems
                     fileMetadata.syncMetadataPermissionsWithProjectPermissions()
@@ -478,7 +471,7 @@ define(['app'], function(App) {
 
                 })
                 .fail(function() {
-                    console.log("save fail");
+                    console.log("fileMetadata save fail");
                 });
         }
     });
@@ -497,11 +490,9 @@ define(['app'], function(App) {
                 .done(function() {
                     that.render();
 
-                    console.log("pems are: " + JSON.stringify(that.permissions));
                     that.tenantUsers = new Backbone.Agave.Collection.TenantUsers();
                     that.tenantUsers.fetch()
                         .done(function() {
-                            //console.log("tenantUsers are: " + JSON.stringify(that.tenantUsers));
                             that.usernameTypeahead(that.permissions, that.tenantUsers);
                         });
                 })

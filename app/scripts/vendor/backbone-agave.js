@@ -148,43 +148,11 @@
             xhr.send(formData);
             return deferred;
 
-/*
-console.log("about to jxhr");
-
-            var jxhr = $.ajax({
-                url: url,
-                headers: {
-                    'Authorization': 'Bearer' + agaveToken.get('access_token')
-                },
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                type: 'POST',
-                success: function() {
-                    console.log("success");
-                },
-                error: function() {
-                    console.log("error");
-                }
-            });
-
-console.log("jxhr ok: " + JSON.stringify(jxhr));
-jxhr.submit();
-            return jxhr;
-            */
         }
     };
 
     // Agave extension of default Backbone.Model that uses Agave sync
     Agave.Model = Backbone.Model.extend({
-        constructor: function(attributes, options) {
-            if (options && options.agaveToken) {
-                this.agaveToken = options.agaveToken;
-            }
-
-            Backbone.Model.apply(this, arguments);
-        },
         apiRoot: Agave.apiRoot,
         sync: Agave.sync,
         requiresAuth: true,
@@ -198,13 +166,6 @@ jxhr.submit();
 
     // Agave extension of default Backbone.Collection that uses Agave sync
     Agave.Collection = Backbone.Collection.extend({
-        constructor: function(attributes, options) {
-            if (options && options.agaveToken) {
-                this.agaveToken = options.agaveToken;
-            }
-
-            Backbone.Collection.apply(this, arguments);
-        },
         apiRoot: Agave.apiRoot,
         sync: Agave.sync,
         requiresAuth: true,
@@ -221,16 +182,6 @@ jxhr.submit();
     });
 
     Agave.MetadataModel = Agave.Model.extend({
-        constructor: function(attributes, options) {
-            if (options && options.agaveToken) {
-                this.agaveToken = options.agaveToken;
-            }
-            else {
-                this.agaveToken = Agave.instance.token();
-            }
-
-            Backbone.Model.apply(this, arguments);
-        },
         idAttribute: 'uuid',
         defaults: {
             uuid: '',
@@ -282,16 +233,6 @@ jxhr.submit();
 
     // Agave extension of default Backbone.Model that uses Agave sync
     Agave.MetadataCollection = Agave.Collection.extend({
-        constructor: function(attributes, options) {
-            if (options && options.agaveToken) {
-                this.agaveToken = options.agaveToken;
-            }
-            else {
-                this.agaveToken = Agave.instance.token();
-            }
-
-            Backbone.Collection.apply(this, arguments);
-        },
         sync: Agave.MetadataSync,
         getSaveUrl: function() {
             return '/meta/v2/data/' + this.get('uuid');

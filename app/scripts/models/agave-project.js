@@ -47,7 +47,7 @@
 
                var value = this.get('value');
                var projectName = value['name'];
-               var username    = this.agaveToken.get('username');
+               var username    = Backbone.Agave.instance.token().get('username');
 
                this.clear();
                this.set({
