@@ -431,7 +431,7 @@ define(['app'], function(App) {
                 associationIds: [ associationId ],
                 value: {
                     projectUuid: this.projectUuid,
-                    type: 'uploaded',
+                    fileCategory: 'uploaded',
                     name: this.model.get('name'),
                     length: this.model.get('length'),
                     mimeType: this.model.get('mimeType')

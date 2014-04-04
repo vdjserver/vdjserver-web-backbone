@@ -16,7 +16,7 @@
                     owner: '',
                     value: {
                         'projectUuid': '',
-                        'type': ''
+                        'fileCategory': ''
                     }
                 }
             );
