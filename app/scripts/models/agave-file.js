@@ -23,7 +23,7 @@
             _links: {}
         },
         url: function() {
-            return '/files/v2/media/system/vdjIrods7/' + this.get('projectUuid') + '/files/';
+            return '/files/v2/media/system/vdjIrods9/' + this.get('projectUuid') + '/files/';
         },
         getAssociationId: function() {
 

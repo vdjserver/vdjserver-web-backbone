@@ -43,6 +43,38 @@
             }
 
             return Backbone.Agave.sync(method, model, options);
+        },
+        addUserToProject: function() {
+            
+            var jxhr = $.ajax({
+                data: {
+                    projectUuid: this.uuid,
+                    username: this.get('username')
+                },
+                headers: {
+                    'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + Backbone.Agave.instance.token().get('access_token'))
+                },
+                type: 'POST',
+                url: Backbone.Agave.vdjauthRoot + '/permissions/username'
+            });
+
+            return jxhr;
+        },
+        removeUserFromProject: function() {
+            
+            var jxhr = $.ajax({
+                data: {
+                    projectUuid: this.uuid,
+                    username: this.get('username')
+                },
+                headers: {
+                    'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + Backbone.Agave.instance.token().get('access_token'))
+                },
+                type: 'DELETE',
+                url: Backbone.Agave.vdjauthRoot + '/permissions/username'
+            });
+
+            return jxhr;
         }
     });
 

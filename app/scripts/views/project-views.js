@@ -11,7 +11,7 @@ define(['app'], function(App) {
 
     Handlebars.registerHelper('ManageUsersShouldDisableDelete', function(data, options) {
 
-        if (data.username === 'VDJAuth' || data.isOwner) {
+        if (data.username === 'vdj' || data.isOwner) {
             return options.fn(data);
         }
 
@@ -313,12 +313,6 @@ define(['app'], function(App) {
 
     Projects.FileListings = Backbone.View.extend({
         template: 'project/file-listings',
-        initialize: function(parameters) {
-
-
-            // File Animation Mutex
-            //this.firstFileHasBeenAdded = false;
-        },
         serialize: function() {
             return {
                 fileListings: this.fileListings.toJSON()
@@ -326,8 +320,6 @@ define(['app'], function(App) {
         },
         events: {
             'click #drag-and-drop-box': 'clickFilesSelectorWrapper'
-            //,
-            //'change #files-selector': 'changeFilesSelector'
         },
         afterRender: function() {
             if (this.fileListings.models.length === 0) {
@@ -558,7 +550,7 @@ define(['app'], function(App) {
 
 
             var that = this;
-            var newUser = this.permissions.create(
+            var newUserPermission = this.permissions.create(
                 {
                     username: username,
                     permission: 'READ_WRITE',
@@ -566,7 +558,16 @@ define(['app'], function(App) {
                 },
                 {
                     success: function() {
-                        that.permissions.add(newUser);
+
+                        newUserPermission.addUserToProject()
+                            .then(function() {
+                                console.log("added user pems success");
+                            })
+                            .fail(function() {
+                                console.log("added user pems fail");
+                            });
+
+                        that.permissions.add(newUserPermission);
                         that.render();
                         that.usernameTypeahead(that.permissions, that.tenantUsers);
                     },
@@ -582,17 +583,55 @@ define(['app'], function(App) {
 
             var username = e.target.dataset.id;
 
-            var user = this.permissions.findWhere({username: username});
+            var userPermission = this.permissions.findWhere({username: username});
 
             var that = this;
-            user.destroy()
+            /*
+            userPermission.destroy()
                 .done(function() {
+
+                    userPermission.removeUserFromProject()
+                        .then(function() {
+                            console.log("added user pems success");
+                        })
+                        .fail(function() {
+                            console.log("added user pems fail");
+                        });
+
                     console.log('user destroy ok');
                     that.render();
                     that.usernameTypeahead(that.permissions, that.tenantUsers);
                 })
                 .fail(function() {
                     console.log("user destroy fail");
+                });
+            */
+
+            // Try to let VDJAuth handle this
+            // Only go to Agave if there's a problem
+            userPermission.removeUserFromProject()
+                .then(function() {
+                    console.log("initial remove user pems success");
+                    userPermission.destroy()
+                        .done(function() {
+                            console.log('user destroy ok');
+                            that.render();
+                            that.usernameTypeahead(that.permissions, that.tenantUsers);
+                        })
+                        .fail(function() {
+                            console.log('user destroy fail');
+                        });
+                })
+                .fail(function() {
+                    console.log("emergency remove");
+                    userPermission.destroy()
+                        .done(function() {
+                            that.render();
+                            that.usernameTypeahead(that.permissions, that.tenantUsers);
+                        })
+                        .fail(function() {
+                            console.log('user destroy fail');
+                        });
                 });
         }
     });
