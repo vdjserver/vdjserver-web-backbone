@@ -190,6 +190,8 @@ define(['app'], function(App) {
         template: 'project/detail',
         initialize: function(parameters) {
 
+            this.fileCategory = 'uploaded';
+
             this.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
 
             // TODO: replace this w/ file metadata fetch via query
@@ -204,8 +206,10 @@ define(['app'], function(App) {
             this.insertView('.file-listings', this.loadingView);
             this.render();
 
+            console.log("url check is: " + this.fileListings.url(this.fileCategory));
+
             var that = this;
-            this.fileListings.fetch()
+            this.fileListings.fetch({url:this.fileListings.url(this.fileCategory)})
                 .done(function() {
 
                     var fileListingsView = new Projects.FileListings({fileListings: that.fileListings});
@@ -230,6 +234,17 @@ define(['app'], function(App) {
                 };
             }
         },
+        afterRender: function() {
+            // UI
+            $('.file-category').removeClass('active');
+            $('#' + this.fileCategory).addClass('active');
+        },
+        events: {
+            'click .delete-project': 'deleteProject',
+            'click #file-upload': 'clickFilesSelectorWrapper',
+            'change #file-dialog': 'changeFilesSelector',
+            'click .file-category': 'changeFileCategory'
+        },
         fileListingsViewEvents: function(fileListingsView) {
 
             var that = this;
@@ -237,11 +252,6 @@ define(['app'], function(App) {
             fileListingsView.on('fileDragDrop', function(files) {
                 that.parseFiles(files);
             });
-        },
-        events: {
-            'click .delete-project': 'deleteProject',
-            'click #file-upload': 'clickFilesSelectorWrapper',
-            'change #file-dialog': 'changeFilesSelector'
         },
         deleteProject: function(e) {
             e.preventDefault();
@@ -259,7 +269,7 @@ define(['app'], function(App) {
                     });
                 });
         },
-        clickFilesSelectorWrapper: function(e) {
+        clickFilesSelectorWrapper: function() {
             document.getElementById('file-dialog').click();
         },
         changeFilesSelector: function(e) {
@@ -278,7 +288,6 @@ define(['app'], function(App) {
                     length: file.size,
                     mimeType: file.type,
                     lastModified: file.lastModifiedDate,
-                    //permissions:
                     projectUuid: projectUuid,
                     fileReference: file
                 });
@@ -289,7 +298,7 @@ define(['app'], function(App) {
 
                 // listen to events on fileTransferView
                 this.fileTransferViewEvents(fileTransferView);
-            };
+            }
         },
         fileTransferViewEvents: function(fileTransferView) {
 
@@ -308,6 +317,13 @@ define(['app'], function(App) {
                 });
 
             });
+        },
+        changeFileCategory: function(e) {
+            e.preventDefault();
+
+            this.fileCategory = e.target.dataset.id;
+
+            this.fetchAndRenderFileListings();
         }
     });
 
