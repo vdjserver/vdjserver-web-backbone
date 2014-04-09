@@ -193,8 +193,7 @@ module.exports = function(grunt) {
                 '<%= yeoman.dist %>/scripts/main.js': [
                     '<%= yeoman.dist %>/scripts/main.js',
                     '<%= yeoman.dist %>/scripts/templates.js'
-                ],
-                '<%= yeoman.dist %>/scripts/vendor/bootstrap.js': ['<%= yeoman.app %>/scripts/vendor/bootstrap.js']
+                ]
             }
         },
         copy: {
@@ -228,6 +227,35 @@ module.exports = function(grunt) {
                              'nvd3/nv.d3.css'
                         ]
                     }
+                ]
+            },
+            distBower: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        flatten: true,
+                        cwd: '<%= yeoman.app %>/bower_components',
+                        dest: '<%= yeoman.dist %>/scripts/vendor',
+                        src: [
+                            'modernizr/modernizr.js',
+                            'moment/moment.js'
+                        ]
+                    }   
+                ]
+            },
+            distBootstrap: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        flatten: true,
+                        cwd: '<%= yeoman.app %>/scripts/vendor',
+                        dest: '<%= yeoman.dist %>/scripts/vendor',
+                        src: [
+                            'bootstrap.js'
+                        ]
+                    }   
                 ]
             },
             dist: {
@@ -416,9 +444,12 @@ module.exports = function(grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-        'concat:bootstrapDev',
         'coffee',
+        'concat:bootstrapDev',
+        'copy:distBootstrap',
         'copy:distStyles',
+        'copy:distBower',
+        'copy:distImages',
         'compass',
         'handlebars',
         'useminPrepare',
@@ -429,7 +460,6 @@ module.exports = function(grunt) {
         'cssmin',
         'uglify',
         'copy:dist',
-        'copy:distImages',
         'usemin'
     ]);
 
