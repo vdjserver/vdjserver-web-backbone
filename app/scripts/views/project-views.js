@@ -194,8 +194,6 @@ define(['app'], function(App) {
 
             this.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
 
-            // TODO: replace this w/ file metadata fetch via query
-            //this.fileListings = new Backbone.Agave.Collection.Files();
             this.fileListings = new Backbone.Agave.Collection.FileMetadatas({projectUuid: parameters.projectUuid});
             this.fetchAndRenderFileListings();
         },
@@ -382,6 +380,7 @@ define(['app'], function(App) {
             }
         },
         serialize: function() {
+            console.log("model is: " + JSON.stringify(this.model));
             return this.model.toJSON()
         },
         events: {
