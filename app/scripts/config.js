@@ -28,15 +28,18 @@ require.config({
         // Agave - Models/Collections
         'agave-new-account': 'models/agave-new-account',
         'agave-io': 'models/agave-io',
-        'agave-user': 'models/agave-user',
-        'agave-users': 'collections/agave-users',
+        'agave-tenant-user': 'models/agave-tenant-user',
+        'agave-tenant-users': 'collections/agave-tenant-users',
+
+        'agave-file-metadata': 'models/agave-file-metadata',
+        'agave-file-metadatas': 'collections/agave-file-metadatas',
 
         'agave-file': 'models/agave-file',
         'agave-files': 'collections/agave-files',
 
         // Agave - Metadata Models/Collections
-        'agave-project-user':  'models/agave-project-user',
-        'agave-project-users': 'collections/agave-project-users',
+        'agave-permission':  'models/agave-permission',
+        'agave-permissions': 'collections/agave-permissions',
         'agave-project': 'models/agave-project',
         'agave-projects': 'collections/agave-projects',
 
@@ -111,24 +114,34 @@ require.config({
             exports: 'Backbone.Agave.IO'
         },
 
-        'agave-user': {
+        'agave-tenant-user': {
             deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.User'
+            exports: 'Backbone.Agave.Model.TenantUser'
         },
-        'agave-users': {
+        'agave-tenant-users': {
+            deps: ['backbone', 'backbone-agave', 'agave-tenant-user'],
+            exports: 'Backbone.Agave.Collection.TenantUsers'
+        },
+
+        'agave-file-metadata': {
             deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Collection.Users'
+            exports: 'Backbone.Agave.Model.FileMetadata'
         },
+        'agave-file-metadatas': {
+            deps: ['backbone', 'backbone-agave', 'agave-file-metadata'],
+            exports: 'Backbone.Agave.Collection.FileMetadatas'
+        },
+
         'agave-file': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.File'
         },
         'agave-files': {
-            deps: ['backbone', 'backbone-agave'],
+            deps: ['backbone', 'backbone-agave', 'agave-file'],
             exports: 'Backbone.Agave.Collection.Files'
         },
 
-        // Agave - Metadata Models
+        // TODO - reorganize these. alphabetically?
         'agave-profile': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.Profile'
@@ -136,16 +149,16 @@ require.config({
 
 
         // Projects
-        'agave-project-user': {
+        'agave-permission': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.ProjectUser'
         },
-        'agave-project-users': {
-            deps: ['backbone', 'backbone-agave', 'agave-project-user'],
+        'agave-permissions': {
+            deps: ['backbone', 'backbone-agave', 'agave-permission'],
             exports: 'Backbone.Agave.Collection.ProjectUsers'
         },
         'agave-project': {
-            deps: ['backbone', 'backbone-agave', 'agave-project-users'],
+            deps: ['backbone', 'backbone-agave', 'agave-permissions'],
             exports: 'Backbone.Agave.Model.Project'
         },
         'agave-projects': {

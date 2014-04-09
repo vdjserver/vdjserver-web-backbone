@@ -5,43 +5,43 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>
-                            Checkmark
+                        <th class="text-center">
+                            Selected
                         </th>
-                        <th>
+                        <th class="text-center">
                             Title
                         </th>
-                        <th>
+                        <th class="text-center">
                             Last Modified
                         </th>
-                        <th>
+                        <th class="text-center">
                             Size
                         </th>
-                        <th>
+                        <th class="text-center">
                             Type
                         </th>
-                        <th>
+                        <th class="text-center">
                             Recent Activity
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each fileListings}}
-                        <tr>
+                        <tr class="text-center">
                             <td>
-                                checkmarkPlaceholder
+                                <input type="checkbox">
                             </td>
                             <td>
-                                {{name}}
+                                {{value.name}}
                             </td>
                             <td>
-                                {{lastModified}}
+                                {{lastUpdated}}
                             </td>
                             <td>
-                                {{length}}
+                                {{value.length}}
                             </td>
                             <td>
-                                {{mimeType}}
+                                {{value.mimeType}}
                             </td>
                             <td>
                                 recentActivityPlaceholder

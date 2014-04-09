@@ -148,7 +148,7 @@ define(['app'], function(App) {
             App.Layouts.main.render();
         },
 
-        projectDetail: function(projectId) {
+        projectDetail: function(projectUuid) {
 
             if (!App.isLoggedIn()) {
                 App.Layouts.main.template = 'layouts/standard';
@@ -161,13 +161,13 @@ define(['app'], function(App) {
                     App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
                 }
 
-                App.Layouts.main.setView('.content', new App.Views.Projects.Detail({projectId: projectId}));
+                App.Layouts.main.setView('.content', new App.Views.Projects.Detail({projectUuid: projectUuid}));
             }
 
             App.Layouts.main.render();
         },
 
-        projectManageUsers: function(projectId) {
+        projectManageUsers: function(projectUuid) {
 
             if (!App.isLoggedIn()) {
                 App.Layouts.main.template = 'layouts/standard';
@@ -180,7 +180,7 @@ define(['app'], function(App) {
                     App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
                 }
 
-                App.Layouts.main.setView('.content', new App.Views.Projects.ManageUsers({projectId: projectId}));
+                App.Layouts.main.setView('.content', new App.Views.Projects.ManageUsers({projectUuid: projectUuid}));
             }
 
             App.Layouts.main.render();

@@ -4,9 +4,9 @@
 
     var Backbone = window.Backbone;
 
-    var User = {};
+    var TenantUser = {};
 
-    User = Backbone.Agave.Model.extend({
+    TenantUser = Backbone.Agave.Model.extend({
         defaults: {
             create_time: '',
             email:       '',
@@ -22,6 +22,6 @@
         idAttribute: 'username'
     });
 
-    Backbone.Agave.Model.User = User;
-    return User;
+    Backbone.Agave.Model.TenantUser = TenantUser;
+    return TenantUser;
 })(this);
