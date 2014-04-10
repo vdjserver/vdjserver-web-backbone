@@ -60,6 +60,7 @@ require.config({
         'auth-views': 'views/auth-views',
         'io-views': 'views/io-views',
         'profile-views': 'views/profile-views',
+        'job-views': 'views/job-views',
         'project-views': 'views/project-views',
         'analyses-views': 'views/analyses-views',
 

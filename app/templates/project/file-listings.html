@@ -29,7 +29,7 @@
                     {{#each fileListings}}
                         <tr class="text-center">
                             <td>
-                                <input type="checkbox">
+                                <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
                             </td>
                             <td>
                                 {{value.name}}
@@ -77,3 +77,5 @@
         <div id="file-staging"></div>
     </div>
 {{/if}}
+
+<div id="job-submit"></div>

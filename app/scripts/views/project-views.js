@@ -56,7 +56,7 @@ define(['app'], function(App) {
         },
         events: {
             'click .view-project': 'selectProject',
-            'click .manage-users': 'manageUsers', 
+            'click .manage-users': 'manageUsers',
   //          'click .select-analyses' : 'selectAnalyses'
         },
         selectProject: function(e) {
@@ -88,10 +88,10 @@ define(['app'], function(App) {
             App.Layouts.main.setView('.content', manageUsersView);
             manageUsersView.render();
         },
-/*        
+/*
         selectAnalyses: function(e) {
             e.preventDefault();
-			
+
             var projectUuid = e.target.dataset.id;
 
             App.router.navigate('/project/' + projectUuid + '/analyses', {
@@ -101,7 +101,7 @@ define(['app'], function(App) {
             var selectAnalysesView = new Projects.SelectAnalyses({projectUuid: projectUuid});
             App.Layouts.main.setView('.content', selectAnalysesView);
             selectAnalysesView.render();
-        },        
+        },
 */
         setProjectActive: function(projectUuid) {
             $('.list-group-item').removeClass('active');
@@ -252,12 +252,27 @@ define(['app'], function(App) {
             // UI
             $('.file-category').removeClass('active');
             $('#' + this.fileCategory).addClass('active');
+
+/*
+            var that = this;
+            $('.selected-files').on('change', function() {
+
+                var selectedFiles = that.getSelectedFiles();
+                if (selectedFiles.length > 0) {
+                    console.log("more than 0");
+                }
+                else {
+                    console.log("less than 0");
+                }
+            });
+*/
         },
         events: {
             'click .delete-project': 'deleteProject',
             'click #file-upload': 'clickFilesSelectorWrapper',
             'change #file-dialog': 'changeFilesSelector',
-            'click .file-category': 'changeFileCategory'
+            'click .file-category': 'changeFileCategory',
+            'click #run-job': 'clickRunJob'
         },
         fileListingsViewEvents: function(fileListingsView) {
 
@@ -338,6 +353,43 @@ define(['app'], function(App) {
             this.fileCategory = e.target.dataset.id;
 
             this.fetchAndRenderFileListings();
+        },
+        clickRunJob: function(e) {
+            e.preventDefault();
+
+            this.removeView('#job-submit');
+
+            console.log("run job!");
+
+            var selectedFileMetadataUuids = this.getSelectedFiles();
+
+            console.log("check is: " + JSON.stringify(selectedFileMetadataUuids));
+
+            var selectedFileListings = this.fileListings.clone();
+            selectedFileListings.reset();
+
+            for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
+                var model = this.fileListings.get(selectedFileMetadataUuids[i]);
+                selectedFileListings.add(model);
+            }
+
+            //console.log("selectedFileListings are: " + JSON.stringify(selectedFileListings));
+
+            var jobSubmitView = new App.Views.Jobs.Submit({selectedFileListings: selectedFileListings});
+            this.insertView('#job-submit', jobSubmitView);
+            jobSubmitView.render();
+        },
+        getSelectedFiles: function() {
+
+            var selectedFileMetadataUuids = [];
+
+            $('.selected-files:checked').each(function() {
+                selectedFileMetadataUuids.push($(this).val());
+            });
+
+            console.log("sel are: " + selectedFileMetadataUuids);
+
+            return selectedFileMetadataUuids;
         }
     });
 

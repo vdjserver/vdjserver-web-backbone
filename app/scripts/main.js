@@ -54,6 +54,7 @@ define([
     'auth-views',
     'io-views',
     'profile-views',
+    'job-views',
     'project-views',
     'analyses-views',
 
