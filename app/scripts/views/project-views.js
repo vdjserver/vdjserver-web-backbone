@@ -31,12 +31,18 @@ define(['app'], function(App) {
         template: 'project/list',
         initialize: function() {
 
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView(loadingView);
+            loadingView.render();
+
             App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects();
 
             var that = this;
 
             App.Datastore.Collection.ProjectCollection.fetch()
                 .done(function() {
+
+                    loadingView.remove();
 
                     App.Datastore.Collection.ProjectCollection.on('change add remove destroy', function() {
 
