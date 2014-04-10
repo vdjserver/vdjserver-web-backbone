@@ -11,7 +11,7 @@ define(['app'], function(App) {
 
     Handlebars.registerHelper('ManageUsersShouldDisableDelete', function(data, options) {
 
-        if (data.username === EnvironmentConfig.serviceAccountUsername || data.isOwner) {
+        if (data.username === Backbone.Agave.instance.token().get('username')) {
             return options.fn(data);
         }
 
