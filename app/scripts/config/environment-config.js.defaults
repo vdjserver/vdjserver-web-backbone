@@ -5,3 +5,4 @@ var EnvironmentConfig = {};
 
 EnvironmentConfig.agaveRoot   = 'https://agave-vdj.tacc.utexas.edu';
 EnvironmentConfig.vdjauthRoot = 'https://vdj-dev.tacc.utexas.edu:8443';
+EnvironmentConfig.serviceAccountUsername = 'vdj';

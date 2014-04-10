@@ -11,7 +11,7 @@ define(['app'], function(App) {
 
     Handlebars.registerHelper('ManageUsersShouldDisableDelete', function(data, options) {
 
-        if (data.username === 'vdj' || data.isOwner) {
+        if (data.username === EnvironmentConfig.serviceAccountUsername || data.isOwner) {
             return options.fn(data);
         }
 
@@ -569,11 +569,13 @@ define(['app'], function(App) {
             var that = this;
             this.permissions.fetch()
                 .done(function() {
+                    that.permissions.remove(EnvironmentConfig.serviceAccountUsername);
                     that.render();
 
                     that.tenantUsers = new Backbone.Agave.Collection.TenantUsers();
                     that.tenantUsers.fetch()
                         .done(function() {
+                            that.tenantUsers.remove(EnvironmentConfig.serviceAccountUsername);
                             that.usernameTypeahead(that.permissions, that.tenantUsers);
                         });
                 })
