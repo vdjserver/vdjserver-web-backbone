@@ -2,7 +2,7 @@
 'use strict';
 
 require.config({
-    deps: ['main'],
+    deps: ['requirejs-main'],
     paths: {
         'backbone':         '../bower_components/backbone/backbone',
         'backbone.syphon':  '../bower_components/backbone.syphon/lib/backbone.syphon',
