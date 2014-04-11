@@ -150,6 +150,7 @@ define(['app'], function(App) {
 
         projectDetail: function(projectUuid) {
 
+            console.log("routing projDetail");
             if (!App.isLoggedIn()) {
                 App.Layouts.main.template = 'layouts/standard';
                 App.Layouts.main.setView('.content', new App.Views.Projects.Login());
@@ -158,8 +159,16 @@ define(['app'], function(App) {
 
                 if (App.Layouts.main.template !== 'layouts/project-standard') {
                     App.Layouts.main.template = 'layouts/project-standard';
-                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
                 }
+
+                if (! App.Layouts.main.getView('.sidebar')) {
+                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
+                }
+                else {
+                    var listView = App.Layouts.main.getView('.sidebar');
+                    listView.uiSelectProject(projectUuid);
+                }
+                
 
                 App.Layouts.main.setView('.content', new App.Views.Projects.Detail({projectUuid: projectUuid}));
             }
@@ -177,7 +186,10 @@ define(['app'], function(App) {
 
                 if (App.Layouts.main.template !== 'layouts/project-standard') {
                     App.Layouts.main.template = 'layouts/project-standard';
-                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
+                }
+
+                if (! App.Layouts.main.getView('.sidebar')) {
+                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
                 }
 
                 App.Layouts.main.setView('.content', new App.Views.Projects.ManageUsers({projectUuid: projectUuid}));

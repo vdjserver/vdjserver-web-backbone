@@ -1,6 +1,6 @@
 <div class="list-group">
 
-    <a class="create-project list-group-item" href="#project/create">
+    <a class="create-project list-group-item" href="project/create">
         Create Project +
     </a>
 </div>
@@ -8,16 +8,16 @@
 <div class="list-group">
     {{#projects}}
         <div id="{{uuid}}-menu" class="project-menu">
-            <a id="{{uuid}}" class="view-project list-group-item" data-id="{{uuid}}">
+            <a href="project/{{uuid}}" id="project-{{uuid}}" class="view-project list-group-item" data-id="{{uuid}}">
                 {{value.name}}
             </a>
 
-            <div id="{{uuid}}-submenu" class="project-submenu hidden">
-                <a href="#analyses/{{uuid}}" class="list-group-item text-right select-analyses" data-id="{{uuid}}">Analyses</a>
+            <div id="project-{{uuid}}-submenu" class="project-submenu hidden">
+                <a href="analyses/{{uuid}}" class="list-group-item text-right select-analyses" data-id="{{uuid}}">Analyses</a>
                 <a href="#" class="list-group-item text-right">Publish Project</a>
                 <a href="#" class="list-group-item text-right">Settings</a>
 
-                <a href="#project/{{uuid}}/users" class="list-group-item text-right manage-users" data-id="{{uuid}}">
+                <a href="project/{{uuid}}/users" class="list-group-item text-right manage-users" data-id="{{uuid}}">
                     Manage Users
                 </a>
             </div>

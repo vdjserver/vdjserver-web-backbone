@@ -29,23 +29,26 @@ define(['app'], function(App) {
 
     Projects.List = Backbone.View.extend({
         template: 'project/list',
-        initialize: function() {
+        initialize: function(parameters) {
+
+            if (parameters && parameters.projectUuid) {
+                this.selectedProjectUuid = parameters.projectUuid;
+            }
+
+            App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects();
 
             var loadingView = new App.Views.Util.Loading({keep: true});
             this.insertView(loadingView);
             loadingView.render();
 
-            App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects();
-
             var that = this;
 
             App.Datastore.Collection.ProjectCollection.fetch()
                 .done(function() {
-
+                    console.log("proj collection ok");
                     loadingView.remove();
 
                     App.Datastore.Collection.ProjectCollection.on('change add remove destroy', function() {
-
                         that.render();
                     });
 
@@ -60,62 +63,27 @@ define(['app'], function(App) {
                 projects: App.Datastore.Collection.ProjectCollection.toJSON()
             };
         },
-        events: {
-            'click .view-project': 'selectProject',
-            'click .manage-users': 'manageUsers',
-  //          'click .select-analyses' : 'selectAnalyses'
+        afterRender: function() {
+            // UI update in case of reload
+            if (this.selectedProjectUuid) {
+                this.uiSetProjectActive(this.selectedProjectUuid);
+                this.uiOpenProjectSubmenu(this.selectedProjectUuid);
+            }
         },
-        selectProject: function(e) {
-            e.preventDefault();
-            var projectUuid = e.target.dataset.id;
-
-            this.setProjectActive(projectUuid);
-            this.openProjectSubmenu(projectUuid);
-
-            App.router.navigate('/project/' + projectUuid , {
-                trigger: false
-            });
-
-            var detailView = new Projects.Detail({projectUuid: projectUuid});
-            App.Layouts.main.setView('.content', detailView);
-            detailView.render();
-
+        uiSelectProject: function(projectUuid) {
+            console.log("projectUuid is: " + projectUuid);
+            this.selectedProjectUuid = projectUuid;
+            
+            this.uiSetProjectActive(this.selectedProjectUuid);
+            this.uiOpenProjectSubmenu(this.selectedProjectUuid);
         },
-        manageUsers: function(e) {
-            e.preventDefault();
-
-            var projectUuid = e.target.dataset.id;
-
-            App.router.navigate('/project/' + projectUuid + '/users', {
-                trigger: false
-            });
-
-            var manageUsersView = new Projects.ManageUsers({projectUuid: projectUuid});
-            App.Layouts.main.setView('.content', manageUsersView);
-            manageUsersView.render();
-        },
-/*
-        selectAnalyses: function(e) {
-            e.preventDefault();
-
-            var projectUuid = e.target.dataset.id;
-
-            App.router.navigate('/project/' + projectUuid + '/analyses', {
-                trigger: false
-            });
-
-            var selectAnalysesView = new Projects.SelectAnalyses({projectUuid: projectUuid});
-            App.Layouts.main.setView('.content', selectAnalysesView);
-            selectAnalysesView.render();
-        },
-*/
-        setProjectActive: function(projectUuid) {
+        uiSetProjectActive: function(projectUuid) {
             $('.list-group-item').removeClass('active');
-            $('#' + projectUuid).addClass('active');
+            $('#project-' + projectUuid).addClass('active');
         },
-        openProjectSubmenu: function(projectUuid) {
+        uiOpenProjectSubmenu: function(projectUuid) {
             $('.project-submenu').addClass('hidden');
-            $('#' + projectUuid + '-submenu').removeClass('hidden');
+            $('#project-' + projectUuid + '-submenu').removeClass('hidden');
         }
     });
 
@@ -191,10 +159,11 @@ define(['app'], function(App) {
                                     .modal('hide')
                                     .on('hidden.bs.modal', function() {
                                         App.Datastore.Collection.ProjectCollection.add(that.model, {merge: true});
-
-                                        App.router.navigate('/project/' + that.model.get('uuid'), {
+                                        console.log("uuid is: " + that.model.get('uuid'));
+                                        App.router.navigate('project/' + that.model.get('uuid'), {
                                             trigger: true
                                         });
+                                        console.log("route done?");
                                     });
                             })
                             .fail(function() {
@@ -214,6 +183,24 @@ define(['app'], function(App) {
 
             this.fileCategory = 'uploaded';
 
+            /* 
+                This is a little tricky. If we're arriving from a page
+                refresh, then we are stuck with two asynchronous fetches.
+                If the file list loads faster than the project list, then
+                we'll need to re-insert our subview and re-render the page
+                once the project list data has been fetched.
+            */
+            if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
+                console.log("fetch if ok");
+                var that = this;
+                App.Datastore.Collection.ProjectCollection.on('sync', function() {
+                    console.log("fetch notification ok");
+                    that.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
+                    that.insertFileListingsView();
+                    that.render();
+                });
+            }
+
             this.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
 
             this.fileListings = new Backbone.Agave.Collection.FileMetadatas({projectUuid: parameters.projectUuid});
@@ -222,9 +209,9 @@ define(['app'], function(App) {
         fetchAndRenderFileListings: function() {
 
             // Get File Listings
-            this.loadingView = new App.Views.Util.Loading({keep: true});
-            this.insertView('.file-listings', this.loadingView);
-            this.render();
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView('.file-listings', loadingView);
+            loadingView.render();
 
             console.log("url check is: " + this.fileListings.url(this.fileCategory));
 
@@ -232,22 +219,28 @@ define(['app'], function(App) {
             this.fileListings.fetch({url:this.fileListings.url(this.fileCategory)})
                 .done(function() {
 
-                    var fileListingsView = new Projects.FileListings({fileListings: that.fileListings});
-
-                    // listen to events on fileListingsView
-                    that.fileListingsViewEvents(fileListingsView);
-
-                    that.insertView('.file-listings', fileListingsView);
-                    that.loadingView.remove();
-
+                    console.log("fileListings fetch done");
+                    loadingView.remove();
+                    
+                    that.insertFileListingsView();
                     that.render();
                 })
                 .fail(function() {
                     console.log("file listings failure");
                 });
         },
+        insertFileListingsView: function() {
+
+            var fileListingsView = new Projects.FileListings({fileListings: this.fileListings});
+            // listen to events on fileListingsView
+            this.fileListingsViewEvents(fileListingsView);
+            this.insertView('.file-listings', fileListingsView);
+
+        },
         serialize: function() {
+            console.log("serializing projDetail");
             if (this.projectModel && this.fileListings) {
+                console.log("serializing projDetail - past if ok. fileListings is: " + JSON.stringify(this.fileListings));
                 return {
                     projectDetail: this.projectModel.toJSON(),
                     fileListings: this.fileListings.toJSON()
