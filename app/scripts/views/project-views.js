@@ -73,7 +73,7 @@ define(['app'], function(App) {
         uiSelectProject: function(projectUuid) {
             console.log("projectUuid is: " + projectUuid);
             this.selectedProjectUuid = projectUuid;
-            
+
             this.uiSetProjectActive(this.selectedProjectUuid);
             this.uiOpenProjectSubmenu(this.selectedProjectUuid);
         },
@@ -183,7 +183,7 @@ define(['app'], function(App) {
 
             this.fileCategory = 'uploaded';
 
-            /* 
+            /*
                 This is a little tricky. If we're arriving from a page
                 refresh, then we are stuck with two asynchronous fetches.
                 If the file list loads faster than the project list, then
@@ -221,7 +221,7 @@ define(['app'], function(App) {
 
                     console.log("fileListings fetch done");
                     loadingView.remove();
-                    
+
                     that.insertFileListingsView();
                     that.render();
                 })
@@ -271,6 +271,7 @@ define(['app'], function(App) {
             'click #file-upload': 'clickFilesSelectorWrapper',
             'change #file-dialog': 'changeFilesSelector',
             'click .file-category': 'changeFileCategory',
+            'click .selected-files': 'uiDisableRunJob',
             'click #run-job': 'clickRunJob'
         },
         fileListingsViewEvents: function(fileListingsView) {
@@ -352,6 +353,14 @@ define(['app'], function(App) {
             this.fileCategory = e.target.dataset.id;
 
             this.fetchAndRenderFileListings();
+        },
+        uiDisableRunJob: function() {
+            if ($('.selected-files:checked').length) {
+                $('#run-job-button').removeClass('disabled');
+            }
+            else {
+                $('#run-job-button').addClass('disabled');
+            }
         },
         clickRunJob: function(e) {
             e.preventDefault();
