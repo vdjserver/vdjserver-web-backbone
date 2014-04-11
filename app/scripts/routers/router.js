@@ -21,13 +21,11 @@ define(['app'], function(App) {
             'io/:owner':       'ioBrowser',
             'io/:owner/*path': 'ioBrowser',
 
-            'project':              'projectIndex',
-            'project/create':       'projectCreate',
-            'project/:id':          'projectDetail',
-//            'project/:id/analyses': 'projectSelectAnalyses',
-            'project/:id/users':    'projectManageUsers',
-            
-            'analyses/:id':				'selectAnalyses'
+            'project':           'projectIndex',
+            'project/create':    'projectCreate',
+            'project/:id':       'projectDetail',
+            'project/:id/analyses': 'projectSelectAnalyses',
+            'project/:id/users': 'projectManageUsers',
         },
 
 
@@ -198,7 +196,7 @@ define(['app'], function(App) {
             App.Layouts.main.render();
         },
         
-        selectAnalyses: function(projectId) {
+        projectSelectAnalyses: function(projectId) {
           if (!App.isLoggedIn()) {
                 //App.Layouts.main.template = 'layouts/standard';
                 App.Layouts.main.setView('.content', new App.Views.Projects.Login());

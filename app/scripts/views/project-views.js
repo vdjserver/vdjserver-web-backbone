@@ -679,26 +679,6 @@ define(['app'], function(App) {
             var userPermission = this.permissions.findWhere({username: username});
 
             var that = this;
-            /*
-            userPermission.destroy()
-                .done(function() {
-
-                    userPermission.removeUserFromProject()
-                        .then(function() {
-                            console.log("added user pems success");
-                        })
-                        .fail(function() {
-                            console.log("added user pems fail");
-                        });
-
-                    console.log('user destroy ok');
-                    that.render();
-                    that.usernameTypeahead(that.permissions, that.tenantUsers);
-                })
-                .fail(function() {
-                    console.log("user destroy fail");
-                });
-            */
 
             // Try to let VDJAuth handle this
             // Only go to Agave if there's a problem

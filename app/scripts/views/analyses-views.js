@@ -17,10 +17,6 @@ define(['app'], function(App) {
 
             this.modelId = parameters.projectId;
             this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
-
-            App.router.navigate('/analyses/' + this.modelId, {
-                trigger: false
-            });
             
             this.render();
         },
