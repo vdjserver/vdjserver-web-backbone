@@ -126,9 +126,9 @@
                                 <h3 class="panel-title">Files</h3>
                             </div>
                             <div class="panel-body">
-                                <ul class="list-group">
+                                <ul class="list-unstyled">
                                     {{#each selectedFileListings}}
-                                        <li class="list-group-item">
+                                        <li>
                                             {{this.value.name}} <!--<button class="btn btn-danger delete-project">&times;</button>-->
                                             <button type="button" class="close remove-file-from-job" id="{{this.uuid}}" aria-hidden="true">&times;</button>
                                         </li>
