@@ -38,6 +38,9 @@ define([
     'agave-file',
     'agave-files',
 
+    'agave-job-listing',
+    'agave-job-listings',
+
     // Regular Models
     'models/message',
     'models/form',

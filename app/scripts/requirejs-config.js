@@ -37,6 +37,9 @@ require.config({
         'agave-file': 'models/agave-file',
         'agave-files': 'collections/agave-files',
 
+        'agave-job-listing': 'models/agave-job-listing',
+        'agave-job-listings': 'collections/agave-job-listings',
+
         // Agave - Metadata Models/Collections
         'agave-permission':  'models/agave-permission',
         'agave-permissions': 'collections/agave-permissions',
@@ -141,6 +144,16 @@ require.config({
             deps: ['backbone', 'backbone-agave', 'agave-file'],
             exports: 'Backbone.Agave.Collection.Files'
         },
+
+        'agave-job-listing': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.JobListing'
+        },
+        'agave-job-listings': {
+            deps: ['backbone', 'backbone-agave', 'agave-job-listing'],
+            exports: 'Backbone.Agave.Collection.JobListings'
+        },
+
 
         // TODO - reorganize these. alphabetically?
         'agave-profile': {

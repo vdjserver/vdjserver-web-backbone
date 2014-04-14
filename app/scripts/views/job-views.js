@@ -7,7 +7,7 @@ define(['app'], function(App) {
     Jobs.Submit = Backbone.View.extend({
         template: 'jobs/job-submit-form',
         initialize: function() {
-        
+
         },
         serialize: function() {
             return {
@@ -52,7 +52,7 @@ define(['app'], function(App) {
     Jobs.Notification = Backbone.View.extend({
         template: 'jobs/notification',
         initialize: function() {
-        
+
         },
         afterRender: function() {
             console.log("afteRender...");
@@ -61,6 +61,29 @@ define(['app'], function(App) {
             }, 5000, function() {
                 console.log("animation done");
             });
+        }
+    });
+
+    Jobs.History = Backbone.View.extend({
+        template: 'jobs/history',
+        initialize: function(parameters) {
+            this.projectUuid = parameters.projectUuid;
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView(loadingView);
+            loadingView.render();
+
+            this.collection = new Backbone.Agave.Collection.JobListings();
+
+            var that = this;
+            this.collection.fetch()
+                .done(function() {
+                    loadingView.remove();
+                    that.render();
+                })
+                .fail(function() {
+
+                });
         }
     });
 

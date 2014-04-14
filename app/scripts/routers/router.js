@@ -24,7 +24,8 @@ define(['app'], function(App) {
             'project':           'projectIndex',
             'project/create':    'projectCreate',
             'project/:id':       'projectDetail',
-            'project/:id/analyses': 'projectSelectAnalyses',
+            'project/:id/jobs': 'projectJobHistory',
+            'project/:id/jobs/:jobId/analyses': 'projectSelectAnalyses',
             'project/:id/users': 'projectManageUsers',
         },
 
@@ -148,7 +149,6 @@ define(['app'], function(App) {
 
         projectDetail: function(projectUuid) {
 
-            console.log("routing projDetail");
             if (!App.isLoggedIn()) {
                 App.Layouts.main.template = 'layouts/standard';
                 App.Layouts.main.setView('.content', new App.Views.Projects.Login());
@@ -166,7 +166,7 @@ define(['app'], function(App) {
                     var listView = App.Layouts.main.getView('.sidebar');
                     listView.uiSelectProject(projectUuid);
                 }
-                
+
 
                 App.Layouts.main.setView('.content', new App.Views.Projects.Detail({projectUuid: projectUuid}));
             }
@@ -195,18 +195,47 @@ define(['app'], function(App) {
 
             App.Layouts.main.render();
         },
-        
-        projectSelectAnalyses: function(projectId) {
+
+        projectJobHistory: function(projectUuid) {
           if (!App.isLoggedIn()) {
                 //App.Layouts.main.template = 'layouts/standard';
                 App.Layouts.main.setView('.content', new App.Views.Projects.Login());
             }
             else {
-            	var selectAnalysesView = new App.Views.Analyses.SelectAnalyses({projectId: projectId});
+                if (App.Layouts.main.template !== 'layouts/project-standard') {
+                    App.Layouts.main.template = 'layouts/project-standard';
+                }
+
+                if (! App.Layouts.main.getView('.sidebar')) {
+                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
+                }
+
+                App.Layouts.main.setView('.content', new App.Views.Jobs.History({projectUuid: projectUuid}));
+            }
+
+            App.Layouts.main.render();
+        },
+
+        projectSelectAnalyses: function(projectUuid, jobId) {
+          if (!App.isLoggedIn()) {
+                //App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
+            }
+            else {
+                if (App.Layouts.main.template !== 'layouts/project-standard') {
+                    App.Layouts.main.template = 'layouts/project-standard';
+                }
+
+                if (! App.Layouts.main.getView('.sidebar')) {
+                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
+                }
+
+            	var selectAnalysesView = new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid, jobId: jobId});
                 App.Layouts.main.setView('.content', selectAnalysesView);
                 selectAnalysesView.render();
-            }            
-        }
+            }
+        },
+
     });
 
     App.Routers.DefaultRouter = DefaultRouter;
