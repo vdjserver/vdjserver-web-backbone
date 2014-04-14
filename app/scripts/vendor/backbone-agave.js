@@ -343,9 +343,6 @@
             console.log("expiresIn check 1 is: " + this.get('expires'));
             console.log("expiresIn check is: " + Math.max(0, this.get('expires') - (Date.now() / 1000)));
             return Math.max(0, this.get('expires') - (Date.now() / 1000));
-        },
-        getBase64: function() {
-            return btoa(this.get('username') + ':' + this.token);
         }
     }),
 

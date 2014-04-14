@@ -59,7 +59,6 @@ require.config({
 
         'create-account-views': 'views/create-account-views',
         'auth-views': 'views/auth-views',
-        'io-views': 'views/io-views',
         'profile-views': 'views/profile-views',
         'job-views': 'views/job-views',
         'project-views': 'views/project-views',
