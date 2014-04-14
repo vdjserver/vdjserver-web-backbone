@@ -6,8 +6,24 @@ define(['app'], function(App) {
 
     Jobs.Submit = Backbone.View.extend({
         template: 'jobs/job-submit-form',
-        initialize: function() {
+        initialize: function(parameters) {
 
+            var jobFormView;
+
+            switch(parameters.jobType) {
+                case 'igblast':
+                    jobFormView = new Jobs.IgBlastForm();
+                    break;
+
+                case 'vdjpipe':
+                    jobFormView = new Jobs.VdjPipeForm();
+                    break;
+
+                default:
+                    break;
+            }
+
+            this.jobFormView = jobFormView;
         },
         serialize: function() {
             return {
@@ -15,6 +31,10 @@ define(['app'], function(App) {
             };
         },
         afterRender: function() {
+            console.log("calling afterRender");
+            this.insertView('#job-form', this.jobFormView);
+            this.jobFormView.render();
+
             $('#job-modal').modal('show');
         },
         events: {
@@ -24,7 +44,6 @@ define(['app'], function(App) {
         submitJob: function() {
             console.log("job submitted");
 
-            var that = this;
             $('#job-modal').modal('hide')
                 .on('hidden.bs.modal', function() {
                     var jobNotificationView = new Jobs.Notification();
@@ -49,13 +68,20 @@ define(['app'], function(App) {
         }
     });
 
+    Jobs.IgBlastForm = Backbone.View.extend({
+        template: 'jobs/igblast-form'
+    });
+
+    Jobs.VdjPipeForm = Backbone.View.extend({
+        template: 'jobs/vdjpipe-form'
+    });
+
     Jobs.Notification = Backbone.View.extend({
         template: 'jobs/notification',
         initialize: function() {
 
         },
         afterRender: function() {
-            console.log("afteRender...");
             $('.job-pending').animate({
                 bottom: '0px'
             }, 5000, function() {

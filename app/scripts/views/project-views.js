@@ -272,7 +272,7 @@ define(['app'], function(App) {
             'change #file-dialog': 'changeFilesSelector',
             'click .file-category': 'changeFileCategory',
             'click .selected-files': 'uiDisableRunJob',
-            'click #run-job': 'clickRunJob'
+            'click .run-job': 'clickRunJob'
         },
         fileListingsViewEvents: function(fileListingsView) {
 
@@ -365,6 +365,9 @@ define(['app'], function(App) {
         clickRunJob: function(e) {
             e.preventDefault();
 
+            var jobType = e.target.dataset.jobtype;
+            console.log("jobType is: " + jobType);
+
             this.removeView('#job-submit');
 
             console.log("run job!");
@@ -383,7 +386,7 @@ define(['app'], function(App) {
 
             //console.log("selectedFileListings are: " + JSON.stringify(selectedFileListings));
 
-            var jobSubmitView = new App.Views.Jobs.Submit({selectedFileListings: selectedFileListings});
+            var jobSubmitView = new App.Views.Jobs.Submit({selectedFileListings: selectedFileListings, jobType: jobType});
             this.insertView('#job-submit', jobSubmitView);
             jobSubmitView.render();
         },
