@@ -20,7 +20,6 @@ define([
     // Agave
     'backbone-agave',
     'agave-new-account',
-    'agave-io',
 
     'agave-tenant-user',
     'agave-tenant-users',

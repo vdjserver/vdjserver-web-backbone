@@ -1,4 +1,3 @@
-
 'use strict';
 
 require.config({
@@ -27,7 +26,6 @@ require.config({
 
         // Agave - Models/Collections
         'agave-new-account': 'models/agave-new-account',
-        'agave-io': 'models/agave-io',
         'agave-tenant-user': 'models/agave-tenant-user',
         'agave-tenant-users': 'collections/agave-tenant-users',
 
@@ -112,10 +110,6 @@ require.config({
         'agave-new-account': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.NewAccount'
-        },
-        'agave-io': {
-            deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.IO'
         },
 
         'agave-tenant-user': {
