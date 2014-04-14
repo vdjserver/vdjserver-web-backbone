@@ -23,6 +23,14 @@ define(['app'], function(App) {
         },
         submitJob: function() {
             console.log("job submitted");
+
+            var that = this;
+            $('#job-modal').modal('hide')
+                .on('hidden.bs.modal', function() {
+                    var jobNotificationView = new Jobs.Notification();
+                    App.Layouts.footer.insertView('#running-jobs', jobNotificationView);
+                    jobNotificationView.render();
+                });
         },
         removeFileFromJob: function(e) {
             e.preventDefault();
@@ -40,6 +48,22 @@ define(['app'], function(App) {
             console.log("done");
         }
     });
+
+    Jobs.Notification = Backbone.View.extend({
+        template: 'jobs/notification',
+        initialize: function() {
+        
+        },
+        afterRender: function() {
+            console.log("afteRender...");
+            $('.job-pending').animate({
+                bottom: '0px'
+            }, 5000, function() {
+                console.log("animation done");
+            });
+        }
+    });
+
 
     App.Views.Jobs = Jobs;
     return Jobs;

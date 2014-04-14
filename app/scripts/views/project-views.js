@@ -457,7 +457,7 @@ define(['app'], function(App) {
         },
         serialize: function() {
             console.log("model is: " + JSON.stringify(this.model));
-            return this.model.toJSON()
+            return this.model.toJSON();
         },
         events: {
             'click .cancel-upload': 'cancelUpload',
