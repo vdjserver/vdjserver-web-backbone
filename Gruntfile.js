@@ -156,7 +156,7 @@ module.exports = function(grunt) {
                 cssDir: '.tmp/styles',
                 imagesDir: '<%= yeoman.app %>/images',
                 javascriptsDir: '<%= yeoman.app %>/scripts',
-                fontsDir: '<%= yeoman.app %>/styles/fonts',
+                fontsDir: '<%= yeoman.app %>/fonts',
                 importPath: '<%= yeoman.app %>/bower_components',
                 httpImagesPath: '/images',
                 relativeAssets: true
@@ -197,6 +197,20 @@ module.exports = function(grunt) {
             }
         },
         copy: {
+            prepareFonts: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        flatten: true,
+                        cwd: '<%= yeoman.app %>',
+                        dest: '<%= yeoman.app %>/fonts',
+                        src: [
+                            'bower_components/font-awesome/fonts/*'
+                        ]
+                    }
+                ]
+            },
             distImages: {
                 files: [
                     {
@@ -219,12 +233,12 @@ module.exports = function(grunt) {
                         cwd: '<%= yeoman.app %>/bower_components',
                         dest: '.tmp/styles',
                         src: [
-                            /* 
+                            /*
                              * Bower styles can all go here!
                              * e.g.
                              *'jcrop/css/jquery.Jcrop.css'
                              */
-                             'nvd3/nv.d3.css'
+                            'nvd3/nv.d3.css'
                         ]
                     }
                 ]
@@ -241,7 +255,7 @@ module.exports = function(grunt) {
                             'modernizr/modernizr.js',
                             'moment/moment.js'
                         ]
-                    }   
+                    }
                 ]
             },
             distBootstrap: {
@@ -255,7 +269,7 @@ module.exports = function(grunt) {
                         src: [
                             'bootstrap.js'
                         ]
-                    }   
+                    }
                 ]
             },
             dist: {
@@ -269,9 +283,9 @@ module.exports = function(grunt) {
                             '*.{ico,txt}',
                             '.htaccess',
                             'images/{,*/}*.{webp,gif}',
-                            'styles/fonts/*',
+                            'fonts/*',
                             'templates/**',
-                            'bower_components/font-awesome/fonts/*'
+                            //'bower_components/font-awesome/fonts/*'
                         ]
                     }
                 ]
@@ -336,7 +350,7 @@ module.exports = function(grunt) {
                         cwd: '<%= yeoman.app %>/bower_components',
                         dest: '<%= yeoman.dist %>/images',
                         src: [
-                            /* 
+                            /*
                              * Bower images can all go here!
                              * e.g.
                              * 'bootstrap-calendar/img/*.{png,jpg,jpeg,gif}',
@@ -425,6 +439,7 @@ module.exports = function(grunt) {
         grunt.task.run([
             'clean:server',
             'concat:bootstrapDev',
+            'copy:prepareFonts',
             'coffee:dist',
             'compass:server',
             'connect:livereload',
@@ -446,6 +461,7 @@ module.exports = function(grunt) {
         'clean:dist',
         'coffee',
         'concat:bootstrapDev',
+        'copy:prepareFonts',
         'copy:distBootstrap',
         'copy:distStyles',
         'copy:distBower',
