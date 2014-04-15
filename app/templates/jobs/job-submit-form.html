@@ -9,18 +9,30 @@
 
                 <div class="row">
                     <div class="col-md-8">
-                        <div id="job-form"></div>
+                        <form id="job-form" role="form">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Job Configuration</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label for="querySequence">Job Name</label>
+                                        <input type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     <div class="col-md-4">
                         <div class="panel panel-success">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Files</h3>
+                                <h3 class="panel-title">Input Files</h3>
                             </div>
                             <div class="panel-body">
                                 <ul class="list-unstyled">
                                     {{#each selectedFileListings}}
                                         <li>
-                                            {{this.value.name}} <!--<button class="btn btn-danger delete-project">&times;</button>-->
+                                            {{this.value.name}}
                                             <button type="button" class="close remove-file-from-job" id="{{this.uuid}}" aria-hidden="true">&times;</button>
                                         </li>
                                     {{/each}}

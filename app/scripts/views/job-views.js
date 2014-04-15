@@ -41,8 +41,14 @@ define(['app'], function(App) {
             'click #submit-job': 'submitJob',
             'click .remove-file-from-job': 'removeFileFromJob'
         },
-        submitJob: function() {
+        submitJob: function(e) {
             console.log("job submitted");
+
+            e.preventDefault();
+
+            //var formData = Backbone.Syphon.serialize('#job-form');
+            //console.log("formData is: " + JSON.stringify(formData));
+
 
             $('#job-modal').modal('hide')
                 .on('hidden.bs.modal', function() {

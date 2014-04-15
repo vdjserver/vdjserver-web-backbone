@@ -37,6 +37,8 @@ define([
     'agave-file',
     'agave-files',
 
+    'agave-job',
+
     'agave-job-listing',
     'agave-job-listings',
 

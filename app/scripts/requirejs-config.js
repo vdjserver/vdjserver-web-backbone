@@ -35,6 +35,8 @@ require.config({
         'agave-file': 'models/agave-file',
         'agave-files': 'collections/agave-files',
 
+        'agave-job': 'models/agave-job',
+
         'agave-job-listing': 'models/agave-job-listing',
         'agave-job-listings': 'collections/agave-job-listings',
 
@@ -138,6 +140,11 @@ require.config({
             exports: 'Backbone.Agave.Collection.Files'
         },
 
+        'agave-job': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.Job'
+        },
+
         'agave-job-listing': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.JobListing'
@@ -172,11 +179,11 @@ require.config({
             deps: ['backbone', 'backbone-agave', 'agave-project'],
             exports: 'Backbone.Agave.Collection.Projects'
         },
-        
+
         //Analyses
         'agave-analyses': {
             deps: ['backbone', 'backbone-agave', 'agave-project'],
             exports: 'Backbone.Agave.Collection.Analyses'
-        }        
+        }
     }
 });

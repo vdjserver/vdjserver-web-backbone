@@ -1,110 +1,108 @@
-<form id="job-form" role="form">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">Germline Gene Databases</h3>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Germline Gene Databases</h3>
+    </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <label for="querySequence">Organism for Query Sequence</label>
+            <select class="form-control">
+                <option>Human</option>
+                <option>Mouse</option>
+                <option>Rat</option>
+                <option>Rabbit</option>
+            </select>
         </div>
-        <div class="panel-body">
-            <div class="form-group">
-                <label for="querySequence">Organism for Query Sequence</label>
-                <select class="form-control">
-                    <option>Human</option>
-                    <option>Mouse</option>
-                    <option>Rat</option>
-                    <option>Rabbit</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="germlineVGeneDatabase">Germline V Gene Database</label>
-                <select class="form-control">
-                    <option value="IG_DB/imgt.Homo_sapiens.V.f.orf.p">IMGT human V genes (F+ORF+in-frame P)</option>
-                    <option value="IG_DB/human_gl_V">NCBI human V genes</option>
-                    <option value="IG_DB/imgt.Homo_sapiens.V.f.orf">IMGT human V genes (F+ORF)</option>
-                    <option value="IG_DB/imgt.Homo_sapiens.V.p">IMGT human V genes (In-frame P)</option>
-                    <option value="IG_DB/imgt.Homo_sapiens.V.f.orf.p.include_orp">IMGT human V genes (F+ORF+in-frame P) including orphons</option>
-                    <option value="IG_DB/imgt.Homo_sapiens.V.f.orf.include_orp">IMGT human V genes (F+ORF) including orphons</option>
-                    <option value="IG_DB/imgt.Homo_sapiens.V.p.include_orp">IMGT human V genes (In-frame P) including orphons</option>
-                    <option value="IG_DB/UNSWIgVRepertoire_fasta.txt">UNSWIg IGHV gene repertoire</option>
-                    <option value="IG_DB/human_gl_V.old">NCBI human V genes (old)</option>
-                    <option value="custom">Custom</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="germlineDGeneDatabase">Germline D Gene Database</label>
-                <select class="form-control">
-                    <option value="IG_DB/imgt.Homo_sapiens.D.f.orf">IMGT human D genes (F+ORF)</option>
-                    <option value="IG_DB/imgt.Homo_sapiens.D.f.orf.include_orp">IMGT human D genes (F+ORF) including orphons</option>
-                    <option value="IG_DB/UNSWIgDRepertoire_fasta.txt">UNSWIg IGHD gene repertoire</option>
-                    <option value="IG_DB/human_gl_D.old">NCBI human D genes (old)</option>
-                    <option value="custom">Custom</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="germlineJGeneDatabase">Germline J Gene Database</label>
-                <select class="form-control">
-                    <option selected="selected" class="Deflt" value="IG_DB/imgt.Homo_sapiens.J.f.orf">IMGT human J genes (F+ORF)</option>
-                    <option value="IG_DB/UNSWIgJRepertoire_fasta.txt">UNSWIg IGHJ gene repertoire</option>
-                    <option value="IG_DB/human_gl_J.old">NCBI human J genes (old)</option>
-                    <option value="custom">Custom</option>
-                </select>
-            </div>
+        <div class="form-group">
+            <label for="germlineVGeneDatabase">Germline V Gene Database</label>
+            <select class="form-control">
+                <option value="IG_DB/imgt.Homo_sapiens.V.f.orf.p">IMGT human V genes (F+ORF+in-frame P)</option>
+                <option value="IG_DB/human_gl_V">NCBI human V genes</option>
+                <option value="IG_DB/imgt.Homo_sapiens.V.f.orf">IMGT human V genes (F+ORF)</option>
+                <option value="IG_DB/imgt.Homo_sapiens.V.p">IMGT human V genes (In-frame P)</option>
+                <option value="IG_DB/imgt.Homo_sapiens.V.f.orf.p.include_orp">IMGT human V genes (F+ORF+in-frame P) including orphons</option>
+                <option value="IG_DB/imgt.Homo_sapiens.V.f.orf.include_orp">IMGT human V genes (F+ORF) including orphons</option>
+                <option value="IG_DB/imgt.Homo_sapiens.V.p.include_orp">IMGT human V genes (In-frame P) including orphons</option>
+                <option value="IG_DB/UNSWIgVRepertoire_fasta.txt">UNSWIg IGHV gene repertoire</option>
+                <option value="IG_DB/human_gl_V.old">NCBI human V genes (old)</option>
+                <option value="custom">Custom</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="germlineDGeneDatabase">Germline D Gene Database</label>
+            <select class="form-control">
+                <option value="IG_DB/imgt.Homo_sapiens.D.f.orf">IMGT human D genes (F+ORF)</option>
+                <option value="IG_DB/imgt.Homo_sapiens.D.f.orf.include_orp">IMGT human D genes (F+ORF) including orphons</option>
+                <option value="IG_DB/UNSWIgDRepertoire_fasta.txt">UNSWIg IGHD gene repertoire</option>
+                <option value="IG_DB/human_gl_D.old">NCBI human D genes (old)</option>
+                <option value="custom">Custom</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="germlineJGeneDatabase">Germline J Gene Database</label>
+            <select class="form-control">
+                <option selected="selected" class="Deflt" value="IG_DB/imgt.Homo_sapiens.J.f.orf">IMGT human J genes (F+ORF)</option>
+                <option value="IG_DB/UNSWIgJRepertoire_fasta.txt">UNSWIg IGHJ gene repertoire</option>
+                <option value="IG_DB/human_gl_J.old">NCBI human J genes (old)</option>
+                <option value="custom">Custom</option>
+            </select>
         </div>
     </div>
+</div>
 
 
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">V Domain Delineation System</h3>
-        </div>
-        <div class="panel-body">
-            <div class="form-group">
-                <label for="vGene">V Gene</label>
-                <select class="form-control">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>20</option>
-                    <option>50</option>
-                    <option>100</option>
-                </select>
-                <label for="dGene">D Gene</label>
-                <select class="form-control">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>15</option>
-                    <option>30</option>
-                </select>
-                <label for="jGene">J Gene</label>
-                <select class="form-control">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>15</option>
-                </select>
-            </div>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">V Domain Delineation System</h3>
+    </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <label for="vGene">V Gene</label>
+            <select class="form-control">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>10</option>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+            </select>
+            <label for="dGene">D Gene</label>
+            <select class="form-control">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>10</option>
+                <option>15</option>
+                <option>30</option>
+            </select>
+            <label for="jGene">J Gene</label>
+            <select class="form-control">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>10</option>
+                <option>15</option>
+            </select>
         </div>
     </div>
+</div>
 
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h3 class="panel-title">V Domain Delineation System</h3>
-        </div>
-        <div class="panel-body">
-            <div class="form-group">
-                <select class="form-control">
-                    <option>IMGT</option>
-                    <option>KABAT</option>
-                </select>
-            </div>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">V Domain Delineation System</h3>
+    </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <select class="form-control">
+                <option>IMGT</option>
+                <option>KABAT</option>
+            </select>
         </div>
     </div>
-</form>
+</div>
