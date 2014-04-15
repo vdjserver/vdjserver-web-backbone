@@ -24,22 +24,34 @@ define(['app'], function(App) {
             }
 
             this.jobFormView = jobFormView;
-        },
-        serialize: function() {
-            return {
-                selectedFileListings: this.selectedFileListings.toJSON()
-            };
-        },
-        afterRender: function() {
-            console.log("calling afterRender");
-            this.insertView('#job-form', this.jobFormView);
+
+
+            this.insertView('.modal-body', this.jobFormView);
             this.jobFormView.render();
 
+            var jobConfigurationView = new Jobs.Configuration();
+            this.insertView('#job-configuration', jobConfigurationView);
+            jobConfigurationView.render();
+
+            var fileListView = new Jobs.FileList({selectedFileListings: this.selectedFileListings});
+            this.insertView('#job-file-list', fileListView);
+            fileListView.render();
+        },
+        afterRender: function() {
+/*
+            $('.vdj-pipe-parameter').draggable({
+                snap: '#vdj-pipe-configuration',
+                snapMode: 'inner',
+                cursor: 'move',
+                containment: ['#vdj-pipe-configuration', '#vdj-pipe-parameters']
+            });
+*/
             $('#job-modal').modal('show');
         },
         events: {
             'click #submit-job': 'submitJob',
-            'click .remove-file-from-job': 'removeFileFromJob'
+            'click .remove-file-from-job': 'removeFileFromJob',
+            'click .job-parameter': 'addJobParameter'
         },
         submitJob: function(e) {
             console.log("job submitted");
@@ -71,7 +83,42 @@ define(['app'], function(App) {
             this.selectedFileListings.remove(uuid);
 
             console.log("done");
+        },
+        addJobParameter: function(e) {
+            e.preventDefault();
+
+            var displayName = e.target.name;
+
+            var parameterView = new Jobs.VdjPipeCheckbox({parameterName: displayName});
+            this.insertView$('#vdj-pipe-configuration', parameterView);
+            parameterView.render();
+            /*
+            console.log("displayName is: " + displayName);
+            console.log("add job param");
+
+            $('#vdj-pipe-configuration').append(
+                '<div class="form-group">'
+                    + '<label>' + displayName + '</label> '
+                    + '<input class="job-form-item" name="" type="checkbox">'
+                    + '<span class="label label-danger">&times;</span>'
+                + '</div>'
+            );
+            */
+
         }
+    });
+
+    Jobs.Configuration = Backbone.View.extend({
+        template: 'jobs/job-configuration-form'
+    });
+
+    Jobs.FileList = Backbone.View.extend({
+        template: 'jobs/job-file-list',
+        serialize: function() {
+            return {
+                selectedFileListings: this.selectedFileListings.toJSON()
+            };
+        },
     });
 
     Jobs.IgBlastForm = Backbone.View.extend({
@@ -80,6 +127,21 @@ define(['app'], function(App) {
 
     Jobs.VdjPipeForm = Backbone.View.extend({
         template: 'jobs/vdjpipe-form'
+    });
+
+    Jobs.VdjPipeCheckbox = Backbone.View.extend({
+        template: 'jobs/vdjpipe-checkbox',
+        initialize: function(parameters) {
+            console.log("parameter is: " + JSON.stringify(parameters));
+            this.parameterName = parameters.parameterName;
+        },
+        serialize: function() {
+            if (this.parameterName) {
+                return {
+                    parameterName: this.parameterName
+                };
+            }
+        }
     });
 
     Jobs.Notification = Backbone.View.extend({
