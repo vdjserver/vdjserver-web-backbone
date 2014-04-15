@@ -58,6 +58,7 @@ require.config({
         'app-views': 'views/app/app-views',
         'form-views': 'views/app/form-views',
         'util-views': 'views/app/util-views',
+        'not-found-views': 'views/not-found-views',
 
         'create-account-views': 'views/create-account-views',
         'auth-views': 'views/auth-views',

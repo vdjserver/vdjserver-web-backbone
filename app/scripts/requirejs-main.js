@@ -12,7 +12,7 @@ define([
 
     // Config
     'environment-config',
-    
+
     //d3 and nvd3 libs for JS visualization
     'd3',
     'nvd3',
@@ -53,6 +53,7 @@ define([
     'app-views',
     'form-views',
     'util-views',
+    'not-found-views',
 
     'create-account-views',
     'auth-views',
