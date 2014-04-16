@@ -10,20 +10,6 @@ define(['app'], function(App) {
 
             this.model.destroy();
             this.render;
-
-            /*
-            var that = this;
-
-            this.model.destroy()
-                .done(function() {
-                    console.log("destroyed token ok");
-                    that.render();
-                })
-                .fail(function() {
-                    console.log("destroyed token fail");
-                    that.render();
-                });
-                */
         },
         serialize: function() {
             return {
