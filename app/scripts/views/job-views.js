@@ -38,29 +38,17 @@ define(['app'], function(App) {
             fileListView.render();
         },
         afterRender: function() {
-/*
-            $('.vdj-pipe-parameter').draggable({
-                snap: '#vdj-pipe-configuration',
-                snapMode: 'inner',
-                cursor: 'move',
-                containment: ['#vdj-pipe-configuration', '#vdj-pipe-parameters']
-            });
-*/
             $('#job-modal').modal('show');
         },
         events: {
             'click #submit-job': 'submitJob',
-            'click .remove-file-from-job': 'removeFileFromJob',
-            'click .job-parameter': 'addJobParameter'
+            'click .remove-file-from-job': 'removeFileFromJob'
         },
         submitJob: function(e) {
-            console.log("job submitted");
-
             e.preventDefault();
 
             //var formData = Backbone.Syphon.serialize('#job-form');
             //console.log("formData is: " + JSON.stringify(formData));
-
 
             $('#job-modal').modal('hide')
                 .on('hidden.bs.modal', function() {
@@ -74,37 +62,11 @@ define(['app'], function(App) {
 
             var uuid = e.target.id;
 
-            console.log("uuid is: " + uuid);
-
             // UI
             $('#' + uuid).parent().remove();
 
             // data collection
             this.selectedFileListings.remove(uuid);
-
-            console.log("done");
-        },
-        addJobParameter: function(e) {
-            e.preventDefault();
-
-            var displayName = e.target.name;
-
-            var parameterView = new Jobs.VdjPipeCheckbox({parameterName: displayName});
-            this.insertView('#vdj-pipe-configuration', parameterView);
-            parameterView.render();
-            /*
-            console.log("displayName is: " + displayName);
-            console.log("add job param");
-
-            $('#vdj-pipe-configuration').append(
-                '<div class="form-group">'
-                    + '<label>' + displayName + '</label> '
-                    + '<input class="job-form-item" name="" type="checkbox">'
-                    + '<span class="label label-danger">&times;</span>'
-                + '</div>'
-            );
-            */
-
         }
     });
 
@@ -118,7 +80,7 @@ define(['app'], function(App) {
             return {
                 selectedFileListings: this.selectedFileListings.toJSON()
             };
-        },
+        }
     });
 
     Jobs.IgBlastForm = Backbone.View.extend({
@@ -126,13 +88,37 @@ define(['app'], function(App) {
     });
 
     Jobs.VdjPipeForm = Backbone.View.extend({
-        template: 'jobs/vdjpipe-form'
+        template: 'jobs/vdjpipe-form',
+        events: {
+            'click .job-parameter': 'addJobParameter',
+            'click .remove-job-parameter': 'removeJobParameter'
+        },
+        afterRender: function() {
+            $('#vdj-pipe-configuration').sortable({
+                axis: 'y',
+                cursor: 'move',
+                revert: true,
+                tolerance: 'pointer'
+            });
+        },
+        addJobParameter: function(e) {
+            e.preventDefault();
+
+            var displayName = e.target.name;
+
+            var parameterView = new Jobs.VdjPipeCheckbox({parameterName: displayName});
+            this.insertView('#vdj-pipe-configuration', parameterView);
+            parameterView.render();
+        },
+        removeJobParameter: function(e) {
+            e.preventDefault();
+            $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
+        }
     });
 
     Jobs.VdjPipeCheckbox = Backbone.View.extend({
         template: 'jobs/vdjpipe-checkbox',
         initialize: function(parameters) {
-            console.log("parameter is: " + JSON.stringify(parameters));
             this.parameterName = parameters.parameterName;
         },
         serialize: function() {
