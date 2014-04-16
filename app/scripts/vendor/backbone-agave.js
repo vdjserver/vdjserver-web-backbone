@@ -67,6 +67,7 @@
         if (options.apiRoot) {
             apiRoot = options.apiRoot;
         }
+
         options.url = apiRoot + (options.url || _.result(model, 'url'));
 
         if (model.requiresAuth) {
@@ -127,17 +128,10 @@
                 }
             };
 
-/*
-            xhr.upload.addEventListener('loadend', function(e) {
-                model.trigger('uploadComplete');
-            });
-*/
             xhr.addEventListener('load', function() {
 
                 if (xhr.status = 200) {
                     var parsedJSON = JSON.parse(xhr.response);
-                    //console.log("parsedJSON is: " + JSON.stringify(parsedJSON));
-                    //model.set(parsedJSON['success']);
                     deferred.resolve(xhr.response);
                 }
                 else {
@@ -262,7 +256,6 @@
         url: '/token',
         sync: function(method, model, options) {
 
-            options.url = model.apiRoot + (options.url || _.result(model, 'url'));
             var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
 
             // Credentials for Basic Authentication
@@ -289,6 +282,8 @@
                     password = agaveToken.get('access_token');
                     break;
             }
+
+            options.url = this.apiRoot + (options.url || _.result(model, 'url'));
 
             // Allow user-provided before send, but protect ours, too.
             if (options.beforeSend) {
@@ -322,26 +317,24 @@
         isActive: function() {
 
             var expires = this.get('expires');
-            var errors = {};
+            var hasError = false;
 
-            if (!expires) {
-                errors.expires = true;
-            }
-            else if (expires && (expires - (Date.now() / 1000) <= 0)) {
-                errors.expires = true;
+            if (! expires) {
+                hasError = true;
             }
 
-            if (! _.isEmpty(errors)) {
-                console.log('token expired');
-                return false;
+            if (expires && (expires - (Date.now() / 1000) <= 0)) {
+                hasError = true;
+            }
+
+            if (! hasError) {
+                return true;
             }
             else {
-                return true;
+                return false;
             }
         },
         expiresIn: function() {
-            console.log("expiresIn check 1 is: " + this.get('expires'));
-            console.log("expiresIn check is: " + Math.max(0, this.get('expires') - (Date.now() / 1000)));
             return Math.max(0, this.get('expires') - (Date.now() / 1000));
         }
     }),

@@ -57,26 +57,23 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
                     warn = setTimeout(function() {
 
-                        // TODO: RENEW TOKEN HERE BY SAVING MODEL
+                        token.save()
+                            .done(function() {
+                                // it was renewed, rewatch token
+                                watchToken();
+                            })
+                            .fail(function() {
+                                console.log("tokenSave fail");
+                            });
 
-                        console.log("token.expires is: " + token.get('expires'));
-                        //console.log("date now madness is: " + Date.now() / 1000);
+                    }, Math.max(0, (/*token.get('expires')*/ token.expiresIn() - 300) * 1000));
 
-                        if (token.expiresIn() > 300) {
-                            console.log("token expire renew");
-                            token.save();
-
-                            // it was renewed, rewatch token
-                            watchToken();
-                        }
-
-                    }, Math.max(0, token.get('expires') - 300));
                     error = setTimeout(function() {
                         alert('Your Session has expired.  You have been logged out.');
                         App.Agave.destroyToken();
                         window.localStorage.removeItem('Agave.Token');
                         App.router.navigate('', {'trigger':true});
-                    }, Math.max(0, token.get('expires')));
+                    }, Math.max(0, (token.expiresIn() * 1000)));
                 }
             };
             App.listenTo(App.Agave, 'Agave:tokenChanged', watchToken, this);
@@ -118,7 +115,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
         },
         setMessage: function(message, timeout) {
 
-            var timeout = timeout || 5000;
+            timeout = timeout || 5000;
 
             (function(msg, t) {
                 var m = $(msg).appendTo('.alerts');
@@ -129,8 +126,6 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 }, t);
             })(message, timeout);
 
-
-            console.log("message set");
             return this;
         },
         setStandardErrorMessage: function(message) {

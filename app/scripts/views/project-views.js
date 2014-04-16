@@ -89,7 +89,6 @@ define(['app'], function(App) {
         template: 'project/index',
         initialize: function() {
             $('html,body').animate({scrollTop:0});
-            console.log("agave token is: " + Backbone.Agave.instance.token().get('access_token'));
         }
     });
 
