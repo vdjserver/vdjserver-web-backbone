@@ -2,7 +2,7 @@ define(['app'], function(App) {
 
     'use strict';
 
-    Handlebars.registerHelper('FormatAgaveDate', function(data, options) {
+    Handlebars.registerHelper('FormatAgaveDate', function(data /*, options*/) {
 
         var formattedDate = moment(data/*, 'YYYY-MM-DDTHH:mm:ssZ'*/).format('D-MMM-YYYY hh:mm');
 
@@ -45,7 +45,6 @@ define(['app'], function(App) {
 
             App.Datastore.Collection.ProjectCollection.fetch()
                 .done(function() {
-                    console.log("proj collection ok");
                     loadingView.remove();
 
                     App.Datastore.Collection.ProjectCollection.on('change add remove destroy', function() {
@@ -71,7 +70,6 @@ define(['app'], function(App) {
             }
         },
         uiSelectProject: function(projectUuid) {
-            console.log("projectUuid is: " + projectUuid);
             this.selectedProjectUuid = projectUuid;
 
             this.uiSetProjectActive(this.selectedProjectUuid);
@@ -91,6 +89,7 @@ define(['app'], function(App) {
         template: 'project/index',
         initialize: function() {
             $('html,body').animate({scrollTop:0});
+            console.log("agave token is: " + Backbone.Agave.instance.token().get('access_token'));
         }
     });
 
@@ -159,11 +158,9 @@ define(['app'], function(App) {
                                     .modal('hide')
                                     .on('hidden.bs.modal', function() {
                                         App.Datastore.Collection.ProjectCollection.add(that.model, {merge: true});
-                                        console.log("uuid is: " + that.model.get('uuid'));
                                         App.router.navigate('project/' + that.model.get('uuid'), {
                                             trigger: true
                                         });
-                                        console.log("route done?");
                                     });
                             })
                             .fail(function() {
@@ -191,10 +188,8 @@ define(['app'], function(App) {
                 once the project list data has been fetched.
             */
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                console.log("fetch if ok");
                 var that = this;
                 App.Datastore.Collection.ProjectCollection.on('sync', function() {
-                    console.log("fetch notification ok");
                     that.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
                     that.insertFileListingsView();
                     that.render();
@@ -213,13 +208,10 @@ define(['app'], function(App) {
             this.insertView('.file-listings', loadingView);
             loadingView.render();
 
-            console.log("url check is: " + this.fileListings.url(this.fileCategory));
-
             var that = this;
             this.fileListings.fetch({url:this.fileListings.url(this.fileCategory)})
                 .done(function() {
 
-                    console.log("fileListings fetch done");
                     loadingView.remove();
 
                     that.insertFileListingsView();
@@ -238,9 +230,7 @@ define(['app'], function(App) {
 
         },
         serialize: function() {
-            console.log("serializing projDetail");
             if (this.projectModel && this.fileListings) {
-                console.log("serializing projDetail - past if ok. fileListings is: " + JSON.stringify(this.fileListings));
                 return {
                     projectDetail: this.projectModel.toJSON(),
                     fileListings: this.fileListings.toJSON()
@@ -366,15 +356,10 @@ define(['app'], function(App) {
             e.preventDefault();
 
             var jobType = e.target.dataset.jobtype;
-            console.log("jobType is: " + jobType);
 
             this.removeView('#job-submit');
 
-            console.log("run job!");
-
             var selectedFileMetadataUuids = this.getSelectedFiles();
-
-            console.log("check is: " + JSON.stringify(selectedFileMetadataUuids));
 
             var selectedFileListings = this.fileListings.clone();
             selectedFileListings.reset();
@@ -383,8 +368,6 @@ define(['app'], function(App) {
                 var model = this.fileListings.get(selectedFileMetadataUuids[i]);
                 selectedFileListings.add(model);
             }
-
-            //console.log("selectedFileListings are: " + JSON.stringify(selectedFileListings));
 
             var jobSubmitView = new App.Views.Jobs.Submit({selectedFileListings: selectedFileListings, jobType: jobType});
             this.insertView('#job-submit', jobSubmitView);
@@ -397,8 +380,6 @@ define(['app'], function(App) {
             $('.selected-files:checked').each(function() {
                 selectedFileMetadataUuids.push($(this).val());
             });
-
-            console.log("sel are: " + selectedFileMetadataUuids);
 
             return selectedFileMetadataUuids;
         }
@@ -425,7 +406,7 @@ define(['app'], function(App) {
                 dropZone.addEventListener('drop', this.fileContainerDrop.bind(this), false);
             }
         },
-        clickFilesSelectorWrapper: function(e) {
+        clickFilesSelectorWrapper: function() {
             /*
                 This actually fires off an event that the parent view will catch.
                 The advantage of doing it this way is that the same file handling
@@ -459,17 +440,16 @@ define(['app'], function(App) {
             }
         },
         serialize: function() {
-            console.log("model is: " + JSON.stringify(this.model));
             return this.model.toJSON();
         },
         events: {
             'click .cancel-upload': 'cancelUpload',
             'click .start-upload':  'startUpload'
         },
-        cancelUpload: function(e) {
+        cancelUpload: function() {
             this.remove();
         },
-        startUpload: function(e) {
+        startUpload: function() {
 
             var that = this;
 
@@ -488,7 +468,7 @@ define(['app'], function(App) {
 
                     // A quick hack until I figure out how to do this in my custom FileSync function
                     var parsedJSON = JSON.parse(response);
-                    parsedJSON = parsedJSON['result'];
+                    parsedJSON = parsedJSON.result;
                     that.model.set(parsedJSON);
 
                     that.fileUploadCompleted();
@@ -535,7 +515,6 @@ define(['app'], function(App) {
             var that = this;
             fileMetadata.save(initialMetadata)
                 .done(function() {
-                    console.log("fileMetadata initial save ok");
 
                     // VDJAuth saves the day by fixing metadata pems
                     fileMetadata.syncMetadataPermissionsWithProjectPermissions()
@@ -687,7 +666,6 @@ define(['app'], function(App) {
             // Only go to Agave if there's a problem
             userPermission.removeUserFromProject()
                 .then(function() {
-                    console.log("initial remove user pems success");
                     userPermission.destroy()
                         .done(function() {
                             console.log('user destroy ok');

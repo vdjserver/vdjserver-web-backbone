@@ -90,7 +90,7 @@ define(['app'], function(App) {
             var displayName = e.target.name;
 
             var parameterView = new Jobs.VdjPipeCheckbox({parameterName: displayName});
-            this.insertView$('#vdj-pipe-configuration', parameterView);
+            this.insertView('#vdj-pipe-configuration', parameterView);
             parameterView.render();
             /*
             console.log("displayName is: " + displayName);

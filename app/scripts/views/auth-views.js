@@ -2,7 +2,6 @@ define(['app'], function(App) {
 
     'use strict';
 
-    var UtilViews = App.Views.Util;
     var Auth = {};
 
     Auth.Login = Backbone.View.extend({

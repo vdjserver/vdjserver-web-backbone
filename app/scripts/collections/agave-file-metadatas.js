@@ -26,7 +26,7 @@
                                 + '"value.projectUuid":"' + this.projectUuid + '",'
                                 + '"value.fileCategory":"uploaded"'
                             + '}');
-                        break;
+                        //break;
 
                     case 'preprocessed':
                         return '/meta/v2/data?q='
@@ -35,7 +35,7 @@
                                 + '"value.projectUuid":"' + this.projectUuid + '",'
                                 + '"value.fileCategory":"preprocessed"'
                             + '}');
-                        break;
+                        //break;
 
                     case 'aligned':
                         return '/meta/v2/data?q='
@@ -44,7 +44,7 @@
                                 + '"value.projectUuid":"' + this.projectUuid + '",'
                                 + '"value.fileCategory":"aligned"'
                             + '}');
-                        break;
+                        //break;
 
                     default:
                         break;

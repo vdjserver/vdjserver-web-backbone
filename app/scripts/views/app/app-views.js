@@ -16,11 +16,10 @@ define(['app'], function(App){
             this.model.on('change', this.render, this);
         },
         serialize: function() {
-            console.log("login status is: " + App.isLoggedIn());
             return {
                 isLoggedIn: App.isLoggedIn(),
                 account: this.model.toJSON()
-            }
+            };
         }
     });
 

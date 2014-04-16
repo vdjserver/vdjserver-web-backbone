@@ -42,18 +42,18 @@
         sync: function(method, model, options) {
 
             if (this.get('uuid') === '') {
-               options.apiRoot = Backbone.Agave.vdjauthRoot;
-               options.url = '/projects';
+                options.apiRoot = Backbone.Agave.vdjauthRoot;
+                options.url = '/projects';
 
-               var value = this.get('value');
-               var projectName = value['name'];
-               var username    = Backbone.Agave.instance.token().get('username');
+                var value = this.get('value');
+                var projectName = value.name;
+                var username = Backbone.Agave.instance.token().get('username');
 
-               this.clear();
-               this.set({
-                   username: username,
-                   projectName: projectName
-               });
+                this.clear();
+                this.set({
+                    username: username,
+                    projectName: projectName
+                });
             }
 
             return Backbone.Agave.MetadataSync(method, this, options);

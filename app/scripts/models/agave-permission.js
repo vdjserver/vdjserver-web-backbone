@@ -15,7 +15,6 @@
         initialize: function(attributes) {
 
             if (this.attributes.uuid) {
-                console.log("past if ok");
                 this.uuid = this.attributes.uuid;
                 delete this.attributes.uuid;
             }
@@ -45,7 +44,7 @@
             return Backbone.Agave.sync(method, model, options);
         },
         addUserToProject: function() {
-            
+
             var jxhr = $.ajax({
                 data: {
                     projectUuid: this.uuid,
@@ -61,7 +60,7 @@
             return jxhr;
         },
         removeUserFromProject: function() {
-            
+
             var jxhr = $.ajax({
                 data: {
                     projectUuid: this.uuid,

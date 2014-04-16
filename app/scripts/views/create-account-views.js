@@ -2,7 +2,6 @@ define(['app'], function(App) {
 
     'use strict';
 
-    var UtilViews = App.Views.Util;
     var CreateAccount = {};
 
     CreateAccount.Form = Backbone.View.extend({
@@ -37,7 +36,7 @@ define(['app'], function(App) {
 
             this.model.set(formData);
 
-            this.model.isValid()
+            this.model.isValid();
             var errors = this.model.validationError;
 
             return errors;
@@ -61,7 +60,7 @@ define(['app'], function(App) {
 
                     this.$el.find('.alerts').end().before($('<div class="alert alert-danger">').text(message).fadeIn());
                     $('#' + type + '-container').addClass('has-error');
-                };
+                }
             }
         },
         submitForm: function(e) {

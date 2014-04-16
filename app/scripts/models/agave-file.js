@@ -4,8 +4,6 @@
 
     var Backbone = window.Backbone;
 
-    var File = {};
-
     var File = Backbone.Agave.FileModel.extend({
         idAttribute: 'path',
         defaults: {
@@ -30,15 +28,11 @@
             if (this.has('_links')) {
                 var links = this.get('_links');
 
+                var metadataReference = links.metadata;
 
-                var metadataReference = links['metadata'];
-
-                console.log("metadataRef is: " + JSON.stringify(metadataReference));
-                var href = metadataReference['href'];
-                console.log("href is: " + href);
+                var href = metadataReference.href;
 
                 var split = href.split('"');
-                console.log("split is: " + JSON.stringify(split));
 
                 var associationId = split[3];
 
@@ -46,8 +40,6 @@
             }
         },
         syncFilePermissionsWithProjectPermissions: function() {
-
-            console.log("path is: " + this.get('path'));
 
             var jxhr = $.ajax({
                 data: {

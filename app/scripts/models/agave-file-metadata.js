@@ -32,7 +32,7 @@
 
             var jxhr = $.ajax({
                 data: {
-                    projectUuid: value['projectUuid'],
+                    projectUuid: value.projectUuid,
                     uuid: this.get('uuid')
                 },
                 headers: {

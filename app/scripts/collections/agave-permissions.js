@@ -10,7 +10,6 @@
 
     Permissions = Backbone.Agave.Collection.extend({
         initialize: function(parameters) {
-            console.log("params are: " + JSON.stringify(parameters));
 
             if (parameters && parameters.uuid) {
                 this.uuid = parameters.uuid;
@@ -19,7 +18,6 @@
         comparator: 'username',
         model: Backbone.Agave.Model.Permission,
         url: function() {
-            console.log("calling url and uuid is: " + this.uuid);
             return '/meta/v2/data/' + this.uuid + '/pems';
         },
         parse: function(response) {
@@ -36,7 +34,7 @@
                     };
 
                     pems.push(userPems);
-                };
+                }
             }
 
             return pems;
