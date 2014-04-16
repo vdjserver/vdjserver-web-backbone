@@ -25,7 +25,6 @@ define(['app'], function(App) {
 
             this.jobFormView = jobFormView;
 
-
             this.insertView('.modal-body', this.jobFormView);
             this.jobFormView.render();
 
@@ -41,14 +40,14 @@ define(['app'], function(App) {
             $('#job-modal').modal('show');
         },
         events: {
-            'click #submit-job': 'submitJob',
+            'submit form': 'submitJob',
             'click .remove-file-from-job': 'removeFileFromJob'
         },
         submitJob: function(e) {
             e.preventDefault();
 
-            //var formData = Backbone.Syphon.serialize('#job-form');
-            //console.log("formData is: " + JSON.stringify(formData));
+            var formData = Backbone.Syphon.serialize(this);
+            console.log("formData is: " + JSON.stringify(formData));
 
             $('#job-modal').modal('hide')
                 .on('hidden.bs.modal', function() {
@@ -89,6 +88,9 @@ define(['app'], function(App) {
 
     Jobs.VdjPipeForm = Backbone.View.extend({
         template: 'jobs/vdjpipe-form',
+        initialize: function() {
+            this.inputCounter = {};
+        },
         events: {
             'click .job-parameter': 'addJobParameter',
             'click .remove-job-parameter': 'removeJobParameter'
@@ -105,8 +107,18 @@ define(['app'], function(App) {
             e.preventDefault();
 
             var displayName = e.target.name;
+            var originalName = e.target.dataset.inputname;
 
-            var parameterView = new Jobs.VdjPipeCheckbox({parameterName: displayName});
+            if (this.inputCounter[originalName]) {
+                this.inputCounter[originalName] = this.inputCounter[originalName] + 1;
+            }
+            else {
+                this.inputCounter[originalName] = 1;
+            }
+
+            var inputName = originalName + this.inputCounter[originalName];
+
+            var parameterView = new Jobs.VdjPipeCheckbox({parameterName: displayName, originalName: originalName, inputName: inputName});
             this.insertView('#vdj-pipe-configuration', parameterView);
             parameterView.render();
         },
@@ -120,11 +132,15 @@ define(['app'], function(App) {
         template: 'jobs/vdjpipe-checkbox',
         initialize: function(parameters) {
             this.parameterName = parameters.parameterName;
+            this.originalName = parameters.originalName;
+            this.inputName = parameters.inputName;
         },
         serialize: function() {
             if (this.parameterName) {
                 return {
-                    parameterName: this.parameterName
+                    parameterName: this.parameterName,
+                    originalName: this.originalName,
+                    inputName: this.inputName
                 };
             }
         }
