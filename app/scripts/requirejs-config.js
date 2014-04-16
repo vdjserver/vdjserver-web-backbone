@@ -4,7 +4,7 @@ require.config({
     deps: ['requirejs-main'],
     paths: {
         'backbone':         '../bower_components/backbone/backbone',
-        'backbone.syphon':  '../bower_components/backbone.syphon/lib/backbone.syphon',
+        'backbone.syphon':  '../bower_components/backbone.syphon/lib/amd/backbone.syphon',
         'bootstrap':        'vendor/bootstrap',
         'handlebars':       '../bower_components/handlebars/handlebars',
         'jquery':           '../bower_components/jquery/dist/jquery',
@@ -75,10 +75,6 @@ require.config({
         'backbone': {
             deps: ['jquery', 'underscore'],
             exports: 'Backbone'
-        },
-        'backbone.syphon': {
-            deps: ['backbone']
-            //exports: 'Backbone'
         },
         'bootstrap': {
             deps: ['jquery']
