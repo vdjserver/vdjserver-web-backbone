@@ -240,20 +240,6 @@ define(['app'], function(App) {
             // UI
             $('.file-category').removeClass('active');
             $('#' + this.fileCategory).addClass('active');
-
-/*
-            var that = this;
-            $('.selected-files').on('change', function() {
-
-                var selectedFiles = that.getSelectedFiles();
-                if (selectedFiles.length > 0) {
-                    console.log("more than 0");
-                }
-                else {
-                    console.log("less than 0");
-                }
-            });
-*/
         },
         events: {
             'click .delete-project': 'deleteProject',
@@ -368,7 +354,12 @@ define(['app'], function(App) {
                 selectedFileListings.add(model);
             }
 
-            var jobSubmitView = new App.Views.Jobs.Submit({selectedFileListings: selectedFileListings, jobType: jobType});
+            var jobSubmitView = new App.Views.Jobs.Submit({
+                selectedFileListings: selectedFileListings, 
+                jobType: jobType, 
+                projectModel: this.projectModel
+            });
+
             this.insertView('#job-submit', jobSubmitView);
             jobSubmitView.render();
         },
@@ -455,12 +446,6 @@ define(['app'], function(App) {
             this.model.on('uploadProgress', function(percentCompleted) {
                 that.uploadProgress(percentCompleted);
             });
-
-            /*
-            this.model.on('uploadComplete', function() {
-                that.fileUploadCompleted();
-            });
-            */
 
             this.model.save()
                 .done(function(response) {

@@ -8,6 +8,8 @@ define(['app'], function(App) {
         template: 'jobs/job-submit-form',
         initialize: function(parameters) {
 
+            this.projectModel = parameters.projectModel;
+
             var jobFormView;
 
             switch(parameters.jobType) {
@@ -46,12 +48,17 @@ define(['app'], function(App) {
         submitJob: function(e) {
             e.preventDefault();
 
+            var that = this;
+
             var formData = Backbone.Syphon.serialize(this);
-            console.log("formData is: " + JSON.stringify(formData));
 
             $('#job-modal').modal('hide')
                 .on('hidden.bs.modal', function() {
-                    var jobNotificationView = new Jobs.Notification();
+                    var jobNotificationView = new Jobs.Notification({
+                        formData: formData, 
+                        projectModel: that.projectModel
+                    });
+
                     App.Layouts.footer.insertView('#running-jobs', jobNotificationView);
                     jobNotificationView.render();
                 });
@@ -118,7 +125,12 @@ define(['app'], function(App) {
 
             var inputName = originalName + this.inputCounter[originalName];
 
-            var parameterView = new Jobs.VdjPipeCheckbox({parameterName: displayName, originalName: originalName, inputName: inputName});
+            var parameterView = new Jobs.VdjPipeCheckbox({
+                parameterName: displayName,
+                originalName: originalName,
+                inputName: inputName
+            });
+
             this.insertView('#vdj-pipe-configuration', parameterView);
             parameterView.render();
         },
@@ -148,8 +160,19 @@ define(['app'], function(App) {
 
     Jobs.Notification = Backbone.View.extend({
         template: 'jobs/notification',
-        initialize: function() {
+        initialize: function(parameters) {
 
+            this.jobName = parameters.formData['job-name'];
+            this.jobStatus = 'Queued';
+            this.projectModel = parameters.projectModel;
+
+        },
+        serialize: function() {
+            return {
+                jobName: this.jobName,
+                jobStatus: this.jobStatus,
+                projectName: this.projectModel.get('value').name
+            };
         },
         afterRender: function() {
             $('.job-pending').animate({
