@@ -33,9 +33,17 @@ define(['app'], function(App) {
 
         // Index
         index: function() {
-            App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.AppViews.Home());
-            App.Layouts.main.render();
+
+            if (! App.isLoggedIn()) {
+                App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.setView('.content', new App.Views.AppViews.Home());
+                App.Layouts.main.render();
+            }
+            else {
+                App.router.navigate('/project', {
+                    trigger: true
+                });
+            }
         },
 
 
@@ -49,9 +57,8 @@ define(['app'], function(App) {
         authLogout: function() {
             App.Agave.destroyToken();
             window.localStorage.removeItem('Agave.Token');
-            
+
             redirectToLogin();
-            //App.router.navigate('', {trigger:true});
         },
 
         // Account
@@ -64,7 +71,7 @@ define(['app'], function(App) {
         // Profile
         accountProfile: function() {
 
-            if (!App.isLoggedIn()) {
+            if (! App.isLoggedIn()) {
                 redirectToLogin();
             }
             else {
@@ -78,7 +85,7 @@ define(['app'], function(App) {
         // Projects
         projectIndex: function() {
 
-            if (!App.isLoggedIn()) {
+            if (! App.isLoggedIn()) {
                 redirectToLogin();
             }
             else {
@@ -96,7 +103,7 @@ define(['app'], function(App) {
 
         projectCreate: function() {
 
-            if (!App.isLoggedIn()) {
+            if (! App.isLoggedIn()) {
                 redirectToLogin();
             }
             else {
@@ -114,7 +121,7 @@ define(['app'], function(App) {
 
         projectDetail: function(projectUuid) {
 
-            if (!App.isLoggedIn()) {
+            if (! App.isLoggedIn()) {
                 redirectToLogin();
             }
             else {
@@ -140,7 +147,7 @@ define(['app'], function(App) {
 
         projectManageUsers: function(projectUuid) {
 
-            if (!App.isLoggedIn()) {
+            if (! App.isLoggedIn()) {
                 redirectToLogin();
             }
             else {
@@ -160,7 +167,7 @@ define(['app'], function(App) {
         },
 
         projectJobHistory: function(projectUuid) {
-            if (!App.isLoggedIn()) {
+            if (! App.isLoggedIn()) {
                 redirectToLogin();
             }
             else {
@@ -179,7 +186,7 @@ define(['app'], function(App) {
         },
 
         projectSelectAnalyses: function(projectUuid, jobId) {
-            if (!App.isLoggedIn()) {
+            if (! App.isLoggedIn()) {
                 redirectToLogin();
             }
             else {
