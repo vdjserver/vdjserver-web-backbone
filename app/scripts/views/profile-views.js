@@ -4,13 +4,6 @@ define(['app'], function(App) {
 
     var Profile   = {};
 
-    Profile.Login = Backbone.View.extend({
-        template: 'profile/login',
-        initialize: function() {
-            $('html,body').animate({scrollTop:0});
-        }
-    });
-
     Profile.Form = Backbone.View.extend({
         template: 'profile/profile-form',
         initialize: function() {

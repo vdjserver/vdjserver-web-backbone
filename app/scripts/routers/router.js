@@ -2,6 +2,12 @@ define(['app'], function(App) {
 
     'use strict';
 
+    var redirectToLogin = function() {
+        App.router.navigate('', {
+            trigger: true
+        });
+    };
+
     var DefaultRouter = Backbone.Router.extend({
 
         routes: {
@@ -12,14 +18,6 @@ define(['app'], function(App) {
 
             'account':         'createAccount',
             'account/profile': 'accountProfile',
-
-            'apps/public': 'appsPublicList',
-            'apps/shared': 'appsSharedList',
-            'apps/:id':    'appsView',
-
-            'io':              'ioBrowser',
-            'io/:owner':       'ioBrowser',
-            'io/:owner/*path': 'ioBrowser',
 
             'project':           'projectIndex',
             'project/create':    'projectCreate',
@@ -51,7 +49,9 @@ define(['app'], function(App) {
         authLogout: function() {
             App.Agave.destroyToken();
             window.localStorage.removeItem('Agave.Token');
-            App.router.navigate('', {trigger:true});
+            
+            redirectToLogin();
+            //App.router.navigate('', {trigger:true});
         },
 
         // Account
@@ -65,8 +65,7 @@ define(['app'], function(App) {
         accountProfile: function() {
 
             if (!App.isLoggedIn()) {
-                App.Layouts.main.template = 'layouts/standard';
-                App.Layouts.main.setView('.content', new App.Views.Profile.Login());
+                redirectToLogin();
             }
             else {
                 App.Layouts.main.template = 'layouts/standard';
@@ -76,47 +75,11 @@ define(['app'], function(App) {
             App.Layouts.main.render();
         },
 
-
-        // Apps
-        appsPublicList: function() {
-            App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.AgaveApps.AppList({collection: new Backbone.Agave.Apps.PublicApplications()}));
-            App.Layouts.main.render();
-        },
-
-        appsSharedList: function() {
-            App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.AgaveApps.AppList({collection: new Backbone.Agave.Apps.SharedApplications()}));
-            App.Layouts.main.render();
-        },
-
-        appsView: function(id) {
-            App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.AgaveApps.AppView({model: new Backbone.Agave.Apps.Application({id:id})}));
-            App.Layouts.main.render();
-        },
-
-
-        // IO
-        ioBrowser: function(owner, path) {
-
-            App.Layouts.main.template = 'layouts/standard';
-            var fullPath = owner || App.Agave.token().get('username');
-
-            if (path) {
-                fullPath += '/' + path;
-            }
-
-            App.Layouts.main.setView('.content',new App.Views.AgaveIO.Browser({collection: new Backbone.Agave.IO.Listing([], {path: fullPath})}));
-            App.Layouts.main.render();
-        },
-
         // Projects
         projectIndex: function() {
 
             if (!App.isLoggedIn()) {
-                App.Layouts.main.template = 'layouts/standard';
-                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
+                redirectToLogin();
             }
             else {
 
@@ -134,8 +97,7 @@ define(['app'], function(App) {
         projectCreate: function() {
 
             if (!App.isLoggedIn()) {
-                App.Layouts.main.template = 'layouts/standard';
-                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
+                redirectToLogin();
             }
             else {
 
@@ -153,8 +115,7 @@ define(['app'], function(App) {
         projectDetail: function(projectUuid) {
 
             if (!App.isLoggedIn()) {
-                App.Layouts.main.template = 'layouts/standard';
-                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
+                redirectToLogin();
             }
             else {
 
@@ -180,8 +141,7 @@ define(['app'], function(App) {
         projectManageUsers: function(projectUuid) {
 
             if (!App.isLoggedIn()) {
-                App.Layouts.main.template = 'layouts/standard';
-                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
+                redirectToLogin();
             }
             else {
 
@@ -201,8 +161,7 @@ define(['app'], function(App) {
 
         projectJobHistory: function(projectUuid) {
             if (!App.isLoggedIn()) {
-                //App.Layouts.main.template = 'layouts/standard';
-                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
+                redirectToLogin();
             }
             else {
                 if (App.Layouts.main.template !== 'layouts/project-standard') {
@@ -221,8 +180,7 @@ define(['app'], function(App) {
 
         projectSelectAnalyses: function(projectUuid, jobId) {
             if (!App.isLoggedIn()) {
-                //App.Layouts.main.template = 'layouts/standard';
-                App.Layouts.main.setView('.content', new App.Views.Projects.Login());
+                redirectToLogin();
             }
             else {
                 if (App.Layouts.main.template !== 'layouts/project-standard') {
@@ -239,6 +197,7 @@ define(['app'], function(App) {
             }
         },
 
+        // 404
         notFound: function() {
             App.Layouts.main.template = 'layouts/standard';
             App.Layouts.main.setView('.content', new App.Views.NotFound.Error());

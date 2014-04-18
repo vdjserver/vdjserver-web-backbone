@@ -4,13 +4,6 @@ define(['app'], function(App) {
 
     var Analyses = {};
 
-    Analyses.Login = Backbone.View.extend({
-        template: 'project/login',
-        initialize: function() {
-            $('html,body').animate({scrollTop:0});
-        }
-    });
-    
     Analyses.SelectAnalyses = Backbone.View.extend({
         template: 'analyses/select-analyses',
         initialize: function(parameters) {

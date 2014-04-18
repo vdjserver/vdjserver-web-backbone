@@ -20,13 +20,6 @@ define(['app'], function(App) {
 
     var Projects = {};
 
-    Projects.Login = Backbone.View.extend({
-        template: 'project/login',
-        initialize: function() {
-            $('html,body').animate({scrollTop:0});
-        }
-    });
-
     Projects.List = Backbone.View.extend({
         template: 'project/list',
         initialize: function(parameters) {
