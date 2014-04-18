@@ -1,0 +1,30 @@
+.projects-list {
+    @extend .list-group;
+
+    list-style: none;
+}
+
+.project-menu {
+
+    list-style: none;
+
+    a {
+        @extend .list-group-item;
+        //background-color: inherit;
+        background-color: $projectMenuLightColor;
+        color: #000000;
+    }
+}
+
+.project-submenu {
+
+    @extend .list-group-item;
+    @extend .text-right;
+
+    background-color: $projectSubmenuColor;
+    color: $projectSubmenuTextColor;
+
+    a {
+        color: inherit;
+    }
+}

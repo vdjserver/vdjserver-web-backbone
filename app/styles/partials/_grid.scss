@@ -8,3 +8,10 @@
     @extend .container;
     padding: 40px 15px;
 }
+
+.sidebar {
+    border-right: 1px solid;
+    border-color: $sidebarColor;
+    overflow: visible;
+    height: 100%;
+}
