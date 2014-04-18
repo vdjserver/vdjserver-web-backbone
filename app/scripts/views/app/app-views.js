@@ -41,10 +41,7 @@ define(['app'], function(App){
     });
 
     AppViews.Home = Backbone.View.extend({
-        template: 'home',
-        serialize: function() {
-            return App.isLoggedIn();
-        }
+        template: 'home'
     });
 
     AppViews.Footer = Backbone.View.extend({
