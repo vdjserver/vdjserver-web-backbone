@@ -11,13 +11,14 @@
 // Modules
 @import 'modules/colors';
 @import 'modules/font';
-@import 'modules/layout';
 
 // Partials
 @import 'partials/alerts';
+@import 'partials/body';
+@import 'partials/boxes';
 @import 'partials/buttons';
+@import 'partials/charts';
 @import 'partials/grid';
 @import 'partials/icons';
+@import 'partials/navbar';
 @import 'partials/tables';
-@import 'partials/boxes';
-@import 'partials/charts';

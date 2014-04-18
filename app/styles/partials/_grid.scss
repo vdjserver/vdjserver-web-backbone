@@ -3,3 +3,8 @@
 
     margin-top: 20px;
 }
+
+.main-content {
+    @extend .container;
+    padding: 40px 15px;
+}

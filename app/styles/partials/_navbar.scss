@@ -3,12 +3,8 @@
     They were adapted from an external css file in: http://getbootstrap.com/examples/starter-template/
 */
 
-body {
-    padding-top: 50px;
-}
-
 .navbar {
-    @extend .navbar; 
+    @extend .navbar;
     @extend .navbar-inverse;
     @extend .navbar-fixed-top;
 }
@@ -32,10 +28,4 @@ body {
 .navbar-items {
     @extend .navbar-collapse;
     @extend .collapse;
-}
-
-
-.main-content {
-    @extend .container;
-    padding: 40px 15px;
 }
