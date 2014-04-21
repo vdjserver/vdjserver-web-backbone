@@ -32,15 +32,30 @@
     }
 }
 
+.triangle-overlay{
+  background: rgba(255,252,252,1);
+  background: -moz-linear-gradient(129deg, rgba(255,252,252,1) 0%, rgba(255,255,255,1) 48%, rgba(247,246,246,1) 51%, rgba(247,246,246,1) 100%);
+  background: -webkit-gradient(left bottom, right top, color-stop(0%, rgba(255,252,252,1)), color-stop(48%, rgba(255,255,255,1)), color-stop(51%, rgba(247,246,246,1)), color-stop(100%, rgba(247,246,246,1)));
+  background: -webkit-linear-gradient(129deg, rgba(255,252,252,1) 0%, rgba(255,255,255,1) 48%, rgba(247,246,246,1) 51%, rgba(247,246,246,1) 100%);
+  background: -o-linear-gradient(129deg, rgba(255,252,252,1) 0%, rgba(255,255,255,1) 48%, rgba(247,246,246,1) 51%, rgba(247,246,246,1) 100%);
+  background: -ms-linear-gradient(129deg, rgba(255,252,252,1) 0%, rgba(255,255,255,1) 48%, rgba(247,246,246,1) 51%, rgba(247,246,246,1) 100%);
+  background: linear-gradient(129deg, rgba(255,252,252,1) 0%, rgba(255,255,255,1) 48%, rgba(247,246,246,1) 51%, rgba(247,246,246,1) 100%); 
+  
+}
+
 .middle-boxes{
   display: flex;
   align-content: flex-start;
   width: 95%;
 }
 
-
+.boxes-shadow{
+  box-shadow: 5px 5px 0px 2px rgba(118, 118, 118, .5);
+}
 
 .boxes-action{
+    @extend .boxes-shadow;
+    @extend .triangle-overlay;
     border:1px solid rgb(69, 139, 0);
     background-color: rgb(255, 255, 255);
     margin: 0px auto;
@@ -86,7 +101,8 @@
 }
 
 .welcome-box{
-    z-index:2;
+    @extend .boxes-shadow;
+    z-index:3;
     max-height:100%;
     height:350px;
     align-self: flex-end;
@@ -95,17 +111,21 @@
     margin: 25px  auto;
     overflow: hidden;
     position: relative;
-    left: 360px;
+    left: 351px;
     top:-50px;
     background: #cc6633;
+    box-shadow: 6px 10px 0px 3px rgba(118, 118, 118, .5);
+    border: 0 none;
 }
 
-.signup{
-    @extend .forms;
+.signup{;
     height: 100%;
     padding: 20px;
     background: transparent;
     color: rgb(255, 255, 255);
+    border-radius: 0;
+    box-shadow:none;
+    border: 0 none;
 }
 
 .signup h2{
@@ -138,7 +158,12 @@
    align-items: flex-end;
 }
 
+
 .bottom{
+   @extend .boxes-shadow;
+}
+
+.bottom.uploads{
      border: 1px solid green;
      margin: 50px 0px  10px 30px;
      display:block;
@@ -158,6 +183,7 @@
      margin-top:8px;
      margin-left: 10px;
      color: #3e3e3e;
+     font-family:'Aleo', serif;
 }
 
 .bottom p{
@@ -179,6 +205,7 @@
      border-bottom: 2px solid rgb(153, 51, 51);
      padding-bottom: 5px;
      margin-left:14px; 
+     font-family: 'Aleo', sans-serif;
 }
 
       
