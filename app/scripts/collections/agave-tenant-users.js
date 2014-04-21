@@ -10,7 +10,7 @@
         model: Backbone.Agave.Model.TenantUser,
         comparator: 'username',
         url: function() {
-            return '/users/';
+            return '/profiles/v2/';
         }
     });
 
