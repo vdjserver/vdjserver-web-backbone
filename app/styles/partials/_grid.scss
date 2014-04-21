@@ -3,3 +3,59 @@
 
     margin-top: 20px;
 }
+
+#wrapper {
+    padding-top: 40px;
+
+    min-height: 100%;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0;
+    display: inline-block;
+}
+
+#sidebar {
+    height: 100%;
+    position: relative;
+    overflow-y: auto;
+}
+
+#sidebar-wrapper {
+    height: 100%;
+    //width: 188px;
+    padding: 50px 0 0px 0;
+    position: fixed;
+
+    border-right: 1px solid;
+    border-color: $sidebarColor;
+}
+
+#main-wrapper {
+    height: 100%;
+    overflow-y: auto;
+    padding: 50px 50px 0 50px;
+}
+
+@media (max-width: $grid-float-breakpoint) {
+    body {
+        padding-top: 0px;
+    }
+
+    #main-wrapper {
+        padding-top: 0px;
+    }
+
+    #sidebar-wrapper {
+        position: static;
+        height:auto;
+        max-height: 300px;
+        border-right:0;
+    }
+}
+@media (min-width: $grid-float-breakpoint-max) {
+    #main-wrapper {
+        float:right;
+    }
+}

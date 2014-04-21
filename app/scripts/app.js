@@ -95,13 +95,6 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 el: '#main'
             });
 
-            App.Layouts.footer = new App.Views.AppViews.FooterLayout({
-                el: '#footer',
-                views: {
-                    '': new App.Views.AppViews.Footer()
-                }
-            });
-
             _.each(App.Layouts, function(layout) {
                 layout.render();
             });

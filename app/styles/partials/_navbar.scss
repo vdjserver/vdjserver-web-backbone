@@ -1,41 +1,6 @@
 /*    They were adapted from an external css file in: http://getbootstrap.com/examples/starter-template/
 */
 
-@font-face{
-    font-family: 'Aleo';
-    src: url('Aleo.otf') format('truetype');
-
-}
-
-//Tex Gyre Adventor-Regular
-
-@font-face {
-    font-family: 'texgyreadventorregular';
-    src: url('texgyreadventor-regular-webfont.eot');
-    src: url('texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('texgyreadventor-regular-webfont.woff') format('woff'),
-         url('texgyreadventor-regular-webfont.ttf') format('truetype'),
-         url('texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-// Tex Gyre Adventor-Bold
-
-@font-face {
-    font-family: 'texgyreadventorbold';
-    src: url('texgyreadventor-bold-webfont.eot');
-    src: url('texgyreadventor-bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('texgyreadventor-bold-webfont.woff') format('woff'),
-         url('texgyreadventor-bold-webfont.ttf') format('truetype'),
-         url('texgyreadventor-bold-webfont.svg#texgyreadventorbold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-
 body {
     padding-top: 50px;
     width: 1200px;
@@ -47,7 +12,7 @@ body {
 }
 
 .navbar {
-    @extend .navbar; 
+    @extend .navbar;
     @extend .navbar-inverse;
     @extend .navbar-fixed-top;
     background-color: rgba(255, 255, 255, 0.5);

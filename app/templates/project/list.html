@@ -1,26 +1,21 @@
-<div class="list-group">
+<ul class="projects-list project-create">
+    <li class="project-create-menu">
+        <a class="" href="project/create">
+            CREATE NEW +
+        </a>
+    </li>
+</ul>
 
-    <a class="create-project list-group-item" href="project/create">
-        Create Project +
-    </a>
-</div>
-
-<div class="list-group">
+<ul class="projects-list">
     {{#projects}}
-        <div id="{{uuid}}-menu" class="project-menu">
-            <a href="project/{{uuid}}" id="project-{{uuid}}" class="view-project list-group-item" data-id="{{uuid}}">
+        <li id="project-{{uuid}}-menu" class="project-menu">
+            <a href="project/{{uuid}}" id="project-{{uuid}}" data-id="{{uuid}}">
                 {{value.name}}
             </a>
-
-            <div id="project-{{uuid}}-submenu" class="project-submenu hidden">
-                <a href="project/{{uuid}}/jobs" class="list-group-item text-right select-analyses" data-id="{{uuid}}">Analyses</a>
-                <a href="#" class="list-group-item text-right">Publish Project</a>
-                <a href="#" class="list-group-item text-right">Settings</a>
-
-                <a href="project/{{uuid}}/users" class="list-group-item text-right manage-users" data-id="{{uuid}}">
-                    Manage Users
-                </a>
-            </div>
-        </div>
+        </li>
+        <li class="project-submenu hidden"><a href="project/{{uuid}}/jobs" class="select-analyses" data-id="{{uuid}}">Analyses</a></li>
+        <li class="project-submenu hidden"><a href="#" class="">Publish Project</a></li>
+        <li class="project-submenu hidden"><a href="#" class="">Settings</a></li>
+        <li class="project-submenu hidden"><a href="project/{{uuid}}/users" class="manage-users" data-id="{{uuid}}">Manage Users</a></li>
     {{/projects}}
-</div>
+</ul>

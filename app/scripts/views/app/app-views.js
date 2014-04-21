@@ -6,7 +6,6 @@ define(['app'], function(App){
     // layouts
     AppViews.HeaderLayout = Backbone.Layout.extend();
     AppViews.MainLayout   = Backbone.Layout.extend();
-    AppViews.FooterLayout = Backbone.Layout.extend();
 
     // app views
     AppViews.Nav = Backbone.View.extend({
@@ -123,13 +122,6 @@ define(['app'], function(App){
             return false;
         }
     });
-
-    AppViews.Footer = Backbone.View.extend({
-        template: 'footer',
-        className: 'footer'
-    });
-
-
 
     App.Views.AppViews = AppViews;
     return AppViews;

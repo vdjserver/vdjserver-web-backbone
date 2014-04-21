@@ -1,0 +1,43 @@
+.project-create-menu {
+    list-style: none;
+    margin-left: 30px;
+    font-family: 'Aleo-Regular';
+    font-size: 21px;
+    font-color: #404040;
+}
+
+.projects-list {
+    @extend .list-group;
+
+    list-style: none;
+}
+
+.project-menu {
+
+    list-style: none;
+    font-family: 'Aleo-Bold';
+    font-size: 18px;
+    margin-left: 15px;
+
+    a {
+        @extend .list-group-item;
+
+        background-color: $projectMenuLightColor;
+        color: #000000;
+    }
+}
+
+.project-submenu {
+
+    @extend .list-group-item;
+
+    font-family: 'Aleo-Bold';
+    font-size: 16px;
+    background-color: $projectSubmenuColor;
+    color: $projectSubmenuTextColor;
+    padding-left: 45px;
+
+    a {
+        color: inherit;
+    }
+}

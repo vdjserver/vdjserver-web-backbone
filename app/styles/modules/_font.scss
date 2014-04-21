@@ -1,58 +1,44 @@
-// font-awesome
-$fa-font-path:   '/bower_components/font-awesome/fonts';
+// Font Awesome
+$fa-font-path: '/fonts/font-awesome';
 
-// Aleo Font
-@font-face{
-    font-family: 'Aleo';
-    src: url('Aleo.otf') format('truetype');
-}
+// Tex Gyre Adventor
+@include font-face(
+    'TexGyreAdventor-Regular',
+    font-files(
+        'tex-gyre-adventor-regular/texgyreadventor-regular-webfont.eot',
+        'tex-gyre-adventor-regular/texgyreadventor-regular-webfont.svg',
+        'tex-gyre-adventor-regular/texgyreadventor-regular-webfont.ttf',
+        'tex-gyre-adventor-regular/texgyreadventor-regular-webfont.woff'
+    )
+);
 
-//TeX-Gyre-Adventor
+@include font-face(
+    'TexGyreAdventor-Bold',
+    font-files(
+        'tex-gyre-adventor-bold/texgyreadventor-bold-webfont.eot',
+        'tex-gyre-adventor-bold/texgyreadventor-bold-webfont.svg',
+        'tex-gyre-adventor-bold/texgyreadventor-bold-webfont.ttf',
+        'tex-gyre-adventor-bold/texgyreadventor-bold-webfont.woff'
+    )
+);
 
-@font-face {
-    font-family: 'texgyreadventorbold';
-    src: url('texgyreadventor-bold-webfont.eot');
-    src: url('texgyreadventor-bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('texgyreadventor-bold-webfont.woff') format('woff'),
-         url('texgyreadventor-bold-webfont.ttf') format('truetype'),
-         url('texgyreadventor-bold-webfont.svg#texgyreadventorbold') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
+// Aleo
+@include font-face(
+    'Aleo-Regular',
+    font-files(
+        'aleo-regular/aleo-regular-webfont.eot',
+        'aleo-regular/aleo-regular-webfont.svg',
+        'aleo-regular/aleo-regular-webfont.ttf',
+        'aleo-regular/aleo-regular-webfont.woff'
+    )
+);
 
-
-@font-face {
-    font-family: 'texgyreadventorbold_italic';
-    src: url('texgyreadventor-bolditalic-webfont.eot');
-    src: url('texgyreadventor-bolditalic-webfont.eot?#iefix') format('embedded-opentype'),
-         url('texgyreadventor-bolditalic-webfont.woff') format('woff'),
-         url('texgyreadventor-bolditalic-webfont.ttf') format('truetype'),
-         url('texgyreadventor-bolditalic-webfont.svg#texgyreadventorbold_italic') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'texgyreadventoritalic';
-    src: url('texgyreadventor-italic-webfont.eot');
-    src: url('texgyreadventor-italic-webfont.eot?#iefix') format('embedded-opentype'),
-         url('texgyreadventor-italic-webfont.woff') format('woff'),
-         url('texgyreadventor-italic-webfont.ttf') format('truetype'),
-         url('texgyreadventor-italic-webfont.svg#texgyreadventoritalic') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'texgyreadventorregular';
-    src: url('texgyreadventor-regular-webfont.eot');
-    src: url('texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('texgyreadventor-regular-webfont.woff') format('woff'),
-         url('texgyreadventor-regular-webfont.ttf') format('truetype'),
-         url('texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
+@include font-face(
+    'Aleo-Bold',
+    font-files(
+        'aleo-bold/aleo-bold-webfont.eot',
+        'aleo-bold/aleo-bold-webfont.svg',
+        'aleo-bold/aleo-bold-webfont.ttf',
+        'aleo-bold/aleo-bold-webfont.woff'
+    )
+);

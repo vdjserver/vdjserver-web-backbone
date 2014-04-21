@@ -70,11 +70,11 @@ define(['app'], function(App) {
         },
         uiSetProjectActive: function(projectUuid) {
             $('.list-group-item').removeClass('active');
-            $('#project-' + projectUuid).addClass('active');
+            $('#project-' + projectUuid + '-menu').addClass('active');
         },
         uiOpenProjectSubmenu: function(projectUuid) {
             $('.project-submenu').addClass('hidden');
-            $('#project-' + projectUuid + '-submenu').removeClass('hidden');
+            $('#project-' + projectUuid + '-menu').nextUntil('.project-menu').removeClass('hidden');
         }
     });
 
@@ -95,9 +95,12 @@ define(['app'], function(App) {
             this.setupModalView();
             this.highlightList();
         },
+        // UI
         highlightList: function() {
-            $('.list-group-item').removeClass('active');
-            $('.create-project').addClass('active');
+            $('.project-menu').removeClass('active');
+            $('.project-create').addClass('active');
+
+            $('.project-submenu').addClass('hidden');
         },
         setupModalView: function() {
 

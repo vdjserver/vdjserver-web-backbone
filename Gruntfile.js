@@ -156,7 +156,7 @@ module.exports = function(grunt) {
                 cssDir: '.tmp/styles',
                 imagesDir: '<%= yeoman.app %>/images',
                 javascriptsDir: '<%= yeoman.app %>/scripts',
-                fontsDir: '<%= yeoman.app %>/fonts',
+                fontsDir: '/fonts',
                 importPath: '<%= yeoman.app %>/bower_components',
                 httpImagesPath: '/images',
                 relativeAssets: true
@@ -204,7 +204,7 @@ module.exports = function(grunt) {
                         dot: true,
                         flatten: true,
                         cwd: '<%= yeoman.app %>',
-                        dest: '<%= yeoman.app %>/fonts',
+                        dest: '<%= yeoman.app %>/fonts/font-awesome',
                         src: [
                             'bower_components/font-awesome/fonts/*'
                         ]
