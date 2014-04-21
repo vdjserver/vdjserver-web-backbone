@@ -12,3 +12,18 @@
     @extend .btn;
     @extend .btn-success;
 }
+
+.welcome-box-btn{
+    @extend .button-primary;
+    margin-right: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'texgyreadventorregular', sans-serif; 
+    margin-top: 20px;
+
+}
+
+.welcome-box-btn:hover{
+    @extend .btn-warning;
+
+}

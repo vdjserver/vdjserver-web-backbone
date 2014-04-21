@@ -1,16 +1,60 @@
-/*
-    These styles offset main content from the navbar.
-    They were adapted from an external css file in: http://getbootstrap.com/examples/starter-template/
+/*    They were adapted from an external css file in: http://getbootstrap.com/examples/starter-template/
 */
+
+@font-face{
+    font-family: 'Aleo';
+    src: url('Aleo.otf') format('truetype');
+
+}
+
+//Tex Gyre Adventor-Regular
+
+@font-face {
+    font-family: 'texgyreadventorregular';
+    src: url('texgyreadventor-regular-webfont.eot');
+    src: url('texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('texgyreadventor-regular-webfont.woff') format('woff'),
+         url('texgyreadventor-regular-webfont.ttf') format('truetype'),
+         url('texgyreadventor-regular-webfont.svg#texgyreadventorregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+// Tex Gyre Adventor-Bold
+
+@font-face {
+    font-family: 'texgyreadventorbold';
+    src: url('texgyreadventor-bold-webfont.eot');
+    src: url('texgyreadventor-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('texgyreadventor-bold-webfont.woff') format('woff'),
+         url('texgyreadventor-bold-webfont.ttf') format('truetype'),
+         url('texgyreadventor-bold-webfont.svg#texgyreadventorbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 
 body {
     padding-top: 50px;
+    width: 1200px;
+    margin: auto 110px;
+    max-width: 100%;
+    overflow: auto;
+    background:url("../images/illustration-final.png") no-repeat 127px -20px;
+
 }
 
 .navbar {
     @extend .navbar; 
     @extend .navbar-inverse;
     @extend .navbar-fixed-top;
+    background-color: rgba(255, 255, 255, 0.5);
+    display: block;
+    height:75px;
+    z-index: 2;
+    
 }
 
 .navbar-content {
@@ -25,17 +69,51 @@ body {
     @extend .navbar-toggle;
 }
 
+.navbar-nav{
+   margin:10px auto;
+
+}
+
+.navbar-blur{
+   @extend .navbar;
+   @extend .navbar-fixed-top;
+   @extend .navbar-inverse;   
+   -webkit-filter: blur(5px);
+   -moz-filter: blur(5px);
+   -ms-filter: blur(5px);
+   filter: blur(5px);
+   z-index:-1;
+}
 .navbar-vdj-logo {
     @extend .navbar-brand;
+    padding: 0px;
 }
+
+.navbar-vdj-logo > img{
+    width: 125px;
+
+}
+
 
 .navbar-items {
     @extend .navbar-collapse;
     @extend .collapse;
 }
 
+.no-user{
+    padding: 0px 20px;
+    margin: 15px 0px;
+    text-transform: uppercase;
+    letter-spacing: 0.08px;
+    font-size:1.2em;
+    color: rgb(148, 71, 63);
+}
 
 .main-content {
     @extend .container;
     padding: 40px 15px;
+}
+
+form{
+    @extend .form-control;
 }
