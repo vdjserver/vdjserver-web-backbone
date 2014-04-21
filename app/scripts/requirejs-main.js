@@ -56,7 +56,6 @@ define([
     'not-found-views',
 
     'create-account-views',
-    'auth-views',
     'profile-views',
     'job-views',
     'project-views',

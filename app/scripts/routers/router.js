@@ -13,7 +13,6 @@ define(['app'], function(App) {
         routes: {
             '': 'index',
 
-            'auth/login':  'authLogin',
             'auth/logout': 'authLogout',
 
             'account':         'createAccount',
@@ -34,18 +33,12 @@ define(['app'], function(App) {
         // Index
         index: function() {
             App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.AppViews.Home());
+            App.Layouts.main.setView('.content', new App.Views.AppViews.Home({model: App.Agave.token()}));
             App.Layouts.main.render();
         },
 
 
         // Auth
-        authLogin: function() {
-            App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.Auth.Login({model: App.Agave.token()}));
-            App.Layouts.main.render();
-        },
-
         authLogout: function() {
             App.Agave.destroyToken();
             window.localStorage.removeItem('Agave.Token');

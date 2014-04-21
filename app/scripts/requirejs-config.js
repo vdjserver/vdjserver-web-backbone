@@ -61,7 +61,6 @@ require.config({
         'not-found-views': 'views/not-found-views',
 
         'create-account-views': 'views/create-account-views',
-        'auth-views': 'views/auth-views',
         'profile-views': 'views/profile-views',
         'job-views': 'views/job-views',
         'project-views': 'views/project-views',
