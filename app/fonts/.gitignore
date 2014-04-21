@@ -1,0 +1,5 @@
+!.gitignore
+
+# Ignore all font-awesome - these are automatically added via grunt
+font-awesome/*
+! font-awesome/.keep
