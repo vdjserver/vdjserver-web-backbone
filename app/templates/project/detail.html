@@ -1,7 +1,7 @@
 <div class="page-header2">
     <div class="row">
-        <div class="col-md-6">
-            <table class="table-without-border">
+        <div class="col-md-4">
+            <table class="project-details">
                 <tbody>
                     <tr>
                         <td>
@@ -30,8 +30,8 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-md-6">
-            <table class="table-without-border">
+        <div class="col-md-4">
+            <table class="project-details">
                 <tbody>
                     <tr>
                         <td>
@@ -51,13 +51,22 @@
                     </tr>
                     <tr>
                         <td>
+                            fastq:
                         </td>
                         <td>
-                            fastq: test | Sequence: test2
+                            NUMBER files | Sequences: NUMBER
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input class="form-control" type="text" name="search" id="search">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">SEARCH</button>
+                </span>
+            </div>
         </div>
     </div>
 </div>
@@ -88,7 +97,7 @@
             </li>
         </ul>
     </div>
-    <div class="col-md-2 col-md-offset-4">
+    <div>
         <ul class="list-inline">
             <li><button class="btn btn-danger delete-project">Delete</button></li>
         </ul>

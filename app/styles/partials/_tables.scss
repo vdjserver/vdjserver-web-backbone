@@ -14,3 +14,11 @@
 .file-listings {
     font-family: 'TexGyreAdventor-Regular'
 }
+
+.project-details {
+    @extend .table-without-border;
+
+    tbody > tr > td {
+        padding: 0;
+    }
+}
