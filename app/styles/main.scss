@@ -1,12 +1,9 @@
 // CSS is organized according to SASS recommendations
 // http://thesassway.com/beginner/how-to-structure-a-sass-project
 
-// Vendor
+// Frameworks
 @import 'compass/css3';
-@import 'vendor/bootstrap-overrides';
 @import 'twbs-bootstrap-sass/vendor/assets/stylesheets/bootstrap.scss';
-@import 'font-awesome/scss/font-awesome';
-@import '/bower_components/nvd3/nv.d3.min.css';
 
 // Modules
 @import 'modules/colors';
@@ -23,3 +20,10 @@
 @import 'partials/menus';
 @import 'partials/navbar';
 @import 'partials/tables';
+
+// Vendor Overrides
+@import 'vendor/bootstrap-overrides';
+
+// Vendor
+@import 'font-awesome/scss/font-awesome';
+@import '/bower_components/nvd3/nv.d3.min.css';

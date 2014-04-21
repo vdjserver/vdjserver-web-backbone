@@ -59,7 +59,7 @@ define(['app'], function(App) {
                         projectModel: that.projectModel
                     });
 
-                    App.Layouts.footer.insertView('#running-jobs', jobNotificationView);
+                    App.Layouts.main.insertView('#running-jobs', jobNotificationView);
                     jobNotificationView.render();
                 });
         },
