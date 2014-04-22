@@ -277,9 +277,10 @@
                     break;
 
                 case 'delete':
-                    options.url = model.url + '/' + model.get('access_token');
-                    options.type = 'DELETE';
-                    password = agaveToken.get('access_token');
+                    //options.url = model.url + '/' + model.get('access_token');
+                    //options.type = 'DELETE';
+                    //password = agaveToken.get('access_token');
+                    return;
                     break;
             }
 
