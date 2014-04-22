@@ -283,7 +283,7 @@ module.exports = function(grunt) {
                             '*.{ico,txt}',
                             '.htaccess',
                             'images/{,*/}*.{webp,gif}',
-                            'fonts/*',
+                            'fonts/**',
                             'templates/**',
                             //'bower_components/font-awesome/fonts/*'
                         ]
