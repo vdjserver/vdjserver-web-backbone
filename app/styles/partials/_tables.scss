@@ -1,3 +1,18 @@
+.table-headings {
+    thead > tr > th {
+        font-family: 'Aleo-Bold';
+        font-size: 16px;
+    }
+
+    tbody > tr > td:nth-of-type(even) {
+        background-color: $projectFileListingsAlternateColor;
+    }
+
+    thead > tr > th:nth-of-type(even) {
+        background-color: $projectFileListingsAlternateColor;
+    }
+}
+
 .table-without-border {
     @extend .table;
 
