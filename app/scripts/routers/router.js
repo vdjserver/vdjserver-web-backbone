@@ -15,12 +15,12 @@ define(['app'], function(App) {
 
             'auth/logout': 'authLogout',
 
-            'account':         'createAccount',
-            'account/profile': 'accountProfile',
+            'account':          'createAccount',
+            'account/profile':  'accountProfile',
 
-            'project':           'projectIndex',
-            'project/create':    'projectCreate',
-            'project/:id':       'projectDetail',
+            'project':          'projectIndex',
+            'project/create':   'projectCreate',
+            'project/:id':      'projectDetail',
             'project/:id/jobs': 'projectJobHistory',
             'project/:id/jobs/:jobId/analyses': 'projectSelectAnalyses',
             'project/:id/users': 'projectManageUsers',
@@ -33,7 +33,7 @@ define(['app'], function(App) {
         // Index
         index: function() {
             if (! App.isLoggedIn()) {
-                App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.template = 'layouts/home';
                 App.Layouts.main.setView('.content', new App.Views.AppViews.Home({model: App.Agave.token()}));
                 App.Layouts.main.render();
             }
