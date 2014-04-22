@@ -72,9 +72,9 @@ define(['app'], function(App){
 
         },
         events: {
-            'submit form': 'submitForm'
+            'click #home-login': 'login'
         },
-        submitForm: function(e) {
+        login: function(e) {
 
             e.preventDefault();
 
@@ -82,7 +82,12 @@ define(['app'], function(App){
                 this.remove();
             });
 
-            var formData = Backbone.Syphon.serialize(this);
+            var formData = {
+                username: $('#username').val(),
+                password: $('#password').val()
+            };
+
+            //var formData = Backbone.Syphon.serialize(this);
 
             console.log("formData is: " + JSON.stringify(formData));
 

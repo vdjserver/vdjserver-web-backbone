@@ -42,3 +42,20 @@ $fa-font-path: '/fonts/font-awesome';
         'aleo-bold/aleo-bold-webfont.woff'
     )
 );
+
+// Rockwell
+@include font-face(
+    'Rockwell-Regular',
+    font-files(
+        'rockwell-regular/rockwell-regular.eot',
+        'rockwell-regular/rockwell-regular.ttf'
+    )
+);
+
+@include font-face(
+    'Rockwell-Light',
+    font-files(
+        'rockwell-light/rockwell-light.eot',
+        'rockwell-light/rockwell-light.ttf'
+    )
+);

@@ -55,7 +55,7 @@
 .boxes-action {
     @extend .boxes-shadow;
     @extend .triangle-overlay;
-    border: 1px solid #458b00;
+    border: 1px solid $vdjLogoGreen;
     background-color: #ffffff;
     //margin: 0px auto;
     height: 300px;
@@ -64,7 +64,7 @@
     padding: 5px;
     //width: 212px;
     //width: 80%;
-    font-family: 'TexGyreAdventor-Bold', sans-serif;
+    font-family: 'Rockwell-Light', sans-serif;
     text-align: center;
     font-weight: lighter;
 }
@@ -77,11 +77,12 @@
     //width: 200px;
     //display: block;
     //border-bottom: 4px solid #94473f;
-    color: #94473f;
+    color: $red;
     text-align: center;
-    font-size: 2.4em;
+    font-size: 40px;
     padding-bottom: 8px;
-    font-family: 'Aleo-Regular', serif;
+    font-family: 'Rockwell-Light', serif;
+    font-weight: lighter;
 }
 
 
@@ -108,19 +109,51 @@
     //max-width: 25%;
     //width: 337px;
     //margin: 25px  auto;
-    margin-top: 25px;
-    top: -50px;
+    margin-top: -20px;
+    //top: -50px;
     //overflow: hidden;
-    position: relative;
     //left: 351px;
+    padding: 20px;
+    position: relative;
     background: #cc6633;
     box-shadow: 10px 10px /*0px 1px*/ rgba($boxShadowColor, .5);
     border: 0 none;
+    font-family: 'Rockwell-Regular';
+
+    a {
+        color: #ffffff;
+    }
+}
+
+.login-button {
+    @extend .btn;
+    @extend .btn-default;
+
+    //@include background-image(linear-gradient(left top, #ceccd1, rgba(#ceccd1, .5) 48%, $boxShadowColor));
+    //@include background-image(linear-gradient(left top, #fffcfc, #ffffff 48%, #f7f6f6 51%, #f7f6f6));
+
+    padding: 0;
+
+    width: 100%;
+    //margin: 0 20px 0 20px;
+    height: 50px;
+
+    background-color: $boxShadowColor;
+    color: #ffffff;
+    font-family: 'Aleo-Regular', sans-serif;
+    font-size: 24px;
+}
+
+.login-button-column {
+    margin: 0;
+    padding: 0;
+    //left: 0;
+    //right: 0;
+    //width: 100%;
 }
 
 .signup {
     height: 100%;
-    padding: 20px;
     background: transparent;
     color: #ffffff;
     border-radius: 0;
@@ -153,11 +186,16 @@
     font-family: "TexGyreAdventor-Bold", sans-serif;
 }
 
+.signup > div {
+    //margin: 7px 0 10px;
+    padding: 0 20px 0 20px;
+}
+
 .signup a > p {
    font-size: 0.9em;
    border: 0 none;
    //display: inline-flex;
-   width: 48%;
+   //width: 50%;
    //align-items: flex-end;
 }
 
@@ -195,7 +233,9 @@
     margin-top: 8px;
     //margin-left: 10px;
     color: #3e3e3e;
-    font-family: 'Aleo-Regular', serif;
+    font-family: 'Rockwell-Light', serif;
+    font-size: 40px;
+
     padding: 10px;
 }
 
@@ -212,5 +252,5 @@
      border-bottom: 2px solid $red;
      padding-bottom: 5px;
      margin-left: 14px;
-     font-family: 'Aleo-Regular', sans-serif;
+     font-family: 'Rockwell Light', sans-serif;
 }
