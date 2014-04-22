@@ -97,9 +97,20 @@ define(['app'], function(App) {
                                 .modal('hide')
                                 .on('hidden.bs.modal', function() {
 
-                                    App.router.navigate('/auth/login', {
-                                        trigger: true
-                                    });
+                                    App.Agave.token()
+                                        .save(formData, {password: formData.password})
+                                        .done(function() {
+                                            console.log("token save done");
+
+                                            App.router.navigate('/project', {
+                                                trigger: true
+                                            });
+                                        })
+                                        .fail(function() {
+                                            console.log("token save fail");
+                                        });
+
+
 
                                 });
 

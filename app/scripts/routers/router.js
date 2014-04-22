@@ -32,9 +32,16 @@ define(['app'], function(App) {
 
         // Index
         index: function() {
-            App.Layouts.main.template = 'layouts/standard';
-            App.Layouts.main.setView('.content', new App.Views.AppViews.Home({model: App.Agave.token()}));
-            App.Layouts.main.render();
+            if (! App.isLoggedIn()) {
+                App.Layouts.main.template = 'layouts/standard';
+                App.Layouts.main.setView('.content', new App.Views.AppViews.Home({model: App.Agave.token()}));
+                App.Layouts.main.render();
+            }
+            else {
+                App.router.navigate('/project', {
+                    trigger: true
+                });
+            }
         },
 
 

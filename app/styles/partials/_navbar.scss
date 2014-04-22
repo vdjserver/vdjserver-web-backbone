@@ -4,7 +4,7 @@
     @extend .navbar-fixed-top;
     background-color: rgba(#ffffff, 0.5);
     display: block;
-    height:75px;
+    height: 75px;
     z-index: 2;
     
 }
@@ -22,7 +22,7 @@
 }
 
 .navbar-nav {
-   margin:10px auto;
+   margin: 10px auto;
 
 }
 
@@ -34,7 +34,7 @@
    -moz-filter: blur(5px);
    -ms-filter: blur(5px);
    filter: blur(5px);
-   z-index:-1;
+   z-index: -1;
 }
 .navbar-vdj-logo {
     @extend .navbar-brand;
@@ -51,15 +51,6 @@
 }
 
 /*
-.no-user{
-    padding: 0px 20px;
-    margin: 15px 0px;
-    text-transform: uppercase;
-    letter-spacing: 0.08px;
-    font-size:1.2em;
-    color: rgb(148, 71, 63);
-}
-
 .main-content {
     @extend .container;
     padding: 40px 15px;

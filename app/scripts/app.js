@@ -51,15 +51,22 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
                 var token = App.Agave.token();
 
+                console.log("token is: " + JSON.stringify(token));
+                console.log("token expires in: " + token.expiresIn());
+
                 if (token.isActive()) {
 
                     window.localStorage.setItem('Agave.Token', JSON.stringify(token.toJSON()));
 
+                    console.log("token isActive");
+
                     warn = setTimeout(function() {
 
+                        console.log("pre token update!");
                         token.save()
                             .done(function() {
                                 // it was renewed, rewatch token
+                                console.log("token renewed");
                                 watchToken();
                             })
                             .fail(function() {
