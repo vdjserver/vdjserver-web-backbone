@@ -4,7 +4,7 @@
     @extend .navbar-fixed-top;
     background-color: rgba(#ffffff, 0.5);
     display: block;
-    height: 75px;
+    height: $publicNavbarHeight;
     z-index: 2;
     
 }
@@ -49,10 +49,3 @@
     @extend .navbar-collapse;
     @extend .collapse;
 }
-
-/*
-.main-content {
-    @extend .container;
-    padding: 40px 15px;
-}
-*/

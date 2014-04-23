@@ -52,7 +52,8 @@ define(['app'], function(App) {
         // Index
         index: function() {
             if (! App.isLoggedIn()) {
-                App.Layouts.main.template = 'layouts/home';
+                App.Layouts.main.template = 'layouts/public';
+                App.Layouts.main.setView('.nav-container', new App.Views.AppViews.Nav({model: App.Agave.token()}));
                 App.Layouts.main.setView('.content', new App.Views.AppViews.Home({model: App.Agave.token()}));
                 App.Layouts.main.render();
             }
@@ -74,7 +75,8 @@ define(['app'], function(App) {
 
         // Account
         createAccount: function() {
-            App.Layouts.main.template = 'layouts/standard';
+            App.Layouts.main.template = 'layouts/public';
+            App.Layouts.main.setView('.nav-container', new App.Views.AppViews.Nav({model: App.Agave.token()}));
             App.Layouts.main.setView('.content', new App.Views.CreateAccount.Form());
             App.Layouts.main.render();
         },
