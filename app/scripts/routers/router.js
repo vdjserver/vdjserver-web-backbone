@@ -8,6 +8,25 @@ define(['app'], function(App) {
         });
     };
 
+    var setProjectSubviews = function(projectUuid) {
+
+        if (App.Layouts.main.template !== 'layouts/project-standard') {
+            App.Layouts.main.template = 'layouts/project-standard';
+        }
+
+        if (! App.Layouts.main.getView('.sidebar')) {
+            App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
+        }
+        else {
+            var listView = App.Layouts.main.getView('.sidebar');
+            listView.uiSelectProject(projectUuid);
+        }
+
+        if (! App.Layouts.main.getView('#project-navbar')) {
+            App.Layouts.main.setView('#project-navbar', new App.Views.Projects.Navbar());
+        }
+    };
+
     var DefaultRouter = Backbone.Router.extend({
 
         routes: {
@@ -82,10 +101,7 @@ define(['app'], function(App) {
             }
             else {
 
-                if (App.Layouts.main.template !== 'layouts/project-standard') {
-                    App.Layouts.main.template = 'layouts/project-standard';
-                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
-                }
+                setProjectSubviews();
 
                 App.Layouts.main.setView('.content', new App.Views.Projects.Index());
             }
@@ -100,10 +116,7 @@ define(['app'], function(App) {
             }
             else {
 
-                if (App.Layouts.main.template !== 'layouts/project-standard') {
-                    App.Layouts.main.template = 'layouts/project-standard';
-                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List());
-                }
+                setProjectSubviews();
 
                 App.Layouts.main.setView('.content', new App.Views.Projects.Create());
             }
@@ -118,18 +131,7 @@ define(['app'], function(App) {
             }
             else {
 
-                if (App.Layouts.main.template !== 'layouts/project-standard') {
-                    App.Layouts.main.template = 'layouts/project-standard';
-                }
-
-                if (! App.Layouts.main.getView('.sidebar')) {
-                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
-                }
-                else {
-                    var listView = App.Layouts.main.getView('.sidebar');
-                    listView.uiSelectProject(projectUuid);
-                }
-
+                setProjectSubviews(projectUuid);
 
                 App.Layouts.main.setView('.content', new App.Views.Projects.Detail({projectUuid: projectUuid}));
             }
@@ -144,13 +146,7 @@ define(['app'], function(App) {
             }
             else {
 
-                if (App.Layouts.main.template !== 'layouts/project-standard') {
-                    App.Layouts.main.template = 'layouts/project-standard';
-                }
-
-                if (! App.Layouts.main.getView('.sidebar')) {
-                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
-                }
+                setProjectSubviews(projectUuid);
 
                 App.Layouts.main.setView('.content', new App.Views.Projects.ManageUsers({projectUuid: projectUuid}));
             }
@@ -163,13 +159,8 @@ define(['app'], function(App) {
                 redirectToLogin();
             }
             else {
-                if (App.Layouts.main.template !== 'layouts/project-standard') {
-                    App.Layouts.main.template = 'layouts/project-standard';
-                }
 
-                if (! App.Layouts.main.getView('.sidebar')) {
-                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
-                }
+                setProjectSubviews(projectUuid);
 
                 App.Layouts.main.setView('.content', new App.Views.Jobs.History({projectUuid: projectUuid}));
             }
@@ -182,18 +173,13 @@ define(['app'], function(App) {
                 redirectToLogin();
             }
             else {
-                if (App.Layouts.main.template !== 'layouts/project-standard') {
-                    App.Layouts.main.template = 'layouts/project-standard';
-                }
 
-                if (! App.Layouts.main.getView('.sidebar')) {
-                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
-                }
+                setProjectSubviews(projectUuid);
 
-                var selectAnalysesView = new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid, jobId: jobId});
-                App.Layouts.main.setView('.content', selectAnalysesView);
-                selectAnalysesView.render();
+                App.Layouts.main.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid, jobId: jobId}));
             }
+
+            App.Layouts.main.render();
         },
 
         // 404

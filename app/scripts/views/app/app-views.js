@@ -43,6 +43,9 @@ define(['app'], function(App){
         template: 'home',
         initialize: function() {
 
+            var navbarView = new AppViews.Nav({model: App.Agave.token()});
+            this.insertView('.nav-container', navbarView);
+
             this.model.destroy();
             this.render;
         },

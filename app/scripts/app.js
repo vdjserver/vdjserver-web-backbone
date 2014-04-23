@@ -89,6 +89,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
 
             // initialize router, views, data and layouts
+            /*
             App.Layouts.header = new App.Views.AppViews.HeaderLayout({
                 el: '#header',
                 views: {
@@ -97,6 +98,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                     ]
                 }
             });
+            */
 
             App.Layouts.main = new App.Views.AppViews.MainLayout({
                 el: '#main'

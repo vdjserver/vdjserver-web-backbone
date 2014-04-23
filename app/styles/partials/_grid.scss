@@ -29,11 +29,10 @@
 #sidebar-wrapper {
     height: 100%;
     //width: 188px;
-    padding: 50px 0 0px 0;
+    padding: 0;
     position: fixed;
 
-    border-right: 1px solid;
-    border-color: $sidebarColor;
+    border-right: 1px solid #575757;
 }
 
 #main-wrapper {

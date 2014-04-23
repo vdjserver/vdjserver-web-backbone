@@ -78,6 +78,13 @@ define(['app'], function(App) {
         }
     });
 
+    Projects.Navbar = Backbone.View.extend({
+        template: 'project/navbar',
+        initialize: function() {
+        
+        }
+    });
+
     Projects.Index = Backbone.View.extend({
         template: 'project/index',
         initialize: function() {
@@ -98,7 +105,7 @@ define(['app'], function(App) {
         // UI
         highlightList: function() {
             $('.project-menu').removeClass('active');
-            $('.project-create').addClass('active');
+            //$('.project-create').addClass('active');
 
             $('.project-submenu').addClass('hidden');
         },

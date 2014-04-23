@@ -1,16 +1,37 @@
 .project-create-menu {
     list-style: none;
+
+    padding: 20px 0 20px 0;
     margin-left: 30px;
     font-family: 'Aleo-Regular';
     font-size: 21px;
     font-color: #404040;
 
+    a {
+        text-decoration: none;
+        color: #000000;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
 
 .projects-list {
     @extend .list-group;
 
     list-style: none;
+    //margin-top: -20px;
+}
+
+.projects-list-vdj-logo-wrapper {
+    @extend .text-center;
+
+    border-bottom: 3px solid #533436;
+}
+
+.projects-list-vdj-logo {
+    height: 106px;
 }
 
 .project-menu {
@@ -19,6 +40,13 @@
     font-family: 'Aleo-Bold';
     font-size: 18px;
     margin-left: 15px;
+
+
+    background-color: $projectMenuLightColor;
+
+    &.active {
+        border-bottom: 3px solid #aaaaaa;
+    }
 
     a {
         @extend .list-group-item;
@@ -38,6 +66,8 @@
     color: $projectSubmenuTextColor;
     padding-left: 45px;
 
+    border: none;
+
     a {
         color: inherit;
     }
@@ -51,4 +81,14 @@
 
 .project-search {
     padding-top: 10px;
+}
+
+.project-navbar-item {
+    border: 1px solid #000000;
+}
+
+.project-navbar-list {
+    border: 1px solid #000000;
+    padding: 0;
+    margin: 0;
 }
