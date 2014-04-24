@@ -113,6 +113,7 @@ define(['app'], function(App){
                                 });
                         })
                         .fail(function() {
+                            $('#confirmation-button').removeClass('hidden');
                             $('.modal-body').html('');
                             $('.modal-body').prepend($('<div class="alert alert-danger">').text('Authentication failed. Please check your username and password').fadeIn());
                             $('#password').val('');
