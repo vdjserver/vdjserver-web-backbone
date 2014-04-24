@@ -1,11 +1,16 @@
 .project-create-menu {
+
+    @extend .text-center;
+
     list-style: none;
 
-    padding: 20px 0 20px 0;
-    margin-left: 30px;
+    padding: 15px 0 15px 0;
+    //margin-left: 30px;
     font-family: 'Aleo-Regular';
     font-size: 21px;
     font-color: #404040;
+
+    background-color: #ffffff;
 
     a {
         text-decoration: none;
@@ -21,12 +26,15 @@
     @extend .list-group;
 
     list-style: none;
+
+    background-color: $projectSubmenuColor;
     //margin-top: -20px;
 }
 
 .projects-list-vdj-logo-wrapper {
     @extend .text-center;
 
+    background-color: #ffffff;
     border-bottom: 3px solid #533436;
 }
 
@@ -39,7 +47,7 @@
     list-style: none;
     font-family: 'Aleo-Bold';
     font-size: 18px;
-    margin-left: 15px;
+    //margin-left: 15px;
 
 
     background-color: $projectMenuLightColor;
@@ -64,7 +72,9 @@
     font-size: 16px;
     background-color: $projectSubmenuColor;
     color: $projectSubmenuTextColor;
-    padding-left: 45px;
+    //padding-left: 45px;
+
+    margin: 0 0 0 15px;
 
     border: none;
 
@@ -84,11 +94,77 @@
 }
 
 .project-navbar-item {
-    border: 1px solid #000000;
+
+    //@extend .btn;
+    //@extend .btn-primary;
+
+    border: 1px solid $projectListBorderColor;
+
+    background-color: $projectNavbarButtonColor;
+    font-family: 'Aleo-Regular';
+    font-size: 30px;
+    font-weight: lighter;
+    top: 0;
+    bottom: 0;
+
+    a {
+        color: #ffffff;
+    }
+}
+/*
+.project-login-button-wrapper {
+    @extend .btn-group;
+
+    margin: 40px 0 0 0;
+    padding: 0;
+    top: 0;
+    bottom: 0;
+    float: right;
+}
+*/
+
+.project-login-button {
+    //@extend .btn;
+    //@extend .btn-primary;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    bottom: 0;
 }
 
-.project-navbar-list {
-    border: 1px solid #000000;
+.project-navbar-list-wrapper {
+    margin: 0;
     padding: 0;
+}
+
+
+.project-navbar-list {
+    @extend .list-inline;
+
+    margin: 0;
+    padding: 0;
+}
+
+#project-navbar {
+    border-bottom: 3px solid $projectNavbarBorderColor;
+    padding: 0;
+    margin: 0;
+    overflow-y: visible;
+}
+/*
+.navbar-buttons {
+    padding: 0;
+    margin: 0;
+}
+*/
+
+#login-dropdown {
+    font-size: 20px;
+
+    border-top: 3px solid $projectNavbarBorderColor;
+    border-bottom: 3px solid #ffffff;
+
+    top: 0;
+    bottom: 0;
     margin: 0;
 }

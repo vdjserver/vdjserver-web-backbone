@@ -88,7 +88,8 @@ define(['app'], function(App) {
                 redirectToLogin();
             }
             else {
-                App.Layouts.main.template = 'layouts/standard';
+                setProjectSubviews();
+
                 App.Layouts.main.setView('.content', new App.Views.Profile.Form());
             }
 

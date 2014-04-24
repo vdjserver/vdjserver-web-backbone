@@ -82,6 +82,11 @@ define(['app'], function(App) {
         template: 'project/navbar',
         initialize: function() {
         
+        },
+        serialize: function() {
+            return {
+                token: App.Agave.token().toJSON()
+            };
         }
     });
 
