@@ -92,9 +92,15 @@ define(['app'], function(App) {
 
     // Redirect to first project available
     Projects.Index = Backbone.View.extend({
-        template: 'project/index',
+        //template: 'project/index',
         initialize: function() {
             $('html,body').animate({scrollTop:0});
+
+            // Get File Listings
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView(loadingView);
+            loadingView.render();
+
 
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
                 App.router.navigate('/project/create', {
