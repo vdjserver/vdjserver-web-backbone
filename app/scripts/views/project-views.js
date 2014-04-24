@@ -81,7 +81,7 @@ define(['app'], function(App) {
     Projects.Navbar = Backbone.View.extend({
         template: 'project/navbar',
         initialize: function() {
-        
+
         },
         serialize: function() {
             return {
@@ -363,8 +363,8 @@ define(['app'], function(App) {
             }
 
             var jobSubmitView = new App.Views.Jobs.Submit({
-                selectedFileListings: selectedFileListings, 
-                jobType: jobType, 
+                selectedFileListings: selectedFileListings,
+                jobType: jobType,
                 projectModel: this.projectModel
             });
 
@@ -680,6 +680,52 @@ define(['app'], function(App) {
                         });
                 });
         }
+    });
+
+    Projects.Settings = Backbone.View.extend({
+        template: 'project/settings',
+        initialize: function(parameters) {
+            this.modelId = parameters.projectUuid;
+            this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
+
+            if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
+                var that = this;
+                App.Datastore.Collection.ProjectCollection.on('sync', function() {
+                    that.model = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
+                    that.render();
+                });
+            }
+
+            this.render();
+        },
+        serialize: function() {
+            if (this.model) {
+                return {
+                    project: this.model.toJSON()
+                };
+            }
+        },
+        events: {
+            'click #save-project-name': 'saveProjectName'
+        },
+        saveProjectName: function(e) {
+            e.preventDefault();
+            
+            var newProjectName = $('#project-name').val();
+
+            var value = this.model.get('value');
+            value.name = newProjectName;
+
+            this.model.set('value', value);
+
+            this.model.save()
+                .done(function() {
+                    console.log("model updated");
+                })
+                .fail(function() {
+                    console.log("model update fail");
+                });
+        },
     });
 
     App.Views.Projects = Projects;

@@ -9,13 +9,13 @@
     </li>
     {{#projects}}
         <li id="project-{{uuid}}-menu" class="project-menu">
-            <a href="project/{{uuid}}" id="project-{{uuid}}" data-id="{{uuid}}">
+            <a href="/project/{{uuid}}" id="project-{{uuid}}" data-id="{{uuid}}">
                 {{value.name}}
             </a>
         </li>
-        <li class="project-submenu hidden"><a href="project/{{uuid}}/jobs" class="select-analyses" data-id="{{uuid}}">Analyses</a></li>
+        <li class="project-submenu hidden"><a href="/project/{{uuid}}/jobs" class="select-analyses" data-id="{{uuid}}">Analyses</a></li>
         <li class="project-submenu hidden"><a href="#" class="">Publish Project</a></li>
-        <li class="project-submenu hidden"><a href="#" class="">Settings</a></li>
-        <li class="project-submenu hidden"><a href="project/{{uuid}}/users" class="manage-users" data-id="{{uuid}}">Manage Users</a></li>
+        <li class="project-submenu hidden"><a href="/project/{{uuid}}/settings" class="">Settings</a></li>
+        <li class="project-submenu hidden"><a href="/project/{{uuid}}/users" class="manage-users" data-id="{{uuid}}">Manage Users</a></li>
     {{/projects}}
 </ul>

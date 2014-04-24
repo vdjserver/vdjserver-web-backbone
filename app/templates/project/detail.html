@@ -1,118 +1,109 @@
 <div class="row">
-    <div class="page-header2">
-        <div class="row project-detail-separator">
-            <div class="col-md-4">
-                <table class="project-details">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <strong>Name:</strong>
-                            </td>
-                            <td>
-                                {{projectDetail.value.name}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Created:</strong>
-                            </td>
-                            <td>
-                                {{FormatAgaveDate projectDetail.created}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Last Modified:</strong>
-                            </td>
-                            <td>
-                                {{FormatAgaveDate projectDetail.lastUpdated}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div class="col-md-6">
+        <table class="project-details">
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>Name:</strong>
+                    </td>
+                    <td>
+                        {{projectDetail.value.name}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Created:</strong>
+                    </td>
+                    <td>
+                        {{FormatAgaveDate projectDetail.created}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Last Modified:</strong>
+                    </td>
+                    <td>
+                        {{FormatAgaveDate projectDetail.lastUpdated}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <table class="project-details">
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>Visibility:</strong>
+                    </td>
+                    <td>
+                        visibilityPlaceholder
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Data:</strong>
+                    </td>
+                    <td>
+                        dataPlaceholder
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        fastq:
+                    </td>
+                    <td>
+                        NUMBER files | Sequences: NUMBER
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="project-detail-controls">
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn" id="file-upload">
+                <i class="fa fa-upload"></i>
+                <input type="file" id="file-dialog" name="files[]" multiple class="hidden" />
+            </button>
+            <div class="btn-group">
+                <button class="btn btn-primary disabled dropdown-toggle" id="run-job-button" data-toggle="dropdown">
+                    Run Job
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li class="file-actions"><a href="#" data-bypass=true class="run-job" data-jobtype="igblast">IgBlast</a></li>
+                    <li class="file-actions"><a href="#" data-bypass=true class="run-job" data-jobtype="vdjpipe">VDJPipe</a></li>
+                </ul>
             </div>
-            <div class="col-md-4">
-                <table class="project-details">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <strong>Visibility:</strong>
-                            </td>
-                            <td>
-                                visibilityPlaceholder
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Data:</strong>
-                            </td>
-                            <td>
-                                dataPlaceholder
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                fastq:
-                            </td>
-                            <td>
-                                NUMBER files | Sequences: NUMBER
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-4">
-                <div class="input-group project-search">
-                    <input class="form-control" type="text" name="search" id="search">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">SEARCH</button>
-                    </span>
-                </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group project-search">
+                <input class="form-control" type="text" name="search" id="search">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">SEARCH</button>
+                </span>
             </div>
         </div>
     </div>
+</div>
 
-
-    <div class="row project-detail-controls">
-        <div class="col-md-6">
-            <ul class="list-inline">
-
-                <li>
-                    <button class="btn" id="file-upload">
-                        <i class="fa fa-upload"></i>
-                        <input type="file" id="file-dialog" name="files[]" multiple class="hidden" />
-                    </button>
-                </li>
-
-                <li>
-                    <div class="btn-group">
-                        <button class="btn btn-primary disabled dropdown-toggle" id="run-job-button" data-toggle="dropdown">
-                            Run Job
-                            <i class="fa fa-caret-down"></i>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li class="file-actions"><a href="#" data-bypass=true class="run-job" data-jobtype="igblast">IgBlast</a></li>
-                            <li class="file-actions"><a href="#" data-bypass=true class="run-job" data-jobtype="vdjpipe">VDJPipe</a></li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div>
-            <ul class="list-inline">
-                <li><button class="btn btn-danger delete-project">Delete</button></li>
+<div class="row">
+    <div class="col-md-12">
+        <div class="file-listing-spacer">
+            <ul class="nav nav-tabs nav-justified">
+                <li class="file-category active" id="uploaded"><a href="#" data-bypass=true data-id="uploaded">Uploaded Data</a></li>
+                <li class="file-category" id="preprocessed"><a href="#" data-bypass=true data-id="preprocessed">Preprocessed</a></li>
+                <li class="file-category" id="aligned"><a href="#" data-bypass=true data-id="aligned">Aligned</a></li>
             </ul>
         </div>
     </div>
+</div>
 
-    <br>
-    <div>
-        <ul class="nav nav-tabs nav-justified">
-            <li class="file-category active" id="uploaded"><a href="#" data-bypass=true data-id="uploaded">Uploaded Data</a></li>
-            <li class="file-category" id="preprocessed"><a href="#" data-bypass=true data-id="preprocessed">Preprocessed</a></li>
-            <li class="file-category" id="aligned"><a href="#" data-bypass=true data-id="aligned">Aligned</a></li>
-        </ul>
+<div class="row">
+    <div class="col-md-12">
+        <div class="file-listings"></div>
     </div>
-
-    <div class="file-listings"></div>
 </div>

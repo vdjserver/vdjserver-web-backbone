@@ -8,6 +8,14 @@ define(['app'], function(App) {
         });
     };
 
+    var setPublicSubviews = function() {
+        if (App.Layouts.main.template !== 'layouts/public') {
+            App.Layouts.main.template = 'layouts/public';
+        }
+
+        App.Layouts.main.setView('.nav-container', new App.Views.AppViews.Nav({model: App.Agave.token()}));
+    };
+
     var setProjectSubviews = function(projectUuid) {
 
         if (App.Layouts.main.template !== 'layouts/project-standard') {
@@ -40,6 +48,7 @@ define(['app'], function(App) {
             'project':          'projectIndex',
             'project/create':   'projectCreate',
             'project/:id':      'projectDetail',
+            'project/:id/settings': 'projectSettings',
             'project/:id/jobs': 'projectJobHistory',
             'project/:id/jobs/:jobId/analyses': 'projectSelectAnalyses',
             'project/:id/users': 'projectManageUsers',
@@ -52,8 +61,7 @@ define(['app'], function(App) {
         // Index
         index: function() {
             if (! App.isLoggedIn()) {
-                App.Layouts.main.template = 'layouts/public';
-                App.Layouts.main.setView('.nav-container', new App.Views.AppViews.Nav({model: App.Agave.token()}));
+                setPublicSubviews();
                 App.Layouts.main.setView('.content', new App.Views.AppViews.Home({model: App.Agave.token()}));
                 App.Layouts.main.render();
             }
@@ -75,8 +83,7 @@ define(['app'], function(App) {
 
         // Account
         createAccount: function() {
-            App.Layouts.main.template = 'layouts/public';
-            App.Layouts.main.setView('.nav-container', new App.Views.AppViews.Nav({model: App.Agave.token()}));
+            setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.CreateAccount.Form());
             App.Layouts.main.render();
         },
@@ -142,6 +149,21 @@ define(['app'], function(App) {
             App.Layouts.main.render();
         },
 
+        projectSettings: function(projectUuid) {
+
+            if (! App.isLoggedIn()) {
+                redirectToLogin();
+            }
+            else {
+
+                setProjectSubviews(projectUuid);
+
+                App.Layouts.main.setView('.content', new App.Views.Projects.Settings({projectUuid: projectUuid}));
+            }
+
+            App.Layouts.main.render();
+        },
+
         projectManageUsers: function(projectUuid) {
 
             if (! App.isLoggedIn()) {
@@ -187,7 +209,7 @@ define(['app'], function(App) {
 
         // 404
         notFound: function() {
-            App.Layouts.main.template = 'layouts/standard';
+            setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.NotFound.Error());
             App.Layouts.main.render();
         },
