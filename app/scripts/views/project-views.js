@@ -90,10 +90,23 @@ define(['app'], function(App) {
         }
     });
 
+    // Redirect to first project available
     Projects.Index = Backbone.View.extend({
         template: 'project/index',
         initialize: function() {
             $('html,body').animate({scrollTop:0});
+
+            if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
+                App.router.navigate('/project/create', {
+                    trigger: true
+                });
+            }
+            else {
+                var project = App.Datastore.Collection.ProjectCollection.at(0);
+                App.router.navigate('/project/' + project.get('uuid'), {
+                    trigger: true
+                });
+            }
         }
     });
 
@@ -706,11 +719,13 @@ define(['app'], function(App) {
             }
         },
         events: {
-            'click #save-project-name': 'saveProjectName'
+            'click #launch-delete-project-modal': 'launchDeleteProjectModal',
+            'click #delete-project': 'deleteProject',
+            'click #save-project-name': 'saveProjectName',
         },
         saveProjectName: function(e) {
             e.preventDefault();
-            
+
             var newProjectName = $('#project-name').val();
 
             var value = this.model.get('value');
@@ -724,6 +739,33 @@ define(['app'], function(App) {
                 })
                 .fail(function() {
                     console.log("model update fail");
+                });
+        },
+        launchDeleteProjectModal: function(e) {
+            e.preventDefault();
+
+            $('#delete-modal').modal('show');
+        },
+        deleteProject: function(e) {
+            e.preventDefault();
+
+            this.model.destroy()
+                .done(function() {
+                    $('#delete-modal').modal('hide')
+                        .on('hidden.bs.modal', function() {
+                            App.router.navigate('/project', {
+                                trigger: true
+                            });
+                    });
+                })
+                .fail(function() {
+                    // Agave currently returns what backbone considers to be the 'wrong' http status code
+                    $('#delete-modal').modal('hide')
+                        .on('hidden.bs.modal', function() {
+                            App.router.navigate('/project', {
+                                trigger: true
+                            });
+                    });
                 });
         },
     });
