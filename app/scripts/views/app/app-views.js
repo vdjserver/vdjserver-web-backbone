@@ -57,12 +57,12 @@ define(['app'], function(App){
         setupModalView: function() {
 
             var message = new App.Models.MessageModel({
-                'header': 'Getting token',
+                'header': 'Logging in',
                 'body':   '<p>Please wait while we authenticate you...</p>'
             });
 
-            var modal = new App.Views.Util.ModalMessage({
-                model:    message
+            var modal = new App.Views.Util.ModalMessageConfirm({
+                model: message
             });
 
             $('<div id="modal-view">').appendTo(this.el);
@@ -91,39 +91,33 @@ define(['app'], function(App){
 
             console.log("formData is: " + JSON.stringify(formData));
 
-            if (formData.username && formData.password) {
+            this.setupModalView();
 
-                this.setupModalView();
+            var that = this;
 
-                var that = this;
+            $('#modal-message')
+                .modal('show')
+                .on('shown.bs.modal', function() {
 
-                $('#modal-message')
-                    .modal('show')
-                    .on('shown.bs.modal', function() {
+                    that.model
+                        .save(formData, {password: formData.password})
+                        .done(function() {
+                            $('#modal-message')
+                                .modal('hide')
+                                .on('hidden.bs.modal', function() {
 
-                        that.model
-                            .save(formData, {password: formData.password})
-                            .done(function() {
-                                $('#modal-message')
-                                    .modal('hide')
-                                    .on('hidden.bs.modal', function() {
-
-                                        App.router.navigate('/project', {
-                                            trigger: true
-                                        });
-
+                                    App.router.navigate('/project', {
+                                        trigger: true
                                     });
-                            })
-                            .fail(function() {
-                                that.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Authentication failed.  Please check your username and password.').fadeIn());
-                                $('#password').val('');
-                                $('#modal-message').modal('hide');
-                            });
-                    });
-            }
-            else {
-                this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Username and Password are required.').fadeIn());
-            }
+
+                                });
+                        })
+                        .fail(function() {
+                            $('.modal-body').html('');
+                            $('.modal-body').prepend($('<div class="alert alert-danger">').text('Authentication failed. Please check your username and password').fadeIn());
+                            $('#password').val('');
+                        });
+                });
             return false;
         }
     });

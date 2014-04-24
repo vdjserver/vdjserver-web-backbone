@@ -47,6 +47,16 @@ define(['app'], function(App){
         }
     });
 
+    Util.ModalMessageConfirm = Backbone.View.extend({
+        template: 'util/modal-message-confirm',
+        serialize: function() {
+            return this.model.toJSON();
+        },
+        getModel: function() {
+            return this.model;
+        }
+    });
+
     App.Views.Util = Util;
     return Util;
 });
