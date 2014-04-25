@@ -7,6 +7,7 @@ define([
     'jquery-ui',
     'bootstrap',
     'backbone.syphon',
+    //'filesize',
     //'moment',
     'typeahead',
 

@@ -1,4 +1,4 @@
-define(['app'], function(App) {
+define(['app', 'filesize'], function(App, filesize) {
 
     'use strict';
 
@@ -16,6 +16,10 @@ define(['app'], function(App) {
         }
 
         return options.inverse(data);
+    });
+
+    Handlebars.registerHelper('GetHumanReadableFileSize', function(data) {
+        return filesize(data);
     });
 
     var Projects = {};
