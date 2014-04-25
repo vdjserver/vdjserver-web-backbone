@@ -389,7 +389,7 @@ define(['app'], function(App) {
                 projectModel: this.projectModel
             });
 
-            this.insertView('#job-submit', jobSubmitView);
+            this.setView('#job-submit', jobSubmitView);
             jobSubmitView.render();
         },
         getSelectedFiles: function() {
