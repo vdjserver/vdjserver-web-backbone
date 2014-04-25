@@ -104,6 +104,7 @@ define(['app'], function(App) {
         },
 
         // Projects
+
         projectIndex: function() {
 
             if (! App.isLoggedIn()) {
@@ -111,9 +112,41 @@ define(['app'], function(App) {
             }
             else {
 
-                setProjectSubviews();
+                /*
+                    This route doesn't follow the standard view loading
+                    pattern that other project routes follow because it needs
+                    to have listView handle redirection instead of indexView.
 
+                    The reason for this is that listView handles data
+                    management for projects, so it can only redirect properly
+                    after data has been fetched.
+
+                    I don't think it makes sense to refactor data management
+                    out into a separate function when this is the only
+                    exception case/problem.
+                */
+
+                if (App.Layouts.main.template !== 'layouts/project-standard') {
+                    App.Layouts.main.template = 'layouts/project-standard';
+                }
+
+                // Get this out so it can render quickly, and so it won't
+                // cause problems by overriding our redirect if it renders
+                // slowly.
                 App.Layouts.main.setView('.content', new App.Views.Projects.Index());
+
+                if (! App.Layouts.main.getView('.sidebar')) {
+                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({shouldLoadViewForIndex: true}));
+                }
+                else {
+                    var projectListView = App.Layouts.main.getView('.sidebar');
+                    projectListView.loadViewForIndex();
+                }
+
+                if (! App.Layouts.main.getView('#project-navbar')) {
+                    App.Layouts.main.setView('#project-navbar', new App.Views.Projects.Navbar());
+                }
+
             }
 
             App.Layouts.main.render();

@@ -45,6 +45,10 @@ define(['app'], function(App) {
                     });
 
                     that.render();
+
+                    if (parameters.shouldLoadViewForIndex && parameters.shouldLoadViewForIndex === true) {
+                        that.loadViewForIndex();
+                    }
                 })
                 .fail(function() {
 
@@ -75,7 +79,20 @@ define(['app'], function(App) {
         uiOpenProjectSubmenu: function(projectUuid) {
             $('.project-submenu').addClass('hidden');
             $('#project-' + projectUuid + '-menu').nextUntil('.project-menu').removeClass('hidden');
-        }
+        },
+        loadViewForIndex: function() {
+            if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
+                App.router.navigate('/project/create', {
+                    trigger: true
+                });
+            }
+            else {
+                var projectModel = App.Datastore.Collection.ProjectCollection.at(0);
+                App.router.navigate('/project/' + projectModel.get('uuid'), {
+                    trigger: true
+                });
+            }
+        },
     });
 
     Projects.Navbar = Backbone.View.extend({
@@ -90,9 +107,7 @@ define(['app'], function(App) {
         }
     });
 
-    // Redirect to first project available
     Projects.Index = Backbone.View.extend({
-        //template: 'project/index',
         initialize: function() {
             $('html,body').animate({scrollTop:0});
 
@@ -100,20 +115,7 @@ define(['app'], function(App) {
             var loadingView = new App.Views.Util.Loading({keep: true});
             this.insertView(loadingView);
             loadingView.render();
-
-
-            if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                App.router.navigate('/project/create', {
-                    trigger: true
-                });
-            }
-            else {
-                var project = App.Datastore.Collection.ProjectCollection.at(0);
-                App.router.navigate('/project/' + project.get('uuid'), {
-                    trigger: true
-                });
-            }
-        }
+        },
     });
 
     Projects.Create = Backbone.View.extend({
