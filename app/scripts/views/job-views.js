@@ -52,10 +52,12 @@ define(['app'], function(App) {
 
             var formData = Backbone.Syphon.serialize(this);
 
+            console.log("job formData is: " + JSON.stringify(formData));
+
             $('#job-modal').modal('hide')
                 .on('hidden.bs.modal', function() {
                     var jobNotificationView = new Jobs.Notification({
-                        formData: formData, 
+                        formData: formData,
                         projectModel: that.projectModel
                     });
 
@@ -115,6 +117,7 @@ define(['app'], function(App) {
 
             var displayName = e.target.name;
             var originalName = e.target.dataset.inputname;
+            var dataType = e.target.dataset.inputtype;
 
             if (this.inputCounter[originalName]) {
                 this.inputCounter[originalName] = this.inputCounter[originalName] + 1;
@@ -125,11 +128,22 @@ define(['app'], function(App) {
 
             var inputName = originalName + this.inputCounter[originalName];
 
-            var parameterView = new Jobs.VdjPipeCheckbox({
-                parameterName: displayName,
-                originalName: originalName,
-                inputName: inputName
-            });
+            var parameterView;
+
+            switch(dataType) {
+                case 'text-immutable':
+
+                    parameterView = new Jobs.VdjPipeTextImmutable({
+                        parameterName: displayName,
+                        originalName: originalName,
+                        inputName: inputName,
+                    });
+
+                    break;
+
+                default:
+                    // code
+            }
 
             this.insertView('#vdj-pipe-configuration', parameterView);
             parameterView.render();
@@ -137,6 +151,24 @@ define(['app'], function(App) {
         removeJobParameter: function(e) {
             e.preventDefault();
             $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
+        }
+    });
+
+    Jobs.VdjPipeTextImmutable = Backbone.View.extend({
+        template: 'jobs/vdjpipe-text-immutable',
+        initialize: function(parameters) {
+            this.parameterName = parameters.parameterName;
+            this.originalName = parameters.originalName;
+            this.inputName = parameters.inputName;
+        },
+        serialize: function() {
+            if (this.parameterName) {
+                return {
+                    parameterName: this.parameterName,
+                    originalName: this.originalName,
+                    inputName: this.inputName
+                };
+            }
         }
     });
 
