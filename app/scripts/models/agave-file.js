@@ -21,7 +21,7 @@
             _links: {}
         },
         url: function() {
-            return '/files/v2/media/system/data.vdjserver.org/' + this.get('projectUuid') + '/files/';
+            return '/files/v2/media/system/data.vdjserver.org//projects/' + this.get('projectUuid') + '/files/';
         },
         getAssociationId: function() {
 

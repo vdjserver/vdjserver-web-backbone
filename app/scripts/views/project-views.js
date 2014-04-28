@@ -488,10 +488,12 @@ define(['app', 'filesize'], function(App, filesize) {
             'click .cancel-upload': 'cancelUpload',
             'click .start-upload':  'startUpload'
         },
-        cancelUpload: function() {
+        cancelUpload: function(e) {
+            e.preventDefault();
             this.remove();
         },
-        startUpload: function() {
+        startUpload: function(e) {
+            e.preventDefault();
 
             var that = this;
 
