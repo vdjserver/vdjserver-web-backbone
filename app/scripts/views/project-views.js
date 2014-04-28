@@ -265,10 +265,14 @@ define(['app', 'filesize'], function(App, filesize) {
         removeLoadingViews: function() {
 
             var fileListingsLoadingView = this.getView('.file-listings');
-            fileListingsLoadingView.remove();
+            if (fileListingsLoadingView) {
+                fileListingsLoadingView.remove();
+            }
 
             var detailsLoadingView = this.getView('.project-details-loading-view');
-            detailsLoadingView.remove();
+            if (detailsLoadingView) {
+                detailsLoadingView.remove();
+            }
         },
         fetchAndRenderFileListings: function() {
 
@@ -509,7 +513,7 @@ define(['app', 'filesize'], function(App, filesize) {
                     parsedJSON = parsedJSON.result;
                     that.model.set(parsedJSON);
 
-                    that.fileUploadCompleted();
+                    that.setFilePermissions();
                 })
                 .fail(function() {
                     console.log("upload fail");
@@ -523,7 +527,7 @@ define(['app', 'filesize'], function(App, filesize) {
             $('.progress-bar').width(percentCompleted);
             $('.progress-bar').text(percentCompleted);
         },
-        fileUploadCompleted: function() {
+        setFilePermissions: function() {
 
             // VDJAuth saves the day by fixing file pems
             this.model.syncFilePermissionsWithProjectPermissions()
@@ -545,7 +549,7 @@ define(['app', 'filesize'], function(App, filesize) {
                     projectUuid: this.projectUuid,
                     fileCategory: 'uploaded',
                     name: this.model.get('name'),
-                    length: this.model.get('length'),
+                    length: this.model.get('fileReference').size,
                     mimeType: this.model.get('mimeType')
                 }
             };
