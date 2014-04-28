@@ -1,5 +1,7 @@
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-3">
+        <div class="project-details-loading-view"></div>
+        {{#if projectDetail}}
         <table class="project-details">
             <tbody>
                 <tr>
@@ -10,38 +12,25 @@
                         {{projectDetail.value.name}}
                     </td>
                 </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="col-md-6">
-        <table class="project-details">
-            <tbody>
-                <tr>
-                    <td>
-                        <strong>Visibility:</strong>
-                    </td>
-                    <td>
-                        visibilityPlaceholder
-                    </td>
-                </tr>
                 <tr>
                     <td>
                         <strong>Data:</strong>
                     </td>
                     <td>
-                        dataPlaceholder
+                        {{fileListingCount}}
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        fastq:
+                        <strong>Members:</strong>
                     </td>
                     <td>
-                        NUMBER files | Sequences: NUMBER
+                        {{userCount}}
                     </td>
                 </tr>
             </tbody>
         </table>
+        {{/if}}
     </div>
 </div>
 

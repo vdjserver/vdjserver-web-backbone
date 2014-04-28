@@ -56,7 +56,15 @@
                        + '"name":"projectFile",'
                        + '"value.projectUuid":"' + this.projectUuid + '"'
                    + '}');
-        }
+        },
+        getFileCount: function() {
+            if (this.length > 0) {
+                return this.length;
+            }
+            else {
+                return 0;
+            }
+        },
     });
 
     Backbone.Agave.Collection.FileMetadatas = FileMetadatas;

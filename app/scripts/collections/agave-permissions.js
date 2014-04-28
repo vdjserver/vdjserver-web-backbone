@@ -38,8 +38,15 @@
             }
 
             return pems;
-        }
-
+        },
+        getUserCount: function() {
+            if (this.length === 1) {
+                return 1;
+            }
+            else {
+                return this.length - 1;
+            }
+        },
     });
 
     Backbone.Agave.Collection.Permissions = Permissions;

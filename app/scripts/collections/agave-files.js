@@ -27,7 +27,7 @@
             }
 
             return finalData;
-        }
+        },
     });
 
     Backbone.Agave.Collection.Files = Files;

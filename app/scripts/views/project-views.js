@@ -212,6 +212,9 @@ define(['app', 'filesize'], function(App, filesize) {
 
             this.fileCategory = 'uploaded';
 
+            this.fileListings = new Backbone.Agave.Collection.FileMetadatas({projectUuid: parameters.projectUuid});
+
+
             /*
                 This is a little tricky. If we're arriving from a page
                 refresh, then we are stuck with two asynchronous fetches.
@@ -219,53 +222,86 @@ define(['app', 'filesize'], function(App, filesize) {
                 we'll need to re-insert our subview and re-render the page
                 once the project list data has been fetched.
             */
+            var that = this;
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                var that = this;
                 App.Datastore.Collection.ProjectCollection.on('sync', function() {
                     that.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
-                    that.insertFileListingsView();
-                    that.render();
+                    that.initialDependencyDataSetup();
                 });
             }
+            else {
+                this.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
+                this.initialDependencyDataSetup();
+            }
+        },
+        initialDependencyDataSetup: function() {
 
-            this.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
+            this.setupLoadingViews();
 
-            this.fileListings = new Backbone.Agave.Collection.FileMetadatas({projectUuid: parameters.projectUuid});
-            this.fetchAndRenderFileListings();
+            var that = this;
+
+            this.projectUsers = new Backbone.Agave.Collection.Permissions({
+                uuid: this.projectModel.get('uuid')
+            });
+
+            this.projectUsers.fetch()
+                .done(function() {
+                    that.fetchAndRenderFileListings();
+                })
+                .fail(function() {
+
+                });
+        },
+        setupLoadingViews: function() {
+
+            var fileListingsLoadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('.file-listings', fileListingsLoadingView);
+            fileListingsLoadingView.render();
+
+            var detailsLoadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('.project-details-loading-view', detailsLoadingView);
+            detailsLoadingView.render();
+        },
+        removeLoadingViews: function() {
+
+            var fileListingsLoadingView = this.getView('.file-listings');
+            fileListingsLoadingView.remove();
+
+            var detailsLoadingView = this.getView('.project-details-loading-view');
+            detailsLoadingView.remove();
         },
         fetchAndRenderFileListings: function() {
 
-            // Get File Listings
-            var loadingView = new App.Views.Util.Loading({keep: true});
-            this.insertView('.file-listings', loadingView);
-            loadingView.render();
 
             var that = this;
             this.fileListings.fetch({url:this.fileListings.url(this.fileCategory)})
                 .done(function() {
 
-                    loadingView.remove();
+                    that.removeLoadingViews();
 
-                    that.insertFileListingsView();
+                    that.setupFileListingsView();
                     that.render();
                 })
                 .fail(function() {
                     console.log("file listings failure");
                 });
         },
-        insertFileListingsView: function() {
+        setupFileListingsView: function() {
 
             var fileListingsView = new Projects.FileListings({fileListings: this.fileListings});
+
             // listen to events on fileListingsView
             this.fileListingsViewEvents(fileListingsView);
-            this.insertView('.file-listings', fileListingsView);
-
+            this.setView('.file-listings', fileListingsView);
         },
         serialize: function() {
-            if (this.projectModel && this.fileListings) {
+                console.log("rendering");
+            if (this.projectModel && this.fileListings && this.projectUsers) {
+                console.log("rendering REAL");
                 return {
                     projectDetail: this.projectModel.toJSON(),
-                    fileListings: this.fileListings.toJSON()
+                    fileListingCount: this.fileListings.getFileCount() + ' files',
+                    userCount: this.projectUsers.getUserCount(),
                 };
             }
         },
@@ -275,7 +311,6 @@ define(['app', 'filesize'], function(App, filesize) {
             $('#' + this.fileCategory).addClass('active');
         },
         events: {
-            'click .delete-project': 'deleteProject',
             'click #file-upload': 'clickFilesSelectorWrapper',
             'change #file-dialog': 'changeFilesSelector',
             'click .file-category': 'changeFileCategory',
@@ -289,22 +324,6 @@ define(['app', 'filesize'], function(App, filesize) {
             fileListingsView.on('fileDragDrop', function(files) {
                 that.parseFiles(files);
             });
-        },
-        deleteProject: function(e) {
-            e.preventDefault();
-
-            this.projectModel.destroy()
-                .done(function() {
-                    App.router.navigate('/project', {
-                        trigger: true
-                    });
-                })
-                .fail(function() {
-                    // Agave currently returns what backbone considers to be the 'wrong' http status code
-                    App.router.navigate('/project', {
-                        trigger: true
-                    });
-                });
         },
         clickFilesSelectorWrapper: function() {
             document.getElementById('file-dialog').click();
