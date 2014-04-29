@@ -299,9 +299,7 @@ define(['app', 'filesize'], function(App, filesize) {
             this.setView('.file-listings', fileListingsView);
         },
         serialize: function() {
-                console.log("rendering");
             if (this.projectModel && this.fileListings && this.projectUsers) {
-                console.log("rendering REAL");
                 return {
                     projectDetail: this.projectModel.toJSON(),
                     fileListingCount: this.fileListings.getFileCount() + ' files',

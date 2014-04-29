@@ -47,8 +47,10 @@
         constructor: Agave,
 
         token: function(options) {
+            //console.log("options are: " + JSON.stringify(options));
             if (options) {
                 this._token.set(options);
+                //console.log("options past if. token new is: " + JSON.stringify(this._token));
             }
             return this._token;
         },
@@ -247,7 +249,7 @@
         idAttribute: 'refresh_token',
         defaults: {
             'token_type': null,
-            'expires_in': null,
+            'expires_in': 0,
             'expires':    0,
             'refresh_token': null,
             'access_token':  null,
