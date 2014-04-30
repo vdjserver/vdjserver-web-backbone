@@ -276,27 +276,26 @@ define(['app', 'filesize'], function(App, filesize) {
         },
         fetchAndRenderFileListings: function() {
 
-
             var that = this;
             this.fileListings.fetch({url:this.fileListings.url(this.fileCategory)})
                 .done(function() {
 
                     that.removeLoadingViews();
 
-                    that.setupFileListingsView();
-                    that.render();
+                    that.setupFileListingsView(that.fileListings);
                 })
                 .fail(function() {
                     console.log("file listings failure");
                 });
         },
-        setupFileListingsView: function() {
+        setupFileListingsView: function(fileListings) {
 
-            var fileListingsView = new Projects.FileListings({fileListings: this.fileListings});
+            var fileListingsView = new Projects.FileListings({fileListings: fileListings});
 
             // listen to events on fileListingsView
             this.fileListingsViewEvents(fileListingsView);
             this.setView('.file-listings', fileListingsView);
+            fileListingsView.render();
         },
         serialize: function() {
             if (this.projectModel && this.fileListings && this.projectUsers) {
@@ -317,7 +316,8 @@ define(['app', 'filesize'], function(App, filesize) {
             'change #file-dialog': 'changeFilesSelector',
             'click .file-category': 'changeFileCategory',
             'click .selected-files': 'uiDisableRunJob',
-            'click .run-job': 'clickRunJob'
+            'click .run-job': 'clickRunJob',
+            'click #search-button': 'searchFileListings',
         },
         fileListingsViewEvents: function(fileListingsView) {
 
@@ -426,7 +426,31 @@ define(['app', 'filesize'], function(App, filesize) {
             });
 
             return selectedFileMetadataUuids;
-        }
+        },
+        searchFileListings: function() {
+            var searchString = $('#search-text').val();
+
+            if (!searchString) {
+                this.setupFileListingsView(this.fileListings);
+            }
+            else {
+                console.log("searchString is: " + searchString);
+
+                //var filteredModels = this.fileListings.where({'value':{'name':searchString}});
+                var filteredModels = _.filter(this.fileListings.models, function(data) {
+                    return data.get('value').name === searchString;
+                });
+                    
+                    //here({'value':{'name':searchString}});
+
+                console.log("filteredModels are: " + JSON.stringify(filteredModels));
+
+                var filteredFileListings = new Backbone.Agave.Collection.FileMetadatas(filteredModels);
+                console.log("filteredFileListings are: " + JSON.stringify(filteredFileListings));
+
+                this.setupFileListingsView(filteredFileListings);
+            }
+        },
     });
 
     Projects.FileListings = Backbone.View.extend({
