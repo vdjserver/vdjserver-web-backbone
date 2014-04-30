@@ -59,7 +59,8 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
                 if (token.isActive()) {
 
-                    //window.localStorage.setItem('Agave.Token', JSON.stringify(token.toJSON()));
+                    // Necessary for browser refresh...
+                    window.localStorage.setItem('Agave.Token', JSON.stringify(token.toJSON()));
 
                     console.log("token is: " + JSON.stringify(token));
 
