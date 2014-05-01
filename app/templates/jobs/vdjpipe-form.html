@@ -1,6 +1,8 @@
 <div class="row">
     <div class="col-md-4">
 
+        <input id="formtype" name="formtype" type="hidden" value="vdjpipe">
+
         <div id="job-configuration"></div>
 
         <div class="panel panel-primary">
@@ -23,13 +25,73 @@
             </div>
             <div class="panel-body">
                 <div class="form-group">
-                     <button type="button" class="btn btn-default job-parameter" data-inputtype="text-immutable" data-inputname="quality-stats" name="Quality Stats">
+                     <button type="button" class="btn btn-default job-parameter" data-parametertype="quality-stats">
                         <i class="fa fa-plus"></i> Quality Stats
                     </button>
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-default job-parameter" data-inputtype="text-immutable" data-inputname="composition-stats" name="Composition Stats">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="composition-stats">
                         <i class="fa fa-plus"></i> Composition Stats
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="forward-seq">
+                        <i class="fa fa-plus"></i> Forward Sequence
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="reverse-seq">
+                        <i class="fa fa-plus"></i> Reverse Sequence
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="nucleotide-filter">
+                        <i class="fa fa-plus"></i> Nucleotide Filter
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="length-filter">
+                        <i class="fa fa-plus"></i> Length Filter
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="homopolymer-filter">
+                        <i class="fa fa-plus"></i> Homopolymer Filter
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="minimal-quality-filter">
+                        <i class="fa fa-plus"></i> Minimal Quality Filter
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="minimal-average-quality-filter">
+                        <i class="fa fa-plus"></i> Minimal Average Quality Filter
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="minimal-quality-window-filter">
+                        <i class="fa fa-plus"></i> Minimal Quality Window Filter
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="average-quality-window-filter">
+                        <i class="fa fa-plus"></i> Average Quality Window Filter
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="ambiguous-nucleotide-window-filter">
+                        <i class="fa fa-plus"></i> Ambiguous Nucleotide Window Filter
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="histogram">
+                        <i class="fa fa-plus"></i> Histogram
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default job-parameter" data-parametertype="find-unique-sequences">
+                        <i class="fa fa-plus"></i> Find Unique Sequences
                     </button>
                 </div>
             </div>

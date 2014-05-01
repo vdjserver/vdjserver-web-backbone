@@ -4,37 +4,37 @@
 
     var Backbone = window.Backbone;
 
-    var Job = Backbone.Agave.Model.extend({
-        defaults: {
-            appId: '',
-            archive: true,
-            archivePath: '',
-            archiveSystem: '',
-            batchQueue: '',
-            endTime: '',
-            executionSystem: '',
-            id: 0,
-            inputs: {},
-            localId: '',
-            memoryPerNode: '',
-            message: '',
-            name: '',
-            nodeCount: 0,
-            notifications: [],
-            outputPath: '',
-            owner: '',
-            parameters: {},
-            processorsPerNode: 0,
-            maxRunTime: '',
-            retries: 0,
-            startTime: '',
-            status: '',
-            submitTime: '',
-            workPath: ''
+    var Job = {};
+
+    Job.AgaveGeneric = Backbone.Agave.JobModel.extend({
+    });
+
+    Job.VdjPipe = Backbone.Agave.JobModel.extend({
+        generateVdjPipeConfig: function(parameters) {
+
+            var outputConfig = {
+                "base_path_input": "sample_data",
+                "base_path_output": "out/temp/paired",
+                "csv_file_delimiter": "\t",
+            };
+
+            //outputConfig.forward_seq
+
+            for (var i = 0; i < parameters.length; i++) {
+                var currentParam = parameters[i]
+
+                switch(currentParam) {
+                    case currentParam.input:
+                        outputConfig.input = [];
+                        outputConfig.input.push(currentParam);
+                        // code
+                        break;
+                    
+                    default:
+                        // code
+                }
+            };
         },
-        url: function() {
-            return '/jobs/v2/';
-        }
     });
 
     Backbone.Agave.Model.Job = Job;

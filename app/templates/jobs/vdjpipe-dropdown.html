@@ -1,0 +1,18 @@
+<li>
+    <div class="panel panel-default vdj-pipe-parameter">
+        <div class="panel-body">
+            <h4>
+                <i class="fa fa-bars"></i>
+                {{parameterName}}
+                <br>
+                <select class="job-form-item" name="{{inputName}}" data-originalname="{{originalName}}" data-type="text">
+                    {{#each files}}
+                        <option value={{value.name}}>{{value.name}}</option>
+                    {{/each}}
+                </select>
+
+                <span class="label label-danger remove-job-parameter">&times;</span>
+            </h4>
+        </div>
+    </div>
+</li>
