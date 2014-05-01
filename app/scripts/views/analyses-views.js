@@ -15,49 +15,166 @@ define(['app'], function(App) {
         },
         events: {
             'click .cdr3-histogram': 'cdr3Histogram',
-            'click .discrete-bar-chart': 'discreteBarChart',
+            'click .gene-dist-chart-btn': 'geneDistChart',
+            'click .composition-chart-btn': 'compositionChart',
+            'click .quality-chart-btn': 'qualityScoreChart',
+            'click .mean-q-hist-btn': 'meanQHist',
+            'click .length-hist-btn': 'lengthHist',
+            'click .gc-hist-btn': 'gcHist',
             'click .toggle-legend-btn': 'toggleLegend',
-            'click .chart-reset-btn': 'clearSVG'
+            'click .chart-reset-btn': 'clearChart',
+            'click .stack-btn': 'buttonDrill',
+            'click .giant-table-btn': 'giantTable',
+            'click .download-btn': 'downloadFile',
         },
-        cdr3Histogram: function() {
-            this.clearSVG();
-            //this would be a fetch on the data or something rather than statically loading it
-            var CDR3_data =
-                [{"key":"imgt","values":[{"x":-1,"y":1012},{"x":0,"y":0},{"x":1,"y":0},{"x":2,"y":0},{"x":3,"y":0},{"x":4,"y":0},{"x":5,"y":0},{"x":6,"y":0},{"x":7,"y":0},{"x":8,"y":0},{"x":9,"y":0},{"x":10,"y":0},{"x":11,"y":0},{"x":12,"y":0},{"x":13,"y":0},{"x":14,"y":0},{"x":15,"y":0},{"x":16,"y":0},{"x":17,"y":0},{"x":18,"y":0},{"x":19,"y":0},{"x":20,"y":0},{"x":21,"y":0},{"x":22,"y":0},{"x":23,"y":0},{"x":24,"y":0},{"x":25,"y":0},{"x":26,"y":0},{"x":27,"y":0},{"x":28,"y":0},{"x":29,"y":0},{"x":30,"y":0},{"x":31,"y":0},{"x":32,"y":0},{"x":33,"y":0},{"x":34,"y":0},{"x":35,"y":7},{"x":36,"y":458},{"x":37,"y":4},{"x":38,"y":8},{"x":39,"y":125},{"x":40,"y":2},{"x":41,"y":7},{"x":42,"y":69},{"x":43,"y":0},{"x":44,"y":11},{"x":45,"y":230},{"x":46,"y":6},{"x":47,"y":67},{"x":48,"y":1265},{"x":49,"y":115},{"x":50,"y":15},{"x":51,"y":142},{"x":52,"y":4},{"x":53,"y":1},{"x":54,"y":6},{"x":55,"y":0},{"x":56,"y":57},{"x":57,"y":692},{"x":58,"y":20},{"x":59,"y":9},{"x":60,"y":178},{"x":61,"y":161},{"x":62,"y":53},{"x":63,"y":9},{"x":64,"y":0},{"x":65,"y":2},{"x":66,"y":509},{"x":67,"y":11},{"x":68,"y":229},{"x":69,"y":22},{"x":70,"y":1},{"x":71,"y":0},{"x":72,"y":0},{"x":73,"y":0},{"x":74,"y":0},{"x":75,"y":0},{"x":76,"y":0},{"x":77,"y":12},{"x":78,"y":679},{"x":79,"y":25},{"x":80,"y":2},{"x":81,"y":3},{"x":82,"y":1},{"x":83,"y":0},{"x":84,"y":0},{"x":85,"y":0},{"x":86,"y":0},{"x":87,"y":0},{"x":88,"y":0},{"x":89,"y":0},{"x":90,"y":3},{"x":91,"y":0},{"x":92,"y":0},{"x":93,"y":1}]},{"key":"kabat","values":[{"x":-1,"y":3189},{"x":0,"y":0},{"x":1,"y":0},{"x":2,"y":0},{"x":3,"y":0},{"x":4,"y":0},{"x":5,"y":0},{"x":6,"y":0},{"x":7,"y":0},{"x":8,"y":0},{"x":9,"y":0},{"x":10,"y":0},{"x":11,"y":0},{"x":12,"y":0},{"x":13,"y":0},{"x":14,"y":0},{"x":15,"y":0},{"x":16,"y":0},{"x":17,"y":0},{"x":18,"y":0},{"x":19,"y":0},{"x":20,"y":0},{"x":21,"y":0},{"x":22,"y":0},{"x":23,"y":0},{"x":24,"y":0},{"x":25,"y":0},{"x":26,"y":0},{"x":27,"y":214},{"x":28,"y":0},{"x":29,"y":0},{"x":30,"y":0},{"x":31,"y":0},{"x":32,"y":0},{"x":33,"y":30},{"x":34,"y":0},{"x":35,"y":0},{"x":36,"y":7},{"x":37,"y":0},{"x":38,"y":0},{"x":39,"y":626},{"x":40,"y":1},{"x":41,"y":5},{"x":42,"y":141},{"x":43,"y":4},{"x":44,"y":0},{"x":45,"y":1},{"x":46,"y":0},{"x":47,"y":2},{"x":48,"y":678},{"x":49,"y":20},{"x":50,"y":9},{"x":51,"y":177},{"x":52,"y":162},{"x":53,"y":52},{"x":54,"y":7},{"x":55,"y":0},{"x":56,"y":0},{"x":57,"y":0},{"x":58,"y":0},{"x":59,"y":224},{"x":60,"y":18},{"x":61,"y":1},{"x":62,"y":0},{"x":63,"y":0},{"x":64,"y":0},{"x":65,"y":0},{"x":66,"y":0},{"x":67,"y":0},{"x":68,"y":1},{"x":69,"y":648},{"x":70,"y":11},{"x":71,"y":1},{"x":72,"y":1},{"x":73,"y":0},{"x":74,"y":0},{"x":75,"y":0},{"x":76,"y":0},{"x":77,"y":0},{"x":78,"y":0},{"x":79,"y":0},{"x":80,"y":0},{"x":81,"y":3},{"x":82,"y":0},{"x":83,"y":0},{"x":84,"y":0},{"x":85,"y":0},{"x":86,"y":0},{"x":87,"y":0},{"x":88,"y":0},{"x":89,"y":0},{"x":90,"y":0},{"x":91,"y":0},{"x":92,"y":0},{"x":93,"y":0}]}]
-            ;
+
+        downloadFile: function() {
+            var pom = document.createElement('a');
+            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.downloadData));
+            pom.setAttribute('download', 'data.csv');
+            pom.click();
+            //todo -- delete this node or something.
+        },
+        
+        giantTable: function() {
+            console.log("hi giantTable");
+            this.clearChart(); this.hideWarning();
             var that = this;
-            nv.addGraph(function() {
-                var chart = nv.models.multiBarChart()
-                  .transitionDuration(350)
-                  .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
-                  .rotateLabels(0)      //Angle to rotate x-axis labels.
-                  .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
-                  .tooltips(true)
-                  .groupSpacing(0.1)    //Distance between each group of bars.
-                ;
+            //get file name post-filter_mean_q_hist.csv
+            var file  = new Backbone.Agave.Model.File();
+            file.getFile('human.IG.fna.igblast.kabat.out.rc_out.tsv')
+                .done(function(tsv) { 
+                    this.tableTSV = tsv;
+                    var width = $("#analyses-chart").width();
+                    var height = $("#analyses-chart").height();
+                    d3.select("#analyses-chart").attr("style",d3.select("#analyses-chart").attr("style") + ";width:" + (+width-40) + "px;height:" + (+height -20) + "px;");
+                    
+                    that.downloadData = tsv;
+                    $(".download-btn").show();
 
-                chart.xAxis
-                    .tickFormat(d3.format(',f'));
+                    var data = d3.tsv.parse(tsv);
+                    console.log(data);
+                    
+                    var defaultColumns = [
+                        {id: "read_id#", name: "Read Sequence Number", field: "read_id#"},
+                        {id: "read_name", name: "Read Identifier", field: "read_name"},
+                        {id: "top_V", name: "Highest Scoring V Segment", field: "top_V"},
+                        {id: "top_D", name: "Highest Scoring D Segment", field: "top_D"},
+                        {id: "top_J", name: "Highest Scoring J Segment", field: "top_J"},
+                        {id: "vdj_server_ann_imgt_cdr3_na_len", name: "IMGT-CDR3 Nucleotide Sequence Length", field: "vdj_server_ann_imgt_cdr3_na_len"},
+                        {id: "vdj_server_ann_imgt_cdr3_tr_len", name: "IMGT-CDR3 AA Sequence Length", field: "vdj_server_ann_imgt_cdr3_tr_len"},
+                        {id: "vdj_server_ann_kabat_cdr3_na_len", name: "Kabat-CDR3 Nucleotide Sequence Length", field: "vdj_server_ann_kabat_cdr3_na_len"},
+                        {id: "vdj_server_ann_kabat_cdr3_tr_len", name: "Kabat-CDR3 AA Sequence Length", field: "vdj_server_ann_kabat_cdr3_tr_len"},
+                        {id: "vdj_server_ann_whole_seq_bsb_freq", name: "Base Substitution Frequency (Over V and J )", field: "vdj_server_ann_whole_seq_bsb_freq"},
+                        {id: "vdj_server_ann_whole_seq_ns_rto", name: "Nonsynonymous/Synonymous Substitution Ratio (Over V and J)", field: "vdj_server_ann_whole_seq_ns_rto"},
+                        {id: "vdj_server_ann_whole_seq_indel_freq", name: "Indel Frequency (Over V and J)", field: "vdj_server_ann_whole_seq_indel_freq"},
+                        {id: "vdj_server_ann_productive_rearrangement", name: "Productive/Non-Productive Rearrangement", field: "vdj_server_ann_productive_rearrangement"},
+                        {id: "vdj_server_whole_vj_stp_cdn", name: "Stop Codon? (from beginning of V to the last aligned base)", field: "vdj_server_whole_vj_stp_cdn"}
+                    ];
+                    
+                    var keys = Object.keys(data[0]);
+                    var columns = [];
+                    for(var i=0; i< keys.length; i++) {
+                        columns.push( { id:keys[i], name: keys[i], field: keys[i] } );
+                    }
 
-                chart.yAxis
-                    .tickFormat(d3.format(',.1f'));
+                    var grid;
+                
+                    var options = {
+                        enableCellNavigation: true,
+                        enableColumnReorder: false,
+                        defaultColumnWidth: 120,
+                        editable: true
+                    };
 
-                d3.select('#cdr3_chart svg')
-                .datum(CDR3_data)
-                    .call(chart);
-    
-                nv.utils.windowResize(function() { that.clearSVG(); chart.update(); });
-                return chart;
-            });         
+                    grid = new Slick.Grid("#analyses-chart", data, defaultColumns, options);
+                    
+                 })
+                .fail (function(response) {
+                    var message = "An error occurred. ";
+                    if(response && response.responseText) {
+                        var txt = JSON.parse(response.responseText);
+                        message = message + txt.message;
+                    }
+                    that.showWarning(message);
+                }); //end getFile.fail()      
+            console.log("um, bye giantTable!");          
+        },
+        
+        cdr3Histogram: function() {
+           this.clearChart(); this.hideWarning();
+            var that = this;
+            //get file name post-filter_mean_q_hist.csv
+            var file  = new Backbone.Agave.Model.File();
+            file.getFile('cdr3-hist-data.json')
+                .done(function(text) {
+                    var CDR3_data = JSON.parse(text);
+            
+                    nv.addGraph(function() {
+                        var chart = nv.models.multiBarChart()
+                          .transitionDuration(350)
+                          .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
+                          .rotateLabels(0)      //Angle to rotate x-axis labels.
+                          .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
+                          .tooltips(true)
+                          .groupSpacing(0.1)    //Distance between each group of bars.
+                        ;
+
+                        chart.xAxis
+                            .tickFormat(d3.format(',f'));
+
+                        chart.yAxis
+                            .tickFormat(d3.format(',.1f'));
+
+                        d3.select('#analyses-chart svg')
+                        .datum(CDR3_data)
+                            .call(chart);
+
+                        nv.utils.windowResize(function() { that.clearSVG(); chart.update(); });
+                        return chart;
+                    });
+                
+                 })
+                .fail (function(response) {
+                    var message = "An error occurred. ";
+                    if(response && response.responseText) {
+                        var txt = JSON.parse(response.responseText);
+                        message = message + txt.message;
+                    }
+                    that.showWarning(message);
+                }); //end getFile.fail()                
+        },
+        clearChart: function() {
+            //hide delete button
+            $(".download-btn").hide();
+            //remove SVG elements
+            this.hideWarning();
+            var oldSVGs = document.getElementsByTagName('svg');
+             for(var i = 0; i < oldSVGs.length ; i++) {
+                oldSVGs[i].parentNode.removeChild(oldSVGs[i]);
+            }
+            //get rid of the download-btn if it exists
+            //remove the svg container as well because some events get tied to it
+            var chartContainer = document.getElementsByClassName('svg-container');           
+              for(var i = 0; i < chartContainer.length ; i++) {
+                chartContainer[i].parentNode.removeChild(chartContainer[i]);
+            }
+            //add them back in
+            d3.select(".row .analyses").append("div").attr("id","analyses-chart").attr("class","svg-container").attr("style","position:relative; top:1px;left:0px;");
+            d3.select(".svg-container").append("svg").attr("style","height:600px;");
         },
         clearSVG: function() {
-            var svgs = document.getElementsByTagName('svg');
-            for(var i = 0; i < svgs.length ; i++) {
-                while (svgs[i].firstChild) {
-                    svgs[i].removeChild(svgs[i].firstChild);
+            //remove SVG elements
+            var oldSVGs = document.getElementsByTagName('svg');
+             for(var i = 0; i < oldSVGs.length ; i++) {
+                while(oldSVGs[i].hasChildNodes()) {
+                    oldSVGs[i].removeChild(oldSVGs[i].firstChild);
                 }
             }
-        },  
+            //add them back in
+            d3.select(".row .analyses").append("div").attr("id","analyses-chart").attr("class","svg-container").attr("style","position:relative; top:1px;left:0px;");
+            d3.select(".svg-container").append("svg").attr("style","height:600px;");
+        },          
         findFromLabel: function(o,label) {
             if("label" in o) {
                 if(o.label === label) {
@@ -106,43 +223,34 @@ define(['app'], function(App) {
                 l1.push(topobj);
                 //l1 "level 1" is the chartable! :)
                 return l1;
-                //some example data is shown below
-            //Eddie was here
-            /*historicalBarChart = [
-            {
-            "key":"Cumulative Return",
-            "values" : [
-            {
-            "label" : "IGHD5-24",
-            "value" : 3
-            },
-            {
-            "label" : "IGHD6-13",
-            "value" : 6
-            }
-            ]
-            }
-            ];*/
-
-
-        },      
+        },
         discreteBarChart: function() {
-            console.log('oh hai there discreteBarChart!');
-            this.clearSVG();
-            var BIGJSON=
-                {"children":[{"children":[{"children":[{"children":[{"label":"IGHD1-1*01","value":170}],"label":"IGHD1-1","value":170},{"children":[{"label":"IGHD1-7*01","value":474}],"label":"IGHD1-7","value":474},{"children":[{"label":"IGHD1-14*01","value":131}],"label":"IGHD1-14","value":131},{"children":[{"label":"IGHD1-20*01","value":972}],"label":"IGHD1-20","value":972},{"children":[{"label":"IGHD1-26*01","value":1488}],"label":"IGHD1-26","value":1488},{"children":[{"label":"IGHD1/OR15-1a*01","value":1251}],"label":"IGHD1/OR15-1a","value":1251},{"children":[{"label":"IGHD1/OR15-1b*01","value":0}],"label":"IGHD1/OR15-1b","value":0}],"label":"IGHD1","value":4486},{"children":[{"children":[{"label":"IGHD2-2*01","value":2553},{"label":"IGHD2-2*02","value":233},{"label":"IGHD2-2*03","value":79}],"label":"IGHD2-2","value":2865},{"children":[{"label":"IGHD2-8*01","value":3869},{"label":"IGHD2-8*02","value":261}],"label":"IGHD2-8","value":4130},{"children":[{"label":"IGHD2-15*01","value":768}],"label":"IGHD2-15","value":768},{"children":[{"label":"IGHD2-21*01","value":6814},{"label":"IGHD2-21*02","value":2424}],"label":"IGHD2-21","value":9238},{"children":[{"label":"IGHD2/OR15-2a*01","value":734}],"label":"IGHD2/OR15-2a","value":734},{"children":[{"label":"IGHD2/OR15-2b*01","value":0}],"label":"IGHD2/OR15-2b","value":0}],"label":"IGHD2","value":17735},{"children":[{"children":[{"label":"IGHD3-3*01","value":4269},{"label":"IGHD3-3*02","value":8}],"label":"IGHD3-3","value":4277},{"children":[{"label":"IGHD3-9*01","value":2792}],"label":"IGHD3-9","value":2792},{"children":[{"label":"IGHD3-10*01","value":11656},{"label":"IGHD3-10*02","value":257}],"label":"IGHD3-10","value":11913},{"children":[{"label":"IGHD3-16*01","value":495},{"label":"IGHD3-16*02","value":543}],"label":"IGHD3-16","value":1038},{"children":[{"label":"IGHD3-22*01","value":1784}],"label":"IGHD3-22","value":1784},{"children":[{"label":"IGHD3/OR15-3a*01","value":1305}],"label":"IGHD3/OR15-3a","value":1305},{"children":[{"label":"IGHD3/OR15-3b*01","value":0}],"label":"IGHD3/OR15-3b","value":0}],"label":"IGHD3","value":23109},{"children":[{"children":[{"label":"IGHD4-4*01","value":0}],"label":"IGHD4-4","value":0},{"children":[{"label":"IGHD4-11*01","value":1524}],"label":"IGHD4-11","value":1524},{"children":[{"label":"IGHD4-17*01","value":2021}],"label":"IGHD4-17","value":2021},{"children":[{"label":"IGHD4-23*01","value":645}],"label":"IGHD4-23","value":645},{"children":[{"label":"IGHD4/OR15-4a*01","value":0}],"label":"IGHD4/OR15-4a","value":0},{"children":[{"label":"IGHD4/OR15-4b*01","value":57}],"label":"IGHD4/OR15-4b","value":57}],"label":"IGHD4","value":4247},{"children":[{"children":[{"label":"IGHD5-5*01","value":751}],"label":"IGHD5-5","value":751},{"children":[{"label":"IGHD5-12*01","value":1882}],"label":"IGHD5-12","value":1882},{"children":[{"label":"IGHD5-18*01","value":0}],"label":"IGHD5-18","value":0},{"children":[{"label":"IGHD5-24*01","value":2480}],"label":"IGHD5-24","value":2480},{"children":[{"label":"IGHD5/OR15-5a*01","value":31}],"label":"IGHD5/OR15-5a","value":31},{"children":[{"label":"IGHD5/OR15-5b*01","value":0}],"label":"IGHD5/OR15-5b","value":0}],"label":"IGHD5","value":5144},{"children":[{"children":[{"label":"IGHD6-6*01","value":986}],"label":"IGHD6-6","value":986},{"children":[{"label":"IGHD6-13*01","value":5926}],"label":"IGHD6-13","value":5926},{"children":[{"label":"IGHD6-19*01","value":9913}],"label":"IGHD6-19","value":9913},{"children":[{"label":"IGHD6-25*01","value":1413}],"label":"IGHD6-25","value":1413}],"label":"IGHD6","value":18238},{"children":[{"children":[{"label":"IGHD7-27*01","value":189}],"label":"IGHD7-27","value":189}],"label":"IGHD7","value":189}],"label":"IGHD","value":73148},{"children":[{"children":[{"label":"IGHJ1*01","value":4465}],"label":"IGHJ1","value":4465},{"children":[{"label":"IGHJ1P*01","value":0}],"label":"IGHJ1P","value":0},{"children":[{"label":"IGHJ2*01","value":1511}],"label":"IGHJ2","value":1511},{"children":[{"label":"IGHJ2P*01","value":0}],"label":"IGHJ2P","value":0},{"children":[{"label":"IGHJ3*01","value":2625},{"label":"IGHJ3*02","value":1341}],"label":"IGHJ3","value":3966},{"children":[{"label":"IGHJ3P*01","value":0},{"label":"IGHJ3P*02","value":0}],"label":"IGHJ3P","value":0},{"children":[{"label":"IGHJ4*01","value":380},{"label":"IGHJ4*02","value":19539},{"label":"IGHJ4*03","value":899}],"label":"IGHJ4","value":20818},{"children":[{"label":"IGHJ5*01","value":8790},{"label":"IGHJ5*02","value":18165}],"label":"IGHJ5","value":26955},{"children":[{"label":"IGHJ6*01","value":1279},{"label":"IGHJ6*02","value":11355},{"label":"IGHJ6*03","value":3791},{"label":"IGHJ6*04","value":203}],"label":"IGHJ6","value":16628}],"label":"IGHJ","value":74343},{"children":[{"children":[{"children":[{"label":"IGHV1-2*01","value":0},{"label":"IGHV1-2*02","value":0},{"label":"IGHV1-2*03","value":0},{"label":"IGHV1-2*04","value":0},{"label":"IGHV1-2*05","value":0}],"label":"IGHV1-2","value":0},{"children":[{"label":"IGHV1-3*01","value":0},{"label":"IGHV1-3*02","value":0}],"label":"IGHV1-3","value":0},{"children":[{"label":"IGHV1-8*01","value":0},{"label":"IGHV1-8*02","value":0}],"label":"IGHV1-8","value":0},{"children":[{"label":"IGHV1-12*01","value":0},{"label":"IGHV1-12*02","value":0}],"label":"IGHV1-12","value":0},{"children":[{"label":"IGHV1-14*01","value":0}],"label":"IGHV1-14","value":0},{"children":[{"label":"IGHV1-17*01","value":0},{"label":"IGHV1-17*02","value":0}],"label":"IGHV1-17","value":0},{"children":[{"label":"IGHV1-18*01","value":0},{"label":"IGHV1-18*02","value":0},{"label":"IGHV1-18*03","value":0},{"label":"IGHV1-18*04","value":0}],"label":"IGHV1-18","value":0},{"children":[{"label":"IGHV1-24*01","value":0}],"label":"IGHV1-24","value":0},{"children":[{"label":"IGHV1-38-4*01","value":0}],"label":"IGHV1-38-4","value":0},{"children":[{"label":"IGHV1-45*01","value":0},{"label":"IGHV1-45*02","value":0},{"label":"IGHV1-45*03","value":0}],"label":"IGHV1-45","value":0},{"children":[{"label":"IGHV1-46*01","value":0},{"label":"IGHV1-46*02","value":0},{"label":"IGHV1-46*03","value":0}],"label":"IGHV1-46","value":0},{"children":[{"label":"IGHV1-58*01","value":0},{"label":"IGHV1-58*02","value":0}],"label":"IGHV1-58","value":0},{"children":[{"label":"IGHV1-67*01","value":0},{"label":"IGHV1-67*02","value":0}],"label":"IGHV1-67","value":0},{"children":[{"label":"IGHV1-68*01","value":0}],"label":"IGHV1-68","value":0},{"children":[{"label":"IGHV1-69*01","value":0},{"label":"IGHV1-69*02","value":0},{"label":"IGHV1-69*03","value":0},{"label":"IGHV1-69*04","value":0},{"label":"IGHV1-69*05","value":0},{"label":"IGHV1-69*06","value":0},{"label":"IGHV1-69*07","value":0},{"label":"IGHV1-69*08","value":0},{"label":"IGHV1-69*09","value":0},{"label":"IGHV1-69*10","value":0},{"label":"IGHV1-69*11","value":0},{"label":"IGHV1-69*12","value":0},{"label":"IGHV1-69*13","value":0},{"label":"IGHV1-69*14","value":0}],"label":"IGHV1-69","value":0},{"children":[{"label":"IGHV1-69-2*01","value":0},{"label":"IGHV1-69-2*02","value":0}],"label":"IGHV1-69-2","value":0},{"children":[{"label":"IGHV1-69D*01","value":0}],"label":"IGHV1-69D","value":0},{"children":[{"label":"IGHV1-NL1*01","value":0}],"label":"IGHV1-NL1","value":0},{"children":[{"label":"IGHV1/OR15-1*01","value":0},{"label":"IGHV1/OR15-1*02","value":0},{"label":"IGHV1/OR15-1*03","value":0},{"label":"IGHV1/OR15-1*04","value":0}],"label":"IGHV1/OR15-1","value":0},{"children":[{"label":"IGHV1/OR15-2*01","value":0},{"label":"IGHV1/OR15-2*02","value":0},{"label":"IGHV1/OR15-2*03","value":7}],"label":"IGHV1/OR15-2","value":7},{"children":[{"label":"IGHV1/OR15-3*01","value":1},{"label":"IGHV1/OR15-3*02","value":0},{"label":"IGHV1/OR15-3*03","value":0}],"label":"IGHV1/OR15-3","value":1},{"children":[{"label":"IGHV1/OR15-4*01","value":0}],"label":"IGHV1/OR15-4","value":0},{"children":[{"label":"IGHV1/OR15-5*01","value":0},{"label":"IGHV1/OR15-5*02","value":0}],"label":"IGHV1/OR15-5","value":0},{"children":[{"label":"IGHV1/OR15-6*01","value":0},{"label":"IGHV1/OR15-6*02","value":0}],"label":"IGHV1/OR15-6","value":0},{"children":[{"label":"IGHV1/OR15-9*01","value":0}],"label":"IGHV1/OR15-9","value":0},{"children":[{"label":"IGHV1/OR16-1*01","value":0}],"label":"IGHV1/OR16-1","value":0},{"children":[{"label":"IGHV1/OR16-2*01","value":0}],"label":"IGHV1/OR16-2","value":0},{"children":[{"label":"IGHV1/OR16-3*01","value":0}],"label":"IGHV1/OR16-3","value":0},{"children":[{"label":"IGHV1/OR16-4*01","value":0},{"label":"IGHV1/OR16-4*02","value":0}],"label":"IGHV1/OR16-4","value":0},{"children":[{"label":"IGHV1/OR21-1*01","value":0}],"label":"IGHV1/OR21-1","value":0}],"label":"IGHV1","value":8},{"children":[{"children":[{"label":"IGHV2-5*01","value":0},{"label":"IGHV2-5*02","value":0},{"label":"IGHV2-5*03","value":0},{"label":"IGHV2-5*04","value":0},{"label":"IGHV2-5*05","value":0},{"label":"IGHV2-5*06","value":0},{"label":"IGHV2-5*08","value":0},{"label":"IGHV2-5*09","value":0}],"label":"IGHV2-5","value":0},{"children":[{"label":"IGHV2-10*01","value":0}],"label":"IGHV2-10","value":0},{"children":[{"label":"IGHV2-26*01","value":0}],"label":"IGHV2-26","value":0},{"children":[{"label":"IGHV2-70*01","value":0},{"label":"IGHV2-70*02","value":0},{"label":"IGHV2-70*03","value":0},{"label":"IGHV2-70*04","value":0},{"label":"IGHV2-70*05","value":0},{"label":"IGHV2-70*06","value":0},{"label":"IGHV2-70*07","value":3},{"label":"IGHV2-70*08","value":0},{"label":"IGHV2-70*09","value":1},{"label":"IGHV2-70*10","value":0},{"label":"IGHV2-70*11","value":0},{"label":"IGHV2-70*12","value":0},{"label":"IGHV2-70*13","value":0}],"label":"IGHV2-70","value":4},{"children":[{"label":"IGHV2-70D*04","value":0},{"label":"IGHV2-70D*14","value":0}],"label":"IGHV2-70D","value":0},{"children":[{"label":"IGHV2/OR16-5*01","value":0}],"label":"IGHV2/OR16-5","value":0}],"label":"IGHV2","value":4},{"children":[{"children":[{"label":"IGHV3-6*01","value":0}],"label":"IGHV3-6","value":0},{"children":[{"label":"IGHV3-7*01","value":0},{"label":"IGHV3-7*02","value":0},{"label":"IGHV3-7*03","value":0}],"label":"IGHV3-7","value":0},{"children":[{"label":"IGHV3-9*01","value":0},{"label":"IGHV3-9*02","value":0},{"label":"IGHV3-9*03","value":0}],"label":"IGHV3-9","value":0},{"children":[{"label":"IGHV3-11*01","value":0},{"label":"IGHV3-11*02","value":0},{"label":"IGHV3-11*03","value":0},{"label":"IGHV3-11*04","value":0},{"label":"IGHV3-11*05","value":0},{"label":"IGHV3-11*06","value":0}],"label":"IGHV3-11","value":0},{"children":[{"label":"IGHV3-13*01","value":0},{"label":"IGHV3-13*02","value":0},{"label":"IGHV3-13*03","value":0},{"label":"IGHV3-13*04","value":0},{"label":"IGHV3-13*05","value":0}],"label":"IGHV3-13","value":0},{"children":[{"label":"IGHV3-15*01","value":0},{"label":"IGHV3-15*02","value":0},{"label":"IGHV3-15*03","value":0},{"label":"IGHV3-15*04","value":0},{"label":"IGHV3-15*05","value":0},{"label":"IGHV3-15*06","value":0},{"label":"IGHV3-15*07","value":0},{"label":"IGHV3-15*08","value":0}],"label":"IGHV3-15","value":0},{"children":[{"label":"IGHV3-16*01","value":0},{"label":"IGHV3-16*02","value":0}],"label":"IGHV3-16","value":0},{"children":[{"label":"IGHV3-19*01","value":0}],"label":"IGHV3-19","value":0},{"children":[{"label":"IGHV3-20*01","value":4},{"label":"IGHV3-20*02","value":0}],"label":"IGHV3-20","value":4},{"children":[{"label":"IGHV3-21*01","value":0},{"label":"IGHV3-21*02","value":0},{"label":"IGHV3-21*03","value":0},{"label":"IGHV3-21*04","value":0}],"label":"IGHV3-21","value":0},{"children":[{"label":"IGHV3-22*01","value":0},{"label":"IGHV3-22*02","value":0}],"label":"IGHV3-22","value":0},{"children":[{"label":"IGHV3-23*01","value":0},{"label":"IGHV3-23*02","value":0},{"label":"IGHV3-23*03","value":0},{"label":"IGHV3-23*04","value":0},{"label":"IGHV3-23*05","value":0}],"label":"IGHV3-23","value":0},{"children":[{"label":"IGHV3-25*01","value":0},{"label":"IGHV3-25*02","value":0},{"label":"IGHV3-25*03","value":0},{"label":"IGHV3-25*04","value":0},{"label":"IGHV3-25*05","value":0}],"label":"IGHV3-25","value":0},{"children":[{"label":"IGHV3-29*01","value":0}],"label":"IGHV3-29","value":0},{"children":[{"label":"IGHV3-30*01","value":0},{"label":"IGHV3-30*02","value":0},{"label":"IGHV3-30*03","value":0},{"label":"IGHV3-30*04","value":0},{"label":"IGHV3-30*05","value":0},{"label":"IGHV3-30*06","value":0},{"label":"IGHV3-30*07","value":0},{"label":"IGHV3-30*08","value":0},{"label":"IGHV3-30*09","value":0},{"label":"IGHV3-30*10","value":0},{"label":"IGHV3-30*11","value":0},{"label":"IGHV3-30*12","value":0},{"label":"IGHV3-30*13","value":0},{"label":"IGHV3-30*14","value":0},{"label":"IGHV3-30*15","value":0},{"label":"IGHV3-30*16","value":0},{"label":"IGHV3-30*17","value":0},{"label":"IGHV3-30*18","value":0},{"label":"IGHV3-30*19","value":0}],"label":"IGHV3-30","value":0},{"children":[{"label":"IGHV3-30-2*01","value":0}],"label":"IGHV3-30-2","value":0},{"children":[{"label":"IGHV3-30-3*01","value":0},{"label":"IGHV3-30-3*02","value":0},{"label":"IGHV3-30-3*03","value":0}],"label":"IGHV3-30-3","value":0},{"children":[{"label":"IGHV3-30-5*01","value":0}],"label":"IGHV3-30-5","value":0},{"children":[{"label":"IGHV3-32*01","value":0}],"label":"IGHV3-32","value":0},{"children":[{"label":"IGHV3-33*01","value":0},{"label":"IGHV3-33*02","value":0},{"label":"IGHV3-33*03","value":0},{"label":"IGHV3-33*04","value":0},{"label":"IGHV3-33*05","value":0},{"label":"IGHV3-33*06","value":0}],"label":"IGHV3-33","value":0},{"children":[{"label":"IGHV3-33-2*01","value":0}],"label":"IGHV3-33-2","value":0},{"children":[{"label":"IGHV3-35*01","value":0}],"label":"IGHV3-35","value":0},{"children":[{"label":"IGHV3-36*01","value":0},{"label":"IGHV3-36*02","value":0}],"label":"IGHV3-36","value":0},{"children":[{"label":"IGHV3-37*01","value":0},{"label":"IGHV3-37*02","value":0}],"label":"IGHV3-37","value":0},{"children":[{"label":"IGHV3-38*01","value":0},{"label":"IGHV3-38*02","value":0},{"label":"IGHV3-38*03","value":0}],"label":"IGHV3-38","value":0},{"children":[{"label":"IGHV3-38-3*01","value":0}],"label":"IGHV3-38-3","value":0},{"children":[{"label":"IGHV3-41*01","value":0}],"label":"IGHV3-41","value":0},{"children":[{"label":"IGHV3-42*01","value":0},{"label":"IGHV3-42*02","value":0},{"label":"IGHV3-42*03","value":0}],"label":"IGHV3-42","value":0},{"children":[{"label":"IGHV3-43*01","value":0},{"label":"IGHV3-43*02","value":0}],"label":"IGHV3-43","value":0},{"children":[{"label":"IGHV3-43D*01","value":0}],"label":"IGHV3-43D","value":0},{"children":[{"label":"IGHV3-47*01","value":0},{"label":"IGHV3-47*02","value":0},{"label":"IGHV3-47*03","value":0}],"label":"IGHV3-47","value":0},{"children":[{"label":"IGHV3-48*01","value":0},{"label":"IGHV3-48*02","value":0},{"label":"IGHV3-48*03","value":0},{"label":"IGHV3-48*04","value":0}],"label":"IGHV3-48","value":0},{"children":[{"label":"IGHV3-49*01","value":0},{"label":"IGHV3-49*02","value":0},{"label":"IGHV3-49*03","value":0},{"label":"IGHV3-49*04","value":0},{"label":"IGHV3-49*05","value":0}],"label":"IGHV3-49","value":0},{"children":[{"label":"IGHV3-50*01","value":0}],"label":"IGHV3-50","value":0},{"children":[{"label":"IGHV3-52*01","value":0},{"label":"IGHV3-52*02","value":0},{"label":"IGHV3-52*03","value":0}],"label":"IGHV3-52","value":0},{"children":[{"label":"IGHV3-53*01","value":0},{"label":"IGHV3-53*02","value":0},{"label":"IGHV3-53*03","value":1},{"label":"IGHV3-53*04","value":0}],"label":"IGHV3-53","value":1},{"children":[{"label":"IGHV3-54*01","value":0},{"label":"IGHV3-54*02","value":0},{"label":"IGHV3-54*03","value":0},{"label":"IGHV3-54*04","value":0}],"label":"IGHV3-54","value":0},{"children":[{"label":"IGHV3-57*01","value":0},{"label":"IGHV3-57*02","value":0}],"label":"IGHV3-57","value":0},{"children":[{"label":"IGHV3-60*01","value":0}],"label":"IGHV3-60","value":0},{"children":[{"label":"IGHV3-62*01","value":24},{"label":"IGHV3-62*02","value":0}],"label":"IGHV3-62","value":24},{"children":[{"label":"IGHV3-63*01","value":0},{"label":"IGHV3-63*02","value":0}],"label":"IGHV3-63","value":0},{"children":[{"label":"IGHV3-64*01","value":0},{"label":"IGHV3-64*02","value":0},{"label":"IGHV3-64*03","value":0},{"label":"IGHV3-64*04","value":0},{"label":"IGHV3-64*05","value":0}],"label":"IGHV3-64","value":0},{"children":[{"label":"IGHV3-64D*06","value":0}],"label":"IGHV3-64D","value":0},{"children":[{"label":"IGHV3-65*01","value":0},{"label":"IGHV3-65*02","value":0},{"label":"IGHV3-65*03","value":0}],"label":"IGHV3-65","value":0},{"children":[{"label":"IGHV3-66*01","value":0},{"label":"IGHV3-66*02","value":0},{"label":"IGHV3-66*03","value":0},{"label":"IGHV3-66*04","value":0}],"label":"IGHV3-66","value":0},{"children":[{"label":"IGHV3-69-1*01","value":0},{"label":"IGHV3-69-1*02","value":0}],"label":"IGHV3-69-1","value":0},{"children":[{"label":"IGHV3-71*01","value":0},{"label":"IGHV3-71*02","value":0},{"label":"IGHV3-71*03","value":0}],"label":"IGHV3-71","value":0},{"children":[{"label":"IGHV3-72*01","value":0},{"label":"IGHV3-72*02","value":2}],"label":"IGHV3-72","value":2},{"children":[{"label":"IGHV3-73*01","value":0},{"label":"IGHV3-73*02","value":0}],"label":"IGHV3-73","value":0},{"children":[{"label":"IGHV3-74*01","value":0},{"label":"IGHV3-74*02","value":0},{"label":"IGHV3-74*03","value":0}],"label":"IGHV3-74","value":0},{"children":[{"label":"IGHV3-75*01","value":0}],"label":"IGHV3-75","value":0},{"children":[{"label":"IGHV3-76*01","value":0},{"label":"IGHV3-76*02","value":0}],"label":"IGHV3-76","value":0},{"children":[{"label":"IGHV3-79*01","value":0}],"label":"IGHV3-79","value":0},{"children":[{"label":"IGHV3-NL1*01","value":0}],"label":"IGHV3-NL1","value":0},{"children":[{"label":"IGHV3/OR15-7*01","value":0},{"label":"IGHV3/OR15-7*02","value":0},{"label":"IGHV3/OR15-7*03","value":1},{"label":"IGHV3/OR15-7*04","value":0},{"label":"IGHV3/OR15-7*05","value":0}],"label":"IGHV3/OR15-7","value":1},{"children":[{"label":"IGHV3/OR16-6*01","value":0},{"label":"IGHV3/OR16-6*02","value":0}],"label":"IGHV3/OR16-6","value":0},{"children":[{"label":"IGHV3/OR16-7*01","value":0},{"label":"IGHV3/OR16-7*02","value":0},{"label":"IGHV3/OR16-7*03","value":0}],"label":"IGHV3/OR16-7","value":0},{"children":[{"label":"IGHV3/OR16-8*01","value":0},{"label":"IGHV3/OR16-8*02","value":0}],"label":"IGHV3/OR16-8","value":0},{"children":[{"label":"IGHV3/OR16-9*01","value":0}],"label":"IGHV3/OR16-9","value":0},{"children":[{"label":"IGHV3/OR16-10*01","value":0},{"label":"IGHV3/OR16-10*02","value":0},{"label":"IGHV3/OR16-10*03","value":0}],"label":"IGHV3/OR16-10","value":0},{"children":[{"label":"IGHV3/OR16-11*01","value":0}],"label":"IGHV3/OR16-11","value":0},{"children":[{"label":"IGHV3/OR16-12*01","value":0}],"label":"IGHV3/OR16-12","value":0},{"children":[{"label":"IGHV3/OR16-13*01","value":0}],"label":"IGHV3/OR16-13","value":0},{"children":[{"label":"IGHV3/OR16-14*01","value":6}],"label":"IGHV3/OR16-14","value":6},{"children":[{"label":"IGHV3/OR16-15*01","value":0},{"label":"IGHV3/OR16-15*02","value":0}],"label":"IGHV3/OR16-15","value":0},{"children":[{"label":"IGHV3/OR16-16*01","value":0}],"label":"IGHV3/OR16-16","value":0}],"label":"IGHV3","value":38},{"children":[{"children":[{"label":"IGHV4-4*01","value":7},{"label":"IGHV4-4*02","value":3238},{"label":"IGHV4-4*03","value":0},{"label":"IGHV4-4*04","value":63},{"label":"IGHV4-4*05","value":0},{"label":"IGHV4-4*06","value":0},{"label":"IGHV4-4*07","value":2775},{"label":"IGHV4-4*08","value":263}],"label":"IGHV4-4","value":6346},{"children":[{"label":"IGHV4-28*01","value":8},{"label":"IGHV4-28*02","value":11},{"label":"IGHV4-28*03","value":25},{"label":"IGHV4-28*04","value":0},{"label":"IGHV4-28*05","value":0},{"label":"IGHV4-28*06","value":1},{"label":"IGHV4-28*07","value":0}],"label":"IGHV4-28","value":45},{"children":[{"label":"IGHV4-30-1*01","value":0}],"label":"IGHV4-30-1","value":0},{"children":[{"label":"IGHV4-30-2*01","value":6396},{"label":"IGHV4-30-2*02","value":388},{"label":"IGHV4-30-2*03","value":238},{"label":"IGHV4-30-2*04","value":23},{"label":"IGHV4-30-2*05","value":112},{"label":"IGHV4-30-2*06","value":499}],"label":"IGHV4-30-2","value":7656},{"children":[{"label":"IGHV4-30-4*01","value":4412},{"label":"IGHV4-30-4*02","value":12},{"label":"IGHV4-30-4*03","value":1},{"label":"IGHV4-30-4*04","value":1},{"label":"IGHV4-30-4*05","value":6},{"label":"IGHV4-30-4*06","value":1},{"label":"IGHV4-30-4*07","value":61}],"label":"IGHV4-30-4","value":4494},{"children":[{"label":"IGHV4-31*01","value":37},{"label":"IGHV4-31*02","value":54},{"label":"IGHV4-31*03","value":4396},{"label":"IGHV4-31*04","value":581},{"label":"IGHV4-31*05","value":1},{"label":"IGHV4-31*06","value":84},{"label":"IGHV4-31*07","value":1},{"label":"IGHV4-31*08","value":7},{"label":"IGHV4-31*09","value":38},{"label":"IGHV4-31*10","value":17}],"label":"IGHV4-31","value":5216},{"children":[{"label":"IGHV4-34*01","value":0},{"label":"IGHV4-34*02","value":9416},{"label":"IGHV4-34*03","value":397},{"label":"IGHV4-34*04","value":0},{"label":"IGHV4-34*05","value":28},{"label":"IGHV4-34*06","value":26},{"label":"IGHV4-34*07","value":0},{"label":"IGHV4-34*08","value":35},{"label":"IGHV4-34*09","value":399},{"label":"IGHV4-34*10","value":173},{"label":"IGHV4-34*11","value":31},{"label":"IGHV4-34*12","value":89},{"label":"IGHV4-34*13","value":0}],"label":"IGHV4-34","value":10594},{"children":[{"label":"IGHV4-38-2*01","value":3222},{"label":"IGHV4-38-2*02","value":1950}],"label":"IGHV4-38-2","value":5172},{"children":[{"label":"IGHV4-39*01","value":8203},{"label":"IGHV4-39*02","value":252},{"label":"IGHV4-39*03","value":108},{"label":"IGHV4-39*04","value":0},{"label":"IGHV4-39*05","value":661},{"label":"IGHV4-39*06","value":230},{"label":"IGHV4-39*07","value":3557}],"label":"IGHV4-39","value":13011},{"children":[{"label":"IGHV4-55*01","value":0},{"label":"IGHV4-55*02","value":0},{"label":"IGHV4-55*03","value":0},{"label":"IGHV4-55*04","value":10},{"label":"IGHV4-55*05","value":0},{"label":"IGHV4-55*06","value":1},{"label":"IGHV4-55*07","value":0},{"label":"IGHV4-55*08","value":1},{"label":"IGHV4-55*09","value":37}],"label":"IGHV4-55","value":49},{"children":[{"label":"IGHV4-59*01","value":12263},{"label":"IGHV4-59*02","value":3711},{"label":"IGHV4-59*03","value":29},{"label":"IGHV4-59*04","value":183},{"label":"IGHV4-59*05","value":291},{"label":"IGHV4-59*06","value":283},{"label":"IGHV4-59*07","value":26},{"label":"IGHV4-59*08","value":944},{"label":"IGHV4-59*09","value":0},{"label":"IGHV4-59*10","value":140}],"label":"IGHV4-59","value":17870},{"children":[{"label":"IGHV4-61*01","value":837},{"label":"IGHV4-61*02","value":1348},{"label":"IGHV4-61*03","value":8},{"label":"IGHV4-61*04","value":0},{"label":"IGHV4-61*05","value":228},{"label":"IGHV4-61*06","value":0},{"label":"IGHV4-61*07","value":3},{"label":"IGHV4-61*08","value":433}],"label":"IGHV4-61","value":2857},{"children":[{"label":"IGHV4-80*01","value":0}],"label":"IGHV4-80","value":0},{"children":[{"label":"IGHV4/OR15-8*01","value":872},{"label":"IGHV4/OR15-8*02","value":8},{"label":"IGHV4/OR15-8*03","value":101}],"label":"IGHV4/OR15-8","value":981}],"label":"IGHV4","value":74291},{"children":[{"children":[{"label":"IGHV5-51*01","value":0},{"label":"IGHV5-51*02","value":0},{"label":"IGHV5-51*03","value":0},{"label":"IGHV5-51*04","value":0},{"label":"IGHV5-51*05","value":0}],"label":"IGHV5-51","value":0},{"children":[{"label":"IGHV5-78*01","value":1},{"label":"IGHV5-78*02","value":0}],"label":"IGHV5-78","value":1},{"children":[{"label":"IGHV5-a*01","value":0},{"label":"IGHV5-a*02","value":0},{"label":"IGHV5-a*03","value":1},{"label":"IGHV5-a*04","value":0}],"label":"IGHV5-a","value":1}],"label":"IGHV5","value":2},{"children":[{"children":[{"label":"IGHV6-1*01","value":388},{"label":"IGHV6-1*02","value":18}],"label":"IGHV6-1","value":406}],"label":"IGHV6","value":406},{"children":[{"children":[{"label":"IGHV7-4-1*01","value":0},{"label":"IGHV7-4-1*02","value":0},{"label":"IGHV7-4-1*03","value":0},{"label":"IGHV7-4-1*04","value":0},{"label":"IGHV7-4-1*05","value":0}],"label":"IGHV7-4-1","value":0},{"children":[{"label":"IGHV7-27*01","value":0}],"label":"IGHV7-27","value":0},{"children":[{"label":"IGHV7-34-1*01","value":0},{"label":"IGHV7-34-1*02","value":0}],"label":"IGHV7-34-1","value":0},{"children":[{"label":"IGHV7-40*01","value":0},{"label":"IGHV7-40*02","value":0},{"label":"IGHV7-40*03","value":0},{"label":"IGHV7-40*04","value":0}],"label":"IGHV7-40","value":0},{"children":[{"label":"IGHV7-56*01","value":0},{"label":"IGHV7-56*02","value":0}],"label":"IGHV7-56","value":0},{"children":[{"label":"IGHV7-77*01","value":0}],"label":"IGHV7-77","value":0},{"children":[{"label":"IGHV7-81*01","value":0}],"label":"IGHV7-81","value":0},{"children":[{"label":"IGHV7-NL1*01","value":0},{"label":"IGHV7-NL1*02","value":0},{"label":"IGHV7-NL1*03","value":0},{"label":"IGHV7-NL1*04","value":0},{"label":"IGHV7-NL1*05","value":0}],"label":"IGHV7-NL1","value":0}],"label":"IGHV7","value":0}],"label":"IGHV","value":74749},{"children":[{"children":[{"label":"IGKJ1*01","value":7}],"label":"IGKJ1","value":7},{"children":[{"label":"IGKJ2*01","value":0},{"label":"IGKJ2*02","value":0},{"label":"IGKJ2*03","value":0},{"label":"IGKJ2*04","value":0}],"label":"IGKJ2","value":0},{"children":[{"label":"IGKJ3*01","value":0}],"label":"IGKJ3","value":0},{"children":[{"label":"IGKJ4*01","value":1},{"label":"IGKJ4*02","value":0}],"label":"IGKJ4","value":1},{"children":[{"label":"IGKJ5*01","value":0}],"label":"IGKJ5","value":0}],"label":"IGKJ","value":8},{"children":[{"children":[{"children":[{"label":"IGKV1-5*01","value":0},{"label":"IGKV1-5*02","value":0},{"label":"IGKV1-5*03","value":0}],"label":"IGKV1-5","value":0},{"children":[{"label":"IGKV1-6*01","value":0}],"label":"IGKV1-6","value":0},{"children":[{"label":"IGKV1-8*01","value":0}],"label":"IGKV1-8","value":0},{"children":[{"label":"IGKV1-9*01","value":0}],"label":"IGKV1-9","value":0},{"children":[{"label":"IGKV1-12*01","value":0},{"label":"IGKV1-12*02","value":0}],"label":"IGKV1-12","value":0},{"children":[{"label":"IGKV1-13*01","value":0},{"label":"IGKV1-13*02","value":0}],"label":"IGKV1-13","value":0},{"children":[{"label":"IGKV1-16*01","value":0},{"label":"IGKV1-16*02","value":0}],"label":"IGKV1-16","value":0},{"children":[{"label":"IGKV1-17*01","value":0},{"label":"IGKV1-17*02","value":0}],"label":"IGKV1-17","value":0},{"children":[{"label":"IGKV1-22*01","value":0}],"label":"IGKV1-22","value":0},{"children":[{"label":"IGKV1-27*01","value":0}],"label":"IGKV1-27","value":0},{"children":[{"label":"IGKV1-32*01","value":0}],"label":"IGKV1-32","value":0},{"children":[{"label":"IGKV1-33*01","value":1}],"label":"IGKV1-33","value":1},{"children":[{"label":"IGKV1-35*01","value":0},{"label":"IGKV1-35*02","value":0}],"label":"IGKV1-35","value":0},{"children":[{"label":"IGKV1-37*01","value":0}],"label":"IGKV1-37","value":0},{"children":[{"label":"IGKV1-39*01","value":0},{"label":"IGKV1-39*02","value":0}],"label":"IGKV1-39","value":0},{"children":[{"label":"IGKV1-NL1*01","value":0}],"label":"IGKV1-NL1","value":0},{"children":[{"label":"IGKV1/OR-1*01","value":0}],"label":"IGKV1/OR-1","value":0},{"children":[{"label":"IGKV1/OR-2*01","value":0}],"label":"IGKV1/OR-2","value":0},{"children":[{"label":"IGKV1/OR-3*01","value":0}],"label":"IGKV1/OR-3","value":0},{"children":[{"label":"IGKV1/OR-4*01","value":0}],"label":"IGKV1/OR-4","value":0},{"children":[{"label":"IGKV1/OR1-1*01","value":0}],"label":"IGKV1/OR1-1","value":0},{"children":[{"label":"IGKV1/OR2-0*01","value":0}],"label":"IGKV1/OR2-0","value":0},{"children":[{"label":"IGKV1/OR2-1*01","value":0}],"label":"IGKV1/OR2-1","value":0},{"children":[{"label":"IGKV1/OR2-3*01","value":0}],"label":"IGKV1/OR2-3","value":0},{"children":[{"label":"IGKV1/OR2-6*01","value":0}],"label":"IGKV1/OR2-6","value":0},{"children":[{"label":"IGKV1/OR2-9*01","value":0}],"label":"IGKV1/OR2-9","value":0},{"children":[{"label":"IGKV1/OR2-11*01","value":0}],"label":"IGKV1/OR2-11","value":0},{"children":[{"label":"IGKV1/OR2-108*01","value":0}],"label":"IGKV1/OR2-108","value":0},{"children":[{"label":"IGKV1/OR2-118*01","value":0}],"label":"IGKV1/OR2-118","value":0},{"children":[{"label":"IGKV1/OR9-1*01","value":0}],"label":"IGKV1/OR9-1","value":0},{"children":[{"label":"IGKV1/OR10-1*01","value":0}],"label":"IGKV1/OR10-1","value":0},{"children":[{"label":"IGKV1/OR15-118*01","value":0}],"label":"IGKV1/OR15-118","value":0},{"children":[{"label":"IGKV1/OR22-1*01","value":0}],"label":"IGKV1/OR22-1","value":0},{"children":[{"label":"IGKV1/OR22-5*01","value":0},{"label":"IGKV1/OR22-5*02","value":0}],"label":"IGKV1/OR22-5","value":0},{"children":[{"label":"IGKV1/ORY-1*01","value":0}],"label":"IGKV1/ORY-1","value":0},{"children":[{"label":"IGKV1D-8*01","value":0}],"label":"IGKV1D-8","value":0},{"children":[{"label":"IGKV1D-12*01","value":0},{"label":"IGKV1D-12*02","value":0}],"label":"IGKV1D-12","value":0},{"children":[{"label":"IGKV1D-13*01","value":0}],"label":"IGKV1D-13","value":0},{"children":[{"label":"IGKV1D-16*01","value":0},{"label":"IGKV1D-16*02","value":0}],"label":"IGKV1D-16","value":0},{"children":[{"label":"IGKV1D-17*01","value":0},{"label":"IGKV1D-17*02","value":0}],"label":"IGKV1D-17","value":0},{"children":[{"label":"IGKV1D-22*01","value":0}],"label":"IGKV1D-22","value":0},{"children":[{"label":"IGKV1D-27*01","value":0}],"label":"IGKV1D-27","value":0},{"children":[{"label":"IGKV1D-32*01","value":0}],"label":"IGKV1D-32","value":0},{"children":[{"label":"IGKV1D-33*01","value":0}],"label":"IGKV1D-33","value":0},{"children":[{"label":"IGKV1D-35*01","value":0},{"label":"IGKV1D-35*02","value":0}],"label":"IGKV1D-35","value":0},{"children":[{"label":"IGKV1D-37*01","value":0}],"label":"IGKV1D-37","value":0},{"children":[{"label":"IGKV1D-39*01","value":0}],"label":"IGKV1D-39","value":0},{"children":[{"label":"IGKV1D-42*01","value":0}],"label":"IGKV1D-42","value":0},{"children":[{"label":"IGKV1D-43*01","value":0}],"label":"IGKV1D-43","value":0}],"label":"IGKV1","value":1},{"children":[{"children":[{"label":"IGKV2-4*01","value":0}],"label":"IGKV2-4","value":0},{"children":[{"label":"IGKV2-10*01","value":0}],"label":"IGKV2-10","value":0},{"children":[{"label":"IGKV2-14*01","value":0}],"label":"IGKV2-14","value":0},{"children":[{"label":"IGKV2-18*01","value":0}],"label":"IGKV2-18","value":0},{"children":[{"label":"IGKV2-19*01","value":0}],"label":"IGKV2-19","value":0},{"children":[{"label":"IGKV2-23*01","value":0}],"label":"IGKV2-23","value":0},{"children":[{"label":"IGKV2-24*01","value":0}],"label":"IGKV2-24","value":0},{"children":[{"label":"IGKV2-26*01","value":0}],"label":"IGKV2-26","value":0},{"children":[{"label":"IGKV2-28*01","value":0}],"label":"IGKV2-28","value":0},{"children":[{"label":"IGKV2-29*01","value":0},{"label":"IGKV2-29*02","value":0},{"label":"IGKV2-29*03","value":1}],"label":"IGKV2-29","value":1},{"children":[{"label":"IGKV2-30*01","value":0},{"label":"IGKV2-30*02","value":0}],"label":"IGKV2-30","value":0},{"children":[{"label":"IGKV2-36*01","value":0}],"label":"IGKV2-36","value":0},{"children":[{"label":"IGKV2-38*01","value":0}],"label":"IGKV2-38","value":0},{"children":[{"label":"IGKV2-40*01","value":0},{"label":"IGKV2-40*02","value":1}],"label":"IGKV2-40","value":1},{"children":[{"label":"IGKV2/OR2-1*01","value":0}],"label":"IGKV2/OR2-1","value":0},{"children":[{"label":"IGKV2/OR2-2*01","value":0}],"label":"IGKV2/OR2-2","value":0},{"children":[{"label":"IGKV2/OR2-4*01","value":0}],"label":"IGKV2/OR2-4","value":0},{"children":[{"label":"IGKV2/OR2-7*01","value":0}],"label":"IGKV2/OR2-7","value":0},{"children":[{"label":"IGKV2/OR2-7D*01","value":0}],"label":"IGKV2/OR2-7D","value":0},{"children":[{"label":"IGKV2/OR2-8*01","value":0}],"label":"IGKV2/OR2-8","value":0},{"children":[{"label":"IGKV2/OR2-10*01","value":0}],"label":"IGKV2/OR2-10","value":0},{"children":[{"label":"IGKV2/OR22-3*01","value":0}],"label":"IGKV2/OR22-3","value":0},{"children":[{"label":"IGKV2/OR22-4*01","value":0}],"label":"IGKV2/OR22-4","value":0},{"children":[{"label":"IGKV2D-10*01","value":0}],"label":"IGKV2D-10","value":0},{"children":[{"label":"IGKV2D-14*01","value":0}],"label":"IGKV2D-14","value":0},{"children":[{"label":"IGKV2D-18*01","value":0}],"label":"IGKV2D-18","value":0},{"children":[{"label":"IGKV2D-19*01","value":0}],"label":"IGKV2D-19","value":0},{"children":[{"label":"IGKV2D-23*01","value":0}],"label":"IGKV2D-23","value":0},{"children":[{"label":"IGKV2D-24*01","value":0}],"label":"IGKV2D-24","value":0},{"children":[{"label":"IGKV2D-26*01","value":0},{"label":"IGKV2D-26*02","value":0}],"label":"IGKV2D-26","value":0},{"children":[{"label":"IGKV2D-28*01","value":0}],"label":"IGKV2D-28","value":0},{"children":[{"label":"IGKV2D-29*01","value":0},{"label":"IGKV2D-29*02","value":0}],"label":"IGKV2D-29","value":0},{"children":[{"label":"IGKV2D-30*01","value":0}],"label":"IGKV2D-30","value":0},{"children":[{"label":"IGKV2D-36*01","value":0}],"label":"IGKV2D-36","value":0},{"children":[{"label":"IGKV2D-38*01","value":0}],"label":"IGKV2D-38","value":0},{"children":[{"label":"IGKV2D-40*01","value":0}],"label":"IGKV2D-40","value":0}],"label":"IGKV2","value":2},{"children":[{"children":[{"label":"IGKV3-7*01","value":0},{"label":"IGKV3-7*02","value":0},{"label":"IGKV3-7*03","value":4},{"label":"IGKV3-7*04","value":0}],"label":"IGKV3-7","value":4},{"children":[{"label":"IGKV3-11*01","value":0},{"label":"IGKV3-11*02","value":0}],"label":"IGKV3-11","value":0},{"children":[{"label":"IGKV3-15*01","value":0}],"label":"IGKV3-15","value":0},{"children":[{"label":"IGKV3-20*01","value":0},{"label":"IGKV3-20*02","value":0}],"label":"IGKV3-20","value":0},{"children":[{"label":"IGKV3-25*01","value":0}],"label":"IGKV3-25","value":0},{"children":[{"label":"IGKV3-31*01","value":0}],"label":"IGKV3-31","value":0},{"children":[{"label":"IGKV3-34*01","value":0}],"label":"IGKV3-34","value":0},{"children":[{"label":"IGKV3-NL1*01","value":0}],"label":"IGKV3-NL1","value":0},{"children":[{"label":"IGKV3-NL2*01","value":0}],"label":"IGKV3-NL2","value":0},{"children":[{"label":"IGKV3-NL3*01","value":0}],"label":"IGKV3-NL3","value":0},{"children":[{"label":"IGKV3-NL4*01","value":0}],"label":"IGKV3-NL4","value":0},{"children":[{"label":"IGKV3-NL5*01","value":0}],"label":"IGKV3-NL5","value":0},{"children":[{"label":"IGKV3/OR2-5*01","value":0}],"label":"IGKV3/OR2-5","value":0},{"children":[{"label":"IGKV3/OR2-268*01","value":0},{"label":"IGKV3/OR2-268*02","value":0}],"label":"IGKV3/OR2-268","value":0},{"children":[{"label":"IGKV3/OR22-2*01","value":0}],"label":"IGKV3/OR22-2","value":0},{"children":[{"label":"IGKV3D-7*01","value":0}],"label":"IGKV3D-7","value":0},{"children":[{"label":"IGKV3D-11*01","value":0}],"label":"IGKV3D-11","value":0},{"children":[{"label":"IGKV3D-15*01","value":0},{"label":"IGKV3D-15*02","value":0}],"label":"IGKV3D-15","value":0},{"children":[{"label":"IGKV3D-20*01","value":0}],"label":"IGKV3D-20","value":0},{"children":[{"label":"IGKV3D-25*01","value":0}],"label":"IGKV3D-25","value":0},{"children":[{"label":"IGKV3D-31*01","value":0},{"label":"IGKV3D-31*02","value":0}],"label":"IGKV3D-31","value":0},{"children":[{"label":"IGKV3D-34*01","value":0}],"label":"IGKV3D-34","value":0}],"label":"IGKV3","value":4},{"children":[{"children":[{"label":"IGKV4-1*01","value":0}],"label":"IGKV4-1","value":0}],"label":"IGKV4","value":0},{"children":[{"children":[{"label":"IGKV5-2*01","value":0}],"label":"IGKV5-2","value":0}],"label":"IGKV5","value":0},{"children":[{"children":[{"label":"IGKV6-21*01","value":2}],"label":"IGKV6-21","value":2},{"children":[{"label":"IGKV6D-21*01","value":0}],"label":"IGKV6D-21","value":0},{"children":[{"label":"IGKV6D-41*01","value":0}],"label":"IGKV6D-41","value":0}],"label":"IGKV6","value":2},{"children":[{"children":[{"label":"IGKV7-3*01","value":1}],"label":"IGKV7-3","value":1}],"label":"IGKV7","value":1}],"label":"IGKV","value":10},{"children":[{"children":[{"label":"IGLJ1*01","value":4}],"label":"IGLJ1","value":4},{"children":[{"label":"IGLJ2*01","value":0}],"label":"IGLJ2","value":0},{"children":[{"label":"IGLJ3*01","value":1},{"label":"IGLJ3*02","value":0}],"label":"IGLJ3","value":1},{"children":[{"label":"IGLJ4*01","value":0}],"label":"IGLJ4","value":0},{"children":[{"label":"IGLJ5*01","value":2},{"label":"IGLJ5*02","value":3}],"label":"IGLJ5","value":5},{"children":[{"label":"IGLJ6*01","value":0}],"label":"IGLJ6","value":0},{"children":[{"label":"IGLJ7*01","value":0},{"label":"IGLJ7*02","value":0}],"label":"IGLJ7","value":0}],"label":"IGLJ","value":10},{"children":[{"children":[{"children":[{"label":"IGLV(I)-20*01","value":0}],"label":"IGLV(I)-20","value":0},{"children":[{"label":"IGLV(I)-38*01","value":0}],"label":"IGLV(I)-38","value":0},{"children":[{"label":"IGLV(I)-42*01","value":0}],"label":"IGLV(I)-42","value":0},{"children":[{"label":"IGLV(I)-56*01","value":0}],"label":"IGLV(I)-56","value":0},{"children":[{"label":"IGLV(I)-63*01","value":0}],"label":"IGLV(I)-63","value":0},{"children":[{"label":"IGLV(I)-68*01","value":0}],"label":"IGLV(I)-68","value":0},{"children":[{"label":"IGLV(I)-70*01","value":0}],"label":"IGLV(I)-70","value":0}],"label":"IGLV(I)","value":0},{"children":[{"children":[{"label":"IGLV(IV)-53*01","value":0}],"label":"IGLV(IV)-53","value":0},{"children":[{"label":"IGLV(IV)-59*01","value":0}],"label":"IGLV(IV)-59","value":0},{"children":[{"label":"IGLV(IV)-64*01","value":0}],"label":"IGLV(IV)-64","value":0},{"children":[{"label":"IGLV(IV)-65*01","value":0}],"label":"IGLV(IV)-65","value":0},{"children":[{"label":"IGLV(IV)-66-1*01","value":0}],"label":"IGLV(IV)-66-1","value":0},{"children":[{"label":"IGLV(IV)/OR22-1*01","value":0}],"label":"IGLV(IV)/OR22-1","value":0},{"children":[{"label":"IGLV(IV)/OR22-2*01","value":0}],"label":"IGLV(IV)/OR22-2","value":0}],"label":"IGLV(IV)","value":0},{"children":[{"children":[{"label":"IGLV(V)-58*01","value":0}],"label":"IGLV(V)-58","value":0},{"children":[{"label":"IGLV(V)-66*01","value":0}],"label":"IGLV(V)-66","value":0}],"label":"IGLV(V)","value":0},{"children":[{"children":[{"label":"IGLV(VI)-22-1*01","value":0}],"label":"IGLV(VI)-22-1","value":0},{"children":[{"label":"IGLV(VI)-25-1*01","value":0}],"label":"IGLV(VI)-25-1","value":0}],"label":"IGLV(VI)","value":0},{"children":[{"children":[{"label":"IGLV(VII)-41-1*01","value":0}],"label":"IGLV(VII)-41-1","value":0}],"label":"IGLV(VII)","value":0},{"children":[{"children":[{"label":"IGLV1-36*01","value":0}],"label":"IGLV1-36","value":0},{"children":[{"label":"IGLV1-40*01","value":2},{"label":"IGLV1-40*02","value":0},{"label":"IGLV1-40*03","value":0}],"label":"IGLV1-40","value":2},{"children":[{"label":"IGLV1-41*01","value":0},{"label":"IGLV1-41*02","value":0}],"label":"IGLV1-41","value":0},{"children":[{"label":"IGLV1-44*01","value":0}],"label":"IGLV1-44","value":0},{"children":[{"label":"IGLV1-47*01","value":0},{"label":"IGLV1-47*02","value":0}],"label":"IGLV1-47","value":0},{"children":[{"label":"IGLV1-50*01","value":0}],"label":"IGLV1-50","value":0},{"children":[{"label":"IGLV1-51*01","value":0},{"label":"IGLV1-51*02","value":1}],"label":"IGLV1-51","value":1},{"children":[{"label":"IGLV1-62*01","value":0}],"label":"IGLV1-62","value":0}],"label":"IGLV1","value":3},{"children":[{"children":[{"label":"IGLV2-5*01","value":0},{"label":"IGLV2-5*02","value":0}],"label":"IGLV2-5","value":0},{"children":[{"label":"IGLV2-8*01","value":0},{"label":"IGLV2-8*02","value":0},{"label":"IGLV2-8*03","value":0}],"label":"IGLV2-8","value":0},{"children":[{"label":"IGLV2-11*01","value":0},{"label":"IGLV2-11*02","value":0},{"label":"IGLV2-11*03","value":0}],"label":"IGLV2-11","value":0},{"children":[{"label":"IGLV2-14*01","value":0},{"label":"IGLV2-14*02","value":0},{"label":"IGLV2-14*03","value":0},{"label":"IGLV2-14*04","value":0}],"label":"IGLV2-14","value":0},{"children":[{"label":"IGLV2-18*01","value":0},{"label":"IGLV2-18*02","value":0},{"label":"IGLV2-18*03","value":0},{"label":"IGLV2-18*04","value":0}],"label":"IGLV2-18","value":0},{"children":[{"label":"IGLV2-23*01","value":0},{"label":"IGLV2-23*02","value":0},{"label":"IGLV2-23*03","value":0}],"label":"IGLV2-23","value":0},{"children":[{"label":"IGLV2-28*01","value":0}],"label":"IGLV2-28","value":0},{"children":[{"label":"IGLV2-33*01","value":0},{"label":"IGLV2-33*02","value":0},{"label":"IGLV2-33*03","value":0}],"label":"IGLV2-33","value":0},{"children":[{"label":"IGLV2-34*01","value":0}],"label":"IGLV2-34","value":0},{"children":[{"label":"IGLV2-NL1*01","value":0}],"label":"IGLV2-NL1","value":0}],"label":"IGLV2","value":0},{"children":[{"children":[{"label":"IGLV3-1*01","value":2}],"label":"IGLV3-1","value":2},{"children":[{"label":"IGLV3-2*01","value":0},{"label":"IGLV3-2*02","value":0}],"label":"IGLV3-2","value":0},{"children":[{"label":"IGLV3-4*01","value":0}],"label":"IGLV3-4","value":0},{"children":[{"label":"IGLV3-6*01","value":0},{"label":"IGLV3-6*02","value":0}],"label":"IGLV3-6","value":0},{"children":[{"label":"IGLV3-7*01","value":0}],"label":"IGLV3-7","value":0},{"children":[{"label":"IGLV3-9*01","value":0},{"label":"IGLV3-9*02","value":0},{"label":"IGLV3-9*03","value":0}],"label":"IGLV3-9","value":0},{"children":[{"label":"IGLV3-10*01","value":0},{"label":"IGLV3-10*02","value":0}],"label":"IGLV3-10","value":0},{"children":[{"label":"IGLV3-12*01","value":6},{"label":"IGLV3-12*02","value":0}],"label":"IGLV3-12","value":6},{"children":[{"label":"IGLV3-13*01","value":3}],"label":"IGLV3-13","value":3},{"children":[{"label":"IGLV3-15*01","value":0}],"label":"IGLV3-15","value":0},{"children":[{"label":"IGLV3-16*01","value":0}],"label":"IGLV3-16","value":0},{"children":[{"label":"IGLV3-17*01","value":0}],"label":"IGLV3-17","value":0},{"children":[{"label":"IGLV3-19*01","value":0}],"label":"IGLV3-19","value":0},{"children":[{"label":"IGLV3-21*01","value":0},{"label":"IGLV3-21*02","value":0},{"label":"IGLV3-21*03","value":0}],"label":"IGLV3-21","value":0},{"children":[{"label":"IGLV3-22*01","value":1},{"label":"IGLV3-22*02","value":0}],"label":"IGLV3-22","value":1},{"children":[{"label":"IGLV3-24*01","value":0},{"label":"IGLV3-24*02","value":0}],"label":"IGLV3-24","value":0},{"children":[{"label":"IGLV3-25*01","value":0},{"label":"IGLV3-25*02","value":0},{"label":"IGLV3-25*03","value":0}],"label":"IGLV3-25","value":0},{"children":[{"label":"IGLV3-26*01","value":0}],"label":"IGLV3-26","value":0},{"children":[{"label":"IGLV3-27*01","value":0}],"label":"IGLV3-27","value":0},{"children":[{"label":"IGLV3-29*01","value":0}],"label":"IGLV3-29","value":0},{"children":[{"label":"IGLV3-30*01","value":0},{"label":"IGLV3-30*02","value":0}],"label":"IGLV3-30","value":0},{"children":[{"label":"IGLV3-31*01","value":0},{"label":"IGLV3-31*02","value":0}],"label":"IGLV3-31","value":0},{"children":[{"label":"IGLV3-32*01","value":1}],"label":"IGLV3-32","value":1}],"label":"IGLV3","value":13},{"children":[{"children":[{"label":"IGLV4-3*01","value":0}],"label":"IGLV4-3","value":0},{"children":[{"label":"IGLV4-60*01","value":0},{"label":"IGLV4-60*02","value":0},{"label":"IGLV4-60*03","value":0}],"label":"IGLV4-60","value":0},{"children":[{"label":"IGLV4-69*01","value":1},{"label":"IGLV4-69*02","value":0}],"label":"IGLV4-69","value":1}],"label":"IGLV4","value":1},{"children":[{"children":[{"label":"IGLV5-37*01","value":0}],"label":"IGLV5-37","value":0},{"children":[{"label":"IGLV5-39*01","value":0},{"label":"IGLV5-39*02","value":3}],"label":"IGLV5-39","value":3},{"children":[{"label":"IGLV5-45*01","value":0},{"label":"IGLV5-45*02","value":0},{"label":"IGLV5-45*03","value":0}],"label":"IGLV5-45","value":0},{"children":[{"label":"IGLV5-48*01","value":0}],"label":"IGLV5-48","value":0},{"children":[{"label":"IGLV5-52*01","value":0}],"label":"IGLV5-52","value":0}],"label":"IGLV5","value":3},{"children":[{"children":[{"label":"IGLV6-57*01","value":3}],"label":"IGLV6-57","value":3}],"label":"IGLV6","value":3},{"children":[{"children":[{"label":"IGLV7-35*01","value":0}],"label":"IGLV7-35","value":0},{"children":[{"label":"IGLV7-43*01","value":2}],"label":"IGLV7-43","value":2},{"children":[{"label":"IGLV7-46*01","value":0},{"label":"IGLV7-46*02","value":0},{"label":"IGLV7-46*03","value":0}],"label":"IGLV7-46","value":0}],"label":"IGLV7","value":2},{"children":[{"children":[{"label":"IGLV8-61*01","value":0},{"label":"IGLV8-61*02","value":0},{"label":"IGLV8-61*03","value":0}],"label":"IGLV8-61","value":0},{"children":[{"label":"IGLV8/OR8-1*01","value":0},{"label":"IGLV8/OR8-1*02","value":1}],"label":"IGLV8/OR8-1","value":1}],"label":"IGLV8","value":1},{"children":[{"children":[{"label":"IGLV9-49*01","value":0},{"label":"IGLV9-49*02","value":0},{"label":"IGLV9-49*03","value":0}],"label":"IGLV9-49","value":0}],"label":"IGLV9","value":0},{"children":[{"children":[{"label":"IGLV10-54*01","value":0},{"label":"IGLV10-54*02","value":0},{"label":"IGLV10-54*03","value":0}],"label":"IGLV10-54","value":0},{"children":[{"label":"IGLV10-67*01","value":0},{"label":"IGLV10-67*02","value":0}],"label":"IGLV10-67","value":0}],"label":"IGLV10","value":0},{"children":[{"children":[{"label":"IGLV11-55*01","value":0}],"label":"IGLV11-55","value":0}],"label":"IGLV11","value":0},{"children":[{"children":[{"label":"IGLV/OR8-2*01","value":0}],"label":"IGLV/OR8-2","value":0},{"children":[{"label":"IGLV8/ORa*01","value":0}],"label":"IGLV8/ORa","value":0}],"label":"NONE","value":0}],"label":"IGLV","value":26},{"children":[{"children":[{"label":"TRAJ1*01","value":0}],"label":"TRAJ1","value":0},{"children":[{"label":"TRAJ2*01","value":0}],"label":"TRAJ2","value":0},{"children":[{"label":"TRAJ3*01","value":0}],"label":"TRAJ3","value":0},{"children":[{"label":"TRAJ4*01","value":0}],"label":"TRAJ4","value":0},{"children":[{"label":"TRAJ5*01","value":0}],"label":"TRAJ5","value":0},{"children":[{"label":"TRAJ6*01","value":0}],"label":"TRAJ6","value":0},{"children":[{"label":"TRAJ7*01","value":0}],"label":"TRAJ7","value":0},{"children":[{"label":"TRAJ8*01","value":0}],"label":"TRAJ8","value":0},{"children":[{"label":"TRAJ9*01","value":0}],"label":"TRAJ9","value":0},{"children":[{"label":"TRAJ10*01","value":0}],"label":"TRAJ10","value":0},{"children":[{"label":"TRAJ11*01","value":0}],"label":"TRAJ11","value":0},{"children":[{"label":"TRAJ12*01","value":0}],"label":"TRAJ12","value":0},{"children":[{"label":"TRAJ13*01","value":0},{"label":"TRAJ13*02","value":0}],"label":"TRAJ13","value":0},{"children":[{"label":"TRAJ14*01","value":0}],"label":"TRAJ14","value":0},{"children":[{"label":"TRAJ15*01","value":0},{"label":"TRAJ15*02","value":0}],"label":"TRAJ15","value":0},{"children":[{"label":"TRAJ16*01","value":0}],"label":"TRAJ16","value":0},{"children":[{"label":"TRAJ17*01","value":0}],"label":"TRAJ17","value":0},{"children":[{"label":"TRAJ18*01","value":0}],"label":"TRAJ18","value":0},{"children":[{"label":"TRAJ19*01","value":0}],"label":"TRAJ19","value":0},{"children":[{"label":"TRAJ20*01","value":0}],"label":"TRAJ20","value":0},{"children":[{"label":"TRAJ21*01","value":0}],"label":"TRAJ21","value":0},{"children":[{"label":"TRAJ22*01","value":0}],"label":"TRAJ22","value":0},{"children":[{"label":"TRAJ23*01","value":0},{"label":"TRAJ23*02","value":0}],"label":"TRAJ23","value":0},{"children":[{"label":"TRAJ24*01","value":0},{"label":"TRAJ24*02","value":0}],"label":"TRAJ24","value":0},{"children":[{"label":"TRAJ25*01","value":0}],"label":"TRAJ25","value":0},{"children":[{"label":"TRAJ26*01","value":0}],"label":"TRAJ26","value":0},{"children":[{"label":"TRAJ27*01","value":0}],"label":"TRAJ27","value":0},{"children":[{"label":"TRAJ28*01","value":0}],"label":"TRAJ28","value":0},{"children":[{"label":"TRAJ29*01","value":0}],"label":"TRAJ29","value":0},{"children":[{"label":"TRAJ30*01","value":0}],"label":"TRAJ30","value":0},{"children":[{"label":"TRAJ31*01","value":0}],"label":"TRAJ31","value":0},{"children":[{"label":"TRAJ32*01","value":0},{"label":"TRAJ32*02","value":0}],"label":"TRAJ32","value":0},{"children":[{"label":"TRAJ33*01","value":0}],"label":"TRAJ33","value":0},{"children":[{"label":"TRAJ34*01","value":0}],"label":"TRAJ34","value":0},{"children":[{"label":"TRAJ35*01","value":0}],"label":"TRAJ35","value":0},{"children":[{"label":"TRAJ36*01","value":0}],"label":"TRAJ36","value":0},{"children":[{"label":"TRAJ37*01","value":0},{"label":"TRAJ37*02","value":0}],"label":"TRAJ37","value":0},{"children":[{"label":"TRAJ38*01","value":0}],"label":"TRAJ38","value":0},{"children":[{"label":"TRAJ39*01","value":0}],"label":"TRAJ39","value":0},{"children":[{"label":"TRAJ40*01","value":0}],"label":"TRAJ40","value":0},{"children":[{"label":"TRAJ41*01","value":0}],"label":"TRAJ41","value":0},{"children":[{"label":"TRAJ42*01","value":0}],"label":"TRAJ42","value":0},{"children":[{"label":"TRAJ43*01","value":0}],"label":"TRAJ43","value":0},{"children":[{"label":"TRAJ44*01","value":0}],"label":"TRAJ44","value":0},{"children":[{"label":"TRAJ45*01","value":0}],"label":"TRAJ45","value":0},{"children":[{"label":"TRAJ46*01","value":0}],"label":"TRAJ46","value":0},{"children":[{"label":"TRAJ47*01","value":0},{"label":"TRAJ47*02","value":0}],"label":"TRAJ47","value":0},{"children":[{"label":"TRAJ48*01","value":0}],"label":"TRAJ48","value":0},{"children":[{"label":"TRAJ49*01","value":0}],"label":"TRAJ49","value":0},{"children":[{"label":"TRAJ50*01","value":0}],"label":"TRAJ50","value":0},{"children":[{"label":"TRAJ51*01","value":0}],"label":"TRAJ51","value":0},{"children":[{"label":"TRAJ52*01","value":0}],"label":"TRAJ52","value":0},{"children":[{"label":"TRAJ53*01","value":0}],"label":"TRAJ53","value":0},{"children":[{"label":"TRAJ54*01","value":0}],"label":"TRAJ54","value":0},{"children":[{"label":"TRAJ55*01","value":0}],"label":"TRAJ55","value":0},{"children":[{"label":"TRAJ56*01","value":0}],"label":"TRAJ56","value":0},{"children":[{"label":"TRAJ57*01","value":0}],"label":"TRAJ57","value":0},{"children":[{"label":"TRAJ58*01","value":0}],"label":"TRAJ58","value":0},{"children":[{"label":"TRAJ59*01","value":0}],"label":"TRAJ59","value":0},{"children":[{"label":"TRAJ60*01","value":0}],"label":"TRAJ60","value":0},{"children":[{"label":"TRAJ61*01","value":0}],"label":"TRAJ61","value":0}],"label":"TRAJ","value":0},{"children":[{"children":[{"children":[{"label":"TRAV1-1*01","value":0},{"label":"TRAV1-1*02","value":0}],"label":"TRAV1-1","value":0},{"children":[{"label":"TRAV1-2*01","value":0},{"label":"TRAV1-2*02","value":0}],"label":"TRAV1-2","value":0}],"label":"TRAV1","value":0},{"children":[{"children":[{"label":"TRAV2*01","value":0},{"label":"TRAV2*02","value":0}],"label":"TRAV2","value":0}],"label":"TRAV2","value":0},{"children":[{"children":[{"label":"TRAV3*01","value":0},{"label":"TRAV3*02","value":0}],"label":"TRAV3","value":0}],"label":"TRAV3","value":0},{"children":[{"children":[{"label":"TRAV4*01","value":0}],"label":"TRAV4","value":0}],"label":"TRAV4","value":0},{"children":[{"children":[{"label":"TRAV5*01","value":0}],"label":"TRAV5","value":0}],"label":"TRAV5","value":0},{"children":[{"children":[{"label":"TRAV6*01","value":0},{"label":"TRAV6*02","value":0},{"label":"TRAV6*03","value":0},{"label":"TRAV6*04","value":0},{"label":"TRAV6*05","value":0},{"label":"TRAV6*06","value":0}],"label":"TRAV6","value":0}],"label":"TRAV6","value":0},{"children":[{"children":[{"label":"TRAV7*01","value":0}],"label":"TRAV7","value":0}],"label":"TRAV7","value":0},{"children":[{"children":[{"label":"TRAV8-1*01","value":0},{"label":"TRAV8-1*02","value":0}],"label":"TRAV8-1","value":0},{"children":[{"label":"TRAV8-2*01","value":0},{"label":"TRAV8-2*02","value":0}],"label":"TRAV8-2","value":0},{"children":[{"label":"TRAV8-3*01","value":0},{"label":"TRAV8-3*02","value":0},{"label":"TRAV8-3*03","value":0}],"label":"TRAV8-3","value":0},{"children":[{"label":"TRAV8-4*01","value":0},{"label":"TRAV8-4*02","value":0},{"label":"TRAV8-4*03","value":0},{"label":"TRAV8-4*04","value":0},{"label":"TRAV8-4*05","value":0},{"label":"TRAV8-4*06","value":0},{"label":"TRAV8-4*07","value":0}],"label":"TRAV8-4","value":0},{"children":[{"label":"TRAV8-5*01","value":0}],"label":"TRAV8-5","value":0},{"children":[{"label":"TRAV8-6*01","value":0},{"label":"TRAV8-6*02","value":0}],"label":"TRAV8-6","value":0},{"children":[{"label":"TRAV8-7*01","value":0}],"label":"TRAV8-7","value":0}],"label":"TRAV8","value":0},{"children":[{"children":[{"label":"TRAV9-1*01","value":0}],"label":"TRAV9-1","value":0},{"children":[{"label":"TRAV9-2*01","value":0},{"label":"TRAV9-2*02","value":0},{"label":"TRAV9-2*03","value":0},{"label":"TRAV9-2*04","value":0}],"label":"TRAV9-2","value":0}],"label":"TRAV9","value":0},{"children":[{"children":[{"label":"TRAV10*01","value":0}],"label":"TRAV10","value":0}],"label":"TRAV10","value":0},{"children":[{"children":[{"label":"TRAV11*01","value":0}],"label":"TRAV11","value":0}],"label":"TRAV11","value":0},{"children":[{"children":[{"label":"TRAV12-1*01","value":0},{"label":"TRAV12-1*02","value":0}],"label":"TRAV12-1","value":0},{"children":[{"label":"TRAV12-2*01","value":0},{"label":"TRAV12-2*02","value":0},{"label":"TRAV12-2*03","value":0}],"label":"TRAV12-2","value":0},{"children":[{"label":"TRAV12-3*01","value":0},{"label":"TRAV12-3*02","value":0}],"label":"TRAV12-3","value":0}],"label":"TRAV12","value":0},{"children":[{"children":[{"label":"TRAV13-1*01","value":0},{"label":"TRAV13-1*02","value":0},{"label":"TRAV13-1*03","value":0}],"label":"TRAV13-1","value":0},{"children":[{"label":"TRAV13-2*01","value":0},{"label":"TRAV13-2*02","value":0}],"label":"TRAV13-2","value":0}],"label":"TRAV13","value":0},{"children":[{"children":[{"label":"TRAV14/DV4*01","value":0},{"label":"TRAV14/DV4*02","value":0},{"label":"TRAV14/DV4*03","value":0},{"label":"TRAV14/DV4*04","value":0}],"label":"TRAV14/DV4","value":0}],"label":"TRAV14","value":0},{"children":[{"children":[{"label":"TRAV15*01","value":0}],"label":"TRAV15","value":0}],"label":"TRAV15","value":0},{"children":[{"children":[{"label":"TRAV16*01","value":0}],"label":"TRAV16","value":0}],"label":"TRAV16","value":0},{"children":[{"children":[{"label":"TRAV17*01","value":0}],"label":"TRAV17","value":0}],"label":"TRAV17","value":0},{"children":[{"children":[{"label":"TRAV18*01","value":0}],"label":"TRAV18","value":0}],"label":"TRAV18","value":0},{"children":[{"children":[{"label":"TRAV19*01","value":0}],"label":"TRAV19","value":0}],"label":"TRAV19","value":0},{"children":[{"children":[{"label":"TRAV20*01","value":0},{"label":"TRAV20*02","value":0},{"label":"TRAV20*03","value":0},{"label":"TRAV20*04","value":0}],"label":"TRAV20","value":0}],"label":"TRAV20","value":0},{"children":[{"children":[{"label":"TRAV21*01","value":0},{"label":"TRAV21*02","value":0}],"label":"TRAV21","value":0}],"label":"TRAV21","value":0},{"children":[{"children":[{"label":"TRAV22*01","value":0}],"label":"TRAV22","value":0}],"label":"TRAV22","value":0},{"children":[{"children":[{"label":"TRAV23/DV6*01","value":0},{"label":"TRAV23/DV6*02","value":0},{"label":"TRAV23/DV6*03","value":0},{"label":"TRAV23/DV6*04","value":0},{"label":"TRAV23/DV6*05","value":0},{"label":"TRAV23/DV6*06","value":0}],"label":"TRAV23/DV6","value":0}],"label":"TRAV23","value":0},{"children":[{"children":[{"label":"TRAV24*01","value":0},{"label":"TRAV24*02","value":0}],"label":"TRAV24","value":0}],"label":"TRAV24","value":0},{"children":[{"children":[{"label":"TRAV25*01","value":0}],"label":"TRAV25","value":0}],"label":"TRAV25","value":0},{"children":[{"children":[{"label":"TRAV26-1*01","value":0},{"label":"TRAV26-1*02","value":0},{"label":"TRAV26-1*03","value":0}],"label":"TRAV26-1","value":0},{"children":[{"label":"TRAV26-2*01","value":0},{"label":"TRAV26-2*02","value":0}],"label":"TRAV26-2","value":0}],"label":"TRAV26","value":0},{"children":[{"children":[{"label":"TRAV27*01","value":0},{"label":"TRAV27*02","value":0},{"label":"TRAV27*03","value":0}],"label":"TRAV27","value":0}],"label":"TRAV27","value":0},{"children":[{"children":[{"label":"TRAV28*01","value":0}],"label":"TRAV28","value":0}],"label":"TRAV28","value":0},{"children":[{"children":[{"label":"TRAV29/DV5*01","value":0},{"label":"TRAV29/DV5*02","value":0},{"label":"TRAV29/DV5*03","value":0}],"label":"TRAV29/DV5","value":0}],"label":"TRAV29","value":0},{"children":[{"children":[{"label":"TRAV30*01","value":0},{"label":"TRAV30*02","value":0},{"label":"TRAV30*03","value":0},{"label":"TRAV30*04","value":0}],"label":"TRAV30","value":0}],"label":"TRAV30","value":0},{"children":[{"children":[{"label":"TRAV31*01","value":0}],"label":"TRAV31","value":0}],"label":"TRAV31","value":0},{"children":[{"children":[{"label":"TRAV32*01","value":0}],"label":"TRAV32","value":0}],"label":"TRAV32","value":0},{"children":[{"children":[{"label":"TRAV33*01","value":0}],"label":"TRAV33","value":0}],"label":"TRAV33","value":0},{"children":[{"children":[{"label":"TRAV34*01","value":0}],"label":"TRAV34","value":0}],"label":"TRAV34","value":0},{"children":[{"children":[{"label":"TRAV35*01","value":0},{"label":"TRAV35*02","value":0}],"label":"TRAV35","value":0}],"label":"TRAV35","value":0},{"children":[{"children":[{"label":"TRAV36/DV7*01","value":0},{"label":"TRAV36/DV7*02","value":0},{"label":"TRAV36/DV7*03","value":0},{"label":"TRAV36/DV7*04","value":0}],"label":"TRAV36/DV7","value":0}],"label":"TRAV36","value":0},{"children":[{"children":[{"label":"TRAV37*01","value":0}],"label":"TRAV37","value":0}],"label":"TRAV37","value":0},{"children":[{"children":[{"label":"TRAV38-1*01","value":0},{"label":"TRAV38-1*02","value":0},{"label":"TRAV38-1*03","value":0},{"label":"TRAV38-1*04","value":0}],"label":"TRAV38-1","value":0},{"children":[{"label":"TRAV38-2/DV8*01","value":0},{"label":"TRAV38-2/DV8*02","value":0},{"label":"TRAV38-2/DV8*03","value":0},{"label":"TRAV38-2/DV8*04","value":0}],"label":"TRAV38-2/DV8","value":0}],"label":"TRAV38","value":0},{"children":[{"children":[{"label":"TRAV39*01","value":0}],"label":"TRAV39","value":0}],"label":"TRAV39","value":0},{"children":[{"children":[{"label":"TRAV40*01","value":0}],"label":"TRAV40","value":0}],"label":"TRAV40","value":0},{"children":[{"children":[{"label":"TRAV41*01","value":0}],"label":"TRAV41","value":0}],"label":"TRAV41","value":0}],"label":"TRAV","value":0},{"children":[{"children":[{"children":[{"label":"TRBD1*01","value":0}],"label":"TRBD1","value":0}],"label":"TRBD1","value":0},{"children":[{"children":[{"label":"TRBD2*01","value":0},{"label":"TRBD2*02","value":0}],"label":"TRBD2","value":0}],"label":"TRBD2","value":0}],"label":"TRBD","value":0},{"children":[{"children":[{"label":"TRBJ1-1*01","value":0}],"label":"TRBJ1-1","value":0},{"children":[{"label":"TRBJ1-2*01","value":0}],"label":"TRBJ1-2","value":0},{"children":[{"label":"TRBJ1-3*01","value":0}],"label":"TRBJ1-3","value":0},{"children":[{"label":"TRBJ1-4*01","value":0}],"label":"TRBJ1-4","value":0},{"children":[{"label":"TRBJ1-5*01","value":0}],"label":"TRBJ1-5","value":0},{"children":[{"label":"TRBJ1-6*01","value":0},{"label":"TRBJ1-6*02","value":0}],"label":"TRBJ1-6","value":0},{"children":[{"label":"TRBJ2-1*01","value":0}],"label":"TRBJ2-1","value":0},{"children":[{"label":"TRBJ2-2*01","value":0}],"label":"TRBJ2-2","value":0},{"children":[{"label":"TRBJ2-2P*01","value":0}],"label":"TRBJ2-2P","value":0},{"children":[{"label":"TRBJ2-3*01","value":0}],"label":"TRBJ2-3","value":0},{"children":[{"label":"TRBJ2-4*01","value":0}],"label":"TRBJ2-4","value":0},{"children":[{"label":"TRBJ2-5*01","value":0}],"label":"TRBJ2-5","value":0},{"children":[{"label":"TRBJ2-6*01","value":0}],"label":"TRBJ2-6","value":0},{"children":[{"label":"TRBJ2-7*01","value":0},{"label":"TRBJ2-7*02","value":0}],"label":"TRBJ2-7","value":0}],"label":"TRBJ","value":0},{"children":[{"children":[{"children":[{"label":"TRBV1*01","value":0}],"label":"TRBV1","value":0}],"label":"TRBV1","value":0},{"children":[{"children":[{"label":"TRBV2*01","value":0},{"label":"TRBV2*02","value":0},{"label":"TRBV2*03","value":0}],"label":"TRBV2","value":0}],"label":"TRBV2","value":0},{"children":[{"children":[{"label":"TRBVA/OR9-2*01","value":0}],"label":"TRBVA/OR9-2","value":0}],"label":"TRBV2A","value":0},{"children":[{"children":[{"label":"TRBV3-1*01","value":0},{"label":"TRBV3-1*02","value":0}],"label":"TRBV3-1","value":0},{"children":[{"label":"TRBV3-2*01","value":0},{"label":"TRBV3-2*02","value":0},{"label":"TRBV3-2*03","value":0}],"label":"TRBV3-2","value":0}],"label":"TRBV3","value":0},{"children":[{"children":[{"label":"TRBV4-1*01","value":0},{"label":"TRBV4-1*02","value":0}],"label":"TRBV4-1","value":0},{"children":[{"label":"TRBV4-2*01","value":0},{"label":"TRBV4-2*02","value":0}],"label":"TRBV4-2","value":0},{"children":[{"label":"TRBV4-3*01","value":0},{"label":"TRBV4-3*02","value":0},{"label":"TRBV4-3*03","value":0},{"label":"TRBV4-3*04","value":0}],"label":"TRBV4-3","value":0}],"label":"TRBV4","value":0},{"children":[{"children":[{"label":"TRBV5-1*01","value":0},{"label":"TRBV5-1*02","value":0}],"label":"TRBV5-1","value":0},{"children":[{"label":"TRBV5-2*01","value":0}],"label":"TRBV5-2","value":0},{"children":[{"label":"TRBV5-3*01","value":0},{"label":"TRBV5-3*02","value":0}],"label":"TRBV5-3","value":0},{"children":[{"label":"TRBV5-4*01","value":0},{"label":"TRBV5-4*02","value":0},{"label":"TRBV5-4*03","value":0},{"label":"TRBV5-4*04","value":0}],"label":"TRBV5-4","value":0},{"children":[{"label":"TRBV5-5*01","value":0},{"label":"TRBV5-5*02","value":0},{"label":"TRBV5-5*03","value":0}],"label":"TRBV5-5","value":0},{"children":[{"label":"TRBV5-6*01","value":0}],"label":"TRBV5-6","value":0},{"children":[{"label":"TRBV5-7*01","value":0}],"label":"TRBV5-7","value":0},{"children":[{"label":"TRBV5-8*01","value":0},{"label":"TRBV5-8*02","value":0}],"label":"TRBV5-8","value":0}],"label":"TRBV5","value":0},{"children":[{"children":[{"label":"TRBV6-1*01","value":0}],"label":"TRBV6-1","value":0},{"children":[{"label":"TRBV6-2*01","value":0},{"label":"TRBV6-2*02","value":0},{"label":"TRBV6-2*03","value":0}],"label":"TRBV6-2","value":0},{"children":[{"label":"TRBV6-3*01","value":0}],"label":"TRBV6-3","value":0},{"children":[{"label":"TRBV6-4*01","value":0},{"label":"TRBV6-4*02","value":0}],"label":"TRBV6-4","value":0},{"children":[{"label":"TRBV6-5*01","value":0}],"label":"TRBV6-5","value":0},{"children":[{"label":"TRBV6-6*01","value":0},{"label":"TRBV6-6*02","value":0},{"label":"TRBV6-6*03","value":0},{"label":"TRBV6-6*04","value":0},{"label":"TRBV6-6*05","value":0}],"label":"TRBV6-6","value":0},{"children":[{"label":"TRBV6-7*01","value":0}],"label":"TRBV6-7","value":0},{"children":[{"label":"TRBV6-8*01","value":0}],"label":"TRBV6-8","value":0},{"children":[{"label":"TRBV6-9*01","value":0}],"label":"TRBV6-9","value":0}],"label":"TRBV6","value":0},{"children":[{"children":[{"label":"TRBV7-1*01","value":0}],"label":"TRBV7-1","value":0},{"children":[{"label":"TRBV7-2*01","value":0},{"label":"TRBV7-2*02","value":0},{"label":"TRBV7-2*03","value":0},{"label":"TRBV7-2*04","value":0}],"label":"TRBV7-2","value":0},{"children":[{"label":"TRBV7-3*01","value":0},{"label":"TRBV7-3*02","value":0},{"label":"TRBV7-3*03","value":0},{"label":"TRBV7-3*04","value":0},{"label":"TRBV7-3*05","value":0}],"label":"TRBV7-3","value":0},{"children":[{"label":"TRBV7-4*01","value":0},{"label":"TRBV7-4*02","value":0}],"label":"TRBV7-4","value":0},{"children":[{"label":"TRBV7-5*01","value":0},{"label":"TRBV7-5*02","value":0}],"label":"TRBV7-5","value":0},{"children":[{"label":"TRBV7-6*01","value":0},{"label":"TRBV7-6*02","value":0}],"label":"TRBV7-6","value":0},{"children":[{"label":"TRBV7-7*01","value":0},{"label":"TRBV7-7*02","value":0}],"label":"TRBV7-7","value":0},{"children":[{"label":"TRBV7-8*01","value":0},{"label":"TRBV7-8*02","value":0},{"label":"TRBV7-8*03","value":0}],"label":"TRBV7-8","value":0},{"children":[{"label":"TRBV7-9*01","value":0},{"label":"TRBV7-9*02","value":0},{"label":"TRBV7-9*03","value":0},{"label":"TRBV7-9*04","value":0},{"label":"TRBV7-9*05","value":0},{"label":"TRBV7-9*06","value":0},{"label":"TRBV7-9*07","value":0}],"label":"TRBV7-9","value":0}],"label":"TRBV7","value":0},{"children":[{"children":[{"label":"TRBV8-1*01","value":0}],"label":"TRBV8-1","value":0},{"children":[{"label":"TRBV8-2*01","value":0}],"label":"TRBV8-2","value":0}],"label":"TRBV8","value":0},{"children":[{"children":[{"label":"TRBV9*01","value":0},{"label":"TRBV9*02","value":0},{"label":"TRBV9*03","value":0}],"label":"TRBV9","value":0}],"label":"TRBV9","value":0},{"children":[{"children":[{"label":"TRBV10-1*01","value":0},{"label":"TRBV10-1*02","value":0},{"label":"TRBV10-1*03","value":0}],"label":"TRBV10-1","value":0},{"children":[{"label":"TRBV10-2*01","value":0},{"label":"TRBV10-2*02","value":0}],"label":"TRBV10-2","value":0},{"children":[{"label":"TRBV10-3*01","value":0},{"label":"TRBV10-3*02","value":0},{"label":"TRBV10-3*03","value":0},{"label":"TRBV10-3*04","value":0}],"label":"TRBV10-3","value":0}],"label":"TRBV10","value":0},{"children":[{"children":[{"label":"TRBV11-1*01","value":0}],"label":"TRBV11-1","value":0},{"children":[{"label":"TRBV11-2*01","value":0},{"label":"TRBV11-2*02","value":0},{"label":"TRBV11-2*03","value":0}],"label":"TRBV11-2","value":0},{"children":[{"label":"TRBV11-3*01","value":0},{"label":"TRBV11-3*02","value":0},{"label":"TRBV11-3*03","value":0},{"label":"TRBV11-3*04","value":0}],"label":"TRBV11-3","value":0}],"label":"TRBV11","value":0},{"children":[{"children":[{"label":"TRBV12-1*01","value":0}],"label":"TRBV12-1","value":0},{"children":[{"label":"TRBV12-2*01","value":0}],"label":"TRBV12-2","value":0},{"children":[{"label":"TRBV12-3*01","value":0}],"label":"TRBV12-3","value":0},{"children":[{"label":"TRBV12-4*01","value":0},{"label":"TRBV12-4*02","value":0}],"label":"TRBV12-4","value":0},{"children":[{"label":"TRBV12-5*01","value":0}],"label":"TRBV12-5","value":0}],"label":"TRBV12","value":0},{"children":[{"children":[{"label":"TRBV13*01","value":0},{"label":"TRBV13*02","value":0}],"label":"TRBV13","value":0}],"label":"TRBV13","value":0},{"children":[{"children":[{"label":"TRBV14*01","value":0},{"label":"TRBV14*02","value":0}],"label":"TRBV14","value":0}],"label":"TRBV14","value":0},{"children":[{"children":[{"label":"TRBV15*01","value":0},{"label":"TRBV15*02","value":0},{"label":"TRBV15*03","value":0}],"label":"TRBV15","value":0}],"label":"TRBV15","value":0},{"children":[{"children":[{"label":"TRBV16*01","value":0},{"label":"TRBV16*02","value":0},{"label":"TRBV16*03","value":0}],"label":"TRBV16","value":0}],"label":"TRBV16","value":0},{"children":[{"children":[{"label":"TRBV17*01","value":0}],"label":"TRBV17","value":0}],"label":"TRBV17","value":0},{"children":[{"children":[{"label":"TRBV18*01","value":0}],"label":"TRBV18","value":0}],"label":"TRBV18","value":0},{"children":[{"children":[{"label":"TRBV19*01","value":0},{"label":"TRBV19*02","value":0},{"label":"TRBV19*03","value":0}],"label":"TRBV19","value":0}],"label":"TRBV19","value":0},{"children":[{"children":[{"label":"TRBV20-1*01","value":0},{"label":"TRBV20-1*02","value":0},{"label":"TRBV20-1*03","value":0},{"label":"TRBV20-1*04","value":0},{"label":"TRBV20-1*05","value":0},{"label":"TRBV20-1*06","value":0},{"label":"TRBV20-1*07","value":0}],"label":"TRBV20-1","value":0},{"children":[{"label":"TRBV20/OR9-2*01","value":0},{"label":"TRBV20/OR9-2*02","value":0},{"label":"TRBV20/OR9-2*03","value":0}],"label":"TRBV20/OR9-2","value":0}],"label":"TRBV20","value":0},{"children":[{"children":[{"label":"TRBV21-1*01","value":0}],"label":"TRBV21-1","value":0},{"children":[{"label":"TRBV21/OR9-2*01","value":0}],"label":"TRBV21/OR9-2","value":0}],"label":"TRBV21","value":0},{"children":[{"children":[{"label":"TRBV22-1*01","value":0}],"label":"TRBV22-1","value":0},{"children":[{"label":"TRBV22/OR9-2*01","value":0}],"label":"TRBV22/OR9-2","value":0}],"label":"TRBV22","value":0},{"children":[{"children":[{"label":"TRBV23-1*01","value":0}],"label":"TRBV23-1","value":0},{"children":[{"label":"TRBV23/OR9-2*01","value":0},{"label":"TRBV23/OR9-2*02","value":0}],"label":"TRBV23/OR9-2","value":0}],"label":"TRBV23","value":0},{"children":[{"children":[{"label":"TRBV24-1*01","value":0}],"label":"TRBV24-1","value":0},{"children":[{"label":"TRBV24/OR9-2*01","value":0},{"label":"TRBV24/OR9-2*02","value":0},{"label":"TRBV24/OR9-2*03","value":0}],"label":"TRBV24/OR9-2","value":0}],"label":"TRBV24","value":0},{"children":[{"children":[{"label":"TRBV25-1*01","value":0}],"label":"TRBV25-1","value":0},{"children":[{"label":"TRBV25/OR9-2*01","value":0},{"label":"TRBV25/OR9-2*02","value":0}],"label":"TRBV25/OR9-2","value":0}],"label":"TRBV25","value":0},{"children":[{"children":[{"label":"TRBV26*01","value":0}],"label":"TRBV26","value":0},{"children":[{"label":"TRBV26/OR9-2*01","value":0},{"label":"TRBV26/OR9-2*02","value":0}],"label":"TRBV26/OR9-2","value":0}],"label":"TRBV26","value":0},{"children":[{"children":[{"label":"TRBV27*01","value":0}],"label":"TRBV27","value":0}],"label":"TRBV27","value":0},{"children":[{"children":[{"label":"TRBV28*01","value":0}],"label":"TRBV28","value":0}],"label":"TRBV28","value":0},{"children":[{"children":[{"label":"TRBV29-1*01","value":0},{"label":"TRBV29-1*02","value":0},{"label":"TRBV29-1*03","value":0}],"label":"TRBV29-1","value":0},{"children":[{"label":"TRBV29/OR9-2*01","value":0},{"label":"TRBV29/OR9-2*02","value":0}],"label":"TRBV29/OR9-2","value":0}],"label":"TRBV29","value":0},{"children":[{"children":[{"label":"TRBV30*01","value":0},{"label":"TRBV30*02","value":0},{"label":"TRBV30*03","value":0},{"label":"TRBV30*04","value":0},{"label":"TRBV30*05","value":0}],"label":"TRBV30","value":0}],"label":"TRBV30","value":0},{"children":[{"children":[{"label":"TRBVA*01","value":0}],"label":"TRBVA","value":0}],"label":"TRBVA","value":0},{"children":[{"children":[{"label":"TRBVB*01","value":0}],"label":"TRBVB","value":0}],"label":"TRBVB","value":0},{"children":[{"children":[{"label":"TRBVC*01","value":0}],"label":"TRBVC","value":0}],"label":"TRBVC","value":0}],"label":"TRBV","value":0},{"children":[{"children":[{"children":[{"label":"TRDD1*01","value":0}],"label":"TRDD1","value":0}],"label":"TRDD1","value":0},{"children":[{"children":[{"label":"TRDD2*01","value":0}],"label":"TRDD2","value":0}],"label":"TRDD2","value":0},{"children":[{"children":[{"label":"TRDD3*01","value":0}],"label":"TRDD3","value":0}],"label":"TRDD3","value":0}],"label":"TRDD","value":0},{"children":[{"children":[{"label":"TRDJ1*01","value":0}],"label":"TRDJ1","value":0},{"children":[{"label":"TRDJ2*01","value":0}],"label":"TRDJ2","value":0},{"children":[{"label":"TRDJ3*01","value":0}],"label":"TRDJ3","value":0},{"children":[{"label":"TRDJ4*01","value":0}],"label":"TRDJ4","value":0}],"label":"TRDJ","value":0},{"children":[{"children":[{"children":[{"label":"TRDV1*01","value":0}],"label":"TRDV1","value":0}],"label":"TRDV1","value":0},{"children":[{"children":[{"label":"TRDV2*01","value":0},{"label":"TRDV2*02","value":0},{"label":"TRDV2*03","value":0}],"label":"TRDV2","value":0}],"label":"TRDV2","value":0},{"children":[{"children":[{"label":"TRDV3*01","value":0},{"label":"TRDV3*02","value":0}],"label":"TRDV3","value":0}],"label":"TRDV3","value":0}],"label":"TRDV","value":0},{"children":[{"children":[{"label":"TRGJ1*01","value":0},{"label":"TRGJ1*02","value":0}],"label":"TRGJ1","value":0},{"children":[{"label":"TRGJ2*01","value":0}],"label":"TRGJ2","value":0},{"children":[{"label":"TRGJP*01","value":0}],"label":"TRGJP","value":0},{"children":[{"label":"TRGJP1*01","value":0}],"label":"TRGJP1","value":0},{"children":[{"label":"TRGJP2*01","value":0}],"label":"TRGJP2","value":0}],"label":"TRGJ","value":0},{"children":[{"children":[{"children":[{"label":"TRGV1*01","value":0}],"label":"TRGV1","value":0},{"children":[{"label":"TRGV2*01","value":0},{"label":"TRGV2*02","value":0}],"label":"TRGV2","value":0},{"children":[{"label":"TRGV3*01","value":0},{"label":"TRGV3*02","value":0}],"label":"TRGV3","value":0},{"children":[{"label":"TRGV3P*01","value":0}],"label":"TRGV3P","value":0},{"children":[{"label":"TRGV4*01","value":0},{"label":"TRGV4*02","value":0}],"label":"TRGV4","value":0},{"children":[{"label":"TRGV5*01","value":0}],"label":"TRGV5","value":0},{"children":[{"label":"TRGV5P*01","value":0},{"label":"TRGV5P*02","value":0}],"label":"TRGV5P","value":0},{"children":[{"label":"TRGV6*01","value":0},{"label":"TRGV6*02","value":0}],"label":"TRGV6","value":0},{"children":[{"label":"TRGV7*01","value":0}],"label":"TRGV7","value":0},{"children":[{"label":"TRGV8*01","value":0}],"label":"TRGV8","value":0}],"label":"TRGV1","value":0},{"children":[{"children":[{"label":"TRGV9*01","value":0},{"label":"TRGV9*02","value":0}],"label":"TRGV9","value":0}],"label":"TRGV2","value":0},{"children":[{"children":[{"label":"TRGV10*01","value":0},{"label":"TRGV10*02","value":0}],"label":"TRGV10","value":0}],"label":"TRGV3","value":0},{"children":[{"children":[{"label":"TRGV11*01","value":0},{"label":"TRGV11*02","value":0}],"label":"TRGV11","value":0}],"label":"TRGV4","value":0},{"children":[{"children":[{"label":"TRGVA*01","value":0}],"label":"TRGVA","value":0}],"label":"TRGVA","value":0},{"children":[{"children":[{"label":"TRGVB*01","value":0}],"label":"TRGVB","value":0}],"label":"TRGVB","value":0}],"label":"TRGV","value":0}],"label":"human","value":222294}
-            ;
-            this.BIGJSON = BIGJSON;
+            this.clearChart(); this.hideWarning();
+            var that = this;
+            //get file name post-filter_mean_q_hist.csv
+            var file  = new Backbone.Agave.Model.File();
+            file.getFile('real_discrete_bar_chart.json')
+                .done(function(text) {
+                    var BIGJSON = JSON.parse(text);
+                    that.BIGJSON = BIGJSON;
 
-            console.log("big test here");
-            var res=this.findFromLabel(BIGJSON,"human");
-            console.log("got res...");
-            this.ogDataset=this.makeChartableFromValidHierarchyObject(res);
-            this.currentDataset = this.ogDataset;           
+                    var res=that.findFromLabel(BIGJSON,"human");
+                    that.ogDataset=that.makeChartableFromValidHierarchyObject(res);
+                    that.currentDataset = that.ogDataset;           
 
-            //call redrawChart to invoke
-            //drawing on the initial dataset
-            this.redrawBarChart();
+                    //call redrawChart to invoke
+                    //drawing on the initial dataset
+                    that.redrawBarChart();               
+                
+                })
+                .fail (function(response) {
+                    var message = "An error occurred. ";
+                    if(response && response.responseText) {
+                        var txt = JSON.parse(response.responseText);
+                        message = message + txt.message;
+                    }
+                    that.showWarning(message);
+                }); //end getFile.fail() 
         },
         resetdiscreteBarChart: function() {
             this.currentDataSet = this.ogDataset;
@@ -163,7 +271,7 @@ define(['app'], function(App) {
                   .color(['#aec7e8', '#7b94b5', '#486192'])
                   .transitionDuration(500)
                   ;
-              d3.select('#cdr3_chart svg')
+              d3.select('#analyses-chart svg')
                   .datum(that.currentDataset)
                   .call(chart);
 
@@ -180,9 +288,1039 @@ define(['app'], function(App) {
                     });
             });        
         },
+        
+        compositionChart: function () {
+            this.clearChart(); this.hideWarning();
+            var that = this;
+            //get file id 0001398787564248-5056a550b8-0001-002
+            var file  = new Backbone.Agave.Model.File();
+            file.getFile('post-filter_composition.csv')
+                .done(function(response) {
+                    response = response.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+                    var data = d3.tsv.parse(response);
+                    var aData= []; var cData= []; var gData= []; var tData= []; var nData= []; var gcData = [];
+  
+                    data.forEach(function(d) {
+                        aData.push({x: +d['position'], y: +d['A%']});
+                        cData.push({x: +d['position'], y: +d['C%']});
+                        gData.push({x: +d['position'], y: +d['G%']});
+                        tData.push({x: +d['position'], y: +d['T%']});
+                        nData.push({x: +d['position'], y: +d['N%']});
+                        gcData.push({x: +d['position'], y: +d['GC%']});
+                    });
+
+                    var myData = [{
+                        key: "A%", 
+                        values: aData
+                    }, 
+                    {
+                        key: "C%", 
+                        values: cData    
+                    },
+                    {
+                        key: "G%", 
+                        values: gData    
+                    },
+                    {
+                        key: "T%", 
+                        values: tData    
+                    }, 
+                    {
+                        key: "N%", 
+                        values: nData    
+                    },
+                    {
+                        key: "GC%", 
+                        values: gcData    
+                    }
+                    ];
+                    
+                    nv.addGraph(function() {
+                        var chart = nv.models.lineChart()
+                            .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                            .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                            .transitionDuration(350)  //how fast do you want the lines to transition?
+                            .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                            .showYAxis(true)        //Show the y-axis
+                            .showXAxis(true)        //Show the x-axis    
+                        ;
+
+                        chart.xAxis     //Chart x-axis settings
+                          .axisLabel('Read Position')
+                          .tickFormat(d3.format(',r'));
+
+                        chart.yAxis     //Chart y-axis settings
+                          .axisLabel('Percent')
+                          .tickFormat(d3.format(',r'));
+
+                        /* Done setting the chart up? Time to render it!*/
+                        d3.select('.svg-container svg')    //Select the <svg> element you want to render the chart in.   
+                         .datum(myData)
+                          .call(chart);          //Finally, render the chart!
+
+                        //Update the chart when window resizes.
+                        nv.utils.windowResize(function() { that.clearSVG(); chart.update() });
+                        return chart;
+                    }); //end nv.addGraph(function(){})
+                    
+                }) //end getFile.done()
+                .fail(function(response) {
+                    //todo - put error on page!!!!!
+                    console.log("Agave fetch of file failed." + reponse);
+                }); //end getFile.fail()
+            
+        },
+        
+        qualityScoreChart: function() {
+            this.clearChart(); this.hideWarning();
+            var that = this;
+            
+            
+            var labels = true; // show the text labels beside individual boxplots?
+
+            var margin = {top: 30, right: 50, bottom: 100, left: 70};
+            var  width = 1200 - margin.left - margin.right;
+            var height = 600 - margin.top - margin.bottom;
+
+            var min = Infinity,
+            max = -Infinity;            
+            
+            //get file id 0001398787564248-5056a550b8-0001-002
+            var file  = new Backbone.Agave.Model.File();
+            file.getFile('post-filter_qstats_short.csv')
+                .done(function(text) {
+ 
+                    //remove commented out lines (header info)
+                    text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+
+                    var tsv = d3.tsv.parse(text);
+                    var data = [];
+                    tsv.forEach(function(d) {
+                        data.push({position: +d['position'], mean: +d['mean'], '10%': +d['10%'], '25%': +d['25%'], '50%': +d['50%'], '75%': +d['75%'], '90%': +d['90%']});
+                        var rowMax = +d["90%"];
+                        var rowMin = +d["10%"];
+                        if (rowMax > max) max = rowMax;
+                        if (rowMin < min) min = rowMin;	 
+                    });
+  
+  
+                    var chart = box()
+                        .whiskers(that.iqr(1.5))
+                        .height(height)
+                        .width(width)
+                        .domain([min, max])
+                        //.showLabels(labels)
+                        ;
+
+                    // the x-axis
+                    var x = d3.scale.ordinal()	   
+                        .domain( data.map(function(d) { return d["position"] } ) )	    
+                        .rangeRoundBands([0 , width], 0.1,0);
+  
+                    var xAxis = d3.svg.axis()
+                        .scale(x)
+                        .orient("bottom");
+
+                    // the y-axis
+                    var y = d3.scale.linear()
+                        .domain([0, max])
+                        .range([height + margin.top, 0 + margin.top]);
+    
+                    //secondary scaling not inverted
+                    var y0 = d3.scale.linear()
+                        .domain([0,max])
+                        .range([0 + margin.top , height - margin.bottom]);
+    
+                    //yAxis
+                    var yAxis = d3.svg.axis()
+                    .scale(y)
+                    .orient("left");
+
+                    var barWidth = x(1)/4;
+    
+                    var topSVG = d3.select("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .attr("class", "box")
+                    ; 
+    
+                    var tip = d3.select(".d3-tip")
+                    ;
+    
+                    var boxG = d3.select("svg").append("g");
+                    boxG
+                        .attr("class","boxG")
+                        .attr("width",width+ margin.left + margin.right)
+                        .attr("height",height + margin.left + margin.right)
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                        ;
+        
+                      var center = boxG.selectAll("line.center")
+                        .data(data)         
+                        ;
+
+                     //vertical line
+                      center.enter().insert("line", "rect")
+                        .attr("class", "center")
+                        .attr("x1",  function(d) { return x(+d.position) + barWidth/2; } )
+                        .attr("y1", function(d) { return y(+d["10%"]); })
+                        .attr("x2", function(d) { return x(+d.position) + barWidth/2; } )
+                        .attr("y2", function(d) { return y(+d["90%"]); })
+                        ;	
+  
+                  //add the background boxes 
+                  //add a group
+                    var bgGroup = d3.select("svg").append("g")
+                        .attr("class","bgGroup")
+                        .attr("width",width+ margin.left + margin.right)
+                        .attr("height",height + margin.left + margin.right)
+                    ;
+                    //then add all 3 rectangles
+                    bgGroup.append("rect")
+                      .attr("width", width )
+                      .attr("height", y(0) - y(20)) 
+                      .attr("transform", "translate("+margin.left + "," + (margin.top + y(20)) + ")")
+                      .attr("class","bg_20")
+                      ;
+     
+                     bgGroup.append("rect")
+                      .attr("width", width )
+                      .attr("height", y(20) - y(28)) //30
+                      .attr("transform", "translate("+margin.left + "," + (margin.top + y(28)) + ")")
+                      .attr("class","bg_28")
+                      ; 
+      
+                     bgGroup.append("rect")
+                      .attr("width", width )
+                      .attr("height", y(28) - y(max))
+                      .attr("transform", "translate("+margin.left + "," + (margin.top + y(max)) + ")")
+                      .attr("class","bg_40")
+                      ;
+  
+  
+                    var svg = d3.select("svg")
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    // draw the boxplots	
+                    svg.selectAll(".box")	   
+                      .data(data)
+                      .enter().append("g")
+                        .attr("transform", function(d) { 
+                            return "translate(" +  x(d["position"])  + "," + margin.top + ")"; 
+                        } )
+                        .on('mouseover', function(d) {
+                            tip.transition()        
+                                .duration(200)      
+                                .style("opacity", .9);      
+                            tip.html("Read Position: " +d.position + "<br/>"  
+                                + "Mean: " + d["mean"] + "<br/>"
+                                + "90%: &nbsp;&nbsp;" + d["90%"] + "<br/>"
+                                + "75%: &nbsp;&nbsp;" + d["75%"] + "<br/>"
+                                + "50%: &nbsp;&nbsp;" + d["50%"] + "<br/>"
+                                + "25%: &nbsp;&nbsp;" + d["25%"] + "<br/>"
+                                + "10%: &nbsp;&nbsp;" + d["10%"] + "<br/>"
+                            )
+                                .style("left", (+d3.event.layerX + 50) + "px")    
+                                .style("top", (+d3.event.layerY +150) + "px");
+                         })
+                        .on('mouseout', function(d) {
+                            tip.transition()        
+                                .duration(300)      
+                                .style("opacity", 0);              
+                         })      
+                      .call(chart.width(x.rangeBand()))
+                      ; 
+    
+          
+                    // add a title
+                    svg.append("text")
+                        .attr("x", (width / 2))             
+                        .attr("y", 0 + (margin.top / 2))
+                        .attr("text-anchor", "middle")  
+                        .style("font-size", "18px") 
+                        //.style("text-decoration", "underline")  
+                        .text("Quality Scores");
+ 
+                     // draw y axis
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis)
+                        .append("text") // and text1
+                          .attr("transform", "rotate(-90), translate(" + -(height/2) +",0)")
+                          .attr("y", -(margin.left / 2))
+                          .attr("dy", ".51em")
+                          .style("text-anchor", "end")
+                          .style("font-size", "16px") 
+                          .text("Quality");		
+    
+                    // draw x axis	
+                    svg.append("g")
+                      .attr("class", "x axis")
+                      .attr("transform", "translate(0," + (height  + margin.top + 1) + ")")
+                      .call(xAxis)
+                      .append("text")             // text label for the x axis
+                        .attr("x", (width / 2) )
+                        .attr("y",  25 )
+                        .attr("dy", ".71em")
+                        .style("text-anchor", "middle")
+                        .style("font-size", "16px") 
+                        .text("Position in Read"); 
+ 
+                   // Define the mean line
+                    var	meanLine = d3.svg.line()								// set 'valueline' to be a line
+                        .x(function(d) { 
+                            //console.log(d.position);
+                            //console.log("x="+x(d.position));
+                            return x(+d.position) + barWidth/2; 
+                        })
+                        .y(function(d) { 
+                            //console.log(d.mean);
+                            //console.log("y="+y(d.mean));
+                            return y(+d.mean); 
+                        }
+                    );
+                    var meanGroup = d3.select("svg").append("g")
+                        .attr("class","meanGroup")
+                        .attr("width",width+ margin.left + margin.right)
+                        .attr("height",height + margin.left + margin.right)
+                    ;  
+                    //add meanLine to the chart
+                    meanGroup.append("path")				// append the valueline line to the 'path' element
+                        .attr("class", "line")				// apply the 'line' CSS styles to this path
+                        .attr("d", meanLine(data))
+                        .attr("width",width+ margin.left + margin.right)
+                        .attr("height",height + margin.left + margin.right)
+                        .attr("fill", false)		
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                    ; 
+
+                    // add points
+                    meanGroup.selectAll('circle')
+                        .data(data)
+                        .enter().append('circle')
+                            .attr('cx', function (d) { return x(+d.position) + barWidth/2;  })
+                            .attr('cy', function (d) { return y(+d.mean) })
+                            .attr('r', 3)
+                            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                            .attr("class", "meanPoints");
+                        ; 
+  
+                
+                })
+                .fail (function() {
+                    
+                    console.log("I suck. boo.");
+                }); //end getFile.fail()       
+        },
+        
+        // Returns a function to compute the interquartile range.
+        // already computed in our data
+        iqr: function(k) {
+          return function(d, i) {
+            var q1 = d.quartiles[0],
+                q3 = d.quartiles[2],
+                iqr = (q3 - q1) * k,
+                i = -1,
+                j = d.length;
+            while (d[++i] < q1 - this.iqr);
+            while (d[--j] > q3 + this.iqr);
+            return [i, j];
+          };
+        },
+ 
+        meanQHist: function() {
+            this.clearChart(); this.hideWarning();
+            var that = this;
+            //get file name post-filter_mean_q_hist.csv
+            var file  = new Backbone.Agave.Model.File();
+            file.getFile('post-filter_mean_q_hist.csv')
+                .done(function(text) {
+                    //remove commented out lines (header info)
+                    text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+                    var data = d3.tsv.parse(text);
+                    var otherD = [];
+                    data.forEach(function(d) {
+                        otherD.push({x: +d['read_quality'], y: +d['count']});
+                    });
+                    var myData = [{
+                        key: "Quality Score", 
+                        values: otherD
+                    }];
+ 
+                     nv.addGraph(function() {
+                      var chart = nv.models.lineChart()
+      
+                                    .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                                    .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                                    .transitionDuration(350)  //how fast do you want the lines to transition?
+                                    .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                                    .showYAxis(true)        //Show the y-axis
+                                    .showXAxis(true)        //Show the x-axis    
+                      ;
+
+                      chart.xAxis     //Chart x-axis settings
+                          .axisLabel('Average Quality per read')
+                          .tickFormat(d3.format(',r'));
+
+                      chart.yAxis     //Chart y-axis settings
+                          .axisLabel('Count')
+                          .tickFormat(d3.format(',r'));
+
+                      /* Done setting the chart up? Time to render it!*/
+                      d3.select('#analyses-chart svg')    //Select the <svg> element you want to render the chart in.   
+                         .datum(myData)
+                          .call(chart);          //Finally, render the chart!
+
+                      //Update the chart when window resizes.
+                      nv.utils.windowResize(function() { that.clearSVG(); chart.update() });
+                      return chart;
+                    });
+                
+                })
+                .fail (function() {
+                    
+                    console.log("I suck. boo.");
+                }); //end getFile.fail()              
+        },
+        
+        lengthHist: function () {
+            this.clearChart(); this.hideWarning();;
+            var that = this;
+            //get file name post-filter_mean_q_hist.csv
+            var file  = new Backbone.Agave.Model.File();
+            file.getFile('pre-filter_len_hist.csv')
+                .done(function(text) {
+                    //remove commented out lines (header info)
+                    text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+                    
+
+                      var data = d3.tsv.parse(text);
+                      var otherD = [];
+                      data.forEach(function(d) {
+                        otherD.push({x: +d['read_length'], y: +d['count']});
+                      });
+
+                      var myData = [{
+                        key: "Sequence Length", 
+                        values: otherD
+                      }];
+
+
+                        nv.addGraph(function() {
+                          var chart = nv.models.lineChart()
+  
+                                        .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                                        .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                                        .transitionDuration(350)  //how fast do you want the lines to transition?
+                                        .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                                        .showYAxis(true)        //Show the y-axis
+                                        .showXAxis(true)        //Show the x-axis    
+                          ;
+
+                          chart.xAxis     //Chart x-axis settings
+                              .axisLabel('Sequence Length (bp)')
+                              .tickFormat(d3.format(',r'));
+
+                          chart.yAxis     //Chart y-axis settings
+                              .axisLabel('Count')
+                              .tickFormat(d3.format(',r'));
+
+                          /* Done setting the chart up? Time to render it!*/
+                          d3.select('#analyses-chart svg')    //Select the <svg> element you want to render the chart in.   
+                             .datum(myData)
+                              .call(chart);          //Finally, render the chart!
+
+                          //Update the chart when window resizes.
+                          nv.utils.windowResize(function() { that.clearSVG(); chart.update() });
+                          return chart;
+                        });
+
+                    
+                    
+                })
+                .fail (function() {
+                    
+                    console.log("I suck. boo.");
+                }); //end getFile.fail()  
+        },
+
+        gcHist: function () {
+            this.clearChart(); this.hideWarning();
+            var that = this;
+            //get file name post-filter_mean_q_hist.csv
+            var file  = new Backbone.Agave.Model.File();
+            file.getFile('pre-filter_gc_hist.csv')
+                .done(function(text) {
+                    //remove commented out lines (header info)
+                    text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+
+                    var data = d3.tsv.parse(text);
+                    var otherD = [];
+                    data.forEach(function(d) {
+                    otherD.push({x: +d['GC%'], y: +d['read_count']});
+                    });
+
+                    //fill in any up to 100
+                    for(var i = 0; i <= 100; i++) {
+                    if(! otherD[i]) {
+                      otherD.push({x: +i, y: 0});
+                    }
+                    }
+
+                    var myData = [{
+                    key: "Mean GC %", 
+                    values: otherD
+                    }];
+
+                    nv.addGraph(function() {
+                      var chart = nv.models.lineChart()
+  
+                                    .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                                    .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                                    .transitionDuration(350)  //how fast do you want the lines to transition?
+                                    .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                                    .showYAxis(true)        //Show the y-axis
+                                    .showXAxis(true)        //Show the x-axis    
+                      ;
+
+                      chart.xAxis     //Chart x-axis settings
+                          .axisLabel('Mean GC Content %')
+                          .tickFormat(d3.format(',r'));
+
+                      chart.yAxis     //Chart y-axis settings
+                          .axisLabel('Read Count')
+                          .tickFormat(d3.format(',r'));
+      
+                      /* Done setting the chart up? Time to render it!*/
+                      d3.select('#analyses-chart svg')    //Select the <svg> element you want to render the chart in.   
+                         .datum(myData)
+                          .call(chart);          //Finally, render the chart!
+
+                      //Update the chart when window resizes.
+                      nv.utils.windowResize(function() { that.clearSVG(); chart.update() });
+                      return chart;
+                    });
+                
+                })
+                .fail (function(response) {
+                    var message = "An error occurred. ";
+                    if(response && response.responseText) {
+                        var txt = JSON.parse(response.responseText);
+                        message = message + txt.message;
+                    }
+                    that.showWarning(message);
+                }); //end getFile.fail()  
+        },
+
+        showWarning: function(message) {
+            console.log("showWarning: " + message);
+            $('.alert-message').text(message);
+            $('.alert').show();
+        },
+        hideWarning: function() {
+            $('.alert').hide();
+        },    
         toggleLegend: function() {
             $('.nv-legendWrap').toggle();
-        }
+        },
+ 
+        //edward salinas       
+        geneDistChart: function() {
+            this.clearChart(); this.hideWarning();
+            var that = this;
+            //get file name post-filter_mean_q_hist.csv
+            var file  = new Backbone.Agave.Model.File();
+            file.getFile('real_discrete_bar_chart.json')
+                .done(function(text) {
+                    
+                    d3.select('#analyses-chart').insert("div", "svg").attr("id","stackdiv");
+                    var BIGJSON = JSON.parse(text);
+                    that.BIGJSON = BIGJSON;
+
+                    var res=that.getHierarchySubHierarchyFromObj(BIGJSON,"human");
+                    console.log("got res..."+res);
+                    var initialChartable=that.makeChartableFromValidHierarchyObject(res);
+                    var currentDataset=initialChartable;
+                    console.log("got initialChartable");
+                    that.stackStatus=false;
+                    that.drillStack=["human"]; //keep track of drill-down location                    
+                    that.redrawGeneDistChart(res);
+                
+                })
+                .fail (function(response) {
+                    var message = "An error occurred. ";
+                    if(response && response.responseText) {
+                        var txt = JSON.parse(response.responseText);
+                        message = message + txt.message;
+                    }
+                    that.showWarning(message);
+                }); //end getFile.fail()            
+        }, //end redrawGeneDistChart
+ 
+        //edward salinas
+        resetDrillStackUpTo: function(u,ds) {
+            console.log("reset called with u="+u+" and ds="+ds.toString());
+            var newDrillStack=[];
+            var di=ds.length;
+            for(di=0;di<ds.length;di++) {
+                newDrillStack.push(ds[di]);
+                if(u===ds[di]) {
+                    di=ds.length+1;
+                }
+            }
+            console.log("new drill stack being returned : "+newDrillStack.toString());
+	        return newDrillStack;
+        },
+ 
+        //edward salinas
+        buttonDrill: function(x, y) {
+            var value = x.toElement.attributes.getNamedItem("data-button-index").value;
+            //console.log(x.toElement.attributes.getNamedItem("data-button-index").value);
+            this.drillStack=this.resetDrillStackUpTo(value,this.drillStack)
+            var res=this.getHierarchySubHierarchyFromObj(this.BIGJSON,value);
+            this.redrawGeneDistChart(res);
+        },
+        
+        //edward salinas
+        getHTMLButtonsFromDrillStack: function(d) {
+            var buttonIndex=0;
+            var buttonHTML='<ol class="breadcrumb">';
+            for(buttonIndex=0;buttonIndex<d.length;buttonIndex++){
+                if(buttonIndex == (d.length -1)) {
+                    buttonHTML = buttonHTML + "<li class='active'>"+d[buttonIndex] + "</li>";
+                } else {
+                    buttonHTML = buttonHTML + "<li><a class='stack-btn' id='stack-btn-"+d[buttonIndex]+"' data-button-index='"+d[buttonIndex]+"' >"+d[buttonIndex]+"</a></li>";                
+                }
+            }
+            buttonHTML = buttonHTML + '</ol>';
+            return buttonHTML;
+        },
+
+        //does the tree have children and there's more than zero of them
+        //edward salinas
+        doesThisRootHaveChildren: function(o,rootName) {
+            var rooted_hierarchy=this.getHierarchySubHierarchyFromObj(o,rootName)
+            if("children" in rooted_hierarchy) {
+                //console.log("children does exist in hierarchy rooted at "+rootName)
+                var children=rooted_hierarchy.children
+                //console.log("The length of them is "+children.length)
+                if(children.length==0) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                //console.log("children does  NOT exist in hierarchy rooted at "+rootName)
+                return false;
+            }
+        },
+
+        isAllelicString: function(s) {
+            var allelePattern=/\S\*\d+$/i;
+            if(s.match(allelePattern)) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        //edward salinas
+        areALLStringsInArrayNONAllelic: function(a) {
+            var i=0;
+            //console.log("Now testing the follow array for allelicity : "+a.toString());
+            for(i=0;i<a.length;i++)
+                {
+                var allelic=this.isAllelicString(a[i]);
+                if(allelic) {
+                    //console.log("The array "+a.toString()+" tests as nonallelic because "+a[i]+" was found to be non-allelic");
+                    return false;
+                    }
+                }
+            //console.log("All items in the array were wound to be allelic!!!!");
+            return true;
+        },
+
+        //edward salinas
+        areALLStringsInArrayAllelic: function(a) {
+            var i=0;
+            //console.log("Now testing the follow array for allelicity : "+a.toString());
+            for(i=0;i<a.length;i++)
+                {
+                var allelic=this.isAllelicString(a[i]);
+                if(!allelic) {
+                    //console.log("The array "+a.toString()+" tests as nonallelic because "+a[i]+" was found to be non-allelic");
+                    return false;
+                    }
+                }
+            //console.log("All items in the array were wound to be allelic!!!!");
+            return true;
+        },
+
+        //edward salinas
+        doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic: function(o,rootName) {
+            var rooted_hierarchy=this.getHierarchySubHierarchyFromObj(o,rootName)
+            var has_kids=this.doesThisRootHaveChildren(o,rootName)
+            var grandKidsLabels=[]
+            var kidsLabels=[]
+            var self=rootName
+            if(has_kids) {
+                var children=rooted_hierarchy.children;
+                var c=0;
+                for(c=0;c<children.length;c++) {
+                    var child=children[c];
+                    if("label" in child) {
+                        kidsLabels.push(child.label);
+                    }
+                    else {
+                        //console.log("why no label at child #"+c+"????")
+                    }
+                    //console.log("Now to test if children is in child....")
+                    if("children" in child) {
+                        //console.log("There appears to be grandchildren rooted here...")
+                        var grandChildren=child.children;
+                        //console.log("Got a list of grandchildren....")
+                        for(var gc=0;gc<grandChildren.length;gc++) {
+                            grandKidsLabels.push(grandChildren[gc].label);
+                        }//for each grandchild
+                    }//if a child has children
+                    else{
+                        console.log("Child "+child_label+" of "+rootName+" has no children!")
+                        return false;
+                    }
+                    }//for children
+                }//there are kids
+            else {
+                //console.log("root "+rootName+" has no children")
+                return false;
+            }
+
+            var cond1=this.isAllelicString(rootName);
+            var cond2=this.areALLStringsInArrayNONAllelic(kidsLabels);
+            var cond3=this.areALLStringsInArrayAllelic(grandKidsLabels);
+            var cond4=(kidsLabels.length==0);
+            var cond5=(grandKidsLabels.length==0);
+
+            if( !cond1 && cond2 && cond3 && !cond4 && !cond5) {
+                return true;
+            } else {
+                return false;
+            }
+        }, //end doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic
+
+        //edward salinas
+        getValueReturnZeroAsDefault: function(s,hierarchy) {
+            var subtree=this.getHierarchySubHierarchyFromObj(hierarchy,s);
+            if(subtree==null)
+            {
+                return 0;
+            }
+            else
+            {
+                return subtree.value;
+            }
+        },
+        
+        getGrandChildrenLabelArray: function(o) {
+            var gcArray=[];
+            if("children" in o) {
+                var children=o.children;
+                for(var c=0;c<children.length;c++)
+                    {
+                    if("children" in children[c])
+                        {
+                        var gKids=children[c].children;
+                        for(var g=0;g<gKids.length;g++)
+                            {
+                            gcArray.push(gKids[g].label);
+                            }
+                        }
+                    }
+                }
+            return gcArray;        
+        },
+        
+        //edward salinas
+        getHighestAlleleValueFromAllelicOnlyList: function(aol) {
+            var maxa=(1);
+            for(var a=0;a<aol.length;a++) {
+                var myRegexp = /\*(\d+)$/;
+                var reMatch=myRegexp.exec(aol[a]);
+                if(reMatch) {
+                    if(maxa<reMatch[1]) {
+                        maxa=reMatch[1];
+                    }
+                }
+            }
+            return maxa;
+        },
+
+        //zero pad a digit string a up to pl digits
+        zeroPadToDigits: function(a,pl) {
+            a=a.toString()
+            while(a.length<pl) {
+                a="0".concat(a);
+            }
+            return a;       
+        },
+
+        //given a full gene name with allele
+        //split it into two parts
+        //edward salinas
+        separateGeneAndAllele: function(a) {
+            var myRegexp = /(.+)\*(\d+)$/;
+            var reMatch=myRegexp.exec(a);
+            var toReturn=[]
+            if(reMatch) {
+                var gene=reMatch[1]
+                var allele=reMatch[2]
+                toReturn.push(gene)
+                toReturn.push(allele)
+            }
+            return toReturn;        
+        },
+
+        //rooted somewhere, make a stacked chart table
+        //edward salinas
+        makeStackChartableFromValidHierarchyObject:function(o) {
+
+console.log(o)
+                /*
+                It's assumed that the root exists and is non-allelic
+                It's assumed that at least one child exists under the root and that it is non-allelic
+                It's assumed that all children have hildren and that all these "grandchildren" are allelic /.+\*\d+/
+                */
+                var gcLabels=this.getGrandChildrenLabelArray(o);
+                var maxa=this.getHighestAlleleValueFromAllelicOnlyList(gcLabels);
+
+                //these colors need to go but they can be used for now
+                //colorArray=["#51A351","#BD362F","#11162F"];    //dirty christmas
+                var colorArray=['#aec7e8', '#7b94b5', '#486192'];  //hues of blues
+                //colorArray=[" #FF0000","#FF7F00","#FFFF00","#00FF00","#0000FF","#4B0082","#8F00FF"]; //rainbow http://suddenwhims.com/2012/10/html-rainbow-color-codes-color-hex/
+                var stackDataArray=[];
+                var alleleNum=1;
+                var immediateChildren=o.children;
+
+                for(alleleNum=1;alleleNum<=maxa;alleleNum++) {
+                    var immediateChildIndex=0;
+                    var alleleNumZeroPadded=this.zeroPadToDigits(alleleNum,2);
+
+                    var objectColorIndex=((alleleNum-1)%colorArray.length);
+                    var color=colorArray[objectColorIndex];
+                    var key=alleleNumZeroPadded.toString();
+            
+
+                    var xList=[];
+                    var yList=[];
+                    var values=[];
+                    for(immediateChildIndex=0;immediateChildIndex<immediateChildren.length;immediateChildIndex++) {
+                        var withStar=immediateChildren[immediateChildIndex].label+"*"+alleleNumZeroPadded;
+                        //console.log("I want to work with "+withStar+" whether it exists or not");
+                        var geneAndAllele=this.separateGeneAndAllele(withStar);
+                        var genex=geneAndAllele[0];
+                        var valy=this.getValueReturnZeroAsDefault(withStar,o)
+                        xList.push(genex)
+                        yList.push(valy);
+                    }//for each immediate child
+
+                    /*
+                    if(xList.length!=yList.length) {
+                        //console.log("FATAL ERROR, XLIST AND YLIST NOT SAME LENGTH!!!");
+                    }
+                    */
+
+                    for(var v=0;v<xList.length;v++) {
+                        var xyObj={"x":xList[v],"y":parseInt(yList[v])};
+                        values.push(xyObj);
+                    }
+
+                    var keyObj={"key":key,"color":color,"values":values};
+                    stackDataArray.push(keyObj);
+
+                }//for each allele up to maximum
+
+            return stackDataArray;
+        },
+
+        //edward salinas
+        redrawGeneDistChart: function(res) {
+            var that = this;
+            console.log("Drill down stack : "+this.drillStack.toString());
+            document.getElementById('stackdiv').innerHTML = this.getHTMLButtonsFromDrillStack(this.drillStack);
+            //call this function to trigger reloading
+            //inside redrawChart()
+            console.log("redrawGeneDistChart called...");
+            console.log("res is "+res);
+            var prevStackStatus=this.stackStatus;
+            this.stackStatus=this.doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(this.BIGJSON,res.label);
+
+            if(prevStackStatus!=this.stackStatus) {
+                console.log("different status!");
+                //clear chart
+                d3.select('#analyses-chart svg')
+                    .selectAll('g').remove();
+            }
+            else {
+                console.log("same status....");
+            }
+
+            if(!this.stackStatus) {
+                console.log("THE CURRENT DATASET NEEDS A PLAIN CHART");
+                var plainChartable=this.makeChartableFromValidHierarchyObject(res);
+                nv.addGraph(
+                  function() {  
+                      var chart = nv.models.discreteBarChart()
+                          .x(function(d) { return d.label })
+                          .y(function(d) { return d.value })
+                          .staggerLabels(true)
+                          //.staggerLabels(historicalBarChart[0].values.length > 8)
+                          .tooltips(true)
+                          .showValues(true)
+                          .color(['#aec7e8', '#7b94b5', '#486192'])
+                          .transitionDuration(500)
+                          ;
+
+                      d3.select('#analyses-chart svg')
+                          //.datum(historicalBarChart)
+                          .datum(plainChartable)
+                          .call(chart);
+
+                      nv.utils.windowResize(chart.update);
+
+                      return chart;
+                  },
+                  function(){
+                    d3.selectAll(".nv-bar").on('click',
+                        function(e){
+                            //get a new 'chartable and invoke redrawChart to get the chart to be re-created
+                            console.log("RECIVED A PLAIN CLICK");
+
+                            var countUnderClick=that.getValueReturnZeroAsDefault(e.label,that.BIGJSON);
+                            if(countUnderClick==0 && that.doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(that.BIGJSON,e.label)==true) {
+                                //console.log("count=0 and is stackable....so ignore!");
+                            }
+                            else {
+                                var res=that.getHierarchySubHierarchyFromObj(that.BIGJSON,e.label);
+                                that.drillStack.push(e.label);
+                                that.redrawGeneDistChart(res);
+                            }
+
+
+                        });
+                    });
+
+
+                }//plain/discrete data case
+            else
+                {
+                console.log("THE CURRENT DATASET NEEDS A STACKED CHART");
+                var stackedChartableData=this.makeStackChartableFromValidHierarchyObject(res);
+console.log(  stackedChartableData );              
+                nv.addGraph(function() {
+                    var chart = nv.models.multiBarChart()
+                         .transitionDuration(350)
+                        // .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
+                         .rotateLabels(0)      //Angle to rotate x-axis labels.
+                         .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
+                         .stacked(true)        //set stacked
+                         .showLegend(true)
+                         .reduceXTicks(true)
+                         .staggerLabels(true)
+                         .tooltip(function(alleleNum,geneName) {
+                                var completeName=geneName+"*"+alleleNum;
+                                var countDefZero=that.getValueReturnZeroAsDefault(completeName,res);
+                                var toolTipTextToDisplay=completeName+" ; count="+countDefZero;
+                                return toolTipTextToDisplay;
+                          })
+                         .groupSpacing(0.1)    //Distance between each group of bars.
+                    ;
+
+                    d3.select('#analyses-chart svg')
+                       .datum(stackedChartableData)
+                       .call(chart);
+
+                    nv.utils.windowResize(function() { 
+                     chart.update;
+                     d3.selectAll(".nv-bar")
+                        .classed("hidden", function(d){
+                            return d.size <= 0;
+                        });
+                    });
+
+                    return chart;
+                }                            
+                ,function(){
+                    d3.selectAll(".nv-bar")
+                    .classed("hidden", function(d){
+                        return d.size <= 0;
+                    })
+                    /*
+                    .on('click',
+                        function(e){
+                            console.log("RECEIVED A STACK CLICK")
+                            console.log("e is");
+                            console.log(e)
+                            console.log("Just ignore this ....don't drill down any further.....");
+                            //get a new 'chartable and invoke redrawChart to get the chart to be re-created
+                            //var res=getHierarchySubHierarchyFromObj(BIGJSON,e.label);
+                            //var chartable=makeChartableFromValidHierarchyObject(res);
+                            //currentDataset=chartable;
+                            //redrawChart()
+                        })
+                    */
+                    ;
+                });	
+
+
+                }//stacked data case
+    
+            console.log("LEAVING redrawchart....");
+
+            //inside redrawGeneDistChart
+        },//end redrawGeneDistChart
+        
+ 
+        
+        //given the entire hierarchy, traverse to the location to 
+        //find the subhierarchy rooted with the given label/name
+        getHierarchySubHierarchyFromObj: function(o,desiredLabel) {
+            if("label" in o) {
+            //console.log("It has a label.");
+            //console.log("The label is "+o.label);
+            if(o.label===desiredLabel) {
+                //console.log("Its the desired label!");
+                return o;
+                } else {
+                //console.log("Its NOT the desired label!");
+                //console.log("So lets see if children have it....");
+                if("children" in o) {
+                    //console.log("it has children....");
+                    var kids=o.children;
+                    var numKids=kids.length;
+                    //console.log("the number of kids is "+numKids);
+                    for(var k=0;k<numKids;k++) {
+                        //var particularKidResult=getHierarchySubHierarchyFromObj(o,desiredLabel)
+                        //console.log("Now seeing if kid #"+k+" has it....");
+                        var particularKidResult=this.getHierarchySubHierarchyFromObj(kids[k],desiredLabel);
+                        if(particularKidResult!=null) {
+                            //console.log("got it!");
+                            return particularKidResult;
+                            }
+                        }
+                    } else {
+                    //console.log("it has no children... :(");
+                    return null;
+                    }
+                return null;
+                }
+            } else {
+            //console.log("The object doesn't have a label?!?!");
+            return null;
+            }
+        }, //end getHierarchySubHierarchyFromObj
+        
 
     });    
 

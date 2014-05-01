@@ -219,7 +219,8 @@ module.exports = function(grunt) {
                         cwd: '<%= yeoman.app %>/bower_components',
                         dest: '<%= yeoman.dist %>/images',
                         src: [
-                            '{,*/}*.{png,jpg,jpeg,gif}'
+                            '{,*/}*.{png,jpg,jpeg,gif}',
+                            'slickgrid/css/smoothness/images/*.{png}'
                         ]
                     }
                 ]
@@ -238,7 +239,9 @@ module.exports = function(grunt) {
                              * e.g.
                              *'jcrop/css/jquery.Jcrop.css'
                              */
-                            'nvd3/nv.d3.css'
+                            'nvd3/nv.d3.css',
+                            'slickgrid/slick.grid.css',
+                            'slickgrid/css/smoothness/jquery-ui-1.8.16.custom.css'
                         ]
                     }
                 ]
@@ -440,6 +443,8 @@ module.exports = function(grunt) {
             'clean:server',
             'concat:bootstrapDev',
             'copy:prepareFonts',
+            'copy:distStyles',
+            'copy:distImages',            
             'coffee:dist',
             'compass:server',
             'connect:livereload',

@@ -52,6 +52,9 @@ define(['app'], function(App) {
             'project/:id/jobs': 'projectJobHistory',
             'project/:id/jobs/:jobId/analyses': 'projectSelectAnalyses',
             'project/:id/users': 'projectManageUsers',
+            
+            //temp for getting charts in
+            'project/:id/charts':'selectAnalyses',
 
             // 404
             '*notFound': 'notFound',
@@ -221,6 +224,21 @@ define(['app'], function(App) {
                 setProjectSubviews(projectUuid);
 
                 App.Layouts.main.setView('.content', new App.Views.Jobs.History({projectUuid: projectUuid}));
+            }
+
+            App.Layouts.main.render();
+        },
+
+		//temp to get charts in
+        selectAnalyses: function(projectUuid) {
+            if (! App.isLoggedIn()) {
+                redirectToLogin();
+            }
+            else {
+
+                setProjectSubviews(projectUuid);
+
+                App.Layouts.main.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid}));
             }
 
             App.Layouts.main.render();

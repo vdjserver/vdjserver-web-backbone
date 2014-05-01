@@ -54,7 +54,20 @@
             });
 
             return jxhr;
-        }
+        },
+        getFile: function(name) {
+            console.log("called getFile with " + name);
+            console.log();
+            var jxhr = $.ajax({
+                headers: {
+                    'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token')
+                },
+                type: 'GET',
+                url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + '0001398787539945-5056a550b8-0001-012' + '/files/' + name,
+            });
+
+            return jxhr;
+        }    
     });
 
     Backbone.Agave.Model.File = File;
