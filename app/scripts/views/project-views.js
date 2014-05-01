@@ -282,6 +282,9 @@ define(['app', 'filesize'], function(App, filesize) {
 
                     that.removeLoadingViews();
 
+                    // Need to render main view before rendering fileListing subview
+                    that.render();
+
                     that.setupFileListingsView(that.fileListings);
                 })
                 .fail(function() {
@@ -336,6 +339,8 @@ define(['app', 'filesize'], function(App, filesize) {
         },
         parseFiles: function(files) {
 
+            $('#file-staging-errors').addClass('hidden');
+
             var projectUuid = this.projectModel.get('uuid');
 
             for (var i = 0; i < files.length; i++) {
@@ -350,12 +355,34 @@ define(['app', 'filesize'], function(App, filesize) {
                     fileReference: file
                 });
 
-                var fileTransferView = new Projects.FileTransfer({model: stagedFile, projectUuid: this.projectModel.get('uuid')});
-                this.insertView('#file-staging', fileTransferView);
-                fileTransferView.render();
+                var isDuplicate = false;
+                for (var j = 0; j < this.fileListings.models.length; j++) {
+                    var model = this.fileListings.at([j]);
 
-                // listen to events on fileTransferView
-                this.fileTransferViewEvents(fileTransferView);
+                    var modelName = model.get('value').name;
+
+                    if (modelName === file.name) {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+
+                if (isDuplicate) {
+                    $('#file-staging-errors').text('The file "' + file.name  + '" can not be uploaded because another file exists with the same name.').fadeIn();
+                    $('#file-staging-errors').removeClass('hidden');
+                }
+                else {
+                    var fileTransferView = new Projects.FileTransfer({
+                        model: stagedFile,
+                        projectUuid: this.projectModel.get('uuid'),
+                    });
+
+                    this.insertView('#file-staging', fileTransferView);
+                    fileTransferView.render();
+
+                    // listen to events on fileTransferView
+                    this.fileTransferViewEvents(fileTransferView);
+                }
             }
         },
         fileTransferViewEvents: function(fileTransferView) {
@@ -440,7 +467,7 @@ define(['app', 'filesize'], function(App, filesize) {
                 var filteredModels = _.filter(this.fileListings.models, function(data) {
                     return data.get('value').name === searchString;
                 });
-                    
+
                     //here({'value':{'name':searchString}});
 
                 console.log("filteredModels are: " + JSON.stringify(filteredModels));
