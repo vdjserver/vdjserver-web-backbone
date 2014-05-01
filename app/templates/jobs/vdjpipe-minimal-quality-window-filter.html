@@ -6,12 +6,13 @@
                 
                 Minimal Quality Window Filter
                 <span class="label label-danger remove-job-parameter">&times;</span>
+                <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
                 <br>
                 <br>
-                Min Quality <input class="job-form-item" name="{{inputName}}-min-quality" data-originalname="{{originalName}}" data-type="text" value="" placeholder="Minimal quality score">
+                Min Quality <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-quality" data-type="number" value="" placeholder="Minimal quality score">
                 <br>
                 <br>
-                Min Interval Length <input class="job-form-item" name="{{inputName}}-min-length" data-originalname="{{originalName}}" data-type="text" value="" placeholder="Minimal interval length">
+                Min Interval Length <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-length" data-type="number" value="" placeholder="Minimal interval length">
             </h4>
         </div>
     </div>
