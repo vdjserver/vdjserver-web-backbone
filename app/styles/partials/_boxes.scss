@@ -102,6 +102,12 @@
     }
 }
 
+@media (max-width: 991px) {
+    .welcome-box {
+        margin-top: 20px;
+    }
+}
+
 .login-button {
     @extend .btn;
     @extend .btn-default;
@@ -118,6 +124,14 @@
     color: #ffffff;
     font-family: 'Aleo-Regular', sans-serif;
     font-size: 24px;
+}
+
+.forgot-password-button {
+    @extend .btn;
+    @extend .btn-link;
+
+    line-height: 36px;
+    padding: 6px;
 }
 
 .login-button-column {

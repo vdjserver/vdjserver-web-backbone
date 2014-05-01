@@ -7,3 +7,10 @@
     @extend .alert;
     @extend .alert-danger;
 }
+
+.alert-floating {
+  margin-top: 20px;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+}

@@ -27,6 +27,7 @@ require.config({
 
         // Agave - Models/Collections
         'agave-new-account': 'models/agave-new-account',
+        'agave-password-reset': 'models/agave-password-reset',
         'agave-tenant-user': 'models/agave-tenant-user',
         'agave-tenant-users': 'collections/agave-tenant-users',
 
@@ -62,6 +63,7 @@ require.config({
         'not-found-views': 'views/not-found-views',
 
         'create-account-views': 'views/create-account-views',
+        'forgot-password-views': 'views/forgot-password-views',
         'profile-views': 'views/profile-views',
         'job-views': 'views/job-views',
         'project-views': 'views/project-views',
@@ -108,6 +110,11 @@ require.config({
         'agave-new-account': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.NewAccount'
+        },
+
+        'agave-password-reset': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.PasswordReset'
         },
 
         'agave-tenant-user': {
