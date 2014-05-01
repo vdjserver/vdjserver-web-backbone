@@ -58,7 +58,7 @@ define(['app'], function(App) {
                     var message = formErrors[i].message;
                     var type    = formErrors[i].type;
 
-                    this.$el.find('.alerts').end().before($('<div class="alert alert-danger">').text(message).fadeIn());
+                    this.$el.find('.public-view').prepend($('<div class="alert alert-danger">').text(message).fadeIn());
                     $('#' + type + '-container').addClass('has-error');
                 }
             }
@@ -116,7 +116,7 @@ define(['app'], function(App) {
 
                         })
                         .fail(function() {
-                            that.$el.find('.alerts').remove().end().before($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
+                            that.$el.find('.public-view').prepend($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
                             $('#modal-message').modal('hide');
                         });
                 });
