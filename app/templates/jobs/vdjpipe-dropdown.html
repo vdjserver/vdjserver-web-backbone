@@ -4,7 +4,13 @@
             <h4>
                 <i class="fa fa-bars"></i>
                 {{parameterName}}
-                <input class="job-form-item" name="{{inputCount}}-{{parameterType}}" type="checkbox">
+                <br>
+                <select class="job-form-item" name="{{inputCount}}-{{parameterType}}" data-type="text">
+                    {{#each files}}
+                        <option value={{value.name}}>{{value.name}}</option>
+                    {{/each}}
+                </select>
+
                 <span class="label label-danger remove-job-parameter">&times;</span>
             </h4>
         </div>

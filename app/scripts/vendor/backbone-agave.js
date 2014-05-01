@@ -47,8 +47,10 @@
         constructor: Agave,
 
         token: function(options) {
+            //console.log("options are: " + JSON.stringify(options));
             if (options) {
                 this._token.set(options);
+                //console.log("options past if. token new is: " + JSON.stringify(this._token));
             }
             return this._token;
         },
@@ -239,6 +241,38 @@
         }
     });
 
+    Agave.JobModel = Agave.Model.extend({
+        defaults: {
+            appId: '',
+            archive: true,
+            archivePath: '',
+            archiveSystem: '',
+            batchQueue: '',
+            endTime: '',
+            executionSystem: '',
+            id: 0,
+            inputs: {},
+            localId: '',
+            memoryPerNode: '',
+            message: '',
+            name: '',
+            nodeCount: 0,
+            notifications: [],
+            outputPath: '',
+            owner: '',
+            parameters: {},
+            processorsPerNode: 0,
+            maxRunTime: '',
+            retries: 0,
+            startTime: '',
+            status: '',
+            submitTime: '',
+            workPath: ''
+        },
+        url: function() {
+            return '/jobs/v2/';
+        }
+    });
 
     // Required Auth package
     var Auth = Agave.Auth = {};
@@ -247,7 +281,7 @@
         idAttribute: 'refresh_token',
         defaults: {
             'token_type': null,
-            'expires_in': null,
+            'expires_in': 0,
             'expires':    0,
             'refresh_token': null,
             'access_token':  null,

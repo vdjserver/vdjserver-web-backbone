@@ -16,7 +16,8 @@
                     owner: '',
                     value: {
                         'projectUuid': '',
-                        'fileCategory': ''
+                        'fileCategory': '',
+                        'isDeleted': false,
                     }
                 }
             );
@@ -43,8 +44,15 @@
             });
 
             return jxhr;
-        }
+        },
+        softDeleteFile: function() {
+            var value = this.get('value');
+            value.isDeleted = true;
 
+            this.set('value', value);
+
+            return this.save();
+        },
     });
 
     Backbone.Agave.Model.FileMetadata = FileMetadata;

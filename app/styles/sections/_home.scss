@@ -1,8 +1,6 @@
 .home-science-image {
-    //top: -100px;
-    //margin: -125px 25% 0 0;
-    //top: 20px;
-    margin: -80px 0 -80px 0;
+    position: absolute;
+    top: -80px;
 }
 
 .home-boxes {
@@ -16,4 +14,5 @@
 
 .home-view {
     padding-top: 50px;
+    position: relative;
 }

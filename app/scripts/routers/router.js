@@ -38,23 +38,22 @@ define(['app'], function(App) {
     var DefaultRouter = Backbone.Router.extend({
 
         routes: {
-            '': 'index',
-
-            'auth/logout': 'authLogout',
-
-            'account':          'createAccount',
-            'account/profile':  'accountProfile',
-
-            'project':          'projectIndex',
-            'project/create':   'projectCreate',
-            'project/:id':      'projectDetail',
-            'project/:id/settings': 'projectSettings',
-            'project/:id/jobs': 'projectJobHistory',
+            '':                                 'index',
+            'auth/logout':                      'authLogout',
+            'account':                          'createAccount',
+            'password-reset(/:uuid)':           'forgotPassword',
+            'account/profile':                  'accountProfile',
+            'project':                          'projectIndex',
+            'project/create':                   'projectCreate',
+            'project/:id':                      'projectDetail',
+            'project/:id/settings':             'projectSettings',
+            'project/:id/jobs':                 'projectJobHistory',
             'project/:id/jobs/:jobId/analyses': 'projectSelectAnalyses',
             'project/:id/users': 'projectManageUsers',
             
             //temp for getting charts in
             'project/:id/charts':'selectAnalyses',
+
 
             // 404
             '*notFound': 'notFound',
@@ -88,6 +87,13 @@ define(['app'], function(App) {
         createAccount: function() {
             setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.CreateAccount.Form());
+            App.Layouts.main.render();
+        },
+
+        // Forgot Password
+        forgotPassword: function(uuid) {
+            setPublicSubviews();
+            App.Layouts.main.setView('.content', new App.Views.ForgotPassword.Form({'uuid': uuid}));
             App.Layouts.main.render();
         },
 

@@ -36,13 +36,13 @@
 
 <div class="project-detail-controls">
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <button class="btn" id="file-upload">
                 <i class="fa fa-upload"></i>
                 <input type="file" id="file-dialog" name="files[]" multiple class="hidden" />
             </button>
             <div class="btn-group">
-                <button class="btn btn-primary disabled dropdown-toggle" id="run-job-button" data-toggle="dropdown">
+                <button class="btn btn-primary disabled dropdown-toggle files-selected-button" id="run-job-button" data-toggle="dropdown">
                     Run Job
                     <i class="fa fa-caret-down"></i>
                 </button>
@@ -51,12 +51,21 @@
                     <li class="file-actions"><a href="#" data-bypass=true class="run-job" data-jobtype="vdjpipe">VDJPipe</a></li>
                 </ul>
             </div>
+            <div class="btn-group">
+                <button class="btn btn-primary disabled dropdown-toggle files-selected-button" id="file-action-button" data-toggle="dropdown">
+                    File Actions
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li class="file-actions"><a href="#" data-bypass=true class="delete-files">Delete</a></li>
+                </ul>
+            </div>
         </div>
         <div class="col-md-3">
             <div class="input-group project-search">
-                <input class="form-control" type="text" name="search" id="search">
+                <input class="form-control" type="text" name="search" id="search-text">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button">SEARCH</button>
+                    <button class="btn btn-default" id="search-button" type="button">SEARCH</button>
                 </span>
             </div>
         </div>
@@ -77,6 +86,8 @@
 
 <div class="row">
     <div class="col-md-12">
+        <div id="file-staging-errors" class="alert alert-danger hidden"></div>
+        <div id="file-staging"></div>
         <div class="file-listings"></div>
     </div>
 </div>

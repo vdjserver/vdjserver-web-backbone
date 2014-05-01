@@ -276,32 +276,32 @@ define(['app', 'filesize'], function(App, filesize) {
         },
         fetchAndRenderFileListings: function() {
 
-
             var that = this;
             this.fileListings.fetch({url:this.fileListings.url(this.fileCategory)})
                 .done(function() {
 
                     that.removeLoadingViews();
 
-                    that.setupFileListingsView();
+                    // Need to render main view before rendering fileListing subview
                     that.render();
+
+                    that.setupFileListingsView(that.fileListings);
                 })
                 .fail(function() {
                     console.log("file listings failure");
                 });
         },
-        setupFileListingsView: function() {
+        setupFileListingsView: function(fileListings) {
 
-            var fileListingsView = new Projects.FileListings({fileListings: this.fileListings});
+            var fileListingsView = new Projects.FileListings({fileListings: fileListings});
 
             // listen to events on fileListingsView
             this.fileListingsViewEvents(fileListingsView);
             this.setView('.file-listings', fileListingsView);
+            fileListingsView.render();
         },
         serialize: function() {
-                console.log("rendering");
             if (this.projectModel && this.fileListings && this.projectUsers) {
-                console.log("rendering REAL");
                 return {
                     projectDetail: this.projectModel.toJSON(),
                     fileListingCount: this.fileListings.getFileCount() + ' files',
@@ -318,8 +318,10 @@ define(['app', 'filesize'], function(App, filesize) {
             'click #file-upload': 'clickFilesSelectorWrapper',
             'change #file-dialog': 'changeFilesSelector',
             'click .file-category': 'changeFileCategory',
-            'click .selected-files': 'uiDisableRunJob',
-            'click .run-job': 'clickRunJob'
+            'click .selected-files': 'uiToggleDisabledButtonStatus',
+            'click .run-job': 'clickRunJob',
+            'click #search-button': 'searchFileListings',
+            'click .delete-files': 'deleteFiles',
         },
         fileListingsViewEvents: function(fileListingsView) {
 
@@ -330,13 +332,17 @@ define(['app', 'filesize'], function(App, filesize) {
             });
         },
         clickFilesSelectorWrapper: function() {
+            console.log("clickFilesSelectorWrapper hit");
             document.getElementById('file-dialog').click();
         },
         changeFilesSelector: function(e) {
+            console.log("changeFilesSelector hit");
             var files = e.target.files;
             this.parseFiles(files);
         },
         parseFiles: function(files) {
+
+            $('#file-staging-errors').addClass('hidden');
 
             var projectUuid = this.projectModel.get('uuid');
 
@@ -352,12 +358,38 @@ define(['app', 'filesize'], function(App, filesize) {
                     fileReference: file
                 });
 
-                var fileTransferView = new Projects.FileTransfer({model: stagedFile, projectUuid: this.projectModel.get('uuid')});
-                this.insertView('#file-staging', fileTransferView);
-                fileTransferView.render();
+                var isDuplicate = false;
+                for (var j = 0; j < this.fileListings.models.length; j++) {
+                    var model = this.fileListings.at([j]);
 
-                // listen to events on fileTransferView
-                this.fileTransferViewEvents(fileTransferView);
+                    var modelName = model.get('value').name;
+
+                    if (modelName === file.name) {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+
+                console.log("about to check duplicates");
+
+                if (isDuplicate) {
+                    console.log("isDuplicate");
+                    $('#file-staging-errors').text('The file "' + file.name  + '" can not be uploaded because another file exists with the same name.').fadeIn();
+                    $('#file-staging-errors').removeClass('hidden');
+                }
+                else {
+                    console.log("NOT Duplicate");
+                    var fileTransferView = new Projects.FileTransfer({
+                        model: stagedFile,
+                        projectUuid: this.projectModel.get('uuid'),
+                    });
+
+                    this.insertView('#file-staging', fileTransferView);
+                    fileTransferView.render();
+
+                    // listen to events on fileTransferView
+                    this.fileTransferViewEvents(fileTransferView);
+                }
             }
         },
         fileTransferViewEvents: function(fileTransferView) {
@@ -366,7 +398,7 @@ define(['app', 'filesize'], function(App, filesize) {
 
             fileTransferView.on('viewFinished', function(newFile) {
 
-                $('#file-staging').fadeOut('5000', function() {
+                $('#file-staging div').fadeOut('5000', function() {
                     fileTransferView.remove();
 
                     that.fileListings.add(newFile);
@@ -385,12 +417,12 @@ define(['app', 'filesize'], function(App, filesize) {
 
             this.fetchAndRenderFileListings();
         },
-        uiDisableRunJob: function() {
+        uiToggleDisabledButtonStatus: function() {
             if ($('.selected-files:checked').length) {
-                $('#run-job-button').removeClass('disabled');
+                $('.files-selected-button').removeClass('disabled');
             }
             else {
-                $('#run-job-button').addClass('disabled');
+                $('.files-selected-button').addClass('disabled');
             }
         },
         clickRunJob: function(e) {
@@ -400,15 +432,8 @@ define(['app', 'filesize'], function(App, filesize) {
 
             this.removeView('#job-submit');
 
-            var selectedFileMetadataUuids = this.getSelectedFiles();
-
-            var selectedFileListings = this.fileListings.clone();
-            selectedFileListings.reset();
-
-            for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
-                var model = this.fileListings.get(selectedFileMetadataUuids[i]);
-                selectedFileListings.add(model);
-            }
+            var selectedFileMetadataUuids = this.getSelectedFileUuids();
+            var selectedFileListings = this.fileListings.getNewCollectionForUuids(selectedFileMetadataUuids);
 
             var jobSubmitView = new App.Views.Jobs.Submit({
                 selectedFileListings: selectedFileListings,
@@ -419,7 +444,7 @@ define(['app', 'filesize'], function(App, filesize) {
             this.setView('#job-submit', jobSubmitView);
             jobSubmitView.render();
         },
-        getSelectedFiles: function() {
+        getSelectedFileUuids: function() {
 
             var selectedFileMetadataUuids = [];
 
@@ -428,7 +453,63 @@ define(['app', 'filesize'], function(App, filesize) {
             });
 
             return selectedFileMetadataUuids;
-        }
+        },
+        searchFileListings: function() {
+            var searchString = $('#search-text').val();
+
+            if (!searchString) {
+                this.setupFileListingsView(this.fileListings);
+            }
+            else {
+                console.log("searchString is: " + searchString);
+
+                //var filteredModels = this.fileListings.where({'value':{'name':searchString}});
+                var filteredModels = _.filter(this.fileListings.models, function(data) {
+                    return data.get('value').name === searchString;
+                });
+
+                    //here({'value':{'name':searchString}});
+
+                console.log("filteredModels are: " + JSON.stringify(filteredModels));
+
+                var filteredFileListings = new Backbone.Agave.Collection.FileMetadatas(filteredModels);
+                console.log("filteredFileListings are: " + JSON.stringify(filteredFileListings));
+
+                this.setupFileListingsView(filteredFileListings);
+            }
+        },
+        deleteFiles: function(e) {
+            e.preventDefault();
+
+            var selectedFileMetadataUuids = this.getSelectedFileUuids();
+
+            // Kind of a hack, but hey it's elegant
+            var softDeletePromise = $.Deferred();
+
+            for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
+                var model = this.fileListings.get(selectedFileMetadataUuids[i]);
+                model.softDeleteFile()
+                    .done(function() {
+                        if (i === selectedFileMetadataUuids.length) {
+                            // All files are deleted, let's get out of here
+                            softDeletePromise.resolve(true);
+                        }
+                    })
+                    .fail(function() {
+                        console.log("softDelete fail");
+                        if (i === selectedFileMetadataUuids.length) {
+                            // All files are deleted, let's get out of here
+                            softDeletePromise.resolve(true);
+                        }
+                    });
+            }
+
+            // All files are deleted, time to reload
+            var that = this;
+            $.when(softDeletePromise).then(function(data, textStatus, jqXHR) {
+                that.fetchAndRenderFileListings();
+            });
+        },
     });
 
     Projects.FileListings = Backbone.View.extend({
@@ -550,7 +631,8 @@ define(['app', 'filesize'], function(App, filesize) {
                     fileCategory: 'uploaded',
                     name: this.model.get('name'),
                     length: this.model.get('fileReference').size,
-                    mimeType: this.model.get('mimeType')
+                    mimeType: this.model.get('mimeType'),
+                    isDeleted: false,
                 }
             };
 
