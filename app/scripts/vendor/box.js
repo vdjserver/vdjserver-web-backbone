@@ -26,15 +26,11 @@ box = function() {
       // Compute quartiles. Must return exactly 3 elements.
       //var quartileData = d.quartiles = quartiles(d);
       var quartileData = [data["25%"], data["50%"], data["75%"]];
-      console.log("quartileData=");
-      console.log(quartileData);
 
       // Compute whiskers. Must return exactly 2 elements, or null.
       //var whiskerIndices = whiskers && whiskers.call(this, d, i),
       //    whiskerData = whiskerIndices && whiskerIndices.map(function(i) { return d[i]; });
       var whiskerData = [ data["10%"], data["90%"]];
-      console.log("whiskerData=")    
-      console.log(whiskerData);
 
       // Compute outliers. If no whiskers are specified, all data are "outliers".
       // We compute the outliers as indices, so that we can join across transitions!
