@@ -127,8 +127,6 @@ define(['app'], function(App) {
   Profile.ChangePasswordForm = Backbone.View.extend({
     template: 'profile/change-password-form',
 
-    delegateAlerts: [],
-
     initialize: function() {
       this.model = new Backbone.Agave.Model.PasswordChange();
       this.listenTo(this.model, 'change', this.render);
@@ -140,11 +138,12 @@ define(['app'], function(App) {
 
     serialize: function() {
         return {
-            alerts: this.delegateAlerts
+            alerts: this.model.get('alerts')
         };
     },
 
     afterRender: function() {
+      this.model.unset('alerts', {silent: true});
       this.setupModalView();
     },
 
@@ -203,14 +202,16 @@ define(['app'], function(App) {
                   .on('hidden.bs.modal', function() {
                     console.log('here');
 
+                    // password changed
+                    that.model.clear({silent: true});
+
                     // let rerender happen
-                    that.delegateAlerts.push({
+                    that.model.set({
+                      alerts: [{
                         type: 'success',
                         message: '<i class="fa fa-thumbs-up"></i> Your password has been successfully changed!'
+                      }]
                     });
-
-                    // password changed
-                    that.model.clear();
                   });
               })
               .fail(function() {

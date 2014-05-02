@@ -11,6 +11,7 @@
     PasswordChange = Backbone.Agave.Model.extend({
         defaults: {
             username:  '',
+            password: '',   // old password
             newPassword: '',
             passwordCheck: ''
         },
@@ -21,7 +22,8 @@
         callSave: function() {
             var jxhr = $.ajax({
                 data: {
-                    newPassword: this.get('newPassword')
+                    newPassword: this.get('newPassword'),
+                    password: this.get('password')
                 },
                 headers: {
                     'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + Backbone.Agave.instance.token().get('access_token'))
@@ -44,16 +46,23 @@
                 });
             }
 
+            if (! attributes.password) {
+                errors.push({
+                    'message': 'Missing current password.',
+                    'type': 'password'
+                });
+            }
+
             if (! attributes.newPassword) {
                 errors.push({
-                    'message': 'Missing password.',
+                    'message': 'Missing new password.',
                     'type': 'newPassword'
                 });
             }
 
             if (! attributes.passwordCheck) {
                 errors.push({
-                    'message': 'Missing password verification.',
+                    'message': 'Missing new password verification.',
                     'type': 'passwordCheck'
                 });
             }
