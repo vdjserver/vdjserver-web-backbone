@@ -364,10 +364,14 @@ define(['app'], function(App) {
                     }); //end nv.addGraph(function(){})
                     
                 }) //end getFile.done()
-                .fail(function(response) {
-                    //todo - put error on page!!!!!
-                    console.log("Agave fetch of file failed." + reponse);
-                }); //end getFile.fail()
+                .fail (function(response) {
+                    var message = "An error occurred. ";
+                    if(response && response.responseText) {
+                        var txt = JSON.parse(response.responseText);
+                        message = message + txt.message;
+                    }
+                    that.showWarning(message);
+                }); //end getFile.fail() 
             
         },
         
@@ -570,13 +574,9 @@ define(['app'], function(App) {
                    // Define the mean line
                     var	meanLine = d3.svg.line()								// set 'valueline' to be a line
                         .x(function(d) { 
-                            //console.log(d.position);
-                            //console.log("x="+x(d.position));
                             return x(+d.position) + barWidth/2; 
                         })
                         .y(function(d) { 
-                            //console.log(d.mean);
-                            //console.log("y="+y(d.mean));
                             return y(+d.mean); 
                         }
                     );
@@ -608,10 +608,14 @@ define(['app'], function(App) {
   
                 
                 })
-                .fail (function() {
-                    
-                    console.log("I suck. boo.");
-                }); //end getFile.fail()       
+                .fail (function(response) {
+                    var message = "An error occurred. ";
+                    if(response && response.responseText) {
+                        var txt = JSON.parse(response.responseText);
+                        message = message + txt.message;
+                    }
+                    that.showWarning(message);
+                }); //end getFile.fail()     
         },
         
         // Returns a function to compute the interquartile range.
@@ -634,7 +638,7 @@ define(['app'], function(App) {
             var that = this;
             //get file name post-filter_mean_q_hist.csv
             var file  = new Backbone.Agave.Model.File();
-            file.getFile('post-filter_mean_q_hist.csv')
+            file.getFile('post-filter_mean_q_hist.txt')
                 .done(function(text) {
                     //remove commented out lines (header info)
                     text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -678,9 +682,13 @@ define(['app'], function(App) {
                     });
                 
                 })
-                .fail (function() {
-                    
-                    console.log("I suck. boo.");
+                .fail (function(response) {
+                    var message = "An error occurred. ";
+                    if(response && response.responseText) {
+                        var txt = JSON.parse(response.responseText);
+                        message = message + txt.message;
+                    }
+                    that.showWarning(message);
                 }); //end getFile.fail()              
         },
         
@@ -739,10 +747,14 @@ define(['app'], function(App) {
                     
                     
                 })
-                .fail (function() {
-                    
-                    console.log("I suck. boo.");
-                }); //end getFile.fail()  
+                .fail (function(response) {
+                    var message = "An error occurred. ";
+                    if(response && response.responseText) {
+                        var txt = JSON.parse(response.responseText);
+                        message = message + txt.message;
+                    }
+                    that.showWarning(message);
+                }); //end getFile.fail() 
         },
 
         gcHist: function () {
@@ -814,7 +826,6 @@ define(['app'], function(App) {
         },
 
         showWarning: function(message) {
-            console.log("showWarning: " + message);
             $('.alert-message').text(message);
             $('.alert').show();
         },
@@ -839,10 +850,8 @@ define(['app'], function(App) {
                     that.BIGJSON = BIGJSON;
 
                     var res=that.getHierarchySubHierarchyFromObj(BIGJSON,"human");
-                    console.log("got res..."+res);
                     var initialChartable=that.makeChartableFromValidHierarchyObject(res);
                     var currentDataset=initialChartable;
-                    console.log("got initialChartable");
                     that.stackStatus=false;
                     that.drillStack=["human"]; //keep track of drill-down location                    
                     that.redrawGeneDistChart(res);
@@ -860,7 +869,6 @@ define(['app'], function(App) {
  
         //edward salinas
         resetDrillStackUpTo: function(u,ds) {
-            console.log("reset called with u="+u+" and ds="+ds.toString());
             var newDrillStack=[];
             var di=ds.length;
             for(di=0;di<ds.length;di++) {
@@ -869,14 +877,12 @@ define(['app'], function(App) {
                     di=ds.length+1;
                 }
             }
-            console.log("new drill stack being returned : "+newDrillStack.toString());
 	        return newDrillStack;
         },
  
         //edward salinas
         buttonDrill: function(x, y) {
             var value = x.toElement.attributes.getNamedItem("data-button-index").value;
-            //console.log(x.toElement.attributes.getNamedItem("data-button-index").value);
             this.drillStack=this.resetDrillStackUpTo(value,this.drillStack)
             var res=this.getHierarchySubHierarchyFromObj(this.BIGJSON,value);
             this.redrawGeneDistChart(res);
@@ -902,9 +908,7 @@ define(['app'], function(App) {
         doesThisRootHaveChildren: function(o,rootName) {
             var rooted_hierarchy=this.getHierarchySubHierarchyFromObj(o,rootName)
             if("children" in rooted_hierarchy) {
-                //console.log("children does exist in hierarchy rooted at "+rootName)
                 var children=rooted_hierarchy.children
-                //console.log("The length of them is "+children.length)
                 if(children.length==0) {
                     return false;
                 }
@@ -913,7 +917,6 @@ define(['app'], function(App) {
                 }
             }
             else {
-                //console.log("children does  NOT exist in hierarchy rooted at "+rootName)
                 return false;
             }
         },
@@ -930,32 +933,26 @@ define(['app'], function(App) {
         //edward salinas
         areALLStringsInArrayNONAllelic: function(a) {
             var i=0;
-            //console.log("Now testing the follow array for allelicity : "+a.toString());
             for(i=0;i<a.length;i++)
                 {
                 var allelic=this.isAllelicString(a[i]);
                 if(allelic) {
-                    //console.log("The array "+a.toString()+" tests as nonallelic because "+a[i]+" was found to be non-allelic");
                     return false;
                     }
                 }
-            //console.log("All items in the array were wound to be allelic!!!!");
             return true;
         },
 
         //edward salinas
         areALLStringsInArrayAllelic: function(a) {
             var i=0;
-            //console.log("Now testing the follow array for allelicity : "+a.toString());
             for(i=0;i<a.length;i++)
                 {
                 var allelic=this.isAllelicString(a[i]);
                 if(!allelic) {
-                    //console.log("The array "+a.toString()+" tests as nonallelic because "+a[i]+" was found to be non-allelic");
                     return false;
                     }
                 }
-            //console.log("All items in the array were wound to be allelic!!!!");
             return true;
         },
 
@@ -974,26 +971,19 @@ define(['app'], function(App) {
                     if("label" in child) {
                         kidsLabels.push(child.label);
                     }
-                    else {
-                        //console.log("why no label at child #"+c+"????")
-                    }
-                    //console.log("Now to test if children is in child....")
+            
                     if("children" in child) {
-                        //console.log("There appears to be grandchildren rooted here...")
                         var grandChildren=child.children;
-                        //console.log("Got a list of grandchildren....")
                         for(var gc=0;gc<grandChildren.length;gc++) {
                             grandKidsLabels.push(grandChildren[gc].label);
                         }//for each grandchild
                     }//if a child has children
                     else{
-                        console.log("Child "+child_label+" of "+rootName+" has no children!")
                         return false;
                     }
                     }//for children
                 }//there are kids
             else {
-                //console.log("root "+rootName+" has no children")
                 return false;
             }
 
@@ -1085,8 +1075,6 @@ define(['app'], function(App) {
         //rooted somewhere, make a stacked chart table
         //edward salinas
         makeStackChartableFromValidHierarchyObject:function(o) {
-
-console.log(o)
                 /*
                 It's assumed that the root exists and is non-allelic
                 It's assumed that at least one child exists under the root and that it is non-allelic
@@ -1117,19 +1105,12 @@ console.log(o)
                     var values=[];
                     for(immediateChildIndex=0;immediateChildIndex<immediateChildren.length;immediateChildIndex++) {
                         var withStar=immediateChildren[immediateChildIndex].label+"*"+alleleNumZeroPadded;
-                        //console.log("I want to work with "+withStar+" whether it exists or not");
                         var geneAndAllele=this.separateGeneAndAllele(withStar);
                         var genex=geneAndAllele[0];
                         var valy=this.getValueReturnZeroAsDefault(withStar,o)
                         xList.push(genex)
                         yList.push(valy);
                     }//for each immediate child
-
-                    /*
-                    if(xList.length!=yList.length) {
-                        //console.log("FATAL ERROR, XLIST AND YLIST NOT SAME LENGTH!!!");
-                    }
-                    */
 
                     for(var v=0;v<xList.length;v++) {
                         var xyObj={"x":xList[v],"y":parseInt(yList[v])};
@@ -1147,27 +1128,19 @@ console.log(o)
         //edward salinas
         redrawGeneDistChart: function(res) {
             var that = this;
-            console.log("Drill down stack : "+this.drillStack.toString());
             document.getElementById('stackdiv').innerHTML = this.getHTMLButtonsFromDrillStack(this.drillStack);
             //call this function to trigger reloading
             //inside redrawChart()
-            console.log("redrawGeneDistChart called...");
-            console.log("res is "+res);
             var prevStackStatus=this.stackStatus;
             this.stackStatus=this.doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(this.BIGJSON,res.label);
 
             if(prevStackStatus!=this.stackStatus) {
-                console.log("different status!");
                 //clear chart
                 d3.select('#analyses-chart svg')
                     .selectAll('g').remove();
             }
-            else {
-                console.log("same status....");
-            }
 
             if(!this.stackStatus) {
-                console.log("THE CURRENT DATASET NEEDS A PLAIN CHART");
                 var plainChartable=this.makeChartableFromValidHierarchyObject(res);
                 nv.addGraph(
                   function() {  
@@ -1195,11 +1168,9 @@ console.log(o)
                     d3.selectAll(".nv-bar").on('click',
                         function(e){
                             //get a new 'chartable and invoke redrawChart to get the chart to be re-created
-                            console.log("RECIVED A PLAIN CLICK");
 
                             var countUnderClick=that.getValueReturnZeroAsDefault(e.label,that.BIGJSON);
                             if(countUnderClick==0 && that.doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(that.BIGJSON,e.label)==true) {
-                                //console.log("count=0 and is stackable....so ignore!");
                             }
                             else {
                                 var res=that.getHierarchySubHierarchyFromObj(that.BIGJSON,e.label);
@@ -1215,9 +1186,7 @@ console.log(o)
                 }//plain/discrete data case
             else
                 {
-                console.log("THE CURRENT DATASET NEEDS A STACKED CHART");
                 var stackedChartableData=this.makeStackChartableFromValidHierarchyObject(res);
-console.log(  stackedChartableData );              
                 nv.addGraph(function() {
                     var chart = nv.models.multiBarChart()
                          .transitionDuration(350)
@@ -1256,27 +1225,12 @@ console.log(  stackedChartableData );
                     .classed("hidden", function(d){
                         return d.size <= 0;
                     })
-                    /*
-                    .on('click',
-                        function(e){
-                            console.log("RECEIVED A STACK CLICK")
-                            console.log("e is");
-                            console.log(e)
-                            console.log("Just ignore this ....don't drill down any further.....");
-                            //get a new 'chartable and invoke redrawChart to get the chart to be re-created
-                            //var res=getHierarchySubHierarchyFromObj(BIGJSON,e.label);
-                            //var chartable=makeChartableFromValidHierarchyObject(res);
-                            //currentDataset=chartable;
-                            //redrawChart()
-                        })
-                    */
                     ;
                 });	
 
 
                 }//stacked data case
     
-            console.log("LEAVING redrawchart....");
 
             //inside redrawGeneDistChart
         },//end redrawGeneDistChart
@@ -1287,36 +1241,27 @@ console.log(  stackedChartableData );
         //find the subhierarchy rooted with the given label/name
         getHierarchySubHierarchyFromObj: function(o,desiredLabel) {
             if("label" in o) {
-            //console.log("It has a label.");
-            //console.log("The label is "+o.label);
+
             if(o.label===desiredLabel) {
-                //console.log("Its the desired label!");
                 return o;
                 } else {
-                //console.log("Its NOT the desired label!");
-                //console.log("So lets see if children have it....");
+
                 if("children" in o) {
-                    //console.log("it has children....");
                     var kids=o.children;
                     var numKids=kids.length;
-                    //console.log("the number of kids is "+numKids);
                     for(var k=0;k<numKids;k++) {
                         //var particularKidResult=getHierarchySubHierarchyFromObj(o,desiredLabel)
-                        //console.log("Now seeing if kid #"+k+" has it....");
                         var particularKidResult=this.getHierarchySubHierarchyFromObj(kids[k],desiredLabel);
                         if(particularKidResult!=null) {
-                            //console.log("got it!");
                             return particularKidResult;
                             }
                         }
                     } else {
-                    //console.log("it has no children... :(");
                     return null;
                     }
                 return null;
                 }
             } else {
-            //console.log("The object doesn't have a label?!?!");
             return null;
             }
         }, //end getHierarchySubHierarchyFromObj
