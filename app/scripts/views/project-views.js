@@ -318,9 +318,10 @@ define(['app', 'filesize'], function(App, filesize) {
             'click #file-upload': 'clickFilesSelectorWrapper',
             'change #file-dialog': 'changeFilesSelector',
             'click .file-category': 'changeFileCategory',
-            'click .selected-files': 'uiDisableRunJob',
+            'click .selected-files': 'uiToggleDisabledButtonStatus',
             'click .run-job': 'clickRunJob',
             'click #search-button': 'searchFileListings',
+            'click .delete-files': 'deleteFiles',
         },
         fileListingsViewEvents: function(fileListingsView) {
 
@@ -331,9 +332,11 @@ define(['app', 'filesize'], function(App, filesize) {
             });
         },
         clickFilesSelectorWrapper: function() {
+            console.log("clickFilesSelectorWrapper hit");
             document.getElementById('file-dialog').click();
         },
         changeFilesSelector: function(e) {
+            console.log("changeFilesSelector hit");
             var files = e.target.files;
             this.parseFiles(files);
         },
@@ -367,11 +370,15 @@ define(['app', 'filesize'], function(App, filesize) {
                     }
                 }
 
+                console.log("about to check duplicates");
+
                 if (isDuplicate) {
+                    console.log("isDuplicate");
                     $('#file-staging-errors').text('The file "' + file.name  + '" can not be uploaded because another file exists with the same name.').fadeIn();
                     $('#file-staging-errors').removeClass('hidden');
                 }
                 else {
+                    console.log("NOT Duplicate");
                     var fileTransferView = new Projects.FileTransfer({
                         model: stagedFile,
                         projectUuid: this.projectModel.get('uuid'),
@@ -391,7 +398,7 @@ define(['app', 'filesize'], function(App, filesize) {
 
             fileTransferView.on('viewFinished', function(newFile) {
 
-                $('#file-staging').fadeOut('5000', function() {
+                $('#file-staging div').fadeOut('5000', function() {
                     fileTransferView.remove();
 
                     that.fileListings.add(newFile);
@@ -410,12 +417,12 @@ define(['app', 'filesize'], function(App, filesize) {
 
             this.fetchAndRenderFileListings();
         },
-        uiDisableRunJob: function() {
+        uiToggleDisabledButtonStatus: function() {
             if ($('.selected-files:checked').length) {
-                $('#run-job-button').removeClass('disabled');
+                $('.files-selected-button').removeClass('disabled');
             }
             else {
-                $('#run-job-button').addClass('disabled');
+                $('.files-selected-button').addClass('disabled');
             }
         },
         clickRunJob: function(e) {
@@ -425,15 +432,8 @@ define(['app', 'filesize'], function(App, filesize) {
 
             this.removeView('#job-submit');
 
-            var selectedFileMetadataUuids = this.getSelectedFiles();
-
-            var selectedFileListings = this.fileListings.clone();
-            selectedFileListings.reset();
-
-            for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
-                var model = this.fileListings.get(selectedFileMetadataUuids[i]);
-                selectedFileListings.add(model);
-            }
+            var selectedFileMetadataUuids = this.getSelectedFileUuids();
+            var selectedFileListings = this.fileListings.getNewCollectionForUuids(selectedFileMetadataUuids);
 
             var jobSubmitView = new App.Views.Jobs.Submit({
                 selectedFileListings: selectedFileListings,
@@ -444,7 +444,7 @@ define(['app', 'filesize'], function(App, filesize) {
             this.setView('#job-submit', jobSubmitView);
             jobSubmitView.render();
         },
-        getSelectedFiles: function() {
+        getSelectedFileUuids: function() {
 
             var selectedFileMetadataUuids = [];
 
@@ -477,6 +477,38 @@ define(['app', 'filesize'], function(App, filesize) {
 
                 this.setupFileListingsView(filteredFileListings);
             }
+        },
+        deleteFiles: function(e) {
+            e.preventDefault();
+
+            var selectedFileMetadataUuids = this.getSelectedFileUuids();
+
+            // Kind of a hack, but hey it's elegant
+            var softDeletePromise = $.Deferred();
+
+            for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
+                var model = this.fileListings.get(selectedFileMetadataUuids[i]);
+                model.softDeleteFile()
+                    .done(function() {
+                        if (i === selectedFileMetadataUuids.length) {
+                            // All files are deleted, let's get out of here
+                            softDeletePromise.resolve(true);
+                        }
+                    })
+                    .fail(function() {
+                        console.log("softDelete fail");
+                        if (i === selectedFileMetadataUuids.length) {
+                            // All files are deleted, let's get out of here
+                            softDeletePromise.resolve(true);
+                        }
+                    });
+            }
+
+            // All files are deleted, time to reload
+            var that = this;
+            $.when(softDeletePromise).then(function(data, textStatus, jqXHR) {
+                that.fetchAndRenderFileListings();
+            });
         },
     });
 
@@ -599,7 +631,8 @@ define(['app', 'filesize'], function(App, filesize) {
                     fileCategory: 'uploaded',
                     name: this.model.get('name'),
                     length: this.model.get('fileReference').size,
-                    mimeType: this.model.get('mimeType')
+                    mimeType: this.model.get('mimeType'),
+                    isDeleted: false,
                 }
             };
 

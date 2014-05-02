@@ -17,7 +17,17 @@ define([
     //d3 and nvd3 libs for JS visualization
     'd3',
     'nvd3',
-
+    //box for help with the box and whisker plot
+    'box',
+ 
+    //jquery.event.drag/drop
+    'jquery.event.drag',
+    'jquery.event.drop',
+    
+    //slickgrid
+    'slickgrid.core',
+    'slickgrid.grid',
+    
     // Agave
     'backbone-agave',
     'agave-new-account',

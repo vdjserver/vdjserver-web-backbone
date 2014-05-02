@@ -16,6 +16,8 @@ require.config({
         'underscore':       '../bower_components/underscore/underscore',
         'd3':               '../bower_components/d3/d3.min',
         'nvd3':             '../bower_components/nvd3/nv.d3.min',
+        'slickgrid.core':   '../bower_components/slickgrid/slick.core',
+        'slickgrid.grid':   '../bower_components/slickgrid/slick.grid',
 
         // Config
         'environment-config': 'config/environment-config',
@@ -53,6 +55,9 @@ require.config({
 
         // Misc.
         'fileSaver': 'vendor/fileSaver',
+        'box': 'vendor/box',
+        'jquery.event.drag':'vendor/jquery.event.drag',
+        'jquery.event.drop':'vendor/jquery.event.drop',
 
         // Handlebars Helpers
         'handlebars-utilities':   'views/handlebars-helpers/handlebars-utilities',
@@ -86,6 +91,12 @@ require.config({
             deps: ['jquery'],
             exports: '$'
         },
+        'jquery.event.drag': {
+            deps: ['jquery']
+        },
+        'jquery.event.drop': {
+            deps: ['jquery']
+        },        
         'handlebars': {
             exports: 'Handlebars'
         },
@@ -93,10 +104,22 @@ require.config({
             deps: ['backbone'],
             exports: 'layoutmanager'
         },
+        'box': {
+            deps:['d3'],
+            exports: 'box'
+        },
         'nvd3': {
             deps:['d3'],
             exports: 'nv'
         },
+        'slickgrid.core': {
+            deps:['jquery', 'jquery-ui', 'jquery.event.drag','jquery.event.drop'],
+            exports: 'Slick'
+        },
+        'slickgrid.grid': {
+            deps:['jquery', 'jquery-ui', 'slickgrid.core', 'jquery.event.drag','jquery.event.drop'],
+            exports: 'Slick'
+        },        
         'typeahead': {
             deps: ['jquery']
         },

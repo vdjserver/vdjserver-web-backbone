@@ -24,16 +24,17 @@
                             + encodeURIComponent('{'
                                 + '"name":"projectFile",'
                                 + '"value.projectUuid":"' + this.projectUuid + '",'
-                                + '"value.fileCategory":"uploaded"'
+                                + '"value.fileCategory":"uploaded",'
+                                + '"value.isDeleted":false'
                             + '}');
-                        //break;
 
                     case 'preprocessed':
                         return '/meta/v2/data?q='
                             + encodeURIComponent('{'
                                 + '"name":"projectFile",'
                                 + '"value.projectUuid":"' + this.projectUuid + '",'
-                                + '"value.fileCategory":"preprocessed"'
+                                + '"value.fileCategory":"preprocessed",'
+                                + '"value.isDeleted":false'
                             + '}');
                         //break;
 
@@ -42,7 +43,8 @@
                             + encodeURIComponent('{'
                                 + '"name":"projectFile",'
                                 + '"value.projectUuid":"' + this.projectUuid + '",'
-                                + '"value.fileCategory":"aligned"'
+                                + '"value.fileCategory":"aligned",'
+                                + '"value.isDeleted":false'
                             + '}');
                         //break;
 
@@ -54,7 +56,8 @@
             return '/meta/v2/data?q='
                    + encodeURIComponent('{'
                        + '"name":"projectFile",'
-                       + '"value.projectUuid":"' + this.projectUuid + '"'
+                       + '"value.projectUuid":"' + this.projectUuid + '",'
+                       + '"value.isDeleted":false'
                    + '}');
         },
         getFileCount: function() {
@@ -64,6 +67,18 @@
             else {
                 return 0;
             }
+        },
+        getNewCollectionForUuids: function(uuids) {
+
+            var newCollection = this.clone();
+            newCollection.reset();
+
+            for (var i = 0; i < uuids.length; i++) {
+                var model = this.get(uuids[i]);
+                newCollection.add(model);
+            }
+
+            return newCollection;
         },
     });
 
