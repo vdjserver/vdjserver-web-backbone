@@ -31,6 +31,7 @@ define([
     // Agave
     'backbone-agave',
     'agave-new-account',
+    'agave-password-change',
     'agave-password-reset',
 
     'agave-tenant-user',

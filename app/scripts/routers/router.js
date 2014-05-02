@@ -43,6 +43,7 @@ define(['app'], function(App) {
             'account':                          'createAccount',
             'password-reset(/:uuid)':           'forgotPassword',
             'account/profile':                  'accountProfile',
+            'account/change-password':          'changePassword',
             'project':                          'projectIndex',
             'project/create':                   'projectCreate',
             'project/:id':                      'projectDetail',
@@ -106,9 +107,20 @@ define(['app'], function(App) {
             else {
                 setProjectSubviews();
 
-                App.Layouts.main.setView('.content', new App.Views.Profile.Form());
+                App.Layouts.main.setView('.content', new App.Views.Profile.Main());
             }
 
+            App.Layouts.main.render();
+        },
+
+        // Change Password
+        changePassword: function() {
+            if (! App.isLoggedIn()) {
+                redirectToLogin();
+            } else {
+                setProjectSubviews();
+                App.Layouts.main.setView('.content', new App.Views.Profile.Main({'subView':'ChangePasswordForm'}));
+            }
             App.Layouts.main.render();
         },
 
