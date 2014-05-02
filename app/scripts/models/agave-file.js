@@ -65,7 +65,7 @@
                 type: 'GET',
                 url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + '0001398998029905-5056a550b8-0001-012' + '/files/' + name,
             });
-
+            this.name = name;
             return jxhr;
         }    
     });

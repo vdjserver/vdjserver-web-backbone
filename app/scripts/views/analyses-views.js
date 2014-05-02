@@ -37,13 +37,13 @@ define(['app'], function(App) {
         },
         
         giantTable: function() {
-            console.log("hi giantTable");
             this.clearChart(); this.hideWarning();
             var that = this;
             //get file name post-filter_mean_q_hist.csv
             var file  = new Backbone.Agave.Model.File();
             file.getFile('human.IG.fna.igblast.kabat.out.rc_out.tsv')
                 .done(function(tsv) { 
+                    $('#chartFileWell').text(file.name);
                     this.tableTSV = tsv;
                     var width = $("#analyses-chart").width();
                     var height = $("#analyses-chart").height();
@@ -53,7 +53,6 @@ define(['app'], function(App) {
                     $(".download-btn").show();
 
                     var data = d3.tsv.parse(tsv);
-                    console.log(data);
                     
                     var defaultColumns = [
                         {id: "read_id#", name: "Read Sequence Number", field: "read_id#"},
@@ -88,6 +87,11 @@ define(['app'], function(App) {
                     };
 
                     grid = new Slick.Grid("#analyses-chart", data, defaultColumns, options);
+                    $(".slick-column-name").each(function()  {
+                        $( this ).attr("title", $( this ).text());
+                        $( this ).attr("data-toggle", "tooltip");
+                    });
+                    $(".slick-header-column").tooltip({ tooltipClass: "custom-tooltip-styling" });
                     
                  })
                 .fail (function(response) {
@@ -98,9 +102,7 @@ define(['app'], function(App) {
                     }
                     that.showWarning(message);
                 }); //end getFile.fail()      
-            console.log("um, bye giantTable!");          
-        },
-        
+        },        
         cdr3Histogram: function() {
            this.clearChart(); this.hideWarning();
             var that = this;
@@ -108,6 +110,7 @@ define(['app'], function(App) {
             var file  = new Backbone.Agave.Model.File();
             file.getFile('cdr3-hist-data.json')
                 .done(function(text) {
+                    $('#chartFileWell').text(file.name);
                     var CDR3_data = JSON.parse(text);
             
                     nv.addGraph(function() {
@@ -162,6 +165,7 @@ define(['app'], function(App) {
             //add them back in
             d3.select(".row .analyses").append("div").attr("id","analyses-chart").attr("class","svg-container").attr("style","position:relative; top:1px;left:0px;");
             d3.select(".svg-container").append("svg").attr("style","height:600px;");
+            $('#chartFileWell').text("No data loaded. Select an Analysis.");
         },
         clearSVG: function() {
             //remove SVG elements
@@ -224,38 +228,6 @@ define(['app'], function(App) {
                 //l1 "level 1" is the chartable! :)
                 return l1;
         },
-        discreteBarChart: function() {
-            this.clearChart(); this.hideWarning();
-            var that = this;
-            //get file name post-filter_mean_q_hist.csv
-            var file  = new Backbone.Agave.Model.File();
-            file.getFile('real_discrete_bar_chart.json')
-                .done(function(text) {
-                    var BIGJSON = JSON.parse(text);
-                    that.BIGJSON = BIGJSON;
-
-                    var res=that.findFromLabel(BIGJSON,"human");
-                    that.ogDataset=that.makeChartableFromValidHierarchyObject(res);
-                    that.currentDataset = that.ogDataset;           
-
-                    //call redrawChart to invoke
-                    //drawing on the initial dataset
-                    that.redrawBarChart();               
-                
-                })
-                .fail (function(response) {
-                    var message = "An error occurred. ";
-                    if(response && response.responseText) {
-                        var txt = JSON.parse(response.responseText);
-                        message = message + txt.message;
-                    }
-                    that.showWarning(message);
-                }); //end getFile.fail() 
-        },
-        resetdiscreteBarChart: function() {
-            this.currentDataSet = this.ogDataset;
-            this.redrawBarChart();
-        },
         redrawBarChart: function() {
             //call this function to trigger reloading
             //inside redrawBarChart()
@@ -296,6 +268,8 @@ define(['app'], function(App) {
             var file  = new Backbone.Agave.Model.File();
             file.getFile('post-filter_composition.csv')
                 .done(function(response) {
+                    
+                    $('#chartFileWell').text(file.name);
                     response = response.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
                     var data = d3.tsv.parse(response);
                     var aData= []; var cData= []; var gData= []; var tData= []; var nData= []; var gcData = [];
@@ -393,7 +367,7 @@ define(['app'], function(App) {
             var file  = new Backbone.Agave.Model.File();
             file.getFile('post-filter_qstats_short.csv')
                 .done(function(text) {
- 
+                    $('#chartFileWell').text(file.name);
                     //remove commented out lines (header info)
                     text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
@@ -638,8 +612,9 @@ define(['app'], function(App) {
             var that = this;
             //get file name post-filter_mean_q_hist.csv
             var file  = new Backbone.Agave.Model.File();
-            file.getFile('post-filter_mean_q_hist.txt')
+            file.getFile('post-filter_mean_q_hist.csv')
                 .done(function(text) {
+                    $('#chartFileWell').text(file.name);
                     //remove commented out lines (header info)
                     text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
                     var data = d3.tsv.parse(text);
@@ -699,6 +674,7 @@ define(['app'], function(App) {
             var file  = new Backbone.Agave.Model.File();
             file.getFile('pre-filter_len_hist.csv')
                 .done(function(text) {
+                    $('#chartFileWell').text(file.name);
                     //remove commented out lines (header info)
                     text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
                     
@@ -764,6 +740,7 @@ define(['app'], function(App) {
             var file  = new Backbone.Agave.Model.File();
             file.getFile('pre-filter_gc_hist.csv')
                 .done(function(text) {
+                    $('#chartFileWell').text(file.name);
                     //remove commented out lines (header info)
                     text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
@@ -844,7 +821,7 @@ define(['app'], function(App) {
             var file  = new Backbone.Agave.Model.File();
             file.getFile('real_discrete_bar_chart.json')
                 .done(function(text) {
-                    
+                    $('#chartFileWell').text(file.name);
                     d3.select('#analyses-chart').insert("div", "svg").attr("id","stackdiv");
                     var BIGJSON = JSON.parse(text);
                     that.BIGJSON = BIGJSON;

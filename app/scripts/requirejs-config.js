@@ -116,7 +116,7 @@ require.config({
             exports: 'Slick'
         },
         'slickgrid.grid': {
-            deps:['jquery', 'jquery-ui', 'slickgrid.core', 'jquery.event.drag','jquery.event.drop'],
+            deps:['jquery','jquery-ui', 'slickgrid.core', 'jquery.event.drag','jquery.event.drop'],
             exports: 'Slick'
         },        
         'typeahead': {
