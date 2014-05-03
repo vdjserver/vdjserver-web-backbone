@@ -571,7 +571,7 @@ define(['app', 'filesize'], function(App, filesize) {
         },
         events: {
             'click .cancel-upload': 'cancelUpload',
-            'click .start-upload':  'startUpload'
+            'submit form':  'startUpload'
         },
         cancelUpload: function(e) {
             e.preventDefault();
@@ -579,6 +579,10 @@ define(['app', 'filesize'], function(App, filesize) {
         },
         startUpload: function(e) {
             e.preventDefault();
+
+            var formData = Backbone.Syphon.serialize(this);
+
+            console.log("formData is: " + JSON.stringify(formData));
 
             var that = this;
 
@@ -594,7 +598,16 @@ define(['app', 'filesize'], function(App, filesize) {
                     parsedJSON = parsedJSON.result;
                     that.model.set(parsedJSON);
 
-                    that.setFilePermissions();
+                    // VDJAuth saves the day by fixing file pems
+                    that.model.syncFilePermissionsWithProjectPermissions()
+                        .done(function() {
+                            console.log("filePems save done");
+                        })
+                        .fail(function() {
+                            console.log("filePems save fail");
+                        });
+                    
+                    that.createFileMetadata(formData);
                 })
                 .fail(function() {
                     console.log("upload fail");
@@ -608,16 +621,7 @@ define(['app', 'filesize'], function(App, filesize) {
             $('.progress-bar').width(percentCompleted);
             $('.progress-bar').text(percentCompleted);
         },
-        setFilePermissions: function() {
-
-            // VDJAuth saves the day by fixing file pems
-            this.model.syncFilePermissionsWithProjectPermissions()
-                .done(function() {
-                    console.log("filePems save done");
-                })
-                .fail(function() {
-                    console.log("filePems save fail");
-                });
+        createFileMetadata: function(formData) {
 
             var associationId = this.model.getAssociationId();
 
@@ -628,10 +632,12 @@ define(['app', 'filesize'], function(App, filesize) {
                 associationIds: [ associationId ],
                 value: {
                     projectUuid: this.projectUuid,
-                    fileCategory: 'uploaded',
+                    fileCategory: formData['file-category'],
                     name: this.model.get('name'),
                     length: this.model.get('fileReference').size,
                     mimeType: this.model.get('mimeType'),
+                    isForwardRead: formData['forward-reads'],
+                    isReverseRead: formData['reverse-reads'],
                     isDeleted: false,
                 }
             };
