@@ -1,0 +1,76 @@
+<li>
+    <div class="panel panel-default vdj-pipe-parameter">
+        <div class="panel-body">
+            <h4>
+                <i class="fa fa-bars"></i>
+                
+                Nucleotide Filter
+                <span class="label label-danger remove-job-parameter">&times;</span>
+            </h4>
+            <ul class="vdjpipe-list">
+                <li>
+                    Allowed Characters
+                    <br>
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}" data-type="text" value="" placeholder="{{placeholderText}}">
+                </li>
+                <li>
+                    <button type="button" id="toggleCharacterLegend" class="btn btn-success">Show/Hide Character Legend</button>
+                </li>
+             </ul>
+        </div>
+        <table id="characterLegend" class="table hidden">
+            <thead>
+                <tr>
+                    <th>Character</th>
+                    <th>Nucleotides</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>R</td>
+                    <td>A G</td>
+                </tr>
+                <tr>
+                    <td>Y</td>
+                    <td>C T</td>
+                </tr>
+                <tr>
+                    <td>K</td>
+                    <td>G T</td>
+                </tr>
+                <tr>
+                    <td>M</td>
+                    <td>A C</td>
+                </tr>
+                <tr>
+                    <td>S</td>
+                    <td>G C</td>
+                </tr>
+                <tr>
+                    <td>W</td>
+                    <td>A T</td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>C G T</td>
+                </tr>
+                <tr>
+                    <td>D</td>
+                    <td>A G T</td>
+                </tr>
+                <tr>
+                    <td>H</td>
+                    <td>A C T</td>
+                </tr>
+                <tr>
+                    <td>V</td>
+                    <td>A C G</td>
+                </tr>
+                <tr>
+                    <td>N</td>
+                    <td>A C G T</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</li>

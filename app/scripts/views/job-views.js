@@ -57,7 +57,7 @@ define(['app'], function(App) {
             var job;
             if (formData.formtype === 'vdjpipe') {
                 console.log("formType ok");
-                
+
                 job = new Backbone.Agave.Model.Job.VdjPipe();
                 job.generateVdjPipeConfig(formData);
             }
@@ -143,7 +143,7 @@ define(['app'], function(App) {
                 case 'composition-stats':
 
                     parameterView = new Jobs.VdjPipeTextImmutable({
-                        parameterName: 'Composition Statistics',
+                        parameterName: 'Base Composition Statistics',
                         parameterType: parameterType,
                         inputCount: currentCount,
                     });
@@ -153,7 +153,7 @@ define(['app'], function(App) {
                 case 'quality-stats':
 
                     parameterView = new Jobs.VdjPipeTextImmutable({
-                        parameterName: 'Quality Statistics',
+                        parameterName: 'Read Quality Statistics',
                         parameterType: parameterType,
                         inputCount: currentCount,
                     });
@@ -184,11 +184,9 @@ define(['app'], function(App) {
 
                 case 'nucleotide-filter':
 
-                    parameterView = new Jobs.VdjPipeTextMutable({
-                        parameterName: 'Nucleotide Filter',
+                    parameterView = new Jobs.VdjPipeNucleotideFilter({
                         parameterType: parameterType,
                         placeholderText: 'AGCT',
-                        inputLabel: 'Allowed Nucleotides',
                         inputCount: currentCount,
                     });
 
@@ -297,6 +295,32 @@ define(['app'], function(App) {
             e.preventDefault();
             $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
         }
+    });
+
+    Jobs.VdjPipeNucleotideFilter = Backbone.View.extend({
+        template: 'jobs/vdjpipe-nucleotide-filter',
+        initialize: function(parameters) {
+        },
+        events: {
+            'click #toggleCharacterLegend': 'toggleCharacterLegend'
+        },
+        serialize: function() {
+            if (this.parameterType) {
+                return {
+                    parameterType: this.parameterType,
+                    inputCount: this.inputCount,
+                    placeholderText: this.placeholderText,
+                };
+            }
+        },
+        toggleCharacterLegend: function() {
+            if ($('#characterLegend').hasClass('hidden')) {
+                $('#characterLegend').removeClass('hidden');
+            }
+            else {
+                $('#characterLegend').addClass('hidden');
+            }
+        },
     });
 
     Jobs.VdjPipeFindUniqueSequences = Backbone.View.extend({

@@ -184,3 +184,13 @@
         padding: 0;
     }
 }
+
+.vdjpipe-list {
+    @extend .list-group;
+    border: none;
+
+    li {
+        @extend .list-group-item;
+        border: none;
+    }
+}

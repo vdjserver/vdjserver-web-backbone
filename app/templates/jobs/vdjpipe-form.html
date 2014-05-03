@@ -26,73 +26,129 @@
             <div class="panel-body">
                 <div class="form-group">
                      <button type="button" class="btn btn-default job-parameter" data-parametertype="quality-stats">
-                        <i class="fa fa-plus"></i> Quality Stats
+                        <i class="fa fa-plus"></i> Read Quality Statistics
                     </button>
+                    <p class="help-block">
+                        Generate quality score distributions for each position, as well as histograms for read length and average read quality.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="composition-stats">
-                        <i class="fa fa-plus"></i> Composition Stats
+                        <i class="fa fa-plus"></i> Base Composition Statistics
                     </button>
+                    <p class="help-block">
+                        Calculate relative abundances of the four nucleotides and ambiguous calls.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="forward-seq">
                         <i class="fa fa-plus"></i> Forward Sequence
                     </button>
+                    <p class="help-block">
+                        Computes the average quality at each position in the read.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="reverse-seq">
                         <i class="fa fa-plus"></i> Reverse Sequence
                     </button>
+                    <p class="help-block">
+                        Computes the average quality at each position in the read.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="nucleotide-filter">
                         <i class="fa fa-plus"></i> Nucleotide Filter
                     </button>
+                    <p class="help-block">
+                        Discard reads with non-allowed characters.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="length-filter">
                         <i class="fa fa-plus"></i> Length Filter
                     </button>
+                    <p class="help-block">
+                        Discard reads with length outside of the range [min, max].
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="homopolymer-filter">
                         <i class="fa fa-plus"></i> Homopolymer Filter
                     </button>
+                    <p class="help-block">
+                        Discard reads that contain a homopolymer longer than a specified length.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="minimal-quality-filter">
                         <i class="fa fa-plus"></i> Minimal Quality Filter
                     </button>
+                    <p class="help-block">
+                        Discard reads that contain a quality score lower than a specified minimum.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="minimal-average-quality-filter">
                         <i class="fa fa-plus"></i> Minimal Average Quality Filter
                     </button>
+                    <p class="help-block">
+                        Discard reads with average quality score lower than a specified minimum.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="minimal-quality-window-filter">
                         <i class="fa fa-plus"></i> Minimal Quality Window Filter
                     </button>
+                    <p class="help-block">
+                        Find longest subsequence with every quality score greater than a specified minimum; discard reads where the found subsequence is shorter than a specified length.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="average-quality-window-filter">
                         <i class="fa fa-plus"></i> Average Quality Window Filter
                     </button>
+                    <p class="help-block">
+                        Find the longest subsequence with average quality score greater than a specified minimum; discard reads where the interval found is shorter than a specified length.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="ambiguous-nucleotide-window-filter">
                         <i class="fa fa-plus"></i> Ambiguous Nucleotide Window Filter
                     </button>
+                    <p class="help-block">
+                        Find the longest subsequence with no more than a specified number of ambiguous base calls.  Discard reads where the found subsequence is shorter than a specified length.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="histogram">
                         <i class="fa fa-plus"></i> Histogram
                     </button>
+                    <p class="help-block">
+                        Computes the average quality at each position in the read.
+                    </p>
+                    <hr>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn btn-default job-parameter" data-parametertype="find-unique-sequences">
                         <i class="fa fa-plus"></i> Find Unique Sequences
                     </button>
+                    <p class="help-block">
+                        Identify unique sequences.
+                    </p>
+                    <hr>
                 </div>
             </div>
         </div>
