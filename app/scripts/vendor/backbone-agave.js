@@ -132,7 +132,7 @@
 
             xhr.addEventListener('load', function() {
 
-                if (xhr.status = 200) {
+                if (xhr.status === 200 || 202) {
                     var parsedJSON = JSON.parse(xhr.response);
                     deferred.resolve(xhr.response);
                 }
