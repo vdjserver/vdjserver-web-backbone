@@ -164,28 +164,6 @@ define(['app'], function(App) {
 
                     break;
 
-                case 'forward-seq':
-
-                    parameterView = new Jobs.VdjPipeDropdown({
-                        parameterName: 'Forward Sequence',
-                        parameterType: parameterType,
-                        selectedFileListings: this.selectedFileListings,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'reverse-seq':
-
-                    parameterView = new Jobs.VdjPipeDropdown({
-                        parameterName: 'Reverse Sequence',
-                        parameterType: parameterType,
-                        selectedFileListings: this.selectedFileListings,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
                 case 'nucleotide-filter':
 
                     parameterView = new Jobs.VdjPipeNucleotideFilter({
