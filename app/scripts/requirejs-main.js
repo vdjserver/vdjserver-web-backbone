@@ -61,6 +61,7 @@ define([
 
     // Handlebars Helpers
     'handlebars-utilities',
+    'handlebars-file-metadata-helpers',
 
     // Views
     'app-views',

@@ -2,6 +2,10 @@ define(['app'], function(App) {
 
     'use strict';
 
+    Handlebars.registerHelper('GetHumanReadableReadDirection', function(data /*, options*/) {
+        return App.Views.HandlebarsHelpers.FileMetadataHelpers.GetHumanReadableReadDirection(data);
+    });
+
     var Jobs = {};
 
     Jobs.Submit = Backbone.View.extend({
@@ -79,7 +83,7 @@ define(['app'], function(App) {
             var uuid = e.target.id;
 
             // UI
-            $('#' + uuid).parent().remove();
+            $('#' + uuid).parent().parent().parent().remove();
 
             // data collection
             this.selectedFileListings.remove(uuid);

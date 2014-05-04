@@ -61,6 +61,7 @@ require.config({
 
         // Handlebars Helpers
         'handlebars-utilities':   'views/handlebars-helpers/handlebars-utilities',
+        'handlebars-file-metadata-helpers':   'views/handlebars-helpers/file-metadata-helpers',
 
         // Views
         'app-views': 'views/app/app-views',

@@ -22,6 +22,10 @@ define(['app', 'filesize'], function(App, filesize) {
         return filesize(data);
     });
 
+    Handlebars.registerHelper('GetHumanReadableReadDirection', function(data /*, options*/) {
+        return App.Views.HandlebarsHelpers.FileMetadataHelpers.GetHumanReadableReadDirection(data);
+    });
+
     var Projects = {};
 
     Projects.List = Backbone.View.extend({
@@ -606,7 +610,7 @@ define(['app', 'filesize'], function(App, filesize) {
                         .fail(function() {
                             console.log("filePems save fail");
                         });
-                    
+
                     that.createFileMetadata(formData);
                 })
                 .fail(function() {
