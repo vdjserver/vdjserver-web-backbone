@@ -6,17 +6,33 @@
 
                 Find Unique Sequences
                 <span class="label label-danger remove-job-parameter">&times;</span>
-                <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
-                <br>
-                <br>
-                Min Length <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min">
-                <br>
-                <br>
-                Ignore Ends <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-ignore-ends">
-                <br>
-                <br>
-                Fraction Match <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-fraction-match">
             </h4>
+            <ul class="vdjpipe-list">
+                <li>
+                    Min Length
+                    <br>
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min">
+                </li>
+                <li>
+                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
+                </li>
+                <li>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default filter-button" id="ignore-ends-button">Ignore Ends</button>
+                        <button type="button" class="btn btn-default filter-button" id="fraction-match-button">Fraction Match</button>
+                    </div>
+                </li>
+                <li class="ignore-ends filter-param hidden">
+                    Ignore Ends
+                    <br>
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-ignore-ends">
+                </li>
+                <li class="fraction-match filter-param hidden">
+                    Fraction Match
+                    <br>
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-fraction-match">
+                </li>
+            </ul>
         </div>
     </div>
 </li>

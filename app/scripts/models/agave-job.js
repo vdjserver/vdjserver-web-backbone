@@ -10,7 +10,7 @@
     });
 
     Job.VdjPipe = Backbone.Agave.JobModel.extend({
-        generateVdjPipeConfig: function(parameters) {
+        generateVdjPipeConfig: function(parameters, fileMetadata) {
 
             var outputConfig = {
                 "base_path_input": "sample_data",
@@ -51,18 +51,6 @@
                                 })
                                 break;
 
-                            case 'forward-seq':
-                                inputOutput.push({
-                                    'forward_seq': parameters[key]
-                                });
-                                break;
-
-                            case 'reverse-seq':
-                                inputOutput.push({
-                                    'reverse_seq': parameters[key]
-                                });
-                                break;
-
                             case 'nucleotide-filter':
                                 paramOutput.push({
                                     'character_filter': parameters[key]
@@ -98,7 +86,7 @@
 
                             case 'minimal-quality-window-filter':
                                 paramOutput.push({
-                                    'min_quaity_window_filter': {
+                                    'min_quality_window_filter': {
                                         'min_quality': parameters[key + '-min-quality'],
                                         'min_length': parameters[key + '-min-length']
                                     }
@@ -150,6 +138,34 @@
                     }
                 }
             }
+
+            /*
+             *
+             *
+
+                            case 'forward-seq':
+                                inputOutput.push({
+                                    'forward_seq': parameters[key]
+                                });
+                                break;
+
+                            case 'reverse-seq':
+                                inputOutput.push({
+                                    'reverse_seq': parameters[key]
+                                });
+                                break;
+
+            */
+
+            for (var i = 0; i < fileMetadata.length; i++) {
+                var value = fileMetadata[i].get('value');
+                
+                if (value.isForwardRead) {
+                    inputOutput.push({
+                        'forward_seq': value.name
+                    });
+                } 
+            };
 
             console.log("paramOutput is: " + JSON.stringify(paramOutput));
             console.log("inputOutput is: " + JSON.stringify(inputOutput));

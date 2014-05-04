@@ -63,7 +63,7 @@ define(['app'], function(App) {
                 console.log("formType ok");
 
                 job = new Backbone.Agave.Model.Job.VdjPipe();
-                job.generateVdjPipeConfig(formData);
+                job.generateVdjPipeConfig(formData, this.selectedFileListings);
             }
 
             $('#job-modal').modal('hide')
@@ -316,7 +316,36 @@ define(['app'], function(App) {
                     inputCount: this.inputCount,
                 };
             }
-        }
+        },
+        events: {
+            'click .filter-button': 'changeFilterOptions',
+        },
+        changeFilterOptions: function(e) {
+            console.log("target id is: " + e.target.id);
+
+            // Hide all params
+            $('.filter-param').addClass('hidden');
+
+            // Reset buttons to default state
+            $('.filter-button').removeClass('btn-success');
+            $('.filter-button').addClass('btn-default');
+
+            // Highlight selected button
+            $('#' + e.target.id).removeClass('btn-default');
+            $('#' + e.target.id).addClass('btn-success');
+
+            // Clear out other input values
+            $('.filter-param input').val('');
+
+            if (e.target.id === 'ignore-ends-button') {
+                // Show Ignore Ends
+                $('.ignore-ends').removeClass('hidden');
+            }
+            else {
+                // Show Fraction Match
+                $('.fraction-match').removeClass('hidden');
+            }
+        },
     });
 
     Jobs.VdjPipeAmbiguousNucleotideWindowFilter = Backbone.View.extend({
