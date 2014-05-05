@@ -10,7 +10,18 @@
     });
 
     Job.VdjPipe = Backbone.Agave.JobModel.extend({
+        defaults: function() {
+            return _.extend(
+                {},
+                Backbone.Agave.JobModel.prototype.defaults,
+                {
+                    appId: 'vdj_pipe-0.0.12u1',
+                }
+            );
+        },
         generateVdjPipeConfig: function(parameters, fileMetadata) {
+
+            console.log("starting - meta is: " + JSON.stringify(fileMetadata));
 
             var outputConfig = {
                 "base_path_input": "sample_data",
@@ -21,7 +32,7 @@
 
             //outputConfig.forward_seq
 
-            var paramOutput = []
+            var paramOutput = [];
             var inputOutput = [];
 
             for (var key in parameters) {
@@ -158,13 +169,14 @@
             */
 
             for (var i = 0; i < fileMetadata.length; i++) {
-                var value = fileMetadata[i].get('value');
-                
+                console.log("values are: " + JSON.stringify(fileMetadata.at([i])));
+                var value = fileMetadata.at([i]).get('value');
+
                 if (value.isForwardRead) {
                     inputOutput.push({
                         'forward_seq': value.name
                     });
-                } 
+                }
             };
 
             console.log("paramOutput is: " + JSON.stringify(paramOutput));
@@ -176,6 +188,22 @@
 
 
             console.log("outputConfig is: " + JSON.stringify(outputConfig));
+
+            this.set('parameters', {
+                'json': outputConfig,
+            });
+        },
+        setFilesParameter: function(filePaths) {
+
+            filePaths = filePaths.join(';');
+
+            this.set('inputs', {
+                'files': filePaths,
+            });
+        },
+        setArchivePath: function(projectId) {
+            var archivePath = '/projects/' + projectId + '/analyses/' + moment().format('YYYY-MM-DD-HH-mm-ss-SS');
+            this.set('archivePath', archivePath);
         },
     });
 

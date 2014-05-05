@@ -246,32 +246,32 @@
             appId: '',
             archive: true,
             archivePath: '',
-            archiveSystem: '',
-            batchQueue: '',
-            endTime: '',
-            executionSystem: '',
+            archiveSystem: 'data.vdjserver.org',
+            batchQueue: 'normal',
             id: 0,
             inputs: {},
-            localId: '',
-            memoryPerNode: '',
-            message: '',
-            name: '',
-            nodeCount: 0,
-            notifications: [],
-            outputPath: '',
-            owner: '',
-            parameters: {},
-            processorsPerNode: 0,
             maxRunTime: '',
-            retries: 0,
-            startTime: '',
-            status: '',
-            submitTime: '',
-            workPath: ''
+            memoryPerNode: '1',
+            name: '',
+            nodeCount: 1,
+            notifications: [],
+            parameters: {},
+            processorsPerNode: 12,
         },
         url: function() {
             return '/jobs/v2/';
-        }
+        },
+        sync: function(method, model, options) {
+
+            switch (method) {
+                case 'update':
+                    options.type = 'POST';
+                    break;
+            }
+
+            // Call Agave Model  sync
+            return Agave.sync(method, model, options);
+        },
     });
 
     // Required Auth package

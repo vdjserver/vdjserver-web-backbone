@@ -62,15 +62,30 @@ define(['app'], function(App) {
             if (formData.formtype === 'vdjpipe') {
                 console.log("formType ok");
 
+                console.log("parent view: selectedFileListings are: " + JSON.stringify(this.selectedFileListings));
+
                 job = new Backbone.Agave.Model.Job.VdjPipe();
                 job.generateVdjPipeConfig(formData, this.selectedFileListings);
+                job.setArchivePath(this.projectModel.get('uuid'));
+                job.set('name', formData['job-name']);
+
+                var tmpFileMetadatas = this.selectedFileListings.pluck('value');
+                var filePaths = [];
+                for (var i = 0; i < tmpFileMetadatas.length; i++) {
+                    console.log('tmpFileMetadatas is: ' + JSON.stringify(tmpFileMetadatas[i]));
+                    filePaths.push('/projects/' + tmpFileMetadatas[i].projectUuid + '/' + tmpFileMetadatas[i].name);
+                }
+
+                job.setFilesParameter(filePaths);
+
+                console.log("job is: " + JSON.stringify(job));
             }
 
             $('#job-modal').modal('hide')
                 .on('hidden.bs.modal', function() {
                     var jobNotificationView = new Jobs.Notification({
-                        formData: formData,
-                        projectModel: that.projectModel
+                        job: job,
+                        projectModel: that.projectModel,
                     });
 
                     App.Layouts.main.insertView('#running-jobs', jobNotificationView);
@@ -487,10 +502,17 @@ define(['app'], function(App) {
         template: 'jobs/notification',
         initialize: function(parameters) {
 
-            this.jobName = parameters.formData['job-name'];
+            this.jobName = this.job.get('name');
             this.jobStatus = 'Queued';
             this.projectModel = parameters.projectModel;
-
+            
+            this.job.save()
+                .done(function() {
+                    console.log('job submit success');
+                })
+                .fail(function() {
+                    console.log('job submit fail');
+                });
         },
         serialize: function() {
             return {
