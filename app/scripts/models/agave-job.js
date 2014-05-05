@@ -190,7 +190,7 @@
             console.log("outputConfig is: " + JSON.stringify(outputConfig));
 
             this.set('parameters', {
-                'json': outputConfig,
+                'json': JSON.stringify(outputConfig),
             });
         },
         setFilesParameter: function(filePaths) {

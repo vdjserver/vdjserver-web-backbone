@@ -73,7 +73,7 @@ define(['app'], function(App) {
                 var filePaths = [];
                 for (var i = 0; i < tmpFileMetadatas.length; i++) {
                     console.log('tmpFileMetadatas is: ' + JSON.stringify(tmpFileMetadatas[i]));
-                    filePaths.push('/projects/' + tmpFileMetadatas[i].projectUuid + '/' + tmpFileMetadatas[i].name);
+                    filePaths.push('/projects/' + tmpFileMetadatas[i].projectUuid + '/files/' + tmpFileMetadatas[i].name);
                 }
 
                 job.setFilesParameter(filePaths);

@@ -250,7 +250,7 @@
             batchQueue: 'normal',
             id: 0,
             inputs: {},
-            maxRunTime: '',
+            maxRunTime: '24:00:00',
             memoryPerNode: '1',
             name: '',
             nodeCount: 1,
