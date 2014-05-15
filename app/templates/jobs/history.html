@@ -2,22 +2,22 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Job ID</th>
                 <th>Job Name</th>
                 <th>Status</th>
                 <th>Start Time</th>
                 <th>End Time</th>
+                <th>Job ID</th>
                 <th>View Analyses</th>
             </tr>
         </thead>
         <tbody>
             {{#each jobs}}
                 <tr>
-                    <td>{{id}}</td>
                     <td>{{name}}</td>
                     <td>{{status}}</td>
                     <td>{{startTime}}</td>
                     <td>{{endTime}}</td>
+                    <td>{{id}}</td>
                     <td>
                         <a href="project/{{projectUuid}}/jobs/{{id}}/analyses">
                             <button type="button" class="btn btn-primary">View Analyses</button>
