@@ -202,8 +202,14 @@
             });
         },
         setArchivePath: function(projectId) {
-            var archivePath = '/projects/' + projectId + '/analyses/' + moment().format('YYYY-MM-DD-HH-mm-ss-SS');
+            var archivePath = '/projects/'
+                            + projectId
+                            + '/analyses/'
+                            + moment().format('YYYY-MM-DD-HH-mm-ss-SS-' + this.getDirectorySafeName(this.get('name')));
             this.set('archivePath', archivePath);
+        },
+        getDirectorySafeName: function(name) {
+            return name.replace(/\s+/g, '-').toLowerCase();
         },
     });
 
