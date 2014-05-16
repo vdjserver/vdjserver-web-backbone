@@ -6,20 +6,24 @@
 
     var JobListing = {};
 
-    JobListing = Backbone.Agave.Model.extend({
-        defaults: {
-            appId: '',
-            endTime: '',
-            executionSystem: '',
-            id: 0,
-            name: '',
-            owner: '',
-            startTime: '',
-            status: ''
+    JobListing = Backbone.Agave.MetadataModel.extend({
+        defaults: function() {
+            return _.extend(
+                {},
+                Backbone.Agave.MetadataModel.prototype.defaults,
+                {
+                    name: 'projectJob',
+                    owner: '',
+                    value: {
+                        'projectUuid': '',
+                        'jobUuid': '',
+                    },
+                }
+            );
         },
         url: function() {
-            return '/jobs/v2/' + this.get('id');
-        }
+            return '/meta/v2/data/' + this.get('uuid');
+        },
     });
 
     Backbone.Agave.Model.JobListing = JobListing;

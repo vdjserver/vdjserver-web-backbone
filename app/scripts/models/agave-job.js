@@ -6,7 +6,13 @@
 
     var Job = {};
 
-    Job.AgaveGeneric = Backbone.Agave.JobModel.extend({
+    Job.Detail = Backbone.Agave.Model.extend({
+        defaults: {
+            id: '',
+        },
+        url: function() {
+            return '/jobs/v2/' + this.get('id');
+        },
     });
 
     Job.VdjPipe = Backbone.Agave.JobModel.extend({
@@ -201,15 +207,35 @@
                 'files': filePaths,
             });
         },
-        setArchivePath: function(projectId) {
+        setArchivePath: function(projectUuid) {
             var archivePath = '/projects/'
-                            + projectId
+                            + projectUuid
                             + '/analyses/'
-                            + moment().format('YYYY-MM-DD-HH-mm-ss-SS-' + this.getDirectorySafeName(this.get('name')));
+                            + moment().format('YYYY-MM-DD-HH-mm-ss-SS')
+                            + '-' + this.getDirectorySafeName(this.get('name'));
+
             this.set('archivePath', archivePath);
+
+            console.log("archivePath is: " + archivePath);
         },
         getDirectorySafeName: function(name) {
-            return name.replace(/\s+/g, '-').toLowerCase();
+            console.log("name input is: " + name);
+            return name.replace(/\s/g, '-').toLowerCase();
+        },
+        createJobMetadata: function(projectUuid) {
+            var jxhr = $.ajax({
+                data: {
+                    projectUuid: projectUuid,
+                    jobUuid: this.get('id'),
+                },
+                headers: {
+                    'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + Backbone.Agave.instance.token().get('access_token'))
+                },
+                type: 'POST',
+                url: Backbone.Agave.vdjauthRoot + '/jobs/metadata',
+            });
+
+            return jxhr;
         },
     });
 

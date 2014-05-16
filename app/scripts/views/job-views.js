@@ -65,9 +65,9 @@ define(['app'], function(App) {
                 console.log("parent view: selectedFileListings are: " + JSON.stringify(this.selectedFileListings));
 
                 job = new Backbone.Agave.Model.Job.VdjPipe();
+                job.set('name', formData['job-name']);
                 job.generateVdjPipeConfig(formData, this.selectedFileListings);
                 job.setArchivePath(this.projectModel.get('uuid'));
-                job.set('name', formData['job-name']);
 
                 var tmpFileMetadatas = this.selectedFileListings.pluck('value');
                 var filePaths = [];
@@ -505,9 +505,20 @@ define(['app'], function(App) {
             this.jobName = this.job.get('name');
             this.jobStatus = 'Queued';
             this.projectModel = parameters.projectModel;
-            
+
+            var that = this;
             this.job.save()
                 .done(function() {
+
+                    // Create metadata
+                    that.job.createJobMetadata(that.projectModel.get('uuid'))
+                        .done(function() {
+                            console.log("job meta ok");
+                        })
+                        .fail(function() {
+                            console.log("job meta fail");
+                        });
+
                     console.log('job submit success');
                 })
                 .fail(function() {
@@ -539,18 +550,37 @@ define(['app'], function(App) {
             this.insertView(loadingView);
             loadingView.render();
 
-            this.collection = new Backbone.Agave.Collection.JobListings();
+            var jobUuids = new Backbone.Agave.Collection.JobListings({projectUuid: this.projectUuid});
+
+            this.jobs = new Backbone.Collection();
 
             var that = this;
-            this.collection.fetch()
+            jobUuids.fetch()
                 .done(function() {
                     loadingView.remove();
-                    that.render();
+
+                    for (var i = 0; i < jobUuids.models.length; i++) {
+                        var job = new Backbone.Agave.Model.Job.Detail({
+                            id: jobUuids.at([i]).get('value').jobUuid,
+                        });
+                    
+                        job.fetch()
+                            .done(function() {
+                                that.jobs.push(job);
+                                that.render();
+                            });
+                    }
+
                 })
                 .fail(function() {
 
                 });
-        }
+        },
+        serialize: function() {
+            return {
+                jobs: this.jobs.toJSON(),
+            };
+        },
     });
 
 
