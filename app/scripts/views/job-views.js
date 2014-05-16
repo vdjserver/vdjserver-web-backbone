@@ -1,4 +1,4 @@
-define(['app'], function(App) {
+define(['app', 'backbone.syphon'], function(App) {
 
     'use strict';
 
@@ -563,7 +563,7 @@ define(['app'], function(App) {
                         var job = new Backbone.Agave.Model.Job.Detail({
                             id: jobUuids.at([i]).get('value').jobUuid,
                         });
-                    
+
                         job.fetch()
                             .done(function() {
                                 that.jobs.push(job);

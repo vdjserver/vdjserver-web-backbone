@@ -1,4 +1,4 @@
-define(['app'], function(App) {
+define(['app', 'backbone.syphon'], function(App) {
 
   'use strict';
 
