@@ -7,6 +7,7 @@
         "backbone.syphon": "0.4.x",
         "d3": "3.3.x",
         "filesize": "2.0.3",
+        "file-saver": "*",
         "font-awesome": "4.0.x",
         "handlebars": "1.3.x",
         "jquery": "2.1.x",

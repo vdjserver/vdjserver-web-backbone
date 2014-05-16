@@ -326,6 +326,7 @@ define(['app', 'filesize', 'backbone.syphon'], function(App, filesize) {
             'click .run-job': 'clickRunJob',
             'click #search-button': 'searchFileListings',
             'click .delete-files': 'deleteFiles',
+            'click .download-file': 'downloadFile',
         },
         fileListingsViewEvents: function(fileListingsView) {
 
@@ -513,6 +514,15 @@ define(['app', 'filesize', 'backbone.syphon'], function(App, filesize) {
             $.when(softDeletePromise).then(function(data, textStatus, jqXHR) {
                 that.fetchAndRenderFileListings();
             });
+        },
+        downloadFile: function(e) {
+            e.preventDefault();
+
+            var fileMetadataUuid = e.target.dataset.filemetadatauuid;
+
+            var fileMetadata = this.fileListings.get(fileMetadataUuid);
+
+            fileMetadata.downloadFile();
         },
     });
 

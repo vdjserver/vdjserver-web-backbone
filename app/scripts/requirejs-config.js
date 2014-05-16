@@ -18,6 +18,7 @@ require.config({
         'nvd3':             '../bower_components/nvd3/nv.d3.min',
         'slickgrid.core':   '../bower_components/slickgrid/slick.core',
         'slickgrid.grid':   '../bower_components/slickgrid/slick.grid',
+        'file-saver':       '../bower_components/file-saver/FileSaver',
 
         // Config
         'environment-config': 'config/environment-config',

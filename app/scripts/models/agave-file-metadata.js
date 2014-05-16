@@ -51,6 +51,24 @@ define(['backbone'], function(Backbone) {
 
             return this.save();
         },
+        downloadFile: function() {
+
+            var that = this;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('get', this.get('_links').file.href);
+            xhr.responseType = 'blob';
+            xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
+            
+            xhr.onload = function() {
+              if (this.status === 200 || this.status === 202) {
+                window.saveAs(new Blob([this.response]), that.get('value').name);
+              }
+            };
+            xhr.send();
+            
+            return xhr;
+        }
     });
 
     Backbone.Agave.Model.FileMetadata = FileMetadata;

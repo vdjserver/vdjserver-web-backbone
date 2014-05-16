@@ -7,6 +7,7 @@ define([
     'jquery-ui',
     'bootstrap',
     'typeahead',
+    'file-saver',
 
     // Config
     'environment-config',
