@@ -1,8 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
 
     var File = Backbone.Agave.FileModel.extend({
         idAttribute: 'path',
@@ -72,4 +70,4 @@
 
     Backbone.Agave.Model.File = File;
     return File;
-})(this);
+});

@@ -1,10 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
-    //var $ = window.$;
-    //var _ = window._;
 
     var NewAccount = {};
 
@@ -86,4 +82,4 @@
 
     Backbone.Agave.Model.NewAccount = NewAccount;
     return NewAccount;
-})(this);
+});

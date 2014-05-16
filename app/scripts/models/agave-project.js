@@ -1,8 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
 
     var Project = {};
 
@@ -62,4 +60,4 @@
 
     Backbone.Agave.Model.Project = Project;
     return Project;
-})(this);
+});

@@ -1,8 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
 
     var Files = {};
 
@@ -32,4 +30,4 @@
 
     Backbone.Agave.Collection.Files = Files;
     return Files;
-})(this);
+});

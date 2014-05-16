@@ -1,8 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
 
     var TenantUsers = {};
 
@@ -16,4 +14,4 @@
 
     Backbone.Agave.Collection.TenantUsers = TenantUsers;
     return TenantUsers;
-})(this);
+});

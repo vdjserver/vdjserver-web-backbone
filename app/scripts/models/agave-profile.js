@@ -1,10 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
-    //var $ = window.$;
-    var _ = window._;
 
     var Profile = {};
 
@@ -32,4 +28,4 @@
 
     Backbone.Agave.Model.Profile = Profile;
     return Profile;
-})(this);
+});

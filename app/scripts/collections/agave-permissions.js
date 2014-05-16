@@ -1,10 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
-    //var $ = window.$;
-    //var _ = window._;
 
     var Permissions = {};
 
@@ -26,7 +22,7 @@
 
             if (response.result) {
                 for (var i = 0; i < response.result.length; i++) {
-                    
+
                     var userPems = {
                         username: response.result[i].username,
                         permission: response.result[i].permission,
@@ -51,4 +47,4 @@
 
     Backbone.Agave.Collection.Permissions = Permissions;
     return Permissions;
-})(this);
+});

@@ -1,10 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
-    //var $ = window.$;
-    //var _ = window._;
 
     var Projects = {};
 
@@ -17,4 +13,4 @@
 
     Backbone.Agave.Collection.Projects = Projects;
     return Projects;
-})(this);
+});

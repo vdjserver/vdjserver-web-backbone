@@ -1,8 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
 
     var Permission = {};
 
@@ -79,4 +77,4 @@
 
     Backbone.Agave.Model.Permission = Permission;
     return Permission;
-})(this);
+});

@@ -1,8 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
 
     var JobListing = {};
 
@@ -28,4 +26,4 @@
 
     Backbone.Agave.Model.JobListing = JobListing;
     return JobListing;
-})(this);
+});

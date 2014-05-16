@@ -1,14 +1,6 @@
-/**
-  * Backbone Agave
-  * Version 0.1
-  *
-  */
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
-    var _ = window._;
 
     var Agave = function(options) {
 
@@ -376,5 +368,4 @@
 
     Backbone.Agave = Agave;
     return Agave;
-
-})(this);
+});

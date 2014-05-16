@@ -1,8 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
 
     var FileMetadata = {};
 
@@ -57,4 +55,4 @@
 
     Backbone.Agave.Model.FileMetadata = FileMetadata;
     return FileMetadata;
-})(this);
+});

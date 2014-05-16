@@ -1,10 +1,6 @@
-(function (window) {
+define(['backbone'], function(Backbone) {
 
     'use strict';
-
-    var Backbone = window.Backbone;
-    //var $ = window.$;
-    //var _ = window._;
 
     var PasswordReset = {};
 
@@ -85,4 +81,4 @@
 
     Backbone.Agave.Model.PasswordReset = PasswordReset;
     return PasswordReset;
-})(this);
+});
