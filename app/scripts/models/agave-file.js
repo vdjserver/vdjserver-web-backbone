@@ -22,20 +22,10 @@ define(['backbone'], function(Backbone) {
             return '/files/v2/media/system/data.vdjserver.org//projects/' + this.get('projectUuid') + '/files/';
         },
         getAssociationId: function() {
-
-            if (this.has('_links')) {
-                var links = this.get('_links');
-
-                var metadataReference = links.metadata;
-
-                var href = metadataReference.href;
-
-                var split = href.split('"');
-
-                var associationId = split[3];
-
-                return associationId;
-            }
+            var path = this.get('path');
+            var split = path.split('/');
+            console.log("split is: " + JSON.stringify(split));
+            return split[2];
         },
         syncFilePermissionsWithProjectPermissions: function() {
 
