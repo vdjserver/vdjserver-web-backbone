@@ -28,10 +28,12 @@ define(['backbone'], function(Backbone) {
             console.log("starting - meta is: " + JSON.stringify(fileMetadata));
 
             var outputConfig = {
-                "base_path_input": "sample_data",
-                "base_path_output": "out/temp/paired",
-                "csv_file_delimiter": "\t",
+                "base_path_input": "",
+                "base_path_output": "",
+                //"base_path_output": "output",
+                "csv_file_delimiter": "\\t",
                 'single_read_pipe': [],
+                //{'write_value': }
             };
 
             //outputConfig.forward_seq
@@ -56,13 +58,13 @@ define(['backbone'], function(Backbone) {
                         switch(vdjPipeParam) {
                             case 'quality-stats':
                                 paramOutput.push({
-                                    'quality_stats': {'out_prefix': '_pre'}
+                                    'quality_stats': {'out_prefix': 'pre-'}
                                 });
                                 break;
 
                             case 'composition-stats':
                                 paramOutput.push({
-                                    'composition_stats': {'out_prefix': '_pre'}
+                                    'composition_stats': {'out_prefix': 'pre-'}
                                 })
                                 break;
 
@@ -219,6 +221,26 @@ define(['backbone'], function(Backbone) {
         getDirectorySafeName: function(name) {
             console.log("name input is: " + name);
             return name.replace(/\s/g, '-').toLowerCase();
+        },
+        createArchivePathDirectory: function(projectUuid) {
+
+            var fullArchivePath = this.get('archivePath');
+            var archivePathSplit = fullArchivePath.split('/');
+            var relativeArchivePath = archivePathSplit[4];
+
+            console.log("relativeArchivePath is: " + relativeArchivePath);
+
+
+            var jxhr = $.ajax({
+                data: 'action=mkdir&path=' + relativeArchivePath,
+                headers: {
+                    'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token')
+                },
+                type: 'PUT',
+                url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + projectUuid + '/analyses',
+            });
+
+            return jxhr;
         },
         createJobMetadata: function(projectUuid) {
             var jxhr = $.ajax({

@@ -237,16 +237,18 @@ define(['backbone'], function(Backbone) {
         defaults: {
             appId: '',
             archive: true,
+            //archive: false,
             archivePath: '',
             archiveSystem: 'data.vdjserver.org',
             batchQueue: 'normal',
-            id: 0,
+            //id: 0,
             inputs: {},
             maxRunTime: '24:00:00',
-            memoryPerNode: '1',
+            //memoryPerNode: '1',
+            outputPath: 'output',
             name: '',
             nodeCount: 1,
-            notifications: [],
+            //notifications: [],
             parameters: {},
             processorsPerNode: 12,
         },
@@ -257,8 +259,8 @@ define(['backbone'], function(Backbone) {
 
             switch (method) {
                 case 'update':
-                    options.type = 'POST';
-                    break;
+                options.type = 'POST';
+                break;
             }
 
             // Call Agave Model  sync

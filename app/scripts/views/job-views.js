@@ -507,7 +507,10 @@ define(['app', 'backbone.syphon'], function(App) {
             this.projectModel = parameters.projectModel;
 
             var that = this;
-            this.job.save()
+            this.job.createArchivePathDirectory(this.projectModel.get('uuid'))
+                .then(function() {
+                    return that.job.save();
+                })
                 .done(function() {
 
                     // Create metadata
