@@ -629,6 +629,16 @@ define(['app', 'backbone.syphon'], function(App) {
                 outputFiles: this.collection.toJSON(),
             };
         },
+        events: {
+            'click .download-file': 'downloadFile',
+        },
+        downloadFile: function(e) {
+            e.preventDefault();
+
+            var fileName = e.target.dataset.filename;
+            var outputFile = this.collection.get(fileName);
+            outputFile.downloadFile();
+        },
     });
 
     App.Views.Jobs = Jobs;

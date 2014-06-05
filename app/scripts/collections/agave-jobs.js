@@ -25,6 +25,7 @@ define(['backbone'], function(Backbone) {
     });
 
     Jobs.OutputFiles = Backbone.Agave.Collection.extend({
+        model: Backbone.Agave.Model.Job.OutputFile,
         initialize: function(parameters) {
             if (parameters.jobId) {
                 this.jobId = parameters.jobId;
