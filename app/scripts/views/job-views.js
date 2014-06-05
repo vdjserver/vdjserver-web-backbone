@@ -6,6 +6,21 @@ define(['app', 'backbone.syphon'], function(App) {
         return App.Views.HandlebarsHelpers.FileMetadataHelpers.GetHumanReadableReadDirection(data);
     });
 
+    Handlebars.registerHelper('JobSuccessCheck', function(data, options) {
+        if (data.status === 'FINISHED') {
+            return options.fn(data);
+        }
+
+        return options.inverse(data);
+    });
+
+    Handlebars.registerHelper('FormatAgaveDate', function(data /*, options*/) {
+                                                                                
+        var formattedDate = moment(data/*, 'YYYY-MM-DDTHH:mm:ssZ'*/).format('D-MMM-YYYY hh:mm');
+                                                                                
+        return formattedDate;                                                 
+    });
+
     var Jobs = {};
 
     Jobs.Submit = Backbone.View.extend({
@@ -550,29 +565,39 @@ define(['app', 'backbone.syphon'], function(App) {
             this.projectUuid = parameters.projectUuid;
 
             var loadingView = new App.Views.Util.Loading({keep: true});
-            this.insertView(loadingView);
+            this.setView(loadingView);
             loadingView.render();
 
             var jobUuids = new Backbone.Agave.Collection.JobListings({projectUuid: this.projectUuid});
 
-            this.jobs = new Backbone.Collection();
+            this.jobs = new Backbone.Agave.Collection.Jobs();
 
             var that = this;
             jobUuids.fetch()
                 .done(function() {
-                    loadingView.remove();
 
+                    var jobModels = [];
+
+                    // Create empty job models and set ids for all job listing results
                     for (var i = 0; i < jobUuids.models.length; i++) {
                         var job = new Backbone.Agave.Model.Job.Detail({
                             id: jobUuids.at([i]).get('value').jobUuid,
                         });
 
-                        job.fetch()
-                            .done(function() {
-                                that.jobs.push(job);
-                                that.render();
-                            });
+                        jobModels.push(job);
                     }
+
+                    // Do a massive async fetch on all individual models
+                    var jobFetches = _.invoke(jobModels, 'fetch');
+
+                    $.when.apply($, jobFetches).done(function() {
+                        for (var i = 0; i < jobModels.length; i++) {
+                            that.jobs.add(jobModels[i]);
+                        }
+
+                        loadingView.remove();
+                        that.render();
+                    });
 
                 })
                 .fail(function() {

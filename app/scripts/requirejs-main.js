@@ -49,6 +49,7 @@ define([
     'agave-files',
 
     'agave-job',
+    'agave-jobs',
 
     'agave-job-listing',
     'agave-job-listings',

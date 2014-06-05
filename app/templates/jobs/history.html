@@ -15,13 +15,17 @@
                 <tr>
                     <td>{{name}}</td>
                     <td>{{status}}</td>
-                    <td>{{startTime}}</td>
-                    <td>{{endTime}}</td>
+                    <td>{{FormatAgaveDate submitTime}}</td>
+                    <td>{{FormatAgaveDate endTime}}</td>
                     <td>{{id}}</td>
                     <td>
-                        <a href="project/{{projectUuid}}/jobs/{{id}}/analyses">
-                            <button type="button" class="btn btn-primary">View Analyses</button>
-                        </a>
+                        {{#JobSuccessCheck this}}
+                            <a href="project/{{projectUuid}}/jobs/{{id}}/analyses" class="disabled">
+                                <button type="button" class="btn btn-primary">View Analyses</button>
+                            </a>
+                        {{else}}
+                            <button type="button" class="btn btn-danger" disabled="disabled">Analysis Unavailable</button>
+                        {{/JobSuccessCheck}}
                     </td>
                 </tr>
             {{/each}}
