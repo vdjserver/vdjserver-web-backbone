@@ -2,9 +2,9 @@ define(['app', 'filesize', 'backbone.syphon'], function(App, filesize) {
 
     'use strict';
 
-    Handlebars.registerHelper('FormatAgaveDate', function(data /*, options*/) {
+    Handlebars.registerHelper('FormatAgaveDate', function(agaveDate) {
 
-        var formattedDate = moment(data/*, 'YYYY-MM-DDTHH:mm:ssZ'*/).format('D-MMM-YYYY hh:mm');
+        var formattedDate = moment(agaveDate).format('D-MMM-YYYY hh:mm');
 
         return formattedDate;
     });
@@ -19,7 +19,9 @@ define(['app', 'filesize', 'backbone.syphon'], function(App, filesize) {
     });
 
     Handlebars.registerHelper('GetHumanReadableFileSize', function(data) {
-        return filesize(data);
+        if (data) {
+            return filesize(data);
+        }
     });
 
     Handlebars.registerHelper('GetHumanReadableReadDirection', function(data /*, options*/) {

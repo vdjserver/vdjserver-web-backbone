@@ -72,9 +72,10 @@ define(['app'], function(App) {
             'project/create':                   'projectCreate',
             'project/:id':                      'projectDetail',
             'project/:id/settings':             'projectSettings',
+            'project/:id/users':                'projectManageUsers',
             'project/:id/jobs':                 'projectJobHistory',
+            'project/:id/jobs/:jobId':          'projectJobOutput',
             'project/:id/jobs/:jobId/analyses': 'projectSelectAnalyses',
-            'project/:id/users': 'projectManageUsers',
 
             //temp for getting charts in
             'project/:id/charts':'selectAnalyses',
@@ -246,12 +247,11 @@ define(['app'], function(App) {
             routeWithTokenRefreshCheck(destinationRoute);
         },
 
-		//temp to get charts in
-        selectAnalyses: function(projectUuid) {
+        projectJobOutput: function(projectUuid, jobId) {
 
             var destinationRoute = function() {
                 setProjectSubviews(projectUuid);
-                App.Layouts.main.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid}));
+                App.Layouts.main.setView('.content', new App.Views.Jobs.Output({projectUuid: projectUuid, jobId: jobId}));
                 App.Layouts.main.render();
             };
 
@@ -276,6 +276,22 @@ define(['app'], function(App) {
             App.Layouts.main.render();
         },
 
+        
+
+
+
+
+		//temp to get charts in
+        selectAnalyses: function(projectUuid) {
+
+            var destinationRoute = function() {
+                setProjectSubviews(projectUuid);
+                App.Layouts.main.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid}));
+                App.Layouts.main.render();
+            };
+
+            routeWithTokenRefreshCheck(destinationRoute);
+        },
 
     });
 

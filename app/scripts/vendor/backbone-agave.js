@@ -277,7 +277,7 @@ define(['backbone'], function(Backbone) {
             inputs: {},
             maxRunTime: '24:00:00',
             //memoryPerNode: '1',
-            outputPath: 'output',
+            outputPath: '',
             name: '',
             nodeCount: 1,
             //notifications: [],

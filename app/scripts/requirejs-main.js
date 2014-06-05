@@ -51,9 +51,6 @@ define([
     'agave-job',
     'agave-jobs',
 
-    'agave-job-listing',
-    'agave-job-listings',
-
     // Regular Models
     'models/message',
     'models/form',

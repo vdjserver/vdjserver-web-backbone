@@ -24,6 +24,37 @@ define(['backbone'], function(Backbone) {
         },
     });
 
+    Jobs.OutputFiles = Backbone.Agave.Collection.extend({
+        initialize: function(parameters) {
+            if (parameters.jobId) {
+                this.jobId = parameters.jobId;
+            }
+        },
+        comparator: 'name',
+        url: function() {
+            return '/jobs/v2/' + this.jobId + '/outputs/listings';
+        },
+    });
+
+    Jobs.Listings = Backbone.Agave.MetadataCollection.extend({
+        model: Backbone.Agave.Model.Job.Listing,
+        initialize: function(parameters) {
+
+            console.log("params are: " + JSON.stringify(parameters));
+            if (parameters && parameters.projectUuid) {
+                this.projectUuid = parameters.projectUuid;
+            }
+        },
+        url: function() {
+            console.log("url is: " + this.projectUuid);
+            return '/meta/v2/data?q='
+                + encodeURIComponent('{'
+                    + '"name":"projectJob",'
+                    + '"value.projectUuid":"' + this.projectUuid + '"'
+                + '}');
+        },
+    });
+
     Backbone.Agave.Collection.Jobs = Jobs;
     return Jobs;
 });

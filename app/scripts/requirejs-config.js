@@ -44,9 +44,6 @@ require.config({
         'agave-job': 'models/agave-job',
         'agave-jobs': 'collections/agave-jobs',
 
-        'agave-job-listing': 'models/agave-job-listing',
-        'agave-job-listings': 'collections/agave-job-listings',
-
         // Agave - Metadata Models/Collections
         'agave-permission':  'models/agave-permission',
         'agave-permissions': 'collections/agave-permissions',

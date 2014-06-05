@@ -13,6 +13,36 @@ define(['backbone'], function(Backbone) {
         },
     });
 
+    Job.Listing = Backbone.Agave.MetadataModel.extend({
+        defaults: function() {
+            return _.extend(
+                {},
+                Backbone.Agave.MetadataModel.prototype.defaults,
+                {
+                    name: 'projectJob',
+                    owner: '',
+                    value: {
+                        'projectUuid': '',
+                        'jobUuid': '',
+                    },
+                }
+            );
+        },
+        url: function() {
+            return '/meta/v2/data/' + this.get('uuid');
+        },
+    });
+
+/*
+    Job.OutputFiles = Backbone.Agave.Model.extend({
+        defaults: {
+            id: '',
+        },
+        url: function() {
+            return '/jobs/v2/' + this.get('id') + '/outputs/listings';
+        },
+    });
+*/
     Job.VdjPipe = Backbone.Agave.JobModel.extend({
         defaults: function() {
             return _.extend(
@@ -233,7 +263,7 @@ define(['backbone'], function(Backbone) {
 
             var jxhr = $.ajax({
                 data: 'action=mkdir&path=' + relativeArchivePath,
-                headers: Backbone.Agave.oauthHeader,
+                headers: Backbone.Agave.oauthHeader(),
                 type: 'PUT',
                 url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + projectUuid + '/analyses',
             });

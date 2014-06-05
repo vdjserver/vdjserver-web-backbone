@@ -2,23 +2,12 @@ define(['app', 'backbone.syphon'], function(App) {
 
     'use strict';
 
-    Handlebars.registerHelper('GetHumanReadableReadDirection', function(data /*, options*/) {
-        return App.Views.HandlebarsHelpers.FileMetadataHelpers.GetHumanReadableReadDirection(data);
-    });
-
     Handlebars.registerHelper('JobSuccessCheck', function(data, options) {
         if (data.status === 'FINISHED') {
             return options.fn(data);
         }
 
         return options.inverse(data);
-    });
-
-    Handlebars.registerHelper('FormatAgaveDate', function(data /*, options*/) {
-                                                                                
-        var formattedDate = moment(data/*, 'YYYY-MM-DDTHH:mm:ssZ'*/).format('D-MMM-YYYY hh:mm');
-                                                                                
-        return formattedDate;                                                 
     });
 
     var Jobs = {};
@@ -568,7 +557,7 @@ define(['app', 'backbone.syphon'], function(App) {
             this.setView(loadingView);
             loadingView.render();
 
-            var jobUuids = new Backbone.Agave.Collection.JobListings({projectUuid: this.projectUuid});
+            var jobUuids = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid});
 
             this.jobs = new Backbone.Agave.Collection.Jobs();
 
@@ -607,10 +596,40 @@ define(['app', 'backbone.syphon'], function(App) {
         serialize: function() {
             return {
                 jobs: this.jobs.toJSON(),
+                projectUuid: this.projectUuid,
             };
         },
     });
 
+    Jobs.Output = Backbone.View.extend({
+        template: 'jobs/output',
+        initialize: function(parameters) {
+            this.projectUuid = parameters.projectUuid;
+            this.jobId = parameters.jobId;
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView(loadingView);
+            loadingView.render();
+
+            this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
+
+            var that = this;
+            this.collection.fetch()
+                .done(function() {
+                    console.log("fetch ok. data is: " + JSON.stringify(that.collection.toJSON()));
+                    loadingView.remove();
+                    that.render();
+                })
+                .fail(function() {
+
+                });
+        },
+        serialize: function() {
+            return {
+                outputFiles: this.collection.toJSON(),
+            };
+        },
+    });
 
     App.Views.Jobs = Jobs;
     return Jobs;
