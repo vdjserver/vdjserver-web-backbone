@@ -33,16 +33,6 @@ define(['backbone'], function(Backbone) {
         },
     });
 
-/*
-    Job.OutputFiles = Backbone.Agave.Model.extend({
-        defaults: {
-            id: '',
-        },
-        url: function() {
-            return '/jobs/v2/' + this.get('id') + '/outputs/listings';
-        },
-    });
-*/
     Job.VdjPipe = Backbone.Agave.JobModel.extend({
         defaults: function() {
             return _.extend(

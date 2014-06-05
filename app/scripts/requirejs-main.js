@@ -42,9 +42,6 @@ define([
 
     'agave-profile',
 
-    'agave-file-metadata',
-    'agave-file-metadatas',
-
     'agave-file',
     'agave-files',
 

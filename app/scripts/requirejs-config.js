@@ -35,9 +35,6 @@ require.config({
         'agave-tenant-user': 'models/agave-tenant-user',
         'agave-tenant-users': 'collections/agave-tenant-users',
 
-        'agave-file-metadata': 'models/agave-file-metadata',
-        'agave-file-metadatas': 'collections/agave-file-metadatas',
-
         'agave-file': 'models/agave-file',
         'agave-files': 'collections/agave-files',
 
@@ -151,15 +148,6 @@ require.config({
             exports: 'Backbone.Agave.Collection.TenantUsers'
         },
 
-        'agave-file-metadata': {
-            deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.FileMetadata'
-        },
-        'agave-file-metadatas': {
-            deps: ['backbone', 'backbone-agave', 'agave-file-metadata'],
-            exports: 'Backbone.Agave.Collection.FileMetadatas'
-        },
-
         'agave-file': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.File'
@@ -176,15 +164,6 @@ require.config({
         'agave-jobs': {
             deps: ['backbone', 'backbone-agave', 'agave-job'],
             exports: 'Backbone.Agave.Collection.Jobs'
-        },
-
-        'agave-job-listing': {
-            deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.JobListing'
-        },
-        'agave-job-listings': {
-            deps: ['backbone', 'backbone-agave', 'agave-job-listing'],
-            exports: 'Backbone.Agave.Collection.JobListings'
         },
 
 
@@ -204,6 +183,7 @@ require.config({
             deps: ['backbone', 'backbone-agave', 'agave-permission'],
             exports: 'Backbone.Agave.Collection.ProjectUsers'
         },
+
         'agave-project': {
             deps: ['backbone', 'backbone-agave', 'agave-permissions'],
             exports: 'Backbone.Agave.Model.Project'

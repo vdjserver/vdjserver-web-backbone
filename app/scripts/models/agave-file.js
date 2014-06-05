@@ -2,7 +2,9 @@ define(['backbone'], function(Backbone) {
 
     'use strict';
 
-    var File = Backbone.Agave.FileModel.extend({
+    var File = {};
+
+    File = Backbone.Agave.FileModel.extend({
         idAttribute: 'path',
         defaults: {
             fileReference: '',
@@ -41,17 +43,83 @@ define(['backbone'], function(Backbone) {
 
             return jxhr;
         },
+        // TODO: refactor these together
         getFile: function(name) {
             console.log("called getFile with " + name);
             console.log();
             var jxhr = $.ajax({
                 headers: Backbone.Agave.oauthHeader(),
                 type: 'GET',
-                url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + '0001398998029905-5056a550b8-0001-012' + '/files/' + name,
+                url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + this.get('projectUuid') + '/files/' + name,
             });
             this.name = name;
             return jxhr;
+        },
+        downloadFile: function() {
+
+            var that = this;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('get', Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + this.get('projectUuid') + '/files/' + this.get('name'));
+            xhr.responseType = 'blob';
+            xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
+
+            xhr.onload = function() {
+              if (this.status === 200 || this.status === 202) {
+                window.saveAs(new Blob([this.response]), that.get('name'));
+              }
+            };
+            xhr.send();
+
+            return xhr;
         }
+    });
+
+    File.Metadata = Backbone.Agave.MetadataModel.extend({
+        defaults: function() {
+            return _.extend(
+                {},
+                Backbone.Agave.MetadataModel.prototype.defaults,
+                {
+                    name: 'projectFile',
+                    owner: '',
+                    value: {
+                        'projectUuid': '',
+                        'fileCategory': '',
+                        'isDeleted': false,
+                    }
+                }
+            );
+        },
+        initialize: function() {
+        },
+        url: function() {
+            return '/meta/v2/data/' + this.get('uuid');
+        },
+        syncMetadataPermissionsWithProjectPermissions: function() {
+
+            var value = this.get('value');
+
+            var jxhr = $.ajax({
+                data: {
+                    projectUuid: value.projectUuid,
+                    uuid: this.get('uuid')
+                },
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                url: Backbone.Agave.vdjauthRoot + '/permissions/metadata'
+            });
+
+            return jxhr;
+        },
+        softDeleteFile: function() {
+            var value = this.get('value');
+            value.isDeleted = true;
+
+            this.set('value', value);
+
+            return this.save();
+        },
     });
 
     Backbone.Agave.Model.File = File;

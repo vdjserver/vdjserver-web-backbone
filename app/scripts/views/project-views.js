@@ -218,7 +218,7 @@ define(['app', 'filesize', 'backbone.syphon'], function(App, filesize) {
 
             this.fileCategory = 'uploaded';
 
-            this.fileListings = new Backbone.Agave.Collection.FileMetadatas({projectUuid: parameters.projectUuid});
+            this.fileListings = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
 
 
             /*
@@ -479,7 +479,7 @@ define(['app', 'filesize', 'backbone.syphon'], function(App, filesize) {
 
                 console.log("filteredModels are: " + JSON.stringify(filteredModels));
 
-                var filteredFileListings = new Backbone.Agave.Collection.FileMetadatas(filteredModels);
+                var filteredFileListings = new Backbone.Agave.Collection.Files.Metadata(filteredModels);
                 console.log("filteredFileListings are: " + JSON.stringify(filteredFileListings));
 
                 this.setupFileListingsView(filteredFileListings);
@@ -520,11 +520,9 @@ define(['app', 'filesize', 'backbone.syphon'], function(App, filesize) {
         downloadFile: function(e) {
             e.preventDefault();
 
-            var fileMetadataUuid = e.target.dataset.filemetadatauuid;
-
-            var fileMetadata = this.fileListings.get(fileMetadataUuid);
-
-            fileMetadata.downloadFile();
+            var fileName = e.target.dataset.filename;
+            var agaveFile = new Backbone.Agave.Model.File({projectUuid: this.projectUuid, name: fileName});
+            agaveFile.downloadFile();
         },
     });
 
@@ -642,7 +640,7 @@ define(['app', 'filesize', 'backbone.syphon'], function(App, filesize) {
             var associationId = this.model.getAssociationId();
 
             // Setup file metadata
-            var fileMetadata = new Backbone.Agave.Model.FileMetadata();
+            var fileMetadata = new Backbone.Agave.Model.File.Metadata();
 
             var initialMetadata = {
                 associationIds: [ associationId ],
