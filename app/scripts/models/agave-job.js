@@ -233,9 +233,7 @@ define(['backbone'], function(Backbone) {
 
             var jxhr = $.ajax({
                 data: 'action=mkdir&path=' + relativeArchivePath,
-                headers: {
-                    'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token')
-                },
+                headers: Backbone.Agave.oauthHeader,
                 type: 'PUT',
                 url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + projectUuid + '/analyses',
             });
@@ -248,9 +246,7 @@ define(['backbone'], function(Backbone) {
                     projectUuid: projectUuid,
                     jobUuid: this.get('id'),
                 },
-                headers: {
-                    'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + Backbone.Agave.instance.token().get('access_token'))
-                },
+                headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
                 url: Backbone.Agave.vdjauthRoot + '/jobs/metadata',
             });

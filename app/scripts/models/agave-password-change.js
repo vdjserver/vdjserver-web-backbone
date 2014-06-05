@@ -21,9 +21,7 @@ define(['backbone'], function(Backbone) {
                     newPassword: this.get('newPassword'),
                     password: this.get('password')
                 },
-                headers: {
-                    'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + Backbone.Agave.instance.token().get('access_token'))
-                },
+                headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
                 url: Backbone.Agave.vdjauthRoot + this.url()
             });

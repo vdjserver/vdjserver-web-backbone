@@ -14,7 +14,7 @@ define(['backbone'], function(Backbone) {
         if (defaults.primary) {
             Agave.instance = this;
         }
-        
+
     };
 
     _.extend(Agave.prototype, Backbone.Events, {
@@ -31,12 +31,24 @@ define(['backbone'], function(Backbone) {
         destroyToken: function() {
             console.log("convenience destroy called");
             this._token.destroy();
-        }
+        },
 
     });
 
     Agave.apiRoot     = EnvironmentConfig.agaveRoot;
     Agave.vdjauthRoot = EnvironmentConfig.vdjauthRoot;
+
+    Agave.basicAuthHeader = function() {
+        return {
+            'Authorization': 'Basic ' + btoa(Agave.instance.token().get('username') + ':' + Agave.instance.token().get('access_token')),
+        };
+    };
+
+    Agave.oauthHeader = function() {
+        return {
+            'Authorization': 'Bearer ' + Agave.instance.token().get('access_token'),
+        };
+    };
 
     Agave.sync = function(method, model, options) {
 
@@ -66,10 +78,10 @@ define(['backbone'], function(Backbone) {
 
 
 
-        /* 
+        /*
             Choose your own adventure:
-            
-            A.) Call default sync if token is ok 
+
+            A.) Call default sync if token is ok
             B.) Try to refresh the token and then continue as usual
             C.) Abandon ship
         */

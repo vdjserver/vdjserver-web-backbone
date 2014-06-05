@@ -48,9 +48,7 @@ define(['backbone'], function(Backbone) {
                     projectUuid: this.uuid,
                     username: this.get('username')
                 },
-                headers: {
-                    'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + Backbone.Agave.instance.token().get('access_token'))
-                },
+                headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
                 url: Backbone.Agave.vdjauthRoot + '/permissions/username'
             });
@@ -64,9 +62,7 @@ define(['backbone'], function(Backbone) {
                     projectUuid: this.uuid,
                     username: this.get('username')
                 },
-                headers: {
-                    'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + Backbone.Agave.instance.token().get('access_token'))
-                },
+                headers: Backbone.Agave.basicAuthHeader(),
                 type: 'DELETE',
                 url: Backbone.Agave.vdjauthRoot + '/permissions/username'
             });

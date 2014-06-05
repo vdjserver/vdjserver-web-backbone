@@ -34,9 +34,7 @@ define(['backbone'], function(Backbone) {
                     projectUuid: value.projectUuid,
                     uuid: this.get('uuid')
                 },
-                headers: {
-                    'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + Backbone.Agave.instance.token().get('access_token'))
-                },
+                headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
                 url: Backbone.Agave.vdjauthRoot + '/permissions/metadata'
             });
@@ -59,14 +57,14 @@ define(['backbone'], function(Backbone) {
             xhr.open('get', this.get('_links').file.href);
             xhr.responseType = 'blob';
             xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-            
+
             xhr.onload = function() {
               if (this.status === 200 || this.status === 202) {
                 window.saveAs(new Blob([this.response]), that.get('value').name);
               }
             };
             xhr.send();
-            
+
             return xhr;
         }
     });
