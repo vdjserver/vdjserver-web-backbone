@@ -29,8 +29,8 @@ define(['backbone'], function(Backbone) {
 
             var outputConfig = {
                 "base_path_input": "",
-                "base_path_output": "",
                 //"base_path_output": "output",
+                "base_path_output": "",
                 "csv_file_delimiter": "\\t",
                 'single_read_pipe': [],
                 //{'write_value': }

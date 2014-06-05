@@ -4,34 +4,17 @@ define(['backbone'], function(Backbone) {
 
     var Agave = function(options) {
 
-        var defaults = _.extend({primary: true}, options),
-            token = this._token = new Agave.Auth.Token({});
-
-        this.listenTo(token, 'change', function() {
-            this.trigger('Agave:tokenChanged');
-        }, this);
-
-        this.listenTo(token, 'destroy', function() {
-            this.token().clear();
-            this.trigger('Agave:tokenDestroy');
-        });
+        var defaults = _.extend({primary: true}, options);
+        var token = this._token = new Agave.Auth.Token({});
 
         if (defaults.token) {
             this.token(defaults.token);
         }
 
-        // look for token in global variable
-        else if (window.AGAVE_TOKEN && window.AGAVE_USERNAME) {
-            this.setToken({
-                'token': window.AGAVE_TOKEN,
-                'username': window.AGAVE_USERNAME
-            });
-        }
-
         if (defaults.primary) {
             Agave.instance = this;
         }
-
+        
     };
 
     _.extend(Agave.prototype, Backbone.Events, {
@@ -39,17 +22,17 @@ define(['backbone'], function(Backbone) {
         constructor: Agave,
 
         token: function(options) {
-            //console.log("options are: " + JSON.stringify(options));
             if (options) {
                 this._token.set(options);
-                //console.log("options past if. token new is: " + JSON.stringify(this._token));
             }
             return this._token;
         },
 
         destroyToken: function() {
+            console.log("convenience destroy called");
             this._token.destroy();
         }
+
     });
 
     Agave.apiRoot     = EnvironmentConfig.agaveRoot;
@@ -57,7 +40,7 @@ define(['backbone'], function(Backbone) {
 
     Agave.sync = function(method, model, options) {
 
-        var apiRoot = model.apiRoot
+        var apiRoot = model.apiRoot;
         if (options.apiRoot) {
             apiRoot = options.apiRoot;
         }
@@ -79,8 +62,43 @@ define(['backbone'], function(Backbone) {
             };
         }
 
-        // Call default sync
-        return Backbone.sync(method, model, options);
+        console.log("isActive is: " + Agave.instance.token().isActive());
+
+
+
+        /* 
+            Choose your own adventure:
+            
+            A.) Call default sync if token is ok 
+            B.) Try to refresh the token and then continue as usual
+            C.) Abandon ship
+        */
+        if (Agave.instance.token().isActive()) {
+            return Backbone.sync(method, model, options);
+        }
+        else if (! Agave.instance.token().isActive() && Agave.instance.token().get('refresh_token')) {
+
+            return Agave.instance.token()
+                .save()
+                .then(function() {
+                    console.log("deferred then ok");
+                    return Backbone.sync(method, model, options);
+                })
+                .fail(function() {
+                    console.log("token refresh fail - destroying token");
+                    Agave.instance.destroyToken();
+                });
+
+        }
+        else {
+            var deferred = $.Deferred();
+
+            deferred.reject(function() {
+                Agave.instance.destroyToken();
+            });
+
+            return deferred;
+        }
     };
 
 
@@ -112,6 +130,7 @@ define(['backbone'], function(Backbone) {
             var xhr = options.xhr || new XMLHttpRequest();
             xhr.open('POST', url, true);
             xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
+            xhr.timeout = 0;
 
 
             // Listen to the upload progress.
@@ -129,6 +148,7 @@ define(['backbone'], function(Backbone) {
                     deferred.resolve(xhr.response);
                 }
                 else {
+                    console.log("jqxhr ELSE - " + xhr.status);
                     deferred.reject('HTTP Error: ' + xhr.status)
                 }
             }, false);
@@ -259,8 +279,8 @@ define(['backbone'], function(Backbone) {
 
             switch (method) {
                 case 'update':
-                options.type = 'POST';
-                break;
+                    options.type = 'POST';
+                    break;
             }
 
             // Call Agave Model  sync
@@ -290,43 +310,35 @@ define(['backbone'], function(Backbone) {
             // Use credentials provided in options first; otherwise used current session creds.
             var username = options.username || (agaveToken ? agaveToken.get('username') : '');
             var password;
+            var requestType;
 
             switch (method) {
 
                 case 'create':
+                    console.log("token method: create");
                     options.type = 'POST';
                     password = options.password;
                     break;
 
                 case 'update':
-                    options.url = model.url + '/' + model.get('refresh_token');
+                    console.log("token method: update");
                     options.type = 'PUT';
                     password = agaveToken.get('refresh_token');
                     break;
 
                 case 'delete':
-                    //options.url = model.url + '/' + model.get('access_token');
-                    //options.type = 'DELETE';
-                    //password = agaveToken.get('access_token');
-                    return;
+                    return false;
                     break;
             }
 
-            options.url = this.apiRoot + (options.url || _.result(model, 'url'));
+console.log("token past switch for method: " + method);
 
-            // Allow user-provided before send, but protect ours, too.
-            if (options.beforeSend) {
-                options._beforeSend = options.beforeSend;
-            }
+            options.url = Backbone.Agave.vdjauthRoot + '/token',
 
-            options.beforeSend = function(xhr) {
-                if (options._beforeSend) {
-                    options._beforeSend(xhr);
-                }
-                xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username + ':' + password));
+            options.headers = {
+                'Authorization': 'Basic ' + btoa(username + ':' + password),
             };
 
-            // Call default sync
             return Backbone.sync(method, model, options);
         },
         parse: function(response) {
@@ -348,11 +360,17 @@ define(['backbone'], function(Backbone) {
             var expires = this.get('expires');
             var hasError = false;
 
+            if (expires) {
+                console.log("expires ok: " + expires);
+                console.log("token expires is: " + Math.max(0, this.get('expires') - (Date.now() / 1000)));
+            }
+
             if (! expires) {
                 hasError = true;
             }
 
-            if (expires && (expires - (Date.now() / 1000) <= 0)) {
+            if (expires && (Math.max(0, expires - (Date.now() / 1000)) <= 0)) {
+                console.log("expires is not ok");
                 hasError = true;
             }
 

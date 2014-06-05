@@ -16,7 +16,7 @@ define(['app', 'backbone.syphon'], function(App){
         },
         serialize: function() {
             return {
-                isLoggedIn: App.isLoggedIn(),
+                isLoggedIn: App.Agave.token().isActive(),
                 account: this.model.toJSON()
             };
         }
@@ -28,7 +28,7 @@ define(['app', 'backbone.syphon'], function(App){
             this.model.on('change', this.render, this);
         },
         beforeRender: function() {
-            if (App.isLoggedIn()) {
+            if (App.Agave.token.isActive()) {
                 this.template = 'logged-in';
             } else {
                 this.template = 'logged-out';
@@ -43,7 +43,7 @@ define(['app', 'backbone.syphon'], function(App){
         template: 'home',
         initialize: function() {
 
-            this.model.destroy();
+            //this.model.destroy();
             this.render;
         },
         serialize: function() {

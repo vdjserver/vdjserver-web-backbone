@@ -41,92 +41,28 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
             // setup agave
             App.Agave = new Backbone.Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
+            console.log("token 1 is: " + JSON.stringify(App.Agave.token()));
 
-            var watchToken = function() {
-                var warn;
-                var error;
-
-                var saveMutex = false;
-
-                clearTimeout(warn);
-                clearTimeout(error);
-
-                var token = App.Agave.token();
-
-                var refreshInterval = token.expiresIn() - 1000;
-
-                console.log("refresh interval is: " + refreshInterval);
-
-                if (token.isActive()) {
-
+            App.listenTo(
+                App.Agave.token(),
+                'change',
+                function() {
                     // Necessary for browser refresh...
-                    window.localStorage.setItem('Agave.Token', JSON.stringify(token.toJSON()));
-
-                    console.log("token is: " + JSON.stringify(token));
-
-                    warn = setTimeout(function() {
-                        console.log("timeout running");
-
-                        /*
-                            If the expiration time is below a certain
-                            threshold, then we should try to refresh.
-
-
-                            This function fires on pageload as well, so this
-                            condition will stop it from refreshing too early
-                            with a new token.
-                        */
-                        if (token.expiresIn() - 1000 < 1500) {
-
-                            if (saveMutex === false) {
-
-                                saveMutex = true;
-
-                                console.log("pre token update!");
-
-                                token.save()
-                                    .done(function() {
-                                        // it was renewed, rewatch token
-                                        console.log("token renewed. token is: " + JSON.stringify(token));
-                                        window.localStorage.setItem('Agave.Token', JSON.stringify(token.toJSON()));
-                                        App.Agave.token(token);
-                                        watchToken();
-                                    })
-                                    .fail(function() {
-                                        console.log("tokenSave fail");
-                                        App.Agave.destroyToken();
-                                        window.localStorage.removeItem('Agave.Token');
-                                        App.router.navigate('', {'trigger':true});
-                                    });
-                            }
-                        }
-
-                    }, Math.max(0, (token.expiresIn() - 1000 * 1000)));
-
-                    error = setTimeout(function() {
-                        alert('Your Session has expired.  You have been logged out.');
-                        App.Agave.destroyToken();
-                        window.localStorage.removeItem('Agave.Token');
-                        App.router.navigate('', {'trigger':true});
-                    }, Math.max(0, (token.expiresIn() * 1000)));
+                    window.localStorage.setItem('Agave.Token', JSON.stringify(App.Agave.token().toJSON()));
                 }
-            };
-            App.listenTo(App.Agave, 'Agave:tokenChanged', watchToken, this);
-            App.listenTo(App.Agave, 'Agave:tokenDestroy', watchToken, this);
-            watchToken();
+            );
+
+            App.listenTo(
+                App.Agave.token(),
+                'destroy',
+                function() {
+                    window.localStorage.removeItem('Agave.Token');
+                    App.router.navigate('', {'trigger':true});
+                }
+            );
 
 
             // initialize router, views, data and layouts
-            /*
-            App.Layouts.header = new App.Views.AppViews.HeaderLayout({
-                el: '#header',
-                views: {
-                    '': [
-                        new App.Views.AppViews.Nav({model: App.Agave.token()})
-                    ]
-                }
-            });
-            */
 
             App.Layouts.main = new App.Views.AppViews.MainLayout({
                 el: '#main'
@@ -188,9 +124,10 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
         Collections: {},
         Routers:     {}
     };
-    return _.extend(App, {
-        isLoggedIn: function() {
-            return this.Agave.token().isActive();
-        }
-    }, Backbone.Events);
+
+    return _.extend(
+        App,
+        {},
+        Backbone.Events
+    );
 });
