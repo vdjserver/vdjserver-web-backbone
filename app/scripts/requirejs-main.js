@@ -29,6 +29,8 @@ define([
     // Agave
     'backbone-agave',
     'agave-new-account',
+    'agave-notification',
+
     'agave-password-change',
     'agave-password-reset',
 

@@ -1,4 +1,9 @@
-define(['app', 'filesize', 'backbone.syphon'], function(App, filesize) {
+define([
+    'app', 
+    'handlebars', 
+    'filesize', 
+    'backbone.syphon'
+], function(App, Handlebars, filesize) {
 
     'use strict';
 

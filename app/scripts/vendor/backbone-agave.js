@@ -322,7 +322,6 @@ define(['backbone'], function(Backbone) {
             // Use credentials provided in options first; otherwise used current session creds.
             var username = options.username || (agaveToken ? agaveToken.get('username') : '');
             var password;
-            var requestType;
 
             switch (method) {
 
