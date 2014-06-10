@@ -251,6 +251,8 @@ define([
 
             var that = this;
 
+            console.log("proj model is: " + JSON.stringify(this.projectModel));
+
             this.projectUsers = new Backbone.Agave.Collection.Permissions({
                 uuid: this.projectModel.get('uuid')
             });

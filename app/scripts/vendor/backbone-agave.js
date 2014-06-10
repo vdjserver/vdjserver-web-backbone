@@ -374,6 +374,7 @@ console.log("token past switch for method: " + method);
             if (expires) {
                 console.log("expires ok: " + expires);
                 console.log("token expires is: " + Math.max(0, this.get('expires') - (Date.now() / 1000)));
+                console.log("token is: " + this.get('access_token'));
             }
 
             if (! expires) {

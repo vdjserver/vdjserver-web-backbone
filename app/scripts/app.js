@@ -56,6 +56,8 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 App.Agave.token(),
                 'destroy',
                 function() {
+                    console.log("destroy ok");
+                    App.Agave.token().clear();
                     window.localStorage.removeItem('Agave.Token');
                     App.router.navigate('', {'trigger':true});
                 }

@@ -33,6 +33,9 @@ define(['app'], function(App) {
     };
 
     var setPublicSubviews = function() {
+
+        App.Layouts.main.removeView('.sidebar');
+
         if (App.Layouts.main.template !== 'layouts/public') {
             App.Layouts.main.template = 'layouts/public';
         }
