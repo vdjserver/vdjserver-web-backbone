@@ -1,11 +1,17 @@
-define(['backbone'], function(Backbone) {
+define([
+    'backbone', 
+    'environment-config'
+], function(
+    Backbone, 
+    EnvironmentConfig
+) {
 
     'use strict';
 
     var Agave = function(options) {
 
         var defaults = _.extend({primary: true}, options);
-        var token = this._token = new Agave.Auth.Token({});
+        this._token = new Agave.Auth.Token({});
 
         if (defaults.token) {
             this.token(defaults.token);
@@ -245,7 +251,7 @@ define(['backbone'], function(Backbone) {
                 var lastModified = result[i].lastModified;
                 var lastModifiedUnixTime = moment(lastModified, dateFormat);
                 result[i].lastModified = lastModifiedUnixTime;
-            };
+            }
 
             return result;
         }

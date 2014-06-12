@@ -81,6 +81,9 @@ require.config({
         'bootstrap': {
             deps: ['jquery']
         },
+        'environment-config': {
+            exports: 'EnvironmentConfig',
+        },
         'jquery-ui': {
             deps: ['jquery'],
             exports: '$'
