@@ -113,6 +113,7 @@ define(['app', 'backbone.syphon'], function(App){
                                 });
                         })
                         .fail(function() {
+                            App.Agave.token().clear();
                             $('#confirmation-button').removeClass('hidden');
                             $('.modal-body').html('');
                             $('.modal-body').prepend($('<div class="alert alert-danger">').text('Authentication failed. Please check your username and password').fadeIn());
