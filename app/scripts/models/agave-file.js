@@ -4,7 +4,7 @@ define(['backbone'], function(Backbone) {
 
     var File = {};
 
-    File = Backbone.Agave.FileModel.extend({
+    File = Backbone.Agave.Model.extend({
         idAttribute: 'path',
         defaults: {
             fileReference: '',
@@ -22,6 +22,49 @@ define(['backbone'], function(Backbone) {
         },
         url: function() {
             return '/files/v2/media/system/data.vdjserver.org//projects/' + this.get('projectUuid') + '/files/';
+        },
+        sync: function(method, model, options) {
+            if (method !== 'create' && method !== 'update') {
+                return Backbone.Agave.sync(method, model, options);
+            }
+            else {
+                var url = model.apiRoot + (options.url || _.result(model, 'url'));
+                var agaveToken = options.agaveToken || model.agaveToken || Backbone.Agave.instance.token();
+
+                var formData = new FormData();
+                formData.append('fileToUpload', model.get('fileReference'));
+
+                var deferred = $.Deferred();
+
+                var xhr = options.xhr || new XMLHttpRequest();
+                xhr.open('POST', url, true);
+                xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
+                xhr.timeout = 0;
+
+
+                // Listen to the upload progress.
+                xhr.upload.onprogress = function(e) {
+                    if (e.lengthComputable) {
+                        var uploadProgress = (e.loaded / e.total) * 100;
+                        model.trigger('uploadProgress', uploadProgress);
+                    }
+                };
+
+                xhr.addEventListener('load', function() {
+
+                    if (xhr.status === 200 || 202) {
+                        //var parsedJSON = JSON.parse(xhr.response);
+                        deferred.resolve(xhr.response);
+                    }
+                    else {
+                        console.log("jqxhr ELSE - " + xhr.status);
+                        deferred.reject('HTTP Error: ' + xhr.status)
+                    }
+                }, false);
+
+                xhr.send(formData);
+                return deferred;
+            }
         },
         getAssociationId: function() {
             var path = this.get('path');

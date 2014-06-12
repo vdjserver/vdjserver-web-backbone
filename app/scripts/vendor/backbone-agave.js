@@ -131,52 +131,6 @@ define([
         return Agave.sync(method, model, options);
     };
 
-    Agave.fileSync = function(method, model, options) {
-
-        if (method !== 'create' && method !== 'update') {
-            return Agave.sync(method, model, options);
-        }
-        else {
-            var url = model.apiRoot + (options.url || _.result(model, 'url'));
-            var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
-
-            var formData = new FormData();
-            formData.append('fileToUpload', model.get('fileReference'));
-
-            var deferred = $.Deferred();
-
-            var xhr = options.xhr || new XMLHttpRequest();
-            xhr.open('POST', url, true);
-            xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
-            xhr.timeout = 0;
-
-
-            // Listen to the upload progress.
-            xhr.upload.onprogress = function(e) {
-                if (e.lengthComputable) {
-                    var uploadProgress = (e.loaded / e.total) * 100;
-                    model.trigger('uploadProgress', uploadProgress);
-                }
-            };
-
-            xhr.addEventListener('load', function() {
-
-                if (xhr.status === 200 || 202) {
-                    var parsedJSON = JSON.parse(xhr.response);
-                    deferred.resolve(xhr.response);
-                }
-                else {
-                    console.log("jqxhr ELSE - " + xhr.status);
-                    deferred.reject('HTTP Error: ' + xhr.status)
-                }
-            }, false);
-
-            xhr.send(formData);
-            return deferred;
-
-        }
-    };
-
     // Agave extension of default Backbone.Model that uses Agave sync
     Agave.Model = Backbone.Model.extend({
         apiRoot: Agave.apiRoot,
@@ -201,10 +155,6 @@ define([
             }
             return response;
         }
-    });
-
-    Agave.FileModel = Agave.Model.extend({
-        sync: Agave.fileSync
     });
 
     Agave.MetadataModel = Agave.Model.extend({
