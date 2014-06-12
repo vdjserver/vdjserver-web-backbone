@@ -18,6 +18,7 @@
         "nvd3": "1.1.x",
         "requirejs": "2.1.x",
         "slickgrid": "2.1.x",
+        "socket.io-client": "1.0.x",
         "typeahead.js": "0.10.x",
         "twbs-bootstrap-sass": "3.1.x",
         "underscore": "1.6.x"

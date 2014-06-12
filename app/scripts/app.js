@@ -124,7 +124,8 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
         },
         Models:      {},
         Collections: {},
-        Routers:     {}
+        Routers:     {},
+        Websockets:  {},
     };
 
     return _.extend(

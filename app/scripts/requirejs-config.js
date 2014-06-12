@@ -18,6 +18,7 @@ require.config({
         'nvd3':             '../bower_components/nvd3/nv.d3.min',
         'slickgrid.core':   '../bower_components/slickgrid/slick.core',
         'slickgrid.grid':   '../bower_components/slickgrid/slick.grid',
+        'socket-io':        '../bower_components/socket.io-client/socket.io',
         'file-saver':       '../bower_components/file-saver/FileSaver',
 
         // Config
@@ -27,6 +28,7 @@ require.config({
         'backbone-agave':  'vendor/backbone-agave',
 
         // Regular Models
+        'job-websocket': 'models/job-websocket',
 
         // Agave - Models/Collections
         'agave-new-account': 'models/agave-new-account',
@@ -93,7 +95,7 @@ require.config({
         },
         'jquery.event.drop': {
             deps: ['jquery']
-        },        
+        },
         'handlebars': {
             exports: 'Handlebars'
         },
@@ -116,7 +118,7 @@ require.config({
         'slickgrid.grid': {
             deps:['jquery','jquery-ui', 'slickgrid.core', 'jquery.event.drag','jquery.event.drop'],
             exports: 'Slick'
-        },        
+        },
         'typeahead': {
             deps: ['jquery']
         },

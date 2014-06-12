@@ -25,6 +25,9 @@ define([
     //slickgrid
     'slickgrid.core',
     'slickgrid.grid',
+
+    // Regular Models
+    'job-websocket',
     
     // Agave
     'backbone-agave',

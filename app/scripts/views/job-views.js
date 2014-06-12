@@ -511,22 +511,25 @@ define(['app', 'backbone.syphon'], function(App) {
             this.projectModel = parameters.projectModel;
 
             var that = this;
+
+            var jobWebsocket = new App.Models.JobWebsocket();
+
             this.job.createArchivePathDirectory(this.projectModel.get('uuid'))
                 .then(function() {
                     return that.job.save();
                 })
+                // Create metadata
+                .then(function() {
+                    return that.job.createJobMetadata(that.projectModel.get('uuid'));
+                })
+                .then(function() {
+                    var jobNotification = new Backbone.Agave.Model.Notification();
+                    return jobNotification.save();
+                })
                 .done(function() {
-
-                    // Create metadata
-                    that.job.createJobMetadata(that.projectModel.get('uuid'))
-                        .done(function() {
-                            console.log("job meta ok");
-                        })
-                        .fail(function() {
-                            console.log("job meta fail");
-                        });
-
-                    console.log('job submit success');
+                    //var jobWebsocketFactory = new App.Models.JobWebsocket.Factory();
+                    //var jobWebsocket = jobWebsocketFactory.getJobWebsocket();
+                    jobWebsocket.subscribeToJob(that.job.get('id'));
                 })
                 .fail(function() {
                     console.log('job submit fail');
