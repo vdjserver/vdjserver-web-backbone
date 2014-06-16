@@ -1,18 +1,24 @@
 <li>
     <div class="panel panel-default vdj-pipe-parameter">
         <div class="panel-body">
-            <h4>
-                <i class="fa fa-bars"></i>
-                {{parameterName}}
-                <br>
-                <select class="job-form-item" name="{{inputCount}}-{{parameterType}}" data-type="text">
-                    {{#each files}}
-                        <option value={{value.name}}>{{value.name}}</option>
-                    {{/each}}
-                </select>
-
-                <span class="label label-danger remove-job-parameter">&times;</span>
-            </h4>
+            <div class="row">
+                <div class="col-md-12">
+                    <i class="fa fa-bars"></i>
+                    &nbsp;
+                    {{parameterName}}
+                    &nbsp;
+                    <span class="label label-danger remove-job-parameter">&times;</span>
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <select class="job-form-item" name="{{inputCount}}-{{parameterType}}" data-type="text">
+                        {{#each files}}
+                            <option value={{value.name}}>{{value.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 </li>

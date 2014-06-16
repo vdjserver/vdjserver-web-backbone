@@ -1,22 +1,38 @@
 <li>
     <div class="panel panel-default vdj-pipe-parameter">
         <div class="panel-body">
-            <h4>
-                <i class="fa fa-bars"></i>
+            <div class="row">
+                <div class="col-md-12">
+                    <i class="fa fa-bars"></i>
+                    &nbsp;
+                    Average Quality Window Filter
+                    &nbsp;
+                    <span class="label label-danger remove-job-parameter">&times;</span>
 
-                Average Quality Window Filter
-                <span class="label label-danger remove-job-parameter">&times;</span>
-                <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
-                <br>
-                <br>
-                Min Quality <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-quality" data-type="text" value="" placeholder="Minimal quality score">
-                <br>
-                <br>
-                Window Length <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-window-length" data-type="text" value="" placeholder="Length for computing averages">
-                <br>
-                <br>
-                Min Interval Length <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-length" data-type="text" value="" placeholder="Minimal interval length">
-            </h4>
+                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Min Quality
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-quality" data-type="text" value="" placeholder="Minimal quality score">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Window Length
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-window-length" data-type="text" value="" placeholder="Length for computing averages">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Min Interval Length
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-length" data-type="text" value="" placeholder="Minimal interval length">
+                </div>
+            </div>
         </div>
     </div>
 </li>

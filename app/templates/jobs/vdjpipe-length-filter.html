@@ -1,19 +1,31 @@
 <li>
     <div class="panel panel-default vdj-pipe-parameter">
         <div class="panel-body">
-            <h4>
-                <i class="fa fa-bars"></i>
-                
-                Length Filter
-                <span class="label label-danger remove-job-parameter">&times;</span>
-                <input class="job-form-item hidden" name="{{inputCount}}-{{parameterType}}">
-                <br>
-                <br>
-                Min <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min" data-type="number" min=0 value=0>
-                <br>
-                <br>
-                Max <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-max" data-type="number" min=0>
-            </h4>
+            <div class="row">
+                <div class="col-md-12">
+                    <i class="fa fa-bars"></i>
+                    &nbsp;
+                    Length Filter
+                    &nbsp;
+                    <span class="label label-danger remove-job-parameter">&times;</span>
+
+                    <input class="job-form-item hidden" name="{{inputCount}}-{{parameterType}}">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Min
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min" data-type="number" min="0" step="1" pattern="\d+" value=0>
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Max
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-max" data-type="number" min="0" step="1" pattern="\d+">
+                </div>
+            </div>
         </div>
     </div>
 </li>

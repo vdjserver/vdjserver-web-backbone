@@ -1,19 +1,31 @@
 <li>
     <div class="panel panel-default vdj-pipe-parameter">
         <div class="panel-body">
-            <h4>
-                <i class="fa fa-bars"></i>
+            <div class="row">
+                <div class="col-md-12">
+                    <i class="fa fa-bars"></i>
+                    &nbsp;
+                    Ambiguous Nucleotide Window Filter
+                    &nbsp;
+                    <span class="label label-danger remove-job-parameter">&times;</span>
 
-                Ambiguous Nucleotide Window Filter
-                <span class="label label-danger remove-job-parameter">&times;</span>
-                <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
-                <br>
-                <br>
-                Min Length <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min" data-type="text" value="">
-                <br>
-                <br>
-                Max Ambiguous <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-max-ambiguous" data-type="text" value="">
-            </h4>
+                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Min Length
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min" data-type="text" value="">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Max Ambiguous
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-max-ambiguous" data-type="text" value="">
+                </div>
+            </div>
         </div>
     </div>
 </li>

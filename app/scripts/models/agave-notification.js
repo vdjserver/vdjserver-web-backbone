@@ -9,6 +9,7 @@ define(['backbone'], function(Backbone) {
             event: '*',
             url:   Backbone.Agave.vdjauthRoot + '/notifications/jobs/${JOB_ID}?status=${JOB_STATUS}&event=${EVENT}&error=${JOB_ERROR}',
             associatedUuid:  '',
+            persistent: true,
         },
         url: function() {
             return '/notifications/v2/';

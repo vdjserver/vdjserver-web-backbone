@@ -67,18 +67,12 @@ define(['backbone'], function(Backbone) {
         },
         generateVdjPipeConfig: function(parameters, fileMetadata) {
 
-            console.log("starting - meta is: " + JSON.stringify(fileMetadata));
-
             var outputConfig = {
-                "base_path_input": "",
-                //"base_path_output": "output",
-                "base_path_output": "",
-                "csv_file_delimiter": "\\t",
+                'base_path_input': '',
+                'base_path_output': '',
+                'csv_file_delimiter': '\\t',
                 'single_read_pipe': [],
-                //{'write_value': }
             };
-
-            //outputConfig.forward_seq
 
             var paramOutput = [];
             var inputOutput = [];
@@ -86,7 +80,7 @@ define(['backbone'], function(Backbone) {
             for (var key in parameters) {
 
                 if (parameters.hasOwnProperty(key)) {
-                    console.log('key is: ' + key);
+                    console.log("key is: " + key);
                     if (key !== 'formtype' && key !== 'job-name') {
                         console.log("past if");
                         var keyCounterIndex = key.indexOf('-') + 1;
@@ -100,14 +94,16 @@ define(['backbone'], function(Backbone) {
                         switch(vdjPipeParam) {
                             case 'quality-stats':
                                 paramOutput.push({
+                                    //'quality_stats': {'out_prefix': parameters[key]}
                                     'quality_stats': {'out_prefix': 'pre-'}
                                 });
                                 break;
 
                             case 'composition-stats':
                                 paramOutput.push({
+                                    //'composition_stats': {'out_prefix': parameters[key]}
                                     'composition_stats': {'out_prefix': 'pre-'}
-                                })
+                                });
                                 break;
 
                             case 'nucleotide-filter':
@@ -198,24 +194,6 @@ define(['backbone'], function(Backbone) {
                 }
             }
 
-            /*
-             *
-             *
-
-                            case 'forward-seq':
-                                inputOutput.push({
-                                    'forward_seq': parameters[key]
-                                });
-                                break;
-
-                            case 'reverse-seq':
-                                inputOutput.push({
-                                    'reverse_seq': parameters[key]
-                                });
-                                break;
-
-            */
-
             for (var i = 0; i < fileMetadata.length; i++) {
                 console.log("values are: " + JSON.stringify(fileMetadata.at([i])));
                 var value = fileMetadata.at([i]).get('value');
@@ -225,15 +203,13 @@ define(['backbone'], function(Backbone) {
                         'forward_seq': value.name
                     });
                 }
-            };
+            }
 
             console.log("paramOutput is: " + JSON.stringify(paramOutput));
             console.log("inputOutput is: " + JSON.stringify(inputOutput));
 
             outputConfig.input = inputOutput;
-
             outputConfig.single_read_pipe = paramOutput;
-
 
             console.log("outputConfig is: " + JSON.stringify(outputConfig));
 
@@ -271,7 +247,6 @@ define(['backbone'], function(Backbone) {
             var relativeArchivePath = archivePathSplit[4];
 
             console.log("relativeArchivePath is: " + relativeArchivePath);
-
 
             var jxhr = $.ajax({
                 data: 'action=mkdir&path=' + relativeArchivePath,

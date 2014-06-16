@@ -1,15 +1,22 @@
 <li>
     <div class="panel panel-default vdj-pipe-parameter">
         <div class="panel-body">
-            <h4>
-                <i class="fa fa-bars"></i>
-                
-                {{parameterName}}
-                <span class="label label-danger remove-job-parameter">&times;</span>
-                <br>
-                <br>
-                {{inputLabel}} <input class="job-form-item" name="{{inputCount}}-{{parameterType}}" data-type="number" value="">
-            </h4>
+            <div class="row">
+                <div class="col-md-12">
+                    <i class="fa fa-bars"></i>
+                    &nbsp;
+                    {{parameterName}}
+                    &nbsp;
+                    <span class="label label-danger remove-job-parameter">&times;</span>
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    {{inputLabel}}
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}" data-type="number" value="" min="0" step="1" pattern="\d+">
+                </div>
+            </div>
         </div>
     </div>
 </li>
