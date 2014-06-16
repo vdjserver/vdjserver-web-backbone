@@ -523,7 +523,8 @@ define(['app', 'backbone.syphon'], function(App) {
                     return that.job.createJobMetadata(that.projectModel.get('uuid'));
                 })
                 .then(function() {
-                    var jobNotification = new Backbone.Agave.Model.Notification();
+                    var jobNotification = new Backbone.Agave.Model.Notification.Job();
+                    jobNotification.set('associatedUuid', that.job.get('id'));
                     return jobNotification.save();
                 })
                 .done(function() {

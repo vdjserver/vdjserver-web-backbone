@@ -10,13 +10,8 @@ define(['backbone'], function(Backbone) {
             url:   Backbone.Agave.vdjauthRoot + '/notifications/jobs/${JOB_ID}?status=${JOB_STATUS}&event=${EVENT}&error=${JOB_ERROR}',
             associatedUuid:  '',
         },
-        initialize: function(parameters) {
-            if (parameters.projectUuid) {
-                this.projectUuid = parameters.projectUuid;
-            }
-        },
         url: function() {
-            return '/files/v2/media/system/data.vdjserver.org//projects/' + this.projectUuid + '/files/';
+            return '/notifications/v2/';
         },
     });
 
