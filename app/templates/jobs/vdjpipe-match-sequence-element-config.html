@@ -3,8 +3,18 @@
         {{fileName}}
         &nbsp;
         <span class="label label-danger remove-match-sequence-element">&times;</span>
+
+        <input name="{{inputCount}}-{{parameterType}}-{{fileName}}-path" type="text" value="{{fileName}}" hidden>
         <table class="table">
             <tbody>
+                <tr>
+                    <td>
+                        Sequences Column
+                    </td>
+                    <td>
+                        <input name="{{inputCount}}-{{parameterType}}-{{fileName}}-column-name" type="text">
+                    </td>
+                </tr>
                 <tr>
                     <td>
                         Position Start/End

@@ -1,0 +1,37 @@
+<div class="row row-with-spacer">
+    <div class="col-md-12" style="border: 1px solid #000000;">
+        {{fileName}}
+        &nbsp;
+        <span class="label label-danger remove-match-sequence-combination-object">&times;</span>
+
+        <input name="{{inputCount}}-{{parameterType}}-{{fileName}}-combination-object-path" type="text" value="{{fileName}}" hidden>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>
+                        Value Name
+                    </td>
+                    <td>
+                        <input name="{{inputCount}}-{{parameterType}}-{{fileName}}-value-name" type="text">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Values Column
+                    </td>
+                    <td>
+                        <input name="{{inputCount}}-{{parameterType}}-{{fileName}}-values-column" type="text">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Names Column
+                    </td>
+                    <td>
+                        <input name="{{inputCount}}-{{parameterType}}-{{fileName}}-names-column" type="text">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

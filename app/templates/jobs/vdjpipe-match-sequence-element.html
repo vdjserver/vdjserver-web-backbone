@@ -35,11 +35,31 @@
                             <option value={{value.name}}>{{value.name}}</option>
                         {{/each}}
                     </select>
-                    &nbsp;
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
                     <button class="btn btn-success add-element-button">Add Element</button>
                 </div>
             </div>
             <div class="added-element-subviews"></div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Combination Objects
+                    &nbsp;
+                    <select class="add-combination-object-select" name="{{inputCount}}-{{parameterType}}" data-type="text">
+                        {{#each files}}
+                            <option value={{value.name}}>{{value.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-success add-combination-object-button">Add Combination Object</button>
+                </div>
+            </div>
+            <div class="added-combination-object-subviews"></div>
         </div>
     </div>
 </li>
