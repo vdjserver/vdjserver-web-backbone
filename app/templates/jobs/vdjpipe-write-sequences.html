@@ -1,0 +1,52 @@
+<li>
+    <div class="panel panel-default vdj-pipe-parameter">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <i class="fa fa-bars"></i>
+                    &nbsp;
+                    Write Sequences
+                    &nbsp;
+                    <span class="label label-danger remove-job-parameter">&times;</span>
+
+                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Output Name
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-output-path" type="text">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Unset Value
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-unset-value" type="text">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-trimmed" type="checkbox">
+                    &nbsp;
+                    Trimmed
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-reverse-compleemented" type="checkbox">
+                    &nbsp;
+                    Reverse Complemented
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-skip-empty" type="checkbox">
+                    &nbsp;
+                    Skip Empty
+                </div>
+            </div>
+        </div>
+    </div>
+</li>

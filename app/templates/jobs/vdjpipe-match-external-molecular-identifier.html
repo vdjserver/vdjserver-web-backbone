@@ -1,0 +1,46 @@
+<li>
+    <div class="panel panel-default vdj-pipe-parameter">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <i class="fa fa-bars"></i>
+                    &nbsp;
+                    Match External Molecular Identifier
+                    &nbsp;
+                    <span class="label label-danger remove-job-parameter">&times;</span>
+
+                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Value Name
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-value-name" type="text">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Fasta File
+                    &nbsp;
+                    <select name="{{inputCount}}-{{parameterType}}-fasta-file">
+                        {{#each files}}
+                            <option value={{value.name}}>{{value.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Pairs File
+                    &nbsp;
+                    <select name="{{inputCount}}-{{parameterType}}-pairs-file">
+                        {{#each files}}
+                            <option value={{value.name}}>{{value.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</li>
