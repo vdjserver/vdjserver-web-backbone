@@ -1,0 +1,45 @@
+<li>
+    <div class="panel panel-default vdj-pipe-parameter">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <i class="fa fa-bars"></i>
+                    &nbsp;
+                    Match Sequence Element
+                    &nbsp;
+                    <span class="label label-danger remove-job-parameter">&times;</span>
+
+                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-reverse-complement" type="checkbox">
+                    &nbsp;
+                    Reverse Complement
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-trimmed" type="checkbox">
+                    &nbsp;
+                    Trimmed
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Elements
+                    &nbsp;
+                    <select class="add-element-select" name="{{inputCount}}-{{parameterType}}" data-type="text">
+                        {{#each files}}
+                            <option value={{value.name}}>{{value.name}}</option>
+                        {{/each}}
+                    </select>
+                    &nbsp;
+                    <button class="btn btn-success add-element-button">Add Element</button>
+                </div>
+            </div>
+            <div class="added-element-subviews"></div>
+        </div>
+    </div>
+</li>
