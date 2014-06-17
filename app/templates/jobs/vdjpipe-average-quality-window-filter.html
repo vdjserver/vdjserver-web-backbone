@@ -16,21 +16,21 @@
                 <div class="col-md-12">
                     Min Quality
                     &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-quality" data-type="text" value="" placeholder="Minimal quality score">
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-quality" data-type="number" value="" placeholder="Minimal quality score">
                 </div>
             </div>
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     Window Length
                     &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-window-length" data-type="text" value="" placeholder="Length for computing averages">
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-window-length" data-type="number" value="" placeholder="Length for computing averages" min="0" step="1" pattern="\d+">
                 </div>
             </div>
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     Min Interval Length
                     &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-length" data-type="text" value="" placeholder="Minimal interval length">
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-length" data-type="number" value="" placeholder="Minimal interval length" min="0" step="1" pattern="\d+">
                 </div>
             </div>
         </div>
