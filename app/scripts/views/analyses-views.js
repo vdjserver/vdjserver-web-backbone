@@ -33,15 +33,9 @@ define(['app'], function(App) {
                 outputFiles: this.collection.toJSON(),
             };
         },
-        downloadFile: function(e) {
-            e.preventDefault();
-
-            var fileName = e.target.dataset.filename;
-            var outputFile = this.collection.get(fileName);
-            outputFile.downloadFile();
-        },
         events: {
             'click .download-file': 'downloadFile',
+            'click .chart-reset-btn': 'clearChart',
 
             'click .cdr3-histogram': 'cdr3Histogram', // !
             'click .gene-dist-chart-btn': 'geneDistChart', // !
@@ -52,9 +46,98 @@ define(['app'], function(App) {
             'click .gc-hist-btn': 'gcHist', // ok
 
             'click .toggle-legend-btn': 'toggleLegend',
-            'click .chart-reset-btn': 'clearChart',
             'click .stack-btn': 'buttonDrill',
             'click .giant-table-btn': 'giantTable',
+        },
+        downloadFile: function(e) {
+            e.preventDefault();
+
+            var fileName = e.target.dataset.filename;
+            var outputFile = this.collection.get(fileName);
+            outputFile.downloadFile();
+        },
+        clearChart: function() {
+
+            //hide delete button
+            $('.download-btn').hide();
+
+            //remove SVG elements
+            this.hideWarning();
+
+            var oldSVGs = document.getElementsByTagName('svg');
+            for (var i = 0; i < oldSVGs.length; i++) {
+                oldSVGs[i].parentNode.removeChild(oldSVGs[i]);
+            }
+
+            //get rid of the download-btn if it exists
+            //remove the svg container as well because some events get tied to it
+            var chartContainer = document.getElementsByClassName('svg-container');
+            for (var i = 0; i < chartContainer.length; i++) {
+                chartContainer[i].parentNode.removeChild(chartContainer[i]);
+            }
+
+            //add them back in
+            d3.select('.row .analyses')
+                .append('div')
+                    .attr('id','analyses-chart')
+                    .attr('class','svg-container')
+                    .attr('style','position:relative; top:1px;left:0px;')
+            ;
+
+            d3.select('.svg-container')
+                .append('svg')
+                    .attr('style','height:600px;');
+
+            $('#chartFileWell').text('No data loaded. Select an Analysis.');
+        },
+        clearSVG: function() {
+
+            //remove SVG elements
+            var oldSVGs = document.getElementsByTagName('svg');
+
+            for (var i = 0; i < oldSVGs.length ; i++) {
+                while(oldSVGs[i].hasChildNodes()) {
+                    oldSVGs[i].removeChild(oldSVGs[i].firstChild);
+                }
+            }
+
+            //add them back in
+            d3.select('.row .analyses')
+                .append('div')
+                    .attr('id','analyses-chart')
+                    .attr('class','svg-container')
+                    .attr('style','position:relative; top:1px;left:0px;');
+
+            d3.select('.svg-container')
+                .append('svg')
+                    .attr('style','height:600px;');
+        },
+        getErrorMessageFromResponse: function(response) {
+            var txt;
+
+            if (response && response.responseText) {
+                txt = JSON.parse(response.responseText);
+            }
+
+            return txt;
+        },
+        showWarning: function(messageFragment) {
+            var message = 'An error occurred.';
+
+            console.log("msg frag is: " + messageFragment);
+            
+            if (messageFragment) {
+                message = message + ' ' + messageFragment.message;
+            }
+
+            $('.alert-message').text(message);
+            $('.alert').show();
+        },
+        hideWarning: function() {
+            $('.alert').hide();
+        },
+        toggleLegend: function() {
+            $('.nv-legendWrap').toggle();
         },
         giantTable: function() {
 
@@ -191,16 +274,9 @@ define(['app'], function(App) {
 
                     $('.slick-header-column').tooltip({ tooltipClass: 'custom-tooltip-styling' });
                  })
-                .fail (function(response) {
-
-                    var message = 'An error occurred. ';
-
-                    if (response && response.responseText) {
-                        var txt = JSON.parse(response.responseText);
-                        message = message + txt.message;
-                    }
-
-                    that.showWarning(message);
+                .fail(function(response) {
+                    errorMessage = this.getErrorMessageFromResponse(response);
+                    that.showWarning(errorMessage);
                 });
         },
         cdr3Histogram: function() {
@@ -218,12 +294,12 @@ define(['app'], function(App) {
 
                     nv.addGraph(function() {
                         var chart = nv.models.multiBarChart()
-                          .transitionDuration(350)
-                          .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
-                          .rotateLabels(0)      //Angle to rotate x-axis labels.
-                          .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
-                          .tooltips(true)
-                          .groupSpacing(0.1)    //Distance between each group of bars.
+                            .transitionDuration(350)
+                            .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
+                            .rotateLabels(0)      //Angle to rotate x-axis labels.
+                            .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
+                            .tooltips(true)
+                            .groupSpacing(0.1)    //Distance between each group of bars.
                         ;
 
                         chart.xAxis
@@ -241,46 +317,10 @@ define(['app'], function(App) {
                     });
 
                  })
-                .fail (function(response) {
-                    var message = 'An error occurred. ';
-                    if(response && response.responseText) {
-                        var txt = JSON.parse(response.responseText);
-                        message = message + txt.message;
-                    }
-                    that.showWarning(message);
-                }); //end getFile.fail()
-        },
-        clearChart: function() {
-            //hide delete button
-            $('.download-btn').hide();
-            //remove SVG elements
-            this.hideWarning();
-            var oldSVGs = document.getElementsByTagName('svg');
-             for(var i = 0; i < oldSVGs.length ; i++) {
-                oldSVGs[i].parentNode.removeChild(oldSVGs[i]);
-            }
-            //get rid of the download-btn if it exists
-            //remove the svg container as well because some events get tied to it
-            var chartContainer = document.getElementsByClassName('svg-container');
-              for(var i = 0; i < chartContainer.length ; i++) {
-                chartContainer[i].parentNode.removeChild(chartContainer[i]);
-            }
-            //add them back in
-            d3.select('.row .analyses').append('div').attr('id','analyses-chart').attr('class','svg-container').attr('style','position:relative; top:1px;left:0px;');
-            d3.select('.svg-container').append('svg').attr('style','height:600px;');
-            $('#chartFileWell').text('No data loaded. Select an Analysis.');
-        },
-        clearSVG: function() {
-            //remove SVG elements
-            var oldSVGs = document.getElementsByTagName('svg');
-             for(var i = 0; i < oldSVGs.length ; i++) {
-                while(oldSVGs[i].hasChildNodes()) {
-                    oldSVGs[i].removeChild(oldSVGs[i].firstChild);
-                }
-            }
-            //add them back in
-            d3.select('.row .analyses').append('div').attr('id','analyses-chart').attr('class','svg-container').attr('style','position:relative; top:1px;left:0px;');
-            d3.select('.svg-container').append('svg').attr('style','height:600px;');
+                .fail(function(response) {
+                    errorMessage = this.getErrorMessageFromResponse(response);
+                    that.showWarning(errorMessage);
+                }); 
         },
         findFromLabel: function(o,label) {
             if('label' in o) {
@@ -478,15 +518,10 @@ define(['app'], function(App) {
                         return chart;
                     });
                 })
-                .fail (function(response) {
-                    var message = 'An error occurred. ';
-
-                    if (response && response.responseText) {
-                        var txt = JSON.parse(response.responseText);
-                        message = message + txt.message;
-                    }
-                    that.showWarning(message);
-                });
+                .fail(function(response) {
+                    errorMessage = this.getErrorMessageFromResponse(response);
+                    that.showWarning(errorMessage);
+                }); 
         },
         qualityScoreChart: function() {
 
@@ -501,7 +536,7 @@ define(['app'], function(App) {
                 top: 30,
                 right: 50,
                 bottom: 100,
-                left: 70
+                left: 70,
             };
 
             var width = 1200
@@ -809,16 +844,10 @@ define(['app'], function(App) {
 
 
                 })
-                .fail (function(response) {
-                    var message = 'An error occurred. ';
-
-                    if(response && response.responseText) {
-                        var txt = JSON.parse(response.responseText);
-                        message = message + txt.message;
-                    }
-
-                    that.showWarning(message);
-                });
+                .fail(function(response) {
+                    errorMessage = this.getErrorMessageFromResponse(response);
+                    that.showWarning(errorMessage);
+                }); 
         },
 
         // Returns a function to compute the interquartile range.
@@ -902,16 +931,10 @@ define(['app'], function(App) {
                     });
 
                 })
-                .fail (function(response) {
-                    var message = 'An error occurred. ';
-
-                    if (response && response.responseText) {
-                        var txt = JSON.parse(response.responseText);
-                        message = message + txt.message;
-                    }
-
-                    that.showWarning(message);
-                });
+                .fail(function(response) {
+                    errorMessage = this.getErrorMessageFromResponse(response);
+                    that.showWarning(errorMessage);
+                }); 
         },
 
         lengthHist: function () {
@@ -980,16 +1003,10 @@ define(['app'], function(App) {
                         return chart;
                     });
                 })
-                .fail (function(response) {
-                    var message = 'An error occurred. ';
-
-                    if (response && response.responseText) {
-                        var txt = JSON.parse(response.responseText);
-                        message = message + txt.message;
-                    }
-
-                    that.showWarning(message);
-                });
+                .fail(function(response) {
+                    errorMessage = this.getErrorMessageFromResponse(response);
+                    that.showWarning(errorMessage);
+                }); 
         },
 
         gcHist: function () {
@@ -1066,27 +1083,10 @@ define(['app'], function(App) {
                         return chart;
                     });
                 })
-                .fail (function(response) {
-                    var message = 'An error occurred. ';
-
-                    if (response && response.responseText) {
-                        var txt = JSON.parse(response.responseText);
-                        message = message + txt.message;
-                    }
-
-                    that.showWarning(message);
-                });
-        },
-
-        showWarning: function(message) {
-            $('.alert-message').text(message);
-            $('.alert').show();
-        },
-        hideWarning: function() {
-            $('.alert').hide();
-        },
-        toggleLegend: function() {
-            $('.nv-legendWrap').toggle();
+                .fail(function(response) {
+                    errorMessage = this.getErrorMessageFromResponse(response);
+                    that.showWarning(errorMessage);
+                }); 
         },
 
         //edward salinas
@@ -1110,15 +1110,11 @@ define(['app'], function(App) {
                     that.redrawGeneDistChart(res);
 
                 })
-                .fail (function(response) {
-                    var message = 'An error occurred. ';
-                    if(response && response.responseText) {
-                        var txt = JSON.parse(response.responseText);
-                        message = message + txt.message;
-                    }
-                    that.showWarning(message);
-                }); //end getFile.fail()
-        }, //end redrawGeneDistChart
+                .fail(function(response) {
+                    errorMessage = this.getErrorMessageFromResponse(response);
+                    that.showWarning(errorMessage);
+                }); 
+        },
 
         //edward salinas
         resetDrillStackUpTo: function(u,ds) {
