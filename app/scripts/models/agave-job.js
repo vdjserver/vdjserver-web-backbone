@@ -80,16 +80,15 @@ define(['backbone'], function(Backbone) {
             for (var key in parameters) {
 
                 if (parameters.hasOwnProperty(key)) {
-                    console.log("key is: " + key);
+                    //console.log("key is: " + key);
                     if (key !== 'formtype' && key !== 'job-name') {
-                        console.log("past if");
                         var keyCounterIndex = key.indexOf('-') + 1;
                         var keyCounter = key.slice(0, keyCounterIndex);
                         var vdjPipeParam = key.slice(keyCounterIndex);
 
-                        console.log("keyCounterIndex is: " + keyCounterIndex);
-                        console.log("keyCounter is: " + keyCounter);
-                        console.log("vdjPipeParam is: " + vdjPipeParam);
+                        //console.log("keyCounterIndex is: " + keyCounterIndex);
+                        //console.log("keyCounter is: " + keyCounter);
+                        //console.log("vdjPipeParam is: " + vdjPipeParam);
 
                         switch(vdjPipeParam) {
                             case 'quality-stats':
@@ -187,6 +186,179 @@ define(['backbone'], function(Backbone) {
                                 });
                                 break;
 
+                            case 'match-sequence-element':
+                                console.log("match sequence element params are: " + JSON.stringify(parameters));
+                                //console.log("key is: " + JSON.stringify(key));
+
+                                var elementName = parameters[key];
+                                //console.log("elementName is: " + elementName);
+                                var reverse = parameters[key + '-reverse-complement'];
+                                var trimmed = parameters[key + '-trimmed'];
+
+                                var elements = [];
+                                for (var i = 0; i < parameters[key].length; i++) {
+                                    var elementCounter = parameters[key][i];
+                                    console.log("elementCounter is: " + elementCounter);
+
+                                    var startPosition = parameters[key + '-' + elementCounter + '-start-position'];
+                                    var startPositionLocation = parameters[key + '-' + elementCounter + '-start-position-location'];
+                                    var startPositionLocationSequence = parameters[key + '-' + elementCounter + '-start-position-location-sequence'];
+
+                                    var endPosition = parameters[key + '-' + elementCounter + '-end-position'];
+                                    var endPositionLocation = parameters[key + '-' + elementCounter + '-end-position-location'];
+                                    var endPositionLocationSequence = parameters[key + '-' + elementCounter + '-end-position-location-sequence'];
+
+                                    var sequenceFile = parameters[key + '-' + elementCounter + '-sequence-file'];
+                                    var csvSequencesFile = parameters[key + '-' + elementCounter + '-csv-path'];
+                                    var csvSequencesColumn = parameters[key + '-' + elementCounter + '-csv-column-name'];
+                                    var required = parameters[key + '-' + elementCounter + '-required'];
+                                    var minScore = parameters[key + '-' + elementCounter + '-minimum-score'];
+                                    var allowGaps = parameters[key + '-' + elementCounter + '-allow-gaps'];
+                                    var minMatchLength = parameters[key + '-' + elementCounter + '-minimum-match-length'];
+                                    var valueName = parameters[key + '-' + elementCounter + '-value-name'];
+                                    var scoreName = parameters[key + '-' + elementCounter + '-score-name'];
+                                    var identityName = parameters[key + '-' + elementCounter + '-identity-name'];
+                                    var cutLowerLocation = parameters[key + '-' + elementCounter + '-cut-lower-location'];
+                                    var cutLowerLocationSequence = parameters[key + '-' + elementCounter + '-cut-lower-location-sequence'];
+                                    var cutUpperLocation = parameters[key + '-' + elementCounter + '-cut-upper-location'];
+                                    var cutUpperLocationSequence = parameters[key + '-' + elementCounter + '-cut-upper-location-sequence'];
+
+                                    var element = {};
+
+                                    if (startPosition) {
+
+                                        // Convert to int
+                                        startPosition = parseInt(startPosition);
+
+                                        element.start = {};
+                                        element.start.pos = startPosition;
+
+                                        if (startPositionLocation && startPositionLocationSequence) {
+                                            if (startPositionLocation === 'before') {
+                                                element.start.before = startPositionLocationSequence;
+                                            }
+                                            else if (startPositionLocation === 'after') {
+                                                element.start.after = startPositionLocationSequence;
+                                            }
+                                        }
+                                    }
+
+                                    if (endPosition) {
+                                        
+                                        // Convert to int
+                                        endPosition = parseInt(endPosition);
+
+                                        element.end = {};
+                                        element.end.pos = endPosition;
+
+                                        if (endPositionLocation && endPositionLocationSequence) {
+                                            if (endPositionLocation === 'before') {
+                                                element.end.before = endPositionLocationSequence;
+                                            }
+                                            else if (endPositionLocation === 'after') {
+                                                element.end.after = endPositionLocationSequence;
+                                            }
+                                        }
+                                    }
+
+                                    if (sequenceFile) {
+                                        element.seq_file = sequenceFile;
+                                    }
+
+                                    if (csvSequencesColumn || csvSequencesFile) {
+
+                                        element.csv_file = {};
+
+                                        if (csvSequencesColumn) {
+                                            element.csv_file.sequences_column = csvSequencesColumn;
+                                        }
+
+                                        if (csvSequencesFile) {
+                                            element.csv_file.path = csvSequencesFile;
+                                        }
+                                    }
+
+                                    if (required) {
+                                        element.required = required;
+                                    }
+
+                                    if (minScore) {
+
+                                        // Convert to int
+                                        minScore = parseInt(minScore);
+
+                                        element.min_score = minScore;
+                                    }
+
+                                    if (allowGaps) {
+                                        element.allow_gaps = allowGaps;
+                                    }
+
+                                    if (minMatchLength) {
+
+                                        // Convert to int
+                                        minMatchLength = parseInt(minMatchLength);
+
+                                        element.min_match_length = minMatchLength;
+                                    }
+
+                                    if (valueName) {
+                                        element.value_name = valueName;
+                                    }
+
+                                    if (scoreName) {
+                                        element.score_name = scoreName;
+                                    }
+
+                                    if (identityName) {
+
+                                        element.identity_name = identityName;
+                                    }
+
+                                    if (cutLowerLocation && cutLowerLocationSequence) {
+
+                                        // Convert to int
+                                        cutLowerLocationSequence = parseInt(cutLowerLocationSequence);
+
+                                        element.cut_lower = {};
+
+                                        if (cutLowerLocation === 'before') {
+                                            element.cut_lower.before = cutLowerLocationSequence;
+                                        }
+                                        else if (cutLowerLocation === 'after') {
+                                            element.cut_lower.after = cutLowerLocationSequence;
+                                        }
+                                    }
+
+                                    if (cutUpperLocation && cutUpperLocationSequence) {
+
+                                        // Convert to int
+                                        cutUpperLocationSequence = parseInt(cutUpperLocationSequence);
+
+                                        element.cut_upper = {};
+
+                                        if (cutUpperLocation === 'before') {
+                                            element.cut_upper.before = cutUpperLocationSequence;
+                                        }
+                                        else if (cutUpperLocation === 'after') {
+                                            element.cut_upper.after = cutUpperLocationSequence;
+                                        }
+                                    }
+
+                                    console.log("element finished: " + JSON.stringify(element));
+                                    elements.push(element);
+                                }
+
+                                paramOutput.push({
+                                    'match': {
+                                        'reverse': reverse,
+                                        'trimmed': trimmed,
+                                        'elements': elements,
+                                    }
+                                });
+
+                                break;
+
                             default:
                                 break;
                         }
@@ -195,7 +367,7 @@ define(['backbone'], function(Backbone) {
             }
 
             for (var i = 0; i < fileMetadata.length; i++) {
-                console.log("values are: " + JSON.stringify(fileMetadata.at([i])));
+                //console.log("values are: " + JSON.stringify(fileMetadata.at([i])));
                 var value = fileMetadata.at([i]).get('value');
 
                 if (value.isForwardRead) {
@@ -205,8 +377,8 @@ define(['backbone'], function(Backbone) {
                 }
             }
 
-            console.log("paramOutput is: " + JSON.stringify(paramOutput));
-            console.log("inputOutput is: " + JSON.stringify(inputOutput));
+            //console.log("paramOutput is: " + JSON.stringify(paramOutput));
+            //console.log("inputOutput is: " + JSON.stringify(inputOutput));
 
             outputConfig.input = inputOutput;
             outputConfig.single_read_pipe = paramOutput;
