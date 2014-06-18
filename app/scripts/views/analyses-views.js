@@ -20,7 +20,7 @@ define(['app'], function(App) {
             var that = this;
             this.collection.fetch()
                 .done(function() {
-                    console.log("fetch ok. data is: " + JSON.stringify(that.collection.toJSON()));
+                    //console.log("fetch ok. data is: " + JSON.stringify(that.collection.toJSON()));
                     loadingView.remove();
                     that.render();
                 })
@@ -43,13 +43,13 @@ define(['app'], function(App) {
         events: {
             'click .download-file': 'downloadFile',
 
-            'click .cdr3-histogram': 'cdr3Histogram',
-            'click .gene-dist-chart-btn': 'geneDistChart',
-            'click .composition-chart-btn': 'compositionChart', //!
+            'click .cdr3-histogram': 'cdr3Histogram', // !
+            'click .gene-dist-chart-btn': 'geneDistChart', // !
+            'click .composition-chart-btn': 'compositionChart', // ok
             'click .quality-chart-btn': 'qualityScoreChart', // ok
             'click .mean-q-hist-btn': 'meanQHist', // ok
             'click .length-hist-btn': 'lengthHist', // ok
-            'click .gc-hist-btn': 'gcHist', //!
+            'click .gc-hist-btn': 'gcHist', // ok
 
             'click .toggle-legend-btn': 'toggleLegend',
             'click .chart-reset-btn': 'clearChart',
@@ -205,7 +205,7 @@ define(['app'], function(App) {
         },
         cdr3Histogram: function() {
 
-            this.clearChart(); 
+            this.clearChart();
             this.hideWarning();
 
             var that = this;
@@ -359,59 +359,88 @@ define(['app'], function(App) {
                         var res=that.findFromLabel(that.BIGJSON,e.label);
                         var chartable=that.makeChartableFromValidHierarchyObject(res);
                         that.currentDataset=chartable;
-                        that.redrawBarChart()
+                        that.redrawBarChart();
                     });
             });
         },
-
         compositionChart: function () {
 
             this.clearChart();
             this.hideWarning();
 
             var that = this;
-            var file = new Backbone.Agave.Model.File();
-            file.getFile('post-filter_composition.csv')
+            var file = this.collection.get('pre-composition.csv');
+            file.downloadFile()
                 .done(function(response) {
-
                     $('#chartFileWell').text(file.name);
+
                     response = response.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+
                     var data = d3.tsv.parse(response);
-                    var aData= []; var cData= []; var gData= []; var tData= []; var nData= []; var gcData = [];
+                    var aData= [];
+                    var cData= [];
+                    var gData= [];
+                    var tData= [];
+                    var nData= [];
+                    var gcData = [];
 
                     data.forEach(function(d) {
-                        aData.push({x: +d['position'], y: +d['A%']});
-                        cData.push({x: +d['position'], y: +d['C%']});
-                        gData.push({x: +d['position'], y: +d['G%']});
-                        tData.push({x: +d['position'], y: +d['T%']});
-                        nData.push({x: +d['position'], y: +d['N%']});
-                        gcData.push({x: +d['position'], y: +d['GC%']});
+                        aData.push({
+                            x: +d['position'],
+                            y: +d['A%'],
+                        });
+
+                        cData.push({
+                            x: +d['position'],
+                            y: +d['C%'],
+                        });
+
+                        gData.push({
+                            x: +d['position'],
+                            y: +d['G%'],
+                        });
+
+                        tData.push({
+                            x: +d['position'],
+                            y: +d['T%'],
+                        });
+
+                        nData.push({
+                            x: +d['position'],
+                            y: +d['N%'],
+                        });
+
+                        gcData.push({
+                            x: +d['position'],
+                            y: +d['GC%'],
+                        });
                     });
 
-                    var myData = [{
-                        key: 'A%',
-                        values: aData
-                    },
-                    {
-                        key: 'C%',
-                        values: cData
-                    },
-                    {
-                        key: 'G%',
-                        values: gData
-                    },
-                    {
-                        key: 'T%',
-                        values: tData
-                    },
-                    {
-                        key: 'N%',
-                        values: nData
-                    },
-                    {
-                        key: 'GC%',
-                        values: gcData
-                    }
+                    var myData = [
+                        {
+                            key: 'A%',
+                            values: aData,
+                        },
+                        {
+                            key: 'C%',
+                            values: cData,
+                        },
+                        {
+                            key: 'G%',
+                            values: gData,
+                        },
+                        {
+                            key: 'T%',
+                            values: tData,
+                        },
+                        {
+                            key: 'N%',
+                            values: nData,
+                        },
+                        {
+                            key: 'GC%',
+                            values: gcData,
+                        }
                     ];
 
                     nv.addGraph(function() {
@@ -425,35 +454,40 @@ define(['app'], function(App) {
                         ;
 
                         chart.xAxis     //Chart x-axis settings
-                          .axisLabel('Read Position')
-                          .tickFormat(d3.format(',r'));
+                            .axisLabel('Read Position')
+                            .tickFormat(d3.format(',r'))
+                        ;
 
                         chart.yAxis     //Chart y-axis settings
-                          .axisLabel('Percent')
-                          .tickFormat(d3.format(',r'));
+                            .axisLabel('Percent')
+                            .tickFormat(d3.format(',r'))
+                        ;
 
                         /* Done setting the chart up? Time to render it!*/
                         d3.select('.svg-container svg')    //Select the <svg> element you want to render the chart in.
-                         .datum(myData)
-                          .call(chart);          //Finally, render the chart!
+                            .datum(myData)
+                            .call(chart)    //Finally, render the chart!
+                        ;
 
                         //Update the chart when window resizes.
-                        nv.utils.windowResize(function() { that.clearSVG(); chart.update() });
-                        return chart;
-                    }); //end nv.addGraph(function(){})
+                        nv.utils.windowResize(function() {
+                            that.clearSVG();
+                            chart.update();
+                        });
 
-                }) //end getFile.done()
+                        return chart;
+                    });
+                })
                 .fail (function(response) {
                     var message = 'An error occurred. ';
-                    if(response && response.responseText) {
+
+                    if (response && response.responseText) {
                         var txt = JSON.parse(response.responseText);
                         message = message + txt.message;
                     }
                     that.showWarning(message);
-                }); //end getFile.fail()
-
+                });
         },
-
         qualityScoreChart: function() {
 
             this.clearChart();
@@ -959,72 +993,89 @@ define(['app'], function(App) {
         },
 
         gcHist: function () {
-            this.clearChart(); this.hideWarning();
+
+            this.clearChart();
+            this.hideWarning();
+
             var that = this;
-            //get file name post-filter_mean_q_hist.csv
-            var file  = new Backbone.Agave.Model.File();
-            file.getFile('pre-filter_gc_hist.csv')
+
+            var file = this.collection.get('pre-gc_hist.csv');
+            file.downloadFile()
                 .done(function(text) {
                     $('#chartFileWell').text(file.name);
+
                     //remove commented out lines (header info)
                     text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-                    var data = d3.tsv.parse(text);
                     var otherD = [];
+                    var data = d3.tsv.parse(text);
                     data.forEach(function(d) {
-                    otherD.push({x: +d['GC%'], y: +d['read_count']});
+                        otherD.push({
+                            x: +d['GC%'],
+                            y: +d['read_count'],
+                        });
                     });
 
                     //fill in any up to 100
-                    for(var i = 0; i <= 100; i++) {
-                    if(! otherD[i]) {
-                      otherD.push({x: +i, y: 0});
-                    }
+                    for (var i = 0; i <= 100; i++) {
+                        if (! otherD[i]) {
+                            otherD.push({
+                                x: +i,
+                                y: 0,
+                            });
+                        }
                     }
 
                     var myData = [{
-                    key: 'Mean GC %',
-                    values: otherD
+                        key: 'Mean GC %',
+                        values: otherD,
                     }];
 
                     nv.addGraph(function() {
-                      var chart = nv.models.lineChart()
+                        var chart = nv.models.lineChart()
+                            .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                            .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                            .transitionDuration(350)  //how fast do you want the lines to transition?
+                            .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                            .showYAxis(true)        //Show the y-axis
+                            .showXAxis(true)        //Show the x-axis
+                        ;
 
-                                    .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
-                                    .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
-                                    .transitionDuration(350)  //how fast do you want the lines to transition?
-                                    .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
-                                    .showYAxis(true)        //Show the y-axis
-                                    .showXAxis(true)        //Show the x-axis
-                      ;
+                        chart.xAxis     //Chart x-axis settings
+                            .axisLabel('Mean GC Content %')
+                            .tickFormat(d3.format(',r'))
+                        ;
 
-                      chart.xAxis     //Chart x-axis settings
-                          .axisLabel('Mean GC Content %')
-                          .tickFormat(d3.format(',r'));
+                        chart.yAxis     //Chart y-axis settings
+                            .axisLabel('Read Count')
+                            .tickFormat(d3.format(',r'))
+                        ;
 
-                      chart.yAxis     //Chart y-axis settings
-                          .axisLabel('Read Count')
-                          .tickFormat(d3.format(',r'));
+                        /* Done setting the chart up? Time to render it!*/
+                        d3.select('#analyses-chart svg')    //Select the <svg> element you want to render the chart in.
+                            .datum(myData)
+                            .call(chart)    //Finally, render the chart!
+                        ;
 
-                      /* Done setting the chart up? Time to render it!*/
-                      d3.select('#analyses-chart svg')    //Select the <svg> element you want to render the chart in.
-                         .datum(myData)
-                          .call(chart);          //Finally, render the chart!
+                        //Update the chart when window resizes.
+                        nv.utils.windowResize(function() {
+                            that.clearSVG();
+                            chart.update();
+                        });
 
-                      //Update the chart when window resizes.
-                      nv.utils.windowResize(function() { that.clearSVG(); chart.update() });
-                      return chart;
+                        return chart;
                     });
-
                 })
                 .fail (function(response) {
                     var message = 'An error occurred. ';
-                    if(response && response.responseText) {
+
+                    if (response && response.responseText) {
                         var txt = JSON.parse(response.responseText);
                         message = message + txt.message;
                     }
+
                     that.showWarning(message);
-                }); //end getFile.fail()
+                });
         },
 
         showWarning: function(message) {
