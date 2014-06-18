@@ -229,46 +229,6 @@ define([
         },
     });
 
-    Jobs.Output = Backbone.View.extend({
-        template: 'jobs/output',
-        initialize: function(parameters) {
-            this.projectUuid = parameters.projectUuid;
-            this.jobId = parameters.jobId;
-
-            var loadingView = new App.Views.Util.Loading({keep: true});
-            this.setView(loadingView);
-            loadingView.render();
-
-            this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
-
-            var that = this;
-            this.collection.fetch()
-                .done(function() {
-                    console.log("fetch ok. data is: " + JSON.stringify(that.collection.toJSON()));
-                    loadingView.remove();
-                    that.render();
-                })
-                .fail(function() {
-
-                });
-        },
-        serialize: function() {
-            return {
-                outputFiles: this.collection.toJSON(),
-            };
-        },
-        events: {
-            'click .download-file': 'downloadFile',
-        },
-        downloadFile: function(e) {
-            e.preventDefault();
-
-            var fileName = e.target.dataset.filename;
-            var outputFile = this.collection.get(fileName);
-            outputFile.downloadFile();
-        },
-    });
-
     Jobs.IgBlastForm = Backbone.View.extend({
         template: 'jobs/igblast-form'
     });

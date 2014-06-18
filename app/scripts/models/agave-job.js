@@ -16,22 +16,12 @@ define(['backbone'], function(Backbone) {
     Job.OutputFile = Backbone.Agave.Model.extend({
         idAttribute: 'name',
         downloadFile: function() {
-
-            var that = this;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open('get', this.get('_links').self.href);
-            xhr.responseType = 'blob';
-            xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-
-            xhr.onload = function() {
-              if (this.status === 200 || this.status === 202) {
-                window.saveAs(new Blob([this.response]), that.get('name'));
-              }
-            };
-            xhr.send();
-
-            return xhr;
+            var jqxhr = $.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type: 'GET',
+                url: this.get('_links').self.href,
+            });
+            return jqxhr;
         },
     });
 
@@ -244,7 +234,7 @@ define(['backbone'], function(Backbone) {
                                     }
 
                                     if (endPosition) {
-                                        
+
                                         // Convert to int
                                         endPosition = parseInt(endPosition);
 

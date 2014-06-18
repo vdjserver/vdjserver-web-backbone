@@ -40,14 +40,11 @@ define(['backbone'], function(Backbone) {
     Jobs.Listings = Backbone.Agave.MetadataCollection.extend({
         model: Backbone.Agave.Model.Job.Listing,
         initialize: function(parameters) {
-
-            console.log("params are: " + JSON.stringify(parameters));
             if (parameters && parameters.projectUuid) {
                 this.projectUuid = parameters.projectUuid;
             }
         },
         url: function() {
-            console.log("url is: " + this.projectUuid);
             return '/meta/v2/data?q='
                 + encodeURIComponent('{'
                     + '"name":"projectJob",'

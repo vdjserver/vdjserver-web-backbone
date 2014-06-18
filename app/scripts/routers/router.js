@@ -78,11 +78,6 @@ define(['app'], function(App) {
             'project/:id/users':                'projectManageUsers',
             'project/:id/jobs':                 'projectJobHistory',
             'project/:id/jobs/:jobId':          'projectJobOutput',
-            'project/:id/jobs/:jobId/analyses': 'projectSelectAnalyses',
-
-            //temp for getting charts in
-            'project/:id/charts':'selectAnalyses',
-
 
             // 404
             '*notFound': 'notFound',
@@ -254,17 +249,6 @@ define(['app'], function(App) {
 
             var destinationRoute = function() {
                 setProjectSubviews(projectUuid);
-                App.Layouts.main.setView('.content', new App.Views.Jobs.Output({projectUuid: projectUuid, jobId: jobId}));
-                App.Layouts.main.render();
-            };
-
-            routeWithTokenRefreshCheck(destinationRoute);
-        },
-
-        projectSelectAnalyses: function(projectUuid, jobId) {
-
-            var destinationRoute = function() {
-                setProjectSubviews(projectUuid);
                 App.Layouts.main.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid, jobId: jobId}));
                 App.Layouts.main.render();
             };
@@ -277,23 +261,6 @@ define(['app'], function(App) {
             setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.NotFound.Error());
             App.Layouts.main.render();
-        },
-
-        
-
-
-
-
-		//temp to get charts in
-        selectAnalyses: function(projectUuid) {
-
-            var destinationRoute = function() {
-                setProjectSubviews(projectUuid);
-                App.Layouts.main.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid}));
-                App.Layouts.main.render();
-            };
-
-            routeWithTokenRefreshCheck(destinationRoute);
         },
 
     });
