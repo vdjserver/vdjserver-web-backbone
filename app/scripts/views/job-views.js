@@ -703,6 +703,7 @@ define([
                 parameterType: this.parameterType,
                 inputCount: this.inputCount,
                 objectCount: this.objectCount,
+                files: this.files,
             });
 
             this.insertView('.added-combination-object-subviews', combinationObjectView);
@@ -739,6 +740,7 @@ define([
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
                     objectCount: this.objectCount,
+                    files: this.files.toJSON(),
                 };
             }
         },

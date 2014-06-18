@@ -12,7 +12,11 @@
                         File
                     </td>
                     <td>
-                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-file" type="text">
+                        <select name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-file">
+                            {{#each files}}
+                                <option value={{value.name}}>{{value.name}}</option>
+                            {{/each}}
+                        </select>
                     </td>
                 </tr>
                 <tr>
