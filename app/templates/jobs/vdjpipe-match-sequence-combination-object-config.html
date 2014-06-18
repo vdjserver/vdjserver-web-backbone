@@ -1,18 +1,26 @@
 <div class="row row-with-spacer">
     <div class="col-md-12" style="border: 1px solid #000000;">
-        {{fileName}}
+        Combination Object
         &nbsp;
         <span class="label label-danger remove-match-sequence-combination-object">&times;</span>
 
-        <input name="{{inputCount}}-{{parameterType}}-{{fileName}}-combination-object-path" type="text" value="{{fileName}}" hidden>
+        <input name="{{inputCount}}-{{parameterType}}-combination-objects[]" type="text" value="{{objectCount}}" hidden>
         <table class="table">
             <tbody>
+                <tr>
+                    <td>
+                        File
+                    </td>
+                    <td>
+                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-file" type="text">
+                    </td>
+                </tr>
                 <tr>
                     <td>
                         Value Name
                     </td>
                     <td>
-                        <input name="{{inputCount}}-{{parameterType}}-{{fileName}}-value-name" type="text">
+                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-value-name" type="text">
                     </td>
                 </tr>
                 <tr>
@@ -20,7 +28,7 @@
                         Values Column
                     </td>
                     <td>
-                        <input name="{{inputCount}}-{{parameterType}}-{{fileName}}-values-column" type="text">
+                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-values-column" type="text">
                     </td>
                 </tr>
                 <tr>
@@ -28,7 +36,7 @@
                         Names Column
                     </td>
                     <td>
-                        <input name="{{inputCount}}-{{parameterType}}-{{fileName}}-names-column" type="text">
+                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-names-column" type="text">
                     </td>
                 </tr>
             </tbody>

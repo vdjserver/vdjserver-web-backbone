@@ -178,7 +178,7 @@ define(['backbone'], function(Backbone) {
 
                             case 'match-sequence-element':
                                 console.log("match sequence element params are: " + JSON.stringify(parameters));
-                                //console.log("key is: " + JSON.stringify(key));
+                                console.log("key is: " + JSON.stringify(key));
 
                                 var elementName = parameters[key];
                                 //console.log("elementName is: " + elementName);
@@ -186,32 +186,32 @@ define(['backbone'], function(Backbone) {
                                 var trimmed = parameters[key + '-trimmed'];
 
                                 var elements = [];
-                                for (var i = 0; i < parameters[key].length; i++) {
-                                    var elementCounter = parameters[key][i];
-                                    console.log("elementCounter is: " + elementCounter);
+                                for (var i = 0; i < parameters[key + '-elements'].length; i++) {
+                                    var elementCounter = parameters[key + '-elements'][i];
+                                    console.log("elementCounter is: " + JSON.stringify(elementCounter));
 
-                                    var startPosition = parameters[key + '-' + elementCounter + '-start-position'];
-                                    var startPositionLocation = parameters[key + '-' + elementCounter + '-start-position-location'];
-                                    var startPositionLocationSequence = parameters[key + '-' + elementCounter + '-start-position-location-sequence'];
+                                    var startPosition = parameters[key + '-' + elementCounter + '-element-start-position'];
+                                    var startPositionLocation = parameters[key + '-' + elementCounter + '-element-start-position-location'];
+                                    var startPositionLocationSequence = parameters[key + '-' + elementCounter + '-element-start-position-location-sequence'];
 
-                                    var endPosition = parameters[key + '-' + elementCounter + '-end-position'];
-                                    var endPositionLocation = parameters[key + '-' + elementCounter + '-end-position-location'];
-                                    var endPositionLocationSequence = parameters[key + '-' + elementCounter + '-end-position-location-sequence'];
+                                    var endPosition = parameters[key + '-' + elementCounter + '-element-end-position'];
+                                    var endPositionLocation = parameters[key + '-' + elementCounter + '-element-end-position-location'];
+                                    var endPositionLocationSequence = parameters[key + '-' + elementCounter + '-element-end-position-location-sequence'];
 
-                                    var sequenceFile = parameters[key + '-' + elementCounter + '-sequence-file'];
-                                    var csvSequencesFile = parameters[key + '-' + elementCounter + '-csv-path'];
-                                    var csvSequencesColumn = parameters[key + '-' + elementCounter + '-csv-column-name'];
-                                    var required = parameters[key + '-' + elementCounter + '-required'];
-                                    var minScore = parameters[key + '-' + elementCounter + '-minimum-score'];
-                                    var allowGaps = parameters[key + '-' + elementCounter + '-allow-gaps'];
-                                    var minMatchLength = parameters[key + '-' + elementCounter + '-minimum-match-length'];
-                                    var valueName = parameters[key + '-' + elementCounter + '-value-name'];
-                                    var scoreName = parameters[key + '-' + elementCounter + '-score-name'];
-                                    var identityName = parameters[key + '-' + elementCounter + '-identity-name'];
-                                    var cutLowerLocation = parameters[key + '-' + elementCounter + '-cut-lower-location'];
-                                    var cutLowerLocationSequence = parameters[key + '-' + elementCounter + '-cut-lower-location-sequence'];
-                                    var cutUpperLocation = parameters[key + '-' + elementCounter + '-cut-upper-location'];
-                                    var cutUpperLocationSequence = parameters[key + '-' + elementCounter + '-cut-upper-location-sequence'];
+                                    var sequenceFile = parameters[key + '-' + elementCounter + '-element-sequence-file'];
+                                    var csvSequencesFile = parameters[key + '-' + elementCounter + '-element-csv-path'];
+                                    var csvSequencesColumn = parameters[key + '-' + elementCounter + '-element-csv-column-name'];
+                                    var required = parameters[key + '-' + elementCounter + '-element-required'];
+                                    var minScore = parameters[key + '-' + elementCounter + '-element-minimum-score'];
+                                    var allowGaps = parameters[key + '-' + elementCounter + '-element-allow-gaps'];
+                                    var minMatchLength = parameters[key + '-' + elementCounter + '-element-minimum-match-length'];
+                                    var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
+                                    var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
+                                    var identityName = parameters[key + '-' + elementCounter + '-element-identity-name'];
+                                    var cutLowerLocation = parameters[key + '-' + elementCounter + '-element-cut-lower-location'];
+                                    var cutLowerLocationSequence = parameters[key + '-' + elementCounter + '-element-cut-lower-location-sequence'];
+                                    var cutUpperLocation = parameters[key + '-' + elementCounter + '-element-cut-upper-location'];
+                                    var cutUpperLocationSequence = parameters[key + '-' + elementCounter + '-element-cut-upper-location-sequence'];
 
                                     var element = {};
 
@@ -339,13 +339,59 @@ define(['backbone'], function(Backbone) {
                                     elements.push(element);
                                 }
 
-                                paramOutput.push({
+                                var combinationObjects = [];
+                                for (var i = 0; i < parameters[key + '-combination-objects'].length; i++) {
+
+                                    var combinationObject = {};
+
+                                    var objectCounter = parameters[key + '-combination-objects'][i];
+                                    console.log("objectCounter is: " + JSON.stringify(objectCounter));
+
+                                    var objectFile = parameters[key + '-' + objectCounter + '-combination-object-file'];
+                                    var valueName = parameters[key + '-' + objectCounter + '-combination-object-value-name'];
+                                    var valuesColumn = parameters[key + '-' + objectCounter + '-combination-object-values-column'];
+                                    var namesColumn = parameters[key + '-' + objectCounter + '-combination-object-names-column'];
+
+                                    console.log("obj file is: " + objectFile);
+                                    console.log("obj value is: " + valueName);
+                                    console.log("obj values2 is: " + valuesColumn);
+                                    console.log("obj names is: " + namesColumn);
+
+                                    if (objectFile && valuesColumn && namesColumn) {
+                                        combinationObject.path = objectFile;
+                                        combinationObject.values_column = valuesColumn;
+                                        combinationObject.names_column = namesColumn;
+
+                                        if (valueName) {
+                                            combinationObject.value_name = valueName;
+                                        }
+
+                                        combinationObjects.push(combinationObject);
+                                    }
+                                }
+
+                                var matchObject = {
                                     'match': {
                                         'reverse': reverse,
                                         'trimmed': trimmed,
                                         'elements': elements,
                                     }
-                                });
+                                };
+
+
+/*
+                                if (elements) {
+                                    paramOutput.match.elements = {};
+                                    paramOutput.match.elements = elements;
+                                }
+*/
+
+                                if (combinationObjects) {
+                                    matchObject.combinations = {};
+                                    matchObject.combinations = combinationObjects;
+                                }
+
+                                paramOutput.push(matchObject);
 
                                 break;
 

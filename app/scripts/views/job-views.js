@@ -159,6 +159,7 @@ define([
                 .fail(function() {
                     console.log('job submit fail');
                 });
+
         },
         serialize: function() {
             return {
@@ -662,6 +663,7 @@ define([
         template: 'jobs/vdjpipe-match-sequence-element',
         initialize: function() {
             this.elementCount = 0;
+            this.objectCount  = 0;
         },
         serialize: function() {
             if (this.parameterType) {
@@ -695,12 +697,12 @@ define([
         addCombinationObject: function(e) {
             e.preventDefault();
 
-            var fileName = $('.add-combination-object-select').val();
+            this.objectCount = this.objectCount + 1;
 
             var combinationObjectView = new Jobs.VdjPipeMatchSequenceCombinationObjectConfig({
                 parameterType: this.parameterType,
                 inputCount: this.inputCount,
-                fileName: fileName,
+                objectCount: this.objectCount,
             });
 
             this.insertView('.added-combination-object-subviews', combinationObjectView);
@@ -736,7 +738,7 @@ define([
                 return {
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
-                    fileName: this.fileName,
+                    objectCount: this.objectCount,
                 };
             }
         },
