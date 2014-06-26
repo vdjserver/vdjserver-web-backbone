@@ -1,7 +1,7 @@
 define([
-    'app', 
-    'handlebars', 
-    'filesize', 
+    'app',
+    'handlebars',
+    'filesize',
     'backbone.syphon'
 ], function(App, Handlebars, filesize) {
 
@@ -586,13 +586,22 @@ define([
             if (parameters && parameters.projectUuid) {
                 this.projectUuid = parameters.projectUuid;
             }
+
+            // Turn empty spaces into dashes
+            this.fileProgressIdentifier = this.model.get('name').replace(/\s+/g, '-');
+
+            // Remove periods - otherwise we don't be able to find this in the DOM
+            this.fileProgressIdentifier = this.fileProgressIdentifier.replace(/\./g, '').toLowerCase() + '-progress';
         },
         serialize: function() {
-            return this.model.toJSON();
+            return {
+                file: this.model.toJSON(),
+                fileProgressIdentifier: this.fileProgressIdentifier,
+            };
         },
         events: {
             'click .cancel-upload': 'cancelUpload',
-            'submit form':  'startUpload'
+            'submit form':  'startUpload',
         },
         cancelUpload: function(e) {
             e.preventDefault();
@@ -639,8 +648,8 @@ define([
             percentCompleted = percentCompleted.toFixed(2);
             percentCompleted += '%';
 
-            $('.progress-bar').width(percentCompleted);
-            $('.progress-bar').text(percentCompleted);
+            $('.' + this.fileProgressIdentifier).width(percentCompleted);
+            $('.' + this.fileProgressIdentifier).text(percentCompleted);
         },
         createFileMetadata: function(formData) {
 
