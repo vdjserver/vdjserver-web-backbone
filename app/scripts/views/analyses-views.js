@@ -39,6 +39,7 @@ define(['app'], function(App) {
 
             'click .cdr3-histogram': 'cdr3Histogram', // !
             'click .gene-dist-chart-btn': 'geneDistChart', // !
+            'click .giant-table-btn': 'giantTable', // !
             'click .composition-chart-btn': 'compositionChart', // ok
             'click .quality-chart-btn': 'qualityScoreChart', // ok
             'click .mean-q-hist-btn': 'meanQHist', // ok
@@ -47,7 +48,6 @@ define(['app'], function(App) {
 
             'click .toggle-legend-btn': 'toggleLegend',
             'click .stack-btn': 'buttonDrill',
-            'click .giant-table-btn': 'giantTable',
         },
         downloadFile: function(e) {
             e.preventDefault();
@@ -88,15 +88,15 @@ define(['app'], function(App) {
                 .append('svg')
                     .attr('style','height:600px;');
 
-            $('#chartFileWell').text('No data loaded. Select an Analysis.');
+            $('#chart-file-well').text('No data loaded. Select an Analysis.');
         },
         clearSVG: function() {
 
             //remove SVG elements
             var oldSVGs = document.getElementsByTagName('svg');
 
-            for (var i = 0; i < oldSVGs.length ; i++) {
-                while(oldSVGs[i].hasChildNodes()) {
+            for (var i = 0; i < oldSVGs.length; i++) {
+                while (oldSVGs[i].hasChildNodes()) {
                     oldSVGs[i].removeChild(oldSVGs[i].firstChild);
                 }
             }
@@ -106,11 +106,13 @@ define(['app'], function(App) {
                 .append('div')
                     .attr('id','analyses-chart')
                     .attr('class','svg-container')
-                    .attr('style','position:relative; top:1px;left:0px;');
+                    .attr('style','position:relative; top:1px;left:0px;')
+            ;
 
             d3.select('.svg-container')
                 .append('svg')
-                    .attr('style','height:600px;');
+                    .attr('style','height:600px;')
+            ;
         },
         getErrorMessageFromResponse: function(response) {
             var txt;
@@ -125,7 +127,7 @@ define(['app'], function(App) {
             var message = 'An error occurred.';
 
             console.log("msg frag is: " + messageFragment);
-            
+
             if (messageFragment) {
                 message = message + ' ' + messageFragment.message;
             }
@@ -150,7 +152,7 @@ define(['app'], function(App) {
             var file  = new Backbone.Agave.Model.File();
             file.getFile('human.IG.fna.igblast.kabat.out.rc_out.tsv')
                 .done(function(tsv) {
-                    $('#chartFileWell').text(file.name);
+                    $('#chart-file-well').text(file.name);
 
                     this.tableTSV = tsv;
 
@@ -289,7 +291,7 @@ define(['app'], function(App) {
             var file = new Backbone.Agave.Model.File();
             file.getFile('cdr3-hist-data.json')
                 .done(function(text) {
-                    $('#chartFileWell').text(file.name);
+                    $('#chart-file-well').text(file.name);
                     var CDR3_data = JSON.parse(text);
 
                     nv.addGraph(function() {
@@ -309,10 +311,14 @@ define(['app'], function(App) {
                             .tickFormat(d3.format(',.1f'));
 
                         d3.select('#analyses-chart svg')
-                        .datum(CDR3_data)
+                            .datum(CDR3_data)
                             .call(chart);
 
-                        nv.utils.windowResize(function() { that.clearSVG(); chart.update(); });
+                        nv.utils.windowResize(function() {
+                            that.clearSVG();
+                            chart.update();
+                        });
+
                         return chart;
                     });
 
@@ -320,13 +326,14 @@ define(['app'], function(App) {
                 .fail(function(response) {
                     errorMessage = this.getErrorMessageFromResponse(response);
                     that.showWarning(errorMessage);
-                }); 
+                });
         },
         findFromLabel: function(o,label) {
             if('label' in o) {
                 if(o.label === label) {
                     return o;
-                } else {
+                }
+                else {
                     if('children' in o) {
                         var kids = o.children;
                         for(var k=0; k < kids.length; k++) {
@@ -335,7 +342,8 @@ define(['app'], function(App) {
                                 return result;
                             }
                         }
-                    } else {
+                    }
+                    else {
                         return null;
                     }
                 }
@@ -412,7 +420,7 @@ define(['app'], function(App) {
             var file = this.collection.get('pre-composition.csv');
             file.downloadFile()
                 .done(function(response) {
-                    $('#chartFileWell').text(file.name);
+                    $('#chart-file-well').text(file.name);
 
                     response = response.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
@@ -521,7 +529,7 @@ define(['app'], function(App) {
                 .fail(function(response) {
                     errorMessage = this.getErrorMessageFromResponse(response);
                     that.showWarning(errorMessage);
-                }); 
+                });
         },
         qualityScoreChart: function() {
 
@@ -553,7 +561,7 @@ define(['app'], function(App) {
             var file = this.collection.get('pre-qstats.csv');
             file.downloadFile()
                 .done(function(text) {
-                    $('#chartFileWell').text(file.name);
+                    $('#chart-file-well').text(file.name);
 
                     //remove commented out lines (header info)
                     text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -847,7 +855,7 @@ define(['app'], function(App) {
                 .fail(function(response) {
                     errorMessage = this.getErrorMessageFromResponse(response);
                     that.showWarning(errorMessage);
-                }); 
+                });
         },
 
         // Returns a function to compute the interquartile range.
@@ -876,7 +884,7 @@ define(['app'], function(App) {
             file.downloadFile()
                 .done(function(text) {
 
-                    $('#chartFileWell').text(file.name);
+                    $('#chart-file-well').text(file.name);
 
                     //remove commented out lines (header info)
                     text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -934,7 +942,7 @@ define(['app'], function(App) {
                 .fail(function(response) {
                     errorMessage = this.getErrorMessageFromResponse(response);
                     that.showWarning(errorMessage);
-                }); 
+                });
         },
 
         lengthHist: function () {
@@ -949,7 +957,7 @@ define(['app'], function(App) {
             file.downloadFile()
                 .done(function(text) {
 
-                    $('#chartFileWell').text(file.name);
+                    $('#chart-file-well').text(file.name);
 
                     //remove commented out lines (header info)
                     text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -1006,7 +1014,7 @@ define(['app'], function(App) {
                 .fail(function(response) {
                     errorMessage = this.getErrorMessageFromResponse(response);
                     that.showWarning(errorMessage);
-                }); 
+                });
         },
 
         gcHist: function () {
@@ -1019,7 +1027,7 @@ define(['app'], function(App) {
             var file = this.collection.get('pre-gc_hist.csv');
             file.downloadFile()
                 .done(function(text) {
-                    $('#chartFileWell').text(file.name);
+                    $('#chart-file-well').text(file.name);
 
                     //remove commented out lines (header info)
                     text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -1086,7 +1094,7 @@ define(['app'], function(App) {
                 .fail(function(response) {
                     errorMessage = this.getErrorMessageFromResponse(response);
                     that.showWarning(errorMessage);
-                }); 
+                });
         },
 
         //edward salinas
@@ -1097,7 +1105,7 @@ define(['app'], function(App) {
             var file  = new Backbone.Agave.Model.File();
             file.getFile('real_discrete_bar_chart.json')
                 .done(function(text) {
-                    $('#chartFileWell').text(file.name);
+                    $('#chart-file-well').text(file.name);
                     d3.select('#analyses-chart').insert('div', 'svg').attr('id','stackdiv');
                     var BIGJSON = JSON.parse(text);
                     that.BIGJSON = BIGJSON;
@@ -1113,7 +1121,7 @@ define(['app'], function(App) {
                 .fail(function(response) {
                     errorMessage = this.getErrorMessageFromResponse(response);
                     that.showWarning(errorMessage);
-                }); 
+                });
         },
 
         //edward salinas
