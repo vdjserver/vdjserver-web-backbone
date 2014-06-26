@@ -84,20 +84,20 @@ define(['backbone'], function(Backbone) {
                             case 'quality-stats':
                                 paramOutput.push({
                                     //'quality_stats': {'out_prefix': parameters[key]}
-                                    'quality_stats': {'out_prefix': 'pre-'}
+                                    'quality_stats': {'out_prefix': 'pre-'},
                                 });
                                 break;
 
                             case 'composition-stats':
                                 paramOutput.push({
                                     //'composition_stats': {'out_prefix': parameters[key]}
-                                    'composition_stats': {'out_prefix': 'pre-'}
+                                    'composition_stats': {'out_prefix': 'pre-'},
                                 });
                                 break;
 
                             case 'nucleotide-filter':
                                 paramOutput.push({
-                                    'character_filter': parameters[key]
+                                    'character_filter': parameters[key],
                                 });
                                 break;
 
@@ -105,26 +105,26 @@ define(['backbone'], function(Backbone) {
                                 paramOutput.push({
                                     'length_filter': {
                                         'min': parameters[keyCounter + 'length-filter-min'],
-                                        'max': parameters[keyCounter + 'length-filter-max']
-                                    }
+                                        'max': parameters[keyCounter + 'length-filter-max'],
+                                    },
                                 });
                                 break;
 
                             case 'homopolymer-filter':
                                 paramOutput.push({
-                                    'homopolymer_filter': parameters[key]
+                                    'homopolymer_filter': parameters[key],
                                 });
                                 break;
 
                             case 'minimal-quality-filter':
                                 paramOutput.push({
-                                    'min_quality_filter': parameters[key]
+                                    'min_quality_filter': parameters[key],
                                 });
                                 break;
 
                             case 'minimal-average-quality-filter':
                                 paramOutput.push({
-                                    'average_quality_filter': parameters[key]
+                                    'average_quality_filter': parameters[key],
                                 });
                                 break;
 
@@ -132,8 +132,8 @@ define(['backbone'], function(Backbone) {
                                 paramOutput.push({
                                     'min_quality_window_filter': {
                                         'min_quality': parameters[key + '-min-quality'],
-                                        'min_length': parameters[key + '-min-length']
-                                    }
+                                        'min_length': parameters[key + '-min-length'],
+                                    },
                                 });
                                 break;
 
@@ -142,8 +142,8 @@ define(['backbone'], function(Backbone) {
                                     'average_quality_window_filter': {
                                         'min_quality': parameters[key + '-min-quality'],
                                         'window_length': parameters[key + '-window-length'],
-                                        'min_length': parameters[key + '-min-length']
-                                    }
+                                        'min_length': parameters[key + '-min-length'],
+                                    },
                                 });
                                 break;
 
@@ -151,8 +151,8 @@ define(['backbone'], function(Backbone) {
                                 paramOutput.push({
                                     'ambiguous_window_filter': {
                                         'min_length': parameters[key + '-min-length'],
-                                        'max_ambiguous': parameters[key + '-max-ambiguous']
-                                    }
+                                        'max_ambiguous': parameters[key + '-max-ambiguous'],
+                                    },
                                 });
                                 break;
 
@@ -160,8 +160,8 @@ define(['backbone'], function(Backbone) {
                                 paramOutput.push({
                                     'histogram': {
                                         'name': parameters[key],
-                                        'out_path': 'TODO'
-                                    }
+                                        //'out_path': 'TODO',
+                                    },
                                 });
                                 break;
 
@@ -172,7 +172,7 @@ define(['backbone'], function(Backbone) {
                                         'ignore_ends': parameters[key + '-ignore-ends'],
                                         'fraction_match': parameters[key + '-fraction-match'],
                                        // Could add out_path_fasta or out_path_duplicates
-                                    }
+                                    },
                                 });
                                 break;
 
@@ -375,7 +375,7 @@ define(['backbone'], function(Backbone) {
                                         'reverse': reverse,
                                         'trimmed': trimmed,
                                         'elements': elements,
-                                    }
+                                    },
                                 };
 
 
@@ -392,6 +392,70 @@ define(['backbone'], function(Backbone) {
                                 }
 
                                 paramOutput.push(matchObject);
+
+                                break;
+
+                            case 'match-external-molecular-identifier':
+                                paramOutput.push({
+                                    'eMID_map': {
+                                        'value_name': parameters[key + '-value-name'],
+                                        'fasta_path': parameters[key + '-fasta-file'],
+                                        'pairs_path': parameters[key + '-pairs-file'],
+                                    },
+                                });
+                                break;
+
+                            case 'write-sequences':
+                                paramOutput.push({
+                                    'write_sequence': {
+                                        'out_path': parameters[key + '-output-path'],
+                                        'unset_value': parameters[key + '-unset-value'],
+                                        'trimmed': parameters[key + '-trimmed'],
+                                        'reverse_complemented': parameters[key + '-reverse-complemented'],
+                                        'skip_empty': parameters[key + '-skip-empty'],
+                                    },
+                                });
+                                break;
+
+                            case 'write-values':
+
+                                var writeValuesNames = parameters[key + '-names'];
+                                writeValuesNames = writeValuesNames.split(',');
+
+                                paramOutput.push({
+                                    'write_value': {
+                                        'names': writeValuesNames,
+                                        'out_path': parameters[key + '-out-path'],
+                                        'unset_value': parameters[key + '-unset-value'],
+                                    },
+                                });
+                                break;
+
+                            case 'find-sequences-from-multiple-groups':
+
+                                var tmpFindIntersection = {
+                                    'find_intersection': {
+                                        'min_length': parameters[key + '-min-length'],
+                                    },
+                                };
+
+                                if (parameters[key + '-fraction-match']) {
+                                    tmpFindIntersection.find_intersection.fraction_match = parameters[key + '-fraction-match'];
+                                }
+                                else if (parameters[key + '-ignore-ends']) {
+                                    tmpFindIntersection.find_intersection.ignore_ends = parameters[key + '-ignore-ends'];
+                                }
+
+                                paramOutput.push(tmpFindIntersection);
+
+                                break;
+
+                            case 'merge-paired-reads':
+                                paramOutput.push({
+                                    'merge_paired': {
+                                        'min_score': parameters[key],
+                                    },
+                                });
 
                                 break;
 
