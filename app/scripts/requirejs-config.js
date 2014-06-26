@@ -103,6 +103,9 @@ require.config({
             deps: ['backbone'],
             exports: 'layoutmanager'
         },
+        'd3': {
+            exports: 'd3',
+        },
         'box': {
             deps:['d3'],
             exports: 'box'

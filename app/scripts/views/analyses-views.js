@@ -1,4 +1,17 @@
-define(['app'], function(App) {
+define([
+    'app',
+    'd3',
+    'nvd3',
+    'box',
+    'slickgrid.core',
+    'slickgrid.grid',
+], function(
+    App,
+    d3,
+    nv,
+    box,
+    Slick
+) {
 
     'use strict';
 
@@ -72,8 +85,8 @@ define(['app'], function(App) {
             //get rid of the download-btn if it exists
             //remove the svg container as well because some events get tied to it
             var chartContainer = document.getElementsByClassName('svg-container');
-            for (var i = 0; i < chartContainer.length; i++) {
-                chartContainer[i].parentNode.removeChild(chartContainer[i]);
+            for (var j = 0; j < chartContainer.length; j++) {
+                chartContainer[j].parentNode.removeChild(chartContainer[j]);
             }
 
             //add them back in
@@ -149,8 +162,8 @@ define(['app'], function(App) {
             var that = this;
 
             //get file name post-filter_mean_q_hist.csv
-            var file  = new Backbone.Agave.Model.File();
-            file.getFile('human.IG.fna.igblast.kabat.out.rc_out.tsv')
+            var file = this.collection.get('human.IG.fna.igblast.kabat.out.rc_out.tsv');
+            file.downloadFile()
                 .done(function(tsv) {
                     $('#chart-file-well').text(file.name);
 
@@ -162,8 +175,8 @@ define(['app'], function(App) {
                     d3.select('#analyses-chart')
                         .attr('style',
                             d3.select('#analyses-chart').attr('style') + ';'
-                            + 'width:' + (+width-40) + 'px;'
-                            + 'height:' + (+height -20) + 'px;'
+                            + 'width:' + (+width - 40) + 'px;'
+                            + 'height:' + (+height - 20) + 'px;'
                          )
                     ;
 
@@ -247,11 +260,11 @@ define(['app'], function(App) {
 
                     var keys = Object.keys(data[0]);
                     var columns = [];
-                    for (var i=0; i< keys.length; i++) {
+                    for (var i = 0; i < keys.length; i++) {
                         columns.push({
                             id: keys[i],
                             name: keys[i],
-                            field: keys[i]
+                            field: keys[i],
                         });
                     }
 
@@ -274,11 +287,13 @@ define(['app'], function(App) {
                         $(this).attr('data-toggle', 'tooltip');
                     });
 
-                    $('.slick-header-column').tooltip({ tooltipClass: 'custom-tooltip-styling' });
+                    $('.slick-header-column').tooltip({
+                        tooltipClass: 'custom-tooltip-styling',
+                    });
                  })
                 .fail(function(response) {
-                    errorMessage = this.getErrorMessageFromResponse(response);
-                    that.showWarning(errorMessage);
+                    var errorMessage = this.getErrorMessageFromResponse(response);
+                    this.showWarning(errorMessage);
                 });
         },
         cdr3Histogram: function() {
@@ -287,12 +302,11 @@ define(['app'], function(App) {
             this.hideWarning();
 
             var that = this;
-            //get file name post-filter_mean_q_hist.csv
-            var file = new Backbone.Agave.Model.File();
-            file.getFile('cdr3-hist-data.json')
+            var file = this.collection.get('cdr3-hist-data.json');
+            file.downloadFile()
                 .done(function(text) {
                     $('#chart-file-well').text(file.name);
-                    var CDR3_data = JSON.parse(text);
+                    var cdr3Data = JSON.parse(text);
 
                     nv.addGraph(function() {
                         var chart = nv.models.multiBarChart()
@@ -305,14 +319,17 @@ define(['app'], function(App) {
                         ;
 
                         chart.xAxis
-                            .tickFormat(d3.format(',f'));
+                            .tickFormat(d3.format(',f'))
+                        ;
 
                         chart.yAxis
-                            .tickFormat(d3.format(',.1f'));
+                            .tickFormat(d3.format(',.1f'))
+                        ;
 
                         d3.select('#analyses-chart svg')
-                            .datum(CDR3_data)
-                            .call(chart);
+                            .datum(cdr3Data)
+                            .call(chart)
+                        ;
 
                         nv.utils.windowResize(function() {
                             that.clearSVG();
@@ -324,21 +341,22 @@ define(['app'], function(App) {
 
                  })
                 .fail(function(response) {
-                    errorMessage = this.getErrorMessageFromResponse(response);
-                    that.showWarning(errorMessage);
+                    var errorMessage = this.getErrorMessageFromResponse(response);
+                    this.showWarning(errorMessage);
                 });
         },
-        findFromLabel: function(o,label) {
-            if('label' in o) {
-                if(o.label === label) {
+        findFromLabel: function(o, label) {
+            if ('label' in o) {
+                if (o.label === label) {
                     return o;
                 }
                 else {
-                    if('children' in o) {
+                    if ('children' in o) {
                         var kids = o.children;
-                        for(var k=0; k < kids.length; k++) {
-                            var result = this.findFromLabel(kids[k],label);
-                            if(result != null) {
+                        for (var k = 0; k < kids.length; k++) {
+                            var result = this.findFromLabel(kids[k], label);
+
+                            if (result !== null) {
                                 return result;
                             }
                         }
@@ -352,63 +370,88 @@ define(['app'], function(App) {
             return null;
         },
         makeChartableFromValidHierarchyObject: function(o) {
-                var values=[];
-                if('children' in o) {
-                    //iterate throuch children
-                    //for each child, make an object with
-                    //2(two) items, 'label' and 'value'
-                    //      {
-                    //        'label' : 'A' ,
-                    //        'value' : 29.765957771107
-                    //      } ,
-                    var kids=o.children;
-                    var numKids=kids.length;
-                    for(var k=0;k<numKids;k++) {
-                        var tempObj={'label':kids[k].label,'value':kids[k].value};
-                        values.push(tempObj);
-                        }
-                    } else {
-                    //no children
-                    //just use self!
-                    var singleObj={'label':o.label,'value':o.value};
-                    values.push(singleObj);
-                    }
-                var topobj={key: 'Cumulative Return','values':values};
-                var l1=[];
-                l1.push(topobj);
-                //l1 'level 1' is the chartable! :)
-                return l1;
+            var values = [];
+            if ('children' in o) {
+                //iterate throuch children
+                //for each child, make an object with
+                //2(two) items, 'label' and 'value'
+                //      {
+                //        'label' : 'A' ,
+                //        'value' : 29.765957771107
+                //      } ,
+
+                var kids = o.children;
+                var numKids = kids.length;
+
+                for (var k = 0; k < numKids; k++) {
+                    var tempObj = {
+                        'label': kids[k].label,
+                        'value': kids[k].value,
+                    };
+
+                    values.push(tempObj);
+                }
+            }
+            else {
+                //no children
+                //just use self!
+                var singleObj = {
+                    'label': o.label,
+                    'value': o.value,
+                };
+
+                values.push(singleObj);
+            }
+
+            var topobj = {
+                'key': 'Cumulative Return',
+                'values': values,
+            };
+
+            var l1 = [];
+            l1.push(topobj);
+            //l1 'level 1' is the chartable! :)
+
+            return l1;
         },
         redrawBarChart: function() {
             //call this function to trigger reloading
             //inside redrawBarChart()
             this.clearSVG();
-            var that = this;
-            nv.addGraph(function() {
-              var chart = nv.models.discreteBarChart()
-                  .x(function(d) { return d.label })
-                  .y(function(d) { return d.value })
-                  .staggerLabels(true)
-                  .tooltips(true)
-                  .showValues(true)
-                  .color(['#aec7e8', '#7b94b5', '#486192'])
-                  .transitionDuration(500)
-                  ;
-              d3.select('#analyses-chart svg')
-                  .datum(that.currentDataset)
-                  .call(chart);
 
-              nv.utils.windowResize(function() { that.clearSVG(); chart.update(); });
-              return chart;
-            },function(){
-                d3.selectAll('.nv-bar').on('click',
-                    function(e){
-                        //get a new 'chartable and invoke redrawChart to get the chart to be re-created
-                        var res=that.findFromLabel(that.BIGJSON,e.label);
-                        var chartable=that.makeChartableFromValidHierarchyObject(res);
-                        that.currentDataset=chartable;
-                        that.redrawBarChart();
-                    });
+            var that = this;
+
+            nv.addGraph(function() {
+                var chart = nv.models.discreteBarChart()
+                    .x(function(d) { return d.label; })
+                    .y(function(d) { return d.value; })
+                    .staggerLabels(true)
+                    .tooltips(true)
+                    .showValues(true)
+                    .color(['#aec7e8', '#7b94b5', '#486192'])
+                    .transitionDuration(500)
+                ;
+
+                d3.select('#analyses-chart svg')
+                    .datum(that.currentDataset)
+                    .call(chart)
+                ;
+
+                nv.utils.windowResize(function() {
+                    that.clearSVG();
+                    chart.update();
+                });
+
+                return chart;
+            },
+            function() {
+                d3.selectAll('.nv-bar').on('click', function(e){
+                    //get a new 'chartable and invoke redrawChart to get the chart to be re-created
+                    var res = that.findFromLabel(that.BIGJSON, e.label);
+                    var chartable = that.makeChartableFromValidHierarchyObject(res);
+                    that.currentDataset = chartable;
+                    that.redrawBarChart();
+                });
             });
         },
         compositionChart: function () {
@@ -527,8 +570,8 @@ define(['app'], function(App) {
                     });
                 })
                 .fail(function(response) {
-                    errorMessage = this.getErrorMessageFromResponse(response);
-                    that.showWarning(errorMessage);
+                    var errorMessage = this.getErrorMessageFromResponse(response);
+                    this.showWarning(errorMessage);
                 });
         },
         qualityScoreChart: function() {
@@ -593,12 +636,11 @@ define(['app'], function(App) {
 
 
                     var chart = box()
-                        .whiskers(that.iqr(1.5))
+                        .whiskers([-1, 0])
                         .height(height)
                         .width(width)
                         .domain([min, max])
-                        //.showLabels(labels)
-                        ;
+                    ;
 
                     // the x-axis
                     var x = d3.scale.ordinal()
@@ -763,7 +805,7 @@ define(['app'], function(App) {
                                 .style('top', (+d3.event.layerY + 150) + 'px')
                             ;
                          })
-                        .on('mouseout', function(d) {
+                        .on('mouseout', function(/* d */) {
                             tip.transition()
                                 .duration(300)
                                 .style('opacity', 0);
@@ -843,34 +885,17 @@ define(['app'], function(App) {
                                 return x(+d.position) + barWidth / 2;
                             })
                             .attr('cy', function (d) {
-                                return y(+d.mean)
+                                return y(+d.mean);
                             })
                             .attr('r', 3)
                             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-                            .attr('class', 'meanPoints');
+                            .attr('class', 'meanPoints')
                     ;
-
-
                 })
                 .fail(function(response) {
-                    errorMessage = this.getErrorMessageFromResponse(response);
-                    that.showWarning(errorMessage);
+                    var errorMessage = this.getErrorMessageFromResponse(response);
+                    this.showWarning(errorMessage);
                 });
-        },
-
-        // Returns a function to compute the interquartile range.
-        // already computed in our data
-        iqr: function(k) {
-          return function(d, i) {
-            var q1 = d.quartiles[0],
-                q3 = d.quartiles[2],
-                iqr = (q3 - q1) * k,
-                i = -1,
-                j = d.length;
-            while (d[++i] < q1 - this.iqr);
-            while (d[--j] > q3 + this.iqr);
-            return [i, j];
-          };
         },
 
         meanQHist: function() {
@@ -940,8 +965,8 @@ define(['app'], function(App) {
 
                 })
                 .fail(function(response) {
-                    errorMessage = this.getErrorMessageFromResponse(response);
-                    that.showWarning(errorMessage);
+                    var errorMessage = this.getErrorMessageFromResponse(response);
+                    this.showWarning(errorMessage);
                 });
         },
 
@@ -953,7 +978,6 @@ define(['app'], function(App) {
             var that = this;
 
             var file = this.collection.get('pre-len_hist.csv');
-            console.log("file is: " + JSON.stringify(file));
             file.downloadFile()
                 .done(function(text) {
 
@@ -1012,8 +1036,8 @@ define(['app'], function(App) {
                     });
                 })
                 .fail(function(response) {
-                    errorMessage = this.getErrorMessageFromResponse(response);
-                    that.showWarning(errorMessage);
+                    var errorMessage = this.getErrorMessageFromResponse(response);
+                    this.showWarning(errorMessage);
                 });
         },
 
@@ -1092,82 +1116,96 @@ define(['app'], function(App) {
                     });
                 })
                 .fail(function(response) {
-                    errorMessage = this.getErrorMessageFromResponse(response);
-                    that.showWarning(errorMessage);
+                    var errorMessage = this.getErrorMessageFromResponse(response);
+                    this.showWarning(errorMessage);
                 });
         },
 
         //edward salinas
         geneDistChart: function() {
-            this.clearChart(); this.hideWarning();
+            this.clearChart();
+            this.hideWarning();
+
             var that = this;
+
             //get file name post-filter_mean_q_hist.csv
-            var file  = new Backbone.Agave.Model.File();
-            file.getFile('real_discrete_bar_chart.json')
+            var file = this.collection.get('real_discrete_bar_chart.json');
+            file.downloadFile()
                 .done(function(text) {
                     $('#chart-file-well').text(file.name);
-                    d3.select('#analyses-chart').insert('div', 'svg').attr('id','stackdiv');
+
+                    d3.select('#analyses-chart')
+                        .insert('div', 'svg')
+                        .attr('id','stackdiv')
+                    ;
+
                     var BIGJSON = JSON.parse(text);
                     that.BIGJSON = BIGJSON;
 
-                    var res=that.getHierarchySubHierarchyFromObj(BIGJSON,'human');
-                    var initialChartable=that.makeChartableFromValidHierarchyObject(res);
-                    var currentDataset=initialChartable;
-                    that.stackStatus=false;
-                    that.drillStack=['human']; //keep track of drill-down location
-                    that.redrawGeneDistChart(res);
+                    var res = that.getHierarchySubHierarchyFromObj(BIGJSON, 'human');
 
+                    that.stackStatus = false;
+                    that.drillStack = ['human']; //keep track of drill-down location
+                    that.redrawGeneDistChart(res);
                 })
                 .fail(function(response) {
-                    errorMessage = this.getErrorMessageFromResponse(response);
-                    that.showWarning(errorMessage);
+                    var errorMessage = this.getErrorMessageFromResponse(response);
+                    this.showWarning(errorMessage);
                 });
         },
 
         //edward salinas
-        resetDrillStackUpTo: function(u,ds) {
-            var newDrillStack=[];
-            var di=ds.length;
-            for(di=0;di<ds.length;di++) {
+        resetDrillStackUpTo: function(u, ds) {
+            var newDrillStack = [];
+            var di = ds.length;
+
+            for (di = 0; di < ds.length; di++) {
                 newDrillStack.push(ds[di]);
-                if(u===ds[di]) {
-                    di=ds.length+1;
+
+                if(u === ds[di]) {
+                    di = ds.length + 1;
                 }
             }
+
 	        return newDrillStack;
         },
 
         //edward salinas
-        buttonDrill: function(x, y) {
+        buttonDrill: function(x) {
+
+            console.log("buttonDrill hit");
             var value = x.toElement.attributes.getNamedItem('data-button-index').value;
-            this.drillStack=this.resetDrillStackUpTo(value,this.drillStack);
-            var res=this.getHierarchySubHierarchyFromObj(this.BIGJSON,value);
+            this.drillStack = this.resetDrillStackUpTo(value, this.drillStack);
+            var res = this.getHierarchySubHierarchyFromObj(this.BIGJSON, value);
             this.redrawGeneDistChart(res);
         },
 
         //edward salinas
         getHTMLButtonsFromDrillStack: function(d) {
-            var buttonIndex=0;
-            var buttonHTML='<ol class="breadcrumb">';
-            for (buttonIndex=0;buttonIndex<d.length;buttonIndex++){
-                if (buttonIndex == (d.length -1)) {
+            var buttonIndex = 0;
+            var buttonHTML = '<ol class="breadcrumb">';
+            for (buttonIndex = 0; buttonIndex < d.length; buttonIndex++) {
+                if (buttonIndex === (d.length -1)) {
                     buttonHTML = buttonHTML + '<li class="active">' + d[buttonIndex] + '</li>';
                 }
                 else {
                     buttonHTML = buttonHTML + '<li><a class="stack-btn" id="stack-btn-' + d[buttonIndex] + '" data-button-index="' + d[buttonIndex] + '" >' + d[buttonIndex] + '</a></li>';
                 }
             }
+
             buttonHTML = buttonHTML + '</ol>';
             return buttonHTML;
         },
 
         //does the tree have children and there's more than zero of them
         //edward salinas
-        doesThisRootHaveChildren: function(o,rootName) {
-            var rooted_hierarchy=this.getHierarchySubHierarchyFromObj(o,rootName)
-            if('children' in rooted_hierarchy) {
-                var children=rooted_hierarchy.children
-                if(children.length==0) {
+        doesThisRootHaveChildren: function(o, rootName) {
+
+            var rooted_hierarchy = this.getHierarchySubHierarchyFromObj(o, rootName);
+            if ('children' in rooted_hierarchy) {
+                var children = rooted_hierarchy.children;
+
+                if (children.length === 0) {
                     return false;
                 }
                 else {
@@ -1180,137 +1218,144 @@ define(['app'], function(App) {
         },
 
         isAllelicString: function(s) {
-            var allelePattern=/\S\*\d+$/i;
-            if(s.match(allelePattern)) {
+            var allelePattern = /\S\*\d+$/i;
+
+            if (s.match(allelePattern)) {
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         },
 
         //edward salinas
         areALLStringsInArrayNONAllelic: function(a) {
-            var i=0;
-            for(i=0;i<a.length;i++)
-                {
-                var allelic=this.isAllelicString(a[i]);
-                if(allelic) {
+
+            for(var i = 0; i < a.length; i++) {
+                var allelic = this.isAllelicString(a[i]);
+                if (allelic) {
                     return false;
-                    }
                 }
+            }
+
             return true;
         },
 
         //edward salinas
         areALLStringsInArrayAllelic: function(a) {
-            var i=0;
-            for(i=0;i<a.length;i++)
-                {
-                var allelic=this.isAllelicString(a[i]);
-                if(!allelic) {
+
+            for (var i = 0; i < a.length; i++) {
+                var allelic = this.isAllelicString(a[i]);
+                if (!allelic) {
                     return false;
-                    }
                 }
+            }
+
             return true;
         },
 
         //edward salinas
-        doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic: function(o,rootName) {
-            var rooted_hierarchy=this.getHierarchySubHierarchyFromObj(o,rootName)
-            var has_kids=this.doesThisRootHaveChildren(o,rootName)
-            var grandKidsLabels=[]
-            var kidsLabels=[]
-            var self=rootName
-            if(has_kids) {
-                var children=rooted_hierarchy.children;
-                var c=0;
-                for(c=0;c<children.length;c++) {
-                    var child=children[c];
-                    if('label' in child) {
+        doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic: function(o, rootName) {
+            var rooted_hierarchy = this.getHierarchySubHierarchyFromObj(o, rootName);
+            var has_kids = this.doesThisRootHaveChildren(o, rootName);
+            var grandKidsLabels = [];
+            var kidsLabels = [];
+            //var self = rootName
+            if (has_kids) {
+                var children = rooted_hierarchy.children;
+                var c = 0;
+
+                for (c = 0; c < children.length; c++) {
+                    var child = children[c];
+                    if ('label' in child) {
                         kidsLabels.push(child.label);
                     }
 
-                    if('children' in child) {
-                        var grandChildren=child.children;
-                        for(var gc=0;gc<grandChildren.length;gc++) {
+                    if ('children' in child) {
+                        var grandChildren = child.children;
+                        for (var gc = 0; gc < grandChildren.length; gc++) {
                             grandKidsLabels.push(grandChildren[gc].label);
                         }//for each grandchild
                     }//if a child has children
                     else{
                         return false;
                     }
-                    }//for children
-                }//there are kids
+                }//for children
+            }//there are kids
             else {
                 return false;
             }
 
-            var cond1=this.isAllelicString(rootName);
-            var cond2=this.areALLStringsInArrayNONAllelic(kidsLabels);
-            var cond3=this.areALLStringsInArrayAllelic(grandKidsLabels);
-            var cond4=(kidsLabels.length==0);
-            var cond5=(grandKidsLabels.length==0);
+            var cond1 = this.isAllelicString(rootName);
+            var cond2 = this.areALLStringsInArrayNONAllelic(kidsLabels);
+            var cond3 = this.areALLStringsInArrayAllelic(grandKidsLabels);
+            var cond4 = (kidsLabels.length === 0);
+            var cond5 = (grandKidsLabels.length === 0);
 
-            if( !cond1 && cond2 && cond3 && !cond4 && !cond5) {
+            if ( !cond1 && cond2 && cond3 && !cond4 && !cond5) {
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         }, //end doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic
 
         //edward salinas
-        getValueReturnZeroAsDefault: function(s,hierarchy) {
-            var subtree=this.getHierarchySubHierarchyFromObj(hierarchy,s);
-            if(subtree==null)
-            {
+        getValueReturnZeroAsDefault: function(s, hierarchy) {
+            var subtree = this.getHierarchySubHierarchyFromObj(hierarchy, s);
+
+            if (subtree === null) {
                 return 0;
             }
-            else
-            {
+            else {
                 return subtree.value;
             }
         },
 
         getGrandChildrenLabelArray: function(o) {
-            var gcArray=[];
-            if('children' in o) {
-                var children=o.children;
-                for(var c=0;c<children.length;c++)
-                    {
-                    if('children' in children[c])
-                        {
-                        var gKids=children[c].children;
-                        for(var g=0;g<gKids.length;g++)
-                            {
+            var gcArray = [];
+
+            if ('children' in o) {
+                var children = o.children;
+
+                for (var c = 0; c < children.length; c++) {
+                    if ('children' in children[c]) {
+                        var gKids = children[c].children;
+
+                        for (var g = 0; g < gKids.length; g++) {
                             gcArray.push(gKids[g].label);
-                            }
                         }
                     }
                 }
+            }
+
             return gcArray;
         },
 
         //edward salinas
         getHighestAlleleValueFromAllelicOnlyList: function(aol) {
-            var maxa=(1);
-            for(var a=0;a<aol.length;a++) {
+            var maxa = (1);
+            for (var a = 0; a < aol.length; a++) {
                 var myRegexp = /\*(\d+)$/;
-                var reMatch=myRegexp.exec(aol[a]);
-                if(reMatch) {
-                    if(maxa<reMatch[1]) {
-                        maxa=reMatch[1];
+                var reMatch = myRegexp.exec(aol[a]);
+                if (reMatch) {
+                    if (maxa < reMatch[1]) {
+                        maxa = reMatch[1];
                     }
                 }
             }
+
             return maxa;
         },
 
         //zero pad a digit string a up to pl digits
-        zeroPadToDigits: function(a,pl) {
-            a=a.toString()
-            while(a.length<pl) {
-                a='0'.concat(a);
+        zeroPadToDigits: function(a, pl) {
+            a = a.toString();
+            while(a.length < pl) {
+                a = '0'.concat(a);
             }
+
+            console.log("a is: " + a);
             return a;
         },
 
@@ -1319,14 +1364,16 @@ define(['app'], function(App) {
         //edward salinas
         separateGeneAndAllele: function(a) {
             var myRegexp = /(.+)\*(\d+)$/;
-            var reMatch=myRegexp.exec(a);
-            var toReturn=[]
-            if(reMatch) {
-                var gene=reMatch[1]
-                var allele=reMatch[2]
-                toReturn.push(gene)
-                toReturn.push(allele)
+            var reMatch = myRegexp.exec(a);
+            var toReturn = [];
+
+            if (reMatch) {
+                var gene = reMatch[1];
+                var allele = reMatch[2];
+                toReturn.push(gene);
+                toReturn.push(allele);
             }
+
             return toReturn;
         },
 
@@ -1338,46 +1385,53 @@ define(['app'], function(App) {
                 It's assumed that at least one child exists under the root and that it is non-allelic
                 It's assumed that all children have hildren and that all these 'grandchildren' are allelic /.+\*\d+/
                 */
-                var gcLabels=this.getGrandChildrenLabelArray(o);
-                var maxa=this.getHighestAlleleValueFromAllelicOnlyList(gcLabels);
+                var gcLabels = this.getGrandChildrenLabelArray(o);
+                var maxa = this.getHighestAlleleValueFromAllelicOnlyList(gcLabels);
 
                 //these colors need to go but they can be used for now
-                //colorArray=['#51A351','#BD362F','#11162F'];    //dirty christmas
-                var colorArray=['#aec7e8', '#7b94b5', '#486192'];  //hues of blues
-                //colorArray=[' #FF0000','#FF7F00','#FFFF00','#00FF00','#0000FF','#4B0082','#8F00FF']; //rainbow http://suddenwhims.com/2012/10/html-rainbow-color-codes-color-hex/
-                var stackDataArray=[];
-                var alleleNum=1;
-                var immediateChildren=o.children;
+                //colorArray = ['#51A351','#BD362F','#11162F'];    //dirty christmas
+                var colorArray = ['#aec7e8', '#7b94b5', '#486192'];  //hues of blues
+                //colorArray = [' #FF0000','#FF7F00','#FFFF00','#00FF00','#0000FF','#4B0082','#8F00FF']; //rainbow http://suddenwhims.com/2012/10/html-rainbow-color-codes-color-hex/
+                var stackDataArray = [];
+                var alleleNum = 1;
+                var immediateChildren = o.children;
 
-                for(alleleNum=1;alleleNum<=maxa;alleleNum++) {
-                    var immediateChildIndex=0;
-                    var alleleNumZeroPadded=this.zeroPadToDigits(alleleNum,2);
+                for (alleleNum = 1; alleleNum <= maxa; alleleNum++) {
+                    var immediateChildIndex = 0;
+                    var alleleNumZeroPadded = this.zeroPadToDigits(alleleNum, 2);
 
-                    var objectColorIndex=((alleleNum-1)%colorArray.length);
-                    var color=colorArray[objectColorIndex];
-                    var key=alleleNumZeroPadded.toString();
+                    var objectColorIndex = ((alleleNum -1) % colorArray.length);
+                    var color = colorArray[objectColorIndex];
+                    var key = alleleNumZeroPadded.toString();
 
-
-                    var xList=[];
-                    var yList=[];
-                    var values=[];
-                    for(immediateChildIndex=0;immediateChildIndex<immediateChildren.length;immediateChildIndex++) {
-                        var withStar=immediateChildren[immediateChildIndex].label+'*'+alleleNumZeroPadded;
-                        var geneAndAllele=this.separateGeneAndAllele(withStar);
-                        var genex=geneAndAllele[0];
-                        var valy=this.getValueReturnZeroAsDefault(withStar,o)
-                        xList.push(genex)
+                    var xList = [];
+                    var yList = [];
+                    var values = [];
+                    for (immediateChildIndex = 0; immediateChildIndex < immediateChildren.length; immediateChildIndex++) {
+                        var withStar = immediateChildren[immediateChildIndex].label + '*' + alleleNumZeroPadded;
+                        var geneAndAllele = this.separateGeneAndAllele(withStar);
+                        var genex = geneAndAllele[0];
+                        var valy = this.getValueReturnZeroAsDefault(withStar, o);
+                        xList.push(genex);
                         yList.push(valy);
                     }//for each immediate child
 
-                    for(var v=0;v<xList.length;v++) {
-                        var xyObj={'x':xList[v],'y':parseInt(yList[v])};
+                    for (var v = 0; v < xList.length; v++) {
+                        var xyObj = {
+                            'x': xList[v],
+                            'y': parseInt(yList[v]),
+                        };
+
                         values.push(xyObj);
                     }
 
-                    var keyObj={'key':key,'color':color,'values':values};
-                    stackDataArray.push(keyObj);
+                    var keyObj = {
+                        'key': key,
+                        'color': color,
+                        'values': values,
+                    };
 
+                    stackDataArray.push(keyObj);
                 }//for each allele up to maximum
 
             return stackDataArray;
@@ -1389,142 +1443,123 @@ define(['app'], function(App) {
             document.getElementById('stackdiv').innerHTML = this.getHTMLButtonsFromDrillStack(this.drillStack);
             //call this function to trigger reloading
             //inside redrawChart()
-            var prevStackStatus=this.stackStatus;
-            this.stackStatus=this.doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(this.BIGJSON,res.label);
+            var prevStackStatus = this.stackStatus;
+            this.stackStatus = this.doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(this.BIGJSON, res.label);
 
-            if(prevStackStatus!=this.stackStatus) {
+            if (prevStackStatus !== this.stackStatus) {
                 //clear chart
                 d3.select('#analyses-chart svg')
-                    .selectAll('g').remove();
+                    .selectAll('g').remove()
+                ;
             }
 
-            if(!this.stackStatus) {
-                var plainChartable=this.makeChartableFromValidHierarchyObject(res);
+            if (!this.stackStatus) {
+                var plainChartable = this.makeChartableFromValidHierarchyObject(res);
                 nv.addGraph(
-                  function() {
-                      var chart = nv.models.discreteBarChart()
-                          .x(function(d) { return d.label })
-                          .y(function(d) { return d.value })
-                          .staggerLabels(true)
-                          //.staggerLabels(historicalBarChart[0].values.length > 8)
-                          .tooltips(true)
-                          .showValues(true)
-                          .color(['#aec7e8', '#7b94b5', '#486192'])
-                          .transitionDuration(500)
-                          ;
+                    function() {
+                        var chart = nv.models.discreteBarChart()
+                            .x(function(d) { return d.label; })
+                            .y(function(d) { return d.value; })
+                            .staggerLabels(true)
+                            .tooltips(true)
+                            .showValues(true)
+                            .color(['#aec7e8', '#7b94b5', '#486192'])
+                            .transitionDuration(500)
+                        ;
 
-                      d3.select('#analyses-chart svg')
-                          //.datum(historicalBarChart)
-                          .datum(plainChartable)
-                          .call(chart);
+                        d3.select('#analyses-chart svg')
+                            .datum(plainChartable)
+                            .call(chart);
 
-                      nv.utils.windowResize(chart.update);
+                        nv.utils.windowResize(chart.update);
 
-                      return chart;
-                  },
-                  function(){
-                    d3.selectAll('.nv-bar').on('click',
-                        function(e){
+                        return chart;
+                    },
+                    function(){
+                        d3.selectAll('.nv-bar').on('click', function(e){
                             //get a new 'chartable and invoke redrawChart to get the chart to be re-created
 
                             var countUnderClick=that.getValueReturnZeroAsDefault(e.label,that.BIGJSON);
-                            if(countUnderClick==0 && that.doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(that.BIGJSON,e.label)==true) {
+                            if (countUnderClick === 0 && that.doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(that.BIGJSON, e.label) === true) {
                             }
                             else {
-                                var res=that.getHierarchySubHierarchyFromObj(that.BIGJSON,e.label);
+                                var res = that.getHierarchySubHierarchyFromObj(that.BIGJSON, e.label);
                                 that.drillStack.push(e.label);
                                 that.redrawGeneDistChart(res);
                             }
-
-
                         });
                     });
-
-
                 }//plain/discrete data case
-            else
-                {
-                var stackedChartableData=this.makeStackChartableFromValidHierarchyObject(res);
-                nv.addGraph(function() {
-                    var chart = nv.models.multiBarChart()
-                         .transitionDuration(350)
-                        // .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
-                         .rotateLabels(0)      //Angle to rotate x-axis labels.
-                         .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
-                         .stacked(true)        //set stacked
-                         .showLegend(true)
-                         .reduceXTicks(true)
-                         .staggerLabels(true)
-                         .tooltip(function(alleleNum,geneName) {
-                                var completeName=geneName+'*'+alleleNum;
-                                var countDefZero=that.getValueReturnZeroAsDefault(completeName,res);
-                                var toolTipTextToDisplay=completeName+' ; count='+countDefZero;
+                else {
+                    var stackedChartableData = this.makeStackChartableFromValidHierarchyObject(res);
+                    nv.addGraph(function() {
+                        var chart = nv.models.multiBarChart()
+                            .transitionDuration(350)
+                            // .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
+                            .rotateLabels(0)      //Angle to rotate x-axis labels.
+                            .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
+                            .stacked(true)        //set stacked
+                            .showLegend(true)
+                            .reduceXTicks(true)
+                            .staggerLabels(true)
+                            .tooltip(function(alleleNum, geneName) {
+                                var completeName = geneName + '*' + alleleNum;
+                                var countDefZero = that.getValueReturnZeroAsDefault(completeName, res);
+                                var toolTipTextToDisplay = completeName + ' ; count=' + countDefZero;
                                 return toolTipTextToDisplay;
-                          })
-                         .groupSpacing(0.1)    //Distance between each group of bars.
-                    ;
+                            })
+                            .groupSpacing(0.1)    //Distance between each group of bars.
+                        ;
 
-                    d3.select('#analyses-chart svg')
-                       .datum(stackedChartableData)
-                       .call(chart);
+                        d3.select('#analyses-chart svg')
+                            .datum(stackedChartableData)
+                            .call(chart)
+                        ;
 
-                    nv.utils.windowResize(function() {
-                     chart.update;
-                     d3.selectAll('.nv-bar')
-                        .classed('hidden', function(d){
-                            return d.size <= 0;
+                        nv.utils.windowResize(function() {
+                            chart.update;
+
+                            d3.selectAll('.nv-bar')
+                                .classed('hidden', function(d){
+                                    return d.size <= 0;
+                            });
                         });
+
+                        return chart;
+                    },
+                    function(){
+                        d3.selectAll('.nv-bar')
+                            .classed('hidden', function(d){
+                                return d.size <= 0;
+                            })
+                        ;
                     });
-
-                    return chart;
-                }
-                ,function(){
-                    d3.selectAll('.nv-bar')
-                    .classed('hidden', function(d){
-                        return d.size <= 0;
-                    })
-                    ;
-                });
-
-
                 }//stacked data case
-
-
-            //inside redrawGeneDistChart
-        },//end redrawGeneDistChart
-
-
+        },
 
         //given the entire hierarchy, traverse to the location to
         //find the subhierarchy rooted with the given label/name
-        getHierarchySubHierarchyFromObj: function(o,desiredLabel) {
-            if('label' in o) {
+        getHierarchySubHierarchyFromObj: function(o, desiredLabel) {
+            if ('label' in o) {
 
-            if(o.label===desiredLabel) {
-                return o;
-                } else {
-
-                if('children' in o) {
-                    var kids=o.children;
-                    var numKids=kids.length;
-                    for(var k=0;k<numKids;k++) {
-                        //var particularKidResult=getHierarchySubHierarchyFromObj(o,desiredLabel)
-                        var particularKidResult=this.getHierarchySubHierarchyFromObj(kids[k],desiredLabel);
-                        if(particularKidResult!=null) {
-                            return particularKidResult;
+                if (o.label === desiredLabel) {
+                    return o;
+                }
+                else {
+                    if ('children' in o) {
+                        for (var k = 0; k < o.children.length; k++) {
+                            //var particularKidResult = getHierarchySubHierarchyFromObj(o, desiredLabel)
+                            var particularKidResult = this.getHierarchySubHierarchyFromObj(o.children[k], desiredLabel);
+                            if (particularKidResult !== null) {
+                                return particularKidResult;
                             }
                         }
-                    } else {
-                    return null;
                     }
-                return null;
                 }
-            } else {
-            return null;
             }
+
+            return null;
         }, //end getHierarchySubHierarchyFromObj
-
-
     });
 
     App.Views.Analyses = Analyses;
