@@ -26,7 +26,7 @@ svg {
 }
 
 .box {
-  font: 10px sans-serif;
+    font: 10px sans-serif;
 }
 
 g line.median {
@@ -37,13 +37,13 @@ g line.median {
 path.mean, path.line{
 
     // the line color
-	stroke: #FB000D;
+    stroke: #FB000D;
 
     // the line width for paths is 2 pixels
-	stroke-width: 2;
+    stroke-width: 2;
 
     // don't fill the area bounded by any path elements
-	fill: none;
+    fill: none;
 }
 
 g.meanGroup > circle.meanPoints {
@@ -53,9 +53,9 @@ g.meanGroup > circle.meanPoints {
 .box line,
 .box rect,
 .box circle {
-  fill: steelblue;
-  stroke: #000;
-  stroke-width: 1px;
+    fill: steelblue;
+    stroke: #000;
+    stroke-width: 1px;
 }
 
 rect.bg_20 {
@@ -74,29 +74,29 @@ rect.bg_40 {
 }
 
 .box .center {
-  stroke-dasharray: 3,3;
+    stroke-dasharray: 3,3;
 }
 
 .box .outlier {
-  fill: none;
-  stroke: #000;
+    fill: none;
+    stroke: #000;
 }
 
 .axis {
-  font: 12px sans-serif;
+    font: 12px sans-serif;
 }
 
 .axis path,
 .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
 
 .x.axis path {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
 
 #chart-file-well {
@@ -104,23 +104,23 @@ rect.bg_40 {
 }
 
 .d3-tip {
-  line-height: 1;
-  font-weight: bold;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  border-radius: 2px;
-  opacity:0;
-  position: absolute;
-  z-index: 100;
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+    opacity:0;
+    position: absolute;
+    z-index: 100;
 }
 
 .custom-tooltip-styling {
-  width: 200px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  z-index: 1000;
-  padding: 5px;
+    width: 200px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    z-index: 1000;
+    padding: 5px;
 }
 
 .ui-tooltip, .arrow:after {
