@@ -1,0 +1,10 @@
+<map id="VDJML_py" name="VDJML_py">
+<area shape="rect" id="node1" href="#vdjml._vdjml_py.Results_meta" target="_top" title="Results_meta" alt="" coords="157,272,283,357"/>
+<area shape="rect" id="node8" href="#vdjml._vdjml_py.Result_store" target="_top" title="Result_store" alt="" coords="253,405,371,491"/>
+<area shape="rect" id="node2" href="#vdjml._vdjml_py.Read_result" target="_top" title="Read_result" alt="" coords="349,272,460,357"/>
+<area shape="rect" id="node3" href="#vdjml._vdjml_py.Segment_match" target="_top" title="Segment_match" alt="" coords="213,139,360,224"/>
+<area shape="rect" id="node4" href="#vdjml._vdjml_py.Aa_substitution" target="_top" title="Aa_substitution" alt="" coords="5,5,147,91"/>
+<area shape="rect" id="node5" href="#vdjml._vdjml_py.Gl_segment_match" target="_top" title="Gl_segment_match" alt="" coords="215,5,385,91"/>
+<area shape="rect" id="node6" href="#vdjml._vdjml_py.Segment_combination" target="_top" title="Segment_combination" alt="" coords="428,139,623,224"/>
+<area shape="rect" id="node7" href="#vdjml._vdjml_py.Gene_region" target="_top" title="Gene_region" alt="" coords="466,5,584,91"/>
+</map>

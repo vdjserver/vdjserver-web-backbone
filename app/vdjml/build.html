@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Building vdjml &mdash; vdjml documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinx_vdjml.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="vdjml documentation" href="index.html" />
+    <link rel="next" title="License" href="license.html" />
+    <link rel="prev" title="VDJMLpy" href="vdjml_py.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="license.html" title="License"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="vdjml_py.html" title="VDJMLpy"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">vdjml</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="building-vdjml">
+<h1>Building <em>vdjml</em><a class="headerlink" href="#building-vdjml" title="Permalink to this headline">¶</a></h1>
+<p>The build process is managed by Boost.Build V2 (<a class="reference external" href="http://www.boost.org/boost-build2">http://www.boost.org/boost-build2</a>).
+Libraries required by VDJML are listed in file <tt class="docutils literal"><span class="pre">vdjml/doc/user-config.jam</span></tt>.</p>
+<ol class="arabic">
+<li><p class="first">Download current distribution of Boost (<a class="reference external" href="http://www.boost.org/">http://www.boost.org/</a>).
+Expand the archive to a directory on your hard drive,
+e.g., to <tt class="docutils literal"><span class="pre">C:/Program</span> <span class="pre">Files/boost/boost_X_XX_0</span></tt>.
+In this document, this directory will be referred as <tt class="docutils literal"><span class="pre">$(BOOST)</span></tt>.</p>
+</li>
+<li><p class="first">In your terminal, change location to directory <tt class="docutils literal"><span class="pre">$(BOOST)/tools/build/v2/</span></tt>.
+Run script <tt class="docutils literal"><span class="pre">bootstrap</span></tt> (<tt class="docutils literal"><span class="pre">.bat</span></tt> or <tt class="docutils literal"><span class="pre">.sh</span></tt>).
+This will produce Boost.Build executable, e.g.,
+<tt class="docutils literal"><span class="pre">$(BOOST)/tools/build/v2/b2.exe</span></tt>.</p>
+</li>
+<li><p class="first">(optional) Add the directory of Boost.Build executable to your <tt class="docutils literal"><span class="pre">PATH</span></tt>
+variable.</p>
+</li>
+<li><p class="first">If not already present, copy file <tt class="docutils literal"><span class="pre">vdjml/doc/boost-build.jam</span></tt> to
+any directory above <tt class="docutils literal"><span class="pre">vdjml</span></tt>.
+Edit the file to specify full path to Boost.Build, i.e.,
+<tt class="docutils literal"><span class="pre">$(BOOST)/tools/build/v2/</span></tt>.
+For details see <tt class="docutils literal"><span class="pre">vdjml/doc/boost-build.jam</span></tt> file.</p>
+</li>
+<li><p class="first">If not already present, copy file <tt class="docutils literal"><span class="pre">vdjml/doc/user-config.jam</span></tt> to
+your HOME directory.
+Edit the file to specify compilers and libraries used by VDJML.
+For details see <tt class="docutils literal"><span class="pre">vdjml/doc/user-config.jam</span></tt> file.</p>
+</li>
+<li><p class="first">Run Boost.Build executable in <tt class="docutils literal"><span class="pre">vdjml</span></tt> directory.
+Run any of the following options:</p>
+<div class="highlight-python"><div class="highlight"><pre>b2                      # build release version of libVDJML
+b2 distro-bindings-py   # make distribution module for Python bindings
+b2 test-py              # run unit tests for Python bindings
+</pre></div>
+</div>
+<dl class="docutils">
+<dt>For faster build times, use <tt class="docutils literal"><span class="pre">-j&lt;N&gt;</span></tt> option to use N parallel processes</dt>
+<dd><p class="first last">(e.g., <tt class="docutils literal"><span class="pre">b2</span> <span class="pre">-j12</span> <span class="pre">distro-bindings-py</span></tt>).</p>
+</dd>
+</dl>
+<p>Other examples:</p>
+<div class="highlight-python"><div class="highlight"><pre>b2 debug test           # build and run unit tests in debug mode
+b2 bindings-py          # build libVDJML Python bindings
+b2 doc-py               # generate documentation for Python bindings
+b2 docs                 # generate all documentation
+</pre></div>
+</div>
+<p>The output will be generated in directory <tt class="docutils literal"><span class="pre">vdjml/out</span></tt>, e.g.,
+<tt class="docutils literal"><span class="pre">vdjml/out/bin/gcc-4.8/release/libvdjml.so</span></tt>,
+<tt class="docutils literal"><span class="pre">vdjml/out/VDJMLpy-X.X.X.tar.gz</span></tt></p>
+</li>
+</ol>
+<p>For more info on using Boost.Build see <a class="reference external" href="http://www.boost.org/boost-build2">http://www.boost.org/boost-build2</a></p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vdjml_py.html"
+                        title="previous chapter">VDJMLpy</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="license.html"
+                        title="next chapter">License</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="license.html" title="License"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="vdjml_py.html" title="VDJMLpy"
+             >previous</a> |</li>
+        <li><a href="index.html">vdjml</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013-4, Mikhail K. Levin, Edward A. Salinas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
+    </div>
+  </body>
+</html>

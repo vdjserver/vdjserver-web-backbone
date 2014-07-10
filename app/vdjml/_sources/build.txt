@@ -1,0 +1,56 @@
+.. File vdjml/doc/build.txt, part of vdjml project.
+   Distributed under the Boost Software License, Version 1.0; see doc/license.txt.
+   Author Mikhail K Levin 2013-4
+
+Building *vdjml*
+---------------------------------
+
+The build process is managed by Boost.Build V2 (http://www.boost.org/boost-build2).
+Libraries required by VDJML are listed in file ``vdjml/doc/user-config.jam``.
+
+1. Download current distribution of Boost (http://www.boost.org/).
+   Expand the archive to a directory on your hard drive, 
+   e.g., to ``C:/Program Files/boost/boost_X_XX_0``.
+   In this document, this directory will be referred as ``$(BOOST)``.
+
+2. In your terminal, change location to directory ``$(BOOST)/tools/build/v2/``.
+   Run script ``bootstrap`` (``.bat`` or ``.sh``).  
+   This will produce Boost.Build executable, e.g., 
+   ``$(BOOST)/tools/build/v2/b2.exe``.
+
+3. (optional) Add the directory of Boost.Build executable to your ``PATH`` 
+   variable.
+
+4. If not already present, copy file ``vdjml/doc/boost-build.jam`` to 
+   any directory above ``vdjml``.  
+   Edit the file to specify full path to Boost.Build, i.e., 
+   ``$(BOOST)/tools/build/v2/``.
+   For details see ``vdjml/doc/boost-build.jam`` file.
+
+5. If not already present, copy file ``vdjml/doc/user-config.jam`` to 
+   your HOME directory.
+   Edit the file to specify compilers and libraries used by VDJML. 
+   For details see ``vdjml/doc/user-config.jam`` file.
+   
+6. Run Boost.Build executable in ``vdjml`` directory. 
+   Run any of the following options::
+
+      b2                      # build release version of libVDJML
+      b2 distro-bindings-py   # make distribution module for Python bindings
+      b2 test-py              # run unit tests for Python bindings
+   
+   For faster build times, use ``-j<N>`` option to use N parallel processes 
+      (e.g., ``b2 -j12 distro-bindings-py``).
+      
+   Other examples::
+
+      b2 debug test           # build and run unit tests in debug mode
+      b2 bindings-py          # build libVDJML Python bindings
+      b2 doc-py               # generate documentation for Python bindings
+      b2 docs                 # generate all documentation
+        
+   The output will be generated in directory ``vdjml/out``, e.g.,
+   ``vdjml/out/bin/gcc-4.8/release/libvdjml.so``,
+   ``vdjml/out/VDJMLpy-X.X.X.tar.gz``
+   
+For more info on using Boost.Build see http://www.boost.org/boost-build2

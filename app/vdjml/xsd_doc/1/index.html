@@ -1,0 +1,719 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <head>
+    <title>VDJML | XML Schema</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" href="xsd.css" type="text/css" />
+  </head>
+  <body>
+    <h1>VDJML XML Schema</h1>
+    <p>
+ VDJML stores results of immune receptor sequence alignment.
+   </p>
+    <p class="graphviz">
+      <embed type="image/svg+xml" src="xsd_dot.svg" alt="VDJML Diagram" width="800"></embed>
+    </p>
+    <div id="xs_elements">
+      <div xmlns="" class="element" id="element-vdjml">
+        <span class="element-name">vdjml</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+      Top element of VDJML document
+      </xs:documentation>
+        </div>
+        <div class="element-attributes">
+          <div class="attribute">
+            <span class="attribute-name">version</span>
+            <span class="attribute-type">xs:decimal</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div xmlns="" class="element" id="element-meta">
+        <span class="element-name">meta</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+      TODO:
+      </xs:documentation>
+        </div>
+        <div class="element-attributes"></div>
+      </div>
+      <div xmlns="" class="element" id="element-generator">
+        <span class="element-name">generator</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+      TODO:
+      </xs:documentation>
+        </div>
+        <div class="element-attributes">
+          <div class="attribute">
+            <span class="attribute-name">name</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">version</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">time_gmt</span>
+            <span class="attribute-type">xs:dateTime</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div xmlns="" class="element" id="element-aligner">
+        <span class="element-name">aligner</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         Information about an aligner, e.g., IgBlast, VQuest, or a software
+         package that reinterprets the results of an aligner.
+      </xs:documentation>
+        </div>
+        <div class="element" id="element-parameters">
+          <span class="element-name">parameters</span>
+          <div class="element-comment">
+            <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+                  TODO:
+               </xs:documentation>
+          </div>
+          <div class="element-attributes"></div>
+        </div>
+        <div class="element-attributes">
+          <div class="attribute">
+            <span class="attribute-name">aligner_id</span>
+            <span class="attribute-type">xs:positiveInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">name</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">version</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">run_id</span>
+            <span class="attribute-type">xs:integer</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">uri</span>
+            <span class="attribute-type">xs:anyURI</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div xmlns="" class="element" id="element-germline_db">
+        <span class="element-name">germline_db</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+      TODO:
+      </xs:documentation>
+        </div>
+        <div class="element-attributes">
+          <div class="attribute">
+            <span class="attribute-name">gl_db_id</span>
+            <span class="attribute-type">xs:positiveInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">name</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">species</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">version</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">uri</span>
+            <span class="attribute-type">xs:anyURI</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div xmlns="" class="element" id="element-read_results">
+        <span class="element-name">read_results</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+      TODO:
+      </xs:documentation>
+        </div>
+        <div class="element-attributes"></div>
+      </div>
+      <div xmlns="" class="element" id="element-read">
+        <span class="element-name">read</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+      TODO:
+      </xs:documentation>
+        </div>
+        <div class="element-attributes">
+          <div class="attribute">
+            <span class="attribute-name">read_id</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div xmlns="" class="element" id="element-vdj_alignment">
+        <span class="element-name">vdj_alignment</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+      TODO:
+      </xs:documentation>
+        </div>
+        <div class="element-attributes"></div>
+      </div>
+      <div xmlns="" class="element" id="element-segment_match">
+        <span class="element-name">segment_match</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+      TODO:
+      </xs:documentation>
+        </div>
+        <div class="element-attributes">
+          <div class="attribute">
+            <span class="attribute-name">segment_match_id</span>
+            <span class="attribute-type">xs:positiveInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+	         TODO:
+	         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">read_pos0</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+	         Zero-based starting position of the match in the read sequence
+	         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">read_len</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+	         Number of nucleoteds in the read sequence for the matching region
+	         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">gl_len</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+	         TODO:
+	         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">identity</span>
+            <span class="attribute-type">vdj:Percent</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">score</span>
+            <span class="attribute-type">xs:integer</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">insertions</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">deletions</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">substitutions</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">stop_codon</span>
+            <span class="attribute-type">xs:boolean</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">mutated_invariant</span>
+            <span class="attribute-type">xs:boolean</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">inverted</span>
+            <span class="attribute-type">xs:boolean</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">out_frame_indel</span>
+            <span class="attribute-type">xs:boolean</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">out_frame_vdj</span>
+            <span class="attribute-type">xs:boolean</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div xmlns="" class="element" id="element-btop">
+        <span class="element-name">btop</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+      TODO:
+      </xs:documentation>
+        </div>
+        <div class="element-attributes"></div>
+      </div>
+      <div xmlns="" class="element" id="element-gl_seg_match">
+        <span class="element-name">gl_seg_match</span>
+        <div class="element-attributes">
+          <div class="attribute">
+            <span class="attribute-name">gl_seg_match_id</span>
+            <span class="attribute-type">xs:positiveInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">num_system</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">name</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">gl_db_id</span>
+            <span class="attribute-type">xs:positiveInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">aligner_id</span>
+            <span class="attribute-type">xs:positiveInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">type</span>
+            <span class="attribute-type">vdj:Segment_type</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">gl_pos0</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div xmlns="" class="element" id="element-aa_substitution">
+        <span class="element-name">aa_substitution</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+      </xs:documentation>
+        </div>
+        <div class="element-attributes">
+          <div class="attribute">
+            <span class="attribute-name">read_pos0</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">read_aa</span>
+            <span class="attribute-type">vdj:Aminoacid</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">gl_aa</span>
+            <span class="attribute-type">vdj:Aminoacid</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div xmlns="" class="element" id="element-combination">
+        <span class="element-name">combination</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         Segment match combination
+      </xs:documentation>
+        </div>
+        <div class="element-attributes">
+          <div class="attribute">
+            <span class="attribute-name">segments</span>
+            <span class="attribute-type"></span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               List of segment match IDs (<code>segment_match_id</code>s)
+            </xs:documentation>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div xmlns="" class="element" id="element-region">
+        <span class="element-name">region</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+      Region of an immune receptor gene, i.e., Ig domain, segment junction.
+      Note: the corresponding positions of the germline sequences are not stored
+      because they may differ depending on the individual germline segment
+      matches.
+      </xs:documentation>
+        </div>
+        <div class="element-attributes">
+          <div class="attribute">
+            <span class="attribute-name">name</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">num_system</span>
+            <span class="attribute-type">xs:string</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+               Attribute is not required because for some regions, e.g., 
+               for VD-junctions, numbering system is not applicable.
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">aligner_id</span>
+            <span class="attribute-type">xs:positiveInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">read_pos0</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               Zero-based index of the first read nucleotide that is mapped to
+               the region.
+               In case of an Ig domain, the corresponding position
+               for each germline segment match may be determined based on 
+               segment match positions and BTOPs.
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">read_len</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required">required</span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+               TODO:
+            </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">identity</span>
+            <span class="attribute-type">vdj:Percent</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">score</span>
+            <span class="attribute-type">xs:integer</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">insertions</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">deletions</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">substitutions</span>
+            <span class="attribute-type">xs:nonNegativeInteger</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">stop_codon</span>
+            <span class="attribute-type">xs:boolean</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">mutated_invariant</span>
+            <span class="attribute-type">xs:boolean</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">inverted</span>
+            <span class="attribute-type">xs:boolean</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">out_frame_indel</span>
+            <span class="attribute-type">xs:boolean</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+          <div class="attribute">
+            <span class="attribute-name">out_frame_vdj</span>
+            <span class="attribute-type">xs:boolean</span>
+            <span class="attribute-is-required"></span>
+            <div class="attribute-comment">
+              <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         TODO:
+         </xs:documentation>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

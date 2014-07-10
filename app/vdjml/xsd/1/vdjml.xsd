@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://vdjserver.org/vdjml/xsd/1/"
+    xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/"
+    elementFormDefault="qualified" attributeFormDefault="unqualified"
+    version="1.0"
+>
+<xs:annotation>
+   <xs:documentation xml:lang="en">
+ VDJML stores results of immune receptor sequence alignment.
+   </xs:documentation>
+</xs:annotation>
+
+<xs:element name="vdjml">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      Top element of VDJML document
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:sequence>
+         <xs:element ref="vdj:meta" />
+         <xs:element ref="vdj:read_results" />
+      </xs:sequence>
+      <xs:attribute name="version" type="xs:decimal" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="meta">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:sequence>
+         <xs:element ref="vdj:generator" />
+         <xs:choice maxOccurs="unbounded">
+            <xs:element ref="vdj:aligner" minOccurs="0" />
+            <xs:element ref="vdj:germline_db" minOccurs="0" />
+            <xs:any namespace="##other" processContents="lax"
+               minOccurs="0" maxOccurs="unbounded" />
+         </xs:choice>
+      </xs:sequence>
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="generator">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="version" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="time_gmt" type="xs:dateTime" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="aligner">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+         Information about an aligner, e.g., IgBlast, VQuest, or a software
+         package that reinterprets the results of an aligner.
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:sequence>
+         <xs:element name="parameters" type="xs:string" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation xml:lang="en">
+                  TODO:
+               </xs:documentation>
+            </xs:annotation>
+         </xs:element>
+      </xs:sequence>
+      <xs:attribute name="aligner_id" type="xs:positiveInteger"
+         use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="name" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="version" type="xs:string">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="run_id" type="xs:integer">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="uri" type="xs:anyURI">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="germline_db">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:attribute name="gl_db_id" type="xs:positiveInteger" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="name" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="species" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="version" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="uri" type="xs:anyURI">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="read_results">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+         <xs:element ref="vdj:read" />
+      </xs:sequence>
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="read">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:sequence>
+         <xs:element ref="vdj:vdj_alignment" minOccurs="0" />
+         <xs:any namespace="##other" processContents="lax" minOccurs="0" 
+            maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="read_id" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:anyAttribute namespace="##other" processContents="lax" />
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="vdj_alignment">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:sequence minOccurs="0" >
+         <xs:element ref="vdj:segment_match" maxOccurs="unbounded" />
+         <xs:element ref="vdj:combination" maxOccurs="unbounded" />
+      </xs:sequence>
+   </xs:complexType>
+</xs:element>
+
+<xs:attributeGroup name="match_metrics">
+   <xs:attribute name="identity" type="vdj:Percent">
+      <xs:annotation>
+         <xs:documentation xml:lang="en">
+         TODO:
+         </xs:documentation>
+      </xs:annotation>
+   </xs:attribute>
+   <xs:attribute name="score" type="xs:integer">
+      <xs:annotation>
+         <xs:documentation xml:lang="en">
+         TODO:
+         </xs:documentation>
+      </xs:annotation>
+   </xs:attribute>
+   <xs:attribute name="insertions" type="xs:nonNegativeInteger" default="0">
+      <xs:annotation>
+         <xs:documentation xml:lang="en">
+         TODO:
+         </xs:documentation>
+      </xs:annotation>
+   </xs:attribute>
+   <xs:attribute name="deletions" type="xs:nonNegativeInteger" default="0">
+      <xs:annotation>
+         <xs:documentation xml:lang="en">
+         TODO:
+         </xs:documentation>
+      </xs:annotation>
+   </xs:attribute>
+   <xs:attribute name="substitutions" type="xs:nonNegativeInteger" default="0">
+      <xs:annotation>
+         <xs:documentation xml:lang="en">
+         TODO:
+         </xs:documentation>
+      </xs:annotation>
+   </xs:attribute>
+   <xs:attribute name="stop_codon" type="xs:boolean" default="false">
+      <xs:annotation>
+         <xs:documentation xml:lang="en">
+         TODO:
+         </xs:documentation>
+      </xs:annotation>
+   </xs:attribute>
+   <xs:attribute name="mutated_invariant" type="xs:boolean" default="false">
+      <xs:annotation>
+         <xs:documentation xml:lang="en">
+         TODO:
+         </xs:documentation>
+      </xs:annotation>
+   </xs:attribute>
+   <xs:attribute name="inverted" type="xs:boolean" default="false">
+      <xs:annotation>
+         <xs:documentation xml:lang="en">
+         TODO:
+         </xs:documentation>
+      </xs:annotation>
+   </xs:attribute>
+   <xs:attribute name="out_frame_indel" type="xs:boolean" default="false">
+      <xs:annotation>
+         <xs:documentation xml:lang="en">
+         TODO:
+         </xs:documentation>
+      </xs:annotation>
+   </xs:attribute>
+   <xs:attribute name="out_frame_vdj" type="xs:boolean" default="false">
+      <xs:annotation>
+         <xs:documentation xml:lang="en">
+         TODO:
+         </xs:documentation>
+      </xs:annotation>
+   </xs:attribute>
+</xs:attributeGroup>
+
+<xs:element name="segment_match">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:sequence>
+         <xs:element ref="vdj:btop" />
+         <xs:element ref="vdj:gl_seg_match" maxOccurs="unbounded" />
+         <xs:element ref="vdj:aa_substitution" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="segment_match_id" type="xs:positiveInteger" use="required">
+	      <xs:annotation>
+	         <xs:documentation xml:lang="en">
+	         TODO:
+	         </xs:documentation>
+	      </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="read_pos0" type="xs:nonNegativeInteger" use="required">
+	      <xs:annotation>
+	         <xs:documentation xml:lang="en">
+	         Zero-based starting position of the match in the read sequence
+	         </xs:documentation>
+	      </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="read_len" type="xs:nonNegativeInteger" use="required">
+	      <xs:annotation>
+	         <xs:documentation xml:lang="en">
+	         Number of nucleoteds in the read sequence for the matching region
+	         </xs:documentation>
+	      </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="gl_len" type="xs:nonNegativeInteger" use="required">
+	      <xs:annotation>
+	         <xs:documentation xml:lang="en">
+	         TODO:
+	         </xs:documentation>
+	      </xs:annotation>
+      </xs:attribute>
+      <xs:attributeGroup ref="vdj:match_metrics" />
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="btop">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:simpleType>
+      <xs:restriction base="xs:token">
+         <xs:pattern value="([\w-]{2}|\d+)+" />      
+      </xs:restriction>
+   </xs:simpleType>
+</xs:element>
+
+<xs:element name="gl_seg_match">
+   <xs:complexType>
+      <xs:attribute name="gl_seg_match_id" type="xs:positiveInteger"
+         use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="num_system" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="name" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="gl_db_id" type="xs:positiveInteger" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="aligner_id" type="xs:positiveInteger"
+         use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" type="vdj:Segment_type" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="gl_pos0" type="xs:nonNegativeInteger" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="aa_substitution">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+         TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:attribute name="read_pos0" type="xs:nonNegativeInteger"
+         use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="read_aa" type="vdj:Aminoacid" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="gl_aa" type="vdj:Aminoacid" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="combination">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+         Segment match combination
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:sequence>
+         <xs:element ref="vdj:region" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="segments" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               List of segment match IDs (<code>segment_match_id</code>s)
+            </xs:documentation>
+         </xs:annotation>
+         <xs:simpleType>
+            <xs:list itemType="xs:positiveInteger" />
+         </xs:simpleType>
+      </xs:attribute>
+   </xs:complexType>
+</xs:element>
+
+<xs:element name="region">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      Region of an immune receptor gene, i.e., Ig domain, segment junction.
+      Note: the corresponding positions of the germline sequences are not stored
+      because they may differ depending on the individual germline segment
+      matches.
+      </xs:documentation>
+   </xs:annotation>
+   <xs:complexType>
+      <xs:attribute name="name" type="xs:string" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="num_system" type="xs:string">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+               Attribute is not required because for some regions, e.g., 
+               for VD-junctions, numbering system is not applicable.
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="aligner_id" type="xs:positiveInteger" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="read_pos0" type="xs:nonNegativeInteger" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               Zero-based index of the first read nucleotide that is mapped to
+               the region.
+               In case of an Ig domain, the corresponding position
+               for each germline segment match may be determined based on 
+               segment match positions and BTOPs.
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="read_len" type="xs:nonNegativeInteger" use="required">
+         <xs:annotation>
+            <xs:documentation xml:lang="en">
+               TODO:
+            </xs:documentation>
+         </xs:annotation>
+      </xs:attribute>
+      <xs:attributeGroup ref="vdj:match_metrics" />
+   </xs:complexType>
+</xs:element>
+
+<xs:simpleType name="Aminoacid">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:restriction base="xs:token">
+      <xs:enumeration value="A" />
+      <xs:enumeration value="a" />
+      <xs:enumeration value="Ala" />
+      <xs:enumeration value="C" />
+      <xs:enumeration value="c" />
+      <xs:enumeration value="Cys" />
+      <xs:enumeration value="D" />
+      <xs:enumeration value="d" />
+      <xs:enumeration value="Asp" />
+      <xs:enumeration value="E" />
+      <xs:enumeration value="e" />
+      <xs:enumeration value="Glu" />
+      <xs:enumeration value="F" />
+      <xs:enumeration value="f" />
+      <xs:enumeration value="Phe" />
+      <xs:enumeration value="G" />
+      <xs:enumeration value="g" />
+      <xs:enumeration value="Gly" />
+      <xs:enumeration value="H" />
+      <xs:enumeration value="h" />
+      <xs:enumeration value="His" />
+      <xs:enumeration value="I" />
+      <xs:enumeration value="i" />
+      <xs:enumeration value="Ile" />
+      <xs:enumeration value="K" />
+      <xs:enumeration value="k" />
+      <xs:enumeration value="Lys" />
+      <xs:enumeration value="L" />
+      <xs:enumeration value="l" />
+      <xs:enumeration value="Leu" />
+      <xs:enumeration value="M" />
+      <xs:enumeration value="m" />
+      <xs:enumeration value="Met" />
+      <xs:enumeration value="N" />
+      <xs:enumeration value="n" />
+      <xs:enumeration value="Asn" />
+      <xs:enumeration value="P" />
+      <xs:enumeration value="p" />
+      <xs:enumeration value="Pro" />
+      <xs:enumeration value="Q" />
+      <xs:enumeration value="q" />
+      <xs:enumeration value="Gln" />
+      <xs:enumeration value="R" />
+      <xs:enumeration value="r" />
+      <xs:enumeration value="Arg" />
+      <xs:enumeration value="S" />
+      <xs:enumeration value="s" />
+      <xs:enumeration value="Ser" />
+      <xs:enumeration value="T" />
+      <xs:enumeration value="t" />
+      <xs:enumeration value="Thr" />
+      <xs:enumeration value="V" />
+      <xs:enumeration value="v" />
+      <xs:enumeration value="Val" />
+      <xs:enumeration value="W" />
+      <xs:enumeration value="w" />
+      <xs:enumeration value="Trp" />
+      <xs:enumeration value="Y" />
+      <xs:enumeration value="y" />
+      <xs:enumeration value="Tyr" />
+      <xs:enumeration value="*" />
+      <xs:enumeration value="Stop" />
+   </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="Nucleotide_defined">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:restriction base="xs:token">
+      <xs:enumeration value="A" />
+      <xs:enumeration value="A" />
+      <xs:enumeration value="a" />
+      <xs:enumeration value="C" />
+      <xs:enumeration value="c" />
+      <xs:enumeration value="G" />
+      <xs:enumeration value="g" />
+      <xs:enumeration value="T" />
+      <xs:enumeration value="t" />
+      <xs:enumeration value="U" />
+      <xs:enumeration value="u" />
+   </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="Nucleotide_ambiguous">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:restriction base="xs:token">
+      <xs:enumeration value="R" />
+      <xs:enumeration value="r" />
+      <xs:enumeration value="Y" />
+      <xs:enumeration value="y" />
+      <xs:enumeration value="K" />
+      <xs:enumeration value="k" />
+      <xs:enumeration value="M" />
+      <xs:enumeration value="m" />
+      <xs:enumeration value="S" />
+      <xs:enumeration value="s" />
+      <xs:enumeration value="W" />
+      <xs:enumeration value="w" />
+      <xs:enumeration value="B" />
+      <xs:enumeration value="b" />
+      <xs:enumeration value="D" />
+      <xs:enumeration value="d" />
+      <xs:enumeration value="H" />
+      <xs:enumeration value="h" />
+      <xs:enumeration value="V" />
+      <xs:enumeration value="v" />
+      <xs:enumeration value="N" />
+      <xs:enumeration value="n" />
+   </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="Segment_type">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:restriction base="xs:token">
+      <xs:enumeration value="V" />
+      <xs:enumeration value="D" />
+      <xs:enumeration value="J" />
+   </xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="Nucleotide_any">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:union memberTypes="vdj:Nucleotide_defined vdj:Nucleotide_ambiguous" />
+</xs:simpleType>
+
+<xs:simpleType name="Percent">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+      TODO:
+      </xs:documentation>
+   </xs:annotation>
+   <xs:restriction base="xs:string">
+      <xs:pattern value="(100|\d{1,2})(\.\d{0,2})?%" />
+   </xs:restriction>
+</xs:simpleType>
+
+</xs:schema>
