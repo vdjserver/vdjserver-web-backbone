@@ -1,0 +1,139 @@
+/*
+ * Modify Sphinx's default.css
+ */
+
+@import url("default.css");
+
+/* -- page layout ----------------------------------------------------------- */
+
+body {
+    font-family: sans-serif;
+    font-size: 100%;
+    background-color: #ffffff;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+}
+
+div.document {
+    background-color: #ffffff;
+    border-top: 1px solid #575757;
+    border-bottom: 1px solid #575757;
+}
+
+div.bodywrapper {
+    margin: 0 0 0 229px;
+}
+
+div.body {
+    background-color: #ffffff;
+    color: #000000;
+    border-left: 1px solid #575757;
+    padding: 0 20px 30px 20px;
+}
+
+div.footer {
+    color: #333333;
+    width: 100%;
+    padding: 9px 0 9px 0;
+    text-align: center;
+    font-size: 75%;
+}
+
+div.footer a {
+    color: #7d362f;
+    text-decoration: underline;
+}
+
+div.related {
+    background-color: #ffffff;
+    line-height: 30px;
+    color: #333333;
+}
+
+div.related a {
+    color: #7d362f;
+}
+
+
+.sphinxsidebarwrapper {
+    background-color: #f3f3f3;
+    border-right: 1px solid #575757;
+}
+
+div.sphinxsidebar h3 {
+    font-family: 'Trebuchet MS', sans-serif;
+    color: #20435c;
+    font-size: 1.4em;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}
+
+div.sphinxsidebar h3 a {
+    color: #428bca;
+}
+
+div.sphinxsidebar h4 {
+    font-family: 'Trebuchet MS', sans-serif;
+    color: #20435c;
+    font-size: 1.3em;
+    font-weight: normal;
+    margin: 5px 0 0 0;
+    padding: 0;
+}
+
+div.sphinxsidebar p {
+    color: #20435c;
+}
+
+div.sphinxsidebar p.topless {
+    margin: 5px 10px 10px 10px;
+}
+
+div.sphinxsidebar ul {
+    margin: 10px;
+    padding: 0;
+    color: #20435c;
+}
+
+div.sphinxsidebar a {
+    color: #428bca;
+}
+
+div.sphinxsidebar input {
+    border: 1px solid #428bca;
+    font-family: sans-serif;
+    font-size: 1em;
+}
+
+/* -- hyperlink styles ------------------------------------------------------ */
+
+a {
+    color: #428bca;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #428bca;
+    text-decoration: none;
+}
+
+/* -- body styles ----------------------------------------------------------- */
+
+
+a.headerlink {
+    color: #7d362f;
+    font-size: 0.8em;
+    padding: 0 4px 0 4px;
+    text-decoration: none;
+}
+
+a.headerlink:hover {
+    background-color: #7d362f;
+    color: white;
+}
+
+/* hide module names */
+tt.descclassname { display:none; }
+

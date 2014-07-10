@@ -288,6 +288,7 @@ module.exports = function(grunt) {
                             'images/{,*/}*.{webp,gif}',
                             'fonts/**',
                             'templates/**',
+                            'vdjml/**',
                             //'bower_components/font-awesome/fonts/*'
                         ]
                     }
@@ -417,8 +418,8 @@ module.exports = function(grunt) {
             }
         },
         usemin: {
-            html: ['<%= yeoman.dist %>/{,*/}*.html'],
-            css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
+            html: ['<%= yeoman.dist %>/{,*/}*.html', '!<%= yeoman.dist %>/vdjml/{,*/}*.html'],
+            css: ['<%= yeoman.dist %>/styles/{,*/}*.css', '!<%= yeoman.dist %>/vdjml/{,*/}*.css'],
             options: {
                 assetsDirs: ['<%= yeoman.dist %>','<%= yeoman.dist %>/images']
             }
@@ -444,7 +445,7 @@ module.exports = function(grunt) {
             'concat:bootstrapDev',
             'copy:prepareFonts',
             'copy:distStyles',
-            'copy:distImages',            
+            'copy:distImages',
             'coffee:dist',
             'compass:server',
             'connect:livereload',

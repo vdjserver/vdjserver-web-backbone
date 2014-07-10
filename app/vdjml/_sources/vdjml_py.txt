@@ -1,0 +1,24 @@
+VDJMLpy
+=======
+
+VDJMLpy is a Python module for working with the results of immune receptor
+sequence alignment in `VDJML <xsd_doc/1/index.html>`_ format.
+It is built as bindings to libVDJML, a C++ library.
+
+* :ref:`genindex`
+* :ref:`search`
+
+Overview
+----------------
+.. graphviz:: vdjml_py_overview.dot
+   :alt: vdjml_py Overview
+
+.. toctree::
+   :maxdepth: 3
+   
+API reference
+-------------
+
+.. automodule:: vdjml
+   :members:
+   :undoc-members:
