@@ -80,45 +80,45 @@ define([
             };
         }
 
-        console.log("isActive is: " + Agave.instance.token().isActive());
-
-
-
-        /*
-            Choose your own adventure:
-
-            A.) Call default sync if token is ok
-            B.) Try to refresh the token and then continue as usual
-            C.) Abandon ship
-        */
-        if (Agave.instance.token().isActive()) {
+        if (!model.requiresAuth) {
             return Backbone.sync(method, model, options);
         }
-        else if (! Agave.instance.token().isActive() && Agave.instance.token().get('refresh_token')) {
+        else {
+            /*
+                Choose your own adventure:
 
-            return Agave.instance.token()
-                .save()
-                .then(function() {
-                    console.log("deferred then ok");
-                    return Backbone.sync(method, model, options);
-                })
-                .fail(function() {
-                    console.log("token refresh fail - destroying token");
+                A.) Call default sync if token is ok
+                B.) Try to refresh the token and then continue as usual
+                C.) Abandon ship
+            */
+            if (Agave.instance.token().isActive()) {
+                return Backbone.sync(method, model, options);
+            }
+            else if (! Agave.instance.token().isActive() && Agave.instance.token().get('refresh_token')) {
+
+                return Agave.instance.token()
+                    .save()
+                    .then(function() {
+                        console.log("deferred then ok");
+                        return Backbone.sync(method, model, options);
+                    })
+                    .fail(function() {
+                        console.log("token refresh fail - destroying token");
+                        Agave.instance.destroyToken();
+                    });
+
+            }
+            else {
+                var deferred = $.Deferred();
+
+                deferred.reject(function() {
                     Agave.instance.destroyToken();
                 });
 
-        }
-        else {
-            var deferred = $.Deferred();
-
-            deferred.reject(function() {
-                Agave.instance.destroyToken();
-            });
-
-            return deferred;
+                return deferred;
+            }
         }
     };
-
 
     // This is a complete replacement for backbone.sync
     // and is mostly the same as that whenever possible
@@ -297,8 +297,6 @@ define([
                     return false;
                     break;
             }
-
-console.log("token past switch for method: " + method);
 
             options.url = Backbone.Agave.vdjauthRoot + '/token',
 

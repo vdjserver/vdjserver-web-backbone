@@ -54,7 +54,6 @@ define(['backbone'], function(Backbone) {
                     });
                 }
 
-                console.log(attributes.username.indexOf(attributes.newPassword));
                 if (attributes.username.length > 0 &&
                     attributes.newPassword.length > 0 &&
                     attributes.username.indexOf(attributes.newPassword) >= 0)
