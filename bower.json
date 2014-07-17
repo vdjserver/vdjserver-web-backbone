@@ -1,27 +1,31 @@
 {
-    "name": "vdjserver-backbone",
-    "version": "1.0.0",
-    "dependencies": {
-        "backbone": "1.1.2",
-        "backbone.analytics": "f5648f583ed9cf073c123ec61b9e31dd9c77c4f9",
-        "backbone.syphon": "0.4.x",
-        "d3": "3.3.x",
-        "filesize": "2.0.3",
-        "file-saver": "b8054a26d13dd700a948735fc05e952c3b7db6c5",
-        "font-awesome": "4.0.x",
-        "handlebars": "1.3.x",
-        "jquery": "2.1.x",
-        "jquery-ui": "1.10.x",
-        "layoutmanager": "0.9.x",
-        "modernizr": "2.8.x",
-        "moment": "2.7.x",
-        "nvd3": "1.1.x",
-        "requirejs": "2.1.x",
-        "slickgrid": "2.1.x",
-        "socket.io-client": "1.0.x",
-        "typeahead.js": "0.10.x",
-        "twbs-bootstrap-sass": "3.1.x",
-        "underscore": "1.6.x"
-    },
-    "devDependencies": {}
+  "name": "vdjserver-backbone",
+  "version": "1.0.0",
+  "dependencies": {
+    "backbone": "1.1.2",
+    "backbone.analytics": "f5648f583ed9cf073c123ec61b9e31dd9c77c4f9",
+    "backbone.syphon": "0.4.x",
+    "d3": "3.4.x",
+    "filesize": "2.0.3",
+    "file-saver": "d50456a358be0eae968c3ae414120bc13333053a",
+    "font-awesome": "4.1.x",
+    "handlebars": "1.3.x",
+    "jquery": "2.1.x",
+    "jquery-ui": "1.11.x",
+    "layoutmanager": "0.9.x",
+    "modernizr": "2.8.x",
+    "moment": "2.7.x",
+    "nvd3": "1.1.x",
+    "requirejs": "2.1.x",
+    "slickgrid": "2.1.x",
+    "socket.io-client": "1.0.x",
+    "typeahead.js": "0.10.x",
+    "twbs-bootstrap-sass": "3.2.x",
+    "underscore": "1.6.x"
+  },
+  "devDependencies": {},
+  "resolutions": {
+    "d3": "3.4.x",
+    "jquery": "2.1.x"
+  }
 }

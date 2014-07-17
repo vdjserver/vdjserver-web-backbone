@@ -3,8 +3,6 @@
 define([
     'app',
     'handlebars',
-    'jquery',
-    'jquery-ui',
     'bootstrap',
     'typeahead',
     'file-saver',
@@ -12,11 +10,9 @@ define([
     // Config
     'environment-config',
 
-    //d3 and nvd3 libs for JS visualization
-    'd3',
+    // Libs for JS visualization
     'nvd3',
-    //box for help with the box and whisker plot
-    'box',
+    'box', // box for help with the box and whisker plot
  
     //jquery.event.drag/drop
     'jquery.event.drag',

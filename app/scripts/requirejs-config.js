@@ -9,7 +9,7 @@ require.config({
         'filesize':         '../bower_components/filesize/lib/filesize',
         'handlebars':       '../bower_components/handlebars/handlebars',
         'jquery':           '../bower_components/jquery/dist/jquery',
-        'jquery-ui':        '../bower_components/jquery-ui/ui/jquery-ui',
+        'jquery-ui':        '../bower_components/jquery-ui/jquery-ui',
         'layoutmanager':    '../bower_components/layoutmanager/backbone.layoutmanager',
         'moment':           '../bower_components/moment/moment',
         'typeahead':        '../bower_components/typeahead.js/dist/typeahead.bundle',
@@ -86,10 +86,6 @@ require.config({
         'environment-config': {
             exports: 'EnvironmentConfig',
         },
-        'jquery-ui': {
-            deps: ['jquery'],
-            exports: '$'
-        },
         'jquery.event.drag': {
             deps: ['jquery']
         },
@@ -102,9 +98,6 @@ require.config({
         'layoutmanager': {
             deps: ['backbone'],
             exports: 'layoutmanager'
-        },
-        'd3': {
-            exports: 'd3',
         },
         'box': {
             deps:['d3'],

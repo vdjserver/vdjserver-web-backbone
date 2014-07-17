@@ -62,7 +62,7 @@ module.exports = function(grunt) {
                     '<%= yeoman.app %>/*.html',
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/**/*.js',
-                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
+                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
                     '<%= yeoman.app %>/templates/**/*.html',
                     'test/spec/**/*.js'
                 ]
@@ -159,7 +159,7 @@ module.exports = function(grunt) {
                 fontsDir: '/fonts',
                 importPath: '<%= yeoman.app %>/bower_components',
                 httpImagesPath: '/images',
-                relativeAssets: true
+                relativeAssets: true,
             },
             dist: {},
             server: {
@@ -172,20 +172,9 @@ module.exports = function(grunt) {
             options: {
                 separator: ';'
             },
-            bootstrapDev: {
+            createBootstrapJS: {
                 src: [
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/affix.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/alert.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/button.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/carousel.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/collapse.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/dropdown.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/tab.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/transition.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/scrollspy.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/modal.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/tooltip.js',
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/vendor/assets/javascripts/bootstrap/popover.js'
+                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap.js',
                 ],
                 dest: '<%= yeoman.app %>/scripts/vendor/bootstrap.js'
             },
@@ -256,24 +245,10 @@ module.exports = function(grunt) {
                         dest: '<%= yeoman.dist %>/scripts/vendor',
                         src: [
                             'modernizr/modernizr.js',
-                            'moment/moment.js'
-                        ]
-                    }
-                ]
-            },
-            distBootstrap: {
-                files: [
-                    {
-                        expand: true,
-                        dot: true,
-                        flatten: true,
-                        cwd: '<%= yeoman.app %>/scripts/vendor',
-                        dest: '<%= yeoman.dist %>/scripts/vendor',
-                        src: [
-                            'bootstrap.js'
-                        ]
-                    }
-                ]
+                            'moment/moment.js',
+                        ],
+                    },
+                ],
             },
             dist: {
                 files: [
@@ -288,12 +263,13 @@ module.exports = function(grunt) {
                             'images/{,*/}*.{webp,gif}',
                             'fonts/**',
                             'templates/**',
+                            'scripts/vendor/{,*/}*.{js}',
                             'vdjml/**',
                             //'bower_components/font-awesome/fonts/*'
                         ]
                     }
                 ]
-            }
+            },
         },
         cssmin: {
             dist: {
@@ -301,9 +277,9 @@ module.exports = function(grunt) {
                     '<%= yeoman.dist %>/styles/main.css': [
                         '.tmp/styles/{,*/}*.css',
                         '<%= yeoman.app %>/styles/{,*/}*.css'
-                    ]
-                }
-            }
+                    ],
+                },
+            },
         },
         handlebars: {
             compile: {
@@ -346,19 +322,20 @@ module.exports = function(grunt) {
                         expand: true,
                         cwd: '<%= yeoman.app %>/images',
                         dest: '<%= yeoman.dist %>/images',
-                        src: '{,*/}*.{png,jpg,jpeg}'
+                        src: '{,*/}*.{png,jpg,jpeg,svg,gif}'
                     },
                     {
                         expand: true,
-                        flatten: true,
+                        flatten: false,
                         cwd: '<%= yeoman.app %>/bower_components',
-                        dest: '<%= yeoman.dist %>/images',
+                        dest: '<%= yeoman.dist %>/bower_components',
                         src: [
                             /*
                              * Bower images can all go here!
                              * e.g.
                              * 'bootstrap-calendar/img/*.{png,jpg,jpeg,gif}',
                              */
+                            'bootstrap/img/*.{png,jpg,jpeg,gif}',
                         ]
                     }
                 ]
@@ -442,7 +419,7 @@ module.exports = function(grunt) {
 
         grunt.task.run([
             'clean:server',
-            'concat:bootstrapDev',
+            'concat:createBootstrapJS',
             'copy:prepareFonts',
             'copy:distStyles',
             'copy:distImages',
@@ -466,9 +443,8 @@ module.exports = function(grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'coffee',
-        'concat:bootstrapDev',
+        'concat:createBootstrapJS',
         'copy:prepareFonts',
-        'copy:distBootstrap',
         'copy:distStyles',
         'copy:distBower',
         'copy:distImages',
