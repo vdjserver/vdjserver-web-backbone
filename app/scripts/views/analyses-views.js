@@ -98,7 +98,8 @@ define([
 
             d3.select('.svg-container')
                 .append('svg')
-                    .attr('style','height:600px;');
+                    .attr('style','height:600px;')
+            ;
 
             $('#chart-file-well').text('No data loaded. Select an Analysis.');
         },
@@ -120,11 +121,12 @@ define([
                     .attr('class','svg-container')
                     .attr('style','position:relative; top:1px;left:0px;')
             ;
-
+/*
             d3.select('.svg-container')
                 .append('svg')
                     .attr('style','height:600px;')
             ;
+*/
         },
         getErrorMessageFromResponse: function(response) {
             var txt;
@@ -158,13 +160,11 @@ define([
             this.clearChart();
             this.hideWarning();
 
-            var that = this;
-
             //get file name post-filter_mean_q_hist.csv
             var file = this.collection.get('human.IG.fna.igblast.kabat.out.rc_out.tsv');
             file.downloadFile()
                 .done(function(tsv) {
-                    Analyses.Charts.GiantTable(that, file, tsv);
+                    Analyses.Charts.GiantTable(file, tsv);
                 })
                 .fail(function(response) {
                     var errorMessage = this.getErrorMessageFromResponse(response);
@@ -181,7 +181,7 @@ define([
             var file = this.collection.get('cdr3-hist-data.json');
             file.downloadFile()
                 .done(function(text) {
-                    Analyses.Charts.Cdr3(that, file, text);
+                    Analyses.Charts.Cdr3(file, text, that.clearSVG);
                  })
                 .fail(function(response) {
                     var errorMessage = this.getErrorMessageFromResponse(response);
@@ -194,10 +194,11 @@ define([
             this.hideWarning();
 
             var that = this;
+
             var file = this.collection.get('pre-composition.csv');
             file.downloadFile()
                 .done(function(response) {
-                    Analyses.Charts.Composition(that, file, response);
+                    Analyses.Charts.Composition(file, response, that.clearSVG);
                 })
                 .fail(function(response) {
                     var errorMessage = this.getErrorMessageFromResponse(response);
@@ -209,19 +210,16 @@ define([
             this.clearChart();
             this.hideWarning();
 
-            var that = this;
-
             var file = this.collection.get('pre-qstats.csv');
             file.downloadFile()
                 .done(function(text) {
-                    Analyses.Charts.QualityScore(that, file, text);
+                    Analyses.Charts.QualityScore(file, text);
                 })
                 .fail(function(response) {
                     var errorMessage = this.getErrorMessageFromResponse(response);
                     this.showWarning(errorMessage);
                 });
         },
-
         meanQualityScoreHistogram: function() {
 
             this.clearChart();
@@ -232,14 +230,13 @@ define([
             var file = this.collection.get('pre-mean_q_hist.csv');
             file.downloadFile()
                 .done(function(text) {
-                    Analyses.Charts.MeanQualityScoreHistogram(that, file, text);
+                    Analyses.Charts.MeanQualityScoreHistogram(file, text, that.clearSVG);
                 })
                 .fail(function(response) {
                     var errorMessage = this.getErrorMessageFromResponse(response);
                     this.showWarning(errorMessage);
                 });
         },
-
         lengthHist: function () {
 
             this.clearChart();
@@ -250,14 +247,13 @@ define([
             var file = this.collection.get('pre-len_hist.csv');
             file.downloadFile()
                 .done(function(text) {
-                    Analyses.Charts.LengthHistogram(that, file, text);
+                    Analyses.Charts.LengthHistogram(file, text, that.clearSVG());
                 })
                 .fail(function(response) {
                     var errorMessage = this.getErrorMessageFromResponse(response);
                     this.showWarning(errorMessage);
                 });
         },
-
         percentageGcHistogram: function () {
 
             this.clearChart();
@@ -268,14 +264,13 @@ define([
             var file = this.collection.get('pre-gc_hist.csv');
             file.downloadFile()
                 .done(function(text) {
-                    Analyses.Charts.PercentageGcHistogram(that, file, text);
+                    Analyses.Charts.PercentageGcHistogram(file, text, that.clearSVG());
                 })
                 .fail(function(response) {
                     var errorMessage = this.getErrorMessageFromResponse(response);
                     this.showWarning(errorMessage);
                 });
         },
-
         //edward salinas
         geneDistChart: function() {
             this.clearChart();
@@ -287,7 +282,7 @@ define([
             var file = this.collection.get('real_discrete_bar_chart.json');
             file.downloadFile()
                 .done(function(text) {
-                    Analyses.Charts.GeneDistribution(that, file, text);
+                    Analyses.Charts.GeneDistribution(file, text, that.clearSVG());
                 })
                 .fail(function(response) {
                     var errorMessage = this.getErrorMessageFromResponse(response);
@@ -296,7 +291,7 @@ define([
         },
     });
 
-    Analyses.Charts.LengthHistogram = function(outerThat, file, text) {
+    Analyses.Charts.LengthHistogram = function(file, text, clearSVG) {
         $('#chart-file-well').text(file.name);
 
         //remove commented out lines (header info)
@@ -344,7 +339,7 @@ define([
 
             //Update the chart when window resizes.
             nv.utils.windowResize(function() {
-                outerThat.clearSVG();
+                clearSVG();
                 chart.update();
             });
 
@@ -352,7 +347,7 @@ define([
         });
     };
 
-    Analyses.Charts.MeanQualityScoreHistogram = function(outerThat, file, text) {
+    Analyses.Charts.MeanQualityScoreHistogram = function(file, text, clearSVG) {
         $('#chart-file-well').text(file.name);
 
         //remove commented out lines (header info)
@@ -400,7 +395,7 @@ define([
 
             //Update the chart when window resizes.
             nv.utils.windowResize(function() {
-                outerThat.clearSVG();
+                clearSVG();
                 chart.update();
             });
 
@@ -408,7 +403,7 @@ define([
         });
     };
 
-    Analyses.Charts.QualityScore = function(outerThat, file, text) {
+    Analyses.Charts.QualityScore = function(file, text) {
         var margin = {
             top: 30,
             right: 50,
@@ -716,7 +711,7 @@ define([
         ;
     };
 
-    Analyses.Charts.PercentageGcHistogram = function(outerThat, file, text) {
+    Analyses.Charts.PercentageGcHistogram = function(file, text, clearSVG) {
         $('#chart-file-well').text(file.name);
 
         //remove commented out lines (header info)
@@ -774,7 +769,7 @@ define([
 
             //Update the chart when window resizes.
             nv.utils.windowResize(function() {
-                outerThat.clearSVG();
+                clearSVG();
                 chart.update();
             });
 
@@ -782,7 +777,7 @@ define([
         });
     };
 
-    Analyses.Charts.GeneDistribution = function(outerThat, file, text) {
+    Analyses.Charts.GeneDistribution = function(file, text, clearSVG) {
 
         var sourceJson = JSON.parse(text);
 
@@ -1271,7 +1266,7 @@ define([
         var redrawBarChart = function() {
             //call this function to trigger reloading
             //inside redrawBarChart()
-            outerThat.clearSVG();
+            clearSVG();
 
             nv.addGraph(function() {
                 var chart = nv.models.discreteBarChart()
@@ -1290,7 +1285,7 @@ define([
                 ;
 
                 nv.utils.windowResize(function() {
-                    outerThat.clearSVG();
+                    clearSVG();
                     chart.update();
                 });
 
@@ -1311,7 +1306,7 @@ define([
         redrawGeneDistChart(res);
     };
 
-    Analyses.Charts.Cdr3 = function(that, file, text) {
+    Analyses.Charts.Cdr3 = function(file, text, clearSVG) {
 
         $('#chart-file-well').text(file.name);
         var cdr3Data = JSON.parse(text);
@@ -1340,7 +1335,7 @@ define([
             ;
 
             nv.utils.windowResize(function() {
-                that.clearSVG();
+                clearSVG();
                 chart.update();
             });
 
@@ -1348,7 +1343,7 @@ define([
         });
     };
 
-    Analyses.Charts.GiantTable = function(that, file, tsv) {
+    Analyses.Charts.GiantTable = function(file, tsv) {
 
         $('#chart-file-well').text(file.name);
 
@@ -1478,7 +1473,7 @@ define([
 
     };
 
-    Analyses.Charts.Composition = function(that, file, response) {
+    Analyses.Charts.Composition = function(file, response, clearSVG) {
         $('#chart-file-well').text(file.name);
 
         response = response.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -1578,7 +1573,7 @@ define([
 
             //Update the chart when window resizes.
             nv.utils.windowResize(function() {
-                that.clearSVG();
+                clearSVG();
                 chart.update();
             });
 
