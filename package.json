@@ -29,9 +29,9 @@
         "grunt-open":       "0.2.x",
         "grunt-requirejs":  "0.4.x",
         "grunt-usemin":     "0.1.x",
-        "jshint-stylish":   "0.2.x",
+        "jshint-stylish":   "0.4.x",
         "load-grunt-tasks": "0.6.x",
-        "time-grunt":       "0.3.x"
+        "time-grunt":       "0.4.x"
     },
     "engines": {
         "node": ">=0.10.13"
