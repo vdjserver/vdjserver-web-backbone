@@ -520,27 +520,28 @@ define(['backbone'], function(Backbone) {
 
             console.log("relativeArchivePath is: " + relativeArchivePath);
 
-            var jxhr = $.ajax({
+            var jqxhr = $.ajax({
                 data: 'action=mkdir&path=' + relativeArchivePath,
                 headers: Backbone.Agave.oauthHeader(),
                 type: 'PUT',
                 url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + projectUuid + '/analyses',
             });
 
-            return jxhr;
+            return jqxhr;
         },
         createJobMetadata: function(projectUuid) {
-            var jxhr = $.ajax({
-                data: {
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
                     projectUuid: projectUuid,
                     jobUuid: this.get('id'),
-                },
+                }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
                 url: Backbone.Agave.vdjauthRoot + '/jobs/metadata',
             });
 
-            return jxhr;
+            return jqxhr;
         },
     });
 

@@ -43,31 +43,33 @@ define(['backbone'], function(Backbone) {
         },
         addUserToProject: function() {
 
-            var jxhr = $.ajax({
-                data: {
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
                     projectUuid: this.uuid,
                     username: this.get('username')
-                },
+                }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
-                url: Backbone.Agave.vdjauthRoot + '/permissions/username'
+                url: Backbone.Agave.vdjauthRoot + '/permissions/username',
             });
 
-            return jxhr;
+            return jqxhr;
         },
         removeUserFromProject: function() {
 
-            var jxhr = $.ajax({
-                data: {
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
                     projectUuid: this.uuid,
                     username: this.get('username')
-                },
+                }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'DELETE',
-                url: Backbone.Agave.vdjauthRoot + '/permissions/username'
+                url: Backbone.Agave.vdjauthRoot + '/permissions/username',
             });
 
-            return jxhr;
+            return jqxhr;
         }
     });
 

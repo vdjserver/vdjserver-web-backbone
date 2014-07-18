@@ -16,17 +16,18 @@ define(['backbone'], function(Backbone) {
             return '/user/change-password';
         },
         callSave: function() {
-            var jxhr = $.ajax({
-                data: {
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
                     newPassword: this.get('newPassword'),
-                    password: this.get('password')
-                },
+                    password: this.get('password'),
+                }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
-                url: Backbone.Agave.vdjauthRoot + this.url()
+                url: Backbone.Agave.vdjauthRoot + this.url(),
             });
 
-            return jxhr;
+            return jqxhr;
         },
         validate: function(attributes) {
 

@@ -74,29 +74,30 @@ define(['backbone'], function(Backbone) {
         },
         syncFilePermissionsWithProjectPermissions: function() {
 
-            var jxhr = $.ajax({
-                data: {
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
                     projectUuid: this.get('projectUuid'),
                     fileName: this.get('name')
-                },
+                }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
                 url: Backbone.Agave.vdjauthRoot + '/permissions/files'
             });
 
-            return jxhr;
+            return jqxhr;
         },
         // TODO: refactor these together
         getFile: function(name) {
             console.log("called getFile with " + name);
             console.log();
-            var jxhr = $.ajax({
+            var jqxhr = $.ajax({
                 headers: Backbone.Agave.oauthHeader(),
                 type: 'GET',
                 url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + this.get('projectUuid') + '/files/' + name,
             });
             this.name = name;
-            return jxhr;
+            return jqxhr;
         },
         downloadFile: function() {
 
@@ -143,17 +144,18 @@ define(['backbone'], function(Backbone) {
 
             var value = this.get('value');
 
-            var jxhr = $.ajax({
-                data: {
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
                     projectUuid: value.projectUuid,
                     uuid: this.get('uuid')
-                },
+                }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
                 url: Backbone.Agave.vdjauthRoot + '/permissions/metadata'
             });
 
-            return jxhr;
+            return jqxhr;
         },
         softDeleteFile: function() {
             var value = this.get('value');
