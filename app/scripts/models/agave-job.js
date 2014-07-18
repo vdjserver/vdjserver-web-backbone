@@ -543,6 +543,20 @@ define(['backbone'], function(Backbone) {
 
             return jqxhr;
         },
+        shareJobWithProjectMembers: function(projectUuid) {
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectUuid: projectUuid,
+                    jobUuid: this.get('id'),
+                }),
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                url: Backbone.Agave.vdjauthRoot + '/permissions/jobs',
+            });
+
+            return jqxhr;
+        },
     });
 
     Backbone.Agave.Model.Job = Job;

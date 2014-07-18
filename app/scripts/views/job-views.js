@@ -146,6 +146,10 @@ define([
                 .then(function() {
                     return that.job.createJobMetadata(that.projectModel.get('uuid'));
                 })
+                // Share job w/ project members
+                .then(function() {
+                    return that.job.shareJobWithProjectMembers(that.projectModel.get('uuid'));
+                })
                 .then(function() {
                     var jobNotification = new Backbone.Agave.Model.Notification.Job();
                     jobNotification.set('associatedUuid', that.job.get('id'));
