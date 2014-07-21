@@ -6,8 +6,6 @@ define([
     '../../test/spec/vendor/agave-tests',
 
     // Models
-    '../../test/spec/models/agave-account-tests',
-    '../../test/spec/models/agave-io-tests',
     '../../test/spec/models/agave-profile-tests',
     '../../test/spec/models/agave-project-tests',
 
@@ -17,7 +15,10 @@ define([
 ], function() {
     'use strict';
 
+    /*
     window.console = window.console || function() {};
     window.notrack = true;
     window.mocha.run();
+    */
+    mocha.run();
 });
