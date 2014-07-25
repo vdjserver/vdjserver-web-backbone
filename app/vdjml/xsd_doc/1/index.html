@@ -295,7 +295,7 @@
             <span class="attribute-is-required">required</span>
             <div class="attribute-comment">
               <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
-	         TODO:
+	         length of aligned germline segment
 	         </xs:documentation>
             </div>
           </div>
@@ -405,13 +405,22 @@
         <span class="element-name">btop</span>
         <div class="element-comment">
           <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
-      TODO:
+      BTOP (Blast traceback operations) string.
+      Integer indecates the number of aligned nucleotides. 
+      Pair of letters indicates a nucleotide mismatch between read/germline 
+      sequences.
+      Dash ('-') indicates deletion.
       </xs:documentation>
         </div>
         <div class="element-attributes"></div>
       </div>
       <div xmlns="" class="element" id="element-gl_seg_match">
         <span class="element-name">gl_seg_match</span>
+        <div class="element-comment">
+          <xs:documentation xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/" xml:lang="en" lang="en">
+         Informatin about aligned germline segment
+      </xs:documentation>
+        </div>
         <div class="element-attributes">
           <div class="attribute">
             <span class="attribute-name">gl_seg_match_id</span>

@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.1',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -897,12 +897,12 @@ It is built as bindings to libVDJML, a C++ library.</p>
 
 <dl class="method">
 <dt id="vdjml._vdjml_py.Result_builder.insert_segment_combination">
-<tt class="descname">insert_segment_combination</tt><big>(</big><em>(Result_builder)arg1</em>, <em>(Seg_match_id)seg_match_1</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_2=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7fa23ecb9ec0&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_3=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7fa23ecb9f30&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_4=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7fa23ecb9fa0&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_5=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7fa23eccc050&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; Segment_combination_builder<a class="headerlink" href="#vdjml._vdjml_py.Result_builder.insert_segment_combination" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">insert_segment_combination</tt><big>(</big><em>(Result_builder)arg1</em>, <em>(Seg_match_id)seg_match_1</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_2=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7f5b4e37eec0&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_3=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7f5b4e37ef30&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_4=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7f5b4e37efa0&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_5=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7f5b4e3a0050&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; Segment_combination_builder<a class="headerlink" href="#vdjml._vdjml_py.Result_builder.insert_segment_combination" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="vdjml._vdjml_py.Result_builder.insert_segment_match">
-<tt class="descname">insert_segment_match</tt><big>(</big><em>(Result_builder)arg1</em>, <em>(int)read_pos0</em>, <em>(str)btop</em>, <em>(str)vdj</em>, <em>(str)seg_name</em>, <em>(int)gl_pos0</em><span class="optional">[</span>, <em>(Match_metrics)metric=&lt;vdjml._vdjml_py.Match_metrics object at 0x7fa23ecc7488&gt;</em><span class="optional">[</span>, <em>(Gl_db_id)gl_database=&lt;vdjml._vdjml_py.Gl_db_id object at 0x7fa23ecb9d70&gt;</em><span class="optional">[</span>, <em>(Numsys_id)num_system=&lt;vdjml._vdjml_py.Numsys_id object at 0x7fa23ecb9de0&gt;</em><span class="optional">[</span>, <em>(Aligner_id)aligner=&lt;vdjml._vdjml_py.Aligner_id object at 0x7fa23ecb9e50&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; Segment_match_builder :<a class="headerlink" href="#vdjml._vdjml_py.Result_builder.insert_segment_match" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">insert_segment_match</tt><big>(</big><em>(Result_builder)arg1</em>, <em>(int)read_pos0</em>, <em>(str)btop</em>, <em>(str)vdj</em>, <em>(str)seg_name</em>, <em>(int)gl_pos0</em><span class="optional">[</span>, <em>(Match_metrics)metric=&lt;vdjml._vdjml_py.Match_metrics object at 0x7f5b4e3c1488&gt;</em><span class="optional">[</span>, <em>(Gl_db_id)gl_database=&lt;vdjml._vdjml_py.Gl_db_id object at 0x7f5b4e37ed70&gt;</em><span class="optional">[</span>, <em>(Numsys_id)num_system=&lt;vdjml._vdjml_py.Numsys_id object at 0x7f5b4e37ede0&gt;</em><span class="optional">[</span>, <em>(Aligner_id)aligner=&lt;vdjml._vdjml_py.Aligner_id object at 0x7f5b4e37ee50&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; Segment_match_builder :<a class="headerlink" href="#vdjml._vdjml_py.Result_builder.insert_segment_match" title="Permalink to this definition">¶</a></dt>
 <dd><p>add new segment match</p>
 </dd></dl>
 
@@ -1038,7 +1038,7 @@ It is built as bindings to libVDJML, a C++ library.</p>
 
 <dl class="class">
 <dt id="vdjml._vdjml_py.Segment_combination">
-<em class="property">class </em><tt class="descname">Segment_combination</tt><big>(</big><em>(object)arg1</em>, <em>(Seg_match_id)seg_match_1</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_2=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7fa23ecb9750&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_3=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7fa23ecb97c0&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_4=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7fa23ecb9830&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_5=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7fa23ecb98a0&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#vdjml._vdjml_py.Segment_combination" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">Segment_combination</tt><big>(</big><em>(object)arg1</em>, <em>(Seg_match_id)seg_match_1</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_2=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7f5b4e37e750&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_3=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7f5b4e37e7c0&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_4=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7f5b4e37e830&gt;</em><span class="optional">[</span>, <em>(Seg_match_id)seg_match_5=&lt;vdjml._vdjml_py.Seg_match_id object at 0x7f5b4e37e8a0&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#vdjml._vdjml_py.Segment_combination" title="Permalink to this definition">¶</a></dt>
 <dd><p>combination of aligned germline segments</p>
 <dl class="method">
 <dt id="vdjml._vdjml_py.Segment_combination.insert">
@@ -1071,9 +1071,9 @@ It is built as bindings to libVDJML, a C++ library.</p>
 <dd><p>Construct alignment results for a combination of germline gene segments</p>
 <dl class="method">
 <dt id="vdjml._vdjml_py.Segment_combination_builder.insert_region">
-<tt class="descname">insert_region</tt><big>(</big><em>(Segment_combination_builder)arg1</em>, <em>(str)name</em>, <em>(Interval)read_range</em><span class="optional">[</span>, <em>(Match_metrics)metric=&lt;vdjml._vdjml_py.Match_metrics object at 0x7fa23ecc7398&gt;</em><span class="optional">[</span>, <em>(Numsys_id)num_system=&lt;vdjml._vdjml_py.Numsys_id object at 0x7fa23ecb9980&gt;</em><span class="optional">[</span>, <em>(Aligner_id)aligner_id=&lt;vdjml._vdjml_py.Aligner_id object at 0x7fa23ecb99f0&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; None<a class="headerlink" href="#vdjml._vdjml_py.Segment_combination_builder.insert_region" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">insert_region</tt><big>(</big><em>(Segment_combination_builder)arg1</em>, <em>(str)name</em>, <em>(Interval)read_range</em><span class="optional">[</span>, <em>(Match_metrics)metric=&lt;vdjml._vdjml_py.Match_metrics object at 0x7f5b4e3c1398&gt;</em><span class="optional">[</span>, <em>(Numsys_id)num_system=&lt;vdjml._vdjml_py.Numsys_id object at 0x7f5b4e37e980&gt;</em><span class="optional">[</span>, <em>(Aligner_id)aligner_id=&lt;vdjml._vdjml_py.Aligner_id object at 0x7f5b4e37e9f0&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; None<a class="headerlink" href="#vdjml._vdjml_py.Segment_combination_builder.insert_region" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
-<dt>insert_region( (Segment_combination_builder)arg1, (Region_id)region, (Interval)read_range [, (Match_metrics)metric=&lt;vdjml._vdjml_py.Match_metrics object at 0x7fa23ecc7410&gt; [, (Numsys_id)num_system=&lt;vdjml._vdjml_py.Numsys_id object at 0x7fa23ecb9a60&gt; [, (Aligner_id)aligner_id=&lt;vdjml._vdjml_py.Aligner_id object at 0x7fa23ecb9ad0&gt;]]]) -&gt; None :</dt>
+<dt>insert_region( (Segment_combination_builder)arg1, (Region_id)region, (Interval)read_range [, (Match_metrics)metric=&lt;vdjml._vdjml_py.Match_metrics object at 0x7f5b4e3c1410&gt; [, (Numsys_id)num_system=&lt;vdjml._vdjml_py.Numsys_id object at 0x7f5b4e37ea60&gt; [, (Aligner_id)aligner_id=&lt;vdjml._vdjml_py.Aligner_id object at 0x7f5b4e37ead0&gt;]]]) -&gt; None :</dt>
 <dd><p class="first">indicate gene region location in read sequence</p>
 <table class="last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1102,7 +1102,7 @@ It is built as bindings to libVDJML, a C++ library.</p>
 
 <dl class="class">
 <dt id="vdjml._vdjml_py.Segment_match">
-<em class="property">class </em><tt class="descname">Segment_match</tt><big>(</big><em>(object)arg1</em>, <em>(int)read_pos0</em>, <em>(Btop)btop</em><span class="optional">[</span>, <em>(Match_metrics)match_metrics=&lt;vdjml._vdjml_py.Match_metrics object at 0x7fa23ef4c848&gt;</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#vdjml._vdjml_py.Segment_match" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">Segment_match</tt><big>(</big><em>(object)arg1</em>, <em>(int)read_pos0</em>, <em>(Btop)btop</em><span class="optional">[</span>, <em>(Match_metrics)match_metrics=&lt;vdjml._vdjml_py.Match_metrics object at 0x7f5b4e643848&gt;</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#vdjml._vdjml_py.Segment_match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alignment results for a read segment</p>
 <dl class="method">
 <dt id="vdjml._vdjml_py.Segment_match.aa_substitutions">
@@ -1193,11 +1193,11 @@ It is built as bindings to libVDJML, a C++ library.</p>
 
 <dl class="method">
 <dt id="vdjml._vdjml_py.Segment_match_builder.insert_gl_segment_match">
-<tt class="descname">insert_gl_segment_match</tt><big>(</big><em>(Segment_match_builder)arg1</em>, <em>(Gl_seg_id)gl_segment_id</em>, <em>(int)pos0</em><span class="optional">[</span>, <em>(Numsys_id)num_system_id=&lt;vdjml._vdjml_py.Numsys_id object at 0x7fa23ecb9b40&gt;</em><span class="optional">[</span>, <em>(Aligner_id)aligner=&lt;vdjml._vdjml_py.Aligner_id object at 0x7fa23ecb9bb0&gt;</em><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; Gl_seg_match_id :<a class="headerlink" href="#vdjml._vdjml_py.Segment_match_builder.insert_gl_segment_match" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">insert_gl_segment_match</tt><big>(</big><em>(Segment_match_builder)arg1</em>, <em>(Gl_seg_id)gl_segment_id</em>, <em>(int)pos0</em><span class="optional">[</span>, <em>(Numsys_id)num_system_id=&lt;vdjml._vdjml_py.Numsys_id object at 0x7f5b4e37eb40&gt;</em><span class="optional">[</span>, <em>(Aligner_id)aligner=&lt;vdjml._vdjml_py.Aligner_id object at 0x7f5b4e37ebb0&gt;</em><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; Gl_seg_match_id :<a class="headerlink" href="#vdjml._vdjml_py.Segment_match_builder.insert_gl_segment_match" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div>add germline segment alignment info</div></blockquote>
 <dl class="docutils">
-<dt>insert_gl_segment_match( (Segment_match_builder)arg1, (str)vdj, (str)seg_name, (int)gl_pos0 [, (Gl_db_id)gl_database=&lt;vdjml._vdjml_py.Gl_db_id object at 0x7fa23ecb9c20&gt; [, (Numsys_id)num_system=&lt;vdjml._vdjml_py.Numsys_id object at 0x7fa23ecb9c90&gt; [, (Aligner_id)aligner=&lt;vdjml._vdjml_py.Aligner_id object at 0x7fa23ecb9d00&gt;]]]) -&gt; Gl_seg_match_id :</dt>
+<dt>insert_gl_segment_match( (Segment_match_builder)arg1, (str)vdj, (str)seg_name, (int)gl_pos0 [, (Gl_db_id)gl_database=&lt;vdjml._vdjml_py.Gl_db_id object at 0x7f5b4e37ec20&gt; [, (Numsys_id)num_system=&lt;vdjml._vdjml_py.Numsys_id object at 0x7f5b4e37ec90&gt; [, (Aligner_id)aligner=&lt;vdjml._vdjml_py.Aligner_id object at 0x7f5b4e37ed00&gt;]]]) -&gt; Gl_seg_match_id :</dt>
 <dd>add germline segment alignment info</dd>
 </dl>
 </dd></dl>
@@ -1330,7 +1330,7 @@ It is built as bindings to libVDJML, a C++ library.</p>
 
 <dl class="class">
 <dt id="vdjml._vdjml_py.Vdjml_writer">
-<em class="property">class </em><tt class="descname">Vdjml_writer</tt><big>(</big><em>(object)arg1</em>, <em>(str)file_name</em>, <em>(Results_meta)meta</em><span class="optional">[</span>, <em>(Compression)compression=vdjml._vdjml_py.Compression.Unknown_compression</em><span class="optional">[</span>, <em>(int)version=1000</em><span class="optional">[</span>, <em>(Xml_writer_options)options=&lt;vdjml._vdjml_py.Xml_writer_options object at 0x7fa23efab9e0&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#vdjml._vdjml_py.Vdjml_writer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">Vdjml_writer</tt><big>(</big><em>(object)arg1</em>, <em>(str)file_name</em>, <em>(Results_meta)meta</em><span class="optional">[</span>, <em>(Compression)compression=vdjml._vdjml_py.Compression.Unknown_compression</em><span class="optional">[</span>, <em>(int)version=1000</em><span class="optional">[</span>, <em>(Xml_writer_options)options=&lt;vdjml._vdjml_py.Xml_writer_options object at 0x7f5b4e6a29e0&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#vdjml._vdjml_py.Vdjml_writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Incrementally serialize VDJ alignment results</p>
 </dd></dl>
 
@@ -1470,7 +1470,7 @@ It is built as bindings to libVDJML, a C++ library.</p>
 
 <dl class="function">
 <dt id="vdjml._vdjml_py.write_to_file">
-<tt class="descname">write_to_file</tt><big>(</big><em>(str)path</em>, <em>(Result_store)store</em><span class="optional">[</span>, <em>(Compression)compression=vdjml._vdjml_py.Compression.Unknown_compression</em><span class="optional">[</span>, <em>(int)version=1000</em><span class="optional">[</span>, <em>(Xml_writer_options)options=&lt;vdjml._vdjml_py.Xml_writer_options object at 0x7fa23efab8c0&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; None<a class="headerlink" href="#vdjml._vdjml_py.write_to_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">write_to_file</tt><big>(</big><em>(str)path</em>, <em>(Result_store)store</em><span class="optional">[</span>, <em>(Compression)compression=vdjml._vdjml_py.Compression.Unknown_compression</em><span class="optional">[</span>, <em>(int)version=1000</em><span class="optional">[</span>, <em>(Xml_writer_options)options=&lt;vdjml._vdjml_py.Xml_writer_options object at 0x7f5b4e6a28c0&gt;</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big> &rarr; None<a class="headerlink" href="#vdjml._vdjml_py.write_to_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <span class="target" id="module-vdjml.igblast_parse"></span><p>vdjml/python/igblast_parse.py is part of VDJML project

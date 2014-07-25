@@ -1,6 +1,7 @@
 var searchData=
 [
   ['test',['test',['../namespacevdjml_1_1test.html',1,'vdjml']]],
+  ['validate',['validate',['../namespacevdjml.html#accfae50098c4302198836316cadd12f0',1,'vdjml']]],
   ['vdjml',['vdjml',['../structvdjml_1_1vocab_1_1vdjml.html',1,'vdjml::vocab']]],
   ['vdjml',['vdjml',['../namespacevdjml.html',1,'']]],
   ['vdjml_3c_201000_20_3e',['vdjml&lt; 1000 &gt;',['../structvdjml_1_1vocab_1_1vdjml_3_011000_01_4.html',1,'vdjml::vocab']]],
@@ -13,8 +14,8 @@ var searchData=
   ['vdjml_5freader_5frun_2ecpp',['vdjml_reader_run.cpp',['../vdjml__reader__run_8cpp.html',1,'']]],
   ['vdjml_5fsequence_5flength_5ftype',['VDJML_SEQUENCE_LENGTH_TYPE',['../length__type_8hpp.html#a384e43198d08170786da9ebfd06aa879',1,'length_type.hpp']]],
   ['vdjml_5fversion_2ehpp',['vdjml_version.hpp',['../vdjml__version_8hpp.html',1,'']]],
-  ['vdjml_5fwriter',['Vdjml_writer',['../classvdjml_1_1Vdjml__writer.html',1,'vdjml']]],
   ['vdjml_5fwriter',['Vdjml_writer',['../classvdjml_1_1Vdjml__writer.html#aa1284429fd137286effbba4466ee25b7',1,'vdjml::Vdjml_writer::Vdjml_writer(std::ostream &amp;os, Results_meta const &amp;rm, Compression compr=Uncompressed, const unsigned version=VDJML_CURRENT_VERSION, Xml_writer_options const &amp;opts=Xml_writer_options())'],['../classvdjml_1_1Vdjml__writer.html#a8c08e00615e07d948bd7641d0e164be8',1,'vdjml::Vdjml_writer::Vdjml_writer(std::string const &amp;path, Results_meta const &amp;rm, Compression compr=Unknown_compression, const unsigned version=VDJML_CURRENT_VERSION, Xml_writer_options const &amp;opts=Xml_writer_options())']]],
+  ['vdjml_5fwriter',['Vdjml_writer',['../classvdjml_1_1Vdjml__writer.html',1,'vdjml']]],
   ['vdjml_5fwriter_2ehpp',['vdjml_writer.hpp',['../vdjml__writer_8hpp.html',1,'']]],
   ['version',['version',['../namespacevdjml.html#aab7f2ed44a4559eed160330d4adad64b',1,'vdjml']]],
   ['vocabulary_2ehpp',['vocabulary.hpp',['../vocabulary_8hpp.html',1,'']]]

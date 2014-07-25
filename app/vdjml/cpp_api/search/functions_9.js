@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['read_5faa',['read_aa',['../classvdjml_1_1Aa__substitution.html#a0fb786065f2485a45092e0ab1c16483a',1,'vdjml::Aa_substitution']]],
-  ['read_5fposition',['read_position',['../classvdjml_1_1Aa__substitution.html#a22d4dd5b285e4358a0787566b9dca34f',1,'vdjml::Aa_substitution']]],
-  ['read_5frange',['read_range',['../classvdjml_1_1Segment__match.html#ab917bff9c3e114e3341c1f2f9cd6ca2f',1,'vdjml::Segment_match']]],
-  ['result_5fstore',['Result_store',['../classvdjml_1_1Result__store.html#a6880ee46ea1b7ee654c7a4804c57d880',1,'vdjml::Result_store']]],
-  ['reverse_5fcomplement',['reverse_complement',['../namespacevdjml.html#a934952979c092f3932ec69b029ecd410',1,'vdjml']]]
+  ['pos0',['pos0',['../classvdjml_1_1Interval.html#ab7bfcc9d6f07d2ab7e3c1aff2ecd8e6a',1,'vdjml::Interval']]],
+  ['pos0_5flen',['pos0_len',['../classvdjml_1_1Interval.html#aaf2cac9ef0c00c9ea41b733dd86c43e5',1,'vdjml::Interval']]],
+  ['pos1',['pos1',['../classvdjml_1_1Interval.html#af6d0babd134eba34c6e1a41a3ac9dd63',1,'vdjml::Interval']]]
 ];

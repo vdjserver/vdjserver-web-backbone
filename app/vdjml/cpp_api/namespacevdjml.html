@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">libVDJML
-   &#160;<span id="projectnumber">v0.1.2</span>
+   &#160;<span id="projectnumber">v0.1.3</span>
    </div>
    <div id="projectbrief">serializes and parses results of immune receptor sequence alignment in VDJML format</div>
   </td>
@@ -95,7 +95,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 
-<p>Main namespace of VDJML library.  
+<p>Main namespace of libVDJML library.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -436,6 +436,10 @@ VDJML_DECL void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> 
 <tr class="memitem:a51ebfe95f9597ca1ebd2a793b3ca9384"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a51ebfe95f9597ca1ebd2a793b3ca9384"></a>
 VDJML_DECL void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (<a class="el" href="classvdjml_1_1Xml__writer.html">Xml_writer</a> &amp;xw, <a class="el" href="classvdjml_1_1Aa__substitution.html">Aa_substitution</a> const &amp;aas, const unsigned version=VDJML_CURRENT_VERSION)</td></tr>
 <tr class="separator:a51ebfe95f9597ca1ebd2a793b3ca9384"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c5cc44c45bdc616610964359ec33ce8"><td class="memItemLeft" align="right" valign="top">VDJML_DECL bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacevdjml.html#a8c5cc44c45bdc616610964359ec33ce8">check</a> (<a class="el" href="classvdjml_1_1Btop.html">Btop</a> const &amp;btop, <a class="el" href="structvdjml_1_1Aligned__seq.html">Aligned_seq</a> const &amp;seq)</td></tr>
+<tr class="separator:a8c5cc44c45bdc616610964359ec33ce8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accfae50098c4302198836316cadd12f0"><td class="memItemLeft" align="right" valign="top">VDJML_DECL void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacevdjml.html#accfae50098c4302198836316cadd12f0">validate</a> (<a class="el" href="classvdjml_1_1Btop.html">Btop</a> const &amp;btop, <a class="el" href="structvdjml_1_1Aligned__seq.html">Aligned_seq</a> const &amp;seq)</td></tr>
+<tr class="separator:accfae50098c4302198836316cadd12f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a551dfbae9fa1ffb4aaa6fd2944154e72"><td class="memTemplParams" colspan="2"><a class="anchor" id="a551dfbae9fa1ffb4aaa6fd2944154e72"></a>
 template&lt;class ChT , class Tr &gt; </td></tr>
 <tr class="memitem:a551dfbae9fa1ffb4aaa6fd2944154e72"><td class="memTemplItemLeft" align="right" valign="top">std::basic_ostream&lt; ChT, Tr &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::basic_ostream&lt; ChT, Tr &gt; &amp;os, <a class="el" href="classvdjml_1_1Btop.html">Btop</a> const &amp;btop)</td></tr>
@@ -456,6 +460,10 @@ template&lt;class ChT , class Tr &gt; </td></tr>
 <tr class="separator:a4942f70034bf8c5dcf5a5c263f969345"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80910026ab9758697e550f4fdab5ece1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structvdjml_1_1Sequence__match.html">Sequence_match</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacevdjml.html#a80910026ab9758697e550f4fdab5ece1">sequence_match</a> (<a class="el" href="classvdjml_1_1Btop.html">Btop</a> const &amp;btop, <a class="el" href="structvdjml_1_1Aligned__seq.html">Aligned_seq</a> const &amp;seq)</td></tr>
 <tr class="separator:a80910026ab9758697e550f4fdab5ece1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d8511d0a268a5ce5eab7f9330547cc9"><td class="memItemLeft" align="right" valign="top">VDJML_DECL bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacevdjml.html#a0d8511d0a268a5ce5eab7f9330547cc9">is_open_frame</a> (<a class="el" href="classvdjml_1_1Btop.html">Btop</a> const &amp;btop, <a class="el" href="structvdjml_1_1Aligned__pos.html">Aligned_pos</a> const &amp;start, <a class="el" href="structvdjml_1_1Aligned__seq.html">Aligned_seq</a> const &amp;seq)</td></tr>
+<tr class="separator:a0d8511d0a268a5ce5eab7f9330547cc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3acc191a1c56d4a76d3411f8c0b20252"><td class="memItemLeft" align="right" valign="top">VDJML_DECL int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacevdjml.html#a3acc191a1c56d4a76d3411f8c0b20252">find_open_frame</a> (<a class="el" href="classvdjml_1_1Btop.html">Btop</a> const &amp;btop, <a class="el" href="structvdjml_1_1Aligned__pos.html">Aligned_pos</a> const &amp;start, <a class="el" href="structvdjml_1_1Aligned__seq.html">Aligned_seq</a> const &amp;seq)</td></tr>
+<tr class="separator:a3acc191a1c56d4a76d3411f8c0b20252"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a9b96843aacc409de680e999bda4e4a"><td class="memTemplParams" colspan="2"><a class="anchor" id="a1a9b96843aacc409de680e999bda4e4a"></a>
 template&lt;class ChT , class Tr &gt; </td></tr>
 <tr class="memitem:a1a9b96843aacc409de680e999bda4e4a"><td class="memTemplItemLeft" align="right" valign="top">std::basic_ostream&lt; ChT, Tr &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::basic_ostream&lt; ChT, Tr &gt; &amp;os, <a class="el" href="classvdjml_1_1Interval.html">Interval</a> const &amp;i)</td></tr>
@@ -511,8 +519,83 @@ char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <tr class="separator:a19728d3eb6b0284915ee54bb339f38b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Main namespace of VDJML library. </p>
+<div class="textblock"><p>Main namespace of libVDJML library. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a8c5cc44c45bdc616610964359ec33ce8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VDJML_DECL bool vdjml::check </td>
+          <td>(</td>
+          <td class="paramtype">Btop const &amp;&#160;</td>
+          <td class="paramname"><em>btop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Aligned_seq const &amp;&#160;</td>
+          <td class="paramname"><em>seq</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">btop</td><td>BTOP structure </td></tr>
+    <tr><td class="paramname">seq</td><td>read or germline sequence </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if btop matches seq by length and content </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a3acc191a1c56d4a76d3411f8c0b20252"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VDJML_DECL int vdjml::find_open_frame </td>
+          <td>(</td>
+          <td class="paramtype">Btop const &amp;&#160;</td>
+          <td class="paramname"><em>btop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Aligned_pos const &amp;&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Aligned_seq const &amp;&#160;</td>
+          <td class="paramname"><em>seq</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">btop</td><td>BTOP structure </td></tr>
+    <tr><td class="paramname">start</td><td>read or germline frame position </td></tr>
+    <tr><td class="paramname">seq</td><td>read or germline sequence </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0,1, or 2 for open frame found or -1 if no open frame is found </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="af6534f24c1f3eca0f15dffb3bd8f7ef8"></a>
 <div class="memitem">
 <div class="memproto">
@@ -561,6 +644,47 @@ char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
       </table>
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>compression based on stream magic number </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a0d8511d0a268a5ce5eab7f9330547cc9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VDJML_DECL bool vdjml::is_open_frame </td>
+          <td>(</td>
+          <td class="paramtype">Btop const &amp;&#160;</td>
+          <td class="paramname"><em>btop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Aligned_pos const &amp;&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Aligned_seq const &amp;&#160;</td>
+          <td class="paramname"><em>seq</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">btop</td><td>BTOP structure </td></tr>
+    <tr><td class="paramname">start</td><td>read or germline frame position </td></tr>
+    <tr><td class="paramname">seq</td><td>read or germline sequence </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if no stop codons found starting from start position </dd></dl>
 
 </div>
 </div>
@@ -823,6 +947,45 @@ char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
   <table class="params">
     <tr><td class="paramname">btop</td><td>BTOP structure </td></tr>
     <tr><td class="paramname">seq</td><td>read or germline sequence </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="accfae50098c4302198836316cadd12f0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">VDJML_DECL void vdjml::validate </td>
+          <td>(</td>
+          <td class="paramtype">Btop const &amp;&#160;</td>
+          <td class="paramname"><em>btop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Aligned_seq const &amp;&#160;</td>
+          <td class="paramname"><em>seq</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">btop</td><td>BTOP structure </td></tr>
+    <tr><td class="paramname">seq</td><td>read or germline sequence </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structvdjml_1_1Btop_1_1Err.html">Btop::Err</a></td><td>if seq has incorrect size, invalid or mismatching nucleotide character </td></tr>
   </table>
   </dd>
 </dl>
@@ -1139,7 +1302,7 @@ char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 10 2014 10:23:05 for libVDJML by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jul 24 2014 09:48:06 for libVDJML by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

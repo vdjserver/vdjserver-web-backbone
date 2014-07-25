@@ -2,6 +2,7 @@ var searchData=
 [
   ['chain_5ftype',['Chain_type',['../namespacevdjml.html#a0df541cb1f2127d39f613641a1e1c391',1,'vdjml']]],
   ['chain_5ftype_2ehpp',['chain_type.hpp',['../chain__type_8hpp.html',1,'']]],
+  ['check',['check',['../namespacevdjml.html#a8c5cc44c45bdc616610964359ec33ce8',1,'vdjml']]],
   ['codon_5findex_2ehpp',['codon_index.hpp',['../codon__index_8hpp.html',1,'']]],
   ['codon_5findex_5frun_2ecpp',['codon_index_run.cpp',['../codon__index__run_8cpp.html',1,'']]],
   ['codon_5fiterator_2ehpp',['codon_iterator.hpp',['../codon__iterator_8hpp.html',1,'']]],
