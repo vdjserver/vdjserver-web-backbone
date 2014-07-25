@@ -8,7 +8,7 @@
                         &nbsp;
                     {{/if}}
 
-                    {{parameterName}}
+                    Histogram
 
                     {{#if isEditable}}
                         &nbsp;
@@ -23,11 +23,15 @@
             {{/if}}
                 <div class="row row-with-spacer">
                     <div class="col-md-12">
-                        <select class="job-form-item" name="{{inputCount}}-{{parameterType}}" type="text">
-                            {{#each files}}
-                                <option value={{value.name}}>{{value.name}}</option>
-                            {{/each}}
-                        </select>
+                        Name
+                        &nbsp;
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-name"
+                            placeholder="text"
+                            type="text"
+                            value="{{options.name}}"
+                        >
                     </div>
                 </div>
             {{#if isEditable}}

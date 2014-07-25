@@ -1,7 +1,7 @@
 define([
     'app',
     'handlebars',
-    'backbone.syphon'
+    'backbone.syphon',
 ], function(App, Handlebars) {
 
     'use strict';
@@ -20,8 +20,10 @@ define([
         template: 'jobs/job-submit-form',
         initialize: function(parameters) {
 
-            this.projectModel = parameters.projectModel;
+            console.log("run init ok");
 
+            this.projectModel = parameters.projectModel;
+/*
             var jobFormView;
 
             switch(parameters.jobType) {
@@ -41,25 +43,62 @@ define([
 
             this.insertView('.modal-body', this.jobFormView);
             this.jobFormView.render();
-
-            var jobConfigurationView = new Jobs.Configuration();
-            this.insertView('#job-configuration', jobConfigurationView);
-            jobConfigurationView.render();
-
-            var fileListView = new Jobs.FileList({selectedFileListings: this.selectedFileListings});
-            this.insertView('#job-file-list', fileListView);
-            fileListView.render();
+*/
+        },
+        serialize: function() {
+            return {
+                selectedFileListings: this.selectedFileListings.toJSON(),
+            };
         },
         afterRender: function() {
             $('#job-modal').modal('show');
         },
         events: {
+            'change #select-workflow': 'showWorkflow',
+            'click .remove-file-from-job': 'removeFileFromJob',
             'submit form': 'submitJob',
-            'click .remove-file-from-job': 'removeFileFromJob'
+        },
+        showWorkflow: function(e) {
+            e.preventDefault();
+
+            // Do housekeeping first
+            this.removeView('#workflow-staging-area');
+
+            // Setup and insert new workflow views
+            var workflow = e.target.value;
+
+            var workflowConfig = Jobs.GetWorkflowConfig(workflow);
+
+            console.log("workflowConfig is: " + JSON.stringify(workflowConfig));
+
+            var workflowViews = new Jobs.GenerateVdjPipeWorkflowViews(workflowConfig);
+
+            /* 
+                I'd love to use insertViews instead, but as of 24/July/2014
+                it seems to work on the parent layout instead of the view
+                represented by |this|.
+
+                This behavior might be a bug in layout manager, so the
+                following loop is a workaround for now.
+            */
+            for (var i = 0; i < workflowViews.length; i++) {
+                var view = workflowViews[i];
+                
+                view.isEditable = false;
+
+                this.insertView('#workflow-staging-area', view);
+
+                view.render();
+            }
         },
         submitJob: function(e) {
             e.preventDefault();
 
+
+
+
+
+/*
             var that = this;
 
             var formData = Backbone.Syphon.serialize(this);
@@ -99,6 +138,7 @@ define([
                     App.Layouts.main.insertView('#running-jobs', jobNotificationView);
                     jobNotificationView.render();
                 });
+            */
         },
         removeFileFromJob: function(e) {
             e.preventDefault();
@@ -113,18 +153,27 @@ define([
         }
     });
 
-    Jobs.Configuration = Backbone.View.extend({
-        template: 'jobs/job-configuration-form'
-    });
+    Jobs.GenerateVdjPipeWorkflowViews = function(config) {
+        var parameters = config['single_read_pipe'];
 
-    Jobs.FileList = Backbone.View.extend({
-        template: 'jobs/job-file-list',
-        serialize: function() {
-            return {
-                selectedFileListings: this.selectedFileListings.toJSON()
-            };
+        var workflowViews = [];
+
+        for (var counter = 0; counter < parameters.length; counter++) {
+
+            var key = Object.keys(parameters[counter])[0];
+            var options = parameters[counter][key];
+console.log("key is: " + key);
+            var vdjPipeView = Jobs.GetVdjPipeView(
+                key,
+                counter,
+                options
+            );
+
+            workflowViews.push(vdjPipeView);
         }
-    });
+
+        return workflowViews;
+    };
 
     Jobs.Notification = Backbone.View.extend({
         template: 'jobs/notification',
@@ -242,7 +291,7 @@ define([
         template: 'jobs/vdjpipe-form',
         initialize: function() {
             //this.inputCounter = {};
-            this.inputCounter = 0;
+            this.counter = 0;
         },
         events: {
             'click .job-parameter': 'addJobParameter',
@@ -257,230 +306,27 @@ define([
         },
         addJobParameter: function(e) {
             e.preventDefault();
-
+/*
             var parameterType = e.target.dataset.parametertype;
 
-            this.inputCounter = this.inputCounter + 1;
-            var currentCount = this.inputCounter;
+            this.counter = this.counter + 1;
 
-            var parameterView;
+            var vdjPipeView = Jobs.GetVdjPipeView(
+                parameterType,
+                this.counter,
+                {}
+            );
 
-            switch(parameterType) {
-                case 'composition-stats':
-
-                    /*
-                    parameterView = new Jobs.VdjPipeBaseCompositionStatistics({
-                        parameterName: 'Base Composition Statistics',
-                        parameterType: parameterType,
-                        placeholderText: 'pre-',
-                        inputLabel: 'Output Prefix',
-                        inputCount: currentCount,
-                    });
-                    */
-                    parameterView = new Jobs.VdjPipeTextImmutable({
-                        parameterName: 'Base Composition Statistics',
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'quality-stats':
-
-                    parameterView = new Jobs.VdjPipeTextImmutable({
-                        parameterName: 'Read Quality Statistics',
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'nucleotide-filter':
-
-                    parameterView = new Jobs.VdjPipeNucleotideFilter({
-                        parameterType: parameterType,
-                        placeholderText: 'AGCT',
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'length-filter':
-
-                    parameterView = new Jobs.VdjPipeLengthFilter({
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'homopolymer-filter':
-
-                    parameterView = new Jobs.VdjPipeNumberMutable({
-                        parameterName: 'Homopolymer Filter',
-                        parameterType: parameterType,
-                        inputLabel: 'Max',
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'minimal-quality-filter':
-
-                    parameterView = new Jobs.VdjPipeNumberMutable({
-                        parameterName: 'Minimal Quality Filter',
-                        parameterType: parameterType,
-                        inputLabel: '',
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'minimal-average-quality-filter':
-
-                    parameterView = new Jobs.VdjPipeTextMutable({
-                        parameterName: 'Minimal Average Quality Filter',
-                        parameterType: parameterType,
-                        placeholderText: '',
-                        inputLabel: '',
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'minimal-quality-window-filter':
-
-                    parameterView = new Jobs.VdjPipeMinimalQualityWindowFilter({
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'average-quality-window-filter':
-
-                    parameterView = new Jobs.VdjPipeAverageQualityWindowFilter({
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'ambiguous-nucleotide-window-filter':
-
-                    parameterView = new Jobs.VdjPipeAmbiguousNucleotideWindowFilter({
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'histogram':
-
-                    parameterView = new Jobs.VdjPipeTextMutable({
-                        parameterName: 'Histogram',
-                        parameterType: parameterType,
-                        placeholderText: '',
-                        inputLabel: 'Name',
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'find-unique-sequences':
-
-                    parameterView = new Jobs.VdjPipeFindUniqueSequences({
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'match-sequence-element':
-
-                    parameterView = new Jobs.VdjPipeMatchSequenceElement({
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                        files: this.selectedFileListings,
-                    });
-
-                    break;
-
-                case 'match-external-molecular-identifier':
-
-                    parameterView = new Jobs.VdjPipeMatchExternalMolecularIdentifier({
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                        files: this.selectedFileListings,
-                    });
-
-                    break;
-
-                case 'write-sequences':
-
-                    parameterView = new Jobs.VdjPipeWriteSequences({
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'write-values':
-
-                    parameterView = new Jobs.VdjPipeWriteValues({
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'find-sequences-from-multiple-groups':
-
-                    parameterView = new Jobs.VdjPipeFindSequencesFromMultipleGroups({
-                        parameterType: parameterType,
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                case 'merge-paired-reads':
-
-                    parameterView = new Jobs.VdjPipeNumberMutable({
-                        parameterName: 'Merge Paired Reads',
-                        parameterType: parameterType,
-                        placeholderText: '',
-                        inputLabel: 'Minimum Score',
-                        inputCount: currentCount,
-                    });
-
-                    break;
-
-                default:
-                    // code
-                    break;
-            }
-
-            this.insertView('#vdj-pipe-configuration', parameterView);
-            parameterView.render();
+            this.insertView('#vdj-pipe-configuration', vdjPipeView);
+            vdjPipeView.render();
+*/
         },
         removeJobParameter: function(e) {
             e.preventDefault();
             $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
         },
     });
-/*
-    Jobs.VdjPipeBaseCompositionStatistics = Backbone.View.extend({
-        template: 'jobs/vdjpipe-base-composition-statistics',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                };
-            }
-        }
-    });
-*/
+
     Jobs.VdjPipeNucleotideFilter = Backbone.View.extend({
         template: 'jobs/vdjpipe-nucleotide-filter',
         events: {
@@ -489,9 +335,10 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
-                    placeholderText: this.placeholderText,
+                    options: this.options,
                 };
             }
         },
@@ -510,8 +357,10 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
+                    options: this.options,
                 };
             }
         },
@@ -546,13 +395,15 @@ define([
         },
     });
 
-    Jobs.VdjPipeAmbiguousNucleotideWindowFilter = Backbone.View.extend({
+    Jobs.VdjPipeAmbiguousWindowFilter = Backbone.View.extend({
         template: 'jobs/vdjpipe-ambiguous-nucleotide-window-filter',
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
+                    options: this.options,
                 };
             }
         },
@@ -563,8 +414,10 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
+                    options: this.options,
                 };
             }
         },
@@ -572,11 +425,39 @@ define([
 
     Jobs.VdjPipeMinimalQualityWindowFilter = Backbone.View.extend({
         template: 'jobs/vdjpipe-minimal-quality-window-filter',
+        initialize: function(parameters) {
+        
+
+        },
+        serialize: function() {
+            if (this.parameterType) {
+/*
+                var returnObject = {
+                    isEditable: this.isEditable,
+                    parameterType: this.parameterType,
+                    inputCount: this.inputCount,
+                    options: this.options,
+                };
+*/
+                return {
+                    isEditable: this.isEditable,
+                    parameterType: this.parameterType,
+                    inputCount: this.inputCount,
+                    options: this.options,
+                };
+            }
+        },
+    });
+                
+    Jobs.VdjPipeMinAverageQualityFilter = Backbone.View.extend({
+        template: 'jobs/vdjpipe-min-average-quality-filter',
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
+                    options: this.options,
                 };
             }
         },
@@ -587,8 +468,10 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
+                    options: this.options,
                 };
             }
         },
@@ -599,25 +482,26 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterName: this.parameterName,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
                     inputLabel: this.inputLabel,
+                    options: this.options,
                 };
             }
         },
     });
 
-    Jobs.VdjPipeTextMutable = Backbone.View.extend({
-        template: 'jobs/vdjpipe-text-mutable',
+    Jobs.VdjPipeHistogram = Backbone.View.extend({
+        template: 'jobs/vdjpipe-histogram',
         serialize: function() {
             if (this.parameterType) {
                 return {
-                    parameterName: this.parameterName,
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
-                    placeholderText: this.placeholderText,
-                    inputLabel: this.inputLabel,
+                    options: this.options,
                 };
             }
         },
@@ -628,10 +512,12 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterName: this.parameterName,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
                     files: this.selectedFileListings.toJSON(),
+                    options: this.options,
                 };
             }
         },
@@ -642,22 +528,11 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterName: this.parameterName,
                     parameterType: this.parameterType,
-                    inputCount: this.inputCount
-                };
-            }
-        },
-    });
-
-    Jobs.VdjPipeCheckbox = Backbone.View.extend({
-        template: 'jobs/vdjpipe-checkbox',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    parameterName: this.parameterName,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount
+                    inputCount: this.inputCount,
+                    options: this.options,
                 };
             }
         },
@@ -671,10 +546,19 @@ define([
         },
         serialize: function() {
             if (this.parameterType) {
+
+                var files = {};
+                
+                if (this.files && this.files.toJSON()) {
+                    files = this.files.toJSON();
+                }
+
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
-                    files: this.files.toJSON(),
+                    files: files,
+                    options: this.options,
                 };
             }
         },
@@ -720,10 +604,12 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
                     elementCount: this.elementCount,
                     //fileName: this.fileName,
+                    options: this.options,
                 };
             }
         },
@@ -741,10 +627,12 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
                     objectCount: this.objectCount,
                     files: this.files.toJSON(),
+                    options: this.options,
                 };
             }
         },
@@ -762,33 +650,39 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
                     files: this.files.toJSON(),
+                    options: this.options,
                 };
             }
         },
     });
 
-    Jobs.VdjPipeWriteSequences = Backbone.View.extend({
+    Jobs.VdjPipeWriteSequence = Backbone.View.extend({
         template: 'jobs/vdjpipe-write-sequences',
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
+                    options: this.options,
                 };
             }
         },
     });
 
-    Jobs.VdjPipeWriteValues = Backbone.View.extend({
+    Jobs.VdjPipeWriteValue = Backbone.View.extend({
         template: 'jobs/vdjpipe-write-values',
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
+                    options: this.options,
                 };
             }
         },
@@ -799,8 +693,10 @@ define([
         serialize: function() {
             if (this.parameterType) {
                 return {
+                    isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
+                    options: this.options,
                 };
             }
         },
@@ -834,6 +730,266 @@ define([
             }
         },
     });
+
+    Jobs.GetWorkflowConfig = function(workflow) {
+        var workflowConfig;
+
+        switch(workflow) {
+            case 'Workflow A':
+
+                workflowConfig = {
+                   
+                   'single_read_pipe': [
+                      { 'quality_stats': { 'out_prefix': 'pre-filter_' } },
+                      { 'composition_stats': { 'out_prefix': 'pre-filter_' } },
+
+                      { 'min_quality_window_filter': { 'min_quality': 20, 'min_length': 200 } },
+                      { 'ambiguous_window_filter': { 'min_length': 200, 'max_ambiguous': 5 } },
+                      {
+                        'average_quality_window_filter': { 
+                           'min_quality': 25, 'window_length': 10, 'min_length': 200
+                        }
+                      },
+                      { 'match':
+                        {
+                            'reverse': true, 'trimmed': false,
+                            'elements': [
+                                 {
+                                   'start': { 'pos': 14 }, 'length': 8,
+                                   'seq_file': 'imid1.fasta',
+                                   'min_score': 10, 'value_name': 'iMID',
+                                   'score_name': 'iMID_score'
+                                 },
+                                 {
+                                   'end': { 'before': 'iMID', 'pos': -1 }, 'length': 10,
+                                   'value_name': 'UMI'
+                                 }
+                            ]
+                        }
+                      },
+                      { 'histogram': { 'name': 'iMID', 'out_path': 'iMID.csv' } },
+/*
+                      { 'select': {
+                            'match': [ { 'name': 'iMID_UMI_map', 'value': '' } ],
+                            'do': [ { 'write_sequence': { 'out_path': 'sample_1.fastq' } } ]
+                        }
+                      },
+*/
+                      { 'write_sequence': 
+                            { 
+                         'trimmed': false, 'skip_empty': true, 'out_path': 'all_seqs.fastq' 
+                            } 
+                      },
+                      { 'write_value': { 
+                            'out_path': 'vals.csv.bz2', 'names': ['read_id', 'iMID', 'UMI']
+                        }
+                      },
+                      { 'write_value': { 
+                            'out_path': 'vals_{iMID}.csv', 'names': ['read_id', 'iMID', 'UMI']
+                        }
+                      }
+
+                   ]
+                };
+
+                break;
+
+            default:
+                break;
+        }
+
+        return workflowConfig;
+    };
+
+    Jobs.GetVdjPipeView = function(key, counter, options) {
+
+        var vdjPipeView;
+
+        switch(key) {
+
+            case 'ambiguous_window_filter':
+
+                vdjPipeView = new Jobs.VdjPipeAmbiguousWindowFilter({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'average_quality_window_filter':
+                vdjPipeView = new Jobs.VdjPipeAverageQualityWindowFilter({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'composition_stats':
+                vdjPipeView = new Jobs.VdjPipeTextImmutable({
+                    parameterName: 'Base Composition Statistics',
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'find_sequences_from_multiple_groups':
+                vdjPipeView = new Jobs.VdjPipeFindSequencesFromMultipleGroups({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'find_unique_sequences':
+                vdjPipeView = new Jobs.VdjPipeFindUniqueSequences({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'histogram':
+                vdjPipeView = new Jobs.VdjPipeHistogram({
+                    parameterName: 'Histogram',
+                    parameterType: key,
+                    placeholderText: '',
+                    inputLabel: 'Name',
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'homopolymer_filter':
+                vdjPipeView = new Jobs.VdjPipeNumberMutable({
+                    parameterName: 'Homopolymer Filter',
+                    parameterType: key,
+                    inputLabel: 'Max',
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'length_filter':
+                vdjPipeView = new Jobs.VdjPipeLengthFilter({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'match_external_molecular_identifier':
+                vdjPipeView = new Jobs.VdjPipeMatchExternalMolecularIdentifier({
+                    parameterType: key,
+                    inputCount: counter,
+                    files: this.selectedFileListings,
+                    options: options,
+                });
+
+                break;
+
+            case 'match':
+                vdjPipeView = new Jobs.VdjPipeMatchSequenceElement({
+                    parameterType: key,
+                    inputCount: counter,
+                    files: this.selectedFileListings,
+                    options: options,
+                });
+
+                break;
+
+            case 'merge_paired_reads':
+                vdjPipeView = new Jobs.VdjPipeNumberMutable({
+                    parameterName: 'Merge Paired Reads',
+                    parameterType: key,
+                    placeholderText: '',
+                    inputLabel: 'Minimum Score',
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'min_average_quality_filter':
+                vdjPipeView = new Jobs.VdjPipeMinAverageQualityFilter({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'min_quality_filter':
+                vdjPipeView = new Jobs.VdjPipeNumberMutable({
+                    parameterName: 'Minimal Quality Filter',
+                    parameterType: key,
+                    inputLabel: '',
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'min_quality_window_filter':
+                vdjPipeView = new Jobs.VdjPipeMinimalQualityWindowFilter({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'nucleotide_filter':
+                vdjPipeView = new Jobs.VdjPipeNucleotideFilter({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'quality_stats':
+                vdjPipeView = new Jobs.VdjPipeTextImmutable({
+                    parameterName: 'Read Quality Statistics',
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'write_sequence':
+                vdjPipeView = new Jobs.VdjPipeWriteSequence({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'write_value':
+                vdjPipeView = new Jobs.VdjPipeWriteValue({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            default:
+                break;
+        }
+
+        return vdjPipeView;
+    };
 
     App.Views.Jobs = Jobs;
     return Jobs;

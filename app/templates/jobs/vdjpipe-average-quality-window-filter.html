@@ -3,36 +3,79 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    <i class="fa fa-bars"></i>
-                    &nbsp;
+                    {{#if isEditable}}
+                        <i class="fa fa-bars"></i>
+                        &nbsp;
+                    {{/if}}
+
                     Average Quality Window Filter
-                    &nbsp;
-                    <span class="label label-danger remove-job-parameter">&times;</span>
+
+                    {{#if isEditable}}
+                        &nbsp;
+                        <span class="label label-danger remove-job-parameter">&times;</span>
+                    {{/if}}
 
                     <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
                 </div>
             </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Min Quality
-                    &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-quality" data-type="number" value="" placeholder="Minimal quality score">
+
+            {{#if isEditable}}
+            {{else}}
+                <fieldset disabled>
+            {{/if}}
+
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+                        Min Quality
+                        &nbsp;
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-min-quality"
+                            placeholder="Minimal quality score"
+                            type="number"
+                            value="{{options.min_quality}}"
+                            step="0.01"
+                        >
+                    </div>
                 </div>
-            </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Window Length
-                    &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-window-length" data-type="number" value="" placeholder="Length for computing averages" min="0" step="1" pattern="\d+">
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+                        Window Length
+                        &nbsp;
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-window-length"
+                            placeholder="Length for computing averages"
+                            type="number"
+                            value="{{options.window_length}}"
+                            step="1"
+                            min="0"
+                            pattern="\d+"
+                        >
+                    </div>
                 </div>
-            </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Min Interval Length
-                    &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-length" data-type="number" value="" placeholder="Minimal interval length" min="0" step="1" pattern="\d+">
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+                        Min Interval Length
+                        &nbsp;
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-min-length"
+                            placeholder="Minimal interval length"
+                            type="number"
+                            value="{{options.min_length}}"
+                            step="1"
+                            min="0"
+                            pattern="\d+"
+                        >
+                    </div>
                 </div>
-            </div>
+
+            {{#if isEditable}}
+            {{else}}
+                </fieldset>
+            {{/if}}
+
         </div>
     </div>
 </li>

@@ -442,6 +442,7 @@ define([
         clickRunJob: function(e) {
             e.preventDefault();
 
+            console.log("clickRunJob");
             var jobType = e.target.dataset.jobtype;
 
             this.removeView('#job-submit');
@@ -449,11 +450,13 @@ define([
             var selectedFileMetadataUuids = this.getSelectedFileUuids();
             var selectedFileListings = this.fileListings.getNewCollectionForUuids(selectedFileMetadataUuids);
 
+            console.log("about to create view");
             var jobSubmitView = new App.Views.Jobs.Submit({
                 selectedFileListings: selectedFileListings,
                 jobType: jobType,
-                projectModel: this.projectModel
+                projectModel: this.projectModel,
             });
+            console.log("created view");
 
             this.setView('#job-submit', jobSubmitView);
             jobSubmitView.render();

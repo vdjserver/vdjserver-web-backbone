@@ -3,29 +3,54 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    <i class="fa fa-bars"></i>
-                    &nbsp;
+
+                    {{#if isEditable}}
+                        <i class="fa fa-bars"></i>
+                        &nbsp;
+                    {{/if}}
+                    
                     Match Sequence Element
-                    &nbsp;
-                    <span class="label label-danger remove-job-parameter">&times;</span>
+                    
+                    {{#if isEditable}}
+                        &nbsp;
+                        <span class="label label-danger remove-job-parameter">&times;</span>
+                    {{/if}}
 
                     <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
                 </div>
             </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-reverse-complement" type="checkbox">
-                    &nbsp;
-                    Reverse Complement
+
+            {{#if isEditable}}
+            {{else}}
+                <fieldset disabled>
+            {{/if}}
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+                        {{#if options.reverse}}
+                            <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-reverse-complement" type="checkbox" checked>
+                        {{else}}
+                            <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-reverse-complement" type="checkbox">
+                        {{/if}}
+                        &nbsp;
+                        Reverse Complement
+                    </div>
                 </div>
-            </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-trimmed" type="checkbox">
-                    &nbsp;
-                    Trimmed
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+                        {{#if options.trimmed}}
+                            <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-trimmed" type="checkbox" value="{{options.trimmed}}" checked>
+                        {{else}}
+                            <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-trimmed" type="checkbox" value="{{options.trimmed}}">
+                        {{/if}}
+                        &nbsp;
+                        Trimmed
+                    </div>
                 </div>
-            </div>
+            {{#if isEditable}}
+            {{else}}
+                </fieldset>
+            {{/if}}
+
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     <button class="btn btn-success add-element-button">Add Element</button>
