@@ -8,6 +8,7 @@ define([
     // Models
     '../../test/spec/models/agave-profile-tests',
     '../../test/spec/models/agave-project-tests',
+    '../../test/spec/models/agave-job-tests',
 
     // Collections
     '../../test/spec/collections/agave-projects-tests'

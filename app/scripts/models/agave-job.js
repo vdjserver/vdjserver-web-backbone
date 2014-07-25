@@ -527,11 +527,16 @@ define(['backbone'], function(Backbone) {
             console.log("name input is: " + name);
             return name.replace(/\s/g, '-').toLowerCase();
         },
-        createArchivePathDirectory: function(projectUuid) {
-
+        getRelativeArchivePath: function() {
             var fullArchivePath = this.get('archivePath');
             var archivePathSplit = fullArchivePath.split('/');
             var relativeArchivePath = archivePathSplit[4];
+
+            return relativeArchivePath;
+        },
+        createArchivePathDirectory: function(projectUuid) {
+
+            var relativeArchivePath = this.getRelativeArchivePath();
 
             console.log("relativeArchivePath is: " + relativeArchivePath);
 

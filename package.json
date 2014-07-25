@@ -31,6 +31,7 @@
         "grunt-usemin":     "0.1.x",
         "jshint-stylish":   "0.4.x",
         "load-grunt-tasks": "0.6.x",
+        "sinon":            "1.10.x",
         "time-grunt":       "0.4.x"
     },
     "engines": {
