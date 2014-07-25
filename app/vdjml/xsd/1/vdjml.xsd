@@ -204,11 +204,11 @@
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
-      <xs:sequence>
+      <xs:choice>
          <xs:element ref="vdj:vdj_alignment" minOccurs="0" />
          <xs:any namespace="##other" processContents="lax" minOccurs="0" 
             maxOccurs="unbounded" />
-      </xs:sequence>
+      </xs:choice>
       <xs:attribute name="read_id" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
@@ -343,7 +343,7 @@
       <xs:attribute name="gl_len" type="xs:nonNegativeInteger" use="required">
 	      <xs:annotation>
 	         <xs:documentation xml:lang="en">
-	         TODO:
+	         length of aligned germline segment
 	         </xs:documentation>
 	      </xs:annotation>
       </xs:attribute>
@@ -354,7 +354,11 @@
 <xs:element name="btop">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      BTOP (Blast traceback operations) string.
+      Integer indecates the number of aligned nucleotides. 
+      Pair of letters indicates a nucleotide mismatch between read/germline 
+      sequences.
+      Dash ('-') indicates deletion.
       </xs:documentation>
    </xs:annotation>
    <xs:simpleType>
@@ -365,6 +369,11 @@
 </xs:element>
 
 <xs:element name="gl_seg_match">
+   <xs:annotation>
+      <xs:documentation xml:lang="en">
+         Informatin about aligned germline segment
+      </xs:documentation>
+   </xs:annotation>
    <xs:complexType>
       <xs:attribute name="gl_seg_match_id" type="xs:positiveInteger"
          use="required">
@@ -599,6 +608,8 @@
       <xs:enumeration value="Tyr" />
       <xs:enumeration value="*" />
       <xs:enumeration value="Stop" />
+      <xs:enumeration value="X" />
+      <xs:enumeration value="x" />
    </xs:restriction>
 </xs:simpleType>
 

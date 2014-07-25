@@ -24,7 +24,7 @@
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
    <div id="projectname">libVDJML
-   &#160;<span id="projectnumber">v0.1.2</span>
+   &#160;<span id="projectnumber">v0.1.3</span>
    </div>
    <div id="projectbrief">serializes and parses results of immune receptor sequence alignment in VDJML format</div>
   </td>
@@ -128,8 +128,7 @@ typedef Interval::length_t&#160;</td><td class="memItemRight" valign="bottom"><b
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a84db3bc069379039bab17d03058c10db"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a84db3bc069379039bab17d03058c10db"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Segment_match</b> (const std::size_t read_pos0, <a class="el" href="classvdjml_1_1Btop.html">Btop</a> const &amp;btop, <a class="el" href="classvdjml_1_1Match__metrics.html">Match_metrics</a> const &amp;mm=<a class="el" href="classvdjml_1_1Match__metrics.html">Match_metrics</a>())</td></tr>
+<tr class="memitem:a84db3bc069379039bab17d03058c10db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classvdjml_1_1Segment__match.html#a84db3bc069379039bab17d03058c10db">Segment_match</a> (const std::size_t read_pos0, <a class="el" href="classvdjml_1_1Btop.html">Btop</a> const &amp;btop, <a class="el" href="classvdjml_1_1Match__metrics.html">Match_metrics</a> const &amp;mm=<a class="el" href="classvdjml_1_1Match__metrics.html">Match_metrics</a>())</td></tr>
 <tr class="separator:a84db3bc069379039bab17d03058c10db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcd8a7d459af2c0a7d304534305bac40"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abcd8a7d459af2c0a7d304534305bac40"></a>
 Seg_match_id&#160;</td><td class="memItemRight" valign="bottom"><b>id</b> () const </td></tr>
@@ -177,13 +176,51 @@ Friends</h2></td></tr>
 <tr class="memitem:ab39c3aa84e8c6f8406c0d48875d4bca8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab39c3aa84e8c6f8406c0d48875d4bca8"></a>
 class&#160;</td><td class="memItemRight" valign="bottom"><b>Segment_match_map</b></td></tr>
 <tr class="separator:ab39c3aa84e8c6f8406c0d48875d4bca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26a26e37f8a2b5dffcb6420ade0f0427"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26a26e37f8a2b5dffcb6420ade0f0427"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>detail::Segment_match_proto</b></td></tr>
-<tr class="separator:a26a26e37f8a2b5dffcb6420ade0f0427"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Alignment results for a read segment. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a84db3bc069379039bab17d03058c10db"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vdjml::Segment_match::Segment_match </td>
+          <td>(</td>
+          <td class="paramtype">const std::size_t&#160;</td>
+          <td class="paramname"><em>read_pos0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classvdjml_1_1Btop.html">Btop</a> const &amp;&#160;</td>
+          <td class="paramname"><em>btop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classvdjml_1_1Match__metrics.html">Match_metrics</a> const &amp;&#160;</td>
+          <td class="paramname"><em>mm</em> = <code><a class="el" href="classvdjml_1_1Match__metrics.html">Match_metrics</a>()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">read_pos0</td><td></td></tr>
+    <tr><td class="paramname">btop</td><td></td></tr>
+    <tr><td class="paramname">mm</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a72c38e75698e13e444339c6ceb0d8094"></a>
 <div class="memitem">
 <div class="memproto">
@@ -238,7 +275,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>detail::Segment_matc
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 10 2014 10:23:05 for libVDJML by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jul 24 2014 09:48:06 for libVDJML by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

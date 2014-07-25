@@ -1,3 +1,5 @@
+- `source <https://bitbucket.org/vdjserver/vdjml/src>`_
+- `downloads <https://bitbucket.org/vdjserver/vdjml/downloads>`_
 - `VDJML XML schema documentation <./xsd_doc/1/index.html>`_
 - `VDJML XML schema <./xsd/1/vdjml.xsd>`_
 - `libVDJML <./cpp_api/index.html>`_
@@ -21,7 +23,7 @@ storing, and writing *VDJML* data.
 
 Authors
 -------
-Lindsay G. Cowell, John Fonner, Jason Vander Helden, Uri Hershberg, Christopher Jordan, Steven Kleinstein, Mikhail K. Levin, Stephen A. Mock, Nancy Monson, William Rounds, Edward Salinas, Walter Scarborough, Richard Scheuermann, Matt Stelmaszek
+Lindsay G. Cowell, John Fonner, Jason Vander Helden, Uri Hershberg, Christopher Jordan, Steven Kleinstein, Mikhail K. Levin, Stephen A. Mock, Nancy Monson, William Rounds, Florian Rubelt, Edward Salinas, Walter Scarborough, Richard Scheuermann, Matt Stelmaszek
 
 *vdjml* is distributed under the terms of Boost Software License.
 

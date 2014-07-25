@@ -8,5 +8,6 @@ var searchData=
   ['interval',['Interval',['../classvdjml_1_1Interval.html',1,'vdjml']]],
   ['interval_2ehpp',['interval.hpp',['../interval_8hpp.html',1,'']]],
   ['interval_5frun_2ecpp',['interval_run.cpp',['../interval__run_8cpp.html',1,'']]],
+  ['is_5fopen_5fframe',['is_open_frame',['../namespacevdjml.html#a0d8511d0a268a5ce5eab7f9330547cc9',1,'vdjml']]],
   ['istream_5fchunker_5frun_2ecpp',['istream_chunker_run.cpp',['../istream__chunker__run_8cpp.html',1,'']]]
 ];

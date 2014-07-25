@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['segment_5ftype',['segment_type',['../namespacevdjml.html#a91d431cfdab885b6a8fe201c4dafc2f1',1,'vdjml::segment_type(const char c)'],['../namespacevdjml.html#a19728d3eb6b0284915ee54bb339f38b5',1,'vdjml::segment_type(const Gs_type gst)']]],
-  ['sequence_5fmatch',['sequence_match',['../namespacevdjml.html#aac667f9a93cb79212e03d5dedff70a0a',1,'vdjml::sequence_match(Btop const &amp;btop, Aligned_pos const &amp;start, Aligned_pos const &amp;end, const char match=nucleotide::Special::Unknown)'],['../namespacevdjml.html#ab0f02d3cb2f3933668c6052016f476ec',1,'vdjml::sequence_match(Btop const &amp;btop, const char match=nucleotide::Special::Unknown)'],['../namespacevdjml.html#a4942f70034bf8c5dcf5a5c263f969345',1,'vdjml::sequence_match(Btop const &amp;btop, Aligned_pos const &amp;start, Aligned_pos const &amp;end, Aligned_seq const &amp;seq)'],['../namespacevdjml.html#a80910026ab9758697e550f4fdab5ece1',1,'vdjml::sequence_match(Btop const &amp;btop, Aligned_seq const &amp;seq)']]]
+  ['read_5faa',['read_aa',['../classvdjml_1_1Aa__substitution.html#a0fb786065f2485a45092e0ab1c16483a',1,'vdjml::Aa_substitution']]],
+  ['read_5fposition',['read_position',['../classvdjml_1_1Aa__substitution.html#a22d4dd5b285e4358a0787566b9dca34f',1,'vdjml::Aa_substitution']]],
+  ['read_5frange',['read_range',['../classvdjml_1_1Segment__match.html#ab917bff9c3e114e3341c1f2f9cd6ca2f',1,'vdjml::Segment_match']]],
+  ['result_5fstore',['Result_store',['../classvdjml_1_1Result__store.html#a6880ee46ea1b7ee654c7a4804c57d880',1,'vdjml::Result_store']]],
+  ['reverse_5fcomplement',['reverse_complement',['../namespacevdjml.html#a934952979c092f3932ec69b029ecd410',1,'vdjml']]]
 ];
