@@ -53,6 +53,16 @@ define(['backbone'], function(Backbone) {
         },
     });
 
+    Jobs.Workflows = Backbone.Agave.MetadataCollection.extend({
+        model: Backbone.Agave.Model.Job.Workflow,
+        url: function() {
+            return '/meta/v2/data?q='
+                + encodeURIComponent('{'
+                    + '"name":"vdjpipeWorkflow"'
+                + '}');
+        },
+    });
+
     Backbone.Agave.Collection.Jobs = Jobs;
     return Jobs;
 });

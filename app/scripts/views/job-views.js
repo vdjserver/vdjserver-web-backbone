@@ -2,6 +2,7 @@ define([
     'app',
     'handlebars',
     'backbone.syphon',
+    'vdjpipe-utilities',
 ], function(App, Handlebars) {
 
     'use strict';
@@ -19,35 +20,27 @@ define([
     Jobs.Submit = Backbone.View.extend({
         template: 'jobs/job-submit-form',
         initialize: function(parameters) {
-
-            console.log("run init ok");
-
             this.projectModel = parameters.projectModel;
-/*
-            var jobFormView;
 
-            switch(parameters.jobType) {
-                case 'igblast':
-                    jobFormView = new Jobs.IgBlastForm();
-                    break;
+            var that = this;
 
-                case 'vdjpipe':
-                    jobFormView = new Jobs.VdjPipeForm({selectedFileListings: this.selectedFileListings});
-                    break;
-
-                default:
-                    break;
-            }
-
-            this.jobFormView = jobFormView;
-
-            this.insertView('.modal-body', this.jobFormView);
-            this.jobFormView.render();
-*/
+            this.jobWorkflows = new Backbone.Agave.Collection.Jobs.Workflows();
+            this.jobWorkflows
+                .fetch()
+                .done(function() {
+                    //that.render();
+                    console.log("fetch done");
+                    //that.serialize();
+                    that.render();
+                });
         },
         serialize: function() {
+
+            console.log("serialize called. json is: " + JSON.stringify(this.jobWorkflows.toJSON()));
+
             return {
                 selectedFileListings: this.selectedFileListings.toJSON(),
+                workflows: this.jobWorkflows.toJSON(),
             };
         },
         afterRender: function() {
@@ -255,7 +248,30 @@ define([
         workflowSave: function(e) {
             e.preventDefault();
 
-            this.trigger('setupJobSubmitView');
+            var formData = Backbone.Syphon.serialize(this);
+
+            var serializedConfig = App.Models.Helpers.VdjPipeUtilities.SerializeVdjPipeConfig(formData);
+
+            console.log("formData is: " + JSON.stringify(formData));
+            console.log("serialized config is: " + JSON.stringify(serializedConfig));
+
+            var jobWorkflow = new Backbone.Agave.Model.Job.Workflow();
+            jobWorkflow.setConfigFromFormData(formData);
+
+            console.log("test is: " + JSON.stringify(jobWorkflow.get('value')));
+
+            var that = this;
+            
+            jobWorkflow
+                .save()
+                .done(function() {
+                    that.trigger('setupJobSubmitView');
+                })
+                .fail(function() {
+                    // troubleshoot
+                    console.log("workflow save fail");
+                });
+            
         },
     });
 
@@ -391,46 +407,6 @@ console.log("key is: " + key);
 
     Jobs.IgBlastForm = Backbone.View.extend({
         template: 'jobs/igblast-form'
-    });
-
-    Jobs.VdjPipeForm = Backbone.View.extend({
-        template: 'jobs/vdjpipe-form',
-        initialize: function() {
-            //this.inputCounter = {};
-            this.counter = 0;
-        },
-        events: {
-            'click .job-parameter': 'addJobParameter',
-            'click .remove-job-parameter': 'removeJobParameter',
-        },
-        afterRender: function() {
-            $('#vdj-pipe-configuration').sortable({
-                axis: 'y',
-                cursor: 'move',
-                tolerance: 'pointer',
-            });
-        },
-        addJobParameter: function(e) {
-            e.preventDefault();
-/*
-            var parameterType = e.target.dataset.parametertype;
-
-            this.counter = this.counter + 1;
-
-            var vdjPipeView = Jobs.GetVdjPipeView(
-                parameterType,
-                this.counter,
-                {}
-            );
-
-            this.insertView('#vdj-pipe-configuration', vdjPipeView);
-            vdjPipeView.render();
-*/
-        },
-        removeJobParameter: function(e) {
-            e.preventDefault();
-            $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
-        },
     });
 
     Jobs.VdjPipeNucleotideFilter = Backbone.View.extend({

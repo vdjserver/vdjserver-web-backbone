@@ -45,8 +45,9 @@
                                 <select class="form-control" id="select-workflow">
                                     <option></option>
                                     <option>Workflow A</option>
-                                    <option>Workflow B</option>
-                                    <option>Custom</option>
+                                    {{#each workflows}}
+                                        <option value="{{this.uuid}}">{{this.workflowName}}</option>
+                                    {{/each}}
                                 </select>
                                 <span class="input-group-btn">
                                     <a href="#" data-bypass=true id="create-new-workflow" class="btn btn-primary fa fa-plus"></a>

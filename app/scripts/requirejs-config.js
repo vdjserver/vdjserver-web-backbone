@@ -62,6 +62,9 @@ require.config({
         'handlebars-utilities':   'views/handlebars-helpers/handlebars-utilities',
         'handlebars-file-metadata-helpers':   'views/handlebars-helpers/file-metadata-helpers',
 
+        // Model Helpers
+        'vdjpipe-utilities': 'models/helpers/vdjpipe-utilities',
+
         // Views
         'app-views': 'views/app/app-views',
         'form-views': 'views/app/form-views',

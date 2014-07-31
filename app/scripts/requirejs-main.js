@@ -13,18 +13,18 @@ define([
     // Libs for JS visualization
     'nvd3',
     'box', // box for help with the box and whisker plot
- 
+
     //jquery.event.drag/drop
     'jquery.event.drag',
     'jquery.event.drop',
-    
+
     //slickgrid
     'slickgrid.core',
     'slickgrid.grid',
 
     // Regular Models
     'job-websocket',
-    
+
     // Agave
     'backbone-agave',
     'agave-new-account',
@@ -56,6 +56,9 @@ define([
     // Handlebars Helpers
     'handlebars-utilities',
     'handlebars-file-metadata-helpers',
+
+    // Model Helpers
+    'vdjpipe-utilities',
 
     // Views
     'app-views',

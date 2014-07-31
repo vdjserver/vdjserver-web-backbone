@@ -1,4 +1,4 @@
-define(['backbone'], function(Backbone) {
+define(['app', 'backbone'], function(App, Backbone) {
 
     'use strict';
 
@@ -576,6 +576,40 @@ define(['backbone'], function(Backbone) {
             });
 
             return jqxhr;
+        },
+    });
+
+    Job.Workflow = Backbone.Agave.MetadataModel.extend({
+        defaults: function() {
+            return _.extend(
+                {},
+                Backbone.Agave.MetadataModel.prototype.defaults,
+                {
+                    name: 'vdjpipeWorkflow',
+                    owner: '',
+                    value: {
+                        'config': '',
+                        'workflowName': '',
+                    },
+                }
+            );
+        },
+        url: function() {
+            return '/meta/v2/data/' + this.get('uuid');
+        },
+        setConfigFromFormData: function(formData) {
+
+            var config = App.Models.Helpers.VdjPipeUtilities.SerializeVdjPipeConfig(formData);
+
+            var workflowName = App.Models.Helpers.VdjPipeUtilities.GetWorkflowName(formData);
+
+            this.set(
+                'value', 
+                {
+                    'config': config,
+                    'workflowName': workflowName,
+                }
+            )
         },
     });
 
