@@ -456,10 +456,40 @@ define([
                 jobType: jobType,
                 projectModel: this.projectModel,
             });
-            console.log("created view");
 
             this.setView('#job-submit', jobSubmitView);
             jobSubmitView.render();
+
+            var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
+
+            var that = this;
+
+            this.listenTo(
+                jobSubmitView,
+                'setupCreateWorkflowView',
+                function() {
+                    console.log("setupCreateWorkflowView ok");
+
+                    $('#job-modal')
+                        .modal('hide')
+                        .on('hidden.bs.modal', function(e) {
+                            that.setView('#job-submit', workflowEditorView);
+                            workflowEditorView.render();
+                        });
+            });
+
+            this.listenTo(
+                workflowEditorView,
+                'setupJobSubmitView',
+                function() {
+
+                    $('#workflow-modal')
+                        .modal('hide')
+                        .on('hidden.bs.modal', function(e) {
+                            that.setView('#job-submit', jobSubmitView);
+                            jobSubmitView.render();
+                        });
+            });
         },
         getSelectedFileUuids: function() {
 

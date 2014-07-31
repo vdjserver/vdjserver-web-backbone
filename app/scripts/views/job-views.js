@@ -56,7 +56,22 @@ define([
         events: {
             'change #select-workflow': 'showWorkflow',
             'click .remove-file-from-job': 'removeFileFromJob',
+            'click #create-new-workflow': 'createWorkflow',
             'submit form': 'submitJob',
+        },
+        createWorkflow: function(e) {
+            e.preventDefault();
+
+            /*
+            var view = new Jobs.WorkflowEditor();
+
+            this.insertView('#workflow-editor', view);
+
+            view.render();
+            */
+
+            this.trigger('setupCreateWorkflowView');
+            console.log("view render ok");
         },
         showWorkflow: function(e) {
             e.preventDefault();
@@ -73,7 +88,7 @@ define([
 
             var workflowViews = new Jobs.GenerateVdjPipeWorkflowViews(workflowConfig);
 
-            /* 
+            /*
                 I'd love to use insertViews instead, but as of 24/July/2014
                 it seems to work on the parent layout instead of the view
                 represented by |this|.
@@ -83,7 +98,7 @@ define([
             */
             for (var i = 0; i < workflowViews.length; i++) {
                 var view = workflowViews[i];
-                
+
                 view.isEditable = false;
 
                 this.insertView('#workflow-staging-area', view);
@@ -151,6 +166,97 @@ define([
             // data collection
             this.selectedFileListings.remove(uuid);
         }
+    });
+
+    Jobs.WorkflowEditor = Backbone.View.extend({
+        template: 'jobs/vdjpipe-form-options',
+        initialize: function(parameters) {
+            $('.workflow-options-list').hide();
+
+            this.counter = 0;
+        },
+        afterRender: function() {
+            console.log("workflow modal show attempt");
+            $('#workflow-modal').modal('show');
+
+            $('#vdj-pipe-configuration').sortable({
+                axis: 'y',
+                cursor: 'move',
+                tolerance: 'pointer',
+            });
+        },
+        events: {
+            'click #workflow-cancel': 'workflowCancel',
+            'click #workflow-save': 'workflowSave',
+
+            'click .workflow-options': 'setupWorkflowOptions',
+
+            'click .job-parameter': 'addJobParameter',
+            'click .remove-job-parameter': 'removeJobParameter',
+        },
+        addJobParameter: function(e) {
+            e.preventDefault();
+
+            var parameterType = e.target.dataset.parametertype;
+
+            console.log("parameterType is: " + parameterType);
+
+            this.counter = this.counter + 1;
+
+            var vdjPipeView = Jobs.GetVdjPipeView(
+                parameterType,
+                this.counter,
+                {}
+            );
+
+            vdjPipeView.isEditable = true;
+
+            console.log("view is: " + vdjPipeView);
+
+            if ($('#vdj-pipe-configuration-placeholder').length) {
+                var that = this;
+                $('#vdj-pipe-configuration-placeholder').addClass('animated flipOutX');
+                $('#vdj-pipe-configuration-placeholder').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                    $("#vdj-pipe-configuration-placeholder").remove();
+                    that.insertView('#vdj-pipe-configuration', vdjPipeView);
+                    vdjPipeView.render();
+                });
+            }
+            else {
+                this.insertView('#vdj-pipe-configuration', vdjPipeView);
+                vdjPipeView.render();
+            }
+        },
+        removeJobParameter: function(e) {
+            e.preventDefault();
+
+            $(e.currentTarget).closest('.vdj-pipe-parameter').addClass('animated flipOutX');
+
+            $(e.currentTarget).closest('.vdj-pipe-parameter').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
+            });
+        },
+        setupWorkflowOptions: function(e) {
+            e.preventDefault();
+
+            var workflowType = e.target.dataset.id;
+
+            $('.workflow-options-list').hide();
+            $('.workflow-options').parent('li').removeClass('active');
+            $(e.currentTarget).parent('li').addClass('active');
+
+            $('#workflow-options-' + workflowType + '-list').show();
+        },
+        workflowCancel: function(e) {
+            e.preventDefault();
+
+            this.trigger('setupJobSubmitView');
+        },
+        workflowSave: function(e) {
+            e.preventDefault();
+
+            this.trigger('setupJobSubmitView');
+        },
     });
 
     Jobs.GenerateVdjPipeWorkflowViews = function(config) {
@@ -426,7 +532,7 @@ console.log("key is: " + key);
     Jobs.VdjPipeMinimalQualityWindowFilter = Backbone.View.extend({
         template: 'jobs/vdjpipe-minimal-quality-window-filter',
         initialize: function(parameters) {
-        
+
 
         },
         serialize: function() {
@@ -448,7 +554,7 @@ console.log("key is: " + key);
             }
         },
     });
-                
+
     Jobs.VdjPipeMinAverageQualityFilter = Backbone.View.extend({
         template: 'jobs/vdjpipe-min-average-quality-filter',
         serialize: function() {
@@ -548,7 +654,7 @@ console.log("key is: " + key);
             if (this.parameterType) {
 
                 var files = {};
-                
+
                 if (this.files && this.files.toJSON()) {
                     files = this.files.toJSON();
                 }
@@ -738,7 +844,7 @@ console.log("key is: " + key);
             case 'Workflow A':
 
                 workflowConfig = {
-                   
+
                    'single_read_pipe': [
                       { 'quality_stats': { 'out_prefix': 'pre-filter_' } },
                       { 'composition_stats': { 'out_prefix': 'pre-filter_' } },
@@ -746,7 +852,7 @@ console.log("key is: " + key);
                       { 'min_quality_window_filter': { 'min_quality': 20, 'min_length': 200 } },
                       { 'ambiguous_window_filter': { 'min_length': 200, 'max_ambiguous': 5 } },
                       {
-                        'average_quality_window_filter': { 
+                        'average_quality_window_filter': {
                            'min_quality': 25, 'window_length': 10, 'min_length': 200
                         }
                       },
@@ -775,16 +881,16 @@ console.log("key is: " + key);
                         }
                       },
 */
-                      { 'write_sequence': 
-                            { 
-                         'trimmed': false, 'skip_empty': true, 'out_path': 'all_seqs.fastq' 
-                            } 
+                      { 'write_sequence':
+                            {
+                         'trimmed': false, 'skip_empty': true, 'out_path': 'all_seqs.fastq'
+                            }
                       },
-                      { 'write_value': { 
+                      { 'write_value': {
                             'out_path': 'vals.csv.bz2', 'names': ['read_id', 'iMID', 'UMI']
                         }
                       },
-                      { 'write_value': { 
+                      { 'write_value': {
                             'out_path': 'vals_{iMID}.csv', 'names': ['read_id', 'iMID', 'UMI']
                         }
                       }
