@@ -137,10 +137,12 @@ define([
                 This behavior might be a bug in layout manager, so the
                 following loop is a workaround for now.
             */
+            console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
             for (var i = 0; i < workflowViews.length; i++) {
                 var view = workflowViews[i];
 
                 view.isEditable = false;
+                view.files = this.selectedFileListings;
 
                 this.insertView('#workflow-staging-area', view);
 
@@ -332,12 +334,14 @@ define([
 
             var key = Object.keys(parameters[counter])[0];
             var options = parameters[counter][key];
-console.log("key is: " + key);
+
             var vdjPipeView = Jobs.GetVdjPipeView(
                 key,
                 counter,
                 options
             );
+
+            console.log("view is: " + vdjPipeView.parameterType);
 
             workflowViews.push(vdjPipeView);
         }
@@ -457,20 +461,10 @@ console.log("key is: " + key);
         template: 'jobs/igblast-form'
     });
 
-    Jobs.VdjPipeNucleotideFilter = Backbone.View.extend({
+    Jobs.VdjPipeNucleotideFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-nucleotide-filter',
         events: {
             'click #toggleCharacterLegend': 'toggleCharacterLegend'
-        },
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-            }
         },
         toggleCharacterLegend: function() {
             if ($('#characterLegend').hasClass('hidden')) {
@@ -482,18 +476,8 @@ console.log("key is: " + key);
         },
     });
 
-    Jobs.VdjPipeFindUniqueSequences = Backbone.View.extend({
+    Jobs.VdjPipeFindUniqueSequences = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-find-unique-sequences',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-            }
-        },
         events: {
             'click .filter-button': 'changeFilterOptions',
         },
@@ -525,89 +509,27 @@ console.log("key is: " + key);
         },
     });
 
-    Jobs.VdjPipeAmbiguousWindowFilter = Backbone.View.extend({
+    Jobs.VdjPipeAmbiguousWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-ambiguous-nucleotide-window-filter',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-            }
-        },
     });
 
-    Jobs.VdjPipeAverageQualityWindowFilter = Backbone.View.extend({
+    Jobs.VdjPipeAverageQualityWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-average-quality-window-filter',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-            }
-        },
     });
 
-    Jobs.VdjPipeMinimalQualityWindowFilter = Backbone.View.extend({
+    Jobs.VdjPipeMinimalQualityWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-minimal-quality-window-filter',
-        initialize: function(parameters) {
-
-
-        },
-        serialize: function() {
-            if (this.parameterType) {
-/*
-                var returnObject = {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-*/
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-            }
-        },
     });
 
-    Jobs.VdjPipeMinAverageQualityFilter = Backbone.View.extend({
+    Jobs.VdjPipeMinAverageQualityFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-min-average-quality-filter',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-            }
-        },
     });
 
-    Jobs.VdjPipeLengthFilter = Backbone.View.extend({
+    Jobs.VdjPipeLengthFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-length-filter',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-            }
-        },
     });
 
-    Jobs.VdjPipeNumberMutable = Backbone.View.extend({
+    Jobs.VdjPipeNumberMutable = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-number-mutable',
         serialize: function() {
             if (this.parameterType) {
@@ -623,37 +545,11 @@ console.log("key is: " + key);
         },
     });
 
-    Jobs.VdjPipeHistogram = Backbone.View.extend({
+    Jobs.VdjPipeHistogram = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-histogram',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-            }
-        },
     });
 
-    Jobs.VdjPipeDropdown = Backbone.View.extend({
-        template: 'jobs/vdjpipe-dropdown',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterName: this.parameterName,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    files: this.selectedFileListings.toJSON(),
-                    options: this.options,
-                };
-            }
-        },
-    });
-
-    Jobs.VdjPipeTextImmutable = Backbone.View.extend({
+    Jobs.VdjPipeTextImmutable = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-text-immutable',
         serialize: function() {
             if (this.parameterType) {
@@ -668,29 +564,11 @@ console.log("key is: " + key);
         },
     });
 
-    Jobs.VdjPipeMatchSequenceElement = Backbone.View.extend({
+    Jobs.VdjPipeMatchSequenceElement = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-match-sequence-element',
         initialize: function() {
             this.elementCount = 0;
             this.objectCount  = 0;
-        },
-        serialize: function() {
-            if (this.parameterType) {
-
-                var files = {};
-
-                if (this.files && this.files.toJSON()) {
-                    files = this.files.toJSON();
-                }
-
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    files: files,
-                    options: this.options,
-                };
-            }
         },
         events: {
             'click .add-element-button': 'addElement',
@@ -721,7 +599,7 @@ console.log("key is: " + key);
                 parameterType: this.parameterType,
                 inputCount: this.inputCount,
                 objectCount: this.objectCount,
-                files: this.files,
+                files: this.files.toJSON(),
             });
 
             this.insertView('.added-combination-object-subviews', combinationObjectView);
@@ -729,7 +607,7 @@ console.log("key is: " + key);
         },
     });
 
-    Jobs.VdjPipeMatchSequenceElementConfig = Backbone.View.extend({
+    Jobs.VdjPipeMatchSequenceElementConfig = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-match-sequence-element-config',
         serialize: function() {
             if (this.parameterType) {
@@ -752,7 +630,7 @@ console.log("key is: " + key);
         },
     });
 
-    Jobs.VdjPipeMatchSequenceCombinationObjectConfig = Backbone.View.extend({
+    Jobs.VdjPipeMatchSequenceCombinationObjectConfig = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-match-sequence-combination-object-config',
         serialize: function() {
             if (this.parameterType) {
@@ -775,50 +653,19 @@ console.log("key is: " + key);
         },
     });
 
-    Jobs.VdjPipeMatchExternalMolecularIdentifier = Backbone.View.extend({
+    Jobs.VdjPipeMatchExternalMolecularIdentifier = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-match-external-molecular-identifier',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    files: this.files.toJSON(),
-                    options: this.options,
-                };
-            }
-        },
     });
 
-    Jobs.VdjPipeWriteSequence = Backbone.View.extend({
+    Jobs.VdjPipeWriteSequence = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-write-sequences',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-            }
-        },
     });
 
-    Jobs.VdjPipeWriteValue = Backbone.View.extend({
+    Jobs.VdjPipeWriteValue = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-write-values',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
-            }
-        },
     });
 
-    Jobs.VdjPipeFindSequencesFromMultipleGroups = Backbone.View.extend({
+    Jobs.VdjPipeFindSequencesFromMultipleGroups = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-find-sequences-from-multiple-groups',
         afterRender: function() {
             this.updateUIForWorkflowOptions();
@@ -831,16 +678,6 @@ console.log("key is: " + key);
             else if (this.options && this.options.ignore_ends) {
                 this.setIgnoreEnds();
                 $('.' + this.parameterType + '-ignore-ends input').val(this.options.ignore_ends);
-            }
-        },
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    options: this.options,
-                };
             }
         },
         events: function() {
@@ -977,8 +814,26 @@ console.log("key is: " + key);
 
                 break;
 
+            case 'average_quality_filter':
+                vdjPipeView = new Jobs.VdjPipeMinAverageQualityFilter({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
             case 'average_quality_window_filter':
                 vdjPipeView = new Jobs.VdjPipeAverageQualityWindowFilter({
+                    parameterType: key,
+                    inputCount: counter,
+                    options: options,
+                });
+
+                break;
+
+            case 'character_filter':
+                vdjPipeView = new Jobs.VdjPipeNucleotideFilter({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -996,6 +851,16 @@ console.log("key is: " + key);
 
                 break;
 
+            case 'eMID_map':
+                vdjPipeView = new Jobs.VdjPipeMatchExternalMolecularIdentifier({
+                    parameterType: key,
+                    inputCount: counter,
+                    files: this.selectedFileListings,
+                    options: options,
+                });
+
+                break;
+
             case 'find_intersection':
                 vdjPipeView = new Jobs.VdjPipeFindSequencesFromMultipleGroups({
                     parameterType: key,
@@ -1005,7 +870,7 @@ console.log("key is: " + key);
 
                 break;
 
-            case 'find_unique_sequences':
+            case 'find_unique':
                 vdjPipeView = new Jobs.VdjPipeFindUniqueSequences({
                     parameterType: key,
                     inputCount: counter,
@@ -1046,16 +911,6 @@ console.log("key is: " + key);
 
                 break;
 
-            case 'match_external_molecular_identifier':
-                vdjPipeView = new Jobs.VdjPipeMatchExternalMolecularIdentifier({
-                    parameterType: key,
-                    inputCount: counter,
-                    files: this.selectedFileListings,
-                    options: options,
-                });
-
-                break;
-
             case 'match':
                 vdjPipeView = new Jobs.VdjPipeMatchSequenceElement({
                     parameterType: key,
@@ -1066,21 +921,11 @@ console.log("key is: " + key);
 
                 break;
 
-            case 'merge_paired_reads':
+            case 'merge_paired':
                 vdjPipeView = new Jobs.VdjPipeNumberMutable({
                     parameterName: 'Merge Paired Reads',
                     parameterType: key,
-                    placeholderText: '',
                     inputLabel: 'Minimum Score',
-                    inputCount: counter,
-                    options: options,
-                });
-
-                break;
-
-            case 'min_average_quality_filter':
-                vdjPipeView = new Jobs.VdjPipeMinAverageQualityFilter({
-                    parameterType: key,
                     inputCount: counter,
                     options: options,
                 });
@@ -1100,15 +945,6 @@ console.log("key is: " + key);
 
             case 'min_quality_window_filter':
                 vdjPipeView = new Jobs.VdjPipeMinimalQualityWindowFilter({
-                    parameterType: key,
-                    inputCount: counter,
-                    options: options,
-                });
-
-                break;
-
-            case 'nucleotide_filter':
-                vdjPipeView = new Jobs.VdjPipeNucleotideFilter({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -1145,6 +981,7 @@ console.log("key is: " + key);
                 break;
 
             default:
+                console.log("default was: " + key);
                 break;
         }
 

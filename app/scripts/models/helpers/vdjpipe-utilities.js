@@ -47,6 +47,13 @@ define(['app'], function(App) {
 
                             break;
 
+                        case 'average_quality_filter':
+                            paramOutput.push({
+                                'average_quality_filter': parseFloat(parameters[key]),
+                            });
+
+                            break;
+
                         case 'average_quality_window_filter':
                             paramOutput.push({
                                 'average_quality_window_filter': {
@@ -58,10 +65,28 @@ define(['app'], function(App) {
 
                             break;
 
+                        case 'character_filter':
+                            paramOutput.push({
+                                'character_filter': parameters[key],
+                            });
+
+                            break;
+
                         case 'composition_stats':
                             paramOutput.push({
                                 //'composition_stats': {'out_prefix': parameters[key]}
                                 'composition_stats': {'out_prefix': 'pre-'},
+                            });
+
+                            break;
+
+                        case 'eMID_map':
+                            paramOutput.push({
+                                'eMID_map': {
+                                    'value_name': parameters[key + '-value-name'],
+                                    'fasta_path': parameters[key + '-fasta-file'],
+                                    'pairs_path': parameters[key + '-pairs-file'],
+                                },
                             });
 
                             break;
@@ -85,7 +110,7 @@ define(['app'], function(App) {
 
                             break;
 
-                        case 'find_unique_sequences':
+                        case 'find_unique':
                             paramOutput.push({
                                 'find_unique': {
                                     'min_length':   parseInt(parameters[key + '-min-length']),
@@ -124,17 +149,6 @@ define(['app'], function(App) {
 
                             break;
 
-                        case 'match_external_molecular_identifier':
-                            paramOutput.push({
-                                'eMID_map': {
-                                    'value_name': parameters[key + '-value-name'],
-                                    'fasta_path': parameters[key + '-fasta-file'],
-                                    'pairs_path': parameters[key + '-pairs-file'],
-                                },
-                            });
-
-                            break;
-
                         case 'match':
                             console.log("match sequence element params are: " + JSON.stringify(parameters));
                             console.log("key is: " + JSON.stringify(key));
@@ -144,187 +158,194 @@ define(['app'], function(App) {
                             var trimmed = parameters[key + '-trimmed'];
 
                             var elements = [];
-                            for (var i = 0; i < parameters[key + '-elements'].length; i++) {
-                                var elementCounter = parameters[key + '-elements'][i];
-                                console.log("elementCounter is: " + JSON.stringify(elementCounter));
 
-                                var startPosition = parameters[key + '-' + elementCounter + '-element-start-position'];
-                                var startPositionLocation = parameters[key + '-' + elementCounter + '-element-start-position-location'];
-                                var startPositionLocationSequence = parameters[key + '-' + elementCounter + '-element-start-position-location-sequence'];
+                            if (parameters[key + '-elements']) {
+                                for (var i = 0; i < parameters[key + '-elements'].length; i++) {
+                                    var elementCounter = parameters[key + '-elements'][i];
+                                    console.log("elementCounter is: " + JSON.stringify(elementCounter));
 
-                                var endPosition = parameters[key + '-' + elementCounter + '-element-end-position'];
-                                var endPositionLocation = parameters[key + '-' + elementCounter + '-element-end-position-location'];
-                                var endPositionLocationSequence = parameters[key + '-' + elementCounter + '-element-end-position-location-sequence'];
+                                    var startPosition = parameters[key + '-' + elementCounter + '-element-start-position'];
+                                    var startPositionLocation = parameters[key + '-' + elementCounter + '-element-start-position-location'];
+                                    var startPositionLocationSequence = parameters[key + '-' + elementCounter + '-element-start-position-location-sequence'];
 
-                                var sequenceFile = parameters[key + '-' + elementCounter + '-element-sequence-file'];
-                                var csvSequencesFile = parameters[key + '-' + elementCounter + '-element-csv-path'];
-                                var csvSequencesColumn = parameters[key + '-' + elementCounter + '-element-csv-column-name'];
-                                var required = parameters[key + '-' + elementCounter + '-element-required'];
-                                var minScore = parameters[key + '-' + elementCounter + '-element-minimum-score'];
-                                var allowGaps = parameters[key + '-' + elementCounter + '-element-allow-gaps'];
-                                var minMatchLength = parameters[key + '-' + elementCounter + '-element-minimum-match-length'];
-                                var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
-                                var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
-                                var identityName = parameters[key + '-' + elementCounter + '-element-identity-name'];
-                                var cutLowerLocation = parameters[key + '-' + elementCounter + '-element-cut-lower-location'];
-                                var cutLowerLocationSequence = parameters[key + '-' + elementCounter + '-element-cut-lower-location-sequence'];
-                                var cutUpperLocation = parameters[key + '-' + elementCounter + '-element-cut-upper-location'];
-                                var cutUpperLocationSequence = parameters[key + '-' + elementCounter + '-element-cut-upper-location-sequence'];
+                                    var endPosition = parameters[key + '-' + elementCounter + '-element-end-position'];
+                                    var endPositionLocation = parameters[key + '-' + elementCounter + '-element-end-position-location'];
+                                    var endPositionLocationSequence = parameters[key + '-' + elementCounter + '-element-end-position-location-sequence'];
 
-                                var element = {};
+                                    var sequenceFile = parameters[key + '-' + elementCounter + '-element-sequence-file'];
+                                    var csvSequencesFile = parameters[key + '-' + elementCounter + '-element-csv-path'];
+                                    var csvSequencesColumn = parameters[key + '-' + elementCounter + '-element-csv-column-name'];
+                                    var required = parameters[key + '-' + elementCounter + '-element-required'];
+                                    var minScore = parameters[key + '-' + elementCounter + '-element-minimum-score'];
+                                    var allowGaps = parameters[key + '-' + elementCounter + '-element-allow-gaps'];
+                                    var minMatchLength = parameters[key + '-' + elementCounter + '-element-minimum-match-length'];
+                                    var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
+                                    var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
+                                    var identityName = parameters[key + '-' + elementCounter + '-element-identity-name'];
+                                    var cutLowerLocation = parameters[key + '-' + elementCounter + '-element-cut-lower-location'];
+                                    var cutLowerLocationSequence = parameters[key + '-' + elementCounter + '-element-cut-lower-location-sequence'];
+                                    var cutUpperLocation = parameters[key + '-' + elementCounter + '-element-cut-upper-location'];
+                                    var cutUpperLocationSequence = parameters[key + '-' + elementCounter + '-element-cut-upper-location-sequence'];
 
-                                if (startPosition) {
+                                    var element = {};
 
-                                    // Convert to int
-                                    startPosition = parseInt(startPosition);
+                                    if (startPosition) {
 
-                                    element.start = {};
-                                    element.start.pos = startPosition;
+                                        // Convert to int
+                                        startPosition = parseInt(startPosition);
 
-                                    if (startPositionLocation && startPositionLocationSequence) {
-                                        if (startPositionLocation === 'before') {
-                                            element.start.before = startPositionLocationSequence;
-                                        }
-                                        else if (startPositionLocation === 'after') {
-                                            element.start.after = startPositionLocationSequence;
-                                        }
-                                    }
-                                }
+                                        element.start = {};
+                                        element.start.pos = startPosition;
 
-                                if (endPosition) {
-
-                                    // Convert to int
-                                    endPosition = parseInt(endPosition);
-
-                                    element.end = {};
-                                    element.end.pos = endPosition;
-
-                                    if (endPositionLocation && endPositionLocationSequence) {
-                                        if (endPositionLocation === 'before') {
-                                            element.end.before = endPositionLocationSequence;
-                                        }
-                                        else if (endPositionLocation === 'after') {
-                                            element.end.after = endPositionLocationSequence;
+                                        if (startPositionLocation && startPositionLocationSequence) {
+                                            if (startPositionLocation === 'before') {
+                                                element.start.before = startPositionLocationSequence;
+                                            }
+                                            else if (startPositionLocation === 'after') {
+                                                element.start.after = startPositionLocationSequence;
+                                            }
                                         }
                                     }
-                                }
 
-                                if (sequenceFile) {
-                                    element.seq_file = sequenceFile;
-                                }
+                                    if (endPosition) {
 
-                                if (csvSequencesColumn || csvSequencesFile) {
+                                        // Convert to int
+                                        endPosition = parseInt(endPosition);
 
-                                    element.csv_file = {};
+                                        element.end = {};
+                                        element.end.pos = endPosition;
 
-                                    if (csvSequencesColumn) {
-                                        element.csv_file.sequences_column = csvSequencesColumn;
+                                        if (endPositionLocation && endPositionLocationSequence) {
+                                            if (endPositionLocation === 'before') {
+                                                element.end.before = endPositionLocationSequence;
+                                            }
+                                            else if (endPositionLocation === 'after') {
+                                                element.end.after = endPositionLocationSequence;
+                                            }
+                                        }
                                     }
 
-                                    if (csvSequencesFile) {
-                                        element.csv_file.path = csvSequencesFile;
+                                    if (sequenceFile) {
+                                        element.seq_file = sequenceFile;
                                     }
-                                }
 
-                                if (required) {
-                                    element.required = required;
-                                }
+                                    if (csvSequencesColumn || csvSequencesFile) {
 
-                                if (minScore) {
+                                        element.csv_file = {};
 
-                                    // Convert to int
-                                    minScore = parseInt(minScore);
+                                        if (csvSequencesColumn) {
+                                            element.csv_file.sequences_column = csvSequencesColumn;
+                                        }
 
-                                    element.min_score = minScore;
-                                }
-
-                                if (allowGaps) {
-                                    element.allow_gaps = allowGaps;
-                                }
-
-                                if (minMatchLength) {
-
-                                    // Convert to int
-                                    minMatchLength = parseInt(minMatchLength);
-
-                                    element.min_match_length = minMatchLength;
-                                }
-
-                                if (valueName) {
-                                    element.value_name = valueName;
-                                }
-
-                                if (scoreName) {
-                                    element.score_name = scoreName;
-                                }
-
-                                if (identityName) {
-
-                                    element.identity_name = identityName;
-                                }
-
-                                if (cutLowerLocation && cutLowerLocationSequence) {
-
-                                    // Convert to int
-                                    cutLowerLocationSequence = parseInt(cutLowerLocationSequence);
-
-                                    element.cut_lower = {};
-
-                                    if (cutLowerLocation === 'before') {
-                                        element.cut_lower.before = cutLowerLocationSequence;
+                                        if (csvSequencesFile) {
+                                            element.csv_file.path = csvSequencesFile;
+                                        }
                                     }
-                                    else if (cutLowerLocation === 'after') {
-                                        element.cut_lower.after = cutLowerLocationSequence;
+
+                                    if (required) {
+                                        element.required = required;
                                     }
+
+                                    if (minScore) {
+
+                                        // Convert to int
+                                        minScore = parseInt(minScore);
+
+                                        element.min_score = minScore;
+                                    }
+
+                                    if (allowGaps) {
+                                        element.allow_gaps = allowGaps;
+                                    }
+
+                                    if (minMatchLength) {
+
+                                        // Convert to int
+                                        minMatchLength = parseInt(minMatchLength);
+
+                                        element.min_match_length = minMatchLength;
+                                    }
+
+                                    if (valueName) {
+                                        element.value_name = valueName;
+                                    }
+
+                                    if (scoreName) {
+                                        element.score_name = scoreName;
+                                    }
+
+                                    if (identityName) {
+
+                                        element.identity_name = identityName;
+                                    }
+
+                                    if (cutLowerLocation && cutLowerLocationSequence) {
+
+                                        // Convert to int
+                                        cutLowerLocationSequence = parseInt(cutLowerLocationSequence);
+
+                                        element.cut_lower = {};
+
+                                        if (cutLowerLocation === 'before') {
+                                            element.cut_lower.before = cutLowerLocationSequence;
+                                        }
+                                        else if (cutLowerLocation === 'after') {
+                                            element.cut_lower.after = cutLowerLocationSequence;
+                                        }
+                                    }
+
+                                    if (cutUpperLocation && cutUpperLocationSequence) {
+
+                                        // Convert to int
+                                        cutUpperLocationSequence = parseInt(cutUpperLocationSequence);
+
+                                        element.cut_upper = {};
+
+                                        if (cutUpperLocation === 'before') {
+                                            element.cut_upper.before = cutUpperLocationSequence;
+                                        }
+                                        else if (cutUpperLocation === 'after') {
+                                            element.cut_upper.after = cutUpperLocationSequence;
+                                        }
+                                    }
+
+                                    console.log("element finished: " + JSON.stringify(element));
+                                    elements.push(element);
                                 }
-
-                                if (cutUpperLocation && cutUpperLocationSequence) {
-
-                                    // Convert to int
-                                    cutUpperLocationSequence = parseInt(cutUpperLocationSequence);
-
-                                    element.cut_upper = {};
-
-                                    if (cutUpperLocation === 'before') {
-                                        element.cut_upper.before = cutUpperLocationSequence;
-                                    }
-                                    else if (cutUpperLocation === 'after') {
-                                        element.cut_upper.after = cutUpperLocationSequence;
-                                    }
-                                }
-
-                                console.log("element finished: " + JSON.stringify(element));
-                                elements.push(element);
                             }
 
                             var combinationObjects = [];
-                            for (var i = 0; i < parameters[key + '-combination-objects'].length; i++) {
 
-                                var combinationObject = {};
+                            if (parameters[key + '-combination-objects']) {
 
-                                var objectCounter = parameters[key + '-combination-objects'][i];
-                                console.log("objectCounter is: " + JSON.stringify(objectCounter));
+                                for (var i = 0; i < parameters[key + '-combination-objects'].length; i++) {
 
-                                var objectFile = parameters[key + '-' + objectCounter + '-combination-object-file'];
-                                var valueName = parameters[key + '-' + objectCounter + '-combination-object-value-name'];
-                                var valuesColumn = parameters[key + '-' + objectCounter + '-combination-object-values-column'];
-                                var namesColumn = parameters[key + '-' + objectCounter + '-combination-object-names-column'];
+                                    var combinationObject = {};
 
-                                console.log("obj file is: " + objectFile);
-                                console.log("obj value is: " + valueName);
-                                console.log("obj values2 is: " + valuesColumn);
-                                console.log("obj names is: " + namesColumn);
+                                    var objectCounter = parameters[key + '-combination-objects'][i];
+                                    console.log("objectCounter is: " + JSON.stringify(objectCounter));
 
-                                if (objectFile && valuesColumn && namesColumn) {
-                                    combinationObject.path = objectFile;
-                                    combinationObject.values_column = valuesColumn;
-                                    combinationObject.names_column = namesColumn;
+                                    var objectFile = parameters[key + '-' + objectCounter + '-combination-object-file'];
+                                    var valueName = parameters[key + '-' + objectCounter + '-combination-object-value-name'];
+                                    var valuesColumn = parameters[key + '-' + objectCounter + '-combination-object-values-column'];
+                                    var namesColumn = parameters[key + '-' + objectCounter + '-combination-object-names-column'];
 
-                                    if (valueName) {
-                                        combinationObject.value_name = valueName;
+                                    console.log("obj file is: " + objectFile);
+                                    console.log("obj value is: " + valueName);
+                                    console.log("obj values2 is: " + valuesColumn);
+                                    console.log("obj names is: " + namesColumn);
+
+                                    if (objectFile && valuesColumn && namesColumn) {
+                                        combinationObject.path = objectFile;
+                                        combinationObject.values_column = valuesColumn;
+                                        combinationObject.names_column = namesColumn;
+
+                                        if (valueName) {
+                                            combinationObject.value_name = valueName;
+                                        }
+
+                                        combinationObjects.push(combinationObject);
                                     }
-
-                                    combinationObjects.push(combinationObject);
                                 }
                             }
 
@@ -353,18 +374,11 @@ define(['app'], function(App) {
 
                             break;
 
-                        case 'merge_paired_reads':
+                        case 'merge_paired':
                             paramOutput.push({
                                 'merge_paired': {
                                     'min_score': parseInt(parameters[key]),
                                 },
-                            });
-
-                            break;
-
-                        case 'min_average_quality_filter':
-                            paramOutput.push({
-                                'average_quality_filter': parseFloat(parameters[key]),
                             });
 
                             break;
@@ -382,13 +396,6 @@ define(['app'], function(App) {
                                     'min_quality': parseInt(parameters[key + '-min-quality']),
                                     'min_length': parseInt(parameters[key + '-min-length']),
                                 },
-                            });
-
-                            break;
-
-                        case 'nucleotide_filter':
-                            paramOutput.push({
-                                'character_filter': parameters[key],
                             });
 
                             break;

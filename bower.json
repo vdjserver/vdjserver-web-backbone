@@ -13,7 +13,7 @@
     "handlebars": "1.3.x",
     "jquery": "2.1.x",
     "jquery-ui": "1.11.x",
-    "layoutmanager": "0.9.x",
+    "layoutmanager": "3a43fd24e4cc89360e4b5f18666f12a5f58eda18",
     "modernizr": "2.8.x",
     "moment": "2.8.x",
     "nvd3": "1.1.x",

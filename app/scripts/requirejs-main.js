@@ -60,6 +60,9 @@ define([
     // Model Helpers
     'vdjpipe-utilities',
 
+    // Generic Views
+    'generic-vdjpipe-option-views',
+
     // Views
     'app-views',
     'form-views',

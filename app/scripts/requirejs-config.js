@@ -65,6 +65,9 @@ require.config({
         // Model Helpers
         'vdjpipe-utilities': 'models/helpers/vdjpipe-utilities',
 
+        // Generic Views
+        'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
+
         // Views
         'app-views': 'views/app/app-views',
         'form-views': 'views/app/form-views',
