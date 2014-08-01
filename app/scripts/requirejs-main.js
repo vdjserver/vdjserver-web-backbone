@@ -63,6 +63,9 @@ define([
     // Generic Views
     'generic-vdjpipe-option-views',
 
+    // View Helpers
+    'vdjpipe-view-helpers',
+
     // Views
     'app-views',
     'form-views',
@@ -75,6 +78,7 @@ define([
     'job-views',
     'project-views',
     'analyses-views',
+    'vdjpipe-views',
 
     // Routers
     'router'
