@@ -43,12 +43,13 @@
                 <div class="row row-with-spacer">
                     <div class="col-md-12">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default find-sequences-from-multiple-groups-filter-button" id="find-sequences-from-multiple-groups-ignore-ends-button">Ignore Ends</button>
-                            <button type="button" class="btn btn-default find-sequences-from-multiple-groups-filter-button" id="find-sequences-from-multiple-groups-fraction-match-button">Fraction Match</button>
+                            <button type="button" class="btn btn-default {{parameterType}}-filter-button" id="{{parameterType}}-ignore-ends-button">Ignore Ends</button>
+                            <button type="button" class="btn btn-default {{parameterType}}-filter-button" id="{{parameterType}}-fraction-match-button">Fraction Match</button>
                         </div>
                     </div>
                 </div>
-                <div class="row row-with-spacer find-sequences-from-multiple-groups-fraction-match hidden find-sequences-from-multiple-groups-filter-param">
+
+                <div class="row row-with-spacer {{parameterType}}-fraction-match hidden {{parameterType}}-filter-param">
                     <div class="col-md-12">
                         Fraction Match
                         &nbsp;
@@ -62,7 +63,8 @@
                         >
                     </div>
                 </div>
-                <div class="row row-with-spacer find-sequences-from-multiple-groups-ignore-ends hidden find-sequences-from-multiple-groups-filter-param">
+
+                <div class="row row-with-spacer {{parameterType}}-ignore-ends hidden {{parameterType}}-filter-param">
                     <div class="col-md-12">
                         Ignore Ends
                         &nbsp;

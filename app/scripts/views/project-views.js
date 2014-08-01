@@ -458,7 +458,12 @@ define([
             });
 
             this.setView('#job-submit', jobSubmitView);
-            jobSubmitView.render();
+
+            jobSubmitView.handleInitialFetches()
+                .done(function() {
+                    jobSubmitView.render();
+                });
+
 
             var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
 

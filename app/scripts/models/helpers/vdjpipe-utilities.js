@@ -66,7 +66,7 @@ define(['app'], function(App) {
 
                             break;
 
-                        case 'find_sequences_from_multiple_groups':
+                        case 'find_intersection':
 
                             var tmpFindIntersection = {
                                 'find_intersection': {

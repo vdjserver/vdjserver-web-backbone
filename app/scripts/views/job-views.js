@@ -24,23 +24,27 @@ define([
 
             var that = this;
 
-            this.jobWorkflows = new Backbone.Agave.Collection.Jobs.Workflows();
-            this.jobWorkflows
+            this.workflows = new Backbone.Agave.Collection.Jobs.Workflows();
+        },
+        handleInitialFetches: function() {
+            var deferred = $.Deferred();
+            this.workflows
                 .fetch()
                 .done(function() {
-                    //that.render();
                     console.log("fetch done");
-                    //that.serialize();
-                    that.render();
+
+                    deferred.resolve();
                 });
+
+            return deferred;
         },
         serialize: function() {
 
-            console.log("serialize called. json is: " + JSON.stringify(this.jobWorkflows.toJSON()));
+            console.log("serialize called. json is: " + JSON.stringify(this.workflows.toJSON()));
 
             return {
                 selectedFileListings: this.selectedFileListings.toJSON(),
-                workflows: this.jobWorkflows.toJSON(),
+                workflows: this.workflows.toJSON(),
             };
         },
         afterRender: function() {
@@ -73,13 +77,19 @@ define([
             this.removeView('#workflow-staging-area');
 
             // Setup and insert new workflow views
-            var workflow = e.target.value;
+            var workflowId = e.target.value;
 
-            var workflowConfig = Jobs.GetWorkflowConfig(workflow);
+            console.log("workflowId is: " + workflowId);
 
-            console.log("workflowConfig is: " + JSON.stringify(workflowConfig));
+            var workflow = this.workflows.get(workflowId);
 
-            var workflowViews = new Jobs.GenerateVdjPipeWorkflowViews(workflowConfig);
+            //var defaultWorkflows = Jobs.GetWorkflowConfig();
+
+            var workflowData = workflow.getWorkflowFromConfig();
+
+            console.log("workflowData is: " + JSON.stringify(workflowData));
+
+            var workflowViews = new Jobs.GenerateVdjPipeWorkflowViews(workflowData);
 
             /*
                 I'd love to use insertViews instead, but as of 24/July/2014
@@ -261,7 +271,7 @@ define([
             console.log("test is: " + JSON.stringify(jobWorkflow.get('value')));
 
             var that = this;
-            
+
             jobWorkflow
                 .save()
                 .done(function() {
@@ -271,7 +281,7 @@ define([
                     // troubleshoot
                     console.log("workflow save fail");
                 });
-            
+
         },
     });
 
@@ -772,6 +782,16 @@ console.log("key is: " + key);
 
     Jobs.VdjPipeFindSequencesFromMultipleGroups = Backbone.View.extend({
         template: 'jobs/vdjpipe-find-sequences-from-multiple-groups',
+        afterRender: function() {
+            if (this.options && this.options.fraction_match) {
+                this.setFractionMatch();
+                $('.' + this.parameterType + '-fraction-match input').val(this.options.fraction_match);
+            }
+            else if (this.options && this.options.ignore_ends) {
+                this.setIgnoreEnds();
+                $('.' + this.parameterType + '-ignore-ends input').val(this.options.ignore_ends);
+            }
+        },
         serialize: function() {
             if (this.parameterType) {
                 return {
@@ -782,34 +802,51 @@ console.log("key is: " + key);
                 };
             }
         },
-        events: {
-            'click .find-sequences-from-multiple-groups-filter-button': 'changeFilterOptions',
+        events: function() {
+            var events = {};
+            events['click #' + this.parameterType + '-ignore-ends-button'] = 'setIgnoreEnds';
+            events['click #' + this.parameterType + '-fraction-match-button'] = 'setFractionMatch';
+
+            return events;
         },
-        changeFilterOptions: function(e) {
-            e.preventDefault();
-
-            // Hide all params
-            $('.find-sequences-from-multiple-groups-filter-param').addClass('hidden');
-
-            // Reset buttons to default state
-            $('.find-sequences-from-multiple-groups-filter-button').removeClass('btn-success');
-            $('.find-sequences-from-multiple-groups-filter-button').addClass('btn-default');
-
-            // Highlight selected button
-            $('#' + e.target.id).removeClass('btn-default');
-            $('#' + e.target.id).addClass('btn-success');
+        resetOptionalFormElementState: function() {
+            // Hide all
+            $('.' + this.parameterType + '-filter-param').addClass('hidden');
 
             // Clear out other input values
-            $('.find-sequences-from-multiple-groups-filter-param input').val('');
+            $('.' + this.parameterType + '-filter-param input').val('');
 
-            if (e.target.id === 'find-sequences-from-multiple-groups-ignore-ends-button') {
-                // Show Ignore Ends
-                $('.find-sequences-from-multiple-groups-ignore-ends').removeClass('hidden');
+            // Reset all button states
+            $('.' + this.parameterType + '-filter-button').removeClass('btn-success');
+            $('.' + this.parameterType + '-filter-button').addClass('btn-default');
+        },
+        setIgnoreEnds: function(e) {
+            if (e) {
+                e.preventDefault();
             }
-            else {
-                // Show Fraction Match
-                $('.find-sequences-from-multiple-groups-fraction-match').removeClass('hidden');
+
+            this.resetOptionalFormElementState();
+
+            // Show this input
+            $('.' + this.parameterType + '-ignore-ends').removeClass('hidden');
+
+            // Highlight selected button
+            $('#' + this.parameterType + '-ignore-ends-button').removeClass('btn-default');
+            $('#' + this.parameterType + '-ignore-ends-button').addClass('btn-success');
+        },
+        setFractionMatch: function(e) {
+            if (e) {
+                e.preventDefault();
             }
+
+            this.resetOptionalFormElementState();
+
+            // Show this input
+            $('.' + this.parameterType + '-fraction-match').removeClass('hidden');
+
+            // Highlight selected button
+            $('#' + this.parameterType + '-fraction-match-button').removeClass('btn-default');
+            $('#' + this.parameterType + '-fraction-match-button').addClass('btn-success');
         },
     });
 
@@ -918,7 +955,7 @@ console.log("key is: " + key);
 
                 break;
 
-            case 'find_sequences_from_multiple_groups':
+            case 'find_intersection':
                 vdjPipeView = new Jobs.VdjPipeFindSequencesFromMultipleGroups({
                     parameterType: key,
                     inputCount: counter,

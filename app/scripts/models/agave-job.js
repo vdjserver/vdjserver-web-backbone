@@ -604,12 +604,19 @@ define(['app', 'backbone'], function(App, Backbone) {
             var workflowName = App.Models.Helpers.VdjPipeUtilities.GetWorkflowName(formData);
 
             this.set(
-                'value', 
+                'value',
                 {
                     'config': config,
                     'workflowName': workflowName,
                 }
             )
+        },
+        getWorkflowFromConfig: function() {
+            var workflow = {
+                'single_read_pipe': this.get('value').config['single_read_pipe'],
+            };
+
+            return workflow;
         },
     });
 
