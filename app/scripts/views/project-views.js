@@ -459,17 +459,20 @@ define([
 
             this.setView('#job-submit', jobSubmitView);
 
-            jobSubmitView.handleInitialFetches()
+            jobSubmitView.fetchNetworkData()
                 .done(function() {
                     jobSubmitView.render();
                 });
 
+            this.handleJobViewEvents(jobSubmitView);
+        },
+        handleJobViewEvents: function(jobSubmitView) {
 
             var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
 
             var that = this;
 
-            this.listenTo(
+            this.listenToOnce(
                 jobSubmitView,
                 'setupCreateWorkflowView',
                 function() {
@@ -481,20 +484,30 @@ define([
                             that.setView('#job-submit', workflowEditorView);
                             workflowEditorView.render();
                         });
-            });
+                }
+            );
 
-            this.listenTo(
+            this.listenToOnce(
                 workflowEditorView,
                 'setupJobSubmitView',
                 function() {
-
+                    console.log("setupJobSubmitView ok");
                     $('#workflow-modal')
                         .modal('hide')
                         .on('hidden.bs.modal', function(e) {
+
                             that.setView('#job-submit', jobSubmitView);
-                            jobSubmitView.render();
+
+                            jobSubmitView.fetchNetworkData()
+                                .done(function() {
+                                    jobSubmitView.render();
+
+                                    // Reset listeners
+                                    that.handleJobViewEvents(jobSubmitView);
+                                });
                         });
-            });
+                }
+            );
         },
         getSelectedFileUuids: function() {
 

@@ -26,7 +26,7 @@ define([
 
             this.workflows = new Backbone.Agave.Collection.Jobs.Workflows();
         },
-        handleInitialFetches: function() {
+        fetchNetworkData: function() {
             var deferred = $.Deferred();
             this.workflows
                 .fetch()
@@ -783,6 +783,9 @@ console.log("key is: " + key);
     Jobs.VdjPipeFindSequencesFromMultipleGroups = Backbone.View.extend({
         template: 'jobs/vdjpipe-find-sequences-from-multiple-groups',
         afterRender: function() {
+            this.updateUIForWorkflowOptions();
+        },
+        updateUIForWorkflowOptions: function() {
             if (this.options && this.options.fraction_match) {
                 this.setFractionMatch();
                 $('.' + this.parameterType + '-fraction-match input').val(this.options.fraction_match);
