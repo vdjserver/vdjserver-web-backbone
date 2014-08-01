@@ -13,6 +13,10 @@
     @extend .btn-success;
 }
 
+.btn-outline-danger {
+    border: 1px solid $brand-danger;
+}
+
 .welcome-box-btn {
     @extend .button-primary;
     margin-right: 10px;

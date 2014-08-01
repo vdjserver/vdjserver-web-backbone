@@ -51,27 +51,65 @@ define([
             $('#job-modal').modal('show');
         },
         events: {
-            'change #select-workflow': 'showWorkflow',
+            'change #select-workflow':     'showWorkflow',
             'click .remove-file-from-job': 'removeFileFromJob',
-            'click #create-new-workflow': 'createWorkflow',
+            'click #create-workflow': 'createWorkflow',
+            'click #edit-workflow':   'editWorkflow',
+            'click #delete-workflow': 'deleteWorkflow',
             'submit form': 'submitJob',
         },
         createWorkflow: function(e) {
             e.preventDefault();
 
-            /*
-            var view = new Jobs.WorkflowEditor();
-
-            this.insertView('#workflow-editor', view);
-
-            view.render();
-            */
-
             this.trigger('setupCreateWorkflowView');
+        },
+        editWorkflow: function(e) {
+            e.preventDefault();
+
+            this.trigger('setupEditWorkflowView');
+        },
+        deleteWorkflow: function(e) {
+            e.preventDefault();
+
+            if ($('#delete-workflow').hasClass('btn-outline-danger')) {
+                $('#delete-workflow').removeClass('btn-outline-danger');
+                $('#delete-workflow').addClass('btn-danger');
+                $('#delete-workflow').html('&nbsp;Confirm Delete');
+            }
+            else if ($(e.currentTarget).hasClass('btn-danger')) {
+                var that = this;
+
+                var workflowId = $('#select-workflow').val();
+
+                console.log("workflowId is: " + workflowId);
+                var workflow = this.workflows.get(workflowId);
+
+                this.workflows.remove(workflow);
+
+                workflow.destroy()
+                    .done(function() {
+                        console.log("workflow destroyed");
+                        $('#select-workflow').val('');
+                        that.removeView('#workflow-staging-area');
+                        $('#select-workflow option[value="' + workflowId + '"]').remove();
+                        that.resetDeleteWorkflow();
+                    })
+                    .fail(function() {
+                        console.log("workflow delete error");
+                    });
+            }
+
             console.log("view render ok");
+        },
+        resetDeleteWorkflow: function() {
+            $('#delete-workflow').removeClass('btn-danger');
+            $('#delete-workflow').addClass('btn-outline-danger');
+            $('#delete-workflow').html('&nbsp;Delete');
         },
         showWorkflow: function(e) {
             e.preventDefault();
+
+            this.resetDeleteWorkflow();
 
             // Do housekeeping first
             this.removeView('#workflow-staging-area');

@@ -40,7 +40,7 @@
 
                     <div class="form-group">
                         <label for="workflowList" class="control-label col-lg-2">Workflows</label>
-                        <div class="col-lg-3">
+                        <div class="col-lg-5">
                             <div class="input-group">
                                 <select class="form-control" id="select-workflow">
                                     <option></option>
@@ -49,24 +49,13 @@
                                         <option value="{{this.uuid}}">{{value.workflowName}}</option>
                                     {{/each}}
                                 </select>
-                                <span class="input-group-btn">
-                                    <a href="#" data-bypass=true id="create-new-workflow" class="btn btn-primary fa fa-plus"></a>
-                                </span>
+                                <div class="input-group-btn">
+                                    <a href="#" data-bypass=true id="create-workflow" class="btn btn-md btn-primary fa fa-plus">&nbsp;Create</a>
+                                    <a href="#" data-bypass=true id="edit-workflow" class="btn btn-md btn-warning fa fa-edit">&nbsp;Edit</a>
+                                    <a href="#" data-bypass=true id="delete-workflow" class="btn btn-md btn-default btn-outline-danger fa fa-trash-o">&nbsp;Delete</a>
+                                </div>
                             </div>
                         </div>
-                        <!--
-                        <div class="col-lg-3">
-                            <select class="form-control" id="select-workflow">
-                                <option></option>
-                                <option>Workflow A</option>
-                                <option>Workflow B</option>
-                                <option>Custom</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-3">
-                            <a href="#" class="btn btn-primary fa fa-plus"></a>
-                        </div>
-                        -->
                     </div>
                     <div class="form-group">
                         <div class="col-lg-offset-2 col-lg-10">
