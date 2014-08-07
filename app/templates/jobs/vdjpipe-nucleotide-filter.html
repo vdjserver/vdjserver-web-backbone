@@ -17,27 +17,19 @@
                 </div>
             </div>
 
-            {{#if isEditable}}
-            {{else}}
-                <fieldset disabled>
-            {{/if}}
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Allowed Characters
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}"
-                            placeholder="AGCT"
-                            type="text"
-                            value="{{options}}"
-                        >
-                    </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Allowed Characters
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}"
+                        placeholder="AGCT"
+                        type="text"
+                        value="{{options}}"
+                    >
                 </div>
-            {{#if isEditable}}
-            {{else}}
-                </fieldset>
-            {{/if}}
+            </div>
 
             <div class="row row-with-spacer">
                 <div class="col-md-12">

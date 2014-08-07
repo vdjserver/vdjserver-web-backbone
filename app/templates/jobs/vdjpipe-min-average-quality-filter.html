@@ -17,26 +17,18 @@
                 </div>
             </div>
 
-            {{#if isEditable}}
-            {{else}}
-                <fieldset disabled>
-            {{/if}}
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}"
-                            placeholder="float"
-                            type="number"
-                            value="{{options}}"
-                            step="0.01"
-                        >
-                    </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}"
+                        placeholder="float"
+                        type="number"
+                        value="{{options}}"
+                        step="0.01"
+                    >
                 </div>
-            {{#if isEditable}}
-            {{else}}
-                </fieldset>
-            {{/if}}
+            </div>
 
         </div>
     </div>

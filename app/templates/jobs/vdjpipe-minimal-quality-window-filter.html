@@ -19,48 +19,38 @@
                 </div>
             </div>
 
-            {{#if isEditable}}
-            {{else}}
-                <fieldset disabled>
-            {{/if}}
-
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Min Quality
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-min-quality"
-                            placeholder="unsigned integer"
-                            type="number"
-                            value="{{options.min_quality}}"
-                            step="1"
-                            min="0"
-                            pattern="\d+"
-                        >
-                    </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Min Quality
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-min-quality"
+                        placeholder="unsigned integer"
+                        type="number"
+                        value="{{options.min_quality}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
                 </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Min Interval Length
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-min-length"
-                            placeholder="unsigned integer"
-                            type="number"
-                            value="{{options.min_length}}"
-                            step="1"
-                            min="0"
-                            pattern="\d+"
-                        >
-                    </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Min Interval Length
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-min-length"
+                        placeholder="unsigned integer"
+                        type="number"
+                        value="{{options.min_length}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
                 </div>
-
-            {{#if isEditable}}
-            {{else}}
-                </fieldset>
-            {{/if}}
+            </div>
 
         </div>
     </div>

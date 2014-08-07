@@ -18,68 +18,61 @@
                     <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
                 </div>
             </div>
-            {{#if isEditable}}
-            {{else}}
-                <fieldset disabled>
-            {{/if}}
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Min Length
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-min"
-                            placeholder="unsigned integer"
-                            type="number"
-                            value="{{options.min_length}}"
-                            step="1"
-                            min="0"
-                            pattern="\d+"
-                        >
+
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Min Length
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-min"
+                        placeholder="unsigned integer"
+                        type="number"
+                        value="{{options.min_length}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default filter-button" id="ignore-ends-button">Ignore Ends</button>
+                        <button type="button" class="btn btn-default filter-button" id="fraction-match-button">Fraction Match</button>
                     </div>
                 </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default filter-button" id="ignore-ends-button">Ignore Ends</button>
-                            <button type="button" class="btn btn-default filter-button" id="fraction-match-button">Fraction Match</button>
-                        </div>
-                    </div>
+            </div>
+            <div class="row row-with-spacer fraction-match filter-param hidden">
+                <div class="col-md-12">
+                    Fraction Match
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-fraction-match"
+                        placeholder="float"
+                        type="number"
+                        value="{{options.fraction_match}}"
+                        step="0.01"
+                    >
                 </div>
-                <div class="row row-with-spacer fraction-match filter-param hidden">
-                    <div class="col-md-12">
-                        Fraction Match
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-fraction-match"
-                            placeholder="float"
-                            type="number"
-                            value="{{options.fraction_match}}"
-                            step="0.01"
-                        >
-                    </div>
+            </div>
+            <div class="row row-with-spacer ignore-ends filter-param hidden">
+                <div class="col-md-12">
+                    Ignore Ends
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-ignore-ends"
+                        placeholder="unsigned integer"
+                        type="number"
+                        value="{{options.ignore_ends}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
                 </div>
-                <div class="row row-with-spacer ignore-ends filter-param hidden">
-                    <div class="col-md-12">
-                        Ignore Ends
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-ignore-ends"
-                            placeholder="unsigned integer"
-                            type="number"
-                            value="{{options.ignore_ends}}"
-                            step="1"
-                            min="0"
-                            pattern="\d+"
-                        >
-                    </div>
-                </div>
-            {{#if isEditable}}
-            {{else}}
-                </fieldset>
-            {{/if}}
+            </div>
 
         </div>
     </div>

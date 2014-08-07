@@ -19,48 +19,38 @@
                 </div>
             </div>
 
-            {{#if isEditable}}
-            {{else}}
-                <fieldset disabled>
-            {{/if}}
-
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Min Length
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-min"
-                            placeholder="Unsigned integer"
-                            type="number"
-                            value="{{options.min_length}}"
-                            step="1"
-                            min="0"
-                            pattern="\d+"
-                        >
-                    </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Min Length
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-min"
+                        placeholder="Unsigned integer"
+                        type="number"
+                        value="{{options.min_length}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
                 </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Max Ambiguous
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-max-ambiguous"
-                            placeholder="Unsigned integer"
-                            type="number"
-                            value="{{options.max_ambiguous}}"
-                            step="1"
-                            min="0"
-                            pattern="\d+"
-                        >
-                    </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Max Ambiguous
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-max-ambiguous"
+                        placeholder="Unsigned integer"
+                        type="number"
+                        value="{{options.max_ambiguous}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
                 </div>
-
-            {{#if isEditable}}
-            {{else}}
-                </fieldset>
-            {{/if}}
+            </div>
 
         </div>
     </div>

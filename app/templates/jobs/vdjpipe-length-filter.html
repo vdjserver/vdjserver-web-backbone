@@ -19,46 +19,38 @@
                 </div>
             </div>
 
-            {{#if isEditable}}
-            {{else}}
-                <fieldset disabled>
-            {{/if}}
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Min
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-min"
-                            placeholder="unsigned integer"
-                            type="number"
-                            value="{{options.min}}"
-                            step="1"
-                            min="0"
-                            pattern="\d+"
-                        >
-                    </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Min
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-min"
+                        placeholder="unsigned integer"
+                        type="number"
+                        value="{{options.min}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
                 </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Max
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-max"
-                            placeholder="unsigned integer"
-                            type="number"
-                            value="{{options.max}}"
-                            step="1"
-                            min="0"
-                            pattern="\d+"
-                        >
-                    </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Max
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-max"
+                        placeholder="unsigned integer"
+                        type="number"
+                        value="{{options.max}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
                 </div>
-            {{#if isEditable}}
-            {{else}}
-                </fieldset>
-            {{/if}}
+            </div>
 
         </div>
     </div>

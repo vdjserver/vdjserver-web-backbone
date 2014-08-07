@@ -19,43 +19,35 @@
                 </div>
             </div>
 
-            {{#if isEditable}}
-            {{else}}
-                <fieldset disabled>
-            {{/if}}
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Value Name
-                        &nbsp;
-                        <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-value-name" type="text">
-                    </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Value Name
+                    &nbsp;
+                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-value-name" type="text">
                 </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Fasta File
-                        &nbsp;
-                        <select name="{{inputCount}}-{{parameterType}}-fasta-file">
-                            {{#each files}}
-                                <option value={{value.name}}>{{value.name}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Fasta File
+                    &nbsp;
+                    <select name="{{inputCount}}-{{parameterType}}-fasta-file">
+                        {{#each files}}
+                            <option value={{value.name}}>{{value.name}}</option>
+                        {{/each}}
+                    </select>
                 </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Pairs File
-                        &nbsp;
-                        <select name="{{inputCount}}-{{parameterType}}-pairs-file">
-                            {{#each files}}
-                                <option value={{value.name}}>{{value.name}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Pairs File
+                    &nbsp;
+                    <select name="{{inputCount}}-{{parameterType}}-pairs-file">
+                        {{#each files}}
+                            <option value={{value.name}}>{{value.name}}</option>
+                        {{/each}}
+                    </select>
                 </div>
-            {{#if isEditable}}
-            {{else}}
-                </fieldset>
-            {{/if}}
+            </div>
 
         </div>
     </div>

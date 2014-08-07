@@ -19,53 +19,45 @@
                 </div>
             </div>
 
-            {{#if isEditable}}
-            {{else}}
-                <fieldset disabled>
-            {{/if}}
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Output Path
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-out-path"
-                            placeholder="text"
-                            type="text"
-                            value="{{options.out_path}}"
-                        >
-                    </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Output Path
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-out-path"
+                        placeholder="text"
+                        type="text"
+                        value="{{options.out_path}}"
+                    >
                 </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Names
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-names"
-                            placeholder="comma separated text"
-                            type="text"
-                            value="{{options.names}}"
-                        >
-                    </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Names
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-names"
+                        placeholder="comma separated text"
+                        type="text"
+                        value="{{options.names}}"
+                    >
                 </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        Unset Value
-                        &nbsp;
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-unset-value"
-                            placeholder="text"
-                            type="text"
-                            value="{{options.unset_value}}"
-                        >
-                    </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Unset Value
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-unset-value"
+                        placeholder="text"
+                        type="text"
+                        value="{{options.unset_value}}"
+                    >
                 </div>
-            {{#if isEditable}}
-            {{else}}
-                </fieldset>
-            {{/if}}
+            </div>
 
         </div>
     </div>
