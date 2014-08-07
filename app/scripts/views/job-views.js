@@ -203,180 +203,267 @@ define([
         }
     });
 
-    Jobs.WorkflowEditor = Backbone.View.extend({
-        template: 'jobs/vdjpipe-form-options',
-        initialize: function() {
+    Jobs.WorkflowEditor = Backbone.View.extend(
+        /** @lends WorkflowEditor.prototype */
+        {
+            /**
+             * This is the workflow editor view for vdjpipe workflows.
+             *
+             * @augments external:Backbone.View
+             * @constructs
+             */
+            initialize: function() {
+                this.counter = 0;
+                this.editableWorkflow = {};
+            },
 
-            this.counter = 0;
-            this.editableWorkflow = {};
-        },
-        setupEditableWorkflow: function(editableWorkflow) {
+            /** Layout Manager template */
+            template: 'jobs/vdjpipe-form-options',
 
-            var workflowData = editableWorkflow.getWorkflowFromConfig();
+            /**
+             * Creates editable workflow views for the supplied workflow
+             * and inserts them into the DOM.
+             *
+             * @param {Workflow} editableWorkflow
+             */
+            setupEditableWorkflow: function(editableWorkflow) {
 
-            var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
+                var workflowData = editableWorkflow.getWorkflowFromConfig();
 
-            //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
+                var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
 
-            $('#vdj-pipe-configuration-placeholder').remove();
+                //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
 
-            for (this.counter = 0; this.counter < workflowViews.length; this.counter++) {
-                var view = workflowViews[this.counter];
+                $('#vdj-pipe-configuration-placeholder').remove();
 
-                view.isEditable = true;
-                //view.files = this.selectedFileListings;
+                for (this.counter = 0; this.counter < workflowViews.length; this.counter++) {
+                    var view = workflowViews[this.counter];
 
-                this.insertView('#vdj-pipe-configuration', view);
-                view.render();
-            }
-        },
-        afterRender: function() {
-            $('#workflow-modal').modal('show');
+                    view.isEditable = true;
+                    //view.files = this.selectedFileListings;
 
-            $('#vdj-pipe-configuration').sortable({
-                axis: 'y',
-                cursor: 'move',
-                tolerance: 'pointer',
-            });
-
-            if (! _.isEmpty(this.editableWorkflow)) {
-                this.setupEditableWorkflow(this.editableWorkflow);
-            }
-        },
-        events: {
-            'click #workflow-cancel': 'workflowCancel',
-            'click #workflow-save': 'workflowSave',
-
-            'click .workflow-options': 'setupWorkflowOptions',
-
-            'click .job-parameter': 'addJobParameter',
-            'click .remove-job-parameter': 'removeJobParameter',
-        },
-        // Event action helpers
-        clearPlaceholder: function() {
-            var deferred = $.Deferred();
-
-            if ($('#vdj-pipe-configuration-placeholder').length) {
-
-                $('#vdj-pipe-configuration-placeholder').addClass('animated flipOutX');
-                $('#vdj-pipe-configuration-placeholder').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-                    $('#vdj-pipe-configuration-placeholder').remove();
-
-                    deferred.resolve();
-                });
-            }
-            else {
-                deferred.resolve();
-            }
-
-            return deferred;
-        },
-        displayFormErrors: function(formErrors) {
-
-            // Clear out old errors
-            //this.$el.find('.alert-danger').fadeOut(function() {
-            $('.alert-danger').fadeOut(function() {
-                this.remove();
-            });
-
-            $('.form-group').removeClass('has-error');
-
-            // Display any new errors
-            if (_.isArray(formErrors)) {
-
-                for (var i = 0; i < formErrors.length; i++) {
-                    var message = formErrors[i].message;
-                    var type = formErrors[i].type;
-
-                    this.$el.find('.modal-body').prepend($('<div class="alert alert-danger">').text(message).fadeIn());
-                    $('#' + type + '-container').addClass('has-error');
+                    this.insertView('#vdj-pipe-configuration', view);
+                    view.render();
                 }
-            }
-        },
-        // Event actions
-        addJobParameter: function(e) {
-            e.preventDefault();
+            },
 
-            var parameterType = e.target.dataset.parametertype;
+            /**
+             * 1. Tells bootstrap modal js to show this view.
+             * 2. Sets up jquery sortable on the workflow staging area.
+             * 3. Sets up an editable workflow if this view has one.
+             */
+            afterRender: function() {
+                $('#workflow-modal').modal('show');
 
-            //console.log("parameterType is: " + parameterType);
-
-            this.counter = this.counter + 1;
-
-            var vdjPipeView = App.Views.Helpers.VdjpipeViewHelpers.GetVdjpipeView(
-                parameterType,
-                this.counter,
-                {}
-            );
-
-            vdjPipeView.isEditable = true;
-
-            var that = this;
-
-            this.clearPlaceholder()
-                .done(function() {
-                    that.insertView('#vdj-pipe-configuration', vdjPipeView);
-                    vdjPipeView.render();
+                $('#vdj-pipe-configuration').sortable({
+                    axis: 'y',
+                    cursor: 'move',
+                    tolerance: 'pointer',
                 });
-        },
-        removeJobParameter: function(e) {
-            e.preventDefault();
 
-            $(e.currentTarget).closest('.vdj-pipe-parameter').addClass('animated flipOutX');
+                if (! _.isEmpty(this.editableWorkflow)) {
+                    this.setupEditableWorkflow(this.editableWorkflow);
+                }
+            },
 
-            $(e.currentTarget).closest('.vdj-pipe-parameter').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-                $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
-            });
-        },
-        setupWorkflowOptions: function(e) {
-            e.preventDefault();
+            /**
+             * DOM events
+             */
+            events: {
+                'click #workflow-cancel': 'workflowCancel',
+                'click #workflow-save': 'workflowSave',
 
-            var workflowType = e.target.dataset.id;
+                'click .workflow-options': 'toggleWorkflowOptionList',
 
-            $('.workflow-options-list').hide();
-            $('.workflow-options').parent('li').removeClass('active');
-            $(e.currentTarget).parent('li').addClass('active');
+                'click .job-parameter': 'addJobParameter',
+                'click .remove-job-parameter': 'removeJobParameter',
+            },
 
-            $('#workflow-options-' + workflowType + '-list').show();
-        },
-        workflowCancel: function(e) {
-            e.preventDefault();
+            // Event Helpers
 
-            this.trigger('setupJobSubmitView');
-        },
-        workflowSave: function(e) {
-            e.preventDefault();
+            /**
+             * Removes workflow config placeholder DOM element.
+             *
+             * @returns {Promise} deferred Promise that the placeholder was removed.
+             */
+            clearPlaceholder: function() {
+                var deferred = $.Deferred();
 
-            var formData = Backbone.Syphon.serialize(this);
+                if ($('#vdj-pipe-configuration-placeholder').length) {
 
-            var jobWorkflow = new Backbone.Agave.Model.Job.Workflow();
-            jobWorkflow.setConfigFromFormData(formData);
+                    $('#vdj-pipe-configuration-placeholder').addClass('animated flipOutX');
+                    $('#vdj-pipe-configuration-placeholder').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                        $('#vdj-pipe-configuration-placeholder').remove();
 
-            var formErrors = jobWorkflow.validate();
+                        deferred.resolve();
+                    });
+                }
+                else {
+                    deferred.resolve();
+                }
 
-console.log("formData is: " + JSON.stringify(formData));
-            if (formErrors) {
-                console.log("correction");
+                return deferred;
+            },
 
-                this.displayFormErrors(formErrors);
-            }
-            else {
+            /**
+             * Displays errors on the DOM based on form validation.
+             *
+             * @param {array} formErrors An array of validation error objects.
+             */
+            displayFormErrors: function(formErrors) {
+
+                // Clear out old errors
+                $('.alert-danger').fadeOut(function() {
+                    this.remove();
+                });
+
+                $('.form-group').removeClass('has-error');
+
+                // Display any new errors
+                if (_.isArray(formErrors)) {
+
+                    for (var i = 0; i < formErrors.length; i++) {
+                        var message = formErrors[i].message;
+                        var type = formErrors[i].type;
+
+                        this.$el.find('.modal-body').prepend($('<div class="alert alert-danger">').text(message).fadeIn());
+                        $('#' + type + '-container').addClass('has-error');
+                    }
+                }
+            },
+
+            // Event Actions
+
+            /**
+             * Adds a job parameter to the new workflow and displays it on
+             * the DOM.
+             *
+             * @param {event} e
+             */
+            addJobParameter: function(e) {
+                e.preventDefault();
+
+                var parameterType = e.target.dataset.parametertype;
+
+                //console.log("parameterType is: " + parameterType);
+
+                this.counter = this.counter + 1;
+
+                var vdjPipeView = App.Views.Helpers.VdjpipeViewHelpers.GetVdjpipeView(
+                    parameterType,
+                    this.counter,
+                    {}
+                );
+
+                vdjPipeView.isEditable = true;
 
                 var that = this;
 
-                jobWorkflow.save()
+                this.clearPlaceholder()
                     .done(function() {
-                        that.trigger('setupJobSubmitView');
-                    })
-                    .fail(function(e) {
-                        // troubleshoot
-                        console.log("save error is: " + JSON.stringify(e));
-                        console.log("workflow save fail");
-                    })
-                    ;
-            }
+                        that.insertView('#vdj-pipe-configuration', vdjPipeView);
+                        vdjPipeView.render();
+                    });
+            },
+
+            /**
+             * Removes a job parameter from the new workflow and removes it
+             * from the DOM.
+             *
+             * @param {event} e
+             */
+            removeJobParameter: function(e) {
+                e.preventDefault();
+
+                $(e.currentTarget).closest('.vdj-pipe-parameter').addClass('animated flipOutX');
+
+                $(e.currentTarget).closest('.vdj-pipe-parameter').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                    $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
+                });
+            },
+
+            /**
+             * Shows a list for the selected workflow option type and hides
+             * all others.
+             *
+             * @param {event} e
+             */
+            toggleWorkflowOptionList: function(e) {
+                e.preventDefault();
+
+                var workflowType = e.target.dataset.id;
+
+                $('.workflow-options-list').hide();
+                $('.workflow-options').parent('li').removeClass('active');
+                $(e.currentTarget).parent('li').addClass('active');
+
+                $('#workflow-options-' + workflowType + '-list').show();
+            },
+
+            /**
+             * Sends an event signifying that this workflow should be closed
+             * without being saved.
+             *
+             * @param {event} e
+             */
+            workflowCancel: function(e) {
+                e.preventDefault();
+                this.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditor);
+            },
+
+            /**
+             * Validates and optionally saves the current workflow.
+             *
+             * If errors are present, then they are displayed.
+             *
+             * Otherwise, the current workflow is saved and an event is sent
+             * that signifies that the workflow is ready to be closed.
+             *
+             * @param {event} e
+             */
+            workflowSave: function(e) {
+                e.preventDefault();
+
+                var formData = Backbone.Syphon.serialize(this);
+
+                var jobWorkflow = new Backbone.Agave.Model.Job.Workflow();
+                jobWorkflow.setConfigFromFormData(formData);
+
+                var formErrors = jobWorkflow.validate();
+
+    console.log("formData is: " + JSON.stringify(formData));
+                if (formErrors) {
+                    console.log("correction");
+
+                    this.displayFormErrors(formErrors);
+                }
+                else {
+
+                    var that = this;
+
+                    jobWorkflow.save()
+                        .done(function() {
+                            that.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditor);
+                        })
+                        .fail(function(e) {
+                            // troubleshoot
+                            console.log("save error is: " + JSON.stringify(e));
+                            console.log("workflow save fail");
+                        })
+                        ;
+                }
+            },
         },
-    });
+        /** Static members */
+        {
+            /**
+             * Custom event enum
+             */
+            events: {
+                closeWorkflowEditor: 'closeWorkflowEditorEvent',
+            },
+        }
+    );
 
     Jobs.Notification = Backbone.View.extend({
         template: 'jobs/notification',

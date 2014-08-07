@@ -500,10 +500,9 @@ define([
                         });
                 }
             );
-
             this.listenToOnce(
                 workflowEditorView,
-                'setupJobSubmitView',
+                App.Views.Jobs.WorkflowEditor.events.closeWorkflowEditor,
                 function() {
                     $('#workflow-modal')
                         .modal('hide')
