@@ -271,6 +271,28 @@ define([
 
             return deferred;
         },
+        displayFormErrors: function(formErrors) {
+
+            // Clear out old errors
+            //this.$el.find('.alert-danger').fadeOut(function() {
+            $('.alert-danger').fadeOut(function() {
+                this.remove();
+            });
+
+            $('.form-group').removeClass('has-error');
+
+            // Display any new errors
+            if (_.isArray(formErrors)) {
+
+                for (var i = 0; i < formErrors.length; i++) {
+                    var message = formErrors[i].message;
+                    var type = formErrors[i].type;
+
+                    this.$el.find('.modal-body').prepend($('<div class="alert alert-danger">').text(message).fadeIn());
+                    $('#' + type + '-container').addClass('has-error');
+                }
+            }
+        },
         // Event actions
         addJobParameter: function(e) {
             e.preventDefault();
@@ -327,29 +349,32 @@ define([
 
             var formData = Backbone.Syphon.serialize(this);
 
-            var serializedConfig = App.Models.Helpers.VdjPipeUtilities.SerializeVdjPipeConfig(formData);
-
-            //console.log("formData is: " + JSON.stringify(formData));
-            //console.log("serialized config is: " + JSON.stringify(serializedConfig));
-
             var jobWorkflow = new Backbone.Agave.Model.Job.Workflow();
             jobWorkflow.setConfigFromFormData(formData);
 
-            //console.log("test is: " + JSON.stringify(jobWorkflow.get('value')));
+            var formErrors = jobWorkflow.validate();
 
-            var that = this;
+console.log("formData is: " + JSON.stringify(formData));
+            if (formErrors) {
+                console.log("correction");
 
-            jobWorkflow
-                .save()
-                .done(function() {
-                    that.trigger('setupJobSubmitView');
-                })
-                .fail(function(e) {
-                    // troubleshoot
-                    console.log("save error is: " + JSON.stringify(e));
-                    console.log("workflow save fail");
-                });
+                this.displayFormErrors(formErrors);
+            }
+            else {
 
+                var that = this;
+
+                jobWorkflow.save()
+                    .done(function() {
+                        that.trigger('setupJobSubmitView');
+                    })
+                    .fail(function(e) {
+                        // troubleshoot
+                        console.log("save error is: " + JSON.stringify(e));
+                        console.log("workflow save fail");
+                    })
+                    ;
+            }
         },
     });
 

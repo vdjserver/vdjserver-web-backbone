@@ -618,6 +618,37 @@ define(['app', 'backbone'], function(App, Backbone) {
 
             return workflow;
         },
+        validate: function() {
+            var value = this.get('value');
+
+            var errors = [];
+
+            if (!value.workflowName) {
+                errors.push({
+                    'message': 'Missing Workflow Name.',
+                    'type': 'workflow-name',
+                });
+            }
+
+            var config = this.getWorkflowFromConfig();
+
+            if (config['single_read_pipe'] && config['single_read_pipe'].length === 0) {
+                errors.push({
+                    'message': 'Missing Configuration Steps.',
+                    'type': 'configuration-steps',
+                });
+            }
+            else if (config['paired_read_pipe'] && config['paired_read_pipe'].length === 0) {
+                errors.push({
+                    'message': 'Missing Configuration Steps.',
+                    'type': 'configuration-steps',
+                });
+            }
+
+            if (errors.length > 0) {
+                return errors;
+            }
+        },
     });
 
     Backbone.Agave.Model.Job = Job;
