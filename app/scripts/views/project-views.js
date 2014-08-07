@@ -476,11 +476,25 @@ define([
                 jobSubmitView,
                 'setupCreateWorkflowView',
                 function() {
-                    console.log("setupCreateWorkflowView ok");
 
                     $('#job-modal')
                         .modal('hide')
-                        .on('hidden.bs.modal', function(e) {
+                        .on('hidden.bs.modal', function() {
+                            that.setView('#job-submit', workflowEditorView);
+                            workflowEditorView.render();
+                        });
+                }
+            );
+
+            this.listenToOnce(
+                jobSubmitView,
+                'setupEditWorkflowView',
+                function(editableWorkflow) {
+                    $('#job-modal')
+                        .modal('hide')
+                        .on('hidden.bs.modal', function() {
+                            // The editable workflow needs to be set before render is called.
+                            workflowEditorView.editableWorkflow = editableWorkflow;
                             that.setView('#job-submit', workflowEditorView);
                             workflowEditorView.render();
                         });
@@ -491,11 +505,11 @@ define([
                 workflowEditorView,
                 'setupJobSubmitView',
                 function() {
-                    console.log("setupJobSubmitView ok");
                     $('#workflow-modal')
                         .modal('hide')
-                        .on('hidden.bs.modal', function(e) {
+                        .on('hidden.bs.modal', function() {
 
+                            //workflowEditorView.remove();
                             that.setView('#job-submit', jobSubmitView);
 
                             jobSubmitView.fetchNetworkData()
@@ -508,6 +522,7 @@ define([
                         });
                 }
             );
+
         },
         getSelectedFileUuids: function() {
 

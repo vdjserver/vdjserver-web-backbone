@@ -609,7 +609,7 @@ define(['app', 'backbone'], function(App, Backbone) {
                     'config': config,
                     'workflowName': workflowName,
                 }
-            )
+            );
         },
         getWorkflowFromConfig: function() {
             var workflow = {

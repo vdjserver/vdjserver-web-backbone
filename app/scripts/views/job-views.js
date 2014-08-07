@@ -22,8 +22,6 @@ define([
         initialize: function(parameters) {
             this.projectModel = parameters.projectModel;
 
-            var that = this;
-
             this.workflows = new Backbone.Agave.Collection.Jobs.Workflows();
         },
         fetchNetworkData: function() {
@@ -31,17 +29,12 @@ define([
             this.workflows
                 .fetch()
                 .done(function() {
-                    console.log("fetch done");
-
                     deferred.resolve();
                 });
 
             return deferred;
         },
         serialize: function() {
-
-            console.log("serialize called. json is: " + JSON.stringify(this.workflows.toJSON()));
-
             return {
                 selectedFileListings: this.selectedFileListings.toJSON(),
                 workflows: this.workflows.toJSON(),
@@ -58,6 +51,13 @@ define([
             'click #delete-workflow': 'deleteWorkflow',
             'submit form': 'submitJob',
         },
+        // Event Helpers
+        resetDeleteWorkflow: function() {
+            $('#delete-workflow').removeClass('btn-danger');
+            $('#delete-workflow').addClass('btn-outline-danger');
+            $('#delete-workflow').html('&nbsp;Delete');
+        },
+        // Events
         createWorkflow: function(e) {
             e.preventDefault();
 
@@ -66,7 +66,10 @@ define([
         editWorkflow: function(e) {
             e.preventDefault();
 
-            this.trigger('setupEditWorkflowView');
+            var workflowId = $('#select-workflow').val();
+            var workflow = this.workflows.get(workflowId);
+
+            this.trigger('setupEditWorkflowView', workflow);
         },
         deleteWorkflow: function(e) {
             e.preventDefault();
@@ -81,14 +84,12 @@ define([
 
                 var workflowId = $('#select-workflow').val();
 
-                console.log("workflowId is: " + workflowId);
                 var workflow = this.workflows.get(workflowId);
 
                 this.workflows.remove(workflow);
 
                 workflow.destroy()
                     .done(function() {
-                        console.log("workflow destroyed");
                         $('#select-workflow').val('');
                         that.removeView('#workflow-staging-area');
                         $('#select-workflow option[value="' + workflowId + '"]').remove();
@@ -98,13 +99,6 @@ define([
                         console.log("workflow delete error");
                     });
             }
-
-            console.log("view render ok");
-        },
-        resetDeleteWorkflow: function() {
-            $('#delete-workflow').removeClass('btn-danger');
-            $('#delete-workflow').addClass('btn-outline-danger');
-            $('#delete-workflow').html('&nbsp;Delete');
         },
         showWorkflow: function(e) {
             e.preventDefault();
@@ -117,15 +111,13 @@ define([
             // Setup and insert new workflow views
             var workflowId = e.target.value;
 
-            console.log("workflowId is: " + workflowId);
-
             var workflow = this.workflows.get(workflowId);
 
             //var defaultWorkflows = Jobs.GetWorkflowConfig();
 
             var workflowData = workflow.getWorkflowFromConfig();
 
-            console.log("workflowData is: " + JSON.stringify(workflowData));
+            //console.log("workflowData is: " + JSON.stringify(workflowData));
 
             var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
 
@@ -137,7 +129,7 @@ define([
                 This behavior might be a bug in layout manager, so the
                 following loop is a workaround for now.
             */
-            console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
+            //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
             for (var i = 0; i < workflowViews.length; i++) {
                 var view = workflowViews[i];
 
@@ -213,13 +205,32 @@ define([
 
     Jobs.WorkflowEditor = Backbone.View.extend({
         template: 'jobs/vdjpipe-form-options',
-        initialize: function(parameters) {
-            $('.workflow-options-list').hide();
+        initialize: function() {
 
             this.counter = 0;
+            this.editableWorkflow = {};
+        },
+        setupEditableWorkflow: function(editableWorkflow) {
+
+            var workflowData = editableWorkflow.getWorkflowFromConfig();
+
+            var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
+
+            //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
+
+            $('#vdj-pipe-configuration-placeholder').remove();
+
+            for (this.counter = 0; this.counter < workflowViews.length; this.counter++) {
+                var view = workflowViews[this.counter];
+
+                view.isEditable = true;
+                //view.files = this.selectedFileListings;
+
+                this.insertView('#vdj-pipe-configuration', view);
+                view.render();
+            }
         },
         afterRender: function() {
-            console.log("workflow modal show attempt");
             $('#workflow-modal').modal('show');
 
             $('#vdj-pipe-configuration').sortable({
@@ -227,6 +238,10 @@ define([
                 cursor: 'move',
                 tolerance: 'pointer',
             });
+
+            if (! _.isEmpty(this.editableWorkflow)) {
+                this.setupEditableWorkflow(this.editableWorkflow);
+            }
         },
         events: {
             'click #workflow-cancel': 'workflowCancel',
@@ -237,12 +252,32 @@ define([
             'click .job-parameter': 'addJobParameter',
             'click .remove-job-parameter': 'removeJobParameter',
         },
+        // Event action helpers
+        clearPlaceholder: function() {
+            var deferred = $.Deferred();
+
+            if ($('#vdj-pipe-configuration-placeholder').length) {
+
+                $('#vdj-pipe-configuration-placeholder').addClass('animated flipOutX');
+                $('#vdj-pipe-configuration-placeholder').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                    $('#vdj-pipe-configuration-placeholder').remove();
+
+                    deferred.resolve();
+                });
+            }
+            else {
+                deferred.resolve();
+            }
+
+            return deferred;
+        },
+        // Event actions
         addJobParameter: function(e) {
             e.preventDefault();
 
             var parameterType = e.target.dataset.parametertype;
 
-            console.log("parameterType is: " + parameterType);
+            //console.log("parameterType is: " + parameterType);
 
             this.counter = this.counter + 1;
 
@@ -254,21 +289,13 @@ define([
 
             vdjPipeView.isEditable = true;
 
-            console.log("view is: " + vdjPipeView);
+            var that = this;
 
-            if ($('#vdj-pipe-configuration-placeholder').length) {
-                var that = this;
-                $('#vdj-pipe-configuration-placeholder').addClass('animated flipOutX');
-                $('#vdj-pipe-configuration-placeholder').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-                    $("#vdj-pipe-configuration-placeholder").remove();
+            this.clearPlaceholder()
+                .done(function() {
                     that.insertView('#vdj-pipe-configuration', vdjPipeView);
                     vdjPipeView.render();
                 });
-            }
-            else {
-                this.insertView('#vdj-pipe-configuration', vdjPipeView);
-                vdjPipeView.render();
-            }
         },
         removeJobParameter: function(e) {
             e.preventDefault();
@@ -302,13 +329,13 @@ define([
 
             var serializedConfig = App.Models.Helpers.VdjPipeUtilities.SerializeVdjPipeConfig(formData);
 
-            console.log("formData is: " + JSON.stringify(formData));
-            console.log("serialized config is: " + JSON.stringify(serializedConfig));
+            //console.log("formData is: " + JSON.stringify(formData));
+            //console.log("serialized config is: " + JSON.stringify(serializedConfig));
 
             var jobWorkflow = new Backbone.Agave.Model.Job.Workflow();
             jobWorkflow.setConfigFromFormData(formData);
 
-            console.log("test is: " + JSON.stringify(jobWorkflow.get('value')));
+            //console.log("test is: " + JSON.stringify(jobWorkflow.get('value')));
 
             var that = this;
 
@@ -317,8 +344,9 @@ define([
                 .done(function() {
                     that.trigger('setupJobSubmitView');
                 })
-                .fail(function() {
+                .fail(function(e) {
                     // troubleshoot
+                    console.log("save error is: " + JSON.stringify(e));
                     console.log("workflow save fail");
                 });
 
