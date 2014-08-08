@@ -69,8 +69,7 @@ define(['backbone'], function(Backbone) {
         getAssociationId: function() {
             var path = this.get('path');
             var split = path.split('/');
-            console.log("split is: " + JSON.stringify(split));
-            return split[2];
+            return split[3];
         },
         syncFilePermissionsWithProjectPermissions: function() {
 
