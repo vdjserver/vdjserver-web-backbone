@@ -1,4 +1,4 @@
-.drag-and-drop-box {
+.jumbotron-dashed-box {
     @extend .jumbotron;
 
     border-style: dashed;
@@ -8,7 +8,7 @@
     margin-color: #ffffff;
 }
 
-.drag-and-drop-box .background-icon {
+.jumbotron-dashed-box .background-icon {
     position: absolute;
     opacity: 0.2;
     font-size: 100px;

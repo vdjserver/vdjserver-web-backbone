@@ -120,9 +120,13 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
         },
         Layouts:     {},
         Views:       {
-            HandlebarsHelpers: {}
+            Generic: {},
+            HandlebarsHelpers: {},
+            Helpers: {},
         },
-        Models:      {},
+        Models:      {
+            Helpers: {},
+        },
         Collections: {},
         Routers:     {},
         Websockets:  {},

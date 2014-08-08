@@ -3,20 +3,37 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    <i class="fa fa-bars"></i>
-                    &nbsp;
+                    {{#if isEditable}}
+                        <i class="fa fa-bars"></i>
+                        &nbsp;
+                    {{/if}}
+
                     {{parameterName}}
-                    &nbsp;
-                    <span class="label label-danger remove-job-parameter">&times;</span>
+
+                    {{#if isEditable}}
+                        &nbsp;
+                        <span class="label label-danger remove-job-parameter">&times;</span>
+                    {{/if}}
                 </div>
             </div>
+
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     {{inputLabel}}
                     &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}" data-type="number" value="" min="0" step="1" pattern="\d+">
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}"
+                        placeholder="unsigned integer"
+                        type="number"
+                        value="{{options}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
                 </div>
             </div>
+
         </div>
     </div>
 </li>

@@ -62,6 +62,15 @@ require.config({
         'handlebars-utilities':   'views/handlebars-helpers/handlebars-utilities',
         'handlebars-file-metadata-helpers':   'views/handlebars-helpers/file-metadata-helpers',
 
+        // Model Helpers
+        'vdjpipe-utilities': 'models/helpers/vdjpipe-utilities',
+
+        // Generic Views
+        'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
+
+        // View Helpers
+        'vdjpipe-view-helpers': 'views/helpers/vdjpipe-view-helpers',
+
         // Views
         'app-views': 'views/app/app-views',
         'form-views': 'views/app/form-views',
@@ -74,6 +83,7 @@ require.config({
         'job-views': 'views/job-views',
         'project-views': 'views/project-views',
         'analyses-views': 'views/analyses-views',
+        'vdjpipe-views': 'views/vdjpipe-views',
 
         // Routers
         'router': 'routers/router'

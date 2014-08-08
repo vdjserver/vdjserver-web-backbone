@@ -3,15 +3,22 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    <i class="fa fa-bars"></i>
-                    &nbsp;
+                    {{#if isEditable}}
+                        <i class="fa fa-bars"></i>
+                        &nbsp;
+                    {{/if}}
+
                     Match External Molecular Identifier
-                    &nbsp;
-                    <span class="label label-danger remove-job-parameter">&times;</span>
+
+                    {{#if isEditable}}
+                        &nbsp;
+                        <span class="label label-danger remove-job-parameter">&times;</span>
+                    {{/if}}
 
                     <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
                 </div>
             </div>
+
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     Value Name
@@ -41,6 +48,7 @@
                     </select>
                 </div>
             </div>
+
         </div>
     </div>
 </li>

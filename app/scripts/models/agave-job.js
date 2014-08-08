@@ -1,4 +1,4 @@
-define(['backbone'], function(Backbone) {
+define(['app', 'backbone'], function(App, Backbone) {
 
     'use strict';
 
@@ -55,6 +55,9 @@ define(['backbone'], function(Backbone) {
                 }
             );
         },
+        initialize: function() {
+            this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
+        },
         generateVdjPipeConfig: function(parameters, fileMetadata) {
 
             var outputConfig = {
@@ -81,107 +84,110 @@ define(['backbone'], function(Backbone) {
                         //console.log("vdjPipeParam is: " + vdjPipeParam);
 
                         switch(vdjPipeParam) {
-                            case 'quality-stats':
+
+                            case 'ambiguous_window_filter':
                                 paramOutput.push({
-                                    //'quality_stats': {'out_prefix': parameters[key]}
-                                    'quality_stats': {'out_prefix': 'pre-'},
+                                    'ambiguous_window_filter': {
+                                        'min_length':    parseInt(parameters[key + '-min-length']),
+                                        'max_ambiguous': parseInt(parameters[key + '-max-ambiguous']),
+                                    },
                                 });
+
                                 break;
 
-                            case 'composition-stats':
+                            case 'average_quality_window_filter':
+                                paramOutput.push({
+                                    'average_quality_window_filter': {
+                                        'min_quality':   parseFloat(parameters[key + '-min-quality']),
+                                        'window_length': parseInt(parameters[key + '-window-length']),
+                                        'min_length':    parseInt(parameters[key + '-min-length']),
+                                    },
+                                });
+
+                                break;
+
+                            case 'composition_stats':
                                 paramOutput.push({
                                     //'composition_stats': {'out_prefix': parameters[key]}
                                     'composition_stats': {'out_prefix': 'pre-'},
                                 });
+
                                 break;
 
-                            case 'nucleotide-filter':
-                                paramOutput.push({
-                                    'character_filter': parameters[key],
-                                });
+                            case 'find_sequences_from_multiple_groups':
+
+                                var tmpFindIntersection = {
+                                    'find_intersection': {
+                                        'min_length': parseInt(parameters[key + '-min-length']),
+                                    },
+                                };
+
+                                if (parameters[key + '-fraction-match']) {
+                                    tmpFindIntersection.find_intersection.fraction_match = parseFloat(parameters[key + '-fraction-match']);
+                                }
+                                else if (parameters[key + '-ignore-ends']) {
+                                    tmpFindIntersection.find_intersection.ignore_ends = parseInt(parameters[key + '-ignore-ends']);
+                                }
+
+                                paramOutput.push(tmpFindIntersection);
+
                                 break;
 
-                            case 'length-filter':
+                            case 'find_unique_sequences':
                                 paramOutput.push({
-                                    'length_filter': {
-                                        'min': parameters[keyCounter + 'length-filter-min'],
-                                        'max': parameters[keyCounter + 'length-filter-max'],
+                                    'find_unique': {
+                                        'min_length':   parseInt(parameters[key + '-min-length']),
+                                        'ignore_ends':  parseInt(parameters[key + '-ignore-ends']),
+                                        'fraction_match': parseFloat(parameters[key + '-fraction-match']),
+                                       // Could add out_path_fasta or out_path_duplicates
                                     },
                                 });
-                                break;
 
-                            case 'homopolymer-filter':
-                                paramOutput.push({
-                                    'homopolymer_filter': parameters[key],
-                                });
-                                break;
-
-                            case 'minimal-quality-filter':
-                                paramOutput.push({
-                                    'min_quality_filter': parameters[key],
-                                });
-                                break;
-
-                            case 'minimal-average-quality-filter':
-                                paramOutput.push({
-                                    'average_quality_filter': parameters[key],
-                                });
-                                break;
-
-                            case 'minimal-quality-window-filter':
-                                paramOutput.push({
-                                    'min_quality_window_filter': {
-                                        'min_quality': parameters[key + '-min-quality'],
-                                        'min_length': parameters[key + '-min-length'],
-                                    },
-                                });
-                                break;
-
-                            case 'average-quality-window-filter':
-                                paramOutput.push({
-                                    'average_quality_window_filter': {
-                                        'min_quality': parameters[key + '-min-quality'],
-                                        'window_length': parameters[key + '-window-length'],
-                                        'min_length': parameters[key + '-min-length'],
-                                    },
-                                });
-                                break;
-
-                            case 'ambiguous-nucleotide-window-filter':
-                                paramOutput.push({
-                                    'ambiguous_window_filter': {
-                                        'min_length': parameters[key + '-min-length'],
-                                        'max_ambiguous': parameters[key + '-max-ambiguous'],
-                                    },
-                                });
                                 break;
 
                             case 'histogram':
                                 paramOutput.push({
                                     'histogram': {
-                                        'name': parameters[key],
+                                        'name': parameters[key + '-name'],
                                         //'out_path': 'TODO',
                                     },
                                 });
+
                                 break;
 
-                            case 'find-unique-sequences':
+                            case 'homopolymer_filter':
                                 paramOutput.push({
-                                    'find_unique': {
-                                        'min_length': parameters[key + '-min-length'],
-                                        'ignore_ends': parameters[key + '-ignore-ends'],
-                                        'fraction_match': parameters[key + '-fraction-match'],
-                                       // Could add out_path_fasta or out_path_duplicates
+                                    'homopolymer_filter': parseInt(parameters[key]),
+                                });
+
+                                break;
+
+                            case 'length_filter':
+                                paramOutput.push({
+                                    'length_filter': {
+                                        'min': parseInt(parameters[keyCounter + 'length-filter-min']),
+                                        'max': parseInt(parameters[keyCounter + 'length-filter-max']),
                                     },
                                 });
+
                                 break;
 
-                            case 'match-sequence-element':
+                            case 'match_external_molecular_identifier':
+                                paramOutput.push({
+                                    'eMID_map': {
+                                        'value_name': parameters[key + '-value-name'],
+                                        'fasta_path': parameters[key + '-fasta-file'],
+                                        'pairs_path': parameters[key + '-pairs-file'],
+                                    },
+                                });
+
+                                break;
+
+                            case 'match':
                                 console.log("match sequence element params are: " + JSON.stringify(parameters));
                                 console.log("key is: " + JSON.stringify(key));
 
                                 var elementName = parameters[key];
-                                //console.log("elementName is: " + elementName);
                                 var reverse = parameters[key + '-reverse-complement'];
                                 var trimmed = parameters[key + '-trimmed'];
 
@@ -395,17 +401,55 @@ define(['backbone'], function(Backbone) {
 
                                 break;
 
-                            case 'match-external-molecular-identifier':
+                            case 'merge_paired_reads':
                                 paramOutput.push({
-                                    'eMID_map': {
-                                        'value_name': parameters[key + '-value-name'],
-                                        'fasta_path': parameters[key + '-fasta-file'],
-                                        'pairs_path': parameters[key + '-pairs-file'],
+                                    'merge_paired': {
+                                        'min_score': parseInt(parameters[key]),
                                     },
                                 });
+
                                 break;
 
-                            case 'write-sequences':
+                            case 'min_average_quality_filter':
+                                paramOutput.push({
+                                    'average_quality_filter': parseFloat(parameters[key]),
+                                });
+
+                                break;
+
+                            case 'min_quality_filter':
+                                paramOutput.push({
+                                    'min_quality_filter': parseInt(parameters[key]),
+                                });
+
+                                break;
+
+                            case 'min_quality_window_filter':
+                                paramOutput.push({
+                                    'min_quality_window_filter': {
+                                        'min_quality': parseInt(parameters[key + '-min-quality']),
+                                        'min_length': parseInt(parameters[key + '-min-length']),
+                                    },
+                                });
+
+                                break;
+
+                            case 'nucleotide_filter':
+                                paramOutput.push({
+                                    'character_filter': parameters[key],
+                                });
+
+                                break;
+
+                            case 'quality_stats':
+                                paramOutput.push({
+                                    //'quality_stats': {'out_prefix': parameters[key]}
+                                    'quality_stats': {'out_prefix': 'pre-'},
+                                });
+
+                                break;
+
+                            case 'write_sequence':
                                 paramOutput.push({
                                     'write_sequence': {
                                         'out_path': parameters[key + '-output-path'],
@@ -415,9 +459,10 @@ define(['backbone'], function(Backbone) {
                                         'skip_empty': parameters[key + '-skip-empty'],
                                     },
                                 });
+
                                 break;
 
-                            case 'write-values':
+                            case 'write_value':
 
                                 var writeValuesNames = parameters[key + '-names'];
                                 writeValuesNames = writeValuesNames.split(',');
@@ -427,33 +472,6 @@ define(['backbone'], function(Backbone) {
                                         'names': writeValuesNames,
                                         'out_path': parameters[key + '-out-path'],
                                         'unset_value': parameters[key + '-unset-value'],
-                                    },
-                                });
-                                break;
-
-                            case 'find-sequences-from-multiple-groups':
-
-                                var tmpFindIntersection = {
-                                    'find_intersection': {
-                                        'min_length': parameters[key + '-min-length'],
-                                    },
-                                };
-
-                                if (parameters[key + '-fraction-match']) {
-                                    tmpFindIntersection.find_intersection.fraction_match = parameters[key + '-fraction-match'];
-                                }
-                                else if (parameters[key + '-ignore-ends']) {
-                                    tmpFindIntersection.find_intersection.ignore_ends = parameters[key + '-ignore-ends'];
-                                }
-
-                                paramOutput.push(tmpFindIntersection);
-
-                                break;
-
-                            case 'merge-paired-reads':
-                                paramOutput.push({
-                                    'merge_paired': {
-                                        'min_score': parameters[key],
                                     },
                                 });
 
@@ -501,7 +519,7 @@ define(['backbone'], function(Backbone) {
             var archivePath = '/projects/'
                             + projectUuid
                             + '/analyses/'
-                            + moment().format('YYYY-MM-DD-HH-mm-ss-SS')
+                            + moment().format(this.archivePathDateFormat)
                             + '-' + this.getDirectorySafeName(this.get('name'));
 
             this.set('archivePath', archivePath);
@@ -512,11 +530,16 @@ define(['backbone'], function(Backbone) {
             console.log("name input is: " + name);
             return name.replace(/\s/g, '-').toLowerCase();
         },
-        createArchivePathDirectory: function(projectUuid) {
-
+        getRelativeArchivePath: function() {
             var fullArchivePath = this.get('archivePath');
             var archivePathSplit = fullArchivePath.split('/');
             var relativeArchivePath = archivePathSplit[4];
+
+            return relativeArchivePath;
+        },
+        createArchivePathDirectory: function(projectUuid) {
+
+            var relativeArchivePath = this.getRelativeArchivePath();
 
             console.log("relativeArchivePath is: " + relativeArchivePath);
 
@@ -556,6 +579,78 @@ define(['backbone'], function(Backbone) {
             });
 
             return jqxhr;
+        },
+    });
+
+    Job.Workflow = Backbone.Agave.MetadataModel.extend({
+        defaults: function() {
+            return _.extend(
+                {},
+                Backbone.Agave.MetadataModel.prototype.defaults,
+                {
+                    name: 'vdjpipeWorkflow',
+                    owner: '',
+                    value: {
+                        'config': '',
+                        'workflowName': '',
+                    },
+                }
+            );
+        },
+        url: function() {
+            return '/meta/v2/data/' + this.get('uuid');
+        },
+        setConfigFromFormData: function(formData) {
+
+            var config = App.Models.Helpers.VdjPipeUtilities.SerializeVdjPipeConfig(formData);
+
+            var workflowName = App.Models.Helpers.VdjPipeUtilities.GetWorkflowName(formData);
+
+            this.set(
+                'value',
+                {
+                    'config': config,
+                    'workflowName': workflowName,
+                }
+            );
+        },
+        getWorkflowFromConfig: function() {
+            var workflow = {
+                'single_read_pipe': this.get('value').config['single_read_pipe'],
+            };
+
+            return workflow;
+        },
+        validate: function() {
+            var value = this.get('value');
+
+            var errors = [];
+
+            if (!value.workflowName) {
+                errors.push({
+                    'message': 'Missing Workflow Name.',
+                    'type': 'workflow-name',
+                });
+            }
+
+            var config = this.getWorkflowFromConfig();
+
+            if (config['single_read_pipe'] && config['single_read_pipe'].length === 0) {
+                errors.push({
+                    'message': 'Missing Configuration Steps.',
+                    'type': 'configuration-steps',
+                });
+            }
+            else if (config['paired_read_pipe'] && config['paired_read_pipe'].length === 0) {
+                errors.push({
+                    'message': 'Missing Configuration Steps.',
+                    'type': 'configuration-steps',
+                });
+            }
+
+            if (errors.length > 0) {
+                return errors;
+            }
         },
     });
 

@@ -1,8 +1,8 @@
 define([
-    'backbone', 
-    'environment-config'
+    'backbone',
+    'environment-config',
 ], function(
-    Backbone, 
+    Backbone,
     EnvironmentConfig
 ) {
 
@@ -164,7 +164,7 @@ define([
             name: '',
             value: {},
             created: '',
-            lastUpdated: ''
+            lastUpdated: '',
         },
         sync: Agave.MetadataSync,
         getSaveUrl: function() {

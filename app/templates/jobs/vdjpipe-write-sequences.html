@@ -3,50 +3,112 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    <i class="fa fa-bars"></i>
-                    &nbsp;
+                    {{#if isEditable}}
+                        <i class="fa fa-bars"></i>
+                        &nbsp;
+                    {{/if}}
+
                     Write Sequences
-                    &nbsp;
-                    <span class="label label-danger remove-job-parameter">&times;</span>
+
+                    {{#if isEditable}}
+                        &nbsp;
+                        <span class="label label-danger remove-job-parameter">&times;</span>
+                    {{/if}}
 
                     <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
                 </div>
             </div>
+
             <div class="row row-with-spacer">
                 <div class="col-md-12">
-                    Output Name
+                    Output Path
                     &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-output-path" type="text">
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-output-path"
+                        placeholder="text"
+                        type="text"
+                        value="{{options.out_path}}"
+                    >
                 </div>
             </div>
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     Unset Value
                     &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-unset-value" type="text">
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-unset-value"
+                        placeholder="text"
+                        type="text"
+                        value="{{options.unset_value}}"
+                    >
                 </div>
             </div>
             <div class="row row-with-spacer">
                 <div class="col-md-12">
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-trimmed" type="checkbox">
+                    {{#if options.trimmed}}
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-trimmed"
+                            type="checkbox"
+                            checked
+                        >
+                    {{else}}
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-trimmed"
+                            type="checkbox"
+                        >
+                    {{/if}}
+
                     &nbsp;
                     Trimmed
                 </div>
             </div>
             <div class="row row-with-spacer">
                 <div class="col-md-12">
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-reverse-complemented" type="checkbox">
+                    {{#if options.reverse_complemented}}
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-reverse-complemented"
+                            type="checkbox"
+                            checked
+                        >
+                    {{else}}
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-reverse-complemented"
+                            type="checkbox"
+                        >
+                    {{/if}}
+
                     &nbsp;
                     Reverse Complemented
                 </div>
             </div>
             <div class="row row-with-spacer">
                 <div class="col-md-12">
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-skip-empty" type="checkbox">
+                    {{#if options.skip_empty}}
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-skip-empty"
+                            type="checkbox"
+                            checked
+                        >
+                    {{else}}
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-skip-empty"
+                            type="checkbox"
+                        >
+                    {{/if}}
+
                     &nbsp;
                     Skip Empty
                 </div>
             </div>
+
         </div>
     </div>
 </li>

@@ -1,8 +1,12 @@
 <div class="row row-with-spacer">
     <div class="col-md-12" style="border: 1px solid #000000;">
+
         Combination Object
-        &nbsp;
-        <span class="label label-danger remove-match-sequence-combination-object">&times;</span>
+
+        {{#if isEditable}}
+            &nbsp;
+            <span class="label label-danger remove-match-sequence-combination-object">&times;</span>
+        {{/if}}
 
         <input name="{{inputCount}}-{{parameterType}}-combination-objects[]" type="text" value="{{objectCount}}" hidden>
         <table class="table">

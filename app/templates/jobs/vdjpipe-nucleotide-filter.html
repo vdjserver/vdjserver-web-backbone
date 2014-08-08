@@ -3,20 +3,34 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    <i class="fa fa-bars"></i>
-                    &nbsp;
+                    {{#if isEditable}}
+                        <i class="fa fa-bars"></i>
+                        &nbsp;
+                    {{/if}}
+
                     Nucleotide Filter
-                    &nbsp;
-                    <span class="label label-danger remove-job-parameter">&times;</span>
+
+                    {{#if isEditable}}
+                        &nbsp;
+                        <span class="label label-danger remove-job-parameter">&times;</span>
+                    {{/if}}
                 </div>
             </div>
+
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     Allowed Characters
                     &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}" data-type="text" value="" placeholder="{{placeholderText}}">
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}"
+                        placeholder="AGCT"
+                        type="text"
+                        value="{{options}}"
+                    >
                 </div>
             </div>
+
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     <button type="button" id="toggleCharacterLegend" class="btn btn-success btn-block">Show/Hide Character Legend</button>

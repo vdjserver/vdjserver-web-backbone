@@ -3,42 +3,77 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    <i class="fa fa-bars"></i>
-                    &nbsp;
+
+                    {{#if isEditable}}
+                        <i class="fa fa-bars"></i>
+                        &nbsp;
+                    {{/if}}
+
                     Find Sequences in Multiple Groups
-                    &nbsp;
-                    <span class="label label-danger remove-job-parameter">&times;</span>
+
+                    {{#if isEditable}}
+                        &nbsp;
+                        <span class="label label-danger remove-job-parameter">&times;</span>
+                    {{/if}}
 
                     <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
                 </div>
             </div>
+
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     Min Length
                     &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-min-length" min="0" step="1" pattern="\d+">
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-min-length"
+                        placeholder="unsigned integer"
+                        type="number"
+                        value="{{options.min_length}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
                 </div>
             </div>
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default find-sequences-from-multiple-groups-filter-button" id="find-sequences-from-multiple-groups-ignore-ends-button">Ignore Ends</button>
-                        <button type="button" class="btn btn-default find-sequences-from-multiple-groups-filter-button" id="find-sequences-from-multiple-groups-fraction-match-button">Fraction Match</button>
+                        <button type="button" class="btn btn-default {{parameterType}}-filter-button" id="{{parameterType}}-ignore-ends-button">Ignore Ends</button>
+                        <button type="button" class="btn btn-default {{parameterType}}-filter-button" id="{{parameterType}}-fraction-match-button">Fraction Match</button>
                     </div>
                 </div>
             </div>
-            <div class="row row-with-spacer find-sequences-from-multiple-groups-fraction-match hidden find-sequences-from-multiple-groups-filter-param">
+
+            <div class="row row-with-spacer {{parameterType}}-fraction-match hidden {{parameterType}}-filter-param">
                 <div class="col-md-12">
                     Fraction Match
                     &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-fraction-match">
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-fraction-match"
+                        placeholder="float"
+                        type="number"
+                        value="{{options.fraction_match}}"
+                        step="0.01"
+                    >
                 </div>
             </div>
-            <div class="row row-with-spacer find-sequences-from-multiple-groups-ignore-ends hidden find-sequences-from-multiple-groups-filter-param">
+
+            <div class="row row-with-spacer {{parameterType}}-ignore-ends hidden {{parameterType}}-filter-param">
                 <div class="col-md-12">
                     Ignore Ends
                     &nbsp;
-                    <input class="job-form-item" name="{{inputCount}}-{{parameterType}}-ignore-ends" min="0" step="1" pattern="\d+">
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-ignore-ends"
+                        placeholder="unsigned integer"
+                        type="number"
+                        value="{{options.ignore_ends}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
                 </div>
             </div>
 

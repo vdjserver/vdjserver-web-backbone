@@ -442,6 +442,7 @@ define([
         clickRunJob: function(e) {
             e.preventDefault();
 
+            console.log("clickRunJob");
             var jobType = e.target.dataset.jobtype;
 
             this.removeView('#job-submit');
@@ -449,14 +450,86 @@ define([
             var selectedFileMetadataUuids = this.getSelectedFileUuids();
             var selectedFileListings = this.fileListings.getNewCollectionForUuids(selectedFileMetadataUuids);
 
+            console.log("about to create view");
             var jobSubmitView = new App.Views.Jobs.Submit({
                 selectedFileListings: selectedFileListings,
                 jobType: jobType,
-                projectModel: this.projectModel
+                projectModel: this.projectModel,
             });
 
             this.setView('#job-submit', jobSubmitView);
-            jobSubmitView.render();
+
+            jobSubmitView.fetchNetworkData()
+                .done(function() {
+                    jobSubmitView.render();
+                });
+
+            this.handleJobViewEvents(jobSubmitView);
+        },
+        handleJobViewEvents: function(jobSubmitView) {
+
+            var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
+
+            var that = this;
+
+            this.listenToOnce(
+                jobSubmitView,
+                'setupCreateWorkflowView',
+                function() {
+
+                    $('#job-modal')
+                        .modal('hide')
+                        .on('hidden.bs.modal', function() {
+                            that.setView('#job-submit', workflowEditorView);
+
+                            workflowEditorView.fetchNetworkData()
+                                .done(function() {
+                                    workflowEditorView.render();
+                                });
+                        });
+                }
+            );
+
+            this.listenToOnce(
+                jobSubmitView,
+                'setupEditWorkflowView',
+                function(editableWorkflow) {
+                    $('#job-modal')
+                        .modal('hide')
+                        .on('hidden.bs.modal', function() {
+                            // The editable workflow needs to be set before render is called.
+                            workflowEditorView.editableWorkflow = editableWorkflow;
+                            that.setView('#job-submit', workflowEditorView);
+
+                            workflowEditorView.fetchNetworkData()
+                                .done(function() {
+                                    workflowEditorView.render();
+                                });
+                        });
+                }
+            );
+            this.listenToOnce(
+                workflowEditorView,
+                App.Views.Jobs.WorkflowEditor.events.closeWorkflowEditor,
+                function() {
+                    $('#workflow-modal')
+                        .modal('hide')
+                        .on('hidden.bs.modal', function() {
+
+                            //workflowEditorView.remove();
+                            that.setView('#job-submit', jobSubmitView);
+
+                            jobSubmitView.fetchNetworkData()
+                                .done(function() {
+                                    jobSubmitView.render();
+
+                                    // Reset listeners
+                                    that.handleJobViewEvents(jobSubmitView);
+                                });
+                        });
+                }
+            );
+
         },
         getSelectedFileUuids: function() {
 
