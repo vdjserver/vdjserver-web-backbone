@@ -55,6 +55,9 @@ define(['app', 'backbone'], function(App, Backbone) {
                 }
             );
         },
+        initialize: function() {
+            this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
+        },
         generateVdjPipeConfig: function(parameters, fileMetadata) {
 
             var outputConfig = {
@@ -516,7 +519,7 @@ define(['app', 'backbone'], function(App, Backbone) {
             var archivePath = '/projects/'
                             + projectUuid
                             + '/analyses/'
-                            + moment().format('YYYY-MM-DD-HH-mm-ss-SS')
+                            + moment().format(this.archivePathDateFormat)
                             + '-' + this.getDirectorySafeName(this.get('name'));
 
             this.set('archivePath', archivePath);

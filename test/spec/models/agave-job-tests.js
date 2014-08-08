@@ -119,21 +119,17 @@ define(['app', 'agave-job', 'moment'], function() {
 
         it('setArchivePath should create a correct archivePath', function() {
 
+            var archivePathDateFormat = 'YYYY-MM-DD';
+
             var model = new Backbone.Agave.Model.Job.VdjPipe();
+            model.archivePathDateFormat = archivePathDateFormat;
 
-            //sinon.stub(moment, '')
-
-            var time = moment().format('YYYY-MM-DD-HH-mm-ss-SS');
-            console.log("time is: " + time);
+            model.set('name', 'testJob');
 
             model.setArchivePath('project123');
+            var time = moment().format(archivePathDateFormat);
 
-            //model.get('archivePath').should.equal
-
-            var relativeArchivePath = model.getRelativeArchivePath();
-
-            relativeArchivePath.should.equal('2014-06-16-14-10-58-46-test');
-
+            model.get('archivePath').should.equal('/projects/project123/analyses/' + time + '-testjob');
         });
 
     });
