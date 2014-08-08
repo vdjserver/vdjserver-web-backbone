@@ -481,7 +481,11 @@ define([
                         .modal('hide')
                         .on('hidden.bs.modal', function() {
                             that.setView('#job-submit', workflowEditorView);
-                            workflowEditorView.render();
+
+                            workflowEditorView.fetchNetworkData()
+                                .done(function() {
+                                    workflowEditorView.render();
+                                });
                         });
                 }
             );
@@ -496,7 +500,11 @@ define([
                             // The editable workflow needs to be set before render is called.
                             workflowEditorView.editableWorkflow = editableWorkflow;
                             that.setView('#job-submit', workflowEditorView);
-                            workflowEditorView.render();
+
+                            workflowEditorView.fetchNetworkData()
+                                .done(function() {
+                                    workflowEditorView.render();
+                                });
                         });
                 }
             );

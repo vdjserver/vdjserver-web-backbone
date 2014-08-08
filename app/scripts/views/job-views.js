@@ -117,7 +117,7 @@ define([
 
             var workflowData = workflow.getWorkflowFromConfig();
 
-            //console.log("workflowData is: " + JSON.stringify(workflowData));
+            console.log("workflowData is: " + JSON.stringify(workflowData));
 
             var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
 
@@ -215,10 +215,28 @@ define([
             initialize: function() {
                 this.counter = 0;
                 this.editableWorkflow = {};
+
+                this.workflows = new Backbone.Agave.Collection.Jobs.Workflows();
             },
 
             /** Layout Manager template */
             template: 'jobs/vdjpipe-form-options',
+
+            /**
+             * Fetches remote data that this view requires.
+             *
+             * @returns {Promise} deferred
+             */
+            fetchNetworkData: function() {
+                var deferred = $.Deferred();
+                this.workflows
+                    .fetch()
+                    .done(function() {
+                        deferred.resolve();
+                    });
+
+                return deferred;
+            },
 
             /**
              * Creates editable workflow views for the supplied workflow
@@ -228,13 +246,17 @@ define([
              */
             setupEditableWorkflow: function(editableWorkflow) {
 
-                var workflowData = editableWorkflow.getWorkflowFromConfig();
+                // Set name on DOM
+                $('#workflow-name').val(editableWorkflow.get('value').workflowName);
 
-                var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
+                // Remove workflow placeholder from DOM
+                $('#vdj-pipe-configuration-placeholder').remove();
 
                 //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
 
-                $('#vdj-pipe-configuration-placeholder').remove();
+                var workflowData = editableWorkflow.getWorkflowFromConfig();
+
+                var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
 
                 for (this.counter = 0; this.counter < workflowViews.length; this.counter++) {
                     var view = workflowViews[this.counter];
@@ -332,6 +354,58 @@ define([
                 }
             },
 
+            /**
+             * Checks if the current workflow name is a duplicate of an existing
+             * workflow name.
+             *
+             * If the workflow name matches the existing name from the current
+             * editable workflow, then it also allowed.
+             *
+             * @returns {error|void} error
+             */
+            validateWorkflowName: function(workflowName) {
+
+                if (workflowName !== this.editableWorkflow.get('value').workflowName) {
+
+                    var workflowNames = this.workflows.getWorkflowNames();
+
+                    var duplicateExists = _.indexOf(workflowNames, workflowName);
+
+                    if (duplicateExists >= 0) {
+                        return [{
+                            'message': 'This workflow name already exists.',
+                            'type': 'workflow-name',
+                        }];
+                    }
+                }
+            },
+
+            /**
+             * Aggregates and returns all form errors. This includes errors
+             * from model validation and custom form validation for duplicate
+             * workflow names.
+             *
+             * @returns {array} formErrors
+             */
+            getFormErrors: function(formData) {
+                var jobWorkflow = new Backbone.Agave.Model.Job.Workflow();
+                jobWorkflow.setConfigFromFormData(formData);
+
+
+
+                var formWorkflowNameErrors = this.validateWorkflowName(formData['workflow-name']) || [];
+                var formModelErrors = jobWorkflow.validate() || [];
+
+
+
+                var formErrors = [];
+                formErrors = _.zip(formModelErrors, formWorkflowNameErrors);
+                formErrors = _.flatten(formErrors);
+                formErrors = _.compact(formErrors);
+
+                return formErrors;
+            },
+
             // Event Actions
 
             /**
@@ -419,6 +493,10 @@ define([
              * Otherwise, the current workflow is saved and an event is sent
              * that signifies that the workflow is ready to be closed.
              *
+             * If this workflow is an edit for an existing workflow, then it
+             * will be updated. Otherwise, a new workflow will be created in
+             * the save process.
+             *
              * @param {event} e
              */
             workflowSave: function(e) {
@@ -426,18 +504,24 @@ define([
 
                 var formData = Backbone.Syphon.serialize(this);
 
-                var jobWorkflow = new Backbone.Agave.Model.Job.Workflow();
-                jobWorkflow.setConfigFromFormData(formData);
+                var formErrors = this.getFormErrors(formData);
 
-                var formErrors = jobWorkflow.validate();
-
-    console.log("formData is: " + JSON.stringify(formData));
-                if (formErrors) {
-                    console.log("correction");
-
+                if (formErrors.length > 0) {
                     this.displayFormErrors(formErrors);
                 }
                 else {
+
+                    var jobWorkflow;
+
+                    // Adjust if we're updating an existing workflow instead of saving a new one
+                    if (! _.isEmpty(this.editableWorkflow)) {
+                        jobWorkflow = this.editableWorkflow;
+                    }
+                    else {
+                        jobWorkflow = new Backbone.Agave.Model.Job.Workflow();
+                    }
+
+                    jobWorkflow.setConfigFromFormData(formData);
 
                     var that = this;
 
@@ -445,12 +529,9 @@ define([
                         .done(function() {
                             that.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditor);
                         })
-                        .fail(function(e) {
+                        .fail(function() {
                             // troubleshoot
-                            console.log("save error is: " + JSON.stringify(e));
-                            console.log("workflow save fail");
-                        })
-                        ;
+                        });
                 }
             },
         },

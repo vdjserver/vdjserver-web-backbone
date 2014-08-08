@@ -61,6 +61,13 @@ define(['backbone'], function(Backbone) {
                     + '"name":"vdjpipeWorkflow"'
                 + '}');
         },
+        getWorkflowNames: function() {
+            var values = this.pluck('value');
+
+            var workflowNames = _.pluck(values, 'workflowName');
+
+            return workflowNames;
+        },
     });
 
     Backbone.Agave.Collection.Jobs = Jobs;
