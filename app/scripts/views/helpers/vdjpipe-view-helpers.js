@@ -36,7 +36,7 @@ define([
 
             case 'ambiguous_window_filter':
 
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeAmbiguousWindowFilter({
+                vdjPipeView = new App.Views.Vdjpipe.AmbiguousWindowFilter({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -45,7 +45,7 @@ define([
                 break;
 
             case 'average_quality_filter':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeMinAverageQualityFilter({
+                vdjPipeView = new App.Views.Vdjpipe.MinimalAverageQualityFilter({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -54,7 +54,7 @@ define([
                 break;
 
             case 'average_quality_window_filter':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeAverageQualityWindowFilter({
+                vdjPipeView = new App.Views.Vdjpipe.AverageQualityWindowFilter({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -63,7 +63,7 @@ define([
                 break;
 
             case 'character_filter':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeNucleotideFilter({
+                vdjPipeView = new App.Views.Vdjpipe.NucleotideFilter({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -72,7 +72,7 @@ define([
                 break;
 
             case 'composition_stats':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeTextImmutable({
+                vdjPipeView = new App.Views.Vdjpipe.TextImmutable({
                     parameterName: 'Base Composition Statistics',
                     parameterType: key,
                     inputCount: counter,
@@ -82,7 +82,7 @@ define([
                 break;
 
             case 'eMID_map':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeMatchExternalMolecularIdentifier({
+                vdjPipeView = new App.Views.Vdjpipe.MatchExternalMolecularIdentifier({
                     parameterType: key,
                     inputCount: counter,
                     files: this.selectedFileListings,
@@ -92,7 +92,7 @@ define([
                 break;
 
             case 'find_intersection':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeFindSequencesFromMultipleGroups({
+                vdjPipeView = new App.Views.Vdjpipe.FindSequencesFromMultipleGroups({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -101,7 +101,7 @@ define([
                 break;
 
             case 'find_unique':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeFindUniqueSequences({
+                vdjPipeView = new App.Views.Vdjpipe.FindUniqueSequences({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -110,7 +110,7 @@ define([
                 break;
 
             case 'histogram':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeHistogram({
+                vdjPipeView = new App.Views.Vdjpipe.Histogram({
                     parameterName: 'Histogram',
                     parameterType: key,
                     placeholderText: '',
@@ -122,10 +122,8 @@ define([
                 break;
 
             case 'homopolymer_filter':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeNumberMutable({
-                    parameterName: 'Homopolymer Filter',
+                vdjPipeView = new App.Views.Vdjpipe.HomopolymerFilter({
                     parameterType: key,
-                    inputLabel: 'Max',
                     inputCount: counter,
                     options: options,
                 });
@@ -133,7 +131,7 @@ define([
                 break;
 
             case 'length_filter':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeLengthFilter({
+                vdjPipeView = new App.Views.Vdjpipe.LengthFilter({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -142,7 +140,7 @@ define([
                 break;
 
             case 'match':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeMatchSequenceElement({
+                vdjPipeView = new App.Views.Vdjpipe.MatchSequenceElement({
                     parameterType: key,
                     inputCount: counter,
                     files: this.selectedFileListings,
@@ -152,10 +150,8 @@ define([
                 break;
 
             case 'merge_paired':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeNumberMutable({
-                    parameterName: 'Merge Paired Reads',
+                vdjPipeView = new App.Views.Vdjpipe.MergePairedReads({
                     parameterType: key,
-                    inputLabel: 'Minimum Score',
                     inputCount: counter,
                     options: options,
                 });
@@ -163,10 +159,8 @@ define([
                 break;
 
             case 'min_quality_filter':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeNumberMutable({
-                    parameterName: 'Minimal Quality Filter',
+                vdjPipeView = new App.Views.Vdjpipe.MinimalQualityFilter({
                     parameterType: key,
-                    inputLabel: '',
                     inputCount: counter,
                     options: options,
                 });
@@ -174,7 +168,7 @@ define([
                 break;
 
             case 'min_quality_window_filter':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeMinimalQualityWindowFilter({
+                vdjPipeView = new App.Views.Vdjpipe.MinimalQualityWindowFilter({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -183,7 +177,7 @@ define([
                 break;
 
             case 'quality_stats':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeTextImmutable({
+                vdjPipeView = new App.Views.Vdjpipe.TextImmutable({
                     parameterName: 'Read Quality Statistics',
                     parameterType: key,
                     inputCount: counter,
@@ -193,7 +187,7 @@ define([
                 break;
 
             case 'write_sequence':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeWriteSequence({
+                vdjPipeView = new App.Views.Vdjpipe.WriteSequence({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -202,7 +196,7 @@ define([
                 break;
 
             case 'write_value':
-                vdjPipeView = new App.Views.Vdjpipe.VdjpipeWriteValue({
+                vdjPipeView = new App.Views.Vdjpipe.WriteValue({
                     parameterType: key,
                     inputCount: counter,
                     options: options,

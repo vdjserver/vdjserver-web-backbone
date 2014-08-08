@@ -635,6 +635,7 @@ define(['app', 'backbone'], function(App, Backbone) {
 
             var config = this.getWorkflowFromConfig();
 
+            // Check if either |single_read_pipe| or |paired_read_pipe| is available.
             if (config['single_read_pipe'] && config['single_read_pipe'].length === 0) {
                 errors.push({
                     'message': 'Missing Configuration Steps.',
@@ -642,10 +643,12 @@ define(['app', 'backbone'], function(App, Backbone) {
                 });
             }
             else if (config['paired_read_pipe'] && config['paired_read_pipe'].length === 0) {
-                errors.push({
-                    'message': 'Missing Configuration Steps.',
-                    'type': 'configuration-steps',
-                });
+                errors.push(
+                    new App.Models.Error({
+                        'message': 'Missing Configuration Steps.',
+                        'type': 'configuration-steps',
+                    })
+                );
             }
 
             if (errors.length > 0) {

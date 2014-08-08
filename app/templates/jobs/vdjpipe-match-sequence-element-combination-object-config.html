@@ -1,0 +1,70 @@
+<div class="row row-with-spacer">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-12">
+                        Combination Object
+
+                        {{#if isEditable}}
+                            &nbsp;
+                            <span class="label label-danger remove-match-sequence-combination-object">&times;</span>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+
+                        <input name="{{inputCount}}-{{parameterType}}-combination-objects[]" type="text" value="{{objectCount}}" hidden>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        File
+                                    </td>
+                                    <td>
+                                        <select name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-file">
+                                            {{#each files}}
+                                                <option value={{value.name}}>{{value.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Value Name
+                                    </td>
+                                    <td>
+                                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-value-name" type="text">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Values Column
+                                    </td>
+                                    <td>
+                                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-values-column" type="text">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Names Column
+                                    </td>
+                                    <td>
+                                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-names-column" type="text">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

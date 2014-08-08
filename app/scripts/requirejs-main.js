@@ -23,6 +23,7 @@ define([
     'slickgrid.grid',
 
     // Regular Models
+    'error',
     'job-websocket',
 
     // Agave

@@ -361,7 +361,7 @@ define([
              * If the workflow name matches the existing name from the current
              * editable workflow, then it also allowed.
              *
-             * @returns {error|void} error
+             * @returns {array|void} error An array that contains an error object.
              */
             validateWorkflowName: function(workflowName) {
 
@@ -399,12 +399,34 @@ define([
 
 
                 var formErrors = [];
+
+                // merge
                 formErrors = _.zip(formModelErrors, formWorkflowNameErrors);
+
+                // combine nested arrays
                 formErrors = _.flatten(formErrors);
+
+                // get rid of null values
                 formErrors = _.compact(formErrors);
 
                 return formErrors;
             },
+/*
+            validateWorkflowOptions: function() {
+
+                var views = this.getViews('#vdj-pipe-configuration');
+
+                var errors = [];
+
+                for (var i = 0; i < views.length; i++) {
+                    var view = views[i];
+
+                    if (true) {}
+                    var error = view.validateParameters();
+                    errors.push(error);
+                }
+            },
+*/
 
             // Event Actions
 

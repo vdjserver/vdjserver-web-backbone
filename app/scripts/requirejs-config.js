@@ -28,6 +28,7 @@ require.config({
         'backbone-agave':  'vendor/backbone-agave',
 
         // Regular Models
+        'error': 'models/error',
         'job-websocket': 'models/job-websocket',
 
         // Agave - Models/Collections

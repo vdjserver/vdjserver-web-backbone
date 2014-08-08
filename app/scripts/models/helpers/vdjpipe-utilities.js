@@ -21,19 +21,15 @@ define(['app'], function(App) {
 
         var paramOutput = [];
         var inputOutput = [];
+        var errors = [];
 
         for (var key in parameters) {
 
             if (parameters.hasOwnProperty(key)) {
-                //console.log("key is: " + key);
                 if (key !== 'formtype' && key !== 'job-name') {
                     var keyCounterIndex = key.indexOf('-') + 1;
                     var keyCounter = key.slice(0, keyCounterIndex);
                     var vdjPipeParam = key.slice(keyCounterIndex);
-
-                    //console.log("keyCounterIndex is: " + keyCounterIndex);
-                    //console.log("keyCounter is: " + keyCounter);
-                    //console.log("vdjPipeParam is: " + vdjPipeParam);
 
                     switch(vdjPipeParam) {
 
@@ -142,16 +138,14 @@ define(['app'], function(App) {
                         case 'length_filter':
                             paramOutput.push({
                                 'length_filter': {
-                                    'min': parseInt(parameters[keyCounter + 'length-filter-min']),
-                                    'max': parseInt(parameters[keyCounter + 'length-filter-max']),
+                                    'min': parseInt(parameters[key + '-min']),
+                                    'max': parseInt(parameters[key + '-max']),
                                 },
                             });
 
                             break;
 
                         case 'match':
-                            console.log("match sequence element params are: " + JSON.stringify(parameters));
-                            console.log("key is: " + JSON.stringify(key));
 
                             var elementName = parameters[key];
                             var reverse = parameters[key + '-reverse-complement'];
@@ -162,7 +156,7 @@ define(['app'], function(App) {
                             if (parameters[key + '-elements']) {
                                 for (var i = 0; i < parameters[key + '-elements'].length; i++) {
                                     var elementCounter = parameters[key + '-elements'][i];
-                                    console.log("elementCounter is: " + JSON.stringify(elementCounter));
+                                    //console.log("elementCounter is: " + JSON.stringify(elementCounter));
 
                                     var startPosition = parameters[key + '-' + elementCounter + '-element-start-position'];
                                     var startPositionLocation = parameters[key + '-' + elementCounter + '-element-start-position-location'];
@@ -309,7 +303,7 @@ define(['app'], function(App) {
                                         }
                                     }
 
-                                    console.log("element finished: " + JSON.stringify(element));
+                                    //console.log("element finished: " + JSON.stringify(element));
                                     elements.push(element);
                                 }
                             }
@@ -323,17 +317,19 @@ define(['app'], function(App) {
                                     var combinationObject = {};
 
                                     var objectCounter = parameters[key + '-combination-objects'][i];
-                                    console.log("objectCounter is: " + JSON.stringify(objectCounter));
+                                    //console.log("objectCounter is: " + JSON.stringify(objectCounter));
 
                                     var objectFile = parameters[key + '-' + objectCounter + '-combination-object-file'];
                                     var valueName = parameters[key + '-' + objectCounter + '-combination-object-value-name'];
                                     var valuesColumn = parameters[key + '-' + objectCounter + '-combination-object-values-column'];
                                     var namesColumn = parameters[key + '-' + objectCounter + '-combination-object-names-column'];
 
+                                    /*
                                     console.log("obj file is: " + objectFile);
                                     console.log("obj value is: " + valueName);
                                     console.log("obj values2 is: " + valuesColumn);
                                     console.log("obj names is: " + namesColumn);
+                                    */
 
                                     if (objectFile && valuesColumn && namesColumn) {
                                         combinationObject.path = objectFile;
@@ -369,6 +365,9 @@ define(['app'], function(App) {
                                 matchObject.combinations = {};
                                 matchObject.combinations = combinationObjects;
                             }
+
+                            console.log("combinationObjects are: " + JSON.stringify(combinationObjects));
+                            console.log("matchObject is: " + JSON.stringify(matchObject));
 
                             paramOutput.push(matchObject);
 
