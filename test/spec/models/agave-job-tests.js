@@ -132,5 +132,15 @@ define(['app', 'agave-job', 'moment'], function() {
             model.get('archivePath').should.equal('/projects/project123/analyses/' + time + '-testjob');
         });
 
+        it('getDirectorySafeName should return a string that is lowercase and without any spaces', function() {
+            var model = new Backbone.Agave.Model.Job.VdjPipe();
+
+            var safeName = model.getDirectorySafeName('1.21 GigaWATTS');
+
+            safeName.should.equal('1.21-gigawatts');
+        });
+
+        //it('getRelativeArchivePath should')
+
     });
 });
