@@ -597,10 +597,20 @@ define(['app', 'backbone'], function(App, Backbone) {
                 }
             );
         },
+        fakeSync: function() {
+            console.log("calling fakeSync");
+            var deferred = $.Deferred();
+
+            deferred.resolve = true;
+
+            return deferred;
+        },
         url: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },
         setConfigFromFormData: function(formData) {
+
+            console.log("model formData is: " + JSON.stringify(formData));
 
             var config = App.Models.Helpers.VdjPipeUtilities.SerializeVdjPipeConfig(formData);
 
@@ -612,6 +622,24 @@ define(['app', 'backbone'], function(App, Backbone) {
                     'config': config,
                     'workflowName': workflowName,
                 }
+            );
+        },
+        setConfigFromPreconfiguredData: function(data) {
+
+            var workflowName = data['workflow-name'];
+            delete data['workflow-name'];
+
+            this.set(
+                'value',
+                {
+                    'config': data,
+                    'workflowName': workflowName,
+                }
+            );
+
+            this.set(
+                'uuid',
+                workflowName
             );
         },
         getWorkflowFromConfig: function() {

@@ -44,9 +44,8 @@
                             <div class="input-group">
                                 <select class="form-control" id="select-workflow">
                                     <option></option>
-                                    <option>Workflow A</option>
                                     {{#each workflows}}
-                                        <option value="{{this.uuid}}">{{value.workflowName}}</option>
+                                        <option value="{{this.uuid}}" data-type="custom-workflow">{{value.workflowName}}</option>
                                     {{/each}}
                                 </select>
                                 <div class="input-group-btn">

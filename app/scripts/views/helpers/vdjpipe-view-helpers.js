@@ -205,6 +205,7 @@ define([
                 break;
 
             default:
+                console.log("key " + key + " is falling into default");
                 break;
         }
 

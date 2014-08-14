@@ -26,9 +26,15 @@ define([
         },
         fetchNetworkData: function() {
             var deferred = $.Deferred();
+
+            var that = this;
+
             this.workflows
                 .fetch()
                 .done(function() {
+
+                    that.workflows.setPredefinedWorkflows();
+
                     deferred.resolve();
                 });
 
@@ -42,6 +48,9 @@ define([
         },
         afterRender: function() {
             $('#job-modal').modal('show');
+
+            // Send a change event to select the first workflow
+            //$('#select-workflow').change();
         },
         events: {
             'change #select-workflow':     'showWorkflow',
@@ -53,9 +62,11 @@ define([
         },
         // Event Helpers
         resetDeleteWorkflow: function() {
-            $('#delete-workflow').removeClass('btn-danger');
-            $('#delete-workflow').addClass('btn-outline-danger');
-            $('#delete-workflow').html('&nbsp;Delete');
+            $('#delete-workflow')
+                .removeClass('btn-danger')
+                .addClass('btn-outline-danger')
+                .html('&nbsp;Delete')
+            ;
         },
         // Events
         createWorkflow: function(e) {
@@ -75,9 +86,11 @@ define([
             e.preventDefault();
 
             if ($('#delete-workflow').hasClass('btn-outline-danger')) {
-                $('#delete-workflow').removeClass('btn-outline-danger');
-                $('#delete-workflow').addClass('btn-danger');
-                $('#delete-workflow').html('&nbsp;Confirm Delete');
+                $('#delete-workflow')
+                    .removeClass('btn-outline-danger')
+                    .addClass('btn-danger')
+                    .html('&nbsp;Confirm Delete')
+                ;
             }
             else if ($(e.currentTarget).hasClass('btn-danger')) {
                 var that = this;
@@ -108,37 +121,52 @@ define([
             // Do housekeeping first
             this.removeView('#workflow-staging-area');
 
+            console.log("past housekeeping");
+
             // Setup and insert new workflow views
             var workflowId = e.target.value;
+                console.log("val is: " + workflowId);
 
-            var workflow = this.workflows.get(workflowId);
+            if (workflowId) {
 
-            //var defaultWorkflows = Jobs.GetWorkflowConfig();
 
-            var workflowData = workflow.getWorkflowFromConfig();
+                var workflow = this.workflows.get(workflowId);
+                var workflowData = workflow.getWorkflowFromConfig();
 
-            console.log("workflowData is: " + JSON.stringify(workflowData));
+                /*
+                var defaultWorkflow = Jobs.GetPredefinedWorkflowConfig(workflowId);
+                if (defaultWorkflow) {
+                    workflowData = defaultWorkflow;
+                }
+                else {
+                    workflow = this.workflows.get(workflowId);
+                    workflowData = workflow.getWorkflowFromConfig();
+                }
+                */
+                console.log("workflow is: " + JSON.stringify(workflow));
+                console.log("workflowData is: " + JSON.stringify(workflowData));
 
-            var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
+                var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
 
-            /*
-                I'd love to use insertViews instead, but as of 24/July/2014
-                it seems to work on the parent layout instead of the view
-                represented by |this|.
+                /*
+                    I'd love to use insertViews instead, but as of 24/July/2014
+                    it seems to work on the parent layout instead of the view
+                    represented by |this|.
 
-                This behavior might be a bug in layout manager, so the
-                following loop is a workaround for now.
-            */
-            //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
-            for (var i = 0; i < workflowViews.length; i++) {
-                var view = workflowViews[i];
+                    This behavior might be a bug in layout manager, so the
+                    following loop is a workaround for now.
+                */
+                //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
+                for (var i = 0; i < workflowViews.length; i++) {
+                    var view = workflowViews[i];
 
-                view.isEditable = false;
-                view.files = this.selectedFileListings;
+                    view.isEditable = false;
+                    view.files = this.selectedFileListings;
 
-                this.insertView('#workflow-staging-area', view);
+                    this.insertView('#workflow-staging-area', view);
 
-                view.render();
+                    view.render();
+                }
             }
         },
         submitJob: function(e) {
@@ -313,12 +341,13 @@ define([
 
                 if ($('#vdj-pipe-configuration-placeholder').length) {
 
-                    $('#vdj-pipe-configuration-placeholder').addClass('animated flipOutX');
-                    $('#vdj-pipe-configuration-placeholder').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-                        $('#vdj-pipe-configuration-placeholder').remove();
-
-                        deferred.resolve();
-                    });
+                    $('#vdj-pipe-configuration-placeholder')
+                        .addClass('animated flipOutX')
+                        .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                            $('#vdj-pipe-configuration-placeholder').remove();
+                            deferred.resolve();
+                        })
+                    ;
                 }
                 else {
                     deferred.resolve();
@@ -355,15 +384,28 @@ define([
             },
 
             /**
-             * Checks if the current workflow name is a duplicate of an existing
-             * workflow name.
+             * Validates workflow names against the following rules:
              *
-             * If the workflow name matches the existing name from the current
-             * editable workflow, then it also allowed.
+             * 1.) Checks if the workflow matches a predefined workflow name.
+             * This is not allowed.
+             *
+             * 2.) Checks if the current workflow name is a duplicate of an existing
+             * workflow name besides the one currently being edited.
              *
              * @returns {array|void} error An array that contains an error object.
              */
             validateWorkflowName: function(workflowName) {
+
+                var predefinedWorkflowNames = this.workflows.getPredefinedWorkflowNames();
+                var predefinedClash = _.indexOf(predefinedWorkflowNames, workflowName);
+
+                if (predefinedClash >= 0) {
+                    return [{
+                        'message': 'Custom workflows cannot be named after predefined workflows. Please choose a different name.',
+                        'type': 'workflow-name',
+                    }];
+                }
+
 
                 if (workflowName !== this.editableWorkflow.get('value').workflowName) {
 
@@ -471,11 +513,17 @@ define([
             removeJobParameter: function(e) {
                 e.preventDefault();
 
-                $(e.currentTarget).closest('.vdj-pipe-parameter').addClass('animated flipOutX');
+                $(e.currentTarget)
+                    .closest('.vdj-pipe-parameter')
+                    .addClass('animated flipOutX')
+                ;
 
-                $(e.currentTarget).closest('.vdj-pipe-parameter').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-                    $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
-                });
+                $(e.currentTarget)
+                    .closest('.vdj-pipe-parameter')
+                    .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+                        $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
+                    })
+                ;
             },
 
             /**
@@ -536,7 +584,8 @@ define([
                     var jobWorkflow;
 
                     // Adjust if we're updating an existing workflow instead of saving a new one
-                    if (! _.isEmpty(this.editableWorkflow)) {
+                    // Also make sure that we create a new workflow if we're editing a predefined one
+                    if (! _.isEmpty(this.editableWorkflow) && !this.editableWorkflow.get('predefined')) {
                         jobWorkflow = this.editableWorkflow;
                     }
                     else {
@@ -549,11 +598,14 @@ define([
 
                     jobWorkflow.save()
                         .done(function() {
+                            console.log("save done");
                             that.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditor);
                         })
                         .fail(function() {
                             // troubleshoot
-                        });
+                            console.log("save fail");
+                        })
+                    ;
                 }
             },
         },
@@ -680,66 +732,52 @@ define([
         template: 'jobs/igblast-form'
     });
 
-    Jobs.GetWorkflowConfig = function(workflow) {
-        var workflowConfig;
+    Jobs.GetPredefinedWorkflowConfig = function(workflowName) {
+        var config;
 
-        switch(workflow) {
-            case 'Workflow A':
+        switch(workflowName) {
+            case 'single-reads':
 
-                workflowConfig = {
-
-                   'single_read_pipe': [
-                      { 'quality_stats': { 'out_prefix': 'pre-filter_' } },
-                      { 'composition_stats': { 'out_prefix': 'pre-filter_' } },
-
-                      { 'min_quality_window_filter': { 'min_quality': 20, 'min_length': 200 } },
-                      { 'ambiguous_window_filter': { 'min_length': 200, 'max_ambiguous': 5 } },
-                      {
-                        'average_quality_window_filter': {
-                           'min_quality': 25, 'window_length': 10, 'min_length': 200
-                        }
-                      },
-                      { 'match':
+                config = {
+                    'summary_output_path': 'summary.txt',
+                    'single_read_pipe': [
+                        { 'quality_stats': { 'out_prefix': 'pre-filter_' } },
+                        { 'composition_stats': { 'out_prefix': 'pre-filter_' } },
                         {
-                            'reverse': true, 'trimmed': false,
-                            'elements': [
-                                 {
-                                   'start': { 'pos': 14 }, 'length': 8,
-                                   'seq_file': 'imid1.fasta',
-                                   'min_score': 10, 'value_name': 'iMID',
-                                   'score_name': 'iMID_score'
-                                 },
-                                 {
-                                   'end': { 'before': 'iMID', 'pos': -1 }, 'length': 10,
-                                   'value_name': 'UMI'
-                                 }
-                            ]
-                        }
-                      },
-                      { 'histogram': { 'name': 'iMID', 'out_path': 'iMID.csv' } },
-/*
-                      { 'select': {
-                            'match': [ { 'name': 'iMID_UMI_map', 'value': '' } ],
-                            'do': [ { 'write_sequence': { 'out_path': 'sample_1.fastq' } } ]
-                        }
-                      },
-*/
-                      { 'write_sequence':
-                            {
-                         'trimmed': false, 'skip_empty': true, 'out_path': 'all_seqs.fastq'
+                            'match': {
+                                'reverse': true,
+                                'elements': [
+                                    { /* barcode element */
+                                        'start': { },
+                                        'sequence': [
+                                            'forward barcode sequence1',
+                                            'forward barcode sequence2'
+                                        ],
+                                        'cut_lower': { 'after': 0 },
+                                        'required': true,
+                                        'require_best': true,
+                                        'value_name': 'MID', 'score_name': 'MID-score'
+                                    }
+                                ]
                             }
-                      },
-                      { 'write_value': {
-                            'out_path': 'vals.csv.bz2', 'names': ['read_id', 'iMID', 'UMI']
+                        },
+                        { 'histogram': { 'name': 'MID', 'out_path': 'MID.csv' } },
+                        { 'length_filter': { 'min': 200 } },
+                        { 'average_quality_filter': 35 },
+                        { 'homopolymer_filter': 20 },
+                        { 'quality_stats': { 'out_prefix': 'post-filter_' } },
+                        { 'composition_stats': { 'out_prefix': 'post-filter_' } },
+                        {
+                            'find_shared': {
+                            'out_unique':'.fasta'
+                            }
                         }
-                      },
-                      { 'write_value': {
-                            'out_path': 'vals_{iMID}.csv', 'names': ['read_id', 'iMID', 'UMI']
-                        }
-                      }
-
-                   ]
+                    ]
                 };
+
+                break;
+
+            case 'paired-reads':
 
                 break;
 
@@ -747,7 +785,7 @@ define([
                 break;
         }
 
-        return workflowConfig;
+        return config;
     };
 
     App.Views.Jobs = Jobs;
