@@ -76,6 +76,18 @@ define(['backbone'], function(Backbone) {
 
             return predefinedWorkflowNames;
         },
+        checkIfPredefinedWorkflow: function(workflowName) {
+            
+            var predefinedWorkflowNames = this.getPredefinedWorkflowNames();
+            var predefinedClash = _.indexOf(predefinedWorkflowNames, workflowName);
+
+            if (predefinedClash >= 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
         setPredefinedWorkflows: function() {
             var singleReadPipeWorkflow = new Backbone.Agave.Model.Job.Workflow();
             singleReadPipeWorkflow.sync = singleReadPipeWorkflow.fakeSync;

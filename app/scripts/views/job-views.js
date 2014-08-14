@@ -53,7 +53,7 @@ define([
             //$('#select-workflow').change();
         },
         events: {
-            'change #select-workflow':     'showWorkflow',
+            'change #select-workflow': 'showWorkflow',
             'click .remove-file-from-job': 'removeFileFromJob',
             'click #create-workflow': 'createWorkflow',
             'click #edit-workflow':   'editWorkflow',
@@ -67,6 +67,22 @@ define([
                 .addClass('btn-outline-danger')
                 .html('&nbsp;Delete')
             ;
+        },
+        guardDeleteIfPredefined: function() {
+
+            // Make sure that this isn't a predefined workflow
+            var workflowId = $('#select-workflow').val();
+            var workflow = this.workflows.get(workflowId);
+
+            // Disable if predefined
+            if (this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
+                console.log("predefizzle");
+                $('#delete-workflow').attr('disabled','disabled');
+                return;
+            }
+            else {
+                $('#delete-workflow').removeAttr('disabled');
+            }
         },
         // Events
         createWorkflow: function(e) {
@@ -117,6 +133,7 @@ define([
             e.preventDefault();
 
             this.resetDeleteWorkflow();
+            this.guardDeleteIfPredefined();
 
             // Do housekeeping first
             this.removeView('#workflow-staging-area');
@@ -129,20 +146,9 @@ define([
 
             if (workflowId) {
 
-
                 var workflow = this.workflows.get(workflowId);
                 var workflowData = workflow.getWorkflowFromConfig();
 
-                /*
-                var defaultWorkflow = Jobs.GetPredefinedWorkflowConfig(workflowId);
-                if (defaultWorkflow) {
-                    workflowData = defaultWorkflow;
-                }
-                else {
-                    workflow = this.workflows.get(workflowId);
-                    workflowData = workflow.getWorkflowFromConfig();
-                }
-                */
                 console.log("workflow is: " + JSON.stringify(workflow));
                 console.log("workflowData is: " + JSON.stringify(workflowData));
 
@@ -396,10 +402,7 @@ define([
              */
             validateWorkflowName: function(workflowName) {
 
-                var predefinedWorkflowNames = this.workflows.getPredefinedWorkflowNames();
-                var predefinedClash = _.indexOf(predefinedWorkflowNames, workflowName);
-
-                if (predefinedClash >= 0) {
+                if (this.workflows.checkIfPredefinedWorkflow(workflowName)) {
                     return [{
                         'message': 'Custom workflows cannot be named after predefined workflows. Please choose a different name.',
                         'type': 'workflow-name',
