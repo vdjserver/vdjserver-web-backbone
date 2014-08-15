@@ -26,7 +26,6 @@
   },
   "devDependencies": {},
   "resolutions": {
-    "d3": "3.4.x",
-    "jquery": "2.1.x"
+    "d3": "3.4.x"
   }
 }
