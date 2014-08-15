@@ -2,8 +2,9 @@ define([
     'app',
     'handlebars',
     'filesize',
+    'environment-config',
     'backbone.syphon'
-], function(App, Handlebars, filesize) {
+], function(App, Handlebars, filesize, EnvironmentConfig) {
 
     'use strict';
 
@@ -721,32 +722,19 @@ define([
             percentCompleted = percentCompleted.toFixed(2);
             percentCompleted += '%';
 
-            $('.' + this.fileProgressIdentifier).width(percentCompleted);
-            $('.' + this.fileProgressIdentifier).text(percentCompleted);
+            $('.' + this.fileProgressIdentifier)
+                .width(percentCompleted)
+                .text(percentCompleted)
+            ;
         },
         createFileMetadata: function(formData) {
 
-            var associationId = this.model.getAssociationId();
-
             // Setup file metadata
             var fileMetadata = new Backbone.Agave.Model.File.Metadata();
-
-            var initialMetadata = {
-                associationIds: [ associationId ],
-                value: {
-                    projectUuid: this.projectUuid,
-                    fileCategory: formData['file-category'],
-                    name: this.model.get('name'),
-                    length: this.model.get('fileReference').size,
-                    mimeType: this.model.get('mimeType'),
-                    isForwardRead: formData['forward-reads'],
-                    isReverseRead: formData['reverse-reads'],
-                    isDeleted: false,
-                }
-            };
+            fileMetadata.setInitialMetadata(this.model, formData);
 
             var that = this;
-            fileMetadata.save(initialMetadata)
+            fileMetadata.save()
                 .done(function() {
 
                     // VDJAuth saves the day by fixing metadata pems

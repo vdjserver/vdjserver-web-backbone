@@ -41,7 +41,6 @@ define(['backbone'], function(Backbone) {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
                 xhr.timeout = 0;
 
-
                 // Listen to the upload progress.
                 xhr.upload.onprogress = function(e) {
                     if (e.lengthComputable) {
@@ -163,6 +162,31 @@ define(['backbone'], function(Backbone) {
             this.set('value', value);
 
             return this.save();
+        },
+        setInitialMetadata: function(file, formData) {
+
+            var privateAttributes = {};
+
+            if (formData['forward-reads']) {
+                privateAttributes['forward-reads'] = true;
+            }
+
+            if (formData['reverse-reads']) {
+                privateAttributes['reverse-reads'] = true;
+            }
+
+            this.set({
+                associationIds: [file.getAssociationId()],
+                value: {
+                    projectUuid: file.get('projectUuid'),
+                    fileCategory: formData['file-category'],
+                    name: file.get('name'),
+                    length: file.get('fileReference').size,
+                    mimeType: file.get('mimeType'),
+                    isDeleted: false,
+                    privateAttributes: privateAttributes,
+                }
+            });
         },
     });
 
