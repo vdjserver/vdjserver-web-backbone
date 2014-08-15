@@ -76,8 +76,7 @@ define([
 
             // Disable if predefined
             if (this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
-                console.log("predefizzle");
-                $('#delete-workflow').attr('disabled','disabled');
+                $('#delete-workflow').attr('disabled', 'disabled');
                 return;
             }
             else {
@@ -125,7 +124,7 @@ define([
                         that.resetDeleteWorkflow();
                     })
                     .fail(function() {
-                        console.log("workflow delete error");
+                        console.log('workflow delete error');
                     });
             }
         },
@@ -138,19 +137,16 @@ define([
             // Do housekeeping first
             this.removeView('#workflow-staging-area');
 
-            console.log("past housekeeping");
-
             // Setup and insert new workflow views
             var workflowId = e.target.value;
-                console.log("val is: " + workflowId);
 
             if (workflowId) {
 
                 var workflow = this.workflows.get(workflowId);
                 var workflowData = workflow.getWorkflowFromConfig();
 
-                console.log("workflow is: " + JSON.stringify(workflow));
-                console.log("workflowData is: " + JSON.stringify(workflowData));
+                console.log('workflow is: ' + JSON.stringify(workflow));
+                console.log('workflowData is: ' + JSON.stringify(workflowData));
 
                 var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
 
@@ -178,10 +174,6 @@ define([
         submitJob: function(e) {
             e.preventDefault();
 
-
-
-
-
 /*
             var that = this;
 
@@ -204,7 +196,12 @@ define([
                 var filePaths = [];
                 for (var i = 0; i < tmpFileMetadatas.length; i++) {
                     console.log('tmpFileMetadatas is: ' + JSON.stringify(tmpFileMetadatas[i]));
-                    filePaths.push('/projects/' + tmpFileMetadatas[i].projectUuid + '/files/' + tmpFileMetadatas[i].name);
+                    filePaths.push(
+                        '/projects/'
+                        + tmpFileMetadatas[i].projectUuid
+                        + '/files/'
+                        + tmpFileMetadatas[i].name
+                    );
                 }
 
                 job.setFilesParameter(filePaths);
@@ -349,10 +346,16 @@ define([
 
                     $('#vdj-pipe-configuration-placeholder')
                         .addClass('animated flipOutX')
-                        .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-                            $('#vdj-pipe-configuration-placeholder').remove();
-                            deferred.resolve();
-                        })
+                        .one('webkitAnimationEnd'
+                            + ' mozAnimationEnd'
+                            + ' MSAnimationEnd'
+                            + ' oanimationend'
+                            + ' animationend',
+                            function() {
+                                $('#vdj-pipe-configuration-placeholder').remove();
+                                deferred.resolve();
+                            }
+                        )
                     ;
                 }
                 else {
@@ -383,7 +386,14 @@ define([
                         var message = formErrors[i].message;
                         var type = formErrors[i].type;
 
-                        this.$el.find('.modal-body').prepend($('<div class="alert alert-danger">').text(message).fadeIn());
+                        this.$el
+                            .find('.modal-body')
+                            .prepend(
+                                $('<div class="alert alert-danger">')
+                                .text(message)
+                                .fadeIn()
+                            )
+                        ;
                         $('#' + type + '-container').addClass('has-error');
                     }
                 }
@@ -404,11 +414,11 @@ define([
 
                 if (this.workflows.checkIfPredefinedWorkflow(workflowName)) {
                     return [{
-                        'message': 'Custom workflows cannot be named after predefined workflows. Please choose a different name.',
+                        'message': 'Custom workflows cannot be named after predefined workflows.'
+                                    + ' Please choose a different name.',
                         'type': 'workflow-name',
                     }];
                 }
-
 
                 if (workflowName !== this.editableWorkflow.get('value').workflowName) {
 
@@ -436,12 +446,8 @@ define([
                 var jobWorkflow = new Backbone.Agave.Model.Job.Workflow();
                 jobWorkflow.setConfigFromFormData(formData);
 
-
-
                 var formWorkflowNameErrors = this.validateWorkflowName(formData['workflow-name']) || [];
                 var formModelErrors = jobWorkflow.validate() || [];
-
-
 
                 var formErrors = [];
 
@@ -601,12 +607,12 @@ define([
 
                     jobWorkflow.save()
                         .done(function() {
-                            console.log("save done");
+                            console.log('save done');
                             that.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditor);
                         })
                         .fail(function() {
                             // troubleshoot
-                            console.log("save fail");
+                            console.log('save fail');
                         })
                     ;
                 }
@@ -673,7 +679,7 @@ define([
             $('.job-pending').animate({
                 bottom: '0px'
             }, 5000, function() {
-                console.log("animation done");
+                console.log('animation done');
             });
         }
     });
@@ -738,25 +744,25 @@ define([
     Jobs.GetPredefinedWorkflowConfig = function(workflowName) {
         var config;
 
-        switch(workflowName) {
+        switch (workflowName) {
             case 'single-reads':
 
                 config = {
                     'summary_output_path': 'summary.txt',
                     'single_read_pipe': [
-                        { 'quality_stats': { 'out_prefix': 'pre-filter_' } },
-                        { 'composition_stats': { 'out_prefix': 'pre-filter_' } },
+                        {'quality_stats': {'out_prefix': 'pre-filter_'}},
+                        {'composition_stats': {'out_prefix': 'pre-filter_'}},
                         {
                             'match': {
                                 'reverse': true,
                                 'elements': [
                                     { /* barcode element */
-                                        'start': { },
+                                        'start': {},
                                         'sequence': [
                                             'forward barcode sequence1',
                                             'forward barcode sequence2'
                                         ],
-                                        'cut_lower': { 'after': 0 },
+                                        'cut_lower': {'after': 0},
                                         'required': true,
                                         'require_best': true,
                                         'value_name': 'MID', 'score_name': 'MID-score'
@@ -764,15 +770,15 @@ define([
                                 ]
                             }
                         },
-                        { 'histogram': { 'name': 'MID', 'out_path': 'MID.csv' } },
-                        { 'length_filter': { 'min': 200 } },
-                        { 'average_quality_filter': 35 },
-                        { 'homopolymer_filter': 20 },
-                        { 'quality_stats': { 'out_prefix': 'post-filter_' } },
-                        { 'composition_stats': { 'out_prefix': 'post-filter_' } },
+                        {'histogram': {'name': 'MID', 'out_path': 'MID.csv'}},
+                        {'length_filter': {'min': 200}},
+                        {'average_quality_filter': 35},
+                        {'homopolymer_filter': 20},
+                        {'quality_stats': {'out_prefix': 'post-filter_'}},
+                        {'composition_stats': {'out_prefix': 'post-filter_'}},
                         {
                             'find_shared': {
-                            'out_unique':'.fasta'
+                                'out_unique':'.fasta'
                             }
                         }
                     ]

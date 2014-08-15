@@ -58,7 +58,14 @@ define(['app', 'backbone.syphon'], function(App) {
                     var message = formErrors[i].message;
                     var type    = formErrors[i].type;
 
-                    this.$el.find('.public-view').prepend($('<div class="alert alert-danger">').text(message).fadeIn());
+                    this.$el
+                        .find('.public-view')
+                        .prepend(
+                                $('<div class="alert alert-danger">')
+                                    .text(message)
+                                    .fadeIn()
+                        )
+                    ;
                     $('#' + type + '-container').addClass('has-error');
                 }
             }
@@ -98,25 +105,32 @@ define(['app', 'backbone.syphon'], function(App) {
                                 .on('hidden.bs.modal', function() {
 
                                     App.Agave.token()
-                                        .save(formData, {password: formData.password})
+                                        .save(
+                                            formData,
+                                            {password: formData.password}
+                                        )
                                         .done(function() {
-                                            console.log("token save done");
+                                            console.log('token save done');
 
                                             App.router.navigate('/project', {
                                                 trigger: true
                                             });
                                         })
                                         .fail(function() {
-                                            console.log("token save fail");
+                                            console.log('token save fail');
                                         });
-
-
 
                                 });
 
                         })
                         .fail(function() {
-                            that.$el.find('.public-view').prepend($('<div class="alert alert-danger">').text('Account creation failed. Please try again.').fadeIn());
+                            that.$el
+                                .find('.public-view')
+                                .prepend(
+                                    $('<div class="alert alert-danger">')
+                                        .text('Account creation failed. Please try again.')
+                                        .fadeIn()
+                                );
                             $('#modal-message').modal('hide');
                         });
                 });
