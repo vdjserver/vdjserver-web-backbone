@@ -75,7 +75,7 @@ define([
             var workflow = this.workflows.get(workflowId);
 
             // Disable if predefined
-            if (this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
+            if (workflow && this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
                 $('#delete-workflow').attr('disabled', 'disabled');
                 return;
             }
@@ -139,7 +139,9 @@ define([
 
             // Setup and insert new workflow views
             var workflowId = e.target.value;
+            console.log("workflowId is: " + workflowId);
 
+            // Only continue if there's actually a workflow selected
             if (workflowId) {
 
                 var workflow = this.workflows.get(workflowId);
@@ -740,62 +742,6 @@ define([
     Jobs.IgBlastForm = Backbone.View.extend({
         template: 'jobs/igblast-form'
     });
-
-    Jobs.GetPredefinedWorkflowConfig = function(workflowName) {
-        var config;
-
-        switch (workflowName) {
-            case 'single-reads':
-
-                config = {
-                    'summary_output_path': 'summary.txt',
-                    'single_read_pipe': [
-                        {'quality_stats': {'out_prefix': 'pre-filter_'}},
-                        {'composition_stats': {'out_prefix': 'pre-filter_'}},
-                        {
-                            'match': {
-                                'reverse': true,
-                                'elements': [
-                                    { /* barcode element */
-                                        'start': {},
-                                        'sequence': [
-                                            'forward barcode sequence1',
-                                            'forward barcode sequence2'
-                                        ],
-                                        'cut_lower': {'after': 0},
-                                        'required': true,
-                                        'require_best': true,
-                                        'value_name': 'MID', 'score_name': 'MID-score'
-                                    }
-                                ]
-                            }
-                        },
-                        {'histogram': {'name': 'MID', 'out_path': 'MID.csv'}},
-                        {'length_filter': {'min': 200}},
-                        {'average_quality_filter': 35},
-                        {'homopolymer_filter': 20},
-                        {'quality_stats': {'out_prefix': 'post-filter_'}},
-                        {'composition_stats': {'out_prefix': 'post-filter_'}},
-                        {
-                            'find_shared': {
-                                'out_unique':'.fasta'
-                            }
-                        }
-                    ]
-                };
-
-                break;
-
-            case 'paired-reads':
-
-                break;
-
-            default:
-                break;
-        }
-
-        return config;
-    };
 
     App.Views.Jobs = Jobs;
     return Jobs;
