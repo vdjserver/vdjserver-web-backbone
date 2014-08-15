@@ -145,12 +145,10 @@ define([
             if (workflowId) {
 
                 var workflow = this.workflows.get(workflowId);
-                var workflowData = workflow.getWorkflowFromConfig();
 
                 console.log('workflow is: ' + JSON.stringify(workflow));
-                console.log('workflowData is: ' + JSON.stringify(workflowData));
 
-                var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
+                var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflow.get('value').config);
 
                 /*
                     I'd love to use insertViews instead, but as of 24/July/2014
@@ -272,6 +270,27 @@ define([
             },
 
             /**
+             * Serialize data onto view template.
+             *
+             * @returns {array}
+             */
+            customSerialize: function(editableWorkflow) {
+
+                // Set name on DOM
+                $('#workflow-name').val(editableWorkflow.get('value').workflowName);
+
+                // Set read direction
+                if (editableWorkflow.get('value').config['single_read_pipe']) {
+                    $('#single-reads').attr('checked', 'checked');
+                    $('#single-reads').closest('label').addClass('active');
+                }
+                else if (editableWorkflow.get('value').config['paired_read_pipe']) {
+                    $('#paired-reads').attr('checked', 'checked');
+                    $('#paired-reads').closest('label').addClass('active');
+                }
+            },
+
+            /**
              * Creates editable workflow views for the supplied workflow
              * and inserts them into the DOM.
              *
@@ -279,17 +298,15 @@ define([
              */
             setupEditableWorkflow: function(editableWorkflow) {
 
-                // Set name on DOM
-                $('#workflow-name').val(editableWorkflow.get('value').workflowName);
+                // Do custom view data serialization
+                this.customSerialize(editableWorkflow);
 
                 // Remove workflow placeholder from DOM
                 $('#vdj-pipe-configuration-placeholder').remove();
 
                 //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
 
-                var workflowData = editableWorkflow.getWorkflowFromConfig();
-
-                var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflowData);
+                var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(editableWorkflow.get('value').config);
 
                 for (this.counter = 0; this.counter < workflowViews.length; this.counter++) {
                     var view = workflowViews[this.counter];
@@ -674,7 +691,7 @@ define([
             return {
                 jobName: this.jobName,
                 jobStatus: this.jobStatus,
-                projectName: this.projectModel.get('value').name
+                projectName: this.projectModel.get('value').name,
             };
         },
         afterRender: function() {

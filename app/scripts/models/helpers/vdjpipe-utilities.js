@@ -16,7 +16,6 @@ define(['app'], function(App) {
             'base_path_input': '',
             'base_path_output': '',
             'csv_file_delimiter': '\\t',
-            'single_read_pipe': [],
         };
 
         var paramOutput = [];
@@ -445,23 +444,39 @@ define(['app'], function(App) {
         if (fileMetadata && fileMetadata.length > 0) {
             for (var i = 0; i < fileMetadata.length; i++) {
                 //console.log("values are: " + JSON.stringify(fileMetadata.at([i])));
+
                 var value = fileMetadata.at([i]).get('value');
 
-                if (value.isForwardRead) {
+                var privateAttributes = value.privateAttributes;
+
+                if (privateAttributes['forward-reads']) {
                     inputOutput.push({
                         'forward_seq': value.name
+                    });
+                }
+
+                if (privateAttributes['reverse-reads']) {
+                    inputOutput.push({
+                        'reverse_seq': value.name
                     });
                 }
             }
         }
 
+        outputConfig.input = inputOutput;
+
+        // Choose read direction and add params
+        // Just as with Highlander, there can only be one
+        if (parameters['single-reads']) {
+            outputConfig['single_read_pipe'] = paramOutput;
+        }
+        else if (parameters['paired-reads']) {
+            outputConfig['paired_read_pipe'] = paramOutput;
+        }
+
         //console.log("paramOutput is: " + JSON.stringify(paramOutput));
         //console.log("inputOutput is: " + JSON.stringify(inputOutput));
-
-        outputConfig.input = inputOutput;
-        outputConfig.single_read_pipe = paramOutput;
-
-        console.log("outputConfig is: " + JSON.stringify(outputConfig));
+        //console.log('outputConfig is: ' + JSON.stringify(outputConfig));
 
         return outputConfig;
     };

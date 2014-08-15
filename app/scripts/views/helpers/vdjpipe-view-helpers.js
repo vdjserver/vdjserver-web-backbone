@@ -7,7 +7,14 @@ define([
     var VdjpipeViewHelpers = {};
 
     VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews = function(config) {
-        var parameters = config['single_read_pipe'];
+        var parameters;
+
+        if (config['single_read_pipe']) {
+            parameters = config['single_read_pipe'];
+        }
+        else {
+            parameters = config['paired_read_pipe'];
+        }
 
         var workflowViews = [];
 

@@ -1,22 +1,34 @@
-<div class="modal fade" id="workflow-modal" tabindex="-1" role="dialog" aria-labelledby="job-modal-label" aria-hidden="true">
+<div class="modal fade" id="workflow-modal" role="dialog" aria-labelledby="job-modal-label" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="job-modal-label">Workflow Editor</h4>
             </div>
-            <form method="post" class="form-horizontal" id="workflow-form" role="form">
+            <form method="post" class="form-horizontal" id="workflow-form" role="form" action="">
                 <div class="modal-body">
 
                     <div class="form-group" id="workflow-name-container">
                         <label for="workflowName" class="control-label col-lg-2">Workflow Name</label>
                         <div class="col-lg-3">
-                            <input type="text" class="form-control" id="workflow-name" name="workflow-name" placeholder="Workflow Name">
+                            <input type="text" class="form-control" id="workflow-name" name="workflow-name" placeholder="Workflow Name" value={{workflowName}}>
+                        </div>
+                    </div>
+                    <div class="form-group" id="workflow-pairing-container">
+                        <label for="pairing" class="control-label col-lg-2">Workflow Pairing</label>
+                        <div class="col-lg-3">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-default">
+                                    <input type="radio" name="single-reads" id="single-reads">&nbsp;Single
+                                </label>
+                                <label class="btn btn-default">
+                                    <input type="radio" name="paired-reads" id="paired-reads">&nbsp;Paired
+                                </label>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="col-lg-12">
                         <div class="col-lg-6">
                             <div class="col-sm-offset-1">
                                 <div class="form-group">
@@ -219,11 +231,11 @@
                             </div>
                         </div>
                     </div>
-                    </div>
+                </div>
                 <div class="modal-footer">
                     <div class="text-center">
                         <button type="button" id="workflow-cancel" class="btn btn-default">Cancel</button>
-                        <input type="submit" id="workflow-save" class="btn btn-success" id="save-workflow" value="Save Workflow">
+                        <input type="submit" id="workflow-save" class="btn btn-success" value="Save Workflow">
                     </div>
                 </div>
             </form>
