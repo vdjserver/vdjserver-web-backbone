@@ -89,69 +89,37 @@ define(['backbone'], function(Backbone) {
             }
         },
         setPredefinedWorkflows: function() {
-            var singleReadPipeWorkflow = new Backbone.Agave.Model.Job.Workflow();
-            singleReadPipeWorkflow.sync = singleReadPipeWorkflow.fakeSync;
-            singleReadPipeWorkflow.set('predefined', true);
 
-            var singleReadPipeData = {
+            for (var i = 0; i < this.preconfiguredWorkflows.length; i++) {
+                var preconfiguredWorkflow = this.preconfiguredWorkflows[i];
 
-                'workflow-name': 'Single Reads',
-                'summary_output_path': 'summary.txt',
-                'single_read_pipe': [
-                    { 'quality_stats': { 'out_prefix': 'pre-filter_' } },
-                    { 'composition_stats': { 'out_prefix': 'pre-filter_' } },
-                    {
-                        'match': {
-                            'reverse': true,
-                            'elements': [
-                                { /* barcode element */
-                                    'start': { },
-                                    'sequence': [
-                                        'forward barcode sequence1',
-                                        'forward barcode sequence2'
-                                    ],
-                                    'cut_lower': { 'after': 0 },
-                                    'required': true,
-                                    'require_best': true,
-                                    'value_name': 'MID', 'score_name': 'MID-score'
-                                }
-                            ]
-                        }
-                    },
-                    { 'histogram': { 'name': 'MID', 'out_path': 'MID.csv' } },
-                    { 'length_filter': { 'min': 200 } },
-                    { 'average_quality_filter': 35 },
-                    { 'homopolymer_filter': 20 },
-                    { 'quality_stats': { 'out_prefix': 'post-filter_' } },
-                    { 'composition_stats': { 'out_prefix': 'post-filter_' } },
-                    {
-                        'find_intersection': {
-                            'out_unique':'.fasta'
-                        }
-                    }
-                ]
+                var workflow = new Backbone.Agave.Model.Job.Workflow();
+                workflow.sync = workflow.fakeSync;
+                workflow.set('predefined', true);
+
+                workflow.setConfigFromPreconfiguredData(preconfiguredWorkflow);
+                this.unshift(workflow);
             };
-
-            singleReadPipeWorkflow.setConfigFromPreconfiguredData(singleReadPipeData);
-            this.unshift(singleReadPipeWorkflow);
-
-            var pairedReadPipeData = {
+        },
+        preconfiguredWorkflows: [
+            {
+                'workflow-name': 'Paired Reads',
                 'summary_output_path': 'summary.txt',
                 'paired_read_pipe': [
                     {
                         'apply': {
                             'to': ['forward', 'reverse'],
-                            'step': { 'quality_stats': { 'out_prefix': 'pre-filter_' } }
+                            'step': {'quality_stats': {'out_prefix': 'pre-filter_'}}
                         }
                     },
                     {
                         'apply': {
                             'to': ['forward', 'reverse'],
-                            'step': { 'composition_stats': { 'out_prefix': 'pre-filter_' } }
+                            'step': {'composition_stats': {'out_prefix': 'pre-filter_'}}
                         }
                     },
                     {
-                        'merge_paired': { 'min_score': 50}
+                        'merge_paired': {'min_score': 50}
                     },
                     {
                         'apply': {
@@ -160,27 +128,27 @@ define(['backbone'], function(Backbone) {
                                 'match': {
                                     'elements': [
                                         { /* forward barcode element */
-                                            'start': { },
+                                            'start': {},
                                             'length': '30',
                                             'min_score': 20,
                                             'sequence': [
                                                 'forward barcode sequence1',
                                                 'forward barcode sequence2'
                                             ],
-                                            'cut_lower': { 'after': 0},
+                                            'cut_lower': {'after': 0},
                                             'required': true,
                                             'require_best': true,
                                             'value_name': 'MID1', 'score_name': 'MID1-score'
                                         },
                                         { /* reverse barcode element */
-                                            'end': { 'after': '' },
+                                            'end': {'after': ''},
                                             'length': 30,
                                             'min_score': 20,
                                             'sequence': [
                                                 'reverse barcode sequence1',
                                                 'reverse barcode sequence2'
                                             ],
-                                            'cut_upper': { 'before': 0 },
+                                            'cut_upper': {'before': 0},
                                             'required': true,
                                             'require_best': true,
                                             'value_name': 'MID2',
@@ -220,35 +188,27 @@ define(['backbone'], function(Backbone) {
                         'apply': {
                             'to': 'merged',
                             'step': {
-                               'length_filter': { 'min': 200 }
+                                'length_filter': {'min': 200}
                             }
                         }
                     },
                     {
                         'apply': {
                             'to': 'merged',
-                            'step': { 'average_quality_filter': 35 }
+                            'step': {'average_quality_filter': 35}
                         }
                     },
                     {
                         'apply': {
                             'to': 'merged',
-                            'step': { 'homopolymer_filter': 20 }
-                        }
-                    },
-                    {
-                        'apply': {
-                            'to': 'merged',
-                            'step': {
-                                'quality_stats': { 'out_prefix': 'post-filter_' }
-                            }
+                            'step': {'homopolymer_filter': 20}
                         }
                     },
                     {
                         'apply': {
                             'to': 'merged',
                             'step': {
-                                'composition_stats': { 'out_prefix': 'post-filter_' }
+                                'quality_stats': {'out_prefix': 'post-filter_'}
                             }
                         }
                     },
@@ -256,15 +216,59 @@ define(['backbone'], function(Backbone) {
                         'apply': {
                             'to': 'merged',
                             'step': {
-                                'find_intersection': { 'out_unique':'.fasta' }
+                                'composition_stats': {'out_prefix': 'post-filter_'}
+                            }
+                        }
+                    },
+                    {
+                        'apply': {
+                            'to': 'merged',
+                            'step': {
+                                'find_intersection': {'out_unique':'.fasta'}
                             }
                         }
                     }
                 ]
-            };
+            },
+            {
 
-            //return singleReadPipeWorkflow();
-        },
+                'workflow-name': 'Single Reads',
+                'summary_output_path': 'summary.txt',
+                'single_read_pipe': [
+                    {'quality_stats': {'out_prefix': 'pre-filter_'}},
+                    {'composition_stats': {'out_prefix': 'pre-filter_'}},
+                    {
+                        'match': {
+                            'reverse': true,
+                            'elements': [
+                                { /* barcode element */
+                                    'start': {},
+                                    'sequence': [
+                                        'forward barcode sequence1',
+                                        'forward barcode sequence2'
+                                    ],
+                                    'cut_lower': {'after': 0},
+                                    'required': true,
+                                    'require_best': true,
+                                    'value_name': 'MID', 'score_name': 'MID-score'
+                                }
+                            ]
+                        }
+                    },
+                    {'histogram': {'name': 'MID', 'out_path': 'MID.csv'}},
+                    {'length_filter': {'min': 200}},
+                    {'average_quality_filter': 35},
+                    {'homopolymer_filter': 20},
+                    {'quality_stats': {'out_prefix': 'post-filter_'}},
+                    {'composition_stats': {'out_prefix': 'post-filter_'}},
+                    {
+                        'find_intersection': {
+                            'out_unique':'.fasta'
+                        }
+                    }
+                ]
+            }
+        ],
     });
 
     Backbone.Agave.Collection.Jobs = Jobs;
