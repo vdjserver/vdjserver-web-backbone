@@ -102,6 +102,23 @@ define(['backbone'], function(Backbone) {
 
             return newCollection;
         },
+        checkForDuplicateFilename: function(filename) {
+
+            var isDuplicate = false;
+
+            for (var j = 0; j < this.models.length; j++) {
+                var model = this.at([j]);
+
+                var modelName = model.get('value').name;
+
+                if (modelName === filename) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+
+            return isDuplicate;
+        },
     });
 
     Backbone.Agave.Collection.Files = Files;

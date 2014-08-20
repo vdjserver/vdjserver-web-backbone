@@ -373,27 +373,16 @@ define([
                     fileReference: file
                 });
 
-                var isDuplicate = false;
-                for (var j = 0; j < this.fileListings.models.length; j++) {
-                    var model = this.fileListings.at([j]);
-
-                    var modelName = model.get('value').name;
-
-                    if (modelName === file.name) {
-                        isDuplicate = true;
-                        break;
-                    }
-                }
-
-                console.log("about to check duplicates");
+                var isDuplicate = this.fileListings.checkForDuplicateFilename(file.name);
 
                 if (isDuplicate) {
-                    console.log("isDuplicate");
-                    $('#file-staging-errors').text('The file "' + file.name  + '" can not be uploaded because another file exists with the same name.').fadeIn();
-                    $('#file-staging-errors').removeClass('hidden');
+                    $('#file-staging-errors')
+                        .text('The file "' + file.name  + '" can not be uploaded because another file exists with the same name.')
+                        .fadeIn()
+                        .removeClass('hidden')
+                    ;
                 }
                 else {
-                    console.log("NOT Duplicate");
                     var fileTransferView = new Projects.FileTransfer({
                         model: stagedFile,
                         projectUuid: this.projectModel.get('uuid'),
@@ -697,23 +686,25 @@ define([
             this.model.save()
                 .done(function(response) {
 
-                    // A quick hack until I figure out how to do this in my custom FileSync function
-                    var parsedJSON = JSON.parse(response);
-                    parsedJSON = parsedJSON.result;
-                    that.model.set(parsedJSON);
+                    console.log("model save done and attributes are: " + JSON.stringify(that.model));
+
+                    // Notify user that permissions are being set
 
                     // VDJAuth saves the day by fixing file pems
                     that.model.syncFilePermissionsWithProjectPermissions()
                         .done(function() {
                             console.log("filePems save done");
+                            that.createFileMetadata(formData);
                         })
                         .fail(function() {
+                            // Notify user that permissions sync failed
+                            // Delete file too??
                             console.log("filePems save fail");
                         });
 
-                    that.createFileMetadata(formData);
                 })
                 .fail(function() {
+                    // Notify user that upload failed
                     console.log("upload fail");
                 });
 
