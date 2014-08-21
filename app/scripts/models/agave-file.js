@@ -56,11 +56,18 @@ define(['backbone'], function(Backbone) {
                     if (xhr.status === 200 || 202) {
 
                         // A little bit of a hack, but it does the trick
-                        var parsedJSON = JSON.parse(xhr.response);
-                        parsedJSON = parsedJSON.result;
-                        that.set(parsedJSON);
+                        try {
+                            console.log("file upload try ok");
+                            var parsedJSON = JSON.parse(xhr.response);
+                            parsedJSON = parsedJSON.result;
+                            that.set(parsedJSON);
 
-                        deferred.resolve(xhr.response);
+                            deferred.resolve(xhr.response);
+                        }
+                        catch (error) {
+                            console.log("file upload try fail");
+                            deferred.reject('Error: Agave response serialization failed.');
+                        }
                     }
                     else {
                         deferred.reject('HTTP Error: ' + xhr.status)

@@ -663,7 +663,7 @@ define([
             };
         },
         events: {
-            'click .cancel-upload': 'cancelUpload',
+            'click #cancel-upload-button': 'cancelUpload',
             'submit form':  'startUpload',
         },
         cancelUpload: function(e) {
@@ -672,6 +672,16 @@ define([
         },
         startUpload: function(e) {
             e.preventDefault();
+
+            // Disable buttons
+            $('.upload-button')
+                .attr('disabled', 'disabled')
+            ;
+
+            // Hide previous notifications
+            $('#file-upload-notifications')
+                .addClass('hidden')
+            ;
 
             var formData = Backbone.Syphon.serialize(this);
 
@@ -686,7 +696,17 @@ define([
             this.model.save()
                 .done(function(response) {
 
+                    console.log("submitting form");
+
                     console.log("model save done and attributes are: " + JSON.stringify(that.model));
+                    $('#file-upload-notifications')
+                        .removeClass()
+                        .addClass('alert alert-info')
+                        .text('Setting file permissions...')
+                        .fadeIn()
+                        .removeClass('hidden')
+                    ;
+
 
                     // Notify user that permissions are being set
 
@@ -700,12 +720,41 @@ define([
                             // Notify user that permissions sync failed
                             // Delete file too??
                             console.log("filePems save fail");
+
+                            that.uploadProgress(0);
+
+                            $('#file-upload-notifications')
+                                .removeClass()
+                                .addClass('alert alert-danger')
+                                .text('Permission error. Please try uploading your file again.')
+                                .fadeIn()
+                                .removeClass('hidden')
+                            ;
+
+                            $('.upload-button').removeAttr('disabled');
+
+                            $('#start-upload-button').text('Try again');
+
                         });
 
                 })
                 .fail(function() {
                     // Notify user that upload failed
                     console.log("upload fail");
+
+                    that.uploadProgress(0);
+
+                    $('#file-upload-notifications')
+                        .removeClass()
+                        .addClass('alert alert-danger')
+                        .text('File upload error. Please try uploading your file again.')
+                        .fadeIn()
+                        .removeClass('hidden')
+                    ;
+
+                    $('.upload-button').removeAttr('disabled');
+
+                    $('#start-upload-button').text('Try again');
                 });
 
         },
