@@ -163,7 +163,7 @@ define(['app', 'backbone'], function(App, Backbone) {
 
             console.log("model formData is: " + JSON.stringify(formData));
 
-            var config = App.Models.Helpers.VdjPipeUtilities.SerializeVdjPipeConfig(formData);
+            var config = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData);
 
             var workflowName = App.Models.Helpers.VdjPipeUtilities.GetWorkflowName(formData);
 
