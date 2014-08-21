@@ -15,6 +15,61 @@ define([
         template: 'jobs/vdjpipe-average-quality-window-filter',
     });
 
+    Vdjpipe.AverageQualityWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
+        template: 'jobs/vdjpipe-average-quality-window-filter',
+    });
+
+    Vdjpipe.CustomDemultiplex = App.Views.Generic.VdjpipeOptionView.extend({
+        template: 'jobs/vdjpipe-custom-demultiplex',
+        initialize: function() {
+            this.elementCount = 0;
+            this.objectCount  = 0;
+        },
+        events: {
+            'click .add-barcode-button': 'addBarcode',
+        },
+        addBarcode: function(e) {
+            e.preventDefault();
+
+            //var fileName = $('.add-element-select').val();
+            this.elementCount = this.elementCount + 1;
+
+            var elementView = new Vdjpipe.DemultiplexBarcodeConfig({
+                isEditable: this.isEditable,
+                parameterType: this.parameterType,
+                inputCount: this.inputCount,
+                elementCount: this.elementCount,
+                //fileName: fileName,
+            });
+
+            this.insertView('.added-barcode-subviews', elementView);
+            elementView.render();
+        },
+    });
+
+    Vdjpipe.DemultiplexBarcodeConfig = App.Views.Generic.VdjpipeOptionView.extend({
+        template: 'jobs/vdjpipe-custom-demultiplex-barcode-config',
+        serialize: function() {
+            if (this.parameterType) {
+                return {
+                    isEditable: this.isEditable,
+                    parameterType: this.parameterType,
+                    inputCount: this.inputCount,
+                    elementCount: this.elementCount,
+                    //fileName: this.fileName,
+                    options: this.options,
+                };
+            }
+        },
+        events: {
+            'click .remove-barcode': 'removeBarcode',
+        },
+        removeBarcode: function(e) {
+            e.preventDefault();
+            this.remove();
+        },
+    });
+
     Vdjpipe.FindSequencesFromMultipleGroups = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-find-sequences-from-multiple-groups',
         afterRender: function() {

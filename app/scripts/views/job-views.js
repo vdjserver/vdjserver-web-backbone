@@ -439,7 +439,11 @@ define([
                     }];
                 }
 
-                if (workflowName !== this.editableWorkflow.get('value').workflowName) {
+                if (
+                    (_.isEmpty(this.editableWorkflow))
+                        ||
+                    (workflowName !== this.editableWorkflow.get('value').workflowName)
+                ) {
 
                     var workflowNames = this.workflows.getWorkflowNames();
 
@@ -621,6 +625,8 @@ define([
                     }
 
                     jobWorkflow.setConfigFromFormData(formData);
+
+                    console.log("just set config: " + JSON.stringify(formData));
 
                     var that = this;
 

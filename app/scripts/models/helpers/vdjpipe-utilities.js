@@ -36,7 +36,7 @@ define(['app'], function(App) {
             }
         }
 
-        return reads;
+        return readDirections;
     };
 
     VdjPipeUtilities.Serializer = function(parameters, key) {
@@ -353,7 +353,7 @@ define(['app'], function(App) {
             };
 
             if (elements) {
-                matchOutput.match.elements = elements;
+                matchObject.match.elements = elements;
             }
 
             if (combinationObjects) {
@@ -472,6 +472,16 @@ define(['app'], function(App) {
 
                         case 'composition_stats':
                             var data = serializer.getCompositionStats();
+                            paramOutput.push(data);
+
+                            break;
+
+                        case 'custom_demultiplex':
+                            var data = serializer.getMatch();
+
+                            data['custom_demultiplex'] = data['match'];
+                            delete data['match'];
+
                             paramOutput.push(data);
 
                             break;

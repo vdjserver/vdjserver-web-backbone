@@ -1,0 +1,121 @@
+<div class="row row-with-spacer">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-12">
+                        Element
+
+                        {{#if isEditable}}
+                            &nbsp;
+                            <span class="label label-danger remove-barcode">&times;</span>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+
+            <!-- These are always set -->
+            <input
+                class="hidden"
+                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-value-name"
+                type="text"
+                value="MID{{elementCount}}"
+            >
+
+            <input
+                class="hidden"
+                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-score-name"
+                type="text"
+                value="MID{{elementCount}}-score"
+            >
+
+
+            <div class="panel-body">
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+
+                        <input name="{{inputCount}}-{{parameterType}}-elements[]" type="text" value="{{elementCount}}" hidden>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Fasta/Fastq Matching File
+                                    </td>
+                                    <td>
+                                        <select name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file">
+                                            {{#each files}}
+                                                <option value={{value.name}}>{{value.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Location
+                                    </td>
+                                    <td>
+                                        <select name="{{inputCount}}-{{parameterType}}-{{elementCount}}-FIXME">
+                                            <option value="3'">3'</option>
+                                            <option value="5'">5'</option>
+                                            <option value="Both">Both</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Required
+                                    </td>
+                                    <td>
+                                        <input
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
+                                            type="checkbox"
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Minimum Number of Mismatches
+                                    </td>
+                                    <td>
+                                        <input
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-minimum-score"
+                                            type="number"
+                                            step="1"
+                                            min="0"
+                                            pattern="\d+"
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Keep Unmatched Reads
+                                    </td>
+                                    <td>
+                                        <input
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-FIXME"
+                                            type="checkbox"
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Trim Barcode
+                                    </td>
+                                    <td>
+                                        <input
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-FIXME"
+                                            type="checkbox"
+                                        >
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

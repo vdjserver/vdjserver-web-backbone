@@ -88,6 +88,16 @@ define([
 
                 break;
 
+            case 'custom_demultiplex':
+                vdjPipeView = new App.Views.Vdjpipe.CustomDemultiplex({
+                    parameterType: key,
+                    inputCount: counter,
+                    files: this.selectedFileListings,
+                    options: options,
+                });
+
+                break;
+
             case 'eMID_map':
                 vdjPipeView = new App.Views.Vdjpipe.MatchExternalMolecularIdentifier({
                     parameterType: key,
