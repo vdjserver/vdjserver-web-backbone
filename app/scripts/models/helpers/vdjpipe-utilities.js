@@ -82,6 +82,69 @@ define(['app'], function(App) {
             };
         };
 
+        this.getCustomDemultiplex = function() {
+
+            var elementName = parameters[key];
+            var reverse = parameters[key + '-reverse-complement'];
+
+            var elements = [];
+
+            if (parameters[key + '-elements']) {
+                for (var i = 0; i < parameters[key + '-elements'].length; i++) {
+                    var element = {};
+                    var elementCounter = parameters[key + '-elements'][i];
+                    //console.log("elementCounter is: " + JSON.stringify(elementCounter));
+
+                    var barcodeLocation = parameters[key + '-' + elementCounter + '-element-custom-location'];
+                    var minScore = parameters[key + '-' + elementCounter + '-element-minimum-score'];
+                    var required = parameters[key + '-' + elementCounter + '-element-required'];
+                    var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
+                    var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
+
+                    if (barcodeLocation) {
+                        element['custom_location'] = barcodeLocation;
+                    }
+
+                    if (minScore) {
+
+                        // Convert to int
+                        minScore = parseInt(minScore);
+
+                        element['min_score'] = minScore;
+                    }
+
+                    if (required) {
+                        element.required = required;
+                    }
+
+                    if (scoreName) {
+                        element['score_name'] = scoreName;
+                    }
+
+                    if (valueName) {
+                        element['value_name'] = valueName;
+                    }
+
+                    //console.log("element finished: " + JSON.stringify(element));
+                    elements.push(element);
+                }
+            }
+
+            var matchObject = {
+                'custom_demultiplex': {
+                    'reverse': reverse,
+                },
+            };
+
+            if (elements) {
+                matchObject['custom_demultiplex'].elements = elements;
+            }
+
+            //console.log("matchObject is: " + JSON.stringify(matchObject));
+
+            return matchObject;
+        };
+
         this.getEmidMap = function() {
             return {
                 'eMID_map': {
@@ -477,12 +540,11 @@ define(['app'], function(App) {
                             break;
 
                         case 'custom_demultiplex':
-                            var data = serializer.getMatch();
-
-                            data['custom_demultiplex'] = data['match'];
-                            delete data['match'];
-
+                            var data = serializer.getCustomDemultiplex();
                             paramOutput.push(data);
+
+                            //data['custom_demultiplex'] = data['match'];
+                            //delete data['match'];
 
                             break;
 
@@ -592,7 +654,77 @@ define(['app'], function(App) {
     };
 
     // Convert workflowConfig to vdjpipeConfig
-    //
+    VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
+
+        var readConfig = {};
+        if (workflowConfig['single_read_pipe']) {
+            readConfig = workflowConfig['single_read_pipe'];
+        }
+        else if (workflowConfig['paired_read_pipe']) {
+            readConfig = workflowConfig['paired_read_pipe'];
+        }
+
+        // Deep copy
+        var newConfig = jQuery.extend(true, [], readConfig);
+
+        for (var i = 0; i < readConfig.length; i++) {
+            var option = readConfig[i];
+
+            //var parameterName = Object.keys(option[0]);
+
+            if (option['custom_demultiplex']) {
+                var elements = option['custom_demultiplex']['elements'];
+
+                for (var j = 0; j < elements.length; j++) {
+
+                    var barcodeLocation = elements[j]['custom_location'];
+
+                    if (barcodeLocation) {
+                        var cut = false;
+
+                        switch (barcodeLocation) {
+                            case '3\'':
+                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
+                                    'before': 0,
+                                };
+
+                                break;
+
+                            case '5\'':
+                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_lower'] = {
+                                    'after': 0,
+                                };
+
+                                break;
+
+                            case 'both':
+                                // code
+                                break;
+
+                            default:
+                                // code
+                        }
+
+                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_location'];
+                        newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
+                    }
+
+                };
+
+                newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
+                delete newConfig[i]['custom_demultiplex'];
+            }
+        };
+
+        if (workflowConfig['single_read_pipe']) {
+            workflowConfig['single_read_pipe'] = newConfig;
+        }
+        else if (workflowConfig['paired_read_pipe']) {
+            workflowConfig['paired_read_pipe'] = newConfig;
+        }
+
+        return workflowConfig;
+    };
 
     App.Models.Helpers.VdjPipeUtilities = VdjPipeUtilities;
     return VdjPipeUtilities;

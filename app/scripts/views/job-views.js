@@ -627,12 +627,13 @@ define([
                     jobWorkflow.setConfigFromFormData(formData);
 
                     console.log("just set config: " + JSON.stringify(formData));
+                    //console.log("converted workflow is: " + JSON.stringify(App.Models.Helpers.VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig(jobWorkflow.get('value').config)));
 
                     var that = this;
 
                     jobWorkflow.save()
                         .done(function() {
-                            console.log('save done');
+                            console.log('save done. final workflow is: ' + JSON.stringify(jobWorkflow));
                             that.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditor);
                         })
                         .fail(function() {

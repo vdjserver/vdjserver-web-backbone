@@ -18,10 +18,15 @@ define([
 
         var workflowViews = [];
 
+console.log("param is: " + JSON.stringify(parameters));
+
         for (var counter = 0; counter < parameters.length; counter++) {
 
             var key = Object.keys(parameters[counter])[0];
             var options = parameters[counter][key];
+
+console.log("key is: " + JSON.stringify(key));
+console.log("options is: " + JSON.stringify(options));
 
             var vdjPipeView = VdjpipeViewHelpers.GetVdjpipeView(
                 key,

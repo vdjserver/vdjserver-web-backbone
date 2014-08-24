@@ -28,13 +28,35 @@ define([
         events: {
             'click .add-barcode-button': 'addBarcode',
         },
+        afterRender: function() {
+            if (this.options && this.options.elements) {
+
+                for (var i = 0; i < this.options.elements.length; i++) {
+                    var barcodeOptions = this.options.elements[i];
+
+                    this.elementCount = this.elementCount + 1;
+
+                    var elementView = new Vdjpipe.CustomDemultiplexBarcodeConfig({
+                        isEditable: this.isEditable,
+                        parameterType: this.parameterType,
+                        inputCount: this.inputCount,
+                        elementCount: this.elementCount,
+                        options: barcodeOptions,
+                        //fileName: fileName,
+                    });
+
+                    this.insertView('.added-barcode-subviews', elementView);
+                    elementView.render();
+                };
+            }
+        },
         addBarcode: function(e) {
             e.preventDefault();
 
             //var fileName = $('.add-element-select').val();
             this.elementCount = this.elementCount + 1;
 
-            var elementView = new Vdjpipe.DemultiplexBarcodeConfig({
+            var elementView = new Vdjpipe.CustomDemultiplexBarcodeConfig({
                 isEditable: this.isEditable,
                 parameterType: this.parameterType,
                 inputCount: this.inputCount,
@@ -47,7 +69,7 @@ define([
         },
     });
 
-    Vdjpipe.DemultiplexBarcodeConfig = App.Views.Generic.VdjpipeOptionView.extend({
+    Vdjpipe.CustomDemultiplexBarcodeConfig = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-custom-demultiplex-barcode-config',
         serialize: function() {
             if (this.parameterType) {
