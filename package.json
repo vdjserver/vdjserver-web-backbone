@@ -32,7 +32,7 @@
         "jshint-stylish":   "0.4.x",
         "load-grunt-tasks": "0.6.x",
         "sinon":            "1.10.x",
-        "time-grunt":       "0.4.x"
+        "time-grunt":       "1.0.x"
     },
     "engines": {
         "node": ">=0.10.13"
