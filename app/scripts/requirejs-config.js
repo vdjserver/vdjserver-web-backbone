@@ -4,7 +4,7 @@ require.config({
     deps: ['requirejs-main'],
     paths: {
         'backbone':         '../bower_components/backbone/backbone',
-        'backbone.syphon':  '../bower_components/backbone.syphon/lib/amd/backbone.syphon',
+        'backbone.syphon':  '../bower_components/marionette.backbone.syphon/lib/backbone.syphon',
         'bootstrap':        'vendor/bootstrap',
         'filesize':         '../bower_components/filesize/lib/filesize',
         'handlebars':       '../bower_components/handlebars/handlebars',

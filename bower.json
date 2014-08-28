@@ -5,15 +5,15 @@
     "animate.css": "3.2.x",
     "backbone": "1.1.2",
     "backbone.analytics": "f5648f583ed9cf073c123ec61b9e31dd9c77c4f9",
-    "backbone.syphon": "0.4.x",
     "d3": "3.4.x",
     "filesize": "2.0.3",
     "file-saver": "d50456a358be0eae968c3ae414120bc13333053a",
-    "font-awesome": "4.1.x",
+    "font-awesome": "4.2.x",
     "handlebars": "1.3.x",
     "jquery": "2.1.x",
     "jquery-ui": "1.11.x",
     "layoutmanager": "0.9.x",
+    "marionette.backbone.syphon": "0.5.x",
     "modernizr": "2.8.x",
     "moment": "2.8.x",
     "nvd3": "1.1.x",
@@ -22,7 +22,7 @@
     "socket.io-client": "1.0.x",
     "typeahead.js": "0.10.x",
     "twbs-bootstrap-sass": "3.2.x",
-    "underscore": "1.6.x"
+    "underscore": "1.7.x"
   },
   "devDependencies": {},
   "resolutions": {
