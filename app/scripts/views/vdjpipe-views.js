@@ -208,13 +208,13 @@ define([
             this.updateUIForWorkflowOptions();
         },
         updateUIForWorkflowOptions: function() {
-            if (this.options && this.options.fraction_match) {
+            if (this.options && this.options['fraction_match']) {
                 this.setFractionMatch();
-                $('.' + this.parameterType + '-fraction-match input').val(this.options.fraction_match);
+                $('.' + this.parameterType + '-fraction-match input').val(this.options['fraction_match']);
             }
-            else if (this.options && this.options.ignore_ends) {
+            else if (this.options && this.options['ignore_ends']) {
                 this.setIgnoreEnds();
-                $('.' + this.parameterType + '-ignore-ends input').val(this.options.ignore_ends);
+                $('.' + this.parameterType + '-ignore-ends input').val(this.options['ignore_ends']);
             }
         },
         events: function() {
@@ -271,13 +271,13 @@ define([
             this.updateUIForWorkflowOptions();
         },
         updateUIForWorkflowOptions: function() {
-            if (this.options && this.options.fraction_match) {
+            if (this.options && this.options['fraction_match']) {
                 this.setFractionMatch();
-                $('.' + this.parameterType + '-fraction-match input').val(this.options.fraction_match);
+                $('.' + this.parameterType + '-fraction-match input').val(this.options['fraction_match']);
             }
-            else if (this.options && this.options.ignore_ends) {
+            else if (this.options && this.options['ignore_ends']) {
                 this.setIgnoreEnds();
-                $('.' + this.parameterType + '-ignore-ends input').val(this.options.ignore_ends);
+                $('.' + this.parameterType + '-ignore-ends input').val(this.options['ignore_ends']);
             }
         },
         events: function() {
@@ -402,7 +402,7 @@ define([
         events: {
             'click .remove-match-sequence-element': 'removeElement',
         },
-        removeElement: function(e){
+        removeElement: function(e) {
             e.preventDefault();
             this.remove();
         },
@@ -432,7 +432,7 @@ define([
         events: {
             'click .remove-match-sequence-combination-object': 'removeCombinationObject',
         },
-        removeCombinationObject: function(e){
+        removeCombinationObject: function(e) {
             e.preventDefault();
             this.remove();
         },
