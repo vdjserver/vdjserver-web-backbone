@@ -25,35 +25,45 @@ define([
             this.elementCount = 0;
             this.objectCount  = 0;
         },
-        events: {
-            'click .add-barcode-button': 'addBarcode',
-        },
         afterRender: function() {
             if (this.options && this.options.elements) {
 
                 for (var i = 0; i < this.options.elements.length; i++) {
                     var barcodeOptions = this.options.elements[i];
 
-                    this.elementCount = this.elementCount + 1;
-
-                    var elementView = new Vdjpipe.CustomDemultiplexBarcodeConfig({
-                        isEditable: this.isEditable,
-                        parameterType: this.parameterType,
-                        inputCount: this.inputCount,
-                        elementCount: this.elementCount,
-                        options: barcodeOptions,
-                        files: this.files,
-                    });
-
-                    this.insertView('.added-barcode-subviews', elementView);
-                    elementView.render();
+                    this.addBarcode(barcodeOptions);
                 };
+
+                $('#barcodes-' + this.inputCount).val(this.elementCount);
             }
         },
-        addBarcode: function(e) {
+        events: function() {
+            var events = {};
+            events['change #barcodes-' + this.inputCount] = 'changeBarcodes';
+
+            return events;
+        },
+        changeBarcodes: function(e) {
             e.preventDefault();
 
-            //var fileName = $('.add-element-select').val();
+            var barcodeCount = e.target.value;
+            barcodeCount = parseInt(barcodeCount);
+
+            if (this.elementCount < barcodeCount) {
+                this.addBarcode();
+            }
+            else {
+                this.removeBarcode();
+            }
+
+            var barcodeSubviews = this.getViews('.added-barcode-subviews').value();
+            for (var i = 0; i < barcodeSubviews.length; i++) {
+                var barcodeView = barcodeSubviews[i];
+                barcodeView.respondToBarcodeCountChange(barcodeCount);
+            };
+        },
+        addBarcode: function(barcodeOptions) {
+
             this.elementCount = this.elementCount + 1;
 
             var elementView = new Vdjpipe.CustomDemultiplexBarcodeConfig({
@@ -61,11 +71,21 @@ define([
                 parameterType: this.parameterType,
                 inputCount: this.inputCount,
                 elementCount: this.elementCount,
+                options: barcodeOptions,
                 files: this.files,
             });
 
             this.insertView('.added-barcode-subviews', elementView);
             elementView.render();
+        },
+        removeBarcode: function() {
+
+            this.elementCount = this.elementCount - 1;
+
+            var barcodeSubviews = this.getViews('.added-barcode-subviews').value();
+            var barcodeView = barcodeSubviews[1];
+
+            barcodeView.remove();
         },
     });
 
@@ -73,22 +93,83 @@ define([
         template: 'jobs/vdjpipe-custom-demultiplex-barcode-config',
         serialize: function() {
             if (this.parameterType) {
+
+                var files = {};
+                if (this.files && this.files.toJSON()) {
+                    files = this.files.toJSON();
+                }
+
                 return {
                     isEditable: this.isEditable,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
                     elementCount: this.elementCount,
                     options: this.options,
-                    files: this.files.toJSON(),
+                    files: files,
                 };
             }
         },
-        events: {
-            'click .remove-barcode': 'removeBarcode',
+        afterRender: function() {
+            this.setTitleByLocation();
         },
-        removeBarcode: function(e) {
-            e.preventDefault();
-            this.remove();
+        events: function() {
+            var events = {};
+            events['change #barcode-location-' + this.inputCount + '-' + this.elementCount] = 'setTitleByLocation';
+
+            return events;
+        },
+        respondToBarcodeCountChange: function(barcodeCount) {
+
+            var originalDropdownValue = $('#barcode-location-' + this.inputCount + '-' + this.elementCount).val();
+
+            if (barcodeCount === 1) {
+                $('#barcode-location-' + this.inputCount + '-' + this.elementCount).html(
+                    '<option value="3\'">3\'</option>'
+                    +  '<option value="5\'">5\'</option>'
+                );
+
+                if (originalDropdownValue === 'Both 3\'' || originalDropdownValue === 'Both 5\'') {
+                    originalDropdownValue = '3\'';
+                }
+            }
+            else if (barcodeCount === 2) {
+                $('#barcode-location-' + this.inputCount + '-' + this.elementCount).html(
+                    '<option value="3\'">3\'</option>'
+                    +  '<option value="5\'">5\'</option>'
+                    +  '<option value="Both 3\'">Both 3\'</option>'
+                    +  '<option value="Both 5\'">Both 5\'</option>'
+                );
+            }
+
+            $('#barcode-location-' + this.inputCount + '-' + this.elementCount).val(originalDropdownValue);
+            this.setTitleByLocation();
+        },
+        setTitleByLocation: function() {
+
+            var barcodeLocation = $('#barcode-location-' + this.inputCount + '-' + this.elementCount).val();
+            /*
+            barcodeLocation = barcodeLocation.toLowerCase();
+            var newTitle = '';
+            switch (barcodeLocation) {
+                case '3\'':
+                    newTitle = '3\' Barcode Set';
+                    break;
+
+                case '5\'':
+                    newTitle = '5\' Barcode Set';
+                    break;
+
+                case 'both':
+                    newTitle = '3\' and 5\' Barcode Set';
+                    break;
+
+                default:
+                    break;
+            }
+            */
+            var newTitle = barcodeLocation + ' Barcode Set';
+
+            $('#barcode-title-' + this.inputCount + '-' + this.elementCount).text(newTitle);
         },
     });
 

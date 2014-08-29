@@ -5,12 +5,7 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-md-12">
-                        Element
-
-                        {{#if isEditable}}
-                            &nbsp;
-                            <span class="label label-danger remove-barcode">&times;</span>
-                        {{/if}}
+                        <span id="barcode-title-{{inputCount}}-{{elementCount}}"></span>
                     </div>
                 </div>
             </div>
@@ -30,17 +25,22 @@
                 value="MID{{elementCount}}-score"
             >
 
-
             <div class="panel-body">
                 <div class="row row-with-spacer">
                     <div class="col-md-12">
 
-                        <input name="{{inputCount}}-{{parameterType}}-elements[]" type="text" value="{{elementCount}}" hidden>
+                        <input
+                            name="{{inputCount}}-{{parameterType}}-elements[]"
+                            type="text"
+                            value="{{elementCount}}"
+                            hidden
+                        >
+
                         <table class="table">
                             <tbody>
                                 <tr>
                                     <td>
-                                        Fasta/Fastq Matching File
+                                        Fasta/Fastq Barcode File
                                     </td>
                                     <td>
                                         <select name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file">
@@ -55,7 +55,7 @@
                                         Location
                                     </td>
                                     <td>
-                                        <select name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-location">
+                                        <select id="barcode-location-{{inputCount}}-{{elementCount}}" name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-location">
                                             <option value="3'">3'</option>
                                             <option value="5'">5'</option>
                                             <option value="Both">Both</option>
@@ -64,7 +64,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Required
+                                        Discard Unassigned Reads?
                                     </td>
                                     <td>
                                         <input
@@ -75,7 +75,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Minimum Number of Mismatches
+                                        Maximum Number of Mismatches
                                     </td>
                                     <td>
                                         <input
@@ -84,17 +84,6 @@
                                             step="1"
                                             min="0"
                                             pattern="\d+"
-                                        >
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Keep Unmatched Reads
-                                    </td>
-                                    <td>
-                                        <input
-                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-FIXME"
-                                            type="checkbox"
                                         >
                                     </td>
                                 </tr>

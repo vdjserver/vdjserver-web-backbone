@@ -16,7 +16,11 @@
                         <span class="label label-danger remove-job-parameter">&times;</span>
                     {{/if}}
 
-                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
+                    <input
+                        class="job-form-item"
+                        type="hidden"
+                        name="{{inputCount}}-{{parameterType}}"
+                    >
                 </div>
             </div>
 
@@ -24,15 +28,26 @@
             <input
                 class="hidden job-form-item"
                 name="{{inputCount}}-{{parameterType}}-reverse-complement"
-                type="checkbox" 
+                type="checkbox"
                 checked
             >
 
             <div class="row row-with-spacer">
                 <div class="col-md-12">
-                    <button class="btn btn-success add-barcode-button">Submit Barcodes</button>
+                    Number of Barcodes
+                    &nbsp;
+                    <input
+                        id="barcodes-{{inputCount}}"
+                        name="barcodes-{{inputCount}}"
+                        type="number"
+                        step="1"
+                        min="1"
+                        max="2"
+                        pattern="\d+"
+                    >
                 </div>
             </div>
+
             <div class="added-barcode-subviews"></div>
 
         </div>
