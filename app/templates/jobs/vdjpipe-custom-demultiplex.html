@@ -37,8 +37,7 @@
                     Number of Barcodes
                     &nbsp;
                     <input
-                        id="barcodes-{{inputCount}}"
-                        name="barcodes-{{inputCount}}"
+                        id="{{inputCount}}-barcodes"
                         type="number"
                         step="1"
                         min="1"
@@ -47,9 +46,18 @@
                     >
                 </div>
             </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Location
+                    &nbsp;
+                    <select id="{{inputCount}}-barcode-location" name="{{inputCount}}-{{parameterType}}-custom-location">
+                        <option value="1">5'</option>
+                        <option value="2">3'</option>
+                    </select>
+                </div>
+            </div>
 
             <div class="added-barcode-subviews"></div>
-
         </div>
     </div>
 </li>

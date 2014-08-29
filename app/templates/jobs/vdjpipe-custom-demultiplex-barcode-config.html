@@ -5,7 +5,7 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-md-12">
-                        <span id="barcode-title-{{inputCount}}-{{elementCount}}"></span>
+                        <span id="{{inputCount}}-barcode-title-{{elementCount}}">{{title}}</span>
                     </div>
                 </div>
             </div>
@@ -47,18 +47,6 @@
                                             {{#each files}}
                                                 <option value={{value.name}}>{{value.name}}</option>
                                             {{/each}}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Location
-                                    </td>
-                                    <td>
-                                        <select id="barcode-location-{{inputCount}}-{{elementCount}}" name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-location">
-                                            <option value="3'">3'</option>
-                                            <option value="5'">5'</option>
-                                            <option value="Both">Both</option>
                                         </select>
                                     </td>
                                 </tr>

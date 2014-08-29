@@ -26,6 +26,7 @@ define([
             this.objectCount  = 0;
         },
         afterRender: function() {
+            // Restore any previously saved barcode elements
             if (this.options && this.options.elements) {
 
                 for (var i = 0; i < this.options.elements.length; i++) {
@@ -34,16 +35,19 @@ define([
                     this.addBarcode(barcodeOptions);
                 };
 
-                $('#barcodes-' + this.inputCount).val(this.elementCount);
+                $('#' + this.inputCount + '-barcodes').val(this.elementCount);
+
+                this.updateSubviewsForBarcodeLocation();
             }
         },
         events: function() {
             var events = {};
-            events['change #barcodes-' + this.inputCount] = 'changeBarcodes';
+            events['change #' + this.inputCount + '-barcodes'] = 'changeBarcodeCount';
+            events['change #' + this.inputCount + '-barcode-location'] = 'updateSubviewsForBarcodeLocation';
 
             return events;
         },
-        changeBarcodes: function(e) {
+        changeBarcodeCount: function(e) {
             e.preventDefault();
 
             var barcodeCount = e.target.value;
@@ -56,11 +60,79 @@ define([
                 this.removeBarcode();
             }
 
+            if (barcodeCount === 1) {
+                $('#' + this.inputCount + '-barcode-location').html(
+                      '<option value="1">5\'</option>'
+                    + '<option value="2">3\'</option>'
+                );
+
+                $('#' + this.inputCount + '-barcode-location').val(1);
+            }
+            else if (barcodeCount === 2) {
+                $('#' + this.inputCount + '-barcode-location').html(
+                      '<option value="3">Both 5\'</option>'
+                    + '<option value="4">Both 3\'</option>'
+                    + '<option value="5">3\' and 5\'</option>'
+                );
+
+                $('#' + this.inputCount + '-barcode-location').val(3);
+            }
+        },
+        updateSubviewsForBarcodeLocation: function(e) {
+            if (e) {
+                e.preventDefault();
+            }
+
+            var barcodeLocation = $('#' + this.inputCount + '-barcode-location').val();
+            barcodeLocation = parseInt(barcodeLocation);
+
+            // .value() is necessary for layoutmanager to return view stack as a JS array
             var barcodeSubviews = this.getViews('.added-barcode-subviews').value();
-            for (var i = 0; i < barcodeSubviews.length; i++) {
-                var barcodeView = barcodeSubviews[i];
-                barcodeView.respondToBarcodeCountChange(barcodeCount);
-            };
+
+            var barcodeCount = $('#' + this.inputCount + '-barcodes').val();
+            barcodeCount = parseInt(barcodeCount);
+
+            if (barcodeCount === 1) {
+
+                if (barcodeLocation === 1) {
+                    barcodeLocation = '5\'';
+                }
+                else if (barcodeLocation === 2) {
+                    barcodeLocation = '3\'';
+                }
+
+                var barcodeView = barcodeSubviews[0];
+                barcodeView.updateForBarcodeLocation(barcodeLocation);
+            }
+            else if (barcodeCount === 2) {
+
+                var barcodeLocations = [];
+
+                switch (barcodeLocation) {
+                    case 3:
+                        barcodeLocations[0] = '5\'';
+                        barcodeLocations[1] = '5\'';
+                        break;
+
+                    case 4:
+                        barcodeLocations[0] = '3\'';
+                        barcodeLocations[1] = '3\'';
+                        break;
+
+                    case 5:
+                        barcodeLocations[0] = '3\'';
+                        barcodeLocations[1] = '5\'';
+                        break;
+
+                    default:
+                        break;
+                }
+
+                for (var i = 0; i < barcodeSubviews.length; i++) {
+                    barcodeView = barcodeSubviews[i];
+                    barcodeView.updateForBarcodeLocation(barcodeLocations[i]);
+                };
+            }
         },
         addBarcode: function(barcodeOptions) {
 
@@ -110,7 +182,8 @@ define([
             }
         },
         afterRender: function() {
-            this.setTitleByLocation();
+            // Set initial title for first render if one is available
+            $('#' + this.inputCount + '-barcode-title-' + this.elementCount).text(this.title);
         },
         events: function() {
             var events = {};
@@ -118,58 +191,14 @@ define([
 
             return events;
         },
-        respondToBarcodeCountChange: function(barcodeCount) {
-
-            var originalDropdownValue = $('#barcode-location-' + this.inputCount + '-' + this.elementCount).val();
-
-            if (barcodeCount === 1) {
-                $('#barcode-location-' + this.inputCount + '-' + this.elementCount).html(
-                    '<option value="3\'">3\'</option>'
-                    +  '<option value="5\'">5\'</option>'
-                );
-
-                if (originalDropdownValue === 'Both 3\'' || originalDropdownValue === 'Both 5\'') {
-                    originalDropdownValue = '3\'';
-                }
-            }
-            else if (barcodeCount === 2) {
-                $('#barcode-location-' + this.inputCount + '-' + this.elementCount).html(
-                    '<option value="3\'">3\'</option>'
-                    +  '<option value="5\'">5\'</option>'
-                    +  '<option value="Both 3\'">Both 3\'</option>'
-                    +  '<option value="Both 5\'">Both 5\'</option>'
-                );
-            }
-
-            $('#barcode-location-' + this.inputCount + '-' + this.elementCount).val(originalDropdownValue);
-            this.setTitleByLocation();
+        updateForBarcodeLocation: function(barcodeLocation) {
+            this.setTitleByLocation(barcodeLocation);
         },
-        setTitleByLocation: function() {
+        setTitleByLocation: function(barcodeLocation) {
 
-            var barcodeLocation = $('#barcode-location-' + this.inputCount + '-' + this.elementCount).val();
-            /*
-            barcodeLocation = barcodeLocation.toLowerCase();
-            var newTitle = '';
-            switch (barcodeLocation) {
-                case '3\'':
-                    newTitle = '3\' Barcode Set';
-                    break;
+            this.title = barcodeLocation + ' Barcode Set';
 
-                case '5\'':
-                    newTitle = '5\' Barcode Set';
-                    break;
-
-                case 'both':
-                    newTitle = '3\' and 5\' Barcode Set';
-                    break;
-
-                default:
-                    break;
-            }
-            */
-            var newTitle = barcodeLocation + ' Barcode Set';
-
-            $('#barcode-title-' + this.inputCount + '-' + this.elementCount).text(newTitle);
+            $('#' + this.inputCount + '-barcode-title-' + this.elementCount).text(this.title);
         },
     });
 
@@ -340,8 +369,6 @@ define([
         },
         addCombinationObject: function(e) {
             e.preventDefault();
-
-            console.log("options are: " + JSON.stringify(this.options));
 
             this.objectCount = this.objectCount + 1;
 
