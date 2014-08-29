@@ -77,6 +77,8 @@ define([
 
                 $('#' + this.inputCount + '-barcode-location').val(3);
             }
+
+            this.updateSubviewsForBarcodeLocation();
         },
         updateSubviewsForBarcodeLocation: function(e) {
             if (e) {
