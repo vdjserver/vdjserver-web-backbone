@@ -42,7 +42,7 @@ define([
                         inputCount: this.inputCount,
                         elementCount: this.elementCount,
                         options: barcodeOptions,
-                        //fileName: fileName,
+                        files: this.files,
                     });
 
                     this.insertView('.added-barcode-subviews', elementView);
@@ -61,7 +61,7 @@ define([
                 parameterType: this.parameterType,
                 inputCount: this.inputCount,
                 elementCount: this.elementCount,
-                //fileName: fileName,
+                files: this.files,
             });
 
             this.insertView('.added-barcode-subviews', elementView);
@@ -78,8 +78,8 @@ define([
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
                     elementCount: this.elementCount,
-                    //fileName: this.fileName,
                     options: this.options,
+                    files: this.files.toJSON(),
                 };
             }
         },
