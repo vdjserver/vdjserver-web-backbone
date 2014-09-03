@@ -194,38 +194,33 @@ define([
 
             var job = new Backbone.Agave.Model.Job.VdjPipe();
 
-            job.setJobConfigFromWorkflowFormData(formData);
+            job.prepareJob(
+                formData,
+                this.selectedFileListings,
+                this.projectModel.get('uuid')
+            );
+
+            console.log("final job is: " + JSON.stringify(job));
+
+            job.submitJob(this.projectModel.get('uuid'))
+                .then(function() {
+                    var jobNotification = new Backbone.Agave.Model.Notification.Job();
+                    jobNotification.set('associatedUuid', that.job.get('id'));
+                    return jobNotification.save();
+                })
+                .done(function() {
+                    //var jobWebsocketFactory = new App.Models.JobWebsocket.Factory();
+                    //var jobWebsocket = jobWebsocketFactory.getJobWebsocket();
+                    jobWebsocket.subscribeToJob(that.job.get('id'));
+                })
+                .fail(function() {
+                    console.log('job submit fail');
+                });
+
 /*
-            var job;
-            if (formData.formtype === 'vdjpipe') {
-                console.log("formType ok");
+            //console.log("parent view: selectedFileListings are: " + JSON.stringify(this.selectedFileListings));
 
-                console.log("parent view: selectedFileListings are: " + JSON.stringify(this.selectedFileListings));
-
-                job = new Backbone.Agave.Model.Job.VdjPipe();
-                job.set('name', formData['job-name']);
-                job.generateVdjPipeConfig(formData, this.selectedFileListings);
-
-                console.log("job is: " + JSON.stringify(job));
-            }
-                job.setArchivePath(this.projectModel.get('uuid'));
-
-                var tmpFileMetadatas = this.selectedFileListings.pluck('value');
-                var filePaths = [];
-                for (var i = 0; i < tmpFileMetadatas.length; i++) {
-                    console.log('tmpFileMetadatas is: ' + JSON.stringify(tmpFileMetadatas[i]));
-                    filePaths.push(
-                        '/projects/'
-                        + tmpFileMetadatas[i].projectUuid
-                        + '/files/'
-                        + tmpFileMetadatas[i].name
-                    );
-                }
-
-                job.setFilesParameter(filePaths);
-
-                console.log("job is: " + JSON.stringify(job));
-            }
+            console.log("job is: " + JSON.stringify(job));
 
             $('#job-modal').modal('hide')
                 .on('hidden.bs.modal', function() {
@@ -685,32 +680,6 @@ define([
             var that = this;
 
             var jobWebsocket = new App.Models.JobWebsocket();
-
-            this.job.createArchivePathDirectory(this.projectModel.get('uuid'))
-                .then(function() {
-                    return that.job.save();
-                })
-                // Create metadata
-                .then(function() {
-                    return that.job.createJobMetadata(that.projectModel.get('uuid'));
-                })
-                // Share job w/ project members
-                .then(function() {
-                    return that.job.shareJobWithProjectMembers(that.projectModel.get('uuid'));
-                })
-                .then(function() {
-                    var jobNotification = new Backbone.Agave.Model.Notification.Job();
-                    jobNotification.set('associatedUuid', that.job.get('id'));
-                    return jobNotification.save();
-                })
-                .done(function() {
-                    //var jobWebsocketFactory = new App.Models.JobWebsocket.Factory();
-                    //var jobWebsocket = jobWebsocketFactory.getJobWebsocket();
-                    jobWebsocket.subscribeToJob(that.job.get('id'));
-                })
-                .fail(function() {
-                    console.log('job submit fail');
-                });
 
         },
         serialize: function() {

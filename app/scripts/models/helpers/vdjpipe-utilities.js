@@ -486,7 +486,7 @@ define(['app'], function(App) {
         };
     };
 
-    VdjPipeUtilities.SerializeWorkflowConfig = function(parameters, fileMetadata) {
+    VdjPipeUtilities.SerializeWorkflowConfig = function(parameters, fileMetadatas) {
 
         console.log("workflowSerialize start");
 
@@ -639,7 +639,7 @@ define(['app'], function(App) {
         console.log("workflow config - paramOutput is: " + JSON.stringify(paramOutput));
 
         // Set file read directions
-        var readDirections = VdjPipeUtilities.GetReadDirections(fileMetadata);
+        var readDirections = VdjPipeUtilities.GetReadDirections(fileMetadatas);
         outputConfig.input = readDirections;
 
         console.log("workflow config - readDirections is: " + JSON.stringify(readDirections));

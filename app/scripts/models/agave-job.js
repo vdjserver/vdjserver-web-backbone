@@ -58,16 +58,18 @@ define(['app', 'backbone', 'vdjpipe-utilities'], function(App, Backbone) {
         initialize: function() {
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
         },
-        setJobConfigFromWorkflowFormData: function(formData) {
+        setJobConfigFromWorkflowFormData: function(formData, fileMetadatas) {
 
             console.log("job set top - form data is: " + JSON.stringify(formData));
-            var workflowConfig = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData);
+            var workflowConfig = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData, fileMetadatas);
 
             console.log("job set - workflowConfig is: " + JSON.stringify(workflowConfig));
 
             var jobConfig = App.Models.Helpers.VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig(workflowConfig);
 
             console.log("job set - jobConfig is: " + JSON.stringify(jobConfig));
+
+            this.set('name', formData['job-name']);
 
             this.set(
                 'parameters',
@@ -77,7 +79,41 @@ define(['app', 'backbone', 'vdjpipe-utilities'], function(App, Backbone) {
             );
 
         },
-        setFilesParameter: function(filePaths) {
+        prepareJob: function(formData, fileMetadatas, projectUuid) {
+            this.setJobConfigFromWorkflowFormData(formData, fileMetadatas);
+            this.setArchivePath(projectUuid);
+            this.setFilesParameter(fileMetadatas);
+        },
+        submitJob: function(projectUuid) {
+
+            var that = this;
+
+            return this.createArchivePathDirectory(projectUuid)
+                .then(function() {
+                    return that.save();
+                })
+                // Create metadata
+                .then(function() {
+                    return that.createJobMetadata(projectUuid);
+                })
+                // Share job w/ project members
+                .then(function() {
+                    return that.shareJobWithProjectMembers(projectUuid);
+                })
+        },
+        setFilesParameter: function(fileMetadatas) {
+            var tmpFileMetadatas = fileMetadatas.pluck('value');
+
+            var filePaths = [];
+            for (var i = 0; i < tmpFileMetadatas.length; i++) {
+                //console.log('tmpFileMetadatas is: ' + JSON.stringify(tmpFileMetadatas[i]));
+                filePaths.push(
+                    '/projects/'
+                    + tmpFileMetadatas[i].projectUuid
+                    + '/files/'
+                    + tmpFileMetadatas[i].name
+                );
+            }
 
             filePaths = filePaths.join(';');
 
