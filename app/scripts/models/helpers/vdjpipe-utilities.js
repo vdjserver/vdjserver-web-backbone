@@ -488,6 +488,8 @@ define(['app'], function(App) {
 
     VdjPipeUtilities.SerializeWorkflowConfig = function(parameters, fileMetadata) {
 
+        console.log("workflowSerialize start");
+
         var outputConfig = {
             'base_path_input': '',
             'base_path_output': '',
@@ -496,6 +498,8 @@ define(['app'], function(App) {
 
         var paramOutput = [];
         var errors = [];
+
+        console.log("workflow config - all parameters are: " + JSON.stringify(parameters));
 
         for (var key in parameters) {
 
@@ -506,6 +510,8 @@ define(['app'], function(App) {
                     var parameterName = key.slice(keyCounterIndex);
 
                     var serializer = new VdjPipeUtilities.Serializer(parameters, key);
+
+                    console.log("workflow config - parameterName is: " + parameterName);
 
                     switch (parameterName) {
 
@@ -542,9 +548,6 @@ define(['app'], function(App) {
                         case 'custom_demultiplex':
                             var data = serializer.getCustomDemultiplex();
                             paramOutput.push(data);
-
-                            //data['custom_demultiplex'] = data['match'];
-                            //delete data['match'];
 
                             break;
 
@@ -633,18 +636,27 @@ define(['app'], function(App) {
             }
         }
 
+        console.log("workflow config - paramOutput is: " + JSON.stringify(paramOutput));
+
         // Set file read directions
         var readDirections = VdjPipeUtilities.GetReadDirections(fileMetadata);
         outputConfig.input = readDirections;
 
+        console.log("workflow config - readDirections is: " + JSON.stringify(readDirections));
+        console.log("workflow config - outputConfig is: " + JSON.stringify(outputConfig));
+
         // Choose read direction and add params
         // Just as with Highlander, there can only be one
         if (parameters['single-reads']) {
+            console.log("workflow config - parameter single-read hit");
             outputConfig['single_read_pipe'] = paramOutput;
         }
         else if (parameters['paired-reads']) {
+            console.log("workflow config - parameter paired-reads hit");
             outputConfig['paired_read_pipe'] = paramOutput;
         }
+
+        console.log("workflow config - final outputConfig is: " + JSON.stringify(outputConfig));
 
         //console.log("paramOutput is: " + JSON.stringify(paramOutput));
         //console.log("inputOutput is: " + JSON.stringify(inputOutput));

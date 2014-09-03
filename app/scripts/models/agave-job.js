@@ -1,4 +1,4 @@
-define(['app', 'backbone'], function(App, Backbone) {
+define(['app', 'backbone', 'vdjpipe-utilities'], function(App, Backbone) {
 
     'use strict';
 
@@ -57,6 +57,25 @@ define(['app', 'backbone'], function(App, Backbone) {
         },
         initialize: function() {
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
+        },
+        setJobConfigFromWorkflowFormData: function(formData) {
+
+            console.log("job set top - form data is: " + JSON.stringify(formData));
+            var workflowConfig = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData);
+
+            console.log("job set - workflowConfig is: " + JSON.stringify(workflowConfig));
+
+            var jobConfig = App.Models.Helpers.VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig(workflowConfig);
+
+            console.log("job set - jobConfig is: " + JSON.stringify(jobConfig));
+
+            this.set(
+                'parameters',
+                {
+                    'json': JSON.stringify(jobConfig),
+                }
+            );
+
         },
         setFilesParameter: function(filePaths) {
 
@@ -161,16 +180,14 @@ define(['app', 'backbone'], function(App, Backbone) {
         },
         setConfigFromFormData: function(formData) {
 
-            console.log("model formData is: " + JSON.stringify(formData));
-
-            var config = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData);
+            var workflowConfig = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData);
 
             var workflowName = App.Models.Helpers.VdjPipeUtilities.GetWorkflowName(formData);
 
             this.set(
                 'value',
                 {
-                    'config': config,
+                    'config': workflowConfig,
                     'workflowName': workflowName,
                 }
             );

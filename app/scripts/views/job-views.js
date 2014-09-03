@@ -169,18 +169,33 @@ define([
 
                     view.render();
                 }
+
+                var workflowConfig = workflow.get('value');
+                if (workflowConfig['single_read_pipe']) {
+                    $('#workflow-staging-area').append(
+                        '<input type="radio" class="hidden" name="single-reads" id="single-reads" checked>'
+                    );
+                }
+                else {
+                    $('#workflow-staging-area').append(
+                        '<input type="radio" class="hidden" name="paired-reads" id="paired-reads" checked>'
+                    );
+                }
             }
         },
         submitJob: function(e) {
             e.preventDefault();
 
-/*
             var that = this;
 
             var formData = Backbone.Syphon.serialize(this);
 
             console.log("job formData is: " + JSON.stringify(formData));
 
+            var job = new Backbone.Agave.Model.Job.VdjPipe();
+
+            job.setJobConfigFromWorkflowFormData(formData);
+/*
             var job;
             if (formData.formtype === 'vdjpipe') {
                 console.log("formType ok");
@@ -190,6 +205,9 @@ define([
                 job = new Backbone.Agave.Model.Job.VdjPipe();
                 job.set('name', formData['job-name']);
                 job.generateVdjPipeConfig(formData, this.selectedFileListings);
+
+                console.log("job is: " + JSON.stringify(job));
+            }
                 job.setArchivePath(this.projectModel.get('uuid'));
 
                 var tmpFileMetadatas = this.selectedFileListings.pluck('value');
@@ -219,7 +237,7 @@ define([
                     App.Layouts.main.insertView('#running-jobs', jobNotificationView);
                     jobNotificationView.render();
                 });
-            */
+*/
         },
         removeFileFromJob: function(e) {
             e.preventDefault();
@@ -607,6 +625,7 @@ define([
                 var formData = Backbone.Syphon.serialize(this);
 
                 var formErrors = this.getFormErrors(formData);
+                console.log('formErrors are: ' + JSON.stringify(formErrors));
 
                 if (formErrors.length > 0) {
                     this.displayFormErrors(formErrors);
