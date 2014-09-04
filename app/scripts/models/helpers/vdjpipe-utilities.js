@@ -95,14 +95,25 @@ define(['app'], function(App) {
                     var elementCounter = parameters[key + '-elements'][i];
                     //console.log("elementCounter is: " + JSON.stringify(elementCounter));
 
+
+                    // TODO: is this one still necessary?
                     var barcodeLocation = parameters[key + '-' + elementCounter + '-element-custom-location'];
+
+
+                    var barcodeType = parameters[key + '-' + elementCounter + '-element-barcode-type'];
+
                     var minScore = parameters[key + '-' + elementCounter + '-element-minimum-score'];
                     var required = parameters[key + '-' + elementCounter + '-element-required'];
                     var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
+                    var seqFile   = parameters[key + '-' + elementCounter + '-element-sequence-file'];
                     var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
 
                     if (barcodeLocation) {
                         element['custom_location'] = barcodeLocation;
+                    }
+
+                    if (barcodeType) {
+                        element['custom_type'] = barcodeType;
                     }
 
                     if (minScore) {
@@ -121,12 +132,155 @@ define(['app'], function(App) {
                         element['score_name'] = scoreName;
                     }
 
+                    if (seqFile) {
+                        element['seq_file'] = seqFile;
+                    }
+
                     if (valueName) {
                         element['value_name'] = valueName;
                     }
 
                     //console.log("element finished: " + JSON.stringify(element));
                     elements.push(element);
+                }
+
+                // Barcodes & Trimming
+                var barcodeCount = parameters[key + '-elements'].length
+                console.log("barcodeCount is: " + barcodeCount);
+                console.log("barcodeCount type is: " + typeof(barcodeCount));
+                if (barcodeCount === 1) {
+
+                    var barcodeType = parameters[key + '-' + 1 + '-element-barcode-type'];
+                    console.log("barcodeCount 1 ok. type is: " + barcodeType);
+
+                    switch (barcodeType) {
+                        case '3\'':
+                            console.log("barcodeCount 1. 3' hit ok.");
+                            elements[0]['end'] = {
+                                'after': '',
+                            };
+
+                            if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
+                                console.log("barcodeCount 1. 3' trim ok.");
+                                elements[0]['cut_upper'] = {
+                                    'before': 0,
+                                };
+                                    
+                                elements[0]['custom_trim'] = true;
+                            }
+
+                            break;
+
+                        case '5\'':
+                            console.log("barcodeCount 1. 5' hit ok.");
+
+                            elements[0]['start'] = {};
+
+                            if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
+                                console.log("barcodeCount 1. 5' trim ok.");
+                                elements[0]['cut_lower'] = {
+                                    'after': 0,
+                                };
+
+                                elements[0]['custom_trim'] = true;
+                            }
+
+                            break;
+
+                        default:
+                            // code
+                    }
+                }
+                else if (barcodeCount === 2) {
+                    //var tmpElementCounter = parameters[key + '-elements'][0];
+
+                    var firstBarcodeType = parameters[key + '-' + 1 + '-element-barcode-type'];
+                    console.log("barcodeCount 2 ok. first is: " + firstBarcodeType);
+                    var secondBarcodeType = parameters[key + '-' + 2 + '-element-barcode-type'];
+                    console.log("barcodeCount 2 ok. second is: " + secondBarcodeType);
+                    console.log("barcodeCount 2 ok. third is: " + parameters[key + '-' + 2 + '-element-barcode-type']);
+
+                    switch (firstBarcodeType) {
+                        case '3\'':
+                            console.log("barcodeCount 2. 3' hit ok.");
+                            elements[0]['end'] = {
+                                'after': '',
+                            };
+
+                            if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
+                                console.log("barcodeCount 2. 3' trim ok.");
+                                elements[0]['cut_upper'] = {
+                                    'before': 0,
+                                };
+
+                                elements[0]['custom_trim'] = true;
+                            }
+                            break;
+
+                        case '5\'':
+                            console.log("barcodeCount 2. 5' hit ok.");
+
+                            elements[0]['start'] = {};
+
+                            if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
+                                console.log("barcodeCount 2. 5' trim ok.");
+                                elements[0]['cut_lower'] = {
+                                    'after': 0,
+                                };
+
+                                elements[0]['custom_trim'] = true;
+                            }
+
+                            break;
+
+                        default:
+                            // code
+                    }
+
+                    switch (secondBarcodeType) {
+                        case '3\'':
+
+                            // Barcode type settings will depend on the first barcode
+                            if (firstBarcodeType === '3\'') {
+                                elements[1]['end'] = {
+                                    'before': 'MID1',
+                                    'pos': -2,
+                                };
+                            }
+                            else if (firstBarcodeType === '5\'') {
+                                elements[1]['end'] = {
+                                    'after': '',
+                                };
+                            }
+
+                            // Set barcode trim
+                            if (parameters[key + '-' + 2 + '-element-trim-barcode']) {
+                                elements[1]['cut_upper'] = {
+                                    'before': 0,
+                                };
+
+                                elements[1]['custom_trim'] = true;
+                            }
+                            break;
+
+                        case '5\'':
+                            // For 5', the barcode type setting does NOT depend on the first barcode
+                            elements[1]['start'] = {};
+
+                            // Set barcode trim
+                            if (parameters[key + '-' + 2 + '-element-trim-barcode']) {
+                                elements[1]['cut_lower'] = {
+                                    'after': 0,
+                                };
+
+                                elements[1]['custom_trim'] = true;
+                            }
+
+                            break;
+
+                        default:
+                            // code
+                    }
                 }
             }
 

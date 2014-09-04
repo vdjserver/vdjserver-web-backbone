@@ -25,6 +25,14 @@
                 value="MID{{elementCount}}-score"
             >
 
+            <input
+                id="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-barcode-type"
+                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-barcode-type"
+                type="text"
+                value="{{options.custom_type}}"
+                hidden
+            >
+
             <div class="panel-body">
                 <div class="row row-with-spacer">
                     <div class="col-md-12">
@@ -55,10 +63,18 @@
                                         Discard Unassigned Reads?
                                     </td>
                                     <td>
-                                        <input
-                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
-                                            type="checkbox"
-                                        >
+                                        {{#if options.required}}
+                                            <input
+                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
+                                                type="checkbox"
+                                                checked
+                                            >
+                                        {{else}}
+                                            <input
+                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
+                                                type="checkbox"
+                                            >
+                                        {{/if}}
                                     </td>
                                 </tr>
                                 <tr>
@@ -69,6 +85,7 @@
                                         <input
                                             name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-minimum-score"
                                             type="number"
+                                            value="{{options.min_score}}"
                                             step="1"
                                             min="0"
                                             pattern="\d+"
@@ -80,10 +97,18 @@
                                         Trim Barcode
                                     </td>
                                     <td>
-                                        <input
-                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-FIXME"
-                                            type="checkbox"
-                                        >
+                                        {{#if options.custom_trim}}
+                                            <input
+                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-trim-barcode"
+                                                type="checkbox"
+                                                checked
+                                            >
+                                        {{else}}
+                                            <input
+                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-trim-barcode"
+                                                type="checkbox"
+                                            >
+                                        {{/if}}
                                     </td>
                                 </tr>
                             </tbody>

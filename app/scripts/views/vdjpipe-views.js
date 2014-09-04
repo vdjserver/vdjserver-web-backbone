@@ -195,12 +195,18 @@ define([
         },
         updateForBarcodeLocation: function(barcodeLocation) {
             this.setTitleByLocation(barcodeLocation);
+            this.setBarcodeTypeByLocation(barcodeLocation);
         },
         setTitleByLocation: function(barcodeLocation) {
 
             this.title = barcodeLocation + ' Barcode Set';
 
             $('#' + this.inputCount + '-barcode-title-' + this.elementCount).text(this.title);
+        },
+        setBarcodeTypeByLocation: function(barcodeLocation) {
+            console.log("barcodeLocation is: " + barcodeLocation);
+            $('#' + this.inputCount + '-' + this.parameterType + '-' + this.elementCount + '-element-barcode-type').val(barcodeLocation);
+            console.log("barcodeType check is: " + $('#' + this.inputCount + '-' + this.parameterType + '-' + this.elementCount + '-element-barcode-type').val());
         },
     });
 
