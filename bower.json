@@ -19,7 +19,7 @@
     "nvd3": "1.1.15-beta",
     "requirejs": "2.1.14",
     "slickgrid": "2.1.0",
-    "socket.io-client": "1.0.6",
+    "socket.io-client": "1.1.0",
     "typeahead.js": "0.10.5",
     "twbs-bootstrap-sass": "3.2.0",
     "underscore": "1.7.0"

@@ -3,8 +3,9 @@ define([
     'handlebars',
     'filesize',
     'environment-config',
+    'socket-io',
     'backbone.syphon'
-], function(App, Handlebars, filesize, EnvironmentConfig) {
+], function(App, Handlebars, filesize, EnvironmentConfig, io) {
 
     'use strict';
 
@@ -108,6 +109,15 @@ define([
                     trigger: true
                 });
             }
+        },
+        addNotification: function(jobNotification) {
+
+            var jobNotificationView = new App.Views.Jobs.Notification({
+                notificationModel: jobNotification,
+            });
+
+            this.insertView('#notifications-' + jobNotification.projectUuid, jobNotificationView);
+            jobNotificationView.render();
         },
     });
 
@@ -330,6 +340,7 @@ define([
         },
         events: {
             'click #file-upload': 'clickFilesSelectorWrapper',
+            //'click #file-upload': 'tmpSocketTest',
             'change #file-dialog': 'changeFilesSelector',
             'click .file-category': 'changeFileCategory',
             'click .selected-files': 'uiToggleDisabledButtonStatus',
@@ -338,6 +349,38 @@ define([
             'click .delete-files': 'deleteFiles',
             'click .download-file': 'downloadFile',
         },
+        /*
+        tmpSocketTest: function() {
+
+            var that = this;
+
+            var socket = io.connect(
+                EnvironmentConfig.vdjauthRoot,
+                {
+                    'reconnect': false,
+                    'reconnection delay': 500,
+                    'forceNew': false,
+                }
+            );
+
+            socket.removeEventListener('connect');
+            socket.removeEventListener('jobUpdate');
+            socket.removeEventListener('disconnect');
+
+            socket.on('connect', function() {
+                socket.emit('joinRoom', '0001410189062850-5056a550b8-0001-007');
+            });
+
+            socket.on('jobUpdate', function(jobUpdate) {
+                console.log("jobUpdate is: " + JSON.stringify(jobUpdate));
+                //that.trigger('jobStatusUpdate', jobUpdate);
+            });
+
+            socket.on('disconnect', function() {
+                socket.removeListener
+            });
+        },
+        */
         fileListingsViewEvents: function(fileListingsView) {
 
             var that = this;
@@ -498,6 +541,7 @@ define([
                         });
                 }
             );
+
             this.listenToOnce(
                 workflowEditorView,
                 App.Views.Jobs.WorkflowEditor.events.closeWorkflowEditor,

@@ -7,8 +7,8 @@ define(['backbone'], function(Backbone) {
     Notification.Job = Backbone.Agave.Model.extend({
         defaults: {
             event: '*',
-            url:   Backbone.Agave.vdjauthRoot + '/notifications/jobs/${JOB_ID}?status=${JOB_STATUS}&event=${EVENT}&error=${JOB_ERROR}',
-            associatedUuid:  '',
+            url: Backbone.Agave.vdjauthRoot + '/notifications/jobs/${JOB_ID}?status=${JOB_STATUS}&event=${EVENT}&error=${JOB_ERROR}',
+            associatedUuid: '',
             persistent: true,
         },
         url: function() {

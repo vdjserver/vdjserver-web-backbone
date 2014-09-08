@@ -202,37 +202,24 @@ define([
 
             console.log("final job is: " + JSON.stringify(job));
 
+            var jobNotification = new Backbone.Agave.Model.Notification.Job();
+            jobNotification.projectUuid = this.projectModel.get('uuid');
+
             job.submitJob(this.projectModel.get('uuid'))
                 .then(function() {
-                    var jobNotification = new Backbone.Agave.Model.Notification.Job();
-                    jobNotification.set('associatedUuid', that.job.get('id'));
+                    jobNotification.set('associatedUuid', job.get('id'));
                     return jobNotification.save();
                 })
                 .done(function() {
-                    //var jobWebsocketFactory = new App.Models.JobWebsocket.Factory();
-                    //var jobWebsocket = jobWebsocketFactory.getJobWebsocket();
-                    jobWebsocket.subscribeToJob(that.job.get('id'));
+                    var listView = App.Layouts.main.getView('.sidebar');
+                    listView.addNotification(jobNotification);
+
+                    $('#job-modal').modal('hide');
+
                 })
                 .fail(function() {
                     console.log('job submit fail');
                 });
-
-/*
-            //console.log("parent view: selectedFileListings are: " + JSON.stringify(this.selectedFileListings));
-
-            console.log("job is: " + JSON.stringify(job));
-
-            $('#job-modal').modal('hide')
-                .on('hidden.bs.modal', function() {
-                    var jobNotificationView = new Jobs.Notification({
-                        job: job,
-                        projectModel: that.projectModel,
-                    });
-
-                    App.Layouts.main.insertView('#running-jobs', jobNotificationView);
-                    jobNotificationView.render();
-                });
-*/
         },
         removeFileFromJob: function(e) {
             e.preventDefault();
@@ -673,29 +660,31 @@ define([
         template: 'jobs/notification',
         initialize: function(parameters) {
 
-            this.jobName = this.job.get('name');
-            this.jobStatus = 'Queued';
-            this.projectModel = parameters.projectModel;
+            var notificationModel = parameters.notificationModel;
 
-            var that = this;
+            var factory = new App.Websockets.Jobs.Factory();
+            this.websocket = factory.getJobWebsocket();
+            this.websocket.connectToServer();
+            this.websocket.subscribeToJob(notificationModel.get('associatedUuid'));
 
-            var jobWebsocket = new App.Models.JobWebsocket();
+            this.listenTo(
+                this.websocket,
+                'jobStatusUpdate',
+                this.handleJobStatusUpdate
+            );
 
+            this.jobStatusMessage = 'Retrieving job status information.'
         },
         serialize: function() {
             return {
-                jobName: this.jobName,
-                jobStatus: this.jobStatus,
-                projectName: this.projectModel.get('value').name,
+                jobStatus: this.jobStatusMessage,
             };
         },
-        afterRender: function() {
-            $('.job-pending').animate({
-                bottom: '0px'
-            }, 5000, function() {
-                console.log('animation done');
-            });
-        }
+        handleJobStatusUpdate: function(jobStatusUpdate) {
+            console.log("job status update is: " + JSON.stringify(jobStatusUpdate));
+            this.jobStatusMessage = jobStatusUpdate['jobMessage'];
+            this.render();
+        },
     });
 
     Jobs.History = Backbone.View.extend({

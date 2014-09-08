@@ -118,17 +118,21 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 }
             });
         },
+        // Properties
+        Collections: {},
+        Instances:   {
+            Websockets: {},
+        },
         Layouts:     {},
+        Models:      {
+            Helpers: {},
+        },
+        Routers:     {},
         Views:       {
             Generic: {},
             HandlebarsHelpers: {},
             Helpers: {},
         },
-        Models:      {
-            Helpers: {},
-        },
-        Collections: {},
-        Routers:     {},
         Websockets:  {},
     };
 
