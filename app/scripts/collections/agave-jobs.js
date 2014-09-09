@@ -77,7 +77,7 @@ define(['backbone'], function(Backbone) {
             return predefinedWorkflowNames;
         },
         checkIfPredefinedWorkflow: function(workflowName) {
-            
+
             var predefinedWorkflowNames = this.getPredefinedWorkflowNames();
             var predefinedClash = _.indexOf(predefinedWorkflowNames, workflowName);
 
@@ -102,6 +102,8 @@ define(['backbone'], function(Backbone) {
             };
         },
         preconfiguredWorkflows: [
+// Paired read workflows are temporarily disabled for the time being.
+/*
             {
                 'workflow-name': 'Paired Reads',
                 'summary_output_path': 'summary.txt',
@@ -127,7 +129,7 @@ define(['backbone'], function(Backbone) {
                             'step': {
                                 'match': {
                                     'elements': [
-                                        { /* forward barcode element */
+                                        { // forward barcode element
                                             'start': {},
                                             'length': '30',
                                             'min_score': 20,
@@ -140,7 +142,7 @@ define(['backbone'], function(Backbone) {
                                             'require_best': true,
                                             'value_name': 'MID1', 'score_name': 'MID1-score'
                                         },
-                                        { /* reverse barcode element */
+                                        { // reverse barcode element
                                             'end': {'after': ''},
                                             'length': 30,
                                             'min_score': 20,
@@ -154,7 +156,7 @@ define(['backbone'], function(Backbone) {
                                             'value_name': 'MID2',
                                             'score_name': 'MID2-score'
                                         }
-                                     /* similar elements for primers */
+                                     // similar elements for primers
                                     ]
                                 }
                             }
@@ -230,6 +232,7 @@ define(['backbone'], function(Backbone) {
                     }
                 ]
             },
+*/
             {
 
                 'workflow-name': 'Single Reads',
