@@ -119,6 +119,22 @@ define(['backbone'], function(Backbone) {
 
             return isDuplicate;
         },
+        getSortedBarcodeCollection: function() {
+
+            var fileTypeMatches = _.filter(this.models, function(model) {
+                return model.get('value')['name'].slice(-6) === '.fasta';
+            });
+
+            var sizeSortedMatches = _.sortBy(fileTypeMatches, function(model) {
+                return model.get('value')['length'];
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(sizeSortedMatches);
+
+            return newCollection;
+        },
     });
 
     Backbone.Agave.Collection.Files = Files;

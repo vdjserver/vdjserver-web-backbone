@@ -28,6 +28,12 @@ define([
         afterRender: function() {
             if (this.options && this.options.elements) {
 
+                // Setup barcode files
+                this.barcodeFiles = {};
+                if (this.allFiles) {
+                    this.barcodeFiles = this.allFiles.getSortedBarcodeCollection();
+                }
+
                 // Restore any previously saved barcode elements
                 for (var i = 0; i < this.options.elements.length; i++) {
                     var barcodeOptions = this.options.elements[i];
@@ -165,6 +171,7 @@ define([
                 elementCount: this.elementCount,
                 options: barcodeOptions,
                 files: this.files,
+                barcodeFiles: this.barcodeFiles,
             });
 
             this.insertView('.added-barcode-subviews', elementView);
@@ -186,9 +193,15 @@ define([
         serialize: function() {
             if (this.parameterType) {
 
+                /*
                 var files = {};
                 if (this.files && this.files.toJSON()) {
                     files = this.files.toJSON();
+                }
+                */
+                var barcodeFiles = {};
+                if (this.barcodeFiles && this.barcodeFiles.toJSON) {
+                    barcodeFiles = this.barcodeFiles.toJSON();
                 }
 
                 return {
@@ -197,7 +210,8 @@ define([
                     inputCount: this.inputCount,
                     elementCount: this.elementCount,
                     options: this.options,
-                    files: files,
+                    //files: files,
+                    barcodeFiles: barcodeFiles,
                 };
             }
         },

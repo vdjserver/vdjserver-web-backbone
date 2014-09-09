@@ -164,6 +164,7 @@ define([
 
                     view.isEditable = false;
                     view.files = this.selectedFileListings;
+                    view.allFiles = this.allFiles;
 
                     this.insertView('#workflow-staging-area', view);
 
