@@ -86,19 +86,16 @@ define(['app'], function(App) {
 
             var elementName = parameters[key];
             var reverse = parameters[key + '-reverse-complement'];
+            var barcodeLocation = parameters[key + '-custom-location'];
 
             var elements = [];
+
 
             if (parameters[key + '-elements']) {
                 for (var i = 0; i < parameters[key + '-elements'].length; i++) {
                     var element = {};
                     var elementCounter = parameters[key + '-elements'][i];
                     //console.log("elementCounter is: " + JSON.stringify(elementCounter));
-
-
-                    // TODO: is this one still necessary?
-                    var barcodeLocation = parameters[key + '-' + elementCounter + '-element-custom-location'];
-
 
                     var barcodeType = parameters[key + '-' + elementCounter + '-element-barcode-type'];
 
@@ -107,10 +104,6 @@ define(['app'], function(App) {
                     var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
                     var seqFile   = parameters[key + '-' + elementCounter + '-element-sequence-file'];
                     var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
-
-                    if (barcodeLocation) {
-                        element['custom_location'] = barcodeLocation;
-                    }
 
                     if (barcodeType) {
                         element['custom_type'] = barcodeType;
@@ -165,7 +158,7 @@ define(['app'], function(App) {
                                 elements[0]['cut_upper'] = {
                                     'before': 0,
                                 };
-                                    
+
                                 elements[0]['custom_trim'] = true;
                             }
 
@@ -287,6 +280,7 @@ define(['app'], function(App) {
             var matchObject = {
                 'custom_demultiplex': {
                     'reverse': reverse,
+                    'custom_location': barcodeLocation,
                 },
             };
 

@@ -26,15 +26,27 @@ define([
             this.objectCount  = 0;
         },
         afterRender: function() {
-            // Restore any previously saved barcode elements
             if (this.options && this.options.elements) {
 
+                // Restore any previously saved barcode elements
                 for (var i = 0; i < this.options.elements.length; i++) {
                     var barcodeOptions = this.options.elements[i];
 
                     this.addBarcode(barcodeOptions);
                 };
 
+                // Set location HTML
+                if (this.options.elements.length === 1) {
+                    this.updateViewForSingleBarcodeLocation();
+                }
+                else {
+                    this.updateViewForDoubleBarcodeLocation();
+                }
+
+                // Select correct location
+                $('#' + this.inputCount + '-barcode-location').val(this.options['custom_location']);
+
+                // Set number of barcodes
                 $('#' + this.inputCount + '-barcodes').val(this.elementCount);
 
                 this.updateSubviewsForBarcodeLocation();
@@ -46,6 +58,19 @@ define([
             events['change #' + this.inputCount + '-barcode-location'] = 'updateSubviewsForBarcodeLocation';
 
             return events;
+        },
+        updateViewForSingleBarcodeLocation: function() {
+            $('#' + this.inputCount + '-barcode-location').html(
+                  '<option value="1">5\'</option>'
+                + '<option value="2">3\'</option>'
+            );
+        },
+        updateViewForDoubleBarcodeLocation: function() {
+            $('#' + this.inputCount + '-barcode-location').html(
+                  '<option value="3">Both 5\'</option>'
+                + '<option value="4">Both 3\'</option>'
+                + '<option value="5">3\' and 5\'</option>'
+            );
         },
         changeBarcodeCount: function(e) {
             e.preventDefault();
@@ -61,19 +86,12 @@ define([
             }
 
             if (barcodeCount === 1) {
-                $('#' + this.inputCount + '-barcode-location').html(
-                      '<option value="1">5\'</option>'
-                    + '<option value="2">3\'</option>'
-                );
+                this.updateViewForSingleBarcodeLocation();
 
                 $('#' + this.inputCount + '-barcode-location').val(1);
             }
             else if (barcodeCount === 2) {
-                $('#' + this.inputCount + '-barcode-location').html(
-                      '<option value="3">Both 5\'</option>'
-                    + '<option value="4">Both 3\'</option>'
-                    + '<option value="5">3\' and 5\'</option>'
-                );
+                this.updateViewForDoubleBarcodeLocation();
 
                 $('#' + this.inputCount + '-barcode-location').val(3);
             }
