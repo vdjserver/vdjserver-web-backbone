@@ -70,7 +70,7 @@ define(['backbone'], function(Backbone) {
             });
 
             return jqxhr;
-        }
+        },
     });
 
     Backbone.Agave.Model.Permission = Permission;

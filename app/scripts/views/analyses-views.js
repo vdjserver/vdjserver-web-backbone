@@ -188,7 +188,7 @@ define([
                     this.showWarning(errorMessage);
                 });
         },
-        compositionChart: function () {
+        compositionChart: function() {
 
             this.clearChart();
             this.hideWarning();

@@ -51,7 +51,7 @@ define(['app', 'backbone', 'vdjpipe-utilities'], function(App, Backbone) {
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: 'vdj_pipe-0.0.16u1',
+                    appId: 'vdj_pipe-0.0.16u2',
                 }
 
             );

@@ -171,7 +171,7 @@ define([
                 }
 
                 var workflowConfig = workflow.get('value');
-                if (workflowConfig['single_read_pipe']) {
+                if (workflowConfig['config']['single_read_pipe']) {
                     $('#workflow-staging-area').append(
                         '<input type="radio" class="hidden" name="single-reads" id="single-reads" checked>'
                     );
@@ -708,6 +708,9 @@ define([
 
                     // Create empty job models and set ids for all job listing results
                     for (var i = 0; i < jobUuids.models.length; i++) {
+
+                        console.log("job id is: " + jobUuids.at([i]).get('value').jobUuid);
+
                         var job = new Backbone.Agave.Model.Job.Detail({
                             id: jobUuids.at([i]).get('value').jobUuid,
                         });
@@ -718,7 +721,8 @@ define([
                     // Do a massive async fetch on all individual models
                     var jobFetches = _.invoke(jobModels, 'fetch');
 
-                    $.when.apply($, jobFetches).done(function() {
+                    $.when.apply($, jobFetches).always(function() {
+                        console.log("job metadata fetch done");
                         for (var i = 0; i < jobModels.length; i++) {
                             that.jobs.add(jobModels[i]);
                         }
@@ -729,7 +733,7 @@ define([
 
                 })
                 .fail(function() {
-
+                    console.log("job fetch fail");
                 });
         },
         serialize: function() {
