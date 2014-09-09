@@ -136,6 +136,7 @@ define([
 
             // Do housekeeping first
             this.removeView('#workflow-staging-area');
+            $('#workflow-staging-area').empty();
 
             // Setup and insert new workflow views
             var workflowId = e.target.value;
@@ -190,6 +191,21 @@ define([
             var that = this;
 
             var formData = Backbone.Syphon.serialize(this);
+
+            // Remove old validation warnings
+            $('.form-group').removeClass('has-error');
+
+            // Begin Validation
+            if (!formData['job-name']) {
+                $('#job-name').closest('.form-group').addClass('has-error');
+                return;
+            }
+
+            if ($.trim($('#workflow-staging-area').html()) === '') {
+                $('#select-workflow').closest('.form-group').addClass('has-error');
+                return;
+            }
+            // End Validation
 
             console.log("job formData is: " + JSON.stringify(formData));
 
