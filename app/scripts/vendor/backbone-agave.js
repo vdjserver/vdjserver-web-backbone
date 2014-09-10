@@ -227,7 +227,7 @@ define([
             archive: true,
             //archive: false,
             archivePath: '',
-            archiveSystem: 'data.vdjserver.org',
+            archiveSystem: EnvironmentConfig.storageSystem,
             batchQueue: 'normal',
             //id: 0,
             inputs: {},

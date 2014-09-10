@@ -1,4 +1,9 @@
-define(['backbone'], function(Backbone) {
+define(
+    [
+        'backbone',
+        'environment-config'
+    ],
+function(Backbone, EnvironmentConfig) {
 
     'use strict';
 
@@ -21,7 +26,7 @@ define(['backbone'], function(Backbone) {
             _links: {}
         },
         url: function() {
-            return '/files/v2/media/system/data.vdjserver.org//projects/' + this.get('projectUuid') + '/files/';
+            return '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + this.get('projectUuid') + '/files/';
         },
         sync: function(method, model, options) {
 
@@ -109,7 +114,7 @@ define(['backbone'], function(Backbone) {
             var jqxhr = $.ajax({
                 headers: Backbone.Agave.oauthHeader(),
                 type: 'GET',
-                url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + this.get('projectUuid') + '/files/' + name,
+                url: Backbone.Agave.apiRoot + '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + this.get('projectUuid') + '/files/' + name,
             });
             this.name = name;
             return jqxhr;
@@ -119,7 +124,7 @@ define(['backbone'], function(Backbone) {
             var that = this;
 
             var xhr = new XMLHttpRequest();
-            xhr.open('get', Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + this.get('projectUuid') + '/files/' + this.get('name'));
+            xhr.open('get', Backbone.Agave.apiRoot + '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + this.get('projectUuid') + '/files/' + this.get('name'));
             xhr.responseType = 'blob';
             xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
 

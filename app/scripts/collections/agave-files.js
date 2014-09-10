@@ -1,4 +1,9 @@
-define(['backbone'], function(Backbone) {
+define(
+    [
+        'backbone',
+        'environment-config'
+    ],
+function(Backbone, EnvironmentConfig) {
 
     'use strict';
 
@@ -8,7 +13,7 @@ define(['backbone'], function(Backbone) {
         model: Backbone.Agave.Model.File,
         comparator: 'name',
         url: function() {
-            return '/files/v2/listings/system/data.vdjserver.org';
+            return '/files/v2/listings/system/' + EnvironmentConfig.storageSystem;
         },
         parse: function(response) {
             if (response.result) {

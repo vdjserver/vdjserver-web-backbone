@@ -1,4 +1,11 @@
-define(['app', 'backbone', 'vdjpipe-utilities'], function(App, Backbone) {
+define(
+    [
+        'app',
+        'backbone',
+        'environment-config',
+        'vdjpipe-utilities'
+    ],
+function(App, Backbone, EnvironmentConfig) {
 
     'use strict';
 
@@ -154,7 +161,7 @@ define(['app', 'backbone', 'vdjpipe-utilities'], function(App, Backbone) {
                 data: 'action=mkdir&path=' + relativeArchivePath,
                 headers: Backbone.Agave.oauthHeader(),
                 type: 'PUT',
-                url: Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/' + projectUuid + '/analyses',
+                url: Backbone.Agave.apiRoot + '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + projectUuid + '/analyses',
             });
 
             return jqxhr;
