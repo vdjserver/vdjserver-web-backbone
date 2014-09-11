@@ -377,8 +377,9 @@ define([
              */
             clearPlaceholder: function() {
                 var deferred = $.Deferred();
-
+console.log("calling clearPlaceholder");
                 if ($('#vdj-pipe-configuration-placeholder').length) {
+console.log("clearPlaceholder if ok");
 
                     $('#vdj-pipe-configuration-placeholder')
                         .addClass('animated flipOutX')
@@ -395,6 +396,7 @@ define([
                     ;
                 }
                 else {
+console.log("clearPlaceholder else ok");
                     deferred.resolve();
                 }
 

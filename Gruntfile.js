@@ -230,7 +230,8 @@ module.exports = function(grunt) {
                              */
                             'nvd3/nv.d3.css',
                             'slickgrid/slick.grid.css',
-                            'slickgrid/css/smoothness/jquery-ui-1.8.16.custom.css'
+                            'slickgrid/css/smoothness/jquery-ui-1.8.16.custom.css',
+                            'animate.css/animate.css',
                         ]
                     }
                 ]
