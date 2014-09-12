@@ -307,9 +307,13 @@ define(['app'], function(App) {
 
             var tmpFindIntersection = {
                 'find_intersection': {
-                    'min_length': parseInt(parameters[key + '-min-length']),
-                },
+                    'out_unique': '.fasta',
+                }
             };
+
+            if (parameters[key + '-min-length']) {
+                tmpFindIntersection['find_intersection']['min_length'] = parseInt(parameters[key + '-min-length']);
+            }
 
             if (parameters[key + '-fraction-match']) {
                 tmpFindIntersection['find_intersection']['fraction_match'] = parseFloat(parameters[key + '-fraction-match']);
@@ -348,12 +352,20 @@ define(['app'], function(App) {
         };
 
         this.getLengthFilter = function() {
-            return {
-                'length_filter': {
-                    'min': parseInt(parameters[key + '-min']),
-                    'max': parseInt(parameters[key + '-max']),
-                },
+
+            var lengthFilter = {
+                'length_filter': {},
             };
+
+            if (parameters[key + '-min']) {
+                lengthFilter['length_filter']['min'] = parseInt(parameters[key + '-min']);
+            }
+
+            if (parameters[key + '-max']) {
+                lengthFilter['length_filter']['max'] = parseInt(parameters[key + '-max']);
+            }
+
+            return lengthFilter;
         };
 
         this.getMatch = function() {
@@ -567,7 +579,7 @@ define(['app'], function(App) {
                 matchObject.match.elements = elements;
             }
 
-            if (combinationObjects) {
+            if (combinationObjects.length > 0) {
                 matchObject.match.combinations = combinationObjects;
             }
 

@@ -262,8 +262,11 @@ define(['backbone'], function(Backbone) {
                     {'length_filter': {'min': 200}},
                     {'average_quality_filter': 35},
                     {'homopolymer_filter': 20},
+// NOTE: these options are temporarily disabled since the serializer ignores their out_prefix
+/*
                     {'quality_stats': {'out_prefix': 'post-filter_'}},
                     {'composition_stats': {'out_prefix': 'post-filter_'}},
+*/
                     {
                         'find_intersection': {
                             'out_unique':'.fasta'
