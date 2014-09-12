@@ -160,17 +160,24 @@ define([
                     following loop is a workaround for now.
                 */
                 //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
+
+                // Note: views will change places in the dom as they render asynchronously
+                // So we need to make sure that they're all inserted properly before calling render.
+                var deferreds = [];
+
                 for (var i = 0; i < workflowViews.length; i++) {
                     var view = workflowViews[i];
 
                     view.isEditable = false;
                     view.files = this.selectedFileListings;
                     view.allFiles = this.allFiles;
-
                     this.insertView('#workflow-staging-area', view);
 
-                    view.render();
+                    deferreds.push(view.render());
                 }
+
+                // Render all workflow views
+                $.when.apply($, deferreds);
 
                 var workflowConfig = workflow.get('value');
                 if (workflowConfig['config']['single_read_pipe']) {
