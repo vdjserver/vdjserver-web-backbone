@@ -20,6 +20,11 @@ define(['app'], function(App) {
 
                 var value = fileMetadata.at([i]).get('value');
 
+                // Hack to prevent .fasta files from being added
+                if (value.name.split('.').pop() === '.fasta') {
+                    continue;
+                }
+
                 var privateAttributes = value.privateAttributes;
 
                 if (privateAttributes['forward-reads']) {
