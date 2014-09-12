@@ -163,7 +163,9 @@ define([
 
                 // Note: views will change places in the dom as they render asynchronously
                 // So we need to make sure that they're all inserted properly before calling render.
-                var deferreds = [];
+
+                var workflowLayout = new Backbone.View();
+                this.insertView('#workflow-staging-area', workflowLayout);
 
                 for (var i = 0; i < workflowViews.length; i++) {
                     var view = workflowViews[i];
@@ -171,13 +173,12 @@ define([
                     view.isEditable = false;
                     view.files = this.selectedFileListings;
                     view.allFiles = this.allFiles;
-                    this.insertView('#workflow-staging-area', view);
 
-                    deferreds.push(view.render());
+                    workflowLayout.insertView(view);
                 }
 
                 // Render all workflow views
-                $.when.apply($, deferreds);
+                workflowLayout.render();
 
                 var workflowConfig = workflow.get('value');
                 if (workflowConfig['config']['single_read_pipe']) {

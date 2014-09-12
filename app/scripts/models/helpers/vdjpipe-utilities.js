@@ -330,9 +330,9 @@ define(['app'], function(App) {
             return tmpFindIntersection;
         };
 
-        this.getFindUnique = function() {
+        this.getFindShared = function() {
             return {
-                'find_unique': {
+                'find_shared': {
                     'min_length':   parseInt(parameters[key + '-min-length']),
                     'ignore_ends':  parseInt(parameters[key + '-ignore-ends']),
                     'fraction_match': parseFloat(parameters[key + '-fraction-match']),
@@ -728,8 +728,8 @@ define(['app'], function(App) {
 
                             break;
 
-                        case 'find_unique':
-                            var data = serializer.getFindUnique();
+                        case 'find_shared':
+                            var data = serializer.getFindShared();
                             paramOutput.push(data);
 
                             break;
