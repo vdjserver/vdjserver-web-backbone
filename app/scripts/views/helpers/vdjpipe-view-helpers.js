@@ -113,17 +113,8 @@ console.log("options is: " + JSON.stringify(options));
 
                 break;
 
-            case 'find_intersection':
-                vdjPipeView = new App.Views.Vdjpipe.FindSequencesFromMultipleGroups({
-                    parameterType: key,
-                    inputCount: counter,
-                    options: options,
-                });
-
-                break;
-
-            case 'find_unique':
-                vdjPipeView = new App.Views.Vdjpipe.FindUniqueSequences({
+            case 'find_shared':
+                vdjPipeView = new App.Views.Vdjpipe.FindSharedSequences({
                     parameterType: key,
                     inputCount: counter,
                     options: options,

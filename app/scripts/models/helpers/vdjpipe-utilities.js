@@ -308,37 +308,27 @@ define(['app'], function(App) {
             };
         };
 
-        this.getFindIntersection = function() {
-
-            var tmpFindIntersection = {
-                'find_intersection': {
-                    'out_unique': '.fasta',
-                }
+        this.getFindShared = function() {
+            var tmpFindShared = {
+                'find_shared': {},
             };
 
             if (parameters[key + '-min-length']) {
-                tmpFindIntersection['find_intersection']['min_length'] = parseInt(parameters[key + '-min-length']);
+                tmpFindShared['find_shared']['min_length'] = parseInt(parameters[key + '-min-length']);
             }
 
             if (parameters[key + '-fraction-match']) {
-                tmpFindIntersection['find_intersection']['fraction_match'] = parseFloat(parameters[key + '-fraction-match']);
+                tmpFindShared['find_shared']['fraction_match'] = parseFloat(parameters[key + '-fraction-match']);
             }
             else if (parameters[key + '-ignore-ends']) {
-                tmpFindIntersection['find_intersection']['ignore_ends'] = parseInt(parameters[key + '-ignore-ends']);
+                tmpFindShared['find_shared']['ignore_ends'] = parseInt(parameters[key + '-ignore-ends']);
             }
 
-            return tmpFindIntersection;
-        };
+            if (tmpFindShared['find_shared'].length === 0) {
+                tmpFindShared['find_shared']['out_unique'] = '.fasta';
+            }
 
-        this.getFindShared = function() {
-            return {
-                'find_shared': {
-                    'min_length':   parseInt(parameters[key + '-min-length']),
-                    'ignore_ends':  parseInt(parameters[key + '-ignore-ends']),
-                    'fraction_match': parseFloat(parameters[key + '-fraction-match']),
-                   // Could add out_path_fasta or out_path_duplicates
-                },
-            };
+            return tmpFindShared;
         };
 
         this.getHistogram = function() {
@@ -718,12 +708,6 @@ define(['app'], function(App) {
 
                         case 'eMID_map':
                             var data = serializer.getEmidMap();
-                            paramOutput.push(data);
-
-                            break;
-
-                        case 'find_intersection':
-                            var data = serializer.getFindIntersection();
                             paramOutput.push(data);
 
                             break;

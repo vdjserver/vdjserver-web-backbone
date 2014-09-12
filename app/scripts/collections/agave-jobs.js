@@ -268,7 +268,7 @@ define(['backbone'], function(Backbone) {
                     {'composition_stats': {'out_prefix': 'post-filter_'}},
 */
                     {
-                        'find_intersection': {
+                        'find_shared': {
                             'out_unique':'.fasta'
                         }
                     }

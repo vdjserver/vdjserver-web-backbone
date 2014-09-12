@@ -242,71 +242,8 @@ define([
         },
     });
 
-    Vdjpipe.FindSequencesFromMultipleGroups = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-find-sequences-from-multiple-groups',
-        afterRender: function() {
-            this.updateUIForWorkflowOptions();
-        },
-        updateUIForWorkflowOptions: function() {
-            if (this.options && this.options['fraction_match']) {
-                this.setFractionMatch();
-                $('.' + this.parameterType + '-fraction-match input').val(this.options['fraction_match']);
-            }
-            else if (this.options && this.options['ignore_ends']) {
-                this.setIgnoreEnds();
-                $('.' + this.parameterType + '-ignore-ends input').val(this.options['ignore_ends']);
-            }
-        },
-        events: function() {
-            var events = {};
-            events['click #' + this.parameterType + '-ignore-ends-button'] = 'setIgnoreEnds';
-            events['click #' + this.parameterType + '-fraction-match-button'] = 'setFractionMatch';
-
-            return events;
-        },
-        resetOptionalFormElementState: function() {
-            // Hide all
-            $('.' + this.parameterType + '-filter-param').addClass('hidden');
-
-            // Clear out other input values
-            $('.' + this.parameterType + '-filter-param input').val('');
-
-            // Reset all button states
-            $('.' + this.parameterType + '-filter-button').removeClass('btn-success');
-            $('.' + this.parameterType + '-filter-button').addClass('btn-default');
-        },
-        setIgnoreEnds: function(e) {
-            if (e) {
-                e.preventDefault();
-            }
-
-            this.resetOptionalFormElementState();
-
-            // Show this input
-            $('.' + this.parameterType + '-ignore-ends').removeClass('hidden');
-
-            // Highlight selected button
-            $('#' + this.parameterType + '-ignore-ends-button').removeClass('btn-default');
-            $('#' + this.parameterType + '-ignore-ends-button').addClass('btn-success');
-        },
-        setFractionMatch: function(e) {
-            if (e) {
-                e.preventDefault();
-            }
-
-            this.resetOptionalFormElementState();
-
-            // Show this input
-            $('.' + this.parameterType + '-fraction-match').removeClass('hidden');
-
-            // Highlight selected button
-            $('#' + this.parameterType + '-fraction-match-button').removeClass('btn-default');
-            $('#' + this.parameterType + '-fraction-match-button').addClass('btn-success');
-        },
-    });
-
-    Vdjpipe.FindUniqueSequences = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-find-unique-sequences',
+    Vdjpipe.FindSharedSequences = App.Views.Generic.VdjpipeOptionView.extend({
+        template: 'jobs/vdjpipe-find-shared-sequences',
         afterRender: function() {
             this.updateUIForWorkflowOptions();
         },
