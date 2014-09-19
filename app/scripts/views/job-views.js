@@ -124,7 +124,7 @@ define([
                         that.resetDeleteWorkflow();
                     })
                     .fail(function() {
-                        console.log('workflow delete error');
+                        //console.log('workflow delete error');
                     });
             }
         },
@@ -140,14 +140,14 @@ define([
 
             // Setup and insert new workflow views
             var workflowId = e.target.value;
-            console.log("workflowId is: " + workflowId);
+            //console.log("workflowId is: " + workflowId);
 
             // Only continue if there's actually a workflow selected
             if (workflowId) {
 
                 var workflow = this.workflows.get(workflowId);
 
-                console.log('workflow is: ' + JSON.stringify(workflow));
+                //console.log('workflow is: ' + JSON.stringify(workflow));
 
                 var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflow.get('value').config);
 
@@ -159,7 +159,7 @@ define([
                     This behavior might be a bug in layout manager, so the
                     following loop is a workaround for now.
                 */
-                //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
+                ////console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
 
                 // Note: views will change places in the dom as they render asynchronously
                 // So we need to make sure that they're all inserted properly before calling render.
@@ -215,7 +215,7 @@ define([
             }
             // End Validation
 
-            console.log("job formData is: " + JSON.stringify(formData));
+            //console.log("job formData is: " + JSON.stringify(formData));
 
             var job = new Backbone.Agave.Model.Job.VdjPipe();
 
@@ -225,7 +225,7 @@ define([
                 this.projectModel.get('uuid')
             );
 
-            console.log("final job is: " + JSON.stringify(job));
+            //console.log("final job is: " + JSON.stringify(job));
 
             var jobNotification = new Backbone.Agave.Model.Notification.Job();
             jobNotification.projectUuid = this.projectModel.get('uuid');
@@ -243,7 +243,7 @@ define([
 
                 })
                 .fail(function() {
-                    console.log('job submit fail');
+                    //console.log('job submit fail');
                 });
         },
         removeFileFromJob: function(e) {
@@ -329,7 +329,7 @@ define([
                 // Remove workflow placeholder from DOM
                 $('#vdj-pipe-configuration-placeholder').remove();
 
-                //console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
+                ////console.log("selected files are: " + JSON.stringify(this.selectedFileListings));
 
                 var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(editableWorkflow.get('value').config);
 
@@ -385,9 +385,9 @@ define([
              */
             clearPlaceholder: function() {
                 var deferred = $.Deferred();
-console.log("calling clearPlaceholder");
+//console.log("calling clearPlaceholder");
                 if ($('#vdj-pipe-configuration-placeholder').length) {
-console.log("clearPlaceholder if ok");
+//console.log("clearPlaceholder if ok");
 
                     $('#vdj-pipe-configuration-placeholder')
                         .addClass('animated flipOutX')
@@ -404,7 +404,7 @@ console.log("clearPlaceholder if ok");
                     ;
                 }
                 else {
-console.log("clearPlaceholder else ok");
+//console.log("clearPlaceholder else ok");
                     deferred.resolve();
                 }
 
@@ -542,7 +542,7 @@ console.log("clearPlaceholder else ok");
 
                 var parameterType = e.target.dataset.parametertype;
 
-                //console.log("parameterType is: " + parameterType);
+                ////console.log("parameterType is: " + parameterType);
 
                 this.counter = this.counter + 1;
 
@@ -634,7 +634,7 @@ console.log("clearPlaceholder else ok");
                 var formData = Backbone.Syphon.serialize(this);
 
                 var formErrors = this.getFormErrors(formData);
-                console.log('formErrors are: ' + JSON.stringify(formErrors));
+                //console.log('formErrors are: ' + JSON.stringify(formErrors));
 
                 if (formErrors.length > 0) {
                     this.displayFormErrors(formErrors);
@@ -654,19 +654,19 @@ console.log("clearPlaceholder else ok");
 
                     jobWorkflow.setConfigFromFormData(formData);
 
-                    console.log("just set config: " + JSON.stringify(formData));
-                    //console.log("converted workflow is: " + JSON.stringify(App.Models.Helpers.VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig(jobWorkflow.get('value').config)));
+                    //console.log("just set config: " + JSON.stringify(formData));
+                    ////console.log("converted workflow is: " + JSON.stringify(App.Models.Helpers.VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig(jobWorkflow.get('value').config)));
 
                     var that = this;
 
                     jobWorkflow.save()
                         .done(function() {
-                            console.log('save done. final workflow is: ' + JSON.stringify(jobWorkflow));
+                            //console.log('save done. final workflow is: ' + JSON.stringify(jobWorkflow));
                             that.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditor);
                         })
                         .fail(function() {
                             // troubleshoot
-                            console.log('save fail');
+                            //console.log('save fail');
                         })
                     ;
                 }
@@ -708,7 +708,7 @@ console.log("clearPlaceholder else ok");
             };
         },
         handleJobStatusUpdate: function(jobStatusUpdate) {
-            console.log("job status update is: " + JSON.stringify(jobStatusUpdate));
+            //console.log("job status update is: " + JSON.stringify(jobStatusUpdate));
             this.jobStatusMessage = jobStatusUpdate['jobMessage'];
             this.render();
         },
@@ -736,7 +736,7 @@ console.log("clearPlaceholder else ok");
                     // Create empty job models and set ids for all job listing results
                     for (var i = 0; i < jobUuids.models.length; i++) {
 
-                        console.log("job id is: " + jobUuids.at([i]).get('value').jobUuid);
+                        //console.log("job id is: " + jobUuids.at([i]).get('value').jobUuid);
 
                         var job = new Backbone.Agave.Model.Job.Detail({
                             id: jobUuids.at([i]).get('value').jobUuid,
@@ -749,7 +749,7 @@ console.log("clearPlaceholder else ok");
                     var jobFetches = _.invoke(jobModels, 'fetch');
 
                     $.when.apply($, jobFetches).always(function() {
-                        console.log("job metadata fetch done");
+                        //console.log("job metadata fetch done");
                         for (var i = 0; i < jobModels.length; i++) {
                             that.jobs.add(jobModels[i]);
                         }
@@ -760,7 +760,7 @@ console.log("clearPlaceholder else ok");
 
                 })
                 .fail(function() {
-                    console.log("job fetch fail");
+                    //console.log("job fetch fail");
                 });
         },
         serialize: function() {

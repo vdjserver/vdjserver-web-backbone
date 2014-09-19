@@ -45,7 +45,7 @@ define(['app', 'backbone.syphon'], function(App) {
           that.setupViews();
         })
         .fail(function() {
-          console.log('fetch error');
+          //console.log('fetch error');
           that.setupViews();
         });
     },
@@ -116,7 +116,7 @@ define(['app', 'backbone.syphon'], function(App) {
               });
           });
       } else {
-        console.log('ran into else...');
+        //console.log('ran into else...');
         this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('Profile update failed. Please try again.').fadeIn());
       }
 
@@ -200,7 +200,7 @@ define(['app', 'backbone.syphon'], function(App) {
                 $('#modal-message')
                   .modal('hide')
                   .on('hidden.bs.modal', function() {
-                    console.log('here');
+                    //console.log('here');
 
                     // password changed
                     that.model.clear({silent: true});

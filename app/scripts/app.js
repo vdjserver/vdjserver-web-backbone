@@ -41,7 +41,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
 
             // setup agave
             App.Agave = new Backbone.Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
-            console.log("token 1 is: " + JSON.stringify(App.Agave.token()));
+            //console.log("token 1 is: " + JSON.stringify(App.Agave.token()));
 
             App.listenTo(
                 App.Agave.token(),
@@ -56,7 +56,7 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 App.Agave.token(),
                 'destroy',
                 function() {
-                    console.log("destroy ok");
+                    //console.log("destroy ok");
                     App.Agave.token().clear();
                     window.localStorage.removeItem('Agave.Token');
                     App.router.navigate('', {'trigger':true});

@@ -12,13 +12,13 @@ define([
 
     var JobWebsocket = Backbone.Model.extend({
         connectToServer: function() {
-            console.log("connecting to server");
+            //console.log("connecting to server");
         },
         subscribeToJob: function(jobId) {
 
             var that = this;
 
-            console.log("subscribe jobId is: " + jobId);
+            //console.log("subscribe jobId is: " + jobId);
 
             var socket = io.connect(
                 EnvironmentConfig.vdjauthRoot,
@@ -32,7 +32,7 @@ define([
             });
 
             socket.on('jobUpdate', function(jobUpdate) {
-                console.log("jobUpdate is: " + JSON.stringify(jobUpdate));
+                //console.log("jobUpdate is: " + JSON.stringify(jobUpdate));
                 that.trigger('jobStatusUpdate', jobUpdate);
             });
         },
@@ -47,11 +47,11 @@ define([
             var socket;
 
             if (App.Instances.Websockets.Job) {
-                console.log("scenario A");
+                //console.log("scenario A");
                 socket = App.Instances.Websockets.Job;
             }
             else {
-                console.log("scenario B");
+                //console.log("scenario B");
                 socket = new JobWebsocket();
                 //socket.connectToServer();
 

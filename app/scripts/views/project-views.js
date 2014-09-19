@@ -262,7 +262,7 @@ define([
 
             var that = this;
 
-            console.log("proj model is: " + JSON.stringify(this.projectModel));
+            //console.log("proj model is: " + JSON.stringify(this.projectModel));
 
             this.projectUsers = new Backbone.Agave.Collection.Permissions({
                 uuid: this.projectModel.get('uuid')
@@ -312,7 +312,7 @@ define([
                     that.setupFileListingsView(that.fileListings);
                 })
                 .fail(function() {
-                    console.log("file listings failure");
+                    //console.log("file listings failure");
                 });
         },
         setupFileListingsView: function(fileListings) {
@@ -357,11 +357,11 @@ define([
             });
         },
         clickFilesSelectorWrapper: function() {
-            console.log("clickFilesSelectorWrapper hit");
+            //console.log("clickFilesSelectorWrapper hit");
             document.getElementById('file-dialog').click();
         },
         changeFilesSelector: function(e) {
-            console.log("changeFilesSelector hit");
+            //console.log("changeFilesSelector hit");
             var files = e.target.files;
             this.parseFiles(files);
         },
@@ -548,7 +548,7 @@ define([
                 this.setupFileListingsView(this.fileListings);
             }
             else {
-                console.log("searchString is: " + searchString);
+                //console.log("searchString is: " + searchString);
 
                 //var filteredModels = this.fileListings.where({'value':{'name':searchString}});
                 var filteredModels = _.filter(this.fileListings.models, function(data) {
@@ -557,10 +557,10 @@ define([
 
                     //here({'value':{'name':searchString}});
 
-                console.log("filteredModels are: " + JSON.stringify(filteredModels));
+                //console.log("filteredModels are: " + JSON.stringify(filteredModels));
 
                 var filteredFileListings = new Backbone.Agave.Collection.Files.Metadata(filteredModels);
-                console.log("filteredFileListings are: " + JSON.stringify(filteredFileListings));
+                //console.log("filteredFileListings are: " + JSON.stringify(filteredFileListings));
 
                 this.setupFileListingsView(filteredFileListings);
             }
@@ -583,7 +583,7 @@ define([
                         }
                     })
                     .fail(function() {
-                        console.log("softDelete fail");
+                        //console.log("softDelete fail");
                         if (i === selectedFileMetadataUuids.length) {
                             // All files are deleted, let's get out of here
                             softDeletePromise.resolve(true);
@@ -695,7 +695,7 @@ define([
 
             var formData = Backbone.Syphon.serialize(this);
 
-            console.log("formData is: " + JSON.stringify(formData));
+            //console.log("formData is: " + JSON.stringify(formData));
 
             var that = this;
 
@@ -706,9 +706,9 @@ define([
             this.model.save()
                 .done(function(response) {
 
-                    console.log("submitting form");
+                    //console.log("submitting form");
 
-                    console.log("model save done and attributes are: " + JSON.stringify(that.model));
+                    //console.log("model save done and attributes are: " + JSON.stringify(that.model));
                     $('#file-upload-notifications')
                         .removeClass()
                         .addClass('alert alert-info')
@@ -723,13 +723,13 @@ define([
                     // VDJAuth saves the day by fixing file pems
                     that.model.syncFilePermissionsWithProjectPermissions()
                         .done(function() {
-                            console.log("filePems save done");
+                            //console.log("filePems save done");
                             that.createFileMetadata(formData);
                         })
                         .fail(function() {
                             // Notify user that permissions sync failed
                             // Delete file too??
-                            console.log("filePems save fail");
+                            //console.log("filePems save fail");
 
                             that.uploadProgress(0);
 
@@ -750,7 +750,7 @@ define([
                 })
                 .fail(function() {
                     // Notify user that upload failed
-                    console.log("upload fail");
+                    //console.log("upload fail");
 
                     that.uploadProgress(0);
 
@@ -790,11 +790,11 @@ define([
                     // VDJAuth saves the day by fixing metadata pems
                     fileMetadata.syncMetadataPermissionsWithProjectPermissions()
                         .done(function() {
-                            console.log("metadata pems saved");
+                            //console.log("metadata pems saved");
                         })
                         .fail(function() {
 
-                            console.log("metadata pems fail");
+                            //console.log("metadata pems fail");
                         });
 
                     $('.progress').removeClass('progress-striped active');
@@ -807,7 +807,7 @@ define([
 
                 })
                 .fail(function() {
-                    console.log("fileMetadata save fail");
+                    //console.log("fileMetadata save fail");
                 });
         }
     });
@@ -835,7 +835,7 @@ define([
                         });
                 })
                 .fail(function() {
-                    console.log("user fetch fail");
+                    //console.log("user fetch fail");
                 });
         },
         usernameTypeahead: function(permissions, tenantUsers) {
@@ -907,10 +907,10 @@ define([
 
                         newUserPermission.addUserToProject()
                             .then(function() {
-                                console.log("added user pems success");
+                                //console.log("added user pems success");
                             })
                             .fail(function() {
-                                console.log("added user pems fail");
+                                //console.log("added user pems fail");
                             });
 
                         that.permissions.add(newUserPermission);
@@ -918,7 +918,7 @@ define([
                         that.usernameTypeahead(that.permissions, that.tenantUsers);
                     },
                     error: function() {
-                        console.log("save error");
+                        //console.log("save error");
                     }
                 }
             );
@@ -939,23 +939,23 @@ define([
                 .then(function() {
                     userPermission.destroy()
                         .done(function() {
-                            console.log('user destroy ok');
+                            //console.log('user destroy ok');
                             that.render();
                             that.usernameTypeahead(that.permissions, that.tenantUsers);
                         })
                         .fail(function() {
-                            console.log('user destroy fail');
+                            //console.log('user destroy fail');
                         });
                 })
                 .fail(function() {
-                    console.log("emergency remove");
+                    //console.log("emergency remove");
                     userPermission.destroy()
                         .done(function() {
                             that.render();
                             that.usernameTypeahead(that.permissions, that.tenantUsers);
                         })
                         .fail(function() {
-                            console.log('user destroy fail');
+                            //console.log('user destroy fail');
                         });
                 });
         }
@@ -1001,10 +1001,10 @@ define([
 
             this.model.save()
                 .done(function() {
-                    console.log("model updated");
+                    //console.log("model updated");
                 })
                 .fail(function() {
-                    console.log("model update fail");
+                    //console.log("model update fail");
                 });
         },
         launchDeleteProjectModal: function(e) {

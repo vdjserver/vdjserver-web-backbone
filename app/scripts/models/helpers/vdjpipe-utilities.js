@@ -16,7 +16,7 @@ define(['app'], function(App) {
 
         if (fileMetadata && fileMetadata.length > 0) {
             for (var i = 0; i < fileMetadata.length; i++) {
-                //console.log("values are: " + JSON.stringify(fileMetadata.at([i])));
+                ////console.log("values are: " + JSON.stringify(fileMetadata.at([i])));
 
                 var value = fileMetadata.at([i]).get('value');
 
@@ -100,7 +100,7 @@ define(['app'], function(App) {
                 for (var i = 0; i < parameters[key + '-elements'].length; i++) {
                     var element = {};
                     var elementCounter = parameters[key + '-elements'][i];
-                    //console.log("elementCounter is: " + JSON.stringify(elementCounter));
+                    ////console.log("elementCounter is: " + JSON.stringify(elementCounter));
 
                     var barcodeType = parameters[key + '-' + elementCounter + '-element-barcode-type'];
 
@@ -138,28 +138,28 @@ define(['app'], function(App) {
                         element['value_name'] = valueName;
                     }
 
-                    //console.log("element finished: " + JSON.stringify(element));
+                    ////console.log("element finished: " + JSON.stringify(element));
                     elements.push(element);
                 }
 
                 // Barcodes & Trimming
                 var barcodeCount = parameters[key + '-elements'].length
-                console.log("barcodeCount is: " + barcodeCount);
-                console.log("barcodeCount type is: " + typeof(barcodeCount));
+                ////console.log("barcodeCount is: " + barcodeCount);
+                ////console.log("barcodeCount type is: " + typeof(barcodeCount));
                 if (barcodeCount === 1) {
 
                     var barcodeType = parameters[key + '-' + 1 + '-element-barcode-type'];
-                    console.log("barcodeCount 1 ok. type is: " + barcodeType);
+                    ////console.log("barcodeCount 1 ok. type is: " + barcodeType);
 
                     switch (barcodeType) {
                         case '3\'':
-                            console.log("barcodeCount 1. 3' hit ok.");
+                            ////console.log("barcodeCount 1. 3' hit ok.");
                             elements[0]['end'] = {
                                 'after': '',
                             };
 
                             if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
-                                console.log("barcodeCount 1. 3' trim ok.");
+                                ////console.log("barcodeCount 1. 3' trim ok.");
                                 elements[0]['cut_upper'] = {
                                     'before': 0,
                                 };
@@ -170,12 +170,12 @@ define(['app'], function(App) {
                             break;
 
                         case '5\'':
-                            console.log("barcodeCount 1. 5' hit ok.");
+                            ////console.log("barcodeCount 1. 5' hit ok.");
 
                             elements[0]['start'] = {};
 
                             if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
-                                console.log("barcodeCount 1. 5' trim ok.");
+                                ////console.log("barcodeCount 1. 5' trim ok.");
                                 elements[0]['cut_lower'] = {
                                     'after': 0,
                                 };
@@ -193,20 +193,20 @@ define(['app'], function(App) {
                     //var tmpElementCounter = parameters[key + '-elements'][0];
 
                     var firstBarcodeType = parameters[key + '-' + 1 + '-element-barcode-type'];
-                    console.log("barcodeCount 2 ok. first is: " + firstBarcodeType);
+                    ////console.log("barcodeCount 2 ok. first is: " + firstBarcodeType);
                     var secondBarcodeType = parameters[key + '-' + 2 + '-element-barcode-type'];
-                    console.log("barcodeCount 2 ok. second is: " + secondBarcodeType);
-                    console.log("barcodeCount 2 ok. third is: " + parameters[key + '-' + 2 + '-element-barcode-type']);
+                    ////console.log("barcodeCount 2 ok. second is: " + secondBarcodeType);
+                    ////console.log("barcodeCount 2 ok. third is: " + parameters[key + '-' + 2 + '-element-barcode-type']);
 
                     switch (firstBarcodeType) {
                         case '3\'':
-                            console.log("barcodeCount 2. 3' hit ok.");
+                            ////console.log("barcodeCount 2. 3' hit ok.");
                             elements[0]['end'] = {
                                 'after': '',
                             };
 
                             if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
-                                console.log("barcodeCount 2. 3' trim ok.");
+                                ////console.log("barcodeCount 2. 3' trim ok.");
                                 elements[0]['cut_upper'] = {
                                     'before': 0,
                                 };
@@ -216,12 +216,12 @@ define(['app'], function(App) {
                             break;
 
                         case '5\'':
-                            console.log("barcodeCount 2. 5' hit ok.");
+                            ////console.log("barcodeCount 2. 5' hit ok.");
 
                             elements[0]['start'] = {};
 
                             if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
-                                console.log("barcodeCount 2. 5' trim ok.");
+                                ////console.log("barcodeCount 2. 5' trim ok.");
                                 elements[0]['cut_lower'] = {
                                     'after': 0,
                                 };
@@ -293,7 +293,7 @@ define(['app'], function(App) {
                 matchObject['custom_demultiplex'].elements = elements;
             }
 
-            //console.log("matchObject is: " + JSON.stringify(matchObject));
+            //////console.log("matchObject is: " + JSON.stringify(matchObject));
 
             return matchObject;
         };
@@ -374,7 +374,7 @@ define(['app'], function(App) {
             if (parameters[key + '-elements']) {
                 for (var i = 0; i < parameters[key + '-elements'].length; i++) {
                     var elementCounter = parameters[key + '-elements'][i];
-                    //console.log("elementCounter is: " + JSON.stringify(elementCounter));
+                    ////console.log("elementCounter is: " + JSON.stringify(elementCounter));
 
                     var startPosition = parameters[key + '-' + elementCounter + '-element-start-position'];
                     var startPositionLocation = parameters[key + '-' + elementCounter + '-element-start-position-location'];
@@ -521,7 +521,7 @@ define(['app'], function(App) {
                         }
                     }
 
-                    //console.log("element finished: " + JSON.stringify(element));
+                    ////console.log("element finished: " + JSON.stringify(element));
                     elements.push(element);
                 }
             }
@@ -535,7 +535,7 @@ define(['app'], function(App) {
                     var combinationObject = {};
 
                     var objectCounter = parameters[key + '-combination-objects'][i];
-                    //console.log("objectCounter is: " + JSON.stringify(objectCounter));
+                    ////console.log("objectCounter is: " + JSON.stringify(objectCounter));
 
                     var objectFile = parameters[key + '-' + objectCounter + '-combination-object-file'];
                     var valueName = parameters[key + '-' + objectCounter + '-combination-object-value-name'];
@@ -543,10 +543,10 @@ define(['app'], function(App) {
                     var namesColumn = parameters[key + '-' + objectCounter + '-combination-object-names-column'];
 
                     /*
-                    console.log("obj file is: " + objectFile);
-                    console.log("obj value is: " + valueName);
-                    console.log("obj values2 is: " + valuesColumn);
-                    console.log("obj names is: " + namesColumn);
+                    //console.log("obj file is: " + objectFile);
+                    //console.log("obj value is: " + valueName);
+                    //console.log("obj values2 is: " + valuesColumn);
+                    //console.log("obj names is: " + namesColumn);
                     */
 
                     if (objectFile && valuesColumn && namesColumn) {
@@ -578,8 +578,8 @@ define(['app'], function(App) {
                 matchObject.match.combinations = combinationObjects;
             }
 
-            console.log("combinationObjects are: " + JSON.stringify(combinationObjects));
-            console.log("matchObject is: " + JSON.stringify(matchObject));
+            //console.log("combinationObjects are: " + JSON.stringify(combinationObjects));
+            ////console.log("matchObject is: " + JSON.stringify(matchObject));
 
             return matchObject;
         };
@@ -643,7 +643,7 @@ define(['app'], function(App) {
 
     VdjPipeUtilities.SerializeWorkflowConfig = function(parameters, fileMetadatas) {
 
-        console.log("workflowSerialize start");
+        ////console.log("workflowSerialize start");
 
         var outputConfig = {
             'base_path_input': '',
@@ -654,7 +654,7 @@ define(['app'], function(App) {
         var paramOutput = [];
         var errors = [];
 
-        console.log("workflow config - all parameters are: " + JSON.stringify(parameters));
+        ////console.log("workflow config - all parameters are: " + JSON.stringify(parameters));
 
         for (var key in parameters) {
 
@@ -666,7 +666,7 @@ define(['app'], function(App) {
 
                     var serializer = new VdjPipeUtilities.Serializer(parameters, key);
 
-                    console.log("workflow config - parameterName is: " + parameterName);
+                    ////console.log("workflow config - parameterName is: " + parameterName);
 
                     switch (parameterName) {
 
@@ -785,31 +785,31 @@ define(['app'], function(App) {
             }
         }
 
-        console.log("workflow config - paramOutput is: " + JSON.stringify(paramOutput));
+        ////console.log("workflow config - paramOutput is: " + JSON.stringify(paramOutput));
 
         // Set file read directions
         var readDirections = VdjPipeUtilities.GetReadDirections(fileMetadatas);
         outputConfig.input = readDirections;
 
-        console.log("workflow config - readDirections is: " + JSON.stringify(readDirections));
-        console.log("workflow config - outputConfig is: " + JSON.stringify(outputConfig));
+        ////console.log("workflow config - readDirections is: " + JSON.stringify(readDirections));
+        ////console.log("workflow config - outputConfig is: " + JSON.stringify(outputConfig));
 
         // Choose read direction and add params
         // Just as with Highlander, there can only be one
         if (parameters['single-reads']) {
-            console.log("workflow config - parameter single-read hit");
+            ////console.log("workflow config - parameter single-read hit");
             outputConfig['single_read_pipe'] = paramOutput;
         }
         else if (parameters['paired-reads']) {
-            console.log("workflow config - parameter paired-reads hit");
+            ////console.log("workflow config - parameter paired-reads hit");
             outputConfig['paired_read_pipe'] = paramOutput;
         }
 
-        console.log("workflow config - final outputConfig is: " + JSON.stringify(outputConfig));
+        ////console.log("workflow config - final outputConfig is: " + JSON.stringify(outputConfig));
 
-        //console.log("paramOutput is: " + JSON.stringify(paramOutput));
-        //console.log("inputOutput is: " + JSON.stringify(inputOutput));
-        //console.log('outputConfig is: ' + JSON.stringify(outputConfig));
+        //////console.log("paramOutput is: " + JSON.stringify(paramOutput));
+        //////console.log("inputOutput is: " + JSON.stringify(inputOutput));
+        //////console.log('outputConfig is: ' + JSON.stringify(outputConfig));
 
         return outputConfig;
     };
