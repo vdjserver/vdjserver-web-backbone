@@ -89,7 +89,6 @@ define(['app'], function(App) {
 
         this.getCustomDemultiplex = function() {
 
-            var elementName = parameters[key];
             var reverse = parameters[key + '-reverse-complement'];
             var barcodeLocation = parameters[key + '-custom-location'];
 
@@ -143,15 +142,14 @@ define(['app'], function(App) {
                 }
 
                 // Barcodes & Trimming
-                var barcodeCount = parameters[key + '-elements'].length
+                var barcodeCount = parameters[key + '-elements'].length;
                 ////console.log("barcodeCount is: " + barcodeCount);
                 ////console.log("barcodeCount type is: " + typeof(barcodeCount));
                 if (barcodeCount === 1) {
 
-                    var barcodeType = parameters[key + '-' + 1 + '-element-barcode-type'];
-                    ////console.log("barcodeCount 1 ok. type is: " + barcodeType);
+                    var onlyBarcode = parameters[key + '-' + 1 + '-element-barcode-type'];
 
-                    switch (barcodeType) {
+                    switch (onlyBarcode) {
                         case '3\'':
                             ////console.log("barcodeCount 1. 3' hit ok.");
                             elements[0]['end'] = {
@@ -365,7 +363,6 @@ define(['app'], function(App) {
 
         this.getMatch = function() {
 
-            var elementName = parameters[key];
             var reverse = parameters[key + '-reverse-complement'];
             var trimmed = parameters[key + '-trimmed'];
 
@@ -530,15 +527,15 @@ define(['app'], function(App) {
 
             if (parameters[key + '-combination-objects']) {
 
-                for (var i = 0; i < parameters[key + '-combination-objects'].length; i++) {
+                for (var combinationCounter = 0; combinationCounter < parameters[key + '-combination-objects'].length; combinationCounter++) {
 
                     var combinationObject = {};
 
-                    var objectCounter = parameters[key + '-combination-objects'][i];
+                    var objectCounter = parameters[key + '-combination-objects'][combinationCounter];
                     ////console.log("objectCounter is: " + JSON.stringify(objectCounter));
 
                     var objectFile = parameters[key + '-' + objectCounter + '-combination-object-file'];
-                    var valueName = parameters[key + '-' + objectCounter + '-combination-object-value-name'];
+                    var objectValueName = parameters[key + '-' + objectCounter + '-combination-object-value-name'];
                     var valuesColumn = parameters[key + '-' + objectCounter + '-combination-object-values-column'];
                     var namesColumn = parameters[key + '-' + objectCounter + '-combination-object-names-column'];
 
@@ -554,8 +551,8 @@ define(['app'], function(App) {
                         combinationObject.values_column = valuesColumn;
                         combinationObject.names_column = namesColumn;
 
-                        if (valueName) {
-                            combinationObject.value_name = valueName;
+                        if (objectValueName) {
+                            combinationObject.value_name = objectValueName;
                         }
 
                         combinationObjects.push(combinationObject);
@@ -652,7 +649,6 @@ define(['app'], function(App) {
         };
 
         var paramOutput = [];
-        var errors = [];
 
         ////console.log("workflow config - all parameters are: " + JSON.stringify(parameters));
 
@@ -661,7 +657,7 @@ define(['app'], function(App) {
             if (parameters.hasOwnProperty(key)) {
                 if (key !== 'formtype' && key !== 'job-name') {
                     var keyCounterIndex = key.indexOf('-') + 1;
-                    var keyCounter = key.slice(0, keyCounterIndex);
+                    //var keyCounter = key.slice(0, keyCounterIndex);
                     var parameterName = key.slice(keyCounterIndex);
 
                     var serializer = new VdjPipeUtilities.Serializer(parameters, key);
@@ -671,110 +667,128 @@ define(['app'], function(App) {
                     switch (parameterName) {
 
                         case 'ambiguous_window_filter':
-                            var data = serializer.getAmbiguousWindowFilter();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getAmbiguousWindowFilter()
+                            );
 
                             break;
 
                         case 'average_quality_filter':
-                            var data = serializer.getAverageQualityFilter();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getAverageQualityFilter()
+                            );
 
                             break;
 
                         case 'average_quality_window_filter':
-                            var data = serializer.getAverageQualityWindowFilter();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getAverageQualityWindowFilter()
+                            );
 
                             break;
 
                         case 'character_filter':
-                            var data = serializer.getCharacterFilter();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getCharacterFilter()
+                            );
 
                             break;
 
                         case 'composition_stats':
-                            var data = serializer.getCompositionStats();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getCompositionStats()
+                            );
 
                             break;
 
                         case 'custom_demultiplex':
-                            var data = serializer.getCustomDemultiplex();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getCustomDemultiplex()
+                            );
 
                             break;
 
                         case 'eMID_map':
-                            var data = serializer.getEmidMap();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getEmidMap()
+                            );
 
                             break;
 
                         case 'find_shared':
-                            var data = serializer.getFindShared();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getFindShared()
+                            );
 
                             break;
 
                         case 'histogram':
-                            var data = serializer.getHistogram();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getHistogram()
+                            );
 
                             break;
 
                         case 'homopolymer_filter':
-                            var data = serializer.getHomopolymerFilter();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getHomopolymerFilter()
+                            );
 
                             break;
 
                         case 'length_filter':
-                            var data = serializer.getLengthFilter();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getLengthFilter()
+                            );
 
                             break;
 
                         case 'match':
-                            var data = serializer.getMatch();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getMatch()
+                            );
 
                             break;
 
                         case 'merge_paired':
-                            var data = serializer.getMergePaired();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getMergePaired()
+                            );
 
                             break;
 
                         case 'min_quality_filter':
-                            var data = serializer.getMinQualityFilter();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getMinQualityFilter()
+                            );
 
                             break;
 
                         case 'min_quality_window_filter':
-                            var data = serializer.getMinQualityWindowFilter();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getMinQualityWindowFilter()
+                            );
 
                             break;
 
                         case 'quality_stats':
-                            var data = serializer.getQualityStats();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getQualityStats()
+                            );
 
                             break;
 
                         case 'write_sequence':
-                            var data = serializer.getWriteSequence();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getWriteSequence()
+                            );
 
                             break;
 
                         case 'write_value':
-                            var data = serializer.getWriteValue();
-                            paramOutput.push(data);
+                            paramOutput.push(
+                                serializer.getWriteValue()
+                            );
 
                             break;
 
@@ -826,7 +840,7 @@ define(['app'], function(App) {
         }
 
         // Deep copy
-        var newConfig = jQuery.extend(true, [], readConfig);
+        var newConfig = $.extend(true, [], readConfig);
 
         for (var i = 0; i < readConfig.length; i++) {
             var option = readConfig[i];
@@ -841,7 +855,6 @@ define(['app'], function(App) {
                     var barcodeLocation = elements[j]['custom_location'];
 
                     if (barcodeLocation) {
-                        var cut = false;
 
                         switch (barcodeLocation) {
                             case '3\'':
@@ -870,12 +883,12 @@ define(['app'], function(App) {
                         newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
                     }
 
-                };
+                }
 
                 newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
                 delete newConfig[i]['custom_demultiplex'];
             }
-        };
+        }
 
         if (workflowConfig['single_read_pipe']) {
             workflowConfig['single_read_pipe'] = newConfig;

@@ -1,3 +1,4 @@
+/* global Bloodhound */
 define([
     'app',
     'handlebars',
@@ -5,7 +6,7 @@ define([
     'environment-config',
     'socket-io',
     'backbone.syphon'
-], function(App, Handlebars, filesize, EnvironmentConfig, io) {
+], function(App, Handlebars, filesize, EnvironmentConfig) {
 
     'use strict';
 
@@ -593,7 +594,7 @@ define([
 
             // All files are deleted, time to reload
             var that = this;
-            $.when(softDeletePromise).then(function(data, textStatus, jqXHR) {
+            $.when(softDeletePromise).then(function(/*data, textStatus, jqXHR*/) {
                 that.fetchAndRenderFileListings();
             });
         },
@@ -649,7 +650,7 @@ define([
 
             //Hand off these file handlers to the parent view through this event.
 
-            this.trigger("fileDragDrop", files);
+            this.trigger('fileDragDrop', files);
         }
     });
 
@@ -704,7 +705,7 @@ define([
             });
 
             this.model.save()
-                .done(function(response) {
+                .done(function(/*response*/) {
 
                     //console.log("submitting form");
 

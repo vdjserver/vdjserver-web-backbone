@@ -108,6 +108,7 @@ function(App, Backbone, EnvironmentConfig) {
                 .then(function() {
                     return that.shareJobWithProjectMembers(projectUuid);
                 })
+                ;
         },
         setFilesParameter: function(fileMetadatas) {
             var tmpFileMetadatas = fileMetadatas.pluck('value');

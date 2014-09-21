@@ -62,7 +62,6 @@ define(['app', 'backbone.syphon'], function(App) {
                             $('#modal-message')
                                 .modal('hide')
                                 .on('hidden.bs.modal', function() {
-                                    var message;
                                     if (that.model.get('uuid')) {
                                         // we're verified and password reset; redirect to login
                                         App.router.navigate('', {trigger:true});

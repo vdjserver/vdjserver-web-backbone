@@ -39,7 +39,7 @@ define([
                     var barcodeOptions = this.options.elements[i];
 
                     this.addBarcode(barcodeOptions);
-                };
+                }
 
                 // Set location HTML
                 if (this.options.elements.length === 1) {
@@ -118,6 +118,8 @@ define([
             var barcodeCount = $('#' + this.inputCount + '-barcodes').val();
             barcodeCount = parseInt(barcodeCount);
 
+            var barcodeView;
+
             if (barcodeCount === 1) {
 
                 if (barcodeLocation === 1) {
@@ -127,7 +129,7 @@ define([
                     barcodeLocation = '3\'';
                 }
 
-                var barcodeView = barcodeSubviews[0];
+                barcodeView = barcodeSubviews[0];
                 barcodeView.updateForBarcodeLocation(barcodeLocation);
             }
             else if (barcodeCount === 2) {
@@ -157,7 +159,7 @@ define([
                 for (var i = 0; i < barcodeSubviews.length; i++) {
                     barcodeView = barcodeSubviews[i];
                     barcodeView.updateForBarcodeLocation(barcodeLocations[i]);
-                };
+                }
             }
         },
         addBarcode: function(barcodeOptions) {

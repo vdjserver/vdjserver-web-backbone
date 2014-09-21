@@ -75,12 +75,12 @@ function(Backbone, EnvironmentConfig) {
                         }
                     }
                     else {
-                        deferred.reject('HTTP Error: ' + xhr.status)
+                        deferred.reject('HTTP Error: ' + xhr.status);
                     }
                 }, false);
 
                 xhr.addEventListener('error', function() {
-                    deferred.reject('HTTP Error: ' + xhr.status)
+                    deferred.reject('HTTP Error: ' + xhr.status);
                 });
 
                 xhr.send(formData);

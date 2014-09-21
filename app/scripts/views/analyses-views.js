@@ -487,12 +487,13 @@ define([
         ;
 
         //secondary scaling not inverted
-        var y0 = d3.scale.linear()
-            .domain([0,max])
+        // y0
+        d3.scale.linear()
+            .domain([0, max])
             .range([
                 0 + margin.top,
                 height - margin.bottom
-             ])
+            ])
         ;
 
         //yAxis
@@ -501,9 +502,10 @@ define([
             .orient('left')
         ;
 
-        var barWidth = x(1)/4;
+        var barWidth = x(1) / 4;
 
-        var topSVG = d3.select('svg')
+        // topSVG
+        d3.select('svg')
             .attr('width',
                 width
                 + margin.left
@@ -1455,6 +1457,7 @@ define([
             editable: true,
         };
 
+        // Grid
         var grid = new Slick.Grid(
             '#analyses-chart',
             data,

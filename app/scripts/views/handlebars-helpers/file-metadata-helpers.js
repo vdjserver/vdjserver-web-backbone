@@ -4,7 +4,7 @@ define(['app'], function(App) {
 
     var FileMetadataHelpers = {};
 
-    FileMetadataHelpers.GetHumanReadableReadDirection = function(data, options) {
+    FileMetadataHelpers.GetHumanReadableReadDirection = function(data/*, options*/) {
 
         if (data.isForwardRead && data.isReverseRead) {
             return 'FR';
@@ -18,7 +18,6 @@ define(['app'], function(App) {
 
         return;
     };
-
 
     App.Views.HandlebarsHelpers.FileMetadataHelpers = FileMetadataHelpers;
     return FileMetadataHelpers;

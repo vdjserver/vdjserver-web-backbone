@@ -196,8 +196,6 @@ define([
         submitJob: function(e) {
             e.preventDefault();
 
-            var that = this;
-
             var formData = Backbone.Syphon.serialize(this);
 
             // Remove old validation warnings
@@ -700,7 +698,7 @@ define([
                 this.handleJobStatusUpdate
             );
 
-            this.jobStatusMessage = 'Retrieving job status information.'
+            this.jobStatusMessage = 'Retrieving job status information.';
         },
         serialize: function() {
             return {

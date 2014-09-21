@@ -99,7 +99,7 @@ define(['backbone'], function(Backbone) {
 
                 workflow.setConfigFromPreconfiguredData(preconfiguredWorkflow);
                 this.unshift(workflow);
-            };
+            }
         },
         preconfiguredWorkflows: [
 // Paired read workflows are temporarily disabled for the time being.
