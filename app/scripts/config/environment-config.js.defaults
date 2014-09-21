@@ -3,7 +3,8 @@
 
 var EnvironmentConfig = {};
 
-EnvironmentConfig.agaveRoot   = 'https://agave-vdj.tacc.utexas.edu';
-EnvironmentConfig.vdjauthRoot = 'https://vdj-dev.tacc.utexas.edu:8443';
+EnvironmentConfig.agaveRoot = 'https://wso2-elb.tacc.utexas.edu';
+EnvironmentConfig.debug = false;
+EnvironmentConfig.vdjauthRoot = 'https://vdjserver.org:8443';
 EnvironmentConfig.serviceAccountUsername = 'vdj';
 EnvironmentConfig.storageSystem = 'data.vdjserver.org';
