@@ -198,5 +198,88 @@ define(['app', 'agave-job', 'moment'], function() {
             )
         });
 
+        it('setFilesParameter should set file paths correctly', function() {
+
+            var projectUuid = '0001410469863267-5056a550b8-0001-012';
+            var file1 = new Backbone.Agave.Model.File.Metadata(
+                {
+                    'uuid': '0001410469889770-5056a550b8-0001-012',
+                    'owner': 'wscarbor',
+                    'schemaId': null,
+                    'internalUsername': null,
+                    'associationIds':[
+                        '0001410469863267-5056a550b8-0001-012'
+                    ],
+                    'lastUpdated': '2014-09-11T16:11:29.770-05:00',
+                    'name': 'projectFile',
+                    'value': {
+                        'projectUuid': '0001410469863267-5056a550b8-0001-012',
+                        'fileCategory': 'uploaded',
+                        'name': 'emid_1_rev.fastq',
+                        'length': 4036,
+                        'mimeType': '',
+                        'isDeleted': false,
+                        'privateAttributes': {
+                            'reverse-reads': true
+                        }
+                    },
+                    'created': '2014-09-11T16:11:29.770-05:00',
+                    '_links': {
+                        'self': {
+                            'href': 'https://agave.iplantc.org/meta/v2/data/0001410469889770-5056a550b8-0001-012'
+                        },
+                        'metadata': {
+                            'href': 'https://wso2-elb.tacc.utexas.edu/meta/v2//data/0001410469863267-5056a550b8-0001-012'
+                        }
+                    }
+                }
+            );
+
+            var file2 = new Backbone.Agave.Model.File.Metadata(
+                {
+                    'uuid': '0001410544419359-5056a550b8-0001-012',
+                    'owner': 'wscarbor',
+                    'schemaId': null,
+                    'internalUsername': null,
+                    'associationIds': [
+                        '0001410469863267-5056a550b8-0001-012'
+                    ],
+                    'lastUpdated': '2014-09-12T12:53:39.359-05:00',
+                    'name': 'projectFile',
+                    'value': {
+                        'projectUuid': '0001410469863267-5056a550b8-0001-012',
+                        'fileCategory': 'uploaded',
+                        'name': 'emid1.fasta',
+                        'length': 75,
+                        'mimeType': '',
+                        'isDeleted': false,
+                        'privateAttributes': {}
+                    },
+                    'created': '2014-09-12T12:53:39.359-05:00',
+                    '_links': {
+                        'self': {
+                            'href': 'https://agave.iplantc.org/meta/v2/data/0001410544419359-5056a550b8-0001-012'
+                        },
+                        'metadata': {
+                            'href': 'https://wso2-elb.tacc.utexas.edu/meta/v2//data/0001410469863267-5056a550b8-0001-012'
+                        }
+                    }
+                }
+            );
+
+            var files = new Backbone.Agave.Collection.Files.Metadata();
+            files.add(file1);
+            files.add(file2);
+
+            var job = new Backbone.Agave.Model.Job.VdjPipe();
+            job.setFilesParameter(files);
+
+            var jobFilesParameter = JSON.stringify(job.get('inputs'));
+
+            jobFilesParameter.should.equal(
+                '{"files":"/projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"}'
+            )
+        });
+
     });
 });
