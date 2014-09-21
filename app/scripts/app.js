@@ -1,4 +1,9 @@
-define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
+define([
+    'handlebars',
+    'environment-config',
+    'backbone',
+    'layoutmanager',
+], function(Handlebars, EnvironmentConfig) {
 
     'use strict';
 
@@ -38,10 +43,12 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 }
             });
 
-
             // setup agave
             App.Agave = new Backbone.Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
-            //console.log("token 1 is: " + JSON.stringify(App.Agave.token()));
+
+            if (EnvironmentConfig.debug) {
+                console.log('token is: ' + JSON.stringify(App.Agave.token()));
+            }
 
             App.listenTo(
                 App.Agave.token(),
@@ -56,13 +63,11 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
                 App.Agave.token(),
                 'destroy',
                 function() {
-                    //console.log("destroy ok");
                     App.Agave.token().clear();
                     window.localStorage.removeItem('Agave.Token');
                     App.router.navigate('', {'trigger':true});
                 }
             );
-
 
             // initialize router, views, data and layouts
 
@@ -109,9 +114,15 @@ define(['handlebars', 'backbone', 'layoutmanager'], function(Handlebars) {
         start: function() {
             App.init();
             Backbone.history.start({pushState: true, root: App.root});
+
             $(document).on('click', 'a[href]:not([data-bypass])', function(evt) {
-                var href = { prop: $(this).prop('href'), attr: $(this).attr('href') };
+                var href = {
+                    prop: $(this).prop('href'),
+                    attr: $(this).attr('href')
+                };
+
                 var root = location.protocol + '//' + location.host + App.root;
+
                 if (href.prop.slice(0, root.length) === root) {
                     evt.preventDefault();
                     Backbone.history.navigate(href.attr, true);

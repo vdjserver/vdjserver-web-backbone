@@ -35,7 +35,6 @@ define([
         },
 
         destroyToken: function() {
-            //console.log("convenience destroy called");
             this._token.destroy();
         },
 
@@ -99,11 +98,9 @@ define([
                 return Agave.instance.token()
                     .save()
                     .then(function() {
-                        //console.log("deferred then ok");
                         return Backbone.sync(method, model, options);
                     })
                     .fail(function() {
-                        //console.log("token refresh fail - destroying token");
                         Agave.instance.destroyToken();
                     });
 
@@ -282,13 +279,11 @@ define([
             switch (method) {
 
                 case 'create':
-                    //console.log("token method: create");
                     options.type = 'POST';
                     password = options.password;
                     break;
 
                 case 'update':
-                    //console.log("token method: update");
                     options.type = 'PUT';
                     password = agaveToken.get('refresh_token');
                     break;
@@ -314,7 +309,7 @@ define([
 
                 this.isFetched = true;
 
-                response.result.expires = response.result.expires_in + (Date.now() / 1000);
+                response.result.expires = response.result['expires_in'] + (Date.now() / 1000);
                 return response.result;
             }
 
@@ -325,18 +320,11 @@ define([
             var expires = this.get('expires');
             var hasError = false;
 
-            if (expires) {
-                //console.log("expires ok: " + expires);
-                //console.log("token expires is: " + Math.max(0, this.get('expires') - (Date.now() / 1000)));
-                //console.log("token is: " + this.get('access_token'));
-            }
-
             if (! expires) {
                 hasError = true;
             }
 
             if (expires && (Math.max(0, expires - (Date.now() / 1000)) <= 0)) {
-                //console.log("expires is not ok");
                 hasError = true;
             }
 

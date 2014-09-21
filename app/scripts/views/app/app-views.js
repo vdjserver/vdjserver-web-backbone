@@ -89,8 +89,6 @@ define(['app', 'backbone.syphon'], function(App){
 
             //var formData = Backbone.Syphon.serialize(this);
 
-            //console.log("formData is: " + JSON.stringify(formData));
-
             this.setupModalView();
 
             var that = this;

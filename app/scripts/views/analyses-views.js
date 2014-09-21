@@ -34,7 +34,6 @@ define([
             var that = this;
             this.collection.fetch()
                 .done(function() {
-                    ////console.log("fetch ok. data is: " + JSON.stringify(that.collection.toJSON()));
                     loadingView.remove();
                     that.render();
                 })
@@ -139,8 +138,6 @@ define([
         },
         showWarning: function(messageFragment) {
             var message = 'An error occurred.';
-
-            //console.log("msg frag is: " + messageFragment);
 
             if (messageFragment) {
                 message = message + ' ' + messageFragment.message;

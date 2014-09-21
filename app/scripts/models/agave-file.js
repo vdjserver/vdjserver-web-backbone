@@ -62,7 +62,6 @@ function(Backbone, EnvironmentConfig) {
 
                         // A little bit of a hack, but it does the trick
                         try {
-                            //console.log("file upload try ok");
                             var parsedJSON = JSON.parse(xhr.response);
                             parsedJSON = parsedJSON.result;
                             that.set(parsedJSON);
@@ -70,7 +69,6 @@ function(Backbone, EnvironmentConfig) {
                             deferred.resolve(xhr.response);
                         }
                         catch (error) {
-                            //console.log("file upload try fail");
                             deferred.reject('Error: Agave response serialization failed.');
                         }
                     }
@@ -109,8 +107,6 @@ function(Backbone, EnvironmentConfig) {
         },
         // TODO: refactor these together
         getFile: function(name) {
-            //console.log("called getFile with " + name);
-            //console.log();
             var jqxhr = $.ajax({
                 headers: Backbone.Agave.oauthHeader(),
                 type: 'GET',

@@ -110,15 +110,13 @@ define(['app', 'backbone.syphon'], function(App) {
                                             {password: formData.password}
                                         )
                                         .done(function() {
-                                            //console.log('token save done');
-
                                             App.router.navigate('/project', {
                                                 trigger: true
                                             });
                                         })
                                         .fail(function() {
-                                            //console.log('token save fail');
-                                        });
+                                        })
+                                        ;
 
                                 });
 

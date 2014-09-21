@@ -68,14 +68,9 @@ function(App, Backbone, EnvironmentConfig) {
         },
         setJobConfigFromWorkflowFormData: function(formData, fileMetadatas) {
 
-            //console.log("job set top - form data is: " + JSON.stringify(formData));
             var workflowConfig = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData, fileMetadatas);
 
-            //console.log("job set - workflowConfig is: " + JSON.stringify(workflowConfig));
-
             var jobConfig = App.Models.Helpers.VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig(workflowConfig);
-
-            //console.log("job set - jobConfig is: " + JSON.stringify(jobConfig));
 
             this.set('name', formData['job-name']);
 
@@ -115,7 +110,6 @@ function(App, Backbone, EnvironmentConfig) {
 
             var filePaths = [];
             for (var i = 0; i < tmpFileMetadatas.length; i++) {
-                //console.log('tmpFileMetadatas is: ' + JSON.stringify(tmpFileMetadatas[i]));
                 filePaths.push(
                     '/projects/'
                     + tmpFileMetadatas[i].projectUuid
@@ -138,11 +132,8 @@ function(App, Backbone, EnvironmentConfig) {
                             + '-' + this.getDirectorySafeName(this.get('name'));
 
             this.set('archivePath', archivePath);
-
-            //console.log("archivePath is: " + archivePath);
         },
         getDirectorySafeName: function(name) {
-            //console.log("name input is: " + name);
             return name.replace(/\s/g, '-').toLowerCase();
         },
         getRelativeArchivePath: function() {
@@ -155,8 +146,6 @@ function(App, Backbone, EnvironmentConfig) {
         createArchivePathDirectory: function(projectUuid) {
 
             var relativeArchivePath = this.getRelativeArchivePath();
-
-            //console.log("relativeArchivePath is: " + relativeArchivePath);
 
             var jqxhr = $.ajax({
                 data: 'action=mkdir&path=' + relativeArchivePath,
@@ -213,7 +202,6 @@ function(App, Backbone, EnvironmentConfig) {
             );
         },
         fakeSync: function() {
-            //console.log("calling fakeSync");
             var deferred = $.Deferred();
 
             deferred.resolve = true;
