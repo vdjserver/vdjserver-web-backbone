@@ -1,7 +1,7 @@
 define([
 
     '../../test/spec/app-tests',
-    
+
     // Agave
     '../../test/spec/vendor/agave-tests',
 

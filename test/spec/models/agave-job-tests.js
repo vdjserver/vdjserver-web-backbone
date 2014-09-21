@@ -142,5 +142,61 @@ define(['app', 'agave-job', 'moment'], function() {
 
         //it('getRelativeArchivePath should')
 
+        it('setJobConfigFromWorkflowFormData should correctly set vdjpipe config parameter as a model parameter', function() {
+
+            var projectUuid = '0001410469863267-5056a550b8-0001-012';
+            var file = new Backbone.Agave.Model.File.Metadata(
+                {
+                    'uuid': '0001410469889770-5056a550b8-0001-012',
+                    'owner': 'wscarbor',
+                    'schemaId': null,
+                    'internalUsername': null,
+                    'associationIds':[
+                        '0001410469863267-5056a550b8-0001-012'
+                    ],
+                    'lastUpdated': '2014-09-11T16:11:29.770-05:00',
+                    'name': 'projectFile',
+                    'value': {
+                        'projectUuid': '0001410469863267-5056a550b8-0001-012',
+                        'fileCategory': 'uploaded',
+                        'name': 'emid_1_rev.fastq',
+                        'length': 4036,
+                        'mimeType': '',
+                        'isDeleted': false,
+                        'privateAttributes': {
+                            'reverse-reads': true
+                        }
+                    },
+                    'created': '2014-09-11T16:11:29.770-05:00',
+                    '_links': {
+                        'self': {
+                            'href': 'https://agave.iplantc.org/meta/v2/data/0001410469889770-5056a550b8-0001-012'
+                        },
+                        'metadata': {
+                            'href': 'https://wso2-elb.tacc.utexas.edu/meta/v2//data/0001410469863267-5056a550b8-0001-012'
+                        }
+                    }
+                }
+            );
+            var files = new Backbone.Agave.Collection.Files.Metadata();
+            files.add(file);
+
+            var formData = {
+                'job-name': 'test',
+                '0-quality_stats': 'Read Quality Statistics',
+                '1-composition_stats': 'Base Composition Statistics',
+                'single-reads':'on'
+            };
+
+            var job = new Backbone.Agave.Model.Job.VdjPipe();
+            job.setJobConfigFromWorkflowFormData(formData, files);
+
+            var serializedJob = JSON.stringify(job.toJSON());
+
+            serializedJob.should.equal(
+                '{"appId":"vdj_pipe-0.0.16u2","archive":true,"archivePath":"","archiveSystem":"data.vdjserver.org","batchQueue":"normal","inputs":{},"maxRunTime":"24:00:00","outputPath":"","name":"test","nodeCount":1,"parameters":{"json":"{\\"base_path_input\\":\\"\\",\\"base_path_output\\":\\"\\",\\"csv_file_delimiter\\":\\"\\\\\\\\t\\",\\"input\\":[{\\"reverse_seq\\":\\"emid_1_rev.fastq\\"}],\\"single_read_pipe\\":[{\\"quality_stats\\":{\\"out_prefix\\":\\"pre-\\"}},{\\"composition_stats\\":{\\"out_prefix\\":\\"pre-\\"}}]}"},"processorsPerNode":12}'
+            )
+        });
+
     });
 });
