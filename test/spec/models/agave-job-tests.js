@@ -369,11 +369,119 @@ define(['app', 'agave-job', 'moment'], function() {
             job.set('archivePath', 'testArchivePath');
 
             var serializedJob = JSON.stringify(job);
-            console.log("serializedJob is: " + serializedJob);
 
             serializedJob.should.equal(
                 '{"appId":"vdj_pipe-0.0.16u2","archive":true,"archivePath":"testArchivePath","archiveSystem":"data.vdjserver.org","batchQueue":"normal","inputs":{"files":"/projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"},"maxRunTime":"24:00:00","outputPath":"","name":"test","nodeCount":1,"parameters":{"json":"{\\"base_path_input\\":\\"\\",\\"base_path_output\\":\\"\\",\\"csv_file_delimiter\\":\\"\\\\\\\\t\\",\\"input\\":[{\\"reverse_seq\\":\\"emid_1_rev.fastq\\"}],\\"single_read_pipe\\":[{\\"quality_stats\\":{\\"out_prefix\\":\\"pre-\\"}},{\\"composition_stats\\":{\\"out_prefix\\":\\"pre-\\"}}]}"},"processorsPerNode":12}'
             )
+        });
+
+        it('job using Single Read Workflow should be setup correctly', function() {
+
+            var projectUuid = '0001410469863267-5056a550b8-0001-012';
+
+            var file1 = new Backbone.Agave.Model.File.Metadata(
+                {
+                    'uuid': '0001410469889770-5056a550b8-0001-012',
+                    'owner': 'wscarbor',
+                    'schemaId': null,
+                    'internalUsername': null,
+                    'associationIds':[
+                        '0001410469863267-5056a550b8-0001-012'
+                    ],
+                    'lastUpdated': '2014-09-11T16:11:29.770-05:00',
+                    'name': 'projectFile',
+                    'value': {
+                        'projectUuid': projectUuid,
+                        'fileCategory': 'uploaded',
+                        'name': 'emid_1_rev.fastq',
+                        'length': 4036,
+                        'mimeType': '',
+                        'isDeleted': false,
+                        'privateAttributes': {
+                            'reverse-reads': true
+                        }
+                    },
+                    'created': '2014-09-11T16:11:29.770-05:00',
+                    '_links': {
+                        'self': {
+                            'href': 'https://agave.iplantc.org/meta/v2/data/0001410469889770-5056a550b8-0001-012'
+                        },
+                        'metadata': {
+                            'href': 'https://wso2-elb.tacc.utexas.edu/meta/v2//data/0001410469863267-5056a550b8-0001-012'
+                        }
+                    }
+                }
+            );
+
+            var file2 = new Backbone.Agave.Model.File.Metadata(
+                {
+                    'uuid': '0001410544419359-5056a550b8-0001-012',
+                    'owner': 'wscarbor',
+                    'schemaId': null,
+                    'internalUsername': null,
+                    'associationIds': [
+                        '0001410469863267-5056a550b8-0001-012'
+                    ],
+                    'lastUpdated': '2014-09-12T12:53:39.359-05:00',
+                    'name': 'projectFile',
+                    'value': {
+                        'projectUuid': projectUuid,
+                        'fileCategory': 'uploaded',
+                        'name': 'emid1.fasta',
+                        'length': 75,
+                        'mimeType': '',
+                        'isDeleted': false,
+                        'privateAttributes': {}
+                    },
+                    'created': '2014-09-12T12:53:39.359-05:00',
+                    '_links': {
+                        'self': {
+                            'href': 'https://agave.iplantc.org/meta/v2/data/0001410544419359-5056a550b8-0001-012'
+                        },
+                        'metadata': {
+                            'href': 'https://wso2-elb.tacc.utexas.edu/meta/v2//data/0001410469863267-5056a550b8-0001-012'
+                        }
+                    }
+                }
+            );
+
+            var files = new Backbone.Agave.Collection.Files.Metadata();
+            files.add(file1);
+            files.add(file2);
+
+            var formData = {
+                'job-name': 'test',
+                'single-reads': 'on',
+                '0-quality_stats': 'Read Quality Statistics',
+                '1-composition_stats': 'Base Composition Statistics',
+                '2-match': '',
+                '2-match-reverse-complement': true,
+                '2-match-trimmed': false,
+                '3-histogram-name': 'MID',
+                '4-length_filter': '',
+                '4-length_filter-min': '200',
+                '4-length_filter-max': '',
+                '5-average_quality_filter': '35',
+                '6-homopolymer_filter': '20',
+                '7-find_shared': '',
+                '7-find_shared-min-length': '',
+                '7-find_shared-fraction-match': '',
+                '7-find_shared-ignore-ends': ''
+            };
+
+            var job = new Backbone.Agave.Model.Job.VdjPipe();
+            job.prepareJob(formData, files, projectUuid);
+
+            // Need to override |archivePath| since it is time dependent
+            job.set('archivePath', 'testArchivePath');
+
+            var serializedJob = JSON.stringify(job);
+
+            var expectedResult = {"appId": "vdj_pipe-0.0.16u2","archive": true,"archivePath": "testArchivePath","archiveSystem": "data.vdjserver.org","batchQueue": "normal","inputs": {"files": "/projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"},"maxRunTime": "24:00:00","outputPath": "","name": "test","nodeCount": 1,"parameters": {"json": "{\"base_path_input\":\"\",\"base_path_output\":\"\",\"csv_file_delimiter\":\"\\\\t\",\"input\":[{\"reverse_seq\":\"emid_1_rev.fastq\"}],\"single_read_pipe\":[{\"quality_stats\":{\"out_prefix\":\"pre-\"}},{\"composition_stats\":{\"out_prefix\":\"pre-\"}},{\"match\":{\"reverse\":true,\"trimmed\":false,\"elements\":[]}},{\"length_filter\":{\"min\":200}},{\"average_quality_filter\":35},{\"homopolymer_filter\":20},{\"find_shared\":{}}]}"},"processorsPerNode": 12};
+
+            serializedJob.should.equal(
+                JSON.stringify(expectedResult)
+            );
         });
 
     });
