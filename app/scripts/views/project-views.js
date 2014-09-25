@@ -384,9 +384,10 @@ define([
                 if (isDuplicate) {
                     $('#file-staging-errors')
                         .text('The file "' + file.name  + '" can not be uploaded because another file exists with the same name.')
+                        .removeClass('hidden alert alert-success')
+                        .addClass('alert alert-danger')
                         .fadeIn()
-                        .removeClass('hidden')
-                    ;
+                        ;
                 }
                 else {
                     var fileTransferView = new Projects.FileTransfer({
@@ -406,17 +407,15 @@ define([
 
             var that = this;
 
-            fileTransferView.on('viewFinished', function(newFile) {
+            fileTransferView.on('addNewFileToProjectFileList', function(newFile) {
 
-                $('#file-staging div').fadeOut('5000', function() {
-                    fileTransferView.remove();
+                that.fileListings.add(newFile);
 
-                    that.fileListings.add(newFile);
+                fileTransferView.remove();
 
-                    var fileListingsView = that.getView('.file-listings');
-                    fileListingsView.fileListings = that.fileListings;
-                    fileListingsView.render();
-                });
+                var fileListingsView = that.getView('.file-listings');
+                fileListingsView.fileListings = that.fileListings;
+                fileListingsView.render();
 
             });
         },
@@ -648,15 +647,15 @@ define([
             }
 
             // Turn empty spaces into dashes
-            this.fileProgressIdentifier = this.model.get('name').replace(/\s+/g, '-');
+            this.fileUniqueIdentifier = this.model.get('name').replace(/\s+/g, '-');
 
             // Remove periods - otherwise we don't be able to find this in the DOM
-            this.fileProgressIdentifier = this.fileProgressIdentifier.replace(/\./g, '').toLowerCase() + '-progress';
+            this.fileUniqueIdentifier = this.fileUniqueIdentifier.replace(/\./g, '').toLowerCase() + '-progress';
         },
         serialize: function() {
             return {
                 file: this.model.toJSON(),
-                fileProgressIdentifier: this.fileProgressIdentifier,
+                fileUniqueIdentifier: this.fileUniqueIdentifier,
             };
         },
         events: {
@@ -675,10 +674,17 @@ define([
                 .attr('disabled', 'disabled')
             ;
 
-            // Hide previous notifications
-            $('#file-upload-notifications')
+            // Hide previous notifications for this file
+            $('#file-upload-notifications-' + this.fileUniqueIdentifier)
                 .addClass('hidden')
             ;
+
+            // Hide previous project notifications
+            $('#file-staging-errors')
+                .empty()
+                .removeClass('alert alert-danger alert-success')
+                .addClass('hidden')
+                ;
 
             var formData = Backbone.Syphon.serialize(this);
 
@@ -691,14 +697,13 @@ define([
             this.model.save()
                 .done(function(/*response*/) {
 
-                    $('#file-upload-notifications')
+                    $('#file-upload-notifications-' + this.fileUniqueIdentifier)
                         .removeClass()
                         .addClass('alert alert-info')
                         .text('Setting file permissions...')
                         .fadeIn()
                         .removeClass('hidden')
-                    ;
-
+                        ;
 
                     // Notify user that permissions are being set
 
@@ -713,7 +718,7 @@ define([
 
                             that.uploadProgress(0);
 
-                            $('#file-upload-notifications')
+                            $('#file-upload-notifications-' + this.fileUniqueIdentifier)
                                 .removeClass()
                                 .addClass('alert alert-danger')
                                 .text('Permission error. Please try uploading your file again.')
@@ -733,7 +738,7 @@ define([
 
                     that.uploadProgress(0);
 
-                    $('#file-upload-notifications')
+                    $('#file-upload-notifications-' + this.fileUniqueIdentifier)
                         .removeClass()
                         .addClass('alert alert-danger')
                         .text('File upload error. Please try uploading your file again.')
@@ -751,7 +756,7 @@ define([
             percentCompleted = percentCompleted.toFixed(2);
             percentCompleted += '%';
 
-            $('.' + this.fileProgressIdentifier)
+            $('.' + this.fileUniqueIdentifier)
                 .width(percentCompleted)
                 .text(percentCompleted)
             ;
@@ -780,7 +785,20 @@ define([
                     $('.start-upload').remove();
                     $('.cancel-upload').remove();
 
-                    that.trigger('viewFinished', fileMetadata);
+                    // Disable buttons
+                    $('.upload-button')
+                        .removeAttr('disabled')
+                        ;
+
+                    that.trigger('addNewFileToProjectFileList', fileMetadata);
+
+                    // Hide previous project notifications
+                    $('#file-staging-errors').empty()
+                        .text('File "' + that.model.get('name') + '" uploaded successfully.')
+                        .removeClass('hidden alert alert-danger')
+                        .addClass('alert alert-success')
+                        .fadeIn()
+                        ;
 
                 })
                 .fail(function() {
@@ -996,7 +1014,7 @@ define([
                             App.router.navigate('/project', {
                                 trigger: true
                             });
-                    });
+                        });
                 });
         },
     });

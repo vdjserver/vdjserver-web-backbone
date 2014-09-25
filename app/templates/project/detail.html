@@ -1,36 +1,37 @@
 <div class="row">
     <div class="col-md-3">
         <div class="project-details-loading-view"></div>
-        {{#if projectDetail}}
-        <table class="project-details">
-            <tbody>
-                <tr>
-                    <td>
-                        <strong>Name:</strong>
-                    </td>
-                    <td>
-                        {{projectDetail.value.name}}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Data:</strong>
-                    </td>
-                    <td>
-                        {{fileListingCount}}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Members:</strong>
-                    </td>
-                    <td>
-                        {{userCount}}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        {{/if}}
+            {{#if projectDetail}}
+                <table class="project-details">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>Name:</strong>
+                            </td>
+                            <td>
+                                {{projectDetail.value.name}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Data:</strong>
+                            </td>
+                            <td>
+                                {{fileListingCount}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Members:</strong>
+                            </td>
+                            <td>
+                                {{userCount}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            {{/if}}
+        </div>
     </div>
 </div>
 
