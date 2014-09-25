@@ -438,16 +438,22 @@ define([
         clickRunJob: function(e) {
             e.preventDefault();
 
-            var jobType = e.target.dataset.jobtype;
+            this.showJobStagingView();
+            //this.handleJobStagingViewEvents();
+        },
+        showJobStagingView: function() {
+
+            //var jobType = e.target.dataset.jobtype;
 
             this.removeView('#job-submit');
+            this.removeView('#workflow-modal');
 
             var selectedFileMetadataUuids = this.getSelectedFileUuids();
             var selectedFileListings = this.fileListings.getNewCollectionForUuids(selectedFileMetadataUuids);
 
             var jobSubmitView = new App.Views.Jobs.Submit({
                 selectedFileListings: selectedFileListings,
-                jobType: jobType,
+                //jobType: jobType,
                 projectModel: this.projectModel,
                 allFiles: this.fileListings,
             });
@@ -459,27 +465,24 @@ define([
                     jobSubmitView.render();
                 });
 
-            this.handleJobViewEvents(jobSubmitView);
-        },
-        handleJobViewEvents: function(jobSubmitView) {
-
-            var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
-
             var that = this;
 
             this.listenToOnce(
                 jobSubmitView,
-                'setupCreateWorkflowView',
+                App.Views.Jobs.WorkflowEditor.events.openWorkflowCreateView,
                 function() {
 
                     $('#job-modal')
                         .modal('hide')
                         .on('hidden.bs.modal', function() {
+                            var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
+
                             that.setView('#job-submit', workflowEditorView);
 
                             workflowEditorView.fetchNetworkData()
                                 .done(function() {
                                     workflowEditorView.render();
+                                    that.handleWorkflowViewEvents(workflowEditorView);
                                 });
                         });
                 }
@@ -487,11 +490,14 @@ define([
 
             this.listenToOnce(
                 jobSubmitView,
-                'setupEditWorkflowView',
+                App.Views.Jobs.WorkflowEditor.events.openWorkflowEditorView,
                 function(editableWorkflow) {
                     $('#job-modal')
                         .modal('hide')
                         .on('hidden.bs.modal', function() {
+
+                            var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
+
                             // The editable workflow needs to be set before render is called.
                             workflowEditorView.editableWorkflow = editableWorkflow;
                             that.setView('#job-submit', workflowEditorView);
@@ -499,33 +505,27 @@ define([
                             workflowEditorView.fetchNetworkData()
                                 .done(function() {
                                     workflowEditorView.render();
+                                    that.handleWorkflowViewEvents(workflowEditorView);
                                 });
                         });
                 }
             );
+        },
+        handleWorkflowViewEvents: function(workflowEditorView) {
+
+            var that = this;
 
             this.listenToOnce(
                 workflowEditorView,
-                App.Views.Jobs.WorkflowEditor.events.closeWorkflowEditor,
+                App.Views.Jobs.WorkflowEditor.events.closeWorkflowEditorView,
                 function() {
                     $('#workflow-modal')
                         .modal('hide')
                         .on('hidden.bs.modal', function() {
-
-                            //workflowEditorView.remove();
-                            that.setView('#job-submit', jobSubmitView);
-
-                            jobSubmitView.fetchNetworkData()
-                                .done(function() {
-                                    jobSubmitView.render();
-
-                                    // Reset listeners
-                                    that.handleJobViewEvents(jobSubmitView);
-                                });
+                            that.showJobStagingView();
                         });
                 }
             );
-
         },
         getSelectedFileUuids: function() {
 

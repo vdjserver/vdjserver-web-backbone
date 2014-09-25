@@ -90,8 +90,10 @@ define(['backbone'], function(Backbone) {
         },
         setPredefinedWorkflows: function() {
 
-            for (var i = 0; i < this.preconfiguredWorkflows.length; i++) {
-                var preconfiguredWorkflow = this.preconfiguredWorkflows[i];
+            var preconfiguredWorkflows = this.preconfiguredWorkflows();
+
+            for (var i = 0; i < preconfiguredWorkflows.length; i++) {
+                var preconfiguredWorkflow = preconfiguredWorkflows[i];
 
                 var workflow = new Backbone.Agave.Model.Job.Workflow();
                 workflow.sync = workflow.fakeSync;
@@ -101,180 +103,185 @@ define(['backbone'], function(Backbone) {
                 this.unshift(workflow);
             }
         },
-        preconfiguredWorkflows: [
-// Paired read workflows are temporarily disabled for the time being.
-/*
-            {
-                'workflow-name': 'Paired Reads',
-                'summary_output_path': 'summary.txt',
-                'paired_read_pipe': [
-                    {
-                        'apply': {
-                            'to': ['forward', 'reverse'],
-                            'step': {'quality_stats': {'out_prefix': 'pre-filter_'}}
-                        }
-                    },
-                    {
-                        'apply': {
-                            'to': ['forward', 'reverse'],
-                            'step': {'composition_stats': {'out_prefix': 'pre-filter_'}}
-                        }
-                    },
-                    {
-                        'merge_paired': {'min_score': 50}
-                    },
-                    {
-                        'apply': {
-                            'to': 'merged',
-                            'step': {
-                                'match': {
-                                    'elements': [
-                                        { // forward barcode element
-                                            'start': {},
-                                            'length': '30',
-                                            'min_score': 20,
-                                            'sequence': [
-                                                'forward barcode sequence1',
-                                                'forward barcode sequence2'
-                                            ],
-                                            'cut_lower': {'after': 0},
-                                            'required': true,
-                                            'require_best': true,
-                                            'value_name': 'MID1', 'score_name': 'MID1-score'
-                                        },
-                                        { // reverse barcode element
-                                            'end': {'after': ''},
-                                            'length': 30,
-                                            'min_score': 20,
-                                            'sequence': [
-                                                'reverse barcode sequence1',
-                                                'reverse barcode sequence2'
-                                            ],
-                                            'cut_upper': {'before': 0},
-                                            'required': true,
-                                            'require_best': true,
-                                            'value_name': 'MID2',
-                                            'score_name': 'MID2-score'
-                                        }
-                                     // similar elements for primers
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    {
-                        'histogram': {
-                            'name': 'MID1',
-                            'out_path': 'MID1.csv'
-                        }
-                    },
-                    {
-                        'histogram': {
-                            'name': 'MID2',
-                            'out_path': 'MID2.csv'
-                        }
-                    },
-                    {
-                        'histogram': {
-                            'name': 'MID1-score',
-                            'out_path': 'MID1-score.csv'
-                        }
-                    },
-                    {
-                        'histogram': {
-                            'name': 'MID2-score',
-                            'out_path': 'MID2-score.csv'
-                        }
-                    },
-                    {
-                        'apply': {
-                            'to': 'merged',
-                            'step': {
-                                'length_filter': {'min': 200}
-                            }
-                        }
-                    },
-                    {
-                        'apply': {
-                            'to': 'merged',
-                            'step': {'average_quality_filter': 35}
-                        }
-                    },
-                    {
-                        'apply': {
-                            'to': 'merged',
-                            'step': {'homopolymer_filter': 20}
-                        }
-                    },
-                    {
-                        'apply': {
-                            'to': 'merged',
-                            'step': {
-                                'quality_stats': {'out_prefix': 'post-filter_'}
-                            }
-                        }
-                    },
-                    {
-                        'apply': {
-                            'to': 'merged',
-                            'step': {
-                                'composition_stats': {'out_prefix': 'post-filter_'}
-                            }
-                        }
-                    },
-                    {
-                        'apply': {
-                            'to': 'merged',
-                            'step': {
-                                'find_intersection': {'out_unique':'.fasta'}
-                            }
-                        }
-                    }
-                ]
-            },
-*/
-            {
+        preconfiguredWorkflows: function() {
 
-                'workflow-name': 'Single Reads',
-                'summary_output_path': 'summary.txt',
-                'single_read_pipe': [
-                    {'quality_stats': {'out_prefix': 'pre-filter_'}},
-                    {'composition_stats': {'out_prefix': 'pre-filter_'}},
-                    {
-                        'match': {
-                            'reverse': true,
-                            'elements': [
-                                { /* barcode element */
-                                    'start': {},
-                                    'sequence': [
-                                        'forward barcode sequence1',
-                                        'forward barcode sequence2'
-                                    ],
-                                    'cut_lower': {'after': 0},
-                                    'required': true,
-                                    'require_best': true,
-                                    'value_name': 'MID', 'score_name': 'MID-score'
+            var workflows = [
+    // Paired read workflows are temporarily disabled for the time being.
+    /*
+                {
+                    'workflow-name': 'Paired Reads',
+                    'summary_output_path': 'summary.txt',
+                    'paired_read_pipe': [
+                        {
+                            'apply': {
+                                'to': ['forward', 'reverse'],
+                                'step': {'quality_stats': {'out_prefix': 'pre-filter_'}}
+                            }
+                        },
+                        {
+                            'apply': {
+                                'to': ['forward', 'reverse'],
+                                'step': {'composition_stats': {'out_prefix': 'pre-filter_'}}
+                            }
+                        },
+                        {
+                            'merge_paired': {'min_score': 50}
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'match': {
+                                        'elements': [
+                                            { // forward barcode element
+                                                'start': {},
+                                                'length': '30',
+                                                'min_score': 20,
+                                                'sequence': [
+                                                    'forward barcode sequence1',
+                                                    'forward barcode sequence2'
+                                                ],
+                                                'cut_lower': {'after': 0},
+                                                'required': true,
+                                                'require_best': true,
+                                                'value_name': 'MID1', 'score_name': 'MID1-score'
+                                            },
+                                            { // reverse barcode element
+                                                'end': {'after': ''},
+                                                'length': 30,
+                                                'min_score': 20,
+                                                'sequence': [
+                                                    'reverse barcode sequence1',
+                                                    'reverse barcode sequence2'
+                                                ],
+                                                'cut_upper': {'before': 0},
+                                                'required': true,
+                                                'require_best': true,
+                                                'value_name': 'MID2',
+                                                'score_name': 'MID2-score'
+                                            }
+                                         // similar elements for primers
+                                        ]
+                                    }
                                 }
-                            ]
+                            }
+                        },
+                        {
+                            'histogram': {
+                                'name': 'MID1',
+                                'out_path': 'MID1.csv'
+                            }
+                        },
+                        {
+                            'histogram': {
+                                'name': 'MID2',
+                                'out_path': 'MID2.csv'
+                            }
+                        },
+                        {
+                            'histogram': {
+                                'name': 'MID1-score',
+                                'out_path': 'MID1-score.csv'
+                            }
+                        },
+                        {
+                            'histogram': {
+                                'name': 'MID2-score',
+                                'out_path': 'MID2-score.csv'
+                            }
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'length_filter': {'min': 200}
+                                }
+                            }
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {'average_quality_filter': 35}
+                            }
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {'homopolymer_filter': 20}
+                            }
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'quality_stats': {'out_prefix': 'post-filter_'}
+                                }
+                            }
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'composition_stats': {'out_prefix': 'post-filter_'}
+                                }
+                            }
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'find_intersection': {'out_unique':'.fasta'}
+                                }
+                            }
                         }
-                    },
-                    {'histogram': {'name': 'MID', 'out_path': 'MID.csv'}},
-                    {'length_filter': {'min': 200}},
-                    {'average_quality_filter': 35},
-                    {'homopolymer_filter': 20},
-// NOTE: these options are temporarily disabled since the serializer ignores their out_prefix
-/*
-                    {'quality_stats': {'out_prefix': 'post-filter_'}},
-                    {'composition_stats': {'out_prefix': 'post-filter_'}},
-*/
-                    {
-                        'find_shared': {
-                            'out_unique':'.fasta'
+                    ]
+                },
+    */
+                {
+
+                    'workflow-name': 'Single Reads',
+                    'summary_output_path': 'summary.txt',
+                    'single_read_pipe': [
+                        {'quality_stats': {'out_prefix': 'pre-filter_'}},
+                        {'composition_stats': {'out_prefix': 'pre-filter_'}},
+                        {
+                            'match': {
+                                'reverse': true,
+                                'elements': [
+                                    { /* barcode element */
+                                        'start': {},
+                                        'sequence': [
+                                            'forward barcode sequence1',
+                                            'forward barcode sequence2'
+                                        ],
+                                        'cut_lower': {'after': 0},
+                                        'required': true,
+                                        'require_best': true,
+                                        'value_name': 'MID', 'score_name': 'MID-score'
+                                    }
+                                ]
+                            }
+                        },
+                        {'histogram': {'name': 'MID', 'out_path': 'MID.csv'}},
+                        {'length_filter': {'min': 200}},
+                        {'average_quality_filter': 35},
+                        {'homopolymer_filter': 20},
+    // NOTE: these options are temporarily disabled since the serializer ignores their out_prefix
+    /*
+                        {'quality_stats': {'out_prefix': 'post-filter_'}},
+                        {'composition_stats': {'out_prefix': 'post-filter_'}},
+    */
+                        {
+                            'find_shared': {
+                                'out_unique':'.fasta'
+                            }
                         }
-                    }
-                ]
-            }
-        ],
+                    ]
+                }
+            ];
+
+            return workflows;
+        },
     });
 
     Backbone.Agave.Collection.Jobs = Jobs;

@@ -87,7 +87,7 @@ define([
         createWorkflow: function(e) {
             e.preventDefault();
 
-            this.trigger('setupCreateWorkflowView');
+            this.trigger(Jobs.WorkflowEditor.events.openWorkflowCreateView);
         },
         editWorkflow: function(e) {
             e.preventDefault();
@@ -95,7 +95,7 @@ define([
             var workflowId = $('#select-workflow').val();
             var workflow = this.workflows.get(workflowId);
 
-            this.trigger('setupEditWorkflowView', workflow);
+            this.trigger(Jobs.WorkflowEditor.events.openWorkflowEditorView, workflow);
         },
         deleteWorkflow: function(e) {
             e.preventDefault();
@@ -593,7 +593,7 @@ define([
              */
             workflowCancel: function(e) {
                 e.preventDefault();
-                this.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditor);
+                this.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditorView);
             },
 
             /**
@@ -639,7 +639,7 @@ define([
 
                     jobWorkflow.save()
                         .done(function() {
-                            that.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditor);
+                            that.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditorView);
                         })
                         .fail(function() {
                             // troubleshoot
@@ -654,7 +654,9 @@ define([
              * Custom event enum
              */
             events: {
-                closeWorkflowEditor: 'closeWorkflowEditorEvent',
+                closeWorkflowEditorView: 'closeWorkflowEditorEvent',
+                openWorkflowEditorView: 'openWorkflowEditorEvent',
+                openWorkflowCreateView: 'openWorkflowCreateEvent',
             },
         }
     );
