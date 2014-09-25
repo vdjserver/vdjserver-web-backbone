@@ -51,7 +51,10 @@
                                         Fasta/Fastq Barcode File
                                     </td>
                                     <td>
-                                        <select name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file">
+                                        <select
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file"
+                                        >
                                             {{#each barcodeFiles}}
                                                 <option value={{value.name}}>{{value.name}}</option>
                                             {{/each}}
@@ -65,12 +68,14 @@
                                     <td>
                                         {{#if options.required}}
                                             <input
+                                                class="job-form-item"
                                                 name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
                                                 type="checkbox"
                                                 checked
                                             >
                                         {{else}}
                                             <input
+                                                class="job-form-item"
                                                 name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
                                                 type="checkbox"
                                             >
@@ -83,6 +88,7 @@
                                     </td>
                                     <td>
                                         <input
+                                            class="job-form-item"
                                             name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-minimum-score"
                                             type="number"
                                             value="{{options.min_score}}"
@@ -99,12 +105,14 @@
                                     <td>
                                         {{#if options.custom_trim}}
                                             <input
+                                                class="job-form-item"
                                                 name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-trim-barcode"
                                                 type="checkbox"
                                                 checked
                                             >
                                         {{else}}
                                             <input
+                                                class="job-form-item"
                                                 name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-trim-barcode"
                                                 type="checkbox"
                                             >

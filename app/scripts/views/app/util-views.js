@@ -12,13 +12,18 @@ define(['app'], function(App){
 
     Util.Loading = Backbone.View.extend({
         template: 'util/loading',
-        initialize: function() {
-            if (! this.model) {
-                this.model = new App.Models.MessageModel({body: 'Loading...'});
+        initialize: function(parameters) {
+            if (parameters && parameters.displayText) {
+                this.displayText = parameters.displayText;
+            }
+            else {
+                this.displayText = 'Loading...';
             }
         },
         serialize: function() {
-            return this.model.toJSON();
+            return {
+                displayText: this.displayText
+            };
         }
     });
 

@@ -192,18 +192,34 @@ define([
             e.preventDefault();
 
             var formData = Backbone.Syphon.serialize(this);
+            var that = this;
 
             // Remove old validation warnings
             $('.form-group').removeClass('has-error');
 
             // Begin Validation
             if (!formData['job-name']) {
-                $('#job-name').closest('.form-group').addClass('has-error');
+                $('#job-name')
+                    .closest('.form-group')
+                    .addClass('has-error')
+                    ;
+
+                $('#job-name').get(0).scrollIntoView();
+
                 return;
             }
 
             if ($.trim($('#workflow-staging-area').html()) === '') {
-                $('#select-workflow').closest('.form-group').addClass('has-error');
+                $('#select-workflow')
+                    .closest('.form-group')
+                    .addClass('has-error')
+                    ;
+
+                $('#select-workflow')
+                    .closest('.form-group')
+                    .get(0)
+                    .scrollIntoView()
+                    ;
                 return;
             }
             // End Validation
@@ -215,6 +231,8 @@ define([
                 this.selectedFileListings,
                 this.projectModel.get('uuid')
             );
+
+            this.setupJobLoadingView();
 
             var jobNotification = new Backbone.Agave.Model.Notification.Job();
             jobNotification.projectUuid = this.projectModel.get('uuid');
@@ -229,10 +247,41 @@ define([
                     listView.addNotification(jobNotification);
 
                     $('#job-modal').modal('hide');
-
                 })
                 .fail(function() {
+                    that.cancelJobLoadingView();
                 });
+        },
+        setupJobLoadingView: function() {
+            // Clear out any previous errors
+            $('#job-submit-loading-view').html('');
+            $('#job-submit-loading-view').removeClass('alert alert-danger');
+
+            // Setup new loading view
+            var loadingView = new App.Views.Util.Loading({
+                displayText: 'Launching Job...',
+                keep: true,
+            });
+
+            this.setView('#job-submit-loading-view', loadingView);
+            loadingView.render();
+
+            $('#job-submit-loading-view').addClass('alert alert-info');
+            $('.job-form-item, .job-submit-button').attr('disabled', 'disabled');
+
+        },
+        cancelJobLoadingView: function() {
+            this.removeView('#job-submit-loading-view');
+
+            $('#job-submit-loading-view').removeClass('alert alert-info');
+            $('.job-form-item, .job-submit-button').removeAttr('disabled');
+
+            $('#job-submit-loading-view').addClass('alert alert-danger');
+            $('#job-submit-loading-view').append(
+                'There was an error launching your job.'
+                + '<br/>'
+                + 'Please try again.'
+            );
         },
         removeFileFromJob: function(e) {
             e.preventDefault();
@@ -244,7 +293,7 @@ define([
 
             // data collection
             this.selectedFileListings.remove(uuid);
-        }
+        },
     });
 
     Jobs.WorkflowEditor = Backbone.View.extend(

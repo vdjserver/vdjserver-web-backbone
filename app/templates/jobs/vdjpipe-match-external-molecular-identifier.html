@@ -23,9 +23,9 @@
                 <div class="col-md-12">
                     Value Name
                     &nbsp;
-                    <input 
-                        class="job-form-item" 
-                        name="{{inputCount}}-{{parameterType}}-value-name" 
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-value-name"
                         placeholder="text"
                         type="text"
                         value="{{options.value_name}}"
@@ -36,7 +36,10 @@
                 <div class="col-md-12">
                     Fasta File
                     &nbsp;
-                    <select name="{{inputCount}}-{{parameterType}}-fasta-file">
+                    <select
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-fasta-file"
+                    >
                         {{#each files}}
                             <option value={{value.name}}>{{value.name}}</option>
                         {{/each}}
@@ -47,7 +50,10 @@
                 <div class="col-md-12">
                     Pairs File
                     &nbsp;
-                    <select name="{{inputCount}}-{{parameterType}}-pairs-file">
+                    <select
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-pairs-file"
+                    >
                         {{#each files}}
                             <option value={{value.name}}>{{value.name}}</option>
                         {{/each}}

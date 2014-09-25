@@ -27,8 +27,9 @@
                                         Fasta/Fastq Matching File
                                     </td>
                                     <td>
-                                        <input 
-                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file" 
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file"
                                             type="text"
                                             value="{{options.seq_file}}"
                                         >
@@ -39,7 +40,11 @@
                                         CSV Sequences File
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-csv-sequences-path" type="text">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-csv-sequences-path"
+                                            type="text"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -47,7 +52,11 @@
                                         CSV Sequences Column
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-csv-sequences-column-name" type="text">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-csv-sequences-column-name"
+                                            type="text"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -55,14 +64,28 @@
                                         Start
                                     </td>
                                     <td>
-                                        <select name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-start-position-location">
+                                        <select
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-start-position-location"
+                                        >
                                             <option value=""></option>
                                             <option value="before">Before</option>
                                             <option value="after">After</option>
                                         </select>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-start-position-location-sequence" type="text">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-start-position-location-sequence"
+                                            type="text"
+                                        >
                                         <hr>
-                                        Position <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-start-position" type="number" min="0" step="1" pattern="\d+">
+                                        Position <input
+                                                    class="job-form-item"
+                                                    name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-start-position"
+                                                    type="number"
+                                                    min="0"
+                                                    step="1"
+                                                    pattern="\d+"
+                                                 >
                                     </td>
                                 </tr>
                                 <tr>
@@ -70,14 +93,28 @@
                                         End
                                     </td>
                                     <td>
-                                        <select name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-end-position-location">
+                                        <select
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-end-position-location"
+                                        >
                                             <option value=""></option>
                                             <option value="before">Before</option>
                                             <option value="after">After</option>
                                         </select>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-end-position-location-sequence" type="text">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-end-position-location-sequence"
+                                            type="text"
+                                        >
                                         <hr>
-                                        Position <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-end-position" type="number" min="0" step="1" pattern="\d+">
+                                        Position <input
+                                                    class="job-form-item"
+                                                    name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-end-position"
+                                                    type="number"
+                                                    min="0"
+                                                    step="1"
+                                                    pattern="\d+"
+                                                 >
                                     </td>
                                 </tr>
                                 <tr>
@@ -85,7 +122,11 @@
                                         Required
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required" type="checkbox">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
+                                            type="checkbox"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -93,7 +134,14 @@
                                         Minimum Score
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-minimum-score" type="number" min="0" step="1" pattern="\d+">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-minimum-score"
+                                            type="number"
+                                            min="0"
+                                            step="1"
+                                            pattern="\d+"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -101,7 +149,11 @@
                                         Allow Gaps
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-allow-gaps" type="checkbox">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-allow-gaps"
+                                            type="checkbox"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -109,7 +161,14 @@
                                         Minimum Match Length
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-minimum-match-length" type="number" min="0" step="1" pattern="\d+">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-minimum-match-length"
+                                            type="number"
+                                            min="0"
+                                            step="1"
+                                            pattern="\d+"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -117,7 +176,11 @@
                                         Value Name
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-value-name" type="text">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-value-name"
+                                            type="text"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -125,7 +188,11 @@
                                         Score Name
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-score-name" type="text">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-score-name"
+                                            type="text"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -133,7 +200,11 @@
                                         Identity Name
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-identity-name" type="text">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-identity-name"
+                                            type="text"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -141,12 +212,22 @@
                                         Cut Upper
                                     </td>
                                     <td>
-                                        <select name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-cut-upper-location">
+                                        <select
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-cut-upper-location"
+                                        >
                                             <option value=""></option>
                                             <option value="before">Before</option>
                                             <option value="after">After</option>
                                         </select>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-cut-upper-location-sequence" type="number" min="0" step="1" pattern="\d+">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-cut-upper-location-sequence"
+                                            type="number"
+                                            min="0"
+                                            step="1"
+                                            pattern="\d+"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -154,12 +235,22 @@
                                         Cut Lower
                                     </td>
                                     <td>
-                                        <select name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-cut-lower-location">
+                                        <select
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-cut-lower-location"
+                                        >
                                             <option value=""></option>
                                             <option value="before">Before</option>
                                             <option value="after">After</option>
                                         </select>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-cut-lower-location-sequence" type="number" min="0" step="1" pattern="\d+">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-cut-lower-location-sequence"
+                                            type="number"
+                                            min="0"
+                                            step="1"
+                                            pattern="\d+"
+                                        >
                                     </td>
                                 </tr>
                             </tbody>

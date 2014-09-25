@@ -38,6 +38,7 @@
                     &nbsp;
                     <input
                         id="{{inputCount}}-barcodes"
+                        class="job-form-item"
                         type="number"
                         step="1"
                         min="1"
@@ -50,7 +51,11 @@
                 <div class="col-md-12">
                     Location
                     &nbsp;
-                    <select id="{{inputCount}}-barcode-location" name="{{inputCount}}-{{parameterType}}-custom-location">
+                    <select
+                        id="{{inputCount}}-barcode-location"
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-custom-location"
+                    >
                         <option value="1">5'</option>
                         <option value="2">3'</option>
                     </select>

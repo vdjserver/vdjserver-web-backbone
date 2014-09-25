@@ -20,6 +20,7 @@
                     <div class="col-md-12">
 
                         <input name="{{inputCount}}-{{parameterType}}-combination-objects[]" type="text" value="{{objectCount}}" hidden>
+
                         <table class="table">
                             <tbody>
                                 <tr>
@@ -27,7 +28,10 @@
                                         File
                                     </td>
                                     <td>
-                                        <select name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-file">
+                                        <select
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-file"
+                                        >
                                             {{#each files}}
                                                 <option value={{value.name}}>{{value.name}}</option>
                                             {{/each}}
@@ -39,7 +43,11 @@
                                         Value Name
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-value-name" type="text">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-value-name"
+                                            type="text"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -47,7 +55,11 @@
                                         Values Column
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-values-column" type="text">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-values-column"
+                                            type="text"
+                                        >
                                     </td>
                                 </tr>
                                 <tr>
@@ -55,7 +67,11 @@
                                         Names Column
                                     </td>
                                     <td>
-                                        <input name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-names-column" type="text">
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-{{objectCount}}-combination-object-names-column"
+                                            type="text"
+                                        >
                                     </td>
                                 </tr>
                             </tbody>

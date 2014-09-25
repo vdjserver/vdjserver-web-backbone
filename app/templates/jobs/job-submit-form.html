@@ -61,9 +61,26 @@
 
                 </div>
                 <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-offset-4 col-lg-4">
+                            <div id="job-submit-loading-view" class="text-center"></div>
+                        </div>
+                    </div>
                     <div class="text-center">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <input type="submit" class="btn btn-success" id="submit-job" value="Launch Job">
+                        <button
+                            class="btn btn-default job-submit-button"
+                            type="button"
+                            data-dismiss="modal"
+                        >
+                            Cancel
+                        </button>
+
+                        <input
+                            id="submit-job"
+                            class="btn btn-success job-submit-button"
+                            type="submit"
+                            value="Launch Job"
+                        >
                     </div>
                 </div>
             </form>
