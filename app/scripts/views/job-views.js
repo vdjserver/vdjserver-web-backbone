@@ -312,7 +312,7 @@ define([
             },
 
             /** Layout Manager template */
-            template: 'jobs/vdjpipe-form-options',
+            template: 'jobs/vdjpipe-form',
 
             /**
              * Fetches remote data that this view requires.
