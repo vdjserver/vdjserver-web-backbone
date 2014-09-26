@@ -340,6 +340,12 @@ define([
             this.setView('.file-listings', fileListingsView);
             fileListingsView.render();
         },
+        setupFileSearchNoResultsView: function() {
+            var fileSearchNoResultsView = new Projects.FileSearchNoResults();
+
+            this.setView('.file-listings', fileSearchNoResultsView);
+            fileSearchNoResultsView.render();
+        },
         serialize: function() {
             if (this.projectModel && this.fileListings && this.projectUsers) {
                 return {
@@ -561,13 +567,14 @@ define([
                 this.setupFileListingsView(this.fileListings);
             }
             else {
-                var filteredModels = _.filter(this.fileListings.models, function(data) {
-                    return data.get('value').name === searchString;
-                });
+                var filteredFileListings = this.fileListings.search(searchString);
 
-                var filteredFileListings = new Backbone.Agave.Collection.Files.Metadata(filteredModels);
-
-                this.setupFileListingsView(filteredFileListings);
+                if (filteredFileListings.length > 0) {
+                    this.setupFileListingsView(filteredFileListings);
+                }
+                else {
+                    this.setupFileSearchNoResultsView();
+                }
             }
         },
         deleteFiles: function(e) {
@@ -608,6 +615,10 @@ define([
             var agaveFile = new Backbone.Agave.Model.File({projectUuid: this.projectUuid, name: fileName});
             agaveFile.downloadFile();
         },
+    });
+
+    Projects.FileSearchNoResults = Backbone.View.extend({
+        template: 'project/file-search-no-results',
     });
 
     Projects.FileListings = Backbone.View.extend({

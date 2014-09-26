@@ -184,7 +184,9 @@ function(Backbone, EnvironmentConfig) {
         setInitialMetadata: function(file, formData) {
 
             var privateAttributes = {};
-            var publicAttributes = {};
+            var publicAttributes = {
+                'tags': [],
+            };
 
             if (formData['forward-reads']) {
                 privateAttributes['forward-reads'] = true;

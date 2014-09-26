@@ -140,6 +140,26 @@ function(Backbone, EnvironmentConfig) {
 
             return newCollection;
         },
+        search: function(searchString) {
+
+            var filteredModels = _.filter(this.models, function(data) {
+                if (data.get('value').name.toLowerCase().indexOf(searchString.toLowerCase()) > -1) {
+                    return true;
+                }
+
+                if (
+                    data.get('value').publicAttributes
+                    && data.get('value').publicAttributes['tags']
+                    && data.get('value').publicAttributes['tags'].toString().toLowerCase().indexOf(searchString.toLowerCase()) > -1
+                ) {
+                    return true;
+                }
+            });
+
+            var filteredFileListings = new Files.Metadata(filteredModels);
+
+            return filteredFileListings;
+        },
     });
 
     Backbone.Agave.Collection.Files = Files;
