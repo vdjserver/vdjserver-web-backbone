@@ -32,6 +32,15 @@ define([
         }
     });
 
+    Handlebars.registerHelper('GetFileTypeFromName', function(filename) {
+        if (filename) {
+            var fileExtension = filename.split('.').pop();
+
+            fileExtension = fileExtension.slice(0);
+            return fileExtension;
+        }
+    });
+
     Handlebars.registerHelper('GetHumanReadableReadDirection', function(data /*, options*/) {
         return App.Views.HandlebarsHelpers.FileMetadataHelpers.GetHumanReadableReadDirection(data);
     });
@@ -376,7 +385,7 @@ define([
                     mimeType: file.type,
                     lastModified: file.lastModifiedDate,
                     projectUuid: projectUuid,
-                    fileReference: file
+                    fileReference: file,
                 });
 
                 var isDuplicate = this.fileListings.checkForDuplicateFilename(file.name);
