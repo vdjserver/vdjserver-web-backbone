@@ -20,6 +20,9 @@
                             Type
                         </th>
                         <th class="text-center">
+                            Tag
+                        </th>
+                        <th class="text-center">
                             Read Direction
                         </th>
                     </tr>
@@ -41,6 +44,9 @@
                             </td>
                             <td>
                                 {{GetFileTypeFromName value.name}}
+                            </td>
+                            <td>
+                                {{GetTagDisplay value.publicAttributes}}
                             </td>
                             <td>
                                 {{GetHumanReadableReadDirection value}}

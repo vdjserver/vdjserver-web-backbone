@@ -41,6 +41,15 @@ define([
         }
     });
 
+    Handlebars.registerHelper('GetTagDisplay', function(publicAttributes) {
+        if (publicAttributes && publicAttributes['tags']) {
+            var tags = publicAttributes['tags'];
+            tags = tags.join(', ');
+
+            return tags;
+        }
+    });
+
     Handlebars.registerHelper('GetHumanReadableReadDirection', function(data /*, options*/) {
         return App.Views.HandlebarsHelpers.FileMetadataHelpers.GetHumanReadableReadDirection(data);
     });

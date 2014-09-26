@@ -184,6 +184,7 @@ function(Backbone, EnvironmentConfig) {
         setInitialMetadata: function(file, formData) {
 
             var privateAttributes = {};
+            var publicAttributes = {};
 
             if (formData['forward-reads']) {
                 privateAttributes['forward-reads'] = true;
@@ -191,6 +192,12 @@ function(Backbone, EnvironmentConfig) {
 
             if (formData['reverse-reads']) {
                 privateAttributes['reverse-reads'] = true;
+            }
+
+            if (formData['tags']) {
+                var objectTags = $.map(formData['tags'].split(','), $.trim);
+
+                publicAttributes['tags'] = objectTags;
             }
 
             this.set({
@@ -203,7 +210,8 @@ function(Backbone, EnvironmentConfig) {
                     mimeType: file.get('mimeType'),
                     isDeleted: false,
                     privateAttributes: privateAttributes,
-                }
+                    publicAttributes: publicAttributes,
+                },
             });
         },
     });
