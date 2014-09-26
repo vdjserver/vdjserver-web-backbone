@@ -365,6 +365,7 @@ define([
             'change #file-dialog': 'changeFilesSelector',
             'click .file-category': 'changeFileCategory',
             'click .selected-files': 'uiToggleDisabledButtonStatus',
+            'click #select-all-files-checkbox': 'toggleSelectAllFiles',
             'click .run-job': 'clickRunJob',
             'click #search-button': 'searchFileListings',
             'click .delete-files': 'deleteFiles',
@@ -457,6 +458,14 @@ define([
             else {
                 $('.files-selected-button').addClass('disabled');
             }
+        },
+        toggleSelectAllFiles: function() {
+
+            $('.selected-files').each(function() {
+                this.checked = !this.checked;
+            });
+
+            this.uiToggleDisabledButtonStatus();
         },
         clickRunJob: function(e) {
             e.preventDefault();
