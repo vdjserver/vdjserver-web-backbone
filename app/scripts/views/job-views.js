@@ -32,7 +32,6 @@ define([
             this.workflows
                 .fetch()
                 .done(function() {
-
                     that.workflows.setPredefinedWorkflows();
 
                     deferred.resolve();

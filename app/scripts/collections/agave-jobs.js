@@ -245,22 +245,24 @@ define(['backbone'], function(Backbone) {
                         {'quality_stats': {'out_prefix': 'pre-filter_'}},
                         {'composition_stats': {'out_prefix': 'pre-filter_'}},
                         {
-                            'match': {
+                            'custom_demultiplex': {
                                 'reverse': true,
+                                'custom_location': '1',
                                 'elements': [
-                                    { /* barcode element */
-                                        'start': {},
-                                        'sequence': [
-                                            'forward barcode sequence1',
-                                            'forward barcode sequence2'
-                                        ],
-                                        'cut_lower': {'after': 0},
+                                    {
+                                        'custom_type': '5\'',
+                                        'min_score': 1,
                                         'required': true,
-                                        'require_best': true,
-                                        'value_name': 'MID', 'score_name': 'MID-score'
-                                    }
-                                ]
-                            }
+                                        'score_name': 'MID1-score',
+                                        'value_name': 'MID1',
+                                        'start': {},
+                                        'cut_lower': {
+                                            'after': 0
+                                        },
+                                        'custom_trim': true
+                                    },
+                                ],
+                            },
                         },
                         {'histogram': {'name': 'MID', 'out_path': 'MID.csv'}},
                         {'length_filter': {'min': 200}},
@@ -274,9 +276,9 @@ define(['backbone'], function(Backbone) {
                         {
                             'find_shared': {
                                 'out_unique':'.fasta'
-                            }
-                        }
-                    ]
+                            },
+                        },
+                    ],
                 }
             ];
 
