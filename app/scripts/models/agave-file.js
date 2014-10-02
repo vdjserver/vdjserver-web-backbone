@@ -197,9 +197,9 @@ function(Backbone, EnvironmentConfig) {
             }
 
             if (formData['tags']) {
-                var objectTags = $.map(formData['tags'].split(','), $.trim);
+                var tagArray = this.formatTagsForSave(formData['tags']);
 
-                publicAttributes['tags'] = objectTags;
+                publicAttributes['tags'] = tagArray;
             }
 
             this.set({
@@ -215,6 +215,23 @@ function(Backbone, EnvironmentConfig) {
                     publicAttributes: publicAttributes,
                 },
             });
+        },
+        formatTagsForSave: function(tagString) {
+            var tagArray = $.map(tagString.split(','), $.trim);
+
+            return tagArray
+        },
+        updateTags: function(tags) {
+
+            var value = this.get('value');
+
+            var tagArray = this.formatTagsForSave(tags);
+
+            value['publicAttributes']['tags'] = tagArray;
+
+            this.set('value', value);
+
+            return this.save();
         },
     });
 

@@ -46,7 +46,12 @@
                                 {{GetFileTypeFromName value.name}}
                             </td>
                             <td>
-                                {{GetTagDisplay value.publicAttributes}}
+                                <input 
+                                    class="project-file-tags"
+                                    data-fileuuid="{{uuid}}"
+                                    type="text" 
+                                    value="{{GetTagDisplay value.publicAttributes}}"
+                                >
                             </td>
                             <td>
                                 {{GetHumanReadableReadDirection value}}

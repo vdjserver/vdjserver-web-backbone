@@ -2,3 +2,17 @@
     @extend .fa;
     @extend .fa-info-circle;
 }
+
+.icon-checkmark-green {
+    @extend .fa;
+    @extend .fa-check;
+
+    color: $vdjLogoGreen;
+}
+
+.icon-error-red {
+    @extend .fa;
+    @extend .fa-times;
+
+    color: $red;
+}

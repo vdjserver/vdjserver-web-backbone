@@ -43,8 +43,12 @@ define([
 
     Handlebars.registerHelper('GetTagDisplay', function(publicAttributes) {
         if (publicAttributes && publicAttributes['tags']) {
+
             var tags = publicAttributes['tags'];
-            tags = tags.join(', ');
+
+            if (_.isArray(tags)) {
+                tags = tags.join(', ');
+            }
 
             return tags;
         }
@@ -641,8 +645,15 @@ define([
             'click #drag-and-drop-box': 'clickFilesSelectorWrapper'
         },
         afterRender: function() {
+
+            this.setupDragDropEventHandlers();
+
+            this.setupTagEditEventHandler();
+        },
+        setupDragDropEventHandlers: function() {
             if (this.fileListings.models.length === 0) {
 
+                // Drag and Drop Listeners
                 var dropZone = document.getElementById('drag-and-drop-box');
                 dropZone.addEventListener('dragover', this.fileContainerDrag, false);
 
@@ -650,6 +661,32 @@ define([
                 // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener
                 dropZone.addEventListener('drop', this.fileContainerDrop.bind(this), false);
             }
+        },
+        setupTagEditEventHandler: function() {
+            var that = this;
+
+            // Tags Listeners
+            $('.project-file-tags').change(function(e) {
+                var fileMetadata = that.fileListings.get(e.target.dataset.fileuuid);
+                fileMetadata.updateTags(e.target.value)
+                    .done(function() {
+                        $('<i class="icon-checkmark-green">Saved</i>')
+                            .insertAfter(e.target)
+                            .fadeOut('slow', function() {
+                                this.remove();
+                            })
+                        ;
+                    })
+                    .fail(function() {
+                        $('<i class="icon-error-red">Saved</i>')
+                            .insertAfter(e.target)
+                            .fadeOut('slow', function() {
+                                this.remove();
+                            })
+                        ;
+                    })
+                    ;
+            });
         },
         clickFilesSelectorWrapper: function() {
             /*
@@ -674,7 +711,8 @@ define([
             //Hand off these file handlers to the parent view through this event.
 
             this.trigger('fileDragDrop', files);
-        }
+        },
+
     });
 
     Projects.FileTransfer = Backbone.View.extend({
