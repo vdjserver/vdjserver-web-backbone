@@ -1,4 +1,9 @@
-define(['backbone'], function(Backbone) {
+define(
+    [
+        'backbone',
+        'environment-config'
+    ],
+function(Backbone, EnvironmentConfig) {
 
     'use strict';
 
@@ -9,7 +14,7 @@ define(['backbone'], function(Backbone) {
             username:  '',
             uuid:  ''
         },
-        apiRoot: Backbone.Agave.vdjauthRoot,
+        apiRoot: EnvironmentConfig.vdjauthRoot,
         url: function() {
             var url = '/user/reset-password';
             if (this.get('uuid')) {

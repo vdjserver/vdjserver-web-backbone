@@ -10,6 +10,15 @@ function(Backbone, EnvironmentConfig) {
     var File = {};
 
     File = Backbone.Agave.Model.extend({
+        // Private methods
+        _getAssociationId: function() {
+            var path = this.get('path');
+            var split = path.split('/');
+
+            return split[3];
+        },
+
+        // Public methods
         idAttribute: 'path',
         defaults: {
             fileReference: '',
@@ -99,12 +108,6 @@ function(Backbone, EnvironmentConfig) {
             }
 
         },
-        getAssociationId: function() {
-            var path = this.get('path');
-            var split = path.split('/');
-
-            return split[3];
-        },
         syncFilePermissionsWithProjectPermissions: function() {
 
             var jqxhr = $.ajax({
@@ -115,7 +118,7 @@ function(Backbone, EnvironmentConfig) {
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
-                url: Backbone.Agave.vdjauthRoot + '/permissions/files'
+                url: EnvironmentConfig.vdjauthRoot + '/permissions/files'
             });
 
             return jqxhr;
@@ -125,7 +128,7 @@ function(Backbone, EnvironmentConfig) {
             var jqxhr = $.ajax({
                 headers: Backbone.Agave.oauthHeader(),
                 type: 'GET',
-                url: Backbone.Agave.apiRoot + '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + this.get('projectUuid') + '/files/' + name,
+                url: EnvironmentConfig.agaveRoot + '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + this.get('projectUuid') + '/files/' + name,
             });
             this.name = name;
             return jqxhr;
@@ -135,7 +138,7 @@ function(Backbone, EnvironmentConfig) {
             var that = this;
 
             var xhr = new XMLHttpRequest();
-            xhr.open('get', Backbone.Agave.apiRoot + '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + this.get('projectUuid') + '/files/' + this.get('name'));
+            xhr.open('get', EnvironmentConfig.agaveRoot + '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + this.get('projectUuid') + '/files/' + this.get('name'));
             xhr.responseType = 'blob';
             xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
 
@@ -160,7 +163,7 @@ function(Backbone, EnvironmentConfig) {
                 headers: Backbone.Agave.oauthHeader(),
                 type:   'PUT',
 
-                url:    Backbone.Agave.apiRoot
+                url:    EnvironmentConfig.agaveRoot
                         + '/files/v2/media/system'
                         + '/' + EnvironmentConfig.storageSystem
                         + '//projects'
@@ -180,7 +183,7 @@ function(Backbone, EnvironmentConfig) {
                         headers: Backbone.Agave.oauthHeader(),
                         type:   'PUT',
 
-                        url:    Backbone.Agave.apiRoot
+                        url:    EnvironmentConfig.agaveRoot
                                 + '/files/v2/media/system'
                                 + '/' + EnvironmentConfig.storageSystem
                                 + '/' + that.get('path'),
@@ -201,6 +204,14 @@ function(Backbone, EnvironmentConfig) {
     });
 
     File.Metadata = Backbone.Agave.MetadataModel.extend({
+        // Private Methods
+        _formatTagsForSave: function(tagString) {
+            var tagArray = $.map(tagString.split(','), $.trim);
+
+            return tagArray;
+        },
+
+        // Public Methods
         defaults: function() {
             return _.extend(
                 {},
@@ -233,7 +244,7 @@ function(Backbone, EnvironmentConfig) {
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
-                url: Backbone.Agave.vdjauthRoot + '/permissions/metadata'
+                url: EnvironmentConfig.vdjauthRoot + '/permissions/metadata'
             });
 
             return jqxhr;
@@ -268,7 +279,7 @@ function(Backbone, EnvironmentConfig) {
             }
 
             this.set({
-                associationIds: [file.getAssociationId()],
+                associationIds: [file._getAssociationId()],
                 value: {
                     projectUuid: file.get('projectUuid'),
                     fileCategory: formData['file-category'],
@@ -304,11 +315,6 @@ function(Backbone, EnvironmentConfig) {
             });
 
             return fileModel;
-        },
-        _formatTagsForSave: function(tagString) {
-            var tagArray = $.map(tagString.split(','), $.trim);
-
-            return tagArray;
         },
     });
 

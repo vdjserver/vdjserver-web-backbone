@@ -1,4 +1,9 @@
-define(['backbone'], function(Backbone) {
+define(
+    [
+        'backbone',
+        'environment-config'
+    ],
+function(Backbone, EnvironmentConfig) {
 
     'use strict';
 
@@ -11,7 +16,7 @@ define(['backbone'], function(Backbone) {
             newPassword: '',
             passwordCheck: ''
         },
-        apiRoot: Backbone.Agave.vdjauthRoot,
+        apiRoot: EnvironmentConfig.vdjauthRoot,
         url: function() {
             return '/user/change-password';
         },
@@ -24,7 +29,7 @@ define(['backbone'], function(Backbone) {
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
-                url: Backbone.Agave.vdjauthRoot + this.url(),
+                url: EnvironmentConfig.vdjauthRoot + this.url(),
             });
 
             return jqxhr;

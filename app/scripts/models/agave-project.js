@@ -1,4 +1,9 @@
-define(['backbone'], function(Backbone) {
+define(
+    [
+        'backbone',
+        'environment-config'
+    ],
+function(Backbone, EnvironmentConfig) {
 
     'use strict';
 
@@ -40,7 +45,7 @@ define(['backbone'], function(Backbone) {
         sync: function(method, model, options) {
 
             if (this.get('uuid') === '') {
-                options.apiRoot = Backbone.Agave.vdjauthRoot;
+                options.apiRoot = EnvironmentConfig.vdjauthRoot;
                 options.url = '/projects';
 
                 var value = this.get('value');

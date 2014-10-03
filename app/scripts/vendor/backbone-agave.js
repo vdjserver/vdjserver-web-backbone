@@ -40,9 +40,6 @@ define([
 
     });
 
-    Agave.apiRoot     = EnvironmentConfig.agaveRoot;
-    Agave.vdjauthRoot = EnvironmentConfig.vdjauthRoot;
-
     Agave.basicAuthHeader = function() {
         return {
             'Authorization': 'Basic ' + btoa(Agave.instance.token().get('username') + ':' + Agave.instance.token().get('access_token')),
@@ -130,7 +127,7 @@ define([
 
     // Agave extension of default Backbone.Model that uses Agave sync
     Agave.Model = Backbone.Model.extend({
-        apiRoot: Agave.apiRoot,
+        apiRoot: EnvironmentConfig.agaveRoot,
         sync: Agave.sync,
         requiresAuth: true,
         parse: function(response) {
@@ -143,7 +140,7 @@ define([
 
     // Agave extension of default Backbone.Collection that uses Agave sync
     Agave.Collection = Backbone.Collection.extend({
-        apiRoot: Agave.apiRoot,
+        apiRoot: EnvironmentConfig.agaveRoot,
         sync: Agave.sync,
         requiresAuth: true,
         parse: function(response) {
@@ -265,7 +262,7 @@ define([
             'refresh_token': null,
             'access_token':  null,
         },
-        apiRoot: Agave.vdjauthRoot,
+        apiRoot: EnvironmentConfig.vdjauthRoot,
         url: '/token',
         sync: function(method, model, options) {
 
@@ -293,7 +290,7 @@ define([
                     break;
             }
 
-            options.url = Backbone.Agave.vdjauthRoot + '/token',
+            options.url = EnvironmentConfig.vdjauthRoot + '/token',
 
             options.headers = {
                 'Authorization': 'Basic ' + btoa(username + ':' + password),
@@ -335,9 +332,6 @@ define([
                 return false;
             }
         },
-        expiresIn: function() {
-            return Math.max(0, this.get('expires') - (Date.now() / 1000));
-        }
     }),
 
     Backbone.Agave = Agave;

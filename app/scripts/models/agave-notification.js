@@ -1,4 +1,9 @@
-define(['backbone'], function(Backbone) {
+define(
+    [
+        'backbone',
+        'environment-config'
+    ],
+function(Backbone, EnvironmentConfig) {
 
     'use strict';
 
@@ -7,7 +12,7 @@ define(['backbone'], function(Backbone) {
     Notification.Job = Backbone.Agave.Model.extend({
         defaults: {
             event: '*',
-            url: Backbone.Agave.vdjauthRoot + '/notifications/jobs/${JOB_ID}?status=${JOB_STATUS}&event=${EVENT}&error=${JOB_ERROR}',
+            url: EnvironmentConfig.vdjauthRoot + '/notifications/jobs/${JOB_ID}?status=${JOB_STATUS}&event=${EVENT}&error=${JOB_ERROR}',
             associatedUuid: '',
             persistent: true,
         },

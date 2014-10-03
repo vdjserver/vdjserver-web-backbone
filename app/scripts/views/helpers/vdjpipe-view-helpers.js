@@ -39,10 +39,9 @@ define([
 
         var vdjPipeView;
 
-        switch(key) {
+        switch (key) {
 
             case 'ambiguous_window_filter':
-
                 vdjPipeView = new App.Views.Vdjpipe.AmbiguousWindowFilter({
                     parameterType: key,
                     inputCount: counter,

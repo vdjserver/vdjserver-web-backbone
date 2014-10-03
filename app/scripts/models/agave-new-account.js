@@ -1,4 +1,9 @@
-define(['backbone'], function(Backbone) {
+define(
+    [
+        'backbone',
+        'environment-config'
+    ],
+function(Backbone, EnvironmentConfig) {
 
     'use strict';
 
@@ -11,7 +16,7 @@ define(['backbone'], function(Backbone) {
             passwordCheck: '',
             email:     ''
         },
-        apiRoot: Backbone.Agave.vdjauthRoot,
+        apiRoot: EnvironmentConfig.vdjauthRoot,
         url: function() {
             return '/user';
         },

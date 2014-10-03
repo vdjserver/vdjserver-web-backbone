@@ -4,45 +4,259 @@ define(['app'], function(App) {
 
     var VdjPipeUtilities = {};
 
+    // Public Methods
+
     VdjPipeUtilities.GetWorkflowName = function(formData) {
         var name = formData['workflow-name'];
 
         return name;
     };
 
-    VdjPipeUtilities.GetReadDirections = function(fileMetadata) {
+    VdjPipeUtilities.SerializeWorkflowConfig = function(parameters, fileMetadatas) {
 
-        var readDirections = [];
+        var outputConfig = {
+            'base_path_input': '',
+            'base_path_output': '',
+            'csv_file_delimiter': '\\t',
+        };
 
-        if (fileMetadata && fileMetadata.length > 0) {
-            for (var i = 0; i < fileMetadata.length; i++) {
-                var value = fileMetadata.at([i]).get('value');
+        var paramOutput = [];
 
-                // Hack to prevent .fasta files from being added
-                if (value.name.split('.').pop() === '.fasta') {
-                    continue;
-                }
+        for (var key in parameters) {
 
-                var privateAttributes = value.privateAttributes;
+            if (parameters.hasOwnProperty(key)) {
+                if (key !== 'formtype' && key !== 'job-name') {
+                    var keyCounterIndex = key.indexOf('-') + 1;
+                    //var keyCounter = key.slice(0, keyCounterIndex);
+                    var parameterName = key.slice(keyCounterIndex);
 
-                if (privateAttributes['forward-reads']) {
-                    readDirections.push({
-                        'forward_seq': value.name
-                    });
-                }
+                    var serializer = new VdjPipeUtilities._Serializer(parameters, key);
 
-                if (privateAttributes['reverse-reads']) {
-                    readDirections.push({
-                        'reverse_seq': value.name
-                    });
+                    switch (parameterName) {
+
+                        case 'ambiguous_window_filter':
+                            paramOutput.push(
+                                serializer.getAmbiguousWindowFilter()
+                            );
+
+                            break;
+
+                        case 'average_quality_filter':
+                            paramOutput.push(
+                                serializer.getAverageQualityFilter()
+                            );
+
+                            break;
+
+                        case 'average_quality_window_filter':
+                            paramOutput.push(
+                                serializer.getAverageQualityWindowFilter()
+                            );
+
+                            break;
+
+                        case 'character_filter':
+                            paramOutput.push(
+                                serializer.getCharacterFilter()
+                            );
+
+                            break;
+
+                        case 'composition_stats':
+                            paramOutput.push(
+                                serializer.getCompositionStats()
+                            );
+
+                            break;
+
+                        case 'custom_demultiplex':
+                            paramOutput.push(
+                                serializer.getCustomDemultiplex()
+                            );
+
+                            break;
+
+                        case 'eMID_map':
+                            paramOutput.push(
+                                serializer.getEmidMap()
+                            );
+
+                            break;
+
+                        case 'find_shared':
+                            paramOutput.push(
+                                serializer.getFindShared()
+                            );
+
+                            break;
+
+                        case 'histogram':
+                            paramOutput.push(
+                                serializer.getHistogram()
+                            );
+
+                            break;
+
+                        case 'homopolymer_filter':
+                            paramOutput.push(
+                                serializer.getHomopolymerFilter()
+                            );
+
+                            break;
+
+                        case 'length_filter':
+                            paramOutput.push(
+                                serializer.getLengthFilter()
+                            );
+
+                            break;
+
+                        case 'match':
+                            paramOutput.push(
+                                serializer.getMatch()
+                            );
+
+                            break;
+
+                        case 'merge_paired':
+                            paramOutput.push(
+                                serializer.getMergePaired()
+                            );
+
+                            break;
+
+                        case 'min_quality_filter':
+                            paramOutput.push(
+                                serializer.getMinQualityFilter()
+                            );
+
+                            break;
+
+                        case 'min_quality_window_filter':
+                            paramOutput.push(
+                                serializer.getMinQualityWindowFilter()
+                            );
+
+                            break;
+
+                        case 'quality_stats':
+                            paramOutput.push(
+                                serializer.getQualityStats()
+                            );
+
+                            break;
+
+                        case 'write_sequence':
+                            paramOutput.push(
+                                serializer.getWriteSequence()
+                            );
+
+                            break;
+
+                        case 'write_value':
+                            paramOutput.push(
+                                serializer.getWriteValue()
+                            );
+
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
             }
         }
 
-        return readDirections;
+        // Set file read directions
+        var readDirections = VdjPipeUtilities._GetReadDirections(fileMetadatas);
+        outputConfig.input = readDirections;
+
+        // Choose read direction and add params
+        // Just as with Highlander, there can only be one
+        if (parameters['single-reads']) {
+            outputConfig['single_read_pipe'] = paramOutput;
+        }
+        else if (parameters['paired-reads']) {
+            outputConfig['paired_read_pipe'] = paramOutput;
+        }
+
+        return outputConfig;
     };
 
-    VdjPipeUtilities.Serializer = function(parameters, key) {
+    // Convert workflowConfig to vdjpipeConfig
+    VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
+
+        var readConfig = {};
+        if (workflowConfig['single_read_pipe']) {
+            readConfig = workflowConfig['single_read_pipe'];
+        }
+        else if (workflowConfig['paired_read_pipe']) {
+            readConfig = workflowConfig['paired_read_pipe'];
+        }
+
+        // Deep copy
+        var newConfig = $.extend(true, [], readConfig);
+
+        for (var i = 0; i < readConfig.length; i++) {
+            var option = readConfig[i];
+
+            //var parameterName = Object.keys(option[0]);
+
+            if (option['custom_demultiplex']) {
+                var elements = option['custom_demultiplex']['elements'];
+
+                for (var j = 0; j < elements.length; j++) {
+
+                    var barcodeLocation = elements[j]['custom_location'];
+
+                    if (barcodeLocation) {
+
+                        switch (barcodeLocation) {
+                            case '3\'':
+                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
+                                    'before': 0,
+                                };
+
+                                break;
+
+                            case '5\'':
+                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_lower'] = {
+                                    'after': 0,
+                                };
+
+                                break;
+
+                            case 'both':
+                                // code
+                                break;
+
+                            default:
+                                // code
+                        }
+
+                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_location'];
+                        newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
+                    }
+
+                }
+
+                newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
+                delete newConfig[i]['custom_demultiplex'];
+            }
+        }
+
+        if (workflowConfig['single_read_pipe']) {
+            workflowConfig['single_read_pipe'] = newConfig;
+        }
+        else if (workflowConfig['paired_read_pipe']) {
+            workflowConfig['paired_read_pipe'] = newConfig;
+        }
+
+        return workflowConfig;
+    };
+
+    // Private Methods
+    VdjPipeUtilities._Serializer = function(parameters, key) {
 
         this.parameters = parameters;
         this.key = key;
@@ -603,247 +817,36 @@ define(['app'], function(App) {
         };
     };
 
-    VdjPipeUtilities.SerializeWorkflowConfig = function(parameters, fileMetadatas) {
+    VdjPipeUtilities._GetReadDirections = function(fileMetadata) {
 
-        var outputConfig = {
-            'base_path_input': '',
-            'base_path_output': '',
-            'csv_file_delimiter': '\\t',
-        };
+        var readDirections = [];
 
-        var paramOutput = [];
+        if (fileMetadata && fileMetadata.length > 0) {
+            for (var i = 0; i < fileMetadata.length; i++) {
+                var value = fileMetadata.at([i]).get('value');
 
-        for (var key in parameters) {
+                // Hack to prevent .fasta files from being added
+                if (value.name.split('.').pop() === '.fasta') {
+                    continue;
+                }
 
-            if (parameters.hasOwnProperty(key)) {
-                if (key !== 'formtype' && key !== 'job-name') {
-                    var keyCounterIndex = key.indexOf('-') + 1;
-                    //var keyCounter = key.slice(0, keyCounterIndex);
-                    var parameterName = key.slice(keyCounterIndex);
+                var privateAttributes = value.privateAttributes;
 
-                    var serializer = new VdjPipeUtilities.Serializer(parameters, key);
+                if (privateAttributes['forward-reads']) {
+                    readDirections.push({
+                        'forward_seq': value.name
+                    });
+                }
 
-                    switch (parameterName) {
-
-                        case 'ambiguous_window_filter':
-                            paramOutput.push(
-                                serializer.getAmbiguousWindowFilter()
-                            );
-
-                            break;
-
-                        case 'average_quality_filter':
-                            paramOutput.push(
-                                serializer.getAverageQualityFilter()
-                            );
-
-                            break;
-
-                        case 'average_quality_window_filter':
-                            paramOutput.push(
-                                serializer.getAverageQualityWindowFilter()
-                            );
-
-                            break;
-
-                        case 'character_filter':
-                            paramOutput.push(
-                                serializer.getCharacterFilter()
-                            );
-
-                            break;
-
-                        case 'composition_stats':
-                            paramOutput.push(
-                                serializer.getCompositionStats()
-                            );
-
-                            break;
-
-                        case 'custom_demultiplex':
-                            paramOutput.push(
-                                serializer.getCustomDemultiplex()
-                            );
-
-                            break;
-
-                        case 'eMID_map':
-                            paramOutput.push(
-                                serializer.getEmidMap()
-                            );
-
-                            break;
-
-                        case 'find_shared':
-                            paramOutput.push(
-                                serializer.getFindShared()
-                            );
-
-                            break;
-
-                        case 'histogram':
-                            paramOutput.push(
-                                serializer.getHistogram()
-                            );
-
-                            break;
-
-                        case 'homopolymer_filter':
-                            paramOutput.push(
-                                serializer.getHomopolymerFilter()
-                            );
-
-                            break;
-
-                        case 'length_filter':
-                            paramOutput.push(
-                                serializer.getLengthFilter()
-                            );
-
-                            break;
-
-                        case 'match':
-                            paramOutput.push(
-                                serializer.getMatch()
-                            );
-
-                            break;
-
-                        case 'merge_paired':
-                            paramOutput.push(
-                                serializer.getMergePaired()
-                            );
-
-                            break;
-
-                        case 'min_quality_filter':
-                            paramOutput.push(
-                                serializer.getMinQualityFilter()
-                            );
-
-                            break;
-
-                        case 'min_quality_window_filter':
-                            paramOutput.push(
-                                serializer.getMinQualityWindowFilter()
-                            );
-
-                            break;
-
-                        case 'quality_stats':
-                            paramOutput.push(
-                                serializer.getQualityStats()
-                            );
-
-                            break;
-
-                        case 'write_sequence':
-                            paramOutput.push(
-                                serializer.getWriteSequence()
-                            );
-
-                            break;
-
-                        case 'write_value':
-                            paramOutput.push(
-                                serializer.getWriteValue()
-                            );
-
-                            break;
-
-                        default:
-                            break;
-                    }
+                if (privateAttributes['reverse-reads']) {
+                    readDirections.push({
+                        'reverse_seq': value.name
+                    });
                 }
             }
         }
 
-        // Set file read directions
-        var readDirections = VdjPipeUtilities.GetReadDirections(fileMetadatas);
-        outputConfig.input = readDirections;
-
-        // Choose read direction and add params
-        // Just as with Highlander, there can only be one
-        if (parameters['single-reads']) {
-            outputConfig['single_read_pipe'] = paramOutput;
-        }
-        else if (parameters['paired-reads']) {
-            outputConfig['paired_read_pipe'] = paramOutput;
-        }
-
-        return outputConfig;
-    };
-
-    // Convert workflowConfig to vdjpipeConfig
-    VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
-
-        var readConfig = {};
-        if (workflowConfig['single_read_pipe']) {
-            readConfig = workflowConfig['single_read_pipe'];
-        }
-        else if (workflowConfig['paired_read_pipe']) {
-            readConfig = workflowConfig['paired_read_pipe'];
-        }
-
-        // Deep copy
-        var newConfig = $.extend(true, [], readConfig);
-
-        for (var i = 0; i < readConfig.length; i++) {
-            var option = readConfig[i];
-
-            //var parameterName = Object.keys(option[0]);
-
-            if (option['custom_demultiplex']) {
-                var elements = option['custom_demultiplex']['elements'];
-
-                for (var j = 0; j < elements.length; j++) {
-
-                    var barcodeLocation = elements[j]['custom_location'];
-
-                    if (barcodeLocation) {
-
-                        switch (barcodeLocation) {
-                            case '3\'':
-                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
-                                    'before': 0,
-                                };
-
-                                break;
-
-                            case '5\'':
-                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_lower'] = {
-                                    'after': 0,
-                                };
-
-                                break;
-
-                            case 'both':
-                                // code
-                                break;
-
-                            default:
-                                // code
-                        }
-
-                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_location'];
-                        newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
-                    }
-
-                }
-
-                newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
-                delete newConfig[i]['custom_demultiplex'];
-            }
-        }
-
-        if (workflowConfig['single_read_pipe']) {
-            workflowConfig['single_read_pipe'] = newConfig;
-        }
-        else if (workflowConfig['paired_read_pipe']) {
-            workflowConfig['paired_read_pipe'] = newConfig;
-        }
-
-        return workflowConfig;
+        return readDirections;
     };
 
     App.Models.Helpers.VdjPipeUtilities = VdjPipeUtilities;

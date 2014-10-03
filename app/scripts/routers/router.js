@@ -2,7 +2,8 @@ define(['app'], function(App) {
 
     'use strict';
 
-    var redirectToLogin = function() {
+    // Private Methods
+    var _redirectToLogin = function() {
         // Routing should be done automatically when this happens.
         App.Agave.destroyToken();
     };
@@ -14,7 +15,7 @@ define(['app'], function(App) {
         B.) Token is no longer active, but can probably be refreshed and route continued
         C.) All hope is lost
      */
-    var routeWithTokenRefreshCheck = function(destinationRoute) {
+    var _routeWithTokenRefreshCheck = function(destinationRoute) {
         if (App.Agave.token().isActive()) {
             destinationRoute();
         }
@@ -24,15 +25,15 @@ define(['app'], function(App) {
                     destinationRoute();
                 })
                 .fail(function() {
-                    redirectToLogin();
+                    _redirectToLogin();
                 });
         }
         else {
-            redirectToLogin();
+            _redirectToLogin();
         }
     };
 
-    var setPublicSubviews = function() {
+    var _setPublicSubviews = function() {
 
         App.Layouts.main.removeView('.sidebar');
 
@@ -43,7 +44,7 @@ define(['app'], function(App) {
         App.Layouts.main.setView('.nav-container', new App.Views.AppViews.Nav({model: App.Agave.token()}));
     };
 
-    var setProjectSubviews = function(projectUuid) {
+    var _setProjectSubviews = function(projectUuid) {
 
         if (App.Layouts.main.template !== 'layouts/project-standard') {
             App.Layouts.main.template = 'layouts/project-standard';
@@ -62,6 +63,7 @@ define(['app'], function(App) {
         }
     };
 
+    // Public Methods
     var DefaultRouter = Backbone.Router.extend({
 
         routes: {
@@ -87,7 +89,7 @@ define(['app'], function(App) {
         // Index
         index: function() {
             if (! App.Agave.token().isActive()) {
-                setPublicSubviews();
+                _setPublicSubviews();
                 App.Layouts.main.setView('.content', new App.Views.AppViews.Home({model: App.Agave.token()}));
                 App.Layouts.main.render();
             }
@@ -107,14 +109,14 @@ define(['app'], function(App) {
 
         // Account
         createAccount: function() {
-            setPublicSubviews();
+            _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.CreateAccount.Form());
             App.Layouts.main.render();
         },
 
         // Forgot Password
         forgotPassword: function(uuid) {
-            setPublicSubviews();
+            _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.ForgotPassword.Form({'uuid': uuid}));
             App.Layouts.main.render();
         },
@@ -123,24 +125,24 @@ define(['app'], function(App) {
         accountProfile: function() {
 
             var destinationRoute = function() {
-                setProjectSubviews();
+                _setProjectSubviews();
                 App.Layouts.main.setView('.content', new App.Views.Profile.Main());
                 App.Layouts.main.render();
             };
 
-            routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         // Change Password
         changePassword: function() {
 
             var destinationRoute = function() {
-                setProjectSubviews();
+                _setProjectSubviews();
                 App.Layouts.main.setView('.content', new App.Views.Profile.Main({'subView':'ChangePasswordForm'}));
                 App.Layouts.main.render();
             };
 
-            routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         // Projects
@@ -187,78 +189,78 @@ define(['app'], function(App) {
                 App.Layouts.main.render();
             };
 
-            routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         projectCreate: function() {
 
             var destinationRoute = function() {
-                setProjectSubviews();
+                _setProjectSubviews();
                 App.Layouts.main.setView('.content', new App.Views.Projects.Create());
                 App.Layouts.main.render();
             };
 
-            routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         projectDetail: function(projectUuid) {
 
             var destinationRoute = function() {
-                setProjectSubviews(projectUuid);
+                _setProjectSubviews(projectUuid);
                 App.Layouts.main.setView('.content', new App.Views.Projects.Detail({projectUuid: projectUuid}));
                 App.Layouts.main.render();
             };
 
-            routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         projectSettings: function(projectUuid) {
 
             var destinationRoute = function() {
-                setProjectSubviews(projectUuid);
+                _setProjectSubviews(projectUuid);
                 App.Layouts.main.setView('.content', new App.Views.Projects.Settings({projectUuid: projectUuid}));
                 App.Layouts.main.render();
             };
 
-            routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         projectManageUsers: function(projectUuid) {
 
             var destinationRoute = function() {
-                setProjectSubviews(projectUuid);
+                _setProjectSubviews(projectUuid);
                 App.Layouts.main.setView('.content', new App.Views.Projects.ManageUsers({projectUuid: projectUuid}));
                 App.Layouts.main.render();
             };
 
-            routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         projectJobHistory: function(projectUuid) {
 
             var destinationRoute = function() {
-                setProjectSubviews(projectUuid);
+                _setProjectSubviews(projectUuid);
                 App.Layouts.main.setView('.content', new App.Views.Jobs.History({projectUuid: projectUuid}));
                 App.Layouts.main.render();
             };
 
-            routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         projectJobOutput: function(projectUuid, jobId) {
 
             var destinationRoute = function() {
-                setProjectSubviews(projectUuid);
+                _setProjectSubviews(projectUuid);
                 App.Layouts.main.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid, jobId: jobId}));
                 App.Layouts.main.render();
             };
 
-            routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         // 404
         notFound: function() {
-            setPublicSubviews();
+            _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.NotFound.Error());
             App.Layouts.main.render();
         },

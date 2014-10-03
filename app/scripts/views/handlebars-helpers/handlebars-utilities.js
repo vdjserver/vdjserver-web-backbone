@@ -13,7 +13,6 @@ define(['app'], function(App) {
         return options.inverse(this);
     };
 
-
     App.Views.HandlebarsHelpers.Utilities = Utilities;
     return Utilities;
 });

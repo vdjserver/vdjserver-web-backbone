@@ -1,4 +1,9 @@
-define(['backbone'], function(Backbone) {
+define(
+    [
+        'backbone',
+        'environment-config'
+    ],
+function(Backbone, EnvironmentConfig) {
 
     'use strict';
 
@@ -51,7 +56,7 @@ define(['backbone'], function(Backbone) {
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
-                url: Backbone.Agave.vdjauthRoot + '/permissions/username',
+                url: EnvironmentConfig.vdjauthRoot + '/permissions/username',
             });
 
             return jqxhr;
@@ -66,7 +71,7 @@ define(['backbone'], function(Backbone) {
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'DELETE',
-                url: Backbone.Agave.vdjauthRoot + '/permissions/username',
+                url: EnvironmentConfig.vdjauthRoot + '/permissions/username',
             });
 
             return jqxhr;

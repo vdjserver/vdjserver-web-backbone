@@ -15,7 +15,7 @@ define(['backbone'], function(Backbone) {
             phone:  '',
             status: '',
             uid: 0,
-            username: ''
+            username: '',
         },
         idAttribute: 'username'
     });

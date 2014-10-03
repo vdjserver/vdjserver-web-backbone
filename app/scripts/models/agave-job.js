@@ -3,7 +3,7 @@ define(
         'app',
         'backbone',
         'environment-config',
-        'vdjpipe-utilities'
+        'vdjpipe-utilities',
     ],
 function(App, Backbone, EnvironmentConfig) {
 
@@ -25,8 +25,8 @@ function(App, Backbone, EnvironmentConfig) {
         downloadFile: function() {
             var jqxhr = $.ajax({
                 headers: Backbone.Agave.oauthHeader(),
-                type: 'GET',
-                url: this.get('_links').self.href,
+                type:    'GET',
+                url:     this.get('_links').self.href,
             });
             return jqxhr;
         },
@@ -53,6 +53,7 @@ function(App, Backbone, EnvironmentConfig) {
     });
 
     Job.VdjPipe = Backbone.Agave.JobModel.extend({
+        // Public Methods
         defaults: function() {
             return _.extend(
                 {},
@@ -66,7 +67,32 @@ function(App, Backbone, EnvironmentConfig) {
         initialize: function() {
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
         },
-        setJobConfigFromWorkflowFormData: function(formData, fileMetadatas) {
+        prepareJob: function(formData, fileMetadatas, projectUuid) {
+            this._setJobConfigFromWorkflowFormData(formData, fileMetadatas);
+            this._setArchivePath(projectUuid);
+            this._setFilesParameter(fileMetadatas);
+        },
+        submitJob: function(projectUuid) {
+
+            var that = this;
+
+            return this._createArchivePathDirectory(projectUuid)
+                .then(function() {
+                    return that.save();
+                })
+                // Create metadata
+                .then(function() {
+                    return that._createJobMetadata(projectUuid);
+                })
+                // Share job w/ project members
+                .then(function() {
+                    return that._shareJobWithProjectMembers(projectUuid);
+                })
+                ;
+        },
+
+        // Private Methods
+        _setJobConfigFromWorkflowFormData: function(formData, fileMetadatas) {
 
             var workflowConfig = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData, fileMetadatas);
 
@@ -80,32 +106,17 @@ function(App, Backbone, EnvironmentConfig) {
                     'json': JSON.stringify(jobConfig),
                 }
             );
-
         },
-        prepareJob: function(formData, fileMetadatas, projectUuid) {
-            this.setJobConfigFromWorkflowFormData(formData, fileMetadatas);
-            this.setArchivePath(projectUuid);
-            this.setFilesParameter(fileMetadatas);
-        },
-        submitJob: function(projectUuid) {
+        _setArchivePath: function(projectUuid) {
+            var archivePath = '/projects/'
+                            + projectUuid
+                            + '/analyses/'
+                            + moment().format(this.archivePathDateFormat)
+                            + '-' + this._getDirectorySafeName(this.get('name'));
 
-            var that = this;
-
-            return this.createArchivePathDirectory(projectUuid)
-                .then(function() {
-                    return that.save();
-                })
-                // Create metadata
-                .then(function() {
-                    return that.createJobMetadata(projectUuid);
-                })
-                // Share job w/ project members
-                .then(function() {
-                    return that.shareJobWithProjectMembers(projectUuid);
-                })
-                ;
+            this.set('archivePath', archivePath);
         },
-        setFilesParameter: function(fileMetadatas) {
+        _setFilesParameter: function(fileMetadatas) {
             var tmpFileMetadatas = fileMetadatas.pluck('value');
 
             var filePaths = [];
@@ -124,62 +135,58 @@ function(App, Backbone, EnvironmentConfig) {
                 'files': filePaths,
             });
         },
-        setArchivePath: function(projectUuid) {
-            var archivePath = '/projects/'
-                            + projectUuid
-                            + '/analyses/'
-                            + moment().format(this.archivePathDateFormat)
-                            + '-' + this.getDirectorySafeName(this.get('name'));
-
-            this.set('archivePath', archivePath);
-        },
-        getDirectorySafeName: function(name) {
+        _getDirectorySafeName: function(name) {
             return name.replace(/\s/g, '-').toLowerCase();
         },
-        getRelativeArchivePath: function() {
+        _getRelativeArchivePath: function() {
             var fullArchivePath = this.get('archivePath');
             var archivePathSplit = fullArchivePath.split('/');
             var relativeArchivePath = archivePathSplit[4];
 
             return relativeArchivePath;
         },
-        createArchivePathDirectory: function(projectUuid) {
+        _createArchivePathDirectory: function(projectUuid) {
 
-            var relativeArchivePath = this.getRelativeArchivePath();
+            var relativeArchivePath = this._getRelativeArchivePath();
 
             var jqxhr = $.ajax({
-                data: 'action=mkdir&path=' + relativeArchivePath,
+                data:   'action=mkdir&path=' + relativeArchivePath,
                 headers: Backbone.Agave.oauthHeader(),
-                type: 'PUT',
-                url: Backbone.Agave.apiRoot + '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + projectUuid + '/analyses',
+                type:   'PUT',
+                url:    EnvironmentConfig.agaveRoot
+                        + '/files/v2/media/system'
+                        + '/' + EnvironmentConfig.storageSystem
+                        + '//projects'
+                        + '/' + projectUuid
+                        + '/analyses',
             });
 
             return jqxhr;
         },
-        createJobMetadata: function(projectUuid) {
+        _createJobMetadata: function(projectUuid) {
             var jqxhr = $.ajax({
-                contentType: 'application/json',
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
                 data: JSON.stringify({
                     projectUuid: projectUuid,
                     jobUuid: this.get('id'),
                 }),
-                headers: Backbone.Agave.basicAuthHeader(),
-                type: 'POST',
-                url: Backbone.Agave.vdjauthRoot + '/jobs/metadata',
+                contentType: 'application/json',
+                url: EnvironmentConfig.vdjauthRoot + '/jobs/metadata',
             });
 
             return jqxhr;
         },
-        shareJobWithProjectMembers: function(projectUuid) {
+        _shareJobWithProjectMembers: function(projectUuid) {
             var jqxhr = $.ajax({
-                contentType: 'application/json',
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
                 data: JSON.stringify({
                     projectUuid: projectUuid,
                     jobUuid: this.get('id'),
                 }),
-                headers: Backbone.Agave.basicAuthHeader(),
-                type: 'POST',
-                url: Backbone.Agave.vdjauthRoot + '/permissions/jobs',
+                contentType: 'application/json',
+                url: EnvironmentConfig.vdjauthRoot + '/permissions/jobs',
             });
 
             return jqxhr;

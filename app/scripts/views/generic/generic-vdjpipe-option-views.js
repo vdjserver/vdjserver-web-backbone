@@ -5,10 +5,17 @@ define([
     'use strict';
 
     var VdjpipeOptionView = Backbone.View.extend({
+
+        // Public Methods
         initialize: function() {
             this.keep = false;
         },
-        getSerializeObject: function() {
+        serialize: function() {
+            return this._getSerializeObject();
+        },
+
+        // Private Methods
+        _getSerializeObject: function() {
 
             var files = {};
 
@@ -23,9 +30,6 @@ define([
                 files: files,
                 options: this.options,
             };
-        },
-        serialize: function() {
-            return this.getSerializeObject();
         },
     });
 
