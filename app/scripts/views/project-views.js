@@ -41,10 +41,10 @@ define([
         }
     });
 
-    Handlebars.registerHelper('GetTagDisplay', function(publicAttributes) {
-        if (publicAttributes && publicAttributes['tags']) {
+    Handlebars.registerHelper('GetTagDisplay', function(privateAttributes) {
+        if (privateAttributes && privateAttributes['tags']) {
 
-            var tags = publicAttributes['tags'];
+            var tags = privateAttributes['tags'];
 
             if (_.isArray(tags)) {
                 tags = tags.join(', ');
@@ -343,6 +343,8 @@ define([
             this.fileListings.fetch({url:this.fileListings.url(this.fileCategory)})
                 .done(function() {
 
+                    console.log("fileListings are: " + JSON.stringify(that.fileListings));
+
                     that._removeLoadingViews();
 
                     // Need to render main view before rendering fileListing subview
@@ -638,21 +640,17 @@ define([
                     .done(function() {
                     })
                     .fail(function() {
-                    });
+                    })
+                ;
 
                 fileMetadataModel.softDelete()
-                    .done(function() {
+                    .always(function() {
                         if (i === selectedFileMetadataUuids.length) {
                             // All files are deleted, let's get out of here
                             softDeletePromise.resolve(true);
                         }
                     })
-                    .fail(function() {
-                        if (i === selectedFileMetadataUuids.length) {
-                            // All files are deleted, let's get out of here
-                            softDeletePromise.resolve(true);
-                        }
-                    });
+                ;
             }
 
             // All files are deleted, time to reload

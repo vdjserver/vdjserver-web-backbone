@@ -269,10 +269,11 @@ function(Backbone, EnvironmentConfig) {
         },
         setInitialMetadata: function(file, formData) {
 
-            var privateAttributes = {};
-            var publicAttributes = {
+            var privateAttributes = {
                 'tags': [],
             };
+
+            var publicAttributes = {};
 
             if (formData['forward-reads']) {
                 privateAttributes['forward-reads'] = true;
@@ -285,7 +286,7 @@ function(Backbone, EnvironmentConfig) {
             if (formData['tags']) {
                 var tagArray = this._formatTagsForSave(formData['tags']);
 
-                publicAttributes['tags'] = tagArray;
+                privateAttributes['tags'] = tagArray;
             }
 
             this.set({
@@ -308,7 +309,7 @@ function(Backbone, EnvironmentConfig) {
 
             var tagArray = this._formatTagsForSave(tags);
 
-            value['publicAttributes']['tags'] = tagArray;
+            value['privateAttributes']['tags'] = tagArray;
 
             this.set('value', value);
 
@@ -316,7 +317,11 @@ function(Backbone, EnvironmentConfig) {
         },
         getFileModel: function() {
             var value = this.get('value');
-            var filePath = '/projects/' + value['projectUuid'] + '/files/' + value['name'];
+
+            var filePath = '/projects'
+                         + '/' + value['projectUuid']
+                         + '/files'
+                         + '/' + value['name'];
 
             var fileModel = new File({
                 path: filePath,
