@@ -305,7 +305,7 @@ define([
             'click .selected-files': '_uiToggleDisabledButtonStatus',
             'click #select-all-files-checkbox': '_toggleSelectAllFiles',
             'click .run-job': '_clickRunJob',
-            'click #search-button': '_searchFileListings',
+            'change #search-text': '_searchFileListings',
             'click .delete-files':  '_clickDeleteFiles',
             'click .download-file': '_clickDownloadFile',
         },
