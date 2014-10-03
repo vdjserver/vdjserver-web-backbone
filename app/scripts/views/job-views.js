@@ -18,6 +18,8 @@ define([
     var Jobs = {};
 
     Jobs.Submit = Backbone.View.extend({
+
+        // Public Methods
         template: 'jobs/job-submit-form',
         initialize: function(parameters) {
             this.projectModel = parameters.projectModel;
@@ -47,48 +49,26 @@ define([
         },
         afterRender: function() {
             $('#job-modal').modal('show');
-
-            // Send a change event to select the first workflow
-            //$('#select-workflow').change();
         },
         events: {
-            'change #select-workflow': 'showWorkflow',
-            'click .remove-file-from-job': 'removeFileFromJob',
-            'click #create-workflow': 'createWorkflow',
-            'click #edit-workflow':   'editWorkflow',
-            'click #delete-workflow': 'deleteWorkflow',
-            'submit form': 'submitJob',
+            'change #select-workflow': '_showWorkflow',
+            'click .remove-file-from-job': '_removeFileFromJob',
+            'click #create-workflow': '_createWorkflow',
+            'click #edit-workflow':   '_editWorkflow',
+            'click #delete-workflow': '_deleteWorkflow',
+            'submit form': '_submitJob',
         },
-        // Event Helpers
-        resetDeleteWorkflow: function() {
-            $('#delete-workflow')
-                .removeClass('btn-danger')
-                .addClass('btn-outline-danger')
-                .html('&nbsp;Delete')
-            ;
-        },
-        guardDeleteIfPredefined: function() {
 
-            // Make sure that this isn't a predefined workflow
-            var workflowId = $('#select-workflow').val();
-            var workflow = this.workflows.get(workflowId);
+        // Private Methods
 
-            // Disable if predefined
-            if (workflow && this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
-                $('#delete-workflow').attr('disabled', 'disabled');
-                return;
-            }
-            else {
-                $('#delete-workflow').removeAttr('disabled');
-            }
-        },
-        // Events
-        createWorkflow: function(e) {
+        // Event Responders
+        _createWorkflow: function(e) {
             e.preventDefault();
 
             this.trigger(Jobs.WorkflowEditor.events.openWorkflowCreateView);
         },
-        editWorkflow: function(e) {
+
+        _editWorkflow: function(e) {
             e.preventDefault();
 
             var workflowId = $('#select-workflow').val();
@@ -96,7 +76,8 @@ define([
 
             this.trigger(Jobs.WorkflowEditor.events.openWorkflowEditorView, workflow);
         },
-        deleteWorkflow: function(e) {
+
+        _deleteWorkflow: function(e) {
             e.preventDefault();
 
             if ($('#delete-workflow').hasClass('btn-outline-danger')) {
@@ -120,17 +101,18 @@ define([
                         $('#select-workflow').val('');
                         that.removeView('#workflow-staging-area');
                         $('#select-workflow option[value="' + workflowId + '"]').remove();
-                        that.resetDeleteWorkflow();
+                        that._uiResetDeleteWorkflow();
                     })
                     .fail(function() {
                     });
             }
         },
-        showWorkflow: function(e) {
+
+        _showWorkflow: function(e) {
             e.preventDefault();
 
-            this.resetDeleteWorkflow();
-            this.guardDeleteIfPredefined();
+            this._uiResetDeleteWorkflow();
+            this._uiGuardDeleteIfPredefined();
 
             // Do housekeeping first
             this.removeView('#workflow-staging-area');
@@ -187,7 +169,8 @@ define([
                 }
             }
         },
-        submitJob: function(e) {
+
+        _submitJob: function(e) {
             e.preventDefault();
 
             var formData = Backbone.Syphon.serialize(this);
@@ -231,7 +214,7 @@ define([
                 this.projectModel.get('uuid')
             );
 
-            this.setupJobLoadingView();
+            this._uiShowJobLoadingView();
 
             var jobNotification = new Backbone.Agave.Model.Notification.Job();
             jobNotification.projectUuid = this.projectModel.get('uuid');
@@ -248,10 +231,48 @@ define([
                     $('#job-modal').modal('hide');
                 })
                 .fail(function() {
-                    that.cancelJobLoadingView();
+                    that._uiCancelJobLoadingView();
                 });
         },
-        setupJobLoadingView: function() {
+
+        _removeFileFromJob: function(e) {
+            e.preventDefault();
+
+            var uuid = e.target.id;
+
+            // UI
+            $('#' + uuid).parent().parent().parent().remove();
+
+            // data collection
+            this.selectedFileListings.remove(uuid);
+        },
+
+        // UI
+        _uiResetDeleteWorkflow: function() {
+            $('#delete-workflow')
+                .removeClass('btn-danger')
+                .addClass('btn-outline-danger')
+                .html('&nbsp;Delete')
+            ;
+        },
+
+        _uiGuardDeleteIfPredefined: function() {
+
+            // Make sure that this isn't a predefined workflow
+            var workflowId = $('#select-workflow').val();
+            var workflow = this.workflows.get(workflowId);
+
+            // Disable if predefined
+            if (workflow && this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
+                $('#delete-workflow').attr('disabled', 'disabled');
+                return;
+            }
+            else {
+                $('#delete-workflow').removeAttr('disabled');
+            }
+        },
+
+        _uiShowJobLoadingView: function() {
             // Clear out any previous errors
             $('#job-submit-loading-view').html('');
             $('#job-submit-loading-view').removeClass('alert alert-danger');
@@ -269,7 +290,8 @@ define([
             $('.job-form-item, .job-submit-button').attr('disabled', 'disabled');
 
         },
-        cancelJobLoadingView: function() {
+
+        _uiCancelJobLoadingView: function() {
             this.removeView('#job-submit-loading-view');
 
             $('#job-submit-loading-view').removeClass('alert alert-info');
@@ -282,22 +304,15 @@ define([
                 + 'Please try again.'
             );
         },
-        removeFileFromJob: function(e) {
-            e.preventDefault();
 
-            var uuid = e.target.id;
-
-            // UI
-            $('#' + uuid).parent().parent().parent().remove();
-
-            // data collection
-            this.selectedFileListings.remove(uuid);
-        },
     });
 
     Jobs.WorkflowEditor = Backbone.View.extend(
         /** @lends WorkflowEditor.prototype */
         {
+
+            // Public Methods
+
             /**
              * This is the workflow editor view for vdjpipe workflows.
              *
@@ -331,25 +346,38 @@ define([
             },
 
             /**
-             * Serialize data onto view template.
-             *
-             * @returns {array}
+             * 1. Tells bootstrap modal js to show this view.
+             * 2. Sets up jquery sortable on the workflow staging area.
+             * 3. Sets up an editable workflow if this view has one.
              */
-            customSerialize: function(editableWorkflow) {
+            afterRender: function() {
+                $('#workflow-modal').modal('show');
 
-                // Set name on DOM
-                $('#workflow-name').val(editableWorkflow.get('value').workflowName);
+                $('#vdj-pipe-configuration').sortable({
+                    axis: 'y',
+                    cursor: 'move',
+                    tolerance: 'pointer',
+                });
 
-                // Set read direction
-                if (editableWorkflow.get('value').config['single_read_pipe']) {
-                    $('#single-reads').attr('checked', 'checked');
-                    $('#single-reads').closest('label').addClass('active');
-                }
-                else if (editableWorkflow.get('value').config['paired_read_pipe']) {
-                    $('#paired-reads').attr('checked', 'checked');
-                    $('#paired-reads').closest('label').addClass('active');
+                if (! _.isEmpty(this.editableWorkflow)) {
+                    this._setupEditableWorkflow(this.editableWorkflow);
                 }
             },
+
+            /**
+             * DOM events
+             */
+            events: {
+                'click #workflow-cancel': '_workflowCancel',
+                'click #workflow-save': '_workflowSave',
+
+                'click .workflow-options': '_toggleWorkflowOptionList',
+
+                'click .job-parameter': '_addJobParameter',
+                'click .remove-job-parameter': '_removeJobParameter',
+            },
+
+            // Private Methods
 
             /**
              * Creates editable workflow views for the supplied workflow
@@ -357,10 +385,10 @@ define([
              *
              * @param {Workflow} editableWorkflow
              */
-            setupEditableWorkflow: function(editableWorkflow) {
+            _setupEditableWorkflow: function(editableWorkflow) {
 
                 // Do custom view data serialization
-                this.customSerialize(editableWorkflow);
+                this._customSerialize(editableWorkflow);
 
                 // Remove workflow placeholder from DOM
                 $('#vdj-pipe-configuration-placeholder').remove();
@@ -379,45 +407,32 @@ define([
             },
 
             /**
-             * 1. Tells bootstrap modal js to show this view.
-             * 2. Sets up jquery sortable on the workflow staging area.
-             * 3. Sets up an editable workflow if this view has one.
+             * Serialize data onto view template.
+             *
+             * @returns {array}
              */
-            afterRender: function() {
-                $('#workflow-modal').modal('show');
+            _customSerialize: function(editableWorkflow) {
 
-                $('#vdj-pipe-configuration').sortable({
-                    axis: 'y',
-                    cursor: 'move',
-                    tolerance: 'pointer',
-                });
+                // Set name on DOM
+                $('#workflow-name').val(editableWorkflow.get('value').workflowName);
 
-                if (! _.isEmpty(this.editableWorkflow)) {
-                    this.setupEditableWorkflow(this.editableWorkflow);
+                // Set read direction
+                if (editableWorkflow.get('value').config['single_read_pipe']) {
+                    $('#single-reads').attr('checked', 'checked');
+                    $('#single-reads').closest('label').addClass('active');
+                }
+                else if (editableWorkflow.get('value').config['paired_read_pipe']) {
+                    $('#paired-reads').attr('checked', 'checked');
+                    $('#paired-reads').closest('label').addClass('active');
                 }
             },
-
-            /**
-             * DOM events
-             */
-            events: {
-                'click #workflow-cancel': 'workflowCancel',
-                'click #workflow-save': 'workflowSave',
-
-                'click .workflow-options': 'toggleWorkflowOptionList',
-
-                'click .job-parameter': 'addJobParameter',
-                'click .remove-job-parameter': 'removeJobParameter',
-            },
-
-            // Event Helpers
 
             /**
              * Removes workflow config placeholder DOM element.
              *
              * @returns {Promise} deferred Promise that the placeholder was removed.
              */
-            clearPlaceholder: function() {
+            _clearPlaceholder: function() {
                 var deferred = $.Deferred();
 
                 if ($('#vdj-pipe-configuration-placeholder').length) {
@@ -448,7 +463,7 @@ define([
              *
              * @param {array} formErrors An array of validation error objects.
              */
-            displayFormErrors: function(formErrors) {
+            _displayFormErrors: function(formErrors) {
 
                 // Clear out old errors
                 $('.alert-danger').fadeOut(function() {
@@ -488,7 +503,7 @@ define([
              *
              * @returns {array|void} error An array that contains an error object.
              */
-            validateWorkflowName: function(workflowName) {
+            _validateWorkflowName: function(workflowName) {
 
                 if (this.workflows.checkIfPredefinedWorkflow(workflowName)) {
                     return [{
@@ -524,11 +539,11 @@ define([
              *
              * @returns {array} formErrors
              */
-            getFormErrors: function(formData) {
+            _getFormErrors: function(formData) {
                 var jobWorkflow = new Backbone.Agave.Model.Job.Workflow();
                 jobWorkflow.setConfigFromFormData(formData);
 
-                var formWorkflowNameErrors = this.validateWorkflowName(formData['workflow-name']) || [];
+                var formWorkflowNameErrors = this._validateWorkflowName(formData['workflow-name']) || [];
                 var formModelErrors = jobWorkflow.validate() || [];
 
                 var formErrors = [];
@@ -544,24 +559,8 @@ define([
 
                 return formErrors;
             },
-/*
-            validateWorkflowOptions: function() {
 
-                var views = this.getViews('#vdj-pipe-configuration');
-
-                var errors = [];
-
-                for (var i = 0; i < views.length; i++) {
-                    var view = views[i];
-
-                    if (true) {}
-                    var error = view.validateParameters();
-                    errors.push(error);
-                }
-            },
-*/
-
-            // Event Actions
+            // Event Responders
 
             /**
              * Adds a job parameter to the new workflow and displays it on
@@ -569,7 +568,7 @@ define([
              *
              * @param {event} e
              */
-            addJobParameter: function(e) {
+            _addJobParameter: function(e) {
                 e.preventDefault();
 
                 var parameterType = e.target.dataset.parametertype;
@@ -586,7 +585,7 @@ define([
 
                 var that = this;
 
-                this.clearPlaceholder()
+                this._clearPlaceholder()
                     .done(function() {
                         that.insertView('#vdj-pipe-configuration', vdjPipeView);
                         vdjPipeView.render();
@@ -599,7 +598,7 @@ define([
              *
              * @param {event} e
              */
-            removeJobParameter: function(e) {
+            _removeJobParameter: function(e) {
                 e.preventDefault();
 
                 $(e.currentTarget)
@@ -621,7 +620,7 @@ define([
              *
              * @param {event} e
              */
-            toggleWorkflowOptionList: function(e) {
+            _toggleWorkflowOptionList: function(e) {
                 e.preventDefault();
 
                 var workflowType = e.target.dataset.id;
@@ -639,7 +638,7 @@ define([
              *
              * @param {event} e
              */
-            workflowCancel: function(e) {
+            _workflowCancel: function(e) {
                 e.preventDefault();
                 this.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditorView);
             },
@@ -658,15 +657,15 @@ define([
              *
              * @param {event} e
              */
-            workflowSave: function(e) {
+            _workflowSave: function(e) {
                 e.preventDefault();
 
                 var formData = Backbone.Syphon.serialize(this);
 
-                var formErrors = this.getFormErrors(formData);
+                var formErrors = this._getFormErrors(formData);
 
                 if (formErrors.length > 0) {
-                    this.displayFormErrors(formErrors);
+                    this._displayFormErrors(formErrors);
                 }
                 else {
 
@@ -703,8 +702,8 @@ define([
              */
             events: {
                 closeWorkflowEditorView: 'closeWorkflowEditorEvent',
-                openWorkflowEditorView: 'openWorkflowEditorEvent',
-                openWorkflowCreateView: 'openWorkflowCreateEvent',
+                openWorkflowEditorView:  'openWorkflowEditorEvent',
+                openWorkflowCreateView:  'openWorkflowCreateEvent',
             },
         }
     );
@@ -723,7 +722,7 @@ define([
             this.listenTo(
                 this.websocket,
                 'jobStatusUpdate',
-                this.handleJobStatusUpdate
+                this._handleJobStatusUpdate
             );
 
             this.jobStatusMessage = 'Retrieving job status information.';
@@ -733,7 +732,10 @@ define([
                 jobStatus: this.jobStatusMessage,
             };
         },
-        handleJobStatusUpdate: function(jobStatusUpdate) {
+
+        // Private Methods
+
+        _handleJobStatusUpdate: function(jobStatusUpdate) {
             this.jobStatusMessage = jobStatusUpdate['jobMessage'];
             this.render();
         },
