@@ -201,6 +201,16 @@ function(Backbone, EnvironmentConfig) {
 
             return softDeletePromise;
         },
+        getDomFriendlyName: function() {
+        
+            // Turn empty spaces into dashes
+            var domFriendlyName = this.get('name').replace(/\s+/g, '-');
+
+            // Remove periods - otherwise we don't be able to find this in the DOM
+            domFriendlyName = this.fileUniqueIdentifier.replace(/\./g, '').toLowerCase();
+
+            return domFriendlyName;
+        },
     });
 
     File.Metadata = Backbone.Agave.MetadataModel.extend({

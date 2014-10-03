@@ -23,22 +23,6 @@ function(Backbone, EnvironmentConfig) {
                 }
             );
         },
-        initialize: function() {
-            /*
-            this.users = new Backbone.Agave.Collection.ProjectUsers();
-
-            var that = this;
-            this.on('change add', function() {
-
-                var uuid = that.get('uuid');
-                var owner = that.get('owner');
-                if (uuid) {
-                    that.users.setUuid(uuid);
-                    that.users.setOwner(owner);
-                }
-            });
-            */
-        },
         url: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },
@@ -60,7 +44,10 @@ function(Backbone, EnvironmentConfig) {
             }
 
             return Backbone.Agave.MetadataSync(method, this, options);
-        }
+        },
+        setAttributesFromFormData: function(formData) {
+            this.set('value', formData);
+        },
     });
 
     Backbone.Agave.Model.Project = Project;
