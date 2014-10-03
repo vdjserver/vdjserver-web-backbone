@@ -599,8 +599,19 @@ define([
             var softDeletePromise = $.Deferred();
 
             for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
-                var model = this.fileListings.get(selectedFileMetadataUuids[i]);
-                model.softDeleteFile()
+                var fileMetadataModel = this.fileListings.get(selectedFileMetadataUuids[i]);
+
+                var fileModel = fileMetadataModel.getFileModel();
+                console.log('fileModel is: ' + JSON.stringify(fileModel));
+                fileModel.softDelete()
+                    .done(function() {
+                        console.log("file " + fileModel.get('path') + " delete success");
+                    })
+                    .fail(function() {
+                        console.log("file " + fileModel.get('path') + " delete fail");
+                    });
+
+                fileMetadataModel.softDelete()
                     .done(function() {
                         if (i === selectedFileMetadataUuids.length) {
                             // All files are deleted, let's get out of here
@@ -617,9 +628,11 @@ define([
 
             // All files are deleted, time to reload
             var that = this;
-            $.when(softDeletePromise).then(function(/*data, textStatus, jqXHR*/) {
+            //$.when(softDeletePromise).then(function(data, textStatus, jqXHR) {
+            $.when(softDeletePromise).then(function() {
                 that.fetchAndRenderFileListings();
             });
+
         },
         downloadFile: function(e) {
             e.preventDefault();

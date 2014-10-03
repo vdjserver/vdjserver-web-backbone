@@ -23,71 +23,86 @@ function(Backbone, EnvironmentConfig) {
             projectUuid: '',
             system: '',
             type: '',
-            _links: {}
+            _links: {},
         },
         url: function() {
-            return '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + this.get('projectUuid') + '/files/';
+            return  '/files/v2/media/system'
+                    + '/' + EnvironmentConfig.storageSystem
+                    + '//projects'
+                    + '/' + this.get('projectUuid')
+                    + '/files/';
         },
         sync: function(method, model, options) {
 
             var that = this;
 
-            if (method !== 'create' && method !== 'update') {
-                return Backbone.Agave.sync(method, model, options);
-            }
-            else {
-                var url = model.apiRoot + (options.url || _.result(model, 'url'));
+            switch (method) {
+                case 'read':
+                case 'delete':
+                    return Backbone.Agave.sync(method, model, options);
+                    break;
 
-                var formData = new FormData();
-                formData.append('fileToUpload', model.get('fileReference'));
+                case 'create':
+                case 'update':
+                    var url = model.apiRoot + (options.url || _.result(model, 'url'));
 
-                var deferred = $.Deferred();
+                    var formData = new FormData();
+                    formData.append('fileToUpload', model.get('fileReference'));
 
-                var xhr = options.xhr || new XMLHttpRequest();
-                xhr.open('POST', url, true);
-                xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-                xhr.timeout = 0;
+                    var deferred = $.Deferred();
 
-                // Listen to the upload progress.
-                xhr.upload.onprogress = function(e) {
-                    if (e.lengthComputable) {
-                        var uploadProgress = (e.loaded / e.total) * 100;
-                        model.trigger('uploadProgress', uploadProgress);
-                    }
-                };
+                    var xhr = options.xhr || new XMLHttpRequest();
+                    xhr.open('POST', url, true);
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
+                    xhr.timeout = 0;
 
-                xhr.addEventListener('load', function() {
-
-                    if (xhr.status === 200 || 202) {
-
-                        // A little bit of a hack, but it does the trick
-                        try {
-                            var parsedJSON = JSON.parse(xhr.response);
-                            parsedJSON = parsedJSON.result;
-                            that.set(parsedJSON);
-
-                            deferred.resolve(xhr.response);
+                    // Listen to the upload progress.
+                    xhr.upload.onprogress = function(e) {
+                        if (e.lengthComputable) {
+                            var uploadProgress = (e.loaded / e.total) * 100;
+                            model.trigger('uploadProgress', uploadProgress);
                         }
-                        catch (error) {
-                            deferred.reject('Error: Agave response serialization failed.');
+                    };
+
+                    xhr.addEventListener('load', function() {
+
+                        if (xhr.status === 200 || 202) {
+
+                            // A little bit of a hack, but it does the trick
+                            try {
+                                var parsedJSON = JSON.parse(xhr.response);
+                                parsedJSON = parsedJSON.result;
+                                that.set(parsedJSON);
+
+                                deferred.resolve(xhr.response);
+                            }
+                            catch (error) {
+                                deferred.reject('Error: Agave response serialization failed.');
+                            }
                         }
-                    }
-                    else {
+                        else {
+                            deferred.reject('HTTP Error: ' + xhr.status);
+                        }
+                    }, false);
+
+                    xhr.addEventListener('error', function() {
                         deferred.reject('HTTP Error: ' + xhr.status);
-                    }
-                }, false);
+                    });
 
-                xhr.addEventListener('error', function() {
-                    deferred.reject('HTTP Error: ' + xhr.status);
-                });
+                    xhr.send(formData);
+                    return deferred;
 
-                xhr.send(formData);
-                return deferred;
+                    break;
+
+                default:
+                    break;
             }
+
         },
         getAssociationId: function() {
             var path = this.get('path');
             var split = path.split('/');
+
             return split[3];
         },
         syncFilePermissionsWithProjectPermissions: function() {
@@ -132,7 +147,57 @@ function(Backbone, EnvironmentConfig) {
             xhr.send();
 
             return xhr;
-        }
+        },
+        softDelete: function() {
+
+            var that = this;
+            var datetimeDir = moment().format('YYYY-MM-DD-HH-mm-ss-SS');
+
+            var softDeletePromise = $.Deferred();
+
+            $.ajax({
+                data:   'action=mkdir&path=' + datetimeDir,
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'PUT',
+
+                url:    Backbone.Agave.apiRoot
+                        + '/files/v2/media/system'
+                        + '/' + EnvironmentConfig.storageSystem
+                        + '//projects'
+                        + '/' + this.get('projectUuid')
+                        + '/deleted/',
+
+                complete: function() {
+
+                    $.ajax({
+                        data:   'action=move&path='
+                                + '//projects'
+                                + '/' + that.get('projectUuid')
+                                + '/deleted'
+                                + '/' + datetimeDir
+                                + '/' + that.get('name'),
+
+                        headers: Backbone.Agave.oauthHeader(),
+                        type:   'PUT',
+
+                        url:    Backbone.Agave.apiRoot
+                                + '/files/v2/media/system'
+                                + '/' + EnvironmentConfig.storageSystem
+                                + '/' + that.get('path'),
+
+                        success: function() {
+                            softDeletePromise.resolve();
+                        },
+                        error: function() {
+                            softDeletePromise.reject();
+                        },
+                    });
+
+                },
+            });
+
+            return softDeletePromise;
+        },
     });
 
     File.Metadata = Backbone.Agave.MetadataModel.extend({
@@ -173,7 +238,7 @@ function(Backbone, EnvironmentConfig) {
 
             return jqxhr;
         },
-        softDeleteFile: function() {
+        softDelete: function() {
             var value = this.get('value');
             value.isDeleted = true;
 
@@ -197,7 +262,7 @@ function(Backbone, EnvironmentConfig) {
             }
 
             if (formData['tags']) {
-                var tagArray = this.formatTagsForSave(formData['tags']);
+                var tagArray = this._formatTagsForSave(formData['tags']);
 
                 publicAttributes['tags'] = tagArray;
             }
@@ -216,22 +281,34 @@ function(Backbone, EnvironmentConfig) {
                 },
             });
         },
-        formatTagsForSave: function(tagString) {
-            var tagArray = $.map(tagString.split(','), $.trim);
-
-            return tagArray
-        },
         updateTags: function(tags) {
 
             var value = this.get('value');
 
-            var tagArray = this.formatTagsForSave(tags);
+            var tagArray = this._formatTagsForSave(tags);
 
             value['publicAttributes']['tags'] = tagArray;
 
             this.set('value', value);
 
             return this.save();
+        },
+        getFileModel: function() {
+            var value = this.get('value');
+            var filePath = '/projects/' + value['projectUuid'] + '/files/' + value['name'];
+
+            var fileModel = new File({
+                path: filePath,
+                projectUuid: value['projectUuid'],
+                name: value['name'],
+            });
+
+            return fileModel;
+        },
+        _formatTagsForSave: function(tagString) {
+            var tagArray = $.map(tagString.split(','), $.trim);
+
+            return tagArray;
         },
     });
 
