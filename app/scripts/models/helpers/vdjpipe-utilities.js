@@ -832,13 +832,13 @@ define(['app'], function(App) {
 
                 var privateAttributes = value.privateAttributes;
 
-                if (privateAttributes['forward-reads']) {
+                if (privateAttributes['read-direction'] === 'F') {
                     readDirections.push({
                         'forward_seq': value.name
                     });
                 }
 
-                if (privateAttributes['reverse-reads']) {
+                if (privateAttributes['read-direction'] === 'R') {
                     readDirections.push({
                         'reverse_seq': value.name
                     });

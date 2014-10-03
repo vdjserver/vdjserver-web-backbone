@@ -54,8 +54,10 @@ define([
         }
     });
 
-    Handlebars.registerHelper('GetHumanReadableReadDirection', function(data /*, options*/) {
-        return App.Views.HandlebarsHelpers.FileMetadataHelpers.GetHumanReadableReadDirection(data);
+    Handlebars.registerHelper('SelectReadDirection', function(option, value) {
+        if (option === value['read-direction']) {
+            return 'selected';
+        }
     });
 
     var Projects = {};
@@ -342,8 +344,6 @@ define([
             var that = this;
             this.fileListings.fetch({url:this.fileListings.url(this.fileCategory)})
                 .done(function() {
-
-                    console.log("fileListings are: " + JSON.stringify(that.fileListings));
 
                     that._removeLoadingViews();
 
@@ -680,7 +680,12 @@ define([
         template: 'project/file-listings',
         serialize: function() {
             return {
-                fileListings: this.fileListings.toJSON()
+                fileListings: this.fileListings.toJSON(),
+                readDirections: [
+                    'F',
+                    'R',
+                    'FR',
+                ],
             };
         },
         events: {
@@ -689,6 +694,7 @@ define([
         afterRender: function() {
             this._setupDragDropEventHandlers();
             this._setupTagEditEventHandler();
+            this._setupReadDirectionEventHandler();
         },
 
         // Private Methods
@@ -729,8 +735,36 @@ define([
                             })
                         ;
                     })
-                    ;
+                ;
             });
+        },
+        _setupReadDirectionEventHandler: function() {
+            var that = this;
+
+            // Read Direction Listeners
+            $('.project-file-read-direction').change(function(e) {
+                var fileMetadata = that.fileListings.get(e.target.dataset.fileuuid);
+
+                fileMetadata.updateReadDirection(e.target.value)
+                    .done(function() {
+                        $('<i class="icon-checkmark-green">Saved</i>')
+                            .insertAfter(e.target)
+                            .fadeOut('slow', function() {
+                                this.remove();
+                            })
+                        ;
+                    })
+                    .fail(function() {
+                        $('<i class="icon-error-red">Saved</i>')
+                            .insertAfter(e.target)
+                            .fadeOut('slow', function() {
+                                this.remove();
+                            })
+                        ;
+                    })
+                ;
+            });
+
         },
         _fileContainerDrag: function(e) {
             e.stopPropagation();

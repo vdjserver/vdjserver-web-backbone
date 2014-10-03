@@ -56,7 +56,6 @@ define([
 
     // Handlebars Helpers
     'handlebars-utilities',
-    'handlebars-file-metadata-helpers',
 
     // Model Helpers
     'vdjpipe-utilities',

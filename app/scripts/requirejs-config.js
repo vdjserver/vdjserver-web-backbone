@@ -61,7 +61,6 @@ require.config({
 
         // Handlebars Helpers
         'handlebars-utilities':   'views/handlebars-helpers/handlebars-utilities',
-        'handlebars-file-metadata-helpers':   'views/handlebars-helpers/file-metadata-helpers',
 
         // Model Helpers
         'vdjpipe-utilities': 'models/helpers/vdjpipe-utilities',

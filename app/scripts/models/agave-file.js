@@ -214,12 +214,6 @@ function(Backbone, EnvironmentConfig) {
     });
 
     File.Metadata = Backbone.Agave.MetadataModel.extend({
-        // Private Methods
-        _formatTagsForSave: function(tagString) {
-            var tagArray = $.map(tagString.split(','), $.trim);
-
-            return tagArray;
-        },
 
         // Public Methods
         defaults: function() {
@@ -270,24 +264,9 @@ function(Backbone, EnvironmentConfig) {
         setInitialMetadata: function(file, formData) {
 
             var privateAttributes = {
-                'tags': [],
+                'tags': this._formatTagsForSave(formData['tags']),
+                'read-direction': this._formatReadDirectionForInitialSave(formData),
             };
-
-            var publicAttributes = {};
-
-            if (formData['forward-reads']) {
-                privateAttributes['forward-reads'] = true;
-            }
-
-            if (formData['reverse-reads']) {
-                privateAttributes['reverse-reads'] = true;
-            }
-
-            if (formData['tags']) {
-                var tagArray = this._formatTagsForSave(formData['tags']);
-
-                privateAttributes['tags'] = tagArray;
-            }
 
             this.set({
                 associationIds: [file._getAssociationId()],
@@ -299,7 +278,7 @@ function(Backbone, EnvironmentConfig) {
                     mimeType: file.get('mimeType'),
                     isDeleted: false,
                     privateAttributes: privateAttributes,
-                    publicAttributes: publicAttributes,
+                    publicAttributes: {},
                 },
             });
         },
@@ -330,6 +309,41 @@ function(Backbone, EnvironmentConfig) {
             });
 
             return fileModel;
+        },
+        updateReadDirection: function(newReadDirection) {
+            var value = this.get('value');
+
+            value['privateAttributes']['read-direction'] = newReadDirection;
+
+            this.set('value', value);
+
+            return this.save();
+        },
+
+        // Private Methods
+        _formatTagsForSave: function(tagString) {
+
+            var tagArray = [];
+
+            if (tagString) {
+                tagArray = $.map(tagString.split(','), $.trim);
+            }
+
+            return tagArray;
+        },
+        _formatReadDirectionForInitialSave: function(formData) {
+            if (formData['forward-reads'] && formData['reverse-reads']) {
+                return 'FR';
+            }
+            else if (formData['forward-reads'] && !formData['reverse-reads']) {
+                return 'F';
+            }
+            else if (formData['reverse-reads'] && !formData['forward-reads']) {
+                return 'R';
+            }
+            else {
+                return '';
+            }
         },
     });
 

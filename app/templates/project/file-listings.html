@@ -46,15 +46,23 @@
                                 {{GetFileTypeFromName value.name}}
                             </td>
                             <td>
-                                <input 
+                                <input
                                     class="project-file-tags"
                                     data-fileuuid="{{uuid}}"
-                                    type="text" 
+                                    type="text"
                                     value="{{GetTagDisplay value.privateAttributes}}"
                                 >
                             </td>
                             <td>
-                                {{GetHumanReadableReadDirection value}}
+                                <select
+                                    class="project-file-read-direction"
+                                    data-fileuuid="{{uuid}}"
+                                >
+                                    <option></option>
+                                    {{#each ../readDirections}}
+                                        <option {{SelectReadDirection this ../value.privateAttributes}}>{{this}}</option>
+                                    {{/each}}
+                                </select>
                             </td>
                         </tr>
                     {{/each}}
