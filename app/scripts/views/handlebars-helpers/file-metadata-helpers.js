@@ -6,13 +6,13 @@ define(['app'], function(App) {
 
     FileMetadataHelpers.GetHumanReadableReadDirection = function(data/*, options*/) {
 
-        if (data.isForwardRead && data.isReverseRead) {
+        if (data.privateAttributes['forward-reads'] && data.privateAttributes['reverse-reads']) {
             return 'FR';
         }
-        else if (data.isForwardRead) {
+        else if (data.privateAttributes['forward-reads']) {
             return 'F';
         }
-        else if (data.isReverseRead) {
+        else if (data.privateAttributes['reverse-reads']) {
             return 'R';
         }
 
