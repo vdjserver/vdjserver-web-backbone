@@ -108,11 +108,11 @@ function(App, Backbone, EnvironmentConfig) {
             );
         },
         _setArchivePath: function(projectUuid) {
-            var archivePath = '/projects/'
-                            + projectUuid
-                            + '/analyses/'
-                            + moment().format(this.archivePathDateFormat)
-                            + '-' + this._getDirectorySafeName(this.get('name'));
+            var archivePath = '/projects'
+                            + '/' + projectUuid
+                            + '/analyses'
+                            + '/' + moment().format(this.archivePathDateFormat) + '-' + this._getDirectorySafeName(this.get('name'))
+                            ;
 
             this.set('archivePath', archivePath);
         },
@@ -122,10 +122,11 @@ function(App, Backbone, EnvironmentConfig) {
             var filePaths = [];
             for (var i = 0; i < tmpFileMetadatas.length; i++) {
                 filePaths.push(
-                    '/projects/'
-                    + tmpFileMetadatas[i].projectUuid
-                    + '/files/'
-                    + tmpFileMetadatas[i].name
+                    'agave://' + EnvironmentConfig.storageSystem
+                    + '//projects'
+                    + '/' + tmpFileMetadatas[i].projectUuid
+                    + '/files'
+                    + '/' + tmpFileMetadatas[i].name
                 );
             }
 
@@ -141,7 +142,7 @@ function(App, Backbone, EnvironmentConfig) {
         _getRelativeArchivePath: function() {
             var fullArchivePath = this.get('archivePath');
             var archivePathSplit = fullArchivePath.split('/');
-            var relativeArchivePath = archivePathSplit[4];
+            var relativeArchivePath = archivePathSplit.pop();
 
             return relativeArchivePath;
         },
