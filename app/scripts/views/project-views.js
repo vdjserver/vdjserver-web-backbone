@@ -1059,7 +1059,7 @@ define([
                 {
                     username: username,
                     permission: 'READ_WRITE',
-                    uuid: this.permissions.uuid
+                    uuid: this.permissions.uuid,
                 },
                 {
                     success: function() {
@@ -1075,7 +1075,7 @@ define([
                         that._usernameTypeahead(that.permissions, that.tenantUsers);
                     },
                     error: function() {
-                    }
+                    },
                 }
             );
 

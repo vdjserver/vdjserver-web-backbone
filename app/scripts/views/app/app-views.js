@@ -11,7 +11,6 @@ define(['app', 'backbone.syphon'], function(App){
     AppViews.Nav = Backbone.View.extend({
         template: 'nav',
         initialize: function() {
-            //this.setView('.login-state', new AppViews.LoginState({model: this.model}));
             this.model.on('change', this.render, this);
         },
         serialize: function() {
@@ -19,23 +18,6 @@ define(['app', 'backbone.syphon'], function(App){
                 isLoggedIn: App.Agave.token().isActive(),
                 account: this.model.toJSON()
             };
-        }
-    });
-
-    AppViews.LoginState = Backbone.View.extend({
-        template: 'logged-out',
-        initialize: function() {
-            this.model.on('change', this.render, this);
-        },
-        beforeRender: function() {
-            if (App.Agave.token.isActive()) {
-                this.template = 'logged-in';
-            } else {
-                this.template = 'logged-out';
-            }
-        },
-        serialize: function() {
-            return this.model.toJSON();
         }
     });
 
