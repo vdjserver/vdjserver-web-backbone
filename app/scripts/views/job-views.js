@@ -582,6 +582,7 @@ define([
                 );
 
                 vdjPipeView.isEditable = true;
+                vdjPipeView.loadDefaultOptions = true;
 
                 var that = this;
 

@@ -168,6 +168,7 @@ define([
 
             var elementView = new Vdjpipe.CustomDemultiplexBarcodeConfig({
                 isEditable: this.isEditable,
+                loadDefaultOptions: this.loadDefaultOptions,
                 parameterType: this.parameterType,
                 inputCount: this.inputCount,
                 elementCount: this.elementCount,
@@ -192,6 +193,14 @@ define([
 
     Vdjpipe.CustomDemultiplexBarcodeConfig = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-custom-demultiplex-barcode-config',
+        initialize: function() {
+            if (this.loadDefaultOptions) {
+                if (!this.options) {
+                    this.options = {};
+                }
+                this.options['custom_trim'] = true;
+            }
+        },
         serialize: function() {
             if (this.parameterType) {
 
@@ -208,6 +217,7 @@ define([
 
                 return {
                     isEditable: this.isEditable,
+                    loadDefaultOptions: this.loadDefaultOptions,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
                     elementCount: this.elementCount,
