@@ -7,6 +7,19 @@ define([
 
     'use strict';
 
+    Handlebars.registerHelper('GetClassForJobStatus', function(jobStatus, options) {
+
+        if (jobStatus === 'PENDING') {
+            return 'badge-danger';
+        }
+        else if (jobStatus === 'RUNNING') {
+            return 'badge-warning';
+        }
+        else if (jobStatus === 'ARCHIVING_FINISHED') {
+            return 'badge-success';
+        }
+    });
+
     Handlebars.registerHelper('JobSuccessCheck', function(data, options) {
         if (data.status === 'FINISHED') {
             return options.fn(data);
@@ -726,7 +739,7 @@ define([
                 this._handleJobStatusUpdate
             );
 
-            this.jobStatusMessage = 'Retrieving job status information.';
+            this.jobStatusMessage = 'PENDING';
         },
         serialize: function() {
             return {
@@ -737,7 +750,7 @@ define([
         // Private Methods
 
         _handleJobStatusUpdate: function(jobStatusUpdate) {
-            this.jobStatusMessage = jobStatusUpdate['jobMessage'];
+            this.jobStatusMessage = jobStatusUpdate['jobStatus'];
             this.render();
         },
     });

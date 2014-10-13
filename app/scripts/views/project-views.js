@@ -136,7 +136,11 @@ define([
                 notificationModel: jobNotification,
             });
 
-            this.insertView('#notifications-' + jobNotification.projectUuid, jobNotificationView);
+            this.insertView(
+                '#project-' + jobNotification.projectUuid + '-notification',
+                jobNotificationView
+            );
+
             jobNotificationView.render();
         },
 

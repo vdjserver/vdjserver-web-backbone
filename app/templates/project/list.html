@@ -1,6 +1,11 @@
 <ul class="projects-list">
     <li class="projects-list-vdj-logo-wrapper">
-        <a href="/project"><img class="projects-list-vdj-logo" src="../images/Final-Logo-Clean-cropped.png"></a>
+        <a href="/project">
+            <img
+                class="projects-list-vdj-logo"
+                src="../images/Final-Logo-Clean-cropped.png"
+            >
+        </a>
     </li>
 
     <li class="project-create-menu">
@@ -13,13 +18,17 @@
         <li id="project-{{uuid}}-menu" class="project-menu">
             <a href="/project/{{uuid}}" id="project-{{uuid}}" data-id="{{uuid}}">
                 {{value.name}}
+                <div
+                    id="project-{{uuid}}-notification"
+                    class=""
+                >
+                </div>
             </a>
         </li>
 
         <li class="project-submenu hidden">
             <a href="/project/{{uuid}}/jobs" class="select-analyses" data-id="{{uuid}}">
                 Analyses
-                <span id="notifications-{{uuid}}"></span>
             </a>
         </li>
 
