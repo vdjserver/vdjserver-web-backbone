@@ -3,19 +3,30 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://vdjserver.org/vdjml/xsd/1/"
     xmlns:vdj="http://vdjserver.org/vdjml/xsd/1/"
+    xmlns="http://www.w3.org/1999/xhtml"
     elementFormDefault="qualified" attributeFormDefault="unqualified"
     version="1.0"
 >
 <xs:annotation>
    <xs:documentation xml:lang="en">
- VDJML stores results of immune receptor sequence alignment.
+    <p>VDJML stores results of immune receptor sequence alignment.</p>
+    
+    <p>All elements and attributes defined by VDJML schema reside in the 
+    namespace <code>http://vdjserver.org/vdjml/xsd/1/</code>, prefix 
+    <code>vdj</code>.</p>
+    
+    <p>User-defined elements and attributes may appear under 
+    <a href="#element-meta"><code>vdj:meta</code></a> and 
+    <a href="#element-read"><code>vdj:read</code></a> elements.
+    User-defined elements and attributes, however, should not use the 
+    <code>vdj</code> namespace.</p> 
    </xs:documentation>
 </xs:annotation>
 
 <xs:element name="vdjml">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      Top element of VDJML document
+      Top element of VDJML document. 
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
@@ -26,7 +37,7 @@
       <xs:attribute name="version" type="xs:decimal" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               version of the VDJML schema, e.g., <code>1.0</code>
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
@@ -36,7 +47,9 @@
 <xs:element name="meta">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      Contains data common to all analysis results.
+      May also contain user-defined elements.
+      The user-defined elements should not use the namespace <code>vdj</code>.
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
@@ -55,28 +68,30 @@
 <xs:element name="generator">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      Describes the software that wrote the VDJML file
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
       <xs:attribute name="name" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               The name of the VDJML generator, e.g., <code>libVDJML</code>
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="version" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Version of the generator software, e.g., <code>1.42.0</code>
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="time_gmt" type="xs:dateTime" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Date and time of writing the file, GMT, in 
+               <code>xs:dateTime</code> format, e.g., 
+               <code>2014-07-24T14:47:24</code>
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
@@ -86,8 +101,9 @@
 <xs:element name="aligner">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-         Information about an aligner, e.g., IgBlast, VQuest, or a software
-         package that reinterprets the results of an aligner.
+         Information about immune receptor analysis software package that
+         performs de novo analysis, e.g., IgBlast, VQuest, or software
+         that builds upon the existing results.
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
@@ -95,7 +111,7 @@
          <xs:element name="parameters" type="xs:string" minOccurs="0">
             <xs:annotation>
                <xs:documentation xml:lang="en">
-                  TODO:
+                  Parameters used for running the IR analysis software
                </xs:documentation>
             </xs:annotation>
          </xs:element>
@@ -104,35 +120,37 @@
          use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               A unique identifier for the IR analysis software 
+               to be used in other parts of the VDJML document
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="name" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               The name of the software
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="version" type="xs:string">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               The version of the software
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="run_id" type="xs:integer">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               The unique identifier for the analysis run (TODO:)
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="uri" type="xs:anyURI">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               The URL where the software or information about it can be 
+               obtained
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
@@ -142,42 +160,44 @@
 <xs:element name="germline_db">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      Information about a germline database used for the analysis
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
       <xs:attribute name="gl_db_id" type="xs:positiveInteger" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               A unique identifier for the germline database 
+               to be used in other parts of the VDJML document
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="name" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Germline database name
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="species" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Germline database species
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="version" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Germline database version
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="uri" type="xs:anyURI">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               The URL where the database or information about it can be 
+               obtained
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
@@ -187,7 +207,9 @@
 <xs:element name="read_results">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      Collection of alignment results for individual sequence reads.
+      It is recommended that the sequence read results appear in the same order
+      as in the FASTA/Q files from which the alignment results were obtained.
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
@@ -200,7 +222,10 @@
 <xs:element name="read">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      Stores information pertaining to an individual sequence read.
+      May also contain user-defined elements and attribures.
+      The user-defined elements and attributes should be in namespaces other than 
+      <code>vdj</code>.
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
@@ -212,7 +237,8 @@
       <xs:attribute name="read_id" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Sequence unique identifier corresponding to the original
+               FASTA/Q file.
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
@@ -223,7 +249,7 @@
 <xs:element name="vdj_alignment">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      Immune receptor sequence alignment results for the sequence read.
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
@@ -238,70 +264,72 @@
    <xs:attribute name="identity" type="vdj:Percent">
       <xs:annotation>
          <xs:documentation xml:lang="en">
-         TODO:
+         Percent of nucleotide sequence identity, e.g., <code>90%</code>.
          </xs:documentation>
       </xs:annotation>
    </xs:attribute>
    <xs:attribute name="score" type="xs:integer">
       <xs:annotation>
          <xs:documentation xml:lang="en">
-         TODO:
+         Alignment score, as defined by the aligner software
          </xs:documentation>
       </xs:annotation>
    </xs:attribute>
    <xs:attribute name="insertions" type="xs:nonNegativeInteger" default="0">
       <xs:annotation>
          <xs:documentation xml:lang="en">
-         TODO:
+         number of nucleotide insertions in the read sequence aligned to
+         the germline sequence
          </xs:documentation>
       </xs:annotation>
    </xs:attribute>
    <xs:attribute name="deletions" type="xs:nonNegativeInteger" default="0">
       <xs:annotation>
          <xs:documentation xml:lang="en">
-         TODO:
+         number of nucleotide deletions from the read sequence aligned to
+         the germline sequence
          </xs:documentation>
       </xs:annotation>
    </xs:attribute>
    <xs:attribute name="substitutions" type="xs:nonNegativeInteger" default="0">
       <xs:annotation>
          <xs:documentation xml:lang="en">
-         TODO:
+         number of nucleotide substitutions
          </xs:documentation>
       </xs:annotation>
    </xs:attribute>
    <xs:attribute name="stop_codon" type="xs:boolean" default="false">
       <xs:annotation>
          <xs:documentation xml:lang="en">
-         TODO:
+         <code>true</code> if the stop codon is present
          </xs:documentation>
       </xs:annotation>
    </xs:attribute>
    <xs:attribute name="mutated_invariant" type="xs:boolean" default="false">
       <xs:annotation>
          <xs:documentation xml:lang="en">
-         TODO:
+         <code>true</code> if a codon for a conserved amino acid is mutated
          </xs:documentation>
       </xs:annotation>
    </xs:attribute>
    <xs:attribute name="inverted" type="xs:boolean" default="false">
       <xs:annotation>
          <xs:documentation xml:lang="en">
-         TODO:
+         <code>true</code> if sequence is inverted (TODO:?)
          </xs:documentation>
       </xs:annotation>
    </xs:attribute>
    <xs:attribute name="out_frame_indel" type="xs:boolean" default="false">
       <xs:annotation>
          <xs:documentation xml:lang="en">
-         TODO:
+         <code>true</code> if indel mutation resulted in a frame shift
          </xs:documentation>
       </xs:annotation>
    </xs:attribute>
    <xs:attribute name="out_frame_vdj" type="xs:boolean" default="false">
       <xs:annotation>
          <xs:documentation xml:lang="en">
-         TODO:
+         <code>true</code> if V(D)J recombination occured out of frame
          </xs:documentation>
       </xs:annotation>
    </xs:attribute>
@@ -310,23 +338,27 @@
 <xs:element name="segment_match">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      Information about germline gene segment(s) aligned to the read sequence
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
       <xs:sequence>
          <xs:element ref="vdj:btop" />
          <xs:element ref="vdj:gl_seg_match" maxOccurs="unbounded" />
-         <xs:element ref="vdj:aa_substitution" minOccurs="0" maxOccurs="unbounded" />
+         <xs:element ref="vdj:aa_substitution" minOccurs="0" 
+            maxOccurs="unbounded" />
       </xs:sequence>
-      <xs:attribute name="segment_match_id" type="xs:positiveInteger" use="required">
+      <xs:attribute name="segment_match_id" type="xs:positiveInteger" 
+         use="required">
 	      <xs:annotation>
 	         <xs:documentation xml:lang="en">
-	         TODO:
+	         A unique identifier for segment match to be used in other parts 
+               of the VDJML document
 	         </xs:documentation>
 	      </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="read_pos0" type="xs:nonNegativeInteger" use="required">
+      <xs:attribute name="read_pos0" type="xs:nonNegativeInteger" 
+         use="required" >
 	      <xs:annotation>
 	         <xs:documentation xml:lang="en">
 	         Zero-based starting position of the match in the read sequence
@@ -354,16 +386,17 @@
 <xs:element name="btop">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      BTOP (Blast traceback operations) string.
+      BTOP (BLAST traceback operations) string.
       Integer indecates the number of aligned nucleotides. 
       Pair of letters indicates a nucleotide mismatch between read/germline 
       sequences.
       Dash ('-') indicates deletion.
+      Example: <code>5AC35</code>.
       </xs:documentation>
    </xs:annotation>
    <xs:simpleType>
       <xs:restriction base="xs:token">
-         <xs:pattern value="([\w-]{2}|\d+)+" />      
+         <xs:pattern value="([\w-]{2}|\d+)+" />
       </xs:restriction>
    </xs:simpleType>
 </xs:element>
@@ -371,7 +404,7 @@
 <xs:element name="gl_seg_match">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-         Informatin about aligned germline segment
+         Information about aligned germline segment
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
@@ -379,28 +412,31 @@
          use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               A unique identifier for germline segment match to be used in 
+               other parts of the VDJML document
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="num_system" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Numbering system name.
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="name" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Name of the germline segment
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="gl_db_id" type="xs:positiveInteger" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               A unique identifier refering to the 
+               <a href="#germline_db-attribute-gl_db_id">germline database</a>
+               in which the segment was found
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
@@ -408,21 +444,25 @@
          use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               A unique identifier refering to the 
+               <a href="aligner-attribute-aligner_id">aligner software</a>
+               that produced the alignment
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="type" type="vdj:Segment_type" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               The type of the segment 
+               (<code>V</code>, <code>D</code>, or <code>J</code>)
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="gl_pos0" type="xs:nonNegativeInteger" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Zero-based start of the alignment position in the germline 
+               sequence.
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
@@ -432,7 +472,7 @@
 <xs:element name="aa_substitution">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-         TODO:
+         Information about an amino acid codon substitution
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
@@ -440,21 +480,22 @@
          use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Zero-based position of the first nucleotide of the codon in
+               the read sequence.
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="read_aa" type="vdj:Aminoacid" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               amino acid encoded by the read sequence
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="gl_aa" type="vdj:Aminoacid" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               amino acid encoded by the germline sequence
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
@@ -464,7 +505,8 @@
 <xs:element name="combination">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-         Segment match combination
+         Annotations of the read sequence based on certain alignments
+         with germline gene segments.
       </xs:documentation>
    </xs:annotation>
    <xs:complexType>
@@ -474,7 +516,10 @@
       <xs:attribute name="segments" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               List of segment match IDs (<code>segment_match_id</code>s)
+               List of identifiers for the segment matches 
+               (<a href="#segment_match-attribute-segment_match_id"
+               ><code>segment_match_id</code></a>-s)
+               that serve as a basis for the annotations listed in this element.
             </xs:documentation>
          </xs:annotation>
          <xs:simpleType>
@@ -497,14 +542,15 @@
       <xs:attribute name="name" type="xs:string" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Name of the region as provided by the alignment software,
+               e.g., <code>FR1</code>
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
       <xs:attribute name="num_system" type="xs:string">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Numbering system name.
                Attribute is not required because for some regions, e.g., 
                for VD-junctions, numbering system is not applicable.
             </xs:documentation>
@@ -513,7 +559,10 @@
       <xs:attribute name="aligner_id" type="xs:positiveInteger" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Unique identifier for the IR analysis software that produced the 
+               region annotation 
+               <a href="#aligner-attribute-aligner_id"><code>aligner_id</code
+               ></a>
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
@@ -531,7 +580,7 @@
       <xs:attribute name="read_len" type="xs:nonNegativeInteger" use="required">
          <xs:annotation>
             <xs:documentation xml:lang="en">
-               TODO:
+               Length of the read sequence that corresponds to the region.
             </xs:documentation>
          </xs:annotation>
       </xs:attribute>
@@ -542,7 +591,7 @@
 <xs:simpleType name="Aminoacid">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      One- or three- letter amino acide abbreviation.
       </xs:documentation>
    </xs:annotation>
    <xs:restriction base="xs:token">
@@ -616,7 +665,8 @@
 <xs:simpleType name="Nucleotide_defined">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      A symbol for one of the 5 nucleotides: 
+      adenine, thymine, guanine, cytosine, or uracil
       </xs:documentation>
    </xs:annotation>
    <xs:restriction base="xs:token">
@@ -637,7 +687,9 @@
 <xs:simpleType name="Nucleotide_ambiguous">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      IUPAC representations of ambiguous nucleotide.  
+      See <a href="http://www.chem.qmul.ac.uk/iubmb/misc/naseq.html"
+      >http://www.chem.qmul.ac.uk/iubmb/misc/naseq.html</a>
       </xs:documentation>
    </xs:annotation>
    <xs:restriction base="xs:token">
@@ -669,7 +721,8 @@
 <xs:simpleType name="Segment_type">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      Representing one of the V(D)J (variable, diversity, and joining) segments 
+      recombined to be part of the immune receptor gene.
       </xs:documentation>
    </xs:annotation>
    <xs:restriction base="xs:token">
@@ -682,7 +735,7 @@
 <xs:simpleType name="Nucleotide_any">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      Representing any nucleotide (ambiguous or not)
       </xs:documentation>
    </xs:annotation>
    <xs:union memberTypes="vdj:Nucleotide_defined vdj:Nucleotide_ambiguous" />
@@ -691,7 +744,7 @@
 <xs:simpleType name="Percent">
    <xs:annotation>
       <xs:documentation xml:lang="en">
-      TODO:
+      Fraction of a value
       </xs:documentation>
    </xs:annotation>
    <xs:restriction base="xs:string">
