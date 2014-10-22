@@ -46,6 +46,9 @@ span.element-name {
     display: block;
 }
 
+span.element-name:before { content: "<"; }
+span.element-name:after { content: ">"; }
+
 div.element-attributes {
     display: table;
 }

@@ -6,33 +6,64 @@
     <link rel="stylesheet" href="xsd.css" type="text/css" />
   </head>
   <body><h1>VDJML XML Schema</h1>
-    <p>VDJML stores results of immune receptor sequence alignment.</p>
+    <p>VDJML is a file format for storing the results from VDJ analysis of 
+    immune receptor (IR) sequence reads.
+    The VDJ analysis includes aligning each input sequence read to 
+    V, D, and J germline gene segments,
+    and, based on the aligned segments, identifying various regions of 
+    interest and other properties of the input sequence.
+    </p>
     
-    <p>All elements and attributes defined by VDJML schema reside in the 
-    namespace <code>http://vdjserver.org/vdjml/xsd/1/</code>, prefix 
-    <code>vdj</code>.</p>
+    <p>The VDJ analysis is performed using either "raw" input sequence reads, 
+    (e.g., as obtained from a sequencing instrument), 
+    "consensus" read sequences, or sequences obtained from other sources.</p>
     
-    <p>User-defined elements and attributes may appear under 
+    <p>Representing the source and the nature of the input sequences is beyond 
+    the scope of this file format.</p>
+    
+    <p>In this document, the input sequences used for the analysis will be 
+    referred to as <i>read sequences</i> or <i>reads</i>.</p>
+    
+    <p>All elements and attributes defined by this version of the VDJML schema 
+    have a namespace <code>http://vdjserver.org/vdjml/xsd/1/</code> 
+    (prefix <code>vdj:</code>).
+    The top element of the schema is <code>vdj:vdjml</code>.</p>
+    
+    <p>The schema uses primitive datatypes defined by the 
+    <a href="http://www.w3.org/TR/xmlschema-2/">W3C XML Schema</a>.
+    The primitive datatypes are defined in the namespace
+    <code>http://www.w3.org/2001/XMLSchema</code>, prefix <code>xs:</code>, 
+    e.g., <code>xs:decimal</code>.</p>
+    
+    <p>A VDJML file consists of two parts.
+    General information about the analysis appears under the element 
+    <a href="#element-meta"><code>vdj:meta</code></a> and the result for
+    each sequence read appears in a sequence of 
+    <a href="#element-read"><code>vdj:read</code></a> elements under the 
+    <a href="#element-read_results"><code>vdj:read_results</code></a> element.</p>
+    
+    <p>The schema also allows some user-defined elements and attributes,
+    which may appear under 
     <a href="#element-meta"><code>vdj:meta</code></a> and 
     <a href="#element-read"><code>vdj:read</code></a> elements.
-    User-defined elements and attributes, however, should not use the 
-    <code>vdj</code> namespace.</p> 
+    User-defined elements and attributes, should have namespaces other than
+    <code>vdj</code>.</p>
    <p class="graphviz"><embed type="image/svg+xml" src="xsd_dot.svg" alt="VDJML Diagram" width="800"></embed></p><div id="xs_elements">
 <div id="element-vdjml" class="element"><span class="element-name">vdjml</span>
       <div class="element-comment">
-      Top element of VDJML document. 
+      Top element of a VDJML document. 
       </div>
    <div class="element-attributes"><div class="attribute-header"><span>attribute</span><span>type</span><span>required</span><span>description</span></div>
 <div id="vdjml-attribute-version" class="attribute"><span class="attribute-name">version</span><span class="attribute-type">xs:decimal</span><span class="attribute-is-required">✓</span>
             <div class="attribute-comment">
-               version of the VDJML schema, e.g., <code>1.0</code>
+               version of the VDJML format, e.g., <code>1.0</code>
             </div>
          </div></div></div>
 <div id="element-meta" class="element"><span class="element-name">meta</span>
       <div class="element-comment">
-      Contains data common to all analysis results.
-      May also contain user-defined elements.
-      The user-defined elements should not use the namespace <code>vdj</code>.
+      Contains general information common to all analysis results.
+      May also contain user-defined attributes and elements,
+      which should use namespaces other than <code>vdj</code>.
       </div>
    </div>
 <div id="element-generator" class="element"><span class="element-name">generator</span>
@@ -59,62 +90,61 @@
          </div></div></div>
 <div id="element-aligner" class="element"><span class="element-name">aligner</span>
       <div class="element-comment">
-         Information about immune receptor analysis software package that
-         performs de novo analysis, e.g., IgBlast, VQuest, or software
-         that builds upon the existing results.
+         Information about the aligner, a program that generated all or some
+         of the results in the VDJML document by either performing the
+         VDJ analysis de novo (e.g., IgBlast or VQuest) or by building upon
+         the results of another aligner.
       </div>
    <div class="element-attributes"><div class="attribute-header"><span>attribute</span><span>type</span><span>required</span><span>description</span></div>
 <div id="aligner-attribute-aligner_id" class="attribute"><span class="attribute-name">aligner_id</span><span class="attribute-type">xs:positiveInteger</span><span class="attribute-is-required">✓</span>
             <div class="attribute-comment">
-               A unique identifier for the IR analysis software 
-               to be used in other parts of the VDJML document
+               A unique identifier for the IR analysis software
             </div>
          </div>
 <div id="aligner-attribute-name" class="attribute"><span class="attribute-name">name</span><span class="attribute-type">xs:string</span><span class="attribute-is-required">✓</span>
             <div class="attribute-comment">
-               The name of the software
+               The name of the aligner
             </div>
          </div>
 <div id="aligner-attribute-version" class="attribute"><span class="attribute-name">version</span><span class="attribute-type">xs:string</span><span class="attribute-is-required"></span>
             <div class="attribute-comment">
-               The version of the software
+               The version of the aligner
             </div>
          </div>
 <div id="aligner-attribute-run_id" class="attribute"><span class="attribute-name">run_id</span><span class="attribute-type">xs:integer</span><span class="attribute-is-required"></span>
             <div class="attribute-comment">
-               The unique identifier for the analysis run (TODO:)
+               A unique identifier for the analysis run
             </div>
          </div>
 <div id="aligner-attribute-uri" class="attribute"><span class="attribute-name">uri</span><span class="attribute-type">xs:anyURI</span><span class="attribute-is-required"></span>
             <div class="attribute-comment">
-               The URL where the software or information about it can be 
+               A URL from which the aligner or information about it can be 
                obtained
             </div>
          </div></div>
 <div id="element-parameters" class="element"><span class="element-name">parameters</span>
                <div class="element-comment">
-                  Parameters used for running the IR analysis software
+                  Parameters used for running the VDJ analysis.
                </div>
             </div></div>
 <div id="element-germline_db" class="element"><span class="element-name">germline_db</span>
       <div class="element-comment">
-      Information about a germline database used for the analysis
+      Information about a germline database used for the analysis.
       </div>
    <div class="element-attributes"><div class="attribute-header"><span>attribute</span><span>type</span><span>required</span><span>description</span></div>
 <div id="germline_db-attribute-gl_db_id" class="attribute"><span class="attribute-name">gl_db_id</span><span class="attribute-type">xs:positiveInteger</span><span class="attribute-is-required">✓</span>
             <div class="attribute-comment">
                A unique identifier for the germline database 
-               to be used in other parts of the VDJML document
             </div>
          </div>
 <div id="germline_db-attribute-name" class="attribute"><span class="attribute-name">name</span><span class="attribute-type">xs:string</span><span class="attribute-is-required">✓</span>
             <div class="attribute-comment">
-               Germline database name
+               The database name
             </div>
          </div>
 <div id="germline_db-attribute-species" class="attribute"><span class="attribute-name">species</span><span class="attribute-type">xs:string</span><span class="attribute-is-required">✓</span>
             <div class="attribute-comment">
-               Germline database species
+               The germline database species
             </div>
          </div>
 <div id="germline_db-attribute-version" class="attribute"><span class="attribute-name">version</span><span class="attribute-type">xs:string</span><span class="attribute-is-required">✓</span>
@@ -130,23 +160,25 @@
          </div></div></div>
 <div id="element-read_results" class="element"><span class="element-name">read_results</span>
       <div class="element-comment">
-      Collection of alignment results for individual sequence reads.
+      Sequence of alignment results for individual sequence reads.
       It is recommended that the sequence read results appear in the same order
       as in the FASTA/Q files from which the alignment results were obtained.
       </div>
    </div>
 <div id="element-read" class="element"><span class="element-name">read</span>
       <div class="element-comment">
-      Stores information pertaining to an individual sequence read.
-      May also contain user-defined elements and attribures.
-      The user-defined elements and attributes should be in namespaces other than 
-      <code>vdj</code>.
+      Stores the analysis results of a single sequence read.
+      
+      May also contain user-defined elements and attributes.
+      The user-defined elements and attributes should be in namespaces other 
+      than <code>vdj</code>.
       </div>
    <div class="element-attributes"><div class="attribute-header"><span>attribute</span><span>type</span><span>required</span><span>description</span></div>
 <div id="read-attribute-read_id" class="attribute"><span class="attribute-name">read_id</span><span class="attribute-type">xs:string</span><span class="attribute-is-required">✓</span>
             <div class="attribute-comment">
-               Sequence unique identifier corresponding to the original
-               FASTA/Q file.
+               Unique identifier of the read sequence; 
+               should be same as the sequence ID from the original FASTA/Q
+               file
             </div>
          </div></div></div>
 <div id="element-vdj_alignment" class="element"><span class="element-name">vdj_alignment</span>
@@ -172,7 +204,7 @@
 	      </div>
 <div id="segment_match-attribute-read_len" class="attribute"><span class="attribute-name">read_len</span><span class="attribute-type">xs:nonNegativeInteger</span><span class="attribute-is-required">✓</span>
 	         <div class="attribute-comment">
-	         Number of nucleoteds in the read sequence for the matching region
+	         Number of nucleotides in the read sequence for the matching region
 	         </div>
 	      </div>
 <div id="segment_match-attribute-gl_len" class="attribute"><span class="attribute-name">gl_len</span><span class="attribute-type">xs:nonNegativeInteger</span><span class="attribute-is-required">✓</span>
@@ -219,7 +251,8 @@
       </div>
 <div id="segment_match-attribute-inverted" class="attribute"><span class="attribute-name">inverted</span><span class="attribute-type">xs:boolean</span><span class="attribute-is-required"></span>
          <div class="attribute-comment">
-         <code>true</code> if sequence is inverted (TODO:?)
+         <code>true</code> if the read sequence is a reverse-complement
+         to germline gene segments
          </div>
       </div>
 <div id="segment_match-attribute-out_frame_indel" class="attribute"><span class="attribute-name">out_frame_indel</span><span class="attribute-type">xs:boolean</span><span class="attribute-is-required"></span>
@@ -229,17 +262,17 @@
       </div>
 <div id="segment_match-attribute-out_frame_vdj" class="attribute"><span class="attribute-name">out_frame_vdj</span><span class="attribute-type">xs:boolean</span><span class="attribute-is-required"></span>
          <div class="attribute-comment">
-         <code>true</code> if V(D)J recombination occured out of frame
+         <code>true</code> if V(D)J recombination occurred out of frame
          </div>
       </div></div></div>
 <div id="element-btop" class="element"><span class="element-name">btop</span>
       <div class="element-comment">
       BTOP (BLAST traceback operations) string.
-      Integer indecates the number of aligned nucleotides. 
-      Pair of letters indicates a nucleotide mismatch between read/germline 
+      Integer indicates the number of aligned nucleotides. 
+      A pair of letters indicates a nucleotide mismatch between read/germline 
       sequences.
       Dash ('-') indicates deletion.
-      Example: <code>5AC35</code>.
+      Example: <code>5AC-G35</code>.
       </div>
    </div>
 <div id="element-gl_seg_match" class="element"><span class="element-name">gl_seg_match</span>
@@ -265,14 +298,14 @@
          </div>
 <div id="gl_seg_match-attribute-gl_db_id" class="attribute"><span class="attribute-name">gl_db_id</span><span class="attribute-type">xs:positiveInteger</span><span class="attribute-is-required">✓</span>
             <div class="attribute-comment">
-               A unique identifier refering to the 
+               A unique identifier referring to the 
                <a href="#germline_db-attribute-gl_db_id">germline database</a>
                in which the segment was found
             </div>
          </div>
 <div id="gl_seg_match-attribute-aligner_id" class="attribute"><span class="attribute-name">aligner_id</span><span class="attribute-type">xs:positiveInteger</span><span class="attribute-is-required">✓</span>
             <div class="attribute-comment">
-               A unique identifier refering to the 
+               A unique identifier referring to the 
                <a href="aligner-attribute-aligner_id">aligner software</a>
                that produced the alignment
             </div>
@@ -404,7 +437,8 @@
       </div>
 <div id="region-attribute-inverted" class="attribute"><span class="attribute-name">inverted</span><span class="attribute-type">xs:boolean</span><span class="attribute-is-required"></span>
          <div class="attribute-comment">
-         <code>true</code> if sequence is inverted (TODO:?)
+         <code>true</code> if the read sequence is a reverse-complement
+         to germline gene segments
          </div>
       </div>
 <div id="region-attribute-out_frame_indel" class="attribute"><span class="attribute-name">out_frame_indel</span><span class="attribute-type">xs:boolean</span><span class="attribute-is-required"></span>
@@ -414,7 +448,7 @@
       </div>
 <div id="region-attribute-out_frame_vdj" class="attribute"><span class="attribute-name">out_frame_vdj</span><span class="attribute-type">xs:boolean</span><span class="attribute-is-required"></span>
          <div class="attribute-comment">
-         <code>true</code> if V(D)J recombination occured out of frame
+         <code>true</code> if V(D)J recombination occurred out of frame
          </div>
       </div></div></div></div></body>
 </html>
