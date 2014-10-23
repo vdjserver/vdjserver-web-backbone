@@ -303,6 +303,9 @@ define([
         },
         afterRender: function() {
             this._uiSetActiveFileCategory();
+
+            // Tooltips
+            $('.has-tooltip').tooltip();
         },
         events: {
             'click #file-upload':    '_clickFilesSelectorWrapper',

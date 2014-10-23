@@ -38,19 +38,52 @@
 <div class="project-detail-controls">
     <div class="row">
         <div class="col-md-4">
-            <button class="btn" id="file-upload">
+            <button
+                id="file-upload"
+                class="btn has-tooltip"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Upload a file"
+            >
                 <i class="fa fa-upload"></i>
-                <input type="file" id="file-dialog" name="files[]" multiple class="hidden" />
+
+                <input
+                    id="file-dialog"
+                    class="hidden"
+                    name="files[]"
+                    type="file"
+                    multiple
+                />
             </button>
+
             <div class="btn-group">
-                <button class="btn btn-primary disabled dropdown-toggle files-selected-button" id="run-job-button" data-toggle="dropdown">
+                <button
+                    id="run-job-button"
+                    class="btn btn-primary disabled dropdown-toggle files-selected-button"
+                    data-toggle="dropdown"
+                >
                     Run Job
                     <i class="fa fa-caret-down"></i>
                 </button>
+
                 <ul class="dropdown-menu" role="menu">
                     <!--NOTE: IgBlast has been temporarily disabled until dev is ready -->
                     <!--<li class="file-actions"><a href="#" data-bypass=true class="run-job" data-jobtype="igblast">IgBlast</a></li>-->
-                    <li class="file-actions"><a href="#" data-bypass=true class="run-job" data-jobtype="vdjpipe">VDJPipe</a></li>
+                    <li class="file-actions">
+                        <a
+                            class="run-job has-tooltip"
+                            href="#"
+                            data-bypass=true
+                            data-jobtype="vdjpipe"
+
+                            {{!-- Dropdown --}}
+                            data-toggle="tooltip"
+                            data-placement="right"
+                            title="Run an HPC job using the VDJPipe tool"
+                        >
+                            VDJPipe
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div class="btn-group">
