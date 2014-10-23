@@ -87,23 +87,53 @@
                 </ul>
             </div>
             <div class="btn-group">
-                <button class="btn btn-primary disabled dropdown-toggle files-selected-button" id="file-action-button" data-toggle="dropdown">
+                <button
+                    id="file-action-button"
+                    class="btn btn-primary disabled dropdown-toggle files-selected-button"
+                    data-toggle="dropdown"
+                >
                     File Actions
                     <i class="fa fa-caret-down"></i>
                 </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li class="file-actions"><a href="#" data-bypass=true class="delete-files">Delete</a></li>
+
+                <ul
+                    class="dropdown-menu"
+                    role="menu"
+                >
+                    <li class="file-actions">
+                        <a
+                            class="delete-files"
+                            href="#"
+                            data-bypass=true
+                        >
+                            Delete
+                        </a>
+                    </li>
                 </ul>
+
             </div>
         </div>
-        <div class="col-md-3">
+
+        <div class="col-md-8">
             <div class="input-group project-search">
-                <input class="form-control" type="text" name="search" id="search-text">
+                <input
+                    id="search-text"
+                    class="form-control"
+                    name="search"
+                    type="text"
+                >
                 <span class="input-group-btn">
-                    <button class="btn btn-default" id="search-button" type="button">SEARCH</button>
+                    <button
+                        id="search-button"
+                        class="btn btn-default"
+                        type="button"
+                    >
+                        SEARCH
+                    </button>
                 </span>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -111,9 +141,48 @@
     <div class="col-md-12">
         <div class="file-listing-spacer">
             <ul class="nav nav-tabs nav-justified">
-                <li class="file-category active" id="uploaded"><a href="#" data-bypass=true data-id="uploaded">Uploaded Data</a></li>
-                <li class="file-category" id="preprocessed"><a href="#" data-bypass=true data-id="preprocessed">Preprocessed</a></li>
-                <li class="file-category" id="aligned"><a href="#" data-bypass=true data-id="aligned">Aligned</a></li>
+
+                <li
+                    id="uploaded"
+                    class="file-category active"
+                >
+                    <a
+                        href="#"
+                        data-bypass=true
+                        data-id="uploaded"
+                    >
+                        Uploaded Data
+                    </a>
+                </li>
+
+
+                <li
+                    id="preprocessed"
+                    class="file-category"
+                >
+                    <a
+                        href="#"
+                        data-bypass=true
+                        data-id="preprocessed"
+                    >
+                        Preprocessed
+                    </a>
+                </li>
+
+
+                <li
+                    id="aligned"
+                    class="file-category"
+                >
+                    <a
+                        href="#"
+                        data-bypass=true
+                        data-id="aligned"
+                    >
+                        Aligned
+                    </a>
+                </li>
+
             </ul>
         </div>
     </div>
