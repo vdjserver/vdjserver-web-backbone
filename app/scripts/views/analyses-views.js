@@ -65,7 +65,7 @@ define([
 
             var fileName = e.target.dataset.filename;
             var outputFile = this.collection.get(fileName);
-            outputFile.downloadFile();
+            outputFile.downloadFileToDisk();
         },
         clearChart: function() {
 
@@ -159,7 +159,7 @@ define([
 
             //get file name post-filter_mean_q_hist.csv
             var file = this.collection.get('human.IG.fna.igblast.kabat.out.rc_out.tsv');
-            file.downloadFile()
+            file.downloadFileToCache()
                 .done(function(tsv) {
                     Analyses.Charts.GiantTable(file, tsv);
                 })
@@ -176,7 +176,7 @@ define([
             var that = this;
 
             var file = this.collection.get('cdr3-hist-data.json');
-            file.downloadFile()
+            file.downloadFileToCache()
                 .done(function(text) {
                     Analyses.Charts.Cdr3(file, text, that.clearSVG);
                  })
@@ -193,7 +193,7 @@ define([
             var that = this;
 
             var file = this.collection.get('pre-composition.csv');
-            file.downloadFile()
+            file.downloadFileToCache()
                 .done(function(response) {
                     Analyses.Charts.Composition(file, response, that.clearSVG);
                 })
@@ -208,7 +208,7 @@ define([
             this.hideWarning();
 
             var file = this.collection.get('pre-qstats.csv');
-            file.downloadFile()
+            file.downloadFileToCache()
                 .done(function(text) {
                     Analyses.Charts.QualityScore(file, text);
                 })
@@ -225,7 +225,7 @@ define([
             var that = this;
 
             var file = this.collection.get('pre-mean_q_hist.csv');
-            file.downloadFile()
+            file.downloadFileToCache()
                 .done(function(text) {
                     Analyses.Charts.MeanQualityScoreHistogram(file, text, that.clearSVG);
                 })
@@ -242,7 +242,7 @@ define([
             var that = this;
 
             var file = this.collection.get('pre-len_hist.csv');
-            file.downloadFile()
+            file.downloadFileToCache()
                 .done(function(text) {
                     Analyses.Charts.LengthHistogram(file, text, that.clearSVG());
                 })
@@ -259,7 +259,7 @@ define([
             var that = this;
 
             var file = this.collection.get('pre-gc_hist.csv');
-            file.downloadFile()
+            file.downloadFileToCache()
                 .done(function(text) {
                     Analyses.Charts.PercentageGcHistogram(file, text, that.clearSVG());
                 })
@@ -277,7 +277,7 @@ define([
 
             //get file name post-filter_mean_q_hist.csv
             var file = this.collection.get('real_discrete_bar_chart.json');
-            file.downloadFile()
+            file.downloadFileToCache()
                 .done(function(text) {
                     Analyses.Charts.GeneDistribution(file, text, that.clearSVG());
                 })

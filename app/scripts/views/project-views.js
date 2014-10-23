@@ -673,7 +673,7 @@ define([
 
             var fileName = e.target.dataset.filename;
             var agaveFile = new Backbone.Agave.Model.File({projectUuid: this.projectUuid, name: fileName});
-            agaveFile.downloadFile();
+            agaveFile.downloadFileToDisk();
         },
     });
 

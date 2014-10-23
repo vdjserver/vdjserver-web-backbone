@@ -123,30 +123,34 @@ function(Backbone, EnvironmentConfig) {
 
             return jqxhr;
         },
-        // TODO: refactor these together
-        getFile: function(name) {
-            var jqxhr = $.ajax({
-                headers: Backbone.Agave.oauthHeader(),
-                type: 'GET',
-                url: EnvironmentConfig.agaveRoot + '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + this.get('projectUuid') + '/files/' + name,
-            });
-            this.name = name;
-            return jqxhr;
-        },
-        downloadFile: function() {
+        downloadFileToDisk: function() {
 
             var that = this;
 
             var xhr = new XMLHttpRequest();
-            xhr.open('get', EnvironmentConfig.agaveRoot + '/files/v2/media/system/' + EnvironmentConfig.storageSystem + '//projects/' + this.get('projectUuid') + '/files/' + this.get('name'));
+            xhr.open(
+                'get',
+                EnvironmentConfig.agaveRoot
+                    + '/files/v2/media/system'
+                    + '/' + EnvironmentConfig.storageSystem
+                    + '//projects'
+                    + '/' + this.get('projectUuid')
+                    + '/files'
+                    + '/' + this.get('name')
+            );
+
             xhr.responseType = 'blob';
             xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
 
             xhr.onload = function() {
-              if (this.status === 200 || this.status === 202) {
-                window.saveAs(new Blob([this.response]), that.get('name'));
-              }
+                if (this.status === 200 || this.status === 202) {
+                    window.saveAs(
+                        new Blob([this.response]),
+                        that.get('name')
+                    );
+                }
             };
+
             xhr.send();
 
             return xhr;
