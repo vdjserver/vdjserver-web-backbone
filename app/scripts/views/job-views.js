@@ -1,22 +1,31 @@
 define([
     'app',
     'handlebars',
+    'environment-config',
     'backbone.syphon',
     'vdjpipe-utilities',
-], function(App, Handlebars) {
+], function(App, Handlebars, EnvironmentConfig) {
 
     'use strict';
 
-    Handlebars.registerHelper('GetClassForJobStatus', function(jobStatus, options) {
+    Handlebars.registerHelper('GetClassForJobStatus', function(notification /*, options*/) {
 
-        if (jobStatus === 'PENDING') {
+        if (EnvironmentConfig.debug) {
+            console.log('job status is: ' + JSON.stringify(notification));
+        }
+
+        if (notification.jobStatus === 'PENDING') {
             return 'badge-danger';
         }
-        else if (jobStatus === 'RUNNING') {
+        else if (notification.jobStatus === 'QUEUED') {
             return 'badge-warning';
         }
-        else if (jobStatus === 'ARCHIVING_FINISHED') {
+        else if (notification.jobStatus === 'ARCHIVING_FINISHED') {
             return 'badge-success';
+        }
+        else {
+            var currentClass = $('#project-' + notification.uuid + '-notification-badge').attr('class');
+            return currentClass;
         }
     });
 
@@ -235,6 +244,7 @@ define([
             job.submitJob(this.projectModel.get('uuid'))
                 .then(function() {
                     jobNotification.set('associatedUuid', job.get('id'));
+                    jobNotification.set('name', job.get('name'));
                     return jobNotification.save();
                 })
                 .done(function() {
@@ -726,12 +736,12 @@ define([
         template: 'jobs/notification',
         initialize: function(parameters) {
 
-            var notificationModel = parameters.notificationModel;
+            this.notificationModel = parameters.notificationModel;
 
             var factory = new App.Websockets.Jobs.Factory();
             this.websocket = factory.getJobWebsocket();
             this.websocket.connectToServer();
-            this.websocket.subscribeToJob(notificationModel.get('associatedUuid'));
+            this.websocket.subscribeToJob(this.notificationModel.get('associatedUuid'));
 
             this.listenTo(
                 this.websocket,
@@ -743,7 +753,9 @@ define([
         },
         serialize: function() {
             return {
+                jobName: this.notificationModel.get('name'),
                 jobStatus: this.jobStatusMessage,
+                uuid: this.notificationModel.projectUuid,
             };
         },
 
