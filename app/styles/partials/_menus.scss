@@ -150,6 +150,8 @@
 }
 
 #project-navbar {
+    background-image: url('../images/navbar-background.jpg');
+    background-size: cover;
     border-bottom: 3px solid $projectNavbarBorderColor;
     padding: 0;
     margin: 0;
@@ -165,6 +167,7 @@
 #login-dropdown {
     font-size: 20px;
 
+    background-color: #ffffff;
     border-top: 3px solid $projectNavbarBorderColor;
     border-bottom: 3px solid #ffffff;
 
