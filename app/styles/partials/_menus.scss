@@ -45,10 +45,10 @@
 .project-menu {
 
     list-style: none;
-    font-family: 'Aleo-Bold';
+    //font-family: 'Aleo-Bold';
+    font-family: 'Aleo-Regular';
     font-size: 18px;
     //margin-left: 15px;
-
 
     background-color: $projectMenuLightColor;
 
@@ -60,7 +60,7 @@
         @extend .list-group-item;
 
         background-color: $projectMenuLightColor;
-        color: #000000;
+        color: $projectMenuTextColor;
     }
 }
 
