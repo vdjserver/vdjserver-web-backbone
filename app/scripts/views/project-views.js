@@ -313,10 +313,11 @@ define([
             'click .file-category':  '_changeFileCategory',
             'click .selected-files': '_uiToggleDisabledButtonStatus',
             'click #select-all-files-checkbox': '_toggleSelectAllFiles',
-            'click .run-job': '_clickRunJob',
-            'change #search-text': '_searchFileListings',
+            'click .run-job':       '_clickRunJob',
+            'change #search-text':  '_searchFileListings',
             'click .delete-files':  '_clickDeleteFiles',
             'click .download-file': '_clickDownloadFile',
+            'click .download-multiple-files': '_clickDownloadMultipleFiles',
         },
 
         // Private Methods
@@ -674,6 +675,22 @@ define([
             var fileName = e.target.dataset.filename;
             var agaveFile = new Backbone.Agave.Model.File({projectUuid: this.projectUuid, name: fileName});
             agaveFile.downloadFileToDisk();
+        },
+
+        _clickDownloadMultipleFiles: function(e) {
+            e.preventDefault();
+
+            var selectedFileMetadataUuids = this._getSelectedFileUuids();
+
+            console.log("selectedMetadata: " + JSON.stringify(selectedFileMetadataUuids));
+
+            for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
+                var fileMetadataModel = this.fileListings.get(selectedFileMetadataUuids[i]);
+
+                var fileModel = fileMetadataModel.getFileModel();
+console.log("fileModel is: " + JSON.stringify(fileModel));
+                fileModel.downloadFileToDisk();
+            }
         },
     });
 
