@@ -44,6 +44,21 @@ define(['backbone'], function(Backbone) {
                 this.projectUuid = parameters.projectUuid;
             }
         },
+        // Sort by reverse date order
+        comparator: function(modelA, modelB) {
+            var modelAEndDate = moment(modelA.get('created'));
+            var modelBEndDate = moment(modelB.get('created'));
+
+            if (modelAEndDate > modelBEndDate) {
+                return -1;
+            }
+            else if (modelBEndDate > modelAEndDate) {
+                return 1;
+            }
+
+            // Equal
+            return 0;
+        },
         url: function() {
             return '/meta/v2/data?q='
                 + encodeURIComponent('{'

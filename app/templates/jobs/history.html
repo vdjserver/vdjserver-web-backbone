@@ -1,36 +1,116 @@
-<div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Job Name</th>
-                <th>Status</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Job ID</th>
-                <th>Owner</th>
-                <th>View Analyses</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each jobs}}
-                <tr>
-                    <td>{{name}}</td>
-                    <td>{{status}}</td>
-                    <td>{{FormatAgaveDate submitTime}}</td>
-                    <td>{{FormatAgaveDate endTime}}</td>
-                    <td>{{id}}</td>
-                    <td>{{owner}}</td>
-                    <td>
-                        {{#JobSuccessCheck this}}
-                            <a href="project/{{../../projectUuid}}/jobs/{{id}}" class="disabled">
-                                <button type="button" class="btn btn-primary">View Output</button>
-                            </a>
-                        {{else}}
-                            <button type="button" class="btn btn-danger" disabled="disabled">Analysis Unavailable</button>
-                        {{/JobSuccessCheck}}
-                    </td>
-                </tr>
-            {{/each}}
-        </tbody>
-    </table>
+<div class="row">
+    <div class="col-sm-12">
+
+        <div class="text-center">
+            <ul class="pagination">
+
+                <li class="job-pagination-previous">
+                    <a
+                        href="#"
+                        data-bypass=true
+                    >
+                        &laquo;
+                    </a>
+                </li>
+
+                {{#each paginationSets}}
+                    <li class="job-pagination-wrapper job-pagination-wrapper-{{this}}">
+                        <a
+                            class="job-pagination"
+                            href="#"
+                            data-bypass=true
+                            data-id="{{this}}"
+                        >
+                            {{this}}
+                        </a>
+                    </li>
+                {{/each}}
+
+                <li class="job-pagination-next">
+                    <a
+                        href="#"
+                        data-bypass=true
+                    >
+                        &raquo;
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Job Name</th>
+                        <th>Status</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Job ID</th>
+                        <th>Owner</th>
+                        <th>View Analyses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each jobs}}
+                        <tr>
+                            <td>{{name}}</td>
+                            <td>{{status}}</td>
+                            <td>{{FormatAgaveDate submitTime}}</td>
+                            <td>{{FormatAgaveDate endTime}}</td>
+                            <td>{{id}}</td>
+                            <td>{{owner}}</td>
+                            <td>
+                                {{#JobSuccessCheck this}}
+                                    <a href="project/{{../../projectUuid}}/jobs/{{id}}" class="disabled">
+                                        <button type="button" class="btn btn-primary">View Output</button>
+                                    </a>
+                                {{else}}
+                                    <button type="button" class="btn btn-danger" disabled="disabled">Analysis Unavailable</button>
+                                {{/JobSuccessCheck}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center">
+            <ul class="pagination">
+
+                <li class="job-pagination-previous">
+                    <a
+                        href="#"
+                        data-bypass=true
+                    >
+                        &laquo;
+                    </a>
+                </li>
+
+                {{#each paginationSets}}
+                    <li class="job-pagination-wrapper job-pagination-wrapper-{{this}}">
+                        <a
+                            class="job-pagination"
+                            href="#"
+                            data-bypass=true
+                            data-id="{{this}}"
+                        >
+                            {{this}}
+                        </a>
+                    </li>
+                {{/each}}
+
+                <li class="job-pagination-next">
+                    <a
+                        href="#"
+                        data-bypass=true
+                    >
+                        &raquo;
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
 </div>
