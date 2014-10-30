@@ -24,6 +24,7 @@ define([
         initialize: function() {
             this.elementCount = 0;
             this.objectCount  = 0;
+            this.barcodeSubviewsSelector = '#' + this.inputCount + '-' + this.parameterType + '-added-barcode-subviews';
         },
         afterRender: function() {
             if (this.options && this.options.elements) {
@@ -84,19 +85,16 @@ define([
             var barcodeCount = e.target.value;
             barcodeCount = parseInt(barcodeCount);
 
-            if (this.elementCount < barcodeCount) {
-                this.addBarcode();
-            }
-            else {
-                this.removeBarcode();
-            }
-
             if (barcodeCount === 1) {
+                // User removed a barcode since the target count is 1
+                this.removeBarcode();
                 this.updateViewForSingleBarcodeLocation();
 
                 $('#' + this.inputCount + '-barcode-location').val(1);
             }
             else if (barcodeCount === 2) {
+                // User added a barcode since the target count is 2
+                this.addBarcode();
                 this.updateViewForDoubleBarcodeLocation();
 
                 $('#' + this.inputCount + '-barcode-location').val(3);
@@ -113,7 +111,7 @@ define([
             barcodeLocation = parseInt(barcodeLocation);
 
             // .value() is necessary for layoutmanager to return view stack as a JS array
-            var barcodeSubviews = this.getViews('.added-barcode-subviews').value();
+            var barcodeSubviews = this.getViews(this.barcodeSubviewsSelector).value();
 
             var barcodeCount = $('#' + this.inputCount + '-barcodes').val();
             barcodeCount = parseInt(barcodeCount);
@@ -177,14 +175,12 @@ define([
                 barcodeFiles: this.barcodeFiles,
             });
 
-            this.insertView('.added-barcode-subviews', elementView);
+            this.insertView(this.barcodeSubviewsSelector, elementView);
             elementView.render();
         },
         removeBarcode: function() {
 
-            this.elementCount = this.elementCount - 1;
-
-            var barcodeSubviews = this.getViews('.added-barcode-subviews').value();
+            var barcodeSubviews = this.getViews(this.barcodeSubviewsSelector).value();
             var barcodeView = barcodeSubviews[1];
 
             barcodeView.remove();
@@ -194,6 +190,11 @@ define([
     Vdjpipe.CustomDemultiplexBarcodeConfig = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-custom-demultiplex-barcode-config',
         initialize: function() {
+
+            // Don't let layout manager discard this view if it is re-rendered!
+            // We're managing it manually to allow user interaction with barcode subviews.
+            this.keep = true;
+
             if (this.loadDefaultOptions) {
                 if (!this.options) {
                     this.options = {};
