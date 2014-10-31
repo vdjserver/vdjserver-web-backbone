@@ -501,6 +501,9 @@ define([
                 // Display any new errors
                 if (_.isArray(formErrors)) {
 
+                    // Scroll before showing error to show off the error fade in
+                    document.getElementById('job-modal-label').scrollIntoView();
+
                     for (var i = 0; i < formErrors.length; i++) {
                         var message = formErrors[i].message;
                         var type = formErrors[i].type;
@@ -513,8 +516,10 @@ define([
                                 .fadeIn()
                             )
                         ;
+
                         $('#' + type + '-container').addClass('has-error');
                     }
+
                 }
             },
 
