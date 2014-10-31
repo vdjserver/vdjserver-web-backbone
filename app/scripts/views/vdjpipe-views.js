@@ -291,28 +291,38 @@ define([
                 e.preventDefault();
             }
 
-            this.resetOptionalFormElementState();
+            if ($('#' + this.parameterType + '-ignore-ends-button').hasClass('btn-success')) {
+                this.resetOptionalFormElementState();
+            }
+            else {
+                this.resetOptionalFormElementState();
 
-            // Show this input
-            $('.' + this.parameterType + '-ignore-ends').removeClass('hidden');
+                // Show this input
+                $('.' + this.parameterType + '-ignore-ends').removeClass('hidden');
 
-            // Highlight selected button
-            $('#' + this.parameterType + '-ignore-ends-button').removeClass('btn-default');
-            $('#' + this.parameterType + '-ignore-ends-button').addClass('btn-success');
+                // Highlight selected button
+                $('#' + this.parameterType + '-ignore-ends-button').removeClass('btn-default');
+                $('#' + this.parameterType + '-ignore-ends-button').addClass('btn-success');
+            }
         },
         setFractionMatch: function(e) {
             if (e) {
                 e.preventDefault();
             }
 
-            this.resetOptionalFormElementState();
+            if ($('#' + this.parameterType + '-fraction-match-button').hasClass('btn-success')) {
+                this.resetOptionalFormElementState();
+            }
+            else {
+                this.resetOptionalFormElementState();
 
-            // Show this input
-            $('.' + this.parameterType + '-fraction-match').removeClass('hidden');
+                // Show this input
+                $('.' + this.parameterType + '-fraction-match').removeClass('hidden');
 
-            // Highlight selected button
-            $('#' + this.parameterType + '-fraction-match-button').removeClass('btn-default');
-            $('#' + this.parameterType + '-fraction-match-button').addClass('btn-success');
+                // Highlight selected button
+                $('#' + this.parameterType + '-fraction-match-button').removeClass('btn-default');
+                $('#' + this.parameterType + '-fraction-match-button').addClass('btn-success');
+            }
         },
     });
 
@@ -328,6 +338,7 @@ define([
         template: 'jobs/vdjpipe-length-filter',
     });
 
+/*
     Vdjpipe.MatchSequenceElement = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-match-sequence-element',
         initialize: function() {
@@ -425,6 +436,7 @@ define([
             this.remove();
         },
     });
+*/
 
     Vdjpipe.MatchExternalMolecularIdentifier = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-match-external-molecular-identifier',

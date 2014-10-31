@@ -211,7 +211,7 @@ define([
                     .addClass('has-error')
                     ;
 
-                $('#job-name').get(0).scrollIntoView();
+                document.getElementById('job-modal-label').scrollIntoView();
 
                 return;
             }

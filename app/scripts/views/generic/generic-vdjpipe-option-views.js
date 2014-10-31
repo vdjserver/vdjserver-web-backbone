@@ -23,6 +23,10 @@ define([
                 files = this.files.toJSON();
             }
 
+            if (this.options.length === undefined) {
+                this.options = '';
+            }
+
             return {
                 isEditable: this.isEditable,
                 parameterType: this.parameterType,
