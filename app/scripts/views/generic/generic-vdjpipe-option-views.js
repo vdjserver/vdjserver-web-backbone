@@ -23,6 +23,8 @@ define([
                 files = this.files.toJSON();
             }
 
+            // Options can occasionally be undefined, and this can
+            // cause serialization issues if left unchecked.
             if (this.options.length === undefined) {
                 this.options = '';
             }
