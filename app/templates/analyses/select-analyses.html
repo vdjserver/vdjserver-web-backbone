@@ -12,6 +12,9 @@
                     <th class="text-center">
                         Size
                     </th>
+                    <th class="text-center">
+                        Visualization
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -26,6 +29,13 @@
                         <td>
                             {{GetHumanReadableFileSize length}}
                         </td>
+                        <td>
+                            {{#FileTypeHasChart this.name}}
+                                <button class="btn btn-default show-chart" data-id="{{name}}">
+                                    Show Chart
+                                </button>
+                            {{/FileTypeHasChart}}
+                        </td>
                     </tr>
                 {{/each}}
             </tbody>
@@ -34,28 +44,30 @@
 </div>
 
 <div class="analyses">
-	<div class="btn-group">
-		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-			View Results <span class="caret"></span>
-  		</button>
-  		<ul class="dropdown-menu" role="menu">
-			<li class="btn cdr3-histogram"><a>CDR3 Length Histogram</a></li>
-			<li class="btn gene-dist-chart-btn"><a>Gene Distribution Chart</a></li>
-			<li class="btn composition-chart-btn"><a>Base Composition Chart</a></li>
-			<li class="btn quality-chart-btn"><a>Quality Score Chart</a></li>
-			<li class="btn mean-q-hist-btn"><a>Mean Quality Score Histogram</a></li>
-			<li class="btn gc-hist-btn"><a>Percentage GC Histogram</a></li>
-			<li class="btn length-hist-btn"><a>Length Histogram</a></li>
-			<li class="btn giant-table-btn"><a>Read Statistics</a></li>
-		</ul>
-	</div>
-	<div class="btn-group">
-		<button class="btn btn-default toggle-legend-btn">Toggle Legend</button>
-		<button class="btn btn-danger chart-reset-btn">Clear Chart</button>
-	</div>
-	<div class="well well-sm" id="chart-file-well">No data loaded. Select an Analysis.</div>
+    <!--
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                View Results <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li class="btn cdr3-histogram"><a>CDR3 Length Histogram</a></li>
+                <li class="btn gene-dist-chart-btn"><a>Gene Distribution Chart</a></li>
+                <li class="btn composition-chart-btn"><a>Base Composition Chart</a></li>
+                <li class="btn quality-chart-btn"><a>Quality Score Chart</a></li>
+                <li class="btn mean-q-hist-btn"><a>Mean Quality Score Histogram</a></li>
+                <li class="btn gc-hist-btn"><a>Percentage GC Histogram</a></li>
+                <li class="btn length-hist-btn"><a>Length Histogram</a></li>
+                <li class="btn giant-table-btn"><a>Read Statistics</a></li>
+            </ul>
+        </div>
+    -->
+    <div class="btn-group">
+        <button id="chart-legend" class="btn btn-default toggle-legend-btn" style="display:none;">Toggle Legend</button>
+    </div>
+
 	<div class="alert alert-danger alert-message" style="display:none;"></div>
 	<button class="btn btn-default download-btn" style="display:none;">Download Full Data</button>
+
 	<div class="d3-tip"></div>
 	<div id='analyses-chart' class='svg-container'>
 	    <svg></svg>

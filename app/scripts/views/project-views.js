@@ -682,13 +682,10 @@ define([
 
             var selectedFileMetadataUuids = this._getSelectedFileUuids();
 
-            console.log("selectedMetadata: " + JSON.stringify(selectedFileMetadataUuids));
-
             for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
                 var fileMetadataModel = this.fileListings.get(selectedFileMetadataUuids[i]);
 
                 var fileModel = fileMetadataModel.getFileModel();
-console.log("fileModel is: " + JSON.stringify(fileModel));
                 fileModel.downloadFileToDisk();
             }
         },

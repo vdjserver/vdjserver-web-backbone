@@ -1,5 +1,6 @@
 define([
     'app',
+    'handlebars',
     'd3',
     'nvd3',
     'box',
@@ -7,6 +8,7 @@ define([
     'slickgrid.grid',
 ], function(
     App,
+    Handlebars,
     d3,
     nv,
     box,
@@ -14,6 +16,24 @@ define([
 ) {
 
     'use strict';
+
+    Handlebars.registerHelper('FileTypeHasChart', function(filename, options) {
+
+        var extension = false;
+
+        if (filename) {
+            var split = filename.split('.');
+            extension = split.pop();
+        }
+
+        if (extension === 'csv') {
+            return options.fn(this);
+        }
+        else {
+            return options.inverse(this);
+        }
+
+    });
 
     var Analyses = {};
     Analyses.Charts = {};
@@ -47,6 +67,8 @@ define([
             };
         },
         events: {
+            'click .show-chart': 'showChart',
+
             'click .download-file': 'downloadFile',
             'click .chart-reset-btn': 'clearChart',
             'click .toggle-legend-btn': 'toggleLegend',
@@ -54,12 +76,67 @@ define([
             'click .cdr3-histogram': 'cdr3Histogram',
             'click .gene-dist-chart-btn': 'geneDistChart',
             'click .giant-table-btn': 'giantTable',
-            'click .composition-chart-btn': 'compositionChart',
             'click .quality-chart-btn': 'qualityScoreChart',
-            'click .mean-q-hist-btn': 'meanQualityScoreHistogram',
-            'click .length-hist-btn': 'lengthHist',
-            'click .gc-hist-btn': 'percentageGcHistogram',
         },
+        showChart: function(e) {
+            e.preventDefault();
+
+            var filename = e.target.dataset.id;
+
+            // Select current button
+            $('.show-chart').removeClass('btn-success');
+            $(e.target).addClass('btn-success');
+
+            // Clean up any charts that are currently displayed
+            this.clearChart();
+            this.hideWarning();
+            $('#chart-legend').hide();
+
+            var that = this;
+
+            var file = this.collection.get(filename);
+            file.downloadFileToCache()
+                .done(function(response) {
+                    switch (filename) {
+                        case 'pre-composition.csv':
+                            $('#chart-legend').show();
+                            Analyses.Charts.Composition(file, response, that.clearSVG);
+                            break;
+
+                        case 'pre-gc_hist.csv':
+                            $('#chart-legend').show();
+                            Analyses.Charts.PercentageGcHistogram(file, response, that.clearSVG());
+                            break;
+
+                        case 'pre-heat_map.csv':
+                            break;
+
+                        case 'pre-len_hist.csv':
+                            $('#chart-legend').show();
+                            Analyses.Charts.LengthHistogram(file, response, that.clearSVG());
+                            break;
+
+                        case 'pre-mean_q_hist.csv':
+                            $('#chart-legend').show();
+                            Analyses.Charts.MeanQualityScoreHistogram(file, response, that.clearSVG);
+                            break;
+
+                        case 'pre-qstats.csv':
+                            $('#chart-legend').show();
+                            Analyses.Charts.QualityScore(file, response);
+                            break;
+
+                        default:
+                            break;
+                    }
+                })
+                .fail(function(response) {
+                    var errorMessage = this.getErrorMessageFromResponse(response);
+                    this.showWarning(errorMessage);
+                })
+                ;
+        },
+
         downloadFile: function(e) {
             e.preventDefault();
 
@@ -180,89 +257,6 @@ define([
                 .done(function(text) {
                     Analyses.Charts.Cdr3(file, text, that.clearSVG);
                  })
-                .fail(function(response) {
-                    var errorMessage = this.getErrorMessageFromResponse(response);
-                    this.showWarning(errorMessage);
-                });
-        },
-        compositionChart: function() {
-
-            this.clearChart();
-            this.hideWarning();
-
-            var that = this;
-
-            var file = this.collection.get('pre-composition.csv');
-            file.downloadFileToCache()
-                .done(function(response) {
-                    Analyses.Charts.Composition(file, response, that.clearSVG);
-                })
-                .fail(function(response) {
-                    var errorMessage = this.getErrorMessageFromResponse(response);
-                    this.showWarning(errorMessage);
-                });
-        },
-        qualityScoreChart: function() {
-
-            this.clearChart();
-            this.hideWarning();
-
-            var file = this.collection.get('pre-qstats.csv');
-            file.downloadFileToCache()
-                .done(function(text) {
-                    Analyses.Charts.QualityScore(file, text);
-                })
-                .fail(function(response) {
-                    var errorMessage = this.getErrorMessageFromResponse(response);
-                    this.showWarning(errorMessage);
-                });
-        },
-        meanQualityScoreHistogram: function() {
-
-            this.clearChart();
-            this.hideWarning();
-
-            var that = this;
-
-            var file = this.collection.get('pre-mean_q_hist.csv');
-            file.downloadFileToCache()
-                .done(function(text) {
-                    Analyses.Charts.MeanQualityScoreHistogram(file, text, that.clearSVG);
-                })
-                .fail(function(response) {
-                    var errorMessage = this.getErrorMessageFromResponse(response);
-                    this.showWarning(errorMessage);
-                });
-        },
-        lengthHist: function () {
-
-            this.clearChart();
-            this.hideWarning();
-
-            var that = this;
-
-            var file = this.collection.get('pre-len_hist.csv');
-            file.downloadFileToCache()
-                .done(function(text) {
-                    Analyses.Charts.LengthHistogram(file, text, that.clearSVG());
-                })
-                .fail(function(response) {
-                    var errorMessage = this.getErrorMessageFromResponse(response);
-                    this.showWarning(errorMessage);
-                });
-        },
-        percentageGcHistogram: function () {
-
-            this.clearChart();
-            this.hideWarning();
-
-            var that = this;
-
-            var file = this.collection.get('pre-gc_hist.csv');
-            file.downloadFileToCache()
-                .done(function(text) {
-                    Analyses.Charts.PercentageGcHistogram(file, text, that.clearSVG());
-                })
                 .fail(function(response) {
                     var errorMessage = this.getErrorMessageFromResponse(response);
                     this.showWarning(errorMessage);
