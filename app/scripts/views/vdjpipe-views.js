@@ -86,8 +86,16 @@ define([
             barcodeCount = parseInt(barcodeCount);
 
             if (barcodeCount === 1) {
-                // User removed a barcode since the target count is 1
-                this.removeBarcode();
+
+                // User removed a barcode since we have an element count
+                if (this.elementCount > 1) {
+                    this.removeBarcode();
+                }
+                // User added an initial barcode
+                else {
+                    this.addBarcode();
+                }
+
                 this.updateViewForSingleBarcodeLocation();
 
                 $('#' + this.inputCount + '-barcode-location').val(1);
@@ -162,7 +170,7 @@ define([
         },
         addBarcode: function(barcodeOptions) {
 
-            this.elementCount = this.elementCount + 1;
+            this.elementCount += 1;
 
             var elementView = new Vdjpipe.CustomDemultiplexBarcodeConfig({
                 isEditable: this.isEditable,
@@ -180,9 +188,11 @@ define([
         },
         removeBarcode: function() {
 
-            var barcodeSubviews = this.getViews(this.barcodeSubviewsSelector).value();
-            var barcodeView = barcodeSubviews[1];
+            this.elementCount -= 1;
 
+            var barcodeSubviews = this.getViews(this.barcodeSubviewsSelector).value();
+
+            var barcodeView = barcodeSubviews[1];
             barcodeView.remove();
         },
     });
