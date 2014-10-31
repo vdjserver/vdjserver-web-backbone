@@ -71,6 +71,9 @@ define([
         },
         afterRender: function() {
             $('#job-modal').modal('show');
+            $('#job-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
         },
         events: {
             'change #select-workflow': '_showWorkflow',
