@@ -65,9 +65,9 @@ define([
 
     // View Helpers
     'vdjpipe-view-helpers',
+    'view-layouts',
 
     // Views
-    'app-views',
     'form-views',
     'util-views',
     'not-found-views',
@@ -77,6 +77,9 @@ define([
     'profile-views',
     'job-views',
     'project-views',
+    'sidemenu-views',
+    'navbar-views',
+    'public-views',
     'analyses-views',
     'vdjpipe-views',
 

@@ -1,37 +1,14 @@
-define(['app', 'backbone.syphon'], function(App) {
+define([
+    'app',
+    'backbone.syphon'
+], function(App) {
+
     'use strict';
 
-    var AppViews = {};
+    var Public = {};
 
-    // layouts
-    //AppViews.HeaderLayout  = Backbone.Layout.extend();
-    AppViews.MainLayout    = Backbone.Layout.extend({
-        el: '#main',
-    });
-    AppViews.SidebarLayout = Backbone.Layout.extend({
-        template: 'layouts/project/project-sidebar',
-    });
-    AppViews.ContentLayout = Backbone.Layout.extend({
-        template: 'layouts/project/project-content',
-    });
-
-
-    // app views
-    AppViews.Nav = Backbone.View.extend({
-        template: 'nav',
-        initialize: function() {
-            this.model.on('change', this.render, this);
-        },
-        serialize: function() {
-            return {
-                isLoggedIn: App.Agave.token().isActive(),
-                account: this.model.toJSON()
-            };
-        },
-    });
-
-    AppViews.Home = Backbone.View.extend({
-        template: 'home',
+    Public.Home = Backbone.View.extend({
+        template: 'public/home',
         initialize: function() {
 
             //this.model.destroy();
@@ -113,6 +90,6 @@ define(['app', 'backbone.syphon'], function(App) {
         },
     });
 
-    App.Views.AppViews = AppViews;
-    return AppViews;
+    App.Views.Public = Public;
+    return Public;
 });

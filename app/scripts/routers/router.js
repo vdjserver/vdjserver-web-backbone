@@ -34,12 +34,9 @@ define(['app'], function(App) {
     };
 
     var _setPublicSubviews = function() {
-
         if (App.Layouts.main.template !== 'layouts/public') {
             App.Layouts.main.template = 'layouts/public';
         }
-
-        App.Layouts.main.setView('.nav-container', new App.Views.AppViews.Nav({model: App.Agave.token()}));
     };
 
     var _setProjectSubviews = function(projectUuid) {
@@ -52,7 +49,7 @@ define(['app'], function(App) {
         }
 
         if (! App.Layouts.sidebar.getView('.sidebar')) {
-            App.Layouts.sidebar.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
+            App.Layouts.sidebar.setView('.sidebar', new App.Views.Sidemenu.List({projectUuid: projectUuid}));
             //App.Layouts.sidebar.render();
         }
         else {
@@ -61,7 +58,7 @@ define(['app'], function(App) {
         }
 
         if (! App.Layouts.content.getView('#project-navbar')) {
-            App.Layouts.content.setView('#project-navbar', new App.Views.Projects.Navbar());
+            App.Layouts.content.setView('#project-navbar', new App.Views.Navbar.Navigation());
         }
     };
 
@@ -92,7 +89,7 @@ define(['app'], function(App) {
         index: function() {
             if (! App.Agave.token().isActive()) {
                 _setPublicSubviews();
-                App.Layouts.main.setView('.content', new App.Views.AppViews.Home({model: App.Agave.token()}));
+                App.Layouts.main.setView('.content', new App.Views.Public.Home({model: App.Agave.token()}));
                 App.Layouts.main.render();
             }
             else {

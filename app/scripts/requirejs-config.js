@@ -70,9 +70,9 @@ require.config({
 
         // View Helpers
         'vdjpipe-view-helpers': 'views/helpers/vdjpipe-view-helpers',
+        'view-layouts': 'views/layouts/view-layouts',
 
         // Views
-        'app-views': 'views/app/app-views',
         'form-views': 'views/app/form-views',
         'util-views': 'views/app/util-views',
         'not-found-views': 'views/not-found-views',
@@ -82,6 +82,9 @@ require.config({
         'profile-views': 'views/profile-views',
         'job-views': 'views/job-views',
         'project-views': 'views/project-views',
+        'sidemenu-views': 'views/sidemenu-views',
+        'navbar-views': 'views/navbar-views',
+        'public-views': 'views/public-views',
         'analyses-views': 'views/analyses-views',
         'vdjpipe-views': 'views/vdjpipe-views',
 
