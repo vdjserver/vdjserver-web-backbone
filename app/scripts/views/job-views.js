@@ -14,14 +14,14 @@ define([
             console.log('job status is: ' + JSON.stringify(notification));
         }
 
-        if (notification.jobStatus === 'PENDING') {
-            return 'badge-danger';
-        }
-        else if (notification.jobStatus === 'QUEUED') {
+        if (notification.jobStatus === ('PENDING' || 'QUEUED')) {
             return 'badge-warning';
         }
-        else if (notification.jobStatus === 'ARCHIVING_FINISHED') {
+        else if (notification.jobStatus === ('ARCHIVING_FINISHED' || 'FINISHED')) {
             return 'badge-success';
+        }
+        else if (notification.jobStatus === ('KILLED' || 'FAILED')) {
+            return 'badge-danger';
         }
         else {
             var currentClass = $('#project-' + notification.uuid + '-notification-badge').attr('class');
