@@ -78,6 +78,8 @@ define([
         events: {
             'change #select-workflow': '_showWorkflow',
             'click .remove-file-from-job': '_removeFileFromJob',
+            'change .job-form-item': '_revealSaveWorkflow',
+            'click #save-workflow': '_saveWorkflow',
             'click #create-workflow': '_createWorkflow',
             'click #edit-workflow':   '_editWorkflow',
             'click #delete-workflow': '_deleteWorkflow',
@@ -87,6 +89,46 @@ define([
         // Private Methods
 
         // Event Responders
+        _revealSaveWorkflow: function(e) {
+            e.preventDefault();
+
+            // Make sure that this isn't a predefined workflow
+            // Only allow if not predefined
+
+            var workflowId = $('#select-workflow').val();
+            var workflow = this.workflows.get(workflowId);
+
+            if (workflow && !this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
+                $('#save-workflow').removeClass('hidden');
+            }
+        },
+        _hideSaveWorkflow: function() {
+            var element = document.getElementById('save-workflow');
+            element.classList.add('hidden');
+        },
+        _saveWorkflow: function(e) {
+            e.preventDefault();
+
+            var formData = Backbone.Syphon.serialize(this);
+
+            var workflowId   = document.getElementById('select-workflow').value;
+            var workflowName = document.getElementById('select-workflow').selectedOptions[0].dataset.name;
+
+            formData['workflow-name'] = workflowName;
+
+            var workflow = this.workflows.get(workflowId);
+            workflow.setConfigFromFormData(formData);
+
+            var that = this;
+            workflow.save()
+                .done(function() {
+                    that._hideSaveWorkflow();
+                })
+                .fail(function() {
+
+                })
+                ;
+        },
         _createWorkflow: function(e) {
             e.preventDefault();
 
@@ -142,6 +184,9 @@ define([
             // Do housekeeping first
             this.removeView('#workflow-staging-area');
             $('#workflow-staging-area').empty();
+
+            // Hide save
+            $('#save-workflow').addClass('hidden');
 
             // Setup and insert new workflow views
             var workflowId = e.target.value;
@@ -211,6 +256,7 @@ define([
                     .addClass('has-error')
                     ;
 
+                // Scroll to top
                 document.getElementById('job-modal-label').scrollIntoView();
 
                 return;
