@@ -35,8 +35,6 @@ define(['app'], function(App) {
 
     var _setPublicSubviews = function() {
 
-        App.Layouts.main.removeView('.sidebar');
-
         if (App.Layouts.main.template !== 'layouts/public') {
             App.Layouts.main.template = 'layouts/public';
         }
@@ -46,20 +44,24 @@ define(['app'], function(App) {
 
     var _setProjectSubviews = function(projectUuid) {
 
-        if (App.Layouts.main.template !== 'layouts/project-standard') {
-            App.Layouts.main.template = 'layouts/project-standard';
+        if (App.Layouts.main.template !== 'layouts/project/project-main') {
+            App.Layouts.main.template = 'layouts/project/project-main';
+            App.Layouts.main.setView('#sidebar-wrapper', App.Layouts.sidebar);
+            App.Layouts.main.setView('#main-wrapper', App.Layouts.content);
+            App.Layouts.main.render();
         }
 
-        if (! App.Layouts.main.getView('.sidebar')) {
-            App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
+        if (! App.Layouts.sidebar.getView('.sidebar')) {
+            App.Layouts.sidebar.setView('.sidebar', new App.Views.Projects.List({projectUuid: projectUuid}));
+            //App.Layouts.sidebar.render();
         }
         else {
-            var listView = App.Layouts.main.getView('.sidebar');
+            var listView = App.Layouts.sidebar.getView('.sidebar');
             listView.uiSelectProject(projectUuid);
         }
 
         if (! App.Layouts.main.getView('#project-navbar')) {
-            App.Layouts.main.setView('#project-navbar', new App.Views.Projects.Navbar());
+            App.Layouts.content.setView('#project-navbar', new App.Views.Projects.Navbar());
         }
     };
 
@@ -150,43 +152,20 @@ define(['app'], function(App) {
         projectIndex: function() {
 
             var destinationRoute = function() {
+                _setProjectSubviews();
 
-                /*
-                    This route doesn't follow the standard view loading
-                    pattern that other project routes follow because it needs
-                    to have listView handle redirection instead of indexView.
+                // Either load the index view before the fetch is done,
+                // or load after the fetch is done.
+                var projectListView = App.Layouts.sidebar.getView('.sidebar');
+                projectListView.shouldLoadViewForIndex = true;
 
-                    The reason for this is that listView handles data
-                    management for projects, so it can only redirect properly
-                    after data has been fetched.
-
-                    I don't think it makes sense to refactor data management
-                    out into a separate function when this is the only
-                    exception case/problem.
-                */
-
-                if (App.Layouts.main.template !== 'layouts/project-standard') {
-                    App.Layouts.main.template = 'layouts/project-standard';
-                }
-
-                // Get this out so it can render quickly, and so it won't
-                // cause problems by overriding our redirect if it renders
-                // slowly.
-                App.Layouts.main.setView('.content', new App.Views.Projects.Index());
-
-                if (! App.Layouts.main.getView('.sidebar')) {
-                    App.Layouts.main.setView('.sidebar', new App.Views.Projects.List({shouldLoadViewForIndex: true}));
-                }
-                else {
-                    var projectListView = App.Layouts.main.getView('.sidebar');
+                if (projectListView.fetchDone === true) {
                     projectListView.loadViewForIndex();
                 }
 
-                if (! App.Layouts.main.getView('#project-navbar')) {
-                    App.Layouts.main.setView('#project-navbar', new App.Views.Projects.Navbar());
-                }
+                App.Layouts.content.setView('.content', new App.Views.Projects.Index());
 
-                App.Layouts.main.render();
+                App.Layouts.content.render();
             };
 
             _routeWithTokenRefreshCheck(destinationRoute);
@@ -196,8 +175,8 @@ define(['app'], function(App) {
 
             var destinationRoute = function() {
                 _setProjectSubviews();
-                App.Layouts.main.setView('.content', new App.Views.Projects.Create());
-                App.Layouts.main.render();
+                App.Layouts.content.setView('.content', new App.Views.Projects.Create());
+                App.Layouts.content.render();
             };
 
             _routeWithTokenRefreshCheck(destinationRoute);
@@ -207,8 +186,8 @@ define(['app'], function(App) {
 
             var destinationRoute = function() {
                 _setProjectSubviews(projectUuid);
-                App.Layouts.main.setView('.content', new App.Views.Projects.Detail({projectUuid: projectUuid}));
-                App.Layouts.main.render();
+                App.Layouts.content.setView('.content', new App.Views.Projects.Detail({projectUuid: projectUuid}));
+                App.Layouts.content.render();
             };
 
             _routeWithTokenRefreshCheck(destinationRoute);
@@ -218,8 +197,8 @@ define(['app'], function(App) {
 
             var destinationRoute = function() {
                 _setProjectSubviews(projectUuid);
-                App.Layouts.main.setView('.content', new App.Views.Projects.Settings({projectUuid: projectUuid}));
-                App.Layouts.main.render();
+                App.Layouts.content.setView('.content', new App.Views.Projects.Settings({projectUuid: projectUuid}));
+                App.Layouts.content.render();
             };
 
             _routeWithTokenRefreshCheck(destinationRoute);
@@ -229,8 +208,8 @@ define(['app'], function(App) {
 
             var destinationRoute = function() {
                 _setProjectSubviews(projectUuid);
-                App.Layouts.main.setView('.content', new App.Views.Projects.ManageUsers({projectUuid: projectUuid}));
-                App.Layouts.main.render();
+                App.Layouts.content.setView('.content', new App.Views.Projects.ManageUsers({projectUuid: projectUuid}));
+                App.Layouts.content.render();
             };
 
             _routeWithTokenRefreshCheck(destinationRoute);
@@ -240,8 +219,8 @@ define(['app'], function(App) {
 
             var destinationRoute = function() {
                 _setProjectSubviews(projectUuid);
-                App.Layouts.main.setView('.content', new App.Views.Jobs.History({projectUuid: projectUuid}));
-                App.Layouts.main.render();
+                App.Layouts.content.setView('.content', new App.Views.Jobs.History({projectUuid: projectUuid}));
+                App.Layouts.content.render();
             };
 
             _routeWithTokenRefreshCheck(destinationRoute);
@@ -251,8 +230,8 @@ define(['app'], function(App) {
 
             var destinationRoute = function() {
                 _setProjectSubviews(projectUuid);
-                App.Layouts.main.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid, jobId: jobId}));
-                App.Layouts.main.render();
+                App.Layouts.content.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid, jobId: jobId}));
+                App.Layouts.content.render();
             };
 
             _routeWithTokenRefreshCheck(destinationRoute);

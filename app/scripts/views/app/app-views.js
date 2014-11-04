@@ -1,11 +1,20 @@
-define(['app', 'backbone.syphon'], function(App){
+define(['app', 'backbone.syphon'], function(App) {
     'use strict';
 
     var AppViews = {};
 
     // layouts
-    AppViews.HeaderLayout = Backbone.Layout.extend();
-    AppViews.MainLayout   = Backbone.Layout.extend();
+    //AppViews.HeaderLayout  = Backbone.Layout.extend();
+    AppViews.MainLayout    = Backbone.Layout.extend({
+        el: '#main',
+    });
+    AppViews.SidebarLayout = Backbone.Layout.extend({
+        template: 'layouts/project/project-sidebar',
+    });
+    AppViews.ContentLayout = Backbone.Layout.extend({
+        template: 'layouts/project/project-content',
+    });
+
 
     // app views
     AppViews.Nav = Backbone.View.extend({
@@ -18,7 +27,7 @@ define(['app', 'backbone.syphon'], function(App){
                 isLoggedIn: App.Agave.token().isActive(),
                 account: this.model.toJSON()
             };
-        }
+        },
     });
 
     AppViews.Home = Backbone.View.extend({
@@ -101,7 +110,7 @@ define(['app', 'backbone.syphon'], function(App){
                         });
                 });
             return false;
-        }
+        },
     });
 
     App.Views.AppViews = AppViews;

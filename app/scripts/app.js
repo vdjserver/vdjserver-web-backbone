@@ -70,16 +70,16 @@ define([
             );
 
             // initialize router, views, data and layouts
-
-            App.Layouts.main = new App.Views.AppViews.MainLayout({
-                el: '#main'
-            });
-
+            App.Layouts.main = new App.Views.AppViews.MainLayout();
+            App.Layouts.sidebar = new App.Views.AppViews.SidebarLayout();
+            App.Layouts.content = new App.Views.AppViews.ContentLayout();
+/*
             _.each(App.Layouts, function(layout) {
                 layout.render();
             });
-
+*/
             App.router = new App.Routers.DefaultRouter();
+
             App.router.navigate('');
 
             App.Datastore = {};

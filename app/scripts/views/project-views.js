@@ -70,6 +70,11 @@ define([
                 this.selectedProjectUuid = parameters.projectUuid;
             }
 
+            if (parameters.shouldLoadViewForIndex && parameters.shouldLoadViewForIndex === true) {
+                this.shouldLoadViewForIndex = true;
+                this.fetchDone = false;
+            }
+
             App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects();
 
             var loadingView = new App.Views.Util.Loading({keep: true});
@@ -88,7 +93,9 @@ define([
 
                     that.render();
 
-                    if (parameters.shouldLoadViewForIndex && parameters.shouldLoadViewForIndex === true) {
+                    that.fetchDone = true;
+
+                    if (that.shouldLoadViewForIndex && that.shouldLoadViewForIndex === true) {
                         that.loadViewForIndex();
                     }
                 })
@@ -146,6 +153,7 @@ define([
 
         // Private Methods
         _collapseAllSubmenus: function() {
+
             $('.project-menu').removeClass('active');
             $('.project-submenu').addClass('hidden');
         },
