@@ -60,7 +60,7 @@ define(['app'], function(App) {
             listView.uiSelectProject(projectUuid);
         }
 
-        if (! App.Layouts.main.getView('#project-navbar')) {
+        if (! App.Layouts.content.getView('#project-navbar')) {
             App.Layouts.content.setView('#project-navbar', new App.Views.Projects.Navbar());
         }
     };

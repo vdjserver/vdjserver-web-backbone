@@ -29,6 +29,15 @@
 
     background-color: $projectSubmenuColor;
     //margin-top: -20px;
+
+}
+
+.project-menu-notification {
+    font-size: 12px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    white-space: nowrap;
 }
 
 .projects-list-vdj-logo-wrapper {

@@ -297,7 +297,7 @@ define([
                     return jobNotification.save();
                 })
                 .done(function() {
-                    var listView = App.Layouts.main.getView('.sidebar');
+                    var listView = App.Layouts.sidebar.getView('.sidebar');
                     listView.addNotification(jobNotification);
 
                     $('#job-modal').modal('hide');
@@ -814,7 +814,6 @@ define([
         },
 
         // Private Methods
-
         _handleJobStatusUpdate: function(jobStatusUpdate) {
             this.jobStatusMessage = jobStatusUpdate['jobStatus'];
             this.render();

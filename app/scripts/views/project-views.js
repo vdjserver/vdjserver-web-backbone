@@ -151,6 +151,20 @@ define([
             jobNotificationView.render();
         },
 
+        addFileTransfer: function(projectUuid, fileUniqueIdentifier, filename) {
+            var fileTransferListView = new Projects.ListFileTransfer({
+                fileUniqueIdentifier: fileUniqueIdentifier,
+                filename: filename,
+            });
+
+            this.insertView(
+                '#project-' + projectUuid + '-notification',
+                fileTransferListView
+            );
+
+            fileTransferListView.render();
+        },
+
         // Private Methods
         _collapseAllSubmenus: function() {
 
@@ -823,6 +837,17 @@ define([
         },
     });
 
+    Projects.ListFileTransfer = Backbone.View.extend({
+        template: 'project/project-menu-notification-file-transfer',
+        serialize: function() {
+            return {
+                fileUniqueIdentifier: this.fileUniqueIdentifier,
+                filename: this.filename,
+            };
+        },
+    });
+
+
     Projects.FileTransfer = Backbone.View.extend({
 
         // Public Methods
@@ -855,6 +880,7 @@ define([
         _startUpload: function(e) {
             e.preventDefault();
 
+            this._setListMenuFileTransferView();
             this._uiUploadStart();
 
             var formData = Backbone.Syphon.serialize(this);
@@ -929,6 +955,15 @@ define([
         },
 
         // UI
+        _setListMenuFileTransferView: function() {
+            var listView = App.Layouts.sidebar.getView('.sidebar');
+
+            listView.addFileTransfer(
+                this.projectUuid,
+                this.fileUniqueIdentifier,
+                this.model.get('name')
+            );
+        },
         _uiUploadStart: function() {
             // Disable buttons
             $('.upload-button')
