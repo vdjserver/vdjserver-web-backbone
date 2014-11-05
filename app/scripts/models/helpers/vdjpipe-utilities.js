@@ -203,15 +203,15 @@ define(['app'], function(App) {
             //var parameterName = Object.keys(option[0]);
 
             if (option['custom_demultiplex']) {
+
                 var elements = option['custom_demultiplex']['elements'];
 
                 for (var j = 0; j < elements.length; j++) {
 
-                    var barcodeLocation = elements[j]['custom_location'];
+                    var barcodeType = elements[j]['custom_type'];
 
-                    if (barcodeLocation) {
-
-                        switch (barcodeLocation) {
+                    if (barcodeType) {
+                        switch (barcodeType) {
                             case '3\'':
                                 newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
                                     'before': 0,
@@ -234,11 +234,14 @@ define(['app'], function(App) {
                                 // code
                         }
 
-                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_location'];
+                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_type'];
+                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_trim'];
                         newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
                     }
 
                 }
+
+                delete newConfig[i]['custom_demultiplex']['custom_location'];
 
                 newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
                 delete newConfig[i]['custom_demultiplex'];

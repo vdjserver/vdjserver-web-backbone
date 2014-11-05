@@ -25,7 +25,7 @@ define([
 
             // Options can occasionally be empty, and this can
             // cause serialization issues if left unchecked.
-            if (_.size(this.options) === 0) {
+            if (_.isArray(this.options) && _.isEmpty(this.options)) { //_.size(this.options) === 0) {
                 this.options = '';
             }
 

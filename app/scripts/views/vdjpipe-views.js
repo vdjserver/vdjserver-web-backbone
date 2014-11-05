@@ -6,15 +6,6 @@ define([
 
     'use strict';
 
-    Handlebars.registerHelper('FindSharedSequencesMinLength', function(minLength /*, options*/) {
-        if (minLength >= 0) {
-            return minLength;
-        }
-        else {
-            return 0;
-        }
-    });
-
     var Vdjpipe = {};
 
     Vdjpipe.AmbiguousWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({

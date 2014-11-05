@@ -138,9 +138,9 @@ define(['backbone'], function(Backbone) {
                                         'value_name': 'MID1',
                                         'start': {},
                                         'cut_lower': {
-                                            'after': 0
+                                            'after': 0,
                                         },
-                                        'custom_trim': true
+                                        'custom_trim': true,
                                     },
                                 ],
                             },
@@ -156,7 +156,8 @@ define(['backbone'], function(Backbone) {
     */
                         {
                             'find_shared': {
-                                'out_unique':'.fasta'
+                                'min_length': 0,
+                                'out_unique':'.fasta',
                             },
                         },
                     ],
