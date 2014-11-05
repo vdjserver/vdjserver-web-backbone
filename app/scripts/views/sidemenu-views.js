@@ -83,7 +83,7 @@ define([
         },
         addNotification: function(jobNotification) {
 
-            var jobNotificationView = new App.Views.Jobs.Notification({
+            var jobNotificationView = new App.Views.Notifications.Job({
                 notificationModel: jobNotification,
             });
 
@@ -96,7 +96,7 @@ define([
         },
 
         addFileTransfer: function(projectUuid, fileUniqueIdentifier, filename) {
-            var fileTransferListView = new App.Views.Projects.ListFileTransfer({
+            var fileTransferListView = new App.Views.Notifications.FileTransfer({
                 fileUniqueIdentifier: fileUniqueIdentifier,
                 filename: filename,
             });

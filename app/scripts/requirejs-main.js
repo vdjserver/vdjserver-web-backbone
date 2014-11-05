@@ -78,6 +78,7 @@ define([
     'job-views',
     'project-views',
     'sidemenu-views',
+    'notification-views',
     'navbar-views',
     'public-views',
     'analyses-views',

@@ -709,17 +709,6 @@ define([
         },
     });
 
-    Projects.ListFileTransfer = Backbone.View.extend({
-        template: 'project/project-menu-notification-file-transfer',
-        serialize: function() {
-            return {
-                fileUniqueIdentifier: this.fileUniqueIdentifier,
-                filename: this.filename,
-            };
-        },
-    });
-
-
     Projects.FileTransfer = Backbone.View.extend({
 
         // Public Methods

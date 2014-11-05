@@ -83,6 +83,7 @@ require.config({
         'job-views': 'views/job-views',
         'project-views': 'views/project-views',
         'sidemenu-views': 'views/sidemenu-views',
+        'notification-views': 'views/notification-views',
         'navbar-views': 'views/navbar-views',
         'public-views': 'views/public-views',
         'analyses-views': 'views/analyses-views',
