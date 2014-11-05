@@ -75,6 +75,7 @@ define(['app'], function(App) {
             'project':                          'projectIndex',
             'project/create':                   'projectCreate',
             'project/:id':                      'projectDetail',
+            'project/:id/associations':         'projectFileAssociations',
             'project/:id/settings':             'projectSettings',
             'project/:id/users':                'projectManageUsers',
             'project/:id/jobs':                 'projectJobHistory',
@@ -184,6 +185,17 @@ define(['app'], function(App) {
             var destinationRoute = function() {
                 _setProjectSubviews(projectUuid);
                 App.Layouts.content.setView('.content', new App.Views.Projects.Detail({projectUuid: projectUuid}));
+                App.Layouts.content.render();
+            };
+
+            _routeWithTokenRefreshCheck(destinationRoute);
+        },
+
+        projectFileAssociations: function(projectUuid) {
+
+            var destinationRoute = function() {
+                _setProjectSubviews(projectUuid);
+                App.Layouts.content.setView('.content', new App.Views.Projects.FileAssociations({projectUuid: projectUuid}));
                 App.Layouts.content.render();
             };
 

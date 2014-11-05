@@ -323,6 +323,22 @@ function(Backbone, EnvironmentConfig) {
 
             return this.save();
         },
+        updateAssociatedQualityScoreMetadata: function(qualityScoreMetadataUuid) {
+            var value = this.get('value');
+
+            value['privateAttributes']['quality-score-metadata-uuid'] = qualityScoreMetadataUuid;
+
+            this.set('value', value);
+
+            return this.save();
+        },
+        getAssociatedQualityScoreMetadataUuid: function() {
+            var value = this.get('value');
+
+            var qualUuid = value['privateAttributes']['quality-score-metadata-uuid'];
+
+            return qualUuid;
+        },
 
         // Private Methods
         _formatTagsForSave: function(tagString) {

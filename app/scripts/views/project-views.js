@@ -60,6 +60,14 @@ define([
         }
     });
 
+    Handlebars.registerHelper('SelectQualityScoreMetadata', function(option, value) {
+        if (value && value['quality-score-metadata-uuid']) {
+            if (option.uuid === value['quality-score-metadata-uuid']) {
+                return 'selected';
+            }
+        }
+    });
+
     var Projects = {};
 
     Projects.Index = Backbone.View.extend({
@@ -889,6 +897,55 @@ define([
                 .addClass('alert alert-success')
                 .fadeIn()
             ;
+        },
+    });
+
+    Projects.FileAssociations = Backbone.View.extend({
+        template: 'project/file-associations',
+        initialize: function(parameters) {
+            this.fastaMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+
+            this.qualMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+
+            var fileMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+
+            var that = this;
+
+            fileMetadatas.fetch()
+                .done(function() {
+                    that.fastaMetadatas = fileMetadatas.getBarcodeCollection();
+                    that.qualMetadatas  = fileMetadatas.getBarcodeQualityScoreCollection();
+
+                    that.render();
+                })
+                .fail(function() {
+
+                })
+                ;
+        },
+        serialize: function() {
+            if (this.fastaMetadatas) {
+                return {
+                    fastaMetadatas: this.fastaMetadatas.toJSON(),
+                    qualMetadatas: this.qualMetadatas.toJSON(),
+                };
+            }
+        },
+        events: {
+            'change .quality-score': '_updateQualityScoreAssociation',
+        },
+
+        // Private Methods
+        _updateQualityScoreAssociation: function(e) {
+            e.preventDefault();
+
+            var fastaUuid = e.target.dataset.fastauuid;
+            var qualName = e.target.value;
+
+            var fastaModel = this.fastaMetadatas.get(fastaUuid);
+            var qualModel = this.qualMetadatas.getModelForName(qualName);
+
+            fastaModel.updateAssociatedQualityScoreMetadata(qualModel.get('uuid'));
         },
     });
 

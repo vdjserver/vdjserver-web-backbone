@@ -140,6 +140,30 @@ function(Backbone, EnvironmentConfig) {
 
             return newCollection;
         },
+        getBarcodeCollection: function() {
+
+            var fileTypeMatches = _.filter(this.models, function(model) {
+                return model.get('value')['name'].slice(-6) === '.fasta';
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(fileTypeMatches);
+
+            return newCollection;
+        },
+        getBarcodeQualityScoreCollection: function() {
+
+            var fileTypeMatches = _.filter(this.models, function(model) {
+                return model.get('value')['name'].slice(-5) === '.qual';
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(fileTypeMatches);
+
+            return newCollection;
+        },
         search: function(searchString) {
 
             var filteredModels = _.filter(this.models, function(data) {
@@ -159,6 +183,16 @@ function(Backbone, EnvironmentConfig) {
             var filteredFileListings = new Files.Metadata(filteredModels);
 
             return filteredFileListings;
+        },
+        getModelForName: function(name) {
+
+            var filteredModels = _.filter(this.models, function(data) {
+                if (data.get('value').name.toLowerCase().indexOf(name.toLowerCase()) > -1) {
+                    return true;
+                }
+            });
+
+            return filteredModels[0];
         },
     });
 

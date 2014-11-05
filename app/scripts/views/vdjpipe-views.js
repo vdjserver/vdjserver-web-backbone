@@ -1,8 +1,7 @@
 define([
     'app',
-    'handlebars',
     'vdjpipe-utilities',
-], function(App, Handlebars) {
+], function(App) {
 
     'use strict';
 

@@ -260,6 +260,7 @@ define([
             job.prepareJob(
                 formData,
                 this.selectedFileListings,
+                this.allFiles,
                 this.projectModel.get('uuid')
             );
 

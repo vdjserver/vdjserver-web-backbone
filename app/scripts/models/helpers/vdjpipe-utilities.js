@@ -820,31 +820,49 @@ define(['app'], function(App) {
         };
     };
 
-    VdjPipeUtilities._GetReadDirections = function(fileMetadata) {
-
+    VdjPipeUtilities._GetReadDirections = function(fileMetadatas) {
         var readDirections = [];
 
-        if (fileMetadata && fileMetadata.length > 0) {
-            for (var i = 0; i < fileMetadata.length; i++) {
-                var value = fileMetadata.at([i]).get('value');
+        if (fileMetadatas && fileMetadatas.length > 0) {
+            for (var i = 0; i < fileMetadatas.length; i++) {
+                var value = fileMetadatas.at([i]).get('value');
 
-                // Hack to prevent .fasta files from being added
-                if (value.name.split('.').pop() === '.fasta') {
-                    continue;
+                if (value.name.split('.').pop() === 'fasta') {
+                    var privateAttributes = value.privateAttributes;
+
+                    var qualMetadata = fileMetadatas.get(privateAttributes['quality-score-metadata-uuid']);
+                    var qualValue = qualMetadata.get('value');
+
+                    if (privateAttributes['read-direction'] === 'F') {
+                        readDirections.push({
+                            'forward_seq': value.name,
+                            'forward_qual': qualValue.name,
+                        });
+                    }
+
+                    if (privateAttributes['read-direction'] === 'R') {
+                        readDirections.push({
+                            'reverse_seq': value.name,
+                            'reverse_qual': qualValue.name,
+                        });
+                    }
                 }
+                else if (value.name.split('.').pop() != 'qual') {
 
-                var privateAttributes = value.privateAttributes;
+                    var privateAttributes = value.privateAttributes;
 
-                if (privateAttributes['read-direction'] === 'F') {
-                    readDirections.push({
-                        'forward_seq': value.name
-                    });
-                }
+                    if (privateAttributes['read-direction'] === 'F') {
+                        readDirections.push({
+                            'forward_seq': value.name
+                        });
+                    }
 
-                if (privateAttributes['read-direction'] === 'R') {
-                    readDirections.push({
-                        'reverse_seq': value.name
-                    });
+                    if (privateAttributes['read-direction'] === 'R') {
+                        readDirections.push({
+                            'reverse_seq': value.name
+                        });
+                    }
+
                 }
             }
         }

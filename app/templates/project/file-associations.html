@@ -1,0 +1,42 @@
+<div class="row">
+    <div class="col-md-12 table-responsive">
+        <table class="table table-bordered table-headings">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        Title
+                    </th>
+                    <th class="text-center">
+                        Type
+                    </th>
+                    <th class="text-center">
+                        Associated Quality Score File
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each fastaMetadatas}}
+                    <tr class="text-center">
+                        <td>
+                            <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}">{{value.name}}</a>
+                        </td>
+                        <td>
+                            {{GetFileTypeFromName value.name}}
+                        </td>
+                        <td>
+                            <select
+                                class="quality-score"
+                                data-fastauuid="{{uuid}}"
+                            >
+                                <option></option>
+                                {{#each ../qualMetadatas}}
+                                    <option {{SelectQualityScoreMetadata this ../value.privateAttributes}}>{{this.value.name}}</option>
+                                {{/each}}
+                            </select>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -92,10 +92,12 @@ function(App, Backbone, EnvironmentConfig) {
         initialize: function() {
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
         },
-        prepareJob: function(formData, fileMetadatas, projectUuid) {
-            this._setJobConfigFromWorkflowFormData(formData, fileMetadatas);
+        prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
+            selectedFileMetadatas = this._updateSelectedFileMetadatasForBarcodes(formData, selectedFileMetadatas, allFileMetadatas);
+
+            this._setJobConfigFromWorkflowFormData(formData, selectedFileMetadatas);
             this._setArchivePath(projectUuid);
-            this._setFilesParameter(fileMetadatas);
+            this._setFilesParameter(selectedFileMetadatas);
         },
         submitJob: function(projectUuid) {
 
@@ -117,6 +119,53 @@ function(App, Backbone, EnvironmentConfig) {
         },
 
         // Private Methods
+        _updateSelectedFileMetadatasForBarcodes: function(formData, selectedFileMetadatas, allFileMetadatas) {
+            var keys = Object.keys(formData);
+
+            // Find if any keys known to have extra files are present
+            var matches = [];
+
+            (function() {
+                for (var i = 0; i < keys.length; i++) {
+                    var search = keys[i].search('element-sequence-file');
+
+                    if (search > -1) {
+                        matches.push(keys[i]);
+                    }
+                }
+            })();
+
+            // Extract filenames from form
+            var files = [];
+
+            (function() {
+                for (var i = 0; i < matches.length; i++) {
+                    var fasta = formData[matches[i]];
+
+                    files.push(fasta);
+                }
+            })();
+
+            // Extract file metadata for filenames
+            (function() {
+
+                for (var i = 0; i < files.length; i++) {
+                    var fastaMetadata = allFileMetadatas.getModelForName(files[i]);
+
+                    // Add qual files
+                    var qualUuid = fastaMetadata.getAssociatedQualityScoreMetadataUuid();
+
+                    var qualMetadata = allFileMetadatas.get(qualUuid);
+
+                    selectedFileMetadatas.add(fastaMetadata);
+                    selectedFileMetadatas.add(qualMetadata);
+                }
+
+            })();
+
+            return selectedFileMetadatas;
+        },
+
         _setJobConfigFromWorkflowFormData: function(formData, fileMetadatas) {
 
             var workflowConfig = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData, fileMetadatas);
