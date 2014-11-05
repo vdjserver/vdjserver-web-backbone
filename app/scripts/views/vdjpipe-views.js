@@ -1,9 +1,19 @@
 define([
     'app',
+    'handlebars',
     'vdjpipe-utilities',
-], function(App) {
+], function(App, Handlebars) {
 
     'use strict';
+
+    Handlebars.registerHelper('FindSharedSequencesMinLength', function(minLength /*, options*/) {
+        if (minLength >= 0) {
+            return minLength;
+        }
+        else {
+            return 0;
+        }
+    });
 
     var Vdjpipe = {};
 
