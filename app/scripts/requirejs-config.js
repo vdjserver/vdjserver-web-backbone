@@ -20,6 +20,7 @@ require.config({
         'slickgrid.grid':   '../bower_components/slickgrid/slick.grid',
         'socket-io':        '../bower_components/socket.io-client/socket.io',
         'file-saver':       '../bower_components/file-saver/FileSaver',
+        'recaptcha-ajax':   '../bower_components/recaptcha-ajax/recaptcha_ajax',
 
         // Config
         'environment-config': 'config/environment-config',
@@ -33,6 +34,8 @@ require.config({
 
         // Agave - Models/Collections
         'agave-new-account': 'models/agave-new-account',
+        'agave-feedback': 'models/agave-feedback',
+
         'agave-notification': 'models/agave-notification',
         'agave-password-reset': 'models/agave-password-reset',
         'agave-password-change': 'models/agave-password-change',
@@ -88,6 +91,7 @@ require.config({
         'public-views': 'views/public-views',
         'analyses-views': 'views/analyses-views',
         'vdjpipe-views': 'views/vdjpipe-views',
+        'feedback-views': 'views/feedback-views',
 
         // Routers
         'router': 'routers/router'
@@ -120,6 +124,9 @@ require.config({
         'nvd3': {
             deps:['d3'],
             exports: 'nv'
+        },
+        'recaptcha-ajax': {
+            exports: 'Recaptcha'
         },
         'slickgrid.core': {
             deps:['jquery', 'jquery-ui', 'jquery.event.drag','jquery.event.drop'],
@@ -168,7 +175,10 @@ require.config({
             deps: ['backbone', 'backbone-agave', 'agave-tenant-user'],
             exports: 'Backbone.Agave.Collection.TenantUsers'
         },
-
+'agave-feedback': {
+    deps: ['backbone', 'backbone-agave'],
+    exports: 'Backbone.Agave.Model.FeedbackModel'
+},
         'agave-file': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.File'

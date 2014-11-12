@@ -14,6 +14,9 @@ define([
     'nvd3',
     'box', // box for help with the box and whisker plot
 
+    //Library for using google's recaptcha-ajax
+    'recaptcha-ajax',
+
     //jquery.event.drag/drop
     'jquery.event.drag',
     'jquery.event.drop',
@@ -46,6 +49,7 @@ define([
 
     'agave-file',
     'agave-files',
+    'agave-feedback',
 
     'agave-job',
     'agave-jobs',
@@ -83,6 +87,7 @@ define([
     'public-views',
     'analyses-views',
     'vdjpipe-views',
+    'feedback-views',
 
     // Routers
     'router'

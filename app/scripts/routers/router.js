@@ -80,6 +80,7 @@ define(['app'], function(App) {
             'project/:id/users':                'projectManageUsers',
             'project/:id/jobs':                 'projectJobHistory',
             'project/:id/jobs/:jobId':          'projectJobOutput',
+            'feedback':                         'feedback',
 
             // 404
             '*notFound': 'notFound',
@@ -118,6 +119,13 @@ define(['app'], function(App) {
         forgotPassword: function(uuid) {
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.ForgotPassword.Form({'uuid': uuid}));
+            App.Layouts.main.render();
+        },
+
+        // Feedback
+        feedback: function() {
+            _setPublicSubviews();
+            App.Layouts.main.setView('.content', new App.Views.Feedback.Form());
             App.Layouts.main.render();
         },
 

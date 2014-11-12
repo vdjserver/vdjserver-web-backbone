@@ -22,7 +22,8 @@
     "socket.io-client": "1.2.0",
     "typeahead.js": "0.10.5",
     "twbs-bootstrap-sass": "3.3.0",
-    "underscore": "1.7.0"
+    "underscore": "1.7.0",
+    "recaptcha-ajax": "*"
   },
   "devDependencies": {},
   "resolutions": {
