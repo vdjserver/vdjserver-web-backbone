@@ -19,6 +19,10 @@ define([
         template: 'jobs/vdjpipe-average-quality-window-filter',
     });
 
+    Vdjpipe.CompositionStats = App.Views.Generic.VdjpipeOptionView.extend({
+        template: 'jobs/vdjpipe-composition-stats',
+    });
+
     Vdjpipe.CustomDemultiplex = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-custom-demultiplex',
         initialize: function() {
@@ -265,6 +269,10 @@ define([
 
     Vdjpipe.FindSharedSequences = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-find-shared-sequences',
+    });
+/*
+    Vdjpipe.FindSharedSequences = App.Views.Generic.VdjpipeOptionView.extend({
+        template: 'jobs/vdjpipe-find-shared-sequences',
         afterRender: function() {
             this.updateUIForWorkflowOptions();
         },
@@ -335,6 +343,7 @@ define([
             }
         },
     });
+*/
 
     Vdjpipe.Histogram = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe-histogram',
@@ -481,6 +490,10 @@ define([
                 $('#characterLegend').addClass('hidden');
             }
         },
+    });
+
+    Vdjpipe.QualityStats = App.Views.Generic.VdjpipeOptionView.extend({
+        template: 'jobs/vdjpipe-quality-stats',
     });
 
     Vdjpipe.TextImmutable = App.Views.Generic.VdjpipeOptionView.extend({

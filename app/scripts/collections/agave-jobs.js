@@ -145,19 +145,17 @@ define(['backbone'], function(Backbone) {
                                 ],
                             },
                         },
-                        {'histogram': {'name': 'MID', 'out_path': 'MID.csv'}},
+                        {'histogram': {'name': 'MID1', 'out_path': 'MID1.csv'}},
+                        {'histogram': {'name': 'MID1-score', 'out_path': 'MID1-score.csv'}},
                         {'length_filter': {'min': 200}},
                         {'average_quality_filter': 35},
                         {'homopolymer_filter': 20},
-    // NOTE: these options are temporarily disabled since the serializer ignores their out_prefix
-    /*
                         {'quality_stats': {'out_prefix': 'post-filter_'}},
                         {'composition_stats': {'out_prefix': 'post-filter_'}},
-    */
                         {
                             'find_shared': {
-                                'min_length': 0,
-                                'out_unique':'.fasta',
+                                'out_group_unique':'.fasta',
+                                'group_variable': 'MID1',
                             },
                         },
                     ],

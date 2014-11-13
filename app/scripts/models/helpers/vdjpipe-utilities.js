@@ -297,8 +297,10 @@ define(['app'], function(App) {
 
         this.getCompositionStats = function() {
             return {
-                //'composition_stats': {'out_prefix': parameters[key]}
-                'composition_stats': {'out_prefix': 'pre-'},
+                //'composition_stats': {'out_prefix': 'pre-'},
+                'composition_stats': {
+                    'out_prefix': parameters[key + '-out-prefix'],
+                },
             };
         };
 
@@ -502,10 +504,20 @@ define(['app'], function(App) {
         };
 
         this.getFindShared = function() {
-            var tmpFindShared = {
-                'find_shared': {},
+
+            var returnValue = {
+                'find_shared': {
+                    'out_group_unique': parameters[key + '-out-group-unique'],
+                },
             };
 
+            if (parameters[key + '-group-variable']) {
+                returnValue['find_shared']['group_variable'] = parameters[key + '-group-variable'];
+            }
+
+            return returnValue;
+
+/*
             if (parameters[key + '-min-length']) {
                 tmpFindShared['find_shared']['min_length'] = parseInt(parameters[key + '-min-length']);
             }
@@ -518,17 +530,18 @@ define(['app'], function(App) {
             }
 
             if (tmpFindShared['find_shared'].length === 0) {
-                tmpFindShared['find_shared']['out_unique'] = '.fasta';
+                tmpFindShared['find_shared']['out_group_unique'] = '.fasta';
             }
+*/
 
-            return tmpFindShared;
+            //return tmpFindShared;
         };
 
         this.getHistogram = function() {
             return {
                 'histogram': {
                     'name': parameters[key + '-name'],
-                    //'out_path': 'TODO',
+                    'out_path': parameters[key + '-out-path'],
                 },
             };
         };
@@ -788,8 +801,10 @@ define(['app'], function(App) {
 
         this.getQualityStats = function() {
             return {
-                //'quality_stats': {'out_prefix': parameters[key]}
-                'quality_stats': {'out_prefix': 'pre-'},
+                //'quality_stats': {'out_prefix': 'pre-'},
+                'quality_stats': {
+                    'out_prefix': parameters[key + '-out-prefix'],
+                },
             };
         };
 

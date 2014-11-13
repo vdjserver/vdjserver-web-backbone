@@ -9,7 +9,7 @@
                         &nbsp;
                     {{/if}}
 
-                    Find Shared Sequences
+                    Find Unique Sequences
 
                     {{#if isEditable}}
                         &nbsp;
@@ -20,6 +20,29 @@
                 </div>
             </div>
 
+            {{#if options.group_variable}}
+                <input
+                    class="job-form-item hidden"
+                    name="{{inputCount}}-{{parameterType}}-group-variable"
+                    value="{{options.group_variable}}"
+                >
+            {{/if}}
+
+            {{#if options.out_group_unique}}
+                <input
+                    class="job-form-item hidden"
+                    name="{{inputCount}}-{{parameterType}}-out-group-unique"
+                    value="{{options.out_group_unique}}"
+                >
+            {{else}}
+                <input
+                    class="job-form-item hidden"
+                    name="{{inputCount}}-{{parameterType}}-out-group-unique"
+                    value=".fasta"
+                >
+            {{/if}}
+
+{{!--
             <div class="row row-with-spacer">
                 <div class="col-md-12">
                     Min Length
@@ -89,6 +112,8 @@
                     >
                 </div>
             </div>
+--}}
+
 
         </div>
     </div>

@@ -78,8 +78,7 @@ define([
                 break;
 
             case 'composition_stats':
-                vdjPipeView = new App.Views.Vdjpipe.TextImmutable({
-                    parameterName: 'Base Composition Statistics',
+                vdjPipeView = new App.Views.Vdjpipe.CompositionStats({
                     parameterType: key,
                     inputCount: counter,
                     options: options,
@@ -118,10 +117,7 @@ define([
 
             case 'histogram':
                 vdjPipeView = new App.Views.Vdjpipe.Histogram({
-                    parameterName: 'Histogram',
                     parameterType: key,
-                    placeholderText: '',
-                    inputLabel: 'Name',
                     inputCount: counter,
                     options: options,
                 });
@@ -184,8 +180,7 @@ define([
                 break;
 
             case 'quality_stats':
-                vdjPipeView = new App.Views.Vdjpipe.TextImmutable({
-                    parameterName: 'Read Quality Statistics',
+                vdjPipeView = new App.Views.Vdjpipe.QualityStats({
                     parameterType: key,
                     inputCount: counter,
                     options: options,

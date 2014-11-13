@@ -8,7 +8,7 @@
                         &nbsp;
                     {{/if}}
 
-                    Histogram
+                    Quality Statistics
 
                     {{#if isEditable}}
                         &nbsp;
@@ -21,27 +21,14 @@
 
             <div class="row row-with-spacer">
                 <div class="col-md-12">
-                    Name
+                    Output Prefix
                     &nbsp;
                     <input
                         class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-name"
+                        name="{{inputCount}}-{{parameterType}}-out-prefix"
                         placeholder="text"
                         type="text"
-                        value="{{options.name}}"
-                    >
-                </div>
-            </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Output Path
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-out-path"
-                        placeholder="text"
-                        type="text"
-                        value="{{options.out_path}}"
+                        value="{{options.out_prefix}}"
                     >
                 </div>
             </div>
