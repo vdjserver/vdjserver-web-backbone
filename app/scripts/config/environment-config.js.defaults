@@ -8,3 +8,4 @@ EnvironmentConfig.debug = false;
 EnvironmentConfig.vdjauthRoot = 'https://vdjserver.org:8443';
 EnvironmentConfig.serviceAccountUsername = 'vdj';
 EnvironmentConfig.storageSystem = 'data.vdjserver.org';
+EnvironmentConfig.recaptchaPublicKey = '6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc';

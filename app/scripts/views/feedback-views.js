@@ -1,4 +1,8 @@
-define(['app', 'backbone.syphon'], function(App) {
+define([
+    'app',
+    'environment-config',
+    'backbone.syphon',
+], function(App, EnvironmentConfig) {
 
     'use strict';
 
@@ -12,7 +16,7 @@ define(['app', 'backbone.syphon'], function(App) {
         },
         afterRender: function() {
             Recaptcha.destroy();
-            Recaptcha.create('6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc','recaptcha');
+            Recaptcha.create(EnvironmentConfig.recaptchaPublicKey,'recaptcha');
         },
         events: {
             'submit form': 'submitForm'
