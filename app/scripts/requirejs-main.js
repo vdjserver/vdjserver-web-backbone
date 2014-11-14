@@ -56,7 +56,6 @@ define([
 
     // Regular Models
     'models/message',
-    'models/form',
 
     // Handlebars Helpers
     'handlebars-utilities',
@@ -72,7 +71,6 @@ define([
     'view-layouts',
 
     // Views
-    'form-views',
     'util-views',
     'not-found-views',
 

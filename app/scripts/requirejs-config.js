@@ -76,7 +76,6 @@ require.config({
         'view-layouts': 'views/layouts/view-layouts',
 
         // Views
-        'form-views': 'views/app/form-views',
         'util-views': 'views/app/util-views',
         'not-found-views': 'views/not-found-views',
 
