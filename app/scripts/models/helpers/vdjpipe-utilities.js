@@ -148,7 +148,7 @@ define(['app'], function(App) {
 
                         case 'write_sequence':
                             paramOutput.push(
-                                serializer.getWriteSequence()
+                                serializer.getWriteSequence(paramOutput)
                             );
 
                             break;
@@ -319,7 +319,6 @@ define(['app'], function(App) {
 
         this.getCompositionStats = function() {
             return {
-                //'composition_stats': {'out_prefix': 'pre-'},
                 'composition_stats': {
                     'out_prefix': parameters[key + '-out-prefix'],
                 },
@@ -597,6 +596,7 @@ define(['app'], function(App) {
             return lengthFilter;
         };
 
+/*
         this.getMatch = function() {
 
             var reverse = parameters[key + '-reverse-complement'];
@@ -803,7 +803,7 @@ define(['app'], function(App) {
 
             return matchObject;
         };
-
+*/
         this.getMergePaired = function() {
             return {
                 'merge_paired': {
@@ -829,23 +829,52 @@ define(['app'], function(App) {
 
         this.getQualityStats = function() {
             return {
-                //'quality_stats': {'out_prefix': 'pre-'},
                 'quality_stats': {
                     'out_prefix': parameters[key + '-out-prefix'],
                 },
             };
         };
 
-        this.getWriteSequence = function() {
-            return {
+        this.getWriteSequence = function(paramOutput) {
+
+            // extract demultiplex variables
+            var demultiplexVariables = this.extractDemultiplexValueVariables(paramOutput);
+
+            var out_path = '';
+
+            for (var i = 0; i < demultiplexVariables.length; i++) {
+                if (i === 0) {
+                    out_path = demultiplexVariables[i];
+                }
+                else if (i > 0) {
+                    out_path += '-' + demultiplexVariables[i];
+                }
+            }
+
+            if (out_path.length > 0) {
+                out_path += '.fasta';
+            }
+
+            var returnValue = {
                 'write_sequence': {
-                    'out_path': parameters[key + '-output-path'],
+                    'out_path': out_path,
                     'unset_value': parameters[key + '-unset-value'],
-                    'trimmed': parameters[key + '-trimmed'],
-                    'reverse_complemented': parameters[key + '-reverse-complemented'],
-                    'skip_empty': parameters[key + '-skip-empty'],
                 },
             };
+
+            if (parameters[key + '-trimmed']) {
+                returnValue['write_sequence']['trimmed'] = parameters[key + '-trimmed'];
+            }
+
+            if (parameters[key + '-reverse-complemented']) {
+                returnValue['write_sequence']['reverse_complemented'] = parameters[key + '-reverse-complemented'];
+            }
+
+            if (parameters[key + '-skip-empty']) {
+                returnValue['write_sequence']['skip_empty'] = parameters[key + '-skip-empty'];
+            }
+
+            return returnValue;
         };
 
         this.getWriteValue = function() {
@@ -860,6 +889,29 @@ define(['app'], function(App) {
                     'unset_value': parameters[key + '-unset-value'],
                 },
             };
+        };
+
+        // Extras
+        this.extractDemultiplexValueVariables = function(config) {
+
+            var demultiplexVariables = [];
+
+            for (var i = 0; i < config.length; i++) {
+
+                var key = Object.keys(config[i]);
+
+                if (key[0] && key[0] === 'custom_demultiplex') {
+                    var demultiplexStanza = config[i]['custom_demultiplex'];
+
+                    for (var j = 0; j < demultiplexStanza['elements'].length; j++) {
+                        var demultiplexVariable = demultiplexStanza['elements'][j]['value_name'];
+
+                        demultiplexVariables.push(demultiplexVariable);
+                    }
+                }
+            }
+
+            return demultiplexVariables;
         };
     };
 
