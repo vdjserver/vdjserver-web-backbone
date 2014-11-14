@@ -2,17 +2,17 @@ define(['app'], function(App) {
 
     'use strict';
 
-    var VdjPipeUtilities = {};
+    var VdjpipeSerializer = {};
 
     // Public Methods
 
-    VdjPipeUtilities.GetWorkflowName = function(formData) {
+    VdjpipeSerializer.GetWorkflowName = function(formData) {
         var name = formData['workflow-name'];
 
         return name;
     };
 
-    VdjPipeUtilities.SerializeWorkflowConfig = function(parameters, fileMetadatas) {
+    VdjpipeSerializer.SerializeWorkflowConfig = function(parameters, fileMetadatas) {
 
         var outputConfig = {
             'base_path_input': '',
@@ -30,7 +30,7 @@ define(['app'], function(App) {
                     //var keyCounter = key.slice(0, keyCounterIndex);
                     var parameterName = key.slice(keyCounterIndex);
 
-                    var serializer = new VdjPipeUtilities._Serializer(parameters, key);
+                    var serializer = new VdjpipeSerializer._Serializer(parameters, key);
 
                     switch (parameterName) {
 
@@ -168,7 +168,7 @@ define(['app'], function(App) {
         }
 
         // Set file read directions
-        var readDirections = VdjPipeUtilities._GetReadDirections(fileMetadatas);
+        var readDirections = VdjpipeSerializer._GetReadDirections(fileMetadatas);
         outputConfig.input = readDirections;
 
         // Choose read direction and add params
@@ -184,7 +184,7 @@ define(['app'], function(App) {
     };
 
     // Convert workflowConfig to vdjpipeConfig
-    VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
+    VdjpipeSerializer.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
 
         var readConfig = {};
         if (workflowConfig['single_read_pipe']) {
@@ -281,7 +281,7 @@ define(['app'], function(App) {
     };
 
     // Private Methods
-    VdjPipeUtilities._Serializer = function(parameters, key) {
+    VdjpipeSerializer._Serializer = function(parameters, key) {
 
         this.parameters = parameters;
         this.key = key;
@@ -915,7 +915,7 @@ define(['app'], function(App) {
         };
     };
 
-    VdjPipeUtilities._GetReadDirections = function(fileMetadatas) {
+    VdjpipeSerializer._GetReadDirections = function(fileMetadatas) {
         var readDirections = [];
 
         if (fileMetadatas && fileMetadatas.length > 0) {
@@ -965,6 +965,6 @@ define(['app'], function(App) {
         return readDirections;
     };
 
-    App.Models.Helpers.VdjPipeUtilities = VdjPipeUtilities;
-    return VdjPipeUtilities;
+    App.Utilities.VdjpipeSerializer = VdjpipeSerializer;
+    return VdjpipeSerializer;
 });

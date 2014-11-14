@@ -126,20 +126,19 @@ define([
         },
         // Properties
         Collections: {},
-        Instances:   {
+        Instances: {
             Websockets: {},
         },
-        Layouts:     {},
-        Models:      {
-            Helpers: {},
-        },
-        Routers:     {},
-        Views:       {
+        Layouts: {},
+        Models:  {},
+        Routers: {},
+        Utilities: {},
+        Views: {
             Generic: {},
             HandlebarsHelpers: {},
             Helpers: {},
         },
-        Websockets:  {},
+        Websockets: {},
     };
 
     return _.extend(

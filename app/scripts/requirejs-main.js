@@ -61,14 +61,14 @@ define([
     // Handlebars Helpers
     'handlebars-utilities',
 
-    // Model Helpers
-    'vdjpipe-utilities',
+    // Utilities
+    'vdjpipe-serializer',
+    'vdjpipe-view-factory',
 
     // Generic Views
     'generic-vdjpipe-option-views',
 
     // View Helpers
-    'vdjpipe-view-helpers',
     'view-layouts',
 
     // Views

@@ -3,7 +3,7 @@ define(
         'app',
         'backbone',
         'environment-config',
-        'vdjpipe-utilities',
+        'vdjpipe-serializer',
     ],
 function(App, Backbone, EnvironmentConfig) {
 
@@ -168,9 +168,9 @@ function(App, Backbone, EnvironmentConfig) {
 
         _setJobConfigFromWorkflowFormData: function(formData, fileMetadatas) {
 
-            var workflowConfig = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData, fileMetadatas);
+            var workflowConfig = App.Utilities.VdjpipeSerializer.SerializeWorkflowConfig(formData, fileMetadatas);
 
-            var jobConfig = App.Models.Helpers.VdjPipeUtilities.ConvertWorkflowConfigToVdjpipeConfig(workflowConfig);
+            var jobConfig = App.Utilities.VdjpipeSerializer.ConvertWorkflowConfigToVdjpipeConfig(workflowConfig);
 
             this.set('name', formData['job-name']);
 
@@ -295,9 +295,9 @@ function(App, Backbone, EnvironmentConfig) {
         },
         setConfigFromFormData: function(formData) {
 
-            var workflowConfig = App.Models.Helpers.VdjPipeUtilities.SerializeWorkflowConfig(formData);
+            var workflowConfig = App.Utilities.VdjpipeSerializer.SerializeWorkflowConfig(formData);
 
-            var workflowName = App.Models.Helpers.VdjPipeUtilities.GetWorkflowName(formData);
+            var workflowName = App.Utilities.VdjpipeSerializer.GetWorkflowName(formData);
 
             this.set(
                 'value',

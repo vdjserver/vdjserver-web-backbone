@@ -1,6 +1,5 @@
 define([
     'app',
-    'vdjpipe-utilities',
 ], function(App) {
 
     'use strict';
@@ -8,23 +7,23 @@ define([
     var Vdjpipe = {};
 
     Vdjpipe.AmbiguousWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-ambiguous-nucleotide-window-filter',
+        template: 'jobs/vdjpipe/vdjpipe-ambiguous-nucleotide-window-filter',
     });
 
     Vdjpipe.AverageQualityWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-average-quality-window-filter',
+        template: 'jobs/vdjpipe/vdjpipe-average-quality-window-filter',
     });
 
     Vdjpipe.AverageQualityWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-average-quality-window-filter',
+        template: 'jobs/vdjpipe/vdjpipe-average-quality-window-filter',
     });
 
     Vdjpipe.CompositionStats = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-composition-stats',
+        template: 'jobs/vdjpipe/vdjpipe-composition-stats',
     });
 
     Vdjpipe.CustomDemultiplex = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-custom-demultiplex',
+        template: 'jobs/vdjpipe/vdjpipe-custom-demultiplex',
         initialize: function() {
             this.elementCount = 0;
             this.objectCount  = 0;
@@ -202,7 +201,7 @@ define([
     });
 
     Vdjpipe.CustomDemultiplexBarcodeConfig = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-custom-demultiplex-barcode-config',
+        template: 'jobs/vdjpipe/vdjpipe-custom-demultiplex-barcode-config',
         initialize: function() {
 
             // Don't let layout manager discard this view if it is re-rendered!
@@ -268,11 +267,11 @@ define([
     });
 
     Vdjpipe.FindSharedSequences = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-find-shared-sequences',
+        template: 'jobs/vdjpipe/vdjpipe-find-shared-sequences',
     });
 /*
     Vdjpipe.FindSharedSequences = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-find-shared-sequences',
+        template: 'jobs/vdjpipe/vdjpipe-find-shared-sequences',
         afterRender: function() {
             this.updateUIForWorkflowOptions();
         },
@@ -346,20 +345,20 @@ define([
 */
 
     Vdjpipe.Histogram = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-histogram',
+        template: 'jobs/vdjpipe/vdjpipe-histogram',
     });
 
     Vdjpipe.HomopolymerFilter = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-homopolymer-filter',
+        template: 'jobs/vdjpipe/vdjpipe-homopolymer-filter',
     });
 
     Vdjpipe.LengthFilter = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-length-filter',
+        template: 'jobs/vdjpipe/vdjpipe-length-filter',
     });
 
 /*
     Vdjpipe.MatchSequenceElement = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-match-sequence-element',
+        template: 'jobs/vdjpipe/vdjpipe-match-sequence-element',
         initialize: function() {
             this.elementCount = 0;
             this.objectCount  = 0;
@@ -404,7 +403,7 @@ define([
     });
 
     Vdjpipe.MatchSequenceElementConfig = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-match-sequence-element-config',
+        template: 'jobs/vdjpipe/vdjpipe-match-sequence-element-config',
         serialize: function() {
             if (this.parameterType) {
                 return {
@@ -427,7 +426,7 @@ define([
     });
 
     Vdjpipe.MatchSequenceElementCombinationObjectConfig = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-match-sequence-element-combination-object-config',
+        template: 'jobs/vdjpipe/vdjpipe-match-sequence-element-combination-object-config',
         serialize: function() {
             if (this.parameterType) {
 
@@ -458,27 +457,27 @@ define([
 */
 
     Vdjpipe.MatchExternalMolecularIdentifier = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-match-external-molecular-identifier',
+        template: 'jobs/vdjpipe/vdjpipe-match-external-molecular-identifier',
     });
 
     Vdjpipe.MergePairedReads = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-merge-paired-reads',
+        template: 'jobs/vdjpipe/vdjpipe-merge-paired-reads',
     });
 
     Vdjpipe.MinimalAverageQualityFilter = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-min-average-quality-filter',
+        template: 'jobs/vdjpipe/vdjpipe-min-average-quality-filter',
     });
 
     Vdjpipe.MinimalQualityFilter = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-min-quality-filter',
+        template: 'jobs/vdjpipe/vdjpipe-min-quality-filter',
     });
 
     Vdjpipe.MinimalQualityWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-min-quality-window-filter',
+        template: 'jobs/vdjpipe/vdjpipe-min-quality-window-filter',
     });
 
     Vdjpipe.NucleotideFilter = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-nucleotide-filter',
+        template: 'jobs/vdjpipe/vdjpipe-nucleotide-filter',
         events: {
             'click #toggleCharacterLegend': 'toggleCharacterLegend'
         },
@@ -493,11 +492,11 @@ define([
     });
 
     Vdjpipe.QualityStats = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-quality-stats',
+        template: 'jobs/vdjpipe/vdjpipe-quality-stats',
     });
 
     Vdjpipe.TextImmutable = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-text-immutable',
+        template: 'jobs/vdjpipe/vdjpipe-text-immutable',
         serialize: function() {
             if (this.parameterType) {
                 return {
@@ -512,11 +511,11 @@ define([
     });
 
     Vdjpipe.WriteSequence = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-write-sequences',
+        template: 'jobs/vdjpipe/vdjpipe-write-sequences',
     });
 
     Vdjpipe.WriteValue = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe-write-values',
+        template: 'jobs/vdjpipe/vdjpipe-write-values',
     });
 
     App.Views.Vdjpipe = Vdjpipe;

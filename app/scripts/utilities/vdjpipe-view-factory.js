@@ -4,9 +4,9 @@ define([
 
     'use strict';
 
-    var VdjpipeViewHelpers = {};
+    var VdjpipeViewFactory = {};
 
-    VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews = function(config) {
+    VdjpipeViewFactory.GenerateVdjpipeWorkflowViews = function(config) {
         var parameters;
 
         if (config['single_read_pipe']) {
@@ -23,7 +23,7 @@ define([
             var key = Object.keys(parameters[counter])[0];
             var options = parameters[counter][key];
 
-            var vdjPipeView = VdjpipeViewHelpers.GetVdjpipeView(
+            var vdjPipeView = VdjpipeViewFactory.GetVdjpipeView(
                 key,
                 counter,
                 options
@@ -35,7 +35,7 @@ define([
         return workflowViews;
     };
 
-    VdjpipeViewHelpers.GetVdjpipeView = function(key, counter, options) {
+    VdjpipeViewFactory.GetVdjpipeView = function(key, counter, options) {
 
         var vdjPipeView;
 
@@ -213,6 +213,6 @@ define([
         return vdjPipeView;
     };
 
-    App.Views.Helpers.VdjpipeViewHelpers = VdjpipeViewHelpers;
-    return VdjpipeViewHelpers;
+    App.Utilities.VdjpipeViewFactory = VdjpipeViewFactory;
+    return VdjpipeViewFactory;
 });

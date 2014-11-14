@@ -2,7 +2,7 @@ define([
     'app',
     'handlebars',
     'backbone.syphon',
-    'vdjpipe-utilities',
+    'vdjpipe-view-factory',
 ], function(App, Handlebars) {
 
     'use strict';
@@ -174,7 +174,7 @@ define([
 
                 var workflow = this.workflows.get(workflowId);
 
-                var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(workflow.get('value').config);
+                var workflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(workflow.get('value').config);
 
                 /*
                     I'd love to use insertViews instead, but as of 24/July/2014
@@ -378,7 +378,7 @@ define([
             },
 
             /** Layout Manager template */
-            template: 'jobs/vdjpipe-form',
+            template: 'jobs/vdjpipe/vdjpipe-workflow-parameters',
 
             /**
              * Fetches remote data that this view requires.
@@ -444,7 +444,7 @@ define([
                 // Remove workflow placeholder from DOM
                 $('#vdj-pipe-configuration-placeholder').remove();
 
-                var workflowViews = new App.Views.Helpers.VdjpipeViewHelpers.GenerateVdjpipeWorkflowViews(editableWorkflow.get('value').config);
+                var workflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(editableWorkflow.get('value').config);
 
                 for (this.counter = 0; this.counter < workflowViews.length; this.counter++) {
                     var view = workflowViews[this.counter];
@@ -631,7 +631,7 @@ define([
 
                 this.counter = this.counter + 1;
 
-                var vdjPipeView = App.Views.Helpers.VdjpipeViewHelpers.GetVdjpipeView(
+                var vdjPipeView = App.Utilities.VdjpipeViewFactory.GetVdjpipeView(
                     parameterType,
                     this.counter,
                     {}

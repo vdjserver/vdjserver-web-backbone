@@ -65,14 +65,14 @@ require.config({
         // Handlebars Helpers
         'handlebars-utilities':   'views/handlebars-helpers/handlebars-utilities',
 
-        // Model Helpers
-        'vdjpipe-utilities': 'models/helpers/vdjpipe-utilities',
+        // Utilities
+        'vdjpipe-serializer': 'utilities/vdjpipe-serializer',
+        'vdjpipe-view-factory': 'utilities/vdjpipe-view-factory',
 
         // Generic Views
         'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
 
         // View Helpers
-        'vdjpipe-view-helpers': 'views/helpers/vdjpipe-view-helpers',
         'view-layouts': 'views/layouts/view-layouts',
 
         // Views
