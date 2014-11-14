@@ -5,8 +5,7 @@
     "homepage": "https://bitbucket.org/taccaci/vdjserver-backbone",
     "repository": "git@bitbucket.org:taccaci/vdjserver-backbone.git",
     "author": "Walter Scarborough <wscarbor@tacc.utexas.edu>",
-    "dependencies": {},
-    "devDependencies": {
+    "dependencies": {
         "chai": "1.9.2",
         "connect-livereload": "0.5.0",
         "connect-modrewrite": "0.7.9",
@@ -33,6 +32,8 @@
         "load-grunt-tasks": "1.0.0",
         "sinon":            "1.11.1",
         "time-grunt":       "1.0.0"
+    },
+    "devDependencies": {
     },
     "engines": {
         "node": ">=0.10.13"
