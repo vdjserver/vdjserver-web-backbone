@@ -237,8 +237,30 @@ define(['app'], function(App) {
                         delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_type'];
                         delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_trim'];
                         newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
-                    }
 
+                        // Set histograms
+                        if (newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'] === true) {
+
+                            var histogram1 = {
+                                'histogram': {
+                                    'name': newConfig[i]['custom_demultiplex']['elements'][j]['value_name'],
+                                    'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['value_name'] + '.csv',
+                                },
+                            };
+
+                            var histogram2 = {
+                                'histogram': {
+                                    'name': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'],
+                                    'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'] + '.csv',
+                                },
+                            };
+
+                            newConfig.push(histogram1);
+                            newConfig.push(histogram2);
+
+                            delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'];
+                        }
+                    }
                 }
 
                 delete newConfig[i]['custom_demultiplex']['custom_location'];
@@ -318,6 +340,8 @@ define(['app'], function(App) {
 
                     var barcodeType = parameters[key + '-' + elementCounter + '-element-barcode-type'];
 
+                    var customHistogram = parameters[key + '-' + elementCounter + '-element-custom-histogram'];
+
                     var minScore = parameters[key + '-' + elementCounter + '-element-minimum-score'];
                     var required = parameters[key + '-' + elementCounter + '-element-required'];
                     var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
@@ -326,6 +350,10 @@ define(['app'], function(App) {
 
                     if (barcodeType) {
                         element['custom_type'] = barcodeType;
+                    }
+
+                    if (customHistogram) {
+                        element['custom_histogram'] = customHistogram;
                     }
 
                     if (minScore) {

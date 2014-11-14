@@ -141,12 +141,15 @@ define(['backbone'], function(Backbone) {
                                             'after': 0,
                                         },
                                         'custom_trim': true,
+                                        'custom_histogram': true,
                                     },
                                 ],
                             },
                         },
+/*
                         {'histogram': {'name': 'MID1', 'out_path': 'MID1.csv'}},
                         {'histogram': {'name': 'MID1-score', 'out_path': 'MID1-score.csv'}},
+*/
                         {'length_filter': {'min': 200}},
                         {'average_quality_filter': 35},
                         {'homopolymer_filter': 20},

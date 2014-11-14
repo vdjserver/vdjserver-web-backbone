@@ -15,14 +15,14 @@
                 class="hidden"
                 name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-value-name"
                 type="text"
-                value="MID{{elementCount}}"
+                value="DemultiplexBarcode{{elementCount}}"
             >
 
             <input
                 class="hidden"
                 name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-score-name"
                 type="text"
-                value="MID{{elementCount}}-score"
+                value="DemultiplexBarcode{{elementCount}}-score"
             >
 
             <input
@@ -114,6 +114,27 @@
                                             <input
                                                 class="job-form-item"
                                                 name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-trim-barcode"
+                                                type="checkbox"
+                                            >
+                                        {{/if}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Generate Histogram
+                                    </td>
+                                    <td>
+                                        {{#if options.custom_histogram}}
+                                            <input
+                                                class="job-form-item"
+                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-histogram"
+                                                type="checkbox"
+                                                checked
+                                            >
+                                        {{else}}
+                                            <input
+                                                class="job-form-item"
+                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-histogram"
                                                 type="checkbox"
                                             >
                                         {{/if}}
