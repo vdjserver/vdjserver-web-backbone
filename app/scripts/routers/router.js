@@ -35,7 +35,9 @@ define(['app'], function(App) {
 
     var _setPublicSubviews = function() {
         if (App.Layouts.main.template !== 'layouts/public') {
-            App.Layouts.main.template = 'layouts/public';
+            App.Layouts.main.template = 'layouts/public/public-main';
+
+            App.Layouts.main.setView('#nav-container', new App.Views.Navbar.Public());
         }
     };
 
