@@ -9,10 +9,9 @@ var TEST_SERVER_PORT = 9002;
 var modRewrite = require('connect-modrewrite');
 
 var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
-var mountFolder = function (connect, dir) {
+var mountFolder = function(connect, dir) {
     return connect.static(require('path').resolve(dir));
 };
-
 
 // # Globbing
 // for performance reasons we're only matching one level down:
@@ -27,7 +26,6 @@ module.exports = function(grunt) {
 
     // load all grunt tasks
     require('load-grunt-tasks')(grunt);
-
 
     // configurable paths
     var yeomanConfig = {
@@ -117,8 +115,6 @@ module.exports = function(grunt) {
             }
         },
 
-
-
         bower: {
             all: {
                 rjsConfig: '<%= yeoman.app %>/scripts/requirejs-config.js'
@@ -171,12 +167,6 @@ module.exports = function(grunt) {
         concat: {
             options: {
                 separator: ';'
-            },
-            createBootstrapJS: {
-                src: [
-                    '<%= yeoman.app %>/bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap.js',
-                ],
-                dest: '<%= yeoman.app %>/scripts/vendor/bootstrap.js'
             },
             dist: {
                 '<%= yeoman.dist %>/scripts/main.js': [
@@ -247,6 +237,7 @@ module.exports = function(grunt) {
                         src: [
                             'modernizr/modernizr.js',
                             'moment/moment.js',
+                            'twbs-bootstrap-sass/assets/javascripts/bootstrap.js',
                         ],
                     },
                 ],
@@ -399,7 +390,10 @@ module.exports = function(grunt) {
             html: ['<%= yeoman.dist %>/{,*/}*.html', '!<%= yeoman.dist %>/vdjml/{,*/}*.html'],
             css: ['<%= yeoman.dist %>/styles/{,*/}*.css', '!<%= yeoman.dist %>/vdjml/{,*/}*.css'],
             options: {
-                assetsDirs: ['<%= yeoman.dist %>','<%= yeoman.dist %>/images']
+                assetsDirs: [
+                    '<%= yeoman.dist %>',
+                    '<%= yeoman.dist %>/images',
+                ]
             }
         }
     });
@@ -420,10 +414,10 @@ module.exports = function(grunt) {
 
         grunt.task.run([
             'clean:server',
-            'concat:createBootstrapJS',
             'copy:prepareFonts',
             'copy:distStyles',
             'copy:distImages',
+            'copy:distBower',
             'coffee:dist',
             'compass:server',
             'connect:livereload',
@@ -444,7 +438,6 @@ module.exports = function(grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'coffee',
-        'concat:createBootstrapJS',
         'copy:prepareFonts',
         'copy:distStyles',
         'copy:distBower',
