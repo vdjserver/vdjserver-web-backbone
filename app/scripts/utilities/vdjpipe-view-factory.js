@@ -9,11 +9,8 @@ define([
     VdjpipeViewFactory.GenerateVdjpipeWorkflowViews = function(config) {
         var parameters;
 
-        if (config['single_read_pipe']) {
-            parameters = config['single_read_pipe'];
-        }
-        else {
-            parameters = config['paired_read_pipe'];
+        if (config['steps']) {
+            parameters = config['steps'];
         }
 
         var workflowViews = [];

@@ -84,7 +84,7 @@ function(App, Backbone, EnvironmentConfig) {
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: 'vdj_pipe-0.0.16u2',
+                    appId: 'vdj_pipe-0.1.2u2',
                 }
 
             );
@@ -338,20 +338,11 @@ function(App, Backbone, EnvironmentConfig) {
                 });
             }
 
-            // Check if either |single_read_pipe| or |paired_read_pipe| is available.
-            if (config['single_read_pipe'] && config['single_read_pipe'].length === 0) {
+            if (config['steps'] && config['steps'].length === 0) {
                 errors.push({
                     'message': 'Missing Configuration Steps.',
                     'type': 'configuration-steps',
                 });
-            }
-            else if (config['paired_read_pipe'] && config['paired_read_pipe'].length === 0) {
-                errors.push(
-                    new App.Models.Error({
-                        'message': 'Missing Configuration Steps.',
-                        'type': 'configuration-steps',
-                    })
-                );
             }
 
             if (errors.length > 0) {

@@ -110,14 +110,14 @@ define(['app'], function(App) {
                             );
 
                             break;
-
+/*
                         case 'match':
                             paramOutput.push(
                                 serializer.getMatch()
                             );
 
                             break;
-
+*/
                         case 'merge_paired':
                             paramOutput.push(
                                 serializer.getMergePaired()
@@ -155,7 +155,7 @@ define(['app'], function(App) {
 
                         case 'write_value':
                             paramOutput.push(
-                                serializer.getWriteValue()
+                                serializer.getWriteValue(paramOutput)
                             );
 
                             break;
@@ -174,10 +174,7 @@ define(['app'], function(App) {
         // Choose read direction and add params
         // Just as with Highlander, there can only be one
         if (parameters['single-reads']) {
-            outputConfig['single_read_pipe'] = paramOutput;
-        }
-        else if (parameters['paired-reads']) {
-            outputConfig['paired_read_pipe'] = paramOutput;
+            outputConfig['steps'] = paramOutput;
         }
 
         return outputConfig;
@@ -187,11 +184,8 @@ define(['app'], function(App) {
     VdjpipeSerializer.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
 
         var readConfig = {};
-        if (workflowConfig['single_read_pipe']) {
-            readConfig = workflowConfig['single_read_pipe'];
-        }
-        else if (workflowConfig['paired_read_pipe']) {
-            readConfig = workflowConfig['paired_read_pipe'];
+        if (workflowConfig['steps']) {
+            readConfig = workflowConfig['steps'];
         }
 
         // Deep copy
@@ -270,11 +264,8 @@ define(['app'], function(App) {
             }
         }
 
-        if (workflowConfig['single_read_pipe']) {
-            workflowConfig['single_read_pipe'] = newConfig;
-        }
-        else if (workflowConfig['paired_read_pipe']) {
-            workflowConfig['paired_read_pipe'] = newConfig;
+        if (workflowConfig['steps']) {
+            workflowConfig['steps'] = newConfig;
         }
 
         return workflowConfig;
@@ -297,7 +288,9 @@ define(['app'], function(App) {
 
         this.getAverageQualityFilter = function() {
             return {
-                'average_quality_filter': parseFloat(parameters[key]),
+                'average_quality_filter': {
+                    'min_quality': parseFloat(parameters[key]),
+                },
             };
         };
 
@@ -313,7 +306,9 @@ define(['app'], function(App) {
 
         this.getCharacterFilter = function() {
             return {
-                'character_filter': parameters[key],
+                'character_filter': {
+                    'chars': parameters[key],
+                },
             };
         };
 
@@ -562,11 +557,11 @@ define(['app'], function(App) {
                     'out_group_unique': parameters[key + '-out-group-unique'],
                 },
             };
-
+/*
             if (parameters[key + '-group-variable']) {
                 returnValue['find_shared']['group_variable'] = parameters[key + '-group-variable'];
             }
-
+*/
             return returnValue;
 
 /*
@@ -600,7 +595,9 @@ define(['app'], function(App) {
 
         this.getHomopolymerFilter = function() {
             return {
-                'homopolymer_filter': parseInt(parameters[key]),
+                'homopolymer_filter': {
+                    'max_length': parseInt(parameters[key]),
+                },
             };
         };
 
@@ -839,7 +836,9 @@ define(['app'], function(App) {
 
         this.getMinQualityFilter = function() {
             return {
-                'min_quality_filter': parseInt(parameters[key]),
+                'min_quality_filter': {
+                    'min_quality': parseInt(parameters[key]),
+                },
             };
         };
 
@@ -863,26 +862,11 @@ define(['app'], function(App) {
         this.getWriteSequence = function(paramOutput) {
 
             // extract demultiplex variables
-            var demultiplexVariables = this.extractDemultiplexValueVariables(paramOutput);
-
-            var out_path = '';
-
-            for (var i = 0; i < demultiplexVariables.length; i++) {
-                if (i === 0) {
-                    out_path = demultiplexVariables[i];
-                }
-                else if (i > 0) {
-                    out_path += '-' + demultiplexVariables[i];
-                }
-            }
-
-            if (out_path.length > 0) {
-                out_path += '.fasta';
-            }
+            var demultiplexVariablePath = this.createDemultiplexBarcodeVariablePath(paramOutput);
 
             var returnValue = {
                 'write_sequence': {
-                    'out_path': out_path,
+                    'out_path': demultiplexVariablePath,
                     'unset_value': parameters[key + '-unset-value'],
                 },
             };
@@ -902,7 +886,7 @@ define(['app'], function(App) {
             return returnValue;
         };
 
-        this.getWriteValue = function() {
+        this.getWriteValue = function(paramOutput) {
 
             var writeValuesNames = parameters[key + '-names'];
             writeValuesNames = writeValuesNames.split(',');
@@ -910,7 +894,7 @@ define(['app'], function(App) {
             return {
                 'write_value': {
                     'names': writeValuesNames,
-                    'out_path': parameters[key + '-out-path'],
+                    'out_path': this.createDemultiplexBarcodeVariablePath(paramOutput),
                     'unset_value': parameters[key + '-unset-value'],
                 },
             };
@@ -938,6 +922,26 @@ define(['app'], function(App) {
 
             return demultiplexVariables;
         };
+
+        this.createDemultiplexBarcodeVariablePath = function(config) {
+
+            var demultiplexVariables = this.extractDemultiplexValueVariables(config);
+
+            var demultiplexVariablePath = '';
+
+            for (var i = 0; i < demultiplexVariables.length; i++) {
+                if (i === 0) {
+                    demultiplexVariablePath += demultiplexVariables[i];
+                }
+                else {
+                    demultiplexVariablePath += '-' + demultiplexVariables[i];
+                }
+            }
+
+            demultiplexVariablePath += '.fasta';
+
+            return demultiplexVariablePath;
+        };
     };
 
     VdjpipeSerializer._GetReadDirections = function(fileMetadatas) {
@@ -946,40 +950,40 @@ define(['app'], function(App) {
         if (fileMetadatas && fileMetadatas.length > 0) {
             for (var i = 0; i < fileMetadatas.length; i++) {
                 var value = fileMetadatas.at([i]).get('value');
+                var privateAttributes = value.privateAttributes;
 
                 if (value.name.split('.').pop() === 'fasta') {
-                    var privateAttributes = value.privateAttributes;
 
                     var qualMetadata = fileMetadatas.get(privateAttributes['quality-score-metadata-uuid']);
                     var qualValue = qualMetadata.get('value');
 
                     if (privateAttributes['read-direction'] === 'F') {
                         readDirections.push({
-                            'forward_seq': value.name,
-                            'forward_qual': qualValue.name,
+                            'sequence': value.name,
+                            'quality': qualValue.name,
                         });
                     }
 
                     if (privateAttributes['read-direction'] === 'R') {
                         readDirections.push({
-                            'reverse_seq': value.name,
-                            'reverse_qual': qualValue.name,
+                            'sequence': value.name,
+                            'is_reverse': true,
+                            'quality': qualValue.name,
                         });
                     }
                 }
                 else if (value.name.split('.').pop() != 'qual') {
 
-                    var privateAttributes = value.privateAttributes;
-
                     if (privateAttributes['read-direction'] === 'F') {
                         readDirections.push({
-                            'forward_seq': value.name
+                            'sequence': value.name,
                         });
                     }
 
                     if (privateAttributes['read-direction'] === 'R') {
                         readDirections.push({
-                            'reverse_seq': value.name
+                            'sequence': value.name,
+                            'is_reverse': true,
                         });
                     }
 

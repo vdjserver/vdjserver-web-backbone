@@ -205,7 +205,7 @@ define([
                 workflowLayout.render();
 
                 var workflowConfig = workflow.get('value');
-                if (workflowConfig['config']['single_read_pipe']) {
+                if (workflowConfig['config']['steps']) {
                     $('#workflow-staging-area').append(
                         '<input type="radio" class="hidden" name="single-reads" id="single-reads" checked>'
                     );
@@ -468,14 +468,16 @@ define([
                 $('#workflow-name').val(editableWorkflow.get('value').workflowName);
 
                 // Set read direction
-                if (editableWorkflow.get('value').config['single_read_pipe']) {
+                if (editableWorkflow.get('value').config['steps']) {
                     $('#single-reads').attr('checked', 'checked');
                     $('#single-reads').closest('label').addClass('active');
                 }
+                /*
                 else if (editableWorkflow.get('value').config['paired_read_pipe']) {
                     $('#paired-reads').attr('checked', 'checked');
                     $('#paired-reads').closest('label').addClass('active');
                 }
+                */
             },
 
             /**

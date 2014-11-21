@@ -122,7 +122,7 @@ define(['backbone'], function(Backbone) {
 
                     'workflow-name': 'Single Reads',
                     'summary_output_path': 'summary.txt',
-                    'single_read_pipe': [
+                    'steps': [
                         {'quality_stats': {'out_prefix': 'pre-filter_'}},
                         {'composition_stats': {'out_prefix': 'pre-filter_'}},
                         {
