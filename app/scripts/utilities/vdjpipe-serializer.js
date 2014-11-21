@@ -331,11 +331,24 @@ define(['app'], function(App) {
             var barcodeLocation = parameters[key + '-custom-location'];
 
             var elements = [];
+            var combinations = [
+                {
+                    'csv_file': {
+                        'path': parameters[key + '-combination-csv-file'],
+                        'values_column': [],
+                        'skip_header': parameters[key + '-skip-header'],
+                    },
+                },
+            ];
+
 
             if (parameters[key + '-elements']) {
                 for (var i = 0; i < parameters[key + '-elements'].length; i++) {
+
                     var element = {};
                     var elementCounter = parameters[key + '-elements'][i];
+
+                    var combination = {};
 
                     var barcodeType = parameters[key + '-' + elementCounter + '-element-barcode-type'];
 
@@ -379,11 +392,19 @@ define(['app'], function(App) {
                         element['value_name'] = valueName;
                     }
 
+                    // Combination
+                    var combinationValue = {};
+                    combinationValue[valueName] = parameters[key + '-' + elementCounter + '-element-barcode-column-order'];
+                    combinations[0]['csv_file']['values_column'].push(combinationValue);
+
+                    // Save element
                     elements.push(element);
                 }
 
                 // Barcodes & Trimming
+
                 var barcodeCount = parameters[key + '-elements'].length;
+
                 if (barcodeCount === 1) {
 
                     var onlyBarcode = parameters[key + '-' + 1 + '-element-barcode-type'];
@@ -515,6 +536,10 @@ define(['app'], function(App) {
 
             if (elements) {
                 matchObject['custom_demultiplex'].elements = elements;
+            }
+
+            if (combinations) {
+                matchObject['custom_demultiplex'].combinations = combinations;
             }
 
             return matchObject;

@@ -1,0 +1,95 @@
+<div class="row row-with-spacer">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-12">
+                        Barcode Combinations
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        CSV File
+                                    </td>
+                                    <td>
+                                        <select
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-combination-csv-file"
+                                        >
+                                            {{#each combinationFiles}}
+                                                <option value={{value.name}}>{{value.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Generate Histogram
+                                    </td>
+                                    <td>
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-combination-generate-histogram"
+                                            type="checkbox"
+                                            checked
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Skip First Line
+                                    </td>
+                                    <td>
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-combination-skip-header"
+                                            type="checkbox"
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Is there a sample identifier column?
+                                    </td>
+                                    <td>
+                                        <input
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-combination-sample-identifier-column-present"
+                                            type="checkbox"
+                                        >
+                                    </td>
+                                </tr>
+                                {{#each barcodeInfo}}
+                                    <tr>
+                                        <td>
+                                            "{{this.barcodeName}}" Barcode Column Ordering
+                                        </td>
+                                        <td>
+                                            <select
+                                                class="job-form-item"
+                                                name="{{../inputCount}}-{{../parameterType}}-{{barcodeElementNumber}}-element-barcode-column-order"
+                                            >
+                                                {{#each ../barcodeColumns}}
+                                                    <option value="{{this}}">{{this}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

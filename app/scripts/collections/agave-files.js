@@ -164,6 +164,18 @@ function(Backbone, EnvironmentConfig) {
 
             return newCollection;
         },
+        getCombinationCollection: function() {
+
+            var fileTypeMatches = _.filter(this.models, function(model) {
+                return model.get('value')['name'].slice(-4) === '.csv';
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(fileTypeMatches);
+
+            return newCollection;
+        },
         search: function(searchString) {
 
             var filteredModels = _.filter(this.models, function(data) {

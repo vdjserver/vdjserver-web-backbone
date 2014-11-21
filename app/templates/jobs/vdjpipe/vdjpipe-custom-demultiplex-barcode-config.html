@@ -13,6 +13,7 @@
             <!-- These are always set -->
             <input
                 class="hidden"
+                id="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-value-name"
                 name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-value-name"
                 type="text"
                 value="DemultiplexBarcode{{elementCount}}"
@@ -20,6 +21,7 @@
 
             <input
                 class="hidden"
+                id="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-score-name"
                 name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-score-name"
                 type="text"
                 value="DemultiplexBarcode{{elementCount}}-score"
@@ -53,6 +55,7 @@
                                     <td>
                                         <select
                                             class="job-form-item"
+                                            id="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file"
                                             name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file"
                                         >
                                             {{#each barcodeFiles}}

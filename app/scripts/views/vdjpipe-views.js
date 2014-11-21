@@ -28,15 +28,20 @@ define([
             this.elementCount = 0;
             this.objectCount  = 0;
             this.barcodeSubviewsSelector = '#' + this.inputCount + '-' + this.parameterType + '-added-barcode-subviews';
+            this.barcodeFiles = {};
+            this.combinationFiles = {};
         },
         afterRender: function() {
             if (this.options && this.options.elements) {
 
                 // Setup barcode files
-                this.barcodeFiles = {};
                 if (this.allFiles) {
                     this.barcodeFiles = this.allFiles.getSortedBarcodeCollection();
+                    this.combinationFiles = this.allFiles.getCombinationCollection();
                 }
+
+                // Combination View
+                this.setupCombinationView();
 
                 // Restore any previously saved barcode elements
                 for (var i = 0; i < this.options.elements.length; i++) {
@@ -184,10 +189,16 @@ define([
                 options: barcodeOptions,
                 files: this.files,
                 barcodeFiles: this.barcodeFiles,
+                parentView: this,
             });
 
             this.insertView(this.barcodeSubviewsSelector, elementView);
-            elementView.render();
+
+            var that = this;
+
+            elementView.render().promise().done(function() {
+                that.updateCombinationView();
+            });
         },
         removeBarcode: function() {
 
@@ -196,7 +207,51 @@ define([
             var barcodeSubviews = this.getViews(this.barcodeSubviewsSelector).value();
 
             var barcodeView = barcodeSubviews[1];
-            barcodeView.remove();
+
+            var that = this;
+            barcodeView.remove().promise().done(function() {
+                that.updateCombinationView();
+            });
+        },
+        setupCombinationView: function() {
+
+            var combinationView = new Vdjpipe.CustomDemultiplexCombinationConfig({
+                isEditable: this.isEditable,
+                loadDefaultOptions: this.loadDefaultOptions,
+                parameterType: this.parameterType,
+                inputCount: this.inputCount,
+                elementCount: this.elementCount,
+                //options: barcodeOptions,
+                files: this.files,
+                combinationFiles: this.combinationFiles,
+                barcodeFiles: this.barcodeFiles,
+            });
+
+            this.setView(
+                '#' + this.inputCount + '-' + this.parameterType + '-combination-subview',
+                combinationView
+            );
+
+            combinationView.render();
+        },
+        updateCombinationView: function() {
+            var combinationView = this.getView(
+                '#' + this.inputCount + '-' + this.parameterType + '-combination-subview'
+            );
+
+            var barcodeInfo = [];
+
+            var barcodeElementViews = this.getViews(this.barcodeSubviewsSelector).value();
+
+            for (var i = 0; i < barcodeElementViews.length; i++) {
+                var barcodeFilename = barcodeElementViews[i].getBarcodeFilename();
+                barcodeInfo.push({
+                    'barcodeName': barcodeFilename,
+                    'barcodeElementNumber': i + 1,
+                });
+            }
+
+            combinationView.updateBarcodeInfo(barcodeInfo, this.elementCount);
         },
     });
 
@@ -218,12 +273,6 @@ define([
         serialize: function() {
             if (this.parameterType) {
 
-                /*
-                var files = {};
-                if (this.files && this.files.toJSON()) {
-                    files = this.files.toJSON();
-                }
-                */
                 var barcodeFiles = {};
                 if (this.barcodeFiles && this.barcodeFiles.toJSON) {
                     barcodeFiles = this.barcodeFiles.toJSON();
@@ -248,6 +297,7 @@ define([
         events: function() {
             var events = {};
             events['change #barcode-location-' + this.inputCount + '-' + this.elementCount] = 'setTitleByLocation';
+            events['change #' + this.inputCount + '-' + this.parameterType + '-' + this.elementCount + '-element-sequence-file'] = 'selectBarcodeFile';
 
             return events;
         },
@@ -263,6 +313,72 @@ define([
         },
         setBarcodeTypeByLocation: function(barcodeLocation) {
             $('#' + this.inputCount + '-' + this.parameterType + '-' + this.elementCount + '-element-barcode-type').val(barcodeLocation);
+        },
+        getBarcodeFilename: function() {
+            var barcodeName = $('#' + this.inputCount + '-' + this.parameterType + '-' + this.elementCount + '-element-sequence-file').val();
+
+            return barcodeName;
+        },
+        selectBarcodeFile: function(e) {
+            e.preventDefault();
+
+            this.parentView.updateCombinationView();
+        },
+    });
+
+    Vdjpipe.CustomDemultiplexCombinationConfig = App.Views.Generic.VdjpipeOptionView.extend({
+        template: 'jobs/vdjpipe/vdjpipe-custom-demultiplex-combination-config',
+        initialize: function() {
+
+            // Don't let layout manager discard this view if it is re-rendered!
+            // We're managing it manually to allow user interaction with barcode subviews.
+            //this.keep = true;
+            this.keep = false;
+            this.barcodeInfo = [];
+        },
+        serialize: function() {
+            if (this.parameterType) {
+
+                var combinationFiles = {};
+                if (this.combinationFiles && this.combinationFiles.toJSON) {
+                    combinationFiles = this.combinationFiles.toJSON();
+                }
+
+                var barcodeInfo = [];
+                if (this.barcodeInfo.length > 0) {
+                    barcodeInfo = this.barcodeInfo;
+                }
+
+                var barcodeColumns = this.getBarcodeColumns(this.elementCount);
+
+                return {
+                    isEditable: this.isEditable,
+                    loadDefaultOptions: this.loadDefaultOptions,
+                    parameterType: this.parameterType,
+                    inputCount: this.inputCount,
+                    elementCount: this.elementCount,
+                    options: this.options,
+                    combinationFiles: combinationFiles,
+                    barcodeInfo: barcodeInfo,
+                    barcodeColumns: barcodeColumns,
+                };
+            }
+        },
+        updateBarcodeInfo: function(barcodeInfo, elementCount) {
+            this.barcodeInfo = barcodeInfo;
+
+            this.elementCount = elementCount;
+
+            this.render();
+        },
+        getBarcodeColumns: function(elementCount) {
+            var barcodeColumns = [];
+
+            for (var i = 1; i < elementCount + 1; i++) {
+                barcodeColumns.push(i);
+            }
+
+            return barcodeColumns;
         },
     });
 
