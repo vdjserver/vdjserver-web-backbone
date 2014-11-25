@@ -12,12 +12,12 @@ define(['app'], function(App) {
         return name;
     };
 
-    VdjpipeSerializer.SerializeWorkflowConfig = function(parameters, fileMetadatas) {
+    VdjpipeSerializer.SerializeWorkflowConfig = function(parameters, fileMetadatas, allFileMetadatas) {
 
         var outputConfig = {
             'base_path_input': '',
             'base_path_output': '',
-            'csv_file_delimiter': '\\t',
+            //'csv_file_delimiter': "\t",
         };
 
         var paramOutput = [];
@@ -71,7 +71,7 @@ define(['app'], function(App) {
 
                         case 'custom_demultiplex':
                             paramOutput.push(
-                                serializer.getCustomDemultiplex()
+                                serializer.getCustomDemultiplex(paramOutput)
                             );
 
                             break;
@@ -168,7 +168,7 @@ define(['app'], function(App) {
         }
 
         // Set file read directions
-        var readDirections = VdjpipeSerializer._GetReadDirections(fileMetadatas);
+        var readDirections = VdjpipeSerializer._GetReadDirections(fileMetadatas, allFileMetadatas);
         outputConfig.input = readDirections;
 
         // Choose read direction and add params
@@ -178,97 +178,6 @@ define(['app'], function(App) {
         }
 
         return outputConfig;
-    };
-
-    // Convert workflowConfig to vdjpipeConfig
-    VdjpipeSerializer.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
-
-        var readConfig = {};
-        if (workflowConfig['steps']) {
-            readConfig = workflowConfig['steps'];
-        }
-
-        // Deep copy
-        var newConfig = $.extend(true, [], readConfig);
-
-        for (var i = 0; i < readConfig.length; i++) {
-            var option = readConfig[i];
-
-            //var parameterName = Object.keys(option[0]);
-
-            if (option['custom_demultiplex']) {
-
-                var elements = option['custom_demultiplex']['elements'];
-
-                for (var j = 0; j < elements.length; j++) {
-
-                    var barcodeType = elements[j]['custom_type'];
-
-                    if (barcodeType) {
-                        switch (barcodeType) {
-                            case '3\'':
-                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
-                                    'before': 0,
-                                };
-
-                                break;
-
-                            case '5\'':
-                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_lower'] = {
-                                    'after': 0,
-                                };
-
-                                break;
-
-                            case 'both':
-                                // code
-                                break;
-
-                            default:
-                                // code
-                        }
-
-                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_type'];
-                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_trim'];
-                        newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
-
-                        // Set histograms
-                        if (newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'] === true) {
-
-                            var histogram1 = {
-                                'histogram': {
-                                    'name': newConfig[i]['custom_demultiplex']['elements'][j]['value_name'],
-                                    'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['value_name'] + '.csv',
-                                },
-                            };
-
-                            var histogram2 = {
-                                'histogram': {
-                                    'name': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'],
-                                    'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'] + '.csv',
-                                },
-                            };
-
-                            newConfig.push(histogram1);
-                            newConfig.push(histogram2);
-
-                            delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'];
-                        }
-                    }
-                }
-
-                delete newConfig[i]['custom_demultiplex']['custom_location'];
-
-                newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
-                delete newConfig[i]['custom_demultiplex'];
-            }
-        }
-
-        if (workflowConfig['steps']) {
-            workflowConfig['steps'] = newConfig;
-        }
-
-        return workflowConfig;
     };
 
     // Private Methods
@@ -325,25 +234,29 @@ define(['app'], function(App) {
             var reverse = parameters[key + '-reverse-complement'];
             var barcodeLocation = parameters[key + '-custom-location'];
 
-            var elements = [];
+            // Combination custom options
             var combinations = [
                 {
                     'csv_file': {
                         'path': parameters[key + '-combination-csv-file'],
-                        'values_column': [],
+                        'values_column': [{}],
                         'skip_header': parameters[key + '-skip-header'],
                     },
+                    'value_name': parameters[key + '-combination-value-name'],
                 },
             ];
 
+            if (parameters[key + '-custom-combination-histogram']) {
+                combinations[0]['custom_histogram'] = parameters[key + '-custom-combination-histogram'];
+            }
+
+            var elements = [];
 
             if (parameters[key + '-elements']) {
                 for (var i = 0; i < parameters[key + '-elements'].length; i++) {
 
                     var element = {};
                     var elementCounter = parameters[key + '-elements'][i];
-
-                    var combination = {};
 
                     var barcodeType = parameters[key + '-' + elementCounter + '-element-barcode-type'];
 
@@ -388,9 +301,7 @@ define(['app'], function(App) {
                     }
 
                     // Combination
-                    var combinationValue = {};
-                    combinationValue[valueName] = parameters[key + '-' + elementCounter + '-element-barcode-column-order'];
-                    combinations[0]['csv_file']['values_column'].push(combinationValue);
+                    combinations[0]['csv_file']['values_column'][0][valueName] = parseInt(parameters[key + '-' + elementCounter + '-element-barcode-column-order']);
 
                     // Save element
                     elements.push(element);
@@ -618,214 +529,6 @@ define(['app'], function(App) {
             return lengthFilter;
         };
 
-/*
-        this.getMatch = function() {
-
-            var reverse = parameters[key + '-reverse-complement'];
-            var trimmed = parameters[key + '-trimmed'];
-
-            var elements = [];
-
-            if (parameters[key + '-elements']) {
-                for (var i = 0; i < parameters[key + '-elements'].length; i++) {
-                    var elementCounter = parameters[key + '-elements'][i];
-
-                    var startPosition = parameters[key + '-' + elementCounter + '-element-start-position'];
-                    var startPositionLocation = parameters[key + '-' + elementCounter + '-element-start-position-location'];
-                    var startPositionLocationSequence = parameters[key + '-' + elementCounter + '-element-start-position-location-sequence'];
-
-                    var endPosition = parameters[key + '-' + elementCounter + '-element-end-position'];
-                    var endPositionLocation = parameters[key + '-' + elementCounter + '-element-end-position-location'];
-                    var endPositionLocationSequence = parameters[key + '-' + elementCounter + '-element-end-position-location-sequence'];
-
-                    var sequenceFile = parameters[key + '-' + elementCounter + '-element-sequence-file'];
-                    var csvSequencesFile = parameters[key + '-' + elementCounter + '-element-csv-path'];
-                    var csvSequencesColumn = parameters[key + '-' + elementCounter + '-element-csv-column-name'];
-                    var required = parameters[key + '-' + elementCounter + '-element-required'];
-                    var minScore = parameters[key + '-' + elementCounter + '-element-minimum-score'];
-                    var allowGaps = parameters[key + '-' + elementCounter + '-element-allow-gaps'];
-                    var minMatchLength = parameters[key + '-' + elementCounter + '-element-minimum-match-length'];
-                    var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
-                    var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
-                    var identityName = parameters[key + '-' + elementCounter + '-element-identity-name'];
-                    var cutLowerLocation = parameters[key + '-' + elementCounter + '-element-cut-lower-location'];
-                    var cutLowerLocationSequence = parameters[key + '-' + elementCounter + '-element-cut-lower-location-sequence'];
-                    var cutUpperLocation = parameters[key + '-' + elementCounter + '-element-cut-upper-location'];
-                    var cutUpperLocationSequence = parameters[key + '-' + elementCounter + '-element-cut-upper-location-sequence'];
-
-                    var element = {};
-
-                    if (startPosition) {
-
-                        // Convert to int
-                        startPosition = parseInt(startPosition);
-
-                        element.start = {};
-                        element.start.pos = startPosition;
-
-                        if (startPositionLocation && startPositionLocationSequence) {
-                            if (startPositionLocation === 'before') {
-                                element.start.before = startPositionLocationSequence;
-                            }
-                            else if (startPositionLocation === 'after') {
-                                element.start.after = startPositionLocationSequence;
-                            }
-                        }
-                    }
-
-                    if (endPosition) {
-
-                        // Convert to int
-                        endPosition = parseInt(endPosition);
-
-                        element.end = {};
-                        element.end.pos = endPosition;
-
-                        if (endPositionLocation && endPositionLocationSequence) {
-                            if (endPositionLocation === 'before') {
-                                element.end.before = endPositionLocationSequence;
-                            }
-                            else if (endPositionLocation === 'after') {
-                                element.end.after = endPositionLocationSequence;
-                            }
-                        }
-                    }
-
-                    if (sequenceFile) {
-                        element.seq_file = sequenceFile;
-                    }
-
-                    if (csvSequencesColumn || csvSequencesFile) {
-
-                        element.csv_file = {};
-
-                        if (csvSequencesColumn) {
-                            element.csv_file.sequences_column = csvSequencesColumn;
-                        }
-
-                        if (csvSequencesFile) {
-                            element.csv_file.path = csvSequencesFile;
-                        }
-                    }
-
-                    if (required) {
-                        element.required = required;
-                    }
-
-                    if (minScore) {
-
-                        // Convert to int
-                        minScore = parseInt(minScore);
-
-                        element.min_score = minScore;
-                    }
-
-                    if (allowGaps) {
-                        element.allow_gaps = allowGaps;
-                    }
-
-                    if (minMatchLength) {
-
-                        // Convert to int
-                        minMatchLength = parseInt(minMatchLength);
-
-                        element.min_match_length = minMatchLength;
-                    }
-
-                    if (valueName) {
-                        element.value_name = valueName;
-                    }
-
-                    if (scoreName) {
-                        element.score_name = scoreName;
-                    }
-
-                    if (identityName) {
-
-                        element.identity_name = identityName;
-                    }
-
-                    if (cutLowerLocation && cutLowerLocationSequence) {
-
-                        // Convert to int
-                        cutLowerLocationSequence = parseInt(cutLowerLocationSequence);
-
-                        element.cut_lower = {};
-
-                        if (cutLowerLocation === 'before') {
-                            element.cut_lower.before = cutLowerLocationSequence;
-                        }
-                        else if (cutLowerLocation === 'after') {
-                            element.cut_lower.after = cutLowerLocationSequence;
-                        }
-                    }
-
-                    if (cutUpperLocation && cutUpperLocationSequence) {
-
-                        // Convert to int
-                        cutUpperLocationSequence = parseInt(cutUpperLocationSequence);
-
-                        element.cut_upper = {};
-
-                        if (cutUpperLocation === 'before') {
-                            element.cut_upper.before = cutUpperLocationSequence;
-                        }
-                        else if (cutUpperLocation === 'after') {
-                            element.cut_upper.after = cutUpperLocationSequence;
-                        }
-                    }
-
-                    elements.push(element);
-                }
-            }
-
-            var combinationObjects = [];
-
-            if (parameters[key + '-combination-objects']) {
-
-                for (var combinationCounter = 0; combinationCounter < parameters[key + '-combination-objects'].length; combinationCounter++) {
-
-                    var combinationObject = {};
-
-                    var objectCounter = parameters[key + '-combination-objects'][combinationCounter];
-
-                    var objectFile = parameters[key + '-' + objectCounter + '-combination-object-file'];
-                    var objectValueName = parameters[key + '-' + objectCounter + '-combination-object-value-name'];
-                    var valuesColumn = parameters[key + '-' + objectCounter + '-combination-object-values-column'];
-                    var namesColumn = parameters[key + '-' + objectCounter + '-combination-object-names-column'];
-
-                    if (objectFile && valuesColumn && namesColumn) {
-                        combinationObject.path = objectFile;
-                        combinationObject.values_column = valuesColumn;
-                        combinationObject.names_column = namesColumn;
-
-                        if (objectValueName) {
-                            combinationObject.value_name = objectValueName;
-                        }
-
-                        combinationObjects.push(combinationObject);
-                    }
-                }
-            }
-
-            var matchObject = {
-                'match': {
-                    'reverse': reverse,
-                    'trimmed': trimmed,
-                },
-            };
-
-            if (elements) {
-                matchObject.match.elements = elements;
-            }
-
-            if (combinationObjects.length > 0) {
-                matchObject.match.combinations = combinationObjects;
-            }
-
-            return matchObject;
-        };
-*/
         this.getMergePaired = function() {
             return {
                 'merge_paired': {
@@ -944,7 +647,7 @@ define(['app'], function(App) {
         };
     };
 
-    VdjpipeSerializer._GetReadDirections = function(fileMetadatas) {
+    VdjpipeSerializer._GetReadDirections = function(fileMetadatas, allFileMetadatas) {
         var readDirections = [];
 
         if (fileMetadatas && fileMetadatas.length > 0) {
@@ -954,44 +657,155 @@ define(['app'], function(App) {
 
                 if (value.name.split('.').pop() === 'fasta') {
 
-                    var qualMetadata = fileMetadatas.get(privateAttributes['quality-score-metadata-uuid']);
-                    var qualValue = qualMetadata.get('value');
+                    var qualUuid = privateAttributes['quality-score-metadata-uuid'];
 
-                    if (privateAttributes['read-direction'] === 'F') {
-                        readDirections.push({
-                            'sequence': value.name,
-                            'quality': qualValue.name,
-                        });
-                    }
+                    if (qualUuid) {
+                        var qualMetadata = allFileMetadatas.get(qualUuid);
+                        var qualValue = qualMetadata.get('value');
 
-                    if (privateAttributes['read-direction'] === 'R') {
-                        readDirections.push({
-                            'sequence': value.name,
-                            'is_reverse': true,
-                            'quality': qualValue.name,
-                        });
+                        if (privateAttributes['read-direction'] === 'F') {
+                            readDirections.push({
+                                'sequence': value.name,
+                                'quality': qualValue.name,
+                            });
+                        }
+
+                        if (privateAttributes['read-direction'] === 'R') {
+                            readDirections.push({
+                                'sequence': value.name,
+                                'is_reverse': true,
+                                'quality': qualValue.name,
+                            });
+                        }
+
+                        continue;
                     }
                 }
-                else if (value.name.split('.').pop() != 'qual') {
 
-                    if (privateAttributes['read-direction'] === 'F') {
-                        readDirections.push({
-                            'sequence': value.name,
-                        });
-                    }
-
-                    if (privateAttributes['read-direction'] === 'R') {
-                        readDirections.push({
-                            'sequence': value.name,
-                            'is_reverse': true,
-                        });
-                    }
-
+                if (privateAttributes['read-direction'] === 'F') {
+                    readDirections.push({
+                        'sequence': value.name,
+                    });
+                }
+                else if (privateAttributes['read-direction'] === 'R') {
+                    readDirections.push({
+                        'sequence': value.name,
+                        'is_reverse': true,
+                    });
                 }
             }
         }
 
         return readDirections;
+    };
+
+    // Convert workflowConfig to vdjpipeConfig
+    VdjpipeSerializer.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
+
+        var readConfig = {};
+        if (workflowConfig['steps']) {
+            readConfig = workflowConfig['steps'];
+        }
+
+        // Deep copy
+        var newConfig = $.extend(true, [], readConfig);
+
+        var tmpBarcodeVariables = [];
+
+        for (var i = 0; i < readConfig.length; i++) {
+            var option = readConfig[i];
+
+            //var parameterName = Object.keys(option[0]);
+
+            if (option['custom_demultiplex']) {
+
+                // Elements
+                var elements = option['custom_demultiplex']['elements'];
+
+                for (var j = 0; j < elements.length; j++) {
+
+                    var barcodeType = elements[j]['custom_type'];
+
+                    if (barcodeType) {
+                        switch (barcodeType) {
+                            case '3\'':
+                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
+                                    'before': 0,
+                                };
+
+                                break;
+
+                            case '5\'':
+                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_lower'] = {
+                                    'after': 0,
+                                };
+
+                                break;
+
+                            case 'both':
+                                // code
+                                break;
+
+                            default:
+                                // code
+                        }
+
+                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_type'];
+                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_trim'];
+                        newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
+
+                        // Set histograms
+                        if (newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'] === true) {
+                            var tmpBarcodeVariableName = newConfig[i]['custom_demultiplex']['elements'][j]['value_name'];
+                            tmpBarcodeVariables.push(tmpBarcodeVariableName);
+
+                            var histogram1 = {
+                                'histogram': {
+                                    'name': tmpBarcodeVariableName,
+                                    'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['value_name'] + '.csv',
+                                },
+                            };
+
+                            var histogram2 = {
+                                'histogram': {
+                                    'name': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'],
+                                    'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'] + '.csv',
+                                },
+                            };
+
+                            newConfig.push(histogram1);
+                            newConfig.push(histogram2);
+
+                            delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'];
+                        }
+                    }
+                }
+
+                // Combinations
+                if (option['custom_demultiplex']['combinations'] && option['custom_demultiplex']['combinations'][0]['custom_histogram']) {
+
+                    var combinationHistogram = {
+                        'histogram': {
+                            'name': option['custom_demultiplex']['combinations'][0]['value_name'],
+                        },
+                    };
+                    newConfig.push(combinationHistogram);
+
+                    delete newConfig[i]['custom_demultiplex']['combinations'][0]['custom_histogram'];
+                }
+
+                delete newConfig[i]['custom_demultiplex']['custom_location'];
+
+                newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
+                delete newConfig[i]['custom_demultiplex'];
+            }
+        }
+
+        if (workflowConfig['steps']) {
+            workflowConfig['steps'] = newConfig;
+        }
+
+        return workflowConfig;
     };
 
     App.Utilities.VdjpipeSerializer = VdjpipeSerializer;

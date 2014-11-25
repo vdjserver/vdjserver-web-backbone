@@ -84,7 +84,8 @@ function(App, Backbone, EnvironmentConfig) {
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: 'vdj_pipe-0.1.2u2',
+                    //appId: 'vdj_pipe-0.1.2u2',
+                    appId: 'vdj_pipe-0.1.2',
                 }
 
             );
@@ -93,10 +94,28 @@ function(App, Backbone, EnvironmentConfig) {
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
-            selectedFileMetadatas = this._updateSelectedFileMetadatasForBarcodes(formData, selectedFileMetadatas, allFileMetadatas);
 
-            this._setJobConfigFromWorkflowFormData(formData, selectedFileMetadatas);
+            this._setJobConfigFromWorkflowFormData(formData, selectedFileMetadatas, allFileMetadatas);
             this._setArchivePath(projectUuid);
+
+            selectedFileMetadatas = this._updateSelectedFileMetadatasForBarcodes(
+                formData,
+                selectedFileMetadatas,
+                allFileMetadatas
+            );
+
+            selectedFileMetadatas = this._updateSelectedFileMetadatasForBarcodeQualityScores(
+                formData,
+                selectedFileMetadatas,
+                allFileMetadatas
+            );
+
+            selectedFileMetadatas = this._updateSelectedFileMetadatasForCombinationCsv(
+                formData,
+                selectedFileMetadatas,
+                allFileMetadatas
+            );
+
             this._setFilesParameter(selectedFileMetadatas);
         },
         submitJob: function(projectUuid) {
@@ -119,6 +138,23 @@ function(App, Backbone, EnvironmentConfig) {
         },
 
         // Private Methods
+        _updateSelectedFileMetadatasForBarcodeQualityScores: function(formData, selectedFileMetadatas, allFileMetadatas) {
+
+            for (var i = 0; i < selectedFileMetadatas.models.length; i++) {
+
+                var selectedFileMetadata = selectedFileMetadatas.at(i);
+
+                var qualUuid = selectedFileMetadata.getAssociatedQualityScoreMetadataUuid();
+
+                if (qualUuid) {
+                    var qualFileMetadata = allFileMetadatas.get(qualUuid);
+
+                    selectedFileMetadatas.add(qualFileMetadata);
+                }
+            }
+
+            return selectedFileMetadatas;
+        },
         _updateSelectedFileMetadatasForBarcodes: function(formData, selectedFileMetadatas, allFileMetadatas) {
             var keys = Object.keys(formData);
 
@@ -166,9 +202,54 @@ function(App, Backbone, EnvironmentConfig) {
             return selectedFileMetadatas;
         },
 
-        _setJobConfigFromWorkflowFormData: function(formData, fileMetadatas) {
+        _updateSelectedFileMetadatasForCombinationCsv: function(formData, selectedFileMetadatas, allFileMetadatas) {
+            var keys = Object.keys(formData);
 
-            var workflowConfig = App.Utilities.VdjpipeSerializer.SerializeWorkflowConfig(formData, fileMetadatas);
+            // Find if any keys known to have extra files are present
+            var matches = [];
+
+            (function() {
+                for (var i = 0; i < keys.length; i++) {
+                    var search = keys[i].search('combination-csv-file');
+
+                    if (search > -1) {
+                        matches.push(keys[i]);
+                    }
+                }
+            })();
+
+            // Extract filenames from form
+            var files = [];
+
+            (function() {
+                for (var i = 0; i < matches.length; i++) {
+                    var fasta = formData[matches[i]];
+
+                    files.push(fasta);
+                }
+            })();
+
+            // Extract file metadata for filenames
+            (function() {
+
+                for (var i = 0; i < files.length; i++) {
+                    var csvMetadata = allFileMetadatas.getModelForName(files[i]);
+
+                    selectedFileMetadatas.add(csvMetadata);
+                }
+
+            })();
+
+            return selectedFileMetadatas;
+        },
+
+        _setJobConfigFromWorkflowFormData: function(formData, fileMetadatas, allFileMetadatas) {
+
+            var workflowConfig = App.Utilities.VdjpipeSerializer.SerializeWorkflowConfig(
+                formData,
+                fileMetadatas,
+                allFileMetadatas
+            );
 
             var jobConfig = App.Utilities.VdjpipeSerializer.ConvertWorkflowConfigToVdjpipeConfig(workflowConfig);
 

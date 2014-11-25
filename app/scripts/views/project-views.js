@@ -943,9 +943,16 @@ define([
             var qualName = e.target.value;
 
             var fastaModel = this.fastaMetadatas.get(fastaUuid);
-            var qualModel = this.qualMetadatas.getModelForName(qualName);
 
-            fastaModel.updateAssociatedQualityScoreMetadata(qualModel.get('uuid'));
+            if (qualName.length > 0) {
+
+                var qualModel = this.qualMetadatas.getModelForName(qualName);
+
+                fastaModel.updateAssociatedQualityScoreMetadata(qualModel.get('uuid'));
+            }
+            else {
+                fastaModel.updateAssociatedQualityScoreMetadata('');
+            }
         },
     });
 

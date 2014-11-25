@@ -10,6 +10,13 @@
                 </div>
             </div>
 
+            <input
+                class="hidden"
+                name="{{inputCount}}-{{parameterType}}-combination-value-name"
+                type="text"
+                value="Combination{{inputCount}}"
+            >
+
             <div class="panel-body">
                 <div class="row row-with-spacer">
                     <div class="col-md-12">
@@ -37,7 +44,7 @@
                                     <td>
                                         <input
                                             class="job-form-item"
-                                            name="{{inputCount}}-{{parameterType}}-combination-generate-histogram"
+                                            name="{{inputCount}}-{{parameterType}}-custom-combination-histogram"
                                             type="checkbox"
                                             checked
                                         >
