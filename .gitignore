@@ -11,3 +11,5 @@ node_modules
 
 # App Specific Files
 app/scripts/vendor/bootstrap.js
+app/scripts/vendor/modernizr.js
+app/scripts/vendor/moment.js

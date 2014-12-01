@@ -176,7 +176,7 @@ module.exports = function(grunt) {
             }
         },
         copy: {
-            prepareFonts: {
+            fontAwesome: {
                 files: [
                     {
                         expand: true,
@@ -190,7 +190,7 @@ module.exports = function(grunt) {
                     }
                 ]
             },
-            distImages: {
+            bowerImages: {
                 files: [
                     {
                         expand: true,
@@ -204,7 +204,7 @@ module.exports = function(grunt) {
                     }
                 ]
             },
-            distStyles: {
+            bowerCss: {
                 files: [
                     {
                         expand: true,
@@ -226,14 +226,14 @@ module.exports = function(grunt) {
                     }
                 ]
             },
-            distBower: {
+            vendorScripts: {
                 files: [
                     {
                         expand: true,
                         dot: true,
                         flatten: true,
                         cwd: '<%= yeoman.app %>/bower_components',
-                        dest: '<%= yeoman.dist %>/scripts/vendor',
+                        dest: '<%= yeoman.app %>/scripts/vendor',
                         src: [
                             'modernizr/modernizr.js',
                             'moment/moment.js',
@@ -255,7 +255,7 @@ module.exports = function(grunt) {
                             'images/{,*/}*.{webp,gif}',
                             'fonts/**',
                             'templates/**',
-                            'scripts/vendor/{,*/}*.{js}',
+                            'scripts/vendor/**', //'{,*/}*.{js}',
                             'vdjml/**',
                             //'bower_components/font-awesome/fonts/*'
                         ]
@@ -414,10 +414,10 @@ module.exports = function(grunt) {
 
         grunt.task.run([
             'clean:server',
-            'copy:prepareFonts',
-            'copy:distStyles',
-            'copy:distImages',
-            'copy:distBower',
+            'copy:fontAwesome',
+            'copy:bowerCss',
+            'copy:bowerImages',
+            'copy:vendorScripts',
             'coffee:dist',
             'compass:server',
             'connect:livereload',
@@ -438,12 +438,13 @@ module.exports = function(grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'coffee',
-        'copy:prepareFonts',
-        'copy:distStyles',
-        'copy:distBower',
-        'copy:distImages',
+        'copy:fontAwesome',
+        'copy:bowerCss',
+        'copy:bowerImages',
+        'copy:vendorScripts',
         'compass',
         'handlebars',
+        'copy:dist',
         'useminPrepare',
         'requirejs',
         'imagemin',
@@ -451,7 +452,6 @@ module.exports = function(grunt) {
         'concat:dist',
         'cssmin',
         'uglify',
-        'copy:dist',
         'usemin'
     ]);
 
