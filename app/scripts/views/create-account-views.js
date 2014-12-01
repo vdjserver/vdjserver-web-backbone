@@ -68,6 +68,8 @@ define(['app', 'backbone.syphon'], function(App) {
                     ;
                     $('#' + type + '-container').addClass('has-error');
                 }
+
+                $('html,body').animate({scrollTop:0});
             }
         },
         submitForm: function(e) {
@@ -130,6 +132,8 @@ define(['app', 'backbone.syphon'], function(App) {
                                         .fadeIn()
                                 );
                             $('#modal-message').modal('hide');
+
+                            $('html,body').animate({scrollTop:0});
                         });
                 });
         }

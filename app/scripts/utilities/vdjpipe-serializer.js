@@ -27,7 +27,6 @@ define(['app'], function(App) {
             if (parameters.hasOwnProperty(key)) {
                 if (key !== 'formtype' && key !== 'job-name') {
                     var keyCounterIndex = key.indexOf('-') + 1;
-                    //var keyCounter = key.slice(0, keyCounterIndex);
                     var parameterName = key.slice(keyCounterIndex);
 
                     var serializer = new VdjpipeSerializer._Serializer(parameters, key);
@@ -714,8 +713,6 @@ define(['app'], function(App) {
 
         for (var i = 0; i < readConfig.length; i++) {
             var option = readConfig[i];
-
-            //var parameterName = Object.keys(option[0]);
 
             if (option['custom_demultiplex']) {
 
