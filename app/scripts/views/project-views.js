@@ -204,15 +204,12 @@ define([
             }
         },
         afterRender: function() {
-            this._uiSetActiveFileCategory();
-
             // Tooltips
             $('.has-tooltip').tooltip();
         },
         events: {
             'click #file-upload':    '_clickFilesSelectorWrapper',
             'change #file-dialog':   '_changeFilesSelector',
-            'click .file-category':  '_changeFileCategory',
             'click .selected-files': '_uiToggleDisabledButtonStatus',
             'click #select-all-files-checkbox': '_toggleSelectAllFiles',
             'click .run-job':       '_clickRunJob',
@@ -491,10 +488,6 @@ define([
         },
 
         // UI
-        _uiSetActiveFileCategory: function() {
-            $('.file-category').removeClass('active');
-            $('#' + this.fileCategory).addClass('active');
-        },
         _uiToggleDisabledButtonStatus: function() {
             if ($('.selected-files:checked').length) {
                 $('.files-selected-button').removeClass('disabled');
@@ -511,13 +504,6 @@ define([
         _changeFilesSelector: function(e) {
             var files = e.target.files;
             this._parseFiles(files);
-        },
-        _changeFileCategory: function(e) {
-            e.preventDefault();
-
-            this.fileCategory = e.target.dataset.id;
-
-            this._fetchAndRenderFileListings();
         },
         _toggleSelectAllFiles: function() {
 
