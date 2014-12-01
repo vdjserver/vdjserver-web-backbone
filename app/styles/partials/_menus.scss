@@ -81,15 +81,24 @@
     font-size: 16px;
     background-color: $projectSubmenuColor;
     color: $projectSubmenuTextColor;
-    //padding-left: 45px;
 
-    margin: 0 0 0 15px;
+    //margin: 0 0 0 15px;
 
     border: none;
+
+    text-align: center;
 
     a {
         color: inherit;
     }
+
+    a:visited, a:focus {
+        text-decoration: none;
+    }
+}
+
+.project-submenu.active, .project-submenu.active:hover {
+    background-color: #b7674b;
 }
 
 .project-detail-controls {

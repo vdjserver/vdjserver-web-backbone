@@ -54,6 +54,8 @@ define([
         },
         events: {
             'click .project-create-menu': '_collapseAllSubmenus',
+            'click .project-submenu a': '_uiSetActiveSubmenu',
+            'click .project-menu': '_uiClearActiveSubmenu',
         },
         afterRender: function() {
             // UI update in case of reload
@@ -111,7 +113,6 @@ define([
 
         // Private Methods
         _collapseAllSubmenus: function() {
-
             $('.project-menu').removeClass('active');
             $('.project-submenu').addClass('hidden');
         },
@@ -122,6 +123,16 @@ define([
         _uiOpenProjectSubmenu: function(projectUuid) {
             $('.project-submenu').addClass('hidden');
             $('#project-' + projectUuid + '-menu').nextUntil('.project-menu').removeClass('hidden');
+        },
+        _uiClearActiveSubmenu: function() {
+            $('.project-submenu').removeClass('active');
+        },
+        _uiSetActiveSubmenu: function(e) {
+            e.preventDefault();
+
+            this._uiClearActiveSubmenu();
+
+            $(e.currentTarget).closest('.project-submenu').addClass('active'); //css('background-color', 'green');
         },
     });
 
