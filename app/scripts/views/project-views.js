@@ -713,6 +713,7 @@ define([
             }
 
             this.fileUniqueIdentifier = this.model.getDomFriendlyName() + '-progress';
+
         },
         serialize: function() {
             return {
@@ -731,6 +732,14 @@ define([
         _cancelUpload: function(e) {
             e.preventDefault();
             this.remove();
+
+            //this.model.abort();
+
+            var listView = App.Layouts.sidebar.getView('.sidebar');
+
+            listView.removeFileTransfer(this.fileUniqueIdentifier);
+
+            this.model.trigger(Backbone.Agave.Model.File.CANCEL_UPLOAD);
         },
         _startUpload: function(e) {
             e.preventDefault();
@@ -742,7 +751,7 @@ define([
 
             var that = this;
 
-            this.model.on('uploadProgress', function(percentCompleted) {
+            this.model.on(Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(percentCompleted) {
                 that._uiSetUploadProgress(percentCompleted);
             });
 
@@ -768,6 +777,8 @@ define([
                     // Notify user that upload failed
                     that._uiSetErrorMessage('File upload error. Please try uploading your file again.');
                 });
+
+            //request.abort()
         },
 
         // Data Management
@@ -820,10 +831,8 @@ define([
             );
         },
         _uiUploadStart: function() {
-            // Disable buttons
-            $('.upload-button')
-                .attr('disabled', 'disabled')
-            ;
+            // Disable user selectable UI components
+            $('#form-' + this.fileUniqueIdentifier).find('.user-selectable').attr('disabled', 'disabled');
 
             // Hide previous notifications for this file
             $('#file-upload-notifications-' + this.fileUniqueIdentifier)
@@ -869,7 +878,7 @@ define([
                 .removeClass('hidden')
             ;
 
-            $('.upload-button').removeAttr('disabled');
+            $('#form-' + this.fileUniqueIdentifier).find('.user-selectable').removeAttr('disabled');
 
             $('#start-upload-button').text('Try again');
         },
