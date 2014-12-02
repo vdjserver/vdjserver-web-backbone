@@ -9,7 +9,7 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">Category</label>
         <div class="col-sm-2">
-            <select class="form-control" name="file-category">
+            <select class="form-control user-selectable" name="file-category">
                 <option value="uploaded">Uploaded</option>
             </select>
         </div>
@@ -26,13 +26,13 @@
         <label class="col-sm-2 control-label">Type</label>
         <div class="col-sm-10">
             <span class="checkbox-horizontal">
-                    <input type="checkbox" name="forward-reads">&nbsp;Forward Reads
+                    <input type="checkbox" name="forward-reads" class="user-selectable">&nbsp;Forward Reads
             </span>
         </div>
         <div class="col-sm-offset-2">
             <div class="col-sm-10">
                 <span class="checkbox-horizontal">
-                    <input type="checkbox" name="reverse-reads">&nbsp;Reverse Reads
+                    <input type="checkbox" name="reverse-reads" class="user-selectable">&nbsp;Reverse Reads
                 </span>
             </div>
         </div>
@@ -41,7 +41,7 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">Tags</label>
         <div class="col-sm-5">
-            <input class="form-control" name="tags" type="text" placeholder="Comma separated tags. Example: single-read, barcode">
+            <input class="form-control user-selectable" name="tags" type="text" placeholder="Comma separated tags. Example: single-read, barcode">
         </div>
     </div>
 
@@ -66,7 +66,7 @@
             <div class="col-sm-5 col-sm-offset-2">
                 <div class="btn-group btn-group-justified">
                     <div class="btn-group">
-                        <button type="submit" id="start-upload-button" class="btn btn-primary upload-button">
+                        <button type="submit" id="start-upload-button" class="btn btn-primary upload-button user-selectable">
                             Start
                         </button>
                     </div>

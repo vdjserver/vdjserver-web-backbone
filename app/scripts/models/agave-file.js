@@ -9,213 +9,223 @@ function(Backbone, EnvironmentConfig) {
 
     var File = {};
 
-    File = Backbone.Agave.Model.extend({
-        // Private methods
-        _getAssociationId: function() {
-            var path = this.get('path');
-            var split = path.split('/');
+    File = Backbone.Agave.Model.extend(
+        {
+            // Private methods
+            _getAssociationId: function() {
+                var path = this.get('path');
+                var split = path.split('/');
 
-            return split[3];
-        },
+                return split[3];
+            },
 
-        // Public methods
-        idAttribute: 'path',
-        defaults: {
-            fileReference: '',
-            format: '',
-            lastModified: '',
-            length: 0,
-            mimeType: '',
-            name: '',
-            path: '',
-            permissions: '',
-            projectUuid: '',
-            system: '',
-            type: '',
-            _links: {},
-        },
-        url: function() {
-            return  '/files/v2/media/system'
-                    + '/' + EnvironmentConfig.storageSystem
-                    + '//projects'
-                    + '/' + this.get('projectUuid')
-                    + '/files/';
-        },
-        sync: function(method, model, options) {
+            // Public methods
+            idAttribute: 'path',
+            defaults: {
+                fileReference: '',
+                format: '',
+                lastModified: '',
+                length: 0,
+                mimeType: '',
+                name: '',
+                path: '',
+                permissions: '',
+                projectUuid: '',
+                system: '',
+                type: '',
+                _links: {},
+            },
+            url: function() {
+                return  '/files/v2/media/system'
+                        + '/' + EnvironmentConfig.storageSystem
+                        + '//projects'
+                        + '/' + this.get('projectUuid')
+                        + '/files/';
+            },
+            sync: function(method, model, options) {
 
-            var that = this;
+                var that = this;
 
-            switch (method) {
-                case 'read':
-                case 'delete':
-                    return Backbone.Agave.sync(method, model, options);
-                    break;
+                switch (method) {
+                    case 'read':
+                    case 'delete':
+                        return Backbone.Agave.sync(method, model, options);
+                        break;
 
-                case 'create':
-                case 'update':
-                    var url = model.apiRoot + (options.url || _.result(model, 'url'));
+                    case 'create':
+                    case 'update':
+                        var url = model.apiRoot + (options.url || _.result(model, 'url'));
 
-                    var formData = new FormData();
-                    formData.append('fileToUpload', model.get('fileReference'));
+                        var formData = new FormData();
+                        formData.append('fileToUpload', model.get('fileReference'));
 
-                    var deferred = $.Deferred();
+                        var deferred = $.Deferred();
 
-                    var xhr = options.xhr || new XMLHttpRequest();
-                    xhr.open('POST', url, true);
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-                    xhr.timeout = 0;
+                        var xhr = options.xhr || new XMLHttpRequest();
+                        xhr.open('POST', url, true);
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
+                        xhr.timeout = 0;
 
-                    // Listen to the upload progress.
-                    xhr.upload.onprogress = function(e) {
-                        if (e.lengthComputable) {
-                            var uploadProgress = (e.loaded / e.total) * 100;
-                            model.trigger('uploadProgress', uploadProgress);
-                        }
-                    };
-
-                    xhr.addEventListener('load', function() {
-
-                        if (xhr.status === 200 || 202) {
-
-                            // A little bit of a hack, but it does the trick
-                            try {
-                                var parsedJSON = JSON.parse(xhr.response);
-                                parsedJSON = parsedJSON.result;
-                                that.set(parsedJSON);
-
-                                deferred.resolve(xhr.response);
+                        // Listen to the upload progress.
+                        xhr.upload.onprogress = function(e) {
+                            if (e.lengthComputable) {
+                                var uploadProgress = (e.loaded / e.total) * 100;
+                                model.trigger(File.UPLOAD_PROGRESS, uploadProgress);
                             }
-                            catch (error) {
-                                deferred.reject('Error: Agave response serialization failed.');
+                        };
+
+                        model.on(File.CANCEL_UPLOAD, function() {
+                            xhr.abort();
+                        });
+
+                        xhr.addEventListener('load', function() {
+
+                            if (xhr.status === 200 || 202) {
+
+                                // A little bit of a hack, but it does the trick
+                                try {
+                                    var parsedJSON = JSON.parse(xhr.response);
+                                    parsedJSON = parsedJSON.result;
+                                    that.set(parsedJSON);
+
+                                    deferred.resolve(xhr.response);
+                                }
+                                catch (error) {
+                                    deferred.reject('Error: Agave response serialization failed.');
+                                }
                             }
-                        }
-                        else {
+                            else {
+                                deferred.reject('HTTP Error: ' + xhr.status);
+                            }
+                        }, false);
+
+                        xhr.addEventListener('error', function() {
                             deferred.reject('HTTP Error: ' + xhr.status);
-                        }
-                    }, false);
+                        });
 
-                    xhr.addEventListener('error', function() {
-                        deferred.reject('HTTP Error: ' + xhr.status);
-                    });
+                        xhr.send(formData);
+                        return deferred;
 
-                    xhr.send(formData);
-                    return deferred;
+                        break;
 
-                    break;
-
-                default:
-                    break;
-            }
-
-        },
-        syncFilePermissionsWithProjectPermissions: function() {
-
-            var jqxhr = $.ajax({
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    projectUuid: this.get('projectUuid'),
-                    fileName: this.get('name')
-                }),
-                headers: Backbone.Agave.basicAuthHeader(),
-                type: 'POST',
-                url: EnvironmentConfig.vdjauthRoot + '/permissions/files'
-            });
-
-            return jqxhr;
-        },
-        downloadFileToDisk: function() {
-
-            var that = this;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open(
-                'get',
-                EnvironmentConfig.agaveRoot
-                    + '/files/v2/media/system'
-                    + '/' + EnvironmentConfig.storageSystem
-                    + '//projects'
-                    + '/' + this.get('projectUuid')
-                    + '/files'
-                    + '/' + this.get('name')
-            );
-
-            xhr.responseType = 'blob';
-            xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-
-            xhr.onload = function() {
-                if (this.status === 200 || this.status === 202) {
-                    window.saveAs(
-                        new Blob([this.response]),
-                        that.get('name')
-                    );
+                    default:
+                        break;
                 }
-            };
 
-            xhr.send();
+            },
+            syncFilePermissionsWithProjectPermissions: function() {
 
-            return xhr;
-        },
-        softDelete: function() {
+                var jqxhr = $.ajax({
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        projectUuid: this.get('projectUuid'),
+                        fileName: this.get('name')
+                    }),
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    url: EnvironmentConfig.vdjauthRoot + '/permissions/files'
+                });
 
-            var that = this;
-            var datetimeDir = moment().format('YYYY-MM-DD-HH-mm-ss-SS');
+                return jqxhr;
+            },
+            downloadFileToDisk: function() {
 
-            var softDeletePromise = $.Deferred();
+                var that = this;
 
-            $.ajax({
-                data:   'action=mkdir&path=' + datetimeDir,
-                headers: Backbone.Agave.oauthHeader(),
-                type:   'PUT',
-
-                url:    EnvironmentConfig.agaveRoot
+                var xhr = new XMLHttpRequest();
+                xhr.open(
+                    'get',
+                    EnvironmentConfig.agaveRoot
                         + '/files/v2/media/system'
                         + '/' + EnvironmentConfig.storageSystem
                         + '//projects'
                         + '/' + this.get('projectUuid')
-                        + '/deleted/',
+                        + '/files'
+                        + '/' + this.get('name')
+                );
 
-                complete: function() {
+                xhr.responseType = 'blob';
+                xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
 
-                    $.ajax({
-                        data:   'action=move&path='
-                                + '//projects'
-                                + '/' + that.get('projectUuid')
-                                + '/deleted'
-                                + '/' + datetimeDir
-                                + '/' + that.get('name'),
+                xhr.onload = function() {
+                    if (this.status === 200 || this.status === 202) {
+                        window.saveAs(
+                            new Blob([this.response]),
+                            that.get('name')
+                        );
+                    }
+                };
 
-                        headers: Backbone.Agave.oauthHeader(),
-                        type:   'PUT',
+                xhr.send();
 
-                        url:    EnvironmentConfig.agaveRoot
-                                + '/files/v2/media/system'
-                                + '/' + EnvironmentConfig.storageSystem
-                                + '/' + that.get('path'),
+                return xhr;
+            },
+            softDelete: function() {
 
-                        success: function() {
-                            softDeletePromise.resolve();
-                        },
-                        error: function() {
-                            softDeletePromise.reject();
-                        },
-                    });
+                var that = this;
+                var datetimeDir = moment().format('YYYY-MM-DD-HH-mm-ss-SS');
 
-                },
-            });
+                var softDeletePromise = $.Deferred();
 
-            return softDeletePromise;
+                $.ajax({
+                    data:   'action=mkdir&path=' + datetimeDir,
+                    headers: Backbone.Agave.oauthHeader(),
+                    type:   'PUT',
+
+                    url:    EnvironmentConfig.agaveRoot
+                            + '/files/v2/media/system'
+                            + '/' + EnvironmentConfig.storageSystem
+                            + '//projects'
+                            + '/' + this.get('projectUuid')
+                            + '/deleted/',
+
+                    complete: function() {
+
+                        $.ajax({
+                            data:   'action=move&path='
+                                    + '//projects'
+                                    + '/' + that.get('projectUuid')
+                                    + '/deleted'
+                                    + '/' + datetimeDir
+                                    + '/' + that.get('name'),
+
+                            headers: Backbone.Agave.oauthHeader(),
+                            type:   'PUT',
+
+                            url:    EnvironmentConfig.agaveRoot
+                                    + '/files/v2/media/system'
+                                    + '/' + EnvironmentConfig.storageSystem
+                                    + '/' + that.get('path'),
+
+                            success: function() {
+                                softDeletePromise.resolve();
+                            },
+                            error: function() {
+                                softDeletePromise.reject();
+                            },
+                        });
+
+                    },
+                });
+
+                return softDeletePromise;
+            },
+            getDomFriendlyName: function() {
+
+                // Turn empty spaces into dashes
+                var domFriendlyName = this.get('name').replace(/\s+/g, '-');
+
+                // Remove periods - otherwise we don't be able to find this in the DOM
+                domFriendlyName = domFriendlyName.replace(/\./g, '').toLowerCase();
+
+                return domFriendlyName;
+            },
         },
-        getDomFriendlyName: function() {
-
-            // Turn empty spaces into dashes
-            var domFriendlyName = this.get('name').replace(/\s+/g, '-');
-
-            // Remove periods - otherwise we don't be able to find this in the DOM
-            domFriendlyName = domFriendlyName.replace(/\./g, '').toLowerCase();
-
-            return domFriendlyName;
-        },
-    });
+        {
+            CANCEL_UPLOAD: 'cancelUpload',
+            UPLOAD_PROGRESS: 'uploadProgress',
+        }
+    );
 
     File.Metadata = Backbone.Agave.MetadataModel.extend({
 
