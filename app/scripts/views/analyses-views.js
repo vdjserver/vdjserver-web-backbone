@@ -97,13 +97,14 @@ define([
             var file = this.collection.get(filename);
             file.downloadFileToCache()
                 .done(function(response) {
+
                     switch (filename) {
-                        case 'pre-composition.csv':
+                        case 'pre-filter_composition.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.Composition(file, response, that.clearSVG);
                             break;
 
-                        case 'pre-gc_hist.csv':
+                        case 'pre-filter_gc_hist.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.PercentageGcHistogram(file, response, that.clearSVG());
                             break;
@@ -111,17 +112,17 @@ define([
                         case 'pre-heat_map.csv':
                             break;
 
-                        case 'pre-len_hist.csv':
+                        case 'pre-filter_len_hist.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.LengthHistogram(file, response, that.clearSVG());
                             break;
 
-                        case 'pre-mean_q_hist.csv':
+                        case 'pre-filter_mean_q_hist.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.MeanQualityScoreHistogram(file, response, that.clearSVG);
                             break;
 
-                        case 'pre-qstats.csv':
+                        case 'pre-filter_qstats.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.QualityScore(file, response);
                             break;
