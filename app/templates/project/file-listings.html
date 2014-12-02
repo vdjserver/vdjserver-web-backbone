@@ -31,7 +31,9 @@
                     {{#each fileListings}}
                         <tr class="text-center">
                             <td>
-                                <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
+                                {{#IfJobSelectableFiletype value.name}}
+                                    <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
+                                {{/IfJobSelectableFiletype}}
                             </td>
                             <td>
                                 <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}">{{value.name}}</a>

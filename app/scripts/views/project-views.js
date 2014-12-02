@@ -10,6 +10,17 @@ define([
 
     'use strict';
 
+    Handlebars.registerHelper('IfJobSelectableFiletype', function(filename, options) {
+        var fileExtension = filename.split('.').pop();
+        fileExtension = fileExtension.slice(0);
+
+        if (fileExtension !== 'qual' && fileExtension !== 'csv') {
+          return options.fn(this);
+        }
+
+        return options.inverse(this);
+    });
+
     Handlebars.registerHelper('FormatAgaveDate', function(agaveDate) {
 
         var formattedDate = moment(agaveDate).format('D-MMM-YYYY hh:mm');
@@ -211,7 +222,7 @@ define([
             'click #file-upload':    '_clickFilesSelectorWrapper',
             'change #file-dialog':   '_changeFilesSelector',
             'click .selected-files': '_uiToggleDisabledButtonStatus',
-            'click #select-all-files-checkbox': '_toggleSelectAllFiles',
+            'change #select-all-files-checkbox': '_toggleSelectAllFiles',
             'click .run-job':       '_clickRunJob',
             'change #search-text':  '_searchFileListings',
             'click .delete-files':  '_clickDeleteFiles',
@@ -505,11 +516,19 @@ define([
             var files = e.target.files;
             this._parseFiles(files);
         },
-        _toggleSelectAllFiles: function() {
+        _toggleSelectAllFiles: function(e) {
+            e.preventDefault();
 
-            $('.selected-files').each(function() {
-                this.checked = !this.checked;
-            });
+            if (e.target.checked === true) {
+                $('.selected-files').each(function() {
+                    this.checked = true;
+                });
+            }
+            else {
+                $('.selected-files').each(function() {
+                    this.checked = false;
+                });
+            }
 
             this._uiToggleDisabledButtonStatus();
         },
