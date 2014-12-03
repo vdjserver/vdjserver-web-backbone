@@ -370,14 +370,10 @@ function(Backbone, EnvironmentConfig) {
 
                 var fileExtension = value['name'].split('.').pop();
 
-                console.log("file ext is: " + fileExtension);
-
                 return fileExtension;
             },
             getFileType: function() {
                 var value = this.get('value');
-
-                console.log("fileType is: " + value['fileType']);
 
                 return value['fileType'];
             },
