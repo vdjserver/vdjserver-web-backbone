@@ -31,9 +31,9 @@
                     {{#each fileListings}}
                         <tr class="text-center">
                             <td>
-                                {{#IfJobSelectableFiletype value.name}}
+                                {{#IfJobSelectableFileType value.name value.fileType}}
                                     <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
-                                {{/IfJobSelectableFiletype}}
+                                {{/IfJobSelectableFileType}}
                             </td>
                             <td>
                                 <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}">{{value.name}}</a>
@@ -45,7 +45,16 @@
                                 {{GetHumanReadableFileSize value.length}}
                             </td>
                             <td>
-                                {{GetFileTypeFromName value.name}}
+                                <select
+                                    class="project-file-type"
+                                    data-fileuuid="{{uuid}}"
+                                >
+                                    {{#each ../fileTypes}}
+                                    <option {{SelectFileType @index ../value.fileType}} value="{{@index}}">
+                                            {{this}}
+                                        </option>
+                                    {{/each}}
+                                </select>
                             </td>
                             <td>
                                 <input

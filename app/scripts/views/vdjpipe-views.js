@@ -36,7 +36,7 @@ define([
 
                 // Setup barcode files
                 if (this.allFiles) {
-                    this.barcodeFiles = this.allFiles.getSortedBarcodeCollection();
+                    this.barcodeFiles = this.allFiles.getBarcodeCollection();
                     this.combinationFiles = this.allFiles.getCombinationCollection();
                 }
 

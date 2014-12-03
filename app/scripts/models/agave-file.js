@@ -26,7 +26,6 @@ function(Backbone, EnvironmentConfig) {
                 format: '',
                 lastModified: '',
                 length: 0,
-                mimeType: '',
                 name: '',
                 path: '',
                 permissions: '',
@@ -227,155 +226,279 @@ function(Backbone, EnvironmentConfig) {
         }
     );
 
-    File.Metadata = Backbone.Agave.MetadataModel.extend({
-
-        // Public Methods
-        defaults: function() {
-            return _.extend(
-                {},
-                Backbone.Agave.MetadataModel.prototype.defaults,
-                {
-                    name: 'projectFile',
-                    owner: '',
-                    value: {
-                        'projectUuid': '',
-                        'fileCategory': '',
-                        'isDeleted': false,
+    File.Metadata = Backbone.Agave.MetadataModel.extend(
+        {
+            // Public Methods
+            defaults: function() {
+                return _.extend(
+                    {},
+                    Backbone.Agave.MetadataModel.prototype.defaults,
+                    {
+                        name: 'projectFile',
+                        owner: '',
+                        value: {
+                            'projectUuid': '',
+                            'fileType': '',
+                            'isDeleted': false,
+                        }
                     }
+                );
+            },
+            initialize: function() {
+            },
+            url: function() {
+                return '/meta/v2/data/' + this.get('uuid');
+            },
+            syncMetadataPermissionsWithProjectPermissions: function() {
+
+                var value = this.get('value');
+
+                var jqxhr = $.ajax({
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        projectUuid: value.projectUuid,
+                        uuid: this.get('uuid')
+                    }),
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    url: EnvironmentConfig.vdjauthRoot + '/permissions/metadata'
+                });
+
+                return jqxhr;
+            },
+            softDelete: function() {
+                var value = this.get('value');
+                value.isDeleted = true;
+
+                this.set('value', value);
+
+                return this.save();
+            },
+            setInitialMetadata: function(file, formData) {
+
+                var privateAttributes = {
+                    'tags': this._formatTagsForSave(formData['tags']),
+                    'read-direction': this._formatReadDirectionForInitialSave(formData),
+                };
+
+                this.set({
+                    associationIds: [file._getAssociationId()],
+                    value: {
+                        projectUuid: file.get('projectUuid'),
+                        fileType: parseInt(formData['file-type']),
+                        name: file.get('name'),
+                        length: file.get('fileReference').size,
+                        isDeleted: false,
+                        privateAttributes: privateAttributes,
+                        publicAttributes: {},
+                    },
+                });
+            },
+            updateTags: function(tags) {
+
+                var value = this.get('value');
+
+                var tagArray = this._formatTagsForSave(tags);
+
+                value['privateAttributes']['tags'] = tagArray;
+
+                this.set('value', value);
+
+                return this.save();
+            },
+            getFileModel: function() {
+                var value = this.get('value');
+
+                var filePath = '/projects'
+                             + '/' + value['projectUuid']
+                             + '/files'
+                             + '/' + value['name'];
+
+                var fileModel = new File({
+                    path: filePath,
+                    projectUuid: value['projectUuid'],
+                    name: value['name'],
+                });
+
+                return fileModel;
+            },
+            updateReadDirection: function(newReadDirection) {
+                var value = this.get('value');
+
+                value['privateAttributes']['read-direction'] = newReadDirection;
+
+                this.set('value', value);
+
+                return this.save();
+            },
+            updateAssociatedQualityScoreMetadata: function(qualityScoreMetadataUuid) {
+                var value = this.get('value');
+
+                value['privateAttributes']['quality-score-metadata-uuid'] = qualityScoreMetadataUuid;
+
+                this.set('value', value);
+
+                return this.save();
+            },
+            removeQualityScoreMetadataAssociation: function() {
+                var value = this.get('value');
+
+                delete value['privateAttributes']['quality-score-metadata-uuid'];
+
+                this.set('value', value);
+
+                return this.save();
+            },
+            getAssociatedQualityScoreMetadataUuid: function() {
+                var value = this.get('value');
+
+                var qualUuid = value['privateAttributes']['quality-score-metadata-uuid'];
+
+                return qualUuid;
+            },
+            updateFileType: function(fileType) {
+                var value = this.get('value');
+
+                value['fileType'] = fileType;
+
+                this.set('value', value);
+
+                return this.save();
+            },
+            getFileExtension: function() {
+                var value = this.get('value');
+
+                var fileExtension = value['name'].split('.').pop();
+
+                console.log("file ext is: " + fileExtension);
+
+                return fileExtension;
+            },
+            getFileType: function() {
+                var value = this.get('value');
+
+                console.log("fileType is: " + value['fileType']);
+
+                return value['fileType'];
+            },
+
+            // Private Methods
+            _formatTagsForSave: function(tagString) {
+
+                var tagArray = [];
+
+                if (tagString) {
+                    tagArray = $.map(tagString.split(','), $.trim);
                 }
-            );
+
+                return tagArray;
+            },
+            _formatReadDirectionForInitialSave: function(formData) {
+                if (formData['forward-reads'] && formData['reverse-reads']) {
+                    return 'FR';
+                }
+                else if (formData['forward-reads'] && !formData['reverse-reads']) {
+                    return 'F';
+                }
+                else if (formData['reverse-reads'] && !formData['forward-reads']) {
+                    return 'R';
+                }
+                else {
+                    return '';
+                }
+            },
         },
-        initialize: function() {
-        },
-        url: function() {
-            return '/meta/v2/data/' + this.get('uuid');
-        },
-        syncMetadataPermissionsWithProjectPermissions: function() {
+        {
+            FILE_TYPE_0: 'Barcode Sequences',
+            FILE_TYPE_1: 'Primer Sequences',
+            FILE_TYPE_2: 'Read-Level Data',
+            FILE_TYPE_3: 'Barcode Combinations',
+            FILE_TYPE_4: 'Specify Later',
 
-            var value = this.get('value');
+            getFileTypeById: function(fileTypeId) {
 
-            var jqxhr = $.ajax({
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    projectUuid: value.projectUuid,
-                    uuid: this.get('uuid')
-                }),
-                headers: Backbone.Agave.basicAuthHeader(),
-                type: 'POST',
-                url: EnvironmentConfig.vdjauthRoot + '/permissions/metadata'
-            });
+                var fileType = '';
 
-            return jqxhr;
-        },
-        softDelete: function() {
-            var value = this.get('value');
-            value.isDeleted = true;
+                switch(fileTypeId) {
+                    case 0:
+                        fileType = this.FILE_TYPE_0;
+                        break;
 
-            this.set('value', value);
+                    case 1:
+                        fileType = this.FILE_TYPE_1;
+                        break;
 
-            return this.save();
-        },
-        setInitialMetadata: function(file, formData) {
+                    case 2:
+                        fileType = this.FILE_TYPE_2;
+                        break;
 
-            var privateAttributes = {
-                'tags': this._formatTagsForSave(formData['tags']),
-                'read-direction': this._formatReadDirectionForInitialSave(formData),
-            };
+                    case 3:
+                        fileType = this.FILE_TYPE_3;
+                        break;
 
-            this.set({
-                associationIds: [file._getAssociationId()],
-                value: {
-                    projectUuid: file.get('projectUuid'),
-                    fileCategory: formData['file-category'],
-                    name: file.get('name'),
-                    length: file.get('fileReference').size,
-                    mimeType: file.get('mimeType'),
-                    isDeleted: false,
-                    privateAttributes: privateAttributes,
-                    publicAttributes: {},
-                },
-            });
-        },
-        updateTags: function(tags) {
+                    case 4:
+                        fileType = this.FILE_TYPE_4;
+                        break;
 
-            var value = this.get('value');
+                    default:
+                        break;
+                }
 
-            var tagArray = this._formatTagsForSave(tags);
+                return fileType;
+            },
 
-            value['privateAttributes']['tags'] = tagArray;
+            getFileTypes: function() {
+                return [
+                    this.FILE_TYPE_0,
+                    this.FILE_TYPE_1,
+                    this.FILE_TYPE_2,
+                    this.FILE_TYPE_3,
+                    this.FILE_TYPE_4,
+                ];
+            },
 
-            this.set('value', value);
+            isFileTypeIdQualAssociable: function(fileTypeId) {
+                var isQualAssociable = false;
 
-            return this.save();
-        },
-        getFileModel: function() {
-            var value = this.get('value');
+                switch(fileTypeId) {
+                    case 2:
+                    case 4:
+                        isQualAssociable = true;
+                        break;
 
-            var filePath = '/projects'
-                         + '/' + value['projectUuid']
-                         + '/files'
-                         + '/' + value['name'];
+                    default:
+                        // code
+                }
 
-            var fileModel = new File({
-                path: filePath,
-                projectUuid: value['projectUuid'],
-                name: value['name'],
-            });
+                return isQualAssociable;
+            },
 
-            return fileModel;
-        },
-        updateReadDirection: function(newReadDirection) {
-            var value = this.get('value');
+            doesFileTypeIdHaveReadDirection: function(fileTypeId) {
 
-            value['privateAttributes']['read-direction'] = newReadDirection;
+                var hasReadDirection = true;
 
-            this.set('value', value);
+                switch(fileTypeId) {
+                    case 3:
+                    case 4:
+                        hasReadDirection = false;
+                        break;
 
-            return this.save();
-        },
-        updateAssociatedQualityScoreMetadata: function(qualityScoreMetadataUuid) {
-            var value = this.get('value');
+                    default:
+                        // code
+                }
 
-            value['privateAttributes']['quality-score-metadata-uuid'] = qualityScoreMetadataUuid;
+                return hasReadDirection;
+            },
 
-            this.set('value', value);
-
-            return this.save();
-        },
-        getAssociatedQualityScoreMetadataUuid: function() {
-            var value = this.get('value');
-
-            var qualUuid = value['privateAttributes']['quality-score-metadata-uuid'];
-
-            return qualUuid;
-        },
-
-        // Private Methods
-        _formatTagsForSave: function(tagString) {
-
-            var tagArray = [];
-
-            if (tagString) {
-                tagArray = $.map(tagString.split(','), $.trim);
-            }
-
-            return tagArray;
-        },
-        _formatReadDirectionForInitialSave: function(formData) {
-            if (formData['forward-reads'] && formData['reverse-reads']) {
-                return 'FR';
-            }
-            else if (formData['forward-reads'] && !formData['reverse-reads']) {
-                return 'F';
-            }
-            else if (formData['reverse-reads'] && !formData['forward-reads']) {
-                return 'R';
-            }
-            else {
-                return '';
-            }
-        },
-    });
+            getReadDirections: function() {
+                return [
+                    'F',
+                    'R',
+                    'FR',
+                ];
+            },
+        }
+    );
 
     Backbone.Agave.Model.File = File;
     return File;
