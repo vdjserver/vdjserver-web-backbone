@@ -194,12 +194,13 @@ module.exports = function(grunt) {
                 files: [
                     {
                         expand: true,
+                        dot:true,
                         flatten: true,
                         cwd: '<%= yeoman.app %>/bower_components',
                         dest: '<%= yeoman.dist %>/images',
                         src: [
-                            '{,*/}*.{png,jpg,jpeg,gif}',
-                            'slickgrid/css/smoothness/images/*.{png}'
+                            'slickgrid/css/smoothness/images/*',
+                            'twbs-bootstrap-sass/assets/images/*',
                         ]
                     }
                 ]
@@ -226,21 +227,19 @@ module.exports = function(grunt) {
                     }
                 ]
             },
-            vendorScripts: {
+            bowerFonts: {
                 files: [
                     {
                         expand: true,
                         dot: true,
                         flatten: true,
                         cwd: '<%= yeoman.app %>/bower_components',
-                        dest: '<%= yeoman.app %>/scripts/vendor',
+                        dest: '<%= yeoman.dist %>/fonts',
                         src: [
-                            'modernizr/modernizr.js',
-                            'moment/moment.js',
-                            'twbs-bootstrap-sass/assets/javascripts/bootstrap.js',
-                        ],
-                    },
-                ],
+                            'twbs-bootstrap-sass/assets/fonts/bootstrap/**',
+                        ]
+                    }
+                ]
             },
             dist: {
                 files: [
@@ -255,9 +254,8 @@ module.exports = function(grunt) {
                             'images/{,*/}*.{webp,gif}',
                             'fonts/**',
                             'templates/**',
-                            'scripts/vendor/**', //'{,*/}*.{js}',
+                            'scripts/vendor/**',
                             'vdjml/**',
-                            //'bower_components/font-awesome/fonts/*'
                         ]
                     }
                 ]
@@ -416,13 +414,11 @@ module.exports = function(grunt) {
             'clean:server',
             'copy:fontAwesome',
             'copy:bowerCss',
-            'copy:bowerImages',
-            'copy:vendorScripts',
             'coffee:dist',
             'compass:server',
             'connect:livereload',
             'open',
-            'watch'
+            'watch',
         ]);
     });
 
@@ -432,7 +428,7 @@ module.exports = function(grunt) {
         'compass',
         'connect:test',
         'mocha',
-        'watch:test'
+        'watch:test',
     ]);
 
     grunt.registerTask('build', [
@@ -441,7 +437,7 @@ module.exports = function(grunt) {
         'copy:fontAwesome',
         'copy:bowerCss',
         'copy:bowerImages',
-        'copy:vendorScripts',
+        'copy:bowerFonts',
         'compass',
         'handlebars',
         'copy:dist',
@@ -452,12 +448,12 @@ module.exports = function(grunt) {
         'concat:dist',
         'cssmin',
         'uglify',
-        'usemin'
+        'usemin',
     ]);
 
     grunt.registerTask('default', [
         'jshint',
         'test',
-        'build'
+        'build',
     ]);
 };

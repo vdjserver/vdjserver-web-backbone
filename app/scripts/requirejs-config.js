@@ -5,7 +5,7 @@ require.config({
     paths: {
         'backbone':         '../bower_components/backbone/backbone',
         'backbone.syphon':  '../bower_components/marionette.backbone.syphon/lib/backbone.syphon',
-        'bootstrap':        'vendor/bootstrap',
+        'bootstrap':        '../bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap',
         'filesize':         '../bower_components/filesize/lib/filesize',
         'handlebars':       '../bower_components/handlebars/handlebars',
         'jquery':           '../bower_components/jquery/dist/jquery',
@@ -95,6 +95,11 @@ require.config({
         // Routers
         'router': 'routers/router'
 
+    },
+    config: {
+        moment: {
+            noGlobal: true,
+        },
     },
     shim: {
         'bootstrap': {

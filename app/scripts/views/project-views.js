@@ -4,9 +4,16 @@ define([
     'handlebars',
     'filesize',
     'environment-config',
+    'moment',
     'socket-io',
     'backbone.syphon',
-], function(App, Handlebars, filesize, EnvironmentConfig) {
+], function(
+    App,
+    Handlebars,
+    filesize,
+    EnvironmentConfig,
+    moment
+) {
 
     'use strict';
 

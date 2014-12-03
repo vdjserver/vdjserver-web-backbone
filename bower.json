@@ -14,7 +14,6 @@
     "jquery-ui": "1.11.2",
     "layoutmanager": "0.9.5",
     "marionette.backbone.syphon": "0.5.0",
-    "modernizr": "2.8.3",
     "moment": "2.8.3",
     "nvd3": "1.1.15-beta",
     "requirejs": "2.1.15",

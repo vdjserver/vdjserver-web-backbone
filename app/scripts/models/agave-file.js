@@ -1,9 +1,10 @@
 define(
     [
         'backbone',
-        'environment-config'
+        'environment-config',
+        'moment',
     ],
-function(Backbone, EnvironmentConfig) {
+function(Backbone, EnvironmentConfig, moment) {
 
     'use strict';
 
