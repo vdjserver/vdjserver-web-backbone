@@ -67,6 +67,8 @@ define([
     // Generic Views
     'generic-vdjpipe-option-views',
 
+    // Mixins
+
     // View Helpers
     'view-layouts',
 

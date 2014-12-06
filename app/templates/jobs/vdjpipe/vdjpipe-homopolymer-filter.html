@@ -1,39 +1,20 @@
-<li>
-    <div class="panel panel-default vdj-pipe-parameter">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
-                    {{#if isEditable}}
-                        <i class="fa fa-bars"></i>
-                        &nbsp;
-                    {{/if}}
+{{> vdjpipe-base-view-top}}
 
-                    Homopolymer Filter
-
-                    {{#if isEditable}}
-                        &nbsp;
-                        <span class="label label-danger remove-job-parameter">&times;</span>
-                    {{/if}}
-                </div>
-            </div>
-
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Max
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}"
-                        placeholder="unsigned integer"
-                        type="number"
-                        value="{{options}}"
-                        step="1"
-                        min="0"
-                        pattern="\d+"
-                    >
-                </div>
-            </div>
-
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            Max
+            &nbsp;
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}"
+                placeholder="unsigned integer"
+                type="number"
+                value="{{options}}"
+                step="1"
+                min="0"
+                pattern="\d+"
+            >
         </div>
     </div>
-</li>
+
+{{> vdjpipe-base-view-bottom}}

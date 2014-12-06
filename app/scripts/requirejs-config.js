@@ -63,7 +63,7 @@ require.config({
         'jquery.event.drop':'vendor/jquery.event.drop',
 
         // Handlebars Helpers
-        'handlebars-utilities':   'views/handlebars-helpers/handlebars-utilities',
+        'handlebars-utilities':   'views/utilities/handlebars-utilities',
 
         // Utilities
         'vdjpipe-serializer': 'utilities/vdjpipe-serializer',
@@ -71,6 +71,8 @@ require.config({
 
         // Generic Views
         'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
+
+        // Mixins
 
         // View Helpers
         'view-layouts': 'views/layouts/view-layouts',

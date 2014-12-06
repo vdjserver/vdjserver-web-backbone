@@ -1,38 +1,18 @@
-<li>
-    <div class="panel panel-default vdj-pipe-parameter">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
-                    {{#if isEditable}}
-                        <i class="fa fa-bars"></i>
-                        &nbsp;
-                    {{/if}}
+{{> vdjpipe-base-view-top}}
 
-                    Generate Quality Statistics
-
-                    {{#if isEditable}}
-                        &nbsp;
-                        <span class="label label-danger remove-job-parameter">&times;</span>
-                    {{/if}}
-
-                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
-                </div>
-            </div>
-
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Output Filename Prefix
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-out-prefix"
-                        placeholder="text"
-                        type="text"
-                        value="{{options.out_prefix}}"
-                    >
-                </div>
-            </div>
-
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            Output Filename Prefix
+            &nbsp;
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-out-prefix"
+                placeholder="text"
+                type="text"
+                value="{{options.out_prefix}}"
+            >
         </div>
     </div>
-</li>
+
+{{> vdjpipe-base-view-bottom}}
+

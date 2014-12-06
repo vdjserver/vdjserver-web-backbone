@@ -1,57 +1,36 @@
-<li>
-    <div class="panel panel-default vdj-pipe-parameter">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
-                    {{#if isEditable}}
-                        <i class="fa fa-bars"></i>
-                        &nbsp;
-                    {{/if}}
+{{> vdjpipe-base-view-top}}
 
-                    Length Filter
-
-                    {{#if isEditable}}
-                        &nbsp;
-                        <span class="label label-danger remove-job-parameter">&times;</span>
-                    {{/if}}
-
-                    <input class="job-form-item hidden" name="{{inputCount}}-{{parameterType}}">
-                </div>
-            </div>
-
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Min
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-min"
-                        placeholder="unsigned integer"
-                        type="number"
-                        value="{{options.min}}"
-                        step="1"
-                        min="0"
-                        pattern="\d+"
-                    >
-                </div>
-            </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Max
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-max"
-                        placeholder="unsigned integer"
-                        type="number"
-                        value="{{options.max}}"
-                        step="1"
-                        min="0"
-                        pattern="\d+"
-                    >
-                </div>
-            </div>
-
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            Min
+            &nbsp;
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-min"
+                placeholder="unsigned integer"
+                type="number"
+                value="{{options.min}}"
+                step="1"
+                min="0"
+                pattern="\d+"
+            >
         </div>
     </div>
-</li>
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            Max
+            &nbsp;
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-max"
+                placeholder="unsigned integer"
+                type="number"
+                value="{{options.max}}"
+                step="1"
+                min="0"
+                pattern="\d+"
+            >
+        </div>
+    </div>
+
+{{> vdjpipe-base-view-bottom}}

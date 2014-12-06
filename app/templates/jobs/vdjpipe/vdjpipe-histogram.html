@@ -1,51 +1,30 @@
-<li>
-    <div class="panel panel-default vdj-pipe-parameter">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
-                    {{#if isEditable}}
-                        <i class="fa fa-bars"></i>
-                        &nbsp;
-                    {{/if}}
+{{> vdjpipe-base-view-top}}
 
-                    Histogram
-
-                    {{#if isEditable}}
-                        &nbsp;
-                        <span class="label label-danger remove-job-parameter">&times;</span>
-                    {{/if}}
-
-                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
-                </div>
-            </div>
-
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Name
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-name"
-                        placeholder="text"
-                        type="text"
-                        value="{{options.name}}"
-                    >
-                </div>
-            </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Output Path
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-out-path"
-                        placeholder="text"
-                        type="text"
-                        value="{{options.out_path}}"
-                    >
-                </div>
-            </div>
-
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            Name
+            &nbsp;
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-name"
+                placeholder="text"
+                type="text"
+                value="{{options.name}}"
+            >
         </div>
     </div>
-</li>
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            Output Path
+            &nbsp;
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-out-path"
+                placeholder="text"
+                type="text"
+                value="{{options.out_path}}"
+            >
+        </div>
+    </div>
+
+{{> vdjpipe-base-view-bottom}}

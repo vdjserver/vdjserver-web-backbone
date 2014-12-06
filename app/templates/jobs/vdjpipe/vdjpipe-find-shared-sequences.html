@@ -1,24 +1,4 @@
-<li>
-    <div class="panel panel-default vdj-pipe-parameter">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
-
-                    {{#if isEditable}}
-                        <i class="fa fa-bars"></i>
-                        &nbsp;
-                    {{/if}}
-
-                    Find Unique Sequences
-
-                    {{#if isEditable}}
-                        &nbsp;
-                        <span class="label label-danger remove-job-parameter">&times;</span>
-                    {{/if}}
-
-                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
-                </div>
-            </div>
+{{> vdjpipe-base-view-top}}
 
             {{#if options.group_variable}}
                 <input
@@ -115,6 +95,4 @@
 --}}
 
 
-        </div>
-    </div>
-</li>
+{{> vdjpipe-base-view-bottom}}

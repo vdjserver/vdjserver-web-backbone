@@ -30,11 +30,13 @@ define([
             }
 
             return {
-                isEditable: this.isEditable,
+                isOrderable: this.isOrderable,
+                isRemovable: this.isRemovable,
                 parameterType: this.parameterType,
                 inputCount: this.inputCount,
                 files: files,
                 options: this.options,
+                vdjpipeOptionTitle: this.vdjpipeOptionTitle,
             };
         },
     });
