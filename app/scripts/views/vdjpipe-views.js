@@ -55,6 +55,7 @@ define([
 
             },
             beforeRender: function() {
+                // Apparently, this vdjpipe step should always be removable.
                 this.isRemovable = true;
             },
             afterRender: function() {
@@ -71,6 +72,7 @@ define([
 
                     // Restore any previously saved barcode elements
                     for (var i = 0; i < this.options.elements.length; i++) {
+
                         var barcodeOptions = this.options.elements[i];
 
                         this.addBarcode(barcodeOptions);
@@ -135,8 +137,15 @@ define([
                     $('#' + this.inputCount + '-barcode-location').val(1);
                 }
                 else if (barcodeCount === 2) {
+                    // Get options from original barcode so they can applied to the new barcode
+                    var barcodeOptions = {};
+                    if (this.options && this.options.elements && this.options.elements[0]) {
+                        barcodeOptions = this.options.elements[0];
+                    }
+
                     // User added a barcode since the target count is 2
-                    this.addBarcode();
+                    this.addBarcode(barcodeOptions);
+
                     this.updateViewForDoubleBarcodeLocation();
 
                     $('#' + this.inputCount + '-barcode-location').val(3);
