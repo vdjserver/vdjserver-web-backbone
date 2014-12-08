@@ -79,7 +79,7 @@ define([
             this.jobs = new Backbone.Agave.Collection.Jobs();
 
             this.paginationSets = 0;
-            this.paginationIterator = 5;
+            this.paginationIterator = 10;
 
             this.currentPaginationSet = 1;
             this.maxPaginationSet = 1;
