@@ -1518,31 +1518,37 @@ define([
                 key: 'A%',
                 values: aData,
                 disabled: true,
+                color: 'red',
             },
             {
                 key: 'C%',
                 values: cData,
                 disabled: true,
+                color: 'blue',
             },
             {
                 key: 'G%',
                 values: gData,
                 disabled: true,
+                color: 'black',
             },
             {
                 key: 'T%',
                 values: tData,
                 disabled: true,
+                color: 'green',
             },
             {
                 key: 'N%',
                 values: nData,
                 disabled: false,
+                color: 'purple',
             },
             {
                 key: 'GC%',
                 values: gcData,
                 disabled: true,
+                color: 'orange',
             }
         ];
 
