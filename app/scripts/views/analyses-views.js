@@ -1,6 +1,7 @@
 define([
     'app',
     'handlebars',
+    'moment',
     'd3',
     'nvd3',
     'box',
@@ -9,6 +10,7 @@ define([
 ], function(
     App,
     Handlebars,
+    moment,
     d3,
     nv,
     box,
@@ -16,6 +18,30 @@ define([
 ) {
 
     'use strict';
+
+    Handlebars.registerHelper('IsJobFrozen', function(data, options) {
+
+        if (data.status !== 'FINISHED') {
+            var now = moment();
+
+            var submitDate = moment(data['submitTime']);
+            var cutoffTime = submitDate.add(1, 'd');
+
+            if (cutoffTime.isBefore(now)) {
+                return options.fn(data);
+            }
+        }
+
+        return options.inverse(data);
+    });
+
+    Handlebars.registerHelper('JobSuccessCheck', function(data, options) {
+        if (data.status === 'FINISHED') {
+            return options.fn(data);
+        }
+
+        return options.inverse(data);
+    });
 
     Handlebars.registerHelper('FileTypeHasChart', function(filename, options) {
 
@@ -42,6 +68,163 @@ define([
 
     var Analyses = {};
     Analyses.Charts = {};
+
+    Analyses.OutputList = Backbone.View.extend({
+        template: 'analyses/output-list',
+        initialize: function(parameters) {
+            this.projectUuid = parameters.projectUuid;
+
+            this.jobMetadatas = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid});
+
+            this.jobs = new Backbone.Agave.Collection.Jobs();
+
+            this.paginationSets = 0;
+            this.paginationIterator = 5;
+
+            this.currentPaginationSet = 1;
+            this.maxPaginationSet = 1;
+
+            this.fetchJobMetadatas();
+        },
+        events: {
+            'click .job-pagination-previous': 'jobPaginationPrevious',
+            'click .job-pagination-next': 'jobPaginationNext',
+            'click .job-pagination': 'jobPaginationIndex',
+        },
+        serialize: function() {
+            return {
+                jobs: this.jobs.toJSON(),
+                projectUuid: this.projectUuid,
+                paginationSets: this.paginationSets,
+            };
+        },
+        fetchJobMetadatas: function() {
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView(loadingView);
+            loadingView.render();
+
+            var that = this;
+
+            this.jobMetadatas.fetch()
+                .done(function() {
+                    that.calculatePaginationSets();
+                    that.fetchPaginatedJobModels();
+                })
+                .fail(function() {
+                });
+        },
+        calculatePaginationSets: function() {
+            var tmpPaginationSets = Math.round(this.jobMetadatas.models.length / this.paginationIterator);
+
+            this.paginationSets = [];
+            for (var i = 1; i < tmpPaginationSets + 1; i++) {
+                this.paginationSets.push(i);
+            }
+
+            this.maxPaginationSet = _.last(this.paginationSets);
+        },
+        fetchPaginatedJobModels: function() {
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView(loadingView);
+            loadingView.render();
+
+            var that = this;
+
+            var jobModels = [];
+
+            var indexLimit = this.getIndexLimit();
+            var currentIndex = this.getCurrentIndex();
+
+            // Create empty job models and set ids for all job listing results
+            for (var i = currentIndex; i < indexLimit; i++) {
+
+                var job = new Backbone.Agave.Model.Job.Detail({
+                    id: this.jobMetadatas.at([i]).get('value').jobUuid,
+                });
+
+                jobModels.push(job);
+            }
+
+            // Do async fetch on all individual models
+            var jobFetches = _.invoke(jobModels, 'fetch');
+
+            this.jobs = new Backbone.Agave.Collection.Jobs();
+
+            $.when.apply($, jobFetches).always(function() {
+                for (var i = 0; i < jobModels.length; i++) {
+                    that.jobs.add(jobModels[i]);
+                }
+
+                loadingView.remove();
+                that.render();
+
+                that.uiSetActivePaginationSet();
+            });
+        },
+
+        getIndexLimit: function() {
+
+            // Index limit should never go above max model count
+            var indexLimit = Math.min(
+                this.paginationIterator * this.currentPaginationSet,
+                this.jobMetadatas.models.length
+            );
+
+            return indexLimit;
+        },
+
+        getCurrentIndex: function() {
+
+            // The current index should be the beginning of the current pagination set
+            var currentIndex = (this.currentPaginationSet * this.paginationIterator) - this.paginationIterator;
+
+            return currentIndex;
+        },
+
+        jobPaginationPrevious: function(e) {
+            e.preventDefault();
+
+            if (this.currentPaginationSet - 1 >= 1) {
+
+                this.currentPaginationSet -= 1;
+                this.fetchPaginatedJobModels();
+            }
+        },
+
+        jobPaginationNext: function(e) {
+            e.preventDefault();
+
+            if (this.currentPaginationSet + 1 <= this.maxPaginationSet) {
+                this.currentPaginationSet += 1;
+                this.fetchPaginatedJobModels();
+            }
+        },
+
+        jobPaginationIndex: function(e) {
+            e.preventDefault();
+
+            this.currentPaginationSet = parseInt(e.target.dataset.id);
+
+            this.fetchPaginatedJobModels();
+        },
+
+        uiSetActivePaginationSet: function() {
+            $('.job-pagination-wrapper').removeClass('active');
+            $('.job-pagination-previous').removeClass('disabled');
+            $('.job-pagination-next').removeClass('disabled');
+
+            $('.job-pagination-wrapper-' + this.currentPaginationSet).addClass('active');
+
+            if (this.currentPaginationSet === 1) {
+                $('.job-pagination-previous').addClass('disabled');
+            }
+
+            if (this.currentPaginationSet === this.maxPaginationSet) {
+                $('.job-pagination-next').addClass('disabled');
+            }
+        },
+
+    });
 
     Analyses.SelectAnalyses = Backbone.View.extend({
         template: 'analyses/select-analyses',

@@ -55,19 +55,41 @@
                     {{#each jobs}}
                         <tr>
                             <td>{{name}}</td>
-                            <td>{{status}}</td>
+                            <td>
+                                {{#IsJobFrozen this}}
+                                    Job Failed
+                                {{else}}
+                                    {{status}}
+                                {{/IsJobFrozen}}
+                            </td>
                             <td>{{FormatAgaveDate submitTime}}</td>
-                            <td>{{FormatAgaveDate endTime}}</td>
+                            <td>
+                                {{#IsJobFrozen this}}
+                                    Job Failed
+
+                                {{else}}
+                                    {{#if endTime}}
+                                        {{FormatAgaveDate endTime}}
+                                    {{else}}
+                                        In Progress
+                                    {{/if}}
+                                {{/IsJobFrozen}}
+
+                            </td>
                             <td>{{id}}</td>
                             <td>{{owner}}</td>
                             <td>
-                                {{#JobSuccessCheck this}}
-                                    <a href="project/{{../../projectUuid}}/jobs/{{id}}" class="disabled">
-                                        <button type="button" class="btn btn-primary">View Output</button>
-                                    </a>
+                                {{#IsJobFrozen this}}
+                                    <button type="button" class="btn btn-danger" disabled="disabled">Job Failed</button>
                                 {{else}}
-                                    <button type="button" class="btn btn-danger" disabled="disabled">Analysis Unavailable</button>
-                                {{/JobSuccessCheck}}
+                                    {{#JobSuccessCheck this}}
+                                        <a href="project/{{../../../projectUuid}}/jobs/{{id}}" class="disabled">
+                                            <button type="button" class="btn btn-primary">View Output</button>
+                                        </a>
+                                    {{else}}
+                                        <button type="button" class="btn btn-warning" disabled="disabled">In Progress</button>
+                                    {{/JobSuccessCheck}}
+                                {{/IsJobFrozen}}
                             </td>
                         </tr>
                     {{/each}}

@@ -238,7 +238,7 @@ define(['app'], function(App) {
 
             var destinationRoute = function() {
                 _setProjectSubviews(projectUuid);
-                App.Layouts.content.setView('.content', new App.Views.Jobs.History({projectUuid: projectUuid}));
+                App.Layouts.content.setView('.content', new App.Views.Analyses.OutputList({projectUuid: projectUuid}));
                 App.Layouts.content.render();
             };
 
