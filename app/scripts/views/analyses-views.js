@@ -1517,26 +1517,32 @@ define([
             {
                 key: 'A%',
                 values: aData,
+                disabled: true,
             },
             {
                 key: 'C%',
                 values: cData,
+                disabled: true,
             },
             {
                 key: 'G%',
                 values: gData,
+                disabled: true,
             },
             {
                 key: 'T%',
                 values: tData,
+                disabled: true,
             },
             {
                 key: 'N%',
                 values: nData,
+                disabled: false,
             },
             {
                 key: 'GC%',
                 values: gcData,
+                disabled: true,
             }
         ];
 
