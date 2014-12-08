@@ -21,7 +21,16 @@
                             <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}">{{value.name}}</a>
                         </td>
                         <td>
-                            {{GetFileTypeFromName value.name}}
+                            <select
+                                class="project-file-type"
+                                data-fileuuid="{{uuid}}"
+                            >
+                                {{#each ../fileTypes}}
+                                <option {{SelectFileType @index ../value.fileType}} value="{{@index}}">
+                                        {{this}}
+                                    </option>
+                                {{/each}}
+                            </select>
                         </td>
                         <td>
                             <select

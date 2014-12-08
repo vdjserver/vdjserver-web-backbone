@@ -3,9 +3,15 @@ define(
         'app',
         'backbone',
         'environment-config',
+        'moment',
         'vdjpipe-serializer',
     ],
-function(App, Backbone, EnvironmentConfig) {
+function(
+    App,
+    Backbone,
+    EnvironmentConfig,
+    moment
+) {
 
     'use strict';
 

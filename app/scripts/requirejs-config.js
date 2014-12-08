@@ -5,7 +5,7 @@ require.config({
     paths: {
         'backbone':         '../bower_components/backbone/backbone',
         'backbone.syphon':  '../bower_components/marionette.backbone.syphon/lib/backbone.syphon',
-        'bootstrap':        'vendor/bootstrap',
+        'bootstrap':        '../bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap',
         'filesize':         '../bower_components/filesize/lib/filesize',
         'handlebars':       '../bower_components/handlebars/handlebars',
         'jquery':           '../bower_components/jquery/dist/jquery',
@@ -63,7 +63,7 @@ require.config({
         'jquery.event.drop':'vendor/jquery.event.drop',
 
         // Handlebars Helpers
-        'handlebars-utilities':   'views/handlebars-helpers/handlebars-utilities',
+        'handlebars-utilities':   'views/utilities/handlebars-utilities',
 
         // Utilities
         'vdjpipe-serializer': 'utilities/vdjpipe-serializer',
@@ -71,6 +71,8 @@ require.config({
 
         // Generic Views
         'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
+
+        // Mixins
 
         // View Helpers
         'view-layouts': 'views/layouts/view-layouts',
@@ -95,6 +97,11 @@ require.config({
         // Routers
         'router': 'routers/router'
 
+    },
+    config: {
+        moment: {
+            noGlobal: true,
+        },
     },
     shim: {
         'bootstrap': {

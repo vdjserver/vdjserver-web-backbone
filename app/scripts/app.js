@@ -9,6 +9,7 @@ define([
 
     var App = {
         root: '/',
+        templatePrefix: 'templates/',
         init: function() {
             var JST = window.JST = window.JST || {};
 
@@ -17,7 +18,7 @@ define([
                 // Allow LayoutManager to augment Backbone.View.prototype.
                 manage: true,
 
-                prefix: 'templates/',
+                prefix: App.templatePrefix,
 
                 fetchTemplate: function(path) {
 
@@ -130,6 +131,7 @@ define([
             Websockets: {},
         },
         Layouts: {},
+        Mixins: {},
         Models:  {},
         Routers: {},
         Utilities: {},

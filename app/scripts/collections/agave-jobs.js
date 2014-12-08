@@ -1,4 +1,7 @@
-define(['backbone'], function(Backbone) {
+define([
+    'backbone',
+    'moment',
+], function(Backbone, moment) {
 
     'use strict';
 

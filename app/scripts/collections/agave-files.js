@@ -41,51 +41,14 @@ function(Backbone, EnvironmentConfig) {
                 this.projectUuid = parameters.projectUuid;
             }
         },
-        url: function(fileCategory) {
-
-            if (fileCategory) {
-
-                switch(fileCategory) {
-                    case 'uploaded':
-                        return '/meta/v2/data?q='
-                            + encodeURIComponent('{'
-                                + '"name":"projectFile",'
-                                + '"value.projectUuid":"' + this.projectUuid + '",'
-                                + '"value.fileCategory":"uploaded",'
-                                + '"value.isDeleted":false'
-                            + '}');
-
-                    case 'preprocessed':
-                        return '/meta/v2/data?q='
-                            + encodeURIComponent('{'
-                                + '"name":"projectFile",'
-                                + '"value.projectUuid":"' + this.projectUuid + '",'
-                                + '"value.fileCategory":"preprocessed",'
-                                + '"value.isDeleted":false'
-                            + '}');
-                        //break;
-
-                    case 'aligned':
-                        return '/meta/v2/data?q='
-                            + encodeURIComponent('{'
-                                + '"name":"projectFile",'
-                                + '"value.projectUuid":"' + this.projectUuid + '",'
-                                + '"value.fileCategory":"aligned",'
-                                + '"value.isDeleted":false'
-                            + '}');
-                        //break;
-
-                    default:
-                        break;
-                }
-            }
-
+        url: function() {
             return '/meta/v2/data?q='
                    + encodeURIComponent('{'
                        + '"name":"projectFile",'
                        + '"value.projectUuid":"' + this.projectUuid + '",'
                        + '"value.isDeleted":false'
-                   + '}');
+                   + '}')
+                   ;
         },
         getFileCount: function() {
             if (this.length > 0) {
@@ -124,55 +87,69 @@ function(Backbone, EnvironmentConfig) {
 
             return isDuplicate;
         },
-        getSortedBarcodeCollection: function() {
 
-            var fileTypeMatches = _.filter(this.models, function(model) {
-                return model.get('value')['name'].slice(-6) === '.fasta';
-            });
+        getQualAssociableFastaCollection: function() {
 
-            var sizeSortedMatches = _.sortBy(fileTypeMatches, function(model) {
-                return model.get('value')['length'];
+            var models = _.filter(this.models, function(model) {
+
+                return (
+                        model.getFileType() === 2
+                            ||
+                        model.getFileType() === 4
+                       )
+                       &&
+                       model.getFileExtension() === 'fasta'
+                       ;
             });
 
             var newCollection = this.clone();
             newCollection.reset();
-            newCollection.add(sizeSortedMatches);
+            newCollection.add(models);
+
+            newCollection.sortBy(this._sortAlphabetical());
 
             return newCollection;
         },
         getBarcodeCollection: function() {
+            /*
+                Get all known fasta files that have been categorized as either:
+                *.) Barcode
+                *.) Unspecified
+            */
 
-            var fileTypeMatches = _.filter(this.models, function(model) {
-                return model.get('value')['name'].slice(-6) === '.fasta';
-            });
+            var knownBarcodeCollection = this._getKnownBarcodeCollection();
 
-            var newCollection = this.clone();
-            newCollection.reset();
-            newCollection.add(fileTypeMatches);
+            var possibleBarcodeCollection = this._getPossibleBarcodeCollection();
 
-            return newCollection;
+            // Merge sets together, and keep independent sorting
+            var mergedCollection = this.clone();
+            mergedCollection.reset();
+            mergedCollection.add(knownBarcodeCollection.models);
+            mergedCollection.add(possibleBarcodeCollection.models);
+
+            return mergedCollection;
         },
-        getBarcodeQualityScoreCollection: function() {
+        getQualCollection: function() {
 
-            var fileTypeMatches = _.filter(this.models, function(model) {
-                return model.get('value')['name'].slice(-5) === '.qual';
+            var qualModels = _.filter(this.models, function(model) {
+                return model.getFileExtension() === 'qual';
             });
 
             var newCollection = this.clone();
             newCollection.reset();
-            newCollection.add(fileTypeMatches);
+            newCollection.add(qualModels);
 
             return newCollection;
         },
         getCombinationCollection: function() {
 
-            var fileTypeMatches = _.filter(this.models, function(model) {
-                return model.get('value')['name'].slice(-4) === '.csv';
+            var combinationModels = _.filter(this.models, function(model) {
+                return model.getFileExtension() === 'csv';
             });
 
             var newCollection = this.clone();
             newCollection.reset();
-            newCollection.add(fileTypeMatches);
+            newCollection.add(combinationModels);
 
             return newCollection;
         },
@@ -185,8 +162,13 @@ function(Backbone, EnvironmentConfig) {
 
                 if (
                     data.get('value').privateAttributes
-                    && data.get('value').privateAttributes['tags']
-                    && data.get('value').privateAttributes['tags'].toString().toLowerCase().indexOf(searchString.toLowerCase()) > -1
+                    &&
+                    data.get('value').privateAttributes['tags']
+                    &&
+                    data.get('value').privateAttributes['tags']
+                        .toString()
+                        .toLowerCase()
+                        .indexOf(searchString.toLowerCase()) > -1
                 ) {
                     return true;
                 }
@@ -205,6 +187,55 @@ function(Backbone, EnvironmentConfig) {
             });
 
             return filteredModels[0];
+        },
+
+        // Private Methods
+        _getKnownBarcodeCollection: function() {
+
+            // Filter down to files that are known barcodes and have the .fasta extension
+            var barcodeModels = _.filter(this.models, function(model) {
+                return model.getFileType() === 0
+                       &&
+                       model.getFileExtension() === 'fasta'
+                       ;
+            });
+
+            var barcodeCollection = this.clone();
+            barcodeCollection.reset();
+            barcodeCollection.add(barcodeModels);
+
+            barcodeCollection.sortBy(this._sortAlphabetical());
+
+            return barcodeCollection;
+        },
+
+        _getPossibleBarcodeCollection: function() {
+
+            // Filter down to files that are unspecified and have the .fasta extension
+            var barcodeModels = _.filter(this.models, function(model) {
+                return model.getFileType() === 4
+                       &&
+                       model.getFileExtension() === 'fasta'
+                       ;
+            });
+
+            var barcodeCollection = this.clone();
+            barcodeCollection.reset();
+            barcodeCollection.add(barcodeModels);
+
+            barcodeCollection.sortBy(this._sortSize());
+
+            return barcodeCollection;
+        },
+        _sortAlphabetical: function() {
+            return function(model) {
+                return model.get('value')['name'].toLowerCase();
+            };
+        },
+        _sortSize: function() {
+            return function(model) {
+                return model.get('value')['length'];
+            };
         },
     });
 

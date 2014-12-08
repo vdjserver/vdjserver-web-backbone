@@ -26,6 +26,11 @@ define([
             extension = split.pop();
         }
 
+        // TEMP - remove this once heat map charts are in place
+        if (filename === 'post-filter_heat_map.csv' || filename === 'pre-filter_heat_map.csv') {
+            return options.inverse(this);
+        }
+
         if (extension === 'csv') {
             return options.fn(this);
         }
@@ -97,13 +102,14 @@ define([
             var file = this.collection.get(filename);
             file.downloadFileToCache()
                 .done(function(response) {
+
                     switch (filename) {
-                        case 'pre-composition.csv':
+                        case 'pre-filter_composition.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.Composition(file, response, that.clearSVG);
                             break;
 
-                        case 'pre-gc_hist.csv':
+                        case 'pre-filter_gc_hist.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.PercentageGcHistogram(file, response, that.clearSVG());
                             break;
@@ -111,17 +117,17 @@ define([
                         case 'pre-heat_map.csv':
                             break;
 
-                        case 'pre-len_hist.csv':
+                        case 'pre-filter_len_hist.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.LengthHistogram(file, response, that.clearSVG());
                             break;
 
-                        case 'pre-mean_q_hist.csv':
+                        case 'pre-filter_mean_q_hist.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.MeanQualityScoreHistogram(file, response, that.clearSVG);
                             break;
 
-                        case 'pre-qstats.csv':
+                        case 'pre-filter_qstats.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.QualityScore(file, response);
                             break;
@@ -1516,26 +1522,38 @@ define([
             {
                 key: 'A%',
                 values: aData,
+                disabled: true,
+                color: 'red',
             },
             {
                 key: 'C%',
                 values: cData,
+                disabled: true,
+                color: 'blue',
             },
             {
                 key: 'G%',
                 values: gData,
+                disabled: true,
+                color: 'black',
             },
             {
                 key: 'T%',
                 values: tData,
+                disabled: true,
+                color: 'green',
             },
             {
                 key: 'N%',
                 values: nData,
+                disabled: false,
+                color: 'purple',
             },
             {
                 key: 'GC%',
                 values: gcData,
+                disabled: true,
+                color: 'orange',
             }
         ];
 

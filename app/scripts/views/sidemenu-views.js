@@ -10,6 +10,8 @@ define([
         template: 'sidemenu/list',
         initialize: function(parameters) {
 
+            this.notificationViews = {};
+
             if (parameters && parameters.projectUuid) {
                 this.selectedProjectUuid = parameters.projectUuid;
             }
@@ -98,10 +100,13 @@ define([
         },
 
         addFileTransfer: function(projectUuid, fileUniqueIdentifier, filename) {
+
             var fileTransferListView = new App.Views.Notifications.FileTransfer({
                 fileUniqueIdentifier: fileUniqueIdentifier,
                 filename: filename,
             });
+
+            this.notificationViews[fileUniqueIdentifier] = fileTransferListView;
 
             this.insertView(
                 '#project-' + projectUuid + '-notification',
@@ -109,6 +114,16 @@ define([
             );
 
             fileTransferListView.render();
+        },
+
+        removeFileTransfer: function(fileUniqueIdentifier) {
+
+            if (fileUniqueIdentifier && this.notificationViews[fileUniqueIdentifier]) {
+
+                var fileTransferView = this.notificationViews[fileUniqueIdentifier];
+
+                fileTransferView.remove();
+            }
         },
 
         // Private Methods

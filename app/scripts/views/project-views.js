@@ -4,11 +4,33 @@ define([
     'handlebars',
     'filesize',
     'environment-config',
+    'moment',
     'socket-io',
     'backbone.syphon',
-], function(App, Handlebars, filesize, EnvironmentConfig) {
+], function(
+    App,
+    Handlebars,
+    filesize,
+    EnvironmentConfig,
+    moment
+) {
 
     'use strict';
+
+    Handlebars.registerHelper('IfJobSelectableFileType', function(filename, fileType, options) {
+        var fileExtension = filename.split('.').pop();
+        fileExtension = fileExtension.slice(0);
+
+        if (fileExtension === 'qual') {
+            return options.inverse(this);
+        }
+
+        if (parseInt(fileType) !== 2 && parseInt(fileType) !== 4) {
+            return options.inverse(this);
+        }
+
+        return options.fn(this);
+    });
 
     Handlebars.registerHelper('FormatAgaveDate', function(agaveDate) {
 
@@ -32,15 +54,6 @@ define([
         }
     });
 
-    Handlebars.registerHelper('GetFileTypeFromName', function(filename) {
-        if (filename) {
-            var fileExtension = filename.split('.').pop();
-
-            fileExtension = fileExtension.slice(0);
-            return fileExtension;
-        }
-    });
-
     Handlebars.registerHelper('GetTagDisplay', function(privateAttributes) {
         if (privateAttributes && privateAttributes['tags']) {
 
@@ -51,6 +64,12 @@ define([
             }
 
             return tags;
+        }
+    });
+
+    Handlebars.registerHelper('SelectFileType', function(option, fileType) {
+        if (option === fileType) {
+            return 'selected';
         }
     });
 
@@ -67,6 +86,31 @@ define([
             }
         }
     });
+
+    var ProjectMixin = {
+        _uiShowSaveSuccessAnimation: function(domSelector) {
+
+            var deferred = $.Deferred();
+
+            $('<i class="icon-checkmark-green">Saved</i>')
+                .insertAfter(domSelector)
+                .fadeOut('slow', function() {
+                    this.remove();
+                    deferred.resolve();
+                })
+                ;
+
+            return deferred;
+        },
+        _uiShowSaveErrorAnimation: function(domSelector) {
+            $('<i class="icon-error-red">Saved</i>')
+                .insertAfter(domSelector)
+                .fadeOut('slow', function() {
+                    this.remove();
+                })
+                ;
+        },
+    };
 
     var Projects = {};
 
@@ -170,8 +214,6 @@ define([
         template: 'project/detail',
         initialize: function(parameters) {
 
-            this.fileCategory = 'uploaded';
-
             this.fileListings = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
 
 
@@ -211,7 +253,7 @@ define([
             'click #file-upload':    '_clickFilesSelectorWrapper',
             'change #file-dialog':   '_changeFilesSelector',
             'click .selected-files': '_uiToggleDisabledButtonStatus',
-            'click #select-all-files-checkbox': '_toggleSelectAllFiles',
+            'change #select-all-files-checkbox': '_toggleSelectAllFiles',
             'click .run-job':       '_clickRunJob',
             'change #search-text':  '_searchFileListings',
             'click .delete-files':  '_clickDeleteFiles',
@@ -249,7 +291,7 @@ define([
         _fetchAndRenderFileListings: function() {
 
             var that = this;
-            this.fileListings.fetch({url:this.fileListings.url(this.fileCategory)})
+            this.fileListings.fetch()
                 .done(function() {
 
                     that._removeLoadingViews();
@@ -323,7 +365,6 @@ define([
                 var stagedFile = new Backbone.Agave.Model.File({
                     name: file.name,
                     length: file.size,
-                    mimeType: file.type,
                     lastModified: file.lastModifiedDate,
                     projectUuid: projectUuid,
                     fileReference: file,
@@ -505,11 +546,19 @@ define([
             var files = e.target.files;
             this._parseFiles(files);
         },
-        _toggleSelectAllFiles: function() {
+        _toggleSelectAllFiles: function(e) {
+            e.preventDefault();
 
-            $('.selected-files').each(function() {
-                this.checked = !this.checked;
-            });
+            if (e.target.checked === true) {
+                $('.selected-files').each(function() {
+                    this.checked = true;
+                });
+            }
+            else {
+                $('.selected-files').each(function() {
+                    this.checked = false;
+                });
+            }
 
             this._uiToggleDisabledButtonStatus();
         },
@@ -583,125 +632,127 @@ define([
         template: 'project/file-search-no-results',
     });
 
-    Projects.FileListings = Backbone.View.extend({
+    Projects.FileListings = Backbone.View.extend(
+        _.extend({}, ProjectMixin, {
 
-        // Public Methods
-        template: 'project/file-listings',
-        serialize: function() {
-            return {
-                fileListings: this.fileListings.toJSON(),
-                readDirections: [
-                    'F',
-                    'R',
-                    'FR',
-                ],
-            };
-        },
-        events: {
-            'click #drag-and-drop-box': '_clickFilesSelectorWrapper'
-        },
-        afterRender: function() {
-            this._setupDragDropEventHandlers();
-            this._setupTagEditEventHandler();
-            this._setupReadDirectionEventHandler();
-        },
+            // Public Methods
+            template: 'project/file-listings',
+            serialize: function() {
+                return {
+                    fileListings: this.fileListings.toJSON(),
+                    readDirections: Backbone.Agave.Model.File.Metadata.getReadDirections(),
+                    fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
+                };
+            },
+            events: {
+                'click #drag-and-drop-box': '_clickFilesSelectorWrapper',
+                'change .project-file-type': '_updateFileType',
+                'change .project-file-read-direction': '_updateReadDirection',
+                'change .project-file-tags': '_updateFileTags',
+            },
+            afterRender: function() {
+                this._setupDragDropEventHandlers();
+            },
 
-        // Private Methods
+            // Private Methods
 
-        // Event Handlers
-        _setupDragDropEventHandlers: function() {
-            if (this.fileListings.models.length === 0) {
+            // Event Handlers
+            _updateFileType: function(e) {
+                e.preventDefault();
 
-                // Drag and Drop Listeners
-                var dropZone = document.getElementById('drag-and-drop-box');
-                dropZone.addEventListener('dragover', this._fileContainerDrag, false);
+                var that = this;
 
-                // Using fancy bind trick to keep 'this' context
-                // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener
-                dropZone.addEventListener('drop', this._fileContainerDrop.bind(this), false);
-            }
-        },
-        _setupTagEditEventHandler: function() {
-            var that = this;
+                var fileTypeId = parseInt(e.currentTarget.value);
 
-            // Tags Listeners
-            $('.project-file-tags').change(function(e) {
-                var fileMetadata = that.fileListings.get(e.target.dataset.fileuuid);
-                fileMetadata.updateTags(e.target.value)
+                var fileMetadata = this.fileListings.get(e.target.dataset.fileuuid);
+
+                fileMetadata.updateFileType(fileTypeId)
+                    .then(function() {
+                        // Show animation before render so it doesn't get lost
+                        return that._uiShowSaveSuccessAnimation(e.target);
+                    })
                     .done(function() {
-                        $('<i class="icon-checkmark-green">Saved</i>')
-                            .insertAfter(e.target)
-                            .fadeOut('slow', function() {
-                                this.remove();
-                            })
-                        ;
+                        // Need to re-render here because some file types can be
+                        // selected for jobs and the re-render will restore checkboxes
+                        that.render();
                     })
                     .fail(function() {
-                        $('<i class="icon-error-red">Saved</i>')
-                            .insertAfter(e.target)
-                            .fadeOut('slow', function() {
-                                this.remove();
-                            })
-                        ;
+                        that._uiShowSaveErrorAnimation(e.target);
                     })
-                ;
-            });
-        },
-        _setupReadDirectionEventHandler: function() {
-            var that = this;
+                    ;
+            },
+            _updateReadDirection: function(e) {
+                e.preventDefault();
 
-            // Read Direction Listeners
-            $('.project-file-read-direction').change(function(e) {
-                var fileMetadata = that.fileListings.get(e.target.dataset.fileuuid);
+                var that = this;
+
+                var fileMetadata = this.fileListings.get(e.target.dataset.fileuuid);
 
                 fileMetadata.updateReadDirection(e.target.value)
                     .done(function() {
-                        $('<i class="icon-checkmark-green">Saved</i>')
-                            .insertAfter(e.target)
-                            .fadeOut('slow', function() {
-                                this.remove();
-                            })
-                        ;
+                        that._uiShowSaveSuccessAnimation(e.target);
                     })
                     .fail(function() {
-                        $('<i class="icon-error-red">Saved</i>')
-                            .insertAfter(e.target)
-                            .fadeOut('slow', function() {
-                                this.remove();
-                            })
-                        ;
+                        that._uiShowSaveErrorAnimation(e.target);
                     })
-                ;
-            });
+                    ;
 
-        },
-        _fileContainerDrag: function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-        },
-        _fileContainerDrop: function(e) {
-            e.stopPropagation();
-            e.preventDefault();
+            },
+            _updateFileTags: function(e) {
+                e.preventDefault();
 
-            var files = e.dataTransfer.files;
+                var that = this;
 
-            //Hand off these file handlers to the parent view through this event.
+                var fileMetadata = this.fileListings.get(e.target.dataset.fileuuid);
+                fileMetadata.updateTags(e.target.value)
+                    .done(function() {
+                        that._uiShowSaveSuccessAnimation(e.target);
+                    })
+                    .fail(function() {
+                        that._uiShowSaveErrorAnimation(e.target);
+                    })
+                    ;
+            },
+            _setupDragDropEventHandlers: function() {
+                if (this.fileListings.models.length === 0) {
 
-            this.trigger('fileDragDrop', files);
-        },
+                    // Drag and Drop Listeners
+                    var dropZone = document.getElementById('drag-and-drop-box');
+                    dropZone.addEventListener('dragover', this._fileContainerDrag, false);
 
-        // Event Responders
-        _clickFilesSelectorWrapper: function() {
-            /*
-                This actually fires off an event that the parent view will catch.
-                The advantage of doing it this way is that the same file handling
-                logic can be reused no matter how the user is actually uploading
-                the file.
-            */
-            document.getElementById('file-dialog').click();
-        },
-    });
+                    // Using fancy bind trick to keep 'this' context
+                    // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener
+                    dropZone.addEventListener('drop', this._fileContainerDrop.bind(this), false);
+                }
+            },
+            _fileContainerDrag: function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+            },
+            _fileContainerDrop: function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                var files = e.dataTransfer.files;
+
+                //Hand off these file handlers to the parent view through this event.
+
+                this.trigger('fileDragDrop', files);
+            },
+
+            // Event Responders
+            _clickFilesSelectorWrapper: function() {
+                /*
+                    This actually fires off an event that the parent view will catch.
+                    The advantage of doing it this way is that the same file handling
+                    logic can be reused no matter how the user is actually uploading
+                    the file.
+                */
+                document.getElementById('file-dialog').click();
+            },
+        })
+    );
 
     Projects.FileTransfer = Backbone.View.extend({
 
@@ -712,15 +763,17 @@ define([
                 this.projectUuid = parameters.projectUuid;
             }
 
-            this.fileUniqueIdentifier = this.model.getDomFriendlyName() + '-progress';
+            this.fileUniqueIdentifier = this._createFileUniqueIdentifier();
         },
         serialize: function() {
             return {
                 file: this.model.toJSON(),
                 fileUniqueIdentifier: this.fileUniqueIdentifier,
+                fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
             };
         },
         events: {
+            'change .file-type': '_updateTypeTags',
             'click #cancel-upload-button': '_cancelUpload',
             'submit form':  '_startUpload',
         },
@@ -728,10 +781,33 @@ define([
         // Private Methods
 
         // Event Responders
+        _updateTypeTags: function(e) {
+            e.preventDefault();
+
+            var fileTypeId = parseInt(e.target.value);
+            var hasReadDirection = Backbone.Agave.Model.File.Metadata.doesFileTypeIdHaveReadDirection(fileTypeId);
+
+            if (hasReadDirection) {
+                $('.file-type-tags').removeClass('hidden');
+            }
+            else {
+                $('.file-type-tags').addClass('hidden');
+            }
+        },
+
         _cancelUpload: function(e) {
             e.preventDefault();
             this.remove();
+
+            //this.model.abort();
+
+            var listView = App.Layouts.sidebar.getView('.sidebar');
+
+            listView.removeFileTransfer(this.fileUniqueIdentifier);
+
+            this.model.trigger(Backbone.Agave.Model.File.CANCEL_UPLOAD);
         },
+
         _startUpload: function(e) {
             e.preventDefault();
 
@@ -742,7 +818,7 @@ define([
 
             var that = this;
 
-            this.model.on('uploadProgress', function(percentCompleted) {
+            this.model.on(Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(percentCompleted) {
                 that._uiSetUploadProgress(percentCompleted);
             });
 
@@ -768,6 +844,8 @@ define([
                     // Notify user that upload failed
                     that._uiSetErrorMessage('File upload error. Please try uploading your file again.');
                 });
+
+            //request.abort()
         },
 
         // Data Management
@@ -808,6 +886,9 @@ define([
                     that._uiSetErrorMessage('Metadata creation error. Please try uploading your file again.');
                 });
         },
+        _createFileUniqueIdentifier: function() {
+            return this.model.getDomFriendlyName() + '-progress';
+        },
 
         // UI
         _setListMenuFileTransferView: function() {
@@ -820,10 +901,8 @@ define([
             );
         },
         _uiUploadStart: function() {
-            // Disable buttons
-            $('.upload-button')
-                .attr('disabled', 'disabled')
-            ;
+            // Disable user selectable UI components
+            $('#form-' + this.fileUniqueIdentifier).find('.user-selectable').attr('disabled', 'disabled');
 
             // Hide previous notifications for this file
             $('#file-upload-notifications-' + this.fileUniqueIdentifier)
@@ -869,7 +948,7 @@ define([
                 .removeClass('hidden')
             ;
 
-            $('.upload-button').removeAttr('disabled');
+            $('#form-' + this.fileUniqueIdentifier).find('.user-selectable').removeAttr('disabled');
 
             $('#start-upload-button').text('Try again');
         },
@@ -886,61 +965,118 @@ define([
         },
     });
 
-    Projects.FileAssociations = Backbone.View.extend({
-        template: 'project/file-associations',
-        initialize: function(parameters) {
-            this.fastaMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+    Projects.FileAssociations = Backbone.View.extend(
+        _.extend({}, ProjectMixin, {
+            template: 'project/file-associations',
+            initialize: function(parameters) {
+                this.fastaMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+                this.qualMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
 
-            this.qualMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+                var fileMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
 
-            var fileMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+                var that = this;
 
-            var that = this;
+                fileMetadatas.fetch()
+                    .done(function() {
+                        that.fastaMetadatas = fileMetadatas.getQualAssociableFastaCollection();
+                        that.qualMetadatas  = fileMetadatas.getQualCollection();
 
-            fileMetadatas.fetch()
-                .done(function() {
-                    that.fastaMetadatas = fileMetadatas.getBarcodeCollection();
-                    that.qualMetadatas  = fileMetadatas.getBarcodeQualityScoreCollection();
+                        that.render();
+                    })
+                    .fail(function() {
 
-                    that.render();
-                })
-                .fail(function() {
+                    })
+                    ;
+            },
+            serialize: function() {
+                if (this.fastaMetadatas) {
+                    return {
+                        fastaMetadatas: this.fastaMetadatas.toJSON(),
+                        qualMetadatas: this.qualMetadatas.toJSON(),
+                        fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
+                    };
+                }
+            },
+            events: {
+                'change .quality-score': '_updateQualityScoreAssociation',
+                'change .project-file-type': '_updateFileType',
+            },
 
-                })
-                ;
-        },
-        serialize: function() {
-            if (this.fastaMetadatas) {
-                return {
-                    fastaMetadatas: this.fastaMetadatas.toJSON(),
-                    qualMetadatas: this.qualMetadatas.toJSON(),
-                };
-            }
-        },
-        events: {
-            'change .quality-score': '_updateQualityScoreAssociation',
-        },
+            // Private Methods
+            _updateQualityScoreAssociation: function(e) {
+                e.preventDefault();
 
-        // Private Methods
-        _updateQualityScoreAssociation: function(e) {
-            e.preventDefault();
+                var that = this;
 
-            var fastaUuid = e.target.dataset.fastauuid;
-            var qualName = e.target.value;
+                var fastaUuid = e.target.dataset.fastauuid;
+                var qualName = e.target.value;
 
-            var fastaModel = this.fastaMetadatas.get(fastaUuid);
+                var fastaModel = this.fastaMetadatas.get(fastaUuid);
 
-            if (qualName.length > 0) {
+                if (qualName.length > 0) {
 
-                var qualModel = this.qualMetadatas.getModelForName(qualName);
+                    var qualModel = this.qualMetadatas.getModelForName(qualName);
 
-                fastaModel.updateAssociatedQualityScoreMetadata(qualModel.get('uuid'));
-            }
-            else {
-                fastaModel.updateAssociatedQualityScoreMetadata('');
-            }
-        },
-    });
+                    fastaModel.updateAssociatedQualityScoreMetadata(qualModel.get('uuid'))
+                        .then(function() {
+                            return that._uiShowSaveSuccessAnimation(e.target);
+                        })
+                        .done(function() {
+                            that.render();
+                        })
+                        ;
+                }
+                else {
+                    fastaModel.removeQualityScoreMetadataAssociation()
+                        .then(function() {
+                            return that._uiShowSaveSuccessAnimation(e.target);
+                        })
+                        .done(function() {
+                            that.render();
+                        })
+                        ;
+                }
+            },
+            _updateFileType: function(e) {
+                e.preventDefault();
+
+                var that = this;
+
+                var fileTypeId = parseInt(e.currentTarget.value);
+
+                var fileMetadata = this.fastaMetadatas.get(e.target.dataset.fileuuid);
+
+                fileMetadata.updateFileType(fileTypeId)
+                    .then(function() {
+
+                        var deferred = $.Deferred();
+
+                        if (Backbone.Agave.Model.File.Metadata.isFileTypeIdQualAssociable(fileTypeId) === true) {
+                            deferred.resolve();
+                            return deferred;
+                        }
+                        else {
+                            that.fastaMetadatas.remove(fileMetadata);
+                            return fileMetadata.removeQualityScoreMetadataAssociation();
+                        }
+                    })
+                    .then(function() {
+                        // Show animation before render so it doesn't get lost
+                        return that._uiShowSaveSuccessAnimation(e.target);
+                    })
+                    .done(function() {
+                        // Need to re-render here because some file types can be
+                        // selected for jobs and the re-render will restore checkboxes
+                        that.render();
+                    })
+                    .fail(function() {
+                        that._uiShowSaveErrorAnimation(e.target);
+                    })
+                    ;
+
+            },
+        })
+    );
 
     Projects.ManageUsers = Backbone.View.extend({
         template: 'project/manage-users',

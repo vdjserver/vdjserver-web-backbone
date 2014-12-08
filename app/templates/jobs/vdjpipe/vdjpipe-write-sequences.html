@@ -1,115 +1,95 @@
-<li>
-    <div class="panel panel-default vdj-pipe-parameter">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
-                    {{#if isEditable}}
-                        <i class="fa fa-bars"></i>
-                        &nbsp;
-                    {{/if}}
+{{> vdjpipe-base-view-top}}
 
-                    Write Sequences
+    <input
+        class="job-form-item hidden"
+        name="{{inputCount}}-{{parameterType}}-output-path"
+        placeholder="text"
+        type="text"
+        value="{{options.out_path}}"
+    >
+    {{#if options.unset_value}}
+        <input
+            class="job-form-item hidden"
+            name="{{inputCount}}-{{parameterType}}-unset-value"
+            placeholder="text"
+            type="text"
+            value="{{options.unset_value}}"
+        >
+    {{else}}
+        <input
+            class="job-form-item hidden"
+            name="{{inputCount}}-{{parameterType}}-unset-value"
+            placeholder="text"
+            type="text"
+            value="unassigned"
+        >
+    {{/if}}
 
-                    {{#if isEditable}}
-                        &nbsp;
-                        <span class="label label-danger remove-job-parameter">&times;</span>
-                    {{/if}}
 
-                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
-                </div>
+    {{!--
+        <div class="row row-with-spacer">
+            <div class="col-md-12">
+                {{#if options.trimmed}}
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-trimmed"
+                        type="checkbox"
+                        checked
+                    >
+                {{else}}
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-trimmed"
+                        type="checkbox"
+                    >
+                {{/if}}
+
+                &nbsp;
+                Trimmed
             </div>
-
-            <input
-                class="job-form-item hidden"
-                name="{{inputCount}}-{{parameterType}}-output-path"
-                placeholder="text"
-                type="text"
-                value="{{options.out_path}}"
-            >
-            {{#if options.unset_value}}
-                <input
-                    class="job-form-item hidden"
-                    name="{{inputCount}}-{{parameterType}}-unset-value"
-                    placeholder="text"
-                    type="text"
-                    value="{{options.unset_value}}"
-                >
-            {{else}}
-                <input
-                    class="job-form-item hidden"
-                    name="{{inputCount}}-{{parameterType}}-unset-value"
-                    placeholder="text"
-                    type="text"
-                    value="unassigned"
-                >
-            {{/if}}
-
-
-            {{!--
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        {{#if options.trimmed}}
-                            <input
-                                class="job-form-item"
-                                name="{{inputCount}}-{{parameterType}}-trimmed"
-                                type="checkbox"
-                                checked
-                            >
-                        {{else}}
-                            <input
-                                class="job-form-item"
-                                name="{{inputCount}}-{{parameterType}}-trimmed"
-                                type="checkbox"
-                            >
-                        {{/if}}
-
-                        &nbsp;
-                        Trimmed
-                    </div>
-                </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        {{#if options.reverse_complemented}}
-                            <input
-                                class="job-form-item"
-                                name="{{inputCount}}-{{parameterType}}-reverse-complemented"
-                                type="checkbox"
-                                checked
-                            >
-                        {{else}}
-                            <input
-                                class="job-form-item"
-                                name="{{inputCount}}-{{parameterType}}-reverse-complemented"
-                                type="checkbox"
-                            >
-                        {{/if}}
-
-                        &nbsp;
-                        Reverse Complemented
-                    </div>
-                </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        {{#if options.skip_empty}}
-                            <input
-                                class="job-form-item"
-                                name="{{inputCount}}-{{parameterType}}-skip-empty"
-                                type="checkbox"
-                                checked
-                            >
-                        {{else}}
-                            <input
-                                class="job-form-item"
-                                name="{{inputCount}}-{{parameterType}}-skip-empty"
-                                type="checkbox"
-                            >
-                        {{/if}}
-
-                        &nbsp;
-                        Skip Empty
-                    </div>
-                </div>
-            --}}
         </div>
-    </div>
-</li>
+        <div class="row row-with-spacer">
+            <div class="col-md-12">
+                {{#if options.reverse_complemented}}
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-reverse-complemented"
+                        type="checkbox"
+                        checked
+                    >
+                {{else}}
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-reverse-complemented"
+                        type="checkbox"
+                    >
+                {{/if}}
+
+                &nbsp;
+                Reverse Complemented
+            </div>
+        </div>
+        <div class="row row-with-spacer">
+            <div class="col-md-12">
+                {{#if options.skip_empty}}
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-skip-empty"
+                        type="checkbox"
+                        checked
+                    >
+                {{else}}
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-skip-empty"
+                        type="checkbox"
+                    >
+                {{/if}}
+
+                &nbsp;
+                Skip Empty
+            </div>
+        </div>
+    --}}
+
+{{> vdjpipe-base-view-bottom}}

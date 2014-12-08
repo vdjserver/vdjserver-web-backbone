@@ -1,42 +1,68 @@
 define([
     'app',
-], function(App) {
+    'handlebars-utilities',
+], function(App, HandlebarsUtilities) {
 
     'use strict';
+
+    HandlebarsUtilities.registerRawPartial('jobs/vdjpipe/vdjpipe-base-view-top', 'vdjpipe-base-view-top');
+    HandlebarsUtilities.registerRawPartial('jobs/vdjpipe/vdjpipe-base-view-bottom', 'vdjpipe-base-view-bottom');
 
     var Vdjpipe = {};
 
     Vdjpipe.AmbiguousWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-ambiguous-nucleotide-window-filter',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Ambiguous Nucleotide Window Filter';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.AverageQualityWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-average-quality-window-filter',
-    });
-
-    Vdjpipe.AverageQualityWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe/vdjpipe-average-quality-window-filter',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Average Quality Window Filter';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.CompositionStats = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-composition-stats',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Generate Composition Stats';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.CustomDemultiplex = App.Views.Generic.VdjpipeOptionView.extend({
+
         template: 'jobs/vdjpipe/vdjpipe-custom-demultiplex',
-        initialize: function() {
+        initialize: function(options) {
+
             this.elementCount = 0;
             this.objectCount  = 0;
             this.barcodeSubviewsSelector = '#' + this.inputCount + '-' + this.parameterType + '-added-barcode-subviews';
             this.barcodeFiles = {};
             this.combinationFiles = {};
+
+            this.vdjpipeOptionTitle = 'Demultiplex';
+
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+
+        },
+        beforeRender: function() {
+            // Apparently, this vdjpipe step should always be removable.
+            this.isRemovable = true;
         },
         afterRender: function() {
             if (this.options && this.options.elements) {
 
                 // Setup barcode files
                 if (this.allFiles) {
-                    this.barcodeFiles = this.allFiles.getSortedBarcodeCollection();
+                    this.barcodeFiles = this.allFiles.getBarcodeCollection();
                     this.combinationFiles = this.allFiles.getCombinationCollection();
                 }
 
@@ -45,6 +71,7 @@ define([
 
                 // Restore any previously saved barcode elements
                 for (var i = 0; i < this.options.elements.length; i++) {
+
                     var barcodeOptions = this.options.elements[i];
 
                     this.addBarcode(barcodeOptions);
@@ -109,8 +136,15 @@ define([
                 $('#' + this.inputCount + '-barcode-location').val(1);
             }
             else if (barcodeCount === 2) {
+                // Get options from original barcode so they can applied to the new barcode
+                var barcodeOptions = {};
+                if (this.options && this.options.elements && this.options.elements[0]) {
+                    barcodeOptions = this.options.elements[0];
+                }
+
                 // User added a barcode since the target count is 2
-                this.addBarcode();
+                this.addBarcode(barcodeOptions);
+
                 this.updateViewForDoubleBarcodeLocation();
 
                 $('#' + this.inputCount + '-barcode-location').val(3);
@@ -181,7 +215,8 @@ define([
             this.elementCount += 1;
 
             var elementView = new Vdjpipe.CustomDemultiplexBarcodeConfig({
-                isEditable: this.isEditable,
+                isOrderable: this.isOrderable,
+                isRemovable: this.isRemovable,
                 loadDefaultOptions: this.loadDefaultOptions,
                 parameterType: this.parameterType,
                 inputCount: this.inputCount,
@@ -216,7 +251,8 @@ define([
         setupCombinationView: function() {
 
             var combinationView = new Vdjpipe.CustomDemultiplexCombinationConfig({
-                isEditable: this.isEditable,
+                isOrderable: this.isOrderable,
+                isRemovable: this.isRemovable,
                 loadDefaultOptions: this.loadDefaultOptions,
                 parameterType: this.parameterType,
                 inputCount: this.inputCount,
@@ -279,7 +315,8 @@ define([
                 }
 
                 return {
-                    isEditable: this.isEditable,
+                    isOrderable: this.isOrderable,
+                    isRemovable: this.isRemovable,
                     loadDefaultOptions: this.loadDefaultOptions,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
@@ -352,7 +389,8 @@ define([
                 var barcodeColumns = this.getBarcodeColumns(this.elementCount);
 
                 return {
-                    isEditable: this.isEditable,
+                    isOrderable: this.isOrderable,
+                    isRemovable: this.isRemovable,
                     loadDefaultOptions: this.loadDefaultOptions,
                     parameterType: this.parameterType,
                     inputCount: this.inputCount,
@@ -384,6 +422,11 @@ define([
 
     Vdjpipe.FindSharedSequences = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-find-shared-sequences',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Find Unique Sequences';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 /*
     Vdjpipe.FindSharedSequences = App.Views.Generic.VdjpipeOptionView.extend({
@@ -462,138 +505,83 @@ define([
 
     Vdjpipe.Histogram = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-histogram',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Histogram';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.HomopolymerFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-homopolymer-filter',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Homopolymer Filter';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.LengthFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-length-filter',
-    });
-
-/*
-    Vdjpipe.MatchSequenceElement = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe/vdjpipe-match-sequence-element',
-        initialize: function() {
-            this.elementCount = 0;
-            this.objectCount  = 0;
-        },
-        events: {
-            'click .add-element-button': 'addElement',
-            'click .add-combination-object-button': 'addCombinationObject',
-        },
-        addElement: function(e) {
-            e.preventDefault();
-
-            //var fileName = $('.add-element-select').val();
-            this.elementCount = this.elementCount + 1;
-
-            var elementView = new Vdjpipe.MatchSequenceElementConfig({
-                isEditable: this.isEditable,
-                parameterType: this.parameterType,
-                inputCount: this.inputCount,
-                elementCount: this.elementCount,
-                //fileName: fileName,
-            });
-
-            this.insertView('.added-element-subviews', elementView);
-            elementView.render();
-        },
-        addCombinationObject: function(e) {
-            e.preventDefault();
-
-            this.objectCount = this.objectCount + 1;
-
-            var combinationObjectView = new Vdjpipe.MatchSequenceElementCombinationObjectConfig({
-                isEditable: this.isEditable,
-                parameterType: this.parameterType,
-                inputCount: this.inputCount,
-                objectCount: this.objectCount,
-                files: this.files,
-            });
-
-            this.insertView('.added-combination-object-subviews', combinationObjectView);
-            combinationObjectView.render();
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Length Filter';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
         },
     });
-
-    Vdjpipe.MatchSequenceElementConfig = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe/vdjpipe-match-sequence-element-config',
-        serialize: function() {
-            if (this.parameterType) {
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    elementCount: this.elementCount,
-                    //fileName: this.fileName,
-                    options: this.options,
-                };
-            }
-        },
-        events: {
-            'click .remove-match-sequence-element': 'removeElement',
-        },
-        removeElement: function(e) {
-            e.preventDefault();
-            this.remove();
-        },
-    });
-
-    Vdjpipe.MatchSequenceElementCombinationObjectConfig = App.Views.Generic.VdjpipeOptionView.extend({
-        template: 'jobs/vdjpipe/vdjpipe-match-sequence-element-combination-object-config',
-        serialize: function() {
-            if (this.parameterType) {
-
-                var files = {};
-
-                if (this.files && this.files.toJSON()) {
-                    files = this.files.toJSON();
-                }
-
-                return {
-                    isEditable: this.isEditable,
-                    parameterType: this.parameterType,
-                    inputCount: this.inputCount,
-                    objectCount: this.objectCount,
-                    files: this.files,
-                    options: this.options,
-                };
-            }
-        },
-        events: {
-            'click .remove-match-sequence-combination-object': 'removeCombinationObject',
-        },
-        removeCombinationObject: function(e) {
-            e.preventDefault();
-            this.remove();
-        },
-    });
-*/
 
     Vdjpipe.MatchExternalMolecularIdentifier = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-match-external-molecular-identifier',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Match External Molecular Identifier';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.MergePairedReads = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-merge-paired-reads',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Merge Paired Reads';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.MinimalAverageQualityFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-min-average-quality-filter',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Minimum Average Quality Window Filter';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.MinimalQualityFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-min-quality-filter',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Minimum Quality Filter';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.MinimalQualityWindowFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-min-quality-window-filter',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Minimum Quality Window Filter';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.NucleotideFilter = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-nucleotide-filter',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Nucleotide Filter';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
         events: {
             'click #toggleCharacterLegend': 'toggleCharacterLegend'
         },
@@ -609,8 +597,14 @@ define([
 
     Vdjpipe.QualityStats = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-quality-stats',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Generate Quality Statistics';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
+/*
     Vdjpipe.TextImmutable = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-text-immutable',
         serialize: function() {
@@ -625,13 +619,24 @@ define([
             }
         },
     });
+*/
 
     Vdjpipe.WriteSequence = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-write-sequences',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Write Sequences';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     Vdjpipe.WriteValue = App.Views.Generic.VdjpipeOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-write-values',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Write Values';
+            App.Views.Generic.VdjpipeOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
     });
 
     App.Views.Vdjpipe = Vdjpipe;

@@ -1,7 +1,7 @@
 define(
     [
         'backbone',
-        'environment-config'
+        'environment-config',
     ],
 function(Backbone, EnvironmentConfig) {
 
@@ -68,6 +68,13 @@ function(Backbone, EnvironmentConfig) {
             {
                 errors.push({
                     'message': 'Password can\'t be part of username.',
+                    'type': 'password'
+                });
+            }
+
+            if (attributes.password.indexOf('%') > -1) {
+                errors.push({
+                    'message': 'Passwords can not contain the \'%\' character.',
                     'type': 'password'
                 });
             }

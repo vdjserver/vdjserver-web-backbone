@@ -1,66 +1,45 @@
-<li>
-    <div class="panel panel-default vdj-pipe-parameter">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
-                    {{#if isEditable}}
-                        <i class="fa fa-bars"></i>
-                        &nbsp;
-                    {{/if}}
+{{> vdjpipe-base-view-top}}
 
-                    Match External Molecular Identifier
-
-                    {{#if isEditable}}
-                        &nbsp;
-                        <span class="label label-danger remove-job-parameter">&times;</span>
-                    {{/if}}
-
-                    <input class="job-form-item" type="hidden" name="{{inputCount}}-{{parameterType}}">
-                </div>
-            </div>
-
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Value Name
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-value-name"
-                        placeholder="text"
-                        type="text"
-                        value="{{options.value_name}}"
-                    >
-                </div>
-            </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Fasta File
-                    &nbsp;
-                    <select
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-fasta-file"
-                    >
-                        {{#each files}}
-                            <option value={{value.name}}>{{value.name}}</option>
-                        {{/each}}
-                    </select>
-                </div>
-            </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Pairs File
-                    &nbsp;
-                    <select
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-pairs-file"
-                    >
-                        {{#each files}}
-                            <option value={{value.name}}>{{value.name}}</option>
-                        {{/each}}
-                    </select>
-                </div>
-            </div>
-
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            Value Name
+            &nbsp;
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-value-name"
+                placeholder="text"
+                type="text"
+                value="{{options.value_name}}"
+            >
         </div>
     </div>
-</li>
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            Fasta File
+            &nbsp;
+            <select
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-fasta-file"
+            >
+                {{#each files}}
+                    <option value={{value.name}}>{{value.name}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            Pairs File
+            &nbsp;
+            <select
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-pairs-file"
+            >
+                {{#each files}}
+                    <option value={{value.name}}>{{value.name}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+
+{{> vdjpipe-base-view-bottom}}
