@@ -26,6 +26,11 @@ define([
             extension = split.pop();
         }
 
+        // TEMP - remove this once heat map charts are in place
+        if (filename === 'post-filter_heat_map.csv' || filename === 'pre-filter_heat_map.csv') {
+            return options.inverse(this);
+        }
+
         if (extension === 'csv') {
             return options.fn(this);
         }
