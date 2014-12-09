@@ -66,6 +66,7 @@ require.config({
         'handlebars-utilities':   'views/utilities/handlebars-utilities',
 
         // Utilities
+        'serialization-tools': 'utilities/serialization-tools',
         'vdjpipe-serializer': 'utilities/vdjpipe-serializer',
         'vdjpipe-view-factory': 'utilities/vdjpipe-view-factory',
 

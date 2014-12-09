@@ -218,6 +218,8 @@ define([
                         view.files = this.selectedFileListings;
                         view.allFiles = this.allFiles;
 
+                        view.prepareFiles();
+
                         workflowLayout.insertView(view);
                     }
 

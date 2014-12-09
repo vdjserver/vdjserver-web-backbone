@@ -129,6 +129,18 @@ function(Backbone, EnvironmentConfig) {
 
             return mergedCollection;
         },
+        getPrimerCollection: function() {
+
+            var primerModels = _.filter(this.models, function(model) {
+                return model.getFileType() === 1;
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(primerModels);
+
+            return newCollection;
+        },
         getQualCollection: function() {
 
             var qualModels = _.filter(this.models, function(model) {
