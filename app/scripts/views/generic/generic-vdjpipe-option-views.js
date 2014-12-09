@@ -1,14 +1,21 @@
 define([
     'app',
-], function(App) {
+    'serialization-tools',
+], function(App, SerializationTools) {
 
     'use strict';
 
-    var VdjpipeOptionView = Backbone.View.extend({
+    var Vdjpipe = {};
+
+    Vdjpipe.BaseOptionView = Backbone.View.extend({
 
         // Public Methods
         initialize: function() {
             this.keep = false;
+        },
+        // Template Design Pattern
+        prepareFiles: function() {
+
         },
         serialize: function() {
             return this._getSerializeObject();
@@ -16,12 +23,7 @@ define([
 
         // Private Methods
         _getSerializeObject: function() {
-
-            var files = {};
-
-            if (this.files && this.files.toJSON()) {
-                files = this.files.toJSON();
-            }
+            var files = SerializationTools.GetSerializedModel(this.files);
 
             // Options can occasionally be empty, and this can
             // cause serialization issues if left unchecked.
@@ -41,6 +43,14 @@ define([
         },
     });
 
-    App.Views.Generic.VdjpipeOptionView = VdjpipeOptionView;
-    return VdjpipeOptionView;
+    Vdjpipe.PrimerTrimming = Vdjpipe.BaseOptionView.extend({
+        template: 'jobs/vdjpipe/vdjpipe-custom-primer-trimming',
+        initialize: function(options) {
+            App.Views.Generic.Vdjpipe.BaseOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
+    });
+
+    App.Views.Generic.Vdjpipe = Vdjpipe;
+    return Vdjpipe.BaseOptionView;
 });

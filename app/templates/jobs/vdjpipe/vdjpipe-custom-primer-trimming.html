@@ -1,0 +1,86 @@
+{{> vdjpipe-base-view-top}}
+
+<div class="row row-with-spacer">
+    <div class="col-md-12">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>
+                        Fasta Primer File
+                    </td>
+                    <td>
+                        <select
+                            class="job-form-item"
+                            id="{{inputCount}}-{{parameterType}}-primer-file"
+                            name="{{inputCount}}-{{parameterType}}-primer-file"
+                        >
+                            {{#each primerFiles}}
+                                <option value={{value.name}}>{{value.name}}</option>
+                            {{/each}}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Discard Reads Without Barcodes?
+                    </td>
+                    <td>
+                        {{#if options.required}}
+                            <input
+                                class="job-form-item"
+                                name="{{inputCount}}-{{parameterType}}-required"
+                                type="checkbox"
+                                checked
+                            >
+                        {{else}}
+                            <input
+                                class="job-form-item"
+                                name="{{inputCount}}-{{parameterType}}-required"
+                                type="checkbox"
+                            >
+                        {{/if}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Maximum Number of Mismatches
+                    </td>
+                    <td>
+                        <input
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-maximum-mismatches"
+                            type="number"
+                            value="{{options.max_mismatches}}"
+                            step="1"
+                            min="0"
+                            pattern="\d+"
+                        >
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Trim Primer
+                    </td>
+                    <td>
+                        {{#if options.custom_trim}}
+                            <input
+                                class="job-form-item"
+                                name="{{inputCount}}-{{parameterType}}-trim-primer"
+                                type="checkbox"
+                                checked
+                            >
+                        {{else}}
+                            <input
+                                class="job-form-item"
+                                name="{{inputCount}}-{{parameterType}}-trim-primer"
+                                type="checkbox"
+                            >
+                        {{/if}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{> vdjpipe-base-view-bottom}}

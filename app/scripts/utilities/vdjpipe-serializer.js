@@ -75,6 +75,20 @@ define(['app'], function(App) {
 
                             break;
 
+                        case 'custom_j_primer_trimming':
+                            paramOutput.push(
+                                serializer.getCustomJPrimerTrimming(paramOutput)
+                            );
+
+                            break;
+
+                        case 'custom_v_primer_trimming':
+                            paramOutput.push(
+                                serializer.getCustomVPrimerTrimming(paramOutput)
+                            );
+
+                            break;
+
                         case 'eMID_map':
                             paramOutput.push(
                                 serializer.getEmidMap()
@@ -257,44 +271,41 @@ define(['app'], function(App) {
                     var element = {};
                     var elementCounter = parameters[key + '-elements'][i];
 
+
                     var barcodeType = parameters[key + '-' + elementCounter + '-element-barcode-type'];
-
-                    var customHistogram = parameters[key + '-' + elementCounter + '-element-custom-histogram'];
-
-                    var minScore = parameters[key + '-' + elementCounter + '-element-minimum-score'];
-                    var required = parameters[key + '-' + elementCounter + '-element-required'];
-                    var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
-                    var seqFile   = parameters[key + '-' + elementCounter + '-element-sequence-file'];
-                    var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
-
                     if (barcodeType) {
                         element['custom_type'] = barcodeType;
                     }
 
+                    var customHistogram = parameters[key + '-' + elementCounter + '-element-custom-histogram'];
                     if (customHistogram) {
                         element['custom_histogram'] = customHistogram;
                     }
 
-                    if (minScore) {
-
+                    var maxMismatches = parameters[key + '-' + elementCounter + '-element-maximum-mismatches'];
+                    if (maxMismatches) {
                         // Convert to int
-                        minScore = parseInt(minScore);
+                        maxMismatches = parseInt(maxMismatches);
 
-                        element['min_score'] = minScore;
+                        element['max_mismatches'] = maxMismatches;
                     }
 
+                    var required = parameters[key + '-' + elementCounter + '-element-required'];
                     if (required) {
                         element.required = required;
                     }
 
+                    var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
                     if (scoreName) {
                         element['score_name'] = scoreName;
                     }
 
+                    var seqFile   = parameters[key + '-' + elementCounter + '-element-sequence-file'];
                     if (seqFile) {
                         element['seq_file'] = seqFile;
                     }
 
+                    var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
                     if (valueName) {
                         element['value_name'] = valueName;
                     }
@@ -307,7 +318,6 @@ define(['app'], function(App) {
                 }
 
                 // Barcodes & Trimming
-
                 var barcodeCount = parameters[key + '-elements'].length;
 
                 if (barcodeCount === 1) {
@@ -448,6 +458,56 @@ define(['app'], function(App) {
             }
 
             return matchObject;
+        };
+
+        this._setupCustomPrimerTrimmingDictionary = function(parameters) {
+            var dictionary = {
+                'require_best': false
+            };
+
+            var required = parameters[key + '-required'];
+            if (required) {
+                dictionary.required = required;
+            }
+
+            var maxMismatches = parameters[key + '-maximum-mismatches'];
+            if (maxMismatches) {
+                // Convert to int
+                maxMismatches = parseInt(maxMismatches);
+                dictionary['max_mismatches'] = maxMismatches;
+            }
+
+            var trimPrimer = parameters[key + '-trim-primer'];
+            if (trimPrimer) {
+                dictionary['custom_trim'] = true;
+            }
+
+            var fastaFile = parameters[key + '-primer-file'];
+            if (fastaFile) {
+                dictionary['seq_file'] = fastaFile;
+            }
+
+            return dictionary;
+        };
+
+        this.getCustomJPrimerTrimming = function() {
+            var dictionary = this._customPrimerTrimmingDictionary(parameters);
+
+            return {
+                'custom_j_primer_trimming': {
+                    'elements': [dictionary],
+                },
+            };
+        };
+
+        this.getCustomVPrimerTrimming = function() {
+            var dictionary = this._customPrimerTrimmingDictionary(parameters);
+
+            return {
+                'custom_v_primer_trimming': {
+                    'elements': [dictionary],
+                },
+            };
         };
 
         this.getEmidMap = function() {
@@ -714,6 +774,9 @@ define(['app'], function(App) {
         for (var i = 0; i < readConfig.length; i++) {
             var option = readConfig[i];
 
+            //////////////
+            // DEMULTIPLEX
+            //////////////
             if (option['custom_demultiplex']) {
 
                 // Elements
@@ -795,6 +858,40 @@ define(['app'], function(App) {
 
                 newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
                 delete newConfig[i]['custom_demultiplex'];
+            }
+
+            ////////////////////
+            // J PRIMER TRIMMING
+            ////////////////////
+            if (option['custom_j_primer_trimming']) {
+
+                if (newConfig[i]['custom_j_primer_trimming']['elements'][0]['custom_trim']) {
+                    newConfig[i]['custom_j_primer_trimming']['elements'][0]['cut_upper'] = {
+                        'before': 0,
+                    };
+                }
+
+                delete newConfig[i]['custom_j_primer_trimming']['elements'][0]['custom_trim'];
+
+                newConfig[i]['match'] = newConfig[i]['custom_j_primer_trimming'];
+                delete newConfig[i]['custom_j_primer_trimming'];
+            }
+
+            ////////////////////
+            // V PRIMER TRIMMING
+            ////////////////////
+            if (option['custom_v_primer_trimming']) {
+
+                if (newConfig[i]['custom_v_primer_trimming']['elements'][0]['custom_trim']) {
+                    newConfig[i]['custom_v_primer_trimming']['elements'][0]['cut_lower'] = {
+                        'after': 0,
+                    };
+                }
+
+                delete newConfig[i]['custom_v_primer_trimming']['elements'][0]['custom_trim'];
+
+                newConfig[i]['match'] = newConfig[i]['custom_v_primer_trimming'];
+                delete newConfig[i]['custom_v_primer_trimming'];
             }
         }
 

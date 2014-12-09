@@ -126,8 +126,16 @@ define([
                     'workflow-name': 'Single Reads',
                     'summary_output_path': 'summary.txt',
                     'steps': [
-                        {'quality_stats': {'out_prefix': 'pre-filter_'}},
-                        {'composition_stats': {'out_prefix': 'pre-filter_'}},
+                        {
+                            'quality_stats': {
+                                'out_prefix': 'pre-filter_',
+                            },
+                        },
+                        {
+                            'composition_stats': {
+                                'out_prefix': 'pre-filter_',
+                            },
+                        },
                         {
                             'custom_demultiplex': {
                                 'reverse': true,
@@ -135,7 +143,7 @@ define([
                                 'elements': [
                                     {
                                         'custom_type': '5\'',
-                                        'min_score': 1,
+                                        'max_mismatches': 1,
                                         'required': true,
                                         'score_name': 'MID1-score',
                                         'value_name': 'MID1',
@@ -149,15 +157,27 @@ define([
                                 ],
                             },
                         },
-/*
-                        {'histogram': {'name': 'MID1', 'out_path': 'MID1.csv'}},
-                        {'histogram': {'name': 'MID1-score', 'out_path': 'MID1-score.csv'}},
-*/
-                        {'length_filter': {'min': 200}},
-                        {'average_quality_filter': 35},
-                        {'homopolymer_filter': 20},
-                        {'quality_stats': {'out_prefix': 'post-filter_'}},
-                        {'composition_stats': {'out_prefix': 'post-filter_'}},
+                        {
+                            'length_filter': {
+                                'min': 200,
+                            },
+                        },
+                        {
+                            'average_quality_filter': 35,
+                        },
+                        {
+                            'homopolymer_filter': 20,
+                        },
+                        {
+                            'quality_stats': {
+                                'out_prefix': 'post-filter_',
+                            },
+                        },
+                        {
+                            'composition_stats': {
+                                'out_prefix': 'post-filter_',
+                            },
+                        },
                         {
                             'find_shared': {
                                 'out_group_unique':'.fasta',
@@ -165,7 +185,7 @@ define([
                             },
                         },
                     ],
-                }
+                },
             ];
 
             return workflows;

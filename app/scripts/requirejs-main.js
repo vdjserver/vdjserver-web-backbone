@@ -61,6 +61,7 @@ define([
     'handlebars-utilities',
 
     // Utilities
+    'serialization-tools',
     'vdjpipe-serializer',
     'vdjpipe-view-factory',
 

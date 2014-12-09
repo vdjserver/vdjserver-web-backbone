@@ -100,7 +100,6 @@ function(
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
-
             this._setJobConfigFromWorkflowFormData(formData, selectedFileMetadatas, allFileMetadatas);
             this._setArchivePath(projectUuid);
 
