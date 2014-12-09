@@ -100,6 +100,7 @@ function(
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
+
             this._setJobConfigFromWorkflowFormData(formData, selectedFileMetadatas, allFileMetadatas);
             this._setArchivePath(projectUuid);
 
@@ -250,7 +251,7 @@ function(
 
         _setJobConfigFromWorkflowFormData: function(formData, fileMetadatas, allFileMetadatas) {
 
-            var workflowConfig = App.Utilities.VdjpipeSerializer.SerializeWorkflowConfig(
+            var workflowConfig = App.Utilities.VdjpipeSerializer.ConvertFormDataToWorkflowConfig(
                 formData,
                 fileMetadatas,
                 allFileMetadatas
@@ -381,7 +382,7 @@ function(
         },
         setConfigFromFormData: function(formData) {
 
-            var workflowConfig = App.Utilities.VdjpipeSerializer.SerializeWorkflowConfig(formData);
+            var workflowConfig = App.Utilities.VdjpipeSerializer.ConvertFormDataToWorkflowConfig(formData);
 
             var workflowName = App.Utilities.VdjpipeSerializer.GetWorkflowName(formData);
 

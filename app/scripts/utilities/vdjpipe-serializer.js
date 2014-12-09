@@ -12,7 +12,7 @@ define(['app'], function(App) {
         return name;
     };
 
-    VdjpipeSerializer.SerializeWorkflowConfig = function(parameters, fileMetadatas, allFileMetadatas) {
+    VdjpipeSerializer.ConvertFormDataToWorkflowConfig = function(parameters, fileMetadatas, allFileMetadatas) {
 
         var outputConfig = {
             'base_path_input': '',
@@ -123,14 +123,7 @@ define(['app'], function(App) {
                             );
 
                             break;
-/*
-                        case 'match':
-                            paramOutput.push(
-                                serializer.getMatch()
-                            );
 
-                            break;
-*/
                         case 'merge_paired':
                             paramOutput.push(
                                 serializer.getMergePaired()
@@ -185,7 +178,7 @@ define(['app'], function(App) {
         outputConfig.input = readDirections;
 
         // Choose read direction and add params
-        // Just as with Highlander, there can only be one
+        // Just as with Highlander, there can only be one (read direction)
         if (parameters['single-reads']) {
             outputConfig['steps'] = paramOutput;
         }
@@ -272,7 +265,7 @@ define(['app'], function(App) {
                     var elementCounter = parameters[key + '-elements'][i];
 
 
-                    var barcodeType = parameters[key + '-' + elementCounter + '-element-barcode-type'];
+                    var barcodeType = parameters[key + '-' + elementCounter + '-element-custom-type'];
                     if (barcodeType) {
                         element['custom_type'] = barcodeType;
                     }
@@ -310,135 +303,16 @@ define(['app'], function(App) {
                         element['value_name'] = valueName;
                     }
 
+                    var trim = parameters[key + '-' + elementCounter + '-element-custom-trim'];
+                    if (trim) {
+                        element['custom_trim'] = trim;
+                    }
+
                     // Combination
                     combinations[0]['csv_file']['values_column'][0][valueName] = parseInt(parameters[key + '-' + elementCounter + '-element-barcode-column-order']);
 
                     // Save element
                     elements.push(element);
-                }
-
-                // Barcodes & Trimming
-                var barcodeCount = parameters[key + '-elements'].length;
-
-                if (barcodeCount === 1) {
-
-                    var onlyBarcode = parameters[key + '-' + 1 + '-element-barcode-type'];
-
-                    switch (onlyBarcode) {
-                        case '3\'':
-                            elements[0]['end'] = {
-                                'after': '',
-                            };
-
-                            if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
-                                elements[0]['cut_upper'] = {
-                                    'before': 0,
-                                };
-
-                                elements[0]['custom_trim'] = true;
-                            }
-
-                            break;
-
-                        case '5\'':
-                            elements[0]['start'] = {};
-
-                            if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
-                                elements[0]['cut_lower'] = {
-                                    'after': 0,
-                                };
-
-                                elements[0]['custom_trim'] = true;
-                            }
-
-                            break;
-
-                        default:
-                            // code
-                    }
-                }
-                else if (barcodeCount === 2) {
-                    //var tmpElementCounter = parameters[key + '-elements'][0];
-
-                    var firstBarcodeType = parameters[key + '-' + 1 + '-element-barcode-type'];
-                    var secondBarcodeType = parameters[key + '-' + 2 + '-element-barcode-type'];
-
-                    switch (firstBarcodeType) {
-                        case '3\'':
-                            elements[0]['end'] = {
-                                'after': '',
-                            };
-
-                            if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
-                                elements[0]['cut_upper'] = {
-                                    'before': 0,
-                                };
-
-                                elements[0]['custom_trim'] = true;
-                            }
-                            break;
-
-                        case '5\'':
-                            elements[0]['start'] = {};
-
-                            if (parameters[key + '-' + 1 + '-element-trim-barcode']) {
-                                elements[0]['cut_lower'] = {
-                                    'after': 0,
-                                };
-
-                                elements[0]['custom_trim'] = true;
-                            }
-
-                            break;
-
-                        default:
-                            // code
-                    }
-
-                    switch (secondBarcodeType) {
-                        case '3\'':
-
-                            // Barcode type settings will depend on the first barcode
-                            if (firstBarcodeType === '3\'') {
-                                elements[1]['end'] = {
-                                    'before': 'MID1',
-                                    'pos': -2,
-                                };
-                            }
-                            else if (firstBarcodeType === '5\'') {
-                                elements[1]['end'] = {
-                                    'after': '',
-                                };
-                            }
-
-                            // Set barcode trim
-                            if (parameters[key + '-' + 2 + '-element-trim-barcode']) {
-                                elements[1]['cut_upper'] = {
-                                    'before': 0,
-                                };
-
-                                elements[1]['custom_trim'] = true;
-                            }
-                            break;
-
-                        case '5\'':
-                            // For 5', the barcode type setting does NOT depend on the first barcode
-                            elements[1]['start'] = {};
-
-                            // Set barcode trim
-                            if (parameters[key + '-' + 2 + '-element-trim-barcode']) {
-                                elements[1]['cut_lower'] = {
-                                    'after': 0,
-                                };
-
-                                elements[1]['custom_trim'] = true;
-                            }
-
-                            break;
-
-                        default:
-                            // code
-                    }
                 }
             }
 
@@ -491,7 +365,7 @@ define(['app'], function(App) {
         };
 
         this.getCustomJPrimerTrimming = function() {
-            var dictionary = this._customPrimerTrimmingDictionary(parameters);
+            var dictionary = this._setupCustomPrimerTrimmingDictionary(parameters);
 
             return {
                 'custom_j_primer_trimming': {
@@ -501,7 +375,7 @@ define(['app'], function(App) {
         };
 
         this.getCustomVPrimerTrimming = function() {
-            var dictionary = this._customPrimerTrimmingDictionary(parameters);
+            var dictionary = this._setupCustomPrimerTrimmingDictionary(parameters);
 
             return {
                 'custom_v_primer_trimming': {
@@ -758,7 +632,6 @@ define(['app'], function(App) {
         return readDirections;
     };
 
-    // Convert workflowConfig to vdjpipeConfig
     VdjpipeSerializer.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
 
         var readConfig = {};
@@ -768,7 +641,6 @@ define(['app'], function(App) {
 
         // Deep copy
         var newConfig = $.extend(true, [], readConfig);
-
         var tmpBarcodeVariables = [];
 
         for (var i = 0; i < readConfig.length; i++) {
@@ -786,58 +658,114 @@ define(['app'], function(App) {
 
                     var barcodeType = elements[j]['custom_type'];
 
-                    if (barcodeType) {
+                    if (j === 0) {
+
                         switch (barcodeType) {
                             case '3\'':
-                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
-                                    'before': 0,
+                                newConfig[i]['custom_demultiplex']['elements'][j]['end'] = {
+                                    'after': 0,
                                 };
+
+                                if (elements[j]['custom_trim']) {
+
+                                    newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
+                                        'before': 0,
+                                    };
+                                }
 
                                 break;
 
                             case '5\'':
-                                newConfig[i]['custom_demultiplex']['elements'][j]['cut_lower'] = {
-                                    'after': 0,
-                                };
+
+                                newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
+
+                                if (elements[j]['custom_trim']) {
+                                    newConfig[i]['custom_demultiplex']['elements'][j]['cut_lower'] = {
+                                        'after': 0,
+                                    };
+                                }
 
                                 break;
 
-                            case 'both':
-                                // code
+                            default:
+                                break;
+                        }
+
+                    }
+                    else if (j === 1) {
+
+                        var previousBarcodeType = elements[j-1]['custom_type'];
+
+                        switch (barcodeType) {
+                            case '3\'':
+
+                                // Barcode type settings will depend on the first barcode
+                                if (previousBarcodeType === '3\'') {
+                                    newConfig[i]['custom_demultiplex']['elements'][j]['end'] = {
+                                        'before': 'MID1',
+                                        'pos': -2,
+                                    };
+                                }
+                                else if (previousBarcodeType === '5\'') {
+                                    elements[j]['end'] = {
+                                        'after': '',
+                                    };
+                                }
+
+                                // Set barcode trim
+                                if (elements[j]['custom_trim']) {
+
+                                    newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
+                                        'before': 0,
+                                    };
+                                }
+
+                                break;
+
+                            case '5\'':
+                                // For 5', the barcode type setting does NOT depend on the first barcode
+                                newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
+
+                                if (elements[j]['custom_trim']) {
+                                    newConfig[i]['custom_demultiplex']['elements'][j]['cut_lower'] = {
+                                        'after': 0,
+                                    };
+                                }
+
                                 break;
 
                             default:
                                 // code
                         }
 
-                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_type'];
-                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_trim'];
-                        newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
+                    }
 
-                        // Set histograms
-                        if (newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'] === true) {
-                            var tmpBarcodeVariableName = newConfig[i]['custom_demultiplex']['elements'][j]['value_name'];
-                            tmpBarcodeVariables.push(tmpBarcodeVariableName);
+                    delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_type'];
+                    delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_trim'];
 
-                            var histogram1 = {
-                                'histogram': {
-                                    'name': tmpBarcodeVariableName,
-                                    'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['value_name'] + '.csv',
-                                },
-                            };
+                    // Set histograms
+                    if (newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'] === true) {
+                        var tmpBarcodeVariableName = newConfig[i]['custom_demultiplex']['elements'][j]['value_name'];
+                        tmpBarcodeVariables.push(tmpBarcodeVariableName);
 
-                            var histogram2 = {
-                                'histogram': {
-                                    'name': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'],
-                                    'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'] + '.csv',
-                                },
-                            };
+                        var histogram1 = {
+                            'histogram': {
+                                'name': tmpBarcodeVariableName,
+                                'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['value_name'] + '.csv',
+                            },
+                        };
 
-                            newConfig.push(histogram1);
-                            newConfig.push(histogram2);
+                        var histogram2 = {
+                            'histogram': {
+                                'name': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'],
+                                'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'] + '.csv',
+                            },
+                        };
 
-                            delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'];
-                        }
+                        newConfig.push(histogram1);
+                        newConfig.push(histogram2);
+
+                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'];
                     }
                 }
 
