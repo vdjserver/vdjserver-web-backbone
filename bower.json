@@ -22,7 +22,8 @@
     "typeahead.js": "0.10.5",
     "twbs-bootstrap-sass": "3.3.0",
     "underscore": "1.7.0",
-    "recaptcha-ajax": "ea58c14d983a8d0d712a3ce9398ad35a7c17c53b"
+    "recaptcha-ajax": "ea58c14d983a8d0d712a3ce9398ad35a7c17c53b",
+    "simple-statistics": "~0.9.0"
   },
   "devDependencies": {},
   "resolutions": {

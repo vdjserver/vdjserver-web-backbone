@@ -7,6 +7,7 @@ define([
     'box',
     'slickgrid.core',
     'slickgrid.grid',
+    'simple-statistics'
 ], function(
     App,
     Handlebars,
@@ -14,7 +15,8 @@ define([
     d3,
     nv,
     box,
-    Slick
+    Slick,
+    Statistics
 ) {
 
     'use strict';
@@ -535,17 +537,37 @@ define([
 
         var data = d3.tsv.parse(text);
         var otherD = [];
+        var medianD = [];
+        var nonZeroCount=[];
         data.forEach(function(d) {
+            if(+d['count'] !== 0){
+               nonZeroCount.push(+d['count']);
+            }
             otherD.push({
                 x: +d['read_quality'],
                 y: +d['count'],
             });
         });
+        
+        var medianCount = ss.median(nonZeroCount);
+        data.forEach(function(d) {
+            medianD.push({
+                x: +d['read_quality'],
+                y: medianCount,
+            });
+        });
 
-        var myData = [{
+        var myData = [
+            {
             key: 'Quality Score',
             values: otherD,
-        }];
+            },
+            {
+            key: 'Median Score',
+            values: medianD,
+            color: '#5CB85C',
+            },
+        ];
 
         nv.addGraph(function() {
             var chart = nv.models.lineChart()

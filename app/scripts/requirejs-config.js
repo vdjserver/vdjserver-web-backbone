@@ -21,7 +21,7 @@ require.config({
         'socket-io':        '../bower_components/socket.io-client/socket.io',
         'file-saver':       '../bower_components/file-saver/FileSaver',
         'recaptcha-ajax':   '../bower_components/recaptcha-ajax/recaptcha_ajax',
-
+        'simple-statistics':'../bower_components/simple-statistics/src/simple_statistics',
         // Config
         'environment-config': 'config/environment-config',
 
@@ -146,6 +146,9 @@ require.config({
         },
         'typeahead': {
             deps: ['jquery']
+        },
+        'simple-statistics': {
+            exports: 'Statistics'
         },
 
         // Agave
