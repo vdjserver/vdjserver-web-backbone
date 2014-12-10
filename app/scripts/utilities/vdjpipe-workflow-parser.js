@@ -2,17 +2,16 @@ define(['app'], function(App) {
 
     'use strict';
 
-    var VdjpipeSerializer = {};
+    var VdjpipeWorkflowParser = {};
 
     // Public Methods
-
-    VdjpipeSerializer.GetWorkflowName = function(formData) {
+    VdjpipeWorkflowParser.GetWorkflowName = function(formData) {
         var name = formData['workflow-name'];
 
         return name;
     };
 
-    VdjpipeSerializer.ConvertFormDataToWorkflowConfig = function(parameters, fileMetadatas, allFileMetadatas) {
+    VdjpipeWorkflowParser.ConvertFormDataToWorkflowConfig = function(parameters, fileMetadatas, allFileMetadatas) {
 
         var outputConfig = {
             'base_path_input': '',
@@ -29,7 +28,7 @@ define(['app'], function(App) {
                     var keyCounterIndex = key.indexOf('-') + 1;
                     var parameterName = key.slice(keyCounterIndex);
 
-                    var serializer = new VdjpipeSerializer._Serializer(parameters, key);
+                    var serializer = new VdjpipeWorkflowParser._Serializer(parameters, key);
 
                     switch (parameterName) {
 
@@ -174,7 +173,7 @@ define(['app'], function(App) {
         }
 
         // Set file read directions
-        var readDirections = VdjpipeSerializer._GetReadDirections(fileMetadatas, allFileMetadatas);
+        var readDirections = VdjpipeWorkflowParser._GetReadDirections(fileMetadatas, allFileMetadatas);
         outputConfig.input = readDirections;
 
         // Choose read direction and add params
@@ -187,7 +186,7 @@ define(['app'], function(App) {
     };
 
     // Private Methods
-    VdjpipeSerializer._Serializer = function(parameters, key) {
+    VdjpipeWorkflowParser._Serializer = function(parameters, key) {
 
         this.parameters = parameters;
         this.key = key;
@@ -580,7 +579,7 @@ define(['app'], function(App) {
         };
     };
 
-    VdjpipeSerializer._GetReadDirections = function(fileMetadatas, allFileMetadatas) {
+    VdjpipeWorkflowParser._GetReadDirections = function(fileMetadatas, allFileMetadatas) {
         var readDirections = [];
 
         if (fileMetadatas && fileMetadatas.length > 0) {
@@ -632,204 +631,6 @@ define(['app'], function(App) {
         return readDirections;
     };
 
-    VdjpipeSerializer.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
-
-        var readConfig = {};
-        if (workflowConfig['steps']) {
-            readConfig = workflowConfig['steps'];
-        }
-
-        // Deep copy
-        var newConfig = $.extend(true, [], readConfig);
-        var tmpBarcodeVariables = [];
-
-        for (var i = 0; i < readConfig.length; i++) {
-            var option = readConfig[i];
-
-            //////////////
-            // DEMULTIPLEX
-            //////////////
-            if (option['custom_demultiplex']) {
-
-                // Elements
-                var elements = option['custom_demultiplex']['elements'];
-
-                for (var j = 0; j < elements.length; j++) {
-
-                    var barcodeType = elements[j]['custom_type'];
-
-                    if (j === 0) {
-
-                        switch (barcodeType) {
-                            case '3\'':
-                                newConfig[i]['custom_demultiplex']['elements'][j]['end'] = {
-                                    'after': 0,
-                                };
-
-                                if (elements[j]['custom_trim']) {
-
-                                    newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
-                                        'before': 0,
-                                    };
-                                }
-
-                                break;
-
-                            case '5\'':
-
-                                newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
-
-                                if (elements[j]['custom_trim']) {
-                                    newConfig[i]['custom_demultiplex']['elements'][j]['cut_lower'] = {
-                                        'after': 0,
-                                    };
-                                }
-
-                                break;
-
-                            default:
-                                break;
-                        }
-
-                    }
-                    else if (j === 1) {
-
-                        var previousBarcodeType = elements[j-1]['custom_type'];
-
-                        switch (barcodeType) {
-                            case '3\'':
-
-                                // Barcode type settings will depend on the first barcode
-                                if (previousBarcodeType === '3\'') {
-                                    newConfig[i]['custom_demultiplex']['elements'][j]['end'] = {
-                                        'before': 'MID1',
-                                        'pos': -2,
-                                    };
-                                }
-                                else if (previousBarcodeType === '5\'') {
-                                    elements[j]['end'] = {
-                                        'after': '',
-                                    };
-                                }
-
-                                // Set barcode trim
-                                if (elements[j]['custom_trim']) {
-
-                                    newConfig[i]['custom_demultiplex']['elements'][j]['cut_upper'] = {
-                                        'before': 0,
-                                    };
-                                }
-
-                                break;
-
-                            case '5\'':
-                                // For 5', the barcode type setting does NOT depend on the first barcode
-                                newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
-
-                                if (elements[j]['custom_trim']) {
-                                    newConfig[i]['custom_demultiplex']['elements'][j]['cut_lower'] = {
-                                        'after': 0,
-                                    };
-                                }
-
-                                break;
-
-                            default:
-                                // code
-                        }
-
-                    }
-
-                    delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_type'];
-                    delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_trim'];
-
-                    // Set histograms
-                    if (newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'] === true) {
-                        var tmpBarcodeVariableName = newConfig[i]['custom_demultiplex']['elements'][j]['value_name'];
-                        tmpBarcodeVariables.push(tmpBarcodeVariableName);
-
-                        var histogram1 = {
-                            'histogram': {
-                                'name': tmpBarcodeVariableName,
-                                'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['value_name'] + '.csv',
-                            },
-                        };
-
-                        var histogram2 = {
-                            'histogram': {
-                                'name': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'],
-                                'out_path': newConfig[i]['custom_demultiplex']['elements'][j]['score_name'] + '.csv',
-                            },
-                        };
-
-                        newConfig.push(histogram1);
-                        newConfig.push(histogram2);
-
-                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'];
-                    }
-                }
-
-                // Combinations
-                if (option['custom_demultiplex']['combinations'] && option['custom_demultiplex']['combinations'][0]['custom_histogram']) {
-
-                    var combinationHistogram = {
-                        'histogram': {
-                            'name': option['custom_demultiplex']['combinations'][0]['value_name'],
-                        },
-                    };
-                    newConfig.push(combinationHistogram);
-
-                    delete newConfig[i]['custom_demultiplex']['combinations'][0]['custom_histogram'];
-                }
-
-                delete newConfig[i]['custom_demultiplex']['custom_location'];
-
-                newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
-                delete newConfig[i]['custom_demultiplex'];
-            }
-
-            ////////////////////
-            // J PRIMER TRIMMING
-            ////////////////////
-            if (option['custom_j_primer_trimming']) {
-
-                if (newConfig[i]['custom_j_primer_trimming']['elements'][0]['custom_trim']) {
-                    newConfig[i]['custom_j_primer_trimming']['elements'][0]['cut_upper'] = {
-                        'before': 0,
-                    };
-                }
-
-                delete newConfig[i]['custom_j_primer_trimming']['elements'][0]['custom_trim'];
-
-                newConfig[i]['match'] = newConfig[i]['custom_j_primer_trimming'];
-                delete newConfig[i]['custom_j_primer_trimming'];
-            }
-
-            ////////////////////
-            // V PRIMER TRIMMING
-            ////////////////////
-            if (option['custom_v_primer_trimming']) {
-
-                if (newConfig[i]['custom_v_primer_trimming']['elements'][0]['custom_trim']) {
-                    newConfig[i]['custom_v_primer_trimming']['elements'][0]['cut_lower'] = {
-                        'after': 0,
-                    };
-                }
-
-                delete newConfig[i]['custom_v_primer_trimming']['elements'][0]['custom_trim'];
-
-                newConfig[i]['match'] = newConfig[i]['custom_v_primer_trimming'];
-                delete newConfig[i]['custom_v_primer_trimming'];
-            }
-        }
-
-        if (workflowConfig['steps']) {
-            workflowConfig['steps'] = newConfig;
-        }
-
-        return workflowConfig;
-    };
-
-    App.Utilities.VdjpipeSerializer = VdjpipeSerializer;
-    return VdjpipeSerializer;
+    App.Utilities.Vdjpipe.WorkflowParser = VdjpipeWorkflowParser;
+    return VdjpipeWorkflowParser;
 });

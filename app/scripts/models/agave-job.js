@@ -4,7 +4,6 @@ define(
         'backbone',
         'environment-config',
         'moment',
-        'vdjpipe-serializer',
     ],
 function(
     App,
@@ -251,13 +250,13 @@ function(
 
         _setJobConfigFromWorkflowFormData: function(formData, fileMetadatas, allFileMetadatas) {
 
-            var workflowConfig = App.Utilities.VdjpipeSerializer.ConvertFormDataToWorkflowConfig(
+            var workflowConfig = App.Utilities.Vdjpipe.WorkflowParser.ConvertFormDataToWorkflowConfig(
                 formData,
                 fileMetadatas,
                 allFileMetadatas
             );
 
-            var jobConfig = App.Utilities.VdjpipeSerializer.ConvertWorkflowConfigToVdjpipeConfig(workflowConfig);
+            var jobConfig = App.Utilities.Vdjpipe.ConfigParser.ConvertWorkflowConfigToVdjpipeConfig(workflowConfig);
 
             this.set('name', formData['job-name']);
 
@@ -382,9 +381,9 @@ function(
         },
         setConfigFromFormData: function(formData) {
 
-            var workflowConfig = App.Utilities.VdjpipeSerializer.ConvertFormDataToWorkflowConfig(formData);
+            var workflowConfig = App.Utilities.Vdjpipe.WorkflowParser.ConvertFormDataToWorkflowConfig(formData);
 
-            var workflowName = App.Utilities.VdjpipeSerializer.GetWorkflowName(formData);
+            var workflowName = App.Utilities.Vdjpipe.WorkflowParser.GetWorkflowName(formData);
 
             this.set(
                 'value',

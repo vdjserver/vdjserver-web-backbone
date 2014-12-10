@@ -134,7 +134,9 @@ define([
         Mixins: {},
         Models:  {},
         Routers: {},
-        Utilities: {},
+        Utilities: {
+            Vdjpipe: {},
+        },
         Views: {
             Generic: {},
             HandlebarsHelpers: {},

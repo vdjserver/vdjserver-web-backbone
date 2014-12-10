@@ -67,7 +67,8 @@ require.config({
 
         // Utilities
         'serialization-tools': 'utilities/serialization-tools',
-        'vdjpipe-serializer': 'utilities/vdjpipe-serializer',
+        'vdjpipe-config-parser': 'utilities/vdjpipe-config-parser',
+        'vdjpipe-workflow-parser': 'utilities/vdjpipe-workflow-parser',
         'vdjpipe-view-factory': 'utilities/vdjpipe-view-factory',
 
         // Generic Views

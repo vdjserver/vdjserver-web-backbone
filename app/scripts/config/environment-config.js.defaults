@@ -5,7 +5,7 @@ var EnvironmentConfig = {};
 
 EnvironmentConfig.agaveRoot = 'https://wso2-elb.tacc.utexas.edu';
 EnvironmentConfig.debug = false;
-EnvironmentConfig.vdjauthRoot = 'https://vdjserver.org:8443';
+EnvironmentConfig.vdjauthRoot = 'https://vdjserver.org/api/v1';
 EnvironmentConfig.serviceAccountUsername = 'vdj';
 EnvironmentConfig.storageSystem = 'data.vdjserver.org';
 EnvironmentConfig.recaptchaPublicKey = '6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc';

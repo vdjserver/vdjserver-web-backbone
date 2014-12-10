@@ -62,7 +62,8 @@ define([
 
     // Utilities
     'serialization-tools',
-    'vdjpipe-serializer',
+    'vdjpipe-config-parser',
+    'vdjpipe-workflow-parser',
     'vdjpipe-view-factory',
 
     // Generic Views
