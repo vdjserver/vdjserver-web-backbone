@@ -255,7 +255,6 @@ module.exports = function(grunt) {
                             'fonts/**',
                             'templates/**',
                             'scripts/vendor/**',
-                            'vdjml/**',
                         ]
                     }
                 ]
@@ -385,8 +384,8 @@ module.exports = function(grunt) {
             }
         },
         usemin: {
-            html: ['<%= yeoman.dist %>/{,*/}*.html', '!<%= yeoman.dist %>/vdjml/{,*/}*.html'],
-            css: ['<%= yeoman.dist %>/styles/{,*/}*.css', '!<%= yeoman.dist %>/vdjml/{,*/}*.css'],
+            html: ['<%= yeoman.dist %>/{,*/}*.html'],
+            css: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
             options: {
                 assetsDirs: [
                     '<%= yeoman.dist %>',
