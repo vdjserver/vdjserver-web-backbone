@@ -236,6 +236,10 @@ define([
             parameters: {},
             processorsPerNode: 12,
         },
+        initialize: function() {
+            this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
+            this.inputParameterName = 'files';
+        },
         url: function() {
             return '/jobs/v2/';
         },
@@ -249,6 +253,112 @@ define([
 
             // Call Agave Model  sync
             return Agave.sync(method, model, options);
+        },
+        submitJob: function(projectUuid) {
+
+            var that = this;
+
+            return this._createArchivePathDirectory(projectUuid)
+                .then(function() {
+                    return that.save();
+                })
+                // Create metadata
+                .then(function() {
+                    return that._createJobMetadata(projectUuid);
+                })
+                // Share job w/ project members
+                .then(function() {
+                    return that._shareJobWithProjectMembers(projectUuid);
+                })
+                ;
+        },
+
+        // Private Methods
+        _setArchivePath: function(projectUuid) {
+            var archivePath = '/projects'
+                            + '/' + projectUuid
+                            + '/analyses'
+                            + '/' + moment().format(this.archivePathDateFormat) + '-' + this._getDirectorySafeName(this.get('name'))
+                            ;
+
+            this.set('archivePath', archivePath);
+        },
+        _getDirectorySafeName: function(name) {
+            return name.replace(/\s/g, '-').toLowerCase();
+        },
+        _getRelativeArchivePath: function() {
+            var fullArchivePath = this.get('archivePath');
+            var archivePathSplit = fullArchivePath.split('/');
+            var relativeArchivePath = archivePathSplit.pop();
+
+            return relativeArchivePath;
+        },
+        _createArchivePathDirectory: function(projectUuid) {
+
+            var relativeArchivePath = this._getRelativeArchivePath();
+
+            var jqxhr = $.ajax({
+                data:   'action=mkdir&path=' + relativeArchivePath,
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'PUT',
+                url:    EnvironmentConfig.agaveRoot
+                        + '/files/v2/media/system'
+                        + '/' + EnvironmentConfig.storageSystem
+                        + '//projects'
+                        + '/' + projectUuid
+                        + '/analyses',
+            });
+
+            return jqxhr;
+        },
+        _createJobMetadata: function(projectUuid) {
+            var jqxhr = $.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                data: JSON.stringify({
+                    projectUuid: projectUuid,
+                    jobUuid: this.get('id'),
+                }),
+                contentType: 'application/json',
+                url: EnvironmentConfig.vdjauthRoot + '/jobs/metadata',
+            });
+
+            return jqxhr;
+        },
+        _shareJobWithProjectMembers: function(projectUuid) {
+            var jqxhr = $.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                data: JSON.stringify({
+                    projectUuid: projectUuid,
+                    jobUuid: this.get('id'),
+                }),
+                contentType: 'application/json',
+                url: EnvironmentConfig.vdjauthRoot + '/permissions/jobs',
+            });
+
+            return jqxhr;
+        },
+        _setFilesParameter: function(fileMetadatas) {
+            var tmpFileMetadatas = fileMetadatas.pluck('value');
+
+            var filePaths = [];
+            for (var i = 0; i < tmpFileMetadatas.length; i++) {
+                filePaths.push(
+                    'agave://' + EnvironmentConfig.storageSystem
+                    + '//projects'
+                    + '/' + tmpFileMetadatas[i].projectUuid
+                    + '/files'
+                    + '/' + tmpFileMetadatas[i].name
+                );
+            }
+
+            filePaths = filePaths.join(';');
+
+            var inputParameters = {};
+            inputParameters[this.inputParameterName] = filePaths;
+
+            this.set('inputs', inputParameters);
         },
     });
 

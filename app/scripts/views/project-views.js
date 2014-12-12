@@ -414,9 +414,7 @@ define([
         },
 
         // Job Staging
-        _showJobStagingView: function() {
-
-            //var jobType = e.target.dataset.jobtype;
+        _showJobStagingView: function(StagingSubview) {
 
             this.removeView('#job-submit');
             this.removeView('#workflow-modal');
@@ -426,63 +424,73 @@ define([
 
             var jobSubmitView = new App.Views.Jobs.Submit({
                 selectedFileListings: selectedFileListings,
-                //jobType: jobType,
                 projectModel: this.projectModel,
                 allFiles: this.fileListings,
             });
 
-            this.setView('#job-submit', jobSubmitView);
+            var stagingSubview = new StagingSubview({
+                selectedFileListings: selectedFileListings,
+                projectModel: this.projectModel,
+                allFiles: this.fileListings,
+            });
 
-            jobSubmitView.fetchNetworkData()
-                .done(function() {
-                    jobSubmitView.render();
-                });
+            jobSubmitView.setView('#job-staging-subview', stagingSubview);
+            stagingSubview.render();
+
+            this.setView('#job-submit', jobSubmitView);
 
             var that = this;
 
-            this.listenToOnce(
-                jobSubmitView,
-                App.Views.Jobs.WorkflowEditor.events.openWorkflowCreateView,
-                function() {
+            stagingSubview.fetchNetworkData()
+                .done(function() {
+                    jobSubmitView.render();
 
-                    $('#job-modal')
-                        .modal('hide')
-                        .on('hidden.bs.modal', function() {
-                            var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
+                    that.listenToOnce(
+                        jobSubmitView,
+                        App.Views.Jobs.WorkflowEditor.events.openWorkflowCreateView,
+                        function() {
 
-                            that.setView('#job-submit', workflowEditorView);
+                            $('#job-modal')
+                                .modal('hide')
+                                .on('hidden.bs.modal', function() {
+                                    var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
 
-                            workflowEditorView.fetchNetworkData()
-                                .done(function() {
-                                    workflowEditorView.render();
-                                    that._handleWorkflowViewEvents(workflowEditorView);
+                                    that.setView('#job-submit', workflowEditorView);
+
+                                    workflowEditorView.fetchNetworkData()
+                                        .done(function() {
+                                            workflowEditorView.render();
+                                            that._handleWorkflowViewEvents(workflowEditorView);
+                                        });
                                 });
-                        });
-                }
-            );
+                        }
+                    );
 
-            this.listenToOnce(
-                jobSubmitView,
-                App.Views.Jobs.WorkflowEditor.events.openWorkflowEditorView,
-                function(editableWorkflow) {
-                    $('#job-modal')
-                        .modal('hide')
-                        .on('hidden.bs.modal', function() {
+                    that.listenToOnce(
+                        jobSubmitView,
+                        App.Views.Jobs.WorkflowEditor.events.openWorkflowEditorView,
+                        function(editableWorkflow) {
+                            $('#job-modal')
+                                .modal('hide')
+                                .on('hidden.bs.modal', function() {
 
-                            var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
+                                    var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
 
-                            // The editable workflow needs to be set before render is called.
-                            workflowEditorView.editableWorkflow = editableWorkflow;
-                            that.setView('#job-submit', workflowEditorView);
+                                    // The editable workflow needs to be set before render is called.
+                                    workflowEditorView.editableWorkflow = editableWorkflow;
+                                    that.setView('#job-submit', workflowEditorView);
 
-                            workflowEditorView.fetchNetworkData()
-                                .done(function() {
-                                    workflowEditorView.render();
-                                    that._handleWorkflowViewEvents(workflowEditorView);
+                                    workflowEditorView.fetchNetworkData()
+                                        .done(function() {
+                                            workflowEditorView.render();
+                                            that._handleWorkflowViewEvents(workflowEditorView);
+                                        });
                                 });
-                        });
-                }
-            );
+                        }
+                    );
+
+                })
+                ;
         },
 
         _handleWorkflowViewEvents: function(workflowEditorView) {
@@ -565,8 +573,25 @@ define([
         _clickRunJob: function(e) {
             e.preventDefault();
 
-            this._showJobStagingView();
-            //this.handleJobStagingViewEvents();
+            // Note: don't instantiate job subviews yet b/c we'll need to
+            // include dependencies for that later on
+
+            switch(e.currentTarget.dataset.jobtype) {
+                case 'igblast':
+                    var igBlastView = App.Views.Jobs.IgBlastStaging;
+                    this._showJobStagingView(igBlastView);
+
+                    break;
+
+                case 'vdjpipe':
+                    var vdjpipeView = App.Views.Jobs.VdjpipeStaging;
+                    this._showJobStagingView(vdjpipeView);
+
+                    break;
+
+                default:
+                    break;
+            }
         },
         _clickDeleteFiles: function(e) {
             e.preventDefault();

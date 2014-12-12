@@ -82,6 +82,51 @@ function(
         },
     });
 
+    Job.IgBlast = Backbone.Agave.JobModel.extend({
+        // Public Methods
+        defaults: function() {
+            return _.extend(
+                {},
+                Backbone.Agave.JobModel.prototype.defaults,
+                {
+                    appId: 'igblast-lonestar-1.4.0',
+                    inputs: {
+                        query: '',
+                    },
+                    parameters: {
+                        species: '',
+                        ig_seqtype: '',
+                        domain_system: '',
+                    },
+                }
+            );
+        },
+        initialize: function(options) {
+            Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
+
+            this.inputParameterName = 'query';
+        },
+        prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
+
+            var parameters = this._serializeFormData(formData);
+
+            this.set('parameters', parameters);
+
+            this._setArchivePath(projectUuid);
+
+            this._setFilesParameter(selectedFileMetadatas);
+        },
+        _serializeFormData: function(formData) {
+            var parameters = {
+                'species': formData['species'],
+                'ig_seqtype': formData['sequence-type'],
+                'domain_system': formData['domain-system'],
+            };
+
+            return parameters;
+        },
+    });
+
     Job.VdjPipe = Backbone.Agave.JobModel.extend({
         // Public Methods
         defaults: function() {
@@ -95,8 +140,8 @@ function(
 
             );
         },
-        initialize: function() {
-            this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
+        initialize: function(options) {
+            Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
@@ -122,24 +167,6 @@ function(
             );
 
             this._setFilesParameter(selectedFileMetadatas);
-        },
-        submitJob: function(projectUuid) {
-
-            var that = this;
-
-            return this._createArchivePathDirectory(projectUuid)
-                .then(function() {
-                    return that.save();
-                })
-                // Create metadata
-                .then(function() {
-                    return that._createJobMetadata(projectUuid);
-                })
-                // Share job w/ project members
-                .then(function() {
-                    return that._shareJobWithProjectMembers(projectUuid);
-                })
-                ;
         },
 
         // Private Methods
@@ -266,91 +293,6 @@ function(
                     'json': JSON.stringify(jobConfig),
                 }
             );
-        },
-        _setArchivePath: function(projectUuid) {
-            var archivePath = '/projects'
-                            + '/' + projectUuid
-                            + '/analyses'
-                            + '/' + moment().format(this.archivePathDateFormat) + '-' + this._getDirectorySafeName(this.get('name'))
-                            ;
-
-            this.set('archivePath', archivePath);
-        },
-        _setFilesParameter: function(fileMetadatas) {
-            var tmpFileMetadatas = fileMetadatas.pluck('value');
-
-            var filePaths = [];
-            for (var i = 0; i < tmpFileMetadatas.length; i++) {
-                filePaths.push(
-                    'agave://' + EnvironmentConfig.storageSystem
-                    + '//projects'
-                    + '/' + tmpFileMetadatas[i].projectUuid
-                    + '/files'
-                    + '/' + tmpFileMetadatas[i].name
-                );
-            }
-
-            filePaths = filePaths.join(';');
-
-            this.set('inputs', {
-                'files': filePaths,
-            });
-        },
-        _getDirectorySafeName: function(name) {
-            return name.replace(/\s/g, '-').toLowerCase();
-        },
-        _getRelativeArchivePath: function() {
-            var fullArchivePath = this.get('archivePath');
-            var archivePathSplit = fullArchivePath.split('/');
-            var relativeArchivePath = archivePathSplit.pop();
-
-            return relativeArchivePath;
-        },
-        _createArchivePathDirectory: function(projectUuid) {
-
-            var relativeArchivePath = this._getRelativeArchivePath();
-
-            var jqxhr = $.ajax({
-                data:   'action=mkdir&path=' + relativeArchivePath,
-                headers: Backbone.Agave.oauthHeader(),
-                type:   'PUT',
-                url:    EnvironmentConfig.agaveRoot
-                        + '/files/v2/media/system'
-                        + '/' + EnvironmentConfig.storageSystem
-                        + '//projects'
-                        + '/' + projectUuid
-                        + '/analyses',
-            });
-
-            return jqxhr;
-        },
-        _createJobMetadata: function(projectUuid) {
-            var jqxhr = $.ajax({
-                headers: Backbone.Agave.basicAuthHeader(),
-                type: 'POST',
-                data: JSON.stringify({
-                    projectUuid: projectUuid,
-                    jobUuid: this.get('id'),
-                }),
-                contentType: 'application/json',
-                url: EnvironmentConfig.vdjauthRoot + '/jobs/metadata',
-            });
-
-            return jqxhr;
-        },
-        _shareJobWithProjectMembers: function(projectUuid) {
-            var jqxhr = $.ajax({
-                headers: Backbone.Agave.basicAuthHeader(),
-                type: 'POST',
-                data: JSON.stringify({
-                    projectUuid: projectUuid,
-                    jobUuid: this.get('id'),
-                }),
-                contentType: 'application/json',
-                url: EnvironmentConfig.vdjauthRoot + '/permissions/jobs',
-            });
-
-            return jqxhr;
         },
     });
 

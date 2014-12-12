@@ -34,356 +34,129 @@ define([
 
     var Jobs = {};
 
-    Jobs.Submit = Backbone.View.extend(
-        _.extend({}, WorkflowParametersMixin, {
+    Jobs.Submit = Backbone.View.extend({
+        // Public Methods
+        template: 'jobs/job-submit-form',
+        initialize: function(parameters) {
+            this.projectModel = parameters.projectModel;
+        },
+        serialize: function() {
+            return {
+                selectedFileListings: this.selectedFileListings.toJSON(),
+            };
+        },
+        afterRender: function() {
+            $('#job-modal').modal('show');
+            $('#job-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+        events: {
+            'click .remove-file-from-job': '_removeFileFromJob',
+            'submit form': '_submitJobForm',
+        },
 
-            // Public Methods
-            template: 'jobs/job-submit-form',
-            initialize: function(parameters) {
-                this.projectModel = parameters.projectModel;
+        // Private Methods
+        _submitJobForm: function(e) {
+            e.preventDefault();
 
-                this.workflows = new Backbone.Agave.Collection.Jobs.Workflows();
-            },
-            fetchNetworkData: function() {
-                var deferred = $.Deferred();
+            var that = this;
 
-                var that = this;
+            var formData = Backbone.Syphon.serialize(this);
 
-                this.workflows
-                    .fetch()
-                    .done(function() {
-                        that.workflows.setPredefinedWorkflows();
+            var validationError = this._validateJobForm(formData);
 
-                        deferred.resolve();
-                    });
+            if (validationError) {
+                return;
+            }
 
-                return deferred;
-            },
-            serialize: function() {
-                return {
-                    selectedFileListings: this.selectedFileListings.toJSON(),
-                    workflows: this.workflows.toJSON(),
-                };
-            },
-            afterRender: function() {
-                $('#job-modal').modal('show');
-                $('#job-modal').on('shown.bs.modal', function() {
-                    $('#job-name').focus();
+            this.uiShowJobLoadingView();
+
+            var jobSubview = this.getView('#job-staging-subview');
+
+            jobSubview.stageJob(formData)
+                .fail(function() {
+                    that._uiCancelJobLoadingView();
                 });
-            },
-            events: {
-                'click .remove-job-parameter': '_removeJobParameter',
-                'change #select-workflow': '_showWorkflow',
-                'click .remove-file-from-job': '_removeFileFromJob',
-                'change .job-form-item': '_revealSaveWorkflow',
-                'click #save-workflow': '_saveWorkflow',
-                'click #create-workflow': '_createWorkflow',
-                'click #edit-workflow':   '_editWorkflow',
-                'click #delete-workflow': '_deleteWorkflow',
-                'submit form': '_submitJob',
-            },
+        },
 
-            // Private Methods
+        _validateJobForm: function(formData) {
+            // Remove old validation warnings
+            $('.form-group').removeClass('has-error');
 
-            // Event Responders
-            _revealSaveWorkflow: function(e) {
-                e.preventDefault();
+            var validationError = false;
 
-                // Make sure that this isn't a predefined workflow
-                // Only allow if not predefined
-
-                var workflowId = $('#select-workflow').val();
-                var workflow = this.workflows.get(workflowId);
-
-                if (workflow && !this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
-                    $('#save-workflow').removeClass('hidden');
-                }
-            },
-            _hideSaveWorkflow: function() {
-                var element = document.getElementById('save-workflow');
-                element.classList.add('hidden');
-            },
-            _saveWorkflow: function(e) {
-                e.preventDefault();
-
-                var formData = Backbone.Syphon.serialize(this);
-
-                var workflowId   = document.getElementById('select-workflow').value;
-                var workflowName = document.getElementById('select-workflow').selectedOptions[0].dataset.name;
-
-                formData['workflow-name'] = workflowName;
-
-                var workflow = this.workflows.get(workflowId);
-                workflow.setConfigFromFormData(formData);
-
-                var that = this;
-                workflow.save()
-                    .done(function() {
-                        that._hideSaveWorkflow();
-                    })
-                    .fail(function() {
-
-                    })
+            // Begin Validation
+            if (!formData['job-name']) {
+                $('#job-name')
+                    .closest('.form-group')
+                    .addClass('has-error')
                     ;
-            },
-            _createWorkflow: function(e) {
-                e.preventDefault();
 
-                this.trigger(Jobs.WorkflowEditor.events.openWorkflowCreateView);
-            },
+                // Scroll to top
+                document.getElementById('job-modal-label').scrollIntoView();
 
-            _editWorkflow: function(e) {
-                e.preventDefault();
+                validationError = true;
+            }
 
-                var workflowId = $('#select-workflow').val();
-                var workflow = this.workflows.get(workflowId);
+            var jobSubview = this.getView('#job-staging-subview');
+            if (jobSubview.validateJobForm()) {
+                validationError = true;
+            }
 
-                this.trigger(Jobs.WorkflowEditor.events.openWorkflowEditorView, workflow);
-            },
+            return validationError;
+        },
 
-            _deleteWorkflow: function(e) {
-                e.preventDefault();
+        _removeFileFromJob: function(e) {
+            e.preventDefault();
 
-                if ($('#delete-workflow').hasClass('btn-outline-danger')) {
-                    $('#delete-workflow')
-                        .removeClass('btn-outline-danger')
-                        .addClass('btn-danger')
-                        .html('&nbsp;Confirm Delete')
-                    ;
-                }
-                else if ($(e.currentTarget).hasClass('btn-danger')) {
-                    var that = this;
-
-                    var workflowId = $('#select-workflow').val();
-
-                    var workflow = this.workflows.get(workflowId);
-
-                    this.workflows.remove(workflow);
-
-                    workflow.destroy()
-                        .done(function() {
-                            $('#select-workflow').val('');
-                            that.removeView('#workflow-staging-area');
-                            $('#select-workflow option[value="' + workflowId + '"]').remove();
-                            that._uiResetDeleteWorkflow();
-                        })
-                        .fail(function() {
-                        });
-                }
-            },
-
-            _showWorkflow: function(e) {
-                e.preventDefault();
-
-                this._uiResetDeleteWorkflow();
-                this._uiGuardDeleteIfPredefined();
-
-                // Do housekeeping first
-                this.removeView('#workflow-staging-area');
-                $('#workflow-staging-area').empty();
-
-                // Hide save
-                $('#save-workflow').addClass('hidden');
-
-                // Setup and insert new workflow views
-                var workflowId = e.target.value;
-
-                // Only continue if there's actually a workflow selected
-                if (workflowId) {
-
-                    var workflow = this.workflows.get(workflowId);
-
-                    var workflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(workflow.get('value').config);
-
-                    /*
-                        I'd love to use insertViews instead, but as of 24/July/2014
-                        it seems to work on the parent layout instead of the view
-                        represented by |this|.
-
-                        This behavior might be a bug in layout manager, so the
-                        following loop is a workaround for now.
-                    */
-
-                    // Note: views will change places in the dom as they render asynchronously
-                    // So we need to make sure that they're all inserted properly before calling render.
-
-                    var workflowLayout = new Backbone.View();
-                    this.insertView('#workflow-staging-area', workflowLayout);
-
-                    for (var i = 0; i < workflowViews.length; i++) {
-                        var view = workflowViews[i];
-
-                        view.isRemovable = false;
-                        view.isOrderable = false;
-                        view.files = this.selectedFileListings;
-                        view.allFiles = this.allFiles;
-
-                        view.prepareFiles();
-
-                        workflowLayout.insertView(view);
-                    }
-
-                    // Render all workflow views
-                    workflowLayout.render();
-
-                    var workflowConfig = workflow.get('value');
-                    if (workflowConfig['config']['steps']) {
-                        $('#workflow-staging-area').append(
-                            '<input type="radio" class="hidden" name="single-reads" id="single-reads" checked>'
-                        );
-                    }
-                    else {
-                        $('#workflow-staging-area').append(
-                            '<input type="radio" class="hidden" name="paired-reads" id="paired-reads" checked>'
-                        );
-                    }
-                }
-            },
-
-            _submitJob: function(e) {
-                e.preventDefault();
-
-                var formData = Backbone.Syphon.serialize(this);
-                var that = this;
-
-                // Remove old validation warnings
-                $('.form-group').removeClass('has-error');
-
-                // Begin Validation
-                if (!formData['job-name']) {
-                    $('#job-name')
-                        .closest('.form-group')
-                        .addClass('has-error')
-                        ;
-
-                    // Scroll to top
-                    document.getElementById('job-modal-label').scrollIntoView();
-
-                    return;
-                }
-
-                if ($.trim($('#workflow-staging-area').html()) === '') {
-                    $('#select-workflow')
-                        .closest('.form-group')
-                        .addClass('has-error')
-                        ;
-
-                    $('#select-workflow')
-                        .closest('.form-group')
-                        .get(0)
-                        .scrollIntoView()
-                        ;
-                    return;
-                }
-                // End Validation
-
-                var job = new Backbone.Agave.Model.Job.VdjPipe();
-
-                job.prepareJob(
-                    formData,
-                    this.selectedFileListings,
-                    this.allFiles,
-                    this.projectModel.get('uuid')
-                );
-
-                this._uiShowJobLoadingView();
-
-                var jobNotification = new Backbone.Agave.Model.Notification.Job();
-                jobNotification.projectUuid = this.projectModel.get('uuid');
-
-                job.submitJob(this.projectModel.get('uuid'))
-                    .then(function() {
-                        jobNotification.set('associatedUuid', job.get('id'));
-                        jobNotification.set('name', job.get('name'));
-                        return jobNotification.save();
-                    })
-                    .done(function() {
-                        var listView = App.Layouts.sidebar.getView('.sidebar');
-                        listView.addNotification(jobNotification);
-
-                        $('#job-modal').modal('hide');
-                    })
-                    .fail(function() {
-                        that._uiCancelJobLoadingView();
-                    });
-            },
-
-            _removeFileFromJob: function(e) {
-                e.preventDefault();
-
-                var uuid = e.target.id;
-
-                // UI
-                $('#' + uuid).parent().parent().parent().remove();
-
-                // data collection
-                this.selectedFileListings.remove(uuid);
-            },
+            var uuid = e.target.id;
 
             // UI
-            _uiResetDeleteWorkflow: function() {
-                $('#delete-workflow')
-                    .removeClass('btn-danger')
-                    .addClass('btn-outline-danger')
-                    .html('&nbsp;Delete')
-                ;
-            },
+            $('#' + uuid).parent().parent().parent().remove();
 
-            _uiGuardDeleteIfPredefined: function() {
+            // data collection
+            this.selectedFileListings.remove(uuid);
+        },
 
-                // Make sure that this isn't a predefined workflow
-                var workflowId = $('#select-workflow').val();
-                var workflow = this.workflows.get(workflowId);
+        // UI
+        uiShowJobLoadingView: function() {
+            // Clear out any previous errors
+            $('#job-submit-loading-view').html('');
+            $('#job-submit-loading-view').removeClass('alert alert-danger');
 
-                // Disable if predefined
-                if (workflow && this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
-                    $('#delete-workflow').attr('disabled', 'disabled');
-                    return;
-                }
-                else {
-                    $('#delete-workflow').removeAttr('disabled');
-                }
-            },
+            // Setup new loading view
+            var loadingView = new App.Views.Util.Loading({
+                displayText: 'Launching Job...',
+                keep: true,
+            });
 
-            _uiShowJobLoadingView: function() {
-                // Clear out any previous errors
-                $('#job-submit-loading-view').html('');
-                $('#job-submit-loading-view').removeClass('alert alert-danger');
+            this.setView('#job-submit-loading-view', loadingView);
+            loadingView.render();
 
-                // Setup new loading view
-                var loadingView = new App.Views.Util.Loading({
-                    displayText: 'Launching Job...',
-                    keep: true,
-                });
+            $('#job-submit-loading-view').addClass('alert alert-info');
+            $('.job-form-item, .job-submit-button').attr('disabled', 'disabled');
 
-                this.setView('#job-submit-loading-view', loadingView);
-                loadingView.render();
+        },
 
-                $('#job-submit-loading-view').addClass('alert alert-info');
-                $('.job-form-item, .job-submit-button').attr('disabled', 'disabled');
+        _uiCancelJobLoadingView: function() {
+            this.removeView('#job-submit-loading-view');
 
-            },
+            $('#job-submit-loading-view').removeClass('alert alert-info');
+            $('.job-form-item, .job-submit-button').removeAttr('disabled');
 
-            _uiCancelJobLoadingView: function() {
-                this.removeView('#job-submit-loading-view');
-
-                $('#job-submit-loading-view').removeClass('alert alert-info');
-                $('.job-form-item, .job-submit-button').removeAttr('disabled');
-
-                $('#job-submit-loading-view').addClass('alert alert-danger');
-                $('#job-submit-loading-view').append(
-                    'There was an error launching your job.'
-                    + '<br/>'
-                    + 'Please try again.'
-                );
-            },
-
-        })
-    );
+            $('#job-submit-loading-view').addClass('alert alert-danger');
+            $('#job-submit-loading-view').append(
+                'There was an error launching your job.'
+                + '<br/>'
+                + 'Please try again.'
+            );
+        },
+    });
 
     Jobs.WorkflowEditor = Backbone.View.extend(
-        _.extend({}, WorkflowParametersMixin, {
-
+        _.extend({}, WorkflowParametersMixin,
+            {
                 // Public Methods
 
                 /**
@@ -770,8 +543,330 @@ define([
         }
     );
 
-    Jobs.IgBlastForm = Backbone.View.extend({
-        template: 'jobs/igblast-form'
+    Jobs.StagingBase = Backbone.View.extend({
+        fetchNetworkData: function() {
+            var deferred = $.Deferred();
+
+            deferred.resolve();
+
+            return deferred;
+        },
+        startJob: function(jobModel) {
+            var jobNotification = new Backbone.Agave.Model.Notification.Job();
+            jobNotification.projectUuid = this.projectModel.get('uuid');
+
+            return jobModel.submitJob(this.projectModel.get('uuid'))
+                .then(function() {
+                    jobNotification.set('associatedUuid', jobModel.get('id'));
+                    jobNotification.set('name', jobModel.get('name'));
+                    return jobNotification.save();
+                })
+                .then(function() {
+                    var listView = App.Layouts.sidebar.getView('.sidebar');
+                    listView.addNotification(jobNotification);
+
+                    return $('#job-modal').modal('hide').promise();
+                })
+                ;
+        },
+    });
+
+    Jobs.VdjpipeStaging = Jobs.StagingBase.extend(
+        _.extend({}, WorkflowParametersMixin, {
+
+            // Public Methods
+            template: 'jobs/vdjpipe-staging',
+            initialize: function(parameters) {
+                this.projectModel = parameters.projectModel;
+
+                this.workflows = new Backbone.Agave.Collection.Jobs.Workflows();
+            },
+            fetchNetworkData: function() {
+                var deferred = $.Deferred();
+
+                var that = this;
+
+                this.workflows
+                    .fetch()
+                    .done(function() {
+                        that.workflows.setPredefinedWorkflows();
+
+                        deferred.resolve();
+                    });
+
+                return deferred;
+            },
+            serialize: function() {
+                return {
+                    selectedFileListings: this.selectedFileListings.toJSON(),
+                    workflows: this.workflows.toJSON(),
+                };
+            },
+            events: {
+                'click .remove-job-parameter': '_removeJobParameter',
+                'change #select-workflow': '_showWorkflow',
+                'change .job-form-item': '_revealSaveWorkflow',
+                'click #save-workflow': '_saveWorkflow',
+                'click #create-workflow': '_createWorkflow',
+                'click #edit-workflow':   '_editWorkflow',
+                'click #delete-workflow': '_deleteWorkflow',
+            },
+            validateJobForm: function() {
+                var validationError = false;
+
+                if ($.trim($('#workflow-staging-area').html()) === '') {
+                    $('#select-workflow')
+                        .closest('.form-group')
+                        .addClass('has-error')
+                        ;
+
+                    $('#select-workflow')
+                        .closest('.form-group')
+                        .get(0)
+                        .scrollIntoView()
+                        ;
+
+                    validationError = true;
+                }
+
+                return validationError;
+            },
+            stageJob: function(formData) {
+
+                var job = new Backbone.Agave.Model.Job.VdjPipe();
+                job.prepareJob(
+                    formData,
+                    this.selectedFileListings,
+                    this.allFiles,
+                    this.projectModel.get('uuid')
+                );
+
+                return this.startJob(job);
+            },
+
+            // Private Methods
+
+            // Event Responders
+            _revealSaveWorkflow: function(e) {
+                e.preventDefault();
+
+                // Make sure that this isn't a predefined workflow
+                // Only allow if not predefined
+
+                var workflowId = $('#select-workflow').val();
+                var workflow = this.workflows.get(workflowId);
+
+                if (workflow && !this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
+                    $('#save-workflow').removeClass('hidden');
+                }
+            },
+            _hideSaveWorkflow: function() {
+                var element = document.getElementById('save-workflow');
+                element.classList.add('hidden');
+            },
+            _saveWorkflow: function(e) {
+                e.preventDefault();
+
+                var formData = Backbone.Syphon.serialize(this);
+
+                var workflowId   = document.getElementById('select-workflow').value;
+                var workflowName = document.getElementById('select-workflow').selectedOptions[0].dataset.name;
+
+                formData['workflow-name'] = workflowName;
+
+                var workflow = this.workflows.get(workflowId);
+                workflow.setConfigFromFormData(formData);
+
+                var that = this;
+                workflow.save()
+                    .done(function() {
+                        that._hideSaveWorkflow();
+                    })
+                    .fail(function() {
+
+                    })
+                    ;
+            },
+            _createWorkflow: function(e) {
+                e.preventDefault();
+
+                this.trigger(Jobs.WorkflowEditor.events.openWorkflowCreateView);
+            },
+
+            _editWorkflow: function(e) {
+                e.preventDefault();
+
+                var workflowId = $('#select-workflow').val();
+                var workflow = this.workflows.get(workflowId);
+
+                this.trigger(Jobs.WorkflowEditor.events.openWorkflowEditorView, workflow);
+            },
+
+            _deleteWorkflow: function(e) {
+                e.preventDefault();
+
+                if ($('#delete-workflow').hasClass('btn-outline-danger')) {
+                    $('#delete-workflow')
+                        .removeClass('btn-outline-danger')
+                        .addClass('btn-danger')
+                        .html('&nbsp;Confirm Delete')
+                    ;
+                }
+                else if ($(e.currentTarget).hasClass('btn-danger')) {
+                    var that = this;
+
+                    var workflowId = $('#select-workflow').val();
+
+                    var workflow = this.workflows.get(workflowId);
+
+                    this.workflows.remove(workflow);
+
+                    workflow.destroy()
+                        .done(function() {
+                            $('#select-workflow').val('');
+                            that.removeView('#workflow-staging-area');
+                            $('#select-workflow option[value="' + workflowId + '"]').remove();
+                            that._uiResetDeleteWorkflow();
+                        })
+                        .fail(function() {
+                        });
+                }
+            },
+
+            _showWorkflow: function(e) {
+                e.preventDefault();
+
+                this._uiResetDeleteWorkflow();
+                this._uiGuardDeleteIfPredefined();
+
+                // Do housekeeping first
+                this.removeView('#workflow-staging-area');
+                $('#workflow-staging-area').empty();
+
+                // Hide save
+                $('#save-workflow').addClass('hidden');
+
+                // Setup and insert new workflow views
+                var workflowId = e.target.value;
+
+                // Only continue if there's actually a workflow selected
+                if (workflowId) {
+
+                    var workflow = this.workflows.get(workflowId);
+
+                    var workflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(workflow.get('value').config);
+
+                    /*
+                        I'd love to use insertViews instead, but as of 24/July/2014
+                        it seems to work on the parent layout instead of the view
+                        represented by |this|.
+
+                        This behavior might be a bug in layout manager, so the
+                        following loop is a workaround for now.
+                    */
+
+                    // Note: views will change places in the dom as they render asynchronously
+                    // So we need to make sure that they're all inserted properly before calling render.
+
+                    var workflowLayout = new Backbone.View();
+                    this.insertView('#workflow-staging-area', workflowLayout);
+
+                    for (var i = 0; i < workflowViews.length; i++) {
+                        var view = workflowViews[i];
+
+                        view.isRemovable = false;
+                        view.isOrderable = false;
+                        view.files = this.selectedFileListings;
+                        view.allFiles = this.allFiles;
+
+                        view.prepareFiles();
+
+                        workflowLayout.insertView(view);
+                    }
+
+                    // Render all workflow views
+                    workflowLayout.render();
+
+                    var workflowConfig = workflow.get('value');
+                    if (workflowConfig['config']['steps']) {
+                        $('#workflow-staging-area').append(
+                            '<input type="radio" class="hidden" name="single-reads" id="single-reads" checked>'
+                        );
+                    }
+                    else {
+                        $('#workflow-staging-area').append(
+                            '<input type="radio" class="hidden" name="paired-reads" id="paired-reads" checked>'
+                        );
+                    }
+                }
+            },
+
+            // UI
+            _uiResetDeleteWorkflow: function() {
+                $('#delete-workflow')
+                    .removeClass('btn-danger')
+                    .addClass('btn-outline-danger')
+                    .html('&nbsp;Delete')
+                ;
+            },
+
+            _uiGuardDeleteIfPredefined: function() {
+
+                // Make sure that this isn't a predefined workflow
+                var workflowId = $('#select-workflow').val();
+                var workflow = this.workflows.get(workflowId);
+
+                // Disable if predefined
+                if (workflow && this.workflows.checkIfPredefinedWorkflow(workflow.get('value').workflowName)) {
+                    $('#delete-workflow').attr('disabled', 'disabled');
+                    return;
+                }
+                else {
+                    $('#delete-workflow').removeAttr('disabled');
+                }
+            },
+        })
+    );
+
+    Jobs.IgBlastStaging = Jobs.StagingBase.extend({
+        template: 'jobs/igblast-staging',
+        stageJob: function(formData) {
+
+            var job = new Backbone.Agave.Model.Job.IgBlast();
+
+            job.prepareJob(
+                formData,
+                this.selectedFileListings,
+                this.allFiles,
+                this.projectModel.get('uuid')
+            );
+
+            return this.startJob(job);
+        },
+        validateJobForm: function() {
+            /*
+            var validationError = false;
+
+            if ($.trim($('#workflow-staging-area').html()) === '') {
+                $('#select-workflow')
+                    .closest('.form-group')
+                    .addClass('has-error')
+                    ;
+
+                $('#select-workflow')
+                    .closest('.form-group')
+                    .get(0)
+                    .scrollIntoView()
+                    ;
+
+                validationError = true;
+            }
+
+            return validationError;
+            */
+
+            return false;
+        },
     });
 
     App.Views.Jobs = Jobs;
