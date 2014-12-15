@@ -152,6 +152,8 @@ define([
 
                 this.updateSubviewsForBarcodeLocation();
             }
+
+            this.layoutView.trigger('FixModalBackdrop');
         },
         events: function() {
             var events = {};
@@ -284,6 +286,7 @@ define([
                 files: this.files,
                 barcodeFiles: this.barcodeFiles,
                 parentView: this,
+                layoutView: this.layoutView,
             });
 
             this.insertView(this.barcodeSubviewsSelector, elementView);
@@ -389,6 +392,8 @@ define([
         afterRender: function() {
             // Set initial title for first render if one is available
             $('#' + this.inputCount + '-barcode-title-' + this.elementCount).text(this.title);
+
+            this.layoutView.trigger('FixModalBackdrop');
         },
         events: function() {
             var events = {};

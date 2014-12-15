@@ -22,12 +22,31 @@ define([
                 .addClass('animated flipOutX')
             ;
 
+            var deferred = $.Deferred();
+
             $(e.currentTarget)
                 .closest('.vdj-pipe-parameter')
-                .one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-                    $(e.currentTarget).closest('.vdj-pipe-parameter').remove();
-                })
-            ;
+                .one(
+                    'webkitAnimationEnd'
+                    + ' mozAnimationEnd'
+                    + ' MSAnimationEnd'
+                    + ' oanimationend'
+                    + ' animationend',
+
+                    function() {
+                        $(e.currentTarget)
+                            .closest('.vdj-pipe-parameter')
+                            .remove()
+                            .promise()
+                            .done(function() {
+                                deferred.resolve();
+                            })
+                            ;
+                    }
+                )
+                ;
+
+            return deferred;
         },
 
     };
@@ -603,7 +622,7 @@ define([
                 };
             },
             events: {
-                'click .remove-job-parameter': '_removeJobParameter',
+                'click .remove-job-parameter': '_removeJobEvent',
                 'change #select-workflow': '_showWorkflow',
                 'change .job-form-item': '_revealSaveWorkflow',
                 'click #save-workflow': '_saveWorkflow',
@@ -645,8 +664,29 @@ define([
             },
 
             // Private Methods
+            _adjustModalHeight: function() {
+                var modalHeight = $('.modal-dialog').innerHeight();
+                $('.modal-backdrop').css({height: modalHeight + 100});
+            },
 
             // Event Responders
+            _removeJobEvent: function(e) {
+                e.preventDefault();
+
+                var that = this;
+
+/*
+                $(e.currentTarget).closest('.vdj-pipe-parameter').remove().promise().done(function() {
+
+                    that._adjustModalHeight();
+                });
+*/
+                this._removeJobParameter(e)
+                    .done(function() {
+                        that._adjustModalHeight();
+                    })
+                    ;
+            },
             _revealSaveWorkflow: function(e) {
                 e.preventDefault();
 
@@ -739,6 +779,8 @@ define([
                 this._uiResetDeleteWorkflow();
                 this._uiGuardDeleteIfPredefined();
 
+                var that = this;
+
                 // Do housekeeping first
                 this.removeView('#workflow-staging-area');
                 $('#workflow-staging-area').empty();
@@ -778,14 +820,25 @@ define([
                         view.isOrderable = false;
                         view.files = this.selectedFileListings;
                         view.allFiles = this.allFiles;
+                        view.layoutView = workflowLayout;
 
                         view.prepareFiles();
 
                         workflowLayout.insertView(view);
                     }
 
+                    this.listenTo(
+                        workflowLayout,
+                        'FixModalBackdrop',
+                        function() {
+                            that._adjustModalHeight();
+                        }
+                    );
+
                     // Render all workflow views
-                    workflowLayout.render();
+                    workflowLayout.render().promise().done(function() {
+                        that._adjustModalHeight();
+                    });
 
                     var workflowConfig = workflow.get('value');
                     if (workflowConfig['config']['steps']) {

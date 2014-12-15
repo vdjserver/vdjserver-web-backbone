@@ -453,6 +453,7 @@ define([
                             $('#job-modal')
                                 .modal('hide')
                                 .on('hidden.bs.modal', function() {
+
                                     var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
 
                                     that.setView('#job-submit', workflowEditorView);
