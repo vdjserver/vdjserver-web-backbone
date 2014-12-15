@@ -96,8 +96,10 @@ define(['app'], function(App) {
                             break;
 
                         case 'find_shared':
+                            var jobName = parameters['job-name'];
+
                             paramOutput.push(
-                                serializer.getFindShared()
+                                serializer.getFindShared(jobName)
                             );
 
                             break;
@@ -393,21 +395,21 @@ define(['app'], function(App) {
             };
         };
 
-        this.getFindShared = function() {
+        this.getFindShared = function(jobName) {
 
             var returnValue = {
                 'find_shared': {
-                    'out_group_unique': parameters[key + '-out-group-unique'],
+                    'out_group_unique': jobName + '.unique' + parameters[key + '-out-group-unique'],
                 },
             };
+
+            return returnValue;
+
 /*
             if (parameters[key + '-group-variable']) {
                 returnValue['find_shared']['group_variable'] = parameters[key + '-group-variable'];
             }
-*/
-            return returnValue;
 
-/*
             if (parameters[key + '-min-length']) {
                 tmpFindShared['find_shared']['min_length'] = parseInt(parameters[key + '-min-length']);
             }
