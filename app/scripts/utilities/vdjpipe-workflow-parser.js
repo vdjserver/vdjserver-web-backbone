@@ -99,7 +99,7 @@ define(['app'], function(App) {
                             var jobName = parameters['job-name'];
 
                             paramOutput.push(
-                                serializer.getFindShared(jobName)
+                                serializer.getFindShared(paramOutput, jobName)
                             );
 
                             break;
@@ -395,11 +395,24 @@ define(['app'], function(App) {
             };
         };
 
-        this.getFindShared = function(jobName) {
+        this.getFindShared = function(config, jobName) {
+
+            // Default value
+            var findSharedVariables = '';
+
+            var demultiplexVariables = this.extractDemultiplexValueVariables(config);
+
+            // If demultiplex vars are available, then overwrite the default findSharedVariables value
+            if (demultiplexVariables && demultiplexVariables.length > 0) {
+
+                for (var i = 0; i < demultiplexVariables.length; i++) {
+                    findSharedVariables += '{' + demultiplexVariables[i] + '}' + '-';
+                }
+            }
 
             var returnValue = {
                 'find_shared': {
-                    'out_group_unique': jobName + '.unique' + parameters[key + '-out-group-unique'],
+                    'out_group_unique': jobName + '-' + findSharedVariables + 'unique' + parameters[key + '-out-group-unique'],
                 },
             };
 

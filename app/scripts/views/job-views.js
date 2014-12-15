@@ -675,12 +675,6 @@ define([
 
                 var that = this;
 
-/*
-                $(e.currentTarget).closest('.vdj-pipe-parameter').remove().promise().done(function() {
-
-                    that._adjustModalHeight();
-                });
-*/
                 this._removeJobParameter(e)
                     .done(function() {
                         that._adjustModalHeight();
