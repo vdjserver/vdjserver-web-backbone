@@ -337,11 +337,13 @@ define([
             outputFile.downloadFileToDisk();
         },
         clearChart: function() {
+            // clear announcements
+            $('#chart-right-announcement').empty();
 
-            //hide delete button
+            // hide delete button
             $('.download-btn').hide();
 
-            //remove SVG elements
+            // remove SVG elements
             this.hideWarning();
 
             var oldSVGs = document.getElementsByTagName('svg');
@@ -475,7 +477,7 @@ define([
     });
 
     Analyses.Charts.LengthHistogram = function(file, text, clearSVG) {
-        $('#chart-file-well').text(file.name);
+        //$('#chart-file-well').text(file.name);
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -531,7 +533,7 @@ define([
     };
 
     Analyses.Charts.MeanQualityScoreHistogram = function(file, text, clearSVG) {
-        $('#chart-file-well').text(file.name);
+        //$('#chart-file-well').text(file.name);
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -625,7 +627,7 @@ define([
         var min = Infinity;
         var max = -Infinity;
 
-        $('#chart-file-well').text(file.name);
+        //$('#chart-file-well').text(file.name);
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -917,7 +919,7 @@ define([
     };
 
     Analyses.Charts.PercentageGcHistogram = function(file, text, clearSVG) {
-        $('#chart-file-well').text(file.name);
+        //$('#chart-file-well').text(file.name);
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -990,7 +992,7 @@ define([
         var drillStack = ['human']; //keep track of drill-down location
         var currentDataset;
 
-        $('#chart-file-well').text(file.name);
+        //$('#chart-file-well').text(file.name);
 
         d3.select('#analyses-chart')
             .insert('div', 'svg')
@@ -1513,7 +1515,7 @@ define([
 
     Analyses.Charts.Cdr3 = function(file, text, clearSVG) {
 
-        $('#chart-file-well').text(file.name);
+        //$('#chart-file-well').text(file.name);
         var cdr3Data = JSON.parse(text);
 
         nv.addGraph(function() {
@@ -1550,7 +1552,7 @@ define([
 
     Analyses.Charts.GiantTable = function(file, tsv) {
 
-        $('#chart-file-well').text(file.name);
+        //$('#chart-file-well').text(file.name);
 
         //this.tableTSV = tsv;
 
@@ -1681,16 +1683,16 @@ define([
     };
 
     Analyses.Charts.Composition = function(file, response, clearSVG) {
-        $('#chart-file-well').text(file.name);
+        $('#chart-right-announcement').text('Click to toggle displayed data.');
 
         response = response.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
         var data = d3.tsv.parse(response);
-        var aData= [];
-        var cData= [];
-        var gData= [];
-        var tData= [];
-        var nData= [];
+        var aData = [];
+        var cData = [];
+        var gData = [];
+        var tData = [];
+        var nData = [];
         var gcData = [];
 
         data.forEach(function(d) {
@@ -1761,7 +1763,7 @@ define([
                 values: gcData,
                 disabled: true,
                 color: 'orange',
-            }
+            },
         ];
 
         nv.addGraph(function() {
