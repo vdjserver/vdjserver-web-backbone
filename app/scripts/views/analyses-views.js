@@ -1,3 +1,5 @@
+/* global ss */
+
 define([
     'app',
     'handlebars',
@@ -15,8 +17,7 @@ define([
     d3,
     nv,
     box,
-    Slick,
-    Statistics
+    Slick
 ) {
 
     'use strict';
@@ -548,7 +549,7 @@ define([
                 y: +d['count'],
             });
         });
-        
+
         var medianCount = ss.median(nonZeroCount);
         data.forEach(function(d) {
             medianD.push({
@@ -1660,7 +1661,8 @@ define([
         };
 
         // Grid
-        var grid = new Slick.Grid(
+        //var grid = new Slick.Grid(
+        Slick.Grid(
             '#analyses-chart',
             data,
             defaultColumns,

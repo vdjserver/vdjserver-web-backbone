@@ -191,7 +191,7 @@ define(['app'], function(App) {
         return response;
     };
 
-    VdjpipeConfigParser._set5PrimeBarcodeCustomTrim = function(barcodeParameter) {
+    VdjpipeConfigParser._set5PrimeBarcodeCustomTrim = function() {
 
         var response = {
             'cut_lower': {

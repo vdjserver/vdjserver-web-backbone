@@ -22,6 +22,7 @@ require.config({
         'file-saver':       '../bower_components/file-saver/FileSaver',
         'recaptcha-ajax':   '../bower_components/recaptcha-ajax/recaptcha_ajax',
         'simple-statistics':'../bower_components/simple-statistics/src/simple_statistics',
+
         // Config
         'environment-config': 'config/environment-config',
 
@@ -137,18 +138,15 @@ require.config({
             exports: 'Recaptcha'
         },
         'slickgrid.core': {
-            deps:['jquery', 'jquery-ui', 'jquery.event.drag','jquery.event.drop'],
+            deps:['jquery', 'jquery-ui', 'jquery.event.drag', 'jquery.event.drop'],
             exports: 'Slick'
         },
         'slickgrid.grid': {
-            deps:['jquery','jquery-ui', 'slickgrid.core', 'jquery.event.drag','jquery.event.drop'],
+            deps:['jquery', 'jquery-ui', 'slickgrid.core', 'jquery.event.drag', 'jquery.event.drop'],
             exports: 'Slick'
         },
         'typeahead': {
             deps: ['jquery']
-        },
-        'simple-statistics': {
-            exports: 'Statistics'
         },
 
         // Agave

@@ -1,8 +1,13 @@
 define([
     'app',
     'environment-config',
+    'recaptcha-ajax',
     'backbone.syphon',
-], function(App, EnvironmentConfig) {
+], function(
+    App,
+    EnvironmentConfig,
+    Recaptcha
+) {
 
     'use strict';
 
@@ -16,12 +21,12 @@ define([
         },
         afterRender: function() {
             Recaptcha.destroy();
-            Recaptcha.create(EnvironmentConfig.recaptchaPublicKey,'recaptcha');
+            Recaptcha.create(EnvironmentConfig.recaptchaPublicKey, 'recaptcha');
         },
         events: {
             'submit form': 'submitForm'
         },
-        validateForm: function(formData){
+        validateForm: function(formData) {
 
             this.model.set(formData);
 
@@ -73,22 +78,22 @@ define([
             this.model.save({
                 feedback: formData.feedback,
                 recaptcha_challenge_field: formData.recaptcha_challenge_field,
-                recaptcha_response_field:    formData.recaptcha_response_field
+                recaptcha_response_field:  formData.recaptcha_response_field
             })
             .done(function() {
-              App.router.navigate('/', {
-                  trigger: true
-              });
+                App.router.navigate('/', {
+                    trigger: true
+                });
             })
             .fail(function(e) {
-              if(e.responseJSON.message === 'Recaptcha response invalid: incorrect-captcha-sol') {
-                Recaptcha.destroy();
-                that.model.set(that.model.defaults);
-                Recaptcha.create('6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc','recaptcha');
-                var formData = Backbone.Syphon.serialize(that);
-                var formErrors = that.validateForm(formData);
-                that.displayFormErrors(formErrors);
-              }
+                if (e.responseJSON.message === 'Recaptcha response invalid: incorrect-captcha-sol') {
+                    Recaptcha.destroy();
+                    that.model.set(that.model.defaults);
+                    Recaptcha.create(EnvironmentConfig.recaptchaPublicKey, 'recaptcha');
+                    var formData = Backbone.Syphon.serialize(that);
+                    var formErrors = that.validateForm(formData);
+                    that.displayFormErrors(formErrors);
+                }
             });
 
         },
