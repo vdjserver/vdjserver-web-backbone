@@ -50,7 +50,7 @@
                                     data-fileuuid="{{uuid}}"
                                 >
                                     {{#each ../fileTypes}}
-                                    <option {{SelectFileType @index ../value.fileType}} value="{{@index}}">
+                                    <option {{ifCondSelected @index ../value.fileType}} value="{{@index}}">
                                             {{this}}
                                         </option>
                                     {{/each}}
@@ -71,7 +71,7 @@
                                 >
                                     <option></option>
                                     {{#each ../readDirections}}
-                                        <option {{SelectReadDirection this ../value.privateAttributes}}>{{this}}</option>
+                                        <option {{ifCondSelected this ../value.privateAttributes.read-direction}}>{{this}}</option>
                                     {{/each}}
                                 </select>
                             </td>

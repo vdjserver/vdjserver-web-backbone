@@ -67,25 +67,21 @@ define([
         }
     });
 
-    Handlebars.registerHelper('SelectFileType', function(option, fileType) {
-        if (option === fileType) {
+    Handlebars.registerHelper('ifCondSelected', function(v1, v2 /*, options*/) {
+        if (v1 === v2) {
             return 'selected';
         }
     });
 
-    Handlebars.registerHelper('SelectReadDirection', function(option, value) {
-        if (option === value['read-direction']) {
-            return 'selected';
+/*
+    Handlebars.registerHelper('ifCond', function(v1, v2, options) {
+        if (v1 === v2) {
+            return options.fn(this);
         }
-    });
 
-    Handlebars.registerHelper('SelectQualityScoreMetadata', function(option, value) {
-        if (value && value['quality-score-metadata-uuid']) {
-            if (option.uuid === value['quality-score-metadata-uuid']) {
-                return 'selected';
-            }
-        }
+        return options.inverse(this);
     });
+*/
 
     var ProjectMixin = {
         _uiShowSaveSuccessAnimation: function(domSelector) {

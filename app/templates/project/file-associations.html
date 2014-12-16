@@ -26,7 +26,7 @@
                                 data-fileuuid="{{uuid}}"
                             >
                                 {{#each ../fileTypes}}
-                                <option {{SelectFileType @index ../value.fileType}} value="{{@index}}">
+                                <option {{ifCondSelected @index ../value.fileType}} value="{{@index}}">
                                         {{this}}
                                     </option>
                                 {{/each}}
@@ -39,7 +39,7 @@
                             >
                                 <option></option>
                                 {{#each ../qualMetadatas}}
-                                    <option {{SelectQualityScoreMetadata this ../value.privateAttributes}}>{{this.value.name}}</option>
+                                    <option {{ifCondSelected this ../value.privateAttributes.quality-score-metadata-uuid}}>{{this.value.name}}</option>
                                 {{/each}}
                             </select>
                         </td>
