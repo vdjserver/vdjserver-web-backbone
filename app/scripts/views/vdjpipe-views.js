@@ -499,7 +499,7 @@ define([
         getBarcodeColumns: function(elementCount) {
             var barcodeColumns = [];
 
-            for (var i = 1; i < elementCount + 1; i++) {
+            for (var i = 1; i < elementCount + 2; i++) {
                 barcodeColumns.push(i);
             }
 
