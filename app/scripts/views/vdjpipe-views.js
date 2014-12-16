@@ -49,6 +49,10 @@ define([
         prepareFiles: function() {
             this.primerFiles = this.allFiles.getPrimerCollection();
         },
+        beforeRender: function() {
+            // Apparently, this vdjpipe step should always be removable.
+            this.isRemovable = true;
+        },
         serialize: function() {
 
             var files = SerializationTools.GetSerializedModel(this.files);
@@ -77,6 +81,10 @@ define([
         },
         prepareFiles: function() {
             this.primerFiles = this.allFiles.getPrimerCollection();
+        },
+        beforeRender: function() {
+            // Apparently, this vdjpipe step should always be removable.
+            this.isRemovable = true;
         },
         serialize: function() {
 
