@@ -707,10 +707,11 @@ define([
             .orient('left')
         ;
 
-        var barWidth = x(1) / 4;
+        // var barWidth = x(1) / 4;
+        var barWidth = x(data[1].position) / 4;
 
         // topSVG
-        d3.select('svg')
+          var svgContainer = d3.select('svg')
             .attr('width',
                 width
                 + margin.left
@@ -722,11 +723,16 @@ define([
                 + margin.bottom
             )
             .attr('class', 'box')
+            .append('svg:g')
+                .attr('class', 'whatever')
+                .call(d3.behavior.zoom().on("zoom", redraw))
+            .append('svg:g')
         ;
 
         var tip = d3.select('.d3-tip');
 
-        var boxG = d3.select('svg').append('g');
+        // var boxG = d3.select('svg').append('g');
+        var boxG = svgContainer.append('g');
         boxG
             .attr('class','boxG')
             .attr('width',
@@ -765,7 +771,8 @@ define([
 
         //add the background boxes
         //add a group
-        var bgGroup = d3.select('svg').append('g')
+        // var bgGroup = d3.select('svg').append('g')
+        var bgGroup = svgContainer.append('g')
             .attr('class', 'bgGroup')
             .attr('width', width
                 + margin.left
@@ -799,7 +806,8 @@ define([
             .attr('class','bg_40')
         ;
 
-        var svg = d3.select('svg')
+        // var svg = d3.select('svg')
+        var svg = svgContainer
             .append('g')
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
         ;
@@ -868,12 +876,17 @@ define([
             .attr('transform', 'translate(0,' + (height + margin.top + 1) + ')')
             .call(xAxis)
             .append('text')             // text label for the x axis
-            .attr('x', (width / 2) )
-            .attr('y',  25)
-            .attr('dy', '.71em')
-            .style('text-anchor', 'middle')
-            .style('font-size', '16px')
-            .text('Position in Read')
+            .attr("dx", "-.1em")
+            .attr("dy", ".1em")
+            .attr("transform", function(d) { 
+                return "rotate(-65)"
+            });
+            // .attr('x', (width / 2) )
+            // .attr('y',  25)
+            // .attr('dy', '.71em')
+            // .style('text-anchor', 'middle')
+            // .style('font-size', '16px')
+            // .text('Position in Read')
         ;
 
         // Define the mean line
@@ -886,7 +899,8 @@ define([
             })
         ;
 
-        var meanGroup = d3.select('svg').append('g')
+        // var meanGroup = d3.select('svg').append('g')
+        var meanGroup = svgContainer.append('g')
             .attr('class', 'meanGroup')
             .attr('width', width + margin.left + margin.right)
             .attr('height', height + margin.left + margin.right)
@@ -916,6 +930,11 @@ define([
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
                 .attr('class', 'meanPoints')
         ;
+
+        function redraw() {
+          svgContainer.attr("transform","translate(" + d3.event.translate + ")"
+              + " scale(" + d3.event.scale + ")");
+        }
     };
 
     Analyses.Charts.PercentageGcHistogram = function(file, text, clearSVG) {
