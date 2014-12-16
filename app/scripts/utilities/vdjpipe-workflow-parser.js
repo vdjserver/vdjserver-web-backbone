@@ -242,19 +242,24 @@ define(['app'], function(App) {
             var barcodeLocation = parameters[key + '-custom-location'];
 
             // Combination custom options
-            var combinations = [
-                {
-                    'csv_file': {
-                        'path': parameters[key + '-combination-csv-file'],
-                        'values_column': [{}],
-                        'skip_header': parameters[key + '-skip-header'],
-                    },
-                    'value_name': parameters[key + '-combination-value-name'],
-                },
-            ];
+            var combinations = false;
 
-            if (parameters[key + '-custom-combination-histogram']) {
-                combinations[0]['custom_histogram'] = parameters[key + '-custom-combination-histogram'];
+            if (parameters[key + '-combination-value-name']) {
+
+                combinations = [
+                    {
+                        'csv_file': {
+                            'path': parameters[key + '-combination-csv-file'],
+                            'values_column': [{}],
+                            'skip_header': parameters[key + '-skip-header'],
+                        },
+                        'value_name': parameters[key + '-combination-value-name'],
+                    },
+                ];
+
+                if (parameters[key + '-custom-combination-histogram']) {
+                    combinations[0]['custom_histogram'] = parameters[key + '-custom-combination-histogram'];
+                }
             }
 
             var elements = [];
@@ -264,7 +269,6 @@ define(['app'], function(App) {
 
                     var element = {};
                     var elementCounter = parameters[key + '-elements'][i];
-
 
                     var barcodeType = parameters[key + '-' + elementCounter + '-element-custom-type'];
                     if (barcodeType) {
@@ -310,7 +314,9 @@ define(['app'], function(App) {
                     }
 
                     // Combination
-                    combinations[0]['csv_file']['values_column'][0][valueName] = parseInt(parameters[key + '-' + elementCounter + '-element-barcode-column-order']);
+                    if (combinations) {
+                        combinations[0]['csv_file']['values_column'][0][valueName] = parseInt(parameters[key + '-' + elementCounter + '-element-barcode-column-order']);
+                    }
 
                     // Save element
                     elements.push(element);

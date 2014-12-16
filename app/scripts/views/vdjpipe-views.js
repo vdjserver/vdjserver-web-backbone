@@ -104,6 +104,7 @@ define([
             this.elementCount = 0;
             this.objectCount  = 0;
             this.barcodeSubviewsSelector = '#' + this.inputCount + '-' + this.parameterType + '-added-barcode-subviews';
+            this.combinationSubviewSelector = '#' + this.inputCount + '-' + this.parameterType + '-combination-subview';
             this.barcodeFiles = {};
             this.combinationFiles = {};
 
@@ -124,9 +125,6 @@ define([
                     this.barcodeFiles = this.allFiles.getBarcodeCollection();
                     this.combinationFiles = this.allFiles.getCombinationCollection();
                 }
-
-                // Combination View
-                this.setupCombinationView();
 
                 // Restore any previously saved barcode elements
                 for (var i = 0; i < this.options.elements.length; i++) {
@@ -195,6 +193,9 @@ define([
                 this.updateViewForSingleBarcodeLocation();
 
                 $('#' + this.inputCount + '-barcode-location').val(1);
+
+                // Combination View
+                this.removeCombinationView();
             }
             else if (barcodeCount === 2) {
                 // Get options from original barcode so they can applied to the new barcode
@@ -209,6 +210,9 @@ define([
                 this.updateViewForDoubleBarcodeLocation();
 
                 $('#' + this.inputCount + '-barcode-location').val(3);
+
+                // Combination View
+                this.addCombinationView();
             }
 
             this.updateSubviewsForBarcodeLocation();
@@ -291,11 +295,9 @@ define([
 
             this.insertView(this.barcodeSubviewsSelector, elementView);
 
-            var that = this;
-
-            elementView.render().promise().done(function() {
-                that.updateCombinationView();
-            });
+            elementView.render().promise().done(
+                this.layoutView.trigger('FixModalBackdrop')
+            );
         },
         removeBarcode: function() {
 
@@ -305,12 +307,11 @@ define([
 
             var barcodeView = barcodeSubviews[1];
 
-            var that = this;
-            barcodeView.remove().promise().done(function() {
-                that.updateCombinationView();
-            });
+            barcodeView.remove().promise().done(
+                this.layoutView.trigger('FixModalBackdrop')
+            );
         },
-        setupCombinationView: function() {
+        addCombinationView: function() {
 
             var combinationView = new Vdjpipe.CustomDemultiplexCombinationConfig({
                 isOrderable: this.isOrderable,
@@ -326,30 +327,45 @@ define([
             });
 
             this.setView(
-                '#' + this.inputCount + '-' + this.parameterType + '-combination-subview',
+                this.combinationSubviewSelector,
                 combinationView
             );
 
-            combinationView.render();
+            var that = this;
+
+            combinationView.render().promise().done(
+                function() {
+                    that.updateCombinationView();
+                    that.layoutView.trigger('FixModalBackdrop');
+                }
+            );
+        },
+        removeCombinationView: function() {
+            this.removeView(this.combinationSubviewSelector);
+            this.layoutView.trigger('FixModalBackdrop');
         },
         updateCombinationView: function() {
-            var combinationView = this.getView(
-                '#' + this.inputCount + '-' + this.parameterType + '-combination-subview'
-            );
 
-            var barcodeInfo = [];
+            if (this.elementCount === 2) {
 
-            var barcodeElementViews = this.getViews(this.barcodeSubviewsSelector).value();
+                var combinationView = this.getView(
+                    this.combinationSubviewSelector
+                );
 
-            for (var i = 0; i < barcodeElementViews.length; i++) {
-                var barcodeFilename = barcodeElementViews[i].getBarcodeFilename();
-                barcodeInfo.push({
-                    'barcodeName': barcodeFilename,
-                    'barcodeElementNumber': i + 1,
-                });
+                var barcodeInfo = [];
+
+                var barcodeElementViews = this.getViews(this.barcodeSubviewsSelector).value();
+
+                for (var i = 0; i < barcodeElementViews.length; i++) {
+                    var barcodeFilename = barcodeElementViews[i].getBarcodeFilename();
+                    barcodeInfo.push({
+                        'barcodeName': barcodeFilename,
+                        'barcodeElementNumber': i + 1,
+                    });
+                }
+
+                combinationView.updateBarcodeInfo(barcodeInfo, this.elementCount);
             }
-
-            combinationView.updateBarcodeInfo(barcodeInfo, this.elementCount);
         },
     });
 
@@ -422,7 +438,6 @@ define([
         },
         selectBarcodeFile: function(e) {
             e.preventDefault();
-
             this.parentView.updateCombinationView();
         },
     });
