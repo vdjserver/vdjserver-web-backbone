@@ -291,29 +291,35 @@ define([
 
                     switch (filename) {
                         case 'pre-filter_composition.csv':
+                        case 'post-filter_composition.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.Composition(file, response, that.clearSVG);
                             break;
 
                         case 'pre-filter_gc_hist.csv':
+                        case 'post-filter-gc_hist.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.PercentageGcHistogram(file, response, that.clearSVG());
                             break;
 
                         case 'pre-heat_map.csv':
+                        case 'post-heat_map.csv':
                             break;
 
                         case 'pre-filter_len_hist.csv':
+                        case 'post-filter_len_hist.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.LengthHistogram(file, response, that.clearSVG());
                             break;
 
                         case 'pre-filter_mean_q_hist.csv':
+                        case 'post-filter_mean_q_hist.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.MeanQualityScoreHistogram(file, response, that.clearSVG);
                             break;
 
                         case 'pre-filter_qstats.csv':
+                        case 'post-filter_qstats.csv':
                             $('#chart-legend').show();
                             Analyses.Charts.QualityScore(file, response);
                             break;
