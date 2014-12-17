@@ -595,37 +595,34 @@ define([
 
             var selectedFileMetadataUuids = this._getSelectedFileUuids();
 
-            // Kind of a hack, but hey it's elegant
-            var softDeletePromise = $.Deferred();
+            var createFileSoftDeletePromise = function(model) {
+                return model.softDelete();
+            };
+
+            var createFileMetadataSoftDeletePromise = function(model) {
+                return model.softDelete();
+            };
+
+            var filePromises = [];
+            var metadataPromises = [];
 
             for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
                 var fileMetadataModel = this.fileListings.get(selectedFileMetadataUuids[i]);
 
                 var fileModel = fileMetadataModel.getFileModel();
 
-                fileModel.softDelete()
-                    .done(function() {
-                    })
-                    .fail(function() {
-                    })
-                ;
-
-                fileMetadataModel.softDelete()
-                    .always(function() {
-                        if (i === selectedFileMetadataUuids.length) {
-                            // All files are deleted, let's get out of here
-                            softDeletePromise.resolve(true);
-                        }
-                    })
-                ;
+                filePromises[i] = createFileSoftDeletePromise(fileModel);
+                metadataPromises[i] = createFileMetadataSoftDeletePromise(fileMetadataModel);
             }
 
-            // All files are deleted, time to reload
             var that = this;
-            $.when(softDeletePromise).then(function() {
-                that._fetchAndRenderFileListings();
-            });
 
+            $.when.apply($, filePromises)
+                .then($.when.apply($, metadataPromises))
+                .always(function() {
+                    that._fetchAndRenderFileListings();
+                }
+            );
         },
 
         _clickDownloadFile: function(e) {
