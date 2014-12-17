@@ -109,6 +109,15 @@ module.exports = function(grunt) {
                 }
             }
         },
+        jscs: {
+            src: [
+                '<%= yeoman.app %>/scripts/*',
+                '!<%= yeoman.app %>/scripts/vendor/**',
+            ],
+            options: {
+                config: '.jscsrc',
+            },
+        },
         open: {
             server: {
                 path: 'http://localhost:<%= connect.options.port %>'
@@ -333,7 +342,7 @@ module.exports = function(grunt) {
         jshint: {
             options: {
                 jshintrc: '.jshintrc',
-                reporter: require('jshint-stylish')
+                reporter: require('jshint-stylish'),
             },
             all: [
                 'Gruntfile.js',
@@ -428,6 +437,11 @@ module.exports = function(grunt) {
         'connect:test',
         'mocha',
         'watch:test',
+    ]);
+
+    grunt.registerTask('lint', [
+        'jshint',
+        'jscs',
     ]);
 
     grunt.registerTask('build', [

@@ -24,6 +24,7 @@
         "grunt-contrib-jshint":   "0.10.0",
         "grunt-contrib-uglify":   "0.6.0",
         "grunt-contrib-watch":    "0.6.1",
+        "grunt-jscs":       "1.0.0",
         "grunt-mocha":      "0.4.11",
         "grunt-open":       "0.2.3",
         "grunt-requirejs":  "0.4.2",
