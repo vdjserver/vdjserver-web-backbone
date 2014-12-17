@@ -22,13 +22,13 @@ define(['backbone'], function(Backbone) {
             );
         },
         url: function() {
-            return  '/meta/v2/data?q='
-                    + encodeURIComponent(
-                        '{'
-                          + '"owner":' + '"' + Backbone.Agave.instance.token().get('username') + '",'
-                          + '"name":"profile"'
-                      + '}'
-                    );
+            return '/meta/v2/data?q='
+                   + encodeURIComponent(
+                       '{'
+                         + '"owner":' + '"' + Backbone.Agave.instance.token().get('username') + '",'
+                         + '"name":"profile"'
+                     + '}'
+                   );
         }
     });
 

@@ -71,7 +71,7 @@ define(['app'], function(App) {
                     }
                     else if (j === 1) {
 
-                        var previousBarcodeType = elements[j-1]['custom_type'];
+                        var previousBarcodeType = elements[j - 1]['custom_type'];
 
                         switch (barcodeType) {
                             case '3\'':
@@ -140,7 +140,10 @@ define(['app'], function(App) {
                 // Combinations
                 if (option['custom_demultiplex']['combinations'] && option['custom_demultiplex']['combinations'][0]['custom_histogram']) {
 
-                    var combinationHistogram = VdjpipeConfigParser._parseDemultiplexCombinationHistograms(option['custom_demultiplex']['combinations']);
+                    var combinationHistogram = VdjpipeConfigParser._parseDemultiplexCombinationHistograms(
+                        option['custom_demultiplex']['combinations']
+                    );
+
                     newConfig.push(combinationHistogram);
 
                     delete newConfig[i]['custom_demultiplex']['combinations'][0]['custom_histogram'];

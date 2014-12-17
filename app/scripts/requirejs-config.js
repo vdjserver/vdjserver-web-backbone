@@ -206,13 +206,11 @@ require.config({
             exports: 'Backbone.Agave.Collection.Jobs'
         },
 
-
         // TODO - reorganize these. alphabetically?
         'agave-profile': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.Profile'
         },
-
 
         // Projects
         'agave-permission': {

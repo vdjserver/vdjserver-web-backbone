@@ -92,7 +92,7 @@ define([
             if (Agave.instance.token().isActive()) {
                 return Backbone.sync(method, model, options);
             }
-            else if (! Agave.instance.token().isActive() && Agave.instance.token().get('refresh_token')) {
+            else if (!Agave.instance.token().isActive() && Agave.instance.token().get('refresh_token')) {
 
                 return Agave.instance.token()
                     .save()
@@ -399,7 +399,7 @@ define([
 
                 case 'delete':
                     return false;
-                    break;
+                    //break;
             }
 
             options.url = EnvironmentConfig.vdjauthRoot + '/token',

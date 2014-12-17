@@ -422,7 +422,13 @@ define([
         events: function() {
             var events = {};
             events['change #barcode-location-' + this.inputCount + '-' + this.elementCount] = 'setTitleByLocation';
-            events['change #' + this.inputCount + '-' + this.parameterType + '-' + this.elementCount + '-element-sequence-file'] = 'selectBarcodeFile';
+
+            events[
+                'change #' + this.inputCount
+                           + '-' + this.parameterType
+                           + '-' + this.elementCount
+                           + '-element-sequence-file'
+            ] = 'selectBarcodeFile';
 
             return events;
         },
@@ -437,10 +443,18 @@ define([
             $('#' + this.inputCount + '-barcode-title-' + this.elementCount).text(this.title);
         },
         setBarcodeTypeByLocation: function(barcodeLocation) {
-            $('#' + this.inputCount + '-' + this.parameterType + '-' + this.elementCount + '-element-custom-type').val(barcodeLocation);
+            $('#' + this.inputCount
+                  + '-' + this.parameterType
+                  + '-' + this.elementCount
+                  + '-element-custom-type'
+            ).val(barcodeLocation);
         },
         getBarcodeFilename: function() {
-            var barcodeName = $('#' + this.inputCount + '-' + this.parameterType + '-' + this.elementCount + '-element-sequence-file').val();
+            var barcodeName = $('#' + this.inputCount
+                                    + '-' + this.parameterType
+                                    + '-' + this.elementCount
+                                    + '-element-sequence-file'
+                              ).val();
 
             return barcodeName;
         },

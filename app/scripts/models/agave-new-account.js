@@ -26,28 +26,28 @@ function(Backbone, EnvironmentConfig) {
             var errors = [];
 
             // Missing attributes
-            if (! attributes.username) {
+            if (!attributes.username) {
                 errors.push({
                     'message': 'Missing username.',
                     'type': 'username'
                 });
             }
 
-            if (! attributes.email) {
+            if (!attributes.email) {
                 errors.push({
                     'message': 'Missing email.',
                     'type': 'email'
                 });
             }
 
-            if (! attributes.password) {
+            if (!attributes.password) {
                 errors.push({
                     'message': 'Missing password.',
                     'type': 'password'
                 });
             }
 
-            if (! attributes.passwordCheck) {
+            if (!attributes.passwordCheck) {
                 errors.push({
                     'message': 'Missing password verification.',
                     'type': 'passwordCheck'
@@ -64,8 +64,8 @@ function(Backbone, EnvironmentConfig) {
 
             if (attributes.username.length > 0 &&
                 attributes.password.length > 0 &&
-                attributes.username.indexOf(attributes.password) >= 0)
-            {
+                attributes.username.indexOf(attributes.password) >= 0
+            ) {
                 errors.push({
                     'message': 'Password can\'t be part of username.',
                     'type': 'password'

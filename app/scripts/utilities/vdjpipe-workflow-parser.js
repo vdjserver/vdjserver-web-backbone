@@ -315,7 +315,9 @@ define(['app'], function(App) {
 
                     // Combination
                     if (combinations) {
-                        combinations[0]['csv_file']['values_column'][0][valueName] = parseInt(parameters[key + '-' + elementCounter + '-element-barcode-column-order']);
+                        combinations[0]['csv_file']['values_column'][0][valueName] = parseInt(
+                            parameters[key + '-' + elementCounter + '-element-barcode-column-order']
+                        );
                     }
 
                     // Save element

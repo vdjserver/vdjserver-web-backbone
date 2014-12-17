@@ -22,7 +22,7 @@ function(Backbone, EnvironmentConfig) {
             var errors = [];
 
             // Missing attributes
-            if (! attributes.feedback) {
+            if (!attributes.feedback) {
                 errors.push({
                     'message': 'No feedback provided.',
                     'type': 'feedback'
@@ -36,11 +36,11 @@ function(Backbone, EnvironmentConfig) {
               });
             }
 */
-            if(! attributes.recaptcha_response_field) {
-              errors.push({
-                  'message': 'Incorrect captcha response.',
-                  'type': 'recaptcha'
-              });
+            if (!attributes.recaptcha_response_field) {
+                errors.push({
+                    'message': 'Incorrect captcha response.',
+                    'type': 'recaptcha'
+                });
             }
 
             if (errors.length) {

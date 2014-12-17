@@ -36,11 +36,11 @@ function(Backbone, EnvironmentConfig, moment) {
                 _links: {},
             },
             url: function() {
-                return  '/files/v2/media/system'
-                        + '/' + EnvironmentConfig.storageSystem
-                        + '//projects'
-                        + '/' + this.get('projectUuid')
-                        + '/files/';
+                return '/files/v2/media/system'
+                       + '/' + EnvironmentConfig.storageSystem
+                       + '//projects'
+                       + '/' + this.get('projectUuid')
+                       + '/files/';
             },
             sync: function(method, model, options) {
 
@@ -50,7 +50,7 @@ function(Backbone, EnvironmentConfig, moment) {
                     case 'read':
                     case 'delete':
                         return Backbone.Agave.sync(method, model, options);
-                        break;
+                        //break;
 
                     case 'create':
                     case 'update':
@@ -106,7 +106,7 @@ function(Backbone, EnvironmentConfig, moment) {
                         xhr.send(formData);
                         return deferred;
 
-                        break;
+                        //break;
 
                     default:
                         break;
@@ -416,7 +416,7 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 var fileType = '';
 
-                switch(fileTypeId) {
+                switch (fileTypeId) {
                     case 0:
                         fileType = this.FILE_TYPE_0;
                         break;
@@ -457,7 +457,7 @@ function(Backbone, EnvironmentConfig, moment) {
             isFileTypeIdQualAssociable: function(fileTypeId) {
                 var isQualAssociable = false;
 
-                switch(fileTypeId) {
+                switch (fileTypeId) {
                     case 2:
                     case 4:
                         isQualAssociable = true;
@@ -474,7 +474,7 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 var hasReadDirection = true;
 
-                switch(fileTypeId) {
+                switch (fileTypeId) {
                     case 3:
                     case 4:
                         hasReadDirection = false;

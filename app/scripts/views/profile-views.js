@@ -220,7 +220,8 @@ define(['app', 'backbone.syphon'], function(App) {
                                         that.model.set({
                                             alerts: [{
                                                 type: 'success',
-                                                message: '<i class="fa fa-thumbs-up"></i> Your password has been successfully changed!'
+                                                message: '<i class="fa fa-thumbs-up"></i>'
+                                                         + 'Your password has been successfully changed!'
                                             }]
                                         });
                                     });
@@ -228,7 +229,9 @@ define(['app', 'backbone.syphon'], function(App) {
                             .fail(function() {
                                 $('#modal-message').modal('hide').on('hidden.bs.modal', function() {
                                     that.$el.find('.alerts').append(
-                                        $('<div class="alert alert-danger">').text('Password change failed! Please try again.').fadeIn()
+                                        $('<div class="alert alert-danger">')
+                                            .text('Password change failed! Please try again.')
+                                            .fadeIn()
                                     );
                                 });
                             });

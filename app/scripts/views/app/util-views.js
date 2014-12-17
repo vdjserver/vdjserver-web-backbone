@@ -1,4 +1,4 @@
-define(['app'], function(App){
+define(['app'], function(App) {
     'use strict';
 
     var Util = {};

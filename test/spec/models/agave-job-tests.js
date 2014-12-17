@@ -195,7 +195,7 @@ define(['app', 'agave-job', 'moment'], function() {
 
             serializedJob.should.equal(
                 '{"appId":"vdj_pipe-0.0.16u2","archive":true,"archivePath":"","archiveSystem":"data.vdjserver.org","batchQueue":"normal","inputs":{},"maxRunTime":"24:00:00","outputPath":"","name":"test","nodeCount":1,"parameters":{"json":"{\\"base_path_input\\":\\"\\",\\"base_path_output\\":\\"\\",\\"csv_file_delimiter\\":\\"\\\\\\\\t\\",\\"input\\":[{\\"reverse_seq\\":\\"emid_1_rev.fastq\\"}],\\"single_read_pipe\\":[{\\"quality_stats\\":{\\"out_prefix\\":\\"pre-\\"}},{\\"composition_stats\\":{\\"out_prefix\\":\\"pre-\\"}}]}"},"processorsPerNode":12}'
-            )
+            );
         });
 
         it('setFilesParameter should set file paths correctly', function() {
@@ -278,7 +278,7 @@ define(['app', 'agave-job', 'moment'], function() {
 
             jobFilesParameter.should.equal(
                 '{"files":"/projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"}'
-            )
+            );
         });
 
         it('prepareJob should adjust settings correctly', function() {
@@ -372,7 +372,7 @@ define(['app', 'agave-job', 'moment'], function() {
 
             serializedJob.should.equal(
                 '{"appId":"vdj_pipe-0.0.16u2","archive":true,"archivePath":"testArchivePath","archiveSystem":"data.vdjserver.org","batchQueue":"normal","inputs":{"files":"/projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"},"maxRunTime":"24:00:00","outputPath":"","name":"test","nodeCount":1,"parameters":{"json":"{\\"base_path_input\\":\\"\\",\\"base_path_output\\":\\"\\",\\"csv_file_delimiter\\":\\"\\\\\\\\t\\",\\"input\\":[{\\"reverse_seq\\":\\"emid_1_rev.fastq\\"}],\\"single_read_pipe\\":[{\\"quality_stats\\":{\\"out_prefix\\":\\"pre-\\"}},{\\"composition_stats\\":{\\"out_prefix\\":\\"pre-\\"}}]}"},"processorsPerNode":12}'
-            )
+            );
         });
 
         it('job using Single Read Workflow should be setup correctly', function() {
@@ -477,7 +477,9 @@ define(['app', 'agave-job', 'moment'], function() {
 
             var serializedJob = JSON.stringify(job);
 
-            var expectedResult = {"appId": "vdj_pipe-0.0.16u2","archive": true,"archivePath": "testArchivePath","archiveSystem": "data.vdjserver.org","batchQueue": "normal","inputs": {"files": "/projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"},"maxRunTime": "24:00:00","outputPath": "","name": "test","nodeCount": 1,"parameters": {"json": "{\"base_path_input\":\"\",\"base_path_output\":\"\",\"csv_file_delimiter\":\"\\\\t\",\"input\":[{\"reverse_seq\":\"emid_1_rev.fastq\"}],\"single_read_pipe\":[{\"quality_stats\":{\"out_prefix\":\"pre-\"}},{\"composition_stats\":{\"out_prefix\":\"pre-\"}},{\"match\":{\"reverse\":true,\"trimmed\":false,\"elements\":[]}},{\"length_filter\":{\"min\":200}},{\"average_quality_filter\":35},{\"homopolymer_filter\":20},{\"find_shared\":{}}]}"},"processorsPerNode": 12};
+            //var expectedResult = {"appId": "vdj_pipe-0.0.16u2","archive": true,"archivePath": "testArchivePath","archiveSystem": "data.vdjserver.org","batchQueue": "normal","inputs": {"files": "/projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"},"maxRunTime": "24:00:00","outputPath": "","name": "test","nodeCount": 1,"parameters": {"json": "{\"base_path_input\":\"\",\"base_path_output\":\"\",\"csv_file_delimiter\":\"\\\\t\",\"input\":[{\"reverse_seq\":\"emid_1_rev.fastq\"}],\"single_read_pipe\":[{\"quality_stats\":{\"out_prefix\":\"pre-\"}},{\"composition_stats\":{\"out_prefix\":\"pre-\"}},{\"match\":{\"reverse\":true,\"trimmed\":false,\"elements\":[]}},{\"length_filter\":{\"min\":200}},{\"average_quality_filter\":35},{\"homopolymer_filter\":20},{\"find_shared\":{}}]}"},"processorsPerNode": 12};
+                        var expectedResult = {'appId': 'vdj_pipe-0.0.16u2','archive': true,'archivePath': 'testArchivePath','archiveSystem': 'data.vdjserver.org','batchQueue': 'normal','inputs': {'files': '/projects/0001  410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta'},'maxRunTime': '24:00:00','outputPath': '','name': 'test','nodeCount': 1,'parameters': {'json': '{\'base_path_input\':\'\',\'base_path_output\':\'\',\'csv_file_delimiter\':\'\\\\t\',\'input\':[{\'reverse_seq\':\'emid_1_rev.fastq\'}],\'single_read_pipe\':[{\'quality_stats\':{\'out_prefix\':\'pre-\'}},{\'composition_stats\':{\'out_prefix\':\'pre-\'}},{\'match\':{\'reverse\':true,\'trimmed\':false,\'elements\':[]}},{\'length_filter\':{\'min\':200}},{\'average_quality_filter\':35},{\'homopolymer_filter\':20},{\'find_shared\':{}}]}'},'processorsPerNode': 12};
+
 
             serializedJob.should.equal(
                 JSON.stringify(expectedResult)

@@ -71,10 +71,14 @@ define(['app', 'backbone.syphon'], function(App) {
                                                     '<i class="fa fa-thumbs-up"></i> You have successfully changed your password!'
                                                 ).fadeIn()
                                             );
-                                        },500);
-                                    } else {
+                                        }, 500);
+                                    }
+                                    else {
                                         // reset process initiated; vdj middleware should send email to user
-                                        var message = '<i class="fa fa-thumbs-up"></i> Your password reset request has been received! Please check the email address associated with your account for further instructions.';
+                                        var message = '<i class="fa fa-thumbs-up"></i>'
+                                                      + 'Your password reset request has been received!'
+                                                      + ' Please check the email address associated with your account for further instructions.';
+
                                         that.model.clear();
                                         that.$el.find('.public-view').prepend($('<div class="alert alert-success">').html(message).fadeIn());
                                     }
@@ -83,7 +87,9 @@ define(['app', 'backbone.syphon'], function(App) {
                         .fail(function() {
                             $('#modal-message').modal('hide').on('hidden.bs.modal', function() {
                                 that.$el.find('.public-view').prepend(
-                                    $('<div class="alert alert-danger">').text('Unable to reset password! Please confirm that your username is correct and try again.').fadeIn()
+                                    $('<div class="alert alert-danger">')
+                                        .text('Unable to reset password! Please confirm that your username is correct and try again.')
+                                        .fadeIn()
                                 );
                             });
                         });

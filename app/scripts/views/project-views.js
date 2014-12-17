@@ -202,7 +202,15 @@ define([
             });
         },
         _displayErrorMessage: function() {
-            this.$el.find('.alert-danger').remove().end().prepend($('<div class="alert alert-danger">').text('There was a problem creating your project. Please try again.').fadeIn());
+            this.$el.find('.alert-danger')
+                .remove()
+                .end()
+                .prepend(
+                    $('<div class="alert alert-danger">')
+                        .text('There was a problem creating your project. Please try again.')
+                        .fadeIn()
+                )
+                ;
         },
     });
 
@@ -211,7 +219,6 @@ define([
         initialize: function(parameters) {
 
             this.fileListings = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
-
 
             /*
                 This is a little tricky. If we're arriving from a page
@@ -573,7 +580,7 @@ define([
             // Note: don't instantiate job subviews yet b/c we'll need to
             // include dependencies for that later on
 
-            switch(e.currentTarget.dataset.jobtype) {
+            switch (e.currentTarget.dataset.jobtype) {
                 case 'igblast':
                     var igBlastView = App.Views.Jobs.IgBlastStaging;
                     this._showJobStagingView(igBlastView);

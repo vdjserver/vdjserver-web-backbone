@@ -224,7 +224,7 @@ define([
                         tolerance: 'pointer',
                     });
 
-                    if (! _.isEmpty(this.editableWorkflow)) {
+                    if (!_.isEmpty(this.editableWorkflow)) {
                         this._setupEditableWorkflow(this.editableWorkflow);
                     }
                 },
@@ -258,7 +258,9 @@ define([
                     // Remove workflow placeholder from DOM
                     $('#vdj-pipe-configuration-placeholder').remove();
 
-                    var workflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(editableWorkflow.get('value').config);
+                    var workflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(
+                        editableWorkflow.get('value').config
+                    );
 
                     for (this.counter = 0; this.counter < workflowViews.length; this.counter++) {
                         var view = workflowViews[this.counter];
@@ -526,7 +528,7 @@ define([
 
                         // Adjust if we're updating an existing workflow instead of saving a new one
                         // Also make sure that we create a new workflow if we're editing a predefined one
-                        if (! _.isEmpty(this.editableWorkflow) && !this.editableWorkflow.get('predefined')) {
+                        if (!_.isEmpty(this.editableWorkflow) && !this.editableWorkflow.get('predefined')) {
                             jobWorkflow = this.editableWorkflow;
                         }
                         else {
@@ -790,7 +792,9 @@ define([
 
                     var workflow = this.workflows.get(workflowId);
 
-                    var workflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(workflow.get('value').config);
+                    var workflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(
+                        workflow.get('value').config
+                    );
 
                     /*
                         I'd love to use insertViews instead, but as of 24/July/2014

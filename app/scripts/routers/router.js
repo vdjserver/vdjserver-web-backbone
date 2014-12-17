@@ -19,7 +19,7 @@ define(['app'], function(App) {
         if (App.Agave.token().isActive()) {
             destinationRoute();
         }
-        else if (! App.Agave.token().isActive() && App.Agave.token().get('refresh_token')) {
+        else if (!App.Agave.token().isActive() && App.Agave.token().get('refresh_token')) {
             App.Agave.token().save()
                 .done(function() {
                     destinationRoute();
@@ -50,7 +50,7 @@ define(['app'], function(App) {
             App.Layouts.main.render();
         }
 
-        if (! App.Layouts.sidebar.getView('.sidebar')) {
+        if (!App.Layouts.sidebar.getView('.sidebar')) {
             App.Layouts.sidebar.setView('.sidebar', new App.Views.Sidemenu.List({projectUuid: projectUuid}));
             //App.Layouts.sidebar.render();
         }
@@ -59,7 +59,7 @@ define(['app'], function(App) {
             listView.uiSelectProject(projectUuid);
         }
 
-        if (! App.Layouts.content.getView('#project-navbar')) {
+        if (!App.Layouts.content.getView('#project-navbar')) {
             App.Layouts.content.setView('#project-navbar', new App.Views.Navbar.Navigation());
         }
     };
@@ -88,10 +88,9 @@ define(['app'], function(App) {
             '*notFound': 'notFound',
         },
 
-
         // Index
         index: function() {
-            if (! App.Agave.token().isActive()) {
+            if (!App.Agave.token().isActive()) {
                 _setPublicSubviews();
                 App.Layouts.main.setView('.content', new App.Views.Public.Home({model: App.Agave.token()}));
                 App.Layouts.main.render();
@@ -102,7 +101,6 @@ define(['app'], function(App) {
                 });
             }
         },
-
 
         // Auth
         authLogout: function() {

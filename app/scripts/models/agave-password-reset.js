@@ -28,7 +28,7 @@ function(Backbone, EnvironmentConfig) {
             var errors = [];
 
             // Missing attributes
-            if (! attributes.username) {
+            if (!attributes.username) {
                 errors.push({
                     'message': 'Missing username.',
                     'type': 'username'
@@ -37,14 +37,14 @@ function(Backbone, EnvironmentConfig) {
 
             // only validate password if uuid present
             if (attributes.uuid) {
-                if (! attributes.newPassword) {
+                if (!attributes.newPassword) {
                     errors.push({
                         'message': 'Missing password.',
                         'type': 'newPassword'
                     });
                 }
 
-                if (! attributes.passwordCheck) {
+                if (!attributes.passwordCheck) {
                     errors.push({
                         'message': 'Missing password verification.',
                         'type': 'passwordCheck'
@@ -61,8 +61,8 @@ function(Backbone, EnvironmentConfig) {
 
                 if (attributes.username.length > 0 &&
                     attributes.newPassword.length > 0 &&
-                    attributes.username.indexOf(attributes.newPassword) >= 0)
-                {
+                    attributes.username.indexOf(attributes.newPassword) >= 0
+                ) {
                     errors.push({
                         'message': 'Password can\'t be part of username.',
                         'type': 'newPassword'

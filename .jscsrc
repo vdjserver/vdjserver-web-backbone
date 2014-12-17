@@ -1,11 +1,11 @@
 {
     "preset": "google",
     "validateIndentation": 4,
-    "maximumLineLength": 130,
+    "maximumLineLength": 150,
+    "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
     "requireOperatorBeforeLineBreak": [
         "?",
         "=",
-        "-",
         "/",
         "*",
         "==",

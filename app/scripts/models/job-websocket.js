@@ -6,7 +6,7 @@ define([
     App,
     io,
     EnvironmentConfig
-){
+) {
 
     'use strict';
 

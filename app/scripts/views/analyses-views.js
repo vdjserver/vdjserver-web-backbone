@@ -361,15 +361,15 @@ define([
             //add them back in
             d3.select('.row .analyses')
                 .append('div')
-                    .attr('id','analyses-chart')
-                    .attr('class','svg-container')
-                    .attr('style','position:relative; top:1px;left:0px;')
-            ;
+                .attr('id', 'analyses-chart')
+                .attr('class', 'svg-container')
+                .attr('style', 'position:relative; top:1px;left:0px;')
+                ;
 
             d3.select('.svg-container')
                 .append('svg')
-                    .attr('style','height:600px;')
-            ;
+                .attr('style', 'height:600px;')
+                ;
 
             $('#chart-file-well').text('No data loaded. Select an Analysis.');
         },
@@ -387,10 +387,10 @@ define([
             //add them back in
             d3.select('.row .analyses')
                 .append('div')
-                    .attr('id','analyses-chart')
-                    .attr('class','svg-container')
-                    .attr('style','position:relative; top:1px;left:0px;')
-            ;
+                .attr('id', 'analyses-chart')
+                .attr('class', 'svg-container')
+                .attr('style', 'position:relative; top:1px;left:0px;')
+                ;
 /*
             d3.select('.svg-container')
                 .append('svg')
@@ -450,7 +450,7 @@ define([
             file.downloadFileToCache()
                 .done(function(text) {
                     Analyses.Charts.Cdr3(file, text, that.clearSVG);
-                 })
+                })
                 .fail(function(response) {
                     var errorMessage = this.getErrorMessageFromResponse(response);
                     this.showWarning(errorMessage);
@@ -541,10 +541,10 @@ define([
         var data = d3.tsv.parse(text);
         var otherD = [];
         var medianD = [];
-        var nonZeroCount=[];
+        var nonZeroCount = [];
         data.forEach(function(d) {
-            if(+d['count'] !== 0){
-               nonZeroCount.push(+d['count']);
+            if (+d['count'] !== 0) {
+                nonZeroCount.push(+d['count']);
             }
             otherD.push({
                 x: +d['read_quality'],
@@ -657,7 +657,6 @@ define([
             }
         });
 
-
         var chart = box()
             .whiskers([-1, 0])
             .height(height)
@@ -711,30 +710,37 @@ define([
         var barWidth = x(data[1].position) / 4;
 
         // topSVG
-          var svgContainer = d3.select('svg')
+
+        function redraw() {
+            svgContainer.attr(
+                'transform',
+                'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
+        }
+
+        var svgContainer = d3.select('svg')
             .attr('width',
                 width
                 + margin.left
                 + margin.right
             )
             .attr('height',
-                height
-                + margin.top
-                + margin.bottom
+              height
+              + margin.top
+              + margin.bottom
             )
             .attr('class', 'box')
             .append('svg:g')
                 .attr('class', 'whatever')
-                .call(d3.behavior.zoom().on("zoom", redraw))
+                .call(d3.behavior.zoom().on('zoom', redraw))
             .append('svg:g')
-        ;
+            ;
 
         var tip = d3.select('.d3-tip');
 
         // var boxG = d3.select('svg').append('g');
         var boxG = svgContainer.append('g');
         boxG
-            .attr('class','boxG')
+            .attr('class', 'boxG')
             .attr('width',
                 width
                 + margin.left
@@ -756,13 +762,13 @@ define([
         center.enter().insert('line', 'rect')
             .attr('class', 'center')
             .attr('x1',  function(d) {
-                return x(+d.position) + barWidth/2;
+                return x(+d.position) + barWidth / 2;
             })
             .attr('y1', function(d) {
                 return y(+d['10%']);
             })
             .attr('x2', function(d) {
-                return x(+d.position) + barWidth/2;
+                return x(+d.position) + barWidth / 2;
             })
             .attr('y2', function(d) {
                 return y(+d['90%']);
@@ -786,24 +792,24 @@ define([
 
         //then add all 3 rectangles
         bgGroup.append('rect')
-            .attr('width', width )
+            .attr('width', width)
             .attr('height', y(0) - y(20))
             .attr('transform', 'translate(' + margin.left + ',' + (margin.top + y(20)) + ')')
             .attr('class', 'bg_20')
         ;
 
         bgGroup.append('rect')
-            .attr('width', width )
+            .attr('width', width)
             .attr('height', y(20) - y(28)) //30
             .attr('transform', 'translate(' + margin.left + ',' + (margin.top + y(28)) + ')')
             .attr('class', 'bg_28')
         ;
 
         bgGroup.append('rect')
-            .attr('width', width )
+            .attr('width', width)
             .attr('height', y(28) - y(max))
             .attr('transform', 'translate(' + margin.left + ',' + (margin.top + y(max)) + ')')
-            .attr('class','bg_40')
+            .attr('class', 'bg_40')
         ;
 
         // var svg = d3.select('svg')
@@ -837,15 +843,14 @@ define([
                     .style('left', (+d3.event.layerX + 50) + 'px')
                     .style('top', (+d3.event.layerY + 150) + 'px')
                 ;
-             })
+            })
             .on('mouseout', function(/* d */) {
                 tip.transition()
                     .duration(300)
                     .style('opacity', 0);
-             })
+            })
             .call(chart.width(x.rangeBand()))
-        ;
-
+            ;
 
         // add a title
         svg.append('text')
@@ -876,11 +881,11 @@ define([
             .attr('transform', 'translate(0,' + (height + margin.top + 1) + ')')
             .call(xAxis)
             .append('text')             // text label for the x axis
-            .attr("dx", "-.1em")
-            .attr("dy", ".1em")
-            .attr("transform", function(d) { 
-                return "rotate(-65)"
-            });
+            .attr('dx', '-.1em')
+            .attr('dy', '.1em')
+            .attr('transform', function(/*d*/) {
+                return 'rotate(-65)';
+            })
             // .attr('x', (width / 2) )
             // .attr('y',  25)
             // .attr('dy', '.71em')
@@ -920,21 +925,16 @@ define([
         meanGroup.selectAll('circle')
             .data(data)
             .enter().append('circle')
-                .attr('cx', function (d) {
+                .attr('cx', function(d) {
                     return x(+d.position) + barWidth / 2;
                 })
-                .attr('cy', function (d) {
+                .attr('cy', function(d) {
                     return y(+d.mean);
                 })
                 .attr('r', 3)
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
                 .attr('class', 'meanPoints')
         ;
-
-        function redraw() {
-          svgContainer.attr("transform","translate(" + d3.event.translate + ")"
-              + " scale(" + d3.event.scale + ")");
-        }
     };
 
     Analyses.Charts.PercentageGcHistogram = function(file, text, clearSVG) {
@@ -954,7 +954,7 @@ define([
 
         //fill in any up to 100
         for (var i = 0; i <= 100; i++) {
-            if (! otherD[i]) {
+            if (!otherD[i]) {
                 otherD.push({
                     x: +i,
                     y: 0,
@@ -1015,7 +1015,7 @@ define([
 
         d3.select('#analyses-chart')
             .insert('div', 'svg')
-            .attr('id','stackdiv')
+            .attr('id', 'stackdiv')
         ;
 
         //edward salinas
@@ -1205,7 +1205,7 @@ define([
                             grandkidsLabels.push(grandchildren[gc].label);
                         }//for each grandchild
                     }//if a child has children
-                    else{
+                    else {
                         return false;
                     }
                 }//for children
@@ -1220,7 +1220,7 @@ define([
             var cond4 = (kidsLabels.length === 0);
             var cond5 = (grandkidsLabels.length === 0);
 
-            if ( !cond1 && cond2 && cond3 && !cond4 && !cond5) {
+            if (!cond1 && cond2 && cond3 && !cond4 && !cond5) {
                 return true;
             }
             else {
@@ -1251,59 +1251,62 @@ define([
         //rooted somewhere, make a stacked chart table
         //edward salinas
         var makeStackChartableFromValidHierarchyObject = function(o) {
-                /*
+            /*
                 It's assumed that the root exists and is non-allelic
                 It's assumed that at least one child exists under the root and that it is non-allelic
                 It's assumed that all children have hildren and that all these 'grandchildren' are allelic /.+\*\d+/
-                */
-                var gcLabels = getGrandChildrenLabelArray(o);
-                var maxa = getHighestAlleleValueFromAllelicOnlyList(gcLabels);
+            */
+            var gcLabels = getGrandChildrenLabelArray(o);
+            var maxa = getHighestAlleleValueFromAllelicOnlyList(gcLabels);
 
-                //these colors need to go but they can be used for now
-                //colorArray = ['#51A351','#BD362F','#11162F'];    //dirty christmas
-                var colorArray = ['#aec7e8', '#7b94b5', '#486192'];  //hues of blues
-                //colorArray = [' #FF0000','#FF7F00','#FFFF00','#00FF00','#0000FF','#4B0082','#8F00FF']; //rainbow http://suddenwhims.com/2012/10/html-rainbow-color-codes-color-hex/
-                var stackDataArray = [];
-                var alleleNum = 1;
-                var immediateChildren = o.children;
+            //these colors need to go but they can be used for now
+            //colorArray = ['#51A351','#BD362F','#11162F'];    //dirty christmas
+            var colorArray = ['#aec7e8', '#7b94b5', '#486192'];  //hues of blues
 
-                for (alleleNum = 1; alleleNum <= maxa; alleleNum++) {
-                    var immediateChildIndex = 0;
-                    var alleleNumZeroPadded = zeroPadToDigits(alleleNum, 2);
+            //colorArray = [' #FF0000','#FF7F00','#FFFF00','#00FF00','#0000FF','#4B0082','#8F00FF'];
+            //rainbow http://suddenwhims.com/2012/10/html-rainbow-color-codes-color-hex/
 
-                    var objectColorIndex = ((alleleNum -1) % colorArray.length);
-                    var color = colorArray[objectColorIndex];
-                    var key = alleleNumZeroPadded.toString();
+            var stackDataArray = [];
+            var alleleNum = 1;
+            var immediateChildren = o.children;
 
-                    var xList = [];
-                    var yList = [];
-                    var values = [];
-                    for (immediateChildIndex = 0; immediateChildIndex < immediateChildren.length; immediateChildIndex++) {
-                        var withStar = immediateChildren[immediateChildIndex].label + '*' + alleleNumZeroPadded;
-                        var geneAndAllele = separateGeneAndAllele(withStar);
-                        var genex = geneAndAllele[0];
-                        var valy = getValueReturnZeroAsDefault(withStar, o);
-                        xList.push(genex);
-                        yList.push(valy);
-                    }//for each immediate child
+            for (alleleNum = 1; alleleNum <= maxa; alleleNum++) {
+                var immediateChildIndex = 0;
+                var alleleNumZeroPadded = zeroPadToDigits(alleleNum, 2);
 
-                    for (var v = 0; v < xList.length; v++) {
-                        var xyObj = {
-                            'x': xList[v],
-                            'y': parseInt(yList[v]),
-                        };
+                var objectColorIndex = ((alleleNum - 1) % colorArray.length);
+                var color = colorArray[objectColorIndex];
+                var key = alleleNumZeroPadded.toString();
 
-                        values.push(xyObj);
-                    }
+                var xList = [];
+                var yList = [];
+                var values = [];
+                for (immediateChildIndex = 0; immediateChildIndex < immediateChildren.length; immediateChildIndex++) {
+                    var withStar = immediateChildren[immediateChildIndex].label + '*' + alleleNumZeroPadded;
+                    var geneAndAllele = separateGeneAndAllele(withStar);
+                    var genex = geneAndAllele[0];
+                    var valy = getValueReturnZeroAsDefault(withStar, o);
+                    xList.push(genex);
+                    yList.push(valy);
+                }//for each immediate child
 
-                    var keyObj = {
-                        'key': key,
-                        'color': color,
-                        'values': values,
+                for (var v = 0; v < xList.length; v++) {
+                    var xyObj = {
+                        'x': xList[v],
+                        'y': parseInt(yList[v]),
                     };
 
-                    stackDataArray.push(keyObj);
-                }//for each allele up to maximum
+                    values.push(xyObj);
+                }
+
+                var keyObj = {
+                    'key': key,
+                    'color': color,
+                    'values': values,
+                };
+
+                stackDataArray.push(keyObj);
+            }//for each allele up to maximum
 
             return stackDataArray;
         };
@@ -1347,7 +1350,7 @@ define([
         var getHTMLButtonsFromDrillStack = function(d) {
             var buttonHTML = '<ol class="breadcrumb">';
             for (var buttonIndex = 0; buttonIndex < d.length; buttonIndex++) {
-                if (buttonIndex === (d.length -1)) {
+                if (buttonIndex === (d.length - 1)) {
                     buttonHTML = buttonHTML
                                + '<li class="active">'
                                     + d[buttonIndex]
@@ -1356,8 +1359,10 @@ define([
                 else {
                     buttonHTML = buttonHTML
                                + '<li>'
-                                    + '<a class="stack-btn" id="stack-btn-' + d[buttonIndex] + '" data-button-index="' + d[buttonIndex] + '" >' + d[buttonIndex] + '</a>'
-                               +'</li>';
+                                    + '<a class="stack-btn" id="stack-btn-' + d[buttonIndex] + '" data-button-index="' + d[buttonIndex] + '" >'
+                                        + d[buttonIndex]
+                                    + '</a>'
+                               + '</li>';
                 }
             }
 
@@ -1425,12 +1430,16 @@ define([
 
                         return chart;
                     },
-                    function(){
-                        d3.selectAll('.nv-bar').on('click', function(e){
+                    function() {
+                        d3.selectAll('.nv-bar').on('click', function(e) {
                             //get a new 'chartable and invoke redrawChart to get the chart to be re-created
 
                             var countUnderClick = getValueReturnZeroAsDefault(e.label, sourceJson);
-                            if (countUnderClick === 0 && doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(sourceJson, e.label) === true) {
+                            if (
+                                countUnderClick === 0
+                                && doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(sourceJson, e.label) === true
+                            ) {
+
                             }
                             else {
                                 var res = getHierarchySubHierarchyFromObj(sourceJson, e.label);
@@ -1440,51 +1449,51 @@ define([
                         });
                     });
                 }//plain/discrete data case
-                else {
-                    var stackedChartableData = makeStackChartableFromValidHierarchyObject(res);
-                    nv.addGraph(function() {
-                        var chart = nv.models.multiBarChart()
-                            .transitionDuration(350)
-                            // .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
-                            .rotateLabels(0)      //Angle to rotate x-axis labels.
-                            .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
-                            .stacked(true)        //set stacked
-                            .showLegend(true)
-                            .reduceXTicks(true)
-                            .staggerLabels(true)
-                            .tooltip(function(alleleNum, geneName) {
-                                var completeName = geneName + '*' + alleleNum;
-                                var countDefZero = getValueReturnZeroAsDefault(completeName, res);
-                                var toolTipTextToDisplay = completeName + ' ; count=' + countDefZero;
-                                return toolTipTextToDisplay;
-                            })
-                            .groupSpacing(0.1)    //Distance between each group of bars.
-                        ;
+            else {
+                var stackedChartableData = makeStackChartableFromValidHierarchyObject(res);
+                nv.addGraph(function() {
+                    var chart = nv.models.multiBarChart()
+                        .transitionDuration(350)
+                        // .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
+                        .rotateLabels(0)      //Angle to rotate x-axis labels.
+                        .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
+                        .stacked(true)        //set stacked
+                        .showLegend(true)
+                        .reduceXTicks(true)
+                        .staggerLabels(true)
+                        .tooltip(function(alleleNum, geneName) {
+                            var completeName = geneName + '*' + alleleNum;
+                            var countDefZero = getValueReturnZeroAsDefault(completeName, res);
+                            var toolTipTextToDisplay = completeName + ' ; count=' + countDefZero;
+                            return toolTipTextToDisplay;
+                        })
+                        .groupSpacing(0.1)    //Distance between each group of bars.
+                    ;
 
-                        d3.select('#analyses-chart svg')
-                            .datum(stackedChartableData)
-                            .call(chart)
-                        ;
+                    d3.select('#analyses-chart svg')
+                        .datum(stackedChartableData)
+                        .call(chart)
+                    ;
 
-                        nv.utils.windowResize(function() {
-                            chart.update;
+                    nv.utils.windowResize(function() {
+                        chart.update;
 
-                            d3.selectAll('.nv-bar')
-                                .classed('hidden', function(d){
-                                    return d.size <= 0;
-                            });
-                        });
-
-                        return chart;
-                    },
-                    function(){
                         d3.selectAll('.nv-bar')
-                            .classed('hidden', function(d){
+                            .classed('hidden', function(d) {
                                 return d.size <= 0;
-                            })
-                        ;
+                            });
                     });
-                }//stacked data case
+
+                    return chart;
+                },
+                function() {
+                    d3.selectAll('.nv-bar')
+                        .classed('hidden', function(d) {
+                            return d.size <= 0;
+                        })
+                    ;
+                });
+            }//stacked data case
         };
 
         // Kickoff
@@ -1518,7 +1527,7 @@ define([
                 return chart;
             },
             function() {
-                d3.selectAll('.nv-bar').on('click', function(e){
+                d3.selectAll('.nv-bar').on('click', function(e) {
                     //get a new 'chartable and invoke redrawChart to get the chart to be re-created
                     var res = findFromLabel(sourceJson, e.label);
                     var chartable = makeChartableFromValidHierarchyObject(res);
@@ -1821,7 +1830,6 @@ define([
         });
 
     };
-
 
     App.Views.Analyses = Analyses;
     return Analyses;
