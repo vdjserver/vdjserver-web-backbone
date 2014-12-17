@@ -32,7 +32,7 @@ define([
     Vdjpipe.CompositionStats = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-composition-stats',
         initialize: function(options) {
-            this.vdjpipeOptionTitle = 'Generate Composition Stats';
+            this.vdjpipeOptionTitle = 'Generate Composition Statistics';
             App.Views.Generic.Vdjpipe.BaseOptionView.prototype.initialize.apply(this, [options]);
             this.render();
         },
