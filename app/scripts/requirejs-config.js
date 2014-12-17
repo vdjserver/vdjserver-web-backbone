@@ -27,7 +27,7 @@ require.config({
         'environment-config': 'config/environment-config',
 
         // Backbone Extensions
-        'backbone-agave':  'vendor/backbone-agave',
+        'backbone-agave':  'backbone/backbone-agave',
 
         // Regular Models
         'error': 'models/error',
