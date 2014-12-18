@@ -894,6 +894,30 @@ define([
 
             return this.startJob(job);
         },
+        events: {
+            'change #sequence-type': 'changeSequenceType',
+            'change #domain-system': 'changeDomainSystem',
+        },
+        changeSequenceType: function(e) {
+            e.preventDefault();
+
+            $('#domain-system').removeAttr('disabled');
+
+            if (e.currentTarget.value === 'TCR') {
+                $('#domain-system').val('imgt');
+                $('#domain-system').attr('disabled', 'disabled');
+            }
+        },
+        changeDomainSystem: function(e) {
+            e.preventDefault();
+
+            $('#sequence-type').removeAttr('disabled');
+
+            if (e.currentTarget.value === 'kabat') {
+                $('#sequence-type').val('Ig');
+                $('#sequence-type').attr('disabled', 'disabled');
+            }
+        },
         validateJobForm: function() {
             /*
             var validationError = false;
