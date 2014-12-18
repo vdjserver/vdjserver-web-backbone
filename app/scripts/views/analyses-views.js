@@ -60,7 +60,7 @@ define([
             return options.inverse(this);
         }
 
-        if (extension === 'csv') {
+        if (extension === 'csv' || extension === 'tsv') {
             return options.fn(this);
         }
         else {
@@ -266,7 +266,6 @@ define([
 
             'click .cdr3-histogram': 'cdr3Histogram',
             'click .gene-dist-chart-btn': 'geneDistChart',
-            'click .giant-table-btn': 'giantTable',
             'click .quality-chart-btn': 'qualityScoreChart',
         },
         showChart: function(e) {
@@ -285,21 +284,21 @@ define([
 
             var that = this;
 
-            var file = this.collection.get(filename);
-            file.downloadFileToCache()
-                .done(function(response) {
+            var fileHandle = this.collection.get(filename);
+            fileHandle.downloadFileToCache()
+                .done(function(fileData) {
 
                     switch (filename) {
                         case 'pre-filter_composition.csv':
                         case 'post-filter_composition.csv':
                             $('#chart-legend').show();
-                            Analyses.Charts.Composition(file, response, that.clearSVG);
+                            Analyses.Charts.Composition(fileHandle, fileData, that.clearSVG);
                             break;
 
                         case 'pre-filter_gc_hist.csv':
                         case 'post-filter-gc_hist.csv':
                             $('#chart-legend').show();
-                            Analyses.Charts.PercentageGcHistogram(file, response, that.clearSVG());
+                            Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, that.clearSVG());
                             break;
 
                         case 'pre-heat_map.csv':
@@ -309,19 +308,24 @@ define([
                         case 'pre-filter_len_hist.csv':
                         case 'post-filter_len_hist.csv':
                             $('#chart-legend').show();
-                            Analyses.Charts.LengthHistogram(file, response, that.clearSVG());
+                            Analyses.Charts.LengthHistogram(fileHandle, fileData, that.clearSVG());
                             break;
 
                         case 'pre-filter_mean_q_hist.csv':
                         case 'post-filter_mean_q_hist.csv':
                             $('#chart-legend').show();
-                            Analyses.Charts.MeanQualityScoreHistogram(file, response, that.clearSVG);
+                            Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, that.clearSVG);
                             break;
 
                         case 'pre-filter_qstats.csv':
                         case 'post-filter_qstats.csv':
                             $('#chart-legend').show();
-                            Analyses.Charts.QualityScore(file, response);
+                            Analyses.Charts.QualityScore(fileHandle, fileData);
+                            break;
+
+                        case 'human.IG.fna.igblast.kabat.out.rc_out.tsv':
+                        case 'human.IG.fna.igblast.imgt.out.rc_out.tsv':
+                            Analyses.Charts.GiantTable(fileHandle, fileData);
                             break;
 
                         default:
@@ -345,9 +349,6 @@ define([
         clearChart: function() {
             // clear announcements
             $('#chart-right-announcement').empty();
-
-            // hide delete button
-            $('.download-btn').hide();
 
             // remove SVG elements
             this.hideWarning();
@@ -429,22 +430,6 @@ define([
         toggleLegend: function() {
             $('.nv-legendWrap').toggle();
         },
-        giantTable: function() {
-
-            this.clearChart();
-            this.hideWarning();
-
-            //get file name post-filter_mean_q_hist.csv
-            var file = this.collection.get('human.IG.fna.igblast.kabat.out.rc_out.tsv');
-            file.downloadFileToCache()
-                .done(function(tsv) {
-                    Analyses.Charts.GiantTable(file, tsv);
-                })
-                .fail(function(response) {
-                    var errorMessage = this.getErrorMessageFromResponse(response);
-                    this.showWarning(errorMessage);
-                });
-        },
         cdr3Histogram: function() {
 
             this.clearChart();
@@ -482,8 +467,7 @@ define([
         },
     });
 
-    Analyses.Charts.LengthHistogram = function(file, text, clearSVG) {
-        //$('#chart-file-well').text(file.name);
+    Analyses.Charts.LengthHistogram = function(fileHandle, text, clearSVG) {
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -538,8 +522,7 @@ define([
         });
     };
 
-    Analyses.Charts.MeanQualityScoreHistogram = function(file, text, clearSVG) {
-        //$('#chart-file-well').text(file.name);
+    Analyses.Charts.MeanQualityScoreHistogram = function(fileHandle, text, clearSVG) {
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -614,7 +597,7 @@ define([
         });
     };
 
-    Analyses.Charts.QualityScore = function(file, text) {
+    Analyses.Charts.QualityScore = function(fileHandle, text) {
         var margin = {
             top: 30,
             right: 50,
@@ -632,8 +615,6 @@ define([
 
         var min = Infinity;
         var max = -Infinity;
-
-        //$('#chart-file-well').text(file.name);
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -943,8 +924,7 @@ define([
         ;
     };
 
-    Analyses.Charts.PercentageGcHistogram = function(file, text, clearSVG) {
-        //$('#chart-file-well').text(file.name);
+    Analyses.Charts.PercentageGcHistogram = function(fileHandle, text, clearSVG) {
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -1009,15 +989,13 @@ define([
         });
     };
 
-    Analyses.Charts.GeneDistribution = function(file, text, clearSVG) {
+    Analyses.Charts.GeneDistribution = function(fileHandle, text, clearSVG) {
 
         var sourceJson = JSON.parse(text);
 
         var stackStatus = false;
         var drillStack = ['human']; //keep track of drill-down location
         var currentDataset;
-
-        //$('#chart-file-well').text(file.name);
 
         d3.select('#analyses-chart')
             .insert('div', 'svg')
@@ -1547,9 +1525,8 @@ define([
         redrawGeneDistChart(res);
     };
 
-    Analyses.Charts.Cdr3 = function(file, text, clearSVG) {
+    Analyses.Charts.Cdr3 = function(fileHandle, text, clearSVG) {
 
-        //$('#chart-file-well').text(file.name);
         var cdr3Data = JSON.parse(text);
 
         nv.addGraph(function() {
@@ -1584,11 +1561,384 @@ define([
         });
     };
 
-    Analyses.Charts.GiantTable = function(file, tsv) {
+    Analyses.Charts.GiantTableFactory = function(filename) {
 
-        //$('#chart-file-well').text(file.name);
+        var columns = [];
 
-        //this.tableTSV = tsv;
+        if (filename === 'human.IG.fna.igblast.kabat.out.rc_out.tsv') {
+
+            columns = [
+                {
+                    id:    'Read identifier',
+                    name:  'Read identifier',
+                    field: 'Read identifier',
+                },
+                {
+                    id:    'V gene',
+                    name:  'V gene',
+                    field: 'V gene',
+                },
+                {
+                    id:    'J gene',
+                    name:  'J gene',
+                    field: 'J gene',
+                },
+                {
+                    id:    'D gene',
+                    name:  'D gene',
+                    field: 'D gene',
+                },
+                {
+                    id:    'Sequence similarity',
+                    name:  'Sequence similarity',
+                    field: 'Sequence similarity',
+                },
+                {
+                    id:    'Out-of-frame junction',
+                    name:  'Out-of-frame junction',
+                    field: 'Out-of-frame junction',
+                },
+                {
+                    id:    'Missing CYS',
+                    name:  'Missing CYS',
+                    field: 'Missing CYS',
+                },
+                {
+                    id:    'Missing TRP/PHE',
+                    name:  'Missing TRP/PHE',
+                    field: 'Missing TRP/PHE',
+                },
+                {
+                    id:    'Stop Codon?',
+                    name:  'Stop Codon?',
+                    field: 'Stop Codon?',
+                },
+                {
+                    id:    'Indels Found',
+                    name:  'Indels Found',
+                    field: 'Indels Found',
+                },
+                {
+                    id:    'Only Frame-Preserving Indels Found',
+                    name:  'Only Frame-Preserving Indels Found',
+                    field: 'Only Frame-Preserving Indels Found',
+                },
+                {
+                    id:    'CDR3 AA (kabat)',
+                    name:  'CDR3 AA (kabat)',
+                    field: 'CDR3 AA (kabat)',
+                },
+                {
+                    id:    'CDR3 NA (kabat)',
+                    name:  'CDR3 NA (kabat)',
+                    field: 'CDR3 NA (kabat)',
+                },
+                {
+                    id:    'FR1 aligned bases (kabat)',
+                    name:  'FR1 aligned bases (kabat)',
+                    field: 'FR1 aligned bases (kabat)',
+                },
+                {
+                    id:    'FR1 base subst. (kabat)',
+                    name:  'FR1 base subst. (kabat)',
+                    field: 'FR1 base subst. (kabat)',
+                },
+                {
+                    id:    'FR1 AA subst. (kabat)',
+                    name:  'FR1 AA subst. (kabat)',
+                    field: 'FR1 AA subst. (kabat)',
+                },
+                {
+                    id:    'FR1 codons with silent mut. (kabat)',
+                    name:  'FR1 codons with silent mut. (kabat)',
+                    field: 'FR1 codons with silent mut. (kabat)',
+                },
+                {
+                    id:    'CDR1 aligned bases (kabat)',
+                    name:  'CDR1 aligned bases (kabat)',
+                    field: 'CDR1 aligned bases (kabat)',
+                },
+                {
+                    id:    'CDR1 base subst. (kabat)',
+                    name:  'CDR1 base subst. (kabat)',
+                    field: 'CDR1 base subst. (kabat)',
+                },
+                {
+                    id:    'CDR1 AA subst. (kabat)',
+                    name:  'CDR1 AA subst. (kabat)',
+                    field: 'CDR1 AA subst. (kabat)',
+                },
+                {
+                    id:    'CDR1 codons with silent mut. (kabat)',
+                    name:  'CDR1 codons with silent mut. (kabat)',
+                    field: 'CDR1 codons with silent mut. (kabat)',
+                },
+                {
+                    id:    'FR2 aligned bases (kabat)',
+                    name:  'FR2 aligned bases (kabat)',
+                    field: 'FR2 aligned bases (kabat)',
+                },
+                {
+                    id:    'FR2 base subst. (kabat)',
+                    name:  'FR2 base subst. (kabat)',
+                    field: 'FR2 base subst. (kabat)',
+                },
+                {
+                    id:    'FR2 AA subst. (kabat)',
+                    name:  'FR2 AA subst. (kabat)',
+                    field: 'FR2 AA subst. (kabat)',
+                },
+                {
+                    id:    'FR2 codons with silent mut. (kabat)',
+                    name:  'FR2 codons with silent mut. (kabat)',
+                    field: 'FR2 codons with silent mut. (kabat)',
+                },
+                {
+                    id:    'CDR2 aligned bases (kabat)',
+                    name:  'CDR2 aligned bases (kabat)',
+                    field: 'CDR2 aligned bases (kabat)',
+                },
+                {
+                    id:    'CDR2 base subst. (kabat)',
+                    name:  'CDR2 base subst. (kabat)',
+                    field: 'CDR2 base subst. (kabat)',
+                },
+                {
+                    id:    'CDR2 AA subst. (kabat)',
+                    name:  'CDR2 AA subst. (kabat)',
+                    field: 'CDR2 AA subst. (kabat)',
+                },
+                {
+                    id:    'CDR2 codons with silent mut. (kabat)',
+                    name:  'CDR2 codons with silent mut. (kabat)',
+                    field: 'CDR2 codons with silent mut. (kabat)',
+                },
+                {
+                    id:    'FR3 aligned bases (kabat)',
+                    name:  'FR3 aligned bases (kabat)',
+                    field: 'FR3 aligned bases (kabat)',
+                },
+                {
+                    id:    'FR3 base subst. (kabat)',
+                    name:  'FR3 base subst. (kabat)',
+                    field: 'FR3 base subst. (kabat)',
+                },
+                {
+                    id:    'FR3 AA subst. (kabat)',
+                    name:  'FR3 AA subst. (kabat)',
+                    field: 'FR3 AA subst. (kabat)',
+                },
+                {
+                    id:    'FR3 codons with silent mut. (kabat)',
+                    name:  'FR3 codons with silent mut. (kabat)',
+                    field: 'FR3 codons with silent mut. (kabat)',
+                },
+                {
+                    id:    'Alternate V gene',
+                    name:  'Alternate V gene',
+                    field: 'Alternate V gene',
+                },
+                {
+                    id:    'Alternate J gene',
+                    name:  'Alternate J gene',
+                    field: 'Alternate J gene',
+                },
+                {
+                    id:    'Alternate D gene',
+                    name:  'Alternate D gene',
+                    field: 'Alternate D gene',
+                },
+            ];
+        }
+        else if (filename === 'human.IG.fna.igblast.imgt.out.rc_out.tsv') {
+            columns = [
+                {
+                    id:    'Read identifier',
+                    name:  'Read identifier',
+                    field: 'Read identifier',
+                },
+                {
+                    id:    'V gene',
+                    name:  'V gene',
+                    field: 'V gene',
+                },
+                {
+                    id:    'J gene',
+                    name:  'J gene',
+                    field: 'J gene',
+                },
+                {
+                    id:    'D gene',
+                    name:  'D gene',
+                    field: 'D gene',
+                },
+                {
+                    id:    'Sequence similarity',
+                    name:  'Sequence similarity',
+                    field: 'Sequence similarity',
+                },
+                {
+                    id:    'Out-of-frame junction',
+                    name:  'Out-of-frame junction',
+                    field: 'Out-of-frame junction',
+                },
+                {
+                    id:    'Missing CYS',
+                    name:  'Missing CYS',
+                    field: 'Missing CYS',
+                },
+                {
+                    id:    'Missing TRP/PHE',
+                    name:  'Missing TRP/PHE',
+                    field: 'Missing TRP/PHE',
+                },
+                {
+                    id:    'Stop Codon?',
+                    name:  'Stop Codon?',
+                    field: 'Stop Codon?',
+                },
+                {
+                    id:    'Indels Found',
+                    name:  'Indels Found',
+                    field: 'Indels Found',
+                },
+                {
+                    id:    'Only Frame-Preserving Indels Found',
+                    name:  'Only Frame-Preserving Indels Found',
+                    field: 'Only Frame-Preserving Indels Found',
+                },
+                {
+                    id:    'CDR3 AA (imgt)',
+                    name:  'CDR3 AA (imgt)',
+                    field: 'CDR3 AA (imgt)',
+                },
+                {
+                    id:    'CDR3 NA (imgt)',
+                    name:  'CDR3 NA (imgt)',
+                    field: 'CDR3 NA (imgt)',
+                },
+                {
+                    id:    'FR1 aligned bases (imgt)',
+                    name:  'FR1 aligned bases (imgt)',
+                    field: 'FR1 aligned bases (imgt)',
+                },
+                {
+                    id:    'FR1 base subst. (imgt)',
+                    name:  'FR1 base subst. (imgt)',
+                    field: 'FR1 base subst. (imgt)',
+                },
+                {
+                    id:    'FR1 AA subst. (imgt)',
+                    name:  'FR1 AA subst. (imgt)',
+                    field: 'FR1 AA subst. (imgt)',
+                },
+                {
+                    id:    'FR1 codons with silent mut. (imgt)',
+                    name:  'FR1 codons with silent mut. (imgt)',
+                    field: 'FR1 codons with silent mut. (imgt)',
+                },
+                {
+                    id:    'CDR1 aligned bases (imgt)',
+                    name:  'CDR1 aligned bases (imgt)',
+                    field: 'CDR1 aligned bases (imgt)',
+                },
+                {
+                    id:    'CDR1 base subst. (imgt)',
+                    name:  'CDR1 base subst. (imgt)',
+                    field: 'CDR1 base subst. (imgt)',
+                },
+                {
+                    id:    'CDR1 AA subst. (imgt)',
+                    name:  'CDR1 AA subst. (imgt)',
+                    field: 'CDR1 AA subst. (imgt)',
+                },
+                {
+                    id:    'CDR1 codons with silent mut. (imgt)',
+                    name:  'CDR1 codons with silent mut. (imgt)',
+                    field: 'CDR1 codons with silent mut. (imgt)',
+                },
+                {
+                    id:    'FR2 aligned bases (imgt)',
+                    name:  'FR2 aligned bases (imgt)',
+                    field: 'FR2 aligned bases (imgt)',
+                },
+                {
+                    id:    'FR2 base subst. (imgt)',
+                    name:  'FR2 base subst. (imgt)',
+                    field: 'FR2 base subst. (imgt)',
+                },
+                {
+                    id:    'FR2 AA subst. (imgt)',
+                    name:  'FR2 AA subst. (imgt)',
+                    field: 'FR2 AA subst. (imgt)',
+                },
+                {
+                    id:    'FR2 codons with silent mut. (imgt)',
+                    name:  'FR2 codons with silent mut. (imgt)',
+                    field: 'FR2 codons with silent mut. (imgt)',
+                },
+                {
+                    id:    'CDR2 aligned bases (imgt)',
+                    name:  'CDR2 aligned bases (imgt)',
+                    field: 'CDR2 aligned bases (imgt)',
+                },
+                {
+                    id:    'CDR2 base subst. (imgt)',
+                    name:  'CDR2 base subst. (imgt)',
+                    field: 'CDR2 base subst. (imgt)',
+                },
+                {
+                    id:    'CDR2 AA subst. (imgt)',
+                    name:  'CDR2 AA subst. (imgt)',
+                    field: 'CDR2 AA subst. (imgt)',
+                },
+                {
+                    id:    'CDR2 codons with silent mut. (imgt)',
+                    name:  'CDR2 codons with silent mut. (imgt)',
+                    field: 'CDR2 codons with silent mut. (imgt)',
+                },
+                {
+                    id:    'FR3 aligned bases (imgt)',
+                    name:  'FR3 aligned bases (imgt)',
+                    field: 'FR3 aligned bases (imgt)',
+                },
+                {
+                    id:    'FR3 base subst. (imgt)',
+                    name:  'FR3 base subst. (imgt)',
+                    field: 'FR3 base subst. (imgt)',
+                },
+                {
+                    id:    'FR3 AA subst. (imgt)',
+                    name:  'FR3 AA subst. (imgt)',
+                    field: 'FR3 AA subst. (imgt)',
+                },
+                {
+                    id:    'FR3 codons with silent mut. (imgt)',
+                    name:  'FR3 codons with silent mut. (imgt)',
+                    field: 'FR3 codons with silent mut. (imgt)',
+                },
+                {
+                    id:    'Alternate V gene',
+                    name:  'Alternate V gene',
+                    field: 'Alternate V gene',
+                },
+                {
+                    id:    'Alternate J gene',
+                    name:  'Alternate J gene',
+                    field: 'Alternate J gene',
+                },
+                {
+                    id:    'Alternate D gene',
+                    name:  'Alternate D gene',
+                    field: 'Alternate D gene',
+                },
+            ];
+        }
+
+        return columns;
+    };
+
+    Analyses.Charts.GiantTable = function(fileHandle, tsv) {
 
         var width = $('#analyses-chart').width();
         var height = $('#analyses-chart').height();
@@ -1596,108 +1946,35 @@ define([
         d3.select('#analyses-chart')
             .attr('style',
                 d3.select('#analyses-chart').attr('style') + ';'
-                + 'width:' + (+width - 40) + 'px;'
-                + 'height:' + (+height - 20) + 'px;'
-             )
+                + 'width:'  + (+width) + 'px;'
+                + 'height:' + (+height) + 'px;'
+            )
         ;
-
-        //that.downloadData = tsv;
-        $('.download-btn').show();
 
         var data = d3.tsv.parse(tsv);
 
-        var defaultColumns = [
-            {
-                id: 'read_id#',
-                name: 'Read Sequence Number',
-                field: 'read_id#',
-            },
-            {
-                id: 'read_name',
-                name: 'Read Identifier',
-                field: 'read_name',
-            },
-            {
-                id: 'top_V',
-                name: 'Highest Scoring V Segment',
-                field: 'top_V',
-            },
-            {
-                id: 'top_D',
-                name: 'Highest Scoring D Segment',
-                field: 'top_D',
-            },
-            {
-                id: 'top_J',
-                name: 'Highest Scoring J Segment',
-                field: 'top_J',
-            },
-            {
-                id: 'vdj_server_ann_imgt_cdr3_na_len',
-                name: 'IMGT-CDR3 Nucleotide Sequence Length',
-                field: 'vdj_server_ann_imgt_cdr3_na_len',
-            },
-            {
-                id: 'vdj_server_ann_imgt_cdr3_tr_len',
-                name: 'IMGT-CDR3 AA Sequence Length',
-                field: 'vdj_server_ann_imgt_cdr3_tr_len',
-            },
-            {
-                id: 'vdj_server_ann_kabat_cdr3_na_len',
-                name: 'Kabat-CDR3 Nucleotide Sequence Length',
-                field: 'vdj_server_ann_kabat_cdr3_na_len',
-            },
-            {
-                id: 'vdj_server_ann_kabat_cdr3_tr_len',
-                name: 'Kabat-CDR3 AA Sequence Length',
-                field: 'vdj_server_ann_kabat_cdr3_tr_len',
-            },
-            {
-                id: 'vdj_server_ann_whole_seq_bsb_freq',
-                name: 'Base Substitution Frequency (Over V and J )',
-                field: 'vdj_server_ann_whole_seq_bsb_freq',
-            },
-            {
-                id: 'vdj_server_ann_whole_seq_ns_rto',
-                name: 'Nonsynonymous/Synonymous Substitution Ratio (Over V and J)',
-                field: 'vdj_server_ann_whole_seq_ns_rto',
-            },
-            {
-                id: 'vdj_server_ann_whole_seq_indel_freq',
-                name: 'Indel Frequency (Over V and J)',
-                field: 'vdj_server_ann_whole_seq_indel_freq',
-            },
-            {
-                id: 'vdj_server_ann_productive_rearrangement',
-                name: 'Productive/Non-Productive Rearrangement',
-                field: 'vdj_server_ann_productive_rearrangement',
-            },
-            {
-                id: 'vdj_server_whole_vj_stp_cdn',
-                name: 'Stop Codon? (from beginning of V to the last aligned base)',
-                field: 'vdj_server_whole_vj_stp_cdn',
-            }
-        ];
+        var defaultColumns = Analyses.Charts.GiantTableFactory(fileHandle.get('name'));
 
         var keys = Object.keys(data[0]);
         var columns = [];
+
         for (var i = 0; i < keys.length; i++) {
+
             columns.push({
-                id: keys[i],
-                name: keys[i],
+                id:    keys[i],
+                name:  keys[i],
                 field: keys[i],
             });
         }
 
         var options = {
-            enableCellNavigation: true,
+            enableCellNavigation: false,
             enableColumnReorder: false,
-            defaultColumnWidth: 120,
-            editable: true,
+            defaultColumnWidth: 300,
+            editable: false,
         };
 
         // Grid
-        //var grid = new Slick.Grid(
         Slick.Grid(
             '#analyses-chart',
             data,
@@ -1705,6 +1982,7 @@ define([
             options
         );
 
+/*
         $('.slick-column-name').each(function()  {
             $(this).attr('title', $(this).text());
             $(this).attr('data-toggle', 'tooltip');
@@ -1713,10 +1991,10 @@ define([
         $('.slick-header-column').tooltip({
             tooltipClass: 'custom-tooltip-styling',
         });
-
+*/
     };
 
-    Analyses.Charts.Composition = function(file, response, clearSVG) {
+    Analyses.Charts.Composition = function(fileHandle, response, clearSVG) {
         $('#chart-right-announcement').text('Click to toggle displayed data.');
 
         response = response.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
