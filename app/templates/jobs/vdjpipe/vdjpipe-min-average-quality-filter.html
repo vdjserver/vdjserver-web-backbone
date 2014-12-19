@@ -1,15 +1,28 @@
 {{> vdjpipe-base-view-top}}
 
     <div class="row row-with-spacer">
-        <div class="col-md-12">
-            <input
-                class="job-form-item"
-                name="{{inputCount}}-{{parameterType}}"
-                placeholder="float"
-                type="number"
-                value="{{options}}"
-                step="0.01"
-            >
+        <div class="col-md-6">
+            <div class="col-md-12">
+                <input
+                    class="job-form-item"
+                    name="{{inputCount}}-{{parameterType}}"
+                    placeholder="float"
+                    type="number"
+                    value="{{options}}"
+                    step="0.01"
+                >
+            </div>
+        </div>
+        <div class="col-md-6">
+            <p>
+                This module removes reads with an average quality score below the threshold provided.
+            </p>
+            <p>
+                Passing a value of “None” means the filter will not be applied.
+            </p>
+            <p>
+                The average is calculated over the full length of the read.
+            </p>
         </div>
     </div>
 

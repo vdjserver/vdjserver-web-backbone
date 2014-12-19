@@ -1,7 +1,7 @@
 {{> vdjpipe-base-view-top}}
 
 <div class="row row-with-spacer">
-    <div class="col-md-12">
+    <div class="col-md-6">
         <table class="table">
             <tbody>
                 <tr>
@@ -22,7 +22,7 @@
                 </tr>
                 <tr>
                     <td>
-                        Discard Reads Without Barcodes?
+                        Discard Reads Without Primers?
                     </td>
                     <td>
                         {{#if options.required}}
@@ -80,6 +80,17 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+    <div class="col-md-6">
+        This module locates
+
+        {{#ifCond parameterType 'custom_j_primer_trimming'}}
+            j
+        {{else}}
+            v
+        {{/ifCond}}
+
+        primer regions within reads.
     </div>
 </div>
 

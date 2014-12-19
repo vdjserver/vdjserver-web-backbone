@@ -40,7 +40,7 @@ define([
 
     Vdjpipe.CustomJPrimerTrimming = App.Views.Generic.Vdjpipe.PrimerTrimming.extend({
         initialize: function(options) {
-            this.vdjpipeOptionTitle = 'J Primer Trimming';
+            this.vdjpipeOptionTitle = 'J Primer Matching';
             App.Views.Generic.Vdjpipe.PrimerTrimming.prototype.initialize.apply(this, [options]);
             this.render();
 
@@ -73,7 +73,7 @@ define([
 
     Vdjpipe.CustomVPrimerTrimming = App.Views.Generic.Vdjpipe.PrimerTrimming.extend({
         initialize: function(options) {
-            this.vdjpipeOptionTitle = 'V Primer Trimming';
+            this.vdjpipeOptionTitle = 'V Primer Matching';
             App.Views.Generic.Vdjpipe.PrimerTrimming.prototype.initialize.apply(this, [options]);
             this.render();
 

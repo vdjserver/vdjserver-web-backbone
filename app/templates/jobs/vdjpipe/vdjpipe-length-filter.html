@@ -1,35 +1,50 @@
 {{> vdjpipe-base-view-top}}
 
     <div class="row row-with-spacer">
-        <div class="col-md-12">
-            Min
-            &nbsp;
-            <input
-                class="job-form-item"
-                name="{{inputCount}}-{{parameterType}}-min"
-                placeholder="None"
-                type="number"
-                value="{{options.min}}"
-                step="1"
-                min="0"
-                pattern="\d+"
-            >
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    Min
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-min"
+                        placeholder="None"
+                        type="number"
+                        value="{{options.min}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
+                </div>
+            </div>
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Max
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-max"
+                        placeholder="None"
+                        type="number"
+                        value="{{options.max}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row row-with-spacer">
-        <div class="col-md-12">
-            Max
-            &nbsp;
-            <input
-                class="job-form-item"
-                name="{{inputCount}}-{{parameterType}}-max"
-                placeholder="None"
-                type="number"
-                value="{{options.max}}"
-                step="1"
-                min="0"
-                pattern="\d+"
-            >
+        <div class="col-md-6">
+            <p>
+                This module removes reads with a length below the minimum threshold provided or above the maximum threshold provided.
+            </p>
+            <p>
+                Passing a value of “None” means the filter will not be applied.
+            </p>
+            <p>
+                Note the read length used here is the length after removing barcodes or primers if the trim option is selected for those modules.
+            </p>
         </div>
     </div>
 

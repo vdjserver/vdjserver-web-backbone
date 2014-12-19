@@ -1,7 +1,7 @@
 {{> vdjpipe-base-view-top}}
 
     <div class="row row-with-spacer">
-        <div class="col-md-12">
+        <div class="col-md-6">
             Max
             &nbsp;
             <input
@@ -14,6 +14,14 @@
                 min="0"
                 pattern="\d+"
             >
+        </div>
+        <div class="col-md-6">
+            <p>
+                This module removes reads with a homopolymer stretch longer than the value provided.
+            </p>
+            <p>
+                Passing a value of “None” means the filter will not be applied.
+            </p>
         </div>
     </div>
 

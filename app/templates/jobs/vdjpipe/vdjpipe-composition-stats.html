@@ -1,7 +1,7 @@
 {{> vdjpipe-base-view-top}}
 
     <div class="row row-with-spacer">
-        <div class="col-md-12">
+        <div class="col-md-6">
             Output Filename Prefix
             &nbsp;
             <input
@@ -11,6 +11,9 @@
                 type="text"
                 value="{{options.out_prefix}}"
             >
+        </div>
+        <div class="col-md-6">
+            This module generates a histogram of the per-read GC content and a plot of the percentage of each nucleotide and of ambiguous base calls at each read position.
         </div>
     </div>
 

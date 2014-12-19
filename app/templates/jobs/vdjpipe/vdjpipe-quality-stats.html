@@ -1,7 +1,7 @@
 {{> vdjpipe-base-view-top}}
 
     <div class="row row-with-spacer">
-        <div class="col-md-12">
+        <div class="col-md-6">
             Output Filename Prefix
             &nbsp;
             <input
@@ -11,6 +11,9 @@
                 type="text"
                 value="{{options.out_prefix}}"
             >
+        </div>
+        <div class="col-md-6">
+            This module generates a length histogram, a histogram of the average quality score per read, and a box-and-whiskers plot of the quality score distribution at each read position.
         </div>
     </div>
 
