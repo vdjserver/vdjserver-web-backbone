@@ -396,10 +396,10 @@ define([
                 .append('div')
                 .attr('id', 'analyses-chart')
                 .attr('class', 'svg-container')
-                .attr('style', 'position:relative; top:1px;left:0px;')
+                .attr('style', 'position:relative; top:1px; left:0px;')
                 ;
 
-             d3.select('.slider').select('input').remove();
+            d3.select('.slider').select('input').remove();
 /*
             d3.select('.svg-container')
                 .append('svg')
@@ -701,11 +701,20 @@ define([
         var barWidth = x(data[1].position) / 4;
 
         // topSVG
+/*
         function redraw() {
             svgContainer.attr(
                 'transform',
                 'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
         }
+*/
+        var currentSliderValue = 1;
+
+        var redraw = function() {
+            svgContainer.attr(
+              'transform',
+              'translate(' + d3.event.translate + ')' + ' scale(' + currentSliderValue + ')');
+        };
 
         var svgContainer = d3.select('svg')
             .attr('width',
@@ -878,9 +887,9 @@ define([
             .style('text-anchor', 'end')
             .attr('dx', '-.8em')
             .attr('dy', '.15em')
-            .attr('transform', function(d) {
-                return 'rotate(-65)'
-                });
+            .attr('transform', function(/*d*/) {
+                return 'rotate(-65)';
+            });
 
         // Define the mean line
         var	meanLine = d3.svg.line()								// set 'valueline' to be a line
@@ -924,11 +933,27 @@ define([
                 .attr('class', 'meanPoints')
         ;
 
-        var currentSliderValue = 1;
+        var zoomed = function() {
+            svgContainer.attr(
+                'transform',
+                'translate(' + d3.event.translate + ') scale(' + d3.event.scale + ')'
+            );
+            slider.property('value', d3.event.scale);
+        };
 
         var zoom = d3.behavior.zoom()
             .scaleExtent([1, 10])
             .on('zoom', zoomed);
+
+        var slided = function(/*d*/) {
+            var components = d3.transform(svgContainer.attr('transform'));
+            currentSliderValue = d3.select(this).property('value');
+
+            svgContainer.attr(
+                'transform',
+                'translate(' + components.translate + ')' + ' scale(' + d3.select(this).property('value') + ')'
+            );
+        };
 
         var slider = d3.select('.slider').append('p').append('input')
           .datum({})
@@ -938,26 +963,6 @@ define([
           .attr('max', zoom.scaleExtent()[1])
           .attr('step', (zoom.scaleExtent()[1] - zoom.scaleExtent()[0]) / 100)
           .on('input', slided);
-
-        function zoomed() {
-          svgContainer.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
-          slider.property('value',  d3.event.scale);
-        }
-
-        function slided(d){
-        	var components = d3.transform(svgContainer.attr('transform'));
-        	currentSliderValue = d3.select(this).property('value');
-
-        	svgContainer.attr('transform',
-        			'translate(' + components.translate + ')'
-        			+ ' scale(' + d3.select(this).property('value') + ')');
-
-        }
-
-        function redraw() {
-          svgContainer.attr('transform','translate(' + d3.event.translate + ')'
-              + ' scale(' + currentSliderValue + ')');
-        }
     };
 
     Analyses.Charts.PercentageGcHistogram = function(fileHandle, text, clearSVG) {
@@ -1597,7 +1602,7 @@ define([
         });
     };
 
-    Analyses.Charts.GiantTableFactory = function(filename) {
+    Analyses.Charts.GiantTableFactory = function(filename, clearSVG) {
 
         clearSVG();
 
@@ -1976,7 +1981,7 @@ define([
         return columns;
     };
 
-    Analyses.Charts.GiantTable = function(fileHandle, tsv) {
+    Analyses.Charts.GiantTable = function(fileHandle, tsv, clearSVG) {
 
         var width = $('#analyses-chart').width();
         var height = $('#analyses-chart').height();
@@ -1991,7 +1996,7 @@ define([
 
         var data = d3.tsv.parse(tsv);
 
-        var defaultColumns = Analyses.Charts.GiantTableFactory(fileHandle.get('name'));
+        var defaultColumns = Analyses.Charts.GiantTableFactory(fileHandle.get('name'), clearSVG);
 
         var keys = Object.keys(data[0]);
         var columns = [];
