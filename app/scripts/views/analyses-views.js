@@ -1615,13 +1615,16 @@ define([
                 .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
                 .tooltips(true)
                 .groupSpacing(0.1)    //Distance between each group of bars.
+                .margin({left: 100})
             ;
 
             chart.xAxis
+                .axisLabel('CDR3 Length')
                 .tickFormat(d3.format(',f'))
             ;
 
             chart.yAxis
+                .axisLabel('Count')
                 .tickFormat(d3.format(',.1f'))
             ;
 
