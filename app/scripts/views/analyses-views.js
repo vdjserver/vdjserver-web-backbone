@@ -285,6 +285,19 @@ define([
             var that = this;
 
             var fileHandle = this.collection.get(filename);
+/*
+            console.log("filename substr is: " + filename.substr(-11));
+
+            if (filename.substr(-11) === '.rc_out.tsv') {
+                filename = filename.substr(-11);
+            }
+
+            if (filename.substr(-14) === '.cdr3_hist.tsv') {
+                filename = filename.substr(-14);
+            }
+
+            console.log("filename after substr is: " + filename);
+*/
             fileHandle.downloadFileToCache()
                 .done(function(fileData) {
 
@@ -325,7 +338,12 @@ define([
 
                         case 'human.IG.fna.igblast.kabat.out.rc_out.tsv':
                         case 'human.IG.fna.igblast.imgt.out.rc_out.tsv':
+                        //case '.rc_out.tsv':
                             Analyses.Charts.GiantTable(fileHandle, fileData, that.clearSVG);
+                            break;
+
+                        case '.cdr3_hist.tsv':
+                            Analyses.Charts.Cdr3(fileHandle, fileData, that.clearSVG);
                             break;
 
                         default:
@@ -431,23 +449,6 @@ define([
         },
         toggleLegend: function() {
             $('.nv-legendWrap').toggle();
-        },
-        cdr3Histogram: function() {
-
-            this.clearChart();
-            this.hideWarning();
-
-            var that = this;
-
-            var file = this.collection.get('cdr3-hist-data.json');
-            file.downloadFileToCache()
-                .done(function(text) {
-                    Analyses.Charts.Cdr3(file, text, that.clearSVG);
-                })
-                .fail(function(response) {
-                    var errorMessage = this.getErrorMessageFromResponse(response);
-                    this.showWarning(errorMessage);
-                });
         },
         //edward salinas
         geneDistChart: function() {
@@ -1568,8 +1569,43 @@ define([
 
     Analyses.Charts.Cdr3 = function(fileHandle, text, clearSVG) {
 
-        var cdr3Data = JSON.parse(text);
+        // Data Formatting
+        var cdr3Data = d3.tsv.parse(text);
 
+        var imgtData = [];
+        var kabatData = [];
+
+        for (var i = 0; i < cdr3Data.length; i++) {
+            var length = cdr3Data[i]['CDR3_LENGTH'];
+            var imgtDataPoint = cdr3Data[i]['imgt'];
+            var kabatDataPoint = cdr3Data[i]['kabat'];
+
+            var imgtStanza = {
+                'x': length,
+                'y': imgtDataPoint,
+            };
+
+            var kabatStanza = {
+                'x': length,
+                'y': kabatDataPoint,
+            };
+
+            imgtData.push(imgtStanza);
+            kabatData.push(kabatStanza);
+        }
+
+        cdr3Data = [
+            {
+                key: 'IMGT',
+                values: imgtData,
+            },
+            {
+                key: 'Kabat',
+                values: kabatData,
+            },
+        ];
+
+        // Begin Chart Code
         nv.addGraph(function() {
             var chart = nv.models.multiBarChart()
                 .transitionDuration(350)
@@ -1607,7 +1643,14 @@ define([
         clearSVG();
 
         var columns = [];
+/*
+        // TODO: differentiate between kabat and imgt
 
+        filename = filename.substr(-11);
+
+        if (filename === '.rc_out.tsv') {
+            console.log("filename past if");
+*/
         if (filename === 'human.IG.fna.igblast.kabat.out.rc_out.tsv') {
 
             columns = [
