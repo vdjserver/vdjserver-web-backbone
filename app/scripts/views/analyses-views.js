@@ -292,12 +292,13 @@ define([
                 filename = filename.substr(-11);
             }
 
+            console.log("filename after substr is: " + filename);
+*/
+
             if (filename.substr(-14) === '.cdr3_hist.tsv') {
                 filename = filename.substr(-14);
             }
 
-            console.log("filename after substr is: " + filename);
-*/
             fileHandle.downloadFileToCache()
                 .done(function(fileData) {
 
