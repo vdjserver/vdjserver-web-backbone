@@ -320,12 +320,12 @@ define([
                         case 'pre-filter_qstats.csv':
                         case 'post-filter_qstats.csv':
                             $('#chart-legend').show();
-                            Analyses.Charts.QualityScore(fileHandle, fileData);
+                            Analyses.Charts.QualityScore(fileHandle, fileData, that.clearSVG);
                             break;
 
                         case 'human.IG.fna.igblast.kabat.out.rc_out.tsv':
                         case 'human.IG.fna.igblast.imgt.out.rc_out.tsv':
-                            Analyses.Charts.GiantTable(fileHandle, fileData);
+                            Analyses.Charts.GiantTable(fileHandle, fileData, that.clearSVG);
                             break;
 
                         default:
@@ -398,6 +398,8 @@ define([
                 .attr('class', 'svg-container')
                 .attr('style', 'position:relative; top:1px;left:0px;')
                 ;
+
+             d3.select('.slider').select('input').remove();
 /*
             d3.select('.svg-container')
                 .append('svg')
@@ -523,6 +525,8 @@ define([
     };
 
     Analyses.Charts.MeanQualityScoreHistogram = function(fileHandle, text, clearSVG) {
+
+        clearSVG();
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -697,7 +701,6 @@ define([
         var barWidth = x(data[1].position) / 4;
 
         // topSVG
-
         function redraw() {
             svgContainer.attr(
                 'transform',
@@ -717,8 +720,12 @@ define([
             )
             .attr('class', 'box')
             .append('svg:g')
-                .attr('class', 'whatever')
                 .call(d3.behavior.zoom().on('zoom', redraw))
+                  .on('dblclick.zoom', null)
+                  .on('touchstart.zoom', null)
+                  .on('wheel.zoom', null)
+                  .on('mousewheel.zoom', null)
+                  .on('MozMousePixelScroll.zoom', null)
             .append('svg:g')
             ;
 
@@ -867,19 +874,13 @@ define([
             .attr('class', 'x axis')
             .attr('transform', 'translate(0,' + (height + margin.top + 1) + ')')
             .call(xAxis)
-            .append('text')             // text label for the x axis
-            .attr('dx', '-.1em')
-            .attr('dy', '.1em')
-            .attr('transform', function(/*d*/) {
-                return 'rotate(-65)';
-            })
-            // .attr('x', (width / 2) )
-            // .attr('y',  25)
-            // .attr('dy', '.71em')
-            // .style('text-anchor', 'middle')
-            // .style('font-size', '16px')
-            // .text('Position in Read')
-        ;
+            .selectAll('text')
+            .style('text-anchor', 'end')
+            .attr('dx', '-.8em')
+            .attr('dy', '.15em')
+            .attr('transform', function(d) {
+                return 'rotate(-65)'
+                });
 
         // Define the mean line
         var	meanLine = d3.svg.line()								// set 'valueline' to be a line
@@ -922,6 +923,41 @@ define([
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
                 .attr('class', 'meanPoints')
         ;
+
+        var currentSliderValue = 1;
+
+        var zoom = d3.behavior.zoom()
+            .scaleExtent([1, 10])
+            .on('zoom', zoomed);
+
+        var slider = d3.select('.slider').append('p').append('input')
+          .datum({})
+          .attr('type', 'range')
+          .attr('value', zoom.scaleExtent()[0])
+          .attr('min', zoom.scaleExtent()[0])
+          .attr('max', zoom.scaleExtent()[1])
+          .attr('step', (zoom.scaleExtent()[1] - zoom.scaleExtent()[0]) / 100)
+          .on('input', slided);
+
+        function zoomed() {
+          svgContainer.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
+          slider.property('value',  d3.event.scale);
+        }
+
+        function slided(d){
+        	var components = d3.transform(svgContainer.attr('transform'));
+        	currentSliderValue = d3.select(this).property('value');
+
+        	svgContainer.attr('transform',
+        			'translate(' + components.translate + ')'
+        			+ ' scale(' + d3.select(this).property('value') + ')');
+
+        }
+
+        function redraw() {
+          svgContainer.attr('transform','translate(' + d3.event.translate + ')'
+              + ' scale(' + currentSliderValue + ')');
+        }
     };
 
     Analyses.Charts.PercentageGcHistogram = function(fileHandle, text, clearSVG) {
@@ -1562,6 +1598,8 @@ define([
     };
 
     Analyses.Charts.GiantTableFactory = function(filename) {
+
+        clearSVG();
 
         var columns = [];
 
