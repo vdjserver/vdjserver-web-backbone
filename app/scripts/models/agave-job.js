@@ -108,6 +108,8 @@ function(
 
             this.set('parameters', parameters);
 
+            this.set('name', formData['job-name']);
+
             this._setArchivePath(projectUuid);
 
             this._setFilesParameter(selectedFileMetadatas);
