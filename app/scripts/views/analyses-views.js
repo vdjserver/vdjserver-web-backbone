@@ -285,15 +285,10 @@ define([
             var that = this;
 
             var fileHandle = this.collection.get(filename);
-/*
-            console.log("filename substr is: " + filename.substr(-11));
 
             if (filename.substr(-11) === '.rc_out.tsv') {
                 filename = filename.substr(-11);
             }
-
-            console.log("filename after substr is: " + filename);
-*/
 
             if (filename.substr(-14) === '.cdr3_hist.tsv') {
                 filename = filename.substr(-14);
@@ -337,9 +332,7 @@ define([
                             Analyses.Charts.QualityScore(fileHandle, fileData, that.clearSVG);
                             break;
 
-                        case 'human.IG.fna.igblast.kabat.out.rc_out.tsv':
-                        case 'human.IG.fna.igblast.imgt.out.rc_out.tsv':
-                        //case '.rc_out.tsv':
+                        case '.rc_out.tsv':
                             Analyses.Charts.GiantTable(fileHandle, fileData, that.clearSVG);
                             break;
 
@@ -1647,15 +1640,15 @@ define([
         clearSVG();
 
         var columns = [];
-/*
-        // TODO: differentiate between kabat and imgt
+        var filenameFragment = '';
 
-        filename = filename.substr(-11);
+        var splitFilename = filename.split('.');
 
-        if (filename === '.rc_out.tsv') {
-            console.log("filename past if");
-*/
-        if (filename === 'human.IG.fna.igblast.kabat.out.rc_out.tsv') {
+        if (splitFilename && splitFilename[splitFilename.length - 3]) {
+            filenameFragment = splitFilename[splitFilename.length - 3];
+        }
+
+        if (filenameFragment === 'kabat') {
 
             columns = [
                 {
@@ -1840,7 +1833,7 @@ define([
                 },
             ];
         }
-        else if (filename === 'human.IG.fna.igblast.imgt.out.rc_out.tsv') {
+        else if (filenameFragment === 'imgt') {
             columns = [
                 {
                     id:    'Read identifier',
