@@ -1831,6 +1831,16 @@ define([
                     name:  'Alternate D gene',
                     field: 'Alternate D gene',
                 },
+                {
+                    id:    'Release Version Tag',
+                    name:  'Release Version Tag',
+                    field: 'Release Version Tag',
+                },
+                {
+                    id:    'Release Version Hash',
+                    name:  'Release Version Hash',
+                    field: 'Release Version Hash',
+                },
             ];
         }
         else if (filenameFragment === 'imgt') {
@@ -2014,6 +2024,16 @@ define([
                     id:    'Alternate D gene',
                     name:  'Alternate D gene',
                     field: 'Alternate D gene',
+                },
+                {
+                    id:    'Release Version Tag',
+                    name:  'Release Version Tag',
+                    field: 'Release Version Tag',
+                },
+                {
+                    id:    'Release Version Hash',
+                    name:  'Release Version Hash',
+                    field: 'Release Version Hash',
                 },
             ];
         }
