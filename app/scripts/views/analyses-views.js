@@ -22,6 +22,22 @@ define([
 
     'use strict';
 
+    var chartableIgblastFilenameCheck = function(filename) {
+        if (filename.substr(-11) === '.rc_out.tsv') {
+            filename = filename.substr(-11);
+        }
+
+        if (filename.substr(-14) === '.cdr3_hist.tsv') {
+            filename = filename.substr(-14);
+        }
+
+        if (filename.substr(-20) === '.segment_counts.json') {
+            filename = filename.substr(-20);
+        }
+
+        return filename;
+    };
+
     Handlebars.registerHelper('IsJobFrozen', function(data, options) {
 
         if (data.status !== 'FINISHED') {
@@ -58,6 +74,10 @@ define([
         // TEMP - remove this once heat map charts are in place
         if (filename === 'post-filter_heat_map.csv' || filename === 'pre-filter_heat_map.csv') {
             return options.inverse(this);
+        }
+
+        if (filename && chartableIgblastFilenameCheck(filename) !== filename) {
+            return options.fn(this);
         }
 
         if (extension === 'csv' || extension === 'tsv') {
@@ -264,8 +284,6 @@ define([
             'click .chart-reset-btn': 'clearChart',
             'click .toggle-legend-btn': 'toggleLegend',
 
-            'click .cdr3-histogram': 'cdr3Histogram',
-            'click .gene-dist-chart-btn': 'geneDistChart',
             'click .quality-chart-btn': 'qualityScoreChart',
         },
         showChart: function(e) {
@@ -286,13 +304,8 @@ define([
 
             var fileHandle = this.collection.get(filename);
 
-            if (filename.substr(-11) === '.rc_out.tsv') {
-                filename = filename.substr(-11);
-            }
-
-            if (filename.substr(-14) === '.cdr3_hist.tsv') {
-                filename = filename.substr(-14);
-            }
+            // Filename adjustments for igblast charts
+            filename = chartableIgblastFilenameCheck(filename);
 
             fileHandle.downloadFileToCache()
                 .done(function(fileData) {
@@ -338,6 +351,10 @@ define([
 
                         case '.cdr3_hist.tsv':
                             Analyses.Charts.Cdr3(fileHandle, fileData, that.clearSVG);
+                            break;
+
+                        case '.segment_counts.json':
+                            Analyses.Charts.GeneDistribution(fileHandle, fileData, that.clearSVG());
                             break;
 
                         default:
@@ -443,24 +460,6 @@ define([
         },
         toggleLegend: function() {
             $('.nv-legendWrap').toggle();
-        },
-        //edward salinas
-        geneDistChart: function() {
-            this.clearChart();
-            this.hideWarning();
-
-            var that = this;
-
-            //get file name post-filter_mean_q_hist.csv
-            var file = this.collection.get('real_discrete_bar_chart.json');
-            file.downloadFileToCache()
-                .done(function(text) {
-                    Analyses.Charts.GeneDistribution(file, text, that.clearSVG());
-                })
-                .fail(function(response) {
-                    var errorMessage = this.getErrorMessageFromResponse(response);
-                    this.showWarning(errorMessage);
-                });
         },
     });
 
@@ -1030,7 +1029,9 @@ define([
         var sourceJson = JSON.parse(text);
 
         var stackStatus = false;
-        var drillStack = ['human']; //keep track of drill-down location
+
+        // this has to be an array
+        var drillStack = [sourceJson['label']]; //keep track of drill-down location
         var currentDataset;
 
         d3.select('#analyses-chart')
