@@ -278,7 +278,7 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 var privateAttributes = {
                     'tags': this._formatTagsForSave(formData['tags']),
-                    'read-direction': this._formatReadDirectionForInitialSave(formData),
+                    'readDirection': this._formatReadDirectionForInitialSave(formData),
                 };
 
                 this.set({
@@ -345,7 +345,7 @@ function(Backbone, EnvironmentConfig, moment) {
             updateReadDirection: function(newReadDirection) {
                 var value = this.get('value');
 
-                value['privateAttributes']['read-direction'] = newReadDirection;
+                value['privateAttributes']['readDirection'] = newReadDirection;
 
                 this.set('value', value);
 

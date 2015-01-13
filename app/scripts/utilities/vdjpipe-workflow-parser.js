@@ -618,14 +618,14 @@ define(['app'], function(App) {
                         var qualMetadata = allFileMetadatas.get(qualUuid);
                         var qualValue = qualMetadata.get('value');
 
-                        if (privateAttributes['read-direction'] === 'F') {
+                        if (privateAttributes['readDirection'] === 'F') {
                             readDirections.push({
                                 'sequence': value.name,
                                 'quality': qualValue.name,
                             });
                         }
 
-                        if (privateAttributes['read-direction'] === 'R') {
+                        if (privateAttributes['readDirection'] === 'R') {
                             readDirections.push({
                                 'sequence': value.name,
                                 'is_reverse': true,
@@ -637,12 +637,12 @@ define(['app'], function(App) {
                     }
                 }
 
-                if (privateAttributes['read-direction'] === 'F') {
+                if (privateAttributes['readDirection'] === 'F') {
                     readDirections.push({
                         'sequence': value.name,
                     });
                 }
-                else if (privateAttributes['read-direction'] === 'R') {
+                else if (privateAttributes['readDirection'] === 'R') {
                     readDirections.push({
                         'sequence': value.name,
                         'is_reverse': true,
