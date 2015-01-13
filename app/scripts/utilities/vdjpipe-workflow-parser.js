@@ -612,7 +612,7 @@ define(['app'], function(App) {
 
                 if (value.name.split('.').pop() === 'fasta') {
 
-                    var qualUuid = privateAttributes['quality-score-metadata-uuid'];
+                    var qualUuid = privateAttributes['qualityScoreMetadataUuid'];
 
                     if (qualUuid) {
                         var qualMetadata = allFileMetadatas.get(qualUuid);
