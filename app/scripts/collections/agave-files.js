@@ -44,7 +44,7 @@ function(Backbone, EnvironmentConfig) {
         url: function() {
             return '/meta/v2/data?q='
                    + encodeURIComponent('{'
-                       + '"name":"projectFile",'
+                       + '"name": { $in: ["projectFile", "projectJobFile"] },'
                        + '"value.projectUuid":"' + this.projectUuid + '",'
                        + '"value.isDeleted":false'
                    + '}')

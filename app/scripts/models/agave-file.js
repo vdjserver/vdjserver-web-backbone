@@ -138,10 +138,9 @@ function(Backbone, EnvironmentConfig, moment) {
                     EnvironmentConfig.agaveRoot
                         + '/files/v2/media/system'
                         + '/' + EnvironmentConfig.storageSystem
-                        + '//projects'
-                        + '/' + this.get('projectUuid')
-                        + '/files'
-                        + '/' + this.get('name')
+
+                        // NOTE: this uses agave // paths
+                        + '/' + this.get('path')
                 );
 
                 xhr.responseType = 'blob';
@@ -310,16 +309,37 @@ function(Backbone, EnvironmentConfig, moment) {
             getFileModel: function() {
                 var value = this.get('value');
 
-                var filePath = '/projects'
+                var fileModel = new File();
+                var filePath = '';
+
+                if (this.get('name') === 'projectFile') {
+
+                    filePath = '/projects'
                              + '/' + value['projectUuid']
                              + '/files'
                              + '/' + value['name'];
 
-                var fileModel = new File({
-                    path: filePath,
-                    projectUuid: value['projectUuid'],
-                    name: value['name'],
-                });
+                    fileModel = new File({
+                        path: filePath,
+                        projectUuid: value['projectUuid'],
+                        name: value['name'],
+                    });
+                }
+                else if (this.get('name') === 'projectJobFile') {
+
+                    filePath = '/projects'
+                             + '/' + value['projectUuid']
+                             + '/analyses'
+                             + '/' + value['privateAttributes']['relativeArchivePath']
+                             + '/' + value['name']
+                             ;
+
+                    fileModel = new File({
+                        path: filePath,
+                        projectUuid: value['projectUuid'],
+                        name: value['name'],
+                    });
+                }
 
                 return fileModel;
             },

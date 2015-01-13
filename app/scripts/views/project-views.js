@@ -615,9 +615,13 @@ define([
             for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
                 var fileMetadataModel = this.fileListings.get(selectedFileMetadataUuids[i]);
 
-                var fileModel = fileMetadataModel.getFileModel();
+                if (fileMetadataModel.get('name') === 'projectFile') {
 
-                filePromises[i] = createFileSoftDeletePromise(fileModel);
+                    var fileModel = fileMetadataModel.getFileModel();
+
+                    filePromises[filePromises.count] = createFileSoftDeletePromise(fileModel);
+                }
+
                 metadataPromises[i] = createFileMetadataSoftDeletePromise(fileMetadataModel);
             }
 
@@ -634,9 +638,11 @@ define([
         _clickDownloadFile: function(e) {
             e.preventDefault();
 
-            var fileName = e.target.dataset.filename;
-            var agaveFile = new Backbone.Agave.Model.File({projectUuid: this.projectUuid, name: fileName});
-            agaveFile.downloadFileToDisk();
+            var metadataUuid = e.target.dataset.metadatauuid;
+
+            var fileMetadataModel = this.fileListings.get(metadataUuid);
+            var fileModel = fileMetadataModel.getFileModel();
+            fileModel.downloadFileToDisk();
         },
 
         _clickDownloadMultipleFiles: function(e) {
