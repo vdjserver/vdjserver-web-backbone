@@ -17,6 +17,9 @@
                             Size
                         </th>
                         <th class="text-center">
+                            File Origin
+                        </th>
+                        <th class="text-center">
                             Type
                         </th>
                         <th class="text-center">
@@ -43,6 +46,13 @@
                             </td>
                             <td>
                                 {{GetHumanReadableFileSize value.length}}
+                            </td>
+                            <td>
+                                {{#ifCond this.name "projectFile"}}
+                                    Uploaded File
+                                {{else}}
+                                    Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.privateAttributes.jobName}}</a>
+                                {{/ifCond}}
                             </td>
                             <td>
                                 <select
