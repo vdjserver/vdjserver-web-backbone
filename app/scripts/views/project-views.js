@@ -642,6 +642,7 @@ define([
 
             var fileMetadataModel = this.fileListings.get(metadataUuid);
             var fileModel = fileMetadataModel.getFileModel();
+
             fileModel.downloadFileToDisk();
         },
 

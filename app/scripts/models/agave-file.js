@@ -132,15 +132,35 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 var that = this;
 
+                var path = '';
+
+                if (this.get('jobUuid')) {
+                    path = EnvironmentConfig.agaveRoot
+                         + '/jobs'
+                         + '/v2'
+                         + '/' + this.get('jobUuid')
+                         + '/outputs'
+                         + '/media'
+                         + '/' + this.get('name')
+                         ;
+                }
+                else {
+                    path = EnvironmentConfig.agaveRoot
+                         + '/files'
+                         + '/v2'
+                         + '/media'
+                         + '/system'
+                         + '/' + EnvironmentConfig.storageSystem
+
+                         // NOTE: this uses agave // paths
+                         + '/' + this.get('path')
+                         ;
+                }
+
                 var xhr = new XMLHttpRequest();
                 xhr.open(
                     'get',
-                    EnvironmentConfig.agaveRoot
-                        + '/files/v2/media/system'
-                        + '/' + EnvironmentConfig.storageSystem
-
-                        // NOTE: this uses agave // paths
-                        + '/' + this.get('path')
+                    path
                 );
 
                 xhr.responseType = 'blob';
@@ -336,6 +356,7 @@ function(Backbone, EnvironmentConfig, moment) {
                 var fileModel = new File({
                     path: this.getFilePath(),
                     projectUuid: value['projectUuid'],
+                    jobUuid: value['jobUuid'],
                     name: value['name'],
                 });
 
