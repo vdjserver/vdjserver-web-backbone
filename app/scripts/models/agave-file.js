@@ -277,8 +277,11 @@ function(Backbone, EnvironmentConfig, moment) {
             setInitialMetadata: function(file, formData) {
 
                 var privateAttributes = {
-                    'tags': this._formatTagsForSave(formData['tags']),
                     'readDirection': this._formatReadDirectionForInitialSave(formData),
+                };
+
+                var publicAttributes = {
+                    'tags': this._formatTagsForSave(formData['tags']),
                 };
 
                 this.set({
@@ -290,7 +293,7 @@ function(Backbone, EnvironmentConfig, moment) {
                         length: file.get('fileReference').size,
                         isDeleted: false,
                         privateAttributes: privateAttributes,
-                        publicAttributes: {},
+                        publicAttributes: publicAttributes,
                     },
                 });
             },
@@ -300,7 +303,7 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 var tagArray = this._formatTagsForSave(tags);
 
-                value['privateAttributes']['tags'] = tagArray;
+                value['publicAttributes']['tags'] = tagArray;
 
                 this.set('value', value);
 

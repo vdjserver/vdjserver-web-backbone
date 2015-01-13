@@ -54,10 +54,10 @@ define([
         }
     });
 
-    Handlebars.registerHelper('GetTagDisplay', function(privateAttributes) {
-        if (privateAttributes && privateAttributes['tags']) {
+    Handlebars.registerHelper('GetTagDisplay', function(publicAttributes) {
+        if (publicAttributes && publicAttributes['tags']) {
 
-            var tags = privateAttributes['tags'];
+            var tags = publicAttributes['tags'];
 
             if (_.isArray(tags)) {
                 tags = tags.join(', ');

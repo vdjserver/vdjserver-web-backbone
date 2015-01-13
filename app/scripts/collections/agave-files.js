@@ -175,9 +175,9 @@ function(Backbone, EnvironmentConfig) {
                 if (
                     data.get('value').privateAttributes
                     &&
-                    data.get('value').privateAttributes['tags']
+                    data.get('value').publicAttributes['tags']
                     &&
-                    data.get('value').privateAttributes['tags']
+                    data.get('value').publicAttributes['tags']
                         .toString()
                         .toLowerCase()
                         .indexOf(searchString.toLowerCase()) > -1
