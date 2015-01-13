@@ -173,11 +173,11 @@ function(Backbone, EnvironmentConfig) {
                 }
 
                 if (
-                    data.get('value').privateAttributes
+                    data.get('value')
                     &&
-                    data.get('value').publicAttributes['tags']
+                    data.get('value').tags
                     &&
-                    data.get('value').publicAttributes['tags']
+                    data.get('value').tags
                         .toString()
                         .toLowerCase()
                         .indexOf(searchString.toLowerCase()) > -1

@@ -51,7 +51,7 @@
                                 {{#ifCond this.name "projectFile"}}
                                     Uploaded File
                                 {{else}}
-                                    Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.privateAttributes.jobName}}</a>
+                                    Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.jobName}}</a>
                                 {{/ifCond}}
                             </td>
                             <td>
@@ -81,7 +81,7 @@
                                 >
                                     <option></option>
                                     {{#each ../readDirections}}
-                                        <option {{ifCondSelected this ../value.privateAttributes.readDirection}}>{{this}}</option>
+                                        <option {{ifCondSelected this ../value.readDirection}}>{{this}}</option>
                                     {{/each}}
                                 </select>
                             </td>

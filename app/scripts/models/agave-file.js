@@ -276,10 +276,6 @@ function(Backbone, EnvironmentConfig, moment) {
             },
             setInitialMetadata: function(file, formData) {
 
-                var privateAttributes = {
-                    'readDirection': this._formatReadDirectionForInitialSave(formData),
-                };
-
                 var publicAttributes = {
                     'tags': this._formatTagsForSave(formData['tags']),
                 };
@@ -292,7 +288,7 @@ function(Backbone, EnvironmentConfig, moment) {
                         name: file.get('name'),
                         length: file.get('fileReference').size,
                         isDeleted: false,
-                        privateAttributes: privateAttributes,
+                        readDirection: this._formatReadDirectionForInitialSave(formData),
                         publicAttributes: publicAttributes,
                     },
                 });
@@ -327,7 +323,7 @@ function(Backbone, EnvironmentConfig, moment) {
                     filePath = '/projects'
                              + '/' + value['projectUuid']
                              + '/analyses'
-                             + '/' + value['privateAttributes']['relativeArchivePath']
+                             + '/' + value['relativeArchivePath']
                              + '/' + value['name']
                              ;
                 }
@@ -348,7 +344,7 @@ function(Backbone, EnvironmentConfig, moment) {
             updateReadDirection: function(newReadDirection) {
                 var value = this.get('value');
 
-                value['privateAttributes']['readDirection'] = newReadDirection;
+                value['readDirection'] = newReadDirection;
 
                 this.set('value', value);
 
@@ -357,7 +353,7 @@ function(Backbone, EnvironmentConfig, moment) {
             updateAssociatedQualityScoreMetadata: function(qualityScoreMetadataUuid) {
                 var value = this.get('value');
 
-                value['privateAttributes']['qualityScoreMetadataUuid'] = qualityScoreMetadataUuid;
+                value['qualityScoreMetadataUuid'] = qualityScoreMetadataUuid;
 
                 this.set('value', value);
 
@@ -366,7 +362,7 @@ function(Backbone, EnvironmentConfig, moment) {
             removeQualityScoreMetadataAssociation: function() {
                 var value = this.get('value');
 
-                delete value['privateAttributes']['qualityScoreMetadataUuid'];
+                delete value['qualityScoreMetadataUuid'];
 
                 this.set('value', value);
 
@@ -375,7 +371,7 @@ function(Backbone, EnvironmentConfig, moment) {
             getAssociatedQualityScoreMetadataUuid: function() {
                 var value = this.get('value');
 
-                var qualUuid = value['privateAttributes']['qualityScoreMetadataUuid'];
+                var qualUuid = value['qualityScoreMetadataUuid'];
 
                 return qualUuid;
             },
