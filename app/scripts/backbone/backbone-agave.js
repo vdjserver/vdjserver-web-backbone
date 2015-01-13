@@ -137,7 +137,7 @@ define([
                 return response.result;
             }
             return response;
-        }
+        },
     });
 
     // Agave extension of default Backbone.Collection that uses Agave sync
@@ -150,7 +150,7 @@ define([
                 return response.result;
             }
             return response;
-        }
+        },
     });
 
     Agave.MetadataModel = Agave.Model.extend({
@@ -200,7 +200,7 @@ define([
             }
 
             return result;
-        }
+        },
     });
 
     // Agave extension of default Backbone.Model that uses Agave sync
@@ -214,7 +214,7 @@ define([
                 return response.result;
             }
             return response;
-        }
+        },
     });
 
     Agave.JobModel = Agave.Model.extend({
@@ -340,16 +340,15 @@ define([
             return jqxhr;
         },
         _setFilesParameter: function(fileMetadatas) {
-            var tmpFileMetadatas = fileMetadatas.pluck('value');
 
             var filePaths = [];
-            for (var i = 0; i < tmpFileMetadatas.length; i++) {
+            for (var i = 0; i < fileMetadatas.models.length; i++) {
+
+                var fileMetadata = fileMetadatas.at(i);
+
                 filePaths.push(
                     'agave://' + EnvironmentConfig.storageSystem
-                    + '//projects'
-                    + '/' + tmpFileMetadatas[i].projectUuid
-                    + '/files'
-                    + '/' + tmpFileMetadatas[i].name
+                    + '/' + fileMetadata.getFilePath()
                 );
             }
 
@@ -429,7 +428,7 @@ define([
             var expires = this.get('expires');
             var hasError = false;
 
-            if (! expires) {
+            if (!expires) {
                 hasError = true;
             }
 
@@ -437,7 +436,7 @@ define([
                 hasError = true;
             }
 
-            if (! hasError) {
+            if (!hasError) {
                 return true;
             }
             else {

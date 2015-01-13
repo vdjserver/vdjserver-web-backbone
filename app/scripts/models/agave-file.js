@@ -240,7 +240,7 @@ function(Backbone, EnvironmentConfig, moment) {
                             'projectUuid': '',
                             'fileType': '',
                             'isDeleted': false,
-                        }
+                        },
                     }
                 );
             },
@@ -306,10 +306,9 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 return this.save();
             },
-            getFileModel: function() {
-                var value = this.get('value');
+            getFilePath: function() {
 
-                var fileModel = new File();
+                var value = this.get('value');
                 var filePath = '';
 
                 if (this.get('name') === 'projectFile') {
@@ -317,13 +316,8 @@ function(Backbone, EnvironmentConfig, moment) {
                     filePath = '/projects'
                              + '/' + value['projectUuid']
                              + '/files'
-                             + '/' + value['name'];
-
-                    fileModel = new File({
-                        path: filePath,
-                        projectUuid: value['projectUuid'],
-                        name: value['name'],
-                    });
+                             + '/' + value['name']
+                             ;
                 }
                 else if (this.get('name') === 'projectJobFile') {
 
@@ -333,13 +327,18 @@ function(Backbone, EnvironmentConfig, moment) {
                              + '/' + value['privateAttributes']['relativeArchivePath']
                              + '/' + value['name']
                              ;
-
-                    fileModel = new File({
-                        path: filePath,
-                        projectUuid: value['projectUuid'],
-                        name: value['name'],
-                    });
                 }
+
+                return filePath;
+            },
+            getFileModel: function() {
+                var value = this.get('value');
+
+                var fileModel = new File({
+                    path: this.getFilePath(),
+                    projectUuid: value['projectUuid'],
+                    name: value['name'],
+                });
 
                 return fileModel;
             },
