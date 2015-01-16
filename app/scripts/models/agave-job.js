@@ -85,7 +85,7 @@ function(
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: 'igblast-lonestar-1.4.0u4',
+                    appId: 'igblast-lonestar-1.4.0u6',
                     inputs: {
                         query: '',
                     },
