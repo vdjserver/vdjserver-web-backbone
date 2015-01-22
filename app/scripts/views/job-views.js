@@ -919,28 +919,34 @@ define([
             }
         },
         validateJobForm: function() {
-            /*
+
             var validationError = false;
 
-            if ($.trim($('#workflow-staging-area').html()) === '') {
-                $('#select-workflow')
-                    .closest('.form-group')
+            if ($('#igblast-species').val() === '') {
+                $('#igblast-species-group')
                     .addClass('has-error')
                     ;
 
-                $('#select-workflow')
-                    .closest('.form-group')
-                    .get(0)
-                    .scrollIntoView()
+                validationError = true;
+            }
+
+            if ($('#sequence-type').val() === '') {
+                $('#igblast-sequence-group')
+                    .addClass('has-error')
+                    ;
+
+                validationError = true;
+            }
+
+            if ($('#domain-system').val() === '') {
+                $('#igblast-domain-group')
+                    .addClass('has-error')
                     ;
 
                 validationError = true;
             }
 
             return validationError;
-            */
-
-            return false;
         },
     });
 
