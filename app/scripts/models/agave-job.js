@@ -132,8 +132,7 @@ function(
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    //appId: 'vdj_pipe-0.1.2u2',
-                    appId: 'vdj_pipe-0.1.2',
+                    appId: 'vdj_pipe-0.1.2u6',
                 }
 
             );
