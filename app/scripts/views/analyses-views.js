@@ -1380,7 +1380,7 @@ define([
                 else {
                     buttonHTML = buttonHTML
                                + '<li>'
-                                    + '<a class="stack-btn" id="stack-btn-' + d[buttonIndex] + '" data-button-index="' + d[buttonIndex] + '" >'
+                                    + '<a class="stack-btn" id="stack-btn-' + d[buttonIndex] + '" data-drillindex="' + d[buttonIndex] + '" >'
                                         + d[buttonIndex]
                                     + '</a>'
                                + '</li>';
@@ -1411,10 +1411,12 @@ define([
 
             // Breadcrumb listener - reset stack breadcrumb buttons
             document.getElementById('stackdiv').innerHTML = getHTMLButtonsFromDrillStack(drillStack);
-            $('.stack-btn').click(function(breadcrumb) {
-                var value = breadcrumb.toElement.attributes.getNamedItem('data-button-index').value;
-                drillStack = resetDrillStackUpTo(value, drillStack);
-                var res = getHierarchySubHierarchyFromObj(sourceJson, value);
+            $('.stack-btn').click(function(e) {
+
+                var drillIndex = e.target.dataset.drillindex;
+                drillStack = resetDrillStackUpTo(drillIndex, drillStack);
+
+                var res = getHierarchySubHierarchyFromObj(sourceJson, drillIndex);
                 redrawGeneDistChart(res);
             });
 
