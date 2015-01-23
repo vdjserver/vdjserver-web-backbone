@@ -4,9 +4,6 @@
             <thead>
                 <tr>
                     <th class="text-center">
-                        <input name="select-all-files-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
-                    </th>
-                    <th class="text-center">
                         Name
                     </th>
                     <th class="text-center">
@@ -20,9 +17,6 @@
             <tbody>
                 {{#each outputFiles}}
                     <tr class="text-center">
-                        <td>
-                            <input name="file-checkbox" type="checkbox" class="selected-files">
-                        </td>
                         <td>
                             <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
                         </td>
@@ -80,8 +74,9 @@
 
 	<div class="alert alert-danger alert-message" style="display:none;"></div>
 
-  <div class="slider"></div>
+    <div class="slider"></div>
 	<div class="d3-tip"></div>
+
 	<div id='analyses-chart' class='svg-container'>
 	    <svg></svg>
 	</div>
