@@ -12,6 +12,8 @@
 
     background-color: #ffffff;
 
+    border-right: 1px solid $projectListBorderColor;
+
     a {
         text-decoration: none;
         color: #000000;
@@ -45,6 +47,8 @@
 
     background-color: #ffffff;
     border-bottom: 3px solid #533436;
+
+    border-right: 1px solid $projectListBorderColor;
 }
 
 .projects-list-vdj-logo {
@@ -60,6 +64,8 @@
     //margin-left: 15px;
 
     background-color: $projectMenuLightColor;
+
+    border-right: 1px solid $projectListBorderColor;
 
     &.active {
         border-bottom: 3px solid #aaaaaa;
@@ -87,6 +93,8 @@
     border: none;
 
     text-align: center;
+
+    border-right: 1px solid $projectListBorderColor;
 
     a {
         color: inherit;
