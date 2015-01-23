@@ -29,36 +29,51 @@ function(Backbone, EnvironmentConfig) {
             if (!attributes.username) {
                 errors.push({
                     'message': 'Missing username.',
-                    'type': 'username'
+                    'type': 'username',
                 });
             }
 
             if (!attributes.email) {
                 errors.push({
                     'message': 'Missing email.',
-                    'type': 'email'
+                    'type': 'email',
                 });
             }
 
             if (!attributes.password) {
                 errors.push({
                     'message': 'Missing password.',
-                    'type': 'password'
+                    'type': 'password',
                 });
             }
 
             if (!attributes.passwordCheck) {
                 errors.push({
                     'message': 'Missing password verification.',
-                    'type': 'passwordCheck'
+                    'type': 'passwordCheck',
                 });
             }
 
-            // Incorrect attributes
+            // Incorrect username attributes
+            if (attributes.username !== attributes.username.toLowerCase()) {
+                errors.push({
+                    'message': 'Usernames can not include capital letters.',
+                    'type': 'username',
+                });
+            }
+
+            if (attributes.username.indexOf(' ') >= 0) {
+                errors.push({
+                    'message': 'Usernames can not include spaces.',
+                    'type': 'username',
+                });
+            }
+
+            // Incorrect password attributes
             if (attributes.password.length > 0 && attributes.password.length < 5) {
                 errors.push({
                     'message': 'Password is too short.',
-                    'type': 'password'
+                    'type': 'password',
                 });
             }
 
@@ -68,28 +83,28 @@ function(Backbone, EnvironmentConfig) {
             ) {
                 errors.push({
                     'message': 'Password can\'t be part of username.',
-                    'type': 'password'
+                    'type': 'password',
                 });
             }
 
             if (attributes.password.indexOf('%') > -1) {
                 errors.push({
                     'message': 'Passwords can not contain the \'%\' character.',
-                    'type': 'password'
+                    'type': 'password',
                 });
             }
 
             if (attributes.password !== attributes.passwordCheck) {
                 errors.push({
                     'message': 'Passwords do not match.',
-                    'type': 'passwordCheck'
+                    'type': 'passwordCheck',
                 });
             }
 
             if (errors.length) {
                 return errors;
             }
-        }
+        },
     });
 
     Backbone.Agave.Model.NewAccount = NewAccount;
