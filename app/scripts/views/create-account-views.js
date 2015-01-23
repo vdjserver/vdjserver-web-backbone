@@ -61,9 +61,9 @@ define(['app', 'backbone.syphon'], function(App) {
                     this.$el
                         .find('.public-view')
                         .prepend(
-                                $('<div class="alert alert-danger">')
-                                    .text(message)
-                                    .fadeIn()
+                            $('<div class="alert alert-danger">')
+                                .text(message)
+                                .fadeIn()
                         )
                     ;
                     $('#' + type + '-container').addClass('has-error');
