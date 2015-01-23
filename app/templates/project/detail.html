@@ -37,104 +37,108 @@
 
 <div class="project-detail-controls">
     <div class="row">
-        <div class="col-md-4">
-            <button
-                id="file-upload"
-                class="btn has-tooltip"
-                data-toggle="tooltip"
-                data-placement="top"
-                title="Upload a file"
-            >
-                <i class="fa fa-upload"></i>
+        <div class="col-sm-6">
+            <div class="btn-group btn-group-justified">
+                <div class="btn-group">
+                    <button
+                        id="file-upload"
+                        class="btn btn-success has-tooltip"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Upload a file"
+                    >
+                        <i class="fa fa-upload"></i>
 
-                <input
-                    id="file-dialog"
-                    class="hidden"
-                    name="files[]"
-                    type="file"
-                    multiple
-                />
-            </button>
+                        <input
+                            id="file-dialog"
+                            class="hidden"
+                            name="files[]"
+                            type="file"
+                            multiple
+                        />
+                    </button>
+                </div>
 
-            <div class="btn-group">
-                <button
-                    id="run-job-button"
-                    class="btn btn-primary disabled dropdown-toggle files-selected-button"
-                    data-toggle="dropdown"
-                >
-                    Run Job
-                    <i class="fa fa-caret-down"></i>
-                </button>
+                <div class="btn-group">
+                    <button
+                        id="run-job-button"
+                        class="btn btn-primary disabled dropdown-toggle files-selected-button"
+                        data-toggle="dropdown"
+                    >
+                        Run Job
+                        <i class="fa fa-caret-down"></i>
+                    </button>
 
-                <ul class="dropdown-menu" role="menu">
+                    <ul class="dropdown-menu" role="menu">
 
-                    <li class="file-actions">
-                        <a
-                            class="run-job"
-                            href="#"
-                            data-bypass=true
-                            data-jobtype="igblast"
-                        >
-                            IgBlast
-                        </a>
-                    </li>
+                        <li class="file-actions">
+                            <a
+                                class="run-job"
+                                href="#"
+                                data-bypass=true
+                                data-jobtype="igblast"
+                            >
+                                IgBlast
+                            </a>
+                        </li>
 
-                    <li class="file-actions">
-                        <a
-                            class="run-job has-tooltip"
-                            href="#"
-                            data-bypass=true
-                            data-jobtype="vdjpipe"
+                        <li class="file-actions">
+                            <a
+                                class="run-job has-tooltip"
+                                href="#"
+                                data-bypass=true
+                                data-jobtype="vdjpipe"
 
-                            {{!-- Dropdown --}}
-                            data-toggle="tooltip"
-                            data-placement="right"
-                            title="Run an HPC job using the VDJPipe tool"
-                        >
-                            VDJPipe
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="btn-group">
-                <button
-                    id="file-action-button"
-                    class="btn btn-primary disabled dropdown-toggle files-selected-button"
-                    data-toggle="dropdown"
-                >
-                    File Actions
-                    <i class="fa fa-caret-down"></i>
-                </button>
+                                {{!-- Dropdown --}}
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="Run an HPC job using the VDJPipe tool"
+                            >
+                                VDJPipe
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button
+                        id="file-action-button"
+                        class="btn btn-primary disabled dropdown-toggle files-selected-button"
+                        data-toggle="dropdown"
+                    >
+                        File Actions
+                        <i class="fa fa-caret-down"></i>
+                    </button>
 
-                <ul
-                    class="dropdown-menu"
-                    role="menu"
-                >
-                    <li class="file-actions">
-                        <a
-                            class="download-multiple-files"
-                            href="#"
-                            data-bypass=true
-                        >
-                            Download
-                        </a>
-                    </li>
+                    <ul
+                        class="dropdown-menu"
+                        role="menu"
+                    >
+                        <li class="file-actions">
+                            <a
+                                class="download-multiple-files"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Download
+                            </a>
+                        </li>
 
-                    <li class="file-actions">
-                        <a
-                            class="delete-files"
-                            href="#"
-                            data-bypass=true
-                        >
-                            Delete
-                        </a>
-                    </li>
-                </ul>
+                        <li class="file-actions">
+                            <a
+                                class="delete-files"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Delete
+                            </a>
+                        </li>
+                    </ul>
 
+                </div>
             </div>
         </div>
 
-        <div class="col-md-8">
+        <div class="col-sm-6">
             <div class="input-group project-search">
                 <input
                     id="search-text"

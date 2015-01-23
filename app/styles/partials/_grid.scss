@@ -53,10 +53,12 @@
     }
 
     #sidebar-wrapper {
-        position: static;
         height: auto;
-        max-height: 300px;
-        border-right: 0;
+    }
+
+    #sidebar {
+        position: static;
+        overflow-y: hidden;
     }
 }
 
@@ -65,4 +67,3 @@
         float:right;
     }
 }
-

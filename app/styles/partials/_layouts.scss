@@ -5,4 +5,8 @@
 .content {
     z-index: 0;
     padding: 20px 50px 0 50px;
+
+    @media (max-width: $grid-float-breakpoint) {
+        padding: 20px 0 0 0;
+    }
 }
