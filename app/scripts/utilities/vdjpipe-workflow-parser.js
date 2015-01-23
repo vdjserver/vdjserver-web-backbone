@@ -623,11 +623,18 @@ define(['app'], function(App) {
                                 'quality': qualValue.name,
                             });
                         }
-
-                        if (value['readDirection'] === 'R') {
+                        else if (value['readDirection'] === 'R') {
                             readDirections.push({
                                 'sequence': value.name,
                                 'is_reverse': true,
+                                'quality': qualValue.name,
+                            });
+                        }
+                        else {
+
+                            // Default: assume forward reads
+                            readDirections.push({
+                                'sequence': value.name,
                                 'quality': qualValue.name,
                             });
                         }
@@ -645,6 +652,12 @@ define(['app'], function(App) {
                     readDirections.push({
                         'sequence': value.name,
                         'is_reverse': true,
+                    });
+                }
+                else {
+                    // Default: assume forward reads
+                    readDirections.push({
+                        'sequence': value.name,
                     });
                 }
             }
