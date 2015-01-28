@@ -1,7 +1,7 @@
 define(
     [
         'backbone',
-        'environment-config'
+        'environment-config',
     ],
 function(Backbone, EnvironmentConfig) {
 
@@ -97,8 +97,6 @@ function(Backbone, EnvironmentConfig) {
                             ||
                         model.getFileType() === 4
                        )
-                       &&
-                       model.getFileExtension() === 'fasta'
                        ;
             });
 
@@ -207,8 +205,6 @@ function(Backbone, EnvironmentConfig) {
             // Filter down to files that are known barcodes and have the .fasta extension
             var barcodeModels = _.filter(this.models, function(model) {
                 return model.getFileType() === 0
-                       &&
-                       model.getFileExtension() === 'fasta'
                        ;
             });
 
@@ -226,8 +222,6 @@ function(Backbone, EnvironmentConfig) {
             // Filter down to files that are unspecified and have the .fasta extension
             var barcodeModels = _.filter(this.models, function(model) {
                 return model.getFileType() === 4
-                       &&
-                       model.getFileExtension() === 'fasta'
                        ;
             });
 
