@@ -22,22 +22,6 @@ define([
 
     'use strict';
 
-    var chartableIgblastFilenameCheck = function(filename) {
-        if (filename.substr(-11) === '.rc_out.tsv') {
-            filename = filename.substr(-11);
-        }
-
-        if (filename.substr(-14) === '.cdr3_hist.tsv') {
-            filename = filename.substr(-14);
-        }
-
-        if (filename.substr(-20) === '.segment_counts.json') {
-            filename = filename.substr(-20);
-        }
-
-        return filename;
-    };
-
     Handlebars.registerHelper('IsJobFrozen', function(data, options) {
 
         if (data.status !== 'FINISHED') {
@@ -64,29 +48,42 @@ define([
 
     Handlebars.registerHelper('FileTypeHasChart', function(filename, options) {
 
-        var extension = false;
-
-        if (filename) {
-            var split = filename.split('.');
-            extension = split.pop();
-        }
-
-        // TEMP - remove this once heat map charts are in place
-        if (filename === 'post-filter_heat_map.csv' || filename === 'pre-filter_heat_map.csv') {
+        if (filename === undefined) {
             return options.inverse(this);
         }
 
-        if (filename && chartableIgblastFilenameCheck(filename) !== filename) {
-            return options.fn(this);
-        }
+        var hasChart = Backbone.Agave.Model.Job.Detail.getChartType(filename);
 
-        if (extension === 'csv' || extension === 'tsv') {
+        if (hasChart) {
             return options.fn(this);
         }
         else {
             return options.inverse(this);
         }
 
+    });
+
+    Handlebars.registerHelper('ChartButtonText', function(filename, options) {
+
+        if (filename === undefined) {
+            return options.inverse(this);
+        }
+
+        var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+
+        var chartText = '';
+
+        switch (chartType) {
+            case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
+                chartText = 'Show List';
+                break;
+
+            default:
+                chartText = 'Show Chart';
+                break;
+        }
+
+        return chartText;
     });
 
     var Analyses = {};
@@ -304,56 +301,46 @@ define([
 
             var fileHandle = this.collection.get(filename);
 
-            // Filename adjustments for igblast charts
-            filename = chartableIgblastFilenameCheck(filename);
+            var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
 
             fileHandle.downloadFileToCache()
                 .done(function(fileData) {
 
-                    switch (filename) {
-                        case 'pre-filter_composition.csv':
-                        case 'post-filter_composition.csv':
+                    switch (chartType) {
+                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
                             $('#chart-legend').show();
                             Analyses.Charts.Composition(fileHandle, fileData, that.clearSVG);
                             break;
 
-                        case 'pre-filter_gc_hist.csv':
-                        case 'post-filter-gc_hist.csv':
+                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_1:
                             $('#chart-legend').show();
                             Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, that.clearSVG());
                             break;
 
-                        case 'pre-heat_map.csv':
-                        case 'post-heat_map.csv':
-                            break;
-
-                        case 'pre-filter_len_hist.csv':
-                        case 'post-filter_len_hist.csv':
+                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_3:
                             $('#chart-legend').show();
                             Analyses.Charts.LengthHistogram(fileHandle, fileData, that.clearSVG());
                             break;
 
-                        case 'pre-filter_mean_q_hist.csv':
-                        case 'post-filter_mean_q_hist.csv':
+                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
                             $('#chart-legend').show();
                             Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, that.clearSVG);
                             break;
 
-                        case 'pre-filter_qstats.csv':
-                        case 'post-filter_qstats.csv':
+                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
                             $('#chart-legend').show();
                             Analyses.Charts.QualityScore(fileHandle, fileData, that.clearSVG);
                             break;
 
-                        case '.rc_out.tsv':
+                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
                             Analyses.Charts.GiantTable(fileHandle, fileData, that.clearSVG);
                             break;
 
-                        case '.cdr3_hist.tsv':
+                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_7:
                             Analyses.Charts.Cdr3(fileHandle, fileData, that.clearSVG);
                             break;
 
-                        case '.segment_counts.json':
+                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_8:
                             Analyses.Charts.GeneDistribution(fileHandle, fileData, that.clearSVG());
                             break;
 

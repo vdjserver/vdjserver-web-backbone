@@ -12,14 +12,82 @@ function(
 
     var Job = {};
 
-    Job.Detail = Backbone.Agave.Model.extend({
-        defaults: {
-            id: '',
+    Job.Detail = Backbone.Agave.Model.extend(
+        {
+            defaults: {
+                id: '',
+            },
+            url: function() {
+                return '/jobs/v2/' + this.get('id');
+            },
         },
-        url: function() {
-            return '/jobs/v2/' + this.get('id');
-        },
-    });
+        {
+            CHART_TYPE_0: 'composition',
+            CHART_TYPE_1: 'gcHistogram',
+            CHART_TYPE_2: 'heatMap',
+            CHART_TYPE_3: 'lengthHistogram',
+            CHART_TYPE_4: 'meanQualityScoreHistogram',
+            CHART_TYPE_5: 'qualityScore',
+            CHART_TYPE_6: 'giantTable',
+            CHART_TYPE_7: 'cdr3',
+            CHART_TYPE_8: 'geneDistribution',
+
+            getChartType: function(filename) {
+
+                var chartType = false;
+
+                switch (filename) {
+                    case 'pre-filter_composition.csv':
+                    case 'post-filter_composition.csv':
+                        chartType = this.CHART_TYPE_0;
+                        break;
+
+                    case 'pre-filter_gc_hist.csv':
+                    case 'post-filter_gc_hist.csv':
+                        chartType = this.CHART_TYPE_1;
+                        break;
+
+/*
+                    case 'pre-heat_map.csv':
+                    case 'post-heat_map.csv':
+                        break;
+*/
+
+                    case 'pre-filter_len_hist.csv':
+                    case 'post-filter_len_hist.csv':
+                        chartType = this.CHART_TYPE_3;
+                        break;
+
+                    case 'pre-filter_mean_q_hist.csv':
+                    case 'post-filter_mean_q_hist.csv':
+                        chartType = this.CHART_TYPE_4;
+                        break;
+
+                    case 'pre-filter_qstats.csv':
+                    case 'post-filter_qstats.csv':
+                        chartType = this.CHART_TYPE_5;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (filename.substr(-11) === '.rc_out.tsv') {
+                    chartType = this.CHART_TYPE_6;
+                }
+
+                if (filename.substr(-14) === '.cdr3_hist.tsv') {
+                    chartType = this.CHART_TYPE_7;
+                }
+
+                if (filename.substr(-20) === '.segment_counts.json') {
+                    chartType = this.CHART_TYPE_8;
+                }
+
+                return chartType;
+            },
+        }
+    );
 
     Job.OutputFile = Backbone.Agave.Model.extend({
         idAttribute: 'name',
