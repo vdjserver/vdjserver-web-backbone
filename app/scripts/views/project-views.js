@@ -256,6 +256,7 @@ define([
             'change #file-dialog':   '_changeFilesSelector',
             'click .selected-files': '_uiToggleDisabledButtonStatus',
             'change #select-all-files-checkbox': '_toggleSelectAllFiles',
+            'click #run-job-button':  '_clickJobDropdown',
             'click .run-job':       '_clickRunJob',
             'change #search-text':  '_searchFileListings',
             'click .delete-files':  '_clickDeleteFiles',
@@ -572,6 +573,14 @@ define([
             }
 
             this._uiToggleDisabledButtonStatus();
+        },
+        _clickJobDropdown: function(e) {
+            e.preventDefault();
+
+            $('.job-selectable').each(function() {
+                this.checked = false;
+            });
+
         },
         _clickRunJob: function(e) {
             e.preventDefault();

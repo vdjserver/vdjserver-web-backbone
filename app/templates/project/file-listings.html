@@ -36,6 +36,8 @@
                             <td>
                                 {{#IfJobSelectableFileType value.name value.fileType}}
                                     <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
+                                {{else}}
+                                    <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files job-selectable">
                                 {{/IfJobSelectableFileType}}
                             </td>
                             <td>
