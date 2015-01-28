@@ -46,15 +46,27 @@
                         Maximum Number of Mismatches
                     </td>
                     <td>
-                        <input
-                            class="job-form-item"
-                            name="{{inputCount}}-{{parameterType}}-maximum-mismatches"
-                            type="number"
-                            value="{{options.max_mismatches}}"
-                            step="1"
-                            min="0"
-                            pattern="\d+"
-                        >
+                        {{#if options.max_mismatches}}
+                            <input
+                                class="job-form-item"
+                                name="{{inputCount}}-{{parameterType}}-maximum-mismatches"
+                                type="number"
+                                value="{{options.max_mismatches}}"
+                                step="1"
+                                min="0"
+                                pattern="\d+"
+                            >
+                        {{else}}
+                            <input
+                                class="job-form-item"
+                                name="{{inputCount}}-{{parameterType}}-maximum-mismatches"
+                                type="number"
+                                value="0"
+                                step="1"
+                                min="0"
+                                pattern="\d+"
+                            >
+                        {{/if}}
                     </td>
                 </tr>
                 <tr>
