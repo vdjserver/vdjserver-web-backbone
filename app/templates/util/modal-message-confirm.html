@@ -10,7 +10,38 @@
                 {{{body}}}
             </div>
             <div class="modal-footer">
-                <button type="button" id="confirmation-button" class="btn btn-primary btn-block hidden" data-dismiss="modal">Ok</button>
+
+                {{#if successStyle}}
+                    <button
+                        type="button"
+                        id="confirmation-button"
+                        class="btn btn-success btn-block hidden"
+                        data-dismiss="modal"
+                    >
+                        Ok
+                    </button>
+                {{else}}
+                    {{#if errorStyle}}
+                        <button
+                            type="button"
+                            id="confirmation-button"
+                            class="btn btn-danger btn-block hidden"
+                            data-dismiss="modal"
+                        >
+                            Ok
+                        </button>
+                    {{else}}
+                        <button
+                            type="button"
+                            id="confirmation-button"
+                            class="btn btn-primary btn-block hidden"
+                            data-dismiss="modal"
+                        >
+                            Ok
+                        </button>
+                    {{/if}}
+                {{/if}}
+
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

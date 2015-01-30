@@ -7,7 +7,7 @@ define(['app'], function(App) {
         template: 'util/message',
         serialize: function() {
             return this.model.toJSON();
-        }
+        },
     });
 
     Util.Loading = Backbone.View.extend({
@@ -22,9 +22,9 @@ define(['app'], function(App) {
         },
         serialize: function() {
             return {
-                displayText: this.displayText
+                displayText: this.displayText,
             };
-        }
+        },
     });
 
     Util.Alert = Backbone.View.extend({
@@ -39,7 +39,7 @@ define(['app'], function(App) {
         },
         serialize: function() {
             return this.model.toJSON();
-        }
+        },
     });
 
     Util.ModalMessage = Backbone.View.extend({
@@ -49,7 +49,7 @@ define(['app'], function(App) {
         },
         getModel: function() {
             return this.model;
-        }
+        },
     });
 
     Util.ModalMessageConfirm = Backbone.View.extend({
@@ -59,7 +59,7 @@ define(['app'], function(App) {
         },
         getModel: function() {
             return this.model;
-        }
+        },
     });
 
     App.Views.Util = Util;

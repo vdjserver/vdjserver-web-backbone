@@ -34,7 +34,7 @@ require.config({
         'job-websocket': 'models/job-websocket',
 
         // Agave - Models/Collections
-        'agave-new-account': 'models/agave-new-account',
+        'agave-account': 'models/agave-account',
         'agave-feedback': 'models/agave-feedback',
 
         'agave-notification': 'models/agave-notification',
@@ -84,7 +84,7 @@ require.config({
         'util-views': 'views/app/util-views',
         'not-found-views': 'views/not-found-views',
 
-        'create-account-views': 'views/create-account-views',
+        'account-views': 'views/account-views',
         'forgot-password-views': 'views/forgot-password-views',
         'profile-views': 'views/profile-views',
         'job-views': 'views/job-views',
@@ -156,9 +156,9 @@ require.config({
         },
 
         // Agave - Models
-        'agave-new-account': {
+        'agave-account': {
             deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.NewAccount'
+            exports: 'Backbone.Agave.Model.Account',
         },
 
         'agave-notification': {

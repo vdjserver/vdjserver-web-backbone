@@ -31,7 +31,7 @@ define([
 
     // Agave
     'backbone-agave',
-    'agave-new-account',
+    'agave-account',
     'agave-notification',
 
     'agave-password-change',
@@ -78,7 +78,7 @@ define([
     'util-views',
     'not-found-views',
 
-    'create-account-views',
+    'account-views',
     'forgot-password-views',
     'profile-views',
     'job-views',

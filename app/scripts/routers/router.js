@@ -71,6 +71,8 @@ define(['app'], function(App) {
             '':                                 'index',
             'auth/logout':                      'authLogout',
             'account':                          'createAccount',
+            'account/pending':                  'verificationPending',
+            'account/verify/:id':               'verifyAccount',
             'password-reset(/:uuid)':           'forgotPassword',
             'account/profile':                  'accountProfile',
             'account/change-password':          'changePassword',
@@ -111,7 +113,20 @@ define(['app'], function(App) {
         // Account
         createAccount: function() {
             _setPublicSubviews();
-            App.Layouts.main.setView('.content', new App.Views.CreateAccount.Form());
+            App.Layouts.main.setView('.content', new App.Views.Account.CreateAccount());
+            App.Layouts.main.render();
+        },
+
+        // Verification Pending
+        verificationPending: function() {
+            _setPublicSubviews();
+            App.Layouts.main.setView('.content', new App.Views.Account.VerificationPending());
+            App.Layouts.main.render();
+        },
+
+        verifyAccount: function(verificationId) {
+            _setPublicSubviews();
+            App.Layouts.main.setView('.content', new App.Views.Account.VerifyAccount({'verificationId': verificationId}));
             App.Layouts.main.render();
         },
 

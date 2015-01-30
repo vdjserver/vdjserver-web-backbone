@@ -1,0 +1,52 @@
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="public-view">
+                <div class="alert alert-info">
+                    <i class="fa fa-user"></i> Verify your new VDJServer account.
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            Please verify your account by checking your email for a verification message from VDJServer.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row-with-spacer">
+                    <form id="resend-verification-form" method="post" class="form-horizontal" role="form">
+                        <div id="resend-email-form-group" class="form-group">
+                            <label for="username" class="col-sm-2 control-label">Username</label>
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="Username" name="verification-username" id="verification-username" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="submit" value="Resend Verification Email" class="btn btn-primary">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <hr>
+
+                <div class="row-with-spacer">
+                    <form id="verify-account-form" method="post" class="form-horizontal" role="form">
+                        <div id="verification-form-group" class="form-group">
+                            <label for="verification-code" class="col-sm-2 control-label">Verification Code</label>
+                            <div class="col-sm-4">
+                                <input type="text" placeholder="Verification Code" name="verification-code" id="verification-code" class="form-control">
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="submit" value="Verify Account" class="btn btn-success">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

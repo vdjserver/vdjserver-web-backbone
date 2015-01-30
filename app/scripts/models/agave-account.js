@@ -7,9 +7,32 @@ function(Backbone, EnvironmentConfig) {
 
     'use strict';
 
-    var NewAccount = {};
+    var Account = {};
 
-    NewAccount = Backbone.Agave.Model.extend({
+    Account.VerifyAccount = Backbone.Agave.Model.extend({
+        apiRoot: EnvironmentConfig.vdjauthRoot,
+        url: function() {
+            return '/user'
+                   + '/verify'
+                   + '/' + this.get('verificationId')
+                   ;
+        },
+        requiresAuth: false,
+    });
+
+    Account.ResendVerificationEmail = Backbone.Agave.Model.extend({
+        apiRoot: EnvironmentConfig.vdjauthRoot,
+        url: function() {
+            return '/user'
+                   + '/' + this.get('username')
+                   + '/verify'
+                   + '/email'
+                   ;
+        },
+        requiresAuth: false,
+    });
+
+    Account.NewAccount = Backbone.Agave.Model.extend({
         defaults: {
             username:  '',
             password:  '',
@@ -107,6 +130,6 @@ function(Backbone, EnvironmentConfig) {
         },
     });
 
-    Backbone.Agave.Model.NewAccount = NewAccount;
-    return NewAccount;
+    Backbone.Agave.Model.Account = Account;
+    return Account;
 });
