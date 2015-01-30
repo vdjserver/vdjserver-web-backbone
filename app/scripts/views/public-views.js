@@ -1,6 +1,6 @@
 define([
     'app',
-    'backbone.syphon'
+    'backbone.syphon',
 ], function(App) {
 
     'use strict';
@@ -78,7 +78,21 @@ define([
 
                                 });
                         })
-                        .fail(function() {
+                        .fail(function(error) {
+
+                            if (error && error['status']) {
+
+                                var httpCode = error['status'];
+
+                                if (httpCode === 403) {
+                                    App.router.navigate('/account/pending', {
+                                        trigger: true
+                                    });
+
+                                    return;
+                                }
+                            }
+
                             App.Agave.token().clear();
                             $('#confirmation-button').removeClass('hidden');
                             $('.modal-body').html('');
