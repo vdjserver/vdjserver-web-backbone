@@ -414,12 +414,10 @@ define([
                 ;
 
             d3.select('.slider').select('input').remove();
-/*
-            d3.select('.svg-container')
-                .append('svg')
-                    .attr('style','height:600px;')
-            ;
-*/
+
+            // Note: we need to reset d3 tip menu position here, otherwise
+            // the horizontal scroll width will get stuck
+            $('.d3-tip').css('left', '');
         },
         getErrorMessageFromResponse: function(response) {
             var txt;
@@ -588,7 +586,13 @@ define([
             left: 70,
         };
 
-        var width = 1200
+        // NOTE: we may need to calculate a suitable value for this from data
+        // if it turns out that it has more of a range than this
+        var maxWidth = 4500;
+
+        $('#analyses-chart').css('width', maxWidth);
+
+        var width = maxWidth //1200
                   - margin.left
                   - margin.right;
 
@@ -676,25 +680,9 @@ define([
             .orient('left')
         ;
 
-        // var barWidth = x(1) / 4;
         var barWidth = x(data[1].position) / 4;
 
-        // topSVG
-/*
-        function redraw() {
-            svgContainer.attr(
-                'transform',
-                'translate(' + d3.event.translate + ')' + ' scale(' + d3.event.scale + ')');
-        }
-*/
-        var currentSliderValue = 1;
-
-        var redraw = function() {
-            svgContainer.attr(
-              'transform',
-              'translate(' + d3.event.translate + ')' + ' scale(' + currentSliderValue + ')');
-        };
-
+        // SVG
         var svgContainer = d3.select('svg')
             .attr('width',
                 width
@@ -707,19 +695,10 @@ define([
               + margin.bottom
             )
             .attr('class', 'box')
-            .append('svg:g')
-                .call(d3.behavior.zoom().on('zoom', redraw))
-                  .on('dblclick.zoom', null)
-                  .on('touchstart.zoom', null)
-                  .on('wheel.zoom', null)
-                  .on('mousewheel.zoom', null)
-                  .on('MozMousePixelScroll.zoom', null)
-            .append('svg:g')
             ;
 
         var tip = d3.select('.d3-tip');
 
-        // var boxG = d3.select('svg').append('g');
         var boxG = svgContainer.append('g');
         boxG
             .attr('class', 'boxG')
@@ -822,8 +801,7 @@ define([
                         + '25%: &nbsp;&nbsp;' + d['25%'] + '<br/>'
                         + '10%: &nbsp;&nbsp;' + d['10%'] + '<br/>'
                     )
-                    .style('left', (+d3.event.layerX + 50) + 'px')
-                    .style('top', (+d3.event.layerY + 150) + 'px')
+                    .style('left', window.pageXOffset + 'px')
                 ;
             })
             .on('mouseout', function(/* d */) {
@@ -911,37 +889,6 @@ define([
                 .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
                 .attr('class', 'meanPoints')
         ;
-
-        var zoomed = function() {
-            svgContainer.attr(
-                'transform',
-                'translate(' + d3.event.translate + ') scale(' + d3.event.scale + ')'
-            );
-            slider.property('value', d3.event.scale);
-        };
-
-        var zoom = d3.behavior.zoom()
-            .scaleExtent([1, 10])
-            .on('zoom', zoomed);
-
-        var slided = function(/*d*/) {
-            var components = d3.transform(svgContainer.attr('transform'));
-            currentSliderValue = d3.select(this).property('value');
-
-            svgContainer.attr(
-                'transform',
-                'translate(' + components.translate + ')' + ' scale(' + d3.select(this).property('value') + ')'
-            );
-        };
-
-        var slider = d3.select('.slider').append('p').append('input')
-          .datum({})
-          .attr('type', 'range')
-          .attr('value', zoom.scaleExtent()[0])
-          .attr('min', zoom.scaleExtent()[0])
-          .attr('max', zoom.scaleExtent()[1])
-          .attr('step', (zoom.scaleExtent()[1] - zoom.scaleExtent()[0]) / 100)
-          .on('input', slided);
     };
 
     Analyses.Charts.PercentageGcHistogram = function(fileHandle, text, clearSVG) {
