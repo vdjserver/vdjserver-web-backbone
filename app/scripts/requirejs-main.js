@@ -21,10 +21,6 @@ define([
     'jquery.event.drag',
     'jquery.event.drop',
 
-    //slickgrid
-    'slickgrid.core',
-    'slickgrid.grid',
-
     // Regular Models
     'error',
     'job-websocket',

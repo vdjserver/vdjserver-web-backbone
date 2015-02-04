@@ -7,17 +7,15 @@ define([
     'd3',
     'nvd3',
     'box',
-    'slickgrid.core',
-    'slickgrid.grid',
-    'simple-statistics'
+    'datatables',
+    'simple-statistics',
 ], function(
     App,
     Handlebars,
     moment,
     d3,
     nv,
-    box,
-    Slick
+    box
 ) {
 
     'use strict';
@@ -1625,9 +1623,7 @@ define([
         });
     };
 
-    Analyses.Charts.GiantTableFactory = function(filename, clearSVG) {
-
-        clearSVG();
+    Analyses.Charts.GiantTableFactory = function(filename) {
 
         var columns = [];
         var filenameFragment = '';
@@ -1642,393 +1638,261 @@ define([
 
             columns = [
                 {
-                    id:    'Read identifier',
-                    name:  'Read identifier',
-                    field: 'Read identifier',
+                    title: 'Read identifier',
                 },
                 {
-                    id:    'V gene',
-                    name:  'V gene',
-                    field: 'V gene',
+                    title: 'V gene',
                 },
                 {
-                    id:    'J gene',
-                    name:  'J gene',
-                    field: 'J gene',
+                    title: 'J gene',
                 },
                 {
-                    id:    'D gene',
-                    name:  'D gene',
-                    field: 'D gene',
+                    title: 'D gene',
                 },
                 {
-                    id:    'Sequence similarity',
-                    name:  'Sequence similarity',
-                    field: 'Sequence similarity',
+                    title: 'Sequence similarity',
                 },
                 {
-                    id:    'Out-of-frame junction',
-                    name:  'Out-of-frame junction',
-                    field: 'Out-of-frame junction',
+                    title: 'Out-of-frame junction',
                 },
                 {
-                    id:    'Missing CYS',
-                    name:  'Missing CYS',
-                    field: 'Missing CYS',
+                    title: 'Missing CYS',
                 },
                 {
-                    id:    'Missing TRP/PHE',
-                    name:  'Missing TRP/PHE',
-                    field: 'Missing TRP/PHE',
+                    title: 'Missing TRP/PHE',
                 },
                 {
-                    id:    'Stop Codon?',
-                    name:  'Stop Codon?',
-                    field: 'Stop Codon?',
+                    title: 'Stop Codon?',
                 },
                 {
-                    id:    'Indels Found',
-                    name:  'Indels Found',
-                    field: 'Indels Found',
+                    title: 'Indels Found',
                 },
                 {
-                    id:    'Only Frame-Preserving Indels Found',
-                    name:  'Only Frame-Preserving Indels Found',
-                    field: 'Only Frame-Preserving Indels Found',
+                    title: 'Only Frame-Preserving Indels Found',
                 },
                 {
-                    id:    'CDR3 AA (kabat)',
-                    name:  'CDR3 AA (kabat)',
-                    field: 'CDR3 AA (kabat)',
+                    title: 'CDR3 AA (kabat)',
                 },
                 {
-                    id:    'CDR3 NA (kabat)',
-                    name:  'CDR3 NA (kabat)',
-                    field: 'CDR3 NA (kabat)',
+                    title: 'CDR3 NA (kabat)',
                 },
                 {
-                    id:    'FR1 aligned bases (kabat)',
-                    name:  'FR1 aligned bases (kabat)',
-                    field: 'FR1 aligned bases (kabat)',
+                    title: 'FR1 aligned bases (kabat)',
                 },
                 {
-                    id:    'FR1 base subst. (kabat)',
-                    name:  'FR1 base subst. (kabat)',
-                    field: 'FR1 base subst. (kabat)',
+                    title: 'FR1 base subst. (kabat)',
                 },
                 {
-                    id:    'FR1 AA subst. (kabat)',
-                    name:  'FR1 AA subst. (kabat)',
-                    field: 'FR1 AA subst. (kabat)',
+                    title: 'FR1 AA subst. (kabat)',
                 },
                 {
-                    id:    'FR1 codons with silent mut. (kabat)',
-                    name:  'FR1 codons with silent mut. (kabat)',
-                    field: 'FR1 codons with silent mut. (kabat)',
+                    title: 'FR1 codons with silent mut. (kabat)',
                 },
                 {
-                    id:    'CDR1 aligned bases (kabat)',
-                    name:  'CDR1 aligned bases (kabat)',
-                    field: 'CDR1 aligned bases (kabat)',
+                    title: 'CDR1 aligned bases (kabat)',
                 },
                 {
-                    id:    'CDR1 base subst. (kabat)',
-                    name:  'CDR1 base subst. (kabat)',
-                    field: 'CDR1 base subst. (kabat)',
+                    title: 'CDR1 base subst. (kabat)',
                 },
                 {
-                    id:    'CDR1 AA subst. (kabat)',
-                    name:  'CDR1 AA subst. (kabat)',
-                    field: 'CDR1 AA subst. (kabat)',
+                    title: 'CDR1 AA subst. (kabat)',
                 },
                 {
-                    id:    'CDR1 codons with silent mut. (kabat)',
-                    name:  'CDR1 codons with silent mut. (kabat)',
-                    field: 'CDR1 codons with silent mut. (kabat)',
+                    title: 'CDR1 codons with silent mut. (kabat)',
                 },
                 {
-                    id:    'FR2 aligned bases (kabat)',
-                    name:  'FR2 aligned bases (kabat)',
-                    field: 'FR2 aligned bases (kabat)',
+                    title: 'FR2 aligned bases (kabat)',
                 },
                 {
-                    id:    'FR2 base subst. (kabat)',
-                    name:  'FR2 base subst. (kabat)',
-                    field: 'FR2 base subst. (kabat)',
+                    title: 'FR2 base subst. (kabat)',
                 },
                 {
-                    id:    'FR2 AA subst. (kabat)',
-                    name:  'FR2 AA subst. (kabat)',
-                    field: 'FR2 AA subst. (kabat)',
+                    title: 'FR2 AA subst. (kabat)',
                 },
                 {
-                    id:    'FR2 codons with silent mut. (kabat)',
-                    name:  'FR2 codons with silent mut. (kabat)',
-                    field: 'FR2 codons with silent mut. (kabat)',
+                    title: 'FR2 codons with silent mut. (kabat)',
                 },
                 {
-                    id:    'CDR2 aligned bases (kabat)',
-                    name:  'CDR2 aligned bases (kabat)',
-                    field: 'CDR2 aligned bases (kabat)',
+                    title: 'CDR2 aligned bases (kabat)',
                 },
                 {
-                    id:    'CDR2 base subst. (kabat)',
-                    name:  'CDR2 base subst. (kabat)',
-                    field: 'CDR2 base subst. (kabat)',
+                    title: 'CDR2 base subst. (kabat)',
                 },
                 {
-                    id:    'CDR2 AA subst. (kabat)',
-                    name:  'CDR2 AA subst. (kabat)',
-                    field: 'CDR2 AA subst. (kabat)',
+                    title: 'CDR2 AA subst. (kabat)',
                 },
                 {
-                    id:    'CDR2 codons with silent mut. (kabat)',
-                    name:  'CDR2 codons with silent mut. (kabat)',
-                    field: 'CDR2 codons with silent mut. (kabat)',
+                    title: 'CDR2 codons with silent mut. (kabat)',
                 },
                 {
-                    id:    'FR3 aligned bases (kabat)',
-                    name:  'FR3 aligned bases (kabat)',
-                    field: 'FR3 aligned bases (kabat)',
+                    title: 'FR3 aligned bases (kabat)',
                 },
                 {
-                    id:    'FR3 base subst. (kabat)',
-                    name:  'FR3 base subst. (kabat)',
-                    field: 'FR3 base subst. (kabat)',
+                    title: 'FR3 base subst. (kabat)',
                 },
                 {
-                    id:    'FR3 AA subst. (kabat)',
-                    name:  'FR3 AA subst. (kabat)',
-                    field: 'FR3 AA subst. (kabat)',
+                    title: 'FR3 AA subst. (kabat)',
                 },
                 {
-                    id:    'FR3 codons with silent mut. (kabat)',
-                    name:  'FR3 codons with silent mut. (kabat)',
-                    field: 'FR3 codons with silent mut. (kabat)',
+                    title: 'FR3 codons with silent mut. (kabat)',
                 },
                 {
-                    id:    'Alternate V gene',
-                    name:  'Alternate V gene',
-                    field: 'Alternate V gene',
+                    title: 'Alternate V gene',
                 },
                 {
-                    id:    'Alternate J gene',
-                    name:  'Alternate J gene',
-                    field: 'Alternate J gene',
+                    title: 'Alternate J gene',
                 },
                 {
-                    id:    'Alternate D gene',
-                    name:  'Alternate D gene',
-                    field: 'Alternate D gene',
+                    title: 'Alternate D gene',
                 },
                 {
-                    id:    'Release Version Tag',
-                    name:  'Release Version Tag',
-                    field: 'Release Version Tag',
+                    title: 'Release Version Tag',
                 },
                 {
-                    id:    'Release Version Hash',
-                    name:  'Release Version Hash',
-                    field: 'Release Version Hash',
+                    title: 'Release Version Hash',
                 },
             ];
         }
         else if (filenameFragment === 'imgt') {
             columns = [
                 {
-                    id:    'Read identifier',
-                    name:  'Read identifier',
-                    field: 'Read identifier',
+                    title: 'Read identifier',
                 },
                 {
-                    id:    'V gene',
-                    name:  'V gene',
-                    field: 'V gene',
+                    title: 'V gene',
                 },
                 {
-                    id:    'J gene',
-                    name:  'J gene',
-                    field: 'J gene',
+                    title: 'J gene',
                 },
                 {
-                    id:    'D gene',
-                    name:  'D gene',
-                    field: 'D gene',
+                    title: 'D gene',
                 },
                 {
-                    id:    'Sequence similarity',
-                    name:  'Sequence similarity',
-                    field: 'Sequence similarity',
+                    title: 'Sequence similarity',
                 },
                 {
-                    id:    'Out-of-frame junction',
-                    name:  'Out-of-frame junction',
-                    field: 'Out-of-frame junction',
+                    title: 'Out-of-frame junction',
                 },
                 {
-                    id:    'Missing CYS',
-                    name:  'Missing CYS',
-                    field: 'Missing CYS',
+                    title: 'Missing CYS',
                 },
                 {
-                    id:    'Missing TRP/PHE',
-                    name:  'Missing TRP/PHE',
-                    field: 'Missing TRP/PHE',
+                    title: 'Missing TRP/PHE',
                 },
                 {
-                    id:    'Stop Codon?',
-                    name:  'Stop Codon?',
-                    field: 'Stop Codon?',
+                    title: 'Stop Codon?',
                 },
                 {
-                    id:    'Indels Found',
-                    name:  'Indels Found',
-                    field: 'Indels Found',
+                    title: 'Indels Found',
                 },
                 {
-                    id:    'Only Frame-Preserving Indels Found',
-                    name:  'Only Frame-Preserving Indels Found',
-                    field: 'Only Frame-Preserving Indels Found',
+                    title: 'Only Frame-Preserving Indels Found',
                 },
                 {
-                    id:    'CDR3 AA (imgt)',
-                    name:  'CDR3 AA (imgt)',
-                    field: 'CDR3 AA (imgt)',
+                    title: 'CDR3 AA (imgt)',
                 },
                 {
-                    id:    'CDR3 NA (imgt)',
-                    name:  'CDR3 NA (imgt)',
-                    field: 'CDR3 NA (imgt)',
+                    title: 'CDR3 NA (imgt)',
                 },
                 {
-                    id:    'FR1 aligned bases (imgt)',
-                    name:  'FR1 aligned bases (imgt)',
-                    field: 'FR1 aligned bases (imgt)',
+                    title: 'FR1 aligned bases (imgt)',
                 },
                 {
-                    id:    'FR1 base subst. (imgt)',
-                    name:  'FR1 base subst. (imgt)',
-                    field: 'FR1 base subst. (imgt)',
+                    title: 'FR1 base subst. (imgt)',
                 },
                 {
-                    id:    'FR1 AA subst. (imgt)',
-                    name:  'FR1 AA subst. (imgt)',
-                    field: 'FR1 AA subst. (imgt)',
+                    title: 'FR1 AA subst. (imgt)',
                 },
                 {
-                    id:    'FR1 codons with silent mut. (imgt)',
-                    name:  'FR1 codons with silent mut. (imgt)',
-                    field: 'FR1 codons with silent mut. (imgt)',
+                    title: 'FR1 codons with silent mut. (imgt)',
                 },
                 {
-                    id:    'CDR1 aligned bases (imgt)',
-                    name:  'CDR1 aligned bases (imgt)',
-                    field: 'CDR1 aligned bases (imgt)',
+                    title: 'CDR1 aligned bases (imgt)',
                 },
                 {
-                    id:    'CDR1 base subst. (imgt)',
-                    name:  'CDR1 base subst. (imgt)',
-                    field: 'CDR1 base subst. (imgt)',
+                    title: 'CDR1 base subst. (imgt)',
                 },
                 {
-                    id:    'CDR1 AA subst. (imgt)',
-                    name:  'CDR1 AA subst. (imgt)',
-                    field: 'CDR1 AA subst. (imgt)',
+                    title: 'CDR1 AA subst. (imgt)',
                 },
                 {
-                    id:    'CDR1 codons with silent mut. (imgt)',
-                    name:  'CDR1 codons with silent mut. (imgt)',
-                    field: 'CDR1 codons with silent mut. (imgt)',
+                    title: 'CDR1 codons with silent mut. (imgt)',
                 },
                 {
-                    id:    'FR2 aligned bases (imgt)',
-                    name:  'FR2 aligned bases (imgt)',
-                    field: 'FR2 aligned bases (imgt)',
+                    title: 'FR2 aligned bases (imgt)',
                 },
                 {
-                    id:    'FR2 base subst. (imgt)',
-                    name:  'FR2 base subst. (imgt)',
-                    field: 'FR2 base subst. (imgt)',
+                    title: 'FR2 base subst. (imgt)',
                 },
                 {
-                    id:    'FR2 AA subst. (imgt)',
-                    name:  'FR2 AA subst. (imgt)',
-                    field: 'FR2 AA subst. (imgt)',
+                    title: 'FR2 AA subst. (imgt)',
                 },
                 {
-                    id:    'FR2 codons with silent mut. (imgt)',
-                    name:  'FR2 codons with silent mut. (imgt)',
-                    field: 'FR2 codons with silent mut. (imgt)',
+                    title: 'FR2 codons with silent mut. (imgt)',
                 },
                 {
-                    id:    'CDR2 aligned bases (imgt)',
-                    name:  'CDR2 aligned bases (imgt)',
-                    field: 'CDR2 aligned bases (imgt)',
+                    title: 'CDR2 aligned bases (imgt)',
                 },
                 {
-                    id:    'CDR2 base subst. (imgt)',
-                    name:  'CDR2 base subst. (imgt)',
-                    field: 'CDR2 base subst. (imgt)',
+                    title: 'CDR2 base subst. (imgt)',
                 },
                 {
-                    id:    'CDR2 AA subst. (imgt)',
-                    name:  'CDR2 AA subst. (imgt)',
-                    field: 'CDR2 AA subst. (imgt)',
+                    title: 'CDR2 AA subst. (imgt)',
                 },
                 {
-                    id:    'CDR2 codons with silent mut. (imgt)',
-                    name:  'CDR2 codons with silent mut. (imgt)',
-                    field: 'CDR2 codons with silent mut. (imgt)',
+                    title: 'CDR2 codons with silent mut. (imgt)',
                 },
                 {
-                    id:    'FR3 aligned bases (imgt)',
-                    name:  'FR3 aligned bases (imgt)',
-                    field: 'FR3 aligned bases (imgt)',
+                    title: 'FR3 aligned bases (imgt)',
                 },
                 {
-                    id:    'FR3 base subst. (imgt)',
-                    name:  'FR3 base subst. (imgt)',
-                    field: 'FR3 base subst. (imgt)',
+                    title: 'FR3 base subst. (imgt)',
                 },
                 {
-                    id:    'FR3 AA subst. (imgt)',
-                    name:  'FR3 AA subst. (imgt)',
-                    field: 'FR3 AA subst. (imgt)',
+                    title: 'FR3 AA subst. (imgt)',
                 },
                 {
-                    id:    'FR3 codons with silent mut. (imgt)',
-                    name:  'FR3 codons with silent mut. (imgt)',
-                    field: 'FR3 codons with silent mut. (imgt)',
+                    title: 'FR3 codons with silent mut. (imgt)',
                 },
                 {
-                    id:    'Alternate V gene',
-                    name:  'Alternate V gene',
-                    field: 'Alternate V gene',
+                    title: 'Alternate V gene',
                 },
                 {
-                    id:    'Alternate J gene',
-                    name:  'Alternate J gene',
-                    field: 'Alternate J gene',
+                    title: 'Alternate J gene',
                 },
                 {
-                    id:    'Alternate D gene',
-                    name:  'Alternate D gene',
-                    field: 'Alternate D gene',
+                    title: 'Alternate D gene',
                 },
                 {
-                    id:    'Release Version Tag',
-                    name:  'Release Version Tag',
-                    field: 'Release Version Tag',
+                    title: 'Release Version Tag',
                 },
                 {
-                    id:    'Release Version Hash',
-                    name:  'Release Version Hash',
-                    field: 'Release Version Hash',
+                    title: 'Release Version Hash',
                 },
             ];
         }
 
         return columns;
+    };
+
+    Analyses.Charts.GiantTableFormatData = function(data) {
+        var chartData = [];
+
+        for (var i = 0; i < data.length; i++) {
+
+            var keys = Object.keys(data[i]);
+
+            var dataSet = [];
+
+            for (var j = 0; j < keys.length; j++) {
+                var val = data[i][keys[j]];
+                dataSet.push(val);
+            }
+
+            chartData.push(dataSet);
+        }
+
+        return chartData;
     };
 
     Analyses.Charts.GiantTable = function(fileHandle, tsv, clearSVG) {
@@ -2044,47 +1908,18 @@ define([
             )
         ;
 
-        var data = d3.tsv.parse(tsv);
+        clearSVG();
 
-        var defaultColumns = Analyses.Charts.GiantTableFactory(fileHandle.get('name'), clearSVG);
+        var columns = Analyses.Charts.GiantTableFactory(fileHandle.get('name'));
+        var rawData = d3.tsv.parse(tsv);
+        var chartData = Analyses.Charts.GiantTableFormatData(rawData);
 
-        var keys = Object.keys(data[0]);
-        var columns = [];
+        $('#analyses-chart').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="giant-table"></table>');
 
-        for (var i = 0; i < keys.length; i++) {
-
-            columns.push({
-                id:    keys[i],
-                name:  keys[i],
-                field: keys[i],
-            });
-        }
-
-        var options = {
-            enableCellNavigation: false,
-            enableColumnReorder: false,
-            defaultColumnWidth: 300,
-            editable: false,
-        };
-
-        // Grid
-        Slick.Grid(
-            '#analyses-chart',
-            data,
-            defaultColumns,
-            options
-        );
-
-/*
-        $('.slick-column-name').each(function()  {
-            $(this).attr('title', $(this).text());
-            $(this).attr('data-toggle', 'tooltip');
+        $('#giant-table').dataTable({
+            'data': chartData,
+            'columns': columns,
         });
-
-        $('.slick-header-column').tooltip({
-            tooltipClass: 'custom-tooltip-styling',
-        });
-*/
     };
 
     Analyses.Charts.Composition = function(fileHandle, response, clearSVG) {

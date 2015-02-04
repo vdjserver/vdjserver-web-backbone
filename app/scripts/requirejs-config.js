@@ -6,6 +6,7 @@ require.config({
         'backbone':         '../bower_components/backbone/backbone',
         'backbone.syphon':  '../bower_components/marionette.backbone.syphon/lib/backbone.syphon',
         'bootstrap':        '../bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap',
+        'datatables':       '../bower_components/datatables/media/js/jquery.dataTables',
         'filesize':         '../bower_components/filesize/lib/filesize',
         'handlebars':       '../bower_components/handlebars/handlebars',
         'jquery':           '../bower_components/jquery/dist/jquery',
@@ -16,8 +17,6 @@ require.config({
         'underscore':       '../bower_components/underscore/underscore',
         'd3':               '../bower_components/d3/d3.min',
         'nvd3':             '../bower_components/nvd3/nv.d3.min',
-        'slickgrid.core':   '../bower_components/slickgrid/slick.core',
-        'slickgrid.grid':   '../bower_components/slickgrid/slick.grid',
         'socket-io':        '../bower_components/socket.io-client/socket.io',
         'file-saver':       '../bower_components/file-saver/FileSaver',
         'recaptcha-ajax':   '../bower_components/recaptcha-ajax/recaptcha_ajax',
@@ -136,14 +135,6 @@ require.config({
         },
         'recaptcha-ajax': {
             exports: 'Recaptcha'
-        },
-        'slickgrid.core': {
-            deps:['jquery', 'jquery-ui', 'jquery.event.drag', 'jquery.event.drop'],
-            exports: 'Slick'
-        },
-        'slickgrid.grid': {
-            deps:['jquery', 'jquery-ui', 'slickgrid.core', 'jquery.event.drag', 'jquery.event.drop'],
-            exports: 'Slick'
         },
         'typeahead': {
             deps: ['jquery']
