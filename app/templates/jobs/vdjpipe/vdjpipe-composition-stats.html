@@ -2,15 +2,22 @@
 
     <div class="row row-with-spacer">
         <div class="col-md-6">
-            Output Filename Prefix
-            &nbsp;
-            <input
-                class="job-form-item"
-                name="{{inputCount}}-{{parameterType}}-out-prefix"
-                placeholder="text"
-                type="text"
-                value="{{options.out_prefix}}"
-            >
+
+            {{> vdjpipe-paired-reads-direction-fragment}}
+
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Output Filename Prefix
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-out-prefix"
+                        placeholder="text"
+                        type="text"
+                        value="{{options.out_prefix}}"
+                    >
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
             This module generates a histogram of the per-read GC content and a plot of the percentage of each nucleotide and of ambiguous base calls at each read position.

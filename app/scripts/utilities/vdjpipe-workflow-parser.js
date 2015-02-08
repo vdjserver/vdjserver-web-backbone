@@ -13,11 +13,40 @@ define(['app'], function(App) {
 
     VdjpipeWorkflowParser.ConvertFormDataToWorkflowConfig = function(parameters, fileMetadatas, allFileMetadatas) {
 
+        var readType = VdjpipeWorkflowParser._ReadType(parameters);
+
+        var inputFileReadDirections = VdjpipeWorkflowParser._GetInputFileReadDirections(fileMetadatas, allFileMetadatas, readType);
+
+        var paramOutput = VdjpipeWorkflowParser._ParseConfigParameters(parameters);
+
         var outputConfig = {
             'base_path_input': '',
             'base_path_output': '',
-            //'csv_file_delimiter': "\t",
+            'input': inputFileReadDirections,
+            'steps': paramOutput,
         };
+
+        _.extend(outputConfig, readType);
+
+        return outputConfig;
+    };
+
+    VdjpipeWorkflowParser._ReadType = function(parameters) {
+
+        var readType = {};
+
+        // Just as with Highlander, there can only be one (read direction)
+        if (parameters['paired_reads']) {
+            readType['paired_reads'] = true;
+        }
+        else {
+            readType['single_reads'] = true;
+        }
+
+        return readType;
+    };
+
+    VdjpipeWorkflowParser._ParseConfigParameters = function(parameters) {
 
         var paramOutput = [];
 
@@ -174,66 +203,65 @@ define(['app'], function(App) {
             }
         }
 
-        // Set file read directions
-        var readDirections = VdjpipeWorkflowParser._GetReadDirections(fileMetadatas, allFileMetadatas);
-        outputConfig.input = readDirections;
-
-        // Choose read direction and add params
-        // Just as with Highlander, there can only be one (read direction)
-        if (parameters['single-reads']) {
-            outputConfig['steps'] = paramOutput;
-        }
-
-        return outputConfig;
+        return paramOutput;
     };
 
     // Private Methods
     VdjpipeWorkflowParser._Serializer = function(parameters, key) {
 
-        this.parameters = parameters;
-        this.key = key;
+        var that = this;
 
         this.getAmbiguousWindowFilter = function() {
-            return {
+            var configuredParameter = {
                 'ambiguous_window_filter': {
                     'min_length':    parseInt(parameters[key + '-min-length']),
                     'max_ambiguous': parseInt(parameters[key + '-max-ambiguous']),
                 }
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getAverageQualityFilter = function() {
-            return {
+            var configuredParameter = {
                 'average_quality_filter': {
                     'min_quality': parseFloat(parameters[key]),
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getAverageQualityWindowFilter = function() {
-            return {
+            var configuredParameter = {
                 'average_quality_window_filter': {
                     'min_quality':   parseFloat(parameters[key + '-min-quality']),
                     'window_length': parseInt(parameters[key + '-window-length']),
                     'min_length':    parseInt(parameters[key + '-min-length']),
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getCharacterFilter = function() {
-            return {
+            var configuredParameter = {
                 'character_filter': {
                     'chars': parameters[key],
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getCompositionStats = function() {
-            return {
+            var configuredParameter = {
                 'composition_stats': {
                     'out_prefix': parameters[key + '-out-prefix'],
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getCustomDemultiplex = function() {
@@ -325,7 +353,7 @@ define(['app'], function(App) {
                 }
             }
 
-            var matchObject = {
+            var configuredParameter = {
                 'custom_demultiplex': {
                     'reverse': reverse,
                     'custom_location': barcodeLocation,
@@ -333,14 +361,14 @@ define(['app'], function(App) {
             };
 
             if (elements) {
-                matchObject['custom_demultiplex'].elements = elements;
+                configuredParameter['custom_demultiplex'].elements = elements;
             }
 
             if (combinations) {
-                matchObject['custom_demultiplex'].combinations = combinations;
+                configuredParameter['custom_demultiplex'].combinations = combinations;
             }
 
-            return matchObject;
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this._setupCustomPrimerTrimmingDictionary = function(parameters) {
@@ -376,31 +404,37 @@ define(['app'], function(App) {
         this.getCustomJPrimerTrimming = function() {
             var dictionary = this._setupCustomPrimerTrimmingDictionary(parameters);
 
-            return {
+            var configuredParameter = {
                 'custom_j_primer_trimming': {
                     'elements': [dictionary],
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getCustomVPrimerTrimming = function() {
             var dictionary = this._setupCustomPrimerTrimmingDictionary(parameters);
 
-            return {
+            var configuredParameter = {
                 'custom_v_primer_trimming': {
                     'elements': [dictionary],
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getEmidMap = function() {
-            return {
+            var configuredParameter = {
                 'eMID_map': {
                     'value_name': parameters[key + '-value-name'],
                     'fasta_path': parameters[key + '-fasta-file'],
                     'pairs_path': parameters[key + '-pairs-file'],
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getFindShared = function(config, jobName) {
@@ -418,13 +452,13 @@ define(['app'], function(App) {
                 }
             }
 
-            var returnValue = {
+            var configuredParameter = {
                 'find_shared': {
                     'out_group_unique': jobName + '-' + findSharedVariables + 'unique' + parameters[key + '-out-group-unique'],
                 },
             };
 
-            return returnValue;
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
 
 /*
             if (parameters[key + '-group-variable']) {
@@ -451,70 +485,84 @@ define(['app'], function(App) {
         };
 
         this.getHistogram = function() {
-            return {
+            var configuredParameter = {
                 'histogram': {
                     'name': parameters[key + '-name'],
                     'out_path': parameters[key + '-out-path'],
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getHomopolymerFilter = function() {
-            return {
+            var configuredParameter = {
                 'homopolymer_filter': {
                     'max_length': parseInt(parameters[key]),
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getLengthFilter = function() {
 
-            var lengthFilter = {
+            var configuredParameter = {
                 'length_filter': {},
             };
 
             if (parameters[key + '-min']) {
-                lengthFilter['length_filter']['min'] = parseInt(parameters[key + '-min']);
+                configuredParameter['length_filter']['min'] = parseInt(parameters[key + '-min']);
             }
 
             if (parameters[key + '-max']) {
-                lengthFilter['length_filter']['max'] = parseInt(parameters[key + '-max']);
+                configuredParameter['length_filter']['max'] = parseInt(parameters[key + '-max']);
             }
 
-            return lengthFilter;
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getMergePaired = function() {
-            return {
+            var configuredParameter = {
                 'merge_paired': {
                     'min_score': parseInt(parameters[key]),
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getMinQualityFilter = function() {
-            return {
+            var configuredParameter = {
                 'min_quality_filter': {
                     'min_quality': parseInt(parameters[key]),
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getMinQualityWindowFilter = function() {
-            return {
+
+            var configuredParameter = {
                 'min_quality_window_filter': {
                     'min_quality': parseInt(parameters[key + '-min-quality']),
                     'min_length': parseInt(parameters[key + '-min-length']),
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getQualityStats = function() {
-            return {
+
+            var configuredParameter = {
                 'quality_stats': {
                     'out_prefix': parameters[key + '-out-prefix'],
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getWriteSequence = function(paramOutput) {
@@ -522,7 +570,7 @@ define(['app'], function(App) {
             // extract demultiplex variables
             var demultiplexVariablePath = this.createDemultiplexBarcodeVariablePath(paramOutput);
 
-            var returnValue = {
+            var configuredParameter = {
                 'write_sequence': {
                     'out_path': demultiplexVariablePath,
                     'unset_value': parameters[key + '-unset-value'],
@@ -530,18 +578,18 @@ define(['app'], function(App) {
             };
 
             if (parameters[key + '-trimmed']) {
-                returnValue['write_sequence']['trimmed'] = parameters[key + '-trimmed'];
+                configuredParameter['write_sequence']['trimmed'] = parameters[key + '-trimmed'];
             }
 
             if (parameters[key + '-reverse-complemented']) {
-                returnValue['write_sequence']['reverse_complemented'] = parameters[key + '-reverse-complemented'];
+                configuredParameter['write_sequence']['reverse_complemented'] = parameters[key + '-reverse-complemented'];
             }
 
             if (parameters[key + '-skip-empty']) {
-                returnValue['write_sequence']['skip_empty'] = parameters[key + '-skip-empty'];
+                configuredParameter['write_sequence']['skip_empty'] = parameters[key + '-skip-empty'];
             }
 
-            return returnValue;
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getWriteValue = function(paramOutput) {
@@ -549,16 +597,32 @@ define(['app'], function(App) {
             var writeValuesNames = parameters[key + '-names'];
             writeValuesNames = writeValuesNames.split(',');
 
-            return {
+            var configuredParameter = {
                 'write_value': {
                     'names': writeValuesNames,
                     'out_path': this.createDemultiplexBarcodeVariablePath(paramOutput),
                     'unset_value': parameters[key + '-unset-value'],
                 },
             };
+
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         // Extras
+        this.wrapIfPairedReads = function(parameters, key, configuredParameter) {
+
+            if (parameters[key + '-paired-read-direction']) {
+                return {
+                    'apply': {
+                        'to': parameters[key + '-paired-read-direction'],
+                        'step': configuredParameter,
+                    },
+                };
+            }
+
+            return configuredParameter;
+        };
+
         this.extractDemultiplexValueVariables = function(config) {
 
             var demultiplexVariables = [];
@@ -602,7 +666,7 @@ define(['app'], function(App) {
         };
     };
 
-    VdjpipeWorkflowParser._GetReadDirections = function(fileMetadatas, allFileMetadatas) {
+    VdjpipeWorkflowParser._GetInputFileReadDirections = function(fileMetadatas, allFileMetadatas, readType) {
         var readDirections = [];
 
         if (fileMetadatas && fileMetadatas.length > 0) {

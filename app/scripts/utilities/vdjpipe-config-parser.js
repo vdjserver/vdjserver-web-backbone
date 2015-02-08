@@ -8,6 +8,7 @@ define(['app'], function(App) {
     VdjpipeConfigParser.ConvertWorkflowConfigToVdjpipeConfig = function(workflowConfig) {
 
         var readConfig = {};
+
         if (workflowConfig['steps']) {
             readConfig = workflowConfig['steps'];
         }
@@ -18,6 +19,13 @@ define(['app'], function(App) {
 
         for (var i = 0; i < readConfig.length; i++) {
             var option = readConfig[i];
+
+            var isPaired = false;
+
+            if (option['apply']) {
+                option = option['apply']['step'];
+                isPaired = true;
+            }
 
             //////////////
             // DEMULTIPLEX
@@ -35,16 +43,14 @@ define(['app'], function(App) {
 
                         switch (barcodeType) {
                             case '3\'':
-                                newConfig[i]['custom_demultiplex']['elements'][j]['end'] = {
-                                    'after': 0,
-                                };
+                                option['custom_demultiplex']['elements'][j]['end'] = VdjpipeConfigParser._get3PrimeBarcode();
 
                                 if (elements[j]['custom_trim']) {
 
-                                    newConfig[i]['custom_demultiplex']['elements'][j] = _.extend(
+                                    option['custom_demultiplex']['elements'][j] = _.extend(
                                         {},
-                                        newConfig[i]['custom_demultiplex']['elements'][j],
-                                        VdjpipeConfigParser._set3PrimeBarcodeCustomTrim()
+                                        option['custom_demultiplex']['elements'][j],
+                                        VdjpipeConfigParser._get3PrimeBarcodeCustomTrim()
                                     );
                                 }
 
@@ -52,13 +58,13 @@ define(['app'], function(App) {
 
                             case '5\'':
 
-                                newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
+                                option['custom_demultiplex']['elements'][j]['start'] = VdjpipeConfigParser._get5PrimeBarcode();
 
                                 if (elements[j]['custom_trim']) {
-                                    newConfig[i]['custom_demultiplex']['elements'][j] = _.extend(
+                                    option['custom_demultiplex']['elements'][j] = _.extend(
                                         {},
-                                        newConfig[i]['custom_demultiplex']['elements'][j],
-                                        VdjpipeConfigParser._set5PrimeBarcodeCustomTrim()
+                                        option['custom_demultiplex']['elements'][j],
+                                        VdjpipeConfigParser._get5PrimeBarcodeCustomTrim()
                                     );
                                 }
 
@@ -78,24 +84,19 @@ define(['app'], function(App) {
 
                                 // Barcode type settings will depend on the first barcode
                                 if (previousBarcodeType === '3\'') {
-                                    newConfig[i]['custom_demultiplex']['elements'][j]['end'] = {
-                                        'before': 'MID1',
-                                        'pos': -2,
-                                    };
+                                    option['custom_demultiplex']['elements'][j]['end'] = VdjpipeConfigParser._get3PrimeBarcodeAfter3PrimeBarcode();
                                 }
                                 else if (previousBarcodeType === '5\'') {
-                                    elements[j]['end'] = {
-                                        'after': '',
-                                    };
+                                    option['custom_demultiplex']['elements'][j]['end'] = VdjpipeConfigParser._get3PrimeBarcodeAfter5PrimeBarcode();
                                 }
 
                                 // Set barcode trim
                                 if (elements[j]['custom_trim']) {
 
-                                    newConfig[i]['custom_demultiplex']['elements'][j] = _.extend(
+                                    option['custom_demultiplex']['elements'][j] = _.extend(
                                         {},
-                                        newConfig[i]['custom_demultiplex']['elements'][j],
-                                        VdjpipeConfigParser._set3PrimeBarcodeCustomTrim()
+                                        option['custom_demultiplex']['elements'][j],
+                                        VdjpipeConfigParser._get3PrimeBarcodeCustomTrim()
                                     );
                                 }
 
@@ -103,13 +104,13 @@ define(['app'], function(App) {
 
                             case '5\'':
                                 // For 5', the barcode type setting does NOT depend on the first barcode
-                                newConfig[i]['custom_demultiplex']['elements'][j]['start'] = {};
+                                option['custom_demultiplex']['elements'][j]['start'] = VdjpipeConfigParser._get5PrimeBarcode();
 
                                 if (elements[j]['custom_trim']) {
-                                    newConfig[i]['custom_demultiplex']['elements'][j] = _.extend(
+                                    option['custom_demultiplex']['elements'][j] = _.extend(
                                         {},
-                                        newConfig[i]['custom_demultiplex']['elements'][j],
-                                        VdjpipeConfigParser._set5PrimeBarcodeCustomTrim()
+                                        option['custom_demultiplex']['elements'][j],
+                                        VdjpipeConfigParser._get5PrimeBarcodeCustomTrim()
                                     );
                                 }
 
@@ -121,19 +122,19 @@ define(['app'], function(App) {
 
                     }
 
-                    delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_type'];
-                    delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_trim'];
+                    delete option['custom_demultiplex']['elements'][j]['custom_type'];
+                    delete option['custom_demultiplex']['elements'][j]['custom_trim'];
 
                     // Set histograms
-                    if (newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'] === true) {
+                    if (option['custom_demultiplex']['elements'][j]['custom_histogram'] === true) {
 
-                        var histogramData = VdjpipeConfigParser._parseDemultiplexBarcodeHistograms(newConfig[i]['custom_demultiplex']['elements'][j]);
+                        var histogramData = VdjpipeConfigParser._parseDemultiplexBarcodeHistograms(option['custom_demultiplex']['elements'][j]);
 
                         tmpBarcodeVariables.push(histogramData.barcodeVariable);
                         newConfig.push(histogramData.histogram1);
                         newConfig.push(histogramData.histogram2);
 
-                        delete newConfig[i]['custom_demultiplex']['elements'][j]['custom_histogram'];
+                        delete option['custom_demultiplex']['elements'][j]['custom_histogram'];
                     }
                 }
 
@@ -146,13 +147,21 @@ define(['app'], function(App) {
 
                     newConfig.push(combinationHistogram);
 
-                    delete newConfig[i]['custom_demultiplex']['combinations'][0]['custom_histogram'];
+                    option['custom_demultiplex']['combinations'][0]['custom_histogram'];
                 }
 
-                delete newConfig[i]['custom_demultiplex']['custom_location'];
+                delete option['custom_demultiplex']['custom_location'];
 
-                newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
-                delete newConfig[i]['custom_demultiplex'];
+                // Insert converted config and remove workflow config
+                if (isPaired) {
+                    newConfig[i]['apply']['step']['match'] = option['custom_demultiplex'];
+                    delete newConfig[i]['apply']['step']['custom_demultiplex'];
+                }
+                else {
+                    newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
+                    delete newConfig[i]['custom_demultiplex'];
+                }
+
             }
 
             ////////////////////
@@ -160,8 +169,15 @@ define(['app'], function(App) {
             ////////////////////
             if (option['custom_j_primer_trimming']) {
 
-                newConfig[i]['match'] = VdjpipeConfigParser._parsePrimerTrimming(newConfig[i]['custom_j_primer_trimming']);
-                delete newConfig[i]['custom_j_primer_trimming'];
+                // Insert converted config and remove workflow config
+                if (isPaired) {
+                    newConfig[i]['apply']['step']['match'] = VdjpipeConfigParser._parsePrimerTrimming(newConfig[i]['custom_j_primer_trimming']);
+                    delete newConfig[i]['apply']['step']['custom_j_primer_trimming'];
+                }
+                else {
+                    newConfig[i]['match'] = VdjpipeConfigParser._parsePrimerTrimming(newConfig[i]['custom_j_primer_trimming']);
+                    delete newConfig[i]['custom_j_primer_trimming'];
+                }
             }
 
             ////////////////////
@@ -169,8 +185,15 @@ define(['app'], function(App) {
             ////////////////////
             if (option['custom_v_primer_trimming']) {
 
-                newConfig[i]['match'] = VdjpipeConfigParser._parsePrimerTrimming(newConfig[i]['custom_v_primer_trimming']);
-                delete newConfig[i]['custom_v_primer_trimming'];
+                // Insert converted config and remove workflow config
+                if (isPaired) {
+                    newConfig[i]['apply']['step']['match'] = VdjpipeConfigParser._parsePrimerTrimming(newConfig[i]['custom_v_primer_trimming']);
+                    delete newConfig[i]['apply']['step']['custom_v_primer_trimming'];
+                }
+                else {
+                    newConfig[i]['match'] = VdjpipeConfigParser._parsePrimerTrimming(newConfig[i]['custom_v_primer_trimming']);
+                    delete newConfig[i]['custom_v_primer_trimming'];
+                }
             }
         }
 
@@ -182,8 +205,30 @@ define(['app'], function(App) {
     };
 
     // Private Methods
+    VdjpipeConfigParser._get3PrimeBarcode = function() {
+        return {
+            'after': 0,
+        };
+    };
 
-    VdjpipeConfigParser._set3PrimeBarcodeCustomTrim = function() {
+    VdjpipeConfigParser._get5PrimeBarcode = function() {
+        return {};
+    };
+
+    VdjpipeConfigParser._get3PrimeBarcodeAfter3PrimeBarcode = function() {
+        return {
+            'before': 'MID1',
+            'pos': -2,
+        };
+    };
+
+    VdjpipeConfigParser._get3PrimeBarcodeAfter5PrimeBarcode = function() {
+        return {
+            'after': '',
+        };
+    };
+
+    VdjpipeConfigParser._get3PrimeBarcodeCustomTrim = function() {
 
         var response = {
             'cut_upper': {
@@ -194,7 +239,7 @@ define(['app'], function(App) {
         return response;
     };
 
-    VdjpipeConfigParser._set5PrimeBarcodeCustomTrim = function() {
+    VdjpipeConfigParser._get5PrimeBarcodeCustomTrim = function() {
 
         var response = {
             'cut_lower': {

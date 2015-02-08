@@ -396,6 +396,31 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 return qualUuid;
             },
+            setPairedReadMetadataUuid: function(pairedReadMetadataUuid) {
+                var value = this.get('value');
+
+                value['pairedReadMetadataUuid'] = pairedReadMetadataUuid;
+
+                this.set('value', value);
+
+                return this.save();
+            },
+            removePairedReadMetadataAssociation: function() {
+                var value = this.get('value');
+
+                delete value['pairedReadMetadataUuid'];
+
+                this.set('value', value);
+
+                return this.save();
+            },
+            getPairedReadMetadataUuid: function() {
+                var value = this.get('value');
+
+                var pairedReadUuid = value['pairedReadMetadataUuid'];
+
+                return pairedReadUuid;
+            },
             updateFileType: function(fileType) {
                 var value = this.get('value');
 

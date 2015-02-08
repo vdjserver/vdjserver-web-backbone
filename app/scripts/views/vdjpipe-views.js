@@ -6,8 +6,9 @@ define([
 
     'use strict';
 
-    HandlebarsUtilities.registerRawPartial('jobs/vdjpipe/vdjpipe-base-view-top', 'vdjpipe-base-view-top');
-    HandlebarsUtilities.registerRawPartial('jobs/vdjpipe/vdjpipe-base-view-bottom', 'vdjpipe-base-view-bottom');
+    HandlebarsUtilities.registerRawPartial('jobs/vdjpipe/fragments/vdjpipe-base-view-top', 'vdjpipe-base-view-top');
+    HandlebarsUtilities.registerRawPartial('jobs/vdjpipe/fragments/vdjpipe-base-view-bottom', 'vdjpipe-base-view-bottom');
+    HandlebarsUtilities.registerRawPartial('jobs/vdjpipe/fragments/vdjpipe-paired-reads-direction-fragment', 'vdjpipe-paired-reads-direction-fragment');
 
     var Vdjpipe = {};
 

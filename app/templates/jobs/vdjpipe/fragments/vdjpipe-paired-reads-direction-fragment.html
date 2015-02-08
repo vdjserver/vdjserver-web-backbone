@@ -1,0 +1,35 @@
+{{!-- If |options.custom_paired_options| exists, then we're dealing with paired reads --}}
+
+{{#if options.custom_paired_options}}
+    <div class="row">
+        <div class="col-md-12">
+            Read Direction
+            &nbsp;
+            <select
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-paired-read-direction"
+            >
+                <option
+                    value="forward"
+                    {{ifCondSelected options.custom_paired_options.to "forward"}}
+                >
+                    Forward
+                </option>
+
+                <option
+                    value="reverse"
+                    {{ifCondSelected options.custom_paired_options.to "reverse"}}
+                >
+                    Reverse
+                </option>
+
+                <option
+                    value="merged"
+                    {{ifCondSelected options.custom_paired_options.to "merged"}}
+                >
+                    Merged
+                </option>
+            </select>
+        </div>
+    </div>
+{{/if}}

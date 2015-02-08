@@ -32,7 +32,43 @@ define([
         return workflowViews;
     };
 
+    VdjpipeViewFactory.UnwrapPairedReadKey = function(key, options) {
+
+        if (key === 'apply') {
+            var unwrappedKey = Object.keys(options['step'])[0];
+
+            return unwrappedKey;
+        }
+
+        return key;
+    };
+
+    VdjpipeViewFactory.UnwrapPairedReadOptions = function(key, options) {
+
+        if (key === 'apply') {
+            var unwrappedKey = Object.keys(options['step'])[0];
+
+            var unwrappedOptions = options['step'][unwrappedKey];
+
+            if (options['to']) {
+                unwrappedOptions['custom_paired_options'] = {};
+                unwrappedOptions['custom_paired_options']['to'] = options['to'];
+            }
+
+            return unwrappedOptions;
+        }
+
+        return options;
+    };
+
     VdjpipeViewFactory.GetVdjpipeView = function(key, counter, options) {
+
+        var unwrappedKey = VdjpipeViewFactory.UnwrapPairedReadKey(key, options);
+        var unwrappedOptions = VdjpipeViewFactory.UnwrapPairedReadOptions(key, options);
+
+        key = unwrappedKey;
+        options = unwrappedOptions;
+
         var initAttributes = {
             'parameterType': key,
             'inputCount': counter,

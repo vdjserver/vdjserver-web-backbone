@@ -120,9 +120,7 @@ define([
         _preconfiguredWorkflows: function() {
 
             var workflows = [
-                // Paired read workflows are temporarily disabled for the time being.
                 {
-
                     'workflow-name': 'Single Reads',
                     'summary_output_path': 'summary.txt',
                     'steps': [
@@ -142,17 +140,17 @@ define([
                                 'custom_location': '1',
                                 'elements': [
                                     {
+                                        'custom_histogram': true,
+                                        'custom_trim': true,
                                         'custom_type': '5\'',
-                                        'max_mismatches': 1,
-                                        'required': true,
-                                        'score_name': 'MID1-score',
-                                        'value_name': 'MID1',
-                                        'start': {},
                                         'cut_lower': {
                                             'after': 0,
                                         },
-                                        'custom_trim': true,
-                                        'custom_histogram': true,
+                                        'max_mismatches': 1,
+                                        'required': true,
+                                        'score_name': 'MID1-score',
+                                        'start': {},
+                                        'value_name': 'MID1',
                                     },
                                 ],
                             },
@@ -169,10 +167,14 @@ define([
                             },
                         },
                         {
-                            'average_quality_filter': 35,
+                            'average_quality_filter': {
+                                'custom_value': 35,
+                            },
                         },
                         {
-                            'homopolymer_filter': 20,
+                            'homopolymer_filter': {
+                                'custom_value': 20,
+                            },
                         },
                         {
                             'quality_stats': {
@@ -188,6 +190,172 @@ define([
                             'find_shared': {
                                 'out_group_unique':'.fasta',
                                 'group_variable': 'MID1',
+                            },
+                        },
+                    ],
+                },
+                {
+                    'workflow-name': 'Paired Reads',
+                    'base_path_input': '',
+                    'base_path_output': '',
+                    'paired_reads': true,
+                    'input': [
+                        {
+                            'forward_seq': 'sample_01f.fasta',
+                            'forward_qual': 'sample_01f.qual',
+                            'reverse_seq': 'sample_01r.fasta',
+                            'reverse_qual': 'sample_01r.qual',
+                        },
+                        {
+                            'forward_seq': 'emid_1_frw.fastq',
+                            'reverse_seq': 'emid_1_rev.fastq',
+                        },
+                    ],
+                    'steps': [
+                        {
+                            'apply': {
+                                'to': 'forward',
+                                'step': {
+                                    'quality_stats': {
+                                        'out_prefix': 'pre-filter-fwd-',
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            'apply': {
+                                'to': 'reverse',
+                                'step': {
+                                    'quality_stats': {
+                                        'out_prefix': 'pre-filter-rev-',
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            'apply': {
+                                'to': 'forward',
+                                'step': {
+                                    'composition_stats': {
+                                        'out_prefix': 'pre-filter-fwd-',
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            'apply': {
+                                'to': 'reverse',
+                                'step': {
+                                    'composition_stats': {
+                                        'out_prefix': 'pre-filter-rev-',
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            'merge_paired': {
+                                'min_score': {
+                                    'custom_value': 50,
+                                },
+                            },
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'custom_demultiplex': {
+                                        'elements': [
+                                            {/* forward barcode element */
+                                                'cut_lower': {
+                                                    'after': 0,
+                                                },
+                                                'max_mismatches': 1,
+                                                'require_best': true,
+                                                'required': true,
+                                                'score_name': 'MID1-score',
+                                                'seq_file': 'mid1.fasta',
+                                                'start': {},
+                                                'value_name': 'MID1',
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+/*
+    These histograms should be generated as part of custom_demultiplex
+
+                        {
+                            'histogram': {
+                                'name': 'DemultiplexBarcode1',
+                                'out_path': 'DemultiplexBarcode1.csv',
+                            },
+                        },
+                        {
+                            'histogram': {
+                                'name': 'DemultiplexBarcode1-score',
+                                'out_path': 'DemultiplexBarcode1-score.csv',
+                            },
+                        },
+*/
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'length_filter': {
+                                        'min': 200,
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'average_quality_filter': {
+                                        'custom_value': 35,
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'homopolymer_filter': {
+                                        'custom_value': 20,
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'quality_stats': {
+                                        'out_prefix': 'merged-',
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'composition_stats': {
+                                        'out_prefix': 'merged-',
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
+                                    'find_shared': {
+                                        'out_group_unique': '.fasta',
+                                    },
+                                },
                             },
                         },
                     ],

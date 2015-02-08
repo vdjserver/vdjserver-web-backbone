@@ -653,7 +653,6 @@ define([
                 return validationError;
             },
             stageJob: function(formData) {
-
                 var job = new Backbone.Agave.Model.Job.VdjPipe();
                 job.prepareJob(
                     formData,
@@ -839,14 +838,14 @@ define([
                     });
 
                     var workflowConfig = workflow.get('value');
-                    if (workflowConfig['config']['steps']) {
+                    if (workflowConfig['config']['paired_reads'] === true) {
                         $('#workflow-staging-area').append(
-                            '<input type="radio" class="hidden" name="single-reads" id="single-reads" checked>'
+                            '<input type="radio" class="hidden" name="paired_reads" id="paired_reads" checked>'
                         );
                     }
                     else {
                         $('#workflow-staging-area').append(
-                            '<input type="radio" class="hidden" name="paired-reads" id="paired-reads" checked>'
+                            '<input type="radio" class="hidden" name="single_reads" id="single_reads" checked>'
                         );
                     }
                 }

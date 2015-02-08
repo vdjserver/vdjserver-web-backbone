@@ -2,18 +2,25 @@
 
     <div class="row row-with-spacer">
         <div class="col-md-6">
-            Max
-            &nbsp;
-            <input
-                class="job-form-item"
-                name="{{inputCount}}-{{parameterType}}"
-                placeholder="None"
-                type="number"
-                value="{{options}}"
-                step="1"
-                min="0"
-                pattern="\d+"
-            >
+
+            {{> vdjpipe-paired-reads-direction-fragment}}
+
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Max
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}"
+                        placeholder="None"
+                        type="number"
+                        value="{{options.custom_value}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
             <p>

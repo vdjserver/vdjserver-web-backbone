@@ -1,16 +1,22 @@
 {{> vdjpipe-base-view-top}}
 
+
     <div class="row row-with-spacer">
         <div class="col-md-6">
-            <div class="col-md-12">
-                <input
-                    class="job-form-item"
-                    name="{{inputCount}}-{{parameterType}}"
-                    placeholder="float"
-                    type="number"
-                    value="{{options}}"
-                    step="0.1"
-                >
+
+            {{> vdjpipe-paired-reads-direction-fragment}}
+
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}"
+                        placeholder="float"
+                        type="number"
+                        value="{{options.custom_value}}"
+                        step="0.1"
+                    >
+                </div>
             </div>
         </div>
         <div class="col-md-6">
