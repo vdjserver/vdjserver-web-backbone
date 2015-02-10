@@ -205,7 +205,33 @@ function(Backbone, EnvironmentConfig) {
 
             return newCollection;
         },
-        organizePairedReads: function() {
+        getOrganizedPairedReads: function() {
+
+            var pairedReads = [];
+            var set = new Set();
+
+            var that = this;
+            this.each(function(model) {
+
+                if (set.has(model) === false) {
+
+                    var pairArray = [];
+
+                    var pairUuid = model.getPairedReadMetadataUuid();
+                    var pairedModel = that.get(pairUuid);
+
+                    pairArray.push(model);
+                    pairArray.push(pairedModel);
+                    set.add(model);
+                    set.add(pairedModel);
+
+                    pairedReads.push(pairArray);
+                }
+            });
+
+            return pairedReads;
+        },
+        getSerializableOrganizedPairedReads: function() {
 
             var pairedReads = [];
             var set = new Set();

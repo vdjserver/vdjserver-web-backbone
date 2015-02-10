@@ -742,7 +742,7 @@ define(['app'], function(App) {
 
         // Separate input files into paired and non paired reads
         var pairedReadCollection = fileMetadatas.getPairedReadCollection();
-        var pairedReads = pairedReadCollection.organizePairedReads();
+        var pairedReads = pairedReadCollection.getOrganizedPairedReads();
 
         for (var i = 0; i < pairedReads.length; i++) {
 
@@ -751,11 +751,22 @@ define(['app'], function(App) {
             for (var j = 0; j < pairedReads[i].length; j++) {
                 var model = pairedReads[i][j];
 
-                if (model['value']['readDirection'] === 'F') {
-                    stanza['forward_seq'] = model['value']['name'];
+                if (model.getReadDirection() === 'F') {
+                    stanza['forward_seq'] = model.get('value')['name'];
                 }
                 else {
-                    stanza['reverse_seq'] = model['value']['name'];
+                    stanza['reverse_seq'] = model.get('value')['name'];
+                }
+
+                if (model.getAssociatedQualityScoreMetadataUuid()) {
+                    var qualModel = allFileMetadatas.get(model.getAssociatedQualityScoreMetadataUuid());
+
+                    if (qualModel.getReadDirection() === 'F') {
+                        stanza['forward_qual'] = qualModel.get('value')['name'];
+                    }
+                    else {
+                        stanza['reverse_qual'] = qualModel.get('value')['name'];
+                    }
                 }
             }
 

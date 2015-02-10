@@ -697,7 +697,7 @@ define([
                 this.nonPairedFileListings = this.fileListings.getNonPairedCollection();
                 this.pairedReadFileListings = this.fileListings.getPairedReadCollection();
 
-                this.pairedReads = this.pairedReadFileListings.organizePairedReads();
+                this.pairedReads = this.pairedReadFileListings.getSerializableOrganizedPairedReads();
             },
             template: 'project/file-listings',
             serialize: function() {

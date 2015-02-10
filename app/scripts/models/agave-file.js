@@ -371,6 +371,13 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 return this.save();
             },
+            getReadDirection: function() {
+                var value = this.get('value');
+
+                var readDirection = value['readDirection'];
+
+                return readDirection;
+            },
             updateAssociatedQualityScoreMetadata: function(qualityScoreMetadataUuid) {
                 var value = this.get('value');
 

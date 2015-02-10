@@ -108,29 +108,45 @@
                             </td>
                             <td>
                                 {{#each this}}
-                                    <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
+                                        </div>
+                                    </div>
                                 {{/each}}
                             </td>
                             <td>
-                                Paired Read
+                                Paired Reads
                             </td>
                             <td>
                                 {{#each this}}
-                                    {{FormatAgaveDate lastUpdated}}
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            {{FormatAgaveDate lastUpdated}}
+                                        </div>
+                                    </div>
                                 {{/each}}
                             </td>
                             <td>
                                 {{#each this}}
-                                    {{GetHumanReadableFileSize value.length}}
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            {{GetHumanReadableFileSize value.length}}
+                                        </div>
+                                    </div>
                                 {{/each}}
                             </td>
                             <td>
                                 {{#each this}}
-                                    {{#ifCond this.name "projectFile"}}
-                                        Uploaded File
-                                    {{else}}
-                                        Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.jobName}}</a>
-                                    {{/ifCond}}
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            {{#ifCond this.name "projectFile"}}
+                                                Uploaded File
+                                            {{else}}
+                                                Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.jobName}}</a>
+                                            {{/ifCond}}
+                                        </div>
+                                    </div>
                                 {{/each}}
                             </td>
                             <td>
@@ -138,25 +154,33 @@
                             </td>
                             <td>
                                 {{#each this}}
-                                    <input
-                                        class="project-file-tags"
-                                        data-fileuuid="{{uuid}}"
-                                        type="text"
-                                        value="{{GetTagDisplay value.publicAttributes}}"
-                                    >
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <input
+                                                class="project-file-tags"
+                                                data-fileuuid="{{uuid}}"
+                                                type="text"
+                                                value="{{GetTagDisplay value.publicAttributes}}"
+                                            >
+                                        </div>
+                                    </div>
                                 {{/each}}
                             </td>
                             <td>
                                 {{#each this}}
-                                    <select
-                                        class="project-file-read-direction"
-                                        data-fileuuid="{{uuid}}"
-                                    >
-                                        <option></option>
-                                        {{#each ../../../readDirections}}
-                                            <option {{ifCondSelected this ../value.readDirection}}>{{this}}</option>
-                                        {{/each}}
-                                    </select>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <select
+                                                class="project-file-read-direction"
+                                                data-fileuuid="{{uuid}}"
+                                            >
+                                                <option></option>
+                                                {{#each ../../../readDirections}}
+                                                    <option {{ifCondSelected this ../value.readDirection}}>{{this}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                    </div>
                                 {{/each}}
                             </td>
                         </tr>
