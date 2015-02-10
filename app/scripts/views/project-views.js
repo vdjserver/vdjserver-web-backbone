@@ -341,11 +341,13 @@ define([
                 var pairedUuid = model.getPairedReadMetadataUuid();
 
                 selectedFileMetadataUuids.push(uuid);
+
+                // If we're dealing with a paired read,
+                // then include the other paired file too
                 if (pairedUuid) {
                     selectedFileMetadataUuids.push(pairedUuid);
                 }
             });
-
 
             return selectedFileMetadataUuids;
         },
