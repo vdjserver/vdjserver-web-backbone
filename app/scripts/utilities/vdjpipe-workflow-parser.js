@@ -15,7 +15,14 @@ define(['app'], function(App) {
 
         var readType = VdjpipeWorkflowParser._ReadType(parameters);
 
-        var inputFileReadDirections = VdjpipeWorkflowParser._GetInputFileReadDirections(fileMetadatas, allFileMetadatas, readType);
+        var inputFileReadDirections;
+
+        if (readType['paired_reads']) {
+            inputFileReadDirections = VdjpipeWorkflowParser._GetInputFilePairedReadDirections(fileMetadatas, allFileMetadatas);
+        }
+        else {
+            inputFileReadDirections = VdjpipeWorkflowParser._GetInputFileSingleReadDirections(fileMetadatas, allFileMetadatas);
+        }
 
         var paramOutput = VdjpipeWorkflowParser._ParseConfigParameters(parameters);
 
@@ -666,7 +673,7 @@ define(['app'], function(App) {
         };
     };
 
-    VdjpipeWorkflowParser._GetInputFileReadDirections = function(fileMetadatas, allFileMetadatas, readType) {
+    VdjpipeWorkflowParser._GetInputFileSingleReadDirections = function(fileMetadatas, allFileMetadatas) {
         var readDirections = [];
 
         if (fileMetadatas && fileMetadatas.length > 0) {
@@ -725,6 +732,34 @@ define(['app'], function(App) {
                     });
                 }
             }
+        }
+
+        return readDirections;
+    };
+
+    VdjpipeWorkflowParser._GetInputFilePairedReadDirections = function(fileMetadatas, allFileMetadatas) {
+        var readDirections = [];
+
+        // Separate input files into paired and non paired reads
+        var pairedReadCollection = fileMetadatas.getPairedReadCollection();
+        var pairedReads = pairedReadCollection.organizePairedReads();
+
+        for (var i = 0; i < pairedReads.length; i++) {
+
+            var stanza = {};
+
+            for (var j = 0; j < pairedReads[i].length; j++) {
+                var model = pairedReads[i][j];
+
+                if (model['value']['readDirection'] === 'F') {
+                    stanza['forward_seq'] = model['value']['name'];
+                }
+                else {
+                    stanza['reverse_seq'] = model['value']['name'];
+                }
+            }
+
+            readDirections.push(stanza);
         }
 
         return readDirections;

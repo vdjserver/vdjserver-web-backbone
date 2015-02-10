@@ -68,6 +68,7 @@ define([
     });
 
     Handlebars.registerHelper('ifCondSelected', function(v1, v2 /*, options*/) {
+
         if (v1 === v2) {
             return 'selected';
         }
@@ -329,11 +330,22 @@ define([
 
         _getSelectedFileUuids: function() {
 
+            var that = this;
+
             var selectedFileMetadataUuids = [];
 
             $('.selected-files:checked').each(function() {
-                selectedFileMetadataUuids.push($(this).val());
+                var uuid = $(this).val();
+
+                var model = that.fileListings.get(uuid);
+                var pairedUuid = model.getPairedReadMetadataUuid();
+
+                selectedFileMetadataUuids.push(uuid);
+                if (pairedUuid) {
+                    selectedFileMetadataUuids.push(pairedUuid);
+                }
             });
+
 
             return selectedFileMetadataUuids;
         },
@@ -577,7 +589,7 @@ define([
         _clickJobDropdown: function(e) {
             e.preventDefault();
 
-            $('.job-selectable').each(function() {
+            $('.not-job-selectable').each(function() {
                 this.checked = false;
             });
 
@@ -677,10 +689,19 @@ define([
         _.extend({}, ProjectMixin, {
 
             // Public Methods
+            initialize: function() {
+
+                // Separate paired files
+                this.nonPairedFileListings = this.fileListings.getNonPairedCollection();
+                this.pairedReadFileListings = this.fileListings.getPairedReadCollection();
+
+                this.pairedReads = this.pairedReadFileListings.organizePairedReads();
+            },
             template: 'project/file-listings',
             serialize: function() {
                 return {
-                    fileListings: this.fileListings.toJSON(),
+                    fileListings: this.nonPairedFileListings.toJSON(),
+                    pairedReadFileListings: this.pairedReads,
                     readDirections: Backbone.Agave.Model.File.Metadata.getReadDirections(),
                     fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
                 };
@@ -1006,9 +1027,108 @@ define([
         },
     });
 
-    Projects.FileAssociations = Backbone.View.extend(
+    Projects.PairedReadFileAssociations = Backbone.View.extend(
         _.extend({}, ProjectMixin, {
-            template: 'project/file-associations',
+            template: 'project/paired-read-file-associations',
+            initialize: function(parameters) {
+
+                this.readLevelMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+
+                this.pairableMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+
+                var fileMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+
+                var that = this;
+
+                fileMetadatas.fetch()
+                    .done(function() {
+                        that.readLevelMetadatas = fileMetadatas.getReadLevelCollection();
+                        that.pairableMetadatas = fileMetadatas.getReadLevelCollection();
+
+                        that.render();
+                    })
+                    .fail(function() {
+
+                    })
+                    ;
+            },
+            serialize: function() {
+                if (this.readLevelMetadatas) {
+                    return {
+                        readLevelMetadatas: this.readLevelMetadatas.toJSON(),
+                        pairableMetadatas: this.pairableMetadatas.toJSON(),
+                    };
+                }
+            },
+            events: {
+                'change .paired-read-file': '_updatePairedFileAssociation',
+            },
+
+            // Private Methods
+            _updatePairedFileAssociation: function(e) {
+                e.preventDefault();
+
+                var that = this;
+
+                var pairUuid = e.target.dataset.pairuuid;
+                var fileUuid = e.target.value;
+
+                var pairModel = this.readLevelMetadatas.get(pairUuid);
+                var fileModel = this.readLevelMetadatas.get(fileUuid);
+
+                if (fileUuid.length > 0) {
+
+                    var savePairedReadPromises = [];
+
+                    var createSavePairedReadPromise = function(model, uuid) {
+                        model.setPairedReadMetadataUuid(uuid);
+                    };
+
+                    savePairedReadPromises.push(createSavePairedReadPromise(pairModel, fileUuid));
+                    savePairedReadPromises.push(createSavePairedReadPromise(fileModel, pairUuid));
+
+                    $.when.apply($, savePairedReadPromises)
+                        .then(function() {
+                            return that._uiShowSaveSuccessAnimation(e.target);
+                        })
+                        .always(function() {
+                            that.render();
+                        })
+                        ;
+                }
+                else {
+
+                    fileUuid = pairModel.getPairedReadMetadataUuid();
+                    fileModel = this.readLevelMetadatas.get(fileUuid);
+
+                    var disassociatePairedReadPromises = [];
+
+                    var createDisassociatePairedReadPromise = function(model) {
+                        model.removePairedReadMetadataAssociation();
+                    };
+
+                    disassociatePairedReadPromises.push(createDisassociatePairedReadPromise(pairModel));
+
+                    if (fileModel) {
+                        disassociatePairedReadPromises.push(createDisassociatePairedReadPromise(fileModel));
+                    }
+
+                    $.when.apply($, disassociatePairedReadPromises)
+                        .then(function() {
+                            return that._uiShowSaveSuccessAnimation(e.target);
+                        })
+                        .always(function() {
+                            that.render();
+                        })
+                        ;
+                }
+            },
+        })
+    );
+
+    Projects.QualFileAssociations = Backbone.View.extend(
+        _.extend({}, ProjectMixin, {
+            template: 'project/qual-file-associations',
             initialize: function(parameters) {
                 this.fastaMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
                 this.qualMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});

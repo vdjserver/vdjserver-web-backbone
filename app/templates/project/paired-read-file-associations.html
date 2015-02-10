@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-md-12 table-responsive">
+        <table class="table table-bordered table-headings">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        Title
+                    </th>
+                    <th class="text-center">
+                        Paired Read File
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each readLevelMetadatas}}
+                    <tr class="text-center">
+                        <td>
+                            <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}">{{value.name}}</a>
+                        </td>
+                        <td>
+                            <select
+                                class="paired-read-file"
+                                data-pairuuid="{{uuid}}"
+                            >
+                                <option></option>
+                                {{#each ../pairableMetadatas}}
+                                    {{#ifCond this.uuid ../uuid}}
+                                    {{else}}
+                                        <option {{ifCondSelected this.uuid ../../value.pairedReadMetadataUuid}} value="{{this.uuid}}">{{this.value.name}}</option>
+                                    {{/ifCond}}
+                                {{/each}}
+                            </select>
+                        </td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -163,6 +163,74 @@ function(Backbone, EnvironmentConfig) {
 
             return newCollection;
         },
+        getReadLevelCollection: function() {
+
+            var readLevelModels = _.filter(this.models, function(model) {
+                return model.getFileType() === 2
+                       ;
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(readLevelModels);
+
+            return newCollection;
+        },
+        getNonPairedCollection: function() {
+
+            var readLevelModels = _.filter(this.models, function(model) {
+                return model.getFileType() === 2
+                       &&
+                       model.getPairedReadMetadataUuid() !== undefined
+                       ;
+            });
+
+            var newCollection = this.clone();
+            newCollection.remove(readLevelModels);
+
+            return newCollection;
+        },
+        getPairedReadCollection: function() {
+
+            var pairedReadModels = _.filter(this.models, function(model) {
+                return model.getFileType() === 2
+                       &&
+                       model.getPairedReadMetadataUuid() !== undefined
+                       ;
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(pairedReadModels);
+
+            return newCollection;
+        },
+        organizePairedReads: function() {
+
+            var pairedReads = [];
+            var set = new Set();
+
+            var that = this;
+            this.each(function(model) {
+
+                if (set.has(model) === false) {
+
+                    var pairArray = [];
+
+                    var pairUuid = model.getPairedReadMetadataUuid();
+                    var pairedModel = that.get(pairUuid);
+
+                    pairArray.push(model.toJSON());
+                    pairArray.push(pairedModel.toJSON());
+                    set.add(model);
+                    set.add(pairedModel);
+
+                    pairedReads.push(pairArray);
+                }
+            });
+
+            return pairedReads;
+        },
         search: function(searchString) {
 
             var filteredModels = _.filter(this.models, function(data) {

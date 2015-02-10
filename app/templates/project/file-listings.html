@@ -11,6 +11,9 @@
                             Title
                         </th>
                         <th class="text-center">
+                            Pairing
+                        </th>
+                        <th class="text-center">
                             Last Modified
                         </th>
                         <th class="text-center">
@@ -31,32 +34,37 @@
                     </tr>
                 </thead>
                 <tbody>
+
+                    {{!-- Start Single Reads --}}
                     {{#each fileListings}}
                         <tr class="text-center">
-                            <td>
+                            <td style="vertical-align:middle">
                                 {{#IfJobSelectableFileType value.name value.fileType}}
                                     <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
                                 {{else}}
-                                    <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files job-selectable">
+                                    <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files not-job-selectable">
                                 {{/IfJobSelectableFileType}}
                             </td>
-                            <td>
+                            <td style="vertical-align:middle">
                                 <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
                             </td>
-                            <td>
+                            <td style="vertical-align:middle">
+                                Single Read
+                            </td>
+                            <td style="vertical-align:middle">
                                 {{FormatAgaveDate lastUpdated}}
                             </td>
-                            <td>
+                            <td style="vertical-align:middle">
                                 {{GetHumanReadableFileSize value.length}}
                             </td>
-                            <td>
+                            <td style="vertical-align:middle">
                                 {{#ifCond this.name "projectFile"}}
                                     Uploaded File
                                 {{else}}
                                     Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.jobName}}</a>
                                 {{/ifCond}}
                             </td>
-                            <td>
+                            <td style="vertical-align:middle">
                                 <select
                                     class="project-file-type"
                                     data-fileuuid="{{uuid}}"
@@ -68,7 +76,7 @@
                                     {{/each}}
                                 </select>
                             </td>
-                            <td>
+                            <td style="vertical-align:middle">
                                 <input
                                     class="project-file-tags"
                                     data-fileuuid="{{uuid}}"
@@ -76,7 +84,7 @@
                                     value="{{GetTagDisplay value.publicAttributes}}"
                                 >
                             </td>
-                            <td>
+                            <td style="vertical-align:middle">
                                 <select
                                     class="project-file-read-direction"
                                     data-fileuuid="{{uuid}}"
@@ -89,6 +97,73 @@
                             </td>
                         </tr>
                     {{/each}}
+                    {{!-- End Single Reads --}}
+
+
+                    {{!-- Start Paired Reads --}}
+                    {{#each pairedReadFileListings}}
+                        <tr class="text-center">
+                            <td style="vertical-align:middle">
+                                <input name="file-checkbox" type="checkbox" value="{{this.0.uuid}}" class="selected-files">
+                            </td>
+                            <td style="vertical-align:middle">
+                                {{#each this}}
+                                    <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
+                                {{/each}}
+                            </td>
+                            <td style="vertical-align:middle">
+                                Paired Read
+                            </td>
+                            <td style="vertical-align:middle">
+                                {{#each this}}
+                                    {{FormatAgaveDate lastUpdated}}
+                                {{/each}}
+                            </td>
+                            <td style="vertical-align:middle">
+                                {{#each this}}
+                                    {{GetHumanReadableFileSize value.length}}
+                                {{/each}}
+                            </td>
+                            <td style="vertical-align:middle">
+                                {{#each this}}
+                                    {{#ifCond this.name "projectFile"}}
+                                        Uploaded File
+                                    {{else}}
+                                        Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.jobName}}</a>
+                                    {{/ifCond}}
+                                {{/each}}
+                            </td>
+                            <td style="vertical-align:middle">
+                                Read-Level Data
+                            </td>
+                            <td style="vertical-align:middle">
+                                {{#each this}}
+                                    <input
+                                        class="project-file-tags"
+                                        data-fileuuid="{{uuid}}"
+                                        type="text"
+                                        value="{{GetTagDisplay value.publicAttributes}}"
+                                    >
+                                {{/each}}
+                            </td>
+                            <td style="vertical-align:middle">
+                                {{#each this}}
+                                    <select
+                                        class="project-file-read-direction"
+                                        data-fileuuid="{{uuid}}"
+                                    >
+                                        <option></option>
+                                        {{#each ../../../readDirections}}
+                                            <option {{ifCondSelected this ../value.readDirection}}>{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                {{/each}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                    {{!-- End Paired Reads --}}
+
+
                 </tbody>
             </table>
         </div>
