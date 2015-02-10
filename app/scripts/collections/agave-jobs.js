@@ -264,8 +264,12 @@ define([
                                 'to': 'merged',
                                 'step': {
                                     'custom_demultiplex': {
+                                        'custom_location': '1',
                                         'elements': [
-                                            {/* forward barcode element */
+                                            /* forward barcode element */
+                                            {
+                                                'custom_histogram': true,
+                                                'custom_trim': true,
                                                 'cut_lower': {
                                                     'after': 0,
                                                 },

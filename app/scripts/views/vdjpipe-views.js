@@ -422,7 +422,10 @@ define([
         },
         events: function() {
             var events = {};
-            events['change #barcode-location-' + this.inputCount + '-' + this.elementCount] = 'setTitleByLocation';
+            events['change #barcode-location'
+                           + '-' + this.inputCount
+                           + '-' + this.elementCount
+            ] = 'setTitleByLocation';
 
             events[
                 'change #' + this.inputCount
