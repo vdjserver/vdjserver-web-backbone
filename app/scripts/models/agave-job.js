@@ -39,32 +39,72 @@ function(
                 switch (filename) {
                     case 'pre-filter_composition.csv':
                     case 'post-filter_composition.csv':
+                    case 'pre-filter-fwd-composition.csv':
+                    case 'post-filter-fwd-composition.csv':
+                    case 'pre-filter-rev-composition.csv':
+                    case 'post-filter-rev-composition.csv':
+                    case 'merged-composition.csv':
+                    case 'forward-composition.csv':
+                    case 'reverse-composition.csv':
                         chartType = this.CHART_TYPE_0;
                         break;
 
                     case 'pre-filter_gc_hist.csv':
                     case 'post-filter_gc_hist.csv':
+                    case 'pre-filter-fwd-gc_hist.csv':
+                    case 'post-filter-fwd-gc_hist.csv':
+                    case 'pre-filter-rev-gc_hist.csv':
+                    case 'post-filter-rev-gc_hist.csv':
+                    case 'merged-gc_hist.csv':
+                    case 'forward-gc_hist.csv':
+                    case 'reverse-gc_hist.csv':
                         chartType = this.CHART_TYPE_1;
                         break;
 
-/*
                     case 'pre-heat_map.csv':
                     case 'post-heat_map.csv':
+                    case 'pre-filter-fwd-heat_map.csv':
+                    case 'post-filter-fwd-heat_map.csv':
+                    case 'pre-filter-rev-heat_map.csv':
+                    case 'post-filter-rev-heat_map.csv':
+                    case 'merged-heat_map.csv':
+                    case 'forward-heat_map.csv':
+                    case 'reverse-heat_map.csv':
                         break;
-*/
 
                     case 'pre-filter_len_hist.csv':
                     case 'post-filter_len_hist.csv':
+                    case 'pre-filter-fwd-len_hist.csv':
+                    case 'post-filter-fwd-len_hist.csv':
+                    case 'pre-filter-rev-len_hist.csv':
+                    case 'post-filter-rev-len_hist.csv':
+                    case 'merged-len_hist.csv':
+                    case 'forward-len_hist.csv':
+                    case 'reverse-len_hist.csv':
                         chartType = this.CHART_TYPE_3;
                         break;
 
                     case 'pre-filter_mean_q_hist.csv':
                     case 'post-filter_mean_q_hist.csv':
+                    case 'pre-filter-fwd-mean_q_hist.csv':
+                    case 'post-filter-fwd-mean_q_hist.csv':
+                    case 'pre-filter-rev-mean_q_hist.csv':
+                    case 'post-filter-rev-mean_q_hist.csv':
+                    case 'merged-mean_q_hist.csv':
+                    case 'forward-mean_q_hist.csv':
+                    case 'reverse-mean_q_hist.csv':
                         chartType = this.CHART_TYPE_4;
                         break;
 
                     case 'pre-filter_qstats.csv':
                     case 'post-filter_qstats.csv':
+                    case 'pre-filter-fwd-qstats.csv':
+                    case 'post-filter-fwd-qstats.csv':
+                    case 'pre-filter-rev-qstats.csv':
+                    case 'post-filter-rev-qstats.csv':
+                    case 'merged-qstats.csv':
+                    case 'forward-qstats.csv':
+                    case 'reverse-qstats.csv':
                         chartType = this.CHART_TYPE_5;
                         break;
 
