@@ -11,9 +11,6 @@
                             Title
                         </th>
                         <th class="text-center">
-                            Pairing
-                        </th>
-                        <th class="text-center">
                             Last Modified
                         </th>
                         <th class="text-center">
@@ -53,13 +50,6 @@
                                 {{/if}}
                             </td>
                             <td>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        Single Read
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
                                 {{> project-file-list-last-modified this}}
 
                                 {{#if this.qualModel}}
@@ -84,7 +74,7 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         {{#if this.qualModel}}
-                                            Read-Level Data
+                                            Single-End Read-Level Data
                                         {{else}}
                                             <select
                                                 class="project-file-type"
@@ -159,13 +149,6 @@
                                 {{/each}}
                             </td>
                             <td>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        Paired Reads
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
                                 {{#each this}}
 
                                     {{> project-file-list-last-modified this}}
@@ -204,7 +187,7 @@
                             <td>
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        Read-Level Data
+                                        Paired-End Read-Level Data
                                     </div>
                                 </div>
                             </td>
