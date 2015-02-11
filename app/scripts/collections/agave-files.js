@@ -176,7 +176,7 @@ function(Backbone, EnvironmentConfig) {
 
             return newCollection;
         },
-        getNonPairedCollection: function() {
+        getNonPairedReadCollection: function() {
 
             var readLevelModels = _.filter(this.models, function(model) {
                 return model.getFileType() === 2
@@ -202,6 +202,21 @@ function(Backbone, EnvironmentConfig) {
             var newCollection = this.clone();
             newCollection.reset();
             newCollection.add(pairedReadModels);
+/*
+            var quals = [];
+            var that = this;
+
+            newCollection.each(function(model) {
+                var qualUuid = model.getAssociatedQualityScoreMetadataUuid();
+
+                if (qualUuid) {
+                    var qualModel = that.get(qualUuid);
+                    quals.push(qualModel);
+                }
+            });
+
+            newCollection.add(quals);
+*/
 
             return newCollection;
         },
@@ -257,6 +272,109 @@ function(Backbone, EnvironmentConfig) {
 
             return pairedReads;
         },
+        getQualAssociatedReadCollection: function() {
+
+            var qualAssociatedModels = [];
+
+            var that = this;
+            this.each(function(model) {
+
+                if (model.getAssociatedQualityScoreMetadataUuid()) {
+                    var qualModel = that.get(model.getAssociatedQualityScoreMetadataUuid());
+
+                    qualAssociatedModels.push(model);
+                    qualAssociatedModels.push(qualModel);
+                }
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(qualAssociatedModels);
+
+            return newCollection;
+        },
+        getOrganizedQualAssociatedReads: function() {
+
+            var splitReads = [];
+
+            var that = this;
+            this.each(function(model) {
+
+                var splitRead = [];
+
+                if (model.getAssociatedQualityScoreMetadataUuid()) {
+                    var qualModel = that.get(model.getAssociatedQualityScoreMetadataUuid());
+
+                    splitRead.push(model.toJSON());
+                    splitRead.push(qualModel.toJSON());
+
+                    splitReads.push(splitRead);
+                }
+            });
+
+            return splitReads;
+        },
+
+
+        // TEMP
+        embedQualModels: function(allFiles) {
+
+            var models = [];
+
+            this.each(function(model) {
+
+                if (model.getAssociatedQualityScoreMetadataUuid()) {
+                    var qualModel = allFiles.get(model.getAssociatedQualityScoreMetadataUuid());
+
+                    model.set('qualModel', qualModel.toJSON());
+
+                    models.push(model);
+                }
+            });
+
+            this.add(models);
+
+            return this;
+        },
+        getAllEmbeddedQualModels: function(allFiles) {
+
+            var models = [];
+
+            this.each(function(model) {
+
+                models.push(model);
+
+                if (model.get('qualModel')) {
+                    var shallowQualModel = model.get('qualModel');
+
+                    var fullQualModel = allFiles.get(shallowQualModel['uuid']);
+
+                    models.push(fullQualModel);
+                }
+            });
+
+            return models;
+        },
+        getEmbeddedQualModels: function(allFiles) {
+
+            var models = [];
+
+            this.each(function(model) {
+
+                if (model.get('qualModel')) {
+                    var shallowQualModel = model.get('qualModel');
+
+                    var fullQualModel = allFiles.get(shallowQualModel['uuid']);
+
+                    models.push(fullQualModel);
+                }
+            });
+
+            return models;
+        },
+        // END TEMP
+
+
         search: function(searchString) {
 
             var filteredModels = _.filter(this.models, function(data) {

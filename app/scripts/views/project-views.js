@@ -693,16 +693,33 @@ define([
             // Public Methods
             initialize: function() {
 
-                // Separate paired files
-                this.nonPairedFileListings = this.fileListings.getNonPairedCollection();
+                // Paired Reads w/ quals
                 this.pairedReadFileListings = this.fileListings.getPairedReadCollection();
 
+                this.pairedReadFileListings = this.pairedReadFileListings.embedQualModels(this.fileListings);
+
                 this.pairedReads = this.pairedReadFileListings.getSerializableOrganizedPairedReads();
+                
+
+
+
+                // Single Reads w/ quals
+                var embeddedPairedReadQualModels = this.pairedReadFileListings.getAllEmbeddedQualModels(this.fileListings);
+
+                this.singleReadFileListings = this.fileListings.clone();
+
+                this.singleReadFileListings.remove(embeddedPairedReadQualModels);
+
+                this.singleReadFileListings = this.singleReadFileListings.embedQualModels(this.fileListings);
+
+                var embeddedSingleReadQualModels = this.singleReadFileListings.getEmbeddedQualModels(this.fileListings);
+
+                this.singleReadFileListings.remove(embeddedSingleReadQualModels);
             },
             template: 'project/file-listings',
             serialize: function() {
                 return {
-                    fileListings: this.nonPairedFileListings.toJSON(),
+                    singleReadFileListings: this.singleReadFileListings.toJSON(),
                     pairedReadFileListings: this.pairedReads,
                     readDirections: Backbone.Agave.Model.File.Metadata.getReadDirections(),
                     fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
