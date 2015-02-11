@@ -1,0 +1,9 @@
+<div class="row">
+    <div class="col-sm-12">
+        {{#ifCond this.name "projectFile"}}
+            Uploaded File
+        {{else}}
+            Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.jobName}}</a>
+        {{/ifCond}}
+    </div>
+</div>

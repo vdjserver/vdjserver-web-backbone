@@ -5,6 +5,7 @@ define([
     'filesize',
     'environment-config',
     'moment',
+    'handlebars-utilities',
     'socket-io',
     'backbone.syphon',
 ], function(
@@ -12,10 +13,41 @@ define([
     Handlebars,
     filesize,
     EnvironmentConfig,
-    moment
+    moment,
+    HandlebarsUtilities
 ) {
 
     'use strict';
+
+    HandlebarsUtilities.registerRawPartial(
+        'project/fragments/project-file-list-title',
+        'project-file-list-title'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
+        'project/fragments/project-file-list-last-modified',
+        'project-file-list-last-modified'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
+        'project/fragments/project-file-list-size',
+        'project-file-list-size'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
+        'project/fragments/project-file-list-type',
+        'project-file-list-type'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
+        'project/fragments/project-file-list-tags',
+        'project-file-list-tags'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
+        'project/fragments/project-file-list-spacer',
+        'project-file-list-spacer'
+    );
 
     Handlebars.registerHelper('IfJobSelectableFileType', function(filename, fileType, options) {
         var fileExtension = filename.split('.').pop();
@@ -68,7 +100,6 @@ define([
     });
 
     Handlebars.registerHelper('ifCondSelected', function(v1, v2 /*, options*/) {
-
         if (v1 === v2) {
             return 'selected';
         }

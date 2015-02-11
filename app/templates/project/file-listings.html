@@ -46,18 +46,11 @@
                                 {{/IfJobSelectableFileType}}
                             </td>
                             <td>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
-                                    </div>
-                                </div>
-                                    {{#if this.qualModel}}
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <a class="download-file" href="#" data-bypass=true data-filename="{{this.qualModel.value.name}}" data-metadatauuid="{{this.qualModel.uuid}}">{{this.qualModel.value.name}}</a>
-                                            </div>
-                                        </div>
-                                    {{/if}}
+                                {{> project-file-list-title this}}
+
+                                {{#if this.qualModel}}
+                                    {{> project-file-list-title this.qualModel}}
+                                {{/if}}
                             </td>
                             <td>
                                 <div class="row">
@@ -71,56 +64,24 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        {{FormatAgaveDate lastUpdated}}
-                                    </div>
-                                </div>
+                                {{> project-file-list-last-modified this}}
+
                                 {{#if this.qualModel}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            {{FormatAgaveDate this.qualModel.lastUpdated}}
-                                        </div>
-                                    </div>
+                                    {{> project-file-list-last-modified this.qualModel}}
                                 {{/if}}
                             </td>
                             <td>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        {{GetHumanReadableFileSize value.length}}
-                                    </div>
-                                </div>
+                                {{> project-file-list-size this}}
+
                                 {{#if this.qualModel}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            {{GetHumanReadableFileSize this.qualModel.value.length}}
-                                        </div>
-                                    </div>
+                                    {{> project-file-list-size this.qualModel}}
                                 {{/if}}
                             </td>
                             <td>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        {{#ifCond this.name "projectFile"}}
-                                            Uploaded File
-                                        {{else}}
-                                            Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.jobName}}</a>
-                                        {{/ifCond}}
-                                    </div>
-                                </div>
+                                {{> project-file-list-type this}}
+
                                 {{#if this.qualModel}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            {{#ifCond this.qualModel.name "projectFile"}}
-                                                Uploaded File
-                                            {{else}}
-                                                Job: <a href="/project/{{this.qualModel.value.projectUuid}}/jobs/{{this.qualModel.value.jobUuid}}">{{this.qualModel.value.jobName}}</a>
-                                            {{/ifCond}}
-                                        </div>
-                                    </div>
-                                    {{#ifCond @index 0}}
-                                        <br>
-                                    {{/ifCond}}
+                                    {{> project-file-list-type this.qualModel}}
                                 {{/if}}
                             </td>
                             <td>
@@ -144,27 +105,10 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <input
-                                            class="project-file-tags"
-                                            data-fileuuid="{{uuid}}"
-                                            type="text"
-                                            value="{{GetTagDisplay value.publicAttributes}}"
-                                        >
-                                    </div>
-                                </div>
+                                {{> project-file-list-tags this}}
+
                                 {{#if this.qualModel}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <input
-                                                class="project-file-tags"
-                                                data-fileuuid="{{this.qualModel.uuid}}"
-                                                type="text"
-                                                value="{{GetTagDisplay this.qualModel.value.publicAttributes}}"
-                                            >
-                                        </div>
-                                    </div>
+                                    {{> project-file-list-tags this.qualModel}}
                                 {{/if}}
                             </td>
                             <td>
@@ -201,96 +145,6 @@
                     {{/each}}
                     {{!-- End Single Reads --}}
 
-
-                    {{!-- Start Qual Associated Single Reads --}}
-                    {{!--
-                    {{#each qualAssociatedSingleFileListings}}
-                        <tr class="text-center">
-                            <td>
-                                <input name="file-checkbox" type="checkbox" value="{{this.0.uuid}}" class="selected-files">
-                            </td>
-                            <td>
-                                {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
-                                        </div>
-                                    </div>
-                                {{/each}}
-                            </td>
-                            <td>
-                                Single Read - Fasta/Qual
-                            </td>
-                            <td>
-                                {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            {{FormatAgaveDate lastUpdated}}
-                                        </div>
-                                    </div>
-                                {{/each}}
-                            </td>
-                            <td>
-                                {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            {{GetHumanReadableFileSize value.length}}
-                                        </div>
-                                    </div>
-                                {{/each}}
-                            </td>
-                            <td>
-                                {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            {{#ifCond this.name "projectFile"}}
-                                                Uploaded File
-                                            {{else}}
-                                                Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.jobName}}</a>
-                                            {{/ifCond}}
-                                        </div>
-                                    </div>
-                                {{/each}}
-                            </td>
-                            <td>
-                                Read-Level Data
-                            </td>
-                            <td>
-                                {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <input
-                                                class="project-file-tags"
-                                                data-fileuuid="{{uuid}}"
-                                                type="text"
-                                                value="{{GetTagDisplay value.publicAttributes}}"
-                                            >
-                                        </div>
-                                    </div>
-                                {{/each}}
-                            </td>
-                            <td>
-                                {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <select
-                                                class="project-file-read-direction"
-                                                data-fileuuid="{{uuid}}"
-                                            >
-                                                <option></option>
-                                                {{#each ../../../readDirections}}
-                                                    <option {{ifCondSelected this ../value.readDirection}}>{{this}}</option>
-                                                {{/each}}
-                                            </select>
-                                        </div>
-                                    </div>
-                                {{/each}}
-                            </td>
-                        </tr>
-                    {{/each}}
-                    --}}
-                    {{!-- End Qual Associated Single Reads --}}
-
                     {{!-- Start Paired Reads --}}
                     {{#each pairedReadFileListings}}
                         <tr class="text-center">
@@ -299,20 +153,12 @@
                             </td>
                             <td>
                                 {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
-                                        </div>
-                                    </div>
+                                    {{> project-file-list-title this}}
+
                                     {{#if this.qualModel}}
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <a class="download-file" href="#" data-bypass=true data-filename="{{this.qualModel.value.name}}" data-metadatauuid="{{this.qualModel.uuid}}">{{this.qualModel.value.name}}</a>
-                                            </div>
-                                        </div>
-                                        {{#ifCond @index 0}}
-                                            <br>
-                                        {{/ifCond}}
+                                        {{> project-file-list-title this.qualModel}}
+
+                                        {{> project-file-list-spacer}}
                                     {{/if}}
                                 {{/each}}
                             </td>
@@ -325,67 +171,41 @@
                             </td>
                             <td>
                                 {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            {{FormatAgaveDate lastUpdated}}
-                                        </div>
-                                    </div>
+
+                                    {{> project-file-list-last-modified this}}
+
                                     {{#if this.qualModel}}
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                {{FormatAgaveDate this.qualModel.lastUpdated}}
-                                            </div>
-                                        </div>
-                                        {{#ifCond @index 0}}
-                                            <br>
-                                        {{/ifCond}}
+                                        {{> project-file-list-last-modified this.qualModel}}
+
+                                        {{> project-file-list-spacer}}
                                     {{/if}}
+
                                 {{/each}}
                             </td>
                             <td>
                                 {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            {{GetHumanReadableFileSize value.length}}
-                                        </div>
-                                    </div>
+
+                                    {{> project-file-list-size this}}
+
                                     {{#if this.qualModel}}
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                {{GetHumanReadableFileSize this.qualModel.value.length}}
-                                            </div>
-                                        </div>
-                                        {{#ifCond @index 0}}
-                                            <br>
-                                        {{/ifCond}}
+                                        {{> project-file-list-size this.qualModel}}
+
+                                        {{> project-file-list-spacer}}
                                     {{/if}}
+
                                 {{/each}}
                             </td>
                             <td>
                                 {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            {{#ifCond this.name "projectFile"}}
-                                                Uploaded File
-                                            {{else}}
-                                                Job: <a href="/project/{{value.projectUuid}}/jobs/{{value.jobUuid}}">{{value.jobName}}</a>
-                                            {{/ifCond}}
-                                        </div>
-                                    </div>
+
+                                    {{> project-file-list-type this}}
+
                                     {{#if this.qualModel}}
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                {{#ifCond this.qualModel.name "projectFile"}}
-                                                    Uploaded File
-                                                {{else}}
-                                                    Job: <a href="/project/{{this.qualModel.value.projectUuid}}/jobs/{{this.qualModel.value.jobUuid}}">{{this.qualModel.value.jobName}}</a>
-                                                {{/ifCond}}
-                                            </div>
-                                        </div>
-                                        {{#ifCond @index 0}}
-                                            <br>
-                                        {{/ifCond}}
+                                        {{> project-file-list-type this.qualModel}}
+
+                                        {{> project-file-list-spacer}}
                                     {{/if}}
+
                                 {{/each}}
                             </td>
                             <td>
@@ -397,31 +217,15 @@
                             </td>
                             <td>
                                 {{#each this}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <input
-                                                class="project-file-tags"
-                                                data-fileuuid="{{uuid}}"
-                                                type="text"
-                                                value="{{GetTagDisplay value.publicAttributes}}"
-                                            >
-                                        </div>
-                                    </div>
+
+                                    {{> project-file-list-tags this}}
+
                                     {{#if this.qualModel}}
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <input
-                                                    class="project-file-tags"
-                                                    data-fileuuid="{{this.qualModel.uuid}}"
-                                                    type="text"
-                                                    value="{{GetTagDisplay this.qualModel.value.publicAttributes}}"
-                                                >
-                                            </div>
-                                        </div>
-                                        {{#ifCond @index 0}}
-                                            <br>
-                                        {{/ifCond}}
+                                        {{> project-file-list-tags this.qualModel}}
+
+                                        {{> project-file-list-spacer}}
                                     {{/if}}
+
                                 {{/each}}
                             </td>
                             <td>
@@ -453,9 +257,8 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        {{#ifCond @index 0}}
-                                            <br>
-                                        {{/ifCond}}
+
+                                        {{> project-file-list-spacer}}
                                     {{/if}}
                                 {{/each}}
                             </td>
