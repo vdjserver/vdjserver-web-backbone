@@ -269,6 +269,7 @@ function(Backbone, EnvironmentConfig) {
 
                 if (model.getQualityScoreMetadataUuid()) {
                     var qualModel = allFiles.get(model.getQualityScoreMetadataUuid());
+                    qualModel.set('isLinkedQualModel', true);
 
                     model.set('qualModel', qualModel.toJSON());
 

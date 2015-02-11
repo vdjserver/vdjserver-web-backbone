@@ -1,5 +1,13 @@
 <div class="row">
     <div class="col-sm-12">
+        {{#if value.qualityScoreMetadataUuid}}
+            <i class="fa fa-link"></i>&nbsp;
+        {{/if}}
+
+        {{#if isLinkedQualModel}}
+            <i class="fa fa-link"></i>&nbsp;
+        {{/if}}
+
         <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
     </div>
 </div>

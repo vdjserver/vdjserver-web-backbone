@@ -55,11 +55,7 @@
                             <td>
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        {{#if this.qualModel}}
-                                            Single Read + Qual
-                                        {{else}}
-                                            Single Read
-                                        {{/if}}
+                                        Single Read
                                     </div>
                                 </div>
                             </td>
@@ -157,9 +153,9 @@
 
                                     {{#if this.qualModel}}
                                         {{> project-file-list-title this.qualModel}}
-
-                                        {{> project-file-list-spacer}}
                                     {{/if}}
+
+                                    {{> project-file-list-spacer}}
                                 {{/each}}
                             </td>
                             <td>
@@ -176,10 +172,9 @@
 
                                     {{#if this.qualModel}}
                                         {{> project-file-list-last-modified this.qualModel}}
-
-                                        {{> project-file-list-spacer}}
                                     {{/if}}
 
+                                    {{> project-file-list-spacer}}
                                 {{/each}}
                             </td>
                             <td>
@@ -189,10 +184,9 @@
 
                                     {{#if this.qualModel}}
                                         {{> project-file-list-size this.qualModel}}
-
-                                        {{> project-file-list-spacer}}
                                     {{/if}}
 
+                                    {{> project-file-list-spacer}}
                                 {{/each}}
                             </td>
                             <td>
@@ -202,10 +196,9 @@
 
                                     {{#if this.qualModel}}
                                         {{> project-file-list-type this.qualModel}}
-
-                                        {{> project-file-list-spacer}}
                                     {{/if}}
 
+                                    {{> project-file-list-spacer}}
                                 {{/each}}
                             </td>
                             <td>
@@ -222,10 +215,9 @@
 
                                     {{#if this.qualModel}}
                                         {{> project-file-list-tags this.qualModel}}
-
-                                        {{> project-file-list-spacer}}
                                     {{/if}}
 
+                                    {{> project-file-list-spacer}}
                                 {{/each}}
                             </td>
                             <td>
@@ -258,8 +250,9 @@
                                             </div>
                                         </div>
 
-                                        {{> project-file-list-spacer}}
                                     {{/if}}
+
+                                    {{> project-file-list-spacer}}
                                 {{/each}}
                             </td>
                         </tr>
