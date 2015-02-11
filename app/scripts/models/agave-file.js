@@ -362,7 +362,14 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 return fileModel;
             },
-            updateReadDirection: function(newReadDirection) {
+            getReadDirection: function() {
+                var value = this.get('value');
+
+                var readDirection = value['readDirection'];
+
+                return readDirection;
+            },
+            setReadDirection: function(newReadDirection) {
                 var value = this.get('value');
 
                 value['readDirection'] = newReadDirection;
@@ -371,14 +378,14 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 return this.save();
             },
-            getReadDirection: function() {
+            getQualityScoreMetadataUuid: function() {
                 var value = this.get('value');
 
-                var readDirection = value['readDirection'];
+                var qualUuid = value['qualityScoreMetadataUuid'];
 
-                return readDirection;
+                return qualUuid;
             },
-            updateAssociatedQualityScoreMetadata: function(qualityScoreMetadataUuid) {
+            setQualityScoreMetadataUuid: function(qualityScoreMetadataUuid) {
                 var value = this.get('value');
 
                 value['qualityScoreMetadataUuid'] = qualityScoreMetadataUuid;
@@ -387,35 +394,10 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 return this.save();
             },
-            removeQualityScoreMetadataAssociation: function() {
+            removeQualityScoreMetadataUuid: function() {
                 var value = this.get('value');
 
                 delete value['qualityScoreMetadataUuid'];
-
-                this.set('value', value);
-
-                return this.save();
-            },
-            getAssociatedQualityScoreMetadataUuid: function() {
-                var value = this.get('value');
-
-                var qualUuid = value['qualityScoreMetadataUuid'];
-
-                return qualUuid;
-            },
-            setPairedReadMetadataUuid: function(pairedReadMetadataUuid) {
-                var value = this.get('value');
-
-                value['pairedReadMetadataUuid'] = pairedReadMetadataUuid;
-
-                this.set('value', value);
-
-                return this.save();
-            },
-            removePairedReadMetadataAssociation: function() {
-                var value = this.get('value');
-
-                delete value['pairedReadMetadataUuid'];
 
                 this.set('value', value);
 
@@ -427,6 +409,29 @@ function(Backbone, EnvironmentConfig, moment) {
                 var pairedReadUuid = value['pairedReadMetadataUuid'];
 
                 return pairedReadUuid;
+            },
+            setPairedReadMetadataUuid: function(pairedReadMetadataUuid) {
+                var value = this.get('value');
+
+                value['pairedReadMetadataUuid'] = pairedReadMetadataUuid;
+
+                this.set('value', value);
+
+                return this.save();
+            },
+            removePairedReadMetadataUuid: function() {
+                var value = this.get('value');
+
+                delete value['pairedReadMetadataUuid'];
+
+                this.set('value', value);
+
+                return this.save();
+            },
+            getFileType: function() {
+                var value = this.get('value');
+
+                return value['fileType'];
             },
             updateFileType: function(fileType) {
                 var value = this.get('value');
@@ -443,11 +448,6 @@ function(Backbone, EnvironmentConfig, moment) {
                 var fileExtension = value['name'].split('.').pop();
 
                 return fileExtension;
-            },
-            getFileType: function() {
-                var value = this.get('value');
-
-                return value['fileType'];
             },
 
             // Private Methods

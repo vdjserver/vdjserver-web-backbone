@@ -87,27 +87,6 @@ function(Backbone, EnvironmentConfig) {
 
             return isDuplicate;
         },
-
-        getQualAssociableFastaCollection: function() {
-
-            var models = _.filter(this.models, function(model) {
-
-                return (
-                        model.getFileType() === 2
-                            ||
-                        model.getFileType() === 4
-                       )
-                       ;
-            });
-
-            var newCollection = this.clone();
-            newCollection.reset();
-            newCollection.add(models);
-
-            newCollection.sortBy(this._sortAlphabetical());
-
-            return newCollection;
-        },
         getBarcodeCollection: function() {
             /*
                 Get all known fasta files that have been categorized as either:
@@ -151,6 +130,26 @@ function(Backbone, EnvironmentConfig) {
 
             return newCollection;
         },
+        getQualAssociableFastaCollection: function() {
+
+            var models = _.filter(this.models, function(model) {
+
+                return (
+                        model.getFileType() === 2
+                            ||
+                        model.getFileType() === 4
+                       )
+                       ;
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(models);
+
+            newCollection.sortBy(this._sortAlphabetical());
+
+            return newCollection;
+        },
         getCombinationCollection: function() {
 
             var combinationModels = _.filter(this.models, function(model) {
@@ -176,20 +175,6 @@ function(Backbone, EnvironmentConfig) {
 
             return newCollection;
         },
-        getNonPairedReadCollection: function() {
-
-            var readLevelModels = _.filter(this.models, function(model) {
-                return model.getFileType() === 2
-                       &&
-                       model.getPairedReadMetadataUuid() !== undefined
-                       ;
-            });
-
-            var newCollection = this.clone();
-            newCollection.remove(readLevelModels);
-
-            return newCollection;
-        },
         getPairedReadCollection: function() {
 
             var pairedReadModels = _.filter(this.models, function(model) {
@@ -202,24 +187,15 @@ function(Backbone, EnvironmentConfig) {
             var newCollection = this.clone();
             newCollection.reset();
             newCollection.add(pairedReadModels);
-/*
-            var quals = [];
-            var that = this;
-
-            newCollection.each(function(model) {
-                var qualUuid = model.getAssociatedQualityScoreMetadataUuid();
-
-                if (qualUuid) {
-                    var qualModel = that.get(qualUuid);
-                    quals.push(qualModel);
-                }
-            });
-
-            newCollection.add(quals);
-*/
 
             return newCollection;
         },
+
+        /**
+            Returns arrays of deep copied paired reads.
+
+            Qual files are not included.
+        */
         getOrganizedPairedReads: function() {
 
             var pairedReads = [];
@@ -246,6 +222,12 @@ function(Backbone, EnvironmentConfig) {
 
             return pairedReads;
         },
+
+        /**
+            Returns arrays of shallow copied paired reads.
+
+            Qual files are not included.
+        */
         getSerializableOrganizedPairedReads: function() {
 
             var pairedReads = [];
@@ -272,59 +254,21 @@ function(Backbone, EnvironmentConfig) {
 
             return pairedReads;
         },
-        getQualAssociatedReadCollection: function() {
 
-            var qualAssociatedModels = [];
+        /**
+            Adds a shallow copy of qual models from |allFiles| to project files in |this|.
 
-            var that = this;
-            this.each(function(model) {
-
-                if (model.getAssociatedQualityScoreMetadataUuid()) {
-                    var qualModel = that.get(model.getAssociatedQualityScoreMetadataUuid());
-
-                    qualAssociatedModels.push(model);
-                    qualAssociatedModels.push(qualModel);
-                }
-            });
-
-            var newCollection = this.clone();
-            newCollection.reset();
-            newCollection.add(qualAssociatedModels);
-
-            return newCollection;
-        },
-        getOrganizedQualAssociatedReads: function() {
-
-            var splitReads = [];
-
-            var that = this;
-            this.each(function(model) {
-
-                var splitRead = [];
-
-                if (model.getAssociatedQualityScoreMetadataUuid()) {
-                    var qualModel = that.get(model.getAssociatedQualityScoreMetadataUuid());
-
-                    splitRead.push(model.toJSON());
-                    splitRead.push(qualModel.toJSON());
-
-                    splitReads.push(splitRead);
-                }
-            });
-
-            return splitReads;
-        },
-
-
-        // TEMP
+            It is important for the copy to be shallow in order for JSON
+            serialization to work properly when model.toJSON() is called.
+        */
         embedQualModels: function(allFiles) {
 
             var models = [];
 
             this.each(function(model) {
 
-                if (model.getAssociatedQualityScoreMetadataUuid()) {
-                    var qualModel = allFiles.get(model.getAssociatedQualityScoreMetadataUuid());
+                if (model.getQualityScoreMetadataUuid()) {
+                    var qualModel = allFiles.get(model.getQualityScoreMetadataUuid());
 
                     model.set('qualModel', qualModel.toJSON());
 
@@ -336,6 +280,14 @@ function(Backbone, EnvironmentConfig) {
 
             return this;
         },
+
+        /**
+            Returns an array of all embedded qual models and read-level models
+            in deep copy format.
+
+            Embedded qual models are read from |this|, and deep copies are
+            taken from |allFiles|.
+        */
         getAllEmbeddedQualModels: function(allFiles) {
 
             var models = [];
@@ -355,6 +307,13 @@ function(Backbone, EnvironmentConfig) {
 
             return models;
         },
+
+        /**
+            Returns an array of all embedded qual models in deep copy format.
+
+            Embedded qual models are read from |this|, and deep copies are
+            taken from |allFiles|.
+        */
         getEmbeddedQualModels: function(allFiles) {
 
             var models = [];
@@ -372,8 +331,6 @@ function(Backbone, EnvironmentConfig) {
 
             return models;
         },
-        // END TEMP
-
 
         search: function(searchString) {
 

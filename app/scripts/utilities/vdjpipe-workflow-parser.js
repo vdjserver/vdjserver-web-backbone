@@ -758,8 +758,8 @@ define(['app'], function(App) {
                     stanza['reverse_seq'] = model.get('value')['name'];
                 }
 
-                if (model.getAssociatedQualityScoreMetadataUuid()) {
-                    var qualModel = allFileMetadatas.get(model.getAssociatedQualityScoreMetadataUuid());
+                if (model.getQualityScoreMetadataUuid()) {
+                    var qualModel = allFileMetadatas.get(model.getQualityScoreMetadataUuid());
 
                     if (qualModel.getReadDirection() === 'F') {
                         stanza['forward_qual'] = qualModel.get('value')['name'];

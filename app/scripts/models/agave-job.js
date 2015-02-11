@@ -281,7 +281,7 @@ function(
 
                 var selectedFileMetadata = selectedFileMetadatas.at(i);
 
-                var qualUuid = selectedFileMetadata.getAssociatedQualityScoreMetadataUuid();
+                var qualUuid = selectedFileMetadata.getQualityScoreMetadataUuid();
 
                 if (qualUuid) {
                     var qualFileMetadata = allFileMetadatas.get(qualUuid);
@@ -326,7 +326,7 @@ function(
                     var fastaMetadata = allFileMetadatas.getModelForName(files[i]);
 
                     // Add qual files
-                    var qualUuid = fastaMetadata.getAssociatedQualityScoreMetadataUuid();
+                    var qualUuid = fastaMetadata.getQualityScoreMetadataUuid();
 
                     var qualMetadata = allFileMetadatas.get(qualUuid);
 

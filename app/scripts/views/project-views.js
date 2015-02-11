@@ -693,27 +693,36 @@ define([
             // Public Methods
             initialize: function() {
 
+                /*
+                    1.) get paired reads
+                    2.) add quals to paired reads
+
+                    3.) remove paired reads + quals from single reads
+                    4.) add quals to single reads
+                */
+
                 // Paired Reads w/ quals
+                // 1.
                 this.pairedReadFileListings = this.fileListings.getPairedReadCollection();
 
+                // 2.
                 this.pairedReadFileListings = this.pairedReadFileListings.embedQualModels(this.fileListings);
-
                 this.pairedReads = this.pairedReadFileListings.getSerializableOrganizedPairedReads();
-                
-
-
 
                 // Single Reads w/ quals
                 var embeddedPairedReadQualModels = this.pairedReadFileListings.getAllEmbeddedQualModels(this.fileListings);
 
                 this.singleReadFileListings = this.fileListings.clone();
 
+                // 3.
                 this.singleReadFileListings.remove(embeddedPairedReadQualModels);
 
+                // 4.
                 this.singleReadFileListings = this.singleReadFileListings.embedQualModels(this.fileListings);
 
                 var embeddedSingleReadQualModels = this.singleReadFileListings.getEmbeddedQualModels(this.fileListings);
 
+                // Remove associated quals from file listing since they're embedded now
                 this.singleReadFileListings.remove(embeddedSingleReadQualModels);
             },
             template: 'project/file-listings',
@@ -769,7 +778,7 @@ define([
 
                 var fileMetadata = this.fileListings.get(e.target.dataset.fileuuid);
 
-                fileMetadata.updateReadDirection(e.target.value)
+                fileMetadata.setReadDirection(e.target.value)
                     .done(function() {
                         that._uiShowSaveSuccessAnimation(e.target);
                     })
@@ -1123,7 +1132,7 @@ define([
                     var disassociatePairedReadPromises = [];
 
                     var createDisassociatePairedReadPromise = function(model) {
-                        model.removePairedReadMetadataAssociation();
+                        model.removePairedReadMetadataUuid();
                     };
 
                     disassociatePairedReadPromises.push(createDisassociatePairedReadPromise(pairModel));
@@ -1197,7 +1206,7 @@ define([
 
                     var qualModel = this.qualMetadatas.getModelForName(qualName);
 
-                    fastaModel.updateAssociatedQualityScoreMetadata(qualModel.get('uuid'))
+                    fastaModel.setQualityScoreMetadataUuid(qualModel.get('uuid'))
                         .then(function() {
                             return that._uiShowSaveSuccessAnimation(e.target);
                         })
@@ -1207,7 +1216,7 @@ define([
                         ;
                 }
                 else {
-                    fastaModel.removeQualityScoreMetadataAssociation()
+                    fastaModel.removeQualityScoreMetadataUuid()
                         .then(function() {
                             return that._uiShowSaveSuccessAnimation(e.target);
                         })
@@ -1237,7 +1246,7 @@ define([
                         }
                         else {
                             that.fastaMetadatas.remove(fileMetadata);
-                            return fileMetadata.removeQualityScoreMetadataAssociation();
+                            return fileMetadata.removeQualityScoreMetadataUuid();
                         }
                     })
                     .then(function() {
