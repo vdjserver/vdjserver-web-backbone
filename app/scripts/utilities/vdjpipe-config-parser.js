@@ -201,6 +201,11 @@ define(['app'], function(App) {
             workflowConfig['steps'] = newConfig;
         }
 
+        // 18/Feb/2015 prune the |single_reads| keyword since vdjpipe doesn't recognize it.
+        if (workflowConfig['single_reads']) {
+            delete workflowConfig['single_reads'];
+        }
+
         return workflowConfig;
     };
 
