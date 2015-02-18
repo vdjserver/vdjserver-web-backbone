@@ -158,7 +158,7 @@ define(['app'], function(App) {
                     delete newConfig[i]['apply']['step']['custom_demultiplex'];
                 }
                 else {
-                    newConfig[i]['match'] = newConfig[i]['custom_demultiplex'];
+                    newConfig[i]['match'] = option['custom_demultiplex'];
                     delete newConfig[i]['custom_demultiplex'];
                 }
 
