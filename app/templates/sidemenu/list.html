@@ -27,8 +27,8 @@
         </li>
 
         <li class="project-submenu hidden">
-            <a href="/project/{{uuid}}/jobs" class="select-analyses" data-id="{{uuid}}">
-                Analyses
+            <a href="/project/{{uuid}}/settings" class="">
+                Settings
             </a>
         </li>
 
@@ -39,26 +39,26 @@
         </li>
 
         <li class="project-submenu hidden">
+            <a href="/project/{{uuid}}" class="">
+                Uploaded Data
+            </a>
+        </li>
+
+        <li class="project-submenu hidden">
+            <a href="/project/{{uuid}}/associations/qual" class="" data-id="{{uuid}}">
+                .fasta/.qual Associations
+            </a>
+        </li>
+
+        <li class="project-submenu hidden">
             <a href="/project/{{uuid}}/associations/paired-reads" class="" data-id="{{uuid}}">
                 Paired Read Associations
             </a>
         </li>
 
         <li class="project-submenu hidden">
-            <a href="/project/{{uuid}}/associations/qual" class="" data-id="{{uuid}}">
-                Qual Associations
-            </a>
-        </li>
-
-        <li class="project-submenu hidden">
-            <a href="/project/{{uuid}}/settings" class="">
-                Settings
-            </a>
-        </li>
-
-        <li class="project-submenu hidden">
-            <a href="/project/{{uuid}}" class="">
-                Uploaded Data
+            <a href="/project/{{uuid}}/jobs" class="select-analyses" data-id="{{uuid}}">
+                Analyses
             </a>
         </li>
     {{/projects}}
