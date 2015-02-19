@@ -116,10 +116,6 @@
     border-top: 1px solid #d8d8d8;
 }
 
-.file-listing-spacer {
-    padding: 20px 0 0 0;
-}
-
 .project-search {
     //padding-top: 10px;
 }
@@ -223,4 +219,13 @@
         @extend .list-group-item;
         border: none;
     }
+}
+
+.file-listing-spacer {
+    padding: 20px 0 0 0;
+}
+
+.file-listing-title-block {
+    display: inline-block;
+    vertical-align: middle;
 }

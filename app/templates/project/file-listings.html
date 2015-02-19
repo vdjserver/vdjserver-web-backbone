@@ -44,10 +44,6 @@
                             </td>
                             <td>
                                 {{> project-file-list-title this}}
-
-                                {{#if this.qualModel}}
-                                    {{> project-file-list-title this.qualModel}}
-                                {{/if}}
                             </td>
                             <td>
                                 {{> project-file-list-last-modified this}}
@@ -140,10 +136,6 @@
                             <td>
                                 {{#each this}}
                                     {{> project-file-list-title this}}
-
-                                    {{#if this.qualModel}}
-                                        {{> project-file-list-title this.qualModel}}
-                                    {{/if}}
 
                                     {{> project-file-list-spacer}}
                                 {{/each}}

@@ -1,13 +1,35 @@
-<div class="row">
-    <div class="col-sm-12">
-        {{#if value.qualityScoreMetadataUuid}}
-            <i class="fa fa-link"></i>&nbsp;
-        {{/if}}
+{{#if value.qualityScoreMetadataUuid}}
+    <div class="row">
+        <div class="col-sm-12">
 
-        {{#if isLinkedQualModel}}
-            <i class="fa fa-link"></i>&nbsp;
-        {{/if}}
+            <div class="file-listing-title-block">
+                <i class="fa fa-link"></i>
+            </div>
 
-        <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
+            <div class="file-listing-title-block">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{#if this.qualModel}}
+                            <a class="download-file" href="#" data-bypass=true data-filename="{{this.qualModel.value.name}}" data-metadatauuid="{{this.qualModel.uuid}}">{{this.qualModel.value.name}}</a>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-danger unlink-qual" id="{{uuid}}">
+                <i class="fa fa-close"></i>
+            </button>
+        </div>
     </div>
-</div>
+{{else}}
+    <div class="row">
+        <div class="col-sm-12">
+            <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
+        </div>
+    </div>
+{{/if}}

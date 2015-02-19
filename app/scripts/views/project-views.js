@@ -288,6 +288,7 @@ define([
             'change #file-dialog':   '_changeFilesSelector',
             'click .selected-files': '_uiToggleDisabledButtonStatus',
             'change #select-all-files-checkbox': '_toggleSelectAllFiles',
+            'click .unlink-qual':   '_unlinkQual',
             'click #run-job-button':  '_clickJobDropdown',
             'click .run-job':       '_clickRunJob',
             'change #search-text':  '_searchFileListings',
@@ -326,9 +327,9 @@ define([
         _fetchAndRenderFileListings: function() {
 
             var that = this;
+            this.fileListings.reset();
             this.fileListings.fetch()
                 .done(function() {
-
                     that._removeLoadingViews();
 
                     // Need to render main view before rendering fileListing subview
@@ -618,6 +619,27 @@ define([
             }
 
             this._uiToggleDisabledButtonStatus();
+        },
+        _unlinkQual: function(e) {
+            e.preventDefault();
+
+            // Use this instead of e.target.id because the click event will
+            // sometimes land on a child element instead of the button itself.
+            // If that happens, e.target.id will refer to the child and not the button.
+            var uuid = $(e.target).closest('button').attr('id');
+
+            var fileMetadataModel = this.fileListings.get(uuid);
+
+            if (fileMetadataModel) {
+
+                var that = this;
+
+                fileMetadataModel.removeQualityScoreMetadataUuid()
+                    .done(function() {
+                        that._fetchAndRenderFileListings();
+                    })
+                    ;
+            }
         },
         _clickJobDropdown: function(e) {
             e.preventDefault();
