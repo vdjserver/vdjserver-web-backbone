@@ -1,59 +1,60 @@
 {{> vdjpipe-base-view-top}}
-
-<!-- Reverse complement is always checked for this option -->
-<input
-    class="hidden job-form-item"
-    name="{{inputCount}}-{{parameterType}}-reverse-complement"
-    type="checkbox"
-    checked
->
-
-<div class="row row-with-spacer">
-    <div class="col-md-6">
-
-        {{> vdjpipe-paired-reads-direction-fragment}}
+    <div class="demultiplex-tooltip" data-toggle="tooltip" data-placement="right" title='Note: barcode files must have their type set as "Barcode Sequences" to be included in this module.'>
+        <!-- Reverse complement is always checked for this option -->
+        <input
+            class="hidden job-form-item"
+            name="{{inputCount}}-{{parameterType}}-reverse-complement"
+            type="checkbox"
+            checked
+        >
 
         <div class="row row-with-spacer">
-            <div class="col-md-12">
-                Number of Barcodes per Read
-                &nbsp;
-                <input
-                    id="{{inputCount}}-barcodes"
-                    class="job-form-item"
-                    type="number"
-                    step="1"
-                    min="1"
-                    max="2"
-                    pattern="\d+"
-                >
+            <div class="col-md-6">
+
+                {{> vdjpipe-paired-reads-direction-fragment}}
+
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+                        Number of Barcodes per Read
+                        &nbsp;
+                        <input
+                            id="{{inputCount}}-barcodes"
+                            class="job-form-item"
+                            type="number"
+                            step="1"
+                            min="1"
+                            max="2"
+                            pattern="\d+"
+                        >
+                    </div>
+                </div>
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+                        Location
+                        &nbsp;
+                        <select
+                            id="{{inputCount}}-barcode-location"
+                            class="job-form-item"
+                            name="{{inputCount}}-{{parameterType}}-custom-location"
+                        >
+                            <option value="1">5'</option>
+                            <option value="2">3'</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <p>
+                    This module assigns reads to samples based on either a single barcode or a combination of two barcodes.
+                </p>
+                <p>
+                    This step can be removed from the workflow template.
+                </p>
             </div>
         </div>
-        <div class="row row-with-spacer">
-            <div class="col-md-12">
-                Location
-                &nbsp;
-                <select
-                    id="{{inputCount}}-barcode-location"
-                    class="job-form-item"
-                    name="{{inputCount}}-{{parameterType}}-custom-location"
-                >
-                    <option value="1">5'</option>
-                    <option value="2">3'</option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <p>
-            This module assigns reads to samples based on either a single barcode or a combination of two barcodes.
-        </p>
-        <p>
-            This step can be removed from the workflow template.
-        </p>
-    </div>
-</div>
 
-<div id="{{inputCount}}-{{parameterType}}-added-barcode-subviews"></div>
-<div id="{{inputCount}}-{{parameterType}}-combination-subview"></div>
+        <div id="{{inputCount}}-{{parameterType}}-added-barcode-subviews"></div>
+        <div id="{{inputCount}}-{{parameterType}}-combination-subview"></div>
 
+    </div>
 {{> vdjpipe-base-view-bottom}}

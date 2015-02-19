@@ -242,7 +242,6 @@ function(
                 {
                     appId: 'vdj_pipe-0.1.2u6',
                 }
-
             );
         },
         initialize: function(options) {

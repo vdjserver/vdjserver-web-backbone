@@ -161,6 +161,8 @@ define([
             }
 
             this.layoutView.trigger('FixModalBackdrop');
+
+            $('.demultiplex-tooltip').tooltip();
         },
         events: function() {
             var events = {};

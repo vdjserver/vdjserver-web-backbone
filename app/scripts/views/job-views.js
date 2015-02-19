@@ -578,6 +578,10 @@ define([
             jobNotification.projectUuid = this.projectModel.get('uuid');
 
             // DEBUG
+            if (EnvironmentConfig.debug.console) {
+                console.log('jobModel is: ' + JSON.stringify(jobModel));
+            }
+
             if (EnvironmentConfig.debug.disableJobs) {
                 return;
             }

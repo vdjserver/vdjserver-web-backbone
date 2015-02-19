@@ -38,113 +38,118 @@
             <div class="panel-body">
                 <div class="row row-with-spacer">
                     <div class="col-md-12">
+                        {{#if barcodeFiles}}
+                            <input
+                                name="{{inputCount}}-{{parameterType}}-elements[]"
+                                type="text"
+                                value="{{elementCount}}"
+                                hidden
+                            >
 
-                        <input
-                            name="{{inputCount}}-{{parameterType}}-elements[]"
-                            type="text"
-                            value="{{elementCount}}"
-                            hidden
-                        >
-
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        Fasta Barcode File
-                                    </td>
-                                    <td>
-                                        <select
-                                            class="job-form-item"
-                                            id="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file"
-                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file"
-                                        >
-                                            {{#each barcodeFiles}}
-                                                <option value={{value.name}}>{{value.name}}</option>
-                                            {{/each}}
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Discard Reads Without Barcodes?
-                                    </td>
-                                    <td>
-                                        {{#if options.required}}
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            Fasta Barcode File
+                                        </td>
+                                        <td>
+                                            <select
+                                                class="job-form-item"
+                                                id="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file"
+                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file"
+                                            >
+                                                {{#each barcodeFiles}}
+                                                    <option value={{value.name}}>{{value.name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Discard Reads Without Barcodes?
+                                        </td>
+                                        <td>
+                                            {{#if options.required}}
+                                                <input
+                                                    class="job-form-item"
+                                                    name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
+                                                    type="checkbox"
+                                                    checked
+                                                >
+                                            {{else}}
+                                                <input
+                                                    class="job-form-item"
+                                                    name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
+                                                    type="checkbox"
+                                                >
+                                            {{/if}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Maximum Number of Mismatches
+                                        </td>
+                                        <td>
                                             <input
                                                 class="job-form-item"
-                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
-                                                type="checkbox"
-                                                checked
+                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-maximum-mismatches"
+                                                type="number"
+                                                value="{{options.max_mismatches}}"
+                                                step="1"
+                                                min="0"
+                                                pattern="\d+"
                                             >
-                                        {{else}}
-                                            <input
-                                                class="job-form-item"
-                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-required"
-                                                type="checkbox"
-                                            >
-                                        {{/if}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Maximum Number of Mismatches
-                                    </td>
-                                    <td>
-                                        <input
-                                            class="job-form-item"
-                                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-maximum-mismatches"
-                                            type="number"
-                                            value="{{options.max_mismatches}}"
-                                            step="1"
-                                            min="0"
-                                            pattern="\d+"
-                                        >
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Trim Barcode
-                                    </td>
-                                    <td>
-                                        {{#if options.custom_trim}}
-                                            <input
-                                                class="job-form-item"
-                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-trim"
-                                                type="checkbox"
-                                                checked
-                                            >
-                                        {{else}}
-                                            <input
-                                                class="job-form-item"
-                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-trim"
-                                                type="checkbox"
-                                            >
-                                        {{/if}}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Generate Histogram
-                                    </td>
-                                    <td>
-                                        {{#if options.custom_histogram}}
-                                            <input
-                                                class="job-form-item"
-                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-histogram"
-                                                type="checkbox"
-                                                checked
-                                            >
-                                        {{else}}
-                                            <input
-                                                class="job-form-item"
-                                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-histogram"
-                                                type="checkbox"
-                                            >
-                                        {{/if}}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Trim Barcode
+                                        </td>
+                                        <td>
+                                            {{#if options.custom_trim}}
+                                                <input
+                                                    class="job-form-item"
+                                                    name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-trim"
+                                                    type="checkbox"
+                                                    checked
+                                                >
+                                            {{else}}
+                                                <input
+                                                    class="job-form-item"
+                                                    name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-trim"
+                                                    type="checkbox"
+                                                >
+                                            {{/if}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Generate Histogram
+                                        </td>
+                                        <td>
+                                            {{#if options.custom_histogram}}
+                                                <input
+                                                    class="job-form-item"
+                                                    name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-histogram"
+                                                    type="checkbox"
+                                                    checked
+                                                >
+                                            {{else}}
+                                                <input
+                                                    class="job-form-item"
+                                                    name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-histogram"
+                                                    type="checkbox"
+                                                >
+                                            {{/if}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        {{else}}
+                            <div class="alert alert-danger">
+                                Warning: there are no barcode files available. Please upload barcode files on the project file list and set their type as "Barcode Sequences".
+                            </div>
+                        {{/if}}
 
                     </div>
                 </div>
