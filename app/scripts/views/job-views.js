@@ -1,9 +1,10 @@
 define([
     'app',
     'environment-config',
+    'moment',
     'backbone.syphon',
     'vdjpipe-view-factory',
-], function(App, EnvironmentConfig) {
+], function(App, EnvironmentConfig, moment) {
 
     'use strict';
 
@@ -59,10 +60,12 @@ define([
         template: 'jobs/job-submit-form',
         initialize: function(parameters) {
             this.projectModel = parameters.projectModel;
+            this.generatedJobName = this._generateJobName();
         },
         serialize: function() {
             return {
                 selectedFileListings: this.selectedFileListings.toJSON(),
+                generatedJobName: this.generatedJobName,
             };
         },
         afterRender: function() {
@@ -77,6 +80,11 @@ define([
         },
 
         // Private Methods
+        _generateJobName: function() {
+            var datetime = moment().format('D-MMM-YYYY h:mm:ss a');
+
+            return 'My Job ' + datetime;
+        },
         _submitJobForm: function(e) {
             e.preventDefault();
 
