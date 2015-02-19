@@ -177,11 +177,15 @@
                                 {{/each}}
                             </td>
                             <td>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        Paired-End Read-Level Data
-                                    </div>
+                                <div class="file-listing-title-block">
+                                    Paired-End Read-Level Data
                                 </div>
+
+                                &nbsp;
+
+                                <button class="btn btn-danger unlink-paired-read" id="{{this.[0].uuid}}">
+                                    <i class="fa fa-close"></i>
+                                </button>
                             </td>
                             <td>
                                 {{#each this}}

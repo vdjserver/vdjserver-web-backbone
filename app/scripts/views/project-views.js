@@ -289,6 +289,7 @@ define([
             'click .selected-files': '_uiToggleDisabledButtonStatus',
             'change #select-all-files-checkbox': '_toggleSelectAllFiles',
             'click .unlink-qual':   '_unlinkQual',
+            'click .unlink-paired-read':   '_unlinkPairedRead',
             'click #run-job-button':  '_clickJobDropdown',
             'click .run-job':       '_clickRunJob',
             'change #search-text':  '_searchFileListings',
@@ -641,6 +642,32 @@ define([
                     ;
             }
         },
+        _unlinkPairedRead: function(e) {
+            e.preventDefault();
+
+            // Use this instead of e.target.id because the click event will
+            // sometimes land on a child element instead of the button itself.
+            // If that happens, e.target.id will refer to the child and not the button.
+            var uuid = $(e.target).closest('button').attr('id');
+
+            var pairFile1Model = this.fileListings.get(uuid);
+
+            var pairFile2Model = this.fileListings.get(pairFile1Model.getPairedReadMetadataUuid());
+
+            if (pairFile1Model && pairFile2Model) {
+
+                var that = this;
+
+                Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads(pairFile1Model, pairFile2Model)
+                    .then(function() {
+                        // Workaround for occasional rendering failure
+                        setTimeout(function() {
+                            that._fetchAndRenderFileListings();
+                        }, 100);
+                    })
+                    ;
+            }
+        },
         _clickJobDropdown: function(e) {
             e.preventDefault();
 
@@ -777,6 +804,8 @@ define([
 
                 // Remove associated quals from file listing since they're embedded now
                 this.singleReadFileListings.remove(embeddedSingleReadQualModels);
+
+                this.render();
             },
             template: 'project/file-listings',
             serialize: function() {
@@ -1182,19 +1211,7 @@ define([
                     fileUuid = pairModel.getPairedReadMetadataUuid();
                     fileModel = this.readLevelMetadatas.get(fileUuid);
 
-                    var disassociatePairedReadPromises = [];
-
-                    var createDisassociatePairedReadPromise = function(model) {
-                        model.removePairedReadMetadataUuid();
-                    };
-
-                    disassociatePairedReadPromises.push(createDisassociatePairedReadPromise(pairModel));
-
-                    if (fileModel) {
-                        disassociatePairedReadPromises.push(createDisassociatePairedReadPromise(fileModel));
-                    }
-
-                    $.when.apply($, disassociatePairedReadPromises)
+                    Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads(fileModel, pairModel)
                         .then(function() {
                             return that._uiShowSaveSuccessAnimation(e.target);
                         })
