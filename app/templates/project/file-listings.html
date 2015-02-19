@@ -60,10 +60,10 @@
                                 {{/if}}
                             </td>
                             <td>
-                                {{> project-file-list-type this}}
+                                {{> project-file-list-origin this}}
 
                                 {{#if this.qualModel}}
-                                    {{> project-file-list-type this.qualModel}}
+                                    {{> project-file-list-origin this.qualModel}}
                                 {{/if}}
                             </td>
                             <td>
@@ -167,10 +167,10 @@
                             <td>
                                 {{#each this}}
 
-                                    {{> project-file-list-type this}}
+                                    {{> project-file-list-origin this}}
 
                                     {{#if this.qualModel}}
-                                        {{> project-file-list-type this.qualModel}}
+                                        {{> project-file-list-origin this.qualModel}}
                                     {{/if}}
 
                                     {{> project-file-list-spacer}}

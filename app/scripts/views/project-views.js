@@ -35,8 +35,8 @@ define([
     );
 
     HandlebarsUtilities.registerRawPartial(
-        'project/fragments/project-file-list-type',
-        'project-file-list-type'
+        'project/fragments/project-file-list-origin',
+        'project-file-list-origin'
     );
 
     HandlebarsUtilities.registerRawPartial(
