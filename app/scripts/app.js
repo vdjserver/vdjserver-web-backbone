@@ -47,7 +47,7 @@ define([
             // setup agave
             App.Agave = new Backbone.Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
 
-            if (EnvironmentConfig.debug) {
+            if (EnvironmentConfig.debug.console) {
                 console.log('token is: ' + JSON.stringify(App.Agave.token()));
             }
 

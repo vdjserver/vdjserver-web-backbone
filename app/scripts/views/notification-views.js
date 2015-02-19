@@ -8,7 +8,7 @@ define([
 
     Handlebars.registerHelper('GetClassForJobStatus', function(notification /*, options*/) {
 
-        if (EnvironmentConfig.debug) {
+        if (EnvironmentConfig.debug.console) {
             console.log('job status is: ' + JSON.stringify(notification));
         }
 

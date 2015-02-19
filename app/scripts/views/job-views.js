@@ -1,8 +1,9 @@
 define([
     'app',
+    'environment-config',
     'backbone.syphon',
     'vdjpipe-view-factory',
-], function(App) {
+], function(App, EnvironmentConfig) {
 
     'use strict';
 
@@ -575,6 +576,11 @@ define([
         startJob: function(jobModel) {
             var jobNotification = new Backbone.Agave.Model.Notification.Job();
             jobNotification.projectUuid = this.projectModel.get('uuid');
+
+            // DEBUG
+            if (EnvironmentConfig.debug.disableJobs) {
+                return;
+            }
 
             return jobModel.submitJob(this.projectModel.get('uuid'))
                 .then(function() {
