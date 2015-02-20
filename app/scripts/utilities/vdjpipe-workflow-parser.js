@@ -455,15 +455,32 @@ define(['app'], function(App) {
             if (demultiplexVariables && demultiplexVariables.length > 0) {
 
                 for (var i = 0; i < demultiplexVariables.length; i++) {
-                    findSharedVariables += '{' + demultiplexVariables[i] + '}' + '-';
+                    findSharedVariables += '{' + demultiplexVariables[i] + '}';
+
+                    if (i < demultiplexVariables.length - 1) {
+                        findSharedVariables += '-';
+                    }
                 }
             }
 
             var configuredParameter = {
-                'find_shared': {
-                    'out_group_unique': jobName + '-' + findSharedVariables + 'unique' + parameters[key + '-out-group-unique'],
-                },
+                'find_shared': {},
             };
+
+            if (findSharedVariables.length > 0) {
+                configuredParameter.find_shared = {
+                    'out_group_unique': findSharedVariables
+                                        + '-u'
+                                        + parameters[key + '-out-group-unique'],
+                };
+            }
+            else {
+                configuredParameter.find_shared = {
+                    'out_group_unique': jobName
+                                        + '-u'
+                                        + parameters[key + '-out-group-unique'],
+                };
+            }
 
             return that.wrapIfPairedReads(parameters, key, configuredParameter);
 
