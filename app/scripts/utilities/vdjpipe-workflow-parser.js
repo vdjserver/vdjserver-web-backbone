@@ -476,9 +476,9 @@ define(['app'], function(App) {
             }
             else {
                 configuredParameter.find_shared = {
-                    'out_group_unique': jobName
-                                        + '-u'
-                                        + parameters[key + '-out-group-unique'],
+                    'out_unique': jobName
+                                  + '-u'
+                                  + parameters[key + '-out-group-unique'],
                 };
             }
 
