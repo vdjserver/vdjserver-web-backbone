@@ -15,6 +15,7 @@ require.config({
         'moment':           '../bower_components/moment/moment',
         'typeahead':        '../bower_components/typeahead.js/dist/typeahead.bundle',
         'underscore':       '../bower_components/underscore/underscore',
+        'underscore.string': '../bower_components/underscore.string/dist/underscore.string.min',
         'd3':               '../bower_components/d3/d3.min',
         'nvd3':             '../bower_components/nvd3/nv.d3.min',
         'socket-io':        '../bower_components/socket.io-client/socket.io',

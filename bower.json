@@ -22,6 +22,7 @@
     "typeahead.js": "0.10.5",
     "twbs-bootstrap-sass": "3.3.3",
     "underscore": "1.7.0",
+    "underscore.string": "3.0.3",
     "recaptcha-ajax": "ea58c14d983a8d0d712a3ce9398ad35a7c17c53b",
     "simple-statistics": "~0.9.0"
   },

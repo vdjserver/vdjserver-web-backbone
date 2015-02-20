@@ -2,8 +2,9 @@ define(
     [
         'backbone',
         'environment-config',
+        'underscore.string',
     ],
-function(Backbone, EnvironmentConfig) {
+function(Backbone, EnvironmentConfig, _string) {
 
     'use strict';
 
@@ -338,54 +339,86 @@ function(Backbone, EnvironmentConfig) {
             },
 
             search: function(searchString) {
+                var generalSearchTerm = searchString;
 
+                // Split into decorators
+                var nameDecoratorValue = false;
+                var nameDecorator = 'name:';
+                if (searchString.indexOf(nameDecorator) > -1) {
+                    nameDecoratorValue = this._searchGetDecoratorValue(searchString, nameDecorator);
+
+                    // prune from general search
+                    generalSearchTerm = generalSearchTerm.replace(nameDecorator + nameDecoratorValue, '');
+                }
+
+                var tagDecoratorValue = false;
+                var tagDecorator = 'tag:';
+                if (searchString.indexOf(tagDecorator) > -1) {
+                    tagDecoratorValue = this._searchGetDecoratorValue(searchString, tagDecorator);
+
+                    // prune from general search
+                    generalSearchTerm = generalSearchTerm.replace(tagDecorator + tagDecoratorValue, '');
+                }
+
+                // clean up general search whitespace
+                generalSearchTerm = generalSearchTerm.trim();
+
+                var that = this;
                 var filteredModels = _.filter(this.models, function(data) {
-                    if (data.get('value').name.toLowerCase().indexOf(searchString.toLowerCase()) > -1) {
-                        return true;
+
+                    var shouldIncludeNameDecorator = false;
+                    var shouldIncludeTagDecorator  = false;
+                    var shouldIncludeGeneralSearch = false;
+
+                    if (nameDecoratorValue) {
+                        if (that._searchModelNameMatch(data, nameDecoratorValue)) {
+                            shouldIncludeNameDecorator = true;
+                        }
+                        else {
+                            shouldIncludeNameDecorator = false;
+                        }
+                    }
+                    else {
+                        shouldIncludeNameDecorator = true;
                     }
 
-                    if (
-                        data.get('value')
-                        &&
-                        data.get('value').publicAttributes
-                        &&
-                        data.get('value').publicAttributes.tags
-                            .toString()
-                            .toLowerCase()
-                            .indexOf(searchString.toLowerCase()) > -1
-                    ) {
-                        return true;
+                    if (tagDecoratorValue) {
+                        if (that._searchModelTagMatch(data, tagDecoratorValue)) {
+                            shouldIncludeTagDecorator = true;
+                        }
+                        else {
+                            shouldIncludeTagDecorator = false;
+                        }
                     }
+                    else {
+                        shouldIncludeTagDecorator = true;
+                    }
+
+                    if (generalSearchTerm.length > 0) {
+                        if (that._searchModelNameMatch(data, generalSearchTerm)) {
+                            return true;
+                        }
+
+                        if (that._searchModelTagMatch(data, generalSearchTerm)) {
+                            return true;
+                        }
+                    }
+                    else {
+                        shouldIncludeGeneralSearch = true;
+                    }
+
+                    return shouldIncludeNameDecorator && shouldIncludeTagDecorator && shouldIncludeGeneralSearch;
                 });
 
-                var finalModels = new Files.Metadata(filteredModels);
+                var searchCollection = new Files.Metadata(filteredModels);
 
                 // Add in fasta/qual models
-                for (var i = 0; i < filteredModels.length; i++) {
-
-                    if (filteredModels[i].getQualityScoreMetadataUuid()) {
-                        var qualModel = this.get(filteredModels[i].getQualityScoreMetadataUuid());
-                        finalModels.add(qualModel);
-                    }
-                    else if (filteredModels[i].get('linkedFastaUuid')) {
-
-                        var fastaModel = this.get(filteredModels[i].get('linkedFastaUuid'));
-                        finalModels.add(fastaModel);
-                    }
-
-                }
+                searchCollection = this._searchResultRestoreQualAssociable(filteredModels, searchCollection);
 
                 // Add in paired read models
-                for (var j = 0; j < filteredModels.length; j++) {
+                searchCollection = this._searchResultRestorePairedReads(filteredModels, searchCollection);
 
-                    if (filteredModels[j].getPairedReadMetadataUuid()) {
-                        var pairModel = this.get(filteredModels[j].getPairedReadMetadataUuid());
-                        finalModels.add(pairModel);
-                    }
-
-                }
-
-                return finalModels;
+                return searchCollection;
             },
             getModelForName: function(name) {
 
@@ -399,6 +432,74 @@ function(Backbone, EnvironmentConfig) {
             },
 
             // Private Methods
+            _searchGetDecoratorValue: function(searchString, decorator) {
+                // Separate decorator from value
+                var decoratorSplit = _string.strRight(searchString, decorator);
+
+                // Get rid of any spaces between decorator and value
+                //decoratorSplit = _string.ltrim(decoratorSplit);
+
+                // Split value from rest of string if a space exists
+                var decoratorValue = _string.strLeftBack(decoratorSplit, ' ');
+
+                return decoratorValue;
+            },
+            _searchModelNameMatch: function(model, searchValue) {
+
+                var matchFound = false;
+
+                if (model.get('value').name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1) {
+                    matchFound = true;
+                }
+
+                return matchFound;
+            },
+            _searchModelTagMatch: function(model, searchValue) {
+
+                var matchFound = false;
+
+                if (
+                    model.get('value')
+                    &&
+                    model.get('value').publicAttributes
+                    &&
+                    model.get('value').publicAttributes.tags
+                        .toString()
+                        .toLowerCase()
+                        .indexOf(searchValue.toLowerCase()) > -1
+                ) {
+                    return true;
+                }
+
+                return matchFound;
+            },
+            _searchResultRestoreQualAssociable: function(filteredModels, searchCollection) {
+                for (var i = 0; i < filteredModels.length; i++) {
+
+                    if (filteredModels[i].getQualityScoreMetadataUuid()) {
+                        var qualModel = this.get(filteredModels[i].getQualityScoreMetadataUuid());
+                        searchCollection.add(qualModel);
+                    }
+                    else if (filteredModels[i].get('linkedFastaUuid')) {
+
+                        var fastaModel = this.get(filteredModels[i].get('linkedFastaUuid'));
+                        searchCollection.add(fastaModel);
+                    }
+                }
+
+                return searchCollection;
+            },
+            _searchResultRestorePairedReads: function(filteredModels, searchCollection) {
+                for (var j = 0; j < filteredModels.length; j++) {
+
+                    if (filteredModels[j].getPairedReadMetadataUuid()) {
+                        var pairModel = this.get(filteredModels[j].getPairedReadMetadataUuid());
+                        searchCollection.add(pairModel);
+                    }
+                }
+
+                return searchCollection;
+            },
             _getKnownBarcodeCollection: function() {
 
                 // Filter down to files that are known barcodes and have the .fasta extension

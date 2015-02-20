@@ -142,9 +142,13 @@
             <div class="input-group project-search">
                 <input
                     id="search-text"
-                    class="form-control"
+                    class="form-control has-tooltip"
                     name="search"
                     type="text"
+                    placeholder="name:exampleSearchFile.fastq   tag:exampleSearchTag"
+                    data-toggle="tooltip"
+                    data-placement="top"
+                    title="You can search by general search terms or with search decorators. Currently supported decorators are 'name:' and 'tag:'. Example -> 'name:myFile  tag:myTag'"
                 >
                 <span class="input-group-btn">
                     <button
