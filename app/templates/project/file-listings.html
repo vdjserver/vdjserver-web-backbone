@@ -1,4 +1,4 @@
-{{#if singleReadFileListings}}
+{{#ifOr singleReadFileListings pairedReadFileListings}}
     <div class="row">
         <div class="col-md-12 table-responsive">
             <table class="table table-bordered table-headings project-files">
@@ -276,6 +276,6 @@
         </div>
         <div id="file-staging"></div>
     </div>
-{{/if}}
+{{/ifOr}}
 
 <div id="job-submit"></div>

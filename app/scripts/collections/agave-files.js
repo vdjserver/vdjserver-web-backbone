@@ -273,7 +273,7 @@ function(Backbone, EnvironmentConfig) {
 
                     if (model.getQualityScoreMetadataUuid()) {
                         var qualModel = allFiles.get(model.getQualityScoreMetadataUuid());
-                        qualModel.set('isLinkedQualModel', true);
+                        qualModel.set('linkedFastaUuid', model.get('uuid'));
 
                         model.set('qualModel', qualModel.toJSON());
 
@@ -347,9 +347,9 @@ function(Backbone, EnvironmentConfig) {
                     if (
                         data.get('value')
                         &&
-                        data.get('value').tags
+                        data.get('value').publicAttributes
                         &&
-                        data.get('value').tags
+                        data.get('value').publicAttributes.tags
                             .toString()
                             .toLowerCase()
                             .indexOf(searchString.toLowerCase()) > -1
@@ -358,9 +358,34 @@ function(Backbone, EnvironmentConfig) {
                     }
                 });
 
-                var filteredFileListings = new Files.Metadata(filteredModels);
+                var finalModels = new Files.Metadata(filteredModels);
 
-                return filteredFileListings;
+                // Add in fasta/qual models
+                for (var i = 0; i < filteredModels.length; i++) {
+
+                    if (filteredModels[i].getQualityScoreMetadataUuid()) {
+                        var qualModel = this.get(filteredModels[i].getQualityScoreMetadataUuid());
+                        finalModels.add(qualModel);
+                    }
+                    else if (filteredModels[i].get('linkedFastaUuid')) {
+
+                        var fastaModel = this.get(filteredModels[i].get('linkedFastaUuid'));
+                        finalModels.add(fastaModel);
+                    }
+
+                }
+
+                // Add in paired read models
+                for (var j = 0; j < filteredModels.length; j++) {
+
+                    if (filteredModels[j].getPairedReadMetadataUuid()) {
+                        var pairModel = this.get(filteredModels[j].getPairedReadMetadataUuid());
+                        finalModels.add(pairModel);
+                    }
+
+                }
+
+                return finalModels;
             },
             getModelForName: function(name) {
 
