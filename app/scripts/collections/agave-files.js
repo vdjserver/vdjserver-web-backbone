@@ -407,6 +407,7 @@ function(Backbone, EnvironmentConfig, _string) {
                         shouldIncludeGeneralSearch = true;
                     }
 
+                    // Evaluate Truth Table
                     return shouldIncludeNameDecorator && shouldIncludeTagDecorator && shouldIncludeGeneralSearch;
                 });
 
