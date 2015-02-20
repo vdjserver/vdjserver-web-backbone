@@ -470,14 +470,14 @@ define(['app'], function(App) {
             if (findSharedVariables.length > 0) {
                 configuredParameter.find_shared = {
                     'out_group_unique': findSharedVariables
-                                        + '-u'
+                                        + '-unique'
                                         + parameters[key + '-out-group-unique'],
                 };
             }
             else {
                 configuredParameter.find_shared = {
                     'out_unique': jobName
-                                  + '-u'
+                                  + '-unique'
                                   + parameters[key + '-out-group-unique'],
                 };
             }
