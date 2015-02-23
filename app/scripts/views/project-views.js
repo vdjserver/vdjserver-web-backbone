@@ -1096,6 +1096,29 @@ define([
                 .removeClass('alert alert-danger alert-success')
                 .addClass('hidden')
             ;
+
+            // Timer
+            this._uiStartTimer();
+        },
+
+        _uiStartTimer: function() {
+
+            $('#file-upload-timer-' + this.fileUniqueIdentifier)
+                .removeClass('hidden')
+            ;
+
+            var duration = moment.duration(0, 'seconds');
+
+            // Start timer
+            var that = this;
+            setInterval(function() {
+                duration.add(1, 'second');
+
+                $('#file-upload-timer-' + that.fileUniqueIdentifier).html(
+                    'Upload time: ' + duration.as('seconds') + ' seconds'
+                );
+
+            }, 1000);
         },
 
         _uiSetUploadProgress: function(percentCompleted) {
@@ -1127,6 +1150,10 @@ define([
                 .text(errorMessage)
                 .fadeIn()
                 .removeClass('hidden')
+            ;
+
+            $('#file-upload-timer-' + this.fileUniqueIdentifier)
+                .addClass('hidden')
             ;
 
             $('#form-' + this.fileUniqueIdentifier).find('.user-selectable').removeAttr('disabled');
