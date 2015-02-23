@@ -141,6 +141,8 @@ function(Backbone, EnvironmentConfig, _string) {
                                 ||
                             model.getFileType() === 4
                            )
+                           &&
+                           model.getFileExtension() !== 'fastq'
                            ;
                 });
 
