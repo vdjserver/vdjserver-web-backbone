@@ -194,6 +194,7 @@ define([
                         },
                     ],
                 },
+/*
                 {
                     'workflow-name': 'Paired Reads',
                     'base_path_input': '',
@@ -266,7 +267,7 @@ define([
                                     'custom_demultiplex': {
                                         'custom_location': '1',
                                         'elements': [
-                                            /* forward barcode element */
+                                            // forward barcode element
                                             {
                                                 'custom_histogram': true,
                                                 'custom_trim': true,
@@ -286,22 +287,21 @@ define([
                                 },
                             },
                         },
-/*
-    These histograms should be generated as part of custom_demultiplex
+    //These histograms should be generated as part of custom_demultiplex
+    //
+    //                    {
+    //                        'histogram': {
+    //                            'name': 'DemultiplexBarcode1',
+    //                            'out_path': 'DemultiplexBarcode1.csv',
+    //                        },
+    //                    },
+    //                    {
+    //                        'histogram': {
+    //                            'name': 'DemultiplexBarcode1-score',
+    //                            'out_path': 'DemultiplexBarcode1-score.csv',
+    //                        },
+    //                    },
 
-                        {
-                            'histogram': {
-                                'name': 'DemultiplexBarcode1',
-                                'out_path': 'DemultiplexBarcode1.csv',
-                            },
-                        },
-                        {
-                            'histogram': {
-                                'name': 'DemultiplexBarcode1-score',
-                                'out_path': 'DemultiplexBarcode1-score.csv',
-                            },
-                        },
-*/
                         {
                             'apply': {
                                 'to': 'merged',
@@ -364,6 +364,7 @@ define([
                         },
                     ],
                 },
+*/
             ];
 
             return workflows;
