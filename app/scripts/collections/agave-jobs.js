@@ -156,10 +156,10 @@ define([
                             },
                         },
                         {
-                            'custom_j_primer_trimming': {},
+                            'custom_v_primer_trimming': {},
                         },
                         {
-                            'custom_v_primer_trimming': {},
+                            'custom_j_primer_trimming': {},
                         },
                         {
                             'length_filter': {
