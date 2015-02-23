@@ -460,15 +460,16 @@ define([
             var that = this;
 
             fileTransferView.on('addNewFileToProjectFileList', function(newFile) {
-
                 that.fileListings.add(newFile);
 
                 fileTransferView.remove();
 
                 var fileListingsView = that.getView('.file-listings');
-                fileListingsView.fileListings = that.fileListings;
-                fileListingsView.render();
 
+                // Putting this in |singleReadListings| for now. If we ever
+                // support paired file uploads, then it will need to be updated.
+                fileListingsView.singleReadFileListings.add(newFile);
+                fileListingsView.render();
             });
         },
 
@@ -739,8 +740,7 @@ define([
 
             var that = this;
 
-            $.when.apply($, filePromises)
-                .then($.when.apply($, metadataPromises))
+            $.when.apply($, filePromises, metadataPromises)
                 .always(function() {
                     that._fetchAndRenderFileListings();
                 }
