@@ -194,7 +194,7 @@ define([
                         },
                     ],
                 },
-/*
+
                 {
                     'workflow-name': 'Paired Reads',
                     'base_path_input': '',
@@ -364,7 +364,7 @@ define([
                         },
                     ],
                 },
-*/
+
             ];
 
             return workflows;
