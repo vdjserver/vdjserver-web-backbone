@@ -1511,12 +1511,12 @@ define([
 
             var imgtStanza = {
                 'x': length,
-                'y': imgtDataPoint,
+                'y': parseInt(imgtDataPoint),
             };
 
             var kabatStanza = {
                 'x': length,
-                'y': kabatDataPoint,
+                'y': parseInt(kabatDataPoint),
             };
 
             imgtData.push(imgtStanza);

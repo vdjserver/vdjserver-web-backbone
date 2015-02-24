@@ -5,6 +5,7 @@ define([
     'handlebars',
     'bootstrap',
     'typeahead',
+    'file-saver',
 
     // Config
     'environment-config',

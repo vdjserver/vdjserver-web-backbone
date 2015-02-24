@@ -8,6 +8,7 @@ require.config({
         'bootstrap':        '../bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap',
         'datatables':       '../bower_components/datatables/media/js/jquery.dataTables',
         'filesize':         '../bower_components/filesize/lib/filesize',
+        'file-saver':       '../bower_components/file-saver/FileSaver',
         'handlebars':       '../bower_components/handlebars/handlebars',
         'jquery':           '../bower_components/jquery/dist/jquery',
         'jquery-ui':        '../bower_components/jquery-ui/jquery-ui',
