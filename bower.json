@@ -8,6 +8,7 @@
     "d3": "3.4.11",
     "datatables": "1.10.4",
     "filesize": "3.1.0",
+    "file-saver": "24b303f49213b905ec9062b708f7cd43d56a5dde",
     "font-awesome": "4.3.0",
     "handlebars": "2.0.0",
     "jquery": "2.1.3",
