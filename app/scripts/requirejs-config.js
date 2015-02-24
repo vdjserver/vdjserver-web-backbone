@@ -19,7 +19,6 @@ require.config({
         'd3':               '../bower_components/d3/d3.min',
         'nvd3':             '../bower_components/nvd3/nv.d3.min',
         'socket-io':        '../bower_components/socket.io-client/socket.io',
-        'file-saver':       '../bower_components/file-saver/FileSaver',
         'recaptcha-ajax':   '../bower_components/recaptcha-ajax/recaptcha_ajax',
         'simple-statistics':'../bower_components/simple-statistics/src/simple_statistics',
 
@@ -58,7 +57,6 @@ require.config({
         'agave-profile': 'models/agave-profile',
 
         // Misc.
-        'fileSaver': 'vendor/fileSaver',
         'box': 'vendor/box',
         'jquery.event.drag':'vendor/jquery.event.drag',
         'jquery.event.drop':'vendor/jquery.event.drop',
