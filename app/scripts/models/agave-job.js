@@ -240,7 +240,7 @@ function(
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: 'vdj_pipe-0.1.2u6',
+                    appId: 'vdj_pipe-0.1.5u1',
                 }
             );
         },

@@ -20,7 +20,11 @@ define([
             var socket = io.connect(
                 EnvironmentConfig.vdjauthRoot,
                 {
-                    'reconnection delay': 500,
+                    'reconnection': true,
+                    'reconnectionDelay': 1000,
+                    'reconnectionDelayMax': 5000,
+                    'reconnectionAttempts': 5,
+                    'path': '/api/v1/socket.io',
                 }
             );
 
