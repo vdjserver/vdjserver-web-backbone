@@ -252,6 +252,12 @@ function(
             this._setJobConfigFromWorkflowFormData(formData, selectedFileMetadatas, allFileMetadatas);
             this._setArchivePath(projectUuid);
 
+            selectedFileMetadatas = this._updateSelectedFileMetadatasForPrimers(
+                formData,
+                selectedFileMetadatas,
+                allFileMetadatas
+            );
+
             selectedFileMetadatas = this._updateSelectedFileMetadatasForBarcodes(
                 formData,
                 selectedFileMetadatas,
@@ -372,6 +378,46 @@ function(
                     var csvMetadata = allFileMetadatas.getModelForName(files[i]);
 
                     selectedFileMetadatas.add(csvMetadata);
+                }
+
+            })();
+
+            return selectedFileMetadatas;
+        },
+        _updateSelectedFileMetadatasForPrimers: function(formData, selectedFileMetadatas, allFileMetadatas) {
+            var keys = Object.keys(formData);
+
+            // Find if any keys known to have extra files are present
+            var matches = [];
+
+            (function() {
+                for (var i = 0; i < keys.length; i++) {
+                    var search = keys[i].search('primer-file');
+
+                    if (search > -1) {
+                        matches.push(keys[i]);
+                    }
+                }
+            })();
+
+            // Extract filenames from form
+            var files = [];
+
+            (function() {
+                for (var i = 0; i < matches.length; i++) {
+                    var fasta = formData[matches[i]];
+
+                    files.push(fasta);
+                }
+            })();
+
+            // Extract file metadata for filenames
+            (function() {
+
+                for (var i = 0; i < files.length; i++) {
+                    var primerMetadata = allFileMetadatas.getModelForName(files[i]);
+
+                    selectedFileMetadatas.add(primerMetadata);
                 }
 
             })();
