@@ -111,6 +111,19 @@
     background-color: #b7674b;
 }
 
+.project-menu {
+
+    a:focus {
+        background-color: #184450;
+        color: #ffffff;
+    }
+
+    a:hover {
+        background-color: #ffffff;
+        color: #000000;
+    }
+}
+
 .project-detail-controls {
     padding: 20px 0 20px 0;
     border-top: 1px solid #d8d8d8;
