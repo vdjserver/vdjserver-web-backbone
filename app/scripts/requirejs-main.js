@@ -66,6 +66,7 @@ define([
     'generic-vdjpipe-option-views',
 
     // Mixins
+    'file-download-detection-mixin',
 
     // View Helpers
     'view-layouts',

@@ -75,6 +75,7 @@ require.config({
         'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
 
         // Mixins
+        'file-download-detection-mixin': 'mixins/file-download-detection-mixin',
 
         // View Helpers
         'view-layouts': 'views/layouts/view-layouts',
