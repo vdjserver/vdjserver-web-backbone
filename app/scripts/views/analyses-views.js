@@ -298,6 +298,8 @@ define([
             showChart: function(e) {
                 e.preventDefault();
 
+                this._uiBeginChartLoading(e.target);
+
                 var filename = e.target.dataset.id;
 
                 // Select current button
@@ -317,6 +319,8 @@ define([
 
                 fileHandle.downloadFileToCache()
                     .done(function(fileData) {
+
+                        that._uiEndChartLoading();
 
                         switch (chartType) {
                             case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
@@ -359,6 +363,11 @@ define([
                             default:
                                 break;
                         }
+
+                        // Scroll down to chart
+                        $('html, body').animate({
+                            scrollTop: $('#analyses-chart').offset().top
+                        }, 1000);
                     })
                     .fail(function(response) {
                         var errorMessage = this.getErrorMessageFromResponse(response);
@@ -457,6 +466,26 @@ define([
             },
             toggleLegend: function() {
                 $('.nv-legendWrap').toggle();
+            },
+
+            // private methods
+            _uiBeginChartLoading: function(selector) {
+                // Disable other buttons
+                $('.show-chart').prop('disabled', true);
+
+                $(selector).after('<div class="chart-loading-view"></div>');
+
+                var loadingView = new App.Views.Util.Loading({keep: true});
+                this.setView('.chart-loading-view', loadingView);
+                loadingView.render();
+            },
+            _uiEndChartLoading: function() {
+
+                // Restore buttons
+                $('.show-chart').prop('disabled', false);
+
+                // Remove loading view
+                $('.chart-loading-view').remove();
             },
         })
     );
