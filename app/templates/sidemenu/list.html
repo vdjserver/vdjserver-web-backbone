@@ -15,7 +15,7 @@
     </li>
 
     {{#projects}}
-        <li id="project-{{uuid}}-menu" class="project-menu">
+        <li id="project-{{uuid}}-menu" class="project-menu" data-id="{{uuid}}">
             <a href="/project/{{uuid}}" id="project-{{uuid}}" data-id="{{uuid}}">
                 {{value.name}}
                 <div
@@ -26,37 +26,37 @@
             </a>
         </li>
 
-        <li class="project-submenu hidden">
+        <li class="project-submenu hidden {{uuid}}-section-4">
             <a href="/project/{{uuid}}/settings" class="">
                 Settings
             </a>
         </li>
 
-        <li class="project-submenu hidden">
+        <li class="project-submenu hidden {{uuid}}-section-5">
             <a href="/project/{{uuid}}/users" class="manage-users" data-id="{{uuid}}">
                 Manage Users
             </a>
         </li>
 
-        <li class="project-submenu hidden">
+        <li class="project-submenu hidden {{uuid}}-section-1">
             <a href="/project/{{uuid}}" class="">
                 Data
             </a>
         </li>
 
-        <li class="project-submenu hidden">
+        <li class="project-submenu hidden {{uuid}}-section-3">
             <a href="/project/{{uuid}}/associations/qual" class="" data-id="{{uuid}}">
                 .fasta/.qual Associations
             </a>
         </li>
 <!--
-        <li class="project-submenu hidden">
+        <li class="project-submenu hidden {{uuid}}-section-2">
             <a href="/project/{{uuid}}/associations/paired-reads" class="" data-id="{{uuid}}">
                 Paired Read Associations
             </a>
         </li>
 -->
-        <li class="project-submenu hidden">
+        <li class="project-submenu hidden {{uuid}}-section-6">
             <a href="/project/{{uuid}}/jobs" class="select-analyses" data-id="{{uuid}}">
                 Analyses
             </a>

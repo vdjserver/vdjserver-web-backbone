@@ -41,7 +41,7 @@ define(['app'], function(App) {
         }
     };
 
-    var _setProjectSubviews = function(projectUuid) {
+    var _setProjectSubviews = function(projectUuid, section) {
 
         if (App.Layouts.main.template !== 'layouts/project/project-main') {
             App.Layouts.main.template = 'layouts/project/project-main';
@@ -51,7 +51,13 @@ define(['app'], function(App) {
         }
 
         if (!App.Layouts.sidebar.getView('.sidebar')) {
-            App.Layouts.sidebar.setView('.sidebar', new App.Views.Sidemenu.List({projectUuid: projectUuid}));
+            App.Layouts.sidebar.setView(
+                '.sidebar',
+                new App.Views.Sidemenu.List({
+                    projectUuid: projectUuid,
+                    section: section,
+                })
+            );
             //App.Layouts.sidebar.render();
         }
         else {
@@ -205,9 +211,12 @@ define(['app'], function(App) {
         },
 
         projectDetail: function(projectUuid) {
-
             var destinationRoute = function() {
-                _setProjectSubviews(projectUuid);
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectFiles
+                );
+
                 App.Layouts.content.setView('.content', new App.Views.Projects.Detail({projectUuid: projectUuid}));
                 App.Layouts.content.render();
             };
@@ -218,7 +227,11 @@ define(['app'], function(App) {
         projectFilePairedReadAssociations: function(projectUuid) {
 
             var destinationRoute = function() {
-                _setProjectSubviews(projectUuid);
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectPairedReadAssociations
+                );
+
                 App.Layouts.content.setView('.content', new App.Views.Projects.PairedReadFileAssociations({projectUuid: projectUuid}));
                 App.Layouts.content.render();
             };
@@ -229,7 +242,11 @@ define(['app'], function(App) {
         projectFileQualAssociations: function(projectUuid) {
 
             var destinationRoute = function() {
-                _setProjectSubviews(projectUuid);
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectQualAssociations
+                );
+
                 App.Layouts.content.setView('.content', new App.Views.Projects.QualFileAssociations({projectUuid: projectUuid}));
                 App.Layouts.content.render();
             };
@@ -240,7 +257,11 @@ define(['app'], function(App) {
         projectSettings: function(projectUuid) {
 
             var destinationRoute = function() {
-                _setProjectSubviews(projectUuid);
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectSettings
+                );
+
                 App.Layouts.content.setView('.content', new App.Views.Projects.Settings({projectUuid: projectUuid}));
                 App.Layouts.content.render();
             };
@@ -251,7 +272,11 @@ define(['app'], function(App) {
         projectManageUsers: function(projectUuid) {
 
             var destinationRoute = function() {
-                _setProjectSubviews(projectUuid);
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectManageUsers
+                );
+
                 App.Layouts.content.setView('.content', new App.Views.Projects.ManageUsers({projectUuid: projectUuid}));
                 App.Layouts.content.render();
             };
@@ -262,7 +287,11 @@ define(['app'], function(App) {
         projectJobHistory: function(projectUuid) {
 
             var destinationRoute = function() {
-                _setProjectSubviews(projectUuid);
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectAnalyses
+                );
+
                 App.Layouts.content.setView('.content', new App.Views.Analyses.OutputList({projectUuid: projectUuid}));
                 App.Layouts.content.render();
             };
@@ -273,7 +302,11 @@ define(['app'], function(App) {
         projectJobOutput: function(projectUuid, jobId) {
 
             var destinationRoute = function() {
-                _setProjectSubviews(projectUuid);
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectAnalyses
+                );
+
                 App.Layouts.content.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid, jobId: jobId}));
                 App.Layouts.content.render();
             };
