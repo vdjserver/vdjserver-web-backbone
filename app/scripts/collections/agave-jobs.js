@@ -163,7 +163,8 @@ define([
                         },
                         {
                             'length_filter': {
-                                'min': 200,
+                                //'min': 200,
+                                'min': 0,
                             },
                         },
                         {
