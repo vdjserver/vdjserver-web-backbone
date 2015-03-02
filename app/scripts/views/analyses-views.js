@@ -3,6 +3,8 @@
 define([
     'app',
     'handlebars',
+    'handlebars-utilities',
+    'file-download-detection-mixin',
     'moment',
     'd3',
     'nvd3',
@@ -12,6 +14,8 @@ define([
 ], function(
     App,
     Handlebars,
+    HandlebarsUtilities,
+    FileDownloadDetectionMixin,
     moment,
     d3,
     nv,
@@ -19,6 +23,11 @@ define([
 ) {
 
     'use strict';
+
+    HandlebarsUtilities.registerRawPartial(
+        'shared-fragments/file-downloads-unsupported',
+        'file-downloads-unsupported'
+    );
 
     Handlebars.registerHelper('IsJobFrozen', function(data, options) {
 
@@ -244,207 +253,213 @@ define([
 
     });
 
-    Analyses.SelectAnalyses = Backbone.View.extend({
-        template: 'analyses/select-analyses',
-        initialize: function(parameters) {
+    Analyses.SelectAnalyses = Backbone.View.extend(
+        _.extend({}, FileDownloadDetectionMixin, {
+            template: 'analyses/select-analyses',
+            initialize: function(parameters) {
 
-            this.projectUuid = parameters.projectUuid;
-            this.jobId = parameters.jobId;
+                this.projectUuid = parameters.projectUuid;
+                this.jobId = parameters.jobId;
 
-            var loadingView = new App.Views.Util.Loading({keep: true});
-            this.setView(loadingView);
-            loadingView.render();
+                var loadingView = new App.Views.Util.Loading({keep: true});
+                this.setView(loadingView);
+                loadingView.render();
 
-            this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
+                this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
 
-            var that = this;
-            this.collection.fetch()
-                .done(function() {
-                    loadingView.remove();
-                    that.render();
-                })
-                .fail(function() {
+                var that = this;
+                this.collection.fetch()
+                    .done(function() {
+                        loadingView.remove();
+                        that.render();
+                    })
+                    .fail(function() {
 
-                });
-        },
-        serialize: function() {
-            return {
-                outputFiles: this.collection.toJSON(),
-            };
-        },
-        events: {
-            'click .show-chart': 'showChart',
+                    });
 
-            'click .download-file': 'downloadFile',
-            'click .chart-reset-btn': 'clearChart',
-            'click .toggle-legend-btn': 'toggleLegend',
+                // Blob Save Detection
+                this._setDownloadCapabilityDetection();
+            },
+            serialize: function() {
+                return {
+                    outputFiles: this.collection.toJSON(),
+                    canDownloadFiles: this.canDownloadFiles,
+                };
+            },
+            events: {
+                'click .show-chart': 'showChart',
 
-            'click .quality-chart-btn': 'qualityScoreChart',
-        },
-        showChart: function(e) {
-            e.preventDefault();
+                'click .download-file': 'downloadFile',
+                'click .chart-reset-btn': 'clearChart',
+                'click .toggle-legend-btn': 'toggleLegend',
 
-            var filename = e.target.dataset.id;
+                'click .quality-chart-btn': 'qualityScoreChart',
+            },
+            showChart: function(e) {
+                e.preventDefault();
 
-            // Select current button
-            $('.show-chart').removeClass('btn-success');
-            $(e.target).addClass('btn-success');
+                var filename = e.target.dataset.id;
 
-            // Clean up any charts that are currently displayed
-            this.clearChart();
-            this.hideWarning();
-            $('#chart-legend').hide();
+                // Select current button
+                $('.show-chart').removeClass('btn-success');
+                $(e.target).addClass('btn-success');
 
-            var that = this;
+                // Clean up any charts that are currently displayed
+                this.clearChart();
+                this.hideWarning();
+                $('#chart-legend').hide();
 
-            var fileHandle = this.collection.get(filename);
+                var that = this;
 
-            var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+                var fileHandle = this.collection.get(filename);
 
-            fileHandle.downloadFileToCache()
-                .done(function(fileData) {
+                var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
 
-                    switch (chartType) {
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
-                            $('#chart-legend').show();
-                            Analyses.Charts.Composition(fileHandle, fileData, that.clearSVG);
-                            break;
+                fileHandle.downloadFileToCache()
+                    .done(function(fileData) {
 
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_1:
-                            $('#chart-legend').show();
-                            Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, that.clearSVG());
-                            break;
+                        switch (chartType) {
+                            case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
+                                $('#chart-legend').show();
+                                Analyses.Charts.Composition(fileHandle, fileData, that.clearSVG);
+                                break;
 
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_3:
-                            $('#chart-legend').show();
-                            Analyses.Charts.LengthHistogram(fileHandle, fileData, that.clearSVG());
-                            break;
+                            case Backbone.Agave.Model.Job.Detail.CHART_TYPE_1:
+                                $('#chart-legend').show();
+                                Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, that.clearSVG());
+                                break;
 
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
-                            $('#chart-legend').show();
-                            Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, that.clearSVG);
-                            break;
+                            case Backbone.Agave.Model.Job.Detail.CHART_TYPE_3:
+                                $('#chart-legend').show();
+                                Analyses.Charts.LengthHistogram(fileHandle, fileData, that.clearSVG());
+                                break;
 
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
-                            $('#chart-legend').show();
-                            Analyses.Charts.QualityScore(fileHandle, fileData, that.clearSVG);
-                            break;
+                            case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
+                                $('#chart-legend').show();
+                                Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, that.clearSVG);
+                                break;
 
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
-                            Analyses.Charts.GiantTable(fileHandle, fileData, that.clearSVG);
-                            break;
+                            case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
+                                $('#chart-legend').show();
+                                Analyses.Charts.QualityScore(fileHandle, fileData, that.clearSVG);
+                                break;
 
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_7:
-                            Analyses.Charts.Cdr3(fileHandle, fileData, that.clearSVG);
-                            break;
+                            case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
+                                Analyses.Charts.GiantTable(fileHandle, fileData, that.clearSVG);
+                                break;
 
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_8:
-                            Analyses.Charts.GeneDistribution(fileHandle, fileData, that.clearSVG());
-                            break;
+                            case Backbone.Agave.Model.Job.Detail.CHART_TYPE_7:
+                                Analyses.Charts.Cdr3(fileHandle, fileData, that.clearSVG);
+                                break;
 
-                        default:
-                            break;
-                    }
-                })
-                .fail(function(response) {
-                    var errorMessage = this.getErrorMessageFromResponse(response);
-                    this.showWarning(errorMessage);
-                })
-                ;
-        },
+                            case Backbone.Agave.Model.Job.Detail.CHART_TYPE_8:
+                                Analyses.Charts.GeneDistribution(fileHandle, fileData, that.clearSVG());
+                                break;
 
-        downloadFile: function(e) {
-            e.preventDefault();
+                            default:
+                                break;
+                        }
+                    })
+                    .fail(function(response) {
+                        var errorMessage = this.getErrorMessageFromResponse(response);
+                        this.showWarning(errorMessage);
+                    })
+                    ;
+            },
 
-            var fileName = e.target.dataset.filename;
-            var outputFile = this.collection.get(fileName);
-            outputFile.downloadFileToDisk();
-        },
-        clearChart: function() {
-            // clear announcements
-            $('#chart-right-announcement').empty();
+            downloadFile: function(e) {
+                e.preventDefault();
 
-            // remove SVG elements
-            this.hideWarning();
+                var fileName = e.target.dataset.filename;
+                var outputFile = this.collection.get(fileName);
+                outputFile.downloadFileToDisk();
+            },
+            clearChart: function() {
+                // clear announcements
+                $('#chart-right-announcement').empty();
 
-            var oldSVGs = document.getElementsByTagName('svg');
-            for (var i = 0; i < oldSVGs.length; i++) {
-                oldSVGs[i].parentNode.removeChild(oldSVGs[i]);
-            }
+                // remove SVG elements
+                this.hideWarning();
 
-            //get rid of the download-btn if it exists
-            //remove the svg container as well because some events get tied to it
-            var chartContainer = document.getElementsByClassName('svg-container');
-            for (var j = 0; j < chartContainer.length; j++) {
-                chartContainer[j].parentNode.removeChild(chartContainer[j]);
-            }
-
-            //add them back in
-            d3.select('.row .analyses')
-                .append('div')
-                .attr('id', 'analyses-chart')
-                .attr('class', 'svg-container')
-                .attr('style', 'position:relative; top:1px;left:0px;')
-                ;
-
-            d3.select('.svg-container')
-                .append('svg')
-                .attr('style', 'height:600px;')
-                ;
-
-            $('#chart-file-well').text('No data loaded. Select an Analysis.');
-        },
-        clearSVG: function() {
-
-            //remove SVG elements
-            var oldSVGs = document.getElementsByTagName('svg');
-
-            for (var i = 0; i < oldSVGs.length; i++) {
-                while (oldSVGs[i].hasChildNodes()) {
-                    oldSVGs[i].removeChild(oldSVGs[i].firstChild);
+                var oldSVGs = document.getElementsByTagName('svg');
+                for (var i = 0; i < oldSVGs.length; i++) {
+                    oldSVGs[i].parentNode.removeChild(oldSVGs[i]);
                 }
-            }
 
-            //add them back in
-            d3.select('.row .analyses')
-                .append('div')
-                .attr('id', 'analyses-chart')
-                .attr('class', 'svg-container')
-                .attr('style', 'position:relative; top:1px; left:0px;')
-                ;
+                //get rid of the download-btn if it exists
+                //remove the svg container as well because some events get tied to it
+                var chartContainer = document.getElementsByClassName('svg-container');
+                for (var j = 0; j < chartContainer.length; j++) {
+                    chartContainer[j].parentNode.removeChild(chartContainer[j]);
+                }
 
-            d3.select('.slider').select('input').remove();
+                //add them back in
+                d3.select('.row .analyses')
+                    .append('div')
+                    .attr('id', 'analyses-chart')
+                    .attr('class', 'svg-container')
+                    .attr('style', 'position:relative; top:1px;left:0px;')
+                    ;
 
-            // Note: we need to reset d3 tip menu position here, otherwise
-            // the horizontal scroll width will get stuck
-            $('.d3-tip').css('left', '');
-        },
-        getErrorMessageFromResponse: function(response) {
-            var txt;
+                d3.select('.svg-container')
+                    .append('svg')
+                    .attr('style', 'height:600px;')
+                    ;
 
-            if (response && response.responseText) {
-                txt = JSON.parse(response.responseText);
-            }
+                $('#chart-file-well').text('No data loaded. Select an Analysis.');
+            },
+            clearSVG: function() {
 
-            return txt;
-        },
-        showWarning: function(messageFragment) {
-            var message = 'An error occurred.';
+                //remove SVG elements
+                var oldSVGs = document.getElementsByTagName('svg');
 
-            if (messageFragment) {
-                message = message + ' ' + messageFragment.message;
-            }
+                for (var i = 0; i < oldSVGs.length; i++) {
+                    while (oldSVGs[i].hasChildNodes()) {
+                        oldSVGs[i].removeChild(oldSVGs[i].firstChild);
+                    }
+                }
 
-            $('.alert-message').text(message);
-            $('.alert').show();
-        },
-        hideWarning: function() {
-            $('.alert').hide();
-        },
-        toggleLegend: function() {
-            $('.nv-legendWrap').toggle();
-        },
-    });
+                //add them back in
+                d3.select('.row .analyses')
+                    .append('div')
+                    .attr('id', 'analyses-chart')
+                    .attr('class', 'svg-container')
+                    .attr('style', 'position:relative; top:1px; left:0px;')
+                    ;
+
+                d3.select('.slider').select('input').remove();
+
+                // Note: we need to reset d3 tip menu position here, otherwise
+                // the horizontal scroll width will get stuck
+                $('.d3-tip').css('left', '');
+            },
+            getErrorMessageFromResponse: function(response) {
+                var txt;
+
+                if (response && response.responseText) {
+                    txt = JSON.parse(response.responseText);
+                }
+
+                return txt;
+            },
+            showWarning: function(messageFragment) {
+                var message = 'An error occurred.';
+
+                if (messageFragment) {
+                    message = message + ' ' + messageFragment.message;
+                }
+
+                $('.chart-warning').text(message);
+                $('.chart-warning').show();
+            },
+            hideWarning: function() {
+                $('.chart-warning').hide();
+            },
+            toggleLegend: function() {
+                $('.nv-legendWrap').toggle();
+            },
+        })
+    );
 
     Analyses.Charts.LengthHistogram = function(fileHandle, text, clearSVG) {
 

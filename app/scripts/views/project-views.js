@@ -6,6 +6,7 @@ define([
     'environment-config',
     'moment',
     'handlebars-utilities',
+    'file-download-detection-mixin',
     'socket-io',
     'backbone.syphon',
 ], function(
@@ -14,10 +15,16 @@ define([
     filesize,
     EnvironmentConfig,
     moment,
-    HandlebarsUtilities
+    HandlebarsUtilities,
+    FileDownloadDetectionMixin
 ) {
 
     'use strict';
+
+    HandlebarsUtilities.registerRawPartial(
+        'shared-fragments/file-downloads-unsupported',
+        'file-downloads-unsupported'
+    );
 
     HandlebarsUtilities.registerRawPartial(
         'project/fragments/project-file-list-title',
@@ -777,7 +784,7 @@ define([
     });
 
     Projects.FileListings = Backbone.View.extend(
-        _.extend({}, ProjectMixin, {
+        _.extend({}, ProjectMixin, FileDownloadDetectionMixin, {
 
             // Public Methods
             initialize: function() {
@@ -814,7 +821,10 @@ define([
                 // Remove associated quals from file listing since they're embedded now
                 this.singleReadFileListings.remove(embeddedSingleReadQualModels);
 
-                this.render();
+                //this.render();
+
+                // Blob Save Detection
+                this._setDownloadCapabilityDetection();
             },
             template: 'project/file-listings',
             serialize: function() {
@@ -823,6 +833,7 @@ define([
                     pairedReadFileListings: this.pairedReads,
                     readDirections: Backbone.Agave.Model.File.Metadata.getReadDirections(),
                     fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
+                    canDownloadFiles: this.canDownloadFiles,
                 };
             },
             events: {

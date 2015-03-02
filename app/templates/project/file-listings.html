@@ -1,5 +1,11 @@
 {{#ifOr singleReadFileListings pairedReadFileListings}}
     <div class="row">
+        {{#if canDownloadFiles}}
+        {{else}}
+            <div class="col-md-12">
+                {{> file-downloads-unsupported}}
+            </div>
+        {{/if}}
         <div class="col-md-12 table-responsive">
             <table class="table table-bordered table-headings project-files">
                 <thead>
@@ -43,7 +49,65 @@
                                 {{/IfJobSelectableFileType}}
                             </td>
                             <td>
-                                {{> project-file-list-title this}}
+
+                                {{!--
+                                    {{> project-file-list-title this}}
+                                --}}
+
+                                {{#if value.qualityScoreMetadataUuid}}
+                                    <div class="row">
+                                        <div class="col-sm-12">
+
+                                            <div class="file-listing-title-block">
+                                                <i class="fa fa-link"></i>
+                                            </div>
+
+                                            &nbsp;
+
+                                            <div class="file-listing-title-block">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        {{#if ../../canDownloadFiles}}
+                                                            <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
+                                                        {{else}}
+                                                            {{value.name}}
+                                                        {{/if}}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        {{#if this.qualModel}}
+                                                            {{#if ../../../canDownloadFiles}}
+                                                                <a class="download-file" href="#" data-bypass=true data-filename="{{this.qualModel.value.name}}" data-metadatauuid="{{this.qualModel.uuid}}">{{this.qualModel.value.name}}</a>
+                                                            {{else}}
+                                                                {{value.name}}
+                                                            {{/if}}
+                                                        {{/if}}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            &nbsp;
+
+                                            <button class="btn btn-danger unlink-qual" id="{{uuid}}">
+                                                <i class="fa fa-close"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                {{else}}
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            {{#if ../../canDownloadFiles}}
+                                                <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
+                                            {{else}}
+                                                {{value.name}}
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                {{/if}}
+
+
+
                             </td>
                             <td>
                                 {{> project-file-list-last-modified this}}

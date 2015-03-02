@@ -1,4 +1,11 @@
 <div class="row">
+    {{#if canDownloadFiles}}
+    {{else}}
+        <div class="col-md-12">
+            {{> file-downloads-unsupported}}
+        </div>
+    {{/if}}
+
     <div class="col-md-12 table-responsive">
         <table class="table table-bordered table-headings">
             <thead>
@@ -18,7 +25,11 @@
                 {{#each outputFiles}}
                     <tr class="text-center">
                         <td>
-                            <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
+                            {{#if ../canDownloadFiles}}
+                                <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
+                            {{else}}
+                                {{name}}
+                            {{/if}}
                         </td>
                         <td>
                             {{GetHumanReadableFileSize length}}
@@ -72,7 +83,7 @@
         </div>
     </div>
 
-	<div class="alert alert-danger alert-message" style="display:none;"></div>
+	<div class="alert alert-danger alert-message chart-warning" style="display:none;"></div>
 
 	<div class="d3-tip"></div>
 
