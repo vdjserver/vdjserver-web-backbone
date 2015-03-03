@@ -62,6 +62,7 @@ define(['app'], function(App) {
         }
         else {
             var listView = App.Layouts.sidebar.getView('.sidebar');
+            listView.setSection(section);
             listView.uiSelectProject(projectUuid);
         }
 

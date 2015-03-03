@@ -70,6 +70,28 @@ define([
 
     });
 
+    Handlebars.registerHelper('FileTypeAvailableInProjectFileList', function(filename, options) {
+
+        if (filename === undefined) {
+            return options.inverse(this);
+        }
+
+        var hasChart = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+
+        var isUnique = false;
+        if (filename.substr(-13) === '-unique.fasta') {
+            isUnique = true;
+        }
+
+        if (hasChart || isUnique) {
+            return options.fn(this);
+        }
+        else {
+            return options.inverse(this);
+        }
+
+    });
+
     Handlebars.registerHelper('ChartButtonText', function(filename, options) {
 
         if (filename === undefined) {
@@ -284,6 +306,7 @@ define([
                 return {
                     outputFiles: this.collection.toJSON(),
                     canDownloadFiles: this.canDownloadFiles,
+                    projectUuid: this.projectUuid,
                 };
             },
             events: {

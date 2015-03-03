@@ -81,11 +81,19 @@ define([
                     $('.' + this.selectedProjectUuid + '-section-' + this.activeSection).addClass('active');
                 }
             },
+            setSection: function(section) {
+                this.activeSection = section;
+            },
             uiSelectProject: function(projectUuid) {
                 this.selectedProjectUuid = projectUuid;
 
                 this._uiSetProjectActive(this.selectedProjectUuid);
                 this._uiOpenProjectSubmenu(this.selectedProjectUuid);
+
+                if (this.activeSection) {
+                    this._uiClearActiveSubmenu();
+                    $('.' + this.selectedProjectUuid + '-section-' + this.activeSection).addClass('active');
+                }
             },
             loadViewForIndex: function() {
                 if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
