@@ -1469,8 +1469,9 @@ define([
                                 redrawGeneDistChart(res);
                             }
                         });
-                    });
-                }//plain/discrete data case
+                    }
+                );
+            }//plain/discrete data case
             else {
                 var stackedChartableData = makeStackChartableFromValidHierarchyObject(res);
                 nv.addGraph(function() {
@@ -1637,9 +1638,7 @@ define([
         });
     };
 
-    Analyses.Charts.GiantTableFactory = function(filename) {
-
-        var columns = [];
+    Analyses.Charts.GiantTableType = function(filename) {
         var filenameFragment = '';
 
         var splitFilename = filename.split('.');
@@ -1648,7 +1647,14 @@ define([
             filenameFragment = splitFilename[splitFilename.length - 3];
         }
 
-        if (filenameFragment === 'kabat') {
+        return filenameFragment;
+    };
+
+    Analyses.Charts.GiantTableFactory = function(tableType) {
+
+        var columns = [];
+
+        if (tableType === 'kabat') {
 
             columns = [
                 {
@@ -1767,7 +1773,7 @@ define([
                 },
             ];
         }
-        else if (filenameFragment === 'imgt') {
+        else if (tableType === 'imgt') {
             columns = [
                 {
                     title: 'Read identifier',
@@ -1889,18 +1895,108 @@ define([
         return columns;
     };
 
-    Analyses.Charts.GiantTableFormatData = function(data) {
+    Analyses.Charts.GiantTableFormatData = function(data, tableType) {
         var chartData = [];
+
+        var imgtColumns = [
+            'Read identifier',
+            'V gene',
+            'J gene',
+            'D gene',
+            'V Sequence similarity',
+            'Out-of-frame junction',
+            'Missing CYS',
+            'Missing TRP/PHE',
+            'Stop Codon?',
+            'Indels Found',
+            'Only Frame-Preserving Indels Found',
+            'CDR3 AA (imgt)',
+            'CDR3 NA (imgt)',
+            'FR1 aligned bases (imgt)',
+            'FR1 base subst. (imgt)',
+            'FR1 AA subst. (imgt)',
+            'FR1 codons with silent mut. (imgt)',
+            'CDR1 aligned bases (imgt)',
+            'CDR1 base subst. (imgt)',
+            'CDR1 AA subst. (imgt)',
+            'CDR1 codons with silent mut. (imgt)',
+            'FR2 aligned bases (imgt)',
+            'FR2 base subst. (imgt)',
+            'FR2 AA subst. (imgt)',
+            'FR2 codons with silent mut. (imgt)',
+            'CDR2 aligned bases (imgt)',
+            'CDR2 base subst. (imgt)',
+            'CDR2 AA subst. (imgt)',
+            'CDR2 codons with silent mut. (imgt)',
+            'FR3 aligned bases (imgt)',
+            'FR3 base subst. (imgt)',
+            'FR3 AA subst. (imgt)',
+            'FR3 codons with silent mut. (imgt)',
+            'Alternate V gene',
+            'Alternate J gene',
+            'Alternate D gene',
+            'Release Version Tag',
+            'Release Version Hash',
+        ];
+
+        var kabatColumns = [
+            'Read identifier',
+            'V gene',
+            'J gene',
+            'D gene',
+            'V Sequence similarity',
+            'Out-of-frame junction',
+            'Missing CYS',
+            'Missing TRP/PHE',
+            'Stop Codon?',
+            'Indels Found',
+            'Only Frame-Preserving Indels Found',
+            'CDR3 AA (kabat)',
+            'CDR3 NA (kabat)',
+            'FR1 aligned bases (kabat)',
+            'FR1 base subst. (kabat)',
+            'FR1 AA subst. (kabat)',
+            'FR1 codons with silent mut. (kabat)',
+            'CDR1 aligned bases (kabat)',
+            'CDR1 base subst. (kabat)',
+            'CDR1 AA subst. (kabat)',
+            'CDR1 codons with silent mut. (kabat)',
+            'FR2 aligned bases (kabat)',
+            'FR2 base subst. (kabat)',
+            'FR2 AA subst. (kabat)',
+            'FR2 codons with silent mut. (kabat)',
+            'CDR2 aligned bases (kabat)',
+            'CDR2 base subst. (kabat)',
+            'CDR2 AA subst. (kabat)',
+            'CDR2 codons with silent mut. (kabat)',
+            'FR3 aligned bases (kabat)',
+            'FR3 base subst. (kabat)',
+            'FR3 AA subst. (kabat)',
+            'FR3 codons with silent mut. (kabat)',
+            'Alternate V gene',
+            'Alternate J gene',
+            'Alternate D gene',
+            'Release Version Tag',
+            'Release Version Hash',
+        ];
+
+        var selectedColumns = [];
+
+        if (tableType === 'imgt') {
+            selectedColumns = imgtColumns;
+        }
+        else if (tableType === 'kabat') {
+            selectedColumns = kabatColumns;
+        }
 
         for (var i = 0; i < data.length; i++) {
 
-            var keys = Object.keys(data[i]);
-
             var dataSet = [];
 
-            for (var j = 0; j < keys.length; j++) {
-                var val = data[i][keys[j]];
-                dataSet.push(val);
+            for (var j = 0; j < selectedColumns.length; j++) {
+                if (data[i].hasOwnProperty(selectedColumns[j])) {
+                    dataSet.push(data[i][selectedColumns[j]]);
+                }
             }
 
             chartData.push(dataSet);
@@ -1924,9 +2020,11 @@ define([
 
         clearSVG();
 
-        var columns = Analyses.Charts.GiantTableFactory(fileHandle.get('name'));
+        var tableType = Analyses.Charts.GiantTableType(fileHandle.get('name'));
         var rawData = d3.tsv.parse(tsv);
-        var chartData = Analyses.Charts.GiantTableFormatData(rawData);
+
+        var columns = Analyses.Charts.GiantTableFactory(tableType);
+        var chartData = Analyses.Charts.GiantTableFormatData(rawData, tableType);
 
         $('#analyses-chart').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="giant-table"></table>');
 
