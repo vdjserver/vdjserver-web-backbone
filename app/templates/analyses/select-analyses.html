@@ -19,6 +19,9 @@
                     <th class="text-center">
                         Visualization
                     </th>
+                    <th class="text-center">
+                        Availability
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +43,11 @@
                                     {{ChartButtonText this.name}}
                                 </button>
                             {{/FileTypeHasChart}}
+                        </td>
+                        <td>
+                            {{#FileTypeAvailableInProjectFileList this.name}}
+                                File Available in <a href="/project/{{../../projectUuid}}">Project Data Area</a>
+                            {{/FileTypeAvailableInProjectFileList}}
                         </td>
                     </tr>
                 {{/each}}
