@@ -131,8 +131,12 @@ define([
 
                 this.notificationViews[fileUniqueIdentifier] = fileTransferListView;
 
-                this.insertView(
-                    '#project-' + projectUuid + '-notification',
+                $('#project-' + projectUuid + '-notification').append(
+                    '<div class="' + fileUniqueIdentifier + '-transfer-view"></div>'
+                );
+
+                this.setView(
+                    '.' + fileUniqueIdentifier + '-transfer-view',
                     fileTransferListView
                 );
 
