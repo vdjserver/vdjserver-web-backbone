@@ -113,7 +113,7 @@
 
 .project-menu {
 
-    a:focus {
+    a:focus, a:active {
         background-color: #184450;
         color: #ffffff;
     }
