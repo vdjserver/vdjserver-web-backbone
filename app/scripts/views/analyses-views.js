@@ -4,22 +4,26 @@ define([
     'app',
     'handlebars',
     'handlebars-utilities',
-    'file-download-detection-mixin',
     'moment',
     'd3',
     'nvd3',
     'box',
+    'chance',
+    'file-download-detection-mixin',
+    'file-transfer-sidebar-ui-mixin',
     'datatables',
     'simple-statistics',
 ], function(
     App,
     Handlebars,
     HandlebarsUtilities,
-    FileDownloadDetectionMixin,
     moment,
     d3,
     nv,
-    box
+    box,
+    Chance,
+    FileDownloadDetectionMixin,
+    FileTransferSidebarUiMixin
 ) {
 
     'use strict';
@@ -276,7 +280,7 @@ define([
     });
 
     Analyses.SelectAnalyses = Backbone.View.extend(
-        _.extend({}, FileDownloadDetectionMixin, {
+        _.extend({}, FileDownloadDetectionMixin, FileTransferSidebarUiMixin, {
             template: 'analyses/select-analyses',
             initialize: function(parameters) {
 
@@ -402,9 +406,53 @@ define([
             downloadFile: function(e) {
                 e.preventDefault();
 
-                var fileName = e.target.dataset.filename;
-                var outputFile = this.collection.get(fileName);
-                outputFile.downloadFileToDisk();
+                var filename = e.target.dataset.filename;
+                var outputFile = this.collection.get(filename);
+
+                var chance = new Chance();
+                var fileUniqueIdentifier = chance.guid();
+
+                this._setListMenuFileTransferView(
+                    this.projectUuid,
+                    fileUniqueIdentifier,
+                    filename
+                );
+
+                // Agave won't provide the length header on the download, but we
+                // can retrieve this now and use this instead.
+                var totalSize = outputFile.get('length');
+
+                var that = this;
+
+                var xhr = outputFile.downloadFileToDisk();
+
+                xhr.addEventListener(
+                    'progress',
+                    function(progress) {
+
+                        var percentCompleted = 0;
+
+                        if (progress.lengthComputable) {
+                            percentCompleted = progress.loaded / progress.total;
+                        }
+                        else {
+                            percentCompleted = progress.loaded / totalSize;
+                        }
+
+                        percentCompleted *= 100;
+
+                        that._uiSetUploadProgress(percentCompleted, fileUniqueIdentifier);
+                    },
+                    false
+                );
+
+                xhr.addEventListener(
+                    'load',
+                    function() {
+                        that._uiSetSidemenuTransferSuccess(fileUniqueIdentifier);
+                    },
+                    false
+                );
             },
             clearChart: function() {
                 // clear announcements

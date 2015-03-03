@@ -6,6 +6,7 @@ require.config({
         'backbone':         '../bower_components/backbone/backbone',
         'backbone.syphon':  '../bower_components/marionette.backbone.syphon/lib/backbone.syphon',
         'bootstrap':        '../bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap',
+        'chance':           '../bower_components/chance/chance',
         'datatables':       '../bower_components/datatables/media/js/jquery.dataTables',
         'filesize':         '../bower_components/filesize/lib/filesize',
         'file-saver':       '../bower_components/file-saver/FileSaver',
@@ -76,6 +77,7 @@ require.config({
 
         // Mixins
         'file-download-detection-mixin': 'mixins/file-download-detection-mixin',
+        'file-transfer-sidebar-ui-mixin': 'mixins/file-transfer-sidebar-ui-mixin',
 
         // View Helpers
         'view-layouts': 'views/layouts/view-layouts',
