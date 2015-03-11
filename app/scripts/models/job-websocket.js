@@ -32,7 +32,23 @@ define([
                 socket.emit('joinRoom', jobId);
             });
 
+            socket.on('connect_error', function(error) {
+                if (EnvironmentConfig.debug.console) {
+                    console.log('socket connect_error is: ' + JSON.stringify(error));
+                }
+            });
+
+            socket.on('error', function(error) {
+                if (EnvironmentConfig.debug.console) {
+                    console.log('socket error is: ' + JSON.stringify(error));
+                }
+            });
+
             socket.on('jobUpdate', function(jobUpdate) {
+                if (EnvironmentConfig.debug.console) {
+                    console.log('socket jobUpdate received: ' + JSON.stringify(jobUpdate));
+                }
+
                 that.trigger('jobStatusUpdate', jobUpdate);
             });
         },
