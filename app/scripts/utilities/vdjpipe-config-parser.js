@@ -212,7 +212,7 @@ define(['app'], function(App) {
     // Private Methods
     VdjpipeConfigParser._get3PrimeBarcode = function() {
         return {
-            'after': 0,
+            'after': '',
         };
     };
 
@@ -223,7 +223,7 @@ define(['app'], function(App) {
     VdjpipeConfigParser._get3PrimeBarcodeAfter3PrimeBarcode = function() {
         return {
             'before': 'MID1',
-            'pos': -2,
+            'pos': -1,
         };
     };
 

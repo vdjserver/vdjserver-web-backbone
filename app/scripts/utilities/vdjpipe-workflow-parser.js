@@ -472,11 +472,12 @@ define(['app'], function(App) {
                     'out_group_unique': findSharedVariables
                                         + '-unique'
                                         + parameters[key + '-out-group-unique'],
+                    'out_summary': 'demultiplexing-summary.txt',
                 };
             }
             else {
                 configuredParameter.find_shared = {
-                    'out_unique': jobName
+                    'out_group_unique': jobName
                                   + '-unique'
                                   + parameters[key + '-out-group-unique'],
                 };

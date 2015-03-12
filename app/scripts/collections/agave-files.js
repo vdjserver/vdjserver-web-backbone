@@ -157,7 +157,7 @@ function(Backbone, EnvironmentConfig, _string) {
             getCombinationCollection: function() {
 
                 var combinationModels = _.filter(this.models, function(model) {
-                    return model.getFileExtension() === 'csv';
+                    return model.getFileType() === 3;
                 });
 
                 var newCollection = this.clone();
