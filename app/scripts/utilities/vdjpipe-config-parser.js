@@ -81,10 +81,18 @@ define(['app'], function(App) {
 
                         switch (barcodeType) {
                             case '3\'':
-
                                 // Barcode type settings will depend on the first barcode
                                 if (previousBarcodeType === '3\'') {
                                     option['custom_demultiplex']['elements'][j]['end'] = VdjpipeConfigParser._get3PrimeBarcodeAfter3PrimeBarcode();
+
+                                    // TODO: refactor
+                                    /*
+                                    _.extend(
+                                        {},
+                                        option['custom_demultiplex']['elements'][j]['end'],
+                                        {before: elements[j-1]['value_name']}
+                                    );
+                                    */
                                 }
                                 else if (previousBarcodeType === '5\'') {
                                     option['custom_demultiplex']['elements'][j]['end'] = VdjpipeConfigParser._get3PrimeBarcodeAfter5PrimeBarcode();
@@ -122,7 +130,6 @@ define(['app'], function(App) {
 
                     }
 
-                    delete option['custom_demultiplex']['elements'][j]['custom_type'];
                     delete option['custom_demultiplex']['elements'][j]['custom_trim'];
 
                     // Set histograms
@@ -138,6 +145,11 @@ define(['app'], function(App) {
                     }
                 }
 
+                // Wait to delete custom type until all elements have been set
+                for (var k = 0; k < elements.length; k++) {
+                    delete option['custom_demultiplex']['elements'][k]['custom_type'];
+                }
+
                 // Combinations
                 if (option['custom_demultiplex']['combinations'] && option['custom_demultiplex']['combinations'][0]['custom_histogram']) {
 
@@ -147,7 +159,7 @@ define(['app'], function(App) {
 
                     newConfig.push(combinationHistogram);
 
-                    option['custom_demultiplex']['combinations'][0]['custom_histogram'];
+                    delete option['custom_demultiplex']['combinations'][0]['custom_histogram'];
                 }
 
                 delete option['custom_demultiplex']['custom_location'];
@@ -222,8 +234,9 @@ define(['app'], function(App) {
 
     VdjpipeConfigParser._get3PrimeBarcodeAfter3PrimeBarcode = function() {
         return {
-            'before': 'MID1',
-            'pos': -1,
+            //TODO: refactor
+            'before': 'DemultiplexBarcode1',
+            'pos': 0,
         };
     };
 

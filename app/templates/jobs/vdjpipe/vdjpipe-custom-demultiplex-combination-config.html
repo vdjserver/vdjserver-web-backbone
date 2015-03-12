@@ -37,6 +37,7 @@
                                         </select>
                                     </td>
                                 </tr>
+                                {{!--
                                 <tr>
                                     <td>
                                         Generate Histogram
@@ -50,6 +51,7 @@
                                         >
                                     </td>
                                 </tr>
+                                --}}
                                 <tr>
                                     <td>
                                         Skip First Line
@@ -95,6 +97,21 @@
                                         </td>
                                     </tr>
                                 {{/each}}
+                                <tr>
+                                    <td>
+                                        Names Column Ordering
+                                    </td>
+                                    <td>
+                                        <select
+                                            class="job-form-item"
+                                            name="{{inputCount}}-{{parameterType}}-combination-names-column-order"
+                                        >
+                                            {{#each barcodeColumns}}
+                                                <option value="{{this}}">{{this}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

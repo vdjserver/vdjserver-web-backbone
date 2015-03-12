@@ -285,8 +285,10 @@ define(['app'], function(App) {
                     {
                         'csv_file': {
                             'path': parameters[key + '-combination-csv-file'],
-                            'values_column': [{}],
+                            'values_column': [],
                             'skip_header': parameters[key + '-skip-header'],
+                            // -1 is a hack for now. vdj_pipe starts counting on 0, but humans tend to like starting on 1 for some reason.
+                            'names_column': parseInt(parameters[key + '-combination-names-column-order']) - 1,
                         },
                         'value_name': parameters[key + '-combination-value-name'],
                     },
@@ -350,9 +352,14 @@ define(['app'], function(App) {
 
                     // Combination
                     if (combinations) {
-                        combinations[0]['csv_file']['values_column'][0][valueName] = parseInt(
+                        var valueColumn = {};
+
+                        // -1 is a hack for now. vdj_pipe starts counting on 0, but humans tend to like starting on 1 for some reason.
+                        valueColumn[valueName] = parseInt(
                             parameters[key + '-' + elementCounter + '-element-barcode-column-order']
-                        );
+                        ) - 1;
+
+                        combinations[0]['csv_file']['values_column'].push(valueColumn);
                     }
 
                     // Save element
@@ -449,16 +456,32 @@ define(['app'], function(App) {
             // Default value
             var findSharedVariables = '';
 
-            var demultiplexVariables = this.extractDemultiplexValueVariables(config);
+            for (var j = 0; j < config.length; j++) {
 
-            // If demultiplex vars are available, then overwrite the default findSharedVariables value
-            if (demultiplexVariables && demultiplexVariables.length > 0) {
+                var key = Object.keys(config[j]);
 
-                for (var i = 0; i < demultiplexVariables.length; i++) {
-                    findSharedVariables += '{' + demultiplexVariables[i] + '}';
+                if (key[0] && key[0] === 'custom_demultiplex') {
 
-                    if (i < demultiplexVariables.length - 1) {
-                        findSharedVariables += '-';
+                    if (config[j]['custom_demultiplex']['combinations']) {
+                        // TODO: refactor
+                        findSharedVariables = '{Combination2}';
+                    }
+                }
+            }
+
+            if (findSharedVariables.length === 0) {
+            
+                var demultiplexVariables = this.extractDemultiplexValueVariables(config);
+
+                // If demultiplex vars are available, then overwrite the default findSharedVariables value
+                if (demultiplexVariables && demultiplexVariables.length > 0) {
+
+                    for (var i = 0; i < demultiplexVariables.length; i++) {
+                        findSharedVariables += '{' + demultiplexVariables[i] + '}';
+
+                        if (i < demultiplexVariables.length - 1) {
+                            findSharedVariables += '-';
+                        }
                     }
                 }
             }
@@ -471,7 +494,9 @@ define(['app'], function(App) {
                 configuredParameter.find_shared = {
                     'out_group_unique': findSharedVariables
                                         + '-unique'
-                                        + parameters[key + '-out-group-unique'],
+                                        + '.fasta'
+                                        ,
+                                        //+ parameters[key + '-out-group-unique'],
                     'out_summary': 'demultiplexing-summary.txt',
                 };
             }
@@ -479,7 +504,8 @@ define(['app'], function(App) {
                 configuredParameter.find_shared = {
                     'out_group_unique': jobName
                                   + '-unique'
-                                  + parameters[key + '-out-group-unique'],
+                                  + '.fasta',
+                                  //+ parameters[key + '-out-group-unique'],
                 };
             }
 
