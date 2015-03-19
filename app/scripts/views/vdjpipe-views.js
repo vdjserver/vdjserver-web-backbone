@@ -474,7 +474,6 @@ define([
     Vdjpipe.CustomDemultiplexCombinationConfig = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-custom-demultiplex-combination-config',
         initialize: function() {
-
             // Don't let layout manager discard this view if it is re-rendered!
             // We're managing it manually to allow user interaction with barcode subviews.
             //this.keep = true;

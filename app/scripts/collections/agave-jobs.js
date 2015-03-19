@@ -134,6 +134,7 @@ define([
                                 'out_prefix': 'pre-filter_',
                             },
                         },
+/*
                         {
                             'custom_demultiplex': {
                                 'reverse': true,
@@ -155,12 +156,30 @@ define([
                                 ],
                             },
                         },
+*/
+                        {
+                            'match': {
+                                'reverse': true,
+                                'elements': [
+                                    {
+                                        'max_mismatches': 1,
+                                        'required': true,
+                                        'start': {},
+                                        'cut_lower': {
+                                            'after': 0,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+/*
                         {
                             'custom_v_primer_trimming': {},
                         },
                         {
                             'custom_j_primer_trimming': {},
                         },
+*/
                         {
                             'length_filter': {
                                 //'min': 200,
