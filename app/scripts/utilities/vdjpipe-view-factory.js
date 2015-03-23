@@ -104,7 +104,7 @@ define([
                 vdjPipeView = new App.Views.Vdjpipe.CompositionStats(initAttributes);
 
                 break;
-/*
+
             case 'custom_j_primer_trimming':
                 vdjPipeView = new App.Views.Vdjpipe.CustomJPrimerTrimming(initAttributes);
 
@@ -114,7 +114,7 @@ define([
                 vdjPipeView = new App.Views.Vdjpipe.CustomVPrimerTrimming(initAttributes);
 
                 break;
-*/
+
             case 'eMID_map':
                 vdjPipeView = new App.Views.Vdjpipe.MatchExternalMolecularIdentifier(initAttributes);
 

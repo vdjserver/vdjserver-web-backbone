@@ -466,7 +466,9 @@ define(['app'], function(App) {
 
             var trimPrimer = parameters[key + '-trim-primer'];
             if (trimPrimer) {
-                dictionary['custom_trim'] = true;
+                dictionary['cut_lower'] = {
+                    'after': 0,
+                };
             }
 
             var fastaFile = parameters[key + '-primer-file'];
@@ -481,7 +483,7 @@ define(['app'], function(App) {
             var dictionary = this._setupCustomPrimerTrimmingDictionary(parameters);
 
             var configuredParameter = {
-                'custom_j_primer_trimming': {
+                'match': {
                     'elements': [dictionary],
                 },
             };
@@ -493,7 +495,7 @@ define(['app'], function(App) {
             var dictionary = this._setupCustomPrimerTrimmingDictionary(parameters);
 
             var configuredParameter = {
-                'custom_v_primer_trimming': {
+                'match': {
                     'elements': [dictionary],
                 },
             };
