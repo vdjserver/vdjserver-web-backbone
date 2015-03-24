@@ -282,6 +282,27 @@ define([
                             'apply': {
                                 'to': 'merged',
                                 'step': {
+                                    'match': {
+                                        'elements': [
+                                            // forward barcode element
+                                            {
+                                                'max_mismatches': 1,
+                                                'required': true,
+                                                'start': {},
+                                                'cut_lower': {
+                                                    'after': 0,
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+/*
+                        {
+                            'apply': {
+                                'to': 'merged',
+                                'step': {
                                     'custom_demultiplex': {
                                         'custom_location': '1',
                                         'elements': [
@@ -305,6 +326,7 @@ define([
                                 },
                             },
                         },
+*/
     //These histograms should be generated as part of custom_demultiplex
     //
     //                    {
