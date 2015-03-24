@@ -219,7 +219,18 @@ define([
                     // check for websockets
                     var job = that.jobs.get(jobModels[i]);
 
-                    if (App.Instances.Websockets[job.get('id')]) {
+                    if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
+                        if (_.findIndex(App.Instances.Websockets, job.get('id'))) {
+
+                            var factory = new App.Websockets.Jobs.Factory();
+                            var websocket = factory.getJobWebsocket();
+                            websocket.connectToServer();
+                            websocket.subscribeToJob(job.get('id'));
+
+                            // Store in global namespace so other views can reuse this
+                            App.Instances.Websockets[job.get('id')] = websocket;
+                        }
+
                         that.listenTo(
                             App.Instances.Websockets[job.get('id')],
                             'jobStatusUpdate',
