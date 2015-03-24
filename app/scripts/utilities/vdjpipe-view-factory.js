@@ -105,11 +105,6 @@ define([
 
                 break;
 
-            case 'custom_demultiplex':
-                vdjPipeView = new App.Views.Vdjpipe.CustomDemultiplex(initAttributes);
-
-                break;
-
             case 'custom_j_primer_trimming':
                 vdjPipeView = new App.Views.Vdjpipe.CustomJPrimerTrimming(initAttributes);
 
@@ -146,7 +141,32 @@ define([
                 break;
 
             case 'match':
-                vdjPipeView = new App.Views.Vdjpipe.MatchSequenceElement(initAttributes);
+                //TODO: switch between match types here w/ detection
+
+                if (
+                        _.has(initAttributes, 'options')
+                        &&
+                        _.has(initAttributes.options, 'elements')
+                        &&
+                        (
+                                _.some(initAttributes.options.elements, function(element) {
+                                    if (_.has(element, 'cut_lower')) {
+                                        return true;
+                                    }
+                                })
+                                ||
+                                _.some(initAttributes.options.elements, function(element) {
+                                    if (_.has(element, 'cut_upper')) {
+                                        return true;
+                                    }
+                                })
+                        )
+                ) {
+                    vdjPipeView = new App.Views.Vdjpipe.CustomDemultiplex(initAttributes);
+                }
+                else {
+
+                }
 
                 break;
 

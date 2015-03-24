@@ -134,6 +134,7 @@ define([
                                 'out_prefix': 'pre-filter_',
                             },
                         },
+/*
                         {
                             'custom_demultiplex': {
                                 'reverse': true,
@@ -151,6 +152,22 @@ define([
                                         'score_name': 'MID1-score',
                                         'start': {},
                                         'value_name': 'MID1',
+                                    },
+                                ],
+                            },
+                        },
+*/
+                        {
+                            'match': {
+                                'reverse': true,
+                                'elements': [
+                                    {
+                                        'max_mismatches': 1,
+                                        'required': true,
+                                        'start': {},
+                                        'cut_lower': {
+                                            'after': 0,
+                                        },
                                     },
                                 ],
                             },

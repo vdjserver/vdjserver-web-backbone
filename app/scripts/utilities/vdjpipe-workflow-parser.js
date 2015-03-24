@@ -2,6 +2,10 @@ define(['app'], function(App) {
 
     'use strict';
 
+    var demultiplexHistograms = [];
+    var combinationValue = '';
+    var sharedVariables = [];
+
     var VdjpipeWorkflowParser = {};
 
     // Public Methods
@@ -33,7 +37,9 @@ define(['app'], function(App) {
             'steps': paramOutput,
         };
 
-        _.extend(outputConfig, readType);
+        if (readType['paired_reads']) {
+            _.extend(outputConfig, readType);
+        }
 
         return outputConfig;
     };
@@ -103,13 +109,6 @@ define(['app'], function(App) {
 
                             break;
 
-                        case 'custom_demultiplex':
-                            paramOutput.push(
-                                serializer.getCustomDemultiplex(paramOutput)
-                            );
-
-                            break;
-
                         case 'custom_j_primer_trimming':
                             paramOutput.push(
                                 serializer.getCustomJPrimerTrimming(paramOutput)
@@ -161,6 +160,13 @@ define(['app'], function(App) {
 
                             break;
 
+                        case 'match':
+                            paramOutput.push(
+                                serializer.getCustomDemultiplex()
+                            );
+
+                            break;
+
                         case 'merge_paired':
                             paramOutput.push(
                                 serializer.getMergePaired()
@@ -208,6 +214,11 @@ define(['app'], function(App) {
                     }
                 }
             }
+        }
+
+        for (var i = 0; i < demultiplexHistograms.length; i++) {
+
+            paramOutput.push(demultiplexHistograms[i]);
         }
 
         return paramOutput;
@@ -273,13 +284,12 @@ define(['app'], function(App) {
 
         this.getCustomDemultiplex = function() {
 
-            var reverse = parameters[key + '-reverse-complement'];
-            var barcodeLocation = parameters[key + '-custom-location'];
-
             // Combination custom options
             var combinations = false;
 
             if (parameters[key + '-combination-value-name']) {
+
+                combinationValue = parameters[key + '-combination-value-name'];
 
                 combinations = [
                     {
@@ -307,16 +317,6 @@ define(['app'], function(App) {
                     var element = {};
                     var elementCounter = parameters[key + '-elements'][i];
 
-                    var barcodeType = parameters[key + '-' + elementCounter + '-element-custom-type'];
-                    if (barcodeType) {
-                        element['custom_type'] = barcodeType;
-                    }
-
-                    var customHistogram = parameters[key + '-' + elementCounter + '-element-custom-histogram'];
-                    if (customHistogram) {
-                        element['custom_histogram'] = customHistogram;
-                    }
-
                     var maxMismatches = parameters[key + '-' + elementCounter + '-element-maximum-mismatches'];
                     if (maxMismatches) {
                         // Convert to int
@@ -330,24 +330,90 @@ define(['app'], function(App) {
                         element.required = required;
                     }
 
-                    var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
-                    if (scoreName) {
-                        element['score_name'] = scoreName;
-                    }
-
                     var seqFile   = parameters[key + '-' + elementCounter + '-element-sequence-file'];
                     if (seqFile) {
                         element['seq_file'] = seqFile;
                     }
 
+                    var scoreName = parameters[key + '-' + elementCounter + '-element-score-name'];
+                    if (scoreName) {
+                        element['score_name'] = scoreName;
+                    }
+
                     var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
                     if (valueName) {
                         element['value_name'] = valueName;
+                        sharedVariables.push(valueName);
+                    }
+
+                    var customHistogram = parameters[key + '-' + elementCounter + '-element-custom-histogram'];
+                    if (customHistogram) {
+
+                        demultiplexHistograms.push(
+                            {
+                                'histogram': {
+                                    'name': valueName,
+                                    'out_path': valueName + '.csv',
+                                },
+                            }
+                        );
+
+                        demultiplexHistograms.push(
+                            {
+                                'histogram': {
+                                    'name': scoreName,
+                                    'out_path': scoreName + '.csv',
+                                },
+                            }
+                        );
                     }
 
                     var trim = parameters[key + '-' + elementCounter + '-element-custom-trim'];
-                    if (trim) {
-                        element['custom_trim'] = trim;
+                    var barcodeType = parameters[key + '-' + elementCounter + '-element-custom-type'];
+                    if (barcodeType) {
+                        switch (barcodeType) {
+                            case '3\'':
+                                if (i === 0) {
+                                    element['end'] = this.getDemultiplex3PrimeBarcode();
+                                }
+                                else {
+                                    var previousBarcode = parameters[key + '-' + (elementCounter - 1) + '-element-custom-type'];
+                                    if (previousBarcode === '3\'') {
+                                        var previousValue = parameters[key + '-' + (elementCounter - 1) + '-element-value-name'];
+                                        element['end'] = this.getDemultiplex3PrimeBarcodeAfter3PrimeBarcode(previousValue);
+                                    }
+                                    else if (previousBarcode === '5\'') {
+                                        element['end'] = this.getDemultiplex3PrimeBarcodeAfter5PrimeBarcode();
+                                    }
+                                }
+
+                                if (trim) {
+                                    element = _.extend(
+                                        {},
+                                        element,
+                                        this.getDemultiplex3PrimeBarcodeCustomTrim()
+                                    );
+                                }
+
+                                break;
+
+                            case '5\'':
+
+                                element['start'] = this.getDemultiplex5PrimeBarcode();
+
+                                if (trim) {
+                                    element = _.extend(
+                                        {},
+                                        element,
+                                        this.getDemultiplex5PrimeBarcodeCustomTrim()
+                                    );
+                                }
+
+                                break;
+
+                            default:
+                                // code
+                        }
                     }
 
                     // Combination
@@ -368,18 +434,14 @@ define(['app'], function(App) {
             }
 
             var configuredParameter = {
-                'custom_demultiplex': {
-                    'reverse': reverse,
-                    'custom_location': barcodeLocation,
+                'match': {
+                    'reverse': parameters[key + '-reverse-complement'],
+                    'elements': elements,
                 },
             };
 
-            if (elements) {
-                configuredParameter['custom_demultiplex'].elements = elements;
-            }
-
             if (combinations) {
-                configuredParameter['custom_demultiplex'].combinations = combinations;
+                configuredParameter['match'].combinations = combinations;
             }
 
             return that.wrapIfPairedReads(parameters, key, configuredParameter);
@@ -404,7 +466,9 @@ define(['app'], function(App) {
 
             var trimPrimer = parameters[key + '-trim-primer'];
             if (trimPrimer) {
-                dictionary['custom_trim'] = true;
+                dictionary['cut_lower'] = {
+                    'after': 0,
+                };
             }
 
             var fastaFile = parameters[key + '-primer-file'];
@@ -419,7 +483,7 @@ define(['app'], function(App) {
             var dictionary = this._setupCustomPrimerTrimmingDictionary(parameters);
 
             var configuredParameter = {
-                'custom_j_primer_trimming': {
+                'match': {
                     'elements': [dictionary],
                 },
             };
@@ -431,7 +495,7 @@ define(['app'], function(App) {
             var dictionary = this._setupCustomPrimerTrimmingDictionary(parameters);
 
             var configuredParameter = {
-                'custom_v_primer_trimming': {
+                'match': {
                     'elements': [dictionary],
                 },
             };
@@ -456,32 +520,15 @@ define(['app'], function(App) {
             // Default value
             var findSharedVariables = '';
 
-            for (var j = 0; j < config.length; j++) {
-
-                var key = Object.keys(config[j]);
-
-                if (key[0] && key[0] === 'custom_demultiplex') {
-
-                    if (config[j]['custom_demultiplex']['combinations']) {
-                        // TODO: refactor
-                        findSharedVariables = '{Combination2}';
-                    }
-                }
+            if (combinationValue.length > 0) {
+                findSharedVariables = '{' + combinationValue + '}';
             }
+            else {
+                for (var i = 0; i < sharedVariables.length; i++) {
+                    findSharedVariables += '{' + sharedVariables[i] + '}';
 
-            if (findSharedVariables.length === 0) {
-            
-                var demultiplexVariables = this.extractDemultiplexValueVariables(config);
-
-                // If demultiplex vars are available, then overwrite the default findSharedVariables value
-                if (demultiplexVariables && demultiplexVariables.length > 0) {
-
-                    for (var i = 0; i < demultiplexVariables.length; i++) {
-                        findSharedVariables += '{' + demultiplexVariables[i] + '}';
-
-                        if (i < demultiplexVariables.length - 1) {
-                            findSharedVariables += '-';
-                        }
+                    if (i < sharedVariables.length - 1) {
+                        findSharedVariables += '-';
                     }
                 }
             }
@@ -494,8 +541,7 @@ define(['app'], function(App) {
                 configuredParameter.find_shared = {
                     'out_group_unique': findSharedVariables
                                         + '-unique'
-                                        + '.fasta'
-                                        ,
+                                        + '.fasta',
                                         //+ parameters[key + '-out-group-unique'],
                     'out_summary': 'demultiplexing-summary.txt',
                 };
@@ -509,30 +555,7 @@ define(['app'], function(App) {
                 };
             }
 
-            return that.wrapIfPairedReads(parameters, key, configuredParameter);
-
-/*
-            if (parameters[key + '-group-variable']) {
-                returnValue['find_shared']['group_variable'] = parameters[key + '-group-variable'];
-            }
-
-            if (parameters[key + '-min-length']) {
-                tmpFindShared['find_shared']['min_length'] = parseInt(parameters[key + '-min-length']);
-            }
-
-            if (parameters[key + '-fraction-match']) {
-                tmpFindShared['find_shared']['fraction_match'] = parseFloat(parameters[key + '-fraction-match']);
-            }
-            else if (parameters[key + '-ignore-ends']) {
-                tmpFindShared['find_shared']['ignore_ends'] = parseInt(parameters[key + '-ignore-ends']);
-            }
-
-            if (tmpFindShared['find_shared'].length === 0) {
-                tmpFindShared['find_shared']['out_group_unique'] = '.fasta';
-            }
-*/
-
-            //return tmpFindShared;
+            return that.wrapIfPairedReads(parameters, '', configuredParameter);
         };
 
         this.getHistogram = function() {
@@ -618,6 +641,8 @@ define(['app'], function(App) {
 
         this.getWriteSequence = function(paramOutput) {
 
+            //TODO: fix/update this section
+
             // extract demultiplex variables
             var demultiplexVariablePath = this.createDemultiplexBarcodeVariablePath(paramOutput);
 
@@ -644,6 +669,8 @@ define(['app'], function(App) {
         };
 
         this.getWriteValue = function(paramOutput) {
+
+            //TODO: fix/update this section
 
             var writeValuesNames = parameters[key + '-names'];
             writeValuesNames = writeValuesNames.split(',');
@@ -674,6 +701,53 @@ define(['app'], function(App) {
             return configuredParameter;
         };
 
+        this.getDemultiplex3PrimeBarcode = function() {
+            return {
+                'after': '',
+            };
+        };
+
+        this.getDemultiplex5PrimeBarcode = function() {
+            return {};
+        };
+
+        this.getDemultiplex3PrimeBarcodeAfter3PrimeBarcode = function(previousValue) {
+            return {
+                //TODO: refactor
+                'before': previousValue,
+                'pos': 0,
+            };
+        };
+
+        this.getDemultiplex3PrimeBarcodeAfter5PrimeBarcode = function() {
+            return {
+                'after': '',
+            };
+        };
+
+        this.getDemultiplex3PrimeBarcodeCustomTrim = function() {
+
+            var response = {
+                'cut_upper': {
+                    'before': 0,
+                },
+            };
+
+            return response;
+        };
+
+        this.getDemultiplex5PrimeBarcodeCustomTrim = function() {
+
+            var response = {
+                'cut_lower': {
+                    'after': 0,
+                },
+            };
+
+            return response;
+        };
+
+        //TODO: remove this section
         this.extractDemultiplexValueVariables = function(config) {
 
             var demultiplexVariables = [];
@@ -696,6 +770,7 @@ define(['app'], function(App) {
             return demultiplexVariables;
         };
 
+        //TODO: remove this section
         this.createDemultiplexBarcodeVariablePath = function(config) {
 
             var demultiplexVariables = this.extractDemultiplexValueVariables(config);

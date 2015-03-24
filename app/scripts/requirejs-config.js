@@ -68,7 +68,6 @@ require.config({
 
         // Utilities
         'serialization-tools': 'utilities/serialization-tools',
-        'vdjpipe-config-parser': 'utilities/vdjpipe-config-parser',
         'vdjpipe-workflow-parser': 'utilities/vdjpipe-workflow-parser',
         'vdjpipe-view-factory': 'utilities/vdjpipe-view-factory',
 
@@ -178,10 +177,12 @@ require.config({
             deps: ['backbone', 'backbone-agave', 'agave-tenant-user'],
             exports: 'Backbone.Agave.Collection.TenantUsers'
         },
-'agave-feedback': {
-    deps: ['backbone', 'backbone-agave'],
-    exports: 'Backbone.Agave.Model.FeedbackModel'
-},
+
+        'agave-feedback': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.FeedbackModel'
+        },
+
         'agave-file': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.File'

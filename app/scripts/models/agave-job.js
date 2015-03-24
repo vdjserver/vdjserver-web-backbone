@@ -433,14 +433,12 @@ function(
                 allFileMetadatas
             );
 
-            var jobConfig = App.Utilities.Vdjpipe.ConfigParser.ConvertWorkflowConfigToVdjpipeConfig(workflowConfig);
-
             this.set('name', formData['job-name']);
 
             this.set(
                 'parameters',
                 {
-                    'json': JSON.stringify(jobConfig),
+                    'json': JSON.stringify(workflowConfig),
                 }
             );
         },

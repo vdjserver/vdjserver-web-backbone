@@ -587,7 +587,15 @@ define([
 
             // DEBUG
             if (EnvironmentConfig.debug.console) {
-                console.log('jobModel is: ' + JSON.stringify(jobModel));
+                var tmpDebugJobModelLog = JSON.stringify(jobModel.get('parameters').json)
+                                            .replace(/\\"/g, '"')
+                                            ;
+                                             //.replace(/^"/, '\'')
+                                             //.replace(/"$/, '\'');
+
+                //tmpDebugJobModelLog = JSON.parse(tmpDebugJobModelLog);
+
+                console.log('jobModel is: ' + tmpDebugJobModelLog);
             }
 
             if (EnvironmentConfig.debug.disableJobs) {

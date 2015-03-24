@@ -153,7 +153,8 @@ define([
                 }
 
                 // Select correct location
-                $('#' + this.inputCount + '-barcode-location').val(this.options['custom_location']);
+                // TODO: if we restore the custom workflow feature, then this val will need to be dynamic
+                $('#' + this.inputCount + '-barcode-location').val('1'); //this.options['custom_location']);
 
                 // Set number of barcodes
                 $('#' + this.inputCount + '-barcodes').val(this.elementCount);
@@ -474,7 +475,6 @@ define([
     Vdjpipe.CustomDemultiplexCombinationConfig = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-custom-demultiplex-combination-config',
         initialize: function() {
-
             // Don't let layout manager discard this view if it is re-rendered!
             // We're managing it manually to allow user interaction with barcode subviews.
             //this.keep = true;
