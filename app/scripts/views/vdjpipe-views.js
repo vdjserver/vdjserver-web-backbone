@@ -1,8 +1,9 @@
 define([
     'app',
     'handlebars-utilities',
+    'handlebars',
     'serialization-tools',
-], function(App, HandlebarsUtilities, SerializationTools) {
+], function(App, HandlebarsUtilities, Handlebars, SerializationTools) {
 
     'use strict';
 
