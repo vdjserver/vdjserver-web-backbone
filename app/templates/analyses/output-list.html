@@ -56,11 +56,13 @@
                         <tr>
                             <td>{{name}}</td>
                             <td>
-                                {{#IsJobFrozen this}}
-                                    Job Failed
-                                {{else}}
-                                    {{status}}
-                                {{/IsJobFrozen}}
+                                <div id="job-status-{{id}}">
+                                    {{#IsJobFrozen this}}
+                                        Job Failed
+                                    {{else}}
+                                        {{status}}
+                                    {{/IsJobFrozen}}
+                                </div>
                             </td>
                             <td>{{FormatAgaveDate submitTime}}</td>
                             <td>

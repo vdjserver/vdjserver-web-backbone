@@ -35,13 +35,8 @@ define([
 
             this.notificationModel = parameters.notificationModel;
 
-            var factory = new App.Websockets.Jobs.Factory();
-            this.websocket = factory.getJobWebsocket();
-            this.websocket.connectToServer();
-            this.websocket.subscribeToJob(this.notificationModel.get('associatedUuid'));
-
             this.listenTo(
-                this.websocket,
+                App.Instances.Websockets[this.notificationModel.get('associatedUuid')],
                 'jobStatusUpdate',
                 this._handleJobStatusUpdate
             );

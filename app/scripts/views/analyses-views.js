@@ -166,6 +166,14 @@ define([
                 .fail(function() {
                 });
         },
+        _handleJobStatusUpdate: function(jobStatusUpdate) {
+
+            $('#job-status-' + jobStatusUpdate.jobId).html(jobStatusUpdate.jobStatus);
+
+            if (jobStatusUpdate.jobStatus === 'FINISHED') {
+                this.render();
+            }
+        },
         calculatePaginationSets: function() {
             var tmpPaginationSets = Math.round(this.jobMetadatas.models.length / this.paginationIterator);
 
@@ -205,7 +213,19 @@ define([
 
             $.when.apply($, jobFetches).always(function() {
                 for (var i = 0; i < jobModels.length; i++) {
+
                     that.jobs.add(jobModels[i]);
+
+                    // check for websockets
+                    var job = that.jobs.get(jobModels[i]);
+
+                    if (App.Instances.Websockets[job.get('id')]) {
+                        that.listenTo(
+                            App.Instances.Websockets[job.get('id')],
+                            'jobStatusUpdate',
+                            that._handleJobStatusUpdate
+                        );
+                    }
                 }
 
                 loadingView.remove();
