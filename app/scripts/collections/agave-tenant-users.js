@@ -9,7 +9,7 @@ define(['backbone'], function(Backbone) {
         comparator: 'username',
         url: function() {
             return '/profiles/v2/';
-        }
+        },
     });
 
     Backbone.Agave.Collection.TenantUsers = TenantUsers;

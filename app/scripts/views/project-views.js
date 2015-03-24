@@ -1464,19 +1464,34 @@ define([
         // Typeahead
         _usernameTypeahead: function(permissions, tenantUsers) {
 
-            // Prune users that shouldn't be in typeahead.
-            var vdjUsernames = tenantUsers.pluck('username');
-            var projectUsernames = permissions.pluck('username');
+            var filteredTenantUsers = tenantUsers.clone();
 
-            vdjUsernames = _.difference(vdjUsernames, projectUsernames);
+            for (var i = 0; i < tenantUsers.models.length; i++) {
+                var tenantUser = tenantUsers.get(tenantUsers.models[i]);
+
+                for (var j = 0; j < permissions.models.length; j++) {
+                    var permission = permissions.get(permissions.models[j]);
+
+                    // Prune users that shouldn't be in typeahead.
+                    if (permission.get('username') === tenantUser.get('username')) {
+                        filteredTenantUsers.remove(tenantUser);
+                    }
+                }
+            }
 
             // Instantiate the bloodhound suggestion engine
             var usernameSuggestionEngine = new Bloodhound({
                 datumTokenizer: function(data) {
+                    data = data['first_name']
+                         + ' ' + data['last_name']
+                         + ' ' + data['email']
+                         + ' ' + data['username']
+                         ;
+
                     return Bloodhound.tokenizers.whitespace(data);
                 },
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
-                local: vdjUsernames
+                local: filteredTenantUsers.toJSON(),
             });
 
             // Initialize the bloodhound suggestion engine
@@ -1487,20 +1502,20 @@ define([
                     $('#add-username').typeahead(
                         {
                             minLength: 1,
-                            highlight: true
+                            highlight: true,
                         },
                         {
                             displayKey: function(value) {
+                                value = value['username'];
                                 return value;
                             },
-                            source: usernameSuggestionEngine.ttAdapter()
+                            source: usernameSuggestionEngine.ttAdapter(),
                         }
                     );
                 })
                 .fail(function() {
                     // Do or do not do, there is no try
                 });
-
         },
 
         // Event Responders
