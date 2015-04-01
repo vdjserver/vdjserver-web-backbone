@@ -2,7 +2,7 @@
 
 //require('sinon');
 
-define(['app', 'agave-job', 'moment'], function() {
+define(['app', 'environment-config', 'moment', 'agave-job'], function(App, EnvironmentConfig, moment) {
 
     'use strict';
 
@@ -33,14 +33,13 @@ define(['app', 'agave-job', 'moment'], function() {
         it('getDirectorySafeName should return a safe directory name', function() {
             var model = new Backbone.Agave.Model.Job.VdjPipe();
 
-            var safeName = model.getDirectorySafeName('name with spaces');
+            var safeName = model._getDirectorySafeName('name with spaces');
             safeName.should.equal('name-with-spaces');
         });
 
         it('shareJobWithProjectMembers should send correct data payload', function(done) {
 
             this.server.respondWith(function(request) {
-
                 var requestBody = JSON.parse(request.requestBody);
                 var requestHeaders = request.requestHeaders;
 
@@ -48,8 +47,9 @@ define(['app', 'agave-job', 'moment'], function() {
 
                 requestBody.projectUuid.should.equal('project123');
                 requestBody.jobUuid.should.equal('job123');
+
                 request.method.should.equal('POST');
-                request.url.should.equal(Backbone.Agave.vdjauthRoot + '/permissions/jobs');
+                request.url.should.equal(EnvironmentConfig.vdjauthRoot + '/permissions/jobs');
 
                 done();
             });
@@ -57,7 +57,7 @@ define(['app', 'agave-job', 'moment'], function() {
             var model = new Backbone.Agave.Model.Job.VdjPipe();
             model.set('id', 'job123');
 
-            model.shareJobWithProjectMembers('project123');
+            model._shareJobWithProjectMembers('project123');
 
             this.server.respond();
         });
@@ -74,7 +74,7 @@ define(['app', 'agave-job', 'moment'], function() {
                 requestBody.projectUuid.should.equal('project123');
                 requestBody.jobUuid.should.equal('job123');
                 request.method.should.equal('POST');
-                request.url.should.equal(Backbone.Agave.vdjauthRoot + '/jobs/metadata');
+                request.url.should.equal(EnvironmentConfig.vdjauthRoot + '/jobs/metadata');
 
                 done();
             });
@@ -82,7 +82,7 @@ define(['app', 'agave-job', 'moment'], function() {
             var model = new Backbone.Agave.Model.Job.VdjPipe();
             model.set('id', 'job123');
 
-            model.createJobMetadata('project123');
+            model._createJobMetadata('project123');
 
             this.server.respond();
         });
@@ -93,7 +93,7 @@ define(['app', 'agave-job', 'moment'], function() {
 
                 request.requestBody.should.equal('action=mkdir&path=2014-06-16-14-10-58-46-test');
                 request.method.should.equal('PUT');
-                request.url.should.equal(Backbone.Agave.apiRoot + '/files/v2/media/system/data.vdjserver.org//projects/project123/analyses');
+                request.url.should.equal(EnvironmentConfig.agaveRoot + '/files/v2/media/system/data.vdjserver.org//projects/project123/analyses');
 
                 done();
             });
@@ -101,7 +101,7 @@ define(['app', 'agave-job', 'moment'], function() {
             var model = new Backbone.Agave.Model.Job.VdjPipe();
             model.set('archivePath', '/projects/project123/analyses/2014-06-16-14-10-58-46-test');
 
-            model.createArchivePathDirectory('project123');
+            model._createArchivePathDirectory('project123');
 
             this.server.respond();
         });
@@ -111,10 +111,9 @@ define(['app', 'agave-job', 'moment'], function() {
             var model = new Backbone.Agave.Model.Job.VdjPipe();
             model.set('archivePath', '/projects/project123/analyses/2014-06-16-14-10-58-46-test');
 
-            var relativeArchivePath = model.getRelativeArchivePath();
+            var relativeArchivePath = model._getRelativeArchivePath();
 
             relativeArchivePath.should.equal('2014-06-16-14-10-58-46-test');
-
         });
 
         it('setArchivePath should create a correct archivePath', function() {
@@ -126,7 +125,7 @@ define(['app', 'agave-job', 'moment'], function() {
 
             model.set('name', 'testJob');
 
-            model.setArchivePath('project123');
+            model._setArchivePath('project123');
             var time = moment().format(archivePathDateFormat);
 
             model.get('archivePath').should.equal('/projects/project123/analyses/' + time + '-testjob');
@@ -135,12 +134,10 @@ define(['app', 'agave-job', 'moment'], function() {
         it('getDirectorySafeName should return a string that is lowercase and without any spaces', function() {
             var model = new Backbone.Agave.Model.Job.VdjPipe();
 
-            var safeName = model.getDirectorySafeName('1.21 GigaWATTS');
+            var safeName = model._getDirectorySafeName('1.21 GigaWATTS');
 
             safeName.should.equal('1.21-gigawatts');
         });
-
-        //it('getRelativeArchivePath should')
 
         it('setJobConfigFromWorkflowFormData should correctly set vdjpipe config parameter as a model parameter', function() {
 
@@ -163,6 +160,7 @@ define(['app', 'agave-job', 'moment'], function() {
                         'length': 4036,
                         'mimeType': '',
                         'isDeleted': false,
+                        'readDirection': 'R',
                         'privateAttributes': {
                             'reverse-reads': true
                         }
@@ -178,6 +176,7 @@ define(['app', 'agave-job', 'moment'], function() {
                     }
                 }
             );
+
             var files = new Backbone.Agave.Collection.Files.Metadata();
             files.add(file);
 
@@ -189,12 +188,12 @@ define(['app', 'agave-job', 'moment'], function() {
             };
 
             var job = new Backbone.Agave.Model.Job.VdjPipe();
-            job.setJobConfigFromWorkflowFormData(formData, files);
+            job._setJobConfigFromWorkflowFormData(formData, files, files);
 
             var serializedJob = JSON.stringify(job.toJSON());
 
             serializedJob.should.equal(
-                '{"appId":"vdj_pipe-0.0.16u2","archive":true,"archivePath":"","archiveSystem":"data.vdjserver.org","batchQueue":"normal","inputs":{},"maxRunTime":"24:00:00","outputPath":"","name":"test","nodeCount":1,"parameters":{"json":"{\\"base_path_input\\":\\"\\",\\"base_path_output\\":\\"\\",\\"csv_file_delimiter\\":\\"\\\\\\\\t\\",\\"input\\":[{\\"reverse_seq\\":\\"emid_1_rev.fastq\\"}],\\"single_read_pipe\\":[{\\"quality_stats\\":{\\"out_prefix\\":\\"pre-\\"}},{\\"composition_stats\\":{\\"out_prefix\\":\\"pre-\\"}}]}"},"processorsPerNode":12}'
+                '{"appId":"vdj_pipe-0.1.5u1","archive":true,"archivePath":"","archiveSystem":"data.vdjserver.org","batchQueue":"normal","inputs":{},"maxRunTime":"24:00:00","outputPath":"","name":"test","nodeCount":1,"parameters":{"json":"{\\"base_path_input\\":\\"\\",\\"base_path_output\\":\\"\\",\\"input\\":[{\\"sequence\\":\\"emid_1_rev.fastq\\",\\"is_reverse\\":true}],\\"steps\\":[{\\"quality_stats\\":{}},{\\"composition_stats\\":{}}]}"},"processorsPerNode":12}'
             );
         });
 
@@ -272,12 +271,12 @@ define(['app', 'agave-job', 'moment'], function() {
             files.add(file2);
 
             var job = new Backbone.Agave.Model.Job.VdjPipe();
-            job.setFilesParameter(files);
+            job._setFilesParameter(files);
 
             var jobFilesParameter = JSON.stringify(job.get('inputs'));
 
             jobFilesParameter.should.equal(
-                '{"files":"/projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"}'
+                '{"files":"agave://data.vdjserver.org//projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;agave://data.vdjserver.org//projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"}'
             );
         });
 
@@ -371,7 +370,7 @@ define(['app', 'agave-job', 'moment'], function() {
             var serializedJob = JSON.stringify(job);
 
             serializedJob.should.equal(
-                '{"appId":"vdj_pipe-0.0.16u2","archive":true,"archivePath":"testArchivePath","archiveSystem":"data.vdjserver.org","batchQueue":"normal","inputs":{"files":"/projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"},"maxRunTime":"24:00:00","outputPath":"","name":"test","nodeCount":1,"parameters":{"json":"{\\"base_path_input\\":\\"\\",\\"base_path_output\\":\\"\\",\\"csv_file_delimiter\\":\\"\\\\\\\\t\\",\\"input\\":[{\\"reverse_seq\\":\\"emid_1_rev.fastq\\"}],\\"single_read_pipe\\":[{\\"quality_stats\\":{\\"out_prefix\\":\\"pre-\\"}},{\\"composition_stats\\":{\\"out_prefix\\":\\"pre-\\"}}]}"},"processorsPerNode":12}'
+                '{"appId":"vdj_pipe-0.1.5u1","archive":true,"archivePath":"testArchivePath","archiveSystem":"data.vdjserver.org","batchQueue":"normal","inputs":{"files":"agave://data.vdjserver.org//projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;agave://data.vdjserver.org//projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"},"maxRunTime":"24:00:00","outputPath":"","name":"test","nodeCount":1,"parameters":{"json":"{\\"base_path_input\\":\\"\\",\\"base_path_output\\":\\"\\",\\"input\\":[{\\"sequence\\":\\"emid_1_rev.fastq\\"},{\\"sequence\\":\\"emid1.fasta\\"}],\\"steps\\":[{\\"quality_stats\\":{}},{\\"composition_stats\\":{}}]}"},"processorsPerNode":12}'
             );
         });
 
@@ -477,9 +476,7 @@ define(['app', 'agave-job', 'moment'], function() {
 
             var serializedJob = JSON.stringify(job);
 
-            //var expectedResult = {"appId": "vdj_pipe-0.0.16u2","archive": true,"archivePath": "testArchivePath","archiveSystem": "data.vdjserver.org","batchQueue": "normal","inputs": {"files": "/projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta"},"maxRunTime": "24:00:00","outputPath": "","name": "test","nodeCount": 1,"parameters": {"json": "{\"base_path_input\":\"\",\"base_path_output\":\"\",\"csv_file_delimiter\":\"\\\\t\",\"input\":[{\"reverse_seq\":\"emid_1_rev.fastq\"}],\"single_read_pipe\":[{\"quality_stats\":{\"out_prefix\":\"pre-\"}},{\"composition_stats\":{\"out_prefix\":\"pre-\"}},{\"match\":{\"reverse\":true,\"trimmed\":false,\"elements\":[]}},{\"length_filter\":{\"min\":200}},{\"average_quality_filter\":35},{\"homopolymer_filter\":20},{\"find_shared\":{}}]}"},"processorsPerNode": 12};
-                        var expectedResult = {'appId': 'vdj_pipe-0.0.16u2','archive': true,'archivePath': 'testArchivePath','archiveSystem': 'data.vdjserver.org','batchQueue': 'normal','inputs': {'files': '/projects/0001  410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;/projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta'},'maxRunTime': '24:00:00','outputPath': '','name': 'test','nodeCount': 1,'parameters': {'json': '{\'base_path_input\':\'\',\'base_path_output\':\'\',\'csv_file_delimiter\':\'\\\\t\',\'input\':[{\'reverse_seq\':\'emid_1_rev.fastq\'}],\'single_read_pipe\':[{\'quality_stats\':{\'out_prefix\':\'pre-\'}},{\'composition_stats\':{\'out_prefix\':\'pre-\'}},{\'match\':{\'reverse\':true,\'trimmed\':false,\'elements\':[]}},{\'length_filter\':{\'min\':200}},{\'average_quality_filter\':35},{\'homopolymer_filter\':20},{\'find_shared\':{}}]}'},'processorsPerNode': 12};
-
+            var expectedResult = {'appId':'vdj_pipe-0.1.5u1','archive':true,'archivePath':'testArchivePath','archiveSystem':'data.vdjserver.org','batchQueue':'normal','inputs':{'files':'agave://data.vdjserver.org//projects/0001410469863267-5056a550b8-0001-012/files/emid_1_rev.fastq;agave://data.vdjserver.org//projects/0001410469863267-5056a550b8-0001-012/files/emid1.fasta'},'maxRunTime':'24:00:00','outputPath':'','name':'test','nodeCount':1,'parameters':{'json':'{\"base_path_input\":\"\",\"base_path_output\":\"\",\"input\":[{\"sequence\":\"emid_1_rev.fastq\"},{\"sequence\":\"emid1.fasta\"}],\"steps\":[{\"quality_stats\":{}},{\"composition_stats\":{}},{\"match\":{\"reverse\":true,\"elements\":[]}},{\"length_filter\":{\"min\":200}},{\"average_quality_filter\":{\"min_quality\":35}},{\"homopolymer_filter\":{\"max_length\":20}},{\"find_shared\":{\"out_group_unique\":\"test-unique.fasta\"}}]}'},'processorsPerNode':12};
 
             serializedJob.should.equal(
                 JSON.stringify(expectedResult)
