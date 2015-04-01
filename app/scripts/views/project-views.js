@@ -127,7 +127,12 @@ define([
 
     Handlebars.registerHelper('ifOr', function(v1, v2, options) {
 
-        if (v1 || v2) {
+        if (_.isArray(v1) && _.isArray(v2)) {
+            if (v1.length > 0 || v2.length > 0) {
+                return options.fn(this);
+            }
+        }
+        else if (v1 || v2) {
             return options.fn(this);
         }
 
@@ -956,15 +961,29 @@ define([
                     ;
             },
             _setupDragDropEventHandlers: function() {
-                if (this.fileListings.models.length === 0) {
+
+                //if (this.fileListings.models.length === 0) {
+                if (
+                    this.singleReadFileListings.models.count === 0
+                    &&
+                    this.pairedReads.count === 0
+                ) {
 
                     // Drag and Drop Listeners
                     var dropZone = document.getElementById('drag-and-drop-box');
-                    dropZone.addEventListener('dragover', this._fileContainerDrag, false);
+                    dropZone.addEventListener(
+                        'dragover',
+                        this._fileContainerDrag,
+                        false
+                    );
 
                     // Using fancy bind trick to keep 'this' context
                     // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener
-                    dropZone.addEventListener('drop', this._fileContainerDrop.bind(this), false);
+                    dropZone.addEventListener(
+                        'drop',
+                        this._fileContainerDrop.bind(this),
+                        false
+                    );
                 }
             },
             _fileContainerDrag: function(e) {
