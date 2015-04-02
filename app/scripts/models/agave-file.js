@@ -526,6 +526,7 @@ function(Backbone, EnvironmentConfig, moment) {
 
                     default:
                         // code
+                        break;
                 }
 
                 return isQualAssociable;
@@ -543,6 +544,7 @@ function(Backbone, EnvironmentConfig, moment) {
 
                     default:
                         // code
+                        break;
                 }
 
                 return hasReadDirection;

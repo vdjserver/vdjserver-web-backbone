@@ -7,9 +7,20 @@ define([
 
     'use strict';
 
-    HandlebarsUtilities.registerRawPartial('jobs/vdjpipe/fragments/vdjpipe-base-view-top', 'vdjpipe-base-view-top');
-    HandlebarsUtilities.registerRawPartial('jobs/vdjpipe/fragments/vdjpipe-base-view-bottom', 'vdjpipe-base-view-bottom');
-    HandlebarsUtilities.registerRawPartial('jobs/vdjpipe/fragments/vdjpipe-paired-reads-direction-fragment', 'vdjpipe-paired-reads-direction-fragment');
+    HandlebarsUtilities.registerRawPartial(
+        'jobs/vdjpipe/fragments/vdjpipe-base-view-top',
+        'vdjpipe-base-view-top'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
+        'jobs/vdjpipe/fragments/vdjpipe-base-view-bottom',
+        'vdjpipe-base-view-bottom'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
+        'jobs/vdjpipe/fragments/vdjpipe-paired-reads-direction-fragment',
+        'vdjpipe-paired-reads-direction-fragment'
+    );
 
     var Vdjpipe = {};
 
@@ -536,7 +547,8 @@ define([
             this.render();
         },
     });
-/*
+
+    /*
     Vdjpipe.FindSharedSequences = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-find-shared-sequences',
         afterRender: function() {
@@ -609,7 +621,7 @@ define([
             }
         },
     });
-*/
+    */
 
     Vdjpipe.Histogram = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-histogram',
@@ -712,7 +724,7 @@ define([
         },
     });
 
-/*
+    /*
     Vdjpipe.TextImmutable = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-text-immutable',
         serialize: function() {
@@ -727,7 +739,7 @@ define([
             }
         },
     });
-*/
+    */
 
     Vdjpipe.WriteSequence = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
         template: 'jobs/vdjpipe/vdjpipe-write-sequences',

@@ -413,6 +413,7 @@ define(['app'], function(App) {
 
                             default:
                                 // code
+                                break;
                         }
                     }
 
@@ -541,8 +542,9 @@ define(['app'], function(App) {
                 configuredParameter.find_shared = {
                     'out_group_unique': findSharedVariables
                                         + '-unique'
-                                        + '.fasta',
-                                        //+ parameters[key + '-out-group-unique'],
+                                        + '.fasta'
+                                        //+ parameters[key + '-out-group-unique']
+                                        ,
                     'out_summary': 'demultiplexing-summary.txt',
                 };
             }
@@ -550,8 +552,9 @@ define(['app'], function(App) {
                 configuredParameter.find_shared = {
                     'out_group_unique': jobName
                                   + '-unique'
-                                  + '.fasta',
-                                  //+ parameters[key + '-out-group-unique'],
+                                  + '.fasta'
+                                  //+ parameters[key + '-out-group-unique']
+                                  ,
                 };
             }
 

@@ -62,12 +62,12 @@ define([
             events: {
                 'click .project-create-menu': '_collapseAllSubmenus',
                 'click .project-submenu a': '_uiSetActiveSubmenu',
-    /*
+                /*
                 'click .project-menu': [
                     '_uiClearActiveSubmenu',
                     '_setActiveMenu',
                 ],
-    */
+                */
                 'click .project-menu': '_uiSetActiveMenu',
             },
             afterRender: function() {

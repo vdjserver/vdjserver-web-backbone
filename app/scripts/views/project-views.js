@@ -1117,7 +1117,7 @@ define([
 
                             });
 
-                            /*
+                        /*
                         $('.progress').removeClass('progress-striped active');
                         $('.progress-bar').addClass('progress-bar-success');
                         */

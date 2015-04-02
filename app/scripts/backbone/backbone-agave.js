@@ -398,7 +398,7 @@ define([
 
                 case 'delete':
                     return false;
-                    //break;
+                    break;
             }
 
             options.url = EnvironmentConfig.vdjauthRoot + '/token',

@@ -678,13 +678,13 @@ define([
 
         var myData = [
             {
-            key: 'Quality Score',
-            values: otherD,
+                key: 'Quality Score',
+                values: otherD,
             },
             {
-            key: 'Median Score',
-            values: medianD,
-            color: '#5CB85C',
+                key: 'Median Score',
+                values: medianD,
+                color: '#5CB85C',
             },
         ];
 

@@ -590,9 +590,9 @@ define([
             if (EnvironmentConfig.debug.console) {
                 var tmpDebugJobModelLog = JSON.stringify(jobModel.get('parameters').json)
                                             .replace(/\\"/g, '"')
-                                            ;
                                              //.replace(/^"/, '\'')
                                              //.replace(/"$/, '\'');
+                                            ;
 
                 //tmpDebugJobModelLog = JSON.parse(tmpDebugJobModelLog);
 

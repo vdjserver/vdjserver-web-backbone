@@ -28,14 +28,15 @@ function(Backbone, EnvironmentConfig) {
                     'type': 'feedback'
                 });
             }
-/*
+
+            /*
             if(! attributes.recaptcha_challenge_field) {
               errors.push({
                   'message': 'Missing Recaptcha Challenge.',
                   'type': 'recaptcha_challenge_field'
               });
             }
-*/
+            */
             if (!attributes.recaptcha_response_field) {
                 errors.push({
                     'message': 'Incorrect captcha response.',
