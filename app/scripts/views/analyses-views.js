@@ -80,20 +80,16 @@ define([
             return options.inverse(this);
         }
 
-        var hasChart = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+        var fileNameSplit = filename.split('.');
+        var fileExtension = fileNameSplit[fileNameSplit.length - 1];
 
-        var isUnique = false;
-        if (filename.substr(-13) === '-unique.fasta') {
-            isUnique = true;
-        }
-
-        if (hasChart || isUnique) {
+        // Whitelisted files
+        if (fileExtension === 'fasta' || fileExtension === 'fastq') {
             return options.fn(this);
         }
         else {
             return options.inverse(this);
         }
-
     });
 
     Handlebars.registerHelper('ChartButtonText', function(filename, options) {
