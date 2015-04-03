@@ -749,7 +749,7 @@ define([
 
                         var fileModel = fileMetadataModel.getFileModel();
 
-                        filePromises[filePromises.count] = createFileSoftDeletePromise(fileModel);
+                        filePromises[filePromises.length] = createFileSoftDeletePromise(fileModel);
                     }
 
                     metadataPromises[i] = createFileMetadataSoftDeletePromise(fileMetadataModel);
@@ -964,11 +964,10 @@ define([
 
                 //if (this.fileListings.models.length === 0) {
                 if (
-                    this.singleReadFileListings.models.count === 0
+                    this.singleReadFileListings.models.length === 0
                     &&
-                    this.pairedReads.count === 0
+                    this.pairedReads.length === 0
                 ) {
-
                     // Drag and Drop Listeners
                     var dropZone = document.getElementById('drag-and-drop-box');
                     dropZone.addEventListener(

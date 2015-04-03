@@ -92,9 +92,9 @@ module.exports = function(grunt) {
                     port: TEST_SERVER_PORT,
                     middleware: function(connect) {
                         return [
-                            mountFolder(connect, '.tmp'),
                             mountFolder(connect, 'test'),
-                            mountFolder(connect, yeomanConfig.app)
+                            mountFolder(connect, '.tmp'),
+                            mountFolder(connect, yeomanConfig.app),
                         ];
                     }
                 }
@@ -354,9 +354,11 @@ module.exports = function(grunt) {
         mocha: {
             all: {
                 options: {
-                    run: true,
+                    run: false,
                     reporter: 'Spec',
-                    urls: ['http://localhost:<%= connect.options.port %>/test/index.html']
+                    urls: ['http://localhost:' + TEST_SERVER_PORT + '/index.html'],
+                    log: true,
+                    logErrors: true,
                 }
             }
         },
@@ -433,10 +435,10 @@ module.exports = function(grunt) {
     grunt.registerTask('test', [
         'clean:server',
         'coffee',
-        'compass',
+        //'compass',
         'connect:test',
         'mocha',
-        'watch:test',
+        //'watch:test',
     ]);
 
     grunt.registerTask('lint', [
