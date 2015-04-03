@@ -1,49 +1,92 @@
 <!doctype html>
-
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        <link rel="stylesheet" href="../.tmp/styles/main.css">
-
+        <link rel="stylesheet" href="bower_components/mocha/mocha.css">
         <title>Mocha Spec Runner</title>
-
-        <!-- mocking -->
-        <script src="../node_modules/sinon/pkg/sinon.js"></script>
-        <!--
-        <script>
-            var sinon = sinon;
-        </script>
-        -->
-
-        <!-- mocha dependencies -->
-        <link rel="stylesheet" href="../node_modules/grunt-mocha/node_modules/mocha/mocha.css">
-        <script src="../node_modules/grunt-mocha/node_modules/mocha/mocha.js"></script>
-
-        <!-- assertion framework -->
-        <script src="../node_modules/chai/chai.js"></script>
-        <script>
-            var should = chai.should();
-        </script>
-
+        <!--<script src="bower_components/sinon/lib/sinon.js"></script>-->
     </head>
     <body>
 
-        <!-- mocha setup -->
+        <!-- include source files here... -->
+
         <div id="mocha"></div>
+        <script src="bower_components/mocha/mocha.js"></script>
+        <script>mocha.setup('tdd')</script>
+
+        <script src="bower_components/chai/chai.js"></script>
         <script>
-            mocha.setup({
-                ui: 'bdd',
-                //reporter: 'spec',
-                //ignoreLeaks: true
-            });
+            var assert = chai.assert;
+            var expect = chai.expect;
+            var should = chai.should();
         </script>
 
-        <script></script>
+
 
         <!-- include source files here... -->
-        <script data-main="config/config" src="../app/bower_components/requirejs/require.js"></script>
 
+        <!-- include spec files here... -->
+
+        <!--<script data-main="config/myConfig" src="bower_components/requirejs/require.js"></script>-->
+        <script src="bower_components/requirejs/require.js"></script>
+
+        <script>
+
+            require.onError = function (err) {
+                console.log("require onError hit");
+                console.log(err.requireType);
+                if (err.requireType === 'timeout') {
+                    console.log('modules: ' + err.requireModules);
+                }
+
+                throw err;
+            };
+
+
+            //console.log("require base is: " + require.toUrl(''));
+            //console.log("require is: " + JSON.stringify(requirejs.s.contexts._.config));
+
+            require.config({
+                baseUrl: 'scripts/',
+                paths: {
+                    'handlebars':       '../bower_components/handlebars/handlebars.amd',
+                    'layoutmanager':    '../bower_components/layoutmanager/backbone.layoutmanager',
+                    'backbone':         '../bower_components/backbone/backbone',
+                    'jquery':           '../bower_components/jquery/dist/jquery',
+                    'environment-config': 'config/environment-config',
+                    'backbone-agave':  'backbone/backbone-agave',
+                    'agave-profile': 'models/agave-profile',
+                    'agave-project': 'models/agave-project',
+                    'agave-file': 'models/agave-file',
+                    'agave-job': 'models/agave-job',
+                    'sinon': '../bower_components/sinon/lib/sinon',
+                    //'sinon': 'bower_components/sinon/lib/sinon',
+                },
+                shim: {
+                    'handlebars': {
+                        exports: 'Handlebars',
+                    },
+                },
+            });
+
+            require([
+                'app',
+                'requirejs-config',
+
+                //'../spec/test',
+                '../spec/app-tests',
+                '../spec/vendor/agave-tests',
+                '../spec/models/agave-profile-tests',
+                '../spec/models/agave-project-tests',
+                //'../spec/collections/agave-projects-tests',
+                '../spec/models/agave-job-tests',
+
+            ], function() {
+                'use strict';
+                mocha.run();
+            });
+
+        </script>
+
+        <!--<script>console.log("finish");</script>-->
     </body>
     </html>
