@@ -325,7 +325,7 @@ function(Backbone, EnvironmentConfig, moment) {
                     filePath = '/projects'
                              + '/' + value['projectUuid']
                              + '/files'
-                             + '/' + value['name']
+                             + '/' + encodeURIComponent(value['name'])
                              ;
                 }
                 else if (this.get('name') === 'projectJobFile') {
@@ -334,7 +334,7 @@ function(Backbone, EnvironmentConfig, moment) {
                              + '/' + value['projectUuid']
                              + '/analyses'
                              + '/' + value['relativeArchivePath']
-                             + '/' + value['name']
+                             + '/' + encodeURIComponent(value['name'])
                              ;
                 }
 
