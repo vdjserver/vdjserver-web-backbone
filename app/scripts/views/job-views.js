@@ -588,15 +588,18 @@ define([
 
             // DEBUG
             if (EnvironmentConfig.debug.console) {
-                var tmpDebugJobModelLog = JSON.stringify(jobModel.get('parameters').json)
-                                            .replace(/\\"/g, '"')
-                                             //.replace(/^"/, '\'')
-                                             //.replace(/"$/, '\'');
-                                            ;
+                if (jobModel.get('parameters') && jobModel.get('parameters').json) {
 
-                //tmpDebugJobModelLog = JSON.parse(tmpDebugJobModelLog);
+                    var tmpDebugJobModelLog = JSON.stringify(jobModel.get('parameters').json)
+                                                .replace(/\\"/g, '"')
+                                                 //.replace(/^"/, '\'')
+                                                 //.replace(/"$/, '\'');
+                                                ;
 
-                console.log('jobModel is: ' + tmpDebugJobModelLog);
+                    //tmpDebugJobModelLog = JSON.parse(tmpDebugJobModelLog);
+
+                    console.log('jobModel is: ' + tmpDebugJobModelLog);
+                }
             }
 
             if (EnvironmentConfig.debug.disableJobs) {
