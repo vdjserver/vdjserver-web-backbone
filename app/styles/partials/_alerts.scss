@@ -14,3 +14,17 @@
   width: 100%;
   z-index: 2;
 }
+
+.alert-primary {
+    @extend .alert-info;
+
+    background: #345B75; //$brand-primary;
+    color: #ffffff;
+}
+
+.alert-vdj-red {                                                              
+    @extend .alert-info;                                                      
+                                                                              
+    background: $projectNavbarButtonColor;                                    
+    color: #ffffff;                                                           
+}

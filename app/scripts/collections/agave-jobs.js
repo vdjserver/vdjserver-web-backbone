@@ -38,6 +38,86 @@ define([
         url: function() {
             return '/jobs/v2/' + this.jobId + '/outputs/listings';
         },
+        getProjectFileOutput: function() {
+            var filteredCollection = this.filter(function(model) {
+
+                if (model.get('name')) {
+
+                    var filename = model.get('name');
+
+                    var fileNameSplit = filename.split('.');
+                    var fileExtension = fileNameSplit[fileNameSplit.length - 1];
+
+                    // Whitelisted files
+                    if (fileExtension === 'fasta' || fileExtension === 'fastq') {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(filteredCollection);
+
+            return newCollection;
+        },
+        getChartFileOutput: function() {
+            var filteredCollection = this.filter(function(model) {
+
+                if (model.get('name')) {
+
+                    var hasChart = Backbone.Agave.Model.Job.Detail.getChartType(model.get('name'));
+
+                    var filename = model.get('name');
+
+                    var fileNameSplit = filename.split('.');
+                    var fileExtension = fileNameSplit[fileNameSplit.length - 1];
+
+                    // Small hack to include files that belong with chartable files but don't actually have charts yet
+                    if (hasChart || fileExtension === 'csv') {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(filteredCollection);
+
+            return newCollection;
+        },
+        getLogFileOutput: function() {
+            var filteredCollection = this.filter(function(model) {
+
+                if (model.get('name')) {
+
+                    var filename = model.get('name');
+
+                    var fileNameSplit = filename.split('.');
+                    var fileExtension = fileNameSplit[fileNameSplit.length - 1];
+
+                    // Whitelisted files
+                    if (fileExtension === 'err' || fileExtension === 'out' || fileExtension === 'vdjml'  || filename === 'vdjpipe_config.json') {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(filteredCollection);
+
+            return newCollection;
+        },
     });
 
     Jobs.Listings = Backbone.Agave.MetadataCollection.extend({
