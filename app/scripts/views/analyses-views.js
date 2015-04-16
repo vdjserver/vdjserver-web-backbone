@@ -354,6 +354,7 @@ define([
             },
             events: {
                 'click .show-chart': 'showChart',
+                'click .download-chart': 'downloadChart',
 
                 'click .download-file': 'downloadFile',
                 'click .chart-reset-btn': 'clearChart',
@@ -368,13 +369,16 @@ define([
 
                 var filename = e.target.dataset.id;
 
-                var classSelector = chance.string({pool: 'abcdefghijklmnopqrstuvwxyz'});
+                var classSelector = chance.string({
+                    pool: 'abcdefghijklmnopqrstuvwxyz',
+                    length: 15,
+                });
 
                 $(e.target.closest('tr')).after(
                     '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
                         + '<td colspan=3>'
-                            + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '" style2="overflow-x: auto; width: 4500px;">'
-                                + '<svg style="height: 0px;"></svg>'
+                            + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'
+                                + '<svg style="height: 0px;" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>'
                             + '</div>'
                             + '<div class="' + classSelector + '-d3-tip d3-tip hidden"></div>'
                         + '</td>'
@@ -382,8 +386,11 @@ define([
                 );
 
                 // Select current button
-                $('.show-chart').removeClass('btn-success');
                 $(e.target).addClass('btn-success');
+
+                // Enable download button
+                $(e.target).nextAll('.download-chart').removeClass('hidden');
+                $(e.target).nextAll('.download-chart').attr('data-chart-class-selector', classSelector);
 
                 // Clean up any charts that are currently displayed
                 this.clearChart();
@@ -475,6 +482,24 @@ define([
                     this.showWarning(errorMessage);
                 })
                 ;
+            },
+            downloadChart: function(e) {
+
+                var chartClassSelector = e.target.dataset.chartClassSelector;
+
+                var nvd3CssUrl = location.protocol + '//' + location.host + '/bower_components/nvd3/nv.d3.min.css';
+
+                $.get(nvd3CssUrl)
+                    .done(function(cssText) {
+                        var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
+                                      + '\n'
+                                      + $('.' + chartClassSelector).html()
+                                      ;
+
+                        var blob = new Blob([svgString], {type: 'text/plain;charset=utf-8'});
+                        saveAs(blob, 'chart-download.svg');
+                    })
+                    ;
             },
 
             downloadFile: function(e) {
@@ -2292,7 +2317,6 @@ console.log("chartClass is: " + chartClass);
 
             return chart;
         });
-
     };
 
     App.Views.Analyses = Analyses;

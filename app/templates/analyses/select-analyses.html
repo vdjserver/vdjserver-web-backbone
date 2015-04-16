@@ -129,9 +129,16 @@
 
                             <td>
                                 {{#FileTypeHasChart this.name}}
-                                    <button class="btn btn-default show-chart" data-id="{{name}}">
-                                        {{ChartButtonText this.name}}
-                                    </button>
+
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-default show-chart" data-id="{{name}}">
+                                            {{ChartButtonText this.name}}
+                                        </button>
+
+                                        <button class="btn btn-primary download-chart hidden" data-id="{{name}}">
+                                            Download Chart
+                                        </button>
+                                    </div>
                                 {{/FileTypeHasChart}}
                             </td>
                         </tr>
