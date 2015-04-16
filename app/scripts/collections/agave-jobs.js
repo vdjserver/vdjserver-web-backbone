@@ -77,7 +77,13 @@ define([
                     var fileExtension = fileNameSplit[fileNameSplit.length - 1];
 
                     // Small hack to include files that belong with chartable files but don't actually have charts yet
-                    if (hasChart || fileExtension === 'csv') {
+                    if (
+                        hasChart
+                        ||
+                        fileExtension === 'csv'
+                        ||
+                        Backbone.Agave.Model.Job.IgBlast.isChartableOutput(filename)
+                    ) {
                         return true;
                     }
                     else {
@@ -103,7 +109,15 @@ define([
                     var fileExtension = fileNameSplit[fileNameSplit.length - 1];
 
                     // Whitelisted files
-                    if (fileExtension === 'err' || fileExtension === 'out' || fileExtension === 'vdjml'  || filename === 'vdjpipe_config.json') {
+                    if (
+                        fileExtension === 'err'
+                        ||
+                        fileExtension === 'out'
+                        ||
+                        fileExtension === 'vdjml'
+                        ||
+                        filename === 'vdjpipe_config.json'
+                    ) {
                         return true;
                     }
                     else {

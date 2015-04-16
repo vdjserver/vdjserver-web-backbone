@@ -1169,7 +1169,7 @@ console.log("chartClass is: " + chartClass);
 
         d3.select('.' + classSelector)
             .insert('div', 'svg')
-            .attr('id', 'stackdiv')
+            .attr('id', classSelector + '-stackdiv')
         ;
 
         //edward salinas
@@ -1513,7 +1513,11 @@ console.log("chartClass is: " + chartClass);
                 else {
                     buttonHTML = buttonHTML
                                + '<li>'
-                                    + '<a class="stack-btn" id="stack-btn-' + d[buttonIndex] + '" data-drillindex="' + d[buttonIndex] + '" >'
+                                    + '<a '
+                                        + 'class="' + classSelector + '-stack-btn" '
+                                        + 'id="' + classSelector + '-stack-btn-' + d[buttonIndex] + '" '
+                                        + 'data-drillindex="' + d[buttonIndex] + '"'
+                                    + ' >'
                                         + d[buttonIndex]
                                     + '</a>'
                                + '</li>';
@@ -1543,8 +1547,8 @@ console.log("chartClass is: " + chartClass);
         var redrawGeneDistChart = function(res) {
 
             // Breadcrumb listener - reset stack breadcrumb buttons
-            document.getElementById('stackdiv').innerHTML = getHTMLButtonsFromDrillStack(drillStack);
-            $('.stack-btn').click(function(e) {
+            document.getElementById(classSelector + '-stackdiv').innerHTML = getHTMLButtonsFromDrillStack(drillStack);
+            $('.' + classSelector + '-stack-btn').click(function(e) {
 
                 var drillIndex = e.target.dataset.drillindex;
                 drillStack = resetDrillStackUpTo(drillIndex, drillStack);

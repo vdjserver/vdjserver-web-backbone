@@ -186,52 +186,68 @@ function(
         },
     });
 
-    Job.IgBlast = Backbone.Agave.JobModel.extend({
-        // Public Methods
-        defaults: function() {
-            return _.extend(
-                {},
-                Backbone.Agave.JobModel.prototype.defaults,
-                {
-                    appId: 'igblast-lonestar-1.4.0u6',
-                    inputs: {
-                        query: '',
-                    },
-                    parameters: {
-                        species: '',
-                        ig_seqtype: '',
-                        domain_system: '',
-                    },
+    Job.IgBlast = Backbone.Agave.JobModel.extend(
+        {
+            // Public Methods
+            defaults: function() {
+                return _.extend(
+                    {},
+                    Backbone.Agave.JobModel.prototype.defaults,
+                    {
+                        appId: 'igblast-lonestar-1.4.0u6',
+                        inputs: {
+                            query: '',
+                        },
+                        parameters: {
+                            species: '',
+                            ig_seqtype: '',
+                            domain_system: '',
+                        },
+                    }
+                );
+            },
+            initialize: function(options) {
+                Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
+
+                this.inputParameterName = 'query';
+            },
+            prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
+
+                var parameters = this._serializeFormData(formData);
+
+                this.set('parameters', parameters);
+
+                this.set('name', formData['job-name']);
+
+                this._setArchivePath(projectUuid);
+
+                this._setFilesParameter(selectedFileMetadatas);
+            },
+            _serializeFormData: function(formData) {
+                var parameters = {
+                    'species': formData['species'],
+                    'ig_seqtype': formData['sequence-type'],
+                    'domain_system': formData['domain-system'],
+                };
+
+                return parameters;
+            },
+        },
+        {
+            isChartableOutput: function(filename) {
+                if (
+                    filename.substr(-11) === 'sample.json'
+                    ||
+                    filename.substr(-10) === 'combo.json'
+                ) {
+                    return true;
                 }
-            );
-        },
-        initialize: function(options) {
-            Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
-
-            this.inputParameterName = 'query';
-        },
-        prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
-
-            var parameters = this._serializeFormData(formData);
-
-            this.set('parameters', parameters);
-
-            this.set('name', formData['job-name']);
-
-            this._setArchivePath(projectUuid);
-
-            this._setFilesParameter(selectedFileMetadatas);
-        },
-        _serializeFormData: function(formData) {
-            var parameters = {
-                'species': formData['species'],
-                'ig_seqtype': formData['sequence-type'],
-                'domain_system': formData['domain-system'],
-            };
-
-            return parameters;
-        },
-    });
+                else {
+                    return false;
+                }
+            },
+        }
+    );
 
     Job.VdjPipe = Backbone.Agave.JobModel.extend({
         // Public Methods
