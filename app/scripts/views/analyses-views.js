@@ -487,17 +487,31 @@ define([
 
                 var chartClassSelector = e.target.dataset.chartClassSelector;
 
+                var filename = e.target.dataset.id;
+                filename = filename.split('.');
+                filename.pop();
+                filename = filename.join('.');
+
                 var nvd3CssUrl = location.protocol + '//' + location.host + '/bower_components/nvd3/nv.d3.min.css';
 
                 $.get(nvd3CssUrl)
                     .done(function(cssText) {
+
+                        /*
+                            Grabbing all content specifically from the svg
+                            element ensures that we won't pick up any other
+                            random elements that are also children of
+                            |classSelector|.
+                        */
                         var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
                                       + '\n'
-                                      + $('.' + chartClassSelector).html()
+                                      + '<svg style="height: 180px;" version="1.1" xmlns="http://www.w3.org/2000/svg">'
+                                      + $('.' + chartClassSelector + ' svg').html()
+                                      + '</svg>'
                                       ;
 
                         var blob = new Blob([svgString], {type: 'text/plain;charset=utf-8'});
-                        saveAs(blob, 'chart-download.svg');
+                        saveAs(blob, filename + '.svg');
                     })
                     ;
             },
