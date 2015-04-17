@@ -356,8 +356,9 @@ define([
             },
             events: {
                 'click .show-chart': 'showChart',
-                'click .download-chart': 'downloadChart',
+                'click .show-log': 'showLog',
 
+                'click .download-chart': 'downloadChart',
                 'click .download-file': 'downloadFile',
 
                 'click .toggle-legend-btn': 'toggleLegend',
@@ -481,6 +482,64 @@ define([
                     this.showWarning(errorMessage);
                 })
                 ;
+            },
+            showLog: function(e) {
+                e.preventDefault();
+
+                this._uiBeginChartLoading(e.target);
+
+                var filename = e.target.dataset.id;
+
+                var classSelector = chance.string({
+                    pool: 'abcdefghijklmnopqrstuvwxyz',
+                    length: 15,
+                });
+
+                $(e.target.closest('tr')).after(
+                    '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
+                        + '<td colspan=3>'
+                            + '<div id="' + classSelector + '" class="text-left ' + classSelector + '">'
+                            + '</div>'
+                        + '</td>'
+                    + '</tr>'
+                );
+
+                // Select current button
+                $(e.target).addClass('btn-success');
+
+                var that = this;
+
+                var fileHandle = this.collection.get(filename);
+
+                var fileData;
+
+                fileHandle.downloadFileToCache()
+                    .then(function(tmpFileData) {
+                        tmpFileData = tmpFileData.replace(/\n/g, '<br>');
+
+                        fileData = tmpFileData;
+                    })
+                    .then(function() {
+                        return $('#chart-tr-' + classSelector).animate({
+                            height: '200px',
+                        }, 500).promise();
+                    })
+                    .done(function() {
+
+                        that._uiEndChartLoading();
+
+                        $('#' + classSelector).html(fileData);
+
+                        // Scroll down to chart
+                        $('html, body').animate({
+                            scrollTop: $('.' + classSelector).offset().top
+                        }, 1000);
+                    })
+                    .fail(function(response) {
+                        var errorMessage = this.getErrorMessageFromResponse(response);
+                        this.showWarning(errorMessage);
+                    })
+                    ;
             },
             downloadChart: function(e) {
 

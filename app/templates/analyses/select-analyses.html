@@ -167,6 +167,9 @@
                         <th class="text-center">
                             Size
                         </th>
+                        <th class="text-center">
+                            Display
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -182,6 +185,11 @@
 
                             <td>
                                 {{GetHumanReadableFileSize length}}
+                            </td>
+                            <td>
+                                <button class="btn btn-default show-log" data-id="{{name}}">
+                                    Show Log
+                                </button>
                             </td>
                         </tr>
                     {{/each}}
