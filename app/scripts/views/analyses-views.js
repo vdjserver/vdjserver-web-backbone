@@ -359,10 +359,8 @@ define([
                 'click .download-chart': 'downloadChart',
 
                 'click .download-file': 'downloadFile',
-                'click .chart-reset-btn': 'clearChart',
-                'click .toggle-legend-btn': 'toggleLegend',
 
-                'click .quality-chart-btn': 'qualityScoreChart',
+                'click .toggle-legend-btn': 'toggleLegend',
             },
             showChart: function(e) {
                 e.preventDefault();
@@ -395,7 +393,6 @@ define([
                 $(e.target).nextAll('.download-chart').attr('data-chart-class-selector', classSelector);
 
                 // Clean up any charts that are currently displayed
-                this.clearChart();
                 this.hideWarning();
                 $('#chart-legend').hide();
 
@@ -426,22 +423,22 @@ define([
                     switch (chartType) {
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
                             $('#chart-legend').show();
-                            Analyses.Charts.Composition(fileHandle, fileData, that.clearSVG, classSelector);
+                            Analyses.Charts.Composition(fileHandle, fileData, classSelector);
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_1:
                             $('#chart-legend').show();
-                            Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, that.clearSVG(), classSelector);
+                            Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, classSelector);
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_3:
                             $('#chart-legend').show();
-                            Analyses.Charts.LengthHistogram(fileHandle, fileData, that.clearSVG(), classSelector);
+                            Analyses.Charts.LengthHistogram(fileHandle, fileData, classSelector);
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
                             $('#chart-legend').show();
-                            Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, that.clearSVG, classSelector);
+                            Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, classSelector);
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
@@ -455,19 +452,19 @@ define([
                             });
 
                             $('#chart-legend').show();
-                            Analyses.Charts.QualityScore(fileHandle, fileData, that.clearSVG, classSelector);
+                            Analyses.Charts.QualityScore(fileHandle, fileData, classSelector);
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
-                            Analyses.Charts.GiantTable(fileHandle, fileData, that.clearSVG, classSelector);
+                            Analyses.Charts.GiantTable(fileHandle, fileData, classSelector);
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_7:
-                            Analyses.Charts.Cdr3(fileHandle, fileData, that.clearSVG, classSelector);
+                            Analyses.Charts.Cdr3(fileHandle, fileData, classSelector);
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_8:
-                            Analyses.Charts.GeneDistribution(fileHandle, fileData, that.clearSVG(), classSelector);
+                            Analyses.Charts.GeneDistribution(fileHandle, fileData, classSelector);
                             break;
 
                         default:
@@ -568,68 +565,6 @@ define([
                     false
                 );
             },
-            clearChart: function() {
-                /*
-                // clear announcements
-                $('#chart-right-announcement').empty();
-
-                // remove SVG elements
-                this.hideWarning();
-
-                var oldSVGs = document.getElementsByTagName('svg');
-                for (var i = 0; i < oldSVGs.length; i++) {
-                    oldSVGs[i].parentNode.removeChild(oldSVGs[i]);
-                }
-
-                //get rid of the download-btn if it exists
-                //remove the svg container as well because some events get tied to it
-                var chartContainer = document.getElementsByClassName('svg-container');
-                for (var j = 0; j < chartContainer.length; j++) {
-                    chartContainer[j].parentNode.removeChild(chartContainer[j]);
-                }
-
-                //add them back in
-                d3.select('.row .analyses')
-                    .append('div')
-                    .attr('id', 'analyses-chart')
-                    .attr('class', 'svg-container')
-                    .attr('style', 'position:relative; top:1px;left:0px;')
-                    ;
-
-                d3.select('.svg-container')
-                    .append('svg')
-                    .attr('style', 'height:600px;')
-                    ;
-
-                $('#chart-file-well').text('No data loaded. Select an Analysis.');
-                */
-            },
-            clearSVG: function(chartClass) {
-                /*
-                //remove SVG elements
-                var oldSVGs = document.getElementsByTagName('svg');
-
-                for (var i = 0; i < oldSVGs.length; i++) {
-                    while (oldSVGs[i].hasChildNodes()) {
-                        oldSVGs[i].removeChild(oldSVGs[i].firstChild);
-                    }
-                }
-console.log("chartClass is: " + chartClass);
-                //add them back in
-                d3.select('.row .analyses')
-                    .append('div')
-                    .attr('class', chartClass)
-                    //.attr('class', 'svg-container')
-                    .attr('style', 'position:relative; top:1px; left:0px;')
-                    ;
-
-                d3.select('.slider').select('input').remove();
-
-                // Note: we need to reset d3 tip menu position here, otherwise
-                // the horizontal scroll width will get stuck
-                $('.d3-tip').css('left', '');
-                */
-            },
             getErrorMessageFromResponse: function(response) {
                 var txt;
 
@@ -678,7 +613,7 @@ console.log("chartClass is: " + chartClass);
         })
     );
 
-    Analyses.Charts.LengthHistogram = function(fileHandle, text, clearSVG, classSelector) {
+    Analyses.Charts.LengthHistogram = function(fileHandle, text, classSelector) {
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -725,7 +660,6 @@ console.log("chartClass is: " + chartClass);
 
             //Update the chart when window resizes.
             nv.utils.windowResize(function() {
-                clearSVG();
                 chart.update();
             });
 
@@ -733,9 +667,7 @@ console.log("chartClass is: " + chartClass);
         });
     };
 
-    Analyses.Charts.MeanQualityScoreHistogram = function(fileHandle, text, clearSVG, classSelector) {
-
-        clearSVG();
+    Analyses.Charts.MeanQualityScoreHistogram = function(fileHandle, text, classSelector) {
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -802,7 +734,6 @@ console.log("chartClass is: " + chartClass);
 
             //Update the chart when window resizes.
             nv.utils.windowResize(function() {
-                clearSVG();
                 chart.update();
             });
 
@@ -810,7 +741,7 @@ console.log("chartClass is: " + chartClass);
         });
     };
 
-    Analyses.Charts.QualityScore = function(fileHandle, text, clearSVG, classSelector) {
+    Analyses.Charts.QualityScore = function(fileHandle, text, classSelector) {
 
         var margin = {
             top: 30,
@@ -1132,7 +1063,7 @@ console.log("chartClass is: " + chartClass);
         ;
     };
 
-    Analyses.Charts.PercentageGcHistogram = function(fileHandle, text, clearSVG, classSelector) {
+    Analyses.Charts.PercentageGcHistogram = function(fileHandle, text, classSelector) {
 
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
@@ -1189,7 +1120,6 @@ console.log("chartClass is: " + chartClass);
 
             //Update the chart when window resizes.
             nv.utils.windowResize(function() {
-                clearSVG(classSelector);
                 chart.update();
             });
 
@@ -1197,7 +1127,7 @@ console.log("chartClass is: " + chartClass);
         });
     };
 
-    Analyses.Charts.GeneDistribution = function(fileHandle, text, clearSVG, classSelector) {
+    Analyses.Charts.GeneDistribution = function(fileHandle, text, classSelector) {
 
         var sourceJson = JSON.parse(text);
 
@@ -1702,7 +1632,6 @@ console.log("chartClass is: " + chartClass);
         var redrawBarChart = function() {
             //call this function to trigger reloading
             //inside redrawBarChart()
-            clearSVG();
 
             nv.addGraph(function() {
                 var chart = nv.models.discreteBarChart()
@@ -1721,7 +1650,6 @@ console.log("chartClass is: " + chartClass);
                 ;
 
                 nv.utils.windowResize(function() {
-                    clearSVG();
                     chart.update();
                 });
 
@@ -1742,7 +1670,7 @@ console.log("chartClass is: " + chartClass);
         redrawGeneDistChart(res);
     };
 
-    Analyses.Charts.Cdr3 = function(fileHandle, text, clearSVG, classSelector) {
+    Analyses.Charts.Cdr3 = function(fileHandle, text, classSelector) {
 
         // Data Formatting
         var cdr3Data = d3.tsv.parse(text);
@@ -1808,7 +1736,6 @@ console.log("chartClass is: " + chartClass);
             ;
 
             nv.utils.windowResize(function() {
-                clearSVG();
                 chart.update();
             });
 
@@ -2183,7 +2110,7 @@ console.log("chartClass is: " + chartClass);
         return chartData;
     };
 
-    Analyses.Charts.GiantTable = function(fileHandle, tsv, clearSVG, classSelector) {
+    Analyses.Charts.GiantTable = function(fileHandle, tsv, classSelector) {
 
         var width = $('.' + classSelector).width();
         var height = $('.' + classSelector).height();
@@ -2195,8 +2122,6 @@ console.log("chartClass is: " + chartClass);
                 + 'height:' + (+height) + 'px;'
             )
         ;
-
-        clearSVG();
 
         var tableType = Analyses.Charts.GiantTableType(fileHandle.get('name'));
         var rawData = d3.tsv.parse(tsv);
@@ -2212,7 +2137,7 @@ console.log("chartClass is: " + chartClass);
         });
     };
 
-    Analyses.Charts.Composition = function(fileHandle, response, clearSVG, classSelector) {
+    Analyses.Charts.Composition = function(fileHandle, response, classSelector) {
 
         $('#chart-right-announcement').text('Click to toggle displayed data.');
 
@@ -2326,7 +2251,6 @@ console.log("chartClass is: " + chartClass);
 
             //Update the chart when window resizes.
             nv.utils.windowResize(function() {
-                clearSVG(classSelector);
                 chart.update();
             });
 
