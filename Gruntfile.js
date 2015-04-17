@@ -30,7 +30,8 @@ module.exports = function(grunt) {
     // configurable paths
     var yeomanConfig = {
         app: 'app',
-        dist: 'dist'
+        dist: 'dist',
+        root: '',
     };
 
     grunt.initConfig({
@@ -181,7 +182,7 @@ module.exports = function(grunt) {
                 '<%= yeoman.dist %>/scripts/main.js': [
                     '<%= yeoman.dist %>/scripts/main.js',
                     '<%= yeoman.dist %>/scripts/templates.js'
-                ]
+                ],
             }
         },
         copy: {
@@ -264,9 +265,19 @@ module.exports = function(grunt) {
                             'fonts/**',
                             'templates/**',
                             'scripts/vendor/**',
-                        ]
-                    }
-                ]
+                        ],
+                    },
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.root %>',
+                        flatten: true,
+                        dest: '<%= yeoman.dist %>/styles',
+                        src: [
+                            '.tmp/styles/nv.d3.css',
+                        ],
+                    },
+                ],
             },
         },
         cssmin: {

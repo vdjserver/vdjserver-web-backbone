@@ -9,6 +9,7 @@ define([
     'nvd3',
     'box',
     'chance',
+    'underscore.string',
     'file-download-detection-mixin',
     'file-transfer-sidebar-ui-mixin',
     'datatables',
@@ -22,6 +23,7 @@ define([
     nv,
     box,
     Chance,
+    _string,
     FileDownloadDetectionMixin,
     FileTransferSidebarUiMixin
 ) {
@@ -492,11 +494,10 @@ define([
                 filename.pop();
                 filename = filename.join('.');
 
-                var nvd3CssUrl = location.protocol + '//' + location.host + '/bower_components/nvd3/nv.d3.min.css';
+                var cssUrl = location.protocol + '//' + location.host + '/styles/nv.d3.css';
 
-                $.get(nvd3CssUrl)
+                $.get(cssUrl)
                     .done(function(cssText) {
-
                         /*
                             Grabbing all content specifically from the svg
                             element ensures that we won't pick up any other
