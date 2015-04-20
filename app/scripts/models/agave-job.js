@@ -132,20 +132,27 @@ function(
     Job.OutputFile = Backbone.Agave.Model.extend({
         idAttribute: 'name',
         downloadFileToCache: function() {
+
+            var link = this.get('_links').self.href;
+            link = this._fixBadAgaveLink(link);
+
             var jqxhr = $.ajax({
                 headers: Backbone.Agave.oauthHeader(),
                 type:    'GET',
-                url:     this.get('_links').self.href,
+                url:     link,
             });
             return jqxhr;
         },
         downloadFileToDisk: function() {
             var that = this;
 
+            var link = this.get('_links').self.href;
+            link = this._fixBadAgaveLink(link);
+
             var xhr = new XMLHttpRequest();
             xhr.open(
                 'get',
-                this.get('_links').self.href
+                link
             );
 
             xhr.responseType = 'blob';
@@ -163,6 +170,13 @@ function(
             xhr.send();
 
             return xhr;
+        },
+        _fixBadAgaveLink: function(link) {
+            var link = link.split('/');
+            link[4] = 'v2';
+            link = link.join('/');
+
+            return link;
         },
     });
 
