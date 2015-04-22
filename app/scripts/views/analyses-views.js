@@ -444,11 +444,17 @@ define([
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
 
-                            $('.svg-container').mouseenter(function(e) {
+                            $('#' + classSelector).css({
+                                'position': 'absolute',
+                                'width': '100%',
+                                'overflow-x': 'scroll',
+                            });
+
+                            $('.' + classSelector).mouseenter(function(e) {
                                 $('.' + classSelector + '-d3-tip').removeClass('hidden');
                             });
 
-                            $('.svg-container').mouseleave(function(e) {
+                            $('.' + classSelector).mouseleave(function(e) {
                                 $('.' + classSelector + '-d3-tip').addClass('hidden');
                             });
 
@@ -551,9 +557,11 @@ define([
                 filename = filename.join('.');
 
                 var cssUrl = location.protocol + '//' + location.host + '/styles/nv.d3.css';
+                //var cssUrl = location.protocol + '//' + location.host + '/styles/main.css';
 
                 $.get(cssUrl)
                     .done(function(cssText) {
+
                         /*
                             Grabbing all content specifically from the svg
                             element ensures that we won't pick up any other
@@ -562,7 +570,7 @@ define([
                         */
                         var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
                                       + '\n'
-                                      + '<svg style="height: 180px;" version="1.1" xmlns="http://www.w3.org/2000/svg">'
+                                      + '<svg style="height: 180px;" version="1.1" xmlns="http://www.w3.org/2000/svg" class="box">'
                                       + $('.' + chartClassSelector + ' svg').html()
                                       + '</svg>'
                                       ;
@@ -803,27 +811,25 @@ define([
     Analyses.Charts.QualityScore = function(fileHandle, text, classSelector) {
 
         var margin = {
-            top: 30,
-            right: 50,
-            bottom: 100,
-            left: 70,
+            top: 20,
+            right: -100,
+            bottom: 0,
+            left: 100,
         };
 
         // NOTE: we may need to calculate a suitable value for this from data
         // if it turns out that it has more of a range than this
-        var maxWidth = 4500;
+        var maxWidth = 5000;
 
-        //$('#analyses-chart').css('width', maxWidth);
-        //$('#analyses-chart').css('overflow-x', 'auto');
-        //$('#analyses-chart').css('width', 1000);
+        // Update chart container for new width
+        $('#' + classSelector + ' svg').css({'width': maxWidth + 'px'});
 
         var width = maxWidth //1200
                   - margin.left
-                  - margin.right;
+                  - margin.right
+                  ;
 
-        var height = 600
-                   - margin.top
-                   - margin.bottom;
+        var height = 100;
 
         var min = Infinity;
         var max = -Infinity;
@@ -1029,6 +1035,7 @@ define([
                         + '10%: &nbsp;&nbsp;' + d['10%'] + '<br/>'
                     )
                     .style('left', window.pageXOffset + 'px')
+                    .style('bottom', '120' + 'px')
                     //.style('top', '0px !important')
                     .style('position', 'relative !important')
                 ;
