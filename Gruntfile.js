@@ -30,7 +30,9 @@ module.exports = function(grunt) {
     // configurable paths
     var yeomanConfig = {
         app: 'app',
-        dist: 'dist'
+        dist: 'dist',
+        liveSite: 'live-site',
+        liveSiteBackup: 'live-site-backup',
     };
 
     grunt.initConfig({
@@ -131,7 +133,9 @@ module.exports = function(grunt) {
         },
         clean: {
             dist: ['.tmp', '<%= yeoman.dist %>/*'],
-            server: '.tmp'
+            server: '.tmp',
+            liveSite: '<%= yeoman.liveSite %>/*',
+            liveSiteBackup: '<%= yeoman.liveSiteBackup %>/*',
         },
         coffee: {
             dist: {
@@ -267,6 +271,28 @@ module.exports = function(grunt) {
                         ]
                     }
                 ]
+            },
+            backupLiveSite: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.liveSite %>',
+                        dest: '<%= yeoman.liveSiteBackup %>',
+                        src: ['**'],
+                    },
+                ],
+            },
+            activateLiveSite: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.dist %>',
+                        dest: '<%= yeoman.liveSite %>',
+                        src: ['**'],
+                    },
+                ],
             },
         },
         cssmin: {
@@ -464,6 +490,14 @@ module.exports = function(grunt) {
         'cssmin',
         'uglify',
         'usemin',
+
+        // Remove old directory
+        'clean:liveSiteBackup',
+        'copy:backupLiveSite',
+
+        // Move build artifact into target directory
+        'clean:liveSite',
+        'copy:activateLiveSite',
     ]);
 
     grunt.registerTask('default', [
