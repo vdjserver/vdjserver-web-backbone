@@ -49,9 +49,9 @@ module.exports = function(grunt) {
                 files: ['test/spec/{,*/}*.coffee'],
                 tasks: ['coffee:test']
             },
-            compass: {
+            sass: {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-                tasks: ['compass']
+                tasks: ['sass:dev']
             },
             livereload: {
                 options: {
@@ -156,34 +156,80 @@ module.exports = function(grunt) {
                 }]
             }
         },
-        compass: {
-            options: {
-                sassDir: '<%= yeoman.app %>/styles',
-                cssDir: '.tmp/styles',
-                imagesDir: '<%= yeoman.app %>/images',
-                javascriptsDir: '<%= yeoman.app %>/scripts',
-                fontsDir: '/fonts',
-                importPath: '<%= yeoman.app %>/bower_components',
-                httpImagesPath: '/images',
-                relativeAssets: true,
-            },
-            dist: {},
-            server: {
+        sass: {
+            dev: {
                 options: {
-                    debugInfo: true
-                }
-            }
+                    style: 'compact',
+                    compass: true,
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>/styles',
+                        src: ['*.{scss,sass}'],
+                        dest: '.tmp/styles',
+                        ext: '.css',
+                    },
+                ],
+            },
+            dist: {
+                options: {
+                    style: 'compact',
+                    compass: true,
+                },
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>/styles',
+                        src: ['*.{scss,sass}'],
+                        dest: '.tmp/styles',
+                        ext: '.css',
+                    }
+                ],
+            },
         },
         concat: {
             options: {
-                separator: ';'
+                separator: ';',
+            },
+            dev: {
+                files: [
+                    {
+                        '.tmp/styles/charts.css': [
+                            '.tmp/styles/charts/*.css',
+                            '.tmp/styles/charts.css',
+                        ],
+                    },
+                    {
+                        '.tmp/styles/main.css': [
+                            '.tmp/styles/main/*.css',
+                            '.tmp/styles/main.css',
+                        ],
+                    },
+                ],
             },
             dist: {
-                '<%= yeoman.dist %>/scripts/main.js': [
-                    '<%= yeoman.dist %>/scripts/main.js',
-                    '<%= yeoman.dist %>/scripts/templates.js'
+                files: [
+                    {
+                        '<%= yeoman.dist %>/scripts/main.js': [
+                            '<%= yeoman.dist %>/scripts/main.js',
+                            '<%= yeoman.dist %>/scripts/templates.js',
+                        ],
+                    },
+                    {
+                        '.tmp/styles/charts.css': [
+                            '.tmp/styles/charts/*.css',
+                            '.tmp/styles/charts.css',
+                        ],
+                    },
+                    {
+                        '.tmp/styles/main.css': [
+                            '.tmp/styles/main/*.css',
+                            '.tmp/styles/main.css',
+                        ],
+                    },
                 ],
-            }
+            },
         },
         copy: {
             fontAwesome: {
@@ -222,7 +268,7 @@ module.exports = function(grunt) {
                         dot: true,
                         flatten: true,
                         cwd: '<%= yeoman.app %>/bower_components',
-                        dest: '.tmp/styles',
+                        dest: '.tmp/styles/main',
                         src: [
                             /*
                              * Bower styles can all go here!
@@ -231,11 +277,25 @@ module.exports = function(grunt) {
                              */
                             'nvd3/nv.d3.css',
                             'datatables/media/css/jquery.dataTables.min.css',
-
                             'animate.css/animate.css',
-                        ]
-                    }
-                ]
+                        ],
+                    },
+                    {
+                        expand: true,
+                        dot: true,
+                        flatten: true,
+                        cwd: '<%= yeoman.app %>/bower_components',
+                        dest: '.tmp/styles/charts',
+                        src: [
+                            /*
+                             * Bower styles can all go here!
+                             * e.g.
+                             *'jcrop/css/jquery.Jcrop.css'
+                             */
+                            'nvd3/nv.d3.css',
+                        ],
+                    },
+                ],
             },
             bowerFonts: {
                 files: [
@@ -267,27 +327,23 @@ module.exports = function(grunt) {
                             'scripts/vendor/**',
                         ],
                     },
-                    {
-                        expand: true,
-                        dot: true,
-                        cwd: '<%= yeoman.root %>',
-                        flatten: true,
-                        dest: '<%= yeoman.dist %>/styles',
-                        src: [
-                            '.tmp/styles/nv.d3.css',
-                        ],
-                    },
                 ],
             },
         },
         cssmin: {
             dist: {
-                files: {
-                    '<%= yeoman.dist %>/styles/main.css': [
-                        '.tmp/styles/{,*/}*.css',
-                        '<%= yeoman.app %>/styles/{,*/}*.css'
-                    ],
-                },
+                files: [
+                    {
+                        '<%= yeoman.dist %>/styles/main.css': [
+                            '.tmp/styles/main.css',
+                        ],
+                    },
+                    {
+                        '<%= yeoman.dist %>/styles/charts.css': [
+                            '.tmp/styles/charts.css',
+                        ],
+                    },
+                ],
             },
         },
         handlebars: {
@@ -394,11 +450,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        /* Note: this isn't working yet
-        uglify: {
-            'dist/scripts/vendor/bootstrap.js': ['dist/scripts/vendor/bootstrap.js']
-        },
-        */
         useminPrepare: {
             html: '<%= yeoman.app %>/index.html',
             options: {
@@ -426,7 +477,6 @@ module.exports = function(grunt) {
             return grunt.task.run([
                 'clean:server',
                 'coffee',
-                'compass:server',
                 'connect:test',
             ]);
         }
@@ -436,7 +486,8 @@ module.exports = function(grunt) {
             'copy:fontAwesome',
             'copy:bowerCss',
             'coffee:dist',
-            'compass:server',
+            'sass:dev',
+            'concat:dev',
             'connect:livereload',
             'open',
             'watch',
@@ -446,7 +497,6 @@ module.exports = function(grunt) {
     grunt.registerTask('test', [
         'clean:server',
         'coffee',
-        //'compass',
         'connect:test',
         'mocha',
         //'watch:test',
@@ -464,7 +514,7 @@ module.exports = function(grunt) {
         'copy:bowerCss',
         'copy:bowerImages',
         'copy:bowerFonts',
-        'compass',
+        'sass:dist',
         'handlebars',
         'copy:dist',
         'useminPrepare',

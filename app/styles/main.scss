@@ -4,7 +4,7 @@
 // Frameworks
 @import 'compass/css3';
 @import 'vendor/bootstrap-overrides';
-@import 'twbs-bootstrap-sass/assets/stylesheets/bootstrap.scss';
+@import '../bower_components/twbs-bootstrap-sass/assets/stylesheets/bootstrap.scss';
 
 // Modules
 @import 'modules/colors';
@@ -34,7 +34,4 @@
 @import 'sections/home';
 
 // Vendor
-@import 'font-awesome/scss/font-awesome';
-@import '/bower_components/nvd3/nv.d3.min.css';
-@import '/bower_components/datatables/media/css/jquery.dataTables.min.css';
-@import '/bower_components/animate.css/animate.css';
+@import '../bower_components/font-awesome/scss/font-awesome';

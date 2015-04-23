@@ -1,0 +1,12 @@
+// CSS is organized according to SASS recommendations
+// http://thesassway.com/beginner/how-to-structure-a-sass-project
+
+// Frameworks
+@import 'compass/css3';
+
+// Modules
+@import 'modules/colors';
+@import 'modules/sizes';
+
+// Partials
+@import 'partials/charts';

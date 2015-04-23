@@ -556,11 +556,12 @@ define([
                 filename.pop();
                 filename = filename.join('.');
 
-                var cssUrl = location.protocol + '//' + location.host + '/styles/nv.d3.css';
-                //var cssUrl = location.protocol + '//' + location.host + '/styles/main.css';
+                var cssUrl = location.protocol + '//' + location.host + '/styles/charts.css';
 
                 $.get(cssUrl)
                     .done(function(cssText) {
+
+                        var width = $('#' + chartClassSelector + ' svg').css('width');
 
                         /*
                             Grabbing all content specifically from the svg
@@ -570,8 +571,13 @@ define([
                         */
                         var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
                                       + '\n'
-                                      + '<svg style="height: 180px;" version="1.1" xmlns="http://www.w3.org/2000/svg" class="box">'
-                                      + $('.' + chartClassSelector + ' svg').html()
+                                      + '<svg '
+                                            + ' style="height: 180px; width:' + width + ';"'
+                                            + ' version="1.1"'
+                                            + ' xmlns="http://www.w3.org/2000/svg"'
+                                            + ' class="box"'
+                                      + '>'
+                                            + $('.' + chartClassSelector + ' svg').html()
                                       + '</svg>'
                                       ;
 
