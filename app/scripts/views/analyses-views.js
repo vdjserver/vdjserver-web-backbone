@@ -316,6 +316,8 @@ define([
                 this.projectUuid = parameters.projectUuid;
                 this.jobId = parameters.jobId;
 
+                this.chartHeight = 360;
+
                 var loadingView = new App.Views.Util.Loading({keep: true});
                 this.setView(loadingView);
                 loadingView.render();
@@ -411,11 +413,11 @@ define([
                 })
                 .then(function() {
                     return $('#chart-tr-' + classSelector).animate({
-                        height: '200px',
+                        height: that.chartHeight + 'px',
                     }, 500).promise();
                 })
                 .then(function() {
-                    $('.' + classSelector + ' svg').css('height', 180);
+                    $('.' + classSelector + ' svg').css('height', that.chartHeight);
                 })
                 .done(function() {
 
@@ -459,7 +461,7 @@ define([
                             });
 
                             $('#chart-legend').show();
-                            Analyses.Charts.QualityScore(fileHandle, fileData, classSelector);
+                            Analyses.Charts.QualityScore(fileHandle, fileData, classSelector, that.chartHeight);
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
@@ -549,6 +551,8 @@ define([
             },
             downloadChart: function(e) {
 
+                var that = this;
+
                 var chartClassSelector = e.target.dataset.chartClassSelector;
 
                 var filename = e.target.dataset.id;
@@ -561,7 +565,7 @@ define([
                 $.get(cssUrl)
                     .done(function(cssText) {
 
-                        var width = $('#' + chartClassSelector + ' svg').css('width');
+                        var widthPx = $('#' + chartClassSelector + ' svg').css('width');
 
                         /*
                             Grabbing all content specifically from the svg
@@ -572,7 +576,7 @@ define([
                         var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
                                       + '\n'
                                       + '<svg '
-                                            + ' style="height: 180px; width:' + width + ';"'
+                                            + ' style="height: ' + that.chartHeight + 'px; width:' + widthPx + ';"'
                                             + ' version="1.1"'
                                             + ' xmlns="http://www.w3.org/2000/svg"'
                                             + ' class="box"'
@@ -814,7 +818,7 @@ define([
         });
     };
 
-    Analyses.Charts.QualityScore = function(fileHandle, text, classSelector) {
+    Analyses.Charts.QualityScore = function(fileHandle, text, classSelector, chartHeight) {
 
         var margin = {
             top: 20,
@@ -835,7 +839,8 @@ define([
                   - margin.right
                   ;
 
-        var height = 100;
+        var height = chartHeight - (chartHeight / 4);
+        console.log('height is: ' + height);
 
         var min = Infinity;
         var max = -Infinity;
