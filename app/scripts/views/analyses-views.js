@@ -506,7 +506,7 @@ define([
                 $(e.target.closest('tr')).after(
                     '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
                         + '<td colspan=3>'
-                            + '<div id="' + classSelector + '" class="text-left ' + classSelector + '">'
+                            + '<div id="' + classSelector + '" class="text-left ' + classSelector + '" style="word-break: break-all;">'
                             + '</div>'
                         + '</td>'
                     + '</tr>'
