@@ -1,0 +1,50 @@
+[
+  {"sraStudy": "SRP055087", "pubMedId": "", "organism": "Mus musculus (BALB/C) Mus", "receptor":"Ig", "study":"whole genome sequencing",
+   "description":"IgM and IgG repertoire from variable region of mice innoculated with PBS (Control) and HEL (Hen Egg-White Lysozyme).",
+   "experiments": 12, "runs":18, "sraSubmission": "SRA2430071", "notes":"This is Adam's 12-study"
+  },
+  {"sraStudy": "SRP049789", "pubMedId": "", "organism": "Mus musculus (BALB/C) Mus", "receptor":"TCR", "study":"targeted locus",
+    "description":"inexperienced T cells reside in the naive, regulatory, and momory T cell compartments CD4+ Virtual Memory: Foreign-specific antigen",
+    "experiments": 34, "runs":34, "sraSubmission": "SRA201057", "notes":"This is Adam's 34-study"
+  },
+  {"sraStudy": "SRP010815", "pubMedId": "PMC3321212", "organism": "Mus musculus", "receptor":"TCR", "study":"transcriptome analysis",
+    "description":"Highly diverse TCR-beta repertoire of CD4 CD8 thomocyte in C57BL/6",
+    "experiments": 2, "runs":2, "sraSubmission": "SRA049969", "notes":"This is Adam's 2-study"
+  },
+  {"sraStudy": "SRP055087", "pubMedId": "", "organism": "Mus musculus (BALB/C) Mus", "receptor":"Ig", "study":"whole genome sequencing",
+    "description":"IgM and IgG repertoire from variable region of mice innoculated with PBS (Control) and HEL (Hen Egg-White Lysozyme).",
+    "experiments": 12, "runs":18, "sraSubmission": "SRA2430071", "notes":"This is Adam's 12-study"
+  },
+  {"sraStudy": "SRP049789", "pubMedId": "", "organism": "Mus musculus (BALB/C) Mus", "receptor":"TCR", "study":"targeted locus",
+    "description":"inexperienced T cells reside in the naive, regulatory, and momory T cell compartments CD4+ Virtual Memory: Foreign-specific antigen",
+    "experiments": 34, "runs":34, "sraSubmission": "SRA201057", "notes":"This is Adam's 34-study"
+  },
+  {"sraStudy": "SRP010815", "pubMedId": "PMC3321212", "organism": "Mus musculus", "receptor":"TCR", "study":"transcriptome analysis",
+    "description":"Highly diverse TCR-beta repertoire of CD4 CD8 thomocyte in C57BL/6",
+    "experiments": 2, "runs":2, "sraSubmission": "SRA049969", "notes":"This is Adam's 2-study"
+  },
+  {"sraStudy": "SRP055087", "pubMedId": "", "organism": "Mus musculus (BALB/C) Mus", "receptor":"Ig", "study":"whole genome sequencing",
+    "description":"IgM and IgG repertoire from variable region of mice innoculated with PBS (Control) and HEL (Hen Egg-White Lysozyme).",
+    "experiments": 12, "runs":18, "sraSubmission": "SRA2430071", "notes":"This is Adam's 12-study"
+  },
+  {"sraStudy": "SRP049789", "pubMedId": "", "organism": "Mus musculus (BALB/C) Mus", "receptor":"TCR", "study":"targeted locus",
+    "description":"inexperienced T cells reside in the naive, regulatory, and momory T cell compartments CD4+ Virtual Memory: Foreign-specific antigen",
+    "experiments": 34, "runs":34, "sraSubmission": "SRA201057", "notes":"This is Adam's 34-study"
+  },
+  {"sraStudy": "SRP010815", "pubMedId": "PMC3321212", "organism": "Mus musculus", "receptor":"TCR", "study":"transcriptome analysis",
+    "description":"Highly diverse TCR-beta repertoire of CD4 CD8 thomocyte in C57BL/6",
+    "experiments": 2, "runs":2, "sraSubmission": "SRA049969", "notes":"This is Adam's 2-study"
+  },
+  {"sraStudy": "SRP055087", "pubMedId": "", "organism": "Mus musculus (BALB/C) Mus", "receptor":"Ig", "study":"whole genome sequencing",
+    "description":"IgM and IgG repertoire from variable region of mice innoculated with PBS (Control) and HEL (Hen Egg-White Lysozyme).",
+    "experiments": 12, "runs":18, "sraSubmission": "SRA2430071", "notes":"This is Adam's 12-study"
+  },
+  {"sraStudy": "SRP049789", "pubMedId": "", "organism": "Mus musculus (BALB/C) Mus", "receptor":"TCR", "study":"targeted locus",
+    "description":"inexperienced T cells reside in the naive, regulatory, and momory T cell compartments CD4+ Virtual Memory: Foreign-specific antigen",
+    "experiments": 34, "runs":34, "sraSubmission": "SRA201057", "notes":"This is Adam's 34-study"
+  },
+  {"sraStudy": "SRP010815", "pubMedId": "PMC3321212", "organism": "Mus musculus", "receptor":"TCR", "study":"transcriptome analysis",
+    "description":"Highly diverse TCR-beta repertoire of CD4 CD8 thomocyte in C57BL/6",
+    "experiments": 2, "runs":2, "sraSubmission": "SRA049969", "notes":"This is Adam's 2-study"
+  }
+]

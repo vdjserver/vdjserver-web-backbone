@@ -93,6 +93,7 @@ define(['app'], function(App) {
             'project/:id/jobs':                 'projectJobHistory',
             'project/:id/jobs/:jobId':          'projectJobOutput',
             'feedback':                         'feedback',
+            'community':                        'community',
 
             // 404
             '*notFound': 'notFound',
@@ -123,6 +124,24 @@ define(['app'], function(App) {
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.Account.CreateAccount());
             App.Layouts.main.render();
+        },
+
+        // Community
+        community: function() {
+
+          var destinationRoute = function() {
+             _setProjectSubviews();
+
+            var communityDataView = new App.Views.Community.Index();
+            App.Layouts.content.setView('.content', communityDataView);
+            App.Layouts.content.render()
+              .promise()
+              .done(function() {
+                communityDataView.startChart();
+              });
+          };
+
+          _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         // Verification Pending
