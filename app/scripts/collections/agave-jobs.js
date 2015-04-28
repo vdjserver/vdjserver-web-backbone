@@ -306,7 +306,7 @@ define([
                         },
                     ],
                 },
-
+/*
                 {
                     'workflow-name': 'Paired Reads',
                     'base_path_input': '',
@@ -392,35 +392,34 @@ define([
                                 },
                             },
                         },
-/*
-                        {
-                            'apply': {
-                                'to': 'merged',
-                                'step': {
-                                    'custom_demultiplex': {
-                                        'custom_location': '1',
-                                        'elements': [
-                                            // forward barcode element
-                                            {
-                                                'custom_histogram': true,
-                                                'custom_trim': true,
-                                                'cut_lower': {
-                                                    'after': 0,
-                                                },
-                                                'max_mismatches': 1,
-                                                'require_best': true,
-                                                'required': true,
-                                                'score_name': 'MID1-score',
-                                                'seq_file': 'mid1.fasta',
-                                                'start': {},
-                                                'value_name': 'MID1',
-                                            },
-                                        ],
-                                    },
-                                },
-                            },
-                        },
-*/
+                        //{
+                        //  'apply': {
+                        //      'to': 'merged',
+                        //      'step': {
+                        //          'custom_demultiplex': {
+                        //              'custom_location': '1',
+                        //              'elements': [
+                        //                  // forward barcode element
+                        //                  {
+                        //                      'custom_histogram': true,
+                        //                      'custom_trim': true,
+                        //                      'cut_lower': {
+                        //                          'after': 0,
+                        //                      },
+                        //                      'max_mismatches': 1,
+                        //                      'require_best': true,
+                        //                      'required': true,
+                        //                      'score_name': 'MID1-score',
+                        //                      'seq_file': 'mid1.fasta',
+                        //                      'start': {},
+                        //                      'value_name': 'MID1',
+                        //                  },
+                        //              ],
+                        //          },
+                        //      },
+                        //  },
+                        //},
+
     //These histograms should be generated as part of custom_demultiplex
     //
     //                    {
@@ -498,6 +497,7 @@ define([
                         },
                     ],
                 },
+                */
 
             ];
 
@@ -506,7 +506,7 @@ define([
         _getPredefinedWorkflowNames: function() {
             var predefinedWorkflowNames = [
                 'Single Reads',
-                'Paired Reads',
+                //'Paired Reads',
             ];
 
             return predefinedWorkflowNames;
