@@ -552,8 +552,12 @@ define([
                             .done(function() {
                                 that.trigger(Jobs.WorkflowEditor.events.closeWorkflowEditorView);
                             })
-                            .fail(function() {
-                                // troubleshoot
+                            .fail(function(error) {
+                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.set('method', 'Backbone.Agave.Model.Job.Workflow().save()');
+                                telemetry.set('view', 'Jobs.WorkflowEditor');
+                                telemetry.save();
                             })
                         ;
                     }
@@ -626,6 +630,13 @@ define([
                     listView.addNotification(jobNotification);
 
                     return $('#job-modal').modal('hide').promise();
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Notification.Job().save()');
+                    telemetry.set('view', 'Jobs.StagingBase');
+                    telemetry.save();
                 })
                 ;
         },
@@ -756,8 +767,12 @@ define([
                     .done(function() {
                         that._hideSaveWorkflow();
                     })
-                    .fail(function() {
-
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Model.Job.Workflow().save()');
+                        telemetry.set('view', 'Jobs.VdjpipeStaging');
+                        telemetry.save();
                     })
                     ;
             },
@@ -802,7 +817,12 @@ define([
                             $('#select-workflow option[value="' + workflowId + '"]').remove();
                             that._uiResetDeleteWorkflow();
                         })
-                        .fail(function() {
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('method', 'Backbone.Agave.Model.Job.Workflow().destroy()');
+                            telemetry.set('view', 'Jobs.VdjpipeStaging');
+                            telemetry.save();
                         });
                 }
             },

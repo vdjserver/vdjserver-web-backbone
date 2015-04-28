@@ -8,6 +8,7 @@ require.config({
         'bootstrap':        '../bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap',
         'chance':           '../bower_components/chance/chance',
         'datatables':       '../bower_components/datatables/media/js/jquery.dataTables',
+        'detect':           '../bower_components/Detect.js/detect',
         'filesize':         '../bower_components/filesize/lib/filesize',
         'file-saver':       '../bower_components/file-saver/FileSaver',
         'handlebars':       '../bower_components/handlebars/handlebars',
@@ -35,6 +36,8 @@ require.config({
         'job-websocket': 'models/job-websocket',
 
         // Agave - Models/Collections
+        'telemetry': 'models/telemetry',
+
         'agave-account': 'models/agave-account',
         'agave-feedback': 'models/agave-feedback',
 
@@ -149,6 +152,11 @@ require.config({
         },
 
         // Agave - Models
+        'telemetry': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.Telemetry',
+        },
+
         'agave-account': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.Account',

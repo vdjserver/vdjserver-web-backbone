@@ -79,6 +79,11 @@ define([
                                 });
                         })
                         .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('method', 'App.Agave.token().save()');
+                            telemetry.set('view', 'Public.Home');
+                            telemetry.save();
 
                             if (error && error['status']) {
 

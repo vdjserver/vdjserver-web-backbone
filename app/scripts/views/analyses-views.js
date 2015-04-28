@@ -161,7 +161,12 @@ define([
                     that.calculatePaginationSets();
                     that.fetchPaginatedJobModels();
                 })
-                .fail(function() {
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Collection.Jobs.Listings().save()');
+                    telemetry.set('view', 'Analyses.OutputList');
+                    telemetry.save();
                 });
         },
         _handleJobStatusUpdate: function(jobStatusUpdate) {
@@ -209,39 +214,48 @@ define([
 
             this.jobs = new Backbone.Agave.Collection.Jobs();
 
-            $.when.apply($, jobFetches).always(function() {
-                for (var i = 0; i < jobModels.length; i++) {
+            $.when.apply($, jobFetches)
+                .always(function() {
+                    for (var i = 0; i < jobModels.length; i++) {
 
-                    that.jobs.add(jobModels[i]);
+                        that.jobs.add(jobModels[i]);
 
-                    // check for websockets
-                    var job = that.jobs.get(jobModels[i]);
+                        // check for websockets
+                        var job = that.jobs.get(jobModels[i]);
 
-                    if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
-                        if (_.findIndex(App.Instances.Websockets, job.get('id'))) {
+                        if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
+                            if (_.findIndex(App.Instances.Websockets, job.get('id'))) {
 
-                            var factory = new App.Websockets.Jobs.Factory();
-                            var websocket = factory.getJobWebsocket();
-                            websocket.connectToServer();
-                            websocket.subscribeToJob(job.get('id'));
+                                var factory = new App.Websockets.Jobs.Factory();
+                                var websocket = factory.getJobWebsocket();
+                                websocket.connectToServer();
+                                websocket.subscribeToJob(job.get('id'));
 
-                            // Store in global namespace so other views can reuse this
-                            App.Instances.Websockets[job.get('id')] = websocket;
+                                // Store in global namespace so other views can reuse this
+                                App.Instances.Websockets[job.get('id')] = websocket;
+                            }
+
+                            that.listenTo(
+                                App.Instances.Websockets[job.get('id')],
+                                'jobStatusUpdate',
+                                that._handleJobStatusUpdate
+                            );
                         }
-
-                        that.listenTo(
-                            App.Instances.Websockets[job.get('id')],
-                            'jobStatusUpdate',
-                            that._handleJobStatusUpdate
-                        );
                     }
-                }
 
-                loadingView.remove();
-                that.render();
+                    loadingView.remove();
+                    that.render();
 
-                that.uiSetActivePaginationSet();
-            });
+                    that.uiSetActivePaginationSet();
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Job.Detail().fetch()');
+                    telemetry.set('view', 'Analyses.OutputList');
+                    telemetry.save();
+                })
+                ;
         },
 
         getIndexLimit: function() {
@@ -336,10 +350,13 @@ define([
                         loadingView.remove();
                         that.render();
                     })
-                    .fail(function() {
-
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().fetch()');
+                        telemetry.set('view', 'Analyses.SelectAnalyses');
+                        telemetry.save();
                     })
-                    ;
 
                 // Blob Save Detection
                 this._setDownloadCapabilityDetection();
@@ -544,8 +561,16 @@ define([
                         }, 1000);
                     })
                     .fail(function(response) {
-                        var errorMessage = this.getErrorMessageFromResponse(response);
-                        this.showWarning(errorMessage);
+                        var errorMessage = that.getErrorMessageFromResponse(response);
+
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(errorMessage));
+                        telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().save()');
+                        telemetry.set('view', 'Analyses.SelectAnalyses');
+                        telemetry.set('jobId', that.jobId);
+                        telemetry.save();
+
+                        that.showWarning(errorMessage);
                     })
                     ;
             },
