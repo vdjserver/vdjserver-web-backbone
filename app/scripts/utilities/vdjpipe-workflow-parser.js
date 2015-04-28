@@ -33,6 +33,7 @@ define(['app'], function(App) {
         var outputConfig = {
             'base_path_input': '',
             'base_path_output': '',
+            'summary_output_path': 'summary.txt',
             'input': inputFileReadDirections,
             'steps': paramOutput,
         };
