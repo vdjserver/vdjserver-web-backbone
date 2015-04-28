@@ -601,7 +601,6 @@ define([
                                                 ;
 
                     //tmpDebugJobModelLog = JSON.parse(tmpDebugJobModelLog);
-
                     console.log('jobModel is: ' + tmpDebugJobModelLog);
                 }
             }
@@ -704,10 +703,14 @@ define([
             },
             stageJob: function(formData) {
                 var job = new Backbone.Agave.Model.Job.VdjPipe();
+
+                var selectedFileListings = _.extend({}, this.selectedFileListings);
+                var allFiles = _.extend({}, this.allFiles);
+
                 job.prepareJob(
                     formData,
-                    this.selectedFileListings,
-                    this.allFiles,
+                    selectedFileListings,
+                    allFiles,
                     this.projectModel.get('uuid')
                 );
 

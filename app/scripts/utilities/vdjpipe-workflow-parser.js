@@ -828,6 +828,7 @@ define(['app'], function(App) {
                 var qualUuid = value['qualityScoreMetadataUuid'];
 
                 if (qualUuid) {
+
                     var qualMetadata = allFileMetadatas.get(qualUuid);
                     var qualValue = qualMetadata.get('value');
 
