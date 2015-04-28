@@ -44,9 +44,16 @@ define(['app', 'backbone.syphon'], function(App) {
                 .done(function() {
                     that.setupViews();
                 })
-                .fail(function() {
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Profile().fetch()');
+                    telemetry.set('view', 'Profile.Form');
+                    telemetry.save();
+
                     that.setupViews();
-                });
+                })
+                ;
         },
         setupViews: function() {
             this.fetchComplete = true;
@@ -109,7 +116,14 @@ define(['app', 'backbone.syphon'], function(App) {
                             .done(function() {
                                 $('#modal-message').modal('hide');
                             })
-                            .fail(function() {
+                            .fail(function(error) {
+
+                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.set('method', 'Backbone.Agave.Model.Profile().save()');
+                                telemetry.set('view', 'Profile.Form');
+                                telemetry.save();
+
                                 that.$el.find('.alert-danger')
                                     .remove()
                                     .end()
@@ -121,7 +135,8 @@ define(['app', 'backbone.syphon'], function(App) {
                                 $('#modal-message').modal('hide');
                             });
                     });
-            } else {
+            }
+            else {
                 this.$el.find('.alert-danger')
                     .remove()
                     .end()
@@ -226,7 +241,13 @@ define(['app', 'backbone.syphon'], function(App) {
                                         });
                                     });
                             })
-                            .fail(function() {
+                            .fail(function(error) {
+                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.set('method', 'Backbone.Agave.Model.PasswordChange().callSave()');
+                                telemetry.set('view', 'Profile.ChangePasswordForm');
+                                telemetry.save();
+
                                 $('#modal-message').modal('hide').on('hidden.bs.modal', function() {
                                     that.$el.find('.alerts').append(
                                         $('<div class="alert alert-danger">')

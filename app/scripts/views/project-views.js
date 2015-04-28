@@ -231,7 +231,6 @@ define([
                         that.model
                             .save()
                             .done(function() {
-
                                 $('#modal-message')
                                     .modal('hide')
                                     .on('hidden.bs.modal', function() {
@@ -241,7 +240,13 @@ define([
                                         });
                                     });
                             })
-                            .fail(function() {
+                            .fail(function(error) {
+                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.set('method', 'Backbone.Agave.Model.Project().save()');
+                                telemetry.set('view', 'Projects.Create');
+                                telemetry.save();
+
                                 that._displayErrorMessage();
                                 $('#modal-message').modal('hide');
                             });
@@ -364,7 +369,12 @@ define([
 
                         that._setupFileListingsView(that.fileListings);
                     })
-                    .fail(function() {
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata().fetch()');
+                        telemetry.set('view', 'Projects.Detail');
+                        telemetry.save();
                     });
             },
 
@@ -382,8 +392,12 @@ define([
                     .done(function() {
                         that._fetchAndRenderFileListings();
                     })
-                    .fail(function() {
-
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Collection.Permissions().fetch()');
+                        telemetry.set('view', 'Projects.Detail');
+                        telemetry.save();
                     });
             },
 
@@ -539,7 +553,15 @@ define([
                                             .done(function() {
                                                 workflowEditorView.render();
                                                 that._handleWorkflowViewEvents(workflowEditorView);
-                                            });
+                                            })
+                                            .fail(function(error) {
+                                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                                telemetry.set('error', JSON.stringify(error));
+                                                telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
+                                                telemetry.set('view', 'Projects.Detail');
+                                                telemetry.save();
+                                            })
+                                            ;
                                     });
                             }
                         );
@@ -562,7 +584,15 @@ define([
                                             .done(function() {
                                                 workflowEditorView.render();
                                                 that._handleWorkflowViewEvents(workflowEditorView);
-                                            });
+                                            })
+                                            .fail(function(error) {
+                                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                                telemetry.set('error', JSON.stringify(error));
+                                                telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
+                                                telemetry.set('view', 'Projects.Detail');
+                                                telemetry.save();
+                                            })
+                                            ;
                                     });
                             }
                         );
@@ -666,6 +696,13 @@ define([
                         .done(function() {
                             that._fetchAndRenderFileListings();
                         })
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('method', 'fileMetadataModel.removeQualityScoreMetadataUuid()');
+                            telemetry.set('view', 'Projects.Detail');
+                            telemetry.save();
+                        })
                         ;
                 }
             },
@@ -760,8 +797,15 @@ define([
                 $.when.apply($, filePromises, metadataPromises)
                     .always(function() {
                         that._fetchAndRenderFileListings();
-                    }
-                );
+                    })
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'softDelete()');
+                        telemetry.set('view', 'Projects.Detail');
+                        telemetry.save();
+                    })
+                    ;
             },
 
             _clickDownloadFile: function(e) {
@@ -923,8 +967,14 @@ define([
                         // selected for jobs and the re-render will restore checkboxes
                         that.render();
                     })
-                    .fail(function() {
+                    .fail(function(error) {
                         that._uiShowSaveErrorAnimation(e.target);
+
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.updateFileType()');
+                        telemetry.set('view', 'Projects.FileListings');
+                        telemetry.save();
                     })
                     ;
             },
@@ -939,8 +989,14 @@ define([
                     .done(function() {
                         that._uiShowSaveSuccessAnimation(e.target);
                     })
-                    .fail(function() {
+                    .fail(function(error) {
                         that._uiShowSaveErrorAnimation(e.target);
+
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.setReadDirection()');
+                        telemetry.set('view', 'Projects.FileListings');
+                        telemetry.save();
                     })
                     ;
 
@@ -955,8 +1011,14 @@ define([
                     .done(function() {
                         that._uiShowSaveSuccessAnimation(e.target);
                     })
-                    .fail(function() {
+                    .fail(function(error) {
                         that._uiShowSaveErrorAnimation(e.target);
+
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.updateTags()');
+                        telemetry.set('view', 'Projects.FileListings');
+                        telemetry.save();
                     })
                     ;
             },
@@ -1101,16 +1163,28 @@ define([
                             .done(function() {
                                 that._createFileMetadata(formData);
                             })
-                            .fail(function() {
+                            .fail(function(error) {
                                 that._uiSetUploadProgress(0, that.fileUniqueIdentifier);
                                 that._uiSetErrorMessage('Permission error. Please try uploading your file again.');
 
                                 // Delete file too??
+
+                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.set('method', 'syncFilePermissionsWithProjectPermissions()');
+                                telemetry.set('view', 'Projects.FileTransfer');
+                                telemetry.save();
                             });
                     })
-                    .fail(function() {
+                    .fail(function(error) {
                         // Notify user that upload failed
                         that._uiSetErrorMessage('File upload error. Please try uploading your file again.');
+
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Model.save()');
+                        telemetry.set('view', 'Projects.FileTransfer');
+                        telemetry.save();
                     });
 
                 //request.abort()
@@ -1131,7 +1205,12 @@ define([
                         fileMetadata.syncMetadataPermissionsWithProjectPermissions()
                             .done(function() {
                             })
-                            .fail(function() {
+                            .fail(function(error) {
+                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.set('method', 'syncMetadataPermissionsWithProjectPermissions()');
+                                telemetry.set('view', 'Projects.FileTransfer');
+                                telemetry.save();
 
                             });
 
@@ -1153,8 +1232,14 @@ define([
 
                         that._uiSetSuccessMessage('File "' + that.model.get('name') + '" uploaded successfully.');
                     })
-                    .fail(function() {
+                    .fail(function(error) {
                         that._uiSetErrorMessage('Metadata creation error. Please try uploading your file again.');
+
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Model.File.Metadata()');
+                        telemetry.set('view', 'Projects.FileTransfer');
+                        telemetry.save();
                     });
             },
 
@@ -1262,8 +1347,12 @@ define([
 
                         that.render();
                     })
-                    .fail(function() {
-
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata()');
+                        telemetry.set('view', 'Projects.PairedReadFileAssociations');
+                        telemetry.save();
                     })
                     ;
             },
@@ -1309,6 +1398,13 @@ define([
                         .always(function() {
                             that.render();
                         })
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('method', 'setPairedReadMetadataUuid()');
+                            telemetry.set('view', 'Projects.PairedReadFileAssociations');
+                            telemetry.save();
+                        })
                         ;
                 }
                 else {
@@ -1322,6 +1418,13 @@ define([
                         })
                         .always(function() {
                             that.render();
+                        })
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads()');
+                            telemetry.set('view', 'Projects.PairedReadFileAssociations');
+                            telemetry.save();
                         })
                         ;
                 }
@@ -1347,8 +1450,12 @@ define([
 
                         that.render();
                     })
-                    .fail(function() {
-
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.fetch()');
+                        telemetry.set('view', 'Projects.QualFileAssociations');
+                        telemetry.save();
                     })
                     ;
             },
@@ -1388,6 +1495,13 @@ define([
                         .done(function() {
                             that.render();
                         })
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.setQualityScoreMetadataUuid()');
+                            telemetry.set('view', 'Projects.QualFileAssociations');
+                            telemetry.save();
+                        })
                         ;
                 }
                 else {
@@ -1397,6 +1511,13 @@ define([
                         })
                         .done(function() {
                             that.render();
+                        })
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.removeQualityScoreMetadataUuid()');
+                            telemetry.set('view', 'Projects.QualFileAssociations');
+                            telemetry.save();
                         })
                         ;
                 }
@@ -1433,8 +1554,14 @@ define([
                         // selected for jobs and the re-render will restore checkboxes
                         that.render();
                     })
-                    .fail(function() {
+                    .fail(function(error) {
                         that._uiShowSaveErrorAnimation(e.target);
+
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.updateFileType()');
+                        telemetry.set('view', 'Projects.QualFileAssociations');
+                        telemetry.save();
                     })
                     ;
 
@@ -1462,10 +1589,24 @@ define([
                         .done(function() {
                             that.tenantUsers.remove(EnvironmentConfig.serviceAccountUsername);
                             that._usernameTypeahead(that.permissions, that.tenantUsers);
-                        });
+                        })
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('method', 'Backbone.Agave.Collection.TenantUsers.fetch()');
+                            telemetry.set('view', 'Projects.ManageUsers');
+                            telemetry.save();
+                        })
+                        ;
                 })
-                .fail(function() {
-                });
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Collection.Permissions.fetch()');
+                    telemetry.set('view', 'Projects.ManageUsers');
+                    telemetry.save();
+                })
+                ;
         },
         serialize: function() {
             return {
@@ -1542,7 +1683,12 @@ define([
                         newUserPermission.addUserToProject()
                             .then(function() {
                             })
-                            .fail(function() {
+                            .fail(function(error) {
+                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.set('method', 'Backbone.Agave.Model.Permission.addUserToProject()');
+                                telemetry.set('view', 'Projects.ManageUsers');
+                                telemetry.save();
                             });
 
                         that.permissions.add(newUserPermission);
@@ -1550,6 +1696,11 @@ define([
                         that._usernameTypeahead(that.permissions, that.tenantUsers);
                     },
                     error: function() {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Model.Permission.create()');
+                        telemetry.set('view', 'Projects.ManageUsers');
+                        telemetry.save();
                     },
                 }
             );
@@ -1573,10 +1724,23 @@ define([
                             that.render();
                             that._usernameTypeahead(that.permissions, that.tenantUsers);
                         })
-                        .fail(function() {
-                        });
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('method', 'Backbone.Agave.Model.Permission.destroy()');
+                            telemetry.set('view', 'Projects.ManageUsers');
+                            telemetry.save();
+                        })
+                        ;
                 })
-            ;
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Permission.removeUserFromProject()');
+                    telemetry.set('view', 'Projects.ManageUsers');
+                    telemetry.save();
+                })
+                ;
         },
     });
 
@@ -1632,8 +1796,14 @@ define([
             this.model.save()
                 .done(function() {
                 })
-                .fail(function() {
-                });
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
+                    telemetry.set('view', 'Projects.Settings');
+                    telemetry.save();
+                })
+                ;
         },
         _deleteProject: function(e) {
             e.preventDefault();
@@ -1649,7 +1819,14 @@ define([
                         })
                     ;
                 })
-            ;
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Project.destroy()');
+                    telemetry.set('view', 'Projects.Settings');
+                    telemetry.save();
+                })
+                ;
         },
     });
 

@@ -27,6 +27,8 @@ define([
 
     // Agave
     'backbone-agave',
+    'telemetry',
+
     'agave-account',
     'agave-notification',
 

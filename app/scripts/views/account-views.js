@@ -114,7 +114,13 @@ define([
                                 });
 
                         })
-                        .fail(function() {
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('method', 'Backbone.Agave.Model.Account.NewAccount().save()');
+                            telemetry.set('view', 'Account.CreateAccount');
+                            telemetry.save();
+
                             that.$el
                                 .find('.public-view')
                                 .prepend(
@@ -173,7 +179,13 @@ define([
                         })
                         ;
                 })
-                .fail(function() {
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Account.ResendVerificationEmail().save()');
+                    telemetry.set('view', 'Account.VerificationPending');
+                    telemetry.save();
+
                     var messageModel = new App.Models.MessageModel({
                         //'header': 'Verifying Account',
                         'body': '<p class="text-center">Unable to send verification email. Please check your username and try again.</p>',
@@ -232,7 +244,13 @@ define([
                         ;
 
                 })
-                .fail(function() {
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Account.VerifyEmail().save()');
+                    telemetry.set('view', 'Account.VerificationPending');
+                    telemetry.save();
+
                     var messageModel = new App.Models.MessageModel({
                         //'header': 'Verifying Account',
                         'body': '<p class="text-center">Unable to verify account. Please check your verification code and try again.</p>',
@@ -309,7 +327,13 @@ define([
                                     })
                                     ;
                             })
-                            .fail(function() {
+                            .fail(function(error) {
+                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.set('method', 'Backbone.Agave.Model.Account.VerifyAccount().save()');
+                                telemetry.set('view', 'Account.VerifyAccount');
+                                telemetry.save();
+
                                 $('#verification-content').html(
                                     '<div class="alert alert-danger">'
                                         + '<i class="fa fa-user"></i> Verification failed. Please try again.'

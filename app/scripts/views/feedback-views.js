@@ -87,6 +87,13 @@ define([
             })
             .fail(function(e) {
                 if (e.responseJSON.message === 'Recaptcha response invalid: incorrect-captcha-sol') {
+
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(e.responseJSON.message));
+                    telemetry.set('method', 'Backbone.Agave.Model.FeedbackModel().save()');
+                    telemetry.set('view', 'Feedback.Form');
+                    telemetry.save();
+
                     Recaptcha.destroy();
                     that.model.set(that.model.defaults);
                     Recaptcha.create(EnvironmentConfig.recaptchaPublicKey, 'recaptcha');

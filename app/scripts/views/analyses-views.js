@@ -159,7 +159,12 @@ define([
                     that.calculatePaginationSets();
                     that.fetchPaginatedJobModels();
                 })
-                .fail(function() {
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Collection.Jobs.Listings().save()');
+                    telemetry.set('view', 'Analyses.OutputList');
+                    telemetry.save();
                 });
         },
         calculatePaginationSets: function() {
@@ -199,16 +204,25 @@ define([
 
             this.jobs = new Backbone.Agave.Collection.Jobs();
 
-            $.when.apply($, jobFetches).always(function() {
-                for (var i = 0; i < jobModels.length; i++) {
-                    that.jobs.add(jobModels[i]);
-                }
+            $.when.apply($, jobFetches)
+                .always(function() {
+                    for (var i = 0; i < jobModels.length; i++) {
+                        that.jobs.add(jobModels[i]);
+                    }
 
-                loadingView.remove();
-                that.render();
+                    loadingView.remove();
+                    that.render();
 
-                that.uiSetActivePaginationSet();
-            });
+                    that.uiSetActivePaginationSet();
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Job.Detail().fetch()');
+                    telemetry.set('view', 'Analyses.OutputList');
+                    telemetry.save();
+                })
+                ;
         },
 
         getIndexLimit: function() {
@@ -295,9 +309,13 @@ define([
                         loadingView.remove();
                         that.render();
                     })
-                    .fail(function() {
-
-                    });
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().fetch()');
+                        telemetry.set('view', 'Analyses.SelectAnalyses');
+                        telemetry.save();
+                    })
 
                 // Blob Save Detection
                 this._setDownloadCapabilityDetection();
@@ -393,8 +411,16 @@ define([
                         }, 1000);
                     })
                     .fail(function(response) {
-                        var errorMessage = this.getErrorMessageFromResponse(response);
-                        this.showWarning(errorMessage);
+                        var errorMessage = that.getErrorMessageFromResponse(response);
+
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.set('error', JSON.stringify(errorMessage));
+                        telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().save()');
+                        telemetry.set('view', 'Analyses.SelectAnalyses');
+                        telemetry.set('jobId', that.jobId);
+                        telemetry.save();
+
+                        that.showWarning(errorMessage);
                     })
                     ;
             },
