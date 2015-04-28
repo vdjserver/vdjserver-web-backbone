@@ -465,13 +465,6 @@ define(['app'], function(App) {
                 dictionary['max_mismatches'] = maxMismatches;
             }
 
-            var trimPrimer = parameters[key + '-trim-primer'];
-            if (trimPrimer) {
-                dictionary['cut_lower'] = {
-                    'after': 0,
-                };
-            }
-
             var fastaFile = parameters[key + '-primer-file'];
             if (fastaFile) {
                 dictionary['seq_file'] = fastaFile;
@@ -481,8 +474,22 @@ define(['app'], function(App) {
         };
 
         this.getCustomJPrimerTrimming = function() {
+            // General primer config
             var dictionary = this._setupCustomPrimerTrimmingDictionary(parameters);
 
+            // J Primer specific config
+            var trimPrimer = parameters[key + '-trim-primer'];
+            if (trimPrimer) {
+                dictionary['cut_upper'] = {
+                    'before': 0,
+                };
+            }
+
+            dictionary['end'] = {
+                'after': '',
+            };
+
+            // Done
             var configuredParameter = {
                 'match': {
                     'elements': [dictionary],
@@ -493,8 +500,22 @@ define(['app'], function(App) {
         };
 
         this.getCustomVPrimerTrimming = function() {
+            // General primer config
             var dictionary = this._setupCustomPrimerTrimmingDictionary(parameters);
 
+            // V Primer specific config
+            var trimPrimer = parameters[key + '-trim-primer'];
+            if (trimPrimer) {
+                dictionary['cut_lower'] = {
+                    'after': 0,
+                };
+            }
+
+            dictionary['start'] = {
+                'before': '',
+            };
+
+            // Done
             var configuredParameter = {
                 'match': {
                     'elements': [dictionary],
