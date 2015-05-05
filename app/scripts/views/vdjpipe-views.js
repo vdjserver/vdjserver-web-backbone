@@ -457,7 +457,7 @@ define([
         },
         setTitleByLocation: function(barcodeLocation) {
 
-            this.title = barcodeLocation + ' Barcode Set';
+            this.title = this._getStringElementCount(this.elementCount) + ' ' + barcodeLocation + ' Barcode Set';
 
             $('#' + this.inputCount + '-barcode-title-' + this.elementCount).text(this.title);
         },
@@ -480,6 +480,14 @@ define([
         selectBarcodeFile: function(e) {
             e.preventDefault();
             this.parentView.updateCombinationView();
+        },
+        _getStringElementCount: function(elementCount) {
+            if (elementCount === 1) {
+                return 'First Element:';
+            }
+            else if (elementCount === 2) {
+                return 'Second Element:';
+            }
         },
     });
 
