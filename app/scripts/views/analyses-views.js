@@ -178,7 +178,7 @@ define([
             }
         },
         calculatePaginationSets: function() {
-            var tmpPaginationSets = Math.round(this.jobMetadatas.models.length / this.paginationIterator);
+            var tmpPaginationSets = Math.ceil(this.jobMetadatas.models.length / this.paginationIterator);
 
             this.paginationSets = [];
             for (var i = 1; i < tmpPaginationSets + 1; i++) {
