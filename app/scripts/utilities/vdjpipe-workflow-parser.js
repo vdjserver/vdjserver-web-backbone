@@ -733,7 +733,9 @@ define(['app'], function(App) {
         };
 
         this.getDemultiplex5PrimeBarcode = function() {
-            return {};
+            return {
+                'before':''
+            };
         };
 
         this.getDemultiplex3PrimeBarcodeAfter3PrimeBarcode = function(previousValue) {
