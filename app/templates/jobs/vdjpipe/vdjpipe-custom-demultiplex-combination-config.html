@@ -79,24 +79,6 @@
                                     </td>
                                 </tr>
 --}}
-
-                                {{#each barcodeInfo}}
-                                    <tr>
-                                        <td>
-                                            "{{this.barcodeName}}" Barcode Column Ordering
-                                        </td>
-                                        <td>
-                                            <select
-                                                class="job-form-item"
-                                                name="{{../inputCount}}-{{../parameterType}}-{{barcodeElementNumber}}-element-barcode-column-order"
-                                            >
-                                                {{#each ../barcodeColumns}}
-                                                    <option value="{{this}}">{{this}}</option>
-                                                {{/each}}
-                                            </select>
-                                        </td>
-                                    </tr>
-                                {{/each}}
                                 <tr>
                                     <td>
                                         Names Column Ordering
@@ -112,6 +94,24 @@
                                         </select>
                                     </td>
                                 </tr>
+
+                                {{#each barcodeInfo}}
+                                    <tr>
+                                        <td>
+                                            "{{this.barcodeName}}" Barcodes Appear in Column
+                                        </td>
+                                        <td>
+                                            <select
+                                                class="job-form-item"
+                                                name="{{../inputCount}}-{{../parameterType}}-{{barcodeElementNumber}}-element-barcode-column-order"
+                                            >
+                                                {{#each ../barcodeColumns}}
+                                                    <option value="{{this}}">{{this}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </td>
+                                    </tr>
+                                {{/each}}
                             </tbody>
                         </table>
                     </div>
