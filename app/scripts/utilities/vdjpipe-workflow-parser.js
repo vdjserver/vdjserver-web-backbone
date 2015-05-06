@@ -451,7 +451,8 @@ define(['app'], function(App) {
 
         this._setupCustomPrimerTrimmingDictionary = function(parameters) {
             var dictionary = {
-                'require_best': false
+                'require_best': false,
+                'reverse': true,
             };
 
             var required = parameters[key + '-required'];
