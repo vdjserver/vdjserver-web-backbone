@@ -371,7 +371,9 @@ define(['app'], function(App) {
 
                     var trim = parameters[key + '-' + elementCounter + '-element-custom-trim'];
                     var barcodeType = parameters[key + '-' + elementCounter + '-element-custom-type'];
+
                     if (barcodeType) {
+
                         switch (barcodeType) {
                             case '3\'':
                                 if (i === 0) {

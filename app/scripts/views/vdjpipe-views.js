@@ -407,6 +407,9 @@ define([
                 }
                 this.options['custom_trim'] = true;
             }
+
+            // Bootstrap the initial location value to avoid lots of rendering juggling.
+            this.options['custom_type'] = '5\'';
         },
         serialize: function() {
             if (this.parameterType) {
@@ -462,11 +465,13 @@ define([
             $('#' + this.inputCount + '-barcode-title-' + this.elementCount).text(this.title);
         },
         setBarcodeTypeByLocation: function(barcodeLocation) {
+
             $('#' + this.inputCount
                   + '-' + this.parameterType
                   + '-' + this.elementCount
                   + '-element-custom-type'
             ).val(barcodeLocation);
+
         },
         getBarcodeFilename: function() {
             var barcodeName = $('#' + this.inputCount
