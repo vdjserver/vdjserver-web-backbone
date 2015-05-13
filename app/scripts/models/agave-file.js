@@ -537,6 +537,8 @@ function(Backbone, EnvironmentConfig, moment) {
                 var hasReadDirection = true;
 
                 switch (fileTypeId) {
+                    case 0:
+                    case 1:
                     case 3:
                     case 4:
                         hasReadDirection = false;
