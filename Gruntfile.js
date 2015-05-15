@@ -72,7 +72,8 @@ module.exports = function(grunt) {
             options: {
                 port: SERVER_PORT,
                 // change this to '0.0.0.0' to access the server from outside
-                hostname: 'localhost'
+                //hostname: 'localhost'
+                hostname: process.env.HOSTNAME || 'localhost'
             },
             livereload: {
                 options: {
@@ -122,7 +123,8 @@ module.exports = function(grunt) {
         },
         open: {
             server: {
-                path: 'http://localhost:<%= connect.options.port %>'
+                //path: 'http://localhost:<%= connect.options.port %>'
+                path: 'http://' + (process.env.HOSTNAME || 'localhost') + ':<%= connect.options.port %>'
             }
         },
 
