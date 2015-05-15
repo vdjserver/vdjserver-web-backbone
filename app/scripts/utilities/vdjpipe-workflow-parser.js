@@ -452,9 +452,10 @@ define(['app'], function(App) {
         };
 
         this._setupCustomPrimerTrimmingDictionary = function(parameters) {
+            // NOTE 13/May/2015: don't add "reverse": true to primer trimming.
+            // It will crash vdj_pipe.
             var dictionary = {
                 'require_best': false,
-                'reverse': true,
             };
 
             var required = parameters[key + '-required'];
