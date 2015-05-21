@@ -24,23 +24,28 @@ RUN gem install \
     sass \
     compass
 
-RUN mkdir /vdjserver-backbone
+RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-backbone
 
 # Install npm dependencies (optimized for cache)
-COPY package.json /vdjserver-backbone/
-RUN cd /vdjserver-backbone && npm install
+COPY package.json /var/www/html/vdjserver-backbone/
+RUN cd /var/www/html/vdjserver-backbone && npm install
 
 # Install bower dependencies
-COPY .bowerrc /vdjserver-backbone/
-COPY bower.json /vdjserver-backbone/
-RUN cd /vdjserver-backbone && bower --allow-root install
+COPY .bowerrc /var/www/html/vdjserver-backbone/
+COPY bower.json /var/www/html/vdjserver-backbone/
+RUN cd /var/www/html/vdjserver-backbone && bower --allow-root install
 
 # Copy project source
-COPY . /vdjserver-backbone
+COPY . /var/www/html/vdjserver-backbone
 
-WORKDIR /vdjserver-backbone
-ENTRYPOINT ["/usr/local/bin/grunt"]
+WORKDIR /var/www/html/vdjserver-backbone
+#RUN "/usr/local/bin/grunt --gruntfile /var/www/html/vdjserver-backbone/Gruntfile.js build"
+RUN ["/usr/local/bin/grunt","build"]
+
+#ENTRYPOINT ["/usr/local/bin/grunt"]
 #CMD "/usr/local/bin/grunt --gruntfile /vdjserver-backbone/Gruntfile.js --help"
 #ENTRYPOINT ["/usr/local/bin/grunt
 #CMD ["--gruntfile /vdjserver-backbone/Gruntfile.js"]
-CMD ["--help"]
+#CMD ["--help"]
+
+VOLUME ["/var/www/html/vdjserver-backbone"]
