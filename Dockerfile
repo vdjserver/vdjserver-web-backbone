@@ -48,4 +48,4 @@ RUN ["/usr/local/bin/grunt","build"]
 #CMD ["--gruntfile /vdjserver-backbone/Gruntfile.js"]
 #CMD ["--help"]
 
-VOLUME ["/var/www/html/vdjserver-backbone"]
+VOLUME ["/var/www/html/vdjserver-backbone/live-site"]
