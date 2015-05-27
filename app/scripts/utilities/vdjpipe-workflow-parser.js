@@ -8,6 +8,13 @@ define(['app'], function(App) {
 
     var VdjpipeWorkflowParser = {};
 
+    var resetSharedValues = function() {
+        // TODO: pass/return these via tuples in ES6
+        demultiplexHistograms = [];
+        combinationValue = '';
+        sharedVariables = [];
+    };
+
     // Public Methods
     VdjpipeWorkflowParser.GetWorkflowName = function(formData) {
         var name = formData['workflow-name'];
@@ -63,6 +70,8 @@ define(['app'], function(App) {
     VdjpipeWorkflowParser._ParseConfigParameters = function(parameters) {
 
         var paramOutput = [];
+
+        resetSharedValues();
 
         for (var key in parameters) {
 
@@ -456,6 +465,7 @@ define(['app'], function(App) {
             // It will crash vdj_pipe.
             var dictionary = {
                 'require_best': false,
+                'required': true,
             };
 
             var required = parameters[key + '-required'];
