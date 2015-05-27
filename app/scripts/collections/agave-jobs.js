@@ -48,8 +48,19 @@ define([
                     var fileNameSplit = filename.split('.');
                     var fileExtension = fileNameSplit[fileNameSplit.length - 1];
 
+                    var doubleFileExtension = fileNameSplit[fileNameSplit.length - 2] + '.' + fileNameSplit[fileNameSplit.length - 1];
+
+                    var test = fileNameSplit[fileNameSplit.length - 100];
+
                     // Whitelisted files
-                    if (fileExtension === 'fasta' || fileExtension === 'fastq') {
+                    if (fileExtension === 'fasta'
+                        ||
+                        fileExtension === 'fastq'
+                        ||
+                        fileExtension === 'vdjml'
+                        ||
+                        doubleFileExtension === 'rc_out.tsv'
+                    ) {
                         return true;
                     }
                     else {
@@ -113,8 +124,6 @@ define([
                         fileExtension === 'err'
                         ||
                         fileExtension === 'out'
-                        ||
-                        fileExtension === 'vdjml'
                         ||
                         filename === 'vdjpipe_config.json'
                     ) {

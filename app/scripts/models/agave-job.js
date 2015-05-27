@@ -112,9 +112,13 @@ function(
                         break;
                 }
 
+                // 27/May/2015 - Temporarily disabled due to
+                // problems rendering BAT for large files.
+                /*
                 if (filename.substr(-11) === '.rc_out.tsv') {
                     chartType = this.CHART_TYPE_6;
                 }
+                */
 
                 if (filename.substr(-14) === '.cdr3_hist.tsv') {
                     chartType = this.CHART_TYPE_7;
