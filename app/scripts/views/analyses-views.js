@@ -1835,7 +1835,7 @@ define([
             ;
 
             chart.yAxis
-                .axisLabel('Count')
+                .axisLabel('Read Count')
                 .tickFormat(d3.format(',.1f'))
             ;
 
