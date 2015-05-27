@@ -89,6 +89,7 @@ define([
     'analyses-views',
     'vdjpipe-views',
     'feedback-views',
+    'software-views',
 
     // Routers
     'router'

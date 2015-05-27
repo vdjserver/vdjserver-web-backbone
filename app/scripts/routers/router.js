@@ -76,13 +76,14 @@ define(['app'], function(App) {
 
         routes: {
             '':                                 'index',
-            'auth/logout':                      'authLogout',
             'account':                          'createAccount',
             'account/pending':                  'verificationPending',
             'account/verify/:id':               'verifyAccount',
-            'password-reset(/:uuid)':           'forgotPassword',
             'account/profile':                  'accountProfile',
             'account/change-password':          'changePassword',
+            'auth/logout':                      'authLogout',
+            'feedback':                         'feedback',
+            'password-reset(/:uuid)':           'forgotPassword',
             'project':                          'projectIndex',
             'project/create':                   'projectCreate',
             'project/:id':                      'projectDetail',
@@ -92,7 +93,7 @@ define(['app'], function(App) {
             'project/:id/users':                'projectManageUsers',
             'project/:id/jobs':                 'projectJobHistory',
             'project/:id/jobs/:jobId':          'projectJobOutput',
-            'feedback':                         'feedback',
+            'software':                         'software',
 
             // 404
             '*notFound': 'notFound',
@@ -309,6 +310,18 @@ define(['app'], function(App) {
                 );
 
                 App.Layouts.content.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid, jobId: jobId}));
+                App.Layouts.content.render();
+            };
+
+            _routeWithTokenRefreshCheck(destinationRoute);
+        },
+
+        // Software
+        software: function() {
+            var destinationRoute = function() {
+                _setProjectSubviews();
+
+                App.Layouts.content.setView('.content', new App.Views.Software.Index());
                 App.Layouts.content.render();
             };
 

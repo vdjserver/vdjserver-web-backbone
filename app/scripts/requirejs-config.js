@@ -100,6 +100,7 @@ require.config({
         'analyses-views': 'views/analyses-views',
         'vdjpipe-views': 'views/vdjpipe-views',
         'feedback-views': 'views/feedback-views',
+        'software-views': 'views/software-views',
 
         // Routers
         'router': 'routers/router'
