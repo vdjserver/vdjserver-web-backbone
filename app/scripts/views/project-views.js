@@ -315,6 +315,7 @@ define([
                 $('.has-tooltip').tooltip();
             },
             events: {
+                'click #dropbox-upload': '_dropboxUpload',
                 'click #file-upload':    '_clickFilesSelectorWrapper',
                 'change #file-dialog':   '_changeFilesSelector',
                 'click .selected-files': '_uiToggleDisabledButtonStatus',
@@ -655,12 +656,40 @@ define([
             },
 
             // Event Responders
-            _clickFilesSelectorWrapper: function() {
+            _clickFilesSelectorWrapper: function(e) {
+                e.preventDefault();
                 document.getElementById('file-dialog').click();
             },
             _changeFilesSelector: function(e) {
                 var files = e.target.files;
                 this._parseFiles(files);
+            },
+            _dropboxUpload: function(e) {
+                e.preventDefault();
+
+                var that = this;
+                var options = {
+                    success: function(files) {
+
+                        console.log('success! files are: ' + JSON.stringify(files));
+
+                        var agaveFile = new Backbone.Agave.Model.File.Dropbox({
+                            projectUuid: that.projectUuid,
+                            urlToIngest: files[0].link,
+                        });
+
+                        console.log("pre sync");
+                        agaveFile.save();
+                        console.log("post sync");
+
+
+                        // TODO: call vdj-api from here
+                    },
+                    linkType: 'direct',
+                    multiselect: true,
+                };
+
+                Dropbox.choose(options);
             },
             _toggleSelectAllFiles: function(e) {
                 e.preventDefault();
