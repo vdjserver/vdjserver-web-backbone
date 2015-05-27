@@ -1785,6 +1785,13 @@ define([
             var imgtDataPoint = cdr3Data[i]['imgt'];
             var kabatDataPoint = cdr3Data[i]['kabat'];
 
+            // 27/May/2015 - Small hack to fix legacy charts with incorrect x-axis data.
+            // Apparently cdr3 charts should never include -1 x-axis values,
+            // and our older versions of IgBlast wrappers have been including -1 values.
+            if (length === '-1') {
+                continue;
+            }
+
             var imgtStanza = {
                 'x': length,
                 'y': parseInt(imgtDataPoint),
