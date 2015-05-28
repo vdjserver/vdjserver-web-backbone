@@ -40,6 +40,8 @@ require.config({
         'agave-feedback': 'models/agave-feedback',
         'agave-community': 'models/agave-community',
         'agave-communities': 'collections/agave-communities',
+        'agave-community-project': 'models/agave-community-project',
+        'agave-communities-projects': 'collections/agave-communities-projects',
 
         'agave-notification': 'models/agave-notification',
         'agave-password-reset': 'models/agave-password-reset',
@@ -102,6 +104,7 @@ require.config({
         'vdjpipe-views': 'views/vdjpipe-views',
         'feedback-views': 'views/feedback-views',
         'community-views': 'views/community-views',
+        'community-project-views': 'views/community-project-views',
 
         // Routers
         'router': 'routers/router'
@@ -167,6 +170,16 @@ require.config({
         'agave-communities': {
           deps: ['backbone', 'backbone-agave', 'agave-community'],
           exports: 'Backbone.Agave.Collection.Communities'
+        },
+
+        'agave-community-project': {
+          deps: ['backbone', 'backbone-agave'],
+          exports: 'Backbone.Agave.Model.CommunityProject'
+        },
+
+        'agave-communities-projects': {
+          deps: ['backbone', 'backbone-agave', 'agave-community-project'],
+          exports: 'Backbone.Agave.Collection.CommunitiesProjects'
         },
 
         'agave-notification': {

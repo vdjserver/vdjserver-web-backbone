@@ -1,5 +1,10 @@
-<div class="container">
+<div class="container-fluid">
   <div class="col-md-12">
+    <div class="row">
+      <div class="form-group col-md-3 pull-right">
+        <input id="searchAll" type="text" class="form-control pull-right" placeholder="Search">
+      </div>
+    </div>
     <table id="community" class="display" cellspacing="0" width="100%">
       <thead>
         <tr>
@@ -39,7 +44,11 @@
         {{#each community}}
         <tr>
           <td>
-            {{sraStudy}}
+            {{#if this.url}}
+            <a href="{{this.url}}">{{sraStudy}}</a>
+            {{else}}
+              {{sraStudy}}
+            {{/if}}
           </td>
           <td>
             {{pubMedId}}

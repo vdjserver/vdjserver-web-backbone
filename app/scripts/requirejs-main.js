@@ -31,6 +31,8 @@ define([
     'agave-account',
     'agave-community',
     'agave-communities',
+    'agave-community-project',
+    'agave-communities-projects',
     'agave-notification',
 
     'agave-password-change',
@@ -81,6 +83,7 @@ define([
 
     'account-views',
     'community-views',
+    'community-project-views',
     'forgot-password-views',
     'profile-views',
     'job-views',

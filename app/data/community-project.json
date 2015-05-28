@@ -1,0 +1,65 @@
+[
+  {
+    "title": "Immunoglobulin repertoire in multiple sclerosis",
+    "bioProjectType": "Transcriptome",
+    "sraAbstract": "In multiple sclerosis (MS), an exchange of lymphocytes, in particular B cells, between the central nervous system (CNS) and periphery is believed to be required for the maintenance of active disease. Therapeutic monoclonal antibodies that prevent lymphocytes from crossing the blood-brain barrier (BBB) or induce near complete peripheral B cell depletion rapidly mitigate MS disease activity. Using next-generation sequencing technology, we recently found that clonally related B cells exist in the cerebrospinal fluid (CSF) and peripheral blood (PB) of MS patients, establishing the existence of an immune axis across the BBB. However, it remains unclear which subpopulations of the highly diverse peripheral B cell compartment share antigen-specificity with intrathecal B cell repertoires, and whether their antigen stimulation occurs on both sides of the BBB. To address these questions, we combined flow cytometry sorting of PB B cell subsets with deep immune repertoire sequencing (DIRS) of CSF and PB B cells. Immunoglobulin (IgM and IgG) heavy chain variable (VH) region repertoires of five PB B cell subsets from MS patients (n=8) were compared with their CSF Ig-VH transcriptomes. In 6 of 8 patients, we identified peripheral CD27+IgD- memory B cells, CD27hiCD38hi plasma cells/plasmablasts, or CD27-IgD- B cells to provide an immune connection to the CNS compartment. Pinpointing Ig class-switched B cells as key component of the immune axis thought to contribute to ongoing MS disease activity strengthens current the rationale of current therapeutic strategies and may lead to more targeted approaches. ",
+    "paper": "http://www.ncbi.nlm.nih.gov/pubmed/25100740",
+    "sraStudy":
+      {
+        "id": "SRP042205",
+        "url": "https://vdj-dev.tacc.utexas.edu/project/0001432334104569-5056a550b8-0001-012"
+      },
+    "bioProject":
+      {
+        "id": "PRJNA248411",
+        "url": "http://www.ncbi.nlm.nih.gov/bioproject/PRJNA248411"
+      },
+    "organism": "Homo sapiens",
+
+    "sraExperiment":
+      [
+        {
+          "id": "SRX551535",
+          "url": "http://www.ncbi.nlm.nih.gov/sra/SRX551535%5baccn%5d"
+        },
+        {
+          "id": "SRX551536",
+          "url": "http://www.ncbi.nlm.nih.gov/sra/SRX551536%5baccn%5d"
+        },
+        {
+          "id": "SRX551502",
+          "url": "http://www.ncbi.nlm.nih.gov/sra/SRX551502%5baccn%5d"
+        }
+      ],
+    "biosample": ["SAMN02798275", "SAMN02798276", "SAMN02798262"],
+    "sampleDescription": ["Cerebrospinal fluid from a 31-year old female", "Cerebrospinal fluid from a 34-year old female", "Peripheral blood from 54-year old female"],
+    "sraRun":
+    [
+      {
+        "id": "SRR1298740",
+        "url": "http://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR1298740"
+      },
+      {
+        "id": "SRR1298742",
+        "url": "http://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR1298742"
+      },
+      {
+        "id": "SRR1297001",
+        "url": "http://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR1297001"
+      }
+    ],
+    "layout": ["Single", "Single", "Single"],
+    "platform": ["454 GS FLX+", "454 GS FLX+", "454 GS FLX+"],
+    "readCount": ["5,900", "9,462", "133,435"],
+    "sequenceLength": ["311-811", "283-710", "204-818"],
+    "fastqSRA": ["SRR1298740.fastq", "SRR1298742.fastq", "SRR1297001.fastq"],
+    "qcFilteredOutput": ["SRR1298740-VDJPipe-unique.fasta", "SRR1298740-VDJPipe-unique.fasta", "SRR1297001-VDJPipe-unique.fasta"],
+    "igBlastOutput": [
+      ["SRR1298740-IgBlast.out.vdjml", "SRR1298740-IgBlast.out.imgt.rc_out.tsv"],
+      ["SRR1298740-IgBlast.out.vdjml", "SRR1298742-VDJPipe-IgBlast.out.imgt.rc_out.tsv"],
+      ["SRR1297001-IgBlast.out.vdjml", "SRR1297001-VDJPipe-IgBlast.out.imgt.rc_out.tsv"]
+    ],
+
+    "vdjServerProcessing": "<p>fastq Extracted from SRA fastq files were extracted from SRA files using SRA Toolkit (fastq-dump --split-3 *.sra). QC Filtered Output The fastq files were processed through VDJPipe using the default Single Read workflow with the following settings:<ul><li> Demultiplex module removed</li> <li> V Primer Matching module removed</li>  <li> J Primer Matching module removed</li> <li> Length Filter set to &ldquo;Min 0&rdquo;</li> <li> Minimum Average Quality Window Filter set to 20</li><li> Homopolymer Filter set to 20</li><li> Replicate reads were removed The reads passing all filtering steps were written to fasta files (Should we provide config files?)</li></ul></p><p>IgBlast Output The fasta files output from VDJPipe were run through IgBlast with the following settings:<ul><li> Organism was set to Human</li><li> Sequence Type was set to Ig</li><li> V Domain Delineation System was set to IMGT The IgBlast alignments are captured in the VDJML files. The tsv files contain V, D, and J gene segment calls along with other information (e.g. CDR3 sequence). </li></ul></p>"
+  }
+]

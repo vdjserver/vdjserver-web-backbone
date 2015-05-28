@@ -29,9 +29,23 @@ define([
             return that.render();
           })
           .then(function() {
-            that.$('#community').dataTable({
+
+            $.fn.dataTableExt.oApi.fnFilterAll = function (oSettings, sInput, iColumn, bRegex, bSmart) {
+             var settings = $.fn.dataTableSettings;
+
+             for (var i = 0; i < settings.length; i++) {
+                 settings[i].oInstance.fnFilter(sInput, iColumn, bRegex, bSmart);
+             }
+            };
+
+            var community1 = that.$('#community').dataTable({
               responsive: true,
               pageLength: 10
+            });
+
+
+            that.$("#searchAll").keyup(function () {
+                community1.fnFilterAll(this.value);
             });
           });
       },

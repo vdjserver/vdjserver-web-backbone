@@ -1,0 +1,187 @@
+<div class="container-fluid">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="form-group col-md-3 pull-right">
+        <input id="searchAll" type="text" class="form-control pull-right" placeholder="Search">
+      </div>
+    </div>
+    <table class='display' id='community1' cellspacing="0" width="100%">
+      <thead>
+        <th></th>
+        <th></th>
+      </thead>
+      <tbody>
+        {{#each community}}
+        <tr>
+          <td><strong>Title</strong></td>
+          <td>{{title}}</td>
+        </tr>
+        <tr>
+          <td><strong>BioProject Type</strong></td>
+          <td>{{bioProjectType}}</td>
+        </tr>
+
+        <tr>
+          <td><strong>SRA Abstract</strong></td>
+          <td>{{sraAbstract}}</td>
+        </tr>
+
+        <tr>
+          <td><strong>Paper</strong></td>
+          <td><a href="{{paper}}" target="_blank">{{paper}}</a></td>
+        </tr>
+
+        <tr>
+          <td><strong>SRA Study</strong></td>
+          <td><a href="{{sraStudy.url}}" target="_blank">{{sraStudy.id}}</a></td>
+        </tr>
+
+        <tr>
+          <td><strong>BioProject</strong></td>
+          <td><a href="{{bioProject.url}}" target="_blank">{{bioProject.id}}</a></td>
+        </tr>
+
+        <tr>
+          <td><strong>Organism</strong></td>
+          <td>{{organism}}</td>
+        </tr>
+
+        <tr>
+          <td><strong>VDJServer processing</strong</td>
+          <td>{{{vdjServerProcessing}}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <table class='display' id='community2' cellspacing="0" width="100%">
+          <thead>
+            <th>
+            </th>
+            {{#each community}}
+              {{#each sraExperiment}}
+                <th></th>
+              {{/each}}
+            {{/each}}
+          </thead>
+          <tbody>
+            {{#each community}}
+            <tr>
+              <td><strong>SRA Experiment</strong></td>
+
+                  {{#each sraExperiment}}
+                  <td>
+                      <a href="{{this.url}}" target="_blank">{{this.id}}</a>
+                    </td>
+                  {{/each}}
+            </tr>
+
+            <tr>
+              <td><strong>Biosample</strong></td>
+
+                {{#each biosample}}
+                <td>
+                  {{this}}
+                </td>
+                {{/each}}
+
+            </tr>
+
+            <tr>
+              <td><strong>Sample Description</strong></td>
+
+                {{#each sampleDescription}}
+                <td>
+                  {{this}}
+                </td>
+                {{/each}}
+
+            </tr>
+
+            <tr>
+              <td><strong>SRA Run</strong></td>
+
+                {{#each sraRun}}
+                <td>
+                  <a href="{{this.url}}" target="_blank">{{this.id}}</a>
+                </td>
+                {{/each}}
+
+            </tr>
+
+            <tr>
+              <td><strong>Layout</strong></td>
+
+                {{#each layout}}
+                <td>
+                  {{this}}
+                </td>
+                {{/each}}
+
+            </tr>
+
+            <tr>
+              <td><strong>Platform</strong></td>
+
+                {{#each platform}}
+                <td>
+                  {{this}}
+                </td>
+                {{/each}}
+
+            </tr>
+
+            <tr>
+              <td><strong>Read Count</strong></td>
+                {{#each readCount}}
+                <td>
+                  {{this}}
+                </td>
+                {{/each}}
+            </tr>
+
+            <tr>
+              <td><strong>Sequence Length</strong</td>
+                {{#each sequenceLength}}
+                <td>
+                  {{this}}
+                </td>
+                {{/each}}
+            </tr>
+
+            <tr>
+              <td><strong>fastq Extracted from SRA</strong></td>
+                {{#each fastqSRA}}
+                <td>
+                  {{this}}
+                </td>
+                {{/each}}
+            </tr>
+
+            <tr>
+              <td><strong>QC Filtered Output</strong></td>
+                {{#each qcFilteredOutput}}
+                <td>
+                  {{this}}
+                </td>
+                {{/each}}
+            </tr>
+
+            <tr>
+              <td><strong>IgBlast Output</strong</td>
+
+                {{#each igBlastOutput}}
+                <td>
+                  {{#each this}}
+                    <li>
+                      {{this}}
+                    </li>
+                  {{/each}}
+                </td>
+                {{/each}}
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+  </div>
+</div>

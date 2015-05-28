@@ -9,7 +9,6 @@ function(Backbone, EnvironmentConfig) {
 
     var Community = Backbone.Agave.Model.extend({
         defaults: {
-
             sraStudy: '',
             pubMedId: '',
             organism: '',
@@ -20,10 +19,6 @@ function(Backbone, EnvironmentConfig) {
             runs: '',
             sraSubmission: '',
             notes: '',
-            // name: '',
-            // description: '',
-
-
         },
         // apiRoot: EnvironmentConfig.vdjauthRoot,
         apiRoot: 'http://localhost:9001',

@@ -94,6 +94,7 @@ define(['app'], function(App) {
             'project/:id/jobs/:jobId':          'projectJobOutput',
             'feedback':                         'feedback',
             'community':                        'community',
+            'community/project/:id':            'communityProject',
 
             // 404
             '*notFound': 'notFound',
@@ -143,6 +144,25 @@ define(['app'], function(App) {
 
           _routeWithTokenRefreshCheck(destinationRoute);
         },
+
+        // Community Projects
+        communityProject: function() {
+
+          var destinationRoute = function() {
+             _setProjectSubviews();
+
+            var communityProjectDataView = new App.Views.CommunityProject.Index();
+            App.Layouts.content.setView('.content', communityProjectDataView);
+            App.Layouts.content.render()
+              .promise()
+              .done(function() {
+                communityProjectDataView.startChart();
+              });
+          };
+
+          _routeWithTokenRefreshCheck(destinationRoute);
+        },
+
 
         // Verification Pending
         verificationPending: function() {
