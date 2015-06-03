@@ -509,6 +509,7 @@ define([
 
                 this.removeView('#job-submit');
                 this.removeView('#workflow-modal');
+                this.removeView('#job-staging-subview');
 
                 var selectedFileMetadataUuids = this._getSelectedFileUuids();
                 var selectedFileListings = this.fileListings.getNewCollectionForUuids(selectedFileMetadataUuids);

@@ -22,6 +22,21 @@ define([
         'vdjpipe-paired-reads-direction-fragment'
     );
 
+    HandlebarsUtilities.registerRawPartial(
+        'jobs/vdjpipe/demultiplex/fragments/vdjpipe-custom-demultiplex-barcode-top',
+        'vdjpipe-custom-demultiplex-barcode-top'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
+        'jobs/vdjpipe/demultiplex/fragments/vdjpipe-custom-demultiplex-barcode-shared-options',
+        'vdjpipe-custom-demultiplex-barcode-shared-options'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
+        'jobs/vdjpipe/demultiplex/fragments/vdjpipe-custom-demultiplex-barcode-bottom',
+        'vdjpipe-custom-demultiplex-barcode-bottom'
+    );
+
     var Vdjpipe = {};
 
     Vdjpipe.AmbiguousWindowFilter = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
@@ -119,7 +134,7 @@ define([
 
     Vdjpipe.CustomDemultiplex = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
 
-        template: 'jobs/vdjpipe/vdjpipe-custom-demultiplex',
+        template: 'jobs/vdjpipe/demultiplex/vdjpipe-custom-demultiplex',
         initialize: function(options) {
 
             this.elementCount = 0;
@@ -139,6 +154,10 @@ define([
             this.isRemovable = true;
         },
         afterRender: function() {
+
+            // Since barcodes have separate dynamic views, they need to be added
+            // here in afterRender()
+
             if (this.options && this.options.elements) {
 
                 // Setup barcode files
@@ -148,11 +167,17 @@ define([
                 }
 
                 // Restore any previously saved barcode elements
-                for (var i = 0; i < this.options.elements.length; i++) {
+                if (this.options.elements.length === 1) {
+                    var barcodeOptions = this.options.elements[0];
 
-                    var barcodeOptions = this.options.elements[i];
+                    this.addSingleBarcode(barcodeOptions);
+                }
+                else {
+                    for (var i = 0; i < this.options.elements.length; i++) {
+                        var barcodeOptions = this.options.elements[i];
 
-                    this.addBarcode(barcodeOptions);
+                        this.addMultiBarcode(barcodeOptions);
+                    }
                 }
 
                 // Set location HTML
@@ -205,38 +230,36 @@ define([
 
             if (barcodeCount === 1) {
 
-                // User removed a barcode since we have an element count
-                if (this.elementCount > 1) {
-                    this.removeBarcode();
-                }
-                // User added an initial barcode
-                else {
-                    this.addBarcode();
-                }
+                // Combination View
+                this.removeCombinationView();
+
+                this.removeAllBarcodes();
+                this.addSingleBarcode();
 
                 this.updateViewForSingleBarcodeLocation();
 
                 $('#' + this.inputCount + '-barcode-location').val(1);
-
-                // Combination View
-                this.removeCombinationView();
             }
             else if (barcodeCount === 2) {
+
                 // Get options from original barcode so they can applied to the new barcode
                 var barcodeOptions = {};
                 if (this.options && this.options.elements && this.options.elements[0]) {
                     barcodeOptions = this.options.elements[0];
                 }
 
-                // User added a barcode since the target count is 2
-                this.addBarcode(barcodeOptions);
+                this.removeAllBarcodes();
+
+                this.addMultiBarcode(barcodeOptions);
+                this.addMultiBarcode(barcodeOptions);
+
+                // add combination view after barcodes have been added
+                // in order to get correct |elementCount|
+                this.addCombinationView();
 
                 this.updateViewForDoubleBarcodeLocation();
 
                 $('#' + this.inputCount + '-barcode-location').val(3);
-
-                // Combination View
-                this.addCombinationView();
             }
 
             this.updateSubviewsForBarcodeLocation();
@@ -299,11 +322,30 @@ define([
                 }
             }
         },
-        addBarcode: function(barcodeOptions) {
+        addSingleBarcode: function(barcodeOptions) {
+            // "Command" design pattern
+
+            var barcodeView = this.generateBarcodeView(barcodeOptions);
+
+            this.insertBarcodeView(barcodeView);
+        },
+        addMultiBarcode: function(barcodeOptions) {
+            // "Command" design pattern
+
+            var barcodeView = this.generateBarcodeView(barcodeOptions);
+            barcodeView.template = 'jobs/vdjpipe/demultiplex/vdjpipe-custom-demultiplex-barcode-multiple';
+
+            this.insertBarcodeView(barcodeView);
+        },
+        generateBarcodeView: function(barcodeOptions) {
+
+            if (barcodeOptions === undefined) {
+                barcodeOptions = {};
+            }
 
             this.elementCount += 1;
 
-            var elementView = new Vdjpipe.CustomDemultiplexBarcodeConfig({
+            var barcodeView = new Vdjpipe.CustomDemultiplexBarcodeConfig({
                 isOrderable: this.isOrderable,
                 isRemovable: this.isRemovable,
                 loadDefaultOptions: this.loadDefaultOptions,
@@ -317,23 +359,25 @@ define([
                 layoutView: this.layoutView,
             });
 
-            this.insertView(this.barcodeSubviewsSelector, elementView);
+            return barcodeView;
+        },
+        insertBarcodeView: function(barcodeView) {
+            this.insertView(this.barcodeSubviewsSelector, barcodeView);
 
-            elementView.render().promise().done(
+            barcodeView.render().promise().done(
                 this.layoutView.trigger('FixModalBackdrop')
             );
         },
-        removeBarcode: function() {
-
-            this.elementCount -= 1;
+        removeAllBarcodes: function() {
+            this.elementCount = 0;
 
             var barcodeSubviews = this.getViews(this.barcodeSubviewsSelector).value();
 
-            var barcodeView = barcodeSubviews[1];
+            var removeBarcodeSubviewsPromises = barcodeSubviews.map(function(barcodeView) {
+                return barcodeView.remove();
+            });
 
-            barcodeView.remove().promise().done(
-                this.layoutView.trigger('FixModalBackdrop')
-            );
+            this.layoutView.trigger('FixModalBackdrop')
         },
         addCombinationView: function() {
 
@@ -381,9 +425,7 @@ define([
                 var barcodeElementViews = this.getViews(this.barcodeSubviewsSelector).value();
 
                 for (var i = 0; i < barcodeElementViews.length; i++) {
-                    var barcodeFilename = barcodeElementViews[i].getBarcodeFilename();
                     barcodeInfo.push({
-                        'barcodeName': barcodeFilename,
                         'barcodeElementNumber': i + 1,
                     });
                 }
@@ -394,7 +436,7 @@ define([
     });
 
     Vdjpipe.CustomDemultiplexBarcodeConfig = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
-        template: 'jobs/vdjpipe/vdjpipe-custom-demultiplex-barcode-config',
+        template: 'jobs/vdjpipe/demultiplex/vdjpipe-custom-demultiplex-barcode',
         initialize: function() {
 
             // Don't let layout manager discard this view if it is re-rendered!
@@ -473,15 +515,6 @@ define([
             ).val(barcodeLocation);
 
         },
-        getBarcodeFilename: function() {
-            var barcodeName = $('#' + this.inputCount
-                                    + '-' + this.parameterType
-                                    + '-' + this.elementCount
-                                    + '-element-sequence-file'
-                              ).val();
-
-            return barcodeName;
-        },
         selectBarcodeFile: function(e) {
             e.preventDefault();
             this.parentView.updateCombinationView();
@@ -497,7 +530,7 @@ define([
     });
 
     Vdjpipe.CustomDemultiplexCombinationConfig = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
-        template: 'jobs/vdjpipe/vdjpipe-custom-demultiplex-combination-config',
+        template: 'jobs/vdjpipe/demultiplex/vdjpipe-custom-demultiplex-combination',
         initialize: function() {
             // Don't let layout manager discard this view if it is re-rendered!
             // We're managing it manually to allow user interaction with barcode subviews.
@@ -545,7 +578,15 @@ define([
             var barcodeColumns = [];
 
             for (var i = 1; i < elementCount + 2; i++) {
-                barcodeColumns.push(i);
+                var selectValue = i;
+
+                barcodeColumns.push({
+                    // NOTE: vdjpipe prefers to start counting from 0,
+                    // whereas humans prefer counting from 1.
+                    // This is a compromise.
+                    selectValue: --selectValue,
+                    displayValue: i,
+                });
             }
 
             return barcodeColumns;

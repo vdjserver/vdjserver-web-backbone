@@ -295,31 +295,10 @@ define(['app'], function(App) {
         this.getCustomDemultiplex = function() {
 
             // Combination custom options
-            var combinations = false;
-
-            if (parameters[key + '-combination-value-name']) {
-
-                combinationValue = parameters[key + '-combination-value-name'];
-
-                combinations = [
-                    {
-                        'csv_file': {
-                            'path': parameters[key + '-combination-csv-file'],
-                            'values_column': [],
-                            'skip_header': parameters[key + '-skip-header'],
-                            // -1 is a hack for now. vdj_pipe starts counting on 0, but humans tend to like starting on 1 for some reason.
-                            'names_column': parseInt(parameters[key + '-combination-names-column-order']) - 1,
-                        },
-                        'value_name': parameters[key + '-combination-value-name'],
-                    },
-                ];
-
-                if (parameters[key + '-custom-combination-histogram']) {
-                    combinations[0]['custom_histogram'] = parameters[key + '-custom-combination-histogram'];
-                }
-            }
 
             var elements = [];
+
+            var combinations = this._setupCustomDemultiplexCombinationStanza();
 
             if (parameters[key + '-elements']) {
                 for (var i = 0; i < parameters[key + '-elements'].length; i++) {
@@ -358,7 +337,6 @@ define(['app'], function(App) {
 
                     var customHistogram = parameters[key + '-' + elementCounter + '-element-custom-histogram'];
                     if (customHistogram) {
-
                         demultiplexHistograms.push(
                             {
                                 'histogram': {
@@ -429,16 +407,18 @@ define(['app'], function(App) {
                         }
                     }
 
-                    // Combination
-                    if (combinations) {
-                        var valueColumn = {};
+                    var isMultibarcode = parameters[key + '-' + elementCounter + '-element-multibarcode'];
+                    if (isMultibarcode) {
+                        element['csv_file'] = {
+                            path: parameters[key + '-combination-csv-file'],
+                        };
 
-                        // -1 is a hack for now. vdj_pipe starts counting on 0, but humans tend to like starting on 1 for some reason.
-                        valueColumn[valueName] = parseInt(
-                            parameters[key + '-' + elementCounter + '-element-barcode-column-order']
-                        ) - 1;
-
-                        combinations[0]['csv_file']['values_column'].push(valueColumn);
+                        if (parseInt(elementCounter) === 1) {
+                            element['csv_file']['sequences_column'] = parseInt(parameters[key + '-combination-first-barcode-column']);
+                        }
+                        else {
+                            element['csv_file']['sequences_column'] = this._detectSecondBarcodeColumn();
+                        }
                     }
 
                     // Save element
@@ -458,6 +438,80 @@ define(['app'], function(App) {
             }
 
             return that.wrapIfPairedReads(parameters, key, configuredParameter);
+        };
+
+        this._detectSecondBarcodeColumn = function() {
+            var columnA = parseInt(parameters[key + '-combination-names-column']);
+            var columnB = parseInt(parameters[key + '-combination-first-barcode-column']);
+            var columnC = false;
+
+            var columnSet = new Set();
+            columnSet.add(columnA);
+            columnSet.add(columnB);
+
+            for (var i = 0; i < 3; i++) {
+                if (columnSet.has(i) === false) {
+                    columnC = i;
+                    break;
+                }
+            };
+
+            return columnC;
+        };
+
+        this._setupCustomDemultiplexCombinationStanza = function() {
+            var combinations = false;
+
+            if (parameters[key + '-combination-value-name']) {
+
+                combinationValue = parameters[key + '-combination-value-name'];
+
+                var valuesColumn = [];
+
+                for (var i = 0; i < parameters[key + '-elements'].length; i++) {
+                    var elementCounter = parameters[key + '-elements'][i];
+                    var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
+                    var columnNumber = false;
+
+                    if (parseInt(elementCounter) === 1) {
+                        columnNumber = parseInt(parameters[key + '-combination-first-barcode-column']);
+                    }
+                    else {
+                        columnNumber = this._detectSecondBarcodeColumn();
+                    }
+
+                    var valueHash = {};
+                    valueHash[valueName] = columnNumber;
+                    valuesColumn.push(valueHash);
+                }
+
+                combinations = [
+                    {
+                        'csv_file': {
+                            'path': parameters[key + '-combination-csv-file'],
+                            'values_column': valuesColumn,
+                            'skip_header': parameters[key + '-combination-skip-header'],
+                            // -1 is a hack for now. vdj_pipe starts counting on 0, but humans tend to like starting on 1 for some reason.
+                            'names_column': parseInt(parameters[key + '-combination-names-column']),
+                        },
+                        'value_name': parameters[key + '-combination-value-name'],
+                    },
+                ];
+
+                if (parameters[key + '-combination-histogram']) {
+
+                    demultiplexHistograms.push(
+                        {
+                            'histogram': {
+                                'name': parameters[key + '-combination-value-name'],
+                                'out_path': parameters[key + '-combination-value-name'] + '.csv',
+                            },
+                        }
+                    );
+                }
+            }
+
+            return combinations;
         };
 
         this._setupCustomPrimerTrimmingDictionary = function(parameters) {
