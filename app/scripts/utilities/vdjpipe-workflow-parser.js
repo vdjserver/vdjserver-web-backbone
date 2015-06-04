@@ -414,10 +414,10 @@ define(['app'], function(App) {
                         };
 
                         if (parseInt(elementCounter) === 1) {
-                            element['csv_file']['sequences_column'] = parseInt(parameters[key + '-combination-first-barcode-column']);
+                            element['csv_file']['sequences_column'] = parameters[key + '-combination-first-barcode-column'];
                         }
                         else {
-                            element['csv_file']['sequences_column'] = this._detectSecondBarcodeColumn();
+                            element['csv_file']['sequences_column'] = parameters[key + '-combination-second-barcode-column'];
                         }
                     }
 
@@ -440,9 +440,10 @@ define(['app'], function(App) {
             return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
+        /*
         this._detectSecondBarcodeColumn = function() {
             var columnA = parseInt(parameters[key + '-combination-names-column']);
-            var columnB = parseInt(parameters[key + '-combination-first-barcode-column']);
+            var columnB = parameters[key + '-combination-first-barcode-column'];
             var columnC = false;
 
             var columnSet = new Set();
@@ -458,6 +459,7 @@ define(['app'], function(App) {
 
             return columnC;
         };
+        */
 
         this._setupCustomDemultiplexCombinationStanza = function() {
             var combinations = false;
@@ -473,11 +475,12 @@ define(['app'], function(App) {
                     var valueName = parameters[key + '-' + elementCounter + '-element-value-name'];
                     var columnNumber = false;
 
+                    // TODO: refactor names like '-combination-first-barcode-column' to use ints instead of spelled numbers
                     if (parseInt(elementCounter) === 1) {
-                        columnNumber = parseInt(parameters[key + '-combination-first-barcode-column']);
+                        columnNumber = parameters[key + '-combination-first-barcode-column'];
                     }
                     else {
-                        columnNumber = this._detectSecondBarcodeColumn();
+                        columnNumber = parameters[key + '-combination-second-barcode-column'];
                     }
 
                     var valueHash = {};

@@ -17,6 +17,14 @@
                 value="Combination{{inputCount}}"
             >
 
+            <input
+                class="hidden"
+                type="text"
+                value=""
+                name="{{inputCount}}-{{parameterType}}-combination-second-barcode-column"
+                id="{{inputCount}}-{{parameterType}}-combination-second-barcode-column"
+            >
+
             <div class="panel-body">
                 <div class="row row-with-spacer">
                     <div class="col-md-12">
@@ -31,6 +39,7 @@
                                             <select
                                                 class="job-form-item"
                                                 name="{{inputCount}}-{{parameterType}}-combination-csv-file"
+                                                id="{{inputCount}}-{{parameterType}}-combination-csv-file"
                                             >
                                                 {{#each combinationFiles}}
                                                     <option value={{value.name}}>{{value.name}}</option>
@@ -56,13 +65,15 @@
                                         </td>
                                         <td>
                                             <select
-                                                class="job-form-item"
+                                                class="job-form-item {{inputCount}}-{{parameterType}}-combination-selectable-column-name"
                                                 name="{{inputCount}}-{{parameterType}}-combination-names-column"
+                                                id="{{inputCount}}-{{parameterType}}-combination-names-column"
                                             >
                                                 {{#each barcodeColumns}}
                                                     <option value="{{this.selectValue}}">{{this.displayValue}}</option>
                                                 {{/each}}
                                             </select>
+                                            <div id="{{inputCount}}-{{parameterType}}-combination-names-column-section"></div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -71,13 +82,15 @@
                                         </td>
                                         <td>
                                             <select
-                                                class="job-form-item"
+                                                class="job-form-item {{inputCount}}-{{parameterType}}-combination-selectable-column-name"
                                                 name="{{inputCount}}-{{parameterType}}-combination-first-barcode-column"
+                                                id="{{inputCount}}-{{parameterType}}-combination-first-barcode-column"
                                             >
                                                 {{#each barcodeColumns}}
                                                     <option value="{{this.selectValue}}">{{this.displayValue}}</option>
                                                 {{/each}}
                                             </select>
+                                            <div id="{{inputCount}}-{{parameterType}}-combination-first-barcode-column-section"></div>
                                         </td>
                                     </tr>
                                     <tr>

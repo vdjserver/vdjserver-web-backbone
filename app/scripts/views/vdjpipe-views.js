@@ -403,7 +403,7 @@ define([
 
             combinationView.render().promise().done(
                 function() {
-                    that.updateCombinationView();
+                    //that.updateCombinationView();
                     that.layoutView.trigger('FixModalBackdrop');
                 }
             );
@@ -412,6 +412,7 @@ define([
             this.removeView(this.combinationSubviewSelector);
             this.layoutView.trigger('FixModalBackdrop');
         },
+        /*
         updateCombinationView: function() {
 
             if (this.elementCount === 2) {
@@ -433,6 +434,7 @@ define([
                 combinationView.updateBarcodeInfo(barcodeInfo, this.elementCount);
             }
         },
+        */
     });
 
     Vdjpipe.CustomDemultiplexBarcodeConfig = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
@@ -487,13 +489,6 @@ define([
                            + '-' + this.elementCount
             ] = 'setTitleByLocation';
 
-            events[
-                'change #' + this.inputCount
-                           + '-' + this.parameterType
-                           + '-' + this.elementCount
-                           + '-element-sequence-file'
-            ] = 'selectBarcodeFile';
-
             return events;
         },
         updateForBarcodeLocation: function(barcodeLocation) {
@@ -515,10 +510,6 @@ define([
             ).val(barcodeLocation);
 
         },
-        selectBarcodeFile: function(e) {
-            e.preventDefault();
-            this.parentView.updateCombinationView();
-        },
         _getStringElementCount: function(elementCount) {
             if (elementCount === 1) {
                 return 'First Element:';
@@ -534,7 +525,6 @@ define([
         initialize: function() {
             // Don't let layout manager discard this view if it is re-rendered!
             // We're managing it manually to allow user interaction with barcode subviews.
-            //this.keep = true;
             this.keep = false;
             this.barcodeInfo = [];
         },
@@ -551,8 +541,6 @@ define([
                     barcodeInfo = this.barcodeInfo;
                 }
 
-                var barcodeColumns = this.getBarcodeColumns(this.elementCount);
-
                 return {
                     isOrderable: this.isOrderable,
                     isRemovable: this.isRemovable,
@@ -563,10 +551,137 @@ define([
                     options: this.options,
                     combinationFiles: combinationFiles,
                     barcodeInfo: barcodeInfo,
-                    barcodeColumns: barcodeColumns,
+                    barcodeColumns: new Array(this.elementCount + 1),
                 };
             }
         },
+        events: function() {
+            var events = {};
+            events['change #' + this.inputCount + '-' + this.parameterType + '-combination-csv-file'] = '_setupColumnNamesEventHandler';
+            events['change .' + this.inputCount + '-' + this.parameterType + '-combination-selectable-column-name'] = '_autoselectSecondBarcode';
+
+            return events;
+        },
+        afterRender: function() {
+            var defaultModel = this.combinationFiles.at(0);
+
+            try {
+                this._setupColumnNames(defaultModel.get('value').name);
+            }
+            catch (e) {
+            }
+        },
+        _setupColumnNamesEventHandler: function(e) {
+
+            var targetFilename = '';
+
+            try {
+                e.preventDefault();
+                targetFilename = e.target.value;
+            }
+            catch (e) {
+            }
+
+            this._setupColumnNames(targetFilename);
+        },
+        _autoselectSecondBarcode: function() {
+            var columnNames = document.getElementById(this.inputCount + '-' + this.parameterType + '-combination-first-barcode-column');
+
+            var barcodeA = $('#' + this.inputCount + '-' + this.parameterType + '-combination-names-column option:selected').text();
+            var barcodeB = $('#' + this.inputCount + '-' + this.parameterType + '-combination-first-barcode-column option:selected').text();
+            var barcodeC = '';
+
+            var selectedBarcodes = new Set();
+            selectedBarcodes.add(barcodeA);
+            selectedBarcodes.add(barcodeB);
+
+            for (var i = 0; i < columnNames.length; i++) {
+                if (selectedBarcodes.has(columnNames[i].value) === false) {
+                    barcodeC = columnNames[i].value;
+                    break;
+                }
+            };
+
+            $('#' + this.inputCount + '-' + this.parameterType + '-combination-second-barcode-column').val(barcodeC);
+        },
+        _setupColumnNames: function(targetFilename) {
+
+            // TODO: reactor this out into helper function
+
+            // Disable select setup
+            $('#' + this.inputCount + '-' + this.parameterType + '-combination-names-column').attr('disabled', true);
+            $('#' + this.inputCount + '-' + this.parameterType + '-combination-first-barcode-column').attr('disabled', true);
+
+            // Loading View setup
+            var loadingViewA = new App.Views.Util.Loading({keep: true});
+            loadingViewA.template = 'util/loading-inline';
+
+            var loadingViewB = new App.Views.Util.Loading({keep: true});
+            loadingViewB.template = 'util/loading-inline';
+
+            this.insertView('#' + this.inputCount + '-' + this.parameterType + '-combination-names-column-section', loadingViewA);
+            this.insertView('#' + this.inputCount + '-' + this.parameterType + '-combination-first-barcode-column-section', loadingViewB);
+
+            loadingViewA.render();
+            loadingViewB.render();
+
+            var selectedFileMetadata = this.combinationFiles.find(function(combinationFile) {
+                return combinationFile.get('value').name === targetFilename;
+            });
+
+            if (selectedFileMetadata) {
+
+                var selectedFile = selectedFileMetadata.getFileModel();
+
+                var that = this;
+                selectedFile.downloadFileToMemory()
+                    .always(function() {
+                        loadingViewA.remove();
+                        loadingViewB.remove();
+                    })
+                    .done(function(file) {
+                        var columns = that._parseColumnNamesFromFirstLine(file);
+
+                        // Remove old options
+                        $('#' + that.inputCount + '-' + that.parameterType + '-combination-names-column > option').remove();
+                        $('#' + that.inputCount + '-' + that.parameterType + '-combination-first-barcode-column > option').remove();
+
+                        // Set new options
+                        for (var i = 0; i < columns.length; i++) {
+                            $('#' + that.inputCount + '-' + that.parameterType + '-combination-names-column')
+                                .append('<option value="' + i + '">' + columns[i] + '</option>')
+                                ;
+
+                            $('#' + that.inputCount + '-' + that.parameterType + '-combination-first-barcode-column')
+                                .append('<option value="' + columns[i] + '">' + columns[i] + '</option>')
+                                ;
+                        }
+
+                        // Reenable select setup
+                        $('#' + that.inputCount + '-' + that.parameterType + '-combination-names-column').attr('disabled', false);
+                        $('#' + that.inputCount + '-' + that.parameterType + '-combination-first-barcode-column').attr('disabled', false);
+                    })
+                    .fail(function() {
+                    })
+                    ;
+            }
+        },
+        _parseColumnNamesFromFirstLine: function(file) {
+            var columnNames = [];
+
+            try {
+                var newlineSplit = file.split('\n');
+                newlineSplit = newlineSplit[0];
+
+                var commaSplit = newlineSplit.split(',');
+                columnNames = commaSplit;
+            }
+            catch (e) {
+            }
+
+            return columnNames;
+        },
+        /*
         updateBarcodeInfo: function(barcodeInfo, elementCount) {
             this.barcodeInfo = barcodeInfo;
 
@@ -574,23 +689,7 @@ define([
 
             this.render();
         },
-        getBarcodeColumns: function(elementCount) {
-            var barcodeColumns = [];
-
-            for (var i = 1; i < elementCount + 2; i++) {
-                var selectValue = i;
-
-                barcodeColumns.push({
-                    // NOTE: vdjpipe prefers to start counting from 0,
-                    // whereas humans prefer counting from 1.
-                    // This is a compromise.
-                    selectValue: --selectValue,
-                    displayValue: i,
-                });
-            }
-
-            return barcodeColumns;
-        },
+        */
     });
 
     Vdjpipe.FindSharedSequences = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
