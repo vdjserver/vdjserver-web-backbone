@@ -606,18 +606,15 @@ define([
         },
         _setupColumnNames: function(targetFilename) {
 
-            // TODO: reactor this out into helper function
+            // TODO: refactor this out into helper function
 
             // Disable select setup
             $('#' + this.inputCount + '-' + this.parameterType + '-combination-names-column').attr('disabled', true);
             $('#' + this.inputCount + '-' + this.parameterType + '-combination-first-barcode-column').attr('disabled', true);
 
             // Loading View setup
-            var loadingViewA = new App.Views.Util.Loading({keep: true});
-            loadingViewA.template = 'util/loading-inline';
-
-            var loadingViewB = new App.Views.Util.Loading({keep: true});
-            loadingViewB.template = 'util/loading-inline';
+            var loadingViewA = new App.Views.Util.LoadingInline({keep: true});
+            var loadingViewB = new App.Views.Util.LoadingInline({keep: true});
 
             this.insertView('#' + this.inputCount + '-' + this.parameterType + '-combination-names-column-section', loadingViewA);
             this.insertView('#' + this.inputCount + '-' + this.parameterType + '-combination-first-barcode-column-section', loadingViewB);
