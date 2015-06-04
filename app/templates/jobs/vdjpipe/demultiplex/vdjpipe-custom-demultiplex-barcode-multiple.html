@@ -1,19 +1,13 @@
 {{> vdjpipe-custom-demultiplex-barcode-top}}
-    {{#if barcodeFiles}}
-        <table class="table">
-            <tbody>
-                {{> vdjpipe-custom-demultiplex-barcode-shared-options}}
-                <input
-                    class="hidden job-form-item"
-                    name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-multibarcode"
-                    type="text"
-                    value="true"
-                >
-            </tbody>
-        </table>
-    {{else}}
-        <div class="alert alert-danger">
-            Warning: there are no barcode files available. Please upload barcode files on the project file list and set their type as "Barcode Sequences".
-        </div>
-    {{/if}}
+    <table class="table">
+        <tbody>
+            {{> vdjpipe-custom-demultiplex-barcode-shared-options}}
+            <input
+                class="hidden job-form-item"
+                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-multibarcode"
+                type="text"
+                value="true"
+            >
+        </tbody>
+    </table>
 {{> vdjpipe-custom-demultiplex-barcode-bottom}}
