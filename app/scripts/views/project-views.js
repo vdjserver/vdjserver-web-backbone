@@ -670,16 +670,45 @@ define([
                 var that = this;
                 var options = {
                     success: function(files) {
+/*
+                        var createFileSavePromise = function(model) {
+                            return model.save();
+                        };
 
-                        console.log('success! files are: ' + JSON.stringify(files));
+                        var fileSavePromises = [];
+                        for (var i = 0; i < files.length; i++) {
 
+                            // TODO: support full array of files
+                            var agaveFile = new Backbone.Agave.Model.File.Dropbox({
+                                projectUuid: that.projectUuid,
+                                urlToIngest: files[i].link,
+                            });
+
+
+                        };
+*/
+                        // TODO: support full array of files
                         var agaveFile = new Backbone.Agave.Model.File.Dropbox({
                             projectUuid: that.projectUuid,
                             urlToIngest: files[0].link,
                         });
 
+                        console.log('success! files are: ' + JSON.stringify(files));
+
                         console.log("pre sync");
-                        agaveFile.save();
+                        agaveFile.save()
+                            .then(function(response) {
+
+                                if (response.hasOwnProperty('result') === true && response.result.hasOwnProperty('uuid') === true) {
+
+                                    console.log("agaveFile result is now: " + JSON.stringify(response));
+
+                                    var notification = new Backbone.Agave.Model.Notification.FileUpload();
+                                    notification.set('associatedUuid', response.result.uuid);
+                                    return notification.save();
+                                }
+                            })
+                            ;
                         console.log("post sync");
 
 
@@ -1182,6 +1211,12 @@ define([
                 });
 
                 this.model.save()
+                    .then(function() {
+                        console.log("model save post is: " + JSON.stringify(that.model));
+                        var notification = new Backbone.Agave.Model.Notification.FileUpload();
+                        notification.set('associatedUuid', that.model.get('uuid'));
+                        return notification.save();
+                    })
                     .done(function() {
 
                         // Notify user that permissions are being set
