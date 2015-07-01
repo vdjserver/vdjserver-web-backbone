@@ -670,49 +670,38 @@ define([
                 var that = this;
                 var options = {
                     success: function(files) {
-/*
+
                         var createFileSavePromise = function(model) {
-                            return model.save();
+                            return model.save()
+                                .then(function(response) {
+
+                                    if (response.hasOwnProperty('result') === true && response.result.hasOwnProperty('uuid') === true) {
+                                        var notification = new Backbone.Agave.Model.Notification.FileUpload();
+                                        notification.set('associatedUuid', response.result.uuid);
+                                        return notification.save();
+                                    }
+                                })
+                                ;
                         };
 
                         var fileSavePromises = [];
                         for (var i = 0; i < files.length; i++) {
 
-                            // TODO: support full array of files
                             var agaveFile = new Backbone.Agave.Model.File.Dropbox({
                                 projectUuid: that.projectUuid,
                                 urlToIngest: files[i].link,
                             });
 
-
+                            fileSavePromises[fileSavePromises.length] = createFileSavePromise(agaveFile);
                         };
-*/
-                        // TODO: support full array of files
-                        var agaveFile = new Backbone.Agave.Model.File.Dropbox({
-                            projectUuid: that.projectUuid,
-                            urlToIngest: files[0].link,
-                        });
 
-                        console.log('success! files are: ' + JSON.stringify(files));
-
-                        console.log("pre sync");
-                        agaveFile.save()
-                            .then(function(response) {
-
-                                if (response.hasOwnProperty('result') === true && response.result.hasOwnProperty('uuid') === true) {
-
-                                    console.log("agaveFile result is now: " + JSON.stringify(response));
-
-                                    var notification = new Backbone.Agave.Model.Notification.FileUpload();
-                                    notification.set('associatedUuid', response.result.uuid);
-                                    return notification.save();
-                                }
+                        $.when.apply($, fileSavePromises)
+                            .then(function(results) {
+                                //console.log("all fileSaves done. results are: " + JSON.stringify(results));
                             })
                             ;
-                        console.log("post sync");
 
-
-                        // TODO: call vdj-api from here
+                        //console.log("post sync");
                     },
                     linkType: 'direct',
                     multiselect: true,
