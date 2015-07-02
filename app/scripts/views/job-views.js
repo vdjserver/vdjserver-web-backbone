@@ -617,13 +617,7 @@ define([
                 })
                 .then(function() {
 
-                    var factory = new App.Websockets.Jobs.Factory();
-                    var websocket = factory.getJobWebsocket();
-                    websocket.connectToServer();
-                    websocket.subscribeToJob(jobNotification.get('associatedUuid'));
-
-                    // Store in global namespace so other views can reuse this
-                    App.Instances.Websockets[jobNotification.get('associatedUuid')] = websocket;
+                    App.Instances.WebsocketManager.subscribeToJob(jobNotification.get('associatedUuid'));
 
                     var listView = App.Layouts.sidebar.getView('.sidebar');
                     listView.addNotification(jobNotification);

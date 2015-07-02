@@ -36,7 +36,7 @@ define([
             this.notificationModel = parameters.notificationModel;
 
             this.listenTo(
-                App.Instances.Websockets[this.notificationModel.get('associatedUuid')],
+                App.Instances.WebsocketManager,
                 'jobStatusUpdate',
                 this._handleJobStatusUpdate
             );

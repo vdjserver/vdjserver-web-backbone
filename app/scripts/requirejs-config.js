@@ -33,7 +33,6 @@ require.config({
 
         // Regular Models
         'error': 'models/error',
-        'job-websocket': 'models/job-websocket',
 
         // Agave - Models/Collections
         'telemetry': 'models/telemetry',
@@ -70,6 +69,7 @@ require.config({
         'handlebars-utilities':   'views/utilities/handlebars-utilities',
 
         // Utilities
+        'websocket-manager': 'utilities/websocket-manager',
         'serialization-tools': 'utilities/serialization-tools',
         'vdjpipe-workflow-parser': 'utilities/vdjpipe-workflow-parser',
         'vdjpipe-view-factory': 'utilities/vdjpipe-view-factory',
