@@ -272,6 +272,34 @@ function(Backbone, EnvironmentConfig, moment) {
         }
     );
 
+    File.Dropbox = File.extend({
+        sync: function(method, model, options) {
+
+            var that = this;
+
+            switch (method) {
+                case 'read':
+                case 'delete':
+                    return Backbone.Agave.sync(method, model, options);
+                    //break;
+
+                case 'create':
+                case 'update':
+
+                    return $.ajax({
+                        url: this.apiRoot + this.url(),
+                        headers: {
+                            'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token'),
+                        },
+                        data: {
+                            urlToIngest: this.get('urlToIngest'),
+                        },
+                        method: 'POST',
+                    });
+            }
+        },
+    });
+
     File.Metadata = Backbone.Agave.MetadataModel.extend(
         {
             // Public Methods

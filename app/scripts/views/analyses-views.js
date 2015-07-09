@@ -216,6 +216,7 @@ define([
 
             $.when.apply($, jobFetches)
                 .always(function() {
+                    console.log("always hit. jobModels length is: " + jobModels.length);
                     for (var i = 0; i < jobModels.length; i++) {
 
                         that.jobs.add(jobModels[i]);
@@ -224,19 +225,12 @@ define([
                         var job = that.jobs.get(jobModels[i]);
 
                         if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
-                            if (_.findIndex(App.Instances.Websockets, job.get('id'))) {
 
-                                var factory = new App.Websockets.Jobs.Factory();
-                                var websocket = factory.getJobWebsocket();
-                                websocket.connectToServer();
-                                websocket.subscribeToJob(job.get('id'));
-
-                                // Store in global namespace so other views can reuse this
-                                App.Instances.Websockets[job.get('id')] = websocket;
-                            }
+                            console.log("job if statement id is: " + job.get('id'));
+                            App.Instances.WebsocketManager.subscribeToEvent(job.get('id'));
 
                             that.listenTo(
-                                App.Instances.Websockets[job.get('id')],
+                                App.Instances.WebsocketManager,
                                 'jobStatusUpdate',
                                 that._handleJobStatusUpdate
                             );

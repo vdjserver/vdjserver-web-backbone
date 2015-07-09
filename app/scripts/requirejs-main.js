@@ -23,7 +23,6 @@ define([
 
     // Regular Models
     'error',
-    'job-websocket',
 
     // Agave
     'backbone-agave',
@@ -59,6 +58,7 @@ define([
     'handlebars-utilities',
 
     // Utilities
+    'websocket-manager',
     'serialization-tools',
     'vdjpipe-workflow-parser',
     'vdjpipe-view-factory',

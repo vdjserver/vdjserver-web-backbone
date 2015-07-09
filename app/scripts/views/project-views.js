@@ -315,6 +315,7 @@ define([
                 $('.has-tooltip').tooltip();
             },
             events: {
+                'click #dropbox-upload': '_dropboxUpload',
                 'click #file-upload':    '_clickFilesSelectorWrapper',
                 'change #file-dialog':   '_changeFilesSelector',
                 'click .selected-files': '_uiToggleDisabledButtonStatus',
@@ -360,8 +361,8 @@ define([
 
                 var that = this;
                 this.fileListings.reset();
-                this.fileListings.fetch()
-                    .done(function() {
+                return this.fileListings.fetch()
+                    .then(function() {
                         that._removeLoadingViews();
 
                         // Need to render main view before rendering fileListing subview
@@ -656,12 +657,71 @@ define([
             },
 
             // Event Responders
-            _clickFilesSelectorWrapper: function() {
+            _clickFilesSelectorWrapper: function(e) {
+                e.preventDefault();
                 document.getElementById('file-dialog').click();
             },
             _changeFilesSelector: function(e) {
                 var files = e.target.files;
                 this._parseFiles(files);
+            },
+            _dropboxUpload: function(e) {
+                e.preventDefault();
+
+                var that = this;
+                var options = {
+                    success: function(files) {
+
+                        var createFileSavePromise = function(model) {
+                            return model.save()
+                                .then(function(response) {
+
+                                    if (response.hasOwnProperty('result') === true && response.result.hasOwnProperty('uuid') === true) {
+                                        var fileTransferNotification = new Backbone.Agave.Model.Notification.FileImport();
+
+                                        fileTransferNotification.set('associatedUuid', response.result.uuid);
+                                        fileTransferNotification.projectUuid = that.projectUuid;
+                                        fileTransferNotification.filename = model.filename;
+                                        fileTransferNotification.projectView = that;
+
+                                        return fileTransferNotification.save()
+                                            .then(function() {
+                                                App.Instances.WebsocketManager.subscribeToEvent(response.result.uuid);
+                                            })
+                                            .then(function() {
+                                                var listView = App.Layouts.sidebar.getView('.sidebar');
+                                                listView.addFileImportNotification(fileTransferNotification);
+                                            })
+                                            ;
+                                    }
+                                })
+                                ;
+                        };
+
+                        var fileSavePromises = [];
+                        for (var i = 0; i < files.length; i++) {
+
+                            var agaveFile = new Backbone.Agave.Model.File.Dropbox({
+                                projectUuid: that.projectUuid,
+                                urlToIngest: files[i].link,
+                            });
+
+                            agaveFile.filename = files[i].name;
+
+                            fileSavePromises[fileSavePromises.length] = createFileSavePromise(agaveFile);
+                        };
+
+                        $.when.apply($, fileSavePromises)
+                            .then(function(results) {
+                                //console.log("all fileSaves done. results are: " + JSON.stringify(results));
+                            })
+                            ;
+                    },
+                    linkType: 'direct',
+                    multiselect: true,
+                };
+
+                Dropbox.choose(options);
             },
             _toggleSelectAllFiles: function(e) {
                 e.preventDefault();
@@ -1154,6 +1214,14 @@ define([
                 });
 
                 this.model.save()
+                    /*
+                    .then(function() {
+                        console.log("model save post is: " + JSON.stringify(that.model));
+                        var notification = new Backbone.Agave.Model.Notification.FileUpload();
+                        notification.set('associatedUuid', that.model.get('uuid'));
+                        return notification.save();
+                    })
+                    */
                     .done(function() {
 
                         // Notify user that permissions are being set

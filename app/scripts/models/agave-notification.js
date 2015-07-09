@@ -21,6 +21,24 @@ function(Backbone, EnvironmentConfig) {
         },
     });
 
+    Notification.FileImport = Backbone.Agave.Model.extend({
+        defaults: {
+            event: 'TRANSFORMING_COMPLETED',
+            //event: '*',
+            url: EnvironmentConfig.vdjauthRoot + '/notifications/files/${UUID}'
+                + '?event=${EVENT}'
+                + '&type=${TYPE}'
+                //+ '&format=${FORMAT}'
+                + '&path=${PATH}'
+                + '&system=${SYSTEM}',
+            associatedUuid: '',
+            persistent: false,
+        },
+        url: function() {
+            return '/notifications/v2/';
+        },
+    });
+
     Backbone.Agave.Model.Notification = Notification;
     return Notification;
 });
