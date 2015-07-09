@@ -227,7 +227,7 @@ define([
                         if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
 
                             console.log("job if statement id is: " + job.get('id'));
-                            App.Instances.WebsocketManager.subscribeToJob(job.get('id'));
+                            App.Instances.WebsocketManager.subscribeToEvent(job.get('id'));
 
                             that.listenTo(
                                 App.Instances.WebsocketManager,

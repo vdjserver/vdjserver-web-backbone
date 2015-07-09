@@ -361,8 +361,8 @@ define([
 
                 var that = this;
                 this.fileListings.reset();
-                this.fileListings.fetch()
-                    .done(function() {
+                return this.fileListings.fetch()
+                    .then(function() {
                         that._removeLoadingViews();
 
                         // Need to render main view before rendering fileListing subview
@@ -676,9 +676,22 @@ define([
                                 .then(function(response) {
 
                                     if (response.hasOwnProperty('result') === true && response.result.hasOwnProperty('uuid') === true) {
-                                        var notification = new Backbone.Agave.Model.Notification.FileUpload();
-                                        notification.set('associatedUuid', response.result.uuid);
-                                        return notification.save();
+                                        var fileTransferNotification = new Backbone.Agave.Model.Notification.FileImport();
+
+                                        fileTransferNotification.set('associatedUuid', response.result.uuid);
+                                        fileTransferNotification.projectUuid = that.projectUuid;
+                                        fileTransferNotification.filename = model.filename;
+                                        fileTransferNotification.projectView = that;
+
+                                        return fileTransferNotification.save()
+                                            .then(function() {
+                                                App.Instances.WebsocketManager.subscribeToEvent(response.result.uuid);
+                                            })
+                                            .then(function() {
+                                                var listView = App.Layouts.sidebar.getView('.sidebar');
+                                                listView.addFileImportNotification(fileTransferNotification);
+                                            })
+                                            ;
                                     }
                                 })
                                 ;
@@ -692,6 +705,8 @@ define([
                                 urlToIngest: files[i].link,
                             });
 
+                            agaveFile.filename = files[i].name;
+
                             fileSavePromises[fileSavePromises.length] = createFileSavePromise(agaveFile);
                         };
 
@@ -700,8 +715,6 @@ define([
                                 //console.log("all fileSaves done. results are: " + JSON.stringify(results));
                             })
                             ;
-
-                        //console.log("post sync");
                     },
                     linkType: 'direct',
                     multiselect: true,
@@ -1200,12 +1213,14 @@ define([
                 });
 
                 this.model.save()
+                    /*
                     .then(function() {
                         console.log("model save post is: " + JSON.stringify(that.model));
                         var notification = new Backbone.Agave.Model.Notification.FileUpload();
                         notification.set('associatedUuid', that.model.get('uuid'));
                         return notification.save();
                     })
+                    */
                     .done(function() {
 
                         // Notify user that permissions are being set

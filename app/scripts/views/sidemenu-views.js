@@ -115,6 +115,7 @@ define([
                     });
                 }
             },
+
             addNotification: function(jobNotification) {
 
                 var jobNotificationView = new App.Views.Notifications.Job({
@@ -148,6 +149,20 @@ define([
                 );
 
                 fileTransferListView.render();
+            },
+
+            addFileImportNotification: function(fileImportNotification) {
+
+                var fileImportNotificationView = new App.Views.Notifications.FileImport({
+                    notificationModel: fileImportNotification,
+                });
+
+                this.insertView(
+                    '#project-' + fileImportNotification.projectUuid + '-notification',
+                    fileImportNotificationView
+                );
+
+                fileImportNotificationView.render();
             },
 
             removeFileTransfer: function(fileUniqueIdentifier) {

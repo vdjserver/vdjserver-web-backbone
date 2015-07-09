@@ -21,7 +21,7 @@ function(Backbone, EnvironmentConfig) {
         },
     });
 
-    Notification.FileUpload = Backbone.Agave.Model.extend({
+    Notification.FileImport = Backbone.Agave.Model.extend({
         defaults: {
             event: 'TRANSFORMING_COMPLETED',
             //event: '*',

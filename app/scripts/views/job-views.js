@@ -617,7 +617,7 @@ define([
                 })
                 .then(function() {
 
-                    App.Instances.WebsocketManager.subscribeToJob(jobNotification.get('associatedUuid'));
+                    App.Instances.WebsocketManager.subscribeToEvent(jobNotification.get('associatedUuid'));
 
                     var listView = App.Layouts.sidebar.getView('.sidebar');
                     listView.addNotification(jobNotification);

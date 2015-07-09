@@ -68,6 +68,42 @@ define([
         },
     });
 
+    Notifications.FileImport = Backbone.View.extend({
+        template: 'notification/file-import',
+        initialize: function(parameters) {
+
+            this.notificationModel = parameters.notificationModel;
+
+            this.listenTo(
+                App.Instances.WebsocketManager,
+                'fileImportUpdate',
+                this._handleFileImportUpdate
+            );
+
+            this.statusMessage = 'pending';
+        },
+        serialize: function() {
+            return {
+                fileName: this.notificationModel.filename,
+                fileStatus: this.statusMessage,
+                projectUuid: this.notificationModel.projectUuid,
+            };
+        },
+
+        // Private Methods
+        _handleFileImportUpdate: function(websocketNotification) {
+
+            if (this.notificationModel.associatedUuid === websocketNotification.fileUuid) {
+                this.statusMessage = websocketNotification.fileImportStatus;
+                this.render();
+            }
+
+            if (websocketNotification.fileImportStatus === 'finished') {
+                this.notificationModel.projectView._fetchAndRenderFileListings();
+            }
+        },
+    });
+
     App.Views.Notifications = Notifications;
     return Notifications;
 });

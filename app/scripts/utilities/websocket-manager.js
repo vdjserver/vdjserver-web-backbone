@@ -27,7 +27,9 @@ define([
             );
 
             this.socket.on('connect', function() {
-                console.log("connect room ok");
+                if (EnvironmentConfig.debug.console) {
+                    console.log('connect room ok');
+                }
             });
 
             this.socket.on('connect_error', function(error) {
@@ -43,17 +45,27 @@ define([
             });
 
             this.socket.on('jobUpdate', function(jobUpdate) {
-                console.log("jobUpdate received: " + JSON.stringify(jobUpdate));
                 if (EnvironmentConfig.debug.console) {
                     console.log('socket jobUpdate received: ' + JSON.stringify(jobUpdate));
                 }
 
                 that.trigger('jobStatusUpdate', jobUpdate);
             });
+
+            this.socket.on('fileImportUpdate', function(fileImportUpdate) {
+                if (EnvironmentConfig.debug.console) {
+                    console.log('socket fileImportUpdate received: ' + JSON.stringify(fileImportUpdate));
+                }
+
+                that.trigger('fileImportUpdate', fileImportUpdate);
+            });
         },
-        subscribeToJob: function(jobId) {
-            console.log("subscribeToJob ok - " + jobId);
-            this.socket.emit('joinRoom', jobId);
+        subscribeToEvent: function(eventId) {
+            if (EnvironmentConfig.debug.console) {
+                console.log('socket subscribeToEvent - ' + eventId);
+            }
+
+            this.socket.emit('joinRoom', eventId);
         },
     });
 

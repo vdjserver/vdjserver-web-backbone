@@ -262,7 +262,7 @@ function(Backbone, EnvironmentConfig, moment) {
                     });
             }
         },
-    })
+    });
 
     File.Metadata = Backbone.Agave.MetadataModel.extend(
         {
