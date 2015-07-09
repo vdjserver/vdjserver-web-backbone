@@ -17,6 +17,14 @@
                 value="Combination{{inputCount}}"
             >
 
+            <input
+                class="hidden"
+                type="text"
+                value=""
+                name="{{inputCount}}-{{parameterType}}-combination-second-barcode-column"
+                id="{{inputCount}}-{{parameterType}}-combination-second-barcode-column"
+            >
+
             <div class="panel-body">
                 <div class="row row-with-spacer">
                     <div class="col-md-12">
@@ -31,6 +39,7 @@
                                             <select
                                                 class="job-form-item"
                                                 name="{{inputCount}}-{{parameterType}}-combination-csv-file"
+                                                id="{{inputCount}}-{{parameterType}}-combination-csv-file"
                                             >
                                                 {{#each combinationFiles}}
                                                     <option value={{value.name}}>{{value.name}}</option>
@@ -38,24 +47,9 @@
                                             </select>
                                         </td>
                                     </tr>
-                                    {{!--
                                     <tr>
                                         <td>
-                                            Generate Histogram
-                                        </td>
-                                        <td>
-                                            <input
-                                                class="job-form-item"
-                                                name="{{inputCount}}-{{parameterType}}-custom-combination-histogram"
-                                                type="checkbox"
-                                                checked
-                                            >
-                                        </td>
-                                    </tr>
-                                    --}}
-                                    <tr>
-                                        <td>
-                                            Skip First Line
+                                            Treat First Line as Column Names
                                         </td>
                                         <td>
                                             <input
@@ -65,54 +59,61 @@
                                             >
                                         </td>
                                     </tr>
-
-    {{!--
                                     <tr>
                                         <td>
-                                            Is there a sample identifier column?
-                                        </td>
-                                        <td>
-                                            <input
-                                                class="job-form-item"
-                                                name="{{inputCount}}-{{parameterType}}-combination-sample-identifier-column-present"
-                                                type="checkbox"
-                                            >
-                                        </td>
-                                    </tr>
-    --}}
-                                    <tr>
-                                        <td>
-                                            Names Column Ordering
+                                            Sample Names Appear in Column
                                         </td>
                                         <td>
                                             <select
-                                                class="job-form-item"
-                                                name="{{inputCount}}-{{parameterType}}-combination-names-column-order"
+                                                class="job-form-item {{inputCount}}-{{parameterType}}-combination-selectable-column-name"
+                                                name="{{inputCount}}-{{parameterType}}-combination-names-column"
+                                                id="{{inputCount}}-{{parameterType}}-combination-names-column"
                                             >
                                                 {{#each barcodeColumns}}
-                                                    <option value="{{this}}">{{this}}</option>
+                                                    <option value="{{this.selectValue}}">{{this.displayValue}}</option>
                                                 {{/each}}
                                             </select>
+                                            <div id="{{inputCount}}-{{parameterType}}-combination-names-column-section"></div>
                                         </td>
                                     </tr>
-
-                                    {{#each barcodeInfo}}
-                                        <tr>
-                                            <td>
-                                                "{{this.barcodeName}}" Barcodes Appear in Column
-                                            </td>
-                                            <td>
-                                                <select
+                                    <tr>
+                                        <td>
+                                            First Barcode Appears in Column
+                                        </td>
+                                        <td>
+                                            <select
+                                                class="job-form-item {{inputCount}}-{{parameterType}}-combination-selectable-column-name"
+                                                name="{{inputCount}}-{{parameterType}}-combination-first-barcode-column"
+                                                id="{{inputCount}}-{{parameterType}}-combination-first-barcode-column"
+                                            >
+                                                {{#each barcodeColumns}}
+                                                    <option value="{{this.selectValue}}">{{this.displayValue}}</option>
+                                                {{/each}}
+                                            </select>
+                                            <div id="{{inputCount}}-{{parameterType}}-combination-first-barcode-column-section"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Generate Histogram
+                                        </td>
+                                        <td>
+                                            {{#if options.custom_histogram}}
+                                                <input
                                                     class="job-form-item"
-                                                    name="{{../inputCount}}-{{../parameterType}}-{{barcodeElementNumber}}-element-barcode-column-order"
+                                                    name="{{inputCount}}-{{parameterType}}-combination-histogram"
+                                                    type="checkbox"
+                                                    checked
                                                 >
-                                                    {{#each ../barcodeColumns}}
-                                                        <option value="{{this}}">{{this}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    {{/each}}
+                                            {{else}}
+                                                <input
+                                                    class="job-form-item"
+                                                    name="{{inputCount}}-{{parameterType}}-combination-histogram"
+                                                    type="checkbox"
+                                                >
+                                            {{/if}}
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         {{else}}

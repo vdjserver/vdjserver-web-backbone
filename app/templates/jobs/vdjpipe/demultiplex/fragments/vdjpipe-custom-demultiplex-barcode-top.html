@@ -1,0 +1,47 @@
+<div class="row row-with-spacer">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-12">
+                        <span id="{{inputCount}}-barcode-title-{{elementCount}}">{{title}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- These are always set -->
+            <input
+                class="hidden"
+                id="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-value-name"
+                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-value-name"
+                type="text"
+                value="DemultiplexBarcode{{elementCount}}"
+            >
+
+            <input
+                class="hidden"
+                id="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-score-name"
+                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-score-name"
+                type="text"
+                value="DemultiplexBarcode{{elementCount}}-score"
+            >
+
+            <input
+                class="hidden"
+                id="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-type"
+                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-type"
+                type="text"
+                value="{{options.custom_type}}"
+            >
+
+            <input
+                name="{{inputCount}}-{{parameterType}}-elements[]"
+                type="text"
+                value="{{elementCount}}"
+                hidden
+            >
+
+            <div class="panel-body">
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">

@@ -128,6 +128,42 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 return jqxhr;
             },
+            downloadFileToMemory: function() {
+
+                var that = this;
+
+                var path = '';
+
+                if (this.get('jobUuid')) {
+                    path = EnvironmentConfig.agaveRoot
+                         + '/jobs'
+                         + '/v2'
+                         + '/' + this.get('jobUuid')
+                         + '/outputs'
+                         + '/media'
+                         + '/' + this.get('name')
+                         ;
+                }
+                else {
+                    path = EnvironmentConfig.agaveRoot
+                         + '/files'
+                         + '/v2'
+                         + '/media'
+                         + '/system'
+                         + '/' + EnvironmentConfig.storageSystem
+
+                         // NOTE: this uses agave // paths
+                         + '/' + this.get('path')
+                         ;
+                }
+
+                return $.ajax({
+                    url: path,
+                    headers: {
+                        'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token'),
+                    },
+                });
+            },
             downloadFileToDisk: function() {
 
                 var that = this;

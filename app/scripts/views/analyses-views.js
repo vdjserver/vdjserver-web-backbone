@@ -865,7 +865,7 @@ define([
                   ;
 
         var height = chartHeight - (chartHeight / 4);
-        console.log('height is: ' + height);
+        //console.log('height is: ' + height);
 
         var min = Infinity;
         var max = -Infinity;

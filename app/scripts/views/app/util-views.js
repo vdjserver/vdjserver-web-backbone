@@ -27,6 +27,10 @@ define(['app'], function(App) {
         },
     });
 
+    Util.LoadingInline = Util.Loading.extend({
+        template: 'util/loading-inline',
+    });
+
     Util.Alert = Backbone.View.extend({
         template: 'util/alert',
         attributes: function() {
