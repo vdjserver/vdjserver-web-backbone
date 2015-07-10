@@ -29,10 +29,8 @@ define([
     // Agave
     'backbone-agave',
     'agave-account',
-    'agave-community',
-    'agave-communities',
-    'agave-community-project',
-    'agave-communities-projects',
+    'agave-community-data',
+    'agave-community-datas',
     'agave-notification',
 
     'agave-password-change',
@@ -83,7 +81,6 @@ define([
 
     'account-views',
     'community-views',
-    'community-project-views',
     'forgot-password-views',
     'profile-views',
     'job-views',

@@ -80,9 +80,12 @@ define(['app'], function(App) {
             'account':                          'createAccount',
             'account/pending':                  'verificationPending',
             'account/verify/:id':               'verifyAccount',
-            'password-reset(/:uuid)':           'forgotPassword',
+            'community':                        'community',
+            'community/:id':                    'communityDetail',
             'account/profile':                  'accountProfile',
             'account/change-password':          'changePassword',
+            'feedback':                         'feedback',
+            'password-reset(/:uuid)':           'forgotPassword',
             'project':                          'projectIndex',
             'project/create':                   'projectCreate',
             'project/:id':                      'projectDetail',
@@ -92,9 +95,6 @@ define(['app'], function(App) {
             'project/:id/users':                'projectManageUsers',
             'project/:id/jobs':                 'projectJobHistory',
             'project/:id/jobs/:jobId':          'projectJobOutput',
-            'feedback':                         'feedback',
-            'community':                        'community',
-            'community/project/:id':            'communityProject',
 
             // 404
             '*notFound': 'notFound',
@@ -130,39 +130,40 @@ define(['app'], function(App) {
         // Community
         community: function() {
 
-          var destinationRoute = function() {
-             _setProjectSubviews();
+            var destinationRoute = function() {
+                _setProjectSubviews();
 
-            var communityDataView = new App.Views.Community.Index();
-            App.Layouts.content.setView('.content', communityDataView);
-            App.Layouts.content.render()
-              .promise()
-              .done(function() {
-                communityDataView.startChart();
-              });
-          };
+                var communityDataView = new App.Views.Community.Index();
+                App.Layouts.content.setView('.content', communityDataView);
+                App.Layouts.content.render()
+                    .promise()
+                    .done(function() {
+                        communityDataView.startChart();
+                    })
+                    ;
+            };
 
-          _routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
-        // Community Projects
-        communityProject: function() {
+        // Community Detail
+        communityDetail: function(communityDataId) {
 
-          var destinationRoute = function() {
-             _setProjectSubviews();
+            var destinationRoute = function() {
+                _setProjectSubviews();
 
-            var communityProjectDataView = new App.Views.CommunityProject.Index();
-            App.Layouts.content.setView('.content', communityProjectDataView);
-            App.Layouts.content.render()
-              .promise()
-              .done(function() {
-                communityProjectDataView.startChart();
-              });
-          };
+                var communityDetailView = new App.Views.Community.Detail({communityDataId: communityDataId});
+                App.Layouts.content.setView('.content', communityDetailView);
+                App.Layouts.content.render()
+                    .promise()
+                    .done(function() {
+                        communityDetailView.startChart();
+                    })
+                    ;
+            };
 
-          _routeWithTokenRefreshCheck(destinationRoute);
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
-
 
         // Verification Pending
         verificationPending: function() {

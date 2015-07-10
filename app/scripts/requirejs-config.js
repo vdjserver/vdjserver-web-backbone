@@ -38,10 +38,9 @@ require.config({
         // Agave - Models/Collections
         'agave-account': 'models/agave-account',
         'agave-feedback': 'models/agave-feedback',
-        'agave-community': 'models/agave-community',
-        'agave-communities': 'collections/agave-communities',
-        'agave-community-project': 'models/agave-community-project',
-        'agave-communities-projects': 'collections/agave-communities-projects',
+
+        'agave-community-data': 'models/agave-community-data',
+        'agave-community-datas': 'collections/agave-community-datas',
 
         'agave-notification': 'models/agave-notification',
         'agave-password-reset': 'models/agave-password-reset',
@@ -104,7 +103,6 @@ require.config({
         'vdjpipe-views': 'views/vdjpipe-views',
         'feedback-views': 'views/feedback-views',
         'community-views': 'views/community-views',
-        'community-project-views': 'views/community-project-views',
 
         // Routers
         'router': 'routers/router'
@@ -162,24 +160,14 @@ require.config({
             exports: 'Backbone.Agave.Model.Account',
         },
 
-        'agave-community': {
-          deps: ['backbone', 'backbone-agave'],
-          exports: 'Backbone.Agave.Model.Community'
+        'agave-community-data': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.CommunityData',
         },
 
-        'agave-communities': {
-          deps: ['backbone', 'backbone-agave', 'agave-community'],
-          exports: 'Backbone.Agave.Collection.Communities'
-        },
-
-        'agave-community-project': {
-          deps: ['backbone', 'backbone-agave'],
-          exports: 'Backbone.Agave.Model.CommunityProject'
-        },
-
-        'agave-communities-projects': {
-          deps: ['backbone', 'backbone-agave', 'agave-community-project'],
-          exports: 'Backbone.Agave.Collection.CommunitiesProjects'
+        'agave-community-datas': {
+            deps: ['backbone', 'backbone-agave', 'agave-community-data'],
+            exports: 'Backbone.Agave.Collection.CommunityDatas'
         },
 
         'agave-notification': {
@@ -205,10 +193,12 @@ require.config({
             deps: ['backbone', 'backbone-agave', 'agave-tenant-user'],
             exports: 'Backbone.Agave.Collection.TenantUsers'
         },
-'agave-feedback': {
-    deps: ['backbone', 'backbone-agave'],
-    exports: 'Backbone.Agave.Model.FeedbackModel'
-},
+
+        'agave-feedback': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.FeedbackModel'
+        },
+
         'agave-file': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.File'

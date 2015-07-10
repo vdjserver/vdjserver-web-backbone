@@ -1,0 +1,184 @@
+<div class="container-fluid">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="form-group col-md-3 pull-right">
+                <input id="searchAll" type="text" class="form-control pull-right" placeholder="Search">
+            </div>
+        </div>
+
+        {{!-- Make sure not to render until we have data... --}}
+        {{#if communityData.value.title}}
+            <table class='display' id='community-detail' cellspacing="0" width="100%">
+                <thead>
+                    <th></th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Title</strong></td>
+                        <td>{{communityData.value.title}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BioProject Type</strong></td>
+                        <td>{{communityData.value.bioProjectType}}</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>SRA Abstract</strong></td>
+                        <td>{{communityData.value.abstract}}</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>Paper</strong></td>
+                        <td><a href="{{communityData.value.paper}}" target="_blank">{{communityData.value.paper}}</a></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>SRA Study</strong></td>
+                        <td>{{communityData.value.studyId}}</td>
+                        <!--
+                            <td><a href="{{communityData.value.sraStudy.url}}" target="_blank">{{communityData.value.sraStudy.id}}</a></td>
+                        -->
+                    </tr>
+
+                    <tr>
+                        <td><strong>BioProject</strong></td>
+                        <td><a href="{{communityData.value.bioProject.url}}" target="_blank">{{communityData.value.bioProject.id}}</a></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>Organism</strong></td>
+                        <td>{{communityData.value.organism}}</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>VDJServer processing</strong</td>
+                        <td>{{{communityData.value.vdjServerProcessing}}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class='display' id='community2' cellspacing="0" width="100%">
+                <thead>
+                    <th>
+                    </th>
+                    {{#each communityData.value.sraExperiment}}
+                        <th></th>
+                    {{/each}}
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SRA Experiment</strong></td>
+
+                        {{#each communityData.value.sraExperiment}}
+                            <td>
+                                <a href="{{this.url}}" target="_blank">{{this.id}}</a>
+                            </td>
+                        {{/each}}
+                    </tr>
+
+                    <tr>
+                        <td><strong>Biosample</strong></td>
+
+                        {{#each communityData.value.biosample}}
+                            <td>
+                                {{this}}
+                            </td>
+                        {{/each}}
+                    </tr>
+
+                    <tr>
+                        <td><strong>Sample Description</strong></td>
+
+                        {{#each communityData.value.sampleDescription}}
+                            <td>
+                                {{this}}
+                            </td>
+                        {{/each}}
+                    </tr>
+
+                    <tr>
+                        <td><strong>SRA Run</strong></td>
+
+                        {{#each communityData.value.sraRun}}
+                            <td>
+                                <a href="{{this.url}}" target="_blank">{{this.id}}</a>
+                            </td>
+                        {{/each}}
+                    </tr>
+
+                    <tr>
+                        <td><strong>Layout</strong></td>
+
+                        {{#each communityData.value.layout}}
+                            <td>
+                                {{this}}
+                            </td>
+                        {{/each}}
+                    </tr>
+
+                    <tr>
+                        <td><strong>Platform</strong></td>
+
+                        {{#each communityData.value.platform}}
+                            <td>
+                                {{this}}
+                            </td>
+                        {{/each}}
+                    </tr>
+
+                    <tr>
+                        <td><strong>Read Count</strong></td>
+                        {{#each communityData.value.readCount}}
+                            <td>
+                                {{this}}
+                            </td>
+                        {{/each}}
+                    </tr>
+
+                    <tr>
+                        <td><strong>Sequence Length</strong</td>
+                        {{#each communityData.value.sequenceLength}}
+                            <td>
+                                {{this}}
+                            </td>
+                        {{/each}}
+                    </tr>
+
+                    <tr>
+                        <td><strong>fastq Extracted from SRA</strong></td>
+                        {{#each communityData.value.fastqSRA}}
+                            <td>
+                                {{this}}
+                            </td>
+                        {{/each}}
+                    </tr>
+
+                    <tr>
+                        <td><strong>QC Filtered Output</strong></td>
+                        {{#each communityData.value.qcFilteredOutput}}
+                            <td>
+                                {{this}}
+                            </td>
+                        {{/each}}
+                    </tr>
+
+                    <tr>
+                        <td><strong>IgBlast Output</strong</td>
+
+                        {{#each communityData.value.igBlastOutput}}
+                            <td>
+                                {{#each this}}
+                                    <li>
+                                        {{this}}
+                                    </li>
+                                {{/each}}
+                            </td>
+                        {{/each}}
+                    </tr>
+                </tbody>
+            </table>
+        {{/if}}
+
+    </div>
+</div>

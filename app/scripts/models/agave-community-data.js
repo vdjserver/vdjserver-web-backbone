@@ -1,14 +1,27 @@
-define(
-    [
-        'backbone',
-        'environment-config'
-    ],
-function(Backbone, EnvironmentConfig) {
+define([
+    'backbone',
+    'environment-config'
+], function(
+    Backbone,
+    EnvironmentConfig
+) {
 
     'use strict';
 
-    var CommunityProject = Backbone.Agave.Model.extend({
+    var CommunityData = Backbone.Agave.MetadataModel.extend({
+        /*
         defaults: {
+            sraStudy: '',
+            pubMedId: '',
+            organism: '',
+            receptor: '',
+            study: '',
+            description: '',
+            experiments: '',
+            runs: '',
+            sraSubmission: '',
+            notes: '',
+
             title: '',
             bioProjectType: '',
             sraAbstract: '',
@@ -30,16 +43,13 @@ function(Backbone, EnvironmentConfig) {
             qcFilteredOutput: [],
             igBlastOutput: []
         },
-        // apiRoot: EnvironmentConfig.vdjauthRoot,
-        apiRoot: 'http://localhost:9001',
-        url: function() {
-          // return '/community'
-          return '/data/community-project.json'
-        },
-        requiresAuth: false,
+        */
 
+        url: function() {
+            return '/meta/v2/data/' + this.get('uuid');
+        },
     });
 
-    Backbone.Agave.Model.CommunityProject = CommunityProject;
-    return CommunityProject;
+    Backbone.Agave.Model.CommunityData = CommunityData;
+    return CommunityData;
 });
