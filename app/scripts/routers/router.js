@@ -82,6 +82,8 @@ define(['app'], function(App) {
             'account/profile':                  'accountProfile',
             'account/change-password':          'changePassword',
             'auth/logout':                      'authLogout',
+            'community':                        'community',
+            'community/:id':                    'communityDetail',
             'feedback':                         'feedback',
             'password-reset(/:uuid)':           'forgotPassword',
             'project':                          'projectIndex',
@@ -124,6 +126,44 @@ define(['app'], function(App) {
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.Account.CreateAccount());
             App.Layouts.main.render();
+        },
+
+        // Community
+        community: function() {
+
+            var destinationRoute = function() {
+                _setProjectSubviews();
+
+                var communityDataView = new App.Views.Community.Index();
+                App.Layouts.content.setView('.content', communityDataView);
+                App.Layouts.content.render()
+                    .promise()
+                    .done(function() {
+                        communityDataView.startChart();
+                    })
+                    ;
+            };
+
+            _routeWithTokenRefreshCheck(destinationRoute);
+        },
+
+        // Community Detail
+        communityDetail: function(communityDataId) {
+
+            var destinationRoute = function() {
+                _setProjectSubviews();
+
+                var communityDetailView = new App.Views.Community.Detail({communityDataId: communityDataId});
+                App.Layouts.content.setView('.content', communityDetailView);
+                App.Layouts.content.render()
+                    .promise()
+                    .done(function() {
+                        communityDetailView.startChart();
+                    })
+                    ;
+            };
+
+            _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         // Verification Pending

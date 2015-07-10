@@ -8,6 +8,7 @@ require.config({
         'bootstrap':        '../bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap',
         'chance':           '../bower_components/chance/chance',
         'datatables':       '../bower_components/datatables/media/js/jquery.dataTables',
+        'datatables-responsive': '../bower_components/datatables-responsive/js/dataTables.responsive',
         'detect':           '../bower_components/Detect.js/detect',
         'filesize':         '../bower_components/filesize/lib/filesize',
         'file-saver':       '../bower_components/file-saver/FileSaver',
@@ -39,6 +40,9 @@ require.config({
 
         'agave-account': 'models/agave-account',
         'agave-feedback': 'models/agave-feedback',
+
+        'agave-community-data': 'models/agave-community-data',
+        'agave-community-datas': 'collections/agave-community-datas',
 
         'agave-notification': 'models/agave-notification',
         'agave-password-reset': 'models/agave-password-reset',
@@ -101,6 +105,7 @@ require.config({
         'vdjpipe-views': 'views/vdjpipe-views',
         'feedback-views': 'views/feedback-views',
         'software-views': 'views/software-views',
+        'community-views': 'views/community-views',
 
         // Routers
         'router': 'routers/router'
@@ -161,6 +166,16 @@ require.config({
         'agave-account': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.Account',
+        },
+
+        'agave-community-data': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.CommunityData',
+        },
+
+        'agave-community-datas': {
+            deps: ['backbone', 'backbone-agave', 'agave-community-data'],
+            exports: 'Backbone.Agave.Collection.CommunityDatas'
         },
 
         'agave-notification': {

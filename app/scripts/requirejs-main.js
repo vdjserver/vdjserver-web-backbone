@@ -13,6 +13,7 @@ define([
     // Libs for JS visualization
     'nvd3',
     'box', // box for help with the box and whisker plot
+    'datatables-responsive',
 
     //Library for using google's recaptcha-ajax
     'recaptcha-ajax',
@@ -29,6 +30,8 @@ define([
     'telemetry',
 
     'agave-account',
+    'agave-community-data',
+    'agave-community-datas',
     'agave-notification',
 
     'agave-password-change',
@@ -78,6 +81,7 @@ define([
     'not-found-views',
 
     'account-views',
+    'community-views',
     'forgot-password-views',
     'profile-views',
     'job-views',

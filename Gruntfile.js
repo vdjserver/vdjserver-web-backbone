@@ -282,6 +282,7 @@ module.exports = function(grunt) {
                              */
                             'nvd3/nv.d3.css',
                             'datatables/media/css/jquery.dataTables.min.css',
+                            'datatables-responsive/css/dataTables.responsive.css',
                             'animate.css/animate.css',
                         ],
                     },
