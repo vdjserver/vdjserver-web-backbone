@@ -12,7 +12,7 @@ function(Backbone, EnvironmentConfig) {
     Notification.Job = Backbone.Agave.Model.extend({
         defaults: {
             event: '*',
-            url: EnvironmentConfig.vdjauthRoot + '/notifications/jobs/${JOB_ID}?status=${JOB_STATUS}&event=${EVENT}&error=${JOB_ERROR}',
+            url: EnvironmentConfig.vdjApi.host + '/notifications/jobs/${JOB_ID}?status=${JOB_STATUS}&event=${EVENT}&error=${JOB_ERROR}',
             associatedUuid: '',
             persistent: true,
         },
@@ -25,7 +25,7 @@ function(Backbone, EnvironmentConfig) {
         defaults: {
             event: 'TRANSFORMING_COMPLETED',
             //event: '*',
-            url: EnvironmentConfig.vdjauthRoot + '/notifications/files/${UUID}'
+            url: EnvironmentConfig.vdjApi.host + '/notifications/files/${UUID}'
                 + '?event=${EVENT}'
                 + '&type=${TYPE}'
                 //+ '&format=${FORMAT}'

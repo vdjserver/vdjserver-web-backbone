@@ -16,7 +16,7 @@ define([
             var that = this;
 
             this.socket = io.connect(
-                EnvironmentConfig.vdjauthRoot,
+                EnvironmentConfig.vdjApi.host,
                 {
                     'reconnection': true,
                     'reconnectionDelay': 1000,

@@ -1650,13 +1650,13 @@ define([
             var that = this;
             this.permissions.fetch()
                 .done(function() {
-                    that.permissions.remove(EnvironmentConfig.serviceAccountUsername);
+                    that.permissions.remove(EnvironmentConfig.agave.serviceAccountUsername);
                     that.render();
 
                     that.tenantUsers = new Backbone.Agave.Collection.TenantUsers();
                     that.tenantUsers.fetch()
                         .done(function() {
-                            that.tenantUsers.remove(EnvironmentConfig.serviceAccountUsername);
+                            that.tenantUsers.remove(EnvironmentConfig.agave.serviceAccountUsername);
                             that._usernameTypeahead(that.permissions, that.tenantUsers);
                         })
                         .fail(function(error) {

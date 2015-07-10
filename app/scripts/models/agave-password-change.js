@@ -16,7 +16,7 @@ function(Backbone, EnvironmentConfig) {
             newPassword: '',
             passwordCheck: ''
         },
-        apiRoot: EnvironmentConfig.vdjauthRoot,
+        apiHost: EnvironmentConfig.vdjApi.host,
         url: function() {
             return '/user/change-password';
         },
@@ -29,7 +29,7 @@ function(Backbone, EnvironmentConfig) {
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
-                url: EnvironmentConfig.vdjauthRoot + this.url(),
+                url: EnvironmentConfig.vdjApi.host + this.url(),
             });
 
             return jqxhr;

@@ -29,7 +29,7 @@ function(Backbone, EnvironmentConfig) {
         sync: function(method, model, options) {
 
             if (this.get('uuid') === '') {
-                options.apiRoot = EnvironmentConfig.vdjauthRoot;
+                options.apiHost = EnvironmentConfig.vdjApi.host;
                 options.url = '/projects';
 
                 var value = this.get('value');
