@@ -141,6 +141,7 @@ define([
             'click .job-pagination-previous': 'jobPaginationPrevious',
             'click .job-pagination-next': 'jobPaginationNext',
             'click .job-pagination': 'jobPaginationIndex',
+            'click .view-config': 'viewConfig',
         },
         serialize: function() {
             return {
@@ -216,7 +217,6 @@ define([
 
             $.when.apply($, jobFetches)
                 .always(function() {
-                    console.log("always hit. jobModels length is: " + jobModels.length);
                     for (var i = 0; i < jobModels.length; i++) {
 
                         that.jobs.add(jobModels[i]);
@@ -226,7 +226,6 @@ define([
 
                         if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
 
-                            console.log("job if statement id is: " + job.get('id'));
                             App.Instances.WebsocketManager.subscribeToEvent(job.get('id'));
 
                             that.listenTo(
@@ -269,6 +268,20 @@ define([
             var currentIndex = (this.currentPaginationSet * this.paginationIterator) - this.paginationIterator;
 
             return currentIndex;
+        },
+
+        viewConfig: function(e) {
+            e.preventDefault();
+
+            var jobId = e.target.dataset.jobid;
+
+            var job = this.jobs.get(jobId);
+
+            var name = job.get('name');
+            var config = job.get('parameters').json;
+
+            var blob = new Blob([config], {type: 'text/plain;charset=utf-8'});
+            saveAs(blob, name + '.json');
         },
 
         jobPaginationPrevious: function(e) {

@@ -82,7 +82,7 @@
                             <td>{{owner}}</td>
                             <td>
                                 {{#IsJobFrozen this}}
-                                    <button type="button" class="btn btn-danger" disabled="disabled">Job Failed</button>
+                                    <button type="button" class="btn btn-danger view-config" data-jobid={{id}}>Job Failed - View Config File</button>
                                 {{else}}
                                     {{#JobSuccessCheck this}}
                                         <a href="project/{{../../../projectUuid}}/jobs/{{id}}" class="disabled">
