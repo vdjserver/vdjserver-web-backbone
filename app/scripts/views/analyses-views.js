@@ -761,7 +761,7 @@ define([
             ;
 
             chart.yAxis     //Chart y-axis settings
-                .axisLabel('Count')
+                .axisLabel('Read Count')
                 .tickFormat(d3.format(',r'))
             ;
 
@@ -830,12 +830,12 @@ define([
             ;
 
             chart.xAxis     //Chart x-axis settings
-                .axisLabel('Average Quality per read')
+                .axisLabel('Average (Median) Quality Score per read')
                 .tickFormat(d3.format(',r'))
             ;
 
             chart.yAxis     //Chart y-axis settings
-                .axisLabel('Count')
+                .axisLabel('Read Count')
                 .tickFormat(d3.format(',r'))
             ;
 
@@ -1225,7 +1225,7 @@ define([
             ;
 
             chart.xAxis     //Chart x-axis settings
-                .axisLabel('Mean GC Content %')
+                .axisLabel('GC Content')
                 .tickFormat(d3.format(',r'))
             ;
 
