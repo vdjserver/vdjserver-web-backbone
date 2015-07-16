@@ -437,7 +437,11 @@ define([
                 })
                 .then(function() {
                     return $('#chart-tr-' + classSelector).animate({
-                        height: that.chartHeight + 'px',
+                        // Unfortunately, this '30' is a bit of a magic number.
+                        // It helps create enough spacer for horizontal scroll
+                        // bars on the qstats chart not to overlay on other
+                        // chart buttons.
+                        height: (that.chartHeight + 30) + 'px',
                     }, 500).promise();
                 })
                 .then(function() {
@@ -1102,6 +1106,15 @@ define([
             //.style('text-decoration', 'underline')
             .text('Quality Scores')
         ;
+
+        // x axis title
+        svg.append('text')
+            .attr('x', (width / 2))
+            .attr('y', height + (margin.top * 3) + 10)
+            .style('text-anchor', 'middle')
+            .style('font-size', '16px')
+            .text('Read Position')
+            ;
 
         // draw y axis
         svg.append('g')
