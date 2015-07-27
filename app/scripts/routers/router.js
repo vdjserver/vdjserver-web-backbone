@@ -80,6 +80,7 @@ define(['app'], function(App) {
             'account/pending':                  'verificationPending',
             'account/verify/:id':               'verifyAccount',
             'account/profile':                  'accountProfile',
+            'account/user-feedback':            'userFeedback',
             'account/change-password':          'changePassword',
             'auth/logout':                      'authLogout',
             'feedback':                         'feedback',
@@ -159,6 +160,18 @@ define(['app'], function(App) {
             var destinationRoute = function() {
                 _setProjectSubviews();
                 App.Layouts.main.setView('.content', new App.Views.Profile.Main());
+                App.Layouts.main.render();
+            };
+
+            _routeWithTokenRefreshCheck(destinationRoute);
+        },
+
+        // User Feedback
+        userFeedback: function() {
+
+            var destinationRoute = function() {
+                _setProjectSubviews();
+                App.Layouts.main.setView('.content', new App.Views.UserFeedback.Main());
                 App.Layouts.main.render();
             };
 
