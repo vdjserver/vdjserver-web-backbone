@@ -173,7 +173,7 @@ define([
 
             if (response.status === 'success' && response.result) {
 
-                response.result = this.parseDate(response.result);
+                //response.result = this.parseDate(response.result);
 
                 if (response.result.length > 0) {
 
@@ -185,6 +185,7 @@ define([
 
             return response;
         },
+        /*
         parseDate: function(result) {
 
             var dateFormat = 'YYYY-MM-DD HH:mm:ss.SSSZZ';
@@ -201,6 +202,7 @@ define([
 
             return result;
         },
+        */
     });
 
     // Agave extension of default Backbone.Model that uses Agave sync
