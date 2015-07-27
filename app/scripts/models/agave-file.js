@@ -13,11 +13,44 @@ function(Backbone, EnvironmentConfig, moment) {
     File = Backbone.Agave.Model.extend(
         {
             // Private methods
+
+            // Path should be resemble this format: /projects/0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
             _getAssociationId: function() {
                 var path = this.get('path');
-                var split = path.split('/');
 
-                return split[3];
+                /*
+                 * /projects/0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+                 * ->
+                 * /projects
+                 * and
+                 * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+                 */
+                var split1 = path.split('/projects');
+
+                /*
+                 * /projects
+                 * and
+                 * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+                 * ->
+                 * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+                 */
+                var split2 = split1[split1.length - 1];
+
+                /*
+                 * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+                 * ->
+                 * ""
+                 * and
+                 * 0001438007785058-e0bd34dffff8de6-0001-012
+                 * and
+                 * files
+                 * and
+                 * mid_pair_1.fastq
+                 */
+                var split3 = split2.split('/');
+
+                // 0001438007785058-e0bd34dffff8de6-0001-012
+                return split3[1];
             },
 
             // Public methods
