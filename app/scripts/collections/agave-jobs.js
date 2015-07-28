@@ -224,99 +224,6 @@ define([
 
             var workflows = [
                 {
-                    'workflow-name': 'Single Reads',
-                    'summary_output_path': 'summary.txt',
-                    'steps': [
-                        {
-                            'quality_stats': {
-                                'out_prefix': 'pre-filter_',
-                            },
-                        },
-                        {
-                            'composition_stats': {
-                                'out_prefix': 'pre-filter_',
-                            },
-                        },
-/*
-                        {
-                            'custom_demultiplex': {
-                                'reverse': true,
-                                'custom_location': '1',
-                                'elements': [
-                                    {
-                                        'custom_histogram': true,
-                                        'custom_trim': true,
-                                        'custom_type': '5\'',
-                                        'cut_lower': {
-                                            'after': 0,
-                                        },
-                                        'max_mismatches': 1,
-                                        'required': true,
-                                        'score_name': 'MID1-score',
-                                        'start': {},
-                                        'value_name': 'MID1',
-                                    },
-                                ],
-                            },
-                        },
-*/
-                        {
-                            'match': {
-                                'reverse': true,
-                                'elements': [
-                                    {
-                                        'max_mismatches': 1,
-                                        'required': true,
-                                        'start': {},
-                                        'cut_lower': {
-                                            'after': 0,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                        {
-                            'custom_v_primer_trimming': {},
-                        },
-                        {
-                            'custom_j_primer_trimming': {},
-                        },
-                        {
-                            'length_filter': {
-                                //'min': 200,
-                                'min': 0,
-                            },
-                        },
-                        {
-                            'average_quality_filter': {
-                                'custom_value': 35,
-                            },
-                        },
-                        {
-                            'homopolymer_filter': {
-                                'custom_value': 20,
-                            },
-                        },
-                        {
-                            'quality_stats': {
-                                'out_prefix': 'post-filter_',
-                            },
-                        },
-                        {
-                            'composition_stats': {
-                                'out_prefix': 'post-filter_',
-                            },
-                        },
-                        {
-                            'find_shared': {
-                                'out_group_unique':'.fasta',
-                                'group_variable': 'MID1',
-                            },
-                        },
-                    ],
-                },
-/*
-                {
                     'workflow-name': 'Paired Reads',
                     'base_path_input': '',
                     'base_path_output': '',
@@ -506,7 +413,99 @@ define([
                         },
                     ],
                 },
-                */
+
+                {
+                    'workflow-name': 'Single Reads',
+                    'summary_output_path': 'summary.txt',
+                    'steps': [
+                        {
+                            'quality_stats': {
+                                'out_prefix': 'pre-filter_',
+                            },
+                        },
+                        {
+                            'composition_stats': {
+                                'out_prefix': 'pre-filter_',
+                            },
+                        },
+/*
+                        {
+                            'custom_demultiplex': {
+                                'reverse': true,
+                                'custom_location': '1',
+                                'elements': [
+                                    {
+                                        'custom_histogram': true,
+                                        'custom_trim': true,
+                                        'custom_type': '5\'',
+                                        'cut_lower': {
+                                            'after': 0,
+                                        },
+                                        'max_mismatches': 1,
+                                        'required': true,
+                                        'score_name': 'MID1-score',
+                                        'start': {},
+                                        'value_name': 'MID1',
+                                    },
+                                ],
+                            },
+                        },
+*/
+                        {
+                            'match': {
+                                'reverse': true,
+                                'elements': [
+                                    {
+                                        'max_mismatches': 1,
+                                        'required': true,
+                                        'start': {},
+                                        'cut_lower': {
+                                            'after': 0,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            'custom_v_primer_trimming': {},
+                        },
+                        {
+                            'custom_j_primer_trimming': {},
+                        },
+                        {
+                            'length_filter': {
+                                //'min': 200,
+                                'min': 0,
+                            },
+                        },
+                        {
+                            'average_quality_filter': {
+                                'custom_value': 35,
+                            },
+                        },
+                        {
+                            'homopolymer_filter': {
+                                'custom_value': 20,
+                            },
+                        },
+                        {
+                            'quality_stats': {
+                                'out_prefix': 'post-filter_',
+                            },
+                        },
+                        {
+                            'composition_stats': {
+                                'out_prefix': 'post-filter_',
+                            },
+                        },
+                        {
+                            'find_shared': {
+                                'out_group_unique':'.fasta',
+                                'group_variable': 'MID1',
+                            },
+                        },
+                    ],
+                },
 
             ];
 

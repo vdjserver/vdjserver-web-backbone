@@ -124,12 +124,12 @@ define([
                     Backbone.history.navigate(href.attr, true);
                 }
             });
+
+            App.Instances.WebsocketManager = new App.Utilities.WebsocketManager();
         },
         // Properties
         Collections: {},
-        Instances: {
-            Websockets: {},
-        },
+        Instances: {},
         Layouts: {},
         Mixins: {},
         Models:  {},

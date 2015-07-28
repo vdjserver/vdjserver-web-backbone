@@ -1,0 +1,50 @@
+{{> vdjpipe-custom-demultiplex-barcode-top}}
+    {{#if barcodeFiles}}
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>
+                        Fasta Barcode File
+                    </td>
+                    <td>
+                        <select
+                            class="job-form-item"
+                            id="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file"
+                            name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-sequence-file"
+                        >
+                            {{#each barcodeFiles}}
+                                <option value={{value.name}}>{{value.name}}</option>
+                            {{/each}}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Generate Histogram
+                    </td>
+                    <td>
+                        {{#if options.custom_histogram}}
+                            <input
+                                class="job-form-item"
+                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-histogram"
+                                type="checkbox"
+                                checked
+                            >
+                        {{else}}
+                            <input
+                                class="job-form-item"
+                                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-custom-histogram"
+                                type="checkbox"
+                            >
+                        {{/if}}
+                    </td>
+                </tr>
+                {{> vdjpipe-custom-demultiplex-barcode-shared-options}}
+            </tbody>
+        </table>
+    {{else}}
+        <div class="alert alert-danger">
+            Warning: there are no barcode files available. Please upload barcode files on the project file list and set their type as "Barcode Sequences".
+        </div>
+    {{/if}}
+{{> vdjpipe-custom-demultiplex-barcode-bottom}}

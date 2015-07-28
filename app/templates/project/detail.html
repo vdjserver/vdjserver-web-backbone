@@ -39,24 +39,52 @@
     <div class="row">
         <div class="col-sm-6">
             <div class="btn-group btn-group-justified">
+
+
+
                 <div class="btn-group">
                     <button
-                        id="file-upload"
-                        class="btn btn-success has-tooltip"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title="Upload a file"
+                        id="upload-file-dropdown"
+                        class="btn btn-success dropdown-toggle"
+                        data-toggle="dropdown"
                     >
                         <i class="fa fa-upload"></i>
-
-                        <input
-                            id="file-dialog"
-                            class="hidden"
-                            name="files[]"
-                            type="file"
-                            multiple
-                        />
+                        &nbsp;&nbsp;Upload&nbsp;&nbsp;
+                        <i class="fa fa-caret-down"></i>
                     </button>
+
+                    <ul class="dropdown-menu" role="menu">
+
+                        <li class="file-actions">
+                            <a
+                                class=""
+                                id="file-upload"
+                                href="#"
+                                data-bypass=true
+                            >
+                            <i class="fa fa-laptop"></i>&nbsp;&nbsp;Upload from your browser
+                            </a>
+
+                            <input
+                                id="file-dialog"
+                                class="hidden"
+                                name="files[]"
+                                type="file"
+                                multiple
+                            />
+                        </li>
+
+                        <li class="file-actions">
+                            <a
+                                id="dropbox-upload"
+                                class=""
+                                href="#"
+                                data-bypass=true
+                            >
+                                <i class="fa fa-dropbox"></i>&nbsp;&nbsp;Upload from Dropbox
+                            </a>
+                        </li>
+                    </ul>
                 </div>
 
                 <div class="btn-group">

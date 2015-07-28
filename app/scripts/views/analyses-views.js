@@ -141,6 +141,7 @@ define([
             'click .job-pagination-previous': 'jobPaginationPrevious',
             'click .job-pagination-next': 'jobPaginationNext',
             'click .job-pagination': 'jobPaginationIndex',
+            'click .view-config': 'viewConfig',
         },
         serialize: function() {
             return {
@@ -224,19 +225,11 @@ define([
                         var job = that.jobs.get(jobModels[i]);
 
                         if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
-                            if (_.findIndex(App.Instances.Websockets, job.get('id'))) {
 
-                                var factory = new App.Websockets.Jobs.Factory();
-                                var websocket = factory.getJobWebsocket();
-                                websocket.connectToServer();
-                                websocket.subscribeToJob(job.get('id'));
-
-                                // Store in global namespace so other views can reuse this
-                                App.Instances.Websockets[job.get('id')] = websocket;
-                            }
+                            App.Instances.WebsocketManager.subscribeToEvent(job.get('id'));
 
                             that.listenTo(
-                                App.Instances.Websockets[job.get('id')],
+                                App.Instances.WebsocketManager,
                                 'jobStatusUpdate',
                                 that._handleJobStatusUpdate
                             );
@@ -275,6 +268,20 @@ define([
             var currentIndex = (this.currentPaginationSet * this.paginationIterator) - this.paginationIterator;
 
             return currentIndex;
+        },
+
+        viewConfig: function(e) {
+            e.preventDefault();
+
+            var jobId = e.target.dataset.jobid;
+
+            var job = this.jobs.get(jobId);
+
+            var name = job.get('name');
+            var config = job.get('parameters').json;
+
+            var blob = new Blob([config], {type: 'text/plain;charset=utf-8'});
+            saveAs(blob, name + '.json');
         },
 
         jobPaginationPrevious: function(e) {
@@ -430,7 +437,11 @@ define([
                 })
                 .then(function() {
                     return $('#chart-tr-' + classSelector).animate({
-                        height: that.chartHeight + 'px',
+                        // Unfortunately, this '30' is a bit of a magic number.
+                        // It helps create enough spacer for horizontal scroll
+                        // bars on the qstats chart not to overlay on other
+                        // chart buttons.
+                        height: (that.chartHeight + 30) + 'px',
                     }, 500).promise();
                 })
                 .then(function() {
@@ -750,7 +761,7 @@ define([
             ;
 
             chart.yAxis     //Chart y-axis settings
-                .axisLabel('Count')
+                .axisLabel('Read Count')
                 .tickFormat(d3.format(',r'))
             ;
 
@@ -819,12 +830,12 @@ define([
             ;
 
             chart.xAxis     //Chart x-axis settings
-                .axisLabel('Average Quality per read')
+                .axisLabel('Average (Median) Quality Score per read')
                 .tickFormat(d3.format(',r'))
             ;
 
             chart.yAxis     //Chart y-axis settings
-                .axisLabel('Count')
+                .axisLabel('Read Count')
                 .tickFormat(d3.format(',r'))
             ;
 
@@ -865,7 +876,7 @@ define([
                   ;
 
         var height = chartHeight - (chartHeight / 4);
-        console.log('height is: ' + height);
+        //console.log('height is: ' + height);
 
         var min = Infinity;
         var max = -Infinity;
@@ -1096,6 +1107,15 @@ define([
             .text('Quality Scores')
         ;
 
+        // x axis title
+        svg.append('text')
+            .attr('x', (width / 2))
+            .attr('y', height + (margin.top * 3) + 10)
+            .style('text-anchor', 'middle')
+            .style('font-size', '16px')
+            .text('Read Position')
+            ;
+
         // draw y axis
         svg.append('g')
             .attr('class', 'y axis')
@@ -1205,7 +1225,7 @@ define([
             ;
 
             chart.xAxis     //Chart x-axis settings
-                .axisLabel('Mean GC Content %')
+                .axisLabel('GC Content')
                 .tickFormat(d3.format(',r'))
             ;
 
