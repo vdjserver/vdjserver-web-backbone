@@ -34,36 +34,19 @@ define(['app', 'backbone.syphon'], function(App) {
             this.loadingView = new App.Views.Util.Loading({
                 keep: true
             });
+
             this.insertView(this.loadingView);
 
-            this.fetchComplete = false;
+            this.setupViews();
 
-            var that = this;
-
-            this.model.fetch()
-                .done(function() {
-                    that.setupViews();
-                })
-                .fail(function(error) {
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
-                    telemetry.set('method', 'Backbone.Agave.Model.UserFeedback().fetch()');
-                    telemetry.set('view', 'UserFeedback.Form');
-                    telemetry.save();
-
-                    that.setupViews();
-                })
-                ;
         },
         setupViews: function() {
-            this.fetchComplete = true;
             this.loadingView.remove();
             this.render();
         },
         serialize: function() {
             return {
                 userFeedbackData: this.model.get('value'),
-                fetchComplete: this.fetchComplete
             };
         },
         afterRender: function() {
@@ -111,10 +94,23 @@ define(['app', 'backbone.syphon'], function(App) {
 
                         that.model
                             .save(formData, {
-                                url: that.model.getSaveUrl()
+                                url: that.model.getCreateUrl()
                             })
                             .done(function() {
-                                $('#modal-message').modal('hide');
+
+                              that.$el.find('.form-control').val("");
+
+                              $('#modal-message')
+                                  .modal('hide')
+                                  .on('hidden.bs.modal', function() {
+                                    setTimeout(function() {
+                                        $('.alert-info').after(
+                                          $('<div class="alert alert-success">').html(
+                                              '<i class="fa fa-thumbs-up"></i> You have successfully submitted your feedback!'
+                                          ).fadeIn()
+                                        );
+                                    }, 500);
+                                  });
                             })
                             .fail(function(error) {
 
