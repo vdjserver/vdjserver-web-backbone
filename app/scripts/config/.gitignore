@@ -1,1 +1,3 @@
-environment-config.js
+*
+!.gitignore
+!environment-config.js.defaults
