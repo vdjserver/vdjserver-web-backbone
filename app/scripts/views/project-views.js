@@ -61,22 +61,11 @@ define([
     );
 
     Handlebars.registerHelper('checkSystemUpStatus', function(systems, options) {
-        var systemUp = true;
 
-        var activeSystems = _.where(systems, {id: EnvironmentConfig.agave.executionSystems.lonestar});
+        var lonestarUp = Backbone.Agave.Collection.Systems.checkSystemUpStatus(systems, EnvironmentConfig.agave.executionSystems.lonestar);
+        var storageUp = Backbone.Agave.Collection.Systems.checkSystemUpStatus(systems, EnvironmentConfig.agave.storageSystems.corral);
 
-        if (activeSystems.length > 0) {
-
-            var upStatus = activeSystems[0].status;
-
-            if (upStatus !== 'UP') {
-                systemUp = false;
-            }
-
-            //systemUp = false;
-        }
-
-        if (systemUp === true) {
+        if (lonestarUp === true && storageUp === true) {
             return options.fn(systems);
         }
         else {
