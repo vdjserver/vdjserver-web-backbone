@@ -126,6 +126,8 @@ define([
                         fileExtension === 'out'
                         ||
                         filename === 'vdjpipe_config.json'
+                        ||
+                        filename === 'summary.txt'
                     ) {
                         return true;
                     }
