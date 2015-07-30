@@ -47,6 +47,8 @@ require.config({
         'agave-notification': 'models/agave-notification',
         'agave-password-reset': 'models/agave-password-reset',
         'agave-password-change': 'models/agave-password-change',
+        'agave-system': 'models/agave-system',
+        'agave-systems': 'collections/agave-systems',
         'agave-tenant-user': 'models/agave-tenant-user',
         'agave-tenant-users': 'collections/agave-tenant-users',
 
@@ -223,6 +225,15 @@ require.config({
         'agave-jobs': {
             deps: ['backbone', 'backbone-agave', 'agave-job'],
             exports: 'Backbone.Agave.Collection.Jobs'
+        },
+
+        'agave-system': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.System',
+        },
+        'agave-systems': {
+            deps: ['backbone', 'backbone-agave', 'agave-system'],
+            exports: 'Backbone.Agave.Collection.Systems',
         },
 
         // TODO - reorganize these. alphabetically?

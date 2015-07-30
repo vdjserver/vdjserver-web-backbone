@@ -54,6 +54,9 @@ define([
     'agave-job',
     'agave-jobs',
 
+    'agave-system',
+    'agave-systems',
+
     // Regular Models
     'models/message',
 
