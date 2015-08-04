@@ -32,21 +32,13 @@ define([
                 })
                 .then(function() {
 
-                    $.fn.dataTableExt.oApi.fnFilterAll = function(oSettings, sInput, iColumn, bRegex, bSmart) {
-                        var settings = $.fn.dataTableSettings;
-
-                        for (var i = 0; i < settings.length; i++) {
-                            settings[i].oInstance.fnFilter(sInput, iColumn, bRegex, bSmart);
-                        }
-                    };
-
                     var communityTable = that.$('#community').dataTable({
                         responsive: true,
                         pageLength: 10,
                     });
 
-                    that.$('#searchAll').keyup(function() {
-                        communityTable.fnFilterAll(this.value);
+                    that.$('#community-search').keyup(function() {
+                        communityTable.fnFilter(this.value);
                     });
                 })
                 ;
@@ -83,26 +75,14 @@ define([
                 })
                 .then(function() {
 
-                    $.fn.dataTableExt.oApi.fnFilterAll = function(oSettings, sInput, iColumn, bRegex, bSmart) {
-                        var settings = $.fn.dataTableSettings;
-
-                        for (var i = 0; i < settings.length; i++) {
-                            settings[i].oInstance.fnFilter(sInput, iColumn, bRegex, bSmart);
-                        }
-                    };
-
-                    var community1 = that.$('#community-detail').dataTable({
+                    var communityProject = that.$('#community-project').dataTable({
                         responsive: true,
                         bPaginate: false,
                         bInfo: false,
                         bSort: false,
                     });
 
-                    that.$('#searchAll').keyup(function() {
-                        community1.fnFilterAll(this.value);
-                    });
-
-                    var community2 = that.$('#community2').dataTable({
+                    var communityProjectExperiments = that.$('#community-project-experiments').dataTable({
                         bPaginate: false,
                         responsive: true,
                         pageLength: 20,
@@ -110,12 +90,10 @@ define([
                         bLengthChange: false,
                     });
 
-                    that.$('#searchAll').keyup(function() {
-                        community2.fnFilterAll(this.value);
+                    that.$('#community-project-search').keyup(function() {
+                        communityProjectExperiments.fnFilter(this.value);
                     });
-
-                })
-                ;
+                });
         },
 
         serialize: function() {
