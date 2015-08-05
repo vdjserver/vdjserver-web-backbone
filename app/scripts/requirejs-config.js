@@ -5,6 +5,7 @@ require.config({
     paths: {
         'backbone':         '../bower_components/backbone/backbone',
         'backbone.syphon':  '../bower_components/marionette.backbone.syphon/lib/backbone.syphon',
+        'backbone-retry-sync': '../bower_components/backbone-retry-sync/backbone-retry-sync',
         'bootstrap':        '../bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap',
         'chance':           '../bower_components/chance/chance',
         'datatables':       '../bower_components/datatables/media/js/jquery.dataTables',

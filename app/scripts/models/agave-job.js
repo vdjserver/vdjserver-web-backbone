@@ -2,6 +2,7 @@ define(
     [
         'app',
         'backbone',
+        'backbone-retry-sync',
     ],
 function(
     App,
@@ -17,9 +18,14 @@ function(
             defaults: {
                 id: '',
             },
+            initialize: function() {
+                this.retrySyncEngine = Backbone.Agave.sync;
+                this.retrySyncLimit = 3;
+            },
             url: function() {
                 return '/jobs/v2/' + this.get('id');
             },
+            sync: Backbone.RetrySync,
         },
         {
             CHART_TYPE_0: 'composition',

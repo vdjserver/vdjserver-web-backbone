@@ -72,7 +72,8 @@ define([
             }
             options.beforeSend = function(xhr) {
                 if (options._beforeSend) {
-                    options._beforeSend(xhr);
+                    //console.log("xhr is: " + JSON.stringify(xhr));
+                    //options._beforeSend(xhr);
                 }
                 xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
             };
