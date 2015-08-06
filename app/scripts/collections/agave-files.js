@@ -38,6 +38,7 @@ function(Backbone, EnvironmentConfig, _string) {
         {
             model: Backbone.Agave.Model.File.Metadata,
             initialize: function(parameters) {
+                Backbone.Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
 
                 if (parameters && parameters.projectUuid) {
                     this.projectUuid = parameters.projectUuid;

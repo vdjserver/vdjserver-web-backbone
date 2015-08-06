@@ -25,7 +25,10 @@ function(Backbone, EnvironmentConfig, detect) {
             return '/telemetry';
         },
         requiresAuth: false,
-        initialize: function() {
+        initialize: function(options) {
+
+            Backbone.Agave.Model.prototype.initialize.apply(this, [options]);
+
             var browser = this._detectBrowser();
             var os = this._detectOS();
             var username = Backbone.Agave.instance.token().get('username');

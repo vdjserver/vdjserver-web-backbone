@@ -7,6 +7,8 @@ define(['backbone'], function(Backbone) {
     Permissions = Backbone.Agave.Collection.extend({
         initialize: function(parameters) {
 
+            Backbone.Agave.Collection.prototype.initialize.apply(this, [parameters]);
+
             if (parameters && parameters.uuid) {
                 this.uuid = parameters.uuid;
             }

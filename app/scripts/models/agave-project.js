@@ -43,7 +43,7 @@ function(Backbone, EnvironmentConfig) {
                 });
             }
 
-            return Backbone.Agave.MetadataSync(method, this, options);
+            return Backbone.Agave.PutOverrideSync(method, this, options);
         },
         setAttributesFromFormData: function(formData) {
             this.set('value', formData);
