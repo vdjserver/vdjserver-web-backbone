@@ -104,6 +104,7 @@ define(['app', 'backbone.syphon'], function(App) {
                                   .modal('hide')
                                   .on('hidden.bs.modal', function() {
                                     setTimeout(function() {
+                                        $('.alert-success').remove();
                                         $('.alert-info').after(
                                           $('<div class="alert alert-success">').html(
                                               '<i class="fa fa-thumbs-up"></i> You have successfully submitted your feedback!'
