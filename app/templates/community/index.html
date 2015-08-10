@@ -1,6 +1,7 @@
 <div class="container-fluid">
     <div class="col-md-12">
         <div class="row">
+            {{#if communityDatas}}
             <div class="form-group col-md-3 pull-right">
                 <input id="community-search" type="text" class="form-control pull-right" placeholder="Search">
             </div>
@@ -101,8 +102,7 @@
                     </tr>
                 </tfoot>
             </table>
+            {{/if}}
         </div>
-
-
     </div>
 </div>

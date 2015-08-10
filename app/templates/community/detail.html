@@ -114,40 +114,47 @@
         </div>
         <table class='display' id='community-project-experiments' cellspacing="0" width="100%">
             <thead>
-            <th>
-              <strong>SRA Experiment</strong>
-            </th>
-            <th>
-              <strong>Biosample</strong>
-            </th>
-            <th>
-              <strong>Sample Description</strong>
-            </th>
-            <th>
-              <strong>SRA Run</strong>
-            </th>
-            <th>
-              <strong>Layout</strong>
-            </th>
-            <th>
-              <strong>Platform</strong>
-            </th>
-            <th>
-              <strong>Read Count</strong>
-            </th>
-            <th>
-              <strong>Sequence Length</strong>
-            </th>
-            <th>
-              <strong>fastq Extracted from SRA</strong>
-            </th>
-            <th>
-              <strong>QC Filtered Output</strong>
-            </th>
-            <th>
-              <strong>IgBlast Output</strong>
-            </th>
+              <tr>
+                <th>
+                  <strong>SRA Experiment</strong>
+                </th>
+                <th>
+                  <strong>Biosample</strong>
+                </th>
+                <th>
+                  <strong>Sample Description</strong>
+                </th>
+                <th>
+                  <strong>SRA Run</strong>
+                </th>
+                <th>
+                  <strong>Layout</strong>
+                </th>
+                <th>
+                  <strong>Platform</strong>
+                </th>
+                <th>
+                  <strong>Read Count</strong>
+                </th>
+                <th>
+                  <strong>Sequence Length</strong>
+                </th>
+                <th>
+                  <strong>fastq Extracted from SRA</strong>
+                </th>
+                <th>
+                  <strong>QC Filtered Output</strong>
+                </th>
+                <th>
+                  <strong>IgBlast Output</strong>
+                </th>
+              </tr>
             </thead>
+            <tfoot>
+              <tr>
+                <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+              </tr>
+            </tfoot>
             <tbody>
             {{#each communityData.value.experimentProjects}}
               <tr>
@@ -155,47 +162,78 @@
                   <a href="{{this.sraExperiment.url}}" target="_blank">{{this.sraExperiment.id}}</a>
                 </td>
                 <td>
-                  {{this.biosample}}
+                  {{#if this.biosample}}
+                    {{this.biosample}}
+                  {{else}}
+                    N/A
+                  {{/if}}
                 </td>
                 <td>
-                  {{this.sampleDescription}}
+                  {{#if this.sampleDescription}}
+                    {{this.sampleDescription}}
+                  {{else}}
+                    N/A
+                  {{/if}}
                 </td>
                 <td>
                   <a href="{{this.sraRun.url}}" target="_blank">{{this.sraRun.id}}</a>
                 </td>
                 <td>
-                  {{this.layout}}
+                  {{#if this.layout}}
+                    {{this.layout}}
+                  {{else}}
+                    N/A
+                  {{/if}}
                 </td>
                 <td>
-                  {{this.platform}}
+                  {{#if this.platform}}
+                    {{this.platform}}
+                  {{else}}
+                    N/A
+                  {{/if}}
                 </td>
                 <td>
-                  {{this.readCount}}
+                  {{#if this.readCount}}
+                    {{this.readCount}}
+                  {{else}}
+                    N/A
+                  {{/if}}
                 </td>
                 <td>
-                  {{this.sequenceLength}}
+                  {{#if this.sequenceLength}}
+                    {{this.sequenceLength}}
+                  {{else}}
+                    N/A
+                  {{/if}}
                 </td>
                 <td>
-                  {{this.fastqSRA}}
+                  {{#if this.fastqSRA}}
+                    {{this.fastqSRA}}
+                  {{else}}
+                    N/A
+                  {{/if}}
                 </td>
                 <td>
-                  {{this.qcFilteredOutput}}
+                  {{#if this.qcFilteredOutput}}
+                    {{this.qcFilteredOutput}}
+                  {{else}}
+                    N/A
+                  {{/if}}
                 </td>
                 <td>
+                  {{#if this.igBlastOutput}}
                   {{#each this.igBlastOutput}}
-                <li>
-                  {{this}}
-                </li>
+                    <li>
+                      {{this}}
+                    </li>
                   {{/each}}
+                  {{else}}
+                    N/A
+                  {{/if}}
                 </td>
               </tr>
             {{/each}}
             </tbody>
-            <tfoot>
-              <tr>
-                <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-              </tr>
-            </tfoot>
         </table>
         {{/if}}
       </div>

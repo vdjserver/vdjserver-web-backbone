@@ -24,6 +24,11 @@ define([
         },
 
         startChart: function() {
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView(loadingView);
+            loadingView.render();
+
             var that = this;
 
             this.communityDatas.fetch()
@@ -31,12 +36,12 @@ define([
                     return that.render();
                 })
                 .then(function() {
-
+                    loadingView.remove();
                     var communityTable = that.$('#community').dataTable({
-                        responsive: true,
+                        responsive: {details: false},
                         pageLength: 10,
                     });
-
+                    
                     that.$('#community-search').keyup(function() {
                         communityTable.fnFilter(this.value);
                     });
@@ -67,6 +72,11 @@ define([
         },
 
         startChart: function() {
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView(loadingView);
+            loadingView.render();
+
             var that = this;
 
             this.communityProject.fetch()
@@ -74,9 +84,9 @@ define([
                     return that.render();
                 })
                 .then(function() {
-
+                    loadingView.remove();
                     var communityProject = that.$('#community-project').dataTable({
-                        responsive: true,
+                        responsive: {details: false},
                         bPaginate: false,
                         bInfo: false,
                         bSort: false,
@@ -84,7 +94,7 @@ define([
 
                     var communityProjectExperiments = that.$('#community-project-experiments').dataTable({
                         bPaginate: false,
-                        responsive: true,
+                        responsive: {details: false},
                         pageLength: 20,
                         bInfo: false,
                         bLengthChange: false,
