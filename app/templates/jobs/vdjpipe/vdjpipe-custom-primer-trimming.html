@@ -101,6 +101,34 @@
                             {{/if}}
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            Length
+                        </td>
+                        <td>
+                            {{#if options.length}}
+                                <input
+                                    class="job-form-item"
+                                    name="{{inputCount}}-{{parameterType}}-element-length"
+                                    type="number"
+                                    value="{{options.length}}"
+                                    step="1"
+                                    min="0"
+                                    pattern="\d+"
+                                >
+                            {{else}}
+                                <input
+                                    class="job-form-item"
+                                    name="{{inputCount}}-{{parameterType}}-element-length"
+                                    type="number"
+                                    value="30"
+                                    step="1"
+                                    min="0"
+                                    pattern="\d+"
+                                >
+                            {{/if}}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
