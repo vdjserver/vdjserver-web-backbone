@@ -84,6 +84,7 @@ require.config({
         // Mixins
         'file-download-detection-mixin': 'mixins/file-download-detection-mixin',
         'file-transfer-sidebar-ui-mixin': 'mixins/file-transfer-sidebar-ui-mixin',
+        'comparators-mixin': 'collections/mixins/comparators-mixin',
 
         // View Helpers
         'view-layouts': 'views/layouts/view-layouts',
