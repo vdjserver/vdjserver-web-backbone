@@ -1,1 +1,2 @@
-environment-config.js
+*
+!environment-config.js.defaults
