@@ -677,10 +677,15 @@ define([
                                 .then(function(response) {
 
                                     if (response.hasOwnProperty('result') === true && response.result.hasOwnProperty('uuid') === true) {
+
+                                        var chance = new Chance();
+                                        var fileUniqueIdentifier = chance.guid();
+
                                         var fileTransferNotification = new Backbone.Agave.Model.Notification.FileImport();
 
                                         fileTransferNotification.set('associatedUuid', response.result.uuid);
-                                        fileTransferNotification.projectUuid = that.projectUuid;
+                                        fileTransferNotification.fileUniqueIdentifier = fileUniqueIdentifier;
+                                        //fileTransferNotification.projectUuid = that.projectUuid;
                                         fileTransferNotification.filename = model.filename;
                                         fileTransferNotification.projectView = that;
 
@@ -690,7 +695,11 @@ define([
                                             })
                                             .then(function() {
                                                 var listView = App.Layouts.sidebar.getView('.sidebar');
-                                                listView.addFileImportNotification(fileTransferNotification);
+                                                listView.addFileImportNotification(
+                                                    that.projectUuid,
+                                                    fileUniqueIdentifier,
+                                                    fileTransferNotification
+                                                );
                                             })
                                             ;
                                     }
