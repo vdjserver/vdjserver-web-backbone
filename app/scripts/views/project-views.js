@@ -685,7 +685,6 @@ define([
 
                                         fileTransferNotification.set('associatedUuid', response.result.uuid);
                                         fileTransferNotification.fileUniqueIdentifier = fileUniqueIdentifier;
-                                        //fileTransferNotification.projectUuid = that.projectUuid;
                                         fileTransferNotification.filename = model.filename;
                                         fileTransferNotification.projectView = that;
 
@@ -902,35 +901,19 @@ define([
 
                 var that = this;
 
-                var xhr = fileModel.downloadFileToDisk();
+                this.listenTo(fileModel, Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(percentCompleted) {
+                    that._uiSetUploadProgress(percentCompleted, fileUniqueIdentifier);
+                });
 
-                xhr.addEventListener(
-                    'progress',
-                    function(progress) {
-
-                        var percentCompleted = 0;
-
-                        if (progress.lengthComputable) {
-                            percentCompleted = progress.loaded / progress.total;
-                        }
-                        else {
-                            percentCompleted = progress.loaded / totalSize;
-                        }
-
-                        percentCompleted *= 100;
-
-                        that._uiSetUploadProgress(percentCompleted, fileUniqueIdentifier);
-                    },
-                    false
-                );
-
-                xhr.addEventListener(
-                    'load',
-                    function() {
+                fileModel.downloadFileToDisk(totalSize)
+                    .then(function(response) {
                         that._uiSetSidemenuTransferSuccess(fileUniqueIdentifier);
-                    },
-                    false
-                );
+                        window.saveAs(
+                            new Blob([response]),
+                            fileModel.get('name')
+                        );
+                    })
+                    ;
             },
 
             _clickDownloadMultipleFiles: function(e) {

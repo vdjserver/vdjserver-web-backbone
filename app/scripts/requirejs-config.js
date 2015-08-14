@@ -84,6 +84,7 @@ require.config({
         // Mixins
         'file-download-detection-mixin': 'mixins/file-download-detection-mixin',
         'file-transfer-sidebar-ui-mixin': 'mixins/file-transfer-sidebar-ui-mixin',
+        'file-transfer-mixins': 'models/mixins/file-transfer-mixins',
 
         // View Helpers
         'view-layouts': 'views/layouts/view-layouts',

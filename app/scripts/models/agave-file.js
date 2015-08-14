@@ -3,8 +3,14 @@ define(
         'backbone',
         'environment-config',
         'moment',
+        'file-transfer-mixins',
     ],
-function(Backbone, EnvironmentConfig, moment) {
+function(
+    Backbone,
+    EnvironmentConfig,
+    moment,
+    FileTransferMixins
+) {
 
     'use strict';
 
@@ -161,6 +167,7 @@ function(Backbone, EnvironmentConfig, moment) {
 
                 return jqxhr;
             },
+            // TODO: merge this with agave-job model downloadFileToCache()
             downloadFileToMemory: function() {
 
                 var that = this;
@@ -197,56 +204,28 @@ function(Backbone, EnvironmentConfig, moment) {
                     },
                 });
             },
-            downloadFileToDisk: function() {
+            downloadFileToDisk: function(totalSize) {
 
                 var that = this;
 
-                var path = '';
+                var jqxhr = $.ajax(
+                    _.extend({}, FileTransferMixins.progressJqxhr(that, totalSize), {
+                        headers: Backbone.Agave.oauthHeader(),
+                        type:    'GET',
+                        url:     EnvironmentConfig.agaveRoot
+                                 + '/files'
+                                 + '/v2'
+                                 + '/media'
+                                 + '/system'
+                                 + '/' + EnvironmentConfig.storageSystem
 
-                if (this.get('jobUuid')) {
-                    path = EnvironmentConfig.agaveRoot
-                         + '/jobs'
-                         + '/v2'
-                         + '/' + this.get('jobUuid')
-                         + '/outputs'
-                         + '/media'
-                         + '/' + this.get('name')
-                         ;
-                }
-                else {
-                    path = EnvironmentConfig.agaveRoot
-                         + '/files'
-                         + '/v2'
-                         + '/media'
-                         + '/system'
-                         + '/' + EnvironmentConfig.storageSystem
-
-                         // NOTE: this uses agave // paths
-                         + '/' + this.get('path')
-                         ;
-                }
-
-                var xhr = new XMLHttpRequest();
-                xhr.open(
-                    'get',
-                    path
+                                 // NOTE: this uses agave // paths
+                                 + '/' + this.get('path')
+                                 ,
+                    })
                 );
 
-                xhr.responseType = 'blob';
-                xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-
-                xhr.onload = function() {
-                    if (this.status === 200 || this.status === 202) {
-                        window.saveAs(
-                            new Blob([this.response]),
-                            that.get('name')
-                        );
-                    }
-                };
-
-                xhr.send();
-
-                return xhr;
+                return jqxhr;
             },
             softDelete: function() {
 
