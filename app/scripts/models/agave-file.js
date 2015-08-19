@@ -325,6 +325,46 @@ function(Backbone, EnvironmentConfig, moment) {
         },
     });
 
+    File.Community = File.extend({
+      downloadFileToDisk: function() {
+          var that = this;
+
+          var path = '';
+
+          path = EnvironmentConfig.agaveRoot
+               + '/files'
+               + '/v2'
+               + '/media'
+               + '/system'
+               + '/' + EnvironmentConfig.storageSystem
+               + '/' + this.get('path')
+               ;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open(
+              'get',
+              path
+          );
+
+          xhr.responseType = 'blob';
+          xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
+
+          xhr.onload = function() {
+              if (this.status === 200 || this.status === 202) {
+                  window.saveAs(
+                      new Blob([this.response]),
+                      that.get('name')
+                  );
+              }
+          };
+
+          xhr.send();
+
+          return xhr;
+      },
+    });
+
+
     File.Dropbox = File.extend({
         sync: function(method, model, options) {
 

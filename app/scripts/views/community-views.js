@@ -120,7 +120,7 @@ define([
 
           var projectUuid = e.target.dataset.projectuuid;
           var fileName = e.target.dataset.filename;
-          var fileModel = new Backbone.Agave.Model.File({
+          var fileModel = new Backbone.Agave.Model.File.Community({
             relativeUrl: '//community' + '/' + projectUuid + '/files' + '/' + fileName,
             projectUuid: projectUuid
           });
@@ -134,9 +134,8 @@ define([
 
           fileModel.fetch()
             .then(function(response){
+                var xhr = fileModel.downloadFileToDisk();
                 var totalSize = fileModel.get('length');
-
-                var xhr = that.downloadFileToDisk(fileModel);
 
                 xhr.addEventListener(
                     'progress',
@@ -177,42 +176,7 @@ define([
                 telemetry.set('view', 'Community.Detail');
                 telemetry.save();
             })
-        },
-
-        downloadFileToDisk: function(file) {
-            var path = '';
-
-            path = EnvironmentConfig.agaveRoot
-                 + '/files'
-                 + '/v2'
-                 + '/media'
-                 + '/system'
-                 + '/' + EnvironmentConfig.storageSystem
-                 + '/' + file.get('path')
-                 ;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open(
-                'get',
-                path
-            );
-
-            xhr.responseType = 'blob';
-            xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-
-            xhr.onload = function() {
-                if (this.status === 200 || this.status === 202) {
-                    window.saveAs(
-                        new Blob([this.response]),
-                        file.get('name')
-                    );
-                }
-            };
-
-            xhr.send();
-
-            return xhr;
-        },
+        }
     });
 
     App.Views.Community = Community;
