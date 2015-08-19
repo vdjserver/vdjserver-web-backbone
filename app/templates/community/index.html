@@ -26,12 +26,6 @@
                         <th>
                             Description
                         </th>
-                        <th>
-                            Experiments
-                        </th>
-                        <th>
-                            Runs
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,26 +73,12 @@
                                 N/A
                               {{/if}}
                             </td>
-                            <td>
-                              {{#if value.experiments}}
-                                {{value.experiments}}
-                              {{else}}
-                                N/A
-                              {{/if}}
-                            </td>
-                            <td>
-                              {{#if value.runs}}
-                                {{value.runs}}
-                              {{else}}
-                                N/A
-                              {{/if}}
-                            </td>
                         </tr>
                     {{/each}}
                 </tbody>
                 <tfoot>
                     <tr>
-                      <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                      <td></td><td></td><td></td><td></td><td></td><td></td>
                     </tr>
                 </tfoot>
             </table>

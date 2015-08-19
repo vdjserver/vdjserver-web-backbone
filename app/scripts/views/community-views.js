@@ -1,8 +1,6 @@
 define([
     'app',
     'environment-config',
-    'recaptcha-ajax',
-    'backbone.syphon',
 ], function(
     App,
     EnvironmentConfig
@@ -41,7 +39,7 @@ define([
                         responsive: {details: false},
                         pageLength: 10,
                     });
-                    
+
                     that.$('#community-search').keyup(function() {
                         communityTable.fnFilter(this.value);
                     });
@@ -56,11 +54,13 @@ define([
         },
     });
 
+
     Community.Detail = Backbone.View.extend({
         template: 'community/detail',
 
         events: {
             'click .paginate_button' : 'switchPage',
+            'click .download-file': '_clickDownloadFile',
         },
 
         initialize: function(parameters) {
@@ -86,18 +86,19 @@ define([
                 .then(function() {
                     loadingView.remove();
                     var communityProject = that.$('#community-project').dataTable({
-                        responsive: {details: false},
-                        bPaginate: false,
                         bInfo: false,
+                        bPaginate: false,
                         bSort: false,
+                        responsive: {details: false},
                     });
 
                     var communityProjectExperiments = that.$('#community-project-experiments').dataTable({
-                        bPaginate: false,
-                        responsive: {details: false},
-                        pageLength: 20,
                         bInfo: false,
                         bLengthChange: false,
+                        bPaginate: false,
+                        bSort: false,
+                        pageLength: 20,
+                        responsive: {details: false},
                     });
 
                     that.$('#community-project-search').keyup(function() {
@@ -110,6 +111,107 @@ define([
             return {
                 communityData: this.communityProject.toJSON(),
             };
+        },
+
+        _clickDownloadFile: function(e){
+          e.preventDefault();
+
+          var that = this;
+
+          var projectUuid = e.target.dataset.projectuuid;
+          var fileName = e.target.dataset.filename;
+          var fileModel = new Backbone.Agave.Model.File({
+            relativeUrl: '//community' + '/' + projectUuid + '/files' + '/' + fileName,
+            projectUuid: projectUuid
+          });
+
+          $('.progress').remove();
+
+          var progressWrapper = $('<div class="progress file-upload-progress-wrapper"></div>');
+          var progressBar = $('<div class="progress-bar progress-striped active progress-bar-success"></div>');
+
+          $(e.target).after(progressWrapper.append(progressBar));
+
+          fileModel.fetch()
+            .then(function(response){
+                var totalSize = fileModel.get('length');
+
+                var xhr = that.downloadFileToDisk(fileModel);
+
+                xhr.addEventListener(
+                    'progress',
+                    function(progress) {
+
+                        var percentCompleted = 0;
+
+                        if (progress.lengthComputable) {
+                            percentCompleted = progress.loaded / progress.total;
+                        }
+                        else {
+                            percentCompleted = progress.loaded / totalSize;
+                        }
+
+                        percentCompleted *= 100;
+                        progressBar.attr('aria-valuenow', percentCompleted)
+                        progressBar.attr('style', 'width:'+percentCompleted+'%');
+                        progressBar.text(percentCompleted.toFixed(2)+' %');
+                    },
+                    false
+                );
+
+                xhr.addEventListener(
+                    'load',
+                    function() {
+                    },
+                    false
+                );
+            })
+            .fail(function(error) {
+                progressBar.remove();
+                var errorMessage = $('<div class="text-warning text-center">Could not download file</div>');
+                progressWrapper.append(errorMessage);
+
+                var telemetry = new Backbone.Agave.Model.Telemetry();
+                telemetry.set('error', JSON.stringify(error));
+                telemetry.set('method', 'Backbone.Agave.Collection.CommunityDatas.fetch()');
+                telemetry.set('view', 'Community.Detail');
+                telemetry.save();
+            })
+        },
+
+        downloadFileToDisk: function(file) {
+            var path = '';
+
+            path = EnvironmentConfig.agaveRoot
+                 + '/files'
+                 + '/v2'
+                 + '/media'
+                 + '/system'
+                 + '/' + EnvironmentConfig.storageSystem
+                 + '/' + file.get('path')
+                 ;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open(
+                'get',
+                path
+            );
+
+            xhr.responseType = 'blob';
+            xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
+
+            xhr.onload = function() {
+                if (this.status === 200 || this.status === 202) {
+                    window.saveAs(
+                        new Blob([this.response]),
+                        file.get('name')
+                    );
+                }
+            };
+
+            xhr.send();
+
+            return xhr;
         },
     });
 

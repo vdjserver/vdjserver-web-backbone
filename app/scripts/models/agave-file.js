@@ -37,10 +37,10 @@ function(Backbone, EnvironmentConfig, moment) {
                 }
             },
             url: function() {
-                return '/files/v2/media/system'
-                       + '/' + EnvironmentConfig.storageSystem
-                       + this.relativeUrl
-                       ;
+              return '/files/v2/listings/system'
+                + '/' + EnvironmentConfig.storageSystem
+                + this.relativeUrl
+              ;
             },
             sync: function(method, model, options) {
 
