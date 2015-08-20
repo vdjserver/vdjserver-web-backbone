@@ -1,7 +1,8 @@
 define([
     'backbone',
     'moment',
-], function(Backbone, moment) {
+    'comparators-mixin',
+], function(Backbone, moment, ComparatorsMixin) {
 
     'use strict';
 
@@ -148,39 +149,26 @@ define([
         },
     });
 
-    Jobs.Listings = Backbone.Agave.MetadataCollection.extend({
-        model: Backbone.Agave.Model.Job.Listing,
-        initialize: function(parameters) {
+    Jobs.Listings = Backbone.Agave.MetadataCollection.extend(
+        _.extend({}, ComparatorsMixin.reverseChronologicalCreatedTime, {
+            model: Backbone.Agave.Model.Job.Listing,
+            initialize: function(parameters) {
 
-            Backbone.Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+                Backbone.Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
 
-            if (parameters && parameters.projectUuid) {
-                this.projectUuid = parameters.projectUuid;
-            }
-        },
-        // Sort by reverse date order
-        comparator: function(modelA, modelB) {
-            var modelAEndDate = moment(modelA.get('created'));
-            var modelBEndDate = moment(modelB.get('created'));
-
-            if (modelAEndDate > modelBEndDate) {
-                return -1;
-            }
-            else if (modelBEndDate > modelAEndDate) {
-                return 1;
-            }
-
-            // Equal
-            return 0;
-        },
-        url: function() {
-            return '/meta/v2/data?q='
-                + encodeURIComponent('{'
-                    + '"name":"projectJob",'
-                    + '"value.projectUuid":"' + this.projectUuid + '"'
-                + '}');
-        },
-    });
+                if (parameters && parameters.projectUuid) {
+                    this.projectUuid = parameters.projectUuid;
+                }
+            },
+            url: function() {
+                return '/meta/v2/data?q='
+                    + encodeURIComponent('{'
+                        + '"name":"projectJob",'
+                        + '"value.projectUuid":"' + this.projectUuid + '"'
+                    + '}');
+            },
+        })
+    );
 
     Jobs.Workflows = Backbone.Agave.MetadataCollection.extend({
 
