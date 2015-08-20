@@ -64,6 +64,7 @@ require.config({
         'agave-projects': 'collections/agave-projects',
 
         'agave-profile': 'models/agave-profile',
+        'agave-user-feedback': 'models/agave-user-feedback',
 
         // Misc.
         'box': 'vendor/box',
@@ -98,6 +99,7 @@ require.config({
         'account-views': 'views/account-views',
         'forgot-password-views': 'views/forgot-password-views',
         'profile-views': 'views/profile-views',
+        'user-feedback-views': 'views/user-feedback-views',
         'job-views': 'views/job-views',
         'project-views': 'views/project-views',
         'sidemenu-views': 'views/sidemenu-views',
@@ -232,6 +234,11 @@ require.config({
         'agave-profile': {
             deps: ['backbone', 'backbone-agave'],
             exports: 'Backbone.Agave.Model.Profile'
+        },
+
+        'agave-user-feedback': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.UserFeedback'
         },
 
         // Projects
