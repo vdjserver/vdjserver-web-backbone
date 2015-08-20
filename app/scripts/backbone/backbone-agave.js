@@ -140,6 +140,10 @@ define([
         requiresAuth: true,
         parse: function(response) {
             if (response.result) {
+                if (_.isArray(response.result)) {
+                    return response.result[0];
+                }
+
                 return response.result;
             }
             return response;

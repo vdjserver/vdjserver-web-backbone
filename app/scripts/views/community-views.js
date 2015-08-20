@@ -1,8 +1,6 @@
 define([
     'app',
     'environment-config',
-    'recaptcha-ajax',
-    'backbone.syphon',
 ], function(
     App,
     EnvironmentConfig
@@ -24,6 +22,11 @@ define([
         },
 
         startChart: function() {
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView(loadingView);
+            loadingView.render();
+
             var that = this;
 
             this.communityDatas.fetch()
@@ -31,22 +34,14 @@ define([
                     return that.render();
                 })
                 .then(function() {
-
-                    $.fn.dataTableExt.oApi.fnFilterAll = function(oSettings, sInput, iColumn, bRegex, bSmart) {
-                        var settings = $.fn.dataTableSettings;
-
-                        for (var i = 0; i < settings.length; i++) {
-                            settings[i].oInstance.fnFilter(sInput, iColumn, bRegex, bSmart);
-                        }
-                    };
-
+                    loadingView.remove();
                     var communityTable = that.$('#community').dataTable({
-                        responsive: true,
+                        responsive: {details: false},
                         pageLength: 10,
                     });
 
-                    that.$('#searchAll').keyup(function() {
-                        communityTable.fnFilterAll(this.value);
+                    that.$('#community-search').keyup(function() {
+                        communityTable.fnFilter(this.value);
                     });
                 })
                 ;
@@ -59,11 +54,13 @@ define([
         },
     });
 
+
     Community.Detail = Backbone.View.extend({
         template: 'community/detail',
 
         events: {
             'click .paginate_button' : 'switchPage',
+            'click .download-file': '_clickDownloadFile',
         },
 
         initialize: function(parameters) {
@@ -75,6 +72,11 @@ define([
         },
 
         startChart: function() {
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.insertView(loadingView);
+            loadingView.render();
+
             var that = this;
 
             this.communityProject.fetch()
@@ -82,40 +84,27 @@ define([
                     return that.render();
                 })
                 .then(function() {
-
-                    $.fn.dataTableExt.oApi.fnFilterAll = function(oSettings, sInput, iColumn, bRegex, bSmart) {
-                        var settings = $.fn.dataTableSettings;
-
-                        for (var i = 0; i < settings.length; i++) {
-                            settings[i].oInstance.fnFilter(sInput, iColumn, bRegex, bSmart);
-                        }
-                    };
-
-                    var community1 = that.$('#community-detail').dataTable({
-                        responsive: true,
-                        bPaginate: false,
+                    loadingView.remove();
+                    var communityProject = that.$('#community-project').dataTable({
                         bInfo: false,
-                        bSort: false,
-                    });
-
-                    that.$('#searchAll').keyup(function() {
-                        community1.fnFilterAll(this.value);
-                    });
-
-                    var community2 = that.$('#community2').dataTable({
                         bPaginate: false,
-                        responsive: true,
-                        pageLength: 20,
+                        bSort: false,
+                        responsive: {details: false},
+                    });
+
+                    var communityProjectExperiments = that.$('#community-project-experiments').dataTable({
                         bInfo: false,
                         bLengthChange: false,
+                        bPaginate: false,
+                        bSort: false,
+                        pageLength: 20,
+                        responsive: {details: false},
                     });
 
-                    that.$('#searchAll').keyup(function() {
-                        community2.fnFilterAll(this.value);
+                    that.$('#community-project-search').keyup(function() {
+                        communityProjectExperiments.fnFilter(this.value);
                     });
-
-                })
-                ;
+                });
         },
 
         serialize: function() {
@@ -123,6 +112,71 @@ define([
                 communityData: this.communityProject.toJSON(),
             };
         },
+
+        _clickDownloadFile: function(e){
+          e.preventDefault();
+
+          var that = this;
+
+          var projectUuid = e.target.dataset.projectuuid;
+          var fileName = e.target.dataset.filename;
+          var fileModel = new Backbone.Agave.Model.File.Community({
+            relativeUrl: '//community' + '/' + projectUuid + '/files' + '/' + fileName,
+            projectUuid: projectUuid
+          });
+
+          $('.progress').remove();
+
+          var progressWrapper = $('<div class="progress file-upload-progress-wrapper"></div>');
+          var progressBar = $('<div class="progress-bar progress-striped active progress-bar-success"></div>');
+
+          $(e.target).after(progressWrapper.append(progressBar));
+
+          fileModel.fetch()
+            .then(function(response){
+                var xhr = fileModel.downloadFileToDisk();
+                var totalSize = fileModel.get('length');
+
+                xhr.addEventListener(
+                    'progress',
+                    function(progress) {
+
+                        var percentCompleted = 0;
+
+                        if (progress.lengthComputable) {
+                            percentCompleted = progress.loaded / progress.total;
+                        }
+                        else {
+                            percentCompleted = progress.loaded / totalSize;
+                        }
+
+                        percentCompleted *= 100;
+                        progressBar.attr('aria-valuenow', percentCompleted)
+                        progressBar.attr('style', 'width:'+percentCompleted+'%');
+                        progressBar.text(percentCompleted.toFixed(2)+' %');
+                    },
+                    false
+                );
+
+                xhr.addEventListener(
+                    'load',
+                    function() {
+                    },
+                    false
+                );
+            })
+            .fail(function(error) {
+                progressBar.remove();
+                var errorMessage = $('<div class="text-warning text-center">Could not download file</div>');
+                progressWrapper.append(errorMessage);
+
+                var telemetry = new Backbone.Agave.Model.Telemetry();
+                telemetry.set('error', JSON.stringify(error));
+                telemetry.set('method', 'Backbone.Agave.Collection.CommunityDatas.fetch()');
+                telemetry.set('view', 'Community.Detail');
+                telemetry.save();
+            })
+        }
     });
 
     App.Views.Community = Community;

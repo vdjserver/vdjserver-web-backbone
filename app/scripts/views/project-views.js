@@ -470,7 +470,7 @@ define([
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
 
-                    var stagedFile = new Backbone.Agave.Model.File({
+                    var stagedFile = new Backbone.Agave.Model.File.ProjectFile({
                         name: file.name,
                         length: file.size,
                         lastModified: file.lastModifiedDate,
@@ -1200,7 +1200,7 @@ define([
 
                 listView.removeFileTransfer(this.fileUniqueIdentifier);
 
-                this.model.trigger(Backbone.Agave.Model.File.CANCEL_UPLOAD);
+                this.model.trigger(Backbone.Agave.Model.File.ProjectFile.CANCEL_UPLOAD);
             },
 
             _startUpload: function(e) {
@@ -1218,7 +1218,7 @@ define([
 
                 var that = this;
 
-                this.model.on(Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(percentCompleted) {
+                this.model.on(Backbone.Agave.Model.File.ProjectFile.UPLOAD_PROGRESS, function(percentCompleted) {
                     that._uiSetUploadProgress(percentCompleted, that.fileUniqueIdentifier);
                 });
 

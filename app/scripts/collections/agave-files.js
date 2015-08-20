@@ -13,8 +13,20 @@ function(Backbone, EnvironmentConfig, _string) {
     Files = Backbone.Agave.Collection.extend({
         model: Backbone.Agave.Model.File,
         comparator: 'name',
+        initialize: function(parameters) {
+            Backbone.Agave.Collection.prototype.initialize.apply(this, [parameters]);
+
+            this.relativeUrl = '';
+
+            if (_.isObject(parameters) && parameters.hasOwnProperty('relativeUrl')) {
+                this.relativeUrl = parameters.relativeUrl;
+            }
+        },
         url: function() {
-            return '/files/v2/listings/system/' + EnvironmentConfig.agave.storageSystems.corral;
+            return '/files/v2/listings/system'
+                + '/' + EnvironmentConfig.agave.storageSystems.corral
+                + this.relativeUrl
+                ;
         },
         parse: function(response) {
             if (response.result) {

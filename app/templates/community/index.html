@@ -1,81 +1,88 @@
 <div class="container-fluid">
     <div class="col-md-12">
         <div class="row">
+            {{#if communityDatas}}
             <div class="form-group col-md-3 pull-right">
-                <input id="searchAll" type="text" class="form-control pull-right" placeholder="Search">
+                <input id="community-search" type="text" class="form-control pull-right" placeholder="Search">
             </div>
-        </div>
-        <table id="community" class="display" cellspacing="0" width="100%">
-            <thead>
-                <tr>
-                    <th>
-                        SRA Study
-                    </th>
-                    <th>
-                        PubMed ID
-                    </th>
-                    <th>
-                        Organism
-                    </th>
-                    <th>
-                        Ig/TCR
-                    </th>
-                    <th>
-                        Study Type
-                    </th>
-                    <th>
-                        Description
-                    </th>
-                    <th>
-                        Experiments
-                    </th>
-                    <th>
-                        Runs
-                    </th>
-                    <th>
-                        SRA Submission
-                    </th>
-                    <th>
-                        Notes
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each communityDatas}}
+            <table id="community" class="display" cellspacing="0" width="100%">
+                <thead>
                     <tr>
-                        <td>
-                            <a href="community/{{uuid}}">{{value.studyId}}</a>
-                        </td>
-                        <td>
-                            {{value.pubMedId}}
-                        </td>
-                        <td>
-                            {{value.organism}}
-                        </td>
-                        <td>
-                            {{value.receptor}}
-                        </td>
-                        <td>
-                            {{value.study}}
-                        </td>
-                        <td>
-                            {{value.description}}
-                        </td>
-                        <td>
-                            {{value.experiments}}
-                        </td>
-                        <td>
-                            {{value.runs}}
-                        </td>
-                        <td>
-                            {{value.sraSubmission}}
-                        </td>
-                        <td>
-                            {{value.notes}}
-                        </td>
+                        <th>
+                            SRA Study
+                        </th>
+                        <th>
+                            PubMed ID
+                        </th>
+                        <th>
+                            Organism
+                        </th>
+                        <th>
+                            Ig/TCR
+                        </th>
+                        <th>
+                            Study Type
+                        </th>
+                        <th>
+                            Description
+                        </th>
                     </tr>
-                {{/each}}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {{#each communityDatas}}
+                        <tr>
+                            <td>
+                              {{#if value.studyId}}
+                                <a href="community/{{uuid}}">{{value.studyId}}</a>
+                              {{else}}
+                                N/A
+                              {{/if}}
+                            </td>
+                            <td>
+                              {{#if value.pubMedId}}
+                                {{value.pubMedId}}
+                              {{else}}
+                                N/A
+                              {{/if}}
+                            </td>
+                            <td>
+                              {{#if value.organism}}
+                                {{value.organism}}
+                              {{else}}
+                                N/A
+                              {{/if}}
+                            </td>
+                            <td>
+                              {{#if value.receptor}}
+                                {{value.receptor}}
+                              {{else}}
+                                N/A
+                              {{/if}}
+                            </td>
+                            <td>
+                              {{#if value.study}}
+                                {{value.study}}
+                              {{else}}
+                                N/A
+                              {{/if}}
+                            </td>
+                            <td>
+                              {{#if value.title}}
+                                {{value.title}}
+                              {{else}}
+                                N/A
+                              {{/if}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+                <tfoot>
+                    <tr>
+                      <td></td><td></td><td></td><td></td><td></td><td></td>
+                    </tr>
+                </tfoot>
+            </table>
+            {{/if}}
+        </div>
     </div>
 </div>
