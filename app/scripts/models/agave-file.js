@@ -230,6 +230,8 @@ function(
             });
         },
         downloadFileToDisk: function(totalSize) {
+            var that = this;
+
             var jqxhr = $.ajax(
                 _.extend({}, FileTransferMixins.progressJqxhr(that, totalSize), {
                     headers: Backbone.Agave.oauthHeader(),

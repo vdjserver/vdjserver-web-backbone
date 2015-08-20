@@ -135,7 +135,7 @@ define([
             this.retrySyncEngine = Agave.sync;
             this.retrySyncLimit = 3;
         },
-        apiHost: EnvironmentConfig.agaveRoot,
+        apiHost: EnvironmentConfig.agave.host,
         sync: Backbone.RetrySync,
         requiresAuth: true,
         parse: function(response) {
@@ -156,7 +156,7 @@ define([
             this.retrySyncEngine = Agave.sync;
             this.retrySyncLimit = 3;
         },
-        apiHost: EnvironmentConfig.agaveRoot,
+        apiHost: EnvironmentConfig.agave.host,
         sync: Backbone.RetrySync,
         requiresAuth: true,
         parse: function(response) {
