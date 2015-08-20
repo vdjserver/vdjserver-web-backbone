@@ -16,6 +16,7 @@ function(Backbone, EnvironmentConfig) {
         },
         idAttribute: 'username',
         initialize: function(attributes) {
+            Backbone.Agave.Model.prototype.initialize.apply(this, [attributes]);
 
             if (this.attributes.uuid) {
                 this.uuid = this.attributes.uuid;

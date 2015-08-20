@@ -30,6 +30,9 @@ define([
     Jobs.OutputFiles = Backbone.Agave.Collection.extend({
         model: Backbone.Agave.Model.Job.OutputFile,
         initialize: function(parameters) {
+
+            Backbone.Agave.Collection.prototype.initialize.apply(this, [parameters]);
+
             if (parameters.jobId) {
                 this.jobId = parameters.jobId;
             }
@@ -148,6 +151,9 @@ define([
     Jobs.Listings = Backbone.Agave.MetadataCollection.extend({
         model: Backbone.Agave.Model.Job.Listing,
         initialize: function(parameters) {
+
+            Backbone.Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+
             if (parameters && parameters.projectUuid) {
                 this.projectUuid = parameters.projectUuid;
             }

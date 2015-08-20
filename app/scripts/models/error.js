@@ -8,6 +8,9 @@ define(['app'], function(App) {
             type: '',
         },
         initialize: function(parameters) {
+
+            Backbone.Agave.Model.prototype.initialize.apply(this, [parameters]);
+
             if (parameters.message) {
                 this.set('message', parameters.message);
             }

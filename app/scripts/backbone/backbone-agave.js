@@ -2,6 +2,7 @@ define([
     'backbone',
     'environment-config',
     'moment',
+    'backbone-retry-sync',
 ], function(
     Backbone,
     EnvironmentConfig,
@@ -72,7 +73,7 @@ define([
             }
             options.beforeSend = function(xhr) {
                 if (options._beforeSend) {
-                    options._beforeSend(xhr);
+                    //options._beforeSend(xhr);
                 }
                 xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
             };
@@ -118,7 +119,7 @@ define([
 
     // This is a complete replacement for backbone.sync
     // and is mostly the same as that whenever possible
-    Agave.MetadataSync = function(method, model, options) {
+    Agave.PutOverrideSync = function(method, model, options) {
 
         if (method === 'update') {
             method = 'create';
@@ -129,8 +130,12 @@ define([
 
     // Agave extension of default Backbone.Model that uses Agave sync
     Agave.Model = Backbone.Model.extend({
+        initialize: function() {
+            this.retrySyncEngine = Agave.sync;
+            this.retrySyncLimit = 3;
+        },
         apiRoot: EnvironmentConfig.agaveRoot,
-        sync: Agave.sync,
+        sync: Backbone.RetrySync,
         requiresAuth: true,
         parse: function(response) {
             if (response.result) {
@@ -142,8 +147,12 @@ define([
 
     // Agave extension of default Backbone.Collection that uses Agave sync
     Agave.Collection = Backbone.Collection.extend({
+        initialize: function() {
+            this.retrySyncEngine = Agave.sync;
+            this.retrySyncLimit = 3;
+        },
         apiRoot: EnvironmentConfig.agaveRoot,
-        sync: Agave.sync,
+        sync: Backbone.RetrySync,
         requiresAuth: true,
         parse: function(response) {
             if (response.result) {
@@ -162,7 +171,11 @@ define([
             created: '',
             lastUpdated: '',
         },
-        sync: Agave.MetadataSync,
+        initialize: function() {
+            this.retrySyncEngine = Agave.PutOverrideSync;
+            this.retrySyncLimit = 3;
+        },
+        sync: Backbone.RetrySync,
         getSaveUrl: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },
@@ -207,7 +220,11 @@ define([
 
     // Agave extension of default Backbone.Model that uses Agave sync
     Agave.MetadataCollection = Agave.Collection.extend({
-        sync: Agave.MetadataSync,
+        initialize: function() {
+            this.retrySyncEngine = Agave.PutOverrideSync;
+            this.retrySyncLimit = 3;
+        },
+        sync: Backbone.RetrySync,
         getSaveUrl: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },
@@ -241,21 +258,14 @@ define([
         initialize: function() {
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
             this.inputParameterName = 'files';
+
+            this.retrySyncEngine = Agave.PutOverrideSync;
+            this.retrySyncLimit = 3;
         },
         url: function() {
             return '/jobs/v2/';
         },
-        sync: function(method, model, options) {
-
-            switch (method) {
-                case 'update':
-                    options.type = 'POST';
-                    break;
-            }
-
-            // Call Agave Model  sync
-            return Agave.sync(method, model, options);
-        },
+        sync: Backbone.RetrySync,
         submitJob: function(projectUuid) {
 
             var that = this;

@@ -351,8 +351,6 @@ function(Backbone, EnvironmentConfig, moment) {
                     }
                 );
             },
-            initialize: function() {
-            },
             url: function() {
                 return '/meta/v2/data/' + this.get('uuid');
             },
