@@ -2,10 +2,12 @@ define(
     [
         'app',
         'backbone',
+        'file-transfer-mixins',
     ],
 function(
     App,
-    Backbone
+    Backbone,
+    FileTransferMixins
 ) {
 
     'use strict';
@@ -148,32 +150,22 @@ function(
             return jqxhr;
         },
         downloadFileToDisk: function() {
-            var that = this;
 
             var link = this.get('_links').self.href;
             link = this._fixBadAgaveLink(link);
 
-            var xhr = new XMLHttpRequest();
-            xhr.open(
-                'get',
-                link
+            var totalSize = this.get('length');
+            var that = this;
+
+            var jqxhr = $.ajax(
+                _.extend({}, FileTransferMixins.progressJqxhr(that, totalSize), {
+                    headers: Backbone.Agave.oauthHeader(),
+                    type:    'GET',
+                    url:     link,
+                })
             );
 
-            xhr.responseType = 'blob';
-            xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-
-            xhr.onload = function() {
-                if (this.status === 200 || this.status === 202) {
-                    window.saveAs(
-                        new Blob([this.response]),
-                        that.get('name')
-                    );
-                }
-            };
-
-            xhr.send();
-
-            return xhr;
+            return jqxhr;
         },
         _fixBadAgaveLink: function(link) {
             var link = link.split('/');

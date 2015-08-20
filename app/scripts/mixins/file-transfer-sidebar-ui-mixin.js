@@ -11,6 +11,9 @@ define([
 
             $('.' + fileUniqueIdentifier)
                 .width(percentCompleted)
+            ;
+
+            $('.' + fileUniqueIdentifier + '-progress-text')
                 .text(percentCompleted)
             ;
         },

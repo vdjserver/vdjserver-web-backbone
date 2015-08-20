@@ -73,6 +73,7 @@ define([
     'file-download-detection-mixin',
     'file-transfer-sidebar-ui-mixin',
     'comparators-mixin',
+    'file-transfer-mixins',
 
     // View Helpers
     'view-layouts',

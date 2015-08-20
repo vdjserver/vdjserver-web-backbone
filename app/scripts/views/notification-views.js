@@ -2,7 +2,13 @@ define([
     'app',
     'handlebars',
     'environment-config',
-], function(App, Handlebars, EnvironmentConfig) {
+    'file-transfer-sidebar-ui-mixin',
+], function(
+    App,
+    Handlebars,
+    EnvironmentConfig,
+    FileTransferSidebarUiMixin
+) {
 
     'use strict';
 
@@ -64,45 +70,75 @@ define([
             return {
                 fileUniqueIdentifier: this.fileUniqueIdentifier,
                 filename: this.filename,
+                transferIcon: 'fa fa-laptop',
             };
         },
     });
 
-    Notifications.FileImport = Backbone.View.extend({
-        template: 'notification/file-import',
-        initialize: function(parameters) {
+    Notifications.FileImport = Backbone.View.extend(
+        _.extend({}, FileTransferSidebarUiMixin, {
 
-            this.notificationModel = parameters.notificationModel;
+            template: 'notification/file-transfer',
+            initialize: function(parameters) {
 
-            this.listenTo(
-                App.Instances.WebsocketManager,
-                'fileImportUpdate',
-                this._handleFileImportUpdate
-            );
+                this.notificationModel = parameters.notificationModel;
 
-            this.statusMessage = 'pending';
-        },
-        serialize: function() {
-            return {
-                fileName: this.notificationModel.filename,
-                fileStatus: this.statusMessage,
-                projectUuid: this.notificationModel.projectUuid,
-            };
-        },
+                this.listenTo(
+                    App.Instances.WebsocketManager,
+                    'fileImportUpdate',
+                    this._handleFileImportUpdate
+                );
+            },
+            serialize: function() {
+                return {
+                    fileUniqueIdentifier: this.notificationModel.fileUniqueIdentifier,
+                    filename: this.notificationModel.filename,
+                    transferIcon: 'fa fa-dropbox',
+                };
+            },
 
-        // Private Methods
-        _handleFileImportUpdate: function(websocketNotification) {
+            // Private Methods
+            _handleFileImportUpdate: function(websocketNotification) {
 
-            if (this.notificationModel.associatedUuid === websocketNotification.fileUuid) {
-                this.statusMessage = websocketNotification.fileImportStatus;
-                this.render();
-            }
+                if (this.notificationModel.associatedUuid === websocketNotification.fileUuid) {
+                    var percentCompleted = this._getPercentCompleted(websocketNotification.fileImportStatus);
 
-            if (websocketNotification.fileImportStatus === 'finished') {
-                this.notificationModel.projectView._fetchAndRenderFileListings();
-            }
-        },
-    });
+                    this._uiSetUploadProgress(percentCompleted, this.notificationModel.fileUniqueIdentifier);
+                }
+
+                if (websocketNotification.fileImportStatus === 'finished') {
+                    this._uiSetSidemenuTransferSuccess(this.notificationModel.fileUniqueIdentifier);
+                    this.notificationModel.projectView._fetchAndRenderFileListings();
+                }
+            },
+            _getPercentCompleted: function(importStatus) {
+                var percentCompleted = 0;
+
+                switch (importStatus) {
+                    case 'permissions':
+                        percentCompleted = 25;
+                        break;
+
+                    case 'metadata':
+                        percentCompleted = 50;
+                        break;
+
+                    case 'metadataPermissions':
+                        percentCompleted = 75;
+                        break;
+
+                    case 'finished':
+                        percentCompleted = 100;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                return percentCompleted;
+            },
+        })
+    );
 
     App.Views.Notifications = Notifications;
     return Notifications;

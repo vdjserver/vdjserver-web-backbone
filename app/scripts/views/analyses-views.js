@@ -642,41 +642,21 @@ define([
                     filename
                 );
 
-                // Agave won't provide the length header on the download, but we
-                // can retrieve this now and use this instead.
-                var totalSize = outputFile.get('length');
-
                 var that = this;
 
-                var xhr = outputFile.downloadFileToDisk();
+                this.listenTo(outputFile, Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(percentCompleted) {
+                    that._uiSetUploadProgress(percentCompleted, fileUniqueIdentifier);
+                });
 
-                xhr.addEventListener(
-                    'progress',
-                    function(progress) {
-
-                        var percentCompleted = 0;
-
-                        if (progress.lengthComputable) {
-                            percentCompleted = progress.loaded / progress.total;
-                        }
-                        else {
-                            percentCompleted = progress.loaded / totalSize;
-                        }
-
-                        percentCompleted *= 100;
-
-                        that._uiSetUploadProgress(percentCompleted, fileUniqueIdentifier);
-                    },
-                    false
-                );
-
-                xhr.addEventListener(
-                    'load',
-                    function() {
+                outputFile.downloadFileToDisk()
+                    .then(function(response) {
                         that._uiSetSidemenuTransferSuccess(fileUniqueIdentifier);
-                    },
-                    false
-                );
+                        window.saveAs(
+                            new Blob([response]),
+                            outputFile.get('name')
+                        );
+                    })
+                    ;
             },
             getErrorMessageFromResponse: function(response) {
                 var txt;

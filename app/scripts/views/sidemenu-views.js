@@ -151,14 +151,18 @@ define([
                 fileTransferListView.render();
             },
 
-            addFileImportNotification: function(fileImportNotification) {
+            addFileImportNotification: function(projectUuid, fileUniqueIdentifier, fileImportNotification) {
 
                 var fileImportNotificationView = new App.Views.Notifications.FileImport({
                     notificationModel: fileImportNotification,
                 });
 
-                this.insertView(
-                    '#project-' + fileImportNotification.projectUuid + '-notification',
+                $('#project-' + projectUuid + '-notification').append(
+                    '<div class="' + fileUniqueIdentifier + '-transfer-view"></div>'
+                );
+
+                this.setView(
+                    '.' + fileUniqueIdentifier + '-transfer-view',
                     fileImportNotificationView
                 );
 

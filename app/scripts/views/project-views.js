@@ -677,10 +677,14 @@ define([
                                 .then(function(response) {
 
                                     if (response.hasOwnProperty('result') === true && response.result.hasOwnProperty('uuid') === true) {
+
+                                        var chance = new Chance();
+                                        var fileUniqueIdentifier = chance.guid();
+
                                         var fileTransferNotification = new Backbone.Agave.Model.Notification.FileImport();
 
                                         fileTransferNotification.set('associatedUuid', response.result.uuid);
-                                        fileTransferNotification.projectUuid = that.projectUuid;
+                                        fileTransferNotification.fileUniqueIdentifier = fileUniqueIdentifier;
                                         fileTransferNotification.filename = model.filename;
                                         fileTransferNotification.projectView = that;
 
@@ -690,7 +694,11 @@ define([
                                             })
                                             .then(function() {
                                                 var listView = App.Layouts.sidebar.getView('.sidebar');
-                                                listView.addFileImportNotification(fileTransferNotification);
+                                                listView.addFileImportNotification(
+                                                    that.projectUuid,
+                                                    fileUniqueIdentifier,
+                                                    fileTransferNotification
+                                                );
                                             })
                                             ;
                                     }
@@ -893,35 +901,19 @@ define([
 
                 var that = this;
 
-                var xhr = fileModel.downloadFileToDisk();
+                this.listenTo(fileModel, Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(percentCompleted) {
+                    that._uiSetUploadProgress(percentCompleted, fileUniqueIdentifier);
+                });
 
-                xhr.addEventListener(
-                    'progress',
-                    function(progress) {
-
-                        var percentCompleted = 0;
-
-                        if (progress.lengthComputable) {
-                            percentCompleted = progress.loaded / progress.total;
-                        }
-                        else {
-                            percentCompleted = progress.loaded / totalSize;
-                        }
-
-                        percentCompleted *= 100;
-
-                        that._uiSetUploadProgress(percentCompleted, fileUniqueIdentifier);
-                    },
-                    false
-                );
-
-                xhr.addEventListener(
-                    'load',
-                    function() {
+                fileModel.downloadFileToDisk(totalSize)
+                    .then(function(response) {
                         that._uiSetSidemenuTransferSuccess(fileUniqueIdentifier);
-                    },
-                    false
-                );
+                        window.saveAs(
+                            new Blob([response]),
+                            fileModel.get('name')
+                        );
+                    })
+                    ;
             },
 
             _clickDownloadMultipleFiles: function(e) {
