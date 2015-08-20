@@ -56,3 +56,31 @@
         {{/if}}
     </td>
 </tr>
+<tr>
+    <td>
+        Search Window
+    </td>
+    <td>
+        {{#if options.length}}
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-length"
+                type="number"
+                value="{{options.length}}"
+                step="1"
+                min="0"
+                pattern="\d+"
+            >
+        {{else}}
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-{{elementCount}}-element-length"
+                type="number"
+                value="20"
+                step="1"
+                min="0"
+                pattern="\d+"
+            >
+        {{/if}}
+    </td>
+</tr>

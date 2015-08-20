@@ -319,6 +319,11 @@ define(['app'], function(App) {
                         element.required = required;
                     }
 
+                    var length = parameters[key + '-' + elementCounter + '-element-length'];
+                    if (length) {
+                        element.length = length;
+                    }
+
                     var seqFile   = parameters[key + '-' + elementCounter + '-element-sequence-file'];
                     if (seqFile) {
                         element['seq_file'] = seqFile;
@@ -540,6 +545,11 @@ define(['app'], function(App) {
             var fastaFile = parameters[key + '-primer-file'];
             if (fastaFile) {
                 dictionary['seq_file'] = fastaFile;
+            }
+
+            var length = parameters[key + '-element-length'];
+            if (length) {
+                dictionary['length'] = length;
             }
 
             return dictionary;
