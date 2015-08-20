@@ -210,21 +210,42 @@ define([
                 jobModels.push(job);
             }
 
-            // Do async fetch on all individual models
-            var jobFetches = _.invoke(jobModels, 'fetch');
-
             this.jobs = new Backbone.Agave.Collection.Jobs();
 
-            $.when.apply($, jobFetches)
+            /*
+                30/July/2015
+
+                This is a hack to fetch all jobs without stopping for errors.
+                The Agave jobs endpoint is throwing a 404/400 for some fetches,
+                and this was causing errors to propagate through fetches using
+                promise arrays. So, this workaround guarantees that any
+                successful fetches will bind data back onto models.
+            */
+            var deferred = $.Deferred();
+            var counter = 0;
+
+            jobModels.forEach(function(jobModel) {
+                jobModel.fetch()
+                    .always(function() {
+                        that.jobs.add(jobModel);
+                        counter++;
+
+                        if (counter === jobModels.length) {
+                            deferred.resolve();
+                        }
+                    })
+                    ;
+            })
+            ;
+
+            $.when(deferred)
                 .always(function() {
                     for (var i = 0; i < jobModels.length; i++) {
-
-                        that.jobs.add(jobModels[i]);
 
                         // check for websockets
                         var job = that.jobs.get(jobModels[i]);
 
-                        if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
+                        if (_.has(job, 'get') && job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
 
                             App.Instances.WebsocketManager.subscribeToEvent(job.get('id'));
 

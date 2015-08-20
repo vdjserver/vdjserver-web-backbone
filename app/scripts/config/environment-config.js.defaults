@@ -2,14 +2,23 @@
 'use strict';
 
 var EnvironmentConfig = {
-    debug: {},
+    agave: {
+        executionSystems: {
+            lonestar: 'lonestar.tacc.utexas.edu',
+            vdjExec01: 'vdj-exec-01.tacc.utexas.edu',
+        },
+        host: 'https://wso2-elb.tacc.utexas.edu',
+        serviceAccountUsername: 'vdj',
+        storageSystems: {
+            corral: 'data.vdjserver.org',
+        },
+    },
+    debug: {
+        console: false,
+        disableJobs: false,
+    },
+    recaptchaPublicKey: '6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc',
+    vdjApi: {
+        host: 'https://vdjserver.org/api/v1',
+    }
 };
-
-EnvironmentConfig.agaveRoot = 'https://wso2-elb.tacc.utexas.edu';
-EnvironmentConfig.vdjauthRoot = 'https://vdjserver.org/api/v1';
-EnvironmentConfig.serviceAccountUsername = 'vdj';
-EnvironmentConfig.storageSystem = 'data.vdjserver.org';
-EnvironmentConfig.recaptchaPublicKey = '6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc';
-
-EnvironmentConfig.debug.console = false;
-EnvironmentConfig.debug.disableJobs = false;

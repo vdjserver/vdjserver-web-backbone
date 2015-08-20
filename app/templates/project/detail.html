@@ -35,12 +35,17 @@
     </div>
 </div>
 
+{{#checkSystemUpStatus systems}}
+{{else}}
+    <div class="alert alert-warning">
+        Jobs are temporarily unavailable. We apologize for the inconvenience, and will reenable them as soon as possible.
+    </div>
+{{/checkSystemUpStatus}}
+
 <div class="project-detail-controls">
     <div class="row">
         <div class="col-sm-6">
             <div class="btn-group btn-group-justified">
-
-
 
                 <div class="btn-group">
                     <button
@@ -92,6 +97,11 @@
                         id="run-job-button"
                         class="btn btn-primary disabled dropdown-toggle files-selected-button"
                         data-toggle="dropdown"
+
+                        {{#checkSystemUpStatus systems}}
+                        {{else}}
+                            disabled
+                        {{/checkSystemUpStatus}}
                     >
                         Run Job
                         <i class="fa fa-caret-down"></i>

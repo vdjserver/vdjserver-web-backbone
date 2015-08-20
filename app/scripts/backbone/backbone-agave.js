@@ -57,12 +57,12 @@ define([
 
     Agave.sync = function(method, model, options) {
 
-        var apiRoot = model.apiRoot;
-        if (options.apiRoot) {
-            apiRoot = options.apiRoot;
+        var apiHost = model.apiHost;
+        if (options.apiHost) {
+            apiHost = options.apiHost;
         }
 
-        options.url = apiRoot + (options.url || _.result(model, 'url'));
+        options.url = apiHost + (options.url || _.result(model, 'url'));
 
         if (model.requiresAuth) {
             var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
@@ -73,6 +73,7 @@ define([
             }
             options.beforeSend = function(xhr) {
                 if (options._beforeSend) {
+                    //console.log("xhr is: " + JSON.stringify(xhr));
                     //options._beforeSend(xhr);
                 }
                 xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
@@ -134,7 +135,7 @@ define([
             this.retrySyncEngine = Agave.sync;
             this.retrySyncLimit = 3;
         },
-        apiRoot: EnvironmentConfig.agaveRoot,
+        apiHost: EnvironmentConfig.agaveRoot,
         sync: Backbone.RetrySync,
         requiresAuth: true,
         parse: function(response) {
@@ -151,7 +152,7 @@ define([
             this.retrySyncEngine = Agave.sync;
             this.retrySyncLimit = 3;
         },
-        apiRoot: EnvironmentConfig.agaveRoot,
+        apiHost: EnvironmentConfig.agaveRoot,
         sync: Backbone.RetrySync,
         requiresAuth: true,
         parse: function(response) {
@@ -242,8 +243,9 @@ define([
             archive: true,
             //archive: false,
             archivePath: '',
-            archiveSystem: EnvironmentConfig.storageSystem,
+            archiveSystem: EnvironmentConfig.agave.storageSystems.corral,
             batchQueue: 'normal',
+            executionSystem: EnvironmentConfig.agave.executionSystems.lonestar,
             //id: 0,
             inputs: {},
             maxRunTime: '24:00:00',
@@ -313,9 +315,9 @@ define([
                 data:   'action=mkdir&path=' + relativeArchivePath,
                 headers: Backbone.Agave.oauthHeader(),
                 type:   'PUT',
-                url:    EnvironmentConfig.agaveRoot
+                url:    EnvironmentConfig.agave.host
                         + '/files/v2/media/system'
-                        + '/' + EnvironmentConfig.storageSystem
+                        + '/' + EnvironmentConfig.agave.storageSystems.corral
                         + '//projects'
                         + '/' + projectUuid
                         + '/analyses',
@@ -332,7 +334,7 @@ define([
                     jobUuid: this.get('id'),
                 }),
                 contentType: 'application/json',
-                url: EnvironmentConfig.vdjauthRoot + '/jobs/metadata',
+                url: EnvironmentConfig.vdjApi.host + '/jobs/metadata',
             });
 
             return jqxhr;
@@ -346,7 +348,7 @@ define([
                     jobUuid: this.get('id'),
                 }),
                 contentType: 'application/json',
-                url: EnvironmentConfig.vdjauthRoot + '/permissions/jobs',
+                url: EnvironmentConfig.vdjApi.host + '/permissions/jobs',
             });
 
             return jqxhr;
@@ -359,7 +361,7 @@ define([
                 var fileMetadata = fileMetadatas.at(i);
 
                 filePaths.push(
-                    'agave://' + EnvironmentConfig.storageSystem
+                    'agave://' + EnvironmentConfig.agave.storageSystems.corral
                     + '/' + fileMetadata.getFilePath()
                 );
             }
@@ -385,7 +387,7 @@ define([
             'refresh_token': null,
             'access_token':  null,
         },
-        apiRoot: EnvironmentConfig.vdjauthRoot,
+        apiHost: EnvironmentConfig.vdjApi.host,
         url: '/token',
         sync: function(method, model, options) {
 
@@ -413,7 +415,7 @@ define([
                     break;
             }
 
-            options.url = EnvironmentConfig.vdjauthRoot + '/token',
+            options.url = EnvironmentConfig.vdjApi.host + '/token',
 
             options.headers = {
                 'Authorization': 'Basic ' + btoa(username + ':' + password),

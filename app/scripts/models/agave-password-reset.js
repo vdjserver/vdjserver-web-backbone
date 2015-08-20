@@ -14,7 +14,7 @@ function(Backbone, EnvironmentConfig) {
             username:  '',
             uuid:  ''
         },
-        apiRoot: EnvironmentConfig.vdjauthRoot,
+        apiHost: EnvironmentConfig.vdjApi.host,
         url: function() {
             var url = '/user/reset-password';
             if (this.get('uuid')) {

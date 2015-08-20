@@ -64,7 +64,11 @@
                                     {{/IsJobFrozen}}
                                 </div>
                             </td>
-                            <td>{{FormatAgaveDate submitTime}}</td>
+                            <td>
+                                {{#if submitTime}}
+                                    {{FormatAgaveDate submitTime}}
+                                {{/if}}
+                            </td>
                             <td>
                                 {{#IsJobFrozen this}}
                                     Job Failed
@@ -72,8 +76,6 @@
                                 {{else}}
                                     {{#if endTime}}
                                         {{FormatAgaveDate endTime}}
-                                    {{else}}
-                                        In Progress
                                     {{/if}}
                                 {{/IsJobFrozen}}
 
@@ -89,7 +91,11 @@
                                             <button type="button" class="btn btn-primary">View Output</button>
                                         </a>
                                     {{else}}
-                                        <button type="button" class="btn btn-warning" disabled="disabled">In Progress</button>
+                                        {{#if submitTime}}
+                                            <button type="button" class="btn btn-warning" disabled="disabled">In Progress</button>
+                                        {{else}}
+                                            <button type="button" class="btn btn-warning" disabled="disabled">Job Information Unavailable</button>
+                                        {{/if}}
                                     {{/JobSuccessCheck}}
                                 {{/IsJobFrozen}}
                             </td>

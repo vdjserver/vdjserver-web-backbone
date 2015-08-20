@@ -20,7 +20,7 @@ function(Backbone, EnvironmentConfig, detect) {
             browser: '',
             os: '',
         },
-        apiRoot: EnvironmentConfig.vdjauthRoot,
+        apiHost: EnvironmentConfig.vdjApi.host,
         url: function() {
             return '/telemetry';
         },

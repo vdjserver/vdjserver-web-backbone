@@ -13,7 +13,7 @@ function(Backbone, EnvironmentConfig) {
             recaptcha_challenge_field:   '',
             recaptcha_response_field: '',
         },
-        apiRoot: EnvironmentConfig.vdjauthRoot,
+        apiHost: EnvironmentConfig.vdjApi.host,
         url: function() {
             return '/feedback';
         },

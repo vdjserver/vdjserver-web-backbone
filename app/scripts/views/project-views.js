@@ -60,6 +60,19 @@ define([
         'project-file-list-spacer'
     );
 
+    Handlebars.registerHelper('checkSystemUpStatus', function(systems, options) {
+
+        var lonestarUp = Backbone.Agave.Collection.Systems.checkSystemUpStatus(systems, EnvironmentConfig.agave.executionSystems.lonestar);
+        var storageUp = Backbone.Agave.Collection.Systems.checkSystemUpStatus(systems, EnvironmentConfig.agave.storageSystems.corral);
+
+        if (lonestarUp === true && storageUp === true) {
+            return options.fn(systems);
+        }
+        else {
+            return options.inverse(systems);
+        }
+    });
+
     Handlebars.registerHelper('IfJobSelectableFileType', function(filename, fileType, options) {
         var fileExtension = filename.split('.').pop();
         fileExtension = fileExtension.slice(0);
@@ -306,6 +319,7 @@ define([
                     return {
                         projectDetail: this.projectModel.toJSON(),
                         fileListingCount: this.fileListings.getFileCount() + ' files',
+                        systems: this.systems.toJSON(),
                         userCount: this.projectUsers.getUserCount(),
                     };
                 }
@@ -389,8 +403,10 @@ define([
                     uuid: this.projectModel.get('uuid')
                 });
 
-                this.projectUsers.fetch()
-                    .done(function() {
+                this.systems = new Backbone.Agave.Collection.Systems();
+
+                $.when(this.systems.fetch(), this.projectUsers.fetch())
+                    .always(function(results) {
                         that._fetchAndRenderFileListings();
                     })
                     .fail(function(error) {
@@ -399,7 +415,8 @@ define([
                         telemetry.set('method', 'Backbone.Agave.Collection.Permissions().fetch()');
                         telemetry.set('view', 'Projects.Detail');
                         telemetry.save();
-                    });
+                    })
+                    ;
             },
 
             _getSelectedFileUuids: function() {
@@ -1642,13 +1659,13 @@ define([
             var that = this;
             this.permissions.fetch()
                 .done(function() {
-                    that.permissions.remove(EnvironmentConfig.serviceAccountUsername);
+                    that.permissions.remove(EnvironmentConfig.agave.serviceAccountUsername);
                     that.render();
 
                     that.tenantUsers = new Backbone.Agave.Collection.TenantUsers();
                     that.tenantUsers.fetch()
                         .done(function() {
-                            that.tenantUsers.remove(EnvironmentConfig.serviceAccountUsername);
+                            that.tenantUsers.remove(EnvironmentConfig.agave.serviceAccountUsername);
                             that._usernameTypeahead(that.permissions, that.tenantUsers);
                         })
                         .fail(function(error) {

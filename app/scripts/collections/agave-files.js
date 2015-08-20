@@ -14,7 +14,7 @@ function(Backbone, EnvironmentConfig, _string) {
         model: Backbone.Agave.Model.File,
         comparator: 'name',
         url: function() {
-            return '/files/v2/listings/system/' + EnvironmentConfig.storageSystem;
+            return '/files/v2/listings/system/' + EnvironmentConfig.agave.storageSystems.corral;
         },
         parse: function(response) {
             if (response.result) {
