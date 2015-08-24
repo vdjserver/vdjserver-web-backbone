@@ -342,6 +342,14 @@ function(
     });
 
     File.Dropbox = File.extend({
+        url: function() {
+            return '/files/v2/media/system'
+                + '/' + EnvironmentConfig.agave.storageSystems.corral
+                + '//projects'
+                + '/' + this.get('projectUuid')
+                + '/files/'
+            ;
+        },
         sync: function(method, model, options) {
 
             var that = this;
