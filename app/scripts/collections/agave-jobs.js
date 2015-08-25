@@ -64,6 +64,8 @@ define([
                         fileExtension === 'vdjml'
                         ||
                         doubleFileExtension === 'rc_out.tsv'
+                        ||
+                        filename === 'summary.txt'
                     ) {
                         return true;
                     }
@@ -130,8 +132,6 @@ define([
                         fileExtension === 'out'
                         ||
                         filename === 'vdjpipe_config.json'
-                        ||
-                        filename === 'summary.txt'
                     ) {
                         return true;
                     }
