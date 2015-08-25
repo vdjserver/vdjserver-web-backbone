@@ -36,7 +36,7 @@ define([
                 .then(function() {
                     loadingView.remove();
                     var communityTable = that.$('#community').dataTable({
-                        responsive: {details: false},
+                        responsive: true,
                         pageLength: 10,
                     });
 
@@ -89,7 +89,7 @@ define([
                         bInfo: false,
                         bPaginate: false,
                         bSort: false,
-                        responsive: {details: false},
+                        responsive: true,
                     });
 
                     var communityProjectExperiments = that.$('#community-project-experiments').dataTable({
@@ -98,7 +98,7 @@ define([
                         bPaginate: false,
                         bSort: false,
                         pageLength: 20,
-                        responsive: {details: false},
+                        responsive: true
                     });
 
                     that.$('#community-project-search').keyup(function() {
@@ -125,12 +125,14 @@ define([
             projectUuid: projectUuid
           });
 
-          $('.progress').remove();
-
           var progressWrapper = $('<div class="progress file-upload-progress-wrapper"></div>');
           var progressBar = $('<div class="progress-bar progress-striped active progress-bar-success"></div>');
 
-          $(e.target).after(progressWrapper.append(progressBar));
+          if ($(e.currentTarget).siblings('.progress').length){
+            $(e.currentTarget).siblings('.progress').remove();
+          }
+
+          $(e.currentTarget).after(progressWrapper.append(progressBar));
 
           fileModel.fetch()
             .then(function(response){
