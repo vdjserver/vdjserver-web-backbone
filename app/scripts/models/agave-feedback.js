@@ -15,7 +15,7 @@ function(Backbone, EnvironmentConfig) {
         },
         apiHost: EnvironmentConfig.vdjApi.host,
         url: function() {
-            return '/feedback';
+            return '/feedback/public';
         },
         requiresAuth: false,
         validate: function(attributes) {
