@@ -53,6 +53,22 @@ function(Backbone, EnvironmentConfig) {
         },
     });
 
+    Feedback.User = Backbone.Agave.Model.extend({
+        defaults: function() {
+
+            var defaultValues = {
+                'feedback': '',
+                'username': Backbone.Agave.instance.token().get('username'),
+            };
+
+            return defaultValues;
+        },
+        apiHost: EnvironmentConfig.vdjApi.host,
+        url: function() {
+            return '/feedback';
+        },
+    });
+
     Backbone.Agave.Model.Feedback = Feedback;
     return Feedback;
 });
