@@ -13,10 +13,10 @@ define([
 
     var Feedback = {};
 
-    Feedback.Form = Backbone.View.extend({
-        template: 'feedback/feedback',
+    Feedback.PublicForm = Backbone.View.extend({
+        template: 'feedback/public-feedback',
         initialize: function() {
-            this.model = new Backbone.Agave.Model.FeedbackModel();
+            this.model = new Backbone.Agave.Model.Feedback.Public();
             this.render;
         },
         afterRender: function() {
@@ -37,7 +37,6 @@ define([
         displayFormErrors: function(formErrors) {
 
             // Clear out old errors
-            //this.$el.find('.alert-danger').fadeOut(function() {
             $('.alert-danger').fadeOut(function() {
                 this.remove();
             });

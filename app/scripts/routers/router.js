@@ -190,7 +190,7 @@ define(['app'], function(App) {
         // Feedback
         feedback: function() {
             _setPublicSubviews();
-            App.Layouts.main.setView('.content', new App.Views.Feedback.Form());
+            App.Layouts.main.setView('.content', new App.Views.Feedback.PublicForm());
             App.Layouts.main.render();
         },
 

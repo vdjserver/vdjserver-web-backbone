@@ -7,7 +7,9 @@ function(Backbone, EnvironmentConfig) {
 
     'use strict';
 
-    var FeedbackModel = Backbone.Agave.Model.extend({
+    var Feedback = {};
+
+    Feedback.Public = Backbone.Agave.Model.extend({
         defaults: {
             feedback: '',
             recaptcha_challenge_field:   '',
@@ -37,6 +39,7 @@ function(Backbone, EnvironmentConfig) {
               });
             }
             */
+
             if (!attributes.recaptcha_response_field) {
                 errors.push({
                     'message': 'Incorrect captcha response.',
@@ -50,6 +53,6 @@ function(Backbone, EnvironmentConfig) {
         },
     });
 
-    Backbone.Agave.Model.FeedbackModel = FeedbackModel;
-    return FeedbackModel;
+    Backbone.Agave.Model.Feedback = Feedback;
+    return Feedback;
 });
