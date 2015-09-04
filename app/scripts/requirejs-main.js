@@ -46,7 +46,6 @@ define([
     'agave-projects',
 
     'agave-profile',
-    'agave-user-feedback',
 
     'agave-file',
     'agave-files',
@@ -90,7 +89,6 @@ define([
     'community-views',
     'forgot-password-views',
     'profile-views',
-    'user-feedback-views',
     'job-views',
     'project-views',
     'sidemenu-views',

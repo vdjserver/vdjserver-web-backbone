@@ -190,7 +190,7 @@ define(['app'], function(App) {
         // Feedback
         feedback: function() {
             _setPublicSubviews();
-            App.Layouts.main.setView('.content', new App.Views.Feedback.Form());
+            App.Layouts.main.setView('.content', new App.Views.Feedback.PublicForm());
             App.Layouts.main.render();
         },
 
@@ -211,7 +211,7 @@ define(['app'], function(App) {
 
             var destinationRoute = function() {
                 _setProjectSubviews();
-                App.Layouts.main.setView('.content', new App.Views.UserFeedback.Main());
+                App.Layouts.main.setView('.content', new App.Views.Feedback.UserForm());
                 App.Layouts.main.render();
             };
 
