@@ -4,12 +4,14 @@ define(
         'environment-config',
         'moment',
         'file-transfer-mixins',
+        'chance',
     ],
 function(
     Backbone,
     EnvironmentConfig,
     moment,
-    FileTransferMixins
+    FileTransferMixins,
+    Chance
 ) {
 
     'use strict';
@@ -41,6 +43,13 @@ function(
                 if (_.isObject(parameters) && parameters.hasOwnProperty('relativeUrl')) {
                     this.relativeUrl = parameters.relativeUrl;
                 }
+
+                this.uniqueIdentifier = this.generateUniqueIdentifier();
+            },
+            generateUniqueIdentifier: function() {
+                var chance = new Chance();
+
+                return chance.guid();
             },
             url: function() {
                 return '/files/v2/listings/system'

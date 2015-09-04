@@ -893,57 +893,86 @@ define([
                     })
                     ;
             },
-
             _clickDownloadFile: function(e) {
                 e.preventDefault();
 
-                var metadataUuid = e.target.dataset.metadatauuid;
+                var metadataUuid = [e.target.dataset.metadatauuid];
 
-                var fileMetadataModel = this.fileListings.get(metadataUuid);
-                var fileModel = fileMetadataModel.getFileModel();
-
-                var chance = new Chance();
-
-                var fileUniqueIdentifier = chance.guid();
-
-                this._setListMenuFileTransferView(
-                    this.projectUuid,
-                    fileUniqueIdentifier,
-                    fileMetadataModel.get('value')['name']
-                );
-
-                // Agave won't provide the length header on the download, but we
-                // can retrieve this now and use this instead.
-                var totalSize = fileMetadataModel.get('value')['length'];
-
-                var that = this;
-
-                this.listenTo(fileModel, Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(percentCompleted) {
-                    that._uiSetUploadProgress(percentCompleted, fileUniqueIdentifier);
-                });
-
-                fileModel.downloadFileToDisk(totalSize)
-                    .then(function(response) {
-                        that._uiSetSidemenuTransferSuccess(fileUniqueIdentifier);
-                        window.saveAs(
-                            new Blob([response]),
-                            fileModel.get('name')
-                        );
-                    })
-                    ;
+                this._downloadProjectFilesForMetadataUuids(metadataUuid);
             },
-
             _clickDownloadMultipleFiles: function(e) {
                 e.preventDefault();
 
                 var selectedFileMetadataUuids = this._getSelectedFileUuids();
 
-                for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
-                    var fileMetadataModel = this.fileListings.get(selectedFileMetadataUuids[i]);
+                this._downloadProjectFilesForMetadataUuids(selectedFileMetadataUuids);
+            },
+            _downloadProjectFilesForMetadataUuids: function(metadataUuids) {
+                var that = this;
 
+                var fileModels = [];
+
+                for (var i = 0; i < metadataUuids.length; i++) {
+                    var metadataUuid = metadataUuids[i];
+
+                    var fileMetadataModel = this.fileListings.get(metadataUuids[i]);
                     var fileModel = fileMetadataModel.getFileModel();
-                    fileModel.downloadFileToDisk();
-                }
+
+                    // Agave won't provide the length header on the download, but we
+                    // can retrieve this now and use this instead.
+                    var totalSize = fileMetadataModel.get('value').length;
+                    fileModel.totalSize = totalSize;
+
+                    this._setListMenuFileTransferView(
+                        this.projectUuid,
+                        fileModel.uniqueIdentifier,
+                        fileMetadataModel.get('value').name
+                    );
+
+                    /**
+                        You may be wondering why there are function calls for
+                        |createEventListeningAction| and |createDownloadAction|
+                        instead of just calling them directly in the loop.
+
+                        The problem is that we are starting asynchronous events
+                        in a loop, and the loop will end much earlier than these
+                        async events actually do. When the loop changes or ends,
+                        the loop target variable and any locally scoped variables
+                        from the outside will either be changed or lost.
+
+                        This means that outside values referenced by the |listenTo|
+                        and |downloadFileToDisk| closures will be unavailable
+                        when their async operations finally update (that's bad).
+
+                        So, since JS is function scoped, we can create a couple of
+                        temporary new scopes to reference our vars in their current
+                        state as of the current loop iteration and everything
+                        will work as expected.
+                    */
+                    var createEventListeningAction = function(tmpFileModel) {
+                        that.listenTo(tmpFileModel, Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(percentCompleted) {
+                            that._uiSetUploadProgress(percentCompleted, tmpFileModel.uniqueIdentifier);
+                        });
+                    };
+
+                    createEventListeningAction(fileModel);
+
+                    var createDownloadAction = function(tmpFileModel) {
+
+                        tmpFileModel.downloadFileToDisk(tmpFileModel.totalSize)
+                            .then(function(response) {
+                                that._uiSetSidemenuTransferSuccess(tmpFileModel.uniqueIdentifier);
+                                window.saveAs(
+                                    new Blob([response]),
+                                    tmpFileModel.get('name')
+                                );
+                            })
+                            ;
+                    };
+
+                    createDownloadAction(fileModel);
+                };
+
             },
         })
     );
