@@ -72,7 +72,7 @@ define([
                     $('#' + type + '-container').addClass('has-error');
                 }
 
-                $('html,body').animate({scrollTop:0});
+                $('html,body').animate({scrollTop: 0});
             }
         },
         submitForm: function(e) {
@@ -116,7 +116,8 @@ define([
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.set('error', error);
+                            telemetry.set('username', formData.username);
                             telemetry.set('method', 'Backbone.Agave.Model.Account.NewAccount().save()');
                             telemetry.set('view', 'Account.CreateAccount');
                             telemetry.save();
@@ -130,7 +131,7 @@ define([
                                 );
                             $('#modal-message').modal('hide');
 
-                            $('html,body').animate({scrollTop:0});
+                            $('html,body').animate({scrollTop: 0});
                         });
                 });
         }
@@ -182,6 +183,7 @@ define([
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
                     telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('username', username);
                     telemetry.set('method', 'Backbone.Agave.Model.Account.ResendVerificationEmail().save()');
                     telemetry.set('view', 'Account.VerificationPending');
                     telemetry.save();
