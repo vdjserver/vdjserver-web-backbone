@@ -208,25 +208,33 @@
                 </td>
                 <td>
                   {{#if this.fastqSRA}}
-                    {{this.fastqSRA}}
+                    {{#each this.fastqSRA}}
+                      <li>
+                        <a class="download-file" href="#" data-bypass=true data-filename="{{this}}" data-uuid="{{../../../communityData.uuid}}">{{this}}</a>
+                      </li>
+                    {{/each}}
                   {{else}}
                     N/A
                   {{/if}}
                 </td>
                 <td>
                   {{#if this.qcFilteredOutput}}
-                    {{this.qcFilteredOutput}}
+                    {{#each this.qcFilteredOutput}}
+                      <li>
+                        <a class="download-file" href="#" data-bypass=true data-filename="{{this}}" data-uuid="{{../../../communityData.uuid}}">{{this}}</a>
+                      </li>
+                    {{/each}}
                   {{else}}
                     N/A
                   {{/if}}
                 </td>
                 <td>
                   {{#if this.igBlastOutput}}
-                  {{#each this.igBlastOutput}}
-                    <li>
-                      <a class="download-file" href="#" data-bypass=true data-filename="{{this}}" data-uuid="{{../../../communityData.uuid}}">{{this}}</a>
-                    </li>
-                  {{/each}}
+                    {{#each this.igBlastOutput}}
+                      <li>
+                        <a class="download-file" href="#" data-bypass=true data-filename="{{this}}" data-uuid="{{../../../communityData.uuid}}">{{this}}</a>
+                      </li>
+                    {{/each}}
                   {{else}}
                     N/A
                   {{/if}}
