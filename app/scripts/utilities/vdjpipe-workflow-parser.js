@@ -661,7 +661,7 @@ define(['app'], function(App) {
                 };
             }
 
-            return that.wrapIfPairedReads(parameters, '', configuredParameter);
+            return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getHistogram = function() {
