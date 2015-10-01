@@ -37,7 +37,7 @@ function(Backbone, EnvironmentConfig) {
             username:  '',
             password:  '',
             passwordCheck: '',
-            email:     ''
+            email:     '',
         },
         apiHost: EnvironmentConfig.vdjApi.host,
         url: function() {
@@ -127,6 +127,51 @@ function(Backbone, EnvironmentConfig) {
             if (errors.length) {
                 return errors;
             }
+        },
+        parseApiErrorMessage: function(errorMessage) {
+
+            var parsedMessage = {
+                'message': '',
+                'type': '',
+            };
+
+            switch (errorMessage) {
+                case '1': {
+                    parsedMessage.message = 'This username has already been reserved. Please try a different one.';
+                    parsedMessage.type = 'username';
+                    break;
+                }
+
+                case '2': {
+                    parsedMessage.message = 'Unable to create account at this time. Please try again later.';
+                    parsedMessage.type = '';
+                    break;
+                }
+
+                case '3': {
+                    parsedMessage.message = 'Unable to create account at this time. Please try again later.';
+                    parsedMessage.type = '';
+                    break;
+                }
+
+                case '4': {
+                    parsedMessage.message = 'Unable to create account at this time. Please try again later.';
+                    parsedMessage.type = '';
+                    break;
+                }
+
+                case '5': {
+                    parsedMessage.message = 'Unable to create account at this time. Please try again later.';
+                    parsedMessage.type = '';
+                    break;
+                }
+
+                default: {
+                    break;
+                }
+            }
+
+            return parsedMessage;
         },
     });
 

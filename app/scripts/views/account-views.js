@@ -19,11 +19,11 @@ define([
 
             var message = new App.Models.MessageModel({
                 'header': 'Creating Account',
-                'body':   '<p>Please wait while your account is created...</p>'
+                'body':   '<p>Please wait while your account is created...</p>',
             });
 
             var modal = new App.Views.Util.ModalMessage({
-                model: message
+                model: message,
             });
 
             $('<div id="modal-view">').appendTo(this.el);
@@ -72,7 +72,9 @@ define([
                     $('#' + type + '-container').addClass('has-error');
                 }
 
-                $('html,body').animate({scrollTop: 0});
+                $('html,body').animate({
+                    scrollTop: 0,
+                });
             }
         },
         submitForm: function(e) {
@@ -101,7 +103,7 @@ define([
                         .save({
                             username: formData.username,
                             password: formData.password,
-                            email:    formData.email
+                            email:    formData.email,
                         })
                         .done(function() {
 
@@ -114,27 +116,21 @@ define([
                                 });
 
                         })
-                        .fail(function(error) {
+                        .fail(function(jqXhr, errorText, errorThrown) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', error);
+                            telemetry.set('error', jqXhr);
                             telemetry.set('username', formData.username);
                             telemetry.set('method', 'Backbone.Agave.Model.Account.NewAccount().save()');
                             telemetry.set('view', 'Account.CreateAccount');
                             telemetry.save();
 
-                            that.$el
-                                .find('.public-view')
-                                .prepend(
-                                    $('<div class="alert alert-danger">')
-                                        .text('Account creation failed. Please try again.')
-                                        .fadeIn()
-                                );
+                            var parsedErrorMessage = that.model.parseApiErrorMessage(JSON.parse(jqXhr.responseText).message);
                             $('#modal-message').modal('hide');
 
-                            $('html,body').animate({scrollTop: 0});
+                            that.displayFormErrors([parsedErrorMessage]);
                         });
                 });
-        }
+        },
     });
 
     Account.VerificationPending = Backbone.View.extend({
@@ -294,7 +290,10 @@ define([
                 this.verificationId = parameters['verificationId'];
             }
 
-            var loadingView = new App.Views.Util.Loading({keep: true});
+            var loadingView = new App.Views.Util.Loading({
+                keep: true,
+            });
+
             this.setView('#loading-view', loadingView);
             loadingView.render();
 
