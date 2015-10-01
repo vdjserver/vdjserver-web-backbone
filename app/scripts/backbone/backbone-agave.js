@@ -76,7 +76,10 @@ define([
                     //console.log("xhr is: " + JSON.stringify(xhr));
                     //options._beforeSend(xhr);
                 }
-                xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
+
+                if (_.isFunction(xhr)) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
+                }
             };
         }
 
