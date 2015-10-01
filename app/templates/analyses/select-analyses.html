@@ -130,12 +130,16 @@
                             <td>
                                 {{#FileTypeHasChart this.name}}
 
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-default show-chart" data-id="{{name}}">
-                                            {{ChartButtonText this.name}}
+                                    <div id="show-chart" class="btn btn-default show-chart" data-id="{{name}}">
+                                        {{ChartButtonText this.name}}
+                                    </div>
+
+                                    <div id="hide-chart" class="btn-group hidden" role="group">
+                                        <button class="btn btn-default hide-chart" data-id="{{name}}">
+                                            Hide Chart
                                         </button>
 
-                                        <button class="btn btn-primary download-chart hidden" data-id="{{name}}">
+                                        <button class="btn btn-primary download-chart" data-id="{{name}}">
                                             Download Chart
                                         </button>
                                     </div>
@@ -189,6 +193,9 @@
                                 {{GetHumanReadableFileSize length}}
                             </td>
                             <td>
+                                <button class="btn btn-default hide-log hidden" data-id="{{name}}">
+                                    Hide Log
+                                </button>
                                 <button class="btn btn-default show-log" data-id="{{name}}">
                                     Show Log
                                 </button>

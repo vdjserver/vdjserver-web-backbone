@@ -403,13 +403,24 @@ define([
             },
             events: {
                 'click .show-chart': 'showChart',
+                'click .hide-chart': 'hideChart',
+
                 'click .show-log': 'showLog',
+                'click .hide-log': 'hideLog',
 
                 'click .download-chart': 'downloadChart',
                 'click .download-file': 'downloadFile',
 
                 'click .toggle-legend-btn': 'toggleLegend',
             },
+
+            hideChart: function(e) {
+                e.preventDefault();
+                $(e.target).parent().prev('#show-chart').removeClass('hidden');
+                $(e.target).closest('#hide-chart').addClass('hidden');
+                $(e.target.closest('tr')).next().remove();
+            },
+
             showChart: function(e) {
                 e.preventDefault();
 
@@ -422,6 +433,11 @@ define([
                     length: 15,
                 });
 
+                // remove if it exists
+                if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
+                  $(e.target.closest('tr')).next().remove();
+                }
+
                 $(e.target.closest('tr')).after(
                     '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
                         + '<td colspan=3>'
@@ -433,11 +449,10 @@ define([
                     + '</tr>'
                 );
 
-                // Select current button
-                $(e.target).addClass('btn-success');
+                $(e.target).addClass('hidden');
+                $(e.target).nextAll('#hide-chart').removeClass('hidden');
 
                 // Enable download button
-                $(e.target).nextAll('.download-chart').removeClass('hidden');
                 $(e.target).nextAll('.download-chart').attr('data-chart-class-selector', classSelector);
 
                 // Clean up any charts that are currently displayed
@@ -540,6 +555,14 @@ define([
                 })
                 ;
             },
+
+            hideLog: function(e){
+                e.preventDefault();
+                $(e.target).addClass('hidden');
+                $(e.target).next('.show-log').removeClass('hidden');
+                $(e.target.closest('tr')).next().remove();
+            },
+
             showLog: function(e) {
                 e.preventDefault();
 
@@ -561,8 +584,8 @@ define([
                     + '</tr>'
                 );
 
-                // Select current button
-                $(e.target).addClass('btn-success');
+                $(e.target).addClass('hidden');
+                $(e.target).prev('.hide-log').removeClass('hidden');
 
                 var that = this;
 
