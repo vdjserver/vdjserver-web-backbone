@@ -103,7 +103,7 @@
                     </tr>
                     <tr>
                         <td>
-                            Length
+                            Search Window
                         </td>
                         <td>
                             {{#if options.length}}
@@ -134,18 +134,21 @@
         </div>
         <div class="col-md-6">
             <p>
-            This module locates
+                This module locates
 
-            {{#ifCond parameterType 'custom_j_primer_trimming'}}
-                j
-            {{else}}
-                v
-            {{/ifCond}}
+                {{#ifCond parameterType 'custom_j_primer_trimming'}}
+                    j
+                {{else}}
+                    v
+                {{/ifCond}}
 
-            primer regions within reads.
+                primer regions within reads.
             </p>
             <p>
                 This step can be removed from the workflow template.
+            </p>
+            <p>
+                The <mark>Search Window</mark> option specifies the size of the window on the 5' or 3' end of the read in which to search for the barcode/primer.
             </p>
         </div>
     {{else}}
