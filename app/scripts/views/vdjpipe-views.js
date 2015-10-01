@@ -23,6 +23,11 @@ define([
     );
 
     HandlebarsUtilities.registerRawPartial(
+        'jobs/vdjpipe/fragments/vdjpipe-paired-reads-direction-limited-fragment',
+        'vdjpipe-paired-reads-direction-limited-fragment'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
         'jobs/vdjpipe/demultiplex/fragments/vdjpipe-custom-demultiplex-barcode-top',
         'vdjpipe-custom-demultiplex-barcode-top'
     );
