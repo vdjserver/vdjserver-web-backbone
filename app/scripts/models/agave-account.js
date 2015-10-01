@@ -40,6 +40,7 @@ function(Backbone, EnvironmentConfig) {
             email:     '',
         },
         apiHost: EnvironmentConfig.vdjApi.host,
+        sync: Backbone.Agave.sync,
         url: function() {
             return '/user';
         },

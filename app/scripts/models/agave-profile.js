@@ -25,8 +25,8 @@ define(['backbone'], function(Backbone) {
             return '/meta/v2/data?q='
                    + encodeURIComponent(
                        '{'
-                         + '"owner":' + '"' + Backbone.Agave.instance.token().get('username') + '",'
-                         + '"name":"profile"'
+                         + '"name":"profile",'
+                         + '"value.name":' + '"' + Backbone.Agave.instance.token().get('username') + '"'
                      + '}'
                    );
         }

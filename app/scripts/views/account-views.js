@@ -124,8 +124,21 @@ define([
                             telemetry.set('view', 'Account.CreateAccount');
                             telemetry.save();
 
-                            var parsedErrorMessage = that.model.parseApiErrorMessage(JSON.parse(jqXhr.responseText).message);
+                            var errorMessage = JSON.parse(jqXhr.responseText).message;
+
+                            var parsedErrorMessage = that.model.parseApiErrorMessage(errorMessage);
+
                             $('#modal-message').modal('hide');
+
+                            if (errorMessage === '4' || errorMessage === '5') {
+                                $('#modal-message')
+                                    .on('hidden.bs.modal', function() {
+                                        App.router.navigate('/account/pending', {
+                                            trigger: true,
+                                        });
+                                    })
+                                    ;
+                            }
 
                             that.displayFormErrors([parsedErrorMessage]);
                         });
