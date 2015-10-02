@@ -77,7 +77,7 @@ define([
                     //options._beforeSend(xhr);
                 }
 
-                if (_.isFunction(xhr)) {
+                if (_.has(xhr, 'setRequestHeader')) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
                 }
             };
