@@ -71,6 +71,22 @@
                             type="submit"
                             value="Launch Job"
                         >
+
+                        <button
+                            id="job-submit-exit"
+                            class="btn btn-default hidden"
+                            type="button"
+                            data-dismiss="modal"
+                        >
+                            Exit
+                        </button>
+
+                        <input type="button"
+                            onclick="location.href='/project/{{this.projectUuid}}/jobs';"
+                            id="job-submit-status"
+                            class="btn btn-info  hidden"
+                            value="Show Job Status"
+                        />
                     </div>
                 </div>
             </form>

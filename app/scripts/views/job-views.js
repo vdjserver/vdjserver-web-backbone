@@ -66,6 +66,7 @@ define([
             return {
                 selectedFileListings: this.selectedFileListings.toJSON(),
                 generatedJobName: this.generatedJobName,
+                projectUuid: this.projectModel.get('uuid')
             };
         },
         afterRender: function() {
@@ -153,18 +154,22 @@ define([
             $('#job-submit-loading-view').html('');
             $('#job-submit-loading-view').removeClass('alert alert-danger');
 
-            // Setup new loading view
-            var loadingView = new App.Views.Util.Loading({
-                displayText: 'Launching Job...',
-                keep: true,
+            var message = new App.Models.MessageModel({
+              'body': 'Your job has been launched!'
             });
 
-            this.setView('#job-submit-loading-view', loadingView);
-            loadingView.render();
+            var alertView = new App.Views.Util.Alert({
+              options:{
+                type: 'success'
+              },
+              model: message
+            });
 
-            $('#job-submit-loading-view').addClass('alert alert-info');
-            $('.job-form-item, .job-submit-button').attr('disabled', 'disabled');
+            this.setView('#job-submit-loading-view', alertView);
+            alertView.render();
 
+            $('#job-submit-exit, #job-submit-status').removeClass('hidden');
+            $('.job-form-item, .job-submit-button').addClass('hidden');
         },
 
         _uiCancelJobLoadingView: function() {
