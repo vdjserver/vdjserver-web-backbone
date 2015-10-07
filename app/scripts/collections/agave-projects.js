@@ -11,7 +11,10 @@ define([
         _.extend({}, ComparatorsMixin.reverseChronologicalCreatedTime, {
             model: Backbone.Agave.Model.Project,
             url: function() {
-                return '/meta/v2/data?q=' + encodeURIComponent('{"name":"project"}');
+                return '/meta/v2/data?q='
+                       + encodeURIComponent('{"name":"project"}')
+                       + '&limit=5000'
+                       ;
             },
         })
     );
