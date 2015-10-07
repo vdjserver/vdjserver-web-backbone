@@ -28,7 +28,9 @@ define(['backbone'], function(Backbone) {
                          + '"owner":' + '"' + Backbone.Agave.instance.token().get('username') + '",'
                          + '"name":"profile"'
                      + '}'
-                   );
+                   )
+                   + '&limit=5000'
+                   ;
         }
     });
 

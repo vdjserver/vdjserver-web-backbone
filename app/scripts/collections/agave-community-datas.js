@@ -12,7 +12,9 @@ define(['backbone'], function(Backbone) {
                    '{'
                      + '"name":"communityDataSRA"'
                  + '}'
-               );
+               )
+               + '&limit=5000'
+               ;
         },
     });
 

@@ -63,6 +63,7 @@ function(Backbone, EnvironmentConfig, _string) {
                            + '"value.projectUuid":"' + this.projectUuid + '",'
                            + '"value.isDeleted":false'
                        + '}')
+                       + '&limit=5000'
                        ;
             },
             getFileCount: function() {

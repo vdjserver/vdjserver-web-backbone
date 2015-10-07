@@ -165,7 +165,9 @@ define([
                     + encodeURIComponent('{'
                         + '"name":"projectJob",'
                         + '"value.projectUuid":"' + this.projectUuid + '"'
-                    + '}');
+                    + '}')
+                    + '&limit=5000'
+                    ;
             },
         })
     );
@@ -178,7 +180,9 @@ define([
             return '/meta/v2/data?q='
                 + encodeURIComponent('{'
                     + '"name":"vdjpipeWorkflow"'
-                + '}');
+                + '}')
+                + '&limit=5000'
+                ;
         },
         getWorkflowNames: function() {
             var values = this.pluck('value');
