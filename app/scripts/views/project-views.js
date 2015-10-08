@@ -695,25 +695,22 @@ define([
 
                                     if (response.hasOwnProperty('result') === true && response.result.hasOwnProperty('uuid') === true) {
 
-                                        var chance = new Chance();
-                                        var fileUniqueIdentifier = chance.guid();
-
+                                        var fileUuid = response.result.uuid;
                                         var fileTransferNotification = new Backbone.Agave.Model.Notification.FileImport();
 
                                         fileTransferNotification.set('associatedUuid', response.result.uuid);
-                                        fileTransferNotification.fileUniqueIdentifier = fileUniqueIdentifier;
                                         fileTransferNotification.filename = model.filename;
                                         fileTransferNotification.projectView = that;
 
                                         return fileTransferNotification.save()
                                             .then(function() {
-                                                App.Instances.WebsocketManager.subscribeToEvent(response.result.uuid);
+                                                App.Instances.WebsocketManager.subscribeToEvent(fileUuid);
                                             })
                                             .then(function() {
                                                 var listView = App.Layouts.sidebar.getView('.sidebar');
                                                 listView.addFileImportNotification(
                                                     that.projectUuid,
-                                                    fileUniqueIdentifier,
+                                                    fileUuid,
                                                     fileTransferNotification
                                                 );
                                             })

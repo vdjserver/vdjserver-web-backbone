@@ -82,6 +82,7 @@ define([
             initialize: function(parameters) {
 
                 this.notificationModel = parameters.notificationModel;
+                this.fileUuid = parameters.fileUuid;
 
                 this.listenTo(
                     App.Instances.WebsocketManager,
@@ -91,7 +92,7 @@ define([
             },
             serialize: function() {
                 return {
-                    fileUniqueIdentifier: this.notificationModel.fileUniqueIdentifier,
+                    fileUniqueIdentifier: this.fileUuid,
                     filename: this.notificationModel.filename,
                     transferIcon: 'fa fa-dropbox',
                 };
@@ -100,14 +101,14 @@ define([
             // Private Methods
             _handleFileImportUpdate: function(websocketNotification) {
 
-                if (this.notificationModel.associatedUuid === websocketNotification.fileUuid) {
+                if (this.fileUuid === websocketNotification.fileInformation.fileUuid) {
                     var percentCompleted = this._getPercentCompleted(websocketNotification.fileImportStatus);
 
-                    this._uiSetUploadProgress(percentCompleted, this.notificationModel.fileUniqueIdentifier);
+                    this._uiSetUploadProgress(percentCompleted, this.fileUuid);
                 }
 
                 if (websocketNotification.fileImportStatus === 'finished') {
-                    this._uiSetSidemenuTransferSuccess(this.notificationModel.fileUniqueIdentifier);
+                    this._uiSetSidemenuTransferSuccess(this.fileUuid);
                     this.notificationModel.projectView._fetchAndRenderFileListings();
                 }
             },
@@ -115,24 +116,29 @@ define([
                 var percentCompleted = 0;
 
                 switch (importStatus) {
-                    case 'permissions':
+                    case 'permissions': {
                         percentCompleted = 25;
                         break;
+                    }
 
-                    case 'metadata':
+                    case 'metadata': {
                         percentCompleted = 50;
                         break;
+                    }
 
-                    case 'metadataPermissions':
+                    case 'metadataPermissions': {
                         percentCompleted = 75;
                         break;
+                    }
 
-                    case 'finished':
+                    case 'finished': {
                         percentCompleted = 100;
                         break;
+                    }
 
-                    default:
+                    default: {
                         break;
+                    }
                 }
 
                 return percentCompleted;

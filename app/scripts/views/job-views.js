@@ -605,7 +605,6 @@ define([
                                                  //.replace(/"$/, '\'');
                                                 ;
 
-                    //tmpDebugJobModelLog = JSON.parse(tmpDebugJobModelLog);
                     console.log('jobModel is: ' + tmpDebugJobModelLog);
                 }
             }
