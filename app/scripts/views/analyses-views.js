@@ -418,7 +418,23 @@ define([
                 e.preventDefault();
                 $(e.target).parent().prev('#show-chart').removeClass('hidden');
                 $(e.target).closest('#hide-chart').addClass('hidden');
-                $(e.target.closest('tr')).next().remove();
+
+                var elOffset = $( e.target ).offset().top;
+                var elHeight = $( e.target ).height();
+                var windowHeight = $(window).height();
+                var offset;
+
+                if (elHeight < windowHeight) {
+                  offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+                } else {
+                  offset = elOffset;
+                }
+
+                $('html, body').animate({scrollTop: offset}, 1000);
+
+                $(e.target.closest('tr')).next().hide(1500, function(){
+                  $(e.target.closest('tr')).next().remove();
+                });
             },
 
             showChart: function(e) {
@@ -558,9 +574,26 @@ define([
 
             hideLog: function(e){
                 e.preventDefault();
-                $(e.target).addClass('hidden');
+
                 $(e.target).next('.show-log').removeClass('hidden');
-                $(e.target.closest('tr')).next().remove();
+                $(e.target).addClass('hidden');
+
+                var elOffset = $( e.target ).offset().top;
+                var elHeight = $( e.target ).height();
+                var windowHeight = $(window).height();
+                var offset;
+
+                if (elHeight < windowHeight) {
+                  offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+                } else {
+                  offset = elOffset;
+                }
+
+                $('html, body').animate({scrollTop: offset}, 1000);
+
+                $(e.target.closest('tr')).next().hide(1500, function(){
+                  $(e.target.closest('tr')).next().remove();
+                });
             },
 
             showLog: function(e) {
@@ -900,7 +933,6 @@ define([
                   ;
 
         var height = chartHeight - (chartHeight / 4);
-        //console.log('height is: ' + height);
 
         var min = Infinity;
         var max = -Infinity;
