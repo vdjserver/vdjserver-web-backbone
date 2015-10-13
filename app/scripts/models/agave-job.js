@@ -3,11 +3,13 @@ define(
         'app',
         'backbone',
         'file-transfer-mixins',
+        'environment-config',
     ],
 function(
     App,
     Backbone,
-    FileTransferMixins
+    FileTransferMixins,
+    EnvironmentConfig
 ) {
 
     'use strict';
@@ -272,6 +274,21 @@ function(
         },
         initialize: function(options) {
             Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
+        },
+        configureExecutionHostForFileSize(fileSize) {
+
+            if (_.isNumber(fileSize)) {
+                if (fileSize < 5000000) {
+                    this.set({
+                        'appId': 'vdj_pipe-small-0.1.5u1',
+                        'executionSystem': EnvironmentConfig.agave.executionSystems.vdjExec01,
+                    });
+
+                    this.unset('maxRunTime');
+                    this.unset('nodeCount');
+                    this.unset('processorsPerNode');
+                }
+            }
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 

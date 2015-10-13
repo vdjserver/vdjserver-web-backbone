@@ -447,6 +447,20 @@ function(Backbone, EnvironmentConfig, _string) {
 
                 return filteredModels[0];
             },
+            getTotalFileSize: function() {
+
+                var values = this.pluck('value');
+
+                var totalSize = 0;
+
+                for (var i = 0; i < values.length; i++) {
+                    if (values[i].hasOwnProperty('length')) {
+                        totalSize += values[i].length;
+                    }
+                };
+
+                return totalSize;
+            },
 
             // Private Methods
             _searchGetDecoratorValue: function(searchString, decorator) {

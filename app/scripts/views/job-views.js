@@ -702,6 +702,9 @@ define([
             stageJob: function(formData) {
                 var job = new Backbone.Agave.Model.Job.VdjPipe();
 
+                var totalFileSize = this.selectedFileListings.getTotalFileSize();
+                job.configureExecutionHostForFileSize(totalFileSize);
+
                 var selectedFileListings = _.extend({}, this.selectedFileListings);
                 var allFiles = _.extend({}, this.allFiles);
 
