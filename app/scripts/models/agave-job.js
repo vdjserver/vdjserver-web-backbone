@@ -275,7 +275,7 @@ function(
         initialize: function(options) {
             Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
         },
-        configureExecutionHostForFileSize(fileSize) {
+        configureExecutionHostForFileSize: function(fileSize) {
 
             if (_.isNumber(fileSize)) {
                 if (fileSize < 5000000) {
