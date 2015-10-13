@@ -26,7 +26,8 @@ define(['app'], function(App) {
                 })
                 .fail(function() {
                     _redirectToLogin();
-                });
+                })
+                ;
         }
         else {
             _redirectToLogin();
@@ -105,6 +106,9 @@ define(['app'], function(App) {
         // Index
         index: function() {
             if (!App.Agave.token().isActive()) {
+                App.Agave.token().clear();
+                window.localStorage.removeItem('Agave.Token');
+
                 _setPublicSubviews();
                 App.Layouts.main.setView('.content', new App.Views.Public.Home({model: App.Agave.token()}));
                 App.Layouts.main.render();

@@ -106,15 +106,14 @@ define([
                     })
                     .fail(function() {
                         Agave.instance.destroyToken();
-                    });
-
+                    })
+                    ;
             }
             else {
-                var deferred = $.Deferred();
+                Agave.instance.destroyToken();
 
-                deferred.reject(function() {
-                    Agave.instance.destroyToken();
-                });
+                var deferred = $.Deferred();
+                deferred.reject();
 
                 return deferred;
             }

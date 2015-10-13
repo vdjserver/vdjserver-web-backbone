@@ -66,7 +66,7 @@ define([
                 function() {
                     App.Agave.token().clear();
                     window.localStorage.removeItem('Agave.Token');
-                    App.router.navigate('', {'trigger':true});
+                    App.router.navigate('', {'trigger': true});
                 }
             );
 
