@@ -14,6 +14,9 @@ require.config({
         'filesize':         '../bower_components/filesize/lib/filesize',
         'file-saver':       '../bower_components/file-saver/FileSaver',
         'handlebars':       '../bower_components/handlebars/handlebars',
+        'highstock':        '../bower_components/highstock-release/highstock',
+        'highcharts-more':   '../bower_components/highstock-release/highcharts-more',
+        'highstock-exporting': '../bower_components/highstock-release/modules/exporting',
         'jquery':           '../bower_components/jquery/dist/jquery',
         'jquery-ui':        '../bower_components/jquery-ui/jquery-ui',
         'layoutmanager':    '../bower_components/layoutmanager/backbone.layoutmanager',
@@ -136,6 +139,15 @@ require.config({
         },
         'handlebars': {
             exports: 'Handlebars'
+        },
+        'highstock': {
+            deps:['jquery'],
+        },
+        'highcharts-more': {
+            deps:['highstock'],
+        },
+        'highstock-exporting': {
+            deps:['highstock'],
         },
         'layoutmanager': {
             deps: ['backbone'],

@@ -469,7 +469,7 @@ define([
                 $(e.target).nextAll('#hide-chart').removeClass('hidden');
 
                 // Enable download button
-                $(e.target).nextAll('.download-chart').attr('data-chart-class-selector', classSelector);
+                $(e.target).nextAll('#hide-chart').children('.download-chart').attr('data-chart-class-selector', classSelector);
 
                 // Clean up any charts that are currently displayed
                 this.hideWarning();
@@ -525,22 +525,6 @@ define([
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
-
-                            $('#' + classSelector).css({
-                                'position': 'absolute',
-                                'width': '100%',
-                                'overflow-x': 'scroll',
-                            });
-
-                            $('.' + classSelector).mouseenter(function(e) {
-                                $('.' + classSelector + '-d3-tip').removeClass('hidden');
-                            });
-
-                            $('.' + classSelector).mouseleave(function(e) {
-                                $('.' + classSelector + '-d3-tip').addClass('hidden');
-                            });
-
-                            $('#chart-legend').show();
                             Analyses.Charts.QualityScore(fileHandle, fileData, classSelector, that.chartHeight);
                             break;
 
@@ -913,332 +897,220 @@ define([
 
     Analyses.Charts.QualityScore = function(fileHandle, text, classSelector, chartHeight) {
 
-        var margin = {
-            top: 20,
-            right: -100,
-            bottom: 0,
-            left: 100,
-        };
+      //remove commented out lines (header info)
+      text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-        // NOTE: we may need to calculate a suitable value for this from data
-        // if it turns out that it has more of a range than this
-        var maxWidth = 5000;
+      var csv = d3.tsv.parse(text);
 
-        // Update chart container for new width
-        $('#' + classSelector + ' svg').css({'width': maxWidth + 'px'});
+      var data = [];
+      var boxPlot = [];
+      var mean = [];
+      var categories = []; // navigator xAxis ticks for our purposes
+      var backgroundBottom = [];
+      var backgroundMiddle = [];
+      var backgroundTop = [];
+      var max = 0;
 
-        var width = maxWidth //1200
-                  - margin.left
-                  - margin.right
-                  ;
+      _.each(csv, function(row, index) {
+        var data = new Array();
+        data.push(parseInt(row['10%']));
+        data.push(parseInt(row['25%']));
+        data.push(parseInt(row['50%']));
+        data.push(parseInt(row['75%']));
+        data.push(parseInt(row['90%']));
+        boxPlot[index] = data;
+        mean.push(parseFloat(row['mean']));
+        categories.push(parseInt(row['position']));
+      });
 
-        var height = chartHeight - (chartHeight / 4);
+      _.each(boxPlot, function(row, index) {
+        var temp = _.max(row);
+        if (temp > max) {
+            max = temp;
+        }
+      });
 
-        var min = Infinity;
-        var max = -Infinity;
+      _.each(boxPlot, function(row, index) {
+        backgroundBottom.push(20);
+        backgroundMiddle.push(8);
+        backgroundTop.push(max - 28);
+      });
 
-        //remove commented out lines (header info)
-        text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+      var chart = new Highcharts.StockChart({
+        chart: {
+            renderTo: classSelector,
+            panning: true,
+            style: {
+                fontFamily: 'Arial',
+            },
+        },
 
-        var tsv = d3.tsv.parse(text);
-        var data = [];
-        tsv.forEach(function(d) {
-            data.push({
-                position: +d['position'],
-                mean: +d['mean'],
-                '10%': +d['10%'],
-                '25%': +d['25%'],
-                '50%': +d['50%'],
-                '75%': +d['75%'],
-                '90%': +d['90%'],
-            });
-
-            var rowMax = +d['90%'];
-            var rowMin = +d['10%'];
-
-            if (rowMax > max) {
-                max = rowMax;
+        title: {
+            text: 'Quality Scores',
+            style: {
+                color: '#000000',
+                fontSize: '12px'
             }
+        },
 
-            if (rowMin < min) {
-                min = rowMin;
+        plotOptions: {
+            series: {
+                stacking: 'normal',
+                groupPadding: 0
+            },
+            boxplot: {
+                fillColor: '#4682B4',
+                lineWidth: 1,
+                color: '#000000',
+                medianColor: '#D18A2D',
+                stemColor: '#1B271F',
+                stemDashStyle: 'dash',
+                stemWidth: 1,
+                whiskerColor: '#1B271F',
+                whiskerLength: '100%',
+                whiskerWidth: 1
+            },
+        },
+
+        tooltip: {
+            formatter: function() {
+
+                var tooltip = '';
+
+                for (var i = 0, length = this.points.length; i < length; i++) {
+                    var point = this.points[i];
+
+                    if (this.points[i].series.name === 'Series 4') {
+                        tooltip = '<b>Read position: <b>' + this.x + '<br/>' +
+                            '<b>90%: <b>' + this.points[i].series.options.data[i][4] + '<br/>' +
+                            '<b>75%: <b>' + this.points[i].series.options.data[i][3] + '<br/>' +
+                            '<b>50%: <b>' + this.points[i].series.options.data[i][2] + '<br/>' +
+                            '<b>25%: <b>' + this.points[i].series.options.data[i][1] + '<br/>' +
+                            '<b>10%: <b>' + this.points[i].series.options.data[i][0] + '<br/>';
+                    }
+                    if (this.points[i].series.name === 'Series 5') {
+                        tooltip += '<b>Mean: <b>' + point.series.options.data[this.x] + '<br/>';
+                    }
+                }
+                return tooltip;
             }
-        });
+        },
 
-        var chart = box()
-            .whiskers([-1, 0])
-            .height(height)
-            .width(width)
-            .domain([min, max])
-        ;
+        credits: {
+            enabled: false
+        },
 
-        // the x-axis
-        var x = d3.scale.ordinal()
-            .domain(data.map(function(d) {
-                return d['position'];
-            }))
-            .rangeRoundBands(
-                [0, width],
-                0.1,
-                0
-            )
-        ;
+        exporting: {
+            enabled: false
+        },
 
-        var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient('bottom')
-        ;
+        yAxis: {
+            title: {
+                text: 'Quality',
+                style: {
+                    color: '#000000',
+                    fontSize: '12px'
+                }
+            },
+            max: max,
+            opposite: false,
+            labels: {
+                align: 'right',
+                enabled: true
+            },
+            labels: {
+                style: {
+                    color: '#000000'
+                }
+            },
+            height: '100%',
+            showLastLabel: true
+        },
 
-        // the y-axis
-        var y = d3.scale.linear()
-            .domain([0, max])
-            .range([
-                height + margin.top,
-                0 + margin.top
-            ])
-        ;
 
-        //secondary scaling not inverted
-        // y0
-        d3.scale.linear()
-            .domain([0, max])
-            .range([
-                0 + margin.top,
-                height - margin.bottom
-            ])
-        ;
+        xAxis: {
+            title: {
+                text: 'Read Position',
+                style: {
+                    color: '#000000',
+                    fontSize: '12px'
+                }
+            },
+            ordinal: false,
+            labels: {
+                style: {
+                    color: '#000000'
+                },
+                formatter: function() {
+                    return this.value;
+                }
+            }
+        },
 
-        //yAxis
-        var yAxis = d3.svg.axis()
-            .scale(y)
-            .orient('left')
-        ;
+        rangeSelector: {
+            selected: 0,
+            inputEnabled: false,
+            buttonTheme: {
+                visibility: 'hidden'
+            },
+            labelStyle: {
+                visibility: 'hidden'
+            }
+        },
 
-        var barWidth = x(data[1].position) / 4;
+        navigator: {
+            series: {
+                type: 'boxplot',
+            },
+            xAxis: {
+                maxRange: 100,
+                ordinal: false,
+                categories: categories, // display navigator with numbers instead of dates
+                labels: {
+                    style: {
+                        color: '#000000'
+                    }
+                },
+            },
 
-        // SVG
-        var svgContainer = d3.select('.' + classSelector + ' svg')
-            .attr('width',
-                width
-                + margin.left
-                + margin.right
-            )
-            .attr('height',
-              height
-              + margin.top
-              + margin.bottom
-            )
-            .attr('class', 'box')
-            ;
 
-        //var tip = d3.select('.d3-tip');
-        var tip = d3.select('.' + classSelector + '-d3-tip');
+        },
 
-        var boxG = svgContainer.append('g');
-        boxG
-            .attr('class', 'boxG')
-            .attr('width',
-                width
-                + margin.left
-                + margin.right
-            )
-            .attr('height',
-                height
-                + margin.left
-                + margin.right
-            )
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-        ;
-
-        var center = boxG.selectAll('line.center')
-            .data(data)
-        ;
-
-        //vertical line
-        center.enter().insert('line', 'rect')
-            .attr('class', 'center')
-            .attr('x1',  function(d) {
-                return x(+d.position) + barWidth / 2;
-            })
-            .attr('y1', function(d) {
-                return y(+d['10%']);
-            })
-            .attr('x2', function(d) {
-                return x(+d.position) + barWidth / 2;
-            })
-            .attr('y2', function(d) {
-                return y(+d['90%']);
-            })
-        ;
-
-        //add the background boxes
-        //add a group
-        // var bgGroup = d3.select('svg').append('g')
-        var bgGroup = svgContainer.append('g')
-            .attr('class', 'bgGroup')
-            .attr('width', width
-                + margin.left
-                + margin.right
-            )
-            .attr('height', height
-                + margin.left
-                + margin.right
-            )
-        ;
-
-        //then add all 3 rectangles
-        bgGroup.append('rect')
-            .attr('width', width)
-            .attr('height', y(0) - y(20))
-            .attr('transform', 'translate(' + margin.left + ',' + (margin.top + y(20)) + ')')
-            .attr('class', 'bg_20')
-        ;
-
-        bgGroup.append('rect')
-            .attr('width', width)
-            .attr('height', y(20) - y(28)) //30
-            .attr('transform', 'translate(' + margin.left + ',' + (margin.top + y(28)) + ')')
-            .attr('class', 'bg_28')
-        ;
-
-        bgGroup.append('rect')
-            .attr('width', width)
-            .attr('height', y(28) - y(max))
-            .attr('transform', 'translate(' + margin.left + ',' + (margin.top + y(max)) + ')')
-            .attr('class', 'bg_40')
-        ;
-
-        // var svg = d3.select('svg')
-        var svg = svgContainer
-            .append('g')
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-        ;
-
-        // draw the boxplots
-        svg.selectAll('.box')
-            .data(data)
-            .enter().append('g')
-            .attr('transform', function(d) {
-                return 'translate(' + x(d['position']) + ',' + margin.top + ')';
-            })
-            .on('mouseover', function(d) {
-                /*
-                tip.transition()
-                    .duration(200)
-                    .style('opacity', 0.9)
-                ;
-                */
-                tip
-                    .html('Read Position: ' + d.position + '<br/>'
-                        + 'Mean: ' + d['mean'] + '<br/>'
-                        + '90%: &nbsp;&nbsp;' + d['90%'] + '<br/>'
-                        + '75%: &nbsp;&nbsp;' + d['75%'] + '<br/>'
-                        + '50%: &nbsp;&nbsp;' + d['50%'] + '<br/>'
-                        + '25%: &nbsp;&nbsp;' + d['25%'] + '<br/>'
-                        + '10%: &nbsp;&nbsp;' + d['10%'] + '<br/>'
-                    )
-                    .style('left', window.pageXOffset + 'px')
-                    .style('bottom', '120' + 'px')
-                    //.style('top', '0px !important')
-                    .style('position', 'relative !important')
-                ;
-            })
-            /*
-            .on('mouseout', function() {
-                tip.transition()
-                    .duration(300)
-                    .style('opacity', 0);
-            })
-            */
-            .call(chart.width(x.rangeBand()))
-            ;
-
-        // add a title
-        svg.append('text')
-            .attr('x', (width / 2))
-            .attr('y', 0 + (margin.top / 2))
-            .attr('text-anchor', 'middle')
-            .style('font-size', '18px')
-            //.style('text-decoration', 'underline')
-            .text('Quality Scores')
-        ;
-
-        // x axis title
-        svg.append('text')
-            .attr('x', (width / 2))
-            .attr('y', height + (margin.top * 3) + 10)
-            .style('text-anchor', 'middle')
-            .style('font-size', '16px')
-            .text('Read Position')
-            ;
-
-        // draw y axis
-        svg.append('g')
-            .attr('class', 'y axis')
-            .call(yAxis)
-            .append('text') // and text1
-            .attr('transform', 'rotate(-90), translate(' + -(height / 2) + ',0)')
-            .attr('y', -(margin.left / 2))
-            .attr('dy', '.51em')
-            .style('text-anchor', 'end')
-            .style('font-size', '16px')
-            .text('Quality')
-        ;
-
-        // draw x axis
-        svg.append('g')
-            .attr('class', 'x axis')
-            .attr('transform', 'translate(0,' + (height + margin.top + 1) + ')')
-            .call(xAxis)
-            .selectAll('text')
-            .style('text-anchor', 'end')
-            .attr('dx', '-.8em')
-            .attr('dy', '.15em')
-            .attr('transform', function(/*d*/) {
-                return 'rotate(-65)';
-            });
-
-        // Define the mean line
-        var	meanLine = d3.svg.line()								// set 'valueline' to be a line
-            .x(function(d) {
-                return x(+d.position) + barWidth / 2;
-            })
-            .y(function(d) {
-                return y(+d.mean);
-            })
-        ;
-
-        // var meanGroup = d3.select('svg').append('g')
-        var meanGroup = svgContainer.append('g')
-            .attr('class', 'meanGroup')
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.left + margin.right)
-        ;
-
-        //add meanLine to the chart
-        meanGroup.append('path')				// append the valueline line to the 'path' element
-            .attr('class', 'line')				// apply the 'line' CSS styles to this path
-            .attr('d', meanLine(data))
-            .attr('width', width + margin.left + margin.right)
-            .attr('height', height + margin.left + margin.right)
-            .attr('fill', false)
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-        ;
-
-        // add points
-        meanGroup.selectAll('circle')
-            .data(data)
-            .enter().append('circle')
-                .attr('cx', function(d) {
-                    return x(+d.position) + barWidth / 2;
-                })
-                .attr('cy', function(d) {
-                    return y(+d.mean);
-                })
-                .attr('r', 3)
-                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-                .attr('class', 'meanPoints')
-        ;
+        series: [{
+            type: 'area',
+            data: backgroundTop,
+            color: '#CEFCDB',
+            stack: 0,
+        }, {
+            type: 'area',
+            data: backgroundMiddle,
+            color: '#FCFCCE',
+            stack: 0,
+        }, {
+            type: 'area',
+            data: backgroundBottom,
+            color: '#F4D7D8',
+            stack: 0,
+        }, {
+            type: 'boxplot',
+            data: boxPlot,
+        }, {
+            type: 'spline',
+            data: mean,
+            marker: {
+                enabled: true,
+                radius: 2,
+                symbol: 'circle'
+            },
+            color: '#FB000D',
+        }, {
+            // dummy series needed to obtain a continous xAxis with navigator in place
+            type: 'line',
+            data: categories,
+            visible: false,
+        }]
+      });
+      chart.xAxis[0].setExtremes(0, 20);
     };
 
     Analyses.Charts.PercentageGcHistogram = function(fileHandle, text, classSelector) {
