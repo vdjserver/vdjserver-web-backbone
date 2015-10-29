@@ -6,158 +6,160 @@
         title='Note: primer files must have their type set as "Primer Sequences" to be included in this module.'
     >
 
-<div class="row row-with-spacer">
-    {{#if primerFiles}}
-        <div class="col-md-6">
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>
-                            Fasta Primer File
-                        </td>
-                        <td>
-                            <select
-                                class="job-form-item"
-                                id="{{inputCount}}-{{parameterType}}-primer-file"
-                                name="{{inputCount}}-{{parameterType}}-primer-file"
-                            >
-                                {{#each primerFiles}}
-                                    <option value={{value.name}}>{{value.name}}</option>
-                                {{/each}}
-                            </select>
-                        </td>
-                    </tr>
+    <div class="row row-with-spacer">
+        {{#if primerFiles}}
+            <div class="col-md-12">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                Fasta Primer File
+                            </td>
+                            <td>
+                                <select
+                                    class="job-form-item"
+                                    id="{{inputCount}}-{{parameterType}}-primer-file"
+                                    name="{{inputCount}}-{{parameterType}}-primer-file"
+                                >
+                                    {{#each primerFiles}}
+                                        <option value={{value.name}}>{{value.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </td>
+                            <td style="border-width: 0px;">
+                                <p>
+                                    This module locates
 
-                    {{!-- NOTE: this is disabled for now until we figure out why it isn't working on the command line
-                    <tr>
-                        <td>
-                            Discard Reads Without Primers?
-                        </td>
-                        <td>
-                            {{#if options.required}}
-                                <input
-                                    class="job-form-item"
-                                    name="{{inputCount}}-{{parameterType}}-required"
-                                    type="checkbox"
-                                    checked
-                                >
-                            {{else}}
-                                <input
-                                    class="job-form-item"
-                                    name="{{inputCount}}-{{parameterType}}-required"
-                                    type="checkbox"
-                                >
-                            {{/if}}
-                        </td>
-                    </tr>
-                    --}}
+                                    {{#ifCond parameterType 'custom_j_primer_trimming'}}
+                                        j
+                                    {{else}}
+                                        v
+                                    {{/ifCond}}
 
-                    <tr>
-                        <td>
-                            Maximum Number of Mismatches
-                        </td>
-                        <td>
-                            {{#if options.max_mismatches}}
-                                <input
-                                    class="job-form-item"
-                                    name="{{inputCount}}-{{parameterType}}-maximum-mismatches"
-                                    type="number"
-                                    value="{{options.max_mismatches}}"
-                                    step="1"
-                                    min="0"
-                                    pattern="\d+"
-                                >
-                            {{else}}
-                                <input
-                                    class="job-form-item"
-                                    name="{{inputCount}}-{{parameterType}}-maximum-mismatches"
-                                    type="number"
-                                    value="0"
-                                    step="1"
-                                    min="0"
-                                    pattern="\d+"
-                                >
-                            {{/if}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Trim Primer
-                        </td>
-                        <td>
-                            {{#if options.custom_trim}}
-                                <input
-                                    class="job-form-item"
-                                    name="{{inputCount}}-{{parameterType}}-trim-primer"
-                                    type="checkbox"
-                                    checked
-                                >
-                            {{else}}
-                                <input
-                                    class="job-form-item"
-                                    name="{{inputCount}}-{{parameterType}}-trim-primer"
-                                    type="checkbox"
-                                >
-                            {{/if}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Search Window
-                        </td>
-                        <td>
-                            {{#if options.length}}
-                                <input
-                                    class="job-form-item"
-                                    name="{{inputCount}}-{{parameterType}}-element-length"
-                                    type="number"
-                                    value="{{options.length}}"
-                                    step="1"
-                                    min="0"
-                                    pattern="\d+"
-                                >
-                            {{else}}
-                                <input
-                                    class="job-form-item"
-                                    name="{{inputCount}}-{{parameterType}}-element-length"
-                                    type="number"
-                                    value="30"
-                                    step="1"
-                                    min="0"
-                                    pattern="\d+"
-                                >
-                            {{/if}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-6">
-            <p>
-                This module locates
+                                    primer regions within reads.
+                                </p>
+                                <p>
+                                    This step can be removed from the workflow template.
+                                </p>
+                            </td>
+                        </tr>
 
-                {{#ifCond parameterType 'custom_j_primer_trimming'}}
-                    j
-                {{else}}
-                    v
-                {{/ifCond}}
+                        {{!-- NOTE: this is disabled for now until we figure out why it isn't working on the command line
+                        <tr>
+                            <td>
+                                Discard Reads Without Primers?
+                            </td>
+                            <td>
+                                {{#if options.required}}
+                                    <input
+                                        class="job-form-item"
+                                        name="{{inputCount}}-{{parameterType}}-required"
+                                        type="checkbox"
+                                        checked
+                                    >
+                                {{else}}
+                                    <input
+                                        class="job-form-item"
+                                        name="{{inputCount}}-{{parameterType}}-required"
+                                        type="checkbox"
+                                    >
+                                {{/if}}
+                            </td>
+                        </tr>
+                        --}}
 
-                primer regions within reads.
-            </p>
-            <p>
-                This step can be removed from the workflow template.
-            </p>
-            <p>
-                The <mark>Search Window</mark> option specifies the size of the window on the 5' or 3' end of the read in which to search for the barcode/primer.
-            </p>
-        </div>
-    {{else}}
-        <div class="col-md-12">
-            <div class="alert alert-danger">
-                Warning: there are no primer files available. Please upload primer files on the project file list and set their type as "Primer Sequences".
+                        <tr>
+                            <td>
+                                Maximum Number of Mismatches
+                            </td>
+                            <td>
+                                {{#if options.max_mismatches}}
+                                    <input
+                                        class="job-form-item"
+                                        name="{{inputCount}}-{{parameterType}}-maximum-mismatches"
+                                        type="number"
+                                        value="{{options.max_mismatches}}"
+                                        step="1"
+                                        min="0"
+                                        pattern="\d+"
+                                    >
+                                {{else}}
+                                    <input
+                                        class="job-form-item"
+                                        name="{{inputCount}}-{{parameterType}}-maximum-mismatches"
+                                        type="number"
+                                        value="0"
+                                        step="1"
+                                        min="0"
+                                        pattern="\d+"
+                                    >
+                                {{/if}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Trim Primer
+                            </td>
+                            <td>
+                                {{#if options.custom_trim}}
+                                    <input
+                                        class="job-form-item"
+                                        name="{{inputCount}}-{{parameterType}}-trim-primer"
+                                        type="checkbox"
+                                        checked
+                                    >
+                                {{else}}
+                                    <input
+                                        class="job-form-item"
+                                        name="{{inputCount}}-{{parameterType}}-trim-primer"
+                                        type="checkbox"
+                                    >
+                                {{/if}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Search Window
+                            </td>
+                            <td>
+                                {{#if options.length}}
+                                    <input
+                                        class="job-form-item"
+                                        name="{{inputCount}}-{{parameterType}}-element-length"
+                                        type="number"
+                                        value="{{options.length}}"
+                                        step="1"
+                                        min="0"
+                                        pattern="\d+"
+                                    >
+                                {{else}}
+                                    <input
+                                        class="job-form-item"
+                                        name="{{inputCount}}-{{parameterType}}-element-length"
+                                        type="number"
+                                        value="30"
+                                        step="1"
+                                        min="0"
+                                        pattern="\d+"
+                                    >
+                                {{/if}}
+                            </td>
+                            <td style="border-width: 0px;">
+                                <p>
+                                    The <mark>Search Window</mark> option specifies the size of the window on the 5' or 3' end of the read in which to search for the barcode/primer.
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
-    {{/if}}
-</div>
+        {{else}}
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    Warning: there are no primer files available. Please upload primer files on the project file list and set their type as "Primer Sequences".
+                </div>
+            </div>
+        {{/if}}
+    </div>
 
 {{> vdjpipe-base-view-bottom}}
