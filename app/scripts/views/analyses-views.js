@@ -520,7 +520,6 @@ define([
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
-                            $('#chart-legend').show();
                             Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, classSelector);
                             break;
 
@@ -826,72 +825,167 @@ define([
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-        var data = d3.tsv.parse(text);
-        var otherD = [];
-        var medianD = [];
-        var nonZeroCount = [];
-        data.forEach(function(d) {
-            if (+d['count'] !== 0) {
-                nonZeroCount.push(+d['count']);
+        var csv = d3.tsv.parse(text);
+
+        // build quality score line
+        var qualityScore = [];
+        _.each(csv, function(row) {
+            qualityScore.push(parseInt(row['count']));
+        });
+
+        // calculate xAxis median
+        var total = 0;
+        _.each(csv, function(row) {
+            if (row['count'] !== '0') {
+                total += parseInt(row['count']);
             }
-            otherD.push({
-                x: +d['read_quality'],
-                y: +d['count'],
-            });
         });
 
-        var medianCount = ss.median(nonZeroCount);
-        data.forEach(function(d) {
-            medianD.push({
-                x: +d['read_quality'],
-                y: medianCount,
-            });
+        var runningTotal = 0;
+        var xMedian = _.find(csv, function(row) {
+            runningTotal += parseInt(row['count']);
+            if (runningTotal >= total / 2) {
+                return row;
+            }
         });
 
-        var myData = [
-            {
-                key: 'Quality Score',
-                values: otherD,
+        // build median line
+        var medianScore = [];
+        _.each(csv, function(row) {
+            if (parseInt(row['count']) <= parseInt(xMedian['count']) && row['read_quality'] !== '0') {
+                medianScore.push({
+                    x: parseInt(xMedian['read_quality']),
+                    y: parseInt(row['count'])
+                });
+            }
+        });
+
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: classSelector,
+                panning: true,
+                style: {
+                    fontFamily: 'Arial',
+                },
             },
-            {
-                key: 'Median Score',
-                values: medianD,
-                color: '#5CB85C',
+
+            exporting: {
+                enabled: false
             },
-        ];
 
-        nv.addGraph(function() {
-            var chart = nv.models.lineChart()
-                .margin({left: 100, right:50})  //Adjust chart margins to give the x-axis some breathing room.
-                .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
-                .transitionDuration(350)  //how fast do you want the lines to transition?
-                .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
-                .showYAxis(true)        //Show the y-axis
-                .showXAxis(true)        //Show the x-axis
-            ;
+            credits: {
+                enabled: false
+            },
 
-            chart.xAxis     //Chart x-axis settings
-                .axisLabel('Average (Median) Quality Score per read')
-                .tickFormat(d3.format(',r'))
-            ;
+            title: {
+                text: ''
+            },
 
-            chart.yAxis     //Chart y-axis settings
-                .axisLabel('Read Count')
-                .tickFormat(d3.format(',r'))
-            ;
+            xAxis: {
+                title: {
+                    text: 'Average (Median) Quality Score per read',
+                    style: {
+                        color: '#000000',
+                        fontSize: '12px'
+                    }
+                },
+                tickInterval: 1,
+                labels: {
+                    style: {
+                        color: '#000000'
+                    },
+                },
+            },
 
-            /* Done setting the chart up? Time to render it!*/
-            d3.select('.' + classSelector + ' svg')    //Select the <svg> element you want to render the chart in.
-                .datum(myData)
-                .call(chart)    //Finally, render the chart!
-            ;
+            yAxis: {
+                title: {
+                    text: 'Read Count',
+                    style: {
+                        color: '#000000',
+                        fontSize: '12px'
+                    }
+                },
+                type: 'line',
+                labels: {
+                    style: {
+                        color: '#000000',
+                        fontSize: '12px'
+                    },
+                    formatter: function() {
+                        return this.value;
+                    }
+                },
+                height: '100%',
+                showLastLabel: true,
+            },
 
-            //Update the chart when window resizes.
-            nv.utils.windowResize(function() {
-                chart.update();
-            });
+            plotOptions: {
+                line: {
+                    animation: false
+                },
+                series: {
+                    marker: {
+                        states: {
+                            hover: {
+                                radiusPlus: 6,
+                                lineWidthPlus: 2
+                            }
+                        }
+                    }
+                }
+            },
 
-            return chart;
+            tooltip: {
+                formatter: function() {
+
+                    var tooltip = '';
+                    for (var i = 0, length = this.series.points.length; i < length; i++) {
+                        var point = this.series.points[i];
+                        if (point.series.name === 'Median Score') {
+                            tooltip = '<b>Median Score: </b>' + xMedian['read_quality'] + '<br/>';
+                        }
+                        if (point.series.name === 'Quality Score') {
+                            if (this.y === 0) {
+                                tooltip = '<b>Quality Read: </b>' + this.x + '<br/>' +
+                                    '<b>Read Count: </b>' + this.y + '<br/>' +
+                                    '<b>Median Score: </b> 0';
+                            } else {
+                                tooltip = '<b>Quality Read: </b>' + this.x + '<br/>' +
+                                    '<b>Read Count: </b>' + this.y + '<br/>' +
+                                    '<b>Median Score: </b>' + xMedian['read_quality'];
+                            }
+
+                        }
+                    }
+                    return tooltip;
+                }
+            },
+
+            legend: {
+                align: 'right',
+                verticalAlign: 'top',
+            },
+
+            series: [{
+                name: 'Median Score',
+                data: medianScore,
+                pointStart: 1,
+                color: '#6EB76A',
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 0
+                }
+            }, {
+                name: 'Quality Score',
+                data: qualityScore,
+                color: '#2A7EB8',
+                marker: {
+                    enabled: true,
+                    symbol: 'circle',
+                    radius: 0
+                }
+            }]
         });
     };
 
@@ -1016,9 +1110,7 @@ define([
             opposite: false,
             labels: {
                 align: 'right',
-                enabled: true
-            },
-            labels: {
+                enabled: true,
                 style: {
                     color: '#000000'
                 }
