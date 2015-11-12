@@ -1808,7 +1808,7 @@ define([
             });
         };
 
-        var res = getHierarchySubHierarchyFromObj(sourceJson, 'human');
+        var res = getHierarchySubHierarchyFromObj(sourceJson, sourceJson.label);
         redrawGeneDistChart(res);
     };
 
