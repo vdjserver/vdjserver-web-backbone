@@ -28,8 +28,7 @@
 
         <div class="col-sm-3">
             <ul class="project-navbar-list text-right">
-                <!-- TODO: refactor this inline "border" style back into a css class -->
-                <li class="dropdown" id="login-dropdown" style="border-right: 3px solid;">
+                <li class="dropdown navbar-dropdown">
                     <a id="notification-menu" class="dropdown-toggle notification-empty" data-toggle="dropdown">
                         <span>
                             <i class="fa fa-bell"></i>
@@ -39,7 +38,7 @@
                     <ul id="notification-list" class="dropdown-menu">
                     </ul>
                 </li>
-                <li class="dropdown" id="login-dropdown" style="border-right: 3px solid;">
+                <li class="dropdown navbar-dropdown" id="login-dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">
                         <span>
                             <i class="fa fa-user"></i> {{token.username}}
