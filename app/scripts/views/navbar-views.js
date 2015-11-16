@@ -52,10 +52,10 @@ define([
                 view.render();
             };
         },
-        _addNotificationAlert() {
+        _addNotificationAlert: function() {
             $('#notification-menu').removeClass('notification-empty');
         },
-        _clearNotificationAlerts() {
+        _clearNotificationAlerts: function() {
             $('#notification-menu').addClass('notification-empty');
         },
     });
