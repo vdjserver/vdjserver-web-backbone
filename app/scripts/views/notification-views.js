@@ -36,31 +36,18 @@ define([
     var Notifications = {};
 
     Notifications.Job = Backbone.View.extend({
-        template: 'notification/job',
+        tagName: 'li',
+        template: 'notification/message',
         initialize: function(parameters) {
-
-            this.notificationModel = parameters.notificationModel;
-
-            this.listenTo(
-                App.Instances.WebsocketManager,
-                'jobStatusUpdate',
-                this._handleJobStatusUpdate
-            );
-
-            this.jobStatusMessage = 'PENDING';
+            if (parameters.hasOwnProperty('notification')) {
+                this.notification = parameters.notification;
+            }
         },
         serialize: function() {
             return {
-                jobName: this.notificationModel.get('name'),
-                jobStatus: this.jobStatusMessage,
-                uuid: this.notificationModel.projectUuid,
+                type: this.notification.get('type'),
+                notification: this.notification.get('notification'),
             };
-        },
-
-        // Private Methods
-        _handleJobStatusUpdate: function(jobStatusUpdate) {
-            this.jobStatusMessage = jobStatusUpdate['jobStatus'];
-            this.render();
         },
     });
 

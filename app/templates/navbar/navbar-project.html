@@ -1,6 +1,6 @@
 <div class="project-navbar-list-wrapper">
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-sm-9">
             <ul class="project-navbar-list text-left">
                 <li class="project-navbar-item">
                     <a href="/project">
@@ -26,9 +26,20 @@
             </ul>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-sm-3">
             <ul class="project-navbar-list text-right">
-                <li class="dropdown" id="login-dropdown">
+                <!-- TODO: refactor this inline "border" style back into a css class -->
+                <li class="dropdown" id="login-dropdown" style="border-right: 3px solid;">
+                    <a id="notification-menu" class="dropdown-toggle notification-empty" data-toggle="dropdown">
+                        <span>
+                            <i class="fa fa-bell"></i>
+                            <b class="caret"></b>
+                        </span>
+                    </a>
+                    <ul id="notification-list" class="dropdown-menu">
+                    </ul>
+                </li>
+                <li class="dropdown" id="login-dropdown" style="border-right: 3px solid;">
                     <a class="dropdown-toggle" data-toggle="dropdown">
                         <span>
                             <i class="fa fa-user"></i> {{token.username}}
@@ -48,5 +59,6 @@
                 </li>
             </ul>
         </div>
+
     </div>
 </div>

@@ -60,8 +60,10 @@ define([
     'agave-system',
     'agave-systems',
 
-    // Regular Models
+    // Regular Collections and Models
     'models/message',
+    'models/notification',
+    'collections/notifications',
 
     // Handlebars Helpers
     'handlebars-utilities',

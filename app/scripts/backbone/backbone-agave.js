@@ -267,30 +267,28 @@ define([
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
             this.inputParameterName = 'files';
 
-            this.retrySyncEngine = Agave.PutOverrideSync;
+            //this.retrySyncEngine = Agave.PutOverrideSync;
             this.retrySyncLimit = 3;
         },
+        apiHost: EnvironmentConfig.vdjApi.host,
         url: function() {
-            return '/jobs/v2/';
+            return '/jobs/queue';
         },
-        sync: Backbone.RetrySync,
         submitJob: function(projectUuid) {
 
-            var that = this;
+            var data = {};
+            data.config = this.toJSON();
+            data.projectUuid = projectUuid;
 
-            return this._createArchivePathDirectory(projectUuid)
-                .then(function() {
-                    return that.save();
-                })
-                // Create metadata
-                .then(function() {
-                    return that._createJobMetadata(projectUuid);
-                })
-                // Share job w/ project members
-                .then(function() {
-                    return that._shareJobWithProjectMembers(projectUuid);
-                })
-                ;
+            var jqxhr = $.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                url: EnvironmentConfig.vdjApi.host + '/jobs/queue',
+            });
+
+            return jqxhr;
         },
 
         // Private Methods

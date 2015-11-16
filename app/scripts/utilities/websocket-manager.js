@@ -49,6 +49,12 @@ define([
                     console.log('socket jobUpdate received: ' + JSON.stringify(jobUpdate));
                 }
 
+                var notification = new App.Models.Notification();
+                notification.set('type', App.Models.Notification.JOB_NOTIFICATION);
+                notification.set('notification', jobUpdate);
+
+                App.Datastore.Notifications.push(notification);
+                // TODO: reexamine websocket trigger
                 that.trigger('jobStatusUpdate', jobUpdate);
             });
 
@@ -57,6 +63,12 @@ define([
                     console.log('socket fileImportUpdate received: ' + JSON.stringify(fileImportUpdate));
                 }
 
+                var notification = new App.Models.Notification();
+                notification.set('type', App.Models.Notification.DROPBOX_FILE_IMPORT_NOTIFICATION);
+                notification.set('notification', fileImportUpdate);
+
+                App.Datastore.Notifications.push(notification);
+                // TODO: reexamine websocket trigger
                 that.trigger('fileImportUpdate', fileImportUpdate);
             });
         },

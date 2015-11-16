@@ -185,7 +185,7 @@
     padding: 0;
 
     .project-navbar-item:nth-child(n) {
-        margin: 0 10px 0 10px;
+        margin: 0 10px 0 0px;
     }
 
     .project-navbar-item:first-child {
@@ -249,4 +249,8 @@
 .file-listing-title-block {
     display: inline-block;
     vertical-align: middle;
+}
+
+.notification-empty {
+    color: #000000;
 }
