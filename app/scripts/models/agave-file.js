@@ -251,7 +251,7 @@ function(
                     + '/' + this.get('path')
                     ;
 
-            if (this.get('jobUuid').length > 0) {
+            if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
 
                 url = EnvironmentConfig.agave.host
                     + '/jobs'
