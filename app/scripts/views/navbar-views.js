@@ -16,7 +16,6 @@ define([
 
             this.listenTo(App.Datastore.Notifications, 'add', function(model) {
                 this._addNotificationAlert();
-                console.log("array change!");
                 var subview = new App.Views.Notifications.Job({notification: model});
                 that.subviews.unshift(subview);
             });
