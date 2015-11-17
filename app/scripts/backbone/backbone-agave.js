@@ -254,7 +254,7 @@ define([
             executionSystem: EnvironmentConfig.agave.executionSystems.lonestar,
             //id: 0,
             inputs: {},
-            maxRunTime: '24:00:00',
+            maxRunTime: '48:00:00',
             //memoryPerNode: '1',
             outputPath: '',
             name: '',
