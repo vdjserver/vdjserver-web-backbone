@@ -223,6 +223,7 @@ define([
         _preconfiguredWorkflows: function() {
 
             var workflows = [
+/*
                 {
                     'workflow-name': 'Paired Reads',
                     'base_path_input': '',
@@ -413,6 +414,7 @@ define([
                         },
                     ],
                 },
+*/
                 {
                     'workflow-name': 'Single Reads',
                     'summary_output_path': 'summary.txt',
