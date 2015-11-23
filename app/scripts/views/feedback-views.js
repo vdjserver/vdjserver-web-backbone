@@ -65,6 +65,8 @@ define([
 
             e.preventDefault();
 
+            $('.alert-success').remove();
+
             var formData = Backbone.Syphon.serialize(this);
             var formErrors = this.validateForm(formData);
             this.displayFormErrors(formErrors);
@@ -74,17 +76,28 @@ define([
             }
 
             var that = this;
+
             this.model.save({
                 feedback: formData.feedback,
                 recaptcha_challenge_field: formData.recaptcha_challenge_field,
                 recaptcha_response_field:  formData.recaptcha_response_field
             })
             .done(function() {
-                App.router.navigate('/', {
-                    trigger: true
-                });
+
+                that.$el.find('.form-control').val('');
+
+                $('.alert-info').before(
+                    $('<div class="alert alert-success">').html(
+                        '<i class="fa fa-thumbs-up"></i> You have successfully submitted your feedback!'
+                    ).fadeIn()
+                );
+
+                Recaptcha.destroy();
+                that.model.set(that.model.defaults);
+                Recaptcha.create(EnvironmentConfig.recaptchaPublicKey, 'recaptcha');
             })
             .fail(function(e) {
+
                 if (e.responseJSON.message === 'Recaptcha response invalid: incorrect-captcha-sol') {
 
                     var telemetry = new Backbone.Agave.Model.Telemetry();
