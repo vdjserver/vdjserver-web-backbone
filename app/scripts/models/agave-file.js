@@ -394,8 +394,16 @@ function(
                         },
                         data: {
                             urlToIngest: this.get('urlToIngest'),
+                            callbackURL: EnvironmentConfig.vdjApi.host + '/notifications/files/import/${UUID}'
+                                        + '?event=${EVENT}'
+                                        + '&type=${TYPE}'
+                                        //+ '&format=${FORMAT}'
+                                        + '&path=${PATH}'
+                                        + '&system=${SYSTEM}'
+                                        ,
                         },
                         method: 'POST',
+
                     });
             }
         },

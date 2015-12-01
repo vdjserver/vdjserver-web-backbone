@@ -14,9 +14,12 @@ define([
     'nvd3',
     'box', // box for help with the box and whisker plot
     'datatables-responsive',
-    'highstock',
+
+    'highcharts',
+    'highcharts-data',
+    'highcharts-drilldown',
     'highcharts-more',
-    'highstock-exporting',
+    'highcharts-exporting',
 
     //Library for using google's recaptcha-ajax
     'recaptcha-ajax',

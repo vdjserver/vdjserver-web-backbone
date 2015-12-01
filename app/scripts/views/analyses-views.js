@@ -12,6 +12,7 @@ define([
     'underscore.string',
     'file-download-detection-mixin',
     'file-transfer-sidebar-ui-mixin',
+    'highcharts',
     'datatables',
     'simple-statistics',
 ], function(
@@ -25,7 +26,8 @@ define([
     Chance,
     _string,
     FileDownloadDetectionMixin,
-    FileTransferSidebarUiMixin
+    FileTransferSidebarUiMixin,
+    Highcharts
 ) {
 
     'use strict';
@@ -520,7 +522,6 @@ define([
                             break;
 
                         case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
-                            $('#chart-legend').show();
                             Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, classSelector);
                             break;
 
@@ -826,72 +827,167 @@ define([
         //remove commented out lines (header info)
         text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-        var data = d3.tsv.parse(text);
-        var otherD = [];
-        var medianD = [];
-        var nonZeroCount = [];
-        data.forEach(function(d) {
-            if (+d['count'] !== 0) {
-                nonZeroCount.push(+d['count']);
+        var csv = d3.tsv.parse(text);
+
+        // build quality score line
+        var qualityScore = [];
+        _.each(csv, function(row) {
+            qualityScore.push(parseInt(row['count']));
+        });
+
+        // calculate xAxis median
+        var total = 0;
+        _.each(csv, function(row) {
+            if (row['count'] !== '0') {
+                total += parseInt(row['count']);
             }
-            otherD.push({
-                x: +d['read_quality'],
-                y: +d['count'],
-            });
         });
 
-        var medianCount = ss.median(nonZeroCount);
-        data.forEach(function(d) {
-            medianD.push({
-                x: +d['read_quality'],
-                y: medianCount,
-            });
+        var runningTotal = 0;
+        var xMedian = _.find(csv, function(row) {
+            runningTotal += parseInt(row['count']);
+            if (runningTotal >= total / 2) {
+                return row;
+            }
         });
 
-        var myData = [
-            {
-                key: 'Quality Score',
-                values: otherD,
+        // build median line
+        var medianScore = [];
+        _.each(csv, function(row) {
+            if (parseInt(row['count']) <= parseInt(xMedian['count']) && row['read_quality'] !== '0') {
+                medianScore.push({
+                    x: parseInt(xMedian['read_quality']),
+                    y: parseInt(row['count'])
+                });
+            }
+        });
+
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: classSelector,
+                panning: true,
+                style: {
+                    fontFamily: 'Arial',
+                },
             },
-            {
-                key: 'Median Score',
-                values: medianD,
-                color: '#5CB85C',
+
+            exporting: {
+                enabled: false
             },
-        ];
 
-        nv.addGraph(function() {
-            var chart = nv.models.lineChart()
-                .margin({left: 100, right:50})  //Adjust chart margins to give the x-axis some breathing room.
-                .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
-                .transitionDuration(350)  //how fast do you want the lines to transition?
-                .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
-                .showYAxis(true)        //Show the y-axis
-                .showXAxis(true)        //Show the x-axis
-            ;
+            credits: {
+                enabled: false
+            },
 
-            chart.xAxis     //Chart x-axis settings
-                .axisLabel('Average (Median) Quality Score per read')
-                .tickFormat(d3.format(',r'))
-            ;
+            title: {
+                text: ''
+            },
 
-            chart.yAxis     //Chart y-axis settings
-                .axisLabel('Read Count')
-                .tickFormat(d3.format(',r'))
-            ;
+            xAxis: {
+                title: {
+                    text: 'Average (Median) Quality Score per read',
+                    style: {
+                        color: '#000000',
+                        fontSize: '12px'
+                    }
+                },
+                tickInterval: 1,
+                labels: {
+                    style: {
+                        color: '#000000'
+                    },
+                },
+            },
 
-            /* Done setting the chart up? Time to render it!*/
-            d3.select('.' + classSelector + ' svg')    //Select the <svg> element you want to render the chart in.
-                .datum(myData)
-                .call(chart)    //Finally, render the chart!
-            ;
+            yAxis: {
+                title: {
+                    text: 'Read Count',
+                    style: {
+                        color: '#000000',
+                        fontSize: '12px'
+                    }
+                },
+                type: 'line',
+                labels: {
+                    style: {
+                        color: '#000000',
+                        fontSize: '12px'
+                    },
+                    formatter: function() {
+                        return this.value;
+                    }
+                },
+                height: '100%',
+                showLastLabel: true,
+            },
 
-            //Update the chart when window resizes.
-            nv.utils.windowResize(function() {
-                chart.update();
-            });
+            plotOptions: {
+                line: {
+                    animation: false
+                },
+                series: {
+                    marker: {
+                        states: {
+                            hover: {
+                                radiusPlus: 6,
+                                lineWidthPlus: 2
+                            }
+                        }
+                    }
+                }
+            },
 
-            return chart;
+            tooltip: {
+                formatter: function() {
+
+                    var tooltip = '';
+                    for (var i = 0, length = this.series.points.length; i < length; i++) {
+                        var point = this.series.points[i];
+                        if (point.series.name === 'Median Score') {
+                            tooltip = '<b>Median Score: </b>' + xMedian['read_quality'] + '<br/>';
+                        }
+                        if (point.series.name === 'Quality Score') {
+                            if (this.y === 0) {
+                                tooltip = '<b>Quality Read: </b>' + this.x + '<br/>' +
+                                    '<b>Read Count: </b>' + this.y + '<br/>' +
+                                    '<b>Median Score: </b> 0';
+                            } else {
+                                tooltip = '<b>Quality Read: </b>' + this.x + '<br/>' +
+                                    '<b>Read Count: </b>' + this.y + '<br/>' +
+                                    '<b>Median Score: </b>' + xMedian['read_quality'];
+                            }
+
+                        }
+                    }
+                    return tooltip;
+                }
+            },
+
+            legend: {
+                align: 'right',
+                verticalAlign: 'top',
+            },
+
+            series: [{
+                name: 'Median Score',
+                data: medianScore,
+                pointStart: 1,
+                color: '#6EB76A',
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 0
+                }
+            }, {
+                name: 'Quality Score',
+                data: qualityScore,
+                color: '#2A7EB8',
+                marker: {
+                    enabled: true,
+                    symbol: 'circle',
+                    radius: 0
+                }
+            }]
         });
     };
 
@@ -1016,9 +1112,7 @@ define([
             opposite: false,
             labels: {
                 align: 'right',
-                enabled: true
-            },
-            labels: {
+                enabled: true,
                 style: {
                     color: '#000000'
                 }
@@ -1179,545 +1273,159 @@ define([
 
     Analyses.Charts.GeneDistribution = function(fileHandle, text, classSelector) {
 
-        var sourceJson = JSON.parse(text);
-
-        var stackStatus = false;
-
-        // this has to be an array
-        var drillStack = [sourceJson['label']]; //keep track of drill-down location
-        var currentDataset;
-
-        d3.select('.' + classSelector)
-            .insert('div', 'svg')
-            .attr('id', classSelector + '-stackdiv')
-        ;
-
-        //edward salinas
-        var getHighestAlleleValueFromAllelicOnlyList = function(aol) {
-            var maxa = (1);
-            for (var a = 0; a < aol.length; a++) {
-                var myRegexp = /\*(\d+)$/;
-                var reMatch = myRegexp.exec(aol[a]);
-                if (reMatch) {
-                    if (maxa < reMatch[1]) {
-                        maxa = reMatch[1];
-                    }
-                }
-            }
-
-            return maxa;
+        var distribution = JSON.parse(text);
+        // build series
+        var series = {
+          id: distribution.label,
+          name: distribution.label,
+          data: new Array()
         };
 
-        //zero pad a digit string a up to pl digits
-        var zeroPadToDigits = function(a, pl) {
-            a = a.toString();
+        _.each(distribution.children, function(gene){
+          series.data.push({
+            id: 'parent',
+            name: gene.label,
+            y: gene.value,
+            drilldown: gene.label,
+            color: '#7B94B5'
+          });
+        });
 
-            while (a.length < pl) {
-                a = '0' + a;
-            }
-
-            return a;
+        // build drilldown
+        var drilldown = {
+          series: new Array()
         };
 
-        //given a full gene name with allele
-        //split it into two parts
-        //edward salinas
-        var separateGeneAndAllele = function(a) {
-            var myRegexp = /(.+)\*(\d+)$/;
-            var reMatch = myRegexp.exec(a);
-            var toReturn = [];
-
-            if (reMatch) {
-                var gene = reMatch[1];
-                var allele = reMatch[2];
-                toReturn.push(gene);
-                toReturn.push(allele);
-            }
-
-            return toReturn;
-        };
-
-        var findFromLabel = function(o, label) {
-
-            if (o.label && o.label === label) {
-                return o;
-            }
-            else {
-                if (o.children !== undefined) {
-                    var kids = o.children;
-                    for (var k = 0; k < kids.length; k++) {
-                        var result = this(kids[k], label);
-
-                        if (result !== null) {
-                            return result;
-                        }
-                    }
-                }
-            }
-
-            //not in the object, not there at all
-            return null;
-        };
-
-        //given the entire hierarchy, traverse to the location to
-        //find the subhierarchy rooted with the given label/name
-        var getHierarchySubHierarchyFromObj = function(o, desiredLabel) {
-            if (o.label !== undefined) {
-
-                if (o.label === desiredLabel) {
-                    return o;
-                }
-                else {
-                    if (o.children !== undefined) {
-                        for (var k = 0; k < o.children.length; k++) {
-                            //var particularKidResult = getHierarchySubHierarchyFromObj(o, desiredLabel)
-                            var particularKidResult = getHierarchySubHierarchyFromObj(o.children[k], desiredLabel);
-                            if (particularKidResult !== null) {
-                                return particularKidResult;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return null;
-        };
-
-        var makeChartableFromValidHierarchyObject = function(o) {
-            var values = [];
-            if (o.children !== undefined) {
-                //iterate throuch children
-                //for each child, make an object with
-                //2(two) items, 'label' and 'value'
-                //      {
-                //        'label' : 'A' ,
-                //        'value' : 29.765957771107
-                //      } ,
-
-                var kids = o.children;
-                var numKids = kids.length;
-
-                for (var k = 0; k < numKids; k++) {
-                    var tempObj = {
-                        'label': kids[k].label,
-                        'value': kids[k].value,
-                    };
-
-                    values.push(tempObj);
-                }
-            }
-            else {
-                //no children
-                //just use self!
-                var singleObj = {
-                    'label': o.label,
-                    'value': o.value,
-                };
-
-                values.push(singleObj);
-            }
-
-            var topobj = {
-                'key': 'Cumulative Return',
-                'values': values,
-            };
-
-            var l1 = [];
-            l1.push(topobj);
-            //l1 'level 1' is the chartable! :)
-
-            return l1;
-        };
-
-        //edward salinas
-        var getValueReturnZeroAsDefault = function(s, hierarchy) {
-            var subtree = getHierarchySubHierarchyFromObj(hierarchy, s);
-
-            if (subtree === null) {
-                return 0;
-            }
-            else {
-                return subtree.value;
-            }
-        };
-
-        //does the tree have children and there's more than zero of them
-        //edward salinas
-        var doesThisRootHaveChildren = function(o, rootName) {
-
-            var rootedHierarchy = getHierarchySubHierarchyFromObj(o, rootName);
-
-            if (rootedHierarchy.children !== undefined) {
-                if (rootedHierarchy.children.length !== 0) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-
-        //edward salinas
-        var doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic = function(o, rootName) {
-            var rootedHierarchy = getHierarchySubHierarchyFromObj(o, rootName);
-            var hasKids = doesThisRootHaveChildren(o, rootName);
-            var grandkidsLabels = [];
-            var kidsLabels = [];
-
-            if (hasKids) {
-                var children = rootedHierarchy.children;
-                var c = 0;
-
-                for (c = 0; c < children.length; c++) {
-                    var child = children[c];
-                    if (child.label !== undefined) {
-                        kidsLabels.push(child.label);
-                    }
-
-                    if (child.children !== undefined) {
-                        var grandchildren = child.children;
-                        for (var gc = 0; gc < grandchildren.length; gc++) {
-                            grandkidsLabels.push(grandchildren[gc].label);
-                        }//for each grandchild
-                    }//if a child has children
-                    else {
-                        return false;
-                    }
-                }//for children
-            }//there are kids
-            else {
-                return false;
-            }
-
-            var cond1 = isAllelicString(rootName);
-            var cond2 = areALLStringsInArrayNONAllelic(kidsLabels);
-            var cond3 = areALLStringsInArrayAllelic(grandkidsLabels);
-            var cond4 = (kidsLabels.length === 0);
-            var cond5 = (grandkidsLabels.length === 0);
-
-            if (!cond1 && cond2 && cond3 && !cond4 && !cond5) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }; //end doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic
-
-        var getGrandChildrenLabelArray = function(o) {
-            var gcArray = [];
-
-            if (o.children !== undefined) {
-                var children = o.children;
-
-                for (var c = 0; c < children.length; c++) {
-                    if (children[c].children !== undefined) {
-                        var gKids = children[c].children;
-
-                        for (var g = 0; g < gKids.length; g++) {
-                            gcArray.push(gKids[g].label);
-                        }
-                    }
-                }
-            }
-
-            return gcArray;
-        };
-
-        //rooted somewhere, make a stacked chart table
-        //edward salinas
-        var makeStackChartableFromValidHierarchyObject = function(o) {
-            /*
-                It's assumed that the root exists and is non-allelic
-                It's assumed that at least one child exists under the root and that it is non-allelic
-                It's assumed that all children have hildren and that all these 'grandchildren' are allelic /.+\*\d+/
-            */
-            var gcLabels = getGrandChildrenLabelArray(o);
-            var maxa = getHighestAlleleValueFromAllelicOnlyList(gcLabels);
-
-            //these colors need to go but they can be used for now
-            //colorArray = ['#51A351','#BD362F','#11162F'];    //dirty christmas
-            var colorArray = ['#aec7e8', '#7b94b5', '#486192'];  //hues of blues
-
-            //colorArray = [' #FF0000','#FF7F00','#FFFF00','#00FF00','#0000FF','#4B0082','#8F00FF'];
-            //rainbow http://suddenwhims.com/2012/10/html-rainbow-color-codes-color-hex/
-
-            var stackDataArray = [];
-            var alleleNum = 1;
-            var immediateChildren = o.children;
-
-            for (alleleNum = 1; alleleNum <= maxa; alleleNum++) {
-                var immediateChildIndex = 0;
-                var alleleNumZeroPadded = zeroPadToDigits(alleleNum, 2);
-
-                var objectColorIndex = ((alleleNum - 1) % colorArray.length);
-                var color = colorArray[objectColorIndex];
-                var key = alleleNumZeroPadded.toString();
-
-                var xList = [];
-                var yList = [];
-                var values = [];
-                for (immediateChildIndex = 0; immediateChildIndex < immediateChildren.length; immediateChildIndex++) {
-                    var withStar = immediateChildren[immediateChildIndex].label + '*' + alleleNumZeroPadded;
-                    var geneAndAllele = separateGeneAndAllele(withStar);
-                    var genex = geneAndAllele[0];
-                    var valy = getValueReturnZeroAsDefault(withStar, o);
-                    xList.push(genex);
-                    yList.push(valy);
-                }//for each immediate child
-
-                for (var v = 0; v < xList.length; v++) {
-                    var xyObj = {
-                        'x': xList[v],
-                        'y': parseInt(yList[v]),
-                    };
-
-                    values.push(xyObj);
-                }
-
-                var keyObj = {
-                    'key': key,
-                    'color': color,
-                    'values': values,
-                };
-
-                stackDataArray.push(keyObj);
-            }//for each allele up to maximum
-
-            return stackDataArray;
-        };
-
-        var isAllelicString = function(s) {
-            var allelePattern = /\S\*\d+$/i;
-
-            if (s.match(allelePattern)) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        };
-
-        //edward salinas
-        var areALLStringsInArrayNONAllelic = function(a) {
-
-            for (var i = 0; i < a.length; i++) {
-                if (isAllelicString(a[i])) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
-
-        //edward salinas
-        var areALLStringsInArrayAllelic = function(a) {
-
-            for (var i = 0; i < a.length; i++) {
-                if (!isAllelicString(a[i])) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
-
-        //edward salinas
-        var getHTMLButtonsFromDrillStack = function(d) {
-            var buttonHTML = '<ol class="breadcrumb">';
-            for (var buttonIndex = 0; buttonIndex < d.length; buttonIndex++) {
-                if (buttonIndex === (d.length - 1)) {
-                    buttonHTML = buttonHTML
-                               + '<li class="active">'
-                                    + d[buttonIndex]
-                               + '</li>';
-                }
-                else {
-                    buttonHTML = buttonHTML
-                               + '<li>'
-                                    + '<a '
-                                        + 'class="' + classSelector + '-stack-btn" '
-                                        + 'id="' + classSelector + '-stack-btn-' + d[buttonIndex] + '" '
-                                        + 'data-drillindex="' + d[buttonIndex] + '"'
-                                    + ' >'
-                                        + d[buttonIndex]
-                                    + '</a>'
-                               + '</li>';
-                }
-            }
-
-            buttonHTML = buttonHTML + '</ol>';
-            return buttonHTML;
-        };
-
-        //edward salinas
-        var resetDrillStackUpTo = function(u, ds) {
-            var newDrillStack = [];
-            var di = ds.length;
-
-            for (di = 0; di < ds.length; di++) {
-                newDrillStack.push(ds[di]);
-
-                if (u === ds[di]) {
-                    di = ds.length + 1;
-                }
-            }
-
-            return newDrillStack;
-        };
-
-        var redrawGeneDistChart = function(res) {
-
-            // Breadcrumb listener - reset stack breadcrumb buttons
-            document.getElementById(classSelector + '-stackdiv').innerHTML = getHTMLButtonsFromDrillStack(drillStack);
-            $('.' + classSelector + '-stack-btn').click(function(e) {
-
-                var drillIndex = e.target.dataset.drillindex;
-                drillStack = resetDrillStackUpTo(drillIndex, drillStack);
-
-                var res = getHierarchySubHierarchyFromObj(sourceJson, drillIndex);
-                redrawGeneDistChart(res);
+        // drilldown level 1
+        _.each(distribution.children, function(gene){
+          var data = [];
+          _.each(gene.children, function(geneChild){
+            data.push({
+              id: 'child',
+              name: geneChild.label,
+              y: geneChild.value,
+              drilldown: geneChild.label,
+              color: '#7B94B5'
             });
+          });
+          drilldown.series.push({
+            id: gene.label,
+            name: gene.label,
+            data: data
+          });
+        });
 
-            //call this function to trigger reloading inside redrawChart()
-            var prevStackStatus = stackStatus;
-            stackStatus = doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(sourceJson, res.label);
+        // drilldown level 2
+        _.each(distribution.children, function(gene){
+          _.each(gene.children, function(geneChild){
+            var data = [];
+            _.each(geneChild.children, function(geneGrandchild){
+              data.push({
+                id: 'grandchild',
+                name: geneGrandchild.label,
+                y: geneGrandchild.value,
+                alleles: geneGrandchild.children
+              });
+            });
+            drilldown.series.push({
+              id: geneChild.label,
+              name: geneChild.label,
+              data: data
+            });
+          });
+        });
 
-            if (prevStackStatus !== stackStatus) {
-                //clear chart
-                d3.select('.' + classSelector + ' svg')
-                    .selectAll('g').remove()
-                ;
-            }
+        Highcharts.setOptions({
+          lang: {
+            thousandsSep: ','
+          }
+        });
 
-            if (!stackStatus) {
-                var plainChartable = makeChartableFromValidHierarchyObject(res);
-                nv.addGraph(
-                    function() {
-                        var chart = nv.models.discreteBarChart()
-                            .x(function(d) { return d.label; })
-                            .y(function(d) { return d.value; })
-                            .staggerLabels(true)
-                            .tooltips(true)
-                            .showValues(true)
-                            .color(['#aec7e8', '#7b94b5', '#486192'])
-                            .transitionDuration(500)
-                        ;
-
-                        d3.select('.' + classSelector + ' svg')
-                            .datum(plainChartable)
-                            .call(chart);
-
-                        nv.utils.windowResize(chart.update);
-
-                        return chart;
-                    },
-                    function() {
-                        d3.selectAll('.nv-bar').on('click', function(e) {
-                            //get a new 'chartable and invoke redrawChart to get the chart to be re-created
-
-                            var countUnderClick = getValueReturnZeroAsDefault(e.label, sourceJson);
-                            if (
-                                countUnderClick === 0
-                                && doGrandchildrenExistAndONLYGrandchildrenAreTerminalAndAllelic(sourceJson, e.label) === true
-                            ) {
-
-                            }
-                            else {
-                                var res = getHierarchySubHierarchyFromObj(sourceJson, e.label);
-                                drillStack.push(e.label);
-                                redrawGeneDistChart(res);
-                            }
-                        });
-                    }
-                );
-            }//plain/discrete data case
-            else {
-                var stackedChartableData = makeStackChartableFromValidHierarchyObject(res);
-                nv.addGraph(function() {
-                    var chart = nv.models.multiBarChart()
-                        .transitionDuration(350)
-                        // .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
-                        .rotateLabels(0)      //Angle to rotate x-axis labels.
-                        .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
-                        .stacked(true)        //set stacked
-                        .showLegend(true)
-                        .reduceXTicks(true)
-                        .staggerLabels(true)
-                        .tooltip(function(alleleNum, geneName) {
-                            var completeName = geneName + '*' + alleleNum;
-                            var countDefZero = getValueReturnZeroAsDefault(completeName, res);
-                            var toolTipTextToDisplay = completeName + ' ; count=' + countDefZero;
-                            return toolTipTextToDisplay;
-                        })
-                        .groupSpacing(0.1)    //Distance between each group of bars.
-                    ;
-
-                    d3.select('.' + classSelector + ' svg')
-                        .datum(stackedChartableData)
-                        .call(chart)
-                    ;
-
-                    nv.utils.windowResize(function() {
-                        chart.update;
-
-                        d3.selectAll('.nv-bar')
-                            .classed('hidden', function(d) {
-                                return d.size <= 0;
-                            });
-                    });
-
-                    return chart;
-                },
-                function() {
-                    d3.selectAll('.nv-bar')
-                        .classed('hidden', function(d) {
-                            return d.size <= 0;
-                        })
-                    ;
-                });
-            }//stacked data case
-        };
-
-        // Kickoff
-
-        var redrawBarChart = function() {
-            //call this function to trigger reloading
-            //inside redrawBarChart()
-
-            nv.addGraph(function() {
-                var chart = nv.models.discreteBarChart()
-                    .x(function(d) { return d.label; })
-                    .y(function(d) { return d.value; })
-                    .staggerLabels(true)
-                    .tooltips(true)
-                    .showValues(true)
-                    .color(['#aec7e8', '#7b94b5', '#486192'])
-                    .transitionDuration(500)
-                ;
-
-                d3.select('.' + classSelector + ' svg')
-                    .datum(currentDataset)
-                    .call(chart)
-                ;
-
-                nv.utils.windowResize(function() {
-                    chart.update();
-                });
-
-                return chart;
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: classSelector,
+                type: 'column',
             },
-            function() {
-                d3.selectAll('.nv-bar').on('click', function(e) {
-                    //get a new 'chartable and invoke redrawChart to get the chart to be re-created
-                    var res = findFromLabel(sourceJson, e.label);
-                    var chartable = makeChartableFromValidHierarchyObject(res);
-                    currentDataset = chartable;
-                    redrawBarChart();
-                });
-            });
-        };
+            title: {
+                text: ''
+            },
+            credits: {
+               enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            xAxis: {
+                labels: {
+                  style: {
+                    color: '#000000',
+                  },
+                  rotation: -90,
+                },
+                type: 'category',
+                tickInterval: 1
+            },
+            yAxis: {
+                title: {
+                    text: ''
+                },
+                labels: {
+                    style: {
+                        color: '#000000'
+                    },
+                    formatter: function () {
+                        return this.value;
+                    }
+                },
+            },
+            legend: {
+                enabled: false
+            },
+            // plotOptions: {
+            //     series: {
+            //         style: {
+            //             color: '#000000'
+            //         },
+            //         borderWidth: 0,
+            //         dataLabels: {
+            //             enabled: true,
+            //             rotation: -45,
+            //             format: '{point.y:,.2f}'
+            //         }
+            //     }
+            // },
 
-        var res = getHierarchySubHierarchyFromObj(sourceJson, 'human');
-        redrawGeneDistChart(res);
+            tooltip: {
+                headerFormat: '<b>Parent: </b> {series.name}<br/>',
+                pointFormat: '<b>{point.name}: </b>{point.y:,.2f}<br/>',
+                formatter: function(){
+                  var tooltip = '';
+                  for(var i = 0, length = this.series.points.length; i < length; i++) {
+                    var point = this.series.points[i];
+
+                    if (point.id === 'parent' || point.id === 'child'){
+                      tooltip = '<b>Parent: </b>' + this.series.name + '<br/>'+
+                                '<b>' + this.key + ': </b>' + Highcharts.numberFormat(this.y, 2) + '<br/>';
+                    }
+
+                    if (point.id === 'grandchild'){
+                      tooltip = '<b>Parent: </b>' + this.series.name + '<br/>'+
+                                '<b>' + this.key + ': </b>' + Highcharts.numberFormat(this.y, 2) + '<br/>';
+                      if (typeof(this.point.alleles) !== 'undefined'){
+                        tooltip += '<b>Alleles:</b><br/>';
+                        _.each(this.point.alleles, function(allele){
+                          tooltip += '<b>' + allele.label + ': </b>' + Highcharts.numberFormat(allele.value, 2) + '<br/>';
+
+                        });
+                      }
+                    }
+                  }
+                  return tooltip;
+                }
+            },
+            series: [series],
+            drilldown: drilldown
+          });
     };
 
     Analyses.Charts.Cdr3 = function(fileHandle, text, classSelector) {
