@@ -689,55 +689,29 @@ define([
                 var options = {
                     success: function(files) {
 
-                        var createFileSavePromise = function(model) {
-                            return model.save()
-                                .then(function(response) {
+                        var fileSavePromises = $.map(files, function(file) {
+                            return function() {
 
-                                    if (response.hasOwnProperty('result') === true && response.result.hasOwnProperty('uuid') === true) {
+                                var agaveFile = new Backbone.Agave.Model.File.Dropbox({
+                                    projectUuid: that.projectUuid,
+                                    urlToIngest: file.link,
+                                });
 
-                                        var fileUuid = response.result.uuid;
-                                        var fileTransferNotification = new Backbone.Agave.Model.Notification.FileImport();
+                                return agaveFile.save();
+                            };
+                        });
 
-                                        fileTransferNotification.set('associatedUuid', response.result.uuid);
-                                        fileTransferNotification.filename = model.filename;
-                                        fileTransferNotification.projectView = that;
-
-                                        return fileTransferNotification.save()
-                                            .then(function() {
-                                                App.Instances.WebsocketManager.subscribeToEvent(fileUuid);
-                                            })
-                                            .then(function() {
-                                                var listView = App.Layouts.sidebar.getView('.sidebar');
-                                                listView.addFileImportNotification(
-                                                    that.projectUuid,
-                                                    fileUuid,
-                                                    fileTransferNotification
-                                                );
-                                            })
-                                            ;
-                                    }
-                                })
-                                ;
-                        };
-
-                        var fileSavePromises = [];
-                        for (var i = 0; i < files.length; i++) {
-
-                            var agaveFile = new Backbone.Agave.Model.File.Dropbox({
-                                projectUuid: that.projectUuid,
-                                urlToIngest: files[i].link,
-                            });
-
-                            agaveFile.filename = files[i].name;
-
-                            fileSavePromises[fileSavePromises.length] = createFileSavePromise(agaveFile);
-                        };
-
-                        $.when.apply($, fileSavePromises)
-                            .then(function(results) {
-                                //console.log("all fileSaves done. results are: " + JSON.stringify(results));
-                            })
-                            ;
+                        var sequentialPromiseResults = fileSavePromises.reduce(
+                            function(previous, current) {
+                                return previous.then(current);
+                            },
+                            $.Deferred().resolve()
+                        )
+                        .then(function() {
+                        })
+                        .fail(function() {
+                        })
+                        ;
                     },
                     linkType: 'direct',
                     multiselect: true,
