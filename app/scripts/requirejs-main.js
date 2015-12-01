@@ -21,9 +21,6 @@ define([
     'highcharts-more',
     'highcharts-exporting',
 
-    //Library for using google's recaptcha-ajax
-    'recaptcha-ajax',
-
     //jquery.event.drag/drop
     'jquery.event.drag',
     'jquery.event.drop',

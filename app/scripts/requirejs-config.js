@@ -31,7 +31,6 @@ require.config({
         'd3':               '../bower_components/d3/d3.min',
         'nvd3':             '../bower_components/nvd3/nv.d3.min',
         'socket-io':        '../bower_components/socket.io-client/socket.io',
-        'recaptcha-ajax':   '../bower_components/recaptcha-ajax/recaptcha_ajax',
         'simple-statistics':'../bower_components/simple-statistics/src/simple_statistics',
 
         // Config
@@ -173,9 +172,6 @@ require.config({
         'nvd3': {
             deps:['d3'],
             exports: 'nv'
-        },
-        'recaptcha-ajax': {
-            exports: 'Recaptcha'
         },
         'typeahead': {
             deps: ['jquery']

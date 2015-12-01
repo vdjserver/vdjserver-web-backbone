@@ -12,8 +12,6 @@ function(Backbone, EnvironmentConfig) {
     Feedback.Public = Backbone.Agave.Model.extend({
         defaults: {
             feedback: '',
-            recaptcha_challenge_field:   '',
-            recaptcha_response_field: '',
         },
         apiHost: EnvironmentConfig.vdjApi.host,
         url: function() {
@@ -31,18 +29,9 @@ function(Backbone, EnvironmentConfig) {
                 });
             }
 
-            /*
-            if(! attributes.recaptcha_challenge_field) {
-              errors.push({
-                  'message': 'Missing Recaptcha Challenge.',
-                  'type': 'recaptcha_challenge_field'
-              });
-            }
-            */
-
-            if (!attributes.recaptcha_response_field) {
+            if (!attributes['g-recaptcha-response']) {
                 errors.push({
-                    'message': 'Incorrect captcha response.',
+                    'message': 'Missing reCAPTCHA Challenge',
                     'type': 'recaptcha'
                 });
             }

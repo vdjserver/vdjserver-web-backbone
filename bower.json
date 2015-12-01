@@ -22,7 +22,6 @@
     "marionette.backbone.syphon": "0.5.1",
     "moment": "2.9.0",
     "nvd3": "1.1.15-beta",
-    "recaptcha-ajax": "ea58c14d983a8d0d712a3ce9398ad35a7c17c53b",
     "requirejs": "2.1.16",
     "simple-statistics": "0.9.1",
     "sinon": "1.11.1",
