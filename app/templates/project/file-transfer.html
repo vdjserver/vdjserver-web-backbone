@@ -58,11 +58,9 @@
     </div>
 
     <div class="form-group">
-        <label class="col-sm-2 control-label">Progress</label>
-        <div class="col-sm-5">
-            <div class="progress file-upload-progress-wrapper">
-                <div class="progress-bar progress-striped active {{fileUniqueIdentifier}}">
-                </div>
+        <div class="col-sm-5 col-sm-offset-2">
+            <div class="alert alert-warning">
+                Note: there is currently a 4 hour time limit when uploading files.
             </div>
         </div>
     </div>
@@ -73,38 +71,6 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-sm-5 col-sm-offset-2">
-            <div class="alert alert-warning">
-                Note: there is currently a 4 hour time limit when uploading files.
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-sm-5 col-sm-offset-2">
-            <div id="file-upload-notifications-{{fileUniqueIdentifier}}" class="alert alert-info hidden"></div>
-        </div>
-    </div>
-
-    <div id="upload-form-controls">
-        <div class="form-group">
-            <div class="col-sm-5 col-sm-offset-2">
-                <div class="btn-group btn-group-justified">
-                    <div class="btn-group">
-                        <button type="submit" id="start-upload-button" class="btn btn-primary upload-button user-selectable">
-                            Start
-                        </button>
-                    </div>
-
-                    <div class="btn-group">
-                        <button id="cancel-upload-button" class="btn btn-danger upload-button">
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{> file-transfer-common this}}
 
 </form>

@@ -70,6 +70,10 @@ define([
                 App.Datastore.Notifications.push(notification);
                 // TODO: reexamine websocket trigger
                 that.trigger('fileImportUpdate', fileImportUpdate);
+
+                if (fileImportUpdate.fileImportStatus === 'finished') {
+                    that.trigger('addFileToProject', fileImportUpdate.fileInformation.metadata);
+                }
             });
         },
         subscribeToEvent: function(eventId) {

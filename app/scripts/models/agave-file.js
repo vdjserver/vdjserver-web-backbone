@@ -74,59 +74,65 @@ function(
                         var formData = new FormData();
                         formData.append('fileToUpload', model.get('fileReference'));
 
-                        var deferred = $.Deferred();
+                        var that = this;
 
-                        var xhr = options.xhr || new XMLHttpRequest();
-                        xhr.open('POST', url, true);
-                        xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-                        xhr.timeout = 0;
+                        return $.ajax({
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
+                            },
+                            xhr: function() {
 
-                        // Listen to the upload progress.
-                        xhr.upload.onprogress = function(e) {
-                            if (e.lengthComputable) {
-                                var uploadProgress = (e.loaded / e.total) * 100;
-                                model.trigger(File.UPLOAD_PROGRESS, uploadProgress);
-                            }
-                        };
+                                var xhr = $.ajaxSettings.xhr();
 
+                                if (typeof xhr.upload == 'object') {
+                                    xhr.upload.addEventListener('progress', function(evt) {
+                                        if (evt.lengthComputable) {
+                                            var percentComplete = (evt.loaded / evt.total) * 100;
+                                            that.trigger(File.UPLOAD_PROGRESS, percentComplete);
+                                        }
+
+                                    }, false);
+                                }
+
+                                return xhr;
+                            },
+                            url: url,
+                            type: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                        })
+                        .then(function(response) {
+                            that.set('uuid', response.result.uuid);
+                            that.set('path', '/vdjZ' + response.result.path);
+                        })
+                        ;
+
+                        /*
                         model.on(File.CANCEL_UPLOAD, function() {
                             xhr.abort();
                         });
-
-                        xhr.addEventListener('load', function() {
-
-                            if (xhr.status === 200 || 202) {
-
-                                // A little bit of a hack, but it does the trick
-                                try {
-                                    var parsedJSON = JSON.parse(xhr.response);
-                                    parsedJSON = parsedJSON.result;
-                                    that.set(parsedJSON);
-
-                                    deferred.resolve(xhr.response);
-                                }
-                                catch (error) {
-                                    deferred.reject('Error: Agave response serialization failed.');
-                                }
-                            }
-                            else {
-                                deferred.reject('HTTP Error: ' + xhr.status);
-                            }
-                        }, false);
-
-                        xhr.addEventListener('error', function() {
-                            deferred.reject('HTTP Error: ' + xhr.status);
-                        });
-
-                        xhr.send(formData);
-                        return deferred;
-
-                        //break;
+                        */
 
                     default:
                         break;
                 }
 
+            },
+            notifyApiUploadComplete: function() {
+                return $.ajax({
+                    url: EnvironmentConfig.vdjApi.host
+                            + '/notifications'
+                            + '/files'
+                            + '/import'
+                            + '?fileUuid=' + this.get('uuid')
+                            + '&path=' + this.get('path')
+                            + '&projectUuid=' + this.get('projectUuid'),
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                })
+                ;
             },
         },
         {
@@ -365,7 +371,7 @@ function(
         },
     });
 
-    File.Dropbox = File.extend({
+    File.UrlImport = File.extend({
         url: function() {
             return '/files/v2/media/system'
                 + '/' + EnvironmentConfig.agave.storageSystems.corral
@@ -394,12 +400,17 @@ function(
                         },
                         data: {
                             urlToIngest: this.get('urlToIngest'),
-                            callbackURL: EnvironmentConfig.vdjApi.host + '/notifications/files/import/${UUID}'
-                                        + '?event=${EVENT}'
+                            callbackURL: EnvironmentConfig.vdjApi.host
+                                        + '/notifications'
+                                        + '/files'
+                                        + '/import'
+                                        + '/?fileUuid=${UUID}'
+                                        + '&event=${EVENT}'
                                         + '&type=${TYPE}'
                                         //+ '&format=${FORMAT}'
                                         + '&path=${PATH}'
                                         + '&system=${SYSTEM}'
+                                        + '&projectUuid=' + this.get('projectUuid')
                                         ,
                         },
                         method: 'POST',
@@ -455,25 +466,6 @@ function(
                 this.set('value', value);
 
                 return this.save();
-            },
-            setInitialMetadata: function(file, formData) {
-
-                var publicAttributes = {
-                    'tags': this._formatTagsForSave(formData['tags']),
-                };
-
-                this.set({
-                    associationIds: [file._getAssociationId()],
-                    value: {
-                        projectUuid: file.get('projectUuid'),
-                        fileType: parseInt(formData['file-type']),
-                        name: file.get('name'),
-                        length: file.get('fileReference').size,
-                        isDeleted: false,
-                        readDirection: this._formatReadDirectionForInitialSave(formData),
-                        publicAttributes: publicAttributes,
-                    },
-                });
             },
             updateTags: function(tags) {
 

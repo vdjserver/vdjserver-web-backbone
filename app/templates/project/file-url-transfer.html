@@ -1,0 +1,14 @@
+<form id="form-{{fileUniqueIdentifier}}" class="file-transfer form-horizontal">
+
+    {{#forLoop 1 11}}
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-10">
+                <input class="form-control user-selectable" name="url{{this}}" type="text" placeholder="URL. For example: http://my-data-server.com/myData.zip or ftp://my-data-server.com/myData.fastq">
+            </div>
+        </div>
+    {{/forLoop}}
+
+    {{> file-transfer-common this}}
+
+</form>
