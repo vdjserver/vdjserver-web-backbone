@@ -7,8 +7,6 @@ define([
     var FileTransferProjectUiMixin = {
         _mixinUiSetUploadProgress: function(fileUniqueIdentifier, percentCompleted) {
 
-            console.log("percentCompleted type is: " + typeof percentCompleted);
-
             percentCompleted = percentCompleted.toFixed(2);
             percentCompleted += '%';
 

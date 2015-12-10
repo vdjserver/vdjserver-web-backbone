@@ -1335,6 +1335,10 @@ define([
 
                         return that.model.notifyApiUploadComplete();
                     })
+                    .then(function() {
+                        that._mixinUiSetSuccessMessage('File "' + that.model.get('name') + '" uploaded successfully.');
+                        that.remove();
+                    })
                     .fail(function(error) {
 
                         // Notify user that upload failed
@@ -1348,64 +1352,7 @@ define([
                     })
                     ;
 
-                    //that.trigger('addNewFileToProjectFileList');
-                    that._mixinUiSetSuccessMessage('File "' + that.model.get('name') + '" uploaded successfully.');
-                    this.remove();
-
-                /*
-                this._setListMenuFileTransferView(
-                    this.projectUuid,
-                    this.fileUniqueIdentifier,
-                    this.model.get('name')
-                );
-
-                this._uiUploadStart();
-
-                var formData = Backbone.Syphon.serialize(this);
-
-                var that = this;
-
-                this.model.on(Backbone.Agave.Model.File.ProjectFile.UPLOAD_PROGRESS, function(percentCompleted) {
-                    that._uiSetUploadProgress(percentCompleted, that.fileUniqueIdentifier);
-                });
-
-                this.model.save()
-                    .done(function() {
-
-                        // Notify user that permissions are being set
-                        that._uiSetProgressMessage('Setting file permissions...');
-
-                        // VDJAuth saves the day by fixing file pems
-                        that.model.syncFilePermissionsWithProjectPermissions()
-                            .done(function() {
-                                that._createFileMetadata(formData);
-                            })
-                            .fail(function(error) {
-                                that._uiSetUploadProgress(0, that.fileUniqueIdentifier);
-                                that._uiSetErrorMessage('Permission error. Please try uploading your file again.');
-
-                                // Delete file too??
-
-                                var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.set('error', JSON.stringify(error));
-                                telemetry.set('method', 'syncFilePermissionsWithProjectPermissions()');
-                                telemetry.set('view', 'Projects.FileTransfer');
-                                telemetry.save();
-                            });
-                    })
-                    .fail(function(error) {
-                        // Notify user that upload failed
-                        that._uiSetErrorMessage('File upload error. Please try uploading your file again.');
-
-                        var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
-                        telemetry.set('method', 'Backbone.Agave.Model.save()');
-                        telemetry.set('view', 'Projects.FileTransfer');
-                        telemetry.save();
-                    });
-
                 //request.abort()
-                */
             },
 
             // UI
