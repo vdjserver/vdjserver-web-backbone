@@ -57,6 +57,27 @@ function(
                     + this.relativeUrl
                 ;
             },
+            applyUploadAttributes: function(formData) {
+                var readDirection = this._formatReadDirectionForInitialSave(formData);
+
+                this.set('vdjFileType', formData['file-type']);
+                this.set('readDirection', readDirection);
+                this.set('tags', formData.tags);
+            },
+            _formatReadDirectionForInitialSave: function(formData) {
+                if (formData['forward-reads'] && formData['reverse-reads']) {
+                    return 'FR';
+                }
+                else if (formData['forward-reads'] && !formData['reverse-reads']) {
+                    return 'F';
+                }
+                else if (formData['reverse-reads'] && !formData['forward-reads']) {
+                    return 'R';
+                }
+                else {
+                    return '';
+                }
+            },
             sync: function(method, model, options) {
 
                 var that = this;
@@ -127,7 +148,11 @@ function(
                             + '/import'
                             + '?fileUuid=' + this.get('uuid')
                             + '&path=' + this.get('path')
-                            + '&projectUuid=' + this.get('projectUuid'),
+                            + '&projectUuid=' + this.get('projectUuid')
+                            + '&vdjFileType=' + this.get('vdjFileType')
+                            + '&readDirection=' + this.get('readDirection')
+                            + '&tags=' + encodeURIComponent(this.get('tags'))
+                            ,
                     type: 'POST',
                     processData: false,
                     contentType: false,
@@ -614,20 +639,6 @@ function(
                 }
 
                 return tagArray;
-            },
-            _formatReadDirectionForInitialSave: function(formData) {
-                if (formData['forward-reads'] && formData['reverse-reads']) {
-                    return 'FR';
-                }
-                else if (formData['forward-reads'] && !formData['reverse-reads']) {
-                    return 'F';
-                }
-                else if (formData['reverse-reads'] && !formData['forward-reads']) {
-                    return 'R';
-                }
-                else {
-                    return '';
-                }
             },
         },
         {

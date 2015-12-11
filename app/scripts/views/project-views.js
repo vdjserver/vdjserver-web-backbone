@@ -1319,8 +1319,10 @@ define([
             _startUpload: function(e) {
                 e.preventDefault();
 
-                // TODO: attach to file import url as params
                 var formData = Backbone.Syphon.serialize(this);
+
+                // Apply to file import model for later use as webhook params
+                this.model.applyUploadAttributes(formData);
 
                 var that = this;
 
