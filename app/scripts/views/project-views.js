@@ -514,12 +514,7 @@ define([
                     var isDuplicate = this.fileListings.checkForDuplicateFilename(file.name);
 
                     if (isDuplicate) {
-                        $('#file-staging-errors')
-                            .text('The file "' + file.name  + '" can not be uploaded because another file exists with the same name.')
-                            .removeClass('hidden alert alert-success')
-                            .addClass('alert alert-danger')
-                            .fadeIn()
-                            ;
+                        this.uiDisplayDuplicateFileMessage(file.name);
                     }
                     else {
                         var fileTransferView = new Projects.FileTransfer({
@@ -675,6 +670,21 @@ define([
             },
 
             // UI
+            uiDisplayDuplicateFileMessage: function(filename) {
+                $('html,body').animate({scrollTop: 0});
+
+                $('#file-staging-errors')
+                    .html(
+                        'Unable to upload!'
+                        + '<br><br>The file "' + filename  + '" can not be uploaded because another file exists with the same name.'
+                        + '<br><br>Please try again with a different filename.'
+                    )
+                    .removeClass('hidden alert alert-success')
+                    .addClass('alert alert-danger')
+                    .fadeIn()
+                    ;
+            },
+
             _uiToggleDisabledButtonStatus: function() {
                 if ($('.selected-files:checked').length) {
                     $('.files-selected-button').removeClass('disabled');
@@ -698,6 +708,8 @@ define([
 
                 var fileTransferView = new Projects.FileUrlTransfer({
                     projectUuid: this.projectModel.get('uuid'),
+                    fileListings: this.fileListings,
+                    projectDetailView: this,
                 });
 
                 this.insertView('#file-staging', fileTransferView);
@@ -710,35 +722,51 @@ define([
                 var options = {
                     success: function(files) {
 
-                        var fileSavePromises = $.map(files, function(file) {
-                            return function() {
+                        var isDuplicate = false;
+                        var duplicateFilename = '';
 
-                                var agaveFile = new Backbone.Agave.Model.File.UrlImport({
-                                    projectUuid: that.projectUuid,
-                                    urlToIngest: file.link,
-                                });
+                        for (var i = 0; i < files.length; i++) {
+                            isDuplicate = that.fileListings.checkForDuplicateFilename(files[i].name);
 
-                                return agaveFile.save();
-                            };
-                        });
+                            if (isDuplicate === true) {
+                                duplicateFilename = files[i].name;
+                                break;
+                            }
+                        };
 
-                        var sequentialPromiseResults = fileSavePromises.reduce(
-                            function(previous, current) {
-                                return previous.then(current);
-                            },
-                            $.Deferred().resolve()
-                        )
-                        .then(function() {
-                        })
-                        .fail(function() {
-                        })
-                        ;
+                        if (isDuplicate === true) {
+                            that.uiDisplayDuplicateFileMessage(duplicateFilename);
+                        }
+                        else {
+
+                            var fileSavePromises = $.map(files, function(file) {
+                                return function() {
+
+                                    var agaveFile = new Backbone.Agave.Model.File.UrlImport({
+                                        projectUuid: that.projectUuid,
+                                        urlToIngest: file.link,
+                                    });
+
+                                    return agaveFile.save();
+                                };
+                            });
+
+                            var sequentialPromiseResults = fileSavePromises.reduce(
+                                function(previous, current) {
+                                    return previous.then(current);
+                                },
+                                $.Deferred().resolve()
+                            )
+                            .then(function() {
+                            })
+                            .fail(function() {
+                            })
+                            ;
+                        }
                     },
                     linkType: 'direct',
                     multiselect: true,
                 };
-
-                // TODO: add duplicate filename check here before allowing dropbox function to start
 
                 Dropbox.choose(options);
             },
@@ -1217,44 +1245,88 @@ define([
                     }
                 }
 
-                var that = this;
+                var isDuplicate = this._checkDuplicateFiles(urls);
 
-                var promises = $.map(urls, function(url) {
-                    return function() {
-                        var agaveFile = new Backbone.Agave.Model.File.UrlImport({
-                            projectUuid: that.projectUuid,
-                            urlToIngest: url,
-                        });
+                if (isDuplicate === true) {
+                    return;
+                }
+                else {
+                    var that = this;
 
-                        return agaveFile.save();
-                    };
+                    var promises = $.map(urls, function(url) {
+                        return function() {
+                            var agaveFile = new Backbone.Agave.Model.File.UrlImport({
+                                projectUuid: that.projectUuid,
+                                urlToIngest: url,
+                            });
+
+                            return agaveFile.save();
+                        };
+                    });
+
+                    this._mixinUiUploadStart(this.fileUniqueIdentifier);
+                    this._mixinUiSetProgressMessage(this.fileUniqueIdentifier, 'Importing files...');
+
+                    var counter = 1;
+
+                    var sequentialPromiseResults = promises.reduce(
+                        function(previous, current) {
+
+                            that._uiProgressBar(counter, promises.length);
+                            counter++;
+
+                            return previous.then(current);
+                        },
+                        $.Deferred().resolve()
+                    )
+                    .then(function() {
+                        that._mixinUiSetSuccessMessage('Files imported successfully.');
+                        that.remove();
+                        $('html,body').animate({scrollTop: 0});
+                    })
+                    .fail(function() {
+                        that._mixinUiSetUploadProgress(that.fileUniqueIdentifier, 0);
+                        that._mixinUiSetErrorMessage(that.fileUniqueIdentifier, 'Import error. Please check your URLs and try again.');
+                    })
+                    ;
+                }
+            },
+            _checkDuplicateFiles: function(urls) {
+                var filenames = urls.map(function(url) {
+                    // Example input: https://www.dropbox.com/s/tuhocuchput9y81/text9.txt?dl=0
+
+                    url = url.split('/');
+                    // Stage 1: ["https:","","www.dropbox.com","s","tuhocuchput9y81","text9.txt?dl=0"]
+
+                    url = url.pop();
+                    // Stage 2: "text9.txt?dl=0"
+
+                    url = url.split('?');
+                    // Stage 3: ["text9.txt","dl=0"]
+
+                    url = url.shift();
+                    // Stage 4: "text9.txt"
+
+                    return url;
                 });
 
-                this._mixinUiUploadStart(this.fileUniqueIdentifier);
-                this._mixinUiSetProgressMessage(this.fileUniqueIdentifier, 'Importing files...');
+                var isDuplicate = false;
+                var duplicateFilename = '';
 
-                var counter = 1;
+                for (var i = 0; i < filenames.length; i++) {
+                    isDuplicate = this.fileListings.checkForDuplicateFilename(filenames[i]);
 
-                var sequentialPromiseResults = promises.reduce(
-                    function(previous, current) {
+                    if (isDuplicate === true) {
+                        duplicateFilename = filenames[i];
+                        break;
+                    }
+                };
 
-                        that._uiProgressBar(counter, promises.length);
-                        counter++;
+                if (isDuplicate) {
+                    this.projectDetailView.uiDisplayDuplicateFileMessage(duplicateFilename);
+                }
 
-                        return previous.then(current);
-                    },
-                    $.Deferred().resolve()
-                )
-                .then(function() {
-                    that._mixinUiSetSuccessMessage('Files imported successfully.');
-                    that.remove();
-                    $('html,body').animate({scrollTop:0});
-                })
-                .fail(function() {
-                    that._mixinUiSetUploadProgress(that.fileUniqueIdentifier, 0);
-                    that._mixinUiSetErrorMessage(that.fileUniqueIdentifier, 'Import error. Please check your URLs and try again.');
-                })
-                ;
+                return isDuplicate;
             },
             _uiProgressBar: function(counter, total) {
                 var percentCompleted = (counter / total) * 100;
