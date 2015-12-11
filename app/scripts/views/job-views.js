@@ -613,7 +613,7 @@ define([
 
             return jobModel.submitJob(this.projectModel.get('uuid'))
                 .then(function() {
-                    return $('#job-modal').modal('hide').promise();
+                    //return $('#job-modal').modal('hide').promise();
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
