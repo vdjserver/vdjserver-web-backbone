@@ -239,22 +239,37 @@ function(
             });
         },
         downloadFileToDisk: function(totalSize) {
+
+            var url = EnvironmentConfig.agave.host
+                    + '/files'
+                    + '/v2'
+                    + '/media'
+                    + '/system'
+                    + '/' + EnvironmentConfig.agave.storageSystems.corral
+
+                    // NOTE: this uses agave // paths
+                    + '/' + this.get('path')
+                    ;
+
+            if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
+
+                url = EnvironmentConfig.agave.host
+                    + '/jobs'
+                    + '/v2'
+                    + '/' + this.get('jobUuid')
+                    + '/outputs'
+                    + '/media'
+                    + '/' + this.get('name')
+                    ;
+            }
+
             var that = this;
 
             var jqxhr = $.ajax(
                 _.extend({}, FileTransferMixins.progressJqxhr(that, totalSize), {
                     headers: Backbone.Agave.oauthHeader(),
                     type:    'GET',
-                    url:     EnvironmentConfig.agave.host
-                             + '/files'
-                             + '/v2'
-                             + '/media'
-                             + '/system'
-                             + '/' + EnvironmentConfig.agave.storageSystems.corral
-
-                             // NOTE: this uses agave // paths
-                             + '/' + this.get('path')
-                             ,
+                    url:     url,
                 })
             );
 
