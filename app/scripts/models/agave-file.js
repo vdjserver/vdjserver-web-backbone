@@ -58,24 +58,14 @@ function(
                 ;
             },
             applyUploadAttributes: function(formData) {
-                var readDirection = this._formatReadDirectionForInitialSave(formData);
+                this.set('vdjFileType', formData['file-type-' + this.get('formElementGuid')]);
 
-                this.set('vdjFileType', formData['file-type']);
-                this.set('readDirection', readDirection);
-                this.set('tags', formData.tags);
-            },
-            _formatReadDirectionForInitialSave: function(formData) {
-                if (formData['forward-reads'] && formData['reverse-reads']) {
-                    return 'FR';
+                if (formData.hasOwnProperty('read-direction-' + this.get('formElementGuid'))) {
+                    this.set('readDirection', formData['read-direction-' + this.get('formElementGuid')]);
                 }
-                else if (formData['forward-reads'] && !formData['reverse-reads']) {
-                    return 'F';
-                }
-                else if (formData['reverse-reads'] && !formData['forward-reads']) {
-                    return 'R';
-                }
-                else {
-                    return '';
+
+                if (formData.hasOwnProperty('tags-' + this.get('formElementGuid'))) {
+                    this.set('tags', formData['tags-' + this.get('formElementGuid')]);
                 }
             },
             sync: function(method, model, options) {
@@ -141,6 +131,18 @@ function(
 
             },
             notifyApiUploadComplete: function() {
+
+                var readDirection = '';
+                var tags = '';
+
+                if (_.isString(this.get('readDirection'))) {
+                    readDirection = this.get('readDirection');
+                }
+
+                if (_.isString(this.get('tags'))) {
+                    tags = this.get('tags');
+                }
+
                 return $.ajax({
                     url: EnvironmentConfig.vdjApi.host
                             + '/notifications'
@@ -150,8 +152,8 @@ function(
                             + '&path=' + this.get('path')
                             + '&projectUuid=' + this.get('projectUuid')
                             + '&vdjFileType=' + this.get('vdjFileType')
-                            + '&readDirection=' + this.get('readDirection')
-                            + '&tags=' + encodeURIComponent(this.get('tags'))
+                            + '&readDirection=' + readDirection
+                            + '&tags=' + encodeURIComponent(tags)
                             ,
                     type: 'POST',
                     processData: false,

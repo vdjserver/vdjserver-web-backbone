@@ -1,0 +1,46 @@
+{{!-- TODO: refactor inline styles into permanent styles --}}
+<div style="border-bottom: 1px solid black;">
+    <div class="form-group">
+        <label class="control-label alert">
+            File Name:
+            <span style="font-weight: normal;">
+                {{file.name}}
+            </span>
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label alert">
+            File Size:
+            <span style="font-weight: normal;">
+                {{GetHumanReadableFileSize file.length}}
+            </span>
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label alert">File Type</label>
+        <select class="form-control user-selectable file-type" name="file-type-{{file.formElementGuid}}">
+            {{#each fileTypes}}
+                <option value="{{@index}}" {{ifCondSelected @index 2}}>{{this}}</option>
+            {{/each}}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label alert">Read Direction</label>
+        <select class="form-control user-selectable file-type" name="read-direction-{{file.formElementGuid}}">
+            <option value=""></option>
+            <option value="F">F</option>
+            <option value="R">R</option>
+            <option value="FR">FR</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label alert">Tags</label>
+        <input class="form-control user-selectable" name="tags-{{file.formElementGuid}}" type="text" placeholder="Comma separated tags. Example: single-read, barcode">
+    </div>
+</div>
+
+<br>

@@ -5,18 +5,25 @@ define([
     'use strict';
 
     var FileTransferProjectUiMixin = {
+        _mixinUiProgressBar: function(counter, total) {
+            var percentCompleted = (counter / total) * 100;
+            this._mixinUiSetUploadProgress(this.fileUniqueIdentifier, percentCompleted);
+        },
         _mixinUiSetUploadProgress: function(fileUniqueIdentifier, percentCompleted) {
 
-            percentCompleted = percentCompleted.toFixed(2);
-            percentCompleted += '%';
+            if (_.isNumber(percentCompleted)) {
 
-            $('.' + fileUniqueIdentifier)
-                .width(percentCompleted)
-            ;
+                percentCompleted = percentCompleted.toFixed(2);
+                percentCompleted += '%';
 
-            $('.' + fileUniqueIdentifier + '-progress-text')
-                .text(percentCompleted)
-            ;
+                $('.' + fileUniqueIdentifier)
+                    .width(percentCompleted)
+                ;
+
+                $('.' + fileUniqueIdentifier + '-progress-text')
+                    .text(percentCompleted)
+                ;
+            }
         },
         _mixinUiUploadStart: function(fileUniqueIdentifier) {
             // Disable user selectable UI components
@@ -45,14 +52,15 @@ define([
             ;
         },
         _mixinUiSetErrorMessage: function(fileUniqueIdentifier, errorMessage) {
-            this._mixinUiSetUploadProgress(0, fileUniqueIdentifier);
 
-            $('#file-upload-notifications-' + fileUniqueIdentifier)
-                .removeClass()
-                .addClass('alert alert-danger')
+            this._mixinUiSetUploadProgress(fileUniqueIdentifier, 0);
+
+            $('#file-staging-errors')
+                .empty()
                 .text(errorMessage)
+                .removeClass('hidden alert alert-success')
+                .addClass('alert alert-danger')
                 .fadeIn()
-                .removeClass('hidden')
             ;
 
             $('#form-' + fileUniqueIdentifier).find('.user-selectable').removeAttr('disabled');

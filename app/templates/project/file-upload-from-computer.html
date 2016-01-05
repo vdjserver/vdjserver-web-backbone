@@ -1,0 +1,84 @@
+<form id="form-{{fileUniqueIdentifier}}" class="file-transfer form-inline">
+
+    <input
+        id="file-dialog"
+        class="hidden"
+        name="files[]"
+        type="file"
+        multiple
+    />
+
+    <br>
+
+    <div class="file-upload-subviews-{{fileUniqueIdentifier}}"></div>
+
+    <div class="form-group" style="width: 100%;">
+        <div class="col-sm-12">
+            <div class="alert">
+                <button id="file-upload-from-computer-file-browser" class="btn btn-success">Add File(s)</button>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <!-- TIMER -->
+    <div class="form-group" style="width: 100%;">
+        <div class="col-sm-12">
+            <div class="alert alert-warning">
+                Note: there is currently a 4 hour time limit when uploading files.
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" style="width: 100%;">
+        <div class="col-sm-12">
+            <div id="file-upload-timer-{{fileUniqueIdentifier}}" class="help-text hidden"></div>
+        </div>
+    </div>
+
+    <br>
+
+    <!-- Notifications  -->
+    <div class="form-group" style="width: 100%;">
+        <div class="col-sm-12">
+            <div id="file-upload-notifications-{{fileUniqueIdentifier}}" class="alert alert-info hidden"></div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="form-group" style="width: 100%;">
+        <div class="col-sm-1">
+            <label class="control-label" style="margin-top: 5px;">Progress</label>
+        </div>
+        <div class="col-sm-11">
+            <div class="progress file-upload-progress-wrapper">
+                <div class="progress-bar progress-striped active {{fileUniqueIdentifier}}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <!-- CONTROLS -->
+    <div class="form-group">
+        <div class="col-sm-6 col-sm-offset-3">
+            <div class="btn-group btn-group-justified">
+                <div class="btn-group">
+                    <button id="start-upload-button-{{fileUniqueIdentifier}}" class="btn btn-primary upload-button user-selectable submit-upload-button">
+                        Start
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button id="cancel-upload-button-{{fileUniqueIdentifier}}" class="btn btn-danger upload-button cancel-upload-button">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
