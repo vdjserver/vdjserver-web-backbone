@@ -677,6 +677,8 @@ define([
 
                 var fileTransferView = new Projects.FileTransfer({
                     projectUuid: this.projectModel.get('uuid'),
+                    fileListings: this.fileListings,
+                    projectDetailView: this,
                 });
 
                 this.setView('#file-staging', fileTransferView);
@@ -1366,8 +1368,6 @@ define([
 
                 var selectedFiles = e.target.files;
 
-                var that = this;
-
                 var chance = new Chance();
 
                 // FileUploadSelected
@@ -1380,20 +1380,33 @@ define([
                         name: file.name,
                         length: file.size,
                         lastModified: file.lastModifiedDate,
-                        projectUuid: that.projectUuid,
+                        projectUuid: this.projectUuid,
                         fileReference: file,
                         formElementGuid: formElementGuid,
                     });
 
-                    // TODO: DUPLICATE CHECK
+                    if (this._checkDuplicateFile(file.name) === true) {
+                        continue;
+                    }
 
-                    that.models.push(stagedFile);
+                    this.models.push(stagedFile);
 
                     var fileUploadSelectedView = new Projects.FileUploadSelected({model: stagedFile});
 
-                    that.insertView('.file-upload-subviews-' + that.fileUniqueIdentifier, fileUploadSelectedView);
+                    this.insertView('.file-upload-subviews-' + this.fileUniqueIdentifier, fileUploadSelectedView);
                     fileUploadSelectedView.render();
                 };
+            },
+
+            _checkDuplicateFile: function(filename) {
+
+                var isDuplicate = this.fileListings.checkForDuplicateFilename(filename);
+
+                if (isDuplicate === true) {
+                    this.projectDetailView.uiDisplayDuplicateFileMessage(filename);
+                }
+
+                return isDuplicate;
             },
 
             _updateTypeTags: function(e) {
