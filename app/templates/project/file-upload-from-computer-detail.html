@@ -1,7 +1,7 @@
 {{!-- TODO: refactor inline styles into permanent styles --}}
 <div style="border-bottom: 1px solid black;">
     <div class="form-group">
-        <label class="control-label alert">
+        <label class="control-label alert label label-primary" style="font-size: 100%;">
             File Name:
             <span style="font-weight: normal;">
                 {{file.name}}
@@ -10,7 +10,7 @@
     </div>
 
     <div class="form-group">
-        <label class="control-label alert">
+        <label class="control-label alert label label-default" style="font-size: 100%;">
             File Size:
             <span style="font-weight: normal;">
                 {{GetHumanReadableFileSize file.length}}

@@ -18,13 +18,21 @@ define([
 
                 var subview = undefined;
 
-                switch(model.get('type')) {
+                switch (model.get('type')) {
                     case App.Models.Notification.JOB_NOTIFICATION:
-                        subview = new App.Views.Notifications.Job({notification: model});
+
+                        if (model.get('notification').jobStatus.toLowerCase() === 'finished') {
+                            subview = new App.Views.Notifications.Job({notification: model});
+                        }
+
                         break;
 
                     case App.Models.Notification.FILE_IMPORT_NOTIFICATION:
-                        subview = new App.Views.Notifications.FileImport({notification: model});
+
+                        if (model.get('notification').fileImportStatus.toLowerCase() === 'finished') {
+                            subview = new App.Views.Notifications.FileImport({notification: model});
+                        }
+
                         break;
 
                     default:
