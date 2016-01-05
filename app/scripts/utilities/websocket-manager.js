@@ -64,7 +64,7 @@ define([
                 }
 
                 var notification = new App.Models.Notification();
-                notification.set('type', App.Models.Notification.DROPBOX_FILE_IMPORT_NOTIFICATION);
+                notification.set('type', App.Models.Notification.FILE_IMPORT_NOTIFICATION);
                 notification.set('notification', fileImportUpdate);
 
                 App.Datastore.Notifications.push(notification);

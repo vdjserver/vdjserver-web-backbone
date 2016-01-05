@@ -11,7 +11,7 @@ define(['app'], function(App) {
         },
         {
             JOB_NOTIFICATION: 'jobNotification',
-            DROPBOX_FILE_IMPORT_NOTIFICATION: 'dropboxFileImportNotification',
+            FILE_IMPORT_NOTIFICATION: 'fileImportNotification',
         }
     );
 

@@ -1,37 +1,16 @@
 define([
     'app',
-    'handlebars',
     'environment-config',
     'file-transfer-sidebar-ui-mixin',
+    'underscore.string',
 ], function(
     App,
-    Handlebars,
     EnvironmentConfig,
-    FileTransferSidebarUiMixin
+    FileTransferSidebarUiMixin,
+    _string
 ) {
 
     'use strict';
-
-    Handlebars.registerHelper('GetClassForJobStatus', function(notification /*, options*/) {
-
-        if (EnvironmentConfig.debug.console) {
-            console.log('job status is: ' + JSON.stringify(notification));
-        }
-
-        if (notification.jobStatus === ('PENDING' || 'QUEUED')) {
-            return 'badge-warning';
-        }
-        else if (notification.jobStatus === ('ARCHIVING_FINISHED' || 'FINISHED')) {
-            return 'badge-success';
-        }
-        else if (notification.jobStatus === ('KILLED' || 'FAILED')) {
-            return 'badge-danger';
-        }
-        else {
-            var currentClass = $('#project-' + notification.uuid + '-notification-badge').attr('class');
-            return currentClass;
-        }
-    });
 
     var Notifications = {};
 
@@ -43,14 +22,125 @@ define([
                 this.notification = parameters.notification;
             }
         },
+        events: {
+            'click .notification-message': '_selectMessage',
+        },
         serialize: function() {
             return {
+                icon: 'fa fa-server',
                 type: this.notification.get('type'),
-                notification: this.notification.get('notification'),
+                notification: this._getMessageForJobStatus(this.notification),
             };
+        },
+        _selectMessage: function(e) {
+            e.preventDefault();
+        },
+        _getMessageForJobStatus: function(notification) {
+            var statusText = _string.capitalize(notification.get('notification').jobStatus.toLowerCase());
+
+            var messageText = notification.get('notification').jobMessage;
+
+            var completeMessage = statusText + ': ' + messageText;
+
+            return completeMessage;
         },
     });
 
+    Notifications.FileImport = Backbone.View.extend({
+        tagName: 'li',
+        template: 'notification/message',
+        initialize: function(parameters) {
+            if (parameters.hasOwnProperty('notification')) {
+                this.notification = parameters.notification;
+            }
+        },
+        events: {
+            'click .notification-message': '_selectMessage',
+        },
+        serialize: function() {
+
+            return {
+                icon: 'fa fa-file-o',
+                type: this.notification.get('type'),
+                notification: this._getMessageForImportStatus(this.notification),
+            };
+        },
+        _selectMessage: function(e) {
+            e.preventDefault();
+        },
+        _getMessageForImportStatus: function(notification) {
+            var filename = this._getFilenameFromPath(notification.get('notification').fileInformation.filePath);
+
+            var message = '';
+
+            switch (notification.get('notification').fileImportStatus) {
+                case 'permissions':
+                    message = 'Set file permissions for ' + filename;
+                    break;
+
+                case 'metadata':
+                    message = 'Created file metadata for ' + filename;
+                    break;
+
+                case 'metadataPermissions':
+                    message = 'Set file metadata permissions for ' + filename;
+                    break;
+
+                case 'finished':
+                    message = 'Finished importing ' + filename;
+                    break;
+
+                default:
+                    break;
+            }
+
+            return message;
+        },
+        _getFilenameFromPath: function(path) {
+            // e.g. filePath":"/vdjZ/projects/1913926141201018395-e0bd34dffff8de6-0001-012/files/text9.txt
+            var splitPath = path.split('/');
+
+            var filename = splitPath.pop();
+
+            return filename;
+        },
+
+        /*
+        _getPercentCompleted: function(importStatus) {
+            var percentCompleted = 0;
+
+            switch (importStatus) {
+                case 'permissions': {
+                    percentCompleted = 25;
+                    break;
+                }
+
+                case 'metadata': {
+                    percentCompleted = 50;
+                    break;
+                }
+
+                case 'metadataPermissions': {
+                    percentCompleted = 75;
+                    break;
+                }
+
+                case 'finished': {
+                    percentCompleted = 100;
+                    break;
+                }
+
+                default: {
+                    break;
+                }
+            }
+
+            return percentCompleted;
+        },
+        */
+    });
+
+    // TODO: this is deprecated and should be carefully removed soon
     Notifications.FileTransfer = Backbone.View.extend({
         template: 'notification/file-transfer',
         serialize: function() {
@@ -61,77 +151,6 @@ define([
             };
         },
     });
-
-    Notifications.FileImport = Backbone.View.extend(
-        _.extend({}, FileTransferSidebarUiMixin, {
-
-            template: 'notification/file-transfer',
-            initialize: function(parameters) {
-
-                this.notificationModel = parameters.notificationModel;
-                this.fileUuid = parameters.fileUuid;
-
-                this.listenTo(
-                    App.Instances.WebsocketManager,
-                    'fileImportUpdate',
-                    this._handleFileImportUpdate
-                );
-            },
-            serialize: function() {
-                return {
-                    fileUniqueIdentifier: this.fileUuid,
-                    filename: this.notificationModel.filename,
-                    transferIcon: 'fa fa-dropbox',
-                };
-            },
-
-            // Private Methods
-            _handleFileImportUpdate: function(websocketNotification) {
-
-                if (this.fileUuid === websocketNotification.fileInformation.fileUuid) {
-                    var percentCompleted = this._getPercentCompleted(websocketNotification.fileImportStatus);
-
-                    this._uiSetUploadProgress(percentCompleted, this.fileUuid);
-                }
-
-                if (websocketNotification.fileImportStatus === 'finished') {
-                    this._uiSetSidemenuTransferSuccess(this.fileUuid);
-                    this.notificationModel.projectView._fetchAndRenderFileListings();
-                }
-            },
-            _getPercentCompleted: function(importStatus) {
-                var percentCompleted = 0;
-
-                switch (importStatus) {
-                    case 'permissions': {
-                        percentCompleted = 25;
-                        break;
-                    }
-
-                    case 'metadata': {
-                        percentCompleted = 50;
-                        break;
-                    }
-
-                    case 'metadataPermissions': {
-                        percentCompleted = 75;
-                        break;
-                    }
-
-                    case 'finished': {
-                        percentCompleted = 100;
-                        break;
-                    }
-
-                    default: {
-                        break;
-                    }
-                }
-
-                return percentCompleted;
-            },
-        })
-    );
 
     App.Views.Notifications = Notifications;
     return Notifications;

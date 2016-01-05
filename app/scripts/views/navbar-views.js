@@ -15,9 +15,26 @@ define([
             var that = this;
 
             this.listenTo(App.Datastore.Notifications, 'add', function(model) {
-                this._addNotificationAlert();
-                var subview = new App.Views.Notifications.Job({notification: model});
-                that.subviews.unshift(subview);
+
+                var subview = undefined;
+
+                switch(model.get('type')) {
+                    case App.Models.Notification.JOB_NOTIFICATION:
+                        subview = new App.Views.Notifications.Job({notification: model});
+                        break;
+
+                    case App.Models.Notification.FILE_IMPORT_NOTIFICATION:
+                        subview = new App.Views.Notifications.FileImport({notification: model});
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (subview !== undefined) {
+                    that.subviews.unshift(subview);
+                    this._addNotificationAlert();
+                }
             });
         },
         serialize: function() {
@@ -32,13 +49,16 @@ define([
 
             this._clearNotificationAlerts();
 
-            // TODO:
-            // add latest 5 new notifications
-            var length = this.subviews.length;
-            //var adjustedLength = this.subviews.length - 5;
-            //this.subviews = this.subviews.splice(5, adjustedLength);
+            /*
+            var notificationLimit = 5;
 
-            for (var j = 4; j < length; j++) {
+            if (this.subviews.length < 5) {
+                notificationLimit = subviews.length;
+            }
+            */
+
+            // remove all notifications except the 5 most recent ones
+            for (var j = 4; j < this.subviews.length; j++) {
                 this.subviews.pop();
             };
 
