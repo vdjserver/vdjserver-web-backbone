@@ -28,7 +28,7 @@ define([
         serialize: function() {
             return {
                 icon: 'fa fa-server',
-                type: this.notification.get('type'),
+                type: this.notification.get('notification').jobName,
                 notification: this._getMessageForJobStatus(this.notification),
             };
         },
@@ -58,10 +58,11 @@ define([
             'click .notification-message': '_selectMessage',
         },
         serialize: function() {
+            var filename = this._getFilenameFromPath(this.notification.get('notification').fileInformation.filePath);
 
             return {
                 icon: 'fa fa-file-o',
-                type: this.notification.get('type'),
+                type: filename,
                 notification: this._getMessageForImportStatus(this.notification),
             };
         },
@@ -69,25 +70,24 @@ define([
             e.preventDefault();
         },
         _getMessageForImportStatus: function(notification) {
-            var filename = this._getFilenameFromPath(notification.get('notification').fileInformation.filePath);
 
             var message = '';
 
             switch (notification.get('notification').fileImportStatus) {
                 case 'permissions':
-                    message = 'Set file permissions for ' + filename;
+                    message = 'Set file permissions.';
                     break;
 
                 case 'metadata':
-                    message = 'Created file metadata for ' + filename;
+                    message = 'Created file metadata.';
                     break;
 
                 case 'metadataPermissions':
-                    message = 'Set file metadata permissions for ' + filename;
+                    message = 'Set file metadata permissions.';
                     break;
 
                 case 'finished':
-                    message = 'Finished importing ' + filename;
+                    message = 'Finished importing.';
                     break;
 
                 default:

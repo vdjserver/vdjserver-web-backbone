@@ -72,10 +72,16 @@ define([
             };
         },
         _addNotificationAlert: function() {
-            $('#notification-menu').removeClass('notification-empty');
+            $('#notification-menu')
+                .addClass('swing animated')
+                .removeClass('notification-empty')
+                ;
         },
         _clearNotificationAlerts: function() {
-            $('#notification-menu').addClass('notification-empty');
+            $('#notification-menu')
+                .addClass('notification-empty')
+                .removeClass('swing animated')
+                ;
         },
     });
 
