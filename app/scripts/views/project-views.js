@@ -1673,26 +1673,38 @@ define([
         })
     );
 
-    Projects.ManageUsers = Backbone.View.extend({
-        template: 'project/manage-users',
+    Projects.Settings = Backbone.View.extend({
+
+        // Public Methods
+        template: 'project/settings',
         initialize: function(parameters) {
 
-            this.modelId = parameters.projectUuid;
-            this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
+            // Project settings
+            this.projectUuid = parameters.projectUuid;
+            this.permissions = new Backbone.Agave.Collection.Permissions({uuid: this.projectUuid});
+            this.tenantUsers = new Backbone.Agave.Collection.TenantUsers();
+            this.model = new Backbone.Agave.Model.Project();
 
-            this.permissions = new Backbone.Agave.Collection.Permissions({uuid: this.modelId});
 
             var that = this;
+
+            if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
+                App.Datastore.Collection.ProjectCollection.on('sync', function() {
+                    that.model = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
+                    that.render();
+                });
+            } else {
+              that.model = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
+              that.render();
+            }
+
+            // User settings
             this.permissions.fetch()
                 .done(function() {
                     that.permissions.remove(EnvironmentConfig.agave.serviceAccountUsername);
-                    that.render();
-
-                    that.tenantUsers = new Backbone.Agave.Collection.TenantUsers();
                     that.tenantUsers.fetch()
                         .done(function() {
-                            that.tenantUsers.remove(EnvironmentConfig.agave.serviceAccountUsername);
-                            that._usernameTypeahead(that.permissions, that.tenantUsers);
+                            that.render();
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -1709,24 +1721,84 @@ define([
                     telemetry.set('method', 'Backbone.Agave.Collection.Permissions.fetch()');
                     telemetry.set('view', 'Projects.ManageUsers');
                     telemetry.save();
-                })
-                ;
+                });
+
         },
         serialize: function() {
-            return {
-                users: this.permissions.toJSON()
-            };
+                return {
+                    project: this.model.toJSON(),
+                    users: this.permissions.toJSON()
+                };
+        },
+        afterRender: function(){
+          this.tenantUsers.remove(EnvironmentConfig.agave.serviceAccountUsername);
+          this._usernameTypeahead(this.permissions, this.tenantUsers);
         },
         events: {
-            'submit form': '_addUserToProject',
+            'click #launch-delete-project-modal': '_launchDeleteProjectModal',
+            'click #delete-project': '_deleteProject',
+            'click #save-project-name': '_saveProjectName',
+            'click #add-user': '_addUserToProject',
             'click .remove-user-from-project': '_removeUserFromProject'
         },
 
         // Private Methods
+        // Event Responders
+        _launchDeleteProjectModal: function(e) {
+            e.preventDefault();
 
+            $('#delete-modal').modal('show');
+        },
+        _saveProjectName: function(e) {
+            e.preventDefault();
+
+            var newProjectName = $('#project-name').val();
+
+            var value = this.model.get('value');
+
+            value.name = newProjectName;
+
+            this.model.set('value', value);
+
+            this.model.save()
+                .done(function() {
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
+                    telemetry.set('view', 'Projects.Settings');
+                    telemetry.save();
+                })
+                ;
+        },
+        _deleteProject: function(e) {
+            e.preventDefault();
+
+            // Note: Agave currently returns what backbone considers to be the 'wrong' http status code
+            this.model.destroy()
+                .always(function() {
+                    $('#delete-modal').modal('hide')
+                        .on('hidden.bs.modal', function() {
+                            App.router.navigate('/project', {
+                                trigger: true
+                            });
+                        })
+                    ;
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Project.destroy()');
+                    telemetry.set('view', 'Projects.Settings');
+                    telemetry.save();
+                })
+                ;
+        },
+
+        // User Private Methods
         // Typeahead
         _usernameTypeahead: function(permissions, tenantUsers) {
-
             var filteredTenantUsers = tenantUsers.clone();
 
             for (var i = 0; i < tenantUsers.models.length; i++) {
@@ -1857,92 +1929,6 @@ define([
                     telemetry.set('error', JSON.stringify(error));
                     telemetry.set('method', 'Backbone.Agave.Model.Permission.removeUserFromProject()');
                     telemetry.set('view', 'Projects.ManageUsers');
-                    telemetry.save();
-                })
-                ;
-        },
-    });
-
-    Projects.Settings = Backbone.View.extend({
-
-        // Public Methods
-        template: 'project/settings',
-        initialize: function(parameters) {
-            this.modelId = parameters.projectUuid;
-            this.model = App.Datastore.Collection.ProjectCollection.get(this.modelId);
-
-            if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                var that = this;
-                App.Datastore.Collection.ProjectCollection.on('sync', function() {
-                    that.model = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
-                    that.render();
-                });
-            }
-
-            this.render();
-        },
-        serialize: function() {
-            if (this.model) {
-                return {
-                    project: this.model.toJSON()
-                };
-            }
-        },
-        events: {
-            'click #launch-delete-project-modal': '_launchDeleteProjectModal',
-            'click #delete-project': '_deleteProject',
-            'click #save-project-name': '_saveProjectName',
-        },
-
-        // Private Methods
-
-        // Event Responders
-        _launchDeleteProjectModal: function(e) {
-            e.preventDefault();
-
-            $('#delete-modal').modal('show');
-        },
-        _saveProjectName: function(e) {
-            e.preventDefault();
-
-            var newProjectName = $('#project-name').val();
-
-            var value = this.model.get('value');
-            value.name = newProjectName;
-
-            this.model.set('value', value);
-
-            this.model.save()
-                .done(function() {
-                })
-                .fail(function(error) {
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
-                    telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
-                    telemetry.set('view', 'Projects.Settings');
-                    telemetry.save();
-                })
-                ;
-        },
-        _deleteProject: function(e) {
-            e.preventDefault();
-
-            // Note: Agave currently returns what backbone considers to be the 'wrong' http status code
-            this.model.destroy()
-                .always(function() {
-                    $('#delete-modal').modal('hide')
-                        .on('hidden.bs.modal', function() {
-                            App.router.navigate('/project', {
-                                trigger: true
-                            });
-                        })
-                    ;
-                })
-                .fail(function(error) {
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
-                    telemetry.set('method', 'Backbone.Agave.Model.Project.destroy()');
-                    telemetry.set('view', 'Projects.Settings');
                     telemetry.save();
                 })
                 ;
