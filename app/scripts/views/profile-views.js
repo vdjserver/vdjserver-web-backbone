@@ -142,7 +142,7 @@ define(['app', 'backbone.syphon'], function(App) {
                     .end()
                     .prepend(
                         $('<div class="alert alert-danger">')
-                            .text('Profile update failed. Please try again.')
+                            .text('Email is required. Profile was not updated.')
                             .fadeIn()
                     );
             }
