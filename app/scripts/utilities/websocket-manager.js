@@ -68,11 +68,26 @@ define([
                 notification.set('notification', fileImportUpdate);
 
                 App.Datastore.Notifications.push(notification);
+
                 // TODO: reexamine websocket trigger
                 that.trigger('fileImportUpdate', fileImportUpdate);
 
                 if (fileImportUpdate.fileImportStatus === 'finished') {
                     that.trigger('addFileToProject', fileImportUpdate.fileInformation.metadata);
+                }
+                else {
+                    if (fileImportUpdate.fileImportStatus === 'permissions') {
+                        //permissions
+                        var filename = fileImportUpdate.fileInformation.filePath.split('/').pop();
+
+                        fileImportUpdate.fileInformation.metadata = {
+                            value: {
+                                'name': filename,
+                            },
+                        };
+                    }
+
+                    that.trigger('updateFileImportProgress', fileImportUpdate);
                 }
             });
         },
@@ -83,7 +98,15 @@ define([
 
             this.socket.emit('joinRoom', eventId);
         },
-    });
+    },
+    {
+        FILE_IMPORT_STATUS_PROGRESS: {
+            'permissions': 50,
+            'metadata': 75,
+            'metadataPermissions': 100,
+        },
+    }
+    );
 
     App.Utilities.WebsocketManager = WebsocketManager;
     return WebsocketManager;

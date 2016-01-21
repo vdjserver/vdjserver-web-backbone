@@ -81,6 +81,11 @@ define([
     });
 
     Handlebars.registerHelper('IfJobSelectableFileType', function(filename, fileType, options) {
+
+        if (filename === undefined) {
+            return options.inverse(this);
+        }
+
         var fileExtension = filename.split('.').pop();
         fileExtension = fileExtension.slice(0);
 
@@ -332,10 +337,17 @@ define([
                     this._initialDependencyDataSetup();
                 }
 
-                App.Instances.WebsocketManager.on('addFileToProject', function(fileMetadataResponse) {
+                this.handleWebsocketEvents();
+            },
+            handleWebsocketEvents: function() {
+
+                var that = this;
+
+                App.Instances.WebsocketManager.on('addFileImportPlaceholder', function(fileMetadataResponse) {
 
                     var fileMetadata = new Backbone.Agave.Model.File.Metadata();
                     fileMetadata.set(fileMetadataResponse);
+                    fileMetadata.addPlaceholderMarker();
 
                     that.fileListings.add(fileMetadata);
 
@@ -345,6 +357,43 @@ define([
                     fileListingsView.singleReadFileListings.add(fileMetadata);
                     fileListingsView.render();
                 });
+
+                App.Instances.WebsocketManager.on('updateFileImportProgress', function(fileMetadataResponse) {
+
+                    var fileMetadata = new Backbone.Agave.Model.File.Metadata();
+                    fileMetadata.set(fileMetadataResponse.fileInformation.metadata);
+
+                    var nameGuid = fileMetadata.getNameGuid(fileMetadata.get('value').name);
+
+                    var progress = App.Utilities.WebsocketManager.FILE_IMPORT_STATUS_PROGRESS[fileMetadataResponse.fileImportStatus];
+
+                    var percentCompleted = progress + '%';
+
+                    var fileListingsView = that.getView('.file-listings');
+
+                    fileListingsView.updatePlaceholderFileProgress(
+                        '.placeholder-guid-' + nameGuid,
+                        percentCompleted
+                    );
+                });
+
+                App.Instances.WebsocketManager.on('addFileToProject', function(fileMetadataResponse) {
+
+                    var fileMetadata = new Backbone.Agave.Model.File.Metadata();
+                    fileMetadata.set(fileMetadataResponse);
+
+                    var modelMatch = that.fileListings.getModelForName(fileMetadata.get('value').name);
+
+                    var fileListingsView = that.getView('.file-listings');
+                    fileListingsView.singleReadFileListings.remove(modelMatch);
+                    fileListingsView.singleReadFileListings.add(fileMetadata);
+
+                    that.fileListings.remove(modelMatch);
+                    that.fileListings.add(fileMetadata);
+
+                    fileListingsView.render();
+                });
+
             },
             serialize: function() {
                 if (this.projectModel && this.fileListings && this.projectUsers) {
@@ -412,6 +461,7 @@ define([
 
                 var that = this;
                 this.fileListings.reset();
+
                 return this.fileListings.fetch()
                     .then(function() {
                         that._removeLoadingViews();
@@ -728,7 +778,17 @@ define([
                                         urlToIngest: file.link,
                                     });
 
-                                    return agaveFile.save();
+                                    return agaveFile.save()
+                                        .then(function() {
+
+                                            var notificationData = agaveFile.getFileStagedNotificationData();
+
+                                            App.Instances.WebsocketManager.trigger(
+                                                'addFileImportPlaceholder',
+                                                notificationData
+                                            );
+                                        })
+                                        ;
                                 };
                             });
 
@@ -1047,6 +1107,12 @@ define([
                 this._setupDragDropEventHandlers();
             },
 
+            updatePlaceholderFileProgress: function(selector, percentCompleted) {
+                $(selector)
+                    .width(percentCompleted)
+                    ;
+            },
+
             // Private Methods
 
             // Event Handlers
@@ -1241,7 +1307,16 @@ define([
                                 urlToIngest: url,
                             });
 
-                            return agaveFile.save();
+                            return agaveFile.save()
+                                .then(function() {
+                                    var notificationData = agaveFile.getFileStagedNotificationData();
+
+                                    App.Instances.WebsocketManager.trigger(
+                                        'addFileImportPlaceholder',
+                                        notificationData
+                                    );
+                                })
+                                ;
                         };
                     });
 
@@ -1456,6 +1531,15 @@ define([
                                 counter++;
 
                                 return file.notifyApiUploadComplete();
+                            })
+                            .then(function() {
+
+                                var notificationData = file.getFileStagedNotificationData();
+
+                                App.Instances.WebsocketManager.trigger(
+                                    'addFileImportPlaceholder',
+                                    notificationData
+                                );
                             })
                             ;
                     };

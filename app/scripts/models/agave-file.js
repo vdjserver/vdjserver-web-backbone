@@ -5,163 +5,188 @@ define(
         'moment',
         'file-transfer-mixins',
         'chance',
+        'underscore.string',
     ],
 function(
     Backbone,
     EnvironmentConfig,
     moment,
     FileTransferMixins,
-    Chance
+    Chance,
+    _string
 ) {
 
     'use strict';
 
+    var FilePlaceholderMixin = {};
+
+    FilePlaceholderMixin.getNameGuid = function(name) {
+        var nameGuid = _string.slugify(name);
+
+        return nameGuid;
+    };
+
     var File = {};
 
     File = Backbone.Agave.Model.extend(
-        {
-            // Public methods
-            idAttribute: 'path',
-            defaults: {
-                fileReference: '',
-                format: '',
-                lastModified: '',
-                length: 0,
-                name: '',
-                path: '',
-                permissions: '',
-                projectUuid: '',
-                system: '',
-                type: '',
-                _links: {},
-            },
-            initialize: function(parameters) {
-                Backbone.Agave.Model.prototype.initialize.apply(this, [parameters]);
+        _.extend({}, FilePlaceholderMixin,
+            {
+                // Public methods
+                idAttribute: 'path',
+                defaults: {
+                    fileReference: '',
+                    format: '',
+                    lastModified: '',
+                    length: 0,
+                    name: '',
+                    path: '',
+                    permissions: '',
+                    projectUuid: '',
+                    system: '',
+                    type: '',
+                    _links: {},
+                },
+                initialize: function(parameters) {
+                    Backbone.Agave.Model.prototype.initialize.apply(this, [parameters]);
 
-                this.relativeUrl = '';
+                    this.relativeUrl = '';
 
-                if (_.isObject(parameters) && parameters.hasOwnProperty('relativeUrl')) {
-                    this.relativeUrl = parameters.relativeUrl;
-                }
+                    if (_.isObject(parameters) && parameters.hasOwnProperty('relativeUrl')) {
+                        this.relativeUrl = parameters.relativeUrl;
+                    }
 
-                this.uniqueIdentifier = this.generateUniqueIdentifier();
-            },
-            generateUniqueIdentifier: function() {
-                var chance = new Chance();
+                    this.uniqueIdentifier = this.generateUniqueIdentifier();
+                },
+                generateUniqueIdentifier: function() {
+                    var chance = new Chance();
 
-                return chance.guid();
-            },
-            url: function() {
-                return '/files/v2/listings/system'
-                    + '/' + EnvironmentConfig.agave.storageSystems.corral
-                    + this.relativeUrl
-                ;
-            },
-            applyUploadAttributes: function(formData) {
-                this.set('vdjFileType', formData['file-type-' + this.get('formElementGuid')]);
+                    return chance.guid();
+                },
+                url: function() {
+                    return '/files/v2/listings/system'
+                        + '/' + EnvironmentConfig.agave.storageSystems.corral
+                        + this.relativeUrl
+                    ;
+                },
+                applyUploadAttributes: function(formData) {
+                    this.set('vdjFileType', formData['file-type-' + this.get('formElementGuid')]);
 
-                if (formData.hasOwnProperty('read-direction-' + this.get('formElementGuid'))) {
-                    this.set('readDirection', formData['read-direction-' + this.get('formElementGuid')]);
-                }
+                    if (formData.hasOwnProperty('read-direction-' + this.get('formElementGuid'))) {
+                        this.set('readDirection', formData['read-direction-' + this.get('formElementGuid')]);
+                    }
 
-                if (formData.hasOwnProperty('tags-' + this.get('formElementGuid'))) {
-                    this.set('tags', formData['tags-' + this.get('formElementGuid')]);
-                }
-            },
-            sync: function(method, model, options) {
+                    if (formData.hasOwnProperty('tags-' + this.get('formElementGuid'))) {
+                        this.set('tags', formData['tags-' + this.get('formElementGuid')]);
+                    }
+                },
+                sync: function(method, model, options) {
 
-                var that = this;
+                    var that = this;
 
-                switch (method) {
-                    case 'read':
-                    case 'delete':
-                        return Backbone.Agave.sync(method, model, options);
-                        //break;
+                    switch (method) {
+                        case 'read':
+                        case 'delete':
+                            return Backbone.Agave.sync(method, model, options);
+                            //break;
 
-                    case 'create':
-                    case 'update':
-                        var url = model.apiHost + (options.url || _.result(model, 'url'));
+                        case 'create':
+                        case 'update':
+                            var url = model.apiHost + (options.url || _.result(model, 'url'));
 
-                        var formData = new FormData();
-                        formData.append('fileToUpload', model.get('fileReference'));
+                            var formData = new FormData();
+                            formData.append('fileToUpload', model.get('fileReference'));
 
-                        var that = this;
+                            var that = this;
 
-                        return $.ajax({
-                            beforeSend: function(xhr) {
-                                xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-                            },
-                            xhr: function() {
+                            return $.ajax({
+                                beforeSend: function(xhr) {
+                                    xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
+                                },
+                                xhr: function() {
 
-                                var xhr = $.ajaxSettings.xhr();
+                                    var xhr = $.ajaxSettings.xhr();
 
-                                if (typeof xhr.upload == 'object') {
-                                    xhr.upload.addEventListener('progress', function(evt) {
-                                        if (evt.lengthComputable) {
-                                            var percentComplete = (evt.loaded / evt.total) * 100;
-                                            that.trigger(File.UPLOAD_PROGRESS, percentComplete);
-                                        }
+                                    if (typeof xhr.upload == 'object') {
+                                        xhr.upload.addEventListener('progress', function(evt) {
+                                            if (evt.lengthComputable) {
+                                                var percentComplete = (evt.loaded / evt.total) * 100;
+                                                that.trigger(File.UPLOAD_PROGRESS, percentComplete);
+                                            }
 
-                                    }, false);
-                                }
+                                        }, false);
+                                    }
 
-                                return xhr;
-                            },
-                            url: url,
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                        })
-                        .then(function(response) {
-                            that.set('uuid', response.result.uuid);
-                            that.set('path', '/vdjZ' + response.result.path);
-                        })
-                        ;
+                                    return xhr;
+                                },
+                                url: url,
+                                type: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                            })
+                            .then(function(response) {
+                                that.set('uuid', response.result.uuid);
+                                that.set('path', '/vdjZ' + response.result.path);
+                            })
+                            ;
 
-                        /*
-                        model.on(File.CANCEL_UPLOAD, function() {
-                            xhr.abort();
-                        });
-                        */
+                            /*
+                            model.on(File.CANCEL_UPLOAD, function() {
+                                xhr.abort();
+                            });
+                            */
 
-                    default:
-                        break;
-                }
+                        default:
+                            break;
+                    }
 
-            },
-            notifyApiUploadComplete: function() {
+                },
+                notifyApiUploadComplete: function() {
 
-                var readDirection = '';
-                var tags = '';
+                    var readDirection = '';
+                    var tags = '';
+                    var that = this;
 
-                if (_.isString(this.get('readDirection'))) {
-                    readDirection = this.get('readDirection');
-                }
+                    if (_.isString(this.get('readDirection'))) {
+                        readDirection = this.get('readDirection');
+                    }
 
-                if (_.isString(this.get('tags'))) {
-                    tags = this.get('tags');
-                }
+                    if (_.isString(this.get('tags'))) {
+                        tags = this.get('tags');
+                    }
 
-                return $.ajax({
-                    url: EnvironmentConfig.vdjApi.host
-                            + '/notifications'
-                            + '/files'
-                            + '/import'
-                            + '?fileUuid=' + this.get('uuid')
-                            + '&path=' + this.get('path')
-                            + '&projectUuid=' + this.get('projectUuid')
-                            + '&vdjFileType=' + this.get('vdjFileType')
-                            + '&readDirection=' + readDirection
-                            + '&tags=' + encodeURIComponent(tags)
-                            ,
-                    type: 'POST',
-                    processData: false,
-                    contentType: false,
-                })
-                ;
-            },
-        },
+                    return $.ajax({
+                        url: EnvironmentConfig.vdjApi.host
+                                + '/notifications'
+                                + '/files'
+                                + '/import'
+                                + '?fileUuid=' + this.get('uuid')
+                                + '&path=' + this.get('path')
+                                + '&projectUuid=' + this.get('projectUuid')
+                                + '&vdjFileType=' + this.get('vdjFileType')
+                                + '&readDirection=' + readDirection
+                                + '&tags=' + encodeURIComponent(tags)
+                                ,
+                        type: 'POST',
+                        processData: false,
+                        contentType: false,
+                    })
+                    ;
+                },
+                getFileStagedNotificationData: function() {
+
+                    var nameGuid = this.getNameGuid(this.get('name'));
+
+                    return {
+                        'value': {
+                            'name': this.get('name'),
+                        },
+                        'projectUuid': this.get('projectUuid'),
+                        'placeholderGuid': nameGuid,
+                    };
+                },
+            }
+        ),
         {
             CANCEL_UPLOAD: 'cancelUpload',
             UPLOAD_PROGRESS: 'uploadProgress',
@@ -407,6 +432,12 @@ function(
                 + '/files/'
             ;
         },
+        getFilenameFromSourceUrl: function() {
+            var urlSplit = this.get('urlToIngest').split('/');
+            var filename = urlSplit.pop();
+
+            return filename;
+        },
         sync: function(method, model, options) {
 
             var that = this;
@@ -442,14 +473,18 @@ function(
                         },
                         method: 'POST',
 
-                    });
+                    })
+                    .then(function() {
+                        that.set('name', that.getFilenameFromSourceUrl());
+                    })
+                    ;
             }
         },
     });
 
     // 13/Aug/2015 TODO: abstract this out into a more generic base class and inherit
     File.Metadata = Backbone.Agave.MetadataModel.extend(
-        {
+        _.extend({}, FilePlaceholderMixin, {
             // Public Methods
             defaults: function() {
                 return _.extend(
@@ -462,12 +497,16 @@ function(
                             'projectUuid': '',
                             'fileType': '',
                             'isDeleted': false,
+                            'isPlaceholder': false,
                         },
                     }
                 );
             },
             url: function() {
                 return '/meta/v2/data/' + this.get('uuid');
+            },
+            addPlaceholderMarker: function() {
+                this.set('isPlaceholder', true);
             },
             syncMetadataPermissionsWithProjectPermissions: function() {
 
@@ -642,7 +681,7 @@ function(
 
                 return tagArray;
             },
-        },
+        }),
         {
             FILE_TYPE_0: 'Barcode Sequences',
             FILE_TYPE_1: 'Primer Sequences',
