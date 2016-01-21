@@ -1,11 +1,16 @@
 <ul class="projects-list">
     <li class="projects-list-vdj-logo-wrapper">
-        <a href="/project">
-            <img
-                class="projects-list-vdj-logo"
-                src="../images/Final-Logo-Clean-cropped.png"
-            >
-        </a>
+
+        {{#unless projects}}
+            <a href="/project/create">
+        {{else}}
+            <a href="/project">
+        {{/unless}}
+                <img
+                    class="projects-list-vdj-logo"
+                    src="../images/Final-Logo-Clean-cropped.png"
+                >
+            </a>
     </li>
 
     <li class="project-create-menu">

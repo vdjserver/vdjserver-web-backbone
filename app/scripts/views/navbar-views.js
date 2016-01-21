@@ -8,9 +8,18 @@ define([
 
     Navbar.Navigation = Backbone.View.extend({
         template: 'navbar/navbar-project',
+        initialize: function() {
+
+            var that = this;
+
+            App.Datastore.Collection.ProjectCollection.on('change add remove destroy', function() {
+                that.render();
+            });
+        },
         serialize: function() {
             return {
-                token: App.Agave.token().toJSON()
+                projects: App.Datastore.Collection.ProjectCollection.toJSON(),
+                token: App.Agave.token().toJSON(),
             };
         },
     });

@@ -3,7 +3,13 @@
         <div class="col-md-10">
             <ul class="project-navbar-list text-left">
                 <li class="project-navbar-item">
-                    <a href="/project">
+
+                    {{#unless projects}}
+                        <a href="/project/create">
+                    {{else}}
+                        <a href="/project">
+                    {{/unless}}
+
                         PROJECTS
                     </a>
                 </li>
