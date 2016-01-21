@@ -160,11 +160,16 @@ define([
             var that = this;
 
             this.jobMetadatas.fetch()
+                .always(function() {
+                    loadingView.remove();
+                    that.render();
+                })
                 .done(function() {
                     that.calculatePaginationSets();
                     that.fetchPaginatedJobModels();
                 })
                 .fail(function(error) {
+
                     var telemetry = new Backbone.Agave.Model.Telemetry();
                     telemetry.set('error', JSON.stringify(error));
                     telemetry.set('method', 'Backbone.Agave.Collection.Jobs.Listings().save()');
@@ -210,6 +215,13 @@ define([
                 });
 
                 jobModels.push(job);
+            }
+
+            if (jobModels.length === 0) {
+                loadingView.remove();
+                this.render();
+
+                return;
             }
 
             this.jobs = new Backbone.Agave.Collection.Jobs();
