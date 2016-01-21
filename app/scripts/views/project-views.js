@@ -354,7 +354,9 @@ define([
                     // Putting this in |singleReadListings| for now. If we ever
                     // support paired file uploads, then it will need to be updated.
                     var fileListingsView = that.getView('.file-listings');
+
                     fileListingsView.singleReadFileListings.add(fileMetadata);
+
                     fileListingsView.render();
                 });
 
@@ -364,7 +366,6 @@ define([
                     fileMetadata.set(fileMetadataResponse.fileInformation.metadata);
 
                     var nameGuid = fileMetadata.getNameGuid(fileMetadata.get('value').name);
-
                     var progress = App.Utilities.WebsocketManager.FILE_IMPORT_STATUS_PROGRESS[fileMetadataResponse.fileImportStatus];
 
                     var percentCompleted = progress + '%';
@@ -386,9 +387,9 @@ define([
 
                     var fileListingsView = that.getView('.file-listings');
                     fileListingsView.singleReadFileListings.remove(modelMatch);
-                    fileListingsView.singleReadFileListings.add(fileMetadata);
-
                     that.fileListings.remove(modelMatch);
+
+                    fileListingsView.singleReadFileListings.add(fileMetadata);
                     that.fileListings.add(fileMetadata);
 
                     fileListingsView.render();

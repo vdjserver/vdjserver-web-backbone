@@ -21,8 +21,13 @@ function(
     var FilePlaceholderMixin = {};
 
     FilePlaceholderMixin.getNameGuid = function(name) {
-        var nameGuid = _string.slugify(name);
 
+        // Remove url params from name - otherwise it'll be hard to match it up with websocket messages later on
+        if (name.indexOf('?') !== -1) {
+            name = name.split('?')[0];
+        }
+
+        var nameGuid = _string.slugify(name);
         return nameGuid;
     };
 
@@ -182,7 +187,7 @@ function(
                             'name': this.get('name'),
                         },
                         'projectUuid': this.get('projectUuid'),
-                        'placeholderGuid': nameGuid,
+                        'uuid': nameGuid,
                     };
                 },
             }
