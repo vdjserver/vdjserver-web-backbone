@@ -206,7 +206,7 @@ function(
                     {},
                     Backbone.Agave.JobModel.prototype.defaults,
                     {
-                        appId: 'igblast-lonestar-1.4.0u6',
+                        appId: 'igblast-lonestar-1.4.0u7',
                         inputs: {
                             query: '',
                         },
