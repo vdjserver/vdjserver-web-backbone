@@ -270,7 +270,14 @@ define([
                                 $('#modal-message')
                                     .modal('hide')
                                     .on('hidden.bs.modal', function() {
+
+                                        // Start listening for websocket events on this new project
+                                        var projectUuid = that.model.get('uuid');
+                                        App.Instances.WebsocketManager.subscribeToEvent(projectUuid);
+
+                                        // Store w/ other projects
                                         App.Datastore.Collection.ProjectCollection.add(that.model, {merge: true});
+                                        // Send user to new project
                                         App.router.navigate('project/' + that.model.get('uuid'), {
                                             trigger: true
                                         });
@@ -344,17 +351,21 @@ define([
                 var that = this;
 
                 App.Instances.WebsocketManager.on('addFileImportPlaceholder', function(fileMetadataResponse) {
-
                     var fileMetadata = new Backbone.Agave.Model.File.Metadata();
                     fileMetadata.set(fileMetadataResponse);
                     fileMetadata.addPlaceholderMarker();
 
                     that.fileListings.add(fileMetadata);
 
+                    // var fileListingsView = that.getView('.file-listings');
+                    //
+                    // NOTE: layoutManager/jquery are not able to reliably retrieve this view
+                    // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
+
+                    var fileListingsView = that.fileListingsView;
+
                     // Putting this in |singleReadListings| for now. If we ever
                     // support paired file uploads, then it will need to be updated.
-                    var fileListingsView = that.getView('.file-listings');
-
                     fileListingsView.singleReadFileListings.add(fileMetadata);
 
                     fileListingsView.render();
@@ -370,7 +381,12 @@ define([
 
                     var percentCompleted = progress + '%';
 
-                    var fileListingsView = that.getView('.file-listings');
+                    // var fileListingsView = that.getView('.file-listings');
+                    //
+                    // NOTE: layoutManager/jquery are not able to reliably retrieve this view
+                    // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
+
+                    var fileListingsView = that.fileListingsView;
 
                     fileListingsView.updatePlaceholderFileProgress(
                         '.placeholder-guid-' + nameGuid,
@@ -379,13 +395,17 @@ define([
                 });
 
                 App.Instances.WebsocketManager.on('addFileToProject', function(fileMetadataResponse) {
-
                     var fileMetadata = new Backbone.Agave.Model.File.Metadata();
                     fileMetadata.set(fileMetadataResponse);
 
                     var modelMatch = that.fileListings.getModelForName(fileMetadata.get('value').name);
 
-                    var fileListingsView = that.getView('.file-listings');
+                    // var fileListingsView = that.getView('.file-listings');
+                    //
+                    // NOTE: layoutManager/jquery are not able to reliably retrieve this view
+                    // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
+
+                    var fileListingsView = that.fileListingsView;
                     fileListingsView.singleReadFileListings.remove(modelMatch);
                     that.fileListings.remove(modelMatch);
 
@@ -535,6 +555,9 @@ define([
             _setupFileListingsView: function(fileListings) {
 
                 var fileListingsView = new Projects.FileListings({fileListings: fileListings});
+
+                // LayoutManager/jquery workaround: create model scoped var reference for websocket file upload view updates
+                this.fileListingsView = fileListingsView;
 
                 // listen to events on fileListingsView
                 this._fileListingsViewEvents(fileListingsView);
