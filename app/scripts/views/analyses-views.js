@@ -709,22 +709,24 @@ define([
 
                 var chance = new Chance();
                 var fileUniqueIdentifier = chance.guid();
-
+/*
                 this._setListMenuFileTransferView(
                     this.projectUuid,
                     fileUniqueIdentifier,
                     filename
                 );
-
+*/
                 var that = this;
 
+                /*
                 this.listenTo(outputFile, Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(percentCompleted) {
                     that._uiSetUploadProgress(percentCompleted, fileUniqueIdentifier);
                 });
+                */
 
                 outputFile.downloadFileToDisk()
                     .then(function(response) {
-                        that._uiSetSidemenuTransferSuccess(fileUniqueIdentifier);
+                        //that._uiSetSidemenuTransferSuccess(fileUniqueIdentifier);
                         window.saveAs(
                             new Blob([response]),
                             outputFile.get('name')

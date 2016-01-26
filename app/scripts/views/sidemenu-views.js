@@ -28,6 +28,15 @@ define([
 
                 App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects();
 
+                App.Datastore.Collection.ProjectCollection.on('sync', function() {
+                    var projects = App.Datastore.Collection.ProjectCollection.each(function(project) {
+
+                        var projectUuid = project.get('uuid');
+
+                        App.Instances.WebsocketManager.subscribeToEvent(projectUuid);
+                    });
+                });
+
                 var loadingView = new App.Views.Util.Loading({keep: true});
                 this.insertView(loadingView);
                 loadingView.render();
@@ -116,20 +125,6 @@ define([
                 }
             },
 
-            addNotification: function(jobNotification) {
-
-                var jobNotificationView = new App.Views.Notifications.Job({
-                    notificationModel: jobNotification,
-                });
-
-                this.insertView(
-                    '#project-' + jobNotification.projectUuid + '-notification',
-                    jobNotificationView
-                );
-
-                jobNotificationView.render();
-            },
-
             addFileTransfer: function(projectUuid, fileUniqueIdentifier, filename) {
 
                 var fileTransferListView = new App.Views.Notifications.FileTransfer({
@@ -149,27 +144,6 @@ define([
                 );
 
                 fileTransferListView.render();
-            },
-
-            addFileImportNotification: function(projectUuid, fileUuid, fileImportNotification) {
-
-                var fileImportNotificationView = new App.Views.Notifications.FileImport({
-                    notificationModel: fileImportNotification,
-                    fileUuid: fileUuid,
-                });
-
-                this.notificationViews[fileUuid] = fileImportNotificationView;
-
-                $('#project-' + projectUuid + '-notification').append(
-                    '<div class="' + fileUuid + '-transfer-view"></div>'
-                );
-
-                this.setView(
-                    '.' + fileUuid + '-transfer-view',
-                    fileImportNotificationView
-                );
-
-                fileImportNotificationView.render();
             },
 
             removeFileTransfer: function(fileUniqueIdentifier) {

@@ -142,7 +142,7 @@
 
     background-color: $projectNavbarButtonColor;
     font-family: 'Aleo-Regular';
-    font-size: 30px;
+    font-size: 25px;
     font-weight: lighter;
     top: 0;
     bottom: 0;
@@ -185,16 +185,16 @@
     padding: 0;
 
     .project-navbar-item:nth-child(n) {
-        margin: 0 10px 0 10px;
+        margin: 0 5px 0 0px;
     }
 
     .project-navbar-item:first-child {
-        margin: 0 10px 0 0;
+        margin: 0 5px 0 0;
     }
 }
 
 #project-navbar {
-    background-image: url('../images/navbar-background.jpg');
+    //background-image: url('../images/navbar-background.jpg');
     background-size: cover;
     border-bottom: 3px solid $projectNavbarBorderColor;
     padding: 0;
@@ -207,18 +207,6 @@
     margin: 0;
 }
 */
-
-#login-dropdown {
-    font-size: 20px;
-
-    background-color: #ffffff;
-    border-top: 3px solid $projectNavbarBorderColor;
-    border-bottom: 3px solid #ffffff;
-
-    top: 10px;
-    bottom: 0;
-    margin: 0;
-}
 
 .project-settings {
     @extend .list-unstyled;
@@ -249,4 +237,25 @@
 .file-listing-title-block {
     display: inline-block;
     vertical-align: middle;
+}
+
+.notification-empty {
+    color: #000000 !important;
+}
+
+#notification-menu {
+    color: $brand-success;
+}
+
+.navbar-dropdown {
+    font-size: 20px;
+
+    background-color: #ffffff;
+    border-top: 3px solid $projectNavbarBorderColor;
+    border-bottom: 3px solid #ffffff;
+    border-right: 3px solid;
+
+    top: 3px;
+    bottom: 0;
+    margin: 0;
 }

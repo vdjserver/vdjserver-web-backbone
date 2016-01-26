@@ -5,18 +5,6 @@ define([
     'use strict';
 
     var FileTransferSidebarUiMixin = {
-        _uiSetUploadProgress: function(percentCompleted, fileUniqueIdentifier) {
-            percentCompleted = percentCompleted.toFixed(2);
-            percentCompleted += '%';
-
-            $('.' + fileUniqueIdentifier)
-                .width(percentCompleted)
-            ;
-
-            $('.' + fileUniqueIdentifier + '-progress-text')
-                .text(percentCompleted)
-            ;
-        },
         _uiSetSidemenuTransferSuccess: function(fileUniqueIdentifier) {
             $('.' + fileUniqueIdentifier).parent().removeClass('progress-striped active');
             $('.' + fileUniqueIdentifier).addClass('progress-bar-success');

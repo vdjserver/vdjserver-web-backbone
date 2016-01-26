@@ -60,8 +60,10 @@ define([
     'agave-system',
     'agave-systems',
 
-    // Regular Models
+    // Regular Collections and Models
     'models/message',
+    'models/notification',
+    'collections/notifications',
 
     // Handlebars Helpers
     'handlebars-utilities',
@@ -78,6 +80,7 @@ define([
     // Mixins
     'file-download-detection-mixin',
     'file-transfer-sidebar-ui-mixin',
+    'file-transfer-project-ui-mixin',
     'comparators-mixin',
     'file-transfer-mixins',
 
