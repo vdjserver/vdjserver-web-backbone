@@ -199,234 +199,216 @@ function(
     );
 
     // 13/Aug/2015 TODO: merge File.ProjectFile w/ Job.OutputFile
-    File.ProjectFile = File.extend({
-        // Private methods
+    File.ProjectFile = File.extend(
+        _.extend({}, FileTransferMixins, {
 
-        // Path should be resemble this format: /projects/0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
-        _getAssociationId: function() {
-            var path = this.get('path');
+            // Private methods
 
-            /*
-             * /projects/0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
-             * ->
-             * /projects
-             * and
-             * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
-             */
-            var split1 = path.split('/projects');
+            // Path should be resemble this format: /projects/0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+            _getAssociationId: function() {
+                var path = this.get('path');
 
-            /*
-             * /projects
-             * and
-             * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
-             * ->
-             * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
-             */
-            var split2 = split1[split1.length - 1];
+                /*
+                 * /projects/0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+                 * ->
+                 * /projects
+                 * and
+                 * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+                 */
+                var split1 = path.split('/projects');
 
-            /*
-             * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
-             * ->
-             * ""
-             * and
-             * 0001438007785058-e0bd34dffff8de6-0001-012
-             * and
-             * files
-             * and
-             * mid_pair_1.fastq
-             */
-            var split3 = split2.split('/');
+                /*
+                 * /projects
+                 * and
+                 * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+                 * ->
+                 * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+                 */
+                var split2 = split1[split1.length - 1];
 
-            // 0001438007785058-e0bd34dffff8de6-0001-012
-            return split3[1];
-        },
+                /*
+                 * /0001438007785058-e0bd34dffff8de6-0001-012/files/mid_pair_1.fastq
+                 * ->
+                 * ""
+                 * and
+                 * 0001438007785058-e0bd34dffff8de6-0001-012
+                 * and
+                 * files
+                 * and
+                 * mid_pair_1.fastq
+                 */
+                var split3 = split2.split('/');
 
-        // Public methods
-        url: function() {
-            return '/files/v2/media/system'
-                   + '/' + EnvironmentConfig.agave.storageSystems.corral
-                   + '//projects'
-                   + '/' + this.get('projectUuid')
-                   + '/files/';
-        },
-        syncFilePermissionsWithProjectPermissions: function() {
+                // 0001438007785058-e0bd34dffff8de6-0001-012
+                return split3[1];
+            },
 
-            var jqxhr = $.ajax({
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    projectUuid: this.get('projectUuid'),
-                    fileName: this.get('name')
-                }),
-                headers: Backbone.Agave.basicAuthHeader(),
-                type: 'POST',
-                url: EnvironmentConfig.vdjApi.host + '/permissions/files'
-            });
+            // Public methods
+            url: function() {
+                return '/files/v2/media/system'
+                       + '/' + EnvironmentConfig.agave.storageSystems.corral
+                       + '//projects'
+                       + '/' + this.get('projectUuid')
+                       + '/files/';
+            },
+            syncFilePermissionsWithProjectPermissions: function() {
 
-            return jqxhr;
-        },
-        // TODO: merge this with agave-job model downloadFileToCache()
-        downloadFileToMemory: function() {
+                var jqxhr = $.ajax({
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        projectUuid: this.get('projectUuid'),
+                        fileName: this.get('name')
+                    }),
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    url: EnvironmentConfig.vdjApi.host + '/permissions/files'
+                });
 
-            var that = this;
+                return jqxhr;
+            },
+            // TODO: merge this with agave-job model downloadFileToCache()
+            downloadFileToMemory: function() {
 
-            var path = '';
+                var that = this;
 
-            if (this.get('jobUuid')) {
-                path = EnvironmentConfig.agave.host
-                     + '/jobs'
-                     + '/v2'
-                     + '/' + this.get('jobUuid')
-                     + '/outputs'
-                     + '/media'
-                     + '/' + this.get('name')
-                     ;
-            }
-            else {
-                path = EnvironmentConfig.agave.host
-                     + '/files'
-                     + '/v2'
-                     + '/media'
-                     + '/system'
-                     + '/' + EnvironmentConfig.agave.storageSystems.corral
+                var path = '';
 
-                     // NOTE: this uses agave // paths
-                     + '/' + this.get('path')
-                     ;
-            }
+                if (this.get('jobUuid')) {
+                    path = EnvironmentConfig.agave.host
+                         + '/jobs'
+                         + '/v2'
+                         + '/' + this.get('jobUuid')
+                         + '/outputs'
+                         + '/media'
+                         + '/' + this.get('name')
+                         ;
+                }
+                else {
+                    path = EnvironmentConfig.agave.host
+                         + '/files'
+                         + '/v2'
+                         + '/media'
+                         + '/system'
+                         + '/' + EnvironmentConfig.agave.storageSystems.corral
 
-            return $.ajax({
-                url: path,
-                headers: {
-                    'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token'),
-                },
-            });
-        },
-        downloadFileToDisk: function(totalSize) {
+                         // NOTE: this uses agave // paths
+                         + '/' + this.get('path')
+                         ;
+                }
 
-            var url = EnvironmentConfig.agave.host
+                return $.ajax({
+                    url: path,
+                    headers: {
+                        'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token'),
+                    },
+                });
+            },
+            downloadFileToDisk: function(totalSize) {
+
+                var url = EnvironmentConfig.agave.host
+                        + '/files'
+                        + '/v2'
+                        + '/media'
+                        + '/system'
+                        + '/' + EnvironmentConfig.agave.storageSystems.corral
+
+                        // NOTE: this uses agave // paths
+                        + '/' + this.get('path')
+                        ;
+
+                if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
+
+                    url = EnvironmentConfig.agave.host
+                        + '/jobs'
+                        + '/v2'
+                        + '/' + this.get('jobUuid')
+                        + '/outputs'
+                        + '/media'
+                        + '/' + this.get('name')
+                        ;
+                }
+
+                var jqxhr = this.downloadUrlByPostit(url);
+
+                return jqxhr;
+            },
+            softDelete: function() {
+
+                var that = this;
+                var datetimeDir = moment().format('YYYY-MM-DD-HH-mm-ss-SS');
+
+                var softDeletePromise = $.Deferred();
+
+                $.ajax({
+                    data:   'action=mkdir&path=' + datetimeDir,
+                    headers: Backbone.Agave.oauthHeader(),
+                    type:   'PUT',
+
+                    url:    EnvironmentConfig.agave.host
+                            + '/files/v2/media/system'
+                            + '/' + EnvironmentConfig.agave.storageSystems.corral
+                            + '//projects'
+                            + '/' + this.get('projectUuid')
+                            + '/deleted/',
+
+                    complete: function() {
+
+                        $.ajax({
+                            data:   'action=move&path='
+                                    + '//projects'
+                                    + '/' + that.get('projectUuid')
+                                    + '/deleted'
+                                    + '/' + datetimeDir
+                                    + '/' + that.get('name'),
+
+                            headers: Backbone.Agave.oauthHeader(),
+                            type:   'PUT',
+
+                            url:    EnvironmentConfig.agave.host
+                                    + '/files/v2/media/system'
+                                    + '/' + EnvironmentConfig.agave.storageSystems.corral
+                                    + '/' + that.get('path'),
+
+                            success: function() {
+                                softDeletePromise.resolve();
+                            },
+                            error: function() {
+                                softDeletePromise.reject();
+                            },
+                        });
+                    },
+                });
+
+                return softDeletePromise;
+            },
+        })
+    );
+
+    File.Community = File.extend(
+        _.extend({}, FileTransferMixins, {
+            downloadFileToDisk: function() {
+                var that = this;
+
+                var url = '';
+
+                url = EnvironmentConfig.agave.host
                     + '/files'
                     + '/v2'
                     + '/media'
                     + '/system'
                     + '/' + EnvironmentConfig.agave.storageSystems.corral
-
-                    // NOTE: this uses agave // paths
-                    + '/' + this.get('path')
+                    + '//community'
+                    + '/' + this.get('communityUuid')
+                    + '/files'
+                    + '/' + this.get('filename')
                     ;
 
-            if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
+                var jqxhr = this.downloadUrlByPostit(url);
 
-                url = EnvironmentConfig.agave.host
-                    + '/jobs'
-                    + '/v2'
-                    + '/' + this.get('jobUuid')
-                    + '/outputs'
-                    + '/media'
-                    + '/' + this.get('name')
-                    ;
-            }
-
-            var that = this;
-
-            var jqxhr = $.ajax(
-                _.extend({}, FileTransferMixins.progressJqxhr(that, totalSize), {
-                    headers: Backbone.Agave.oauthHeader(),
-                    type:    'GET',
-                    url:     url,
-                })
-            );
-
-            return jqxhr;
-        },
-        softDelete: function() {
-
-            var that = this;
-            var datetimeDir = moment().format('YYYY-MM-DD-HH-mm-ss-SS');
-
-            var softDeletePromise = $.Deferred();
-
-            $.ajax({
-                data:   'action=mkdir&path=' + datetimeDir,
-                headers: Backbone.Agave.oauthHeader(),
-                type:   'PUT',
-
-                url:    EnvironmentConfig.agave.host
-                        + '/files/v2/media/system'
-                        + '/' + EnvironmentConfig.agave.storageSystems.corral
-                        + '//projects'
-                        + '/' + this.get('projectUuid')
-                        + '/deleted/',
-
-                complete: function() {
-
-                    $.ajax({
-                        data:   'action=move&path='
-                                + '//projects'
-                                + '/' + that.get('projectUuid')
-                                + '/deleted'
-                                + '/' + datetimeDir
-                                + '/' + that.get('name'),
-
-                        headers: Backbone.Agave.oauthHeader(),
-                        type:   'PUT',
-
-                        url:    EnvironmentConfig.agave.host
-                                + '/files/v2/media/system'
-                                + '/' + EnvironmentConfig.agave.storageSystems.corral
-                                + '/' + that.get('path'),
-
-                        success: function() {
-                            softDeletePromise.resolve();
-                        },
-                        error: function() {
-                            softDeletePromise.reject();
-                        },
-                    });
-                },
-            });
-
-            return softDeletePromise;
-        },
-    });
-
-    File.Community = File.extend({
-        downloadFileToDisk: function() {
-            var that = this;
-
-            var path = '';
-
-            path = EnvironmentConfig.agave.host
-                + '/files'
-                + '/v2'
-                + '/media'
-                + '/system'
-                + '/' + EnvironmentConfig.agave.storageSystems.corral
-                + '/' + this.get('path')
-                ;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open(
-                'get',
-                path
-            );
-
-            xhr.responseType = 'blob';
-            xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
-
-            xhr.onload = function() {
-                if (this.status === 200 || this.status === 202) {
-                    window.saveAs(
-                        new Blob([this.response]),
-                        that.get('name')
-                    );
-                }
-            };
-
-            xhr.send();
-
-            return xhr;
-        },
-    });
+                return jqxhr;
+            },
+        })
+    );
 
     File.UrlImport = File.extend({
         url: function() {

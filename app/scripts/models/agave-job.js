@@ -137,46 +137,39 @@ function(
         }
     );
 
-    Job.OutputFile = Backbone.Agave.Model.extend({
-        idAttribute: 'name',
-        downloadFileToCache: function() {
+    Job.OutputFile = Backbone.Agave.Model.extend(
+        _.extend({}, FileTransferMixins, {
+            idAttribute: 'name',
+            downloadFileToCache: function() {
 
-            var link = this.get('_links').self.href;
-            link = this._fixBadAgaveLink(link);
+                var link = this.get('_links').self.href;
+                link = this._fixBadAgaveLink(link);
 
-            var jqxhr = $.ajax({
-                headers: Backbone.Agave.oauthHeader(),
-                type:    'GET',
-                url:     link,
-            });
-            return jqxhr;
-        },
-        downloadFileToDisk: function() {
-
-            var link = this.get('_links').self.href;
-            link = this._fixBadAgaveLink(link);
-
-            var totalSize = this.get('length');
-            var that = this;
-
-            var jqxhr = $.ajax(
-                _.extend({}, FileTransferMixins.progressJqxhr(that, totalSize), {
+                var jqxhr = $.ajax({
                     headers: Backbone.Agave.oauthHeader(),
                     type:    'GET',
                     url:     link,
-                })
-            );
+                });
+                return jqxhr;
+            },
+            downloadFileToDisk: function() {
 
-            return jqxhr;
-        },
-        _fixBadAgaveLink: function(link) {
-            var link = link.split('/');
-            link[4] = 'v2';
-            link = link.join('/');
+                var url = this.get('_links').self.href;
+                url = this._fixBadAgaveLink(url);
 
-            return link;
-        },
-    });
+                var jqxhr = this.downloadUrlByPostit(url);
+
+                return jqxhr;
+            },
+            _fixBadAgaveLink: function(link) {
+                var link = link.split('/');
+                link[4] = 'v2';
+                link = link.join('/');
+
+                return link;
+            },
+        })
+    );
 
     Job.Listing = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
