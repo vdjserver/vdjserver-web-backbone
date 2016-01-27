@@ -78,7 +78,6 @@ define([
     'generic-vdjpipe-option-views',
 
     // Mixins
-    'file-download-detection-mixin',
     'file-transfer-project-ui-mixin',
     'comparators-mixin',
     'file-transfer-mixins',

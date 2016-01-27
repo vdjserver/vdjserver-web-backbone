@@ -1,41 +1,34 @@
 <div class="row">
-    {{#if canDownloadFiles}}
-    {{else}}
-        <div class="col-md-12">
-            {{> file-downloads-unsupported}}
-        </div>
-    {{/if}}
-
-        <div class="col-md-3 table-responsive">
-            <table class="project-details">
-                <tbody>
-                    <tr>
-                        <td>
-                            <strong>Job Name:</strong>
-                        </td>
-                        <td>
-                            {{jobDetail.name}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>App:</strong>
-                        </td>
-                        <td>
-                            {{jobDetail.appId}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Date:</strong>
-                        </td>
-                        <td>
-                            {{FormatAgaveDate jobDetail.submitTime}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="col-md-3 table-responsive">
+        <table class="project-details">
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>Job Name:</strong>
+                    </td>
+                    <td>
+                        {{jobDetail.name}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>App:</strong>
+                    </td>
+                    <td>
+                        {{jobDetail.appId}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Date:</strong>
+                    </td>
+                    <td>
+                        {{FormatAgaveDate jobDetail.submitTime}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -65,11 +58,7 @@
                     {{#each projectFiles}}
                         <tr class="text-center">
                             <td>
-                                {{#if ../canDownloadFiles}}
-                                    <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
-                                {{else}}
-                                    {{name}}
-                                {{/if}}
+                                <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
                             </td>
 
                             <td>
@@ -116,11 +105,7 @@
                     {{#each chartFiles}}
                         <tr class="text-center" id="chart-{{this.name}}">
                             <td>
-                                {{#if ../canDownloadFiles}}
-                                    <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
-                                {{else}}
-                                    {{name}}
-                                {{/if}}
+                                <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
                             </td>
 
                             <td>
@@ -181,11 +166,7 @@
                     {{#each logFiles}}
                         <tr class="text-center">
                             <td>
-                                {{#if ../canDownloadFiles}}
-                                    <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
-                                {{else}}
-                                    {{name}}
-                                {{/if}}
+                                <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
                             </td>
 
                             <td>

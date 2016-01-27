@@ -91,7 +91,6 @@ require.config({
         'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
 
         // Mixins
-        'file-download-detection-mixin': 'mixins/file-download-detection-mixin',
         'file-transfer-project-ui-mixin': 'mixins/file-transfer-project-ui-mixin',
         'comparators-mixin': 'collections/mixins/comparators-mixin',
         'file-transfer-mixins': 'models/mixins/file-transfer-mixins',

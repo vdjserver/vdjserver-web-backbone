@@ -10,7 +10,6 @@ define([
     'box',
     'chance',
     'underscore.string',
-    'file-download-detection-mixin',
     'highcharts',
     'datatables',
     'simple-statistics',
@@ -24,16 +23,10 @@ define([
     box,
     Chance,
     _string,
-    FileDownloadDetectionMixin,
     Highcharts
 ) {
 
     'use strict';
-
-    HandlebarsUtilities.registerRawPartial(
-        'shared-fragments/file-downloads-unsupported',
-        'file-downloads-unsupported'
-    );
 
     Handlebars.registerHelper('IsJobFrozen', function(data, options) {
 
@@ -359,201 +352,280 @@ define([
                 $('.job-pagination-next').addClass('disabled');
             }
         },
-
     });
 
-    Analyses.SelectAnalyses = Backbone.View.extend(
-        _.extend({}, FileDownloadDetectionMixin, {
-            template: 'analyses/select-analyses',
-            initialize: function(parameters) {
+    Analyses.SelectAnalyses = Backbone.View.extend({
+        template: 'analyses/select-analyses',
+        initialize: function(parameters) {
 
-                this.projectUuid = parameters.projectUuid;
-                this.jobId = parameters.jobId;
+            this.projectUuid = parameters.projectUuid;
+            this.jobId = parameters.jobId;
 
-                this.chartHeight = 360;
+            this.chartHeight = 360;
 
-                var loadingView = new App.Views.Util.Loading({keep: true});
-                this.setView(loadingView);
-                loadingView.render();
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView(loadingView);
+            loadingView.render();
 
-                this.jobDetail = new Backbone.Agave.Model.Job.Detail({id: this.jobId});
+            this.jobDetail = new Backbone.Agave.Model.Job.Detail({id: this.jobId});
 
-                this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
+            this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
 
-                var that = this;
+            var that = this;
 
-                this.jobDetail.fetch()
-                    .then(function() {
-                        return that.collection.fetch();
-                    })
-                    .done(function() {
-                        loadingView.remove();
-                        that.render();
-                    })
-                    .fail(function(error) {
-                        var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
-                        telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().fetch()');
-                        telemetry.set('view', 'Analyses.SelectAnalyses');
-                        telemetry.save();
-                    })
+            this.jobDetail.fetch()
+                .then(function() {
+                    return that.collection.fetch();
+                })
+                .done(function() {
+                    loadingView.remove();
+                    that.render();
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().fetch()');
+                    telemetry.set('view', 'Analyses.SelectAnalyses');
+                    telemetry.save();
+                })
+                ;
+        },
+        serialize: function() {
+            return {
+                jobDetail: this.jobDetail.toJSON(),
+                projectFiles: this.collection.getProjectFileOutput().toJSON(),
+                chartFiles: this.collection.getChartFileOutput().toJSON(),
+                logFiles: this.collection.getLogFileOutput().toJSON(),
 
-                // Blob Save Detection
-                this._setDownloadCapabilityDetection();
-            },
-            serialize: function() {
-                return {
-                    jobDetail: this.jobDetail.toJSON(),
-                    projectFiles: this.collection.getProjectFileOutput().toJSON(),
-                    chartFiles: this.collection.getChartFileOutput().toJSON(),
-                    logFiles: this.collection.getLogFileOutput().toJSON(),
+                //outputFiles: this.collection.toJSON(),
+                canDownloadFiles: this.canDownloadFiles,
+                projectUuid: this.projectUuid,
+            };
+        },
+        events: {
+            'click .show-chart': 'showChart',
+            'click .hide-chart': 'hideChart',
 
-                    //outputFiles: this.collection.toJSON(),
-                    canDownloadFiles: this.canDownloadFiles,
-                    projectUuid: this.projectUuid,
-                };
-            },
-            events: {
-                'click .show-chart': 'showChart',
-                'click .hide-chart': 'hideChart',
+            'click .show-log': 'showLog',
+            'click .hide-log': 'hideLog',
 
-                'click .show-log': 'showLog',
-                'click .hide-log': 'hideLog',
+            'click .download-chart': 'downloadChart',
+            'click .download-file': 'downloadFile',
 
-                'click .download-chart': 'downloadChart',
-                'click .download-file': 'downloadFile',
+            'click .toggle-legend-btn': 'toggleLegend',
+        },
 
-                'click .toggle-legend-btn': 'toggleLegend',
-            },
+        hideChart: function(e) {
+            e.preventDefault();
+            $(e.target).parent().prev('#show-chart').removeClass('hidden');
+            $(e.target).closest('#hide-chart').addClass('hidden');
 
-            hideChart: function(e) {
-                e.preventDefault();
-                $(e.target).parent().prev('#show-chart').removeClass('hidden');
-                $(e.target).closest('#hide-chart').addClass('hidden');
+            var elOffset = $( e.target ).offset().top;
+            var elHeight = $( e.target ).height();
+            var windowHeight = $(window).height();
+            var offset;
 
-                var elOffset = $( e.target ).offset().top;
-                var elHeight = $( e.target ).height();
-                var windowHeight = $(window).height();
-                var offset;
+            if (elHeight < windowHeight) {
+              offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+            } else {
+              offset = elOffset;
+            }
 
-                if (elHeight < windowHeight) {
-                  offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
-                } else {
-                  offset = elOffset;
+            $('html, body').animate({scrollTop: offset}, 1000);
+
+            $(e.target.closest('tr')).next().hide(1500, function(){
+              $(e.target.closest('tr')).next().remove();
+            });
+        },
+
+        showChart: function(e) {
+            e.preventDefault();
+
+            this._uiBeginChartLoading(e.target);
+
+            var filename = e.target.dataset.id;
+
+            var classSelector = chance.string({
+                pool: 'abcdefghijklmnopqrstuvwxyz',
+                length: 15,
+            });
+
+            // remove if it exists
+            if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
+              $(e.target.closest('tr')).next().remove();
+            }
+
+            $(e.target.closest('tr')).after(
+                '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
+                    + '<td colspan=3>'
+                        + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'
+                            + '<svg style="height: 0px;" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>'
+                        + '</div>'
+                        + '<div class="' + classSelector + '-d3-tip d3-tip hidden"></div>'
+                    + '</td>'
+                + '</tr>'
+            );
+
+            $(e.target).addClass('hidden');
+            $(e.target).nextAll('#hide-chart').removeClass('hidden');
+
+            // Enable download button
+            $(e.target).nextAll('#hide-chart').children('.download-chart').attr('data-chart-class-selector', classSelector);
+
+            // Clean up any charts that are currently displayed
+            this.hideWarning();
+            $('#chart-legend').hide();
+
+            var that = this;
+
+            var fileHandle = this.collection.get(filename);
+
+            var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+
+            var fileData;
+
+            fileHandle.downloadFileToCache()
+            .then(function(tmpFileData) {
+                fileData = tmpFileData;
+            })
+            .then(function() {
+                return $('#chart-tr-' + classSelector).animate({
+                    // Unfortunately, this '30' is a bit of a magic number.
+                    // It helps create enough spacer for horizontal scroll
+                    // bars on the qstats chart not to overlay on other
+                    // chart buttons.
+                    height: (that.chartHeight + 30) + 'px',
+                }, 500).promise();
+            })
+            .then(function() {
+                $('.' + classSelector + ' svg').css('height', that.chartHeight);
+            })
+            .done(function() {
+
+                that._uiEndChartLoading();
+
+                switch (chartType) {
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
+                        $('#chart-legend').show();
+                        Analyses.Charts.Composition(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_1:
+                        $('#chart-legend').show();
+                        Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_3:
+                        $('#chart-legend').show();
+                        Analyses.Charts.LengthHistogram(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
+                        Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
+                        Analyses.Charts.QualityScore(fileHandle, fileData, classSelector, that.chartHeight);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
+                        Analyses.Charts.GiantTable(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_7:
+                        Analyses.Charts.Cdr3(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_8:
+                        Analyses.Charts.GeneDistribution(fileHandle, fileData, classSelector);
+                        break;
+
+                    default:
+                        break;
                 }
 
-                $('html, body').animate({scrollTop: offset}, 1000);
+                // Scroll down to chart
+                $('html, body').animate({
+                    scrollTop: $('.' + classSelector).offset().top
+                }, 1000);
+            })
+            .fail(function(response) {
+                var errorMessage = this.getErrorMessageFromResponse(response);
+                this.showWarning(errorMessage);
+            })
+            ;
+        },
 
-                $(e.target.closest('tr')).next().hide(1500, function(){
-                  $(e.target.closest('tr')).next().remove();
-                });
-            },
+        hideLog: function(e){
+            e.preventDefault();
 
-            showChart: function(e) {
-                e.preventDefault();
+            $(e.target).next('.show-log').removeClass('hidden');
+            $(e.target).addClass('hidden');
 
-                this._uiBeginChartLoading(e.target);
+            var elOffset = $( e.target ).offset().top;
+            var elHeight = $( e.target ).height();
+            var windowHeight = $(window).height();
+            var offset;
 
-                var filename = e.target.dataset.id;
+            if (elHeight < windowHeight) {
+              offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+            } else {
+              offset = elOffset;
+            }
 
-                var classSelector = chance.string({
-                    pool: 'abcdefghijklmnopqrstuvwxyz',
-                    length: 15,
-                });
+            $('html, body').animate({scrollTop: offset}, 1000);
 
-                // remove if it exists
-                if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
-                  $(e.target.closest('tr')).next().remove();
-                }
+            $(e.target.closest('tr')).next().hide(1500, function(){
+              $(e.target.closest('tr')).next().remove();
+            });
+        },
 
-                $(e.target.closest('tr')).after(
-                    '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
-                        + '<td colspan=3>'
-                            + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'
-                                + '<svg style="height: 0px;" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>'
-                            + '</div>'
-                            + '<div class="' + classSelector + '-d3-tip d3-tip hidden"></div>'
-                        + '</td>'
-                    + '</tr>'
-                );
+        showLog: function(e) {
+            e.preventDefault();
 
-                $(e.target).addClass('hidden');
-                $(e.target).nextAll('#hide-chart').removeClass('hidden');
+            this._uiBeginChartLoading(e.target);
 
-                // Enable download button
-                $(e.target).nextAll('#hide-chart').children('.download-chart').attr('data-chart-class-selector', classSelector);
+            var filename = e.target.dataset.id;
 
-                // Clean up any charts that are currently displayed
-                this.hideWarning();
-                $('#chart-legend').hide();
+            var classSelector = chance.string({
+                pool: 'abcdefghijklmnopqrstuvwxyz',
+                length: 15,
+            });
 
-                var that = this;
+            $(e.target.closest('tr')).after(
+                '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
+                    + '<td colspan=3>'
+                        + '<div id="' + classSelector + '" class="text-left ' + classSelector + '" style="word-break: break-all;">'
+                        + '</div>'
+                    + '</td>'
+                + '</tr>'
+            );
 
-                var fileHandle = this.collection.get(filename);
+            $(e.target).addClass('hidden');
+            $(e.target).prev('.hide-log').removeClass('hidden');
 
-                var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+            var that = this;
 
-                var fileData;
+            var fileHandle = this.collection.get(filename);
 
-                fileHandle.downloadFileToCache()
+            var fileData;
+
+            fileHandle.downloadFileToCache()
                 .then(function(tmpFileData) {
+                    tmpFileData = tmpFileData.replace(/\n/g, '<br>');
+
                     fileData = tmpFileData;
                 })
                 .then(function() {
                     return $('#chart-tr-' + classSelector).animate({
-                        // Unfortunately, this '30' is a bit of a magic number.
-                        // It helps create enough spacer for horizontal scroll
-                        // bars on the qstats chart not to overlay on other
-                        // chart buttons.
-                        height: (that.chartHeight + 30) + 'px',
+                        height: '200px',
                     }, 500).promise();
-                })
-                .then(function() {
-                    $('.' + classSelector + ' svg').css('height', that.chartHeight);
                 })
                 .done(function() {
 
                     that._uiEndChartLoading();
 
-                    switch (chartType) {
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
-                            $('#chart-legend').show();
-                            Analyses.Charts.Composition(fileHandle, fileData, classSelector);
-                            break;
-
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_1:
-                            $('#chart-legend').show();
-                            Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, classSelector);
-                            break;
-
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_3:
-                            $('#chart-legend').show();
-                            Analyses.Charts.LengthHistogram(fileHandle, fileData, classSelector);
-                            break;
-
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
-                            Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, classSelector);
-                            break;
-
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
-                            Analyses.Charts.QualityScore(fileHandle, fileData, classSelector, that.chartHeight);
-                            break;
-
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
-                            Analyses.Charts.GiantTable(fileHandle, fileData, classSelector);
-                            break;
-
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_7:
-                            Analyses.Charts.Cdr3(fileHandle, fileData, classSelector);
-                            break;
-
-                        case Backbone.Agave.Model.Job.Detail.CHART_TYPE_8:
-                            Analyses.Charts.GeneDistribution(fileHandle, fileData, classSelector);
-                            break;
-
-                        default:
-                            break;
-                    }
+                    $('#' + classSelector).html(fileData);
 
                     // Scroll down to chart
                     $('html, body').animate({
@@ -561,207 +633,123 @@ define([
                     }, 1000);
                 })
                 .fail(function(response) {
-                    var errorMessage = this.getErrorMessageFromResponse(response);
-                    this.showWarning(errorMessage);
+                    var errorMessage = that.getErrorMessageFromResponse(response);
+
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(errorMessage));
+                    telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().save()');
+                    telemetry.set('view', 'Analyses.SelectAnalyses');
+                    telemetry.set('jobId', that.jobId);
+                    telemetry.save();
+
+                    that.showWarning(errorMessage);
                 })
                 ;
-            },
+        },
+        downloadChart: function(e) {
 
-            hideLog: function(e){
-                e.preventDefault();
+            var that = this;
 
-                $(e.target).next('.show-log').removeClass('hidden');
-                $(e.target).addClass('hidden');
+            var chartClassSelector = e.target.dataset.chartClassSelector;
 
-                var elOffset = $( e.target ).offset().top;
-                var elHeight = $( e.target ).height();
-                var windowHeight = $(window).height();
-                var offset;
+            var filename = e.target.dataset.id;
+            filename = filename.split('.');
+            filename.pop();
+            filename = filename.join('.');
 
-                if (elHeight < windowHeight) {
-                  offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
-                } else {
-                  offset = elOffset;
-                }
+            var cssUrl = location.protocol + '//' + location.host + '/styles/charts.css';
 
-                $('html, body').animate({scrollTop: offset}, 1000);
+            $.get(cssUrl)
+                .done(function(cssText) {
 
-                $(e.target.closest('tr')).next().hide(1500, function(){
-                  $(e.target.closest('tr')).next().remove();
-                });
-            },
+                    var widthPx = $('#' + chartClassSelector + ' svg').css('width');
 
-            showLog: function(e) {
-                e.preventDefault();
+                    /*
+                        Grabbing all content specifically from the svg
+                        element ensures that we won't pick up any other
+                        random elements that are also children of
+                        |classSelector|.
+                    */
+                    var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
+                                  + '\n'
+                                  + '<svg '
+                                        + ' style="height: ' + that.chartHeight + 'px; width:' + widthPx + ';"'
+                                        + ' version="1.1"'
+                                        + ' xmlns="http://www.w3.org/2000/svg"'
+                                        + ' class="box"'
+                                  + '>'
+                                        + $('.' + chartClassSelector + ' svg').html()
+                                  + '</svg>'
+                                  ;
 
-                this._uiBeginChartLoading(e.target);
+                    var blob = new Blob([svgString], {type: 'text/plain;charset=utf-8'});
+                    saveAs(blob, filename + '.svg');
+                })
+                ;
+        },
 
-                var filename = e.target.dataset.id;
+        downloadFile: function(e) {
+            e.preventDefault();
 
-                var classSelector = chance.string({
-                    pool: 'abcdefghijklmnopqrstuvwxyz',
-                    length: 15,
-                });
+            var filename = e.target.dataset.filename;
+            var outputFile = this.collection.get(filename);
 
-                $(e.target.closest('tr')).after(
-                    '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
-                        + '<td colspan=3>'
-                            + '<div id="' + classSelector + '" class="text-left ' + classSelector + '" style="word-break: break-all;">'
-                            + '</div>'
-                        + '</td>'
-                    + '</tr>'
-                );
+            outputFile.downloadFileToDisk()
+                .fail(function(error) {
+                      var telemetry = new Backbone.Agave.Model.Telemetry();
+                      telemetry.set('error', JSON.stringify(error));
+                      telemetry.set('method', 'Backbone.Agave.Model.Job.OutputFile.downloadFileToDisk()');
+                      telemetry.set('view', 'Analyses.SelectAnalyses');
+                      telemetry.save();
+                  })
+                  ;
+        },
+        getErrorMessageFromResponse: function(response) {
+            var txt;
 
-                $(e.target).addClass('hidden');
-                $(e.target).prev('.hide-log').removeClass('hidden');
+            if (response && response.responseText) {
+                txt = JSON.parse(response.responseText);
+            }
 
-                var that = this;
+            return txt;
+        },
+        showWarning: function(messageFragment) {
+            var message = 'An error occurred.';
 
-                var fileHandle = this.collection.get(filename);
+            if (messageFragment) {
+                message = message + ' ' + messageFragment.message;
+            }
 
-                var fileData;
+            $('.chart-warning').text(message);
+            $('.chart-warning').show();
+        },
+        hideWarning: function() {
+            $('.chart-warning').hide();
+        },
+        toggleLegend: function() {
+            $('.nv-legendWrap').toggle();
+        },
 
-                fileHandle.downloadFileToCache()
-                    .then(function(tmpFileData) {
-                        tmpFileData = tmpFileData.replace(/\n/g, '<br>');
+        // private methods
+        _uiBeginChartLoading: function(selector) {
+            // Disable other buttons
+            $('.show-chart').prop('disabled', true);
 
-                        fileData = tmpFileData;
-                    })
-                    .then(function() {
-                        return $('#chart-tr-' + classSelector).animate({
-                            height: '200px',
-                        }, 500).promise();
-                    })
-                    .done(function() {
+            $(selector).after('<div class="chart-loading-view"></div>');
 
-                        that._uiEndChartLoading();
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('.chart-loading-view', loadingView);
+            loadingView.render();
+        },
+        _uiEndChartLoading: function() {
 
-                        $('#' + classSelector).html(fileData);
+            // Restore buttons
+            $('.show-chart').prop('disabled', false);
 
-                        // Scroll down to chart
-                        $('html, body').animate({
-                            scrollTop: $('.' + classSelector).offset().top
-                        }, 1000);
-                    })
-                    .fail(function(response) {
-                        var errorMessage = that.getErrorMessageFromResponse(response);
-
-                        var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(errorMessage));
-                        telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().save()');
-                        telemetry.set('view', 'Analyses.SelectAnalyses');
-                        telemetry.set('jobId', that.jobId);
-                        telemetry.save();
-
-                        that.showWarning(errorMessage);
-                    })
-                    ;
-            },
-            downloadChart: function(e) {
-
-                var that = this;
-
-                var chartClassSelector = e.target.dataset.chartClassSelector;
-
-                var filename = e.target.dataset.id;
-                filename = filename.split('.');
-                filename.pop();
-                filename = filename.join('.');
-
-                var cssUrl = location.protocol + '//' + location.host + '/styles/charts.css';
-
-                $.get(cssUrl)
-                    .done(function(cssText) {
-
-                        var widthPx = $('#' + chartClassSelector + ' svg').css('width');
-
-                        /*
-                            Grabbing all content specifically from the svg
-                            element ensures that we won't pick up any other
-                            random elements that are also children of
-                            |classSelector|.
-                        */
-                        var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
-                                      + '\n'
-                                      + '<svg '
-                                            + ' style="height: ' + that.chartHeight + 'px; width:' + widthPx + ';"'
-                                            + ' version="1.1"'
-                                            + ' xmlns="http://www.w3.org/2000/svg"'
-                                            + ' class="box"'
-                                      + '>'
-                                            + $('.' + chartClassSelector + ' svg').html()
-                                      + '</svg>'
-                                      ;
-
-                        var blob = new Blob([svgString], {type: 'text/plain;charset=utf-8'});
-                        saveAs(blob, filename + '.svg');
-                    })
-                    ;
-            },
-
-            downloadFile: function(e) {
-                e.preventDefault();
-
-                var filename = e.target.dataset.filename;
-                var outputFile = this.collection.get(filename);
-
-                outputFile.downloadFileToDisk()
-                    .fail(function(error) {
-                          var telemetry = new Backbone.Agave.Model.Telemetry();
-                          telemetry.set('error', JSON.stringify(error));
-                          telemetry.set('method', 'Backbone.Agave.Model.Job.OutputFile.downloadFileToDisk()');
-                          telemetry.set('view', 'Analyses.SelectAnalyses');
-                          telemetry.save();
-                      })
-                      ;
-            },
-            getErrorMessageFromResponse: function(response) {
-                var txt;
-
-                if (response && response.responseText) {
-                    txt = JSON.parse(response.responseText);
-                }
-
-                return txt;
-            },
-            showWarning: function(messageFragment) {
-                var message = 'An error occurred.';
-
-                if (messageFragment) {
-                    message = message + ' ' + messageFragment.message;
-                }
-
-                $('.chart-warning').text(message);
-                $('.chart-warning').show();
-            },
-            hideWarning: function() {
-                $('.chart-warning').hide();
-            },
-            toggleLegend: function() {
-                $('.nv-legendWrap').toggle();
-            },
-
-            // private methods
-            _uiBeginChartLoading: function(selector) {
-                // Disable other buttons
-                $('.show-chart').prop('disabled', true);
-
-                $(selector).after('<div class="chart-loading-view"></div>');
-
-                var loadingView = new App.Views.Util.Loading({keep: true});
-                this.setView('.chart-loading-view', loadingView);
-                loadingView.render();
-            },
-            _uiEndChartLoading: function() {
-
-                // Restore buttons
-                $('.show-chart').prop('disabled', false);
-
-                // Remove loading view
-                $('.chart-loading-view').remove();
-            },
-        })
-    );
+            // Remove loading view
+            $('.chart-loading-view').remove();
+        },
+    });
 
     Analyses.Charts.LengthHistogram = function(fileHandle, text, classSelector) {
 
