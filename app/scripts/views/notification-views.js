@@ -1,12 +1,10 @@
 define([
     'app',
     'environment-config',
-    'file-transfer-sidebar-ui-mixin',
     'underscore.string',
 ], function(
     App,
     EnvironmentConfig,
-    FileTransferSidebarUiMixin,
     _string
 ) {
 

@@ -79,7 +79,6 @@ define([
 
     // Mixins
     'file-download-detection-mixin',
-    'file-transfer-sidebar-ui-mixin',
     'file-transfer-project-ui-mixin',
     'comparators-mixin',
     'file-transfer-mixins',

@@ -6,32 +6,36 @@ define([
 
     var FileTransferMixins = {};
 
-    FileTransferMixins.progressJqxhr = function(that, totalSize) {
-        return {
-            xhr: function() {
+    FileTransferMixins.downloadUrlByPostit = function(url) {
+        var jqxhr = $.ajax({
+            headers: _.extend(
+                {},
+                Backbone.Agave.oauthHeader(),
+                {
+                    'Content-Type': 'application/json',
+                }
+            ),
+            type:    'POST',
+            url:     EnvironmentConfig.agave.host
+                        + '/postits'
+                        + '/v2'
+                        ,
+            data: JSON.stringify({
+                'url': url,
+                'method': 'GET',
+                'maxUses': 1,
+                'lifetime': 3600,
+                'noauth': false,
+            }),
+        })
+        .then(function(response) {
+            response = JSON.parse(response);
 
-                var progressHandler = function(evt) {
-                    var percentCompleted = 0;
+            window.open(response.result._links.self.href);
+        })
+        ;
 
-                    if (evt.lengthComputable) {
-                        percentCompleted = evt.loaded / evt.total;
-                    }
-                    else {
-                        percentCompleted = evt.loaded / totalSize;
-                    }
-
-                    percentCompleted *= 100;
-                    that.trigger(Backbone.Agave.Model.File.UPLOAD_PROGRESS, percentCompleted);
-                };
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.upload.addEventListener('progress', progressHandler);
-                xhr.addEventListener('progress', progressHandler);
-
-                return xhr;
-            },
-        };
+        return jqxhr;
     };
 
     App.Mixins.FileTransferMixins = FileTransferMixins;
