@@ -32,7 +32,7 @@ define([
                 'method': 'GET',
                 'maxUses': 1,
                 'lifetime': 3600,
-                'noauth': false,
+                'noauth': true,
             }),
         })
         .then(function(response) {
@@ -54,11 +54,6 @@ define([
             * it is only concerned with initiating data transfer, which is what the user is trying to do anyway
         */
         .then(function(targetUrl) {
-
-            var chance = new Chance();
-            var guid = chance.guid();
-
-            var postitDownloadSelector = 'postit-download-' + guid;
 
             var link = document.createElement('a');
             link.setAttribute('download', null);
