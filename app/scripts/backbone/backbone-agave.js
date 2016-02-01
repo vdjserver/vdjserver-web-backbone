@@ -425,6 +425,9 @@ define([
                 'Authorization': 'Basic ' + btoa(username + ':' + password),
             };
 
+            // Prevent backbone from adding the password to the url
+            delete options.password;
+
             return Backbone.sync(method, model, options);
         },
         parse: function(response) {
