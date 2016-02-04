@@ -324,7 +324,7 @@ define([
             */
             var that = this;
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                App.Datastore.Collection.ProjectCollection.on('sync', function() {
+                that.listenTo(App.Datastore.Collection.ProjectCollection, 'sync', function() {
                     that.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
                     that._initialDependencyDataSetup();
                 });
@@ -1790,11 +1790,10 @@ define([
             this.tenantUsers = new Backbone.Agave.Collection.TenantUsers();
             this.model = new Backbone.Agave.Model.Project();
 
-
             var that = this;
 
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                App.Datastore.Collection.ProjectCollection.on('sync', function() {
+                that.listenTo(App.Datastore.Collection.ProjectCollection, 'sync', function() {
                     that.model = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
                     that.render();
                 });
