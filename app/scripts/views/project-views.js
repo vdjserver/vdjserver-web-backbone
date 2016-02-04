@@ -1486,10 +1486,16 @@ define([
                 this._mixinUiUploadStart(this.fileUniqueIdentifier);
                 this._mixinUiSetProgressMessage(this.fileUniqueIdentifier, 'Uploading files...');
 
-                var totalProgressLength = 0;
                 var totalLength = this.models.reduce(function(lengthSum, model) {
                     return lengthSum + model.get('length');
                 }, 0);
+
+                // Set up a placeholder for all model progress
+                var progress = {};
+                this.models.forEach(function(model) {
+                    var name = model.get('name');
+                    progress[name] = 0;
+                });
 
                 var modelSavePromises = $.map(this.models, function(file) {
                     return function() {
@@ -1497,7 +1503,16 @@ define([
                         file.applyUploadAttributes(formData);
 
                         that.listenTo(file, Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(progressLength) {
-                            totalProgressLength += progressLength;
+                            var totalProgressLength = 0;
+
+                            // Update model progress placeholder
+                            progress[file.get('name')] = progressLength;
+
+                            // Sum current model progress placeholders
+                            for (var key in progress) {
+                                totalProgressLength += progress[key];
+                            }
+
                             that._mixinUiProgressBar(totalProgressLength, totalLength);
                         });
 
