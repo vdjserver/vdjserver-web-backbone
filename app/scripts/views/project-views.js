@@ -1486,19 +1486,23 @@ define([
                 this._mixinUiUploadStart(this.fileUniqueIdentifier);
                 this._mixinUiSetProgressMessage(this.fileUniqueIdentifier, 'Uploading files...');
 
-                var counter = 1;
+                var totalProgressLength = 0;
+                var totalLength = this.models.reduce(function(lengthSum, model) {
+                    return lengthSum + model.get('length');
+                }, 0);
 
                 var modelSavePromises = $.map(this.models, function(file) {
                     return function() {
 
                         file.applyUploadAttributes(formData);
 
+                        that.listenTo(file, Backbone.Agave.Model.File.UPLOAD_PROGRESS, function(progressLength) {
+                            totalProgressLength += progressLength;
+                            that._mixinUiProgressBar(totalProgressLength, totalLength);
+                        });
+
                         return file.save()
                             .then(function() {
-
-                                that._mixinUiProgressBar(counter, modelSavePromises.length);
-                                counter++;
-
                                 return file.notifyApiUploadComplete();
                             })
                             .then(function() {

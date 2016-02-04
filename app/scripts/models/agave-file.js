@@ -114,8 +114,7 @@ function(
                                     if (typeof xhr.upload == 'object') {
                                         xhr.upload.addEventListener('progress', function(evt) {
                                             if (evt.lengthComputable) {
-                                                var percentComplete = (evt.loaded / evt.total) * 100;
-                                                that.trigger(File.UPLOAD_PROGRESS, percentComplete);
+                                                that.trigger(File.UPLOAD_PROGRESS, evt.loaded);
                                             }
 
                                         }, false);
