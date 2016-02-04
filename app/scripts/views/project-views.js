@@ -340,7 +340,7 @@ define([
 
             var that = this;
 
-            App.Instances.WebsocketManager.on('addFileImportPlaceholder', function(fileMetadataResponse) {
+            this.listenTo(App.Instances.WebsocketManager, 'addFileImportPlaceholder', function(fileMetadataResponse) {
                 var fileMetadata = new Backbone.Agave.Model.File.Metadata();
                 fileMetadata.set(fileMetadataResponse);
                 fileMetadata.addPlaceholderMarker();
@@ -361,7 +361,7 @@ define([
                 fileListingsView.render();
             });
 
-            App.Instances.WebsocketManager.on('updateFileImportProgress', function(fileMetadataResponse) {
+            this.listenTo(App.Instances.WebsocketManager, 'updateFileImportProgress', function(fileMetadataResponse) {
 
                 var fileMetadata = new Backbone.Agave.Model.File.Metadata();
                 fileMetadata.set(fileMetadataResponse.fileInformation.metadata);
@@ -384,7 +384,7 @@ define([
                 );
             });
 
-            App.Instances.WebsocketManager.on('addFileToProject', function(fileMetadataResponse) {
+            this.listenTo(App.Instances.WebsocketManager, 'addFileToProject', function(fileMetadataResponse) {
                 var fileMetadata = new Backbone.Agave.Model.File.Metadata();
                 fileMetadata.set(fileMetadataResponse);
 
