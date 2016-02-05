@@ -103,7 +103,7 @@ function(
 
                             var that = this;
 
-                            return $.ajax({
+                            var request = $.ajax({
                                 beforeSend: function(xhr) {
                                     xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
                                 },
@@ -120,6 +120,10 @@ function(
                                         }, false);
                                     }
 
+                                    that.listenTo(that, File.CANCEL_UPLOAD, function() {
+                                        xhr.abort();
+                                    });
+
                                     return xhr;
                                 },
                                 url: url,
@@ -134,11 +138,7 @@ function(
                             })
                             ;
 
-                            /*
-                            model.on(File.CANCEL_UPLOAD, function() {
-                                xhr.abort();
-                            });
-                            */
+                            return request;
 
                         default:
                             break;
@@ -437,11 +437,26 @@ function(
                 case 'create':
                 case 'update':
 
+                    //var that = this;
+
                     return $.ajax({
                         url: this.apiHost + this.url(),
                         headers: {
                             'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token'),
                         },
+                        /*
+                        xhr: function() {
+
+                            var xhr = $.ajaxSettings.xhr();
+
+                            that.listenTo(that, File.CANCEL_UPLOAD, function() {
+                                console.log('cancel upload received: ' + model.get('name'));
+                                xhr.abort();
+                            });
+
+                            return xhr;
+                        },
+                        */
                         data: {
                             urlToIngest: this.get('urlToIngest'),
                             callbackURL: EnvironmentConfig.vdjApi.host

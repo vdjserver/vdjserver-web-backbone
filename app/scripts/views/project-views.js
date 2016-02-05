@@ -566,7 +566,7 @@ define([
             e.preventDefault();
 
             var selectedFiles = e.target.files;
-                
+
             this._uploadFileFromComputer(undefined, selectedFiles);
 
         },
@@ -1254,6 +1254,13 @@ define([
             _cancelUpload: function(e) {
                 e.preventDefault();
 
+                /*
+                this.models.forEach(function(model) {
+                    console.log("trigger upload cancel")
+                    model.trigger(Backbone.Agave.Model.File.ProjectFile.CANCEL_UPLOAD);
+                });
+                */
+
                 this.remove();
             },
 
@@ -1486,10 +1493,11 @@ define([
             _cancelUpload: function(e) {
                 e.preventDefault();
 
-                this.remove();
+                this.models.forEach(function(model) {
+                    model.trigger(Backbone.Agave.Model.File.ProjectFile.CANCEL_UPLOAD);
+                });
 
-                // TODO: What about this?
-                //this.model.trigger(Backbone.Agave.Model.File.ProjectFile.CANCEL_UPLOAD);
+                this.remove();
             },
 
             _startUpload: function(e) {
