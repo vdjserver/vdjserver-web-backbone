@@ -425,7 +425,7 @@ define([
             'click #file-upload':    '_uploadFileFromComputer',
             'click #dropbox-upload': '_dropboxUpload',
             'click #url-upload': '_urlUpload',
-            'change #file-dialog':   '_changeFilesSelector',
+            'change #file-listings-dialog':   '_openFileDialog',
 
             // Select files
             'click .selected-files': '_uiToggleDisabledButtonStatus',
@@ -558,14 +558,17 @@ define([
 
             var that = this;
 
-            // TODO: FIX DRAG AND DROP
             fileListingsView.on('fileDragDrop', function(files) {
-                var renderPromise = that._uploadFileFromComputer();
-
-                renderPromise.promise().done(function(view) {
-                    view._selectFiles();
-                });
+                var renderPromise = that._uploadFileFromComputer(undefined, files);
             });
+        },
+        _openFileDialog: function(e) {
+            e.preventDefault();
+
+            var selectedFiles = e.target.files;
+                
+            this._uploadFileFromComputer(undefined, selectedFiles);
+
         },
         // Job Staging
         _showJobStagingView: function(StagingSubview) {
@@ -734,16 +737,22 @@ define([
         },
 
         // Event Responders
-        _uploadFileFromComputer: function(e) {
+        _uploadFileFromComputer: function(e, stagedFiles) {
             if (e !== undefined) {
                 e.preventDefault();
             }
 
-            var fileTransferView = new Projects.FileTransfer({
+            var viewOptions = {
                 projectUuid: this.projectModel.get('uuid'),
                 fileListings: this.fileListings,
                 projectDetailView: this,
-            });
+            };
+
+            if (stagedFiles !== undefined) {
+                viewOptions['stagedFiles'] = stagedFiles;
+            }
+
+            var fileTransferView = new Projects.FileTransfer(viewOptions);
 
             this.setView('#file-staging', fileTransferView);
             return fileTransferView.render();
@@ -1208,7 +1217,7 @@ define([
                     logic can be reused no matter how the user is actually uploading
                     the file.
                 */
-                document.getElementById('file-dialog').click();
+                document.getElementById('file-listings-dialog').click();
             },
         })
     );
@@ -1376,11 +1385,16 @@ define([
                     this.projectUuid = parameters.projectUuid;
                 }
 
+
                 this.models = [];
 
                 var chance = new Chance();
 
                 this.fileUniqueIdentifier = chance.guid();
+
+                if (parameters && parameters.hasOwnProperty('stagedFiles')) {
+                    this._displayStagedFiles(parameters.stagedFiles);
+                }
             },
             serialize: function() {
                 return {
@@ -1412,11 +1426,14 @@ define([
 
                 var selectedFiles = e.target.files;
 
+                this._displayStagedFiles(selectedFiles);
+            },
+            _displayStagedFiles: function(files) {
                 var chance = new Chance();
 
                 // FileUploadSelected
-                for (var i = 0; i < selectedFiles.length; i++) {
-                    var file = selectedFiles[i];
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
 
                     var formElementGuid = chance.guid();
 
@@ -1441,7 +1458,6 @@ define([
                     fileUploadSelectedView.render();
                 };
             },
-
             _checkDuplicateFile: function(filename) {
 
                 var isDuplicate = this.fileListings.checkForDuplicateFilename(filename);
