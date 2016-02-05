@@ -1982,43 +1982,44 @@ define([
 
             var username = $('#add-username').val();
 
-            // TODO: Check that username exists
+            // Check that username exists before adding
+            var tenantUsers = this.tenantUsers.clone();
+            if (_.has(tenantUsers._byId, username)){
+              var that = this;
+              var newUserPermission = this.permissions.create(
+                  {
+                      username: username,
+                      permission: 'READ_WRITE',
+                      uuid: this.permissions.uuid,
+                  },
+                  {
+                      success: function() {
 
-            var that = this;
-            var newUserPermission = this.permissions.create(
-                {
-                    username: username,
-                    permission: 'READ_WRITE',
-                    uuid: this.permissions.uuid,
-                },
-                {
-                    success: function() {
+                          newUserPermission.addUserToProject()
+                              .then(function() {
+                              })
+                              .fail(function(error) {
+                                  var telemetry = new Backbone.Agave.Model.Telemetry();
+                                  telemetry.set('error', JSON.stringify(error));
+                                  telemetry.set('method', 'Backbone.Agave.Model.Permission.addUserToProject()');
+                                  telemetry.set('view', 'Projects.ManageUsers');
+                                  telemetry.save();
+                              });
 
-                        newUserPermission.addUserToProject()
-                            .then(function() {
-                            })
-                            .fail(function(error) {
-                                var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.set('error', JSON.stringify(error));
-                                telemetry.set('method', 'Backbone.Agave.Model.Permission.addUserToProject()');
-                                telemetry.set('view', 'Projects.ManageUsers');
-                                telemetry.save();
-                            });
-
-                        that.permissions.add(newUserPermission);
-                        that.render();
-                        that._usernameTypeahead(that.permissions, that.tenantUsers);
-                    },
-                    error: function() {
-                        var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
-                        telemetry.set('method', 'Backbone.Agave.Model.Permission.create()');
-                        telemetry.set('view', 'Projects.ManageUsers');
-                        telemetry.save();
-                    },
-                }
-            );
-
+                          that.permissions.add(newUserPermission);
+                          that.render();
+                          that._usernameTypeahead(that.permissions, that.tenantUsers);
+                      },
+                      error: function() {
+                          var telemetry = new Backbone.Agave.Model.Telemetry();
+                          telemetry.set('error', JSON.stringify(error));
+                          telemetry.set('method', 'Backbone.Agave.Model.Permission.create()');
+                          telemetry.set('view', 'Projects.ManageUsers');
+                          telemetry.save();
+                      },
+                  }
+              );
+            }
         },
         _removeUserFromProject: function(e) {
             e.preventDefault();
