@@ -94,13 +94,13 @@
                                                 <div class="file-listing-title-block">
                                                     <div class="row">
                                                         <div class="col-sm-12">
-                                                            <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
+                                                            <button class="download-file btn btn-default" data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</button>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-sm-12">
                                                             {{#if this.qualModel}}
-                                                                <a class="download-file" href="#" data-bypass=true data-filename="{{this.qualModel.value.name}}" data-metadatauuid="{{this.qualModel.uuid}}">{{this.qualModel.value.name}}</a>
+                                                                <button class="download-file btn btn-default" data-filename="{{this.qualModel.value.name}}" data-metadatauuid="{{this.qualModel.uuid}}">{{this.qualModel.value.name}}</button>
                                                             {{/if}}
                                                         </div>
                                                     </div>
@@ -116,7 +116,7 @@
                                     {{else}}
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</a>
+                                                <button class="download-file btn btn-default" data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</button>
                                             </div>
                                         </div>
                                     {{/if}}
