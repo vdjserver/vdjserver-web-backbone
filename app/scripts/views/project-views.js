@@ -313,6 +313,8 @@ define([
         template: 'project/detail',
         initialize: function(parameters) {
 
+            this.projectUuid = parameters.projectUuid;
+
             this.fileListings = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
 
             /*
@@ -341,68 +343,88 @@ define([
             var that = this;
 
             this.listenTo(App.Instances.WebsocketManager, 'addFileImportPlaceholder', function(fileMetadataResponse) {
-                var fileMetadata = new Backbone.Agave.Model.File.Metadata();
-                fileMetadata.set(fileMetadataResponse);
-                fileMetadata.addPlaceholderMarker();
 
-                that.fileListings.add(fileMetadata);
+                if (fileMetadataResponse.hasOwnProperty('projectUuid')
+                    && fileMetadataResponse.projectUuid === that.projectUuid
+                ) {
 
-                // var fileListingsView = that.getView('.file-listings');
-                //
-                // NOTE: layoutManager/jquery are not able to reliably retrieve this view
-                // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
+                    var fileMetadata = new Backbone.Agave.Model.File.Metadata();
+                    fileMetadata.set(fileMetadataResponse);
 
-                var fileListingsView = that.fileListingsView;
+                    fileMetadata.addPlaceholderMarker();
 
-                // Putting this in |singleReadListings| for now. If we ever
-                // support paired file uploads, then it will need to be updated.
-                fileListingsView.singleReadFileListings.add(fileMetadata);
+                    that.fileListings.add(fileMetadata);
 
-                fileListingsView.render();
+                    // var fileListingsView = that.getView('.file-listings');
+                    //
+                    // NOTE: layoutManager/jquery are not able to reliably retrieve this view
+                    // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
+
+                    var fileListingsView = that.fileListingsView;
+
+                    // Putting this in |singleReadListings| for now. If we ever
+                    // support paired file uploads, then it will need to be updated.
+                    fileListingsView.singleReadFileListings.add(fileMetadata);
+
+                    fileListingsView.render();
+                }
             });
 
             this.listenTo(App.Instances.WebsocketManager, 'updateFileImportProgress', function(fileMetadataResponse) {
 
-                var fileMetadata = new Backbone.Agave.Model.File.Metadata();
-                fileMetadata.set(fileMetadataResponse.fileInformation.metadata);
+                if (fileMetadataResponse.hasOwnProperty('fileInformation')
+                    && fileMetadataResponse.fileInformation.hasOwnProperty('projectUuid')
+                    && fileMetadataResponse.fileInformation.projectUuid === that.projectUuid
+                ) {
 
-                var nameGuid = fileMetadata.getNameGuid(fileMetadata.get('value').name);
-                var progress = App.Utilities.WebsocketManager.FILE_IMPORT_STATUS_PROGRESS[fileMetadataResponse.fileImportStatus];
+                    var fileMetadata = new Backbone.Agave.Model.File.Metadata();
+                    fileMetadata.set(fileMetadataResponse.fileInformation.metadata);
 
-                var percentCompleted = progress + '%';
+                    var nameGuid = fileMetadata.getNameGuid(fileMetadata.get('value').name);
+                    var progress = App.Utilities.WebsocketManager.FILE_IMPORT_STATUS_PROGRESS[fileMetadataResponse.fileImportStatus];
 
-                // var fileListingsView = that.getView('.file-listings');
-                //
-                // NOTE: layoutManager/jquery are not able to reliably retrieve this view
-                // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
+                    var percentCompleted = progress + '%';
 
-                var fileListingsView = that.fileListingsView;
+                    // var fileListingsView = that.getView('.file-listings');
+                    //
+                    // NOTE: layoutManager/jquery are not able to reliably retrieve this view
+                    // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
 
-                fileListingsView.updatePlaceholderFileProgress(
-                    '.placeholder-guid-' + nameGuid,
-                    percentCompleted
-                );
+                    var fileListingsView = that.fileListingsView;
+
+                    fileListingsView.updatePlaceholderFileProgress(
+                        '.placeholder-guid-' + nameGuid,
+                        percentCompleted
+                    );
+                }
             });
 
             this.listenTo(App.Instances.WebsocketManager, 'addFileToProject', function(fileMetadataResponse) {
-                var fileMetadata = new Backbone.Agave.Model.File.Metadata();
-                fileMetadata.set(fileMetadataResponse);
 
-                var modelMatch = that.fileListings.getModelForName(fileMetadata.get('value').name);
+                if (fileMetadataResponse.hasOwnProperty('value')
+                    && fileMetadataResponse.value.hasOwnProperty('projectUuid')
+                    && fileMetadataResponse.value.projectUuid === that.projectUuid
+                ) {
 
-                // var fileListingsView = that.getView('.file-listings');
-                //
-                // NOTE: layoutManager/jquery are not able to reliably retrieve this view
-                // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
+                    var fileMetadata = new Backbone.Agave.Model.File.Metadata();
+                    fileMetadata.set(fileMetadataResponse);
 
-                var fileListingsView = that.fileListingsView;
-                fileListingsView.singleReadFileListings.remove(modelMatch);
-                that.fileListings.remove(modelMatch);
+                    var modelMatch = that.fileListings.getModelForName(fileMetadata.get('value').name);
 
-                fileListingsView.singleReadFileListings.add(fileMetadata);
-                that.fileListings.add(fileMetadata);
+                    // var fileListingsView = that.getView('.file-listings');
+                    //
+                    // NOTE: layoutManager/jquery are not able to reliably retrieve this view
+                    // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
 
-                fileListingsView.render();
+                    var fileListingsView = that.fileListingsView;
+                    fileListingsView.singleReadFileListings.remove(modelMatch);
+                    that.fileListings.remove(modelMatch);
+
+                    fileListingsView.singleReadFileListings.add(fileMetadata);
+                    that.fileListings.add(fileMetadata);
+
+                    fileListingsView.render();
+                }
             });
 
         },
