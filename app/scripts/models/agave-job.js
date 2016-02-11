@@ -142,31 +142,39 @@ function(
             idAttribute: 'name',
             downloadFileToCache: function() {
 
-                var link = this.get('_links').self.href;
-                link = this._fixBadAgaveLink(link);
+                var url = this.get('_links').self.href;
+                url = this._fixBadAgaveUrl(url);
 
                 var jqxhr = $.ajax({
                     headers: Backbone.Agave.oauthHeader(),
                     type:    'GET',
-                    url:     link,
+                    url:     url,
                 });
                 return jqxhr;
             },
             downloadFileToDisk: function() {
 
                 var url = this.get('_links').self.href;
-                url = this._fixBadAgaveLink(url);
+                url = this._fixBadAgaveUrl(url);
+                url = this._urlencodeOutputPath(url);
 
                 var jqxhr = this.downloadUrlByPostit(url);
 
                 return jqxhr;
             },
-            _fixBadAgaveLink: function(link) {
-                var link = link.split('/');
-                link[4] = 'v2';
-                link = link.join('/');
+            _fixBadAgaveUrl: function(url) {
+                var url = url.split('/');
+                url[4] = 'v2';
+                url = url.join('/');
 
-                return link;
+                return url;
+            },
+            _urlencodeOutputPath: function(url) {
+                var url = url.split('/');
+                url[url.length - 1] = encodeURIComponent(url[url.length - 1]);
+                url = url.join('/');
+
+                return url;
             },
         })
     );
