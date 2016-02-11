@@ -207,7 +207,7 @@ define(['app'], function(App) {
 
                         case 'write_sequence':
                             paramOutput.push(
-                                serializer.getWriteSequence(paramOutput)
+                                serializer.getWriteSequence(paramOutput, jobName)
                             );
 
                             break;
@@ -745,10 +745,43 @@ define(['app'], function(App) {
             return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
-        this.getWriteSequence = function(paramOutput) {
+        this.getWriteSequence = function(paramOutput, jobName) {
 
+            // Default value
+            var writeSequenceVariables = '';
+
+            if (combinationValue.length > 0) {
+                writeSequenceVariables = '{' + combinationValue + '}';
+            }
+            else {
+                for (var i = 0; i < sharedVariables.length; i++) {
+                    writeSequenceVariables += '{' + sharedVariables[i] + '}';
+
+                    if (i < sharedVariables.length - 1) {
+                        writeSequenceVariables += '-';
+                    }
+                }
+            }
+
+            var configuredParameter = {
+                'write_sequence': {},
+            };
+
+            if (writeSequenceVariables.length > 0) {
+                configuredParameter.write_sequence = {
+                    'out_path': writeSequenceVariables
+                                        + '.fastq'
+                };
+            }
+            else {
+                configuredParameter.write_sequence = {
+                    'out_path': jobName
+                                  + '.fastq'
+                };
+            }
+
+/*
             //TODO: fix/update this section
-
             // extract demultiplex variables
             var demultiplexVariablePath = this.createDemultiplexBarcodeVariablePath(paramOutput);
 
@@ -770,6 +803,7 @@ define(['app'], function(App) {
             if (parameters[key + '-skip-empty']) {
                 configuredParameter['write_sequence']['skip_empty'] = parameters[key + '-skip-empty'];
             }
+*/
 
             return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };

@@ -505,6 +505,114 @@ define([
                                 'group_variable': 'MID1',
                             },
                         },
+                        {
+                            'write_sequence': {
+                                'out_path':'.fastq',
+                            },
+                        },
+                    ],
+                },
+
+                {
+                    'workflow-name': 'Find Unique Sequences',
+                    'summary_output_path': 'unique_summary.txt',
+                    'steps': [
+                        {
+                            'find_shared': {
+                                'out_group_unique':'.fasta',
+                                'group_variable': 'MID1',
+                            },
+                        },
+                    ],
+                },
+
+                {
+                    'workflow-name': 'Primer Triming',
+                    'summary_output_path': 'primer_summary.txt',
+                    'steps': [
+                        {
+                            'custom_v_primer_trimming': {},
+                        },
+                        {
+                            'custom_j_primer_trimming': {},
+                        },
+                        {
+                            'write_sequence': {
+                                'out_path':'.fastq',
+                            },
+                        },
+                    ],
+                },
+
+                {
+                    'workflow-name': 'Barcode Demultiplexing',
+                    'summary_output_path': 'barcode_summary.txt',
+                    'steps': [
+                        {
+                            'match': {
+                                'reverse': true,
+                                'elements': [
+                                    {
+                                        'max_mismatches': 1,
+                                        'required': true,
+                                        'start': {},
+                                        'cut_lower': {
+                                            'after': 0,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            'write_sequence': {
+                                'out_path':'.fastq',
+                            },
+                        },
+                    ],
+                },
+
+                {
+                    'workflow-name': 'Sequence Filters',
+                    'summary_output_path': 'filter_summary.txt',
+                    'steps': [
+                        {
+                            'length_filter': {
+                                //'min': 200,
+                                'min': 0,
+                            },
+                        },
+                        {
+                            'average_quality_filter': {
+                                'custom_value': 35,
+                            },
+                        },
+                        {
+                            'homopolymer_filter': {
+                                'custom_value': 20,
+                            },
+                        },
+                        {
+                            'write_sequence': {
+                                'out_path':'.fastq',
+                            },
+                        },
+                    ],
+                },
+
+                {
+                    'workflow-name': 'Sequence Statistics',
+                    'summary_output_path': 'stats_summary.txt',
+                    'steps': [
+                        {
+                            'quality_stats': {
+                                'out_prefix': 'stats_',
+                            },
+                        },
+                        {
+                            'composition_stats': {
+                                'out_prefix': 'stats_',
+                            },
+                        },
                     ],
                 },
 
@@ -514,7 +622,12 @@ define([
         },
         _getPredefinedWorkflowNames: function() {
             var predefinedWorkflowNames = [
-                'Single Reads',
+                //'Single Reads',
+                'Find Unique Sequences',
+                'Primer Trimming',
+                'Barcode Demultiplexing',
+                'Sequence Filters',
+                'Sequence Statistics',
                 //'Paired Reads',
             ];
 
