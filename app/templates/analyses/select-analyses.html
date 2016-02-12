@@ -58,7 +58,7 @@
                     {{#each projectFiles}}
                         <tr class="text-center">
                             <td>
-                                <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
+                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{name}}">{{name}}</button>
                             </td>
 
                             <td>
@@ -105,7 +105,7 @@
                     {{#each chartFiles}}
                         <tr class="text-center" id="chart-{{this.name}}">
                             <td>
-                                <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
+                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{name}}">{{name}}</button>
                             </td>
 
                             <td>
@@ -114,7 +114,7 @@
 
                             <td>
                                 {{#FileTypeHasChart this.name}}
-                                    <div id="show-chart" class="btn btn-default show-chart" data-id="{{name}}">
+                                    <div id="show-chart" class="btn btn-primary show-chart" data-id="{{name}}">
                                         {{ChartButtonText this.name}}
                                     </div>
 

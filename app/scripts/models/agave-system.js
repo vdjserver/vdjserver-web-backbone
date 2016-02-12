@@ -10,7 +10,6 @@ define(['backbone'], function(Backbone) {
             'name': '',
             'default': false,
             'description': '',
-            'name': '',
             'public': false,
             'status': 'UP',
             'type': '',
