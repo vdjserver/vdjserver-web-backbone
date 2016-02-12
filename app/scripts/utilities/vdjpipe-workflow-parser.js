@@ -207,7 +207,7 @@ define(['app'], function(App) {
 
                         case 'write_sequence':
                             paramOutput.push(
-                                serializer.getWriteSequence(paramOutput, jobName)
+                                serializer.getWriteSequence(paramOutput)
                             );
 
                             break;
@@ -648,7 +648,7 @@ define(['app'], function(App) {
                                         + '.fasta'
                                         //+ parameters[key + '-out-group-unique']
                                         ,
-                    'out_summary': 'demultiplexing-summary.txt',
+                    'out_summary': 'find-unique-summary.txt',
                 };
             }
             else {
@@ -745,7 +745,7 @@ define(['app'], function(App) {
             return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
-        this.getWriteSequence = function(paramOutput, jobName) {
+        this.getWriteSequence = function(paramOutput) {
 
             // Default value
             var writeSequenceVariables = '';
@@ -769,14 +769,15 @@ define(['app'], function(App) {
 
             if (writeSequenceVariables.length > 0) {
                 configuredParameter.write_sequence = {
-                    'out_path': writeSequenceVariables
-                                        + '.fastq'
+                    'out_path': parameters[key + '-out-prefix']
+                                + writeSequenceVariables
+                                + '.fastq'
                 };
             }
             else {
                 configuredParameter.write_sequence = {
-                    'out_path': jobName
-                                  + '.fastq'
+                    'out_path': parameters[key + '-out-prefix']
+                                + '.fastq'
                 };
             }
 

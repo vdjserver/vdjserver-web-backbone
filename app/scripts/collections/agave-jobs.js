@@ -507,6 +507,7 @@ define([
                         },
                         {
                             'write_sequence': {
+                                'out_prefix': 'final_reads',
                                 'out_path':'.fastq',
                             },
                         },
@@ -538,6 +539,7 @@ define([
                         },
                         {
                             'write_sequence': {
+                                'out_prefix': 'primer_trimmed_reads',
                                 'out_path':'.fastq',
                             },
                         },
@@ -565,6 +567,7 @@ define([
                         },
                         {
                             'write_sequence': {
+                                'out_prefix': '',
                                 'out_path':'.fastq',
                             },
                         },
@@ -593,6 +596,7 @@ define([
                         },
                         {
                             'write_sequence': {
+                                'out_prefix': 'filtered_reads',
                                 'out_path':'.fastq',
                             },
                         },
