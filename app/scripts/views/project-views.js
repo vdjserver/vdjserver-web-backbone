@@ -1907,6 +1907,7 @@ define([
             'click #launch-delete-project-modal': '_launchDeleteProjectModal',
             'click #delete-project': '_deleteProject',
             'click #save-project-name': '_saveProjectName',
+            'click #save-project-description': '_saveProjectDescription',
             'click #add-user': '_addUserToProject',
             'click .remove-user-from-project': '_removeUserFromProject',
         },
@@ -1917,6 +1918,29 @@ define([
             e.preventDefault();
 
             $('#delete-modal').modal('show');
+        },
+        _saveProjectDescription: function(e) {
+            e.preventDefault();
+
+            var newProjectDescription = $('#project-description').val();
+
+            var value = this.model.get('value');
+
+            value.description = newProjectDescription;
+
+            this.model.set('value', value);
+
+            this.model.save()
+                .done(function() {
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
+                    telemetry.set('view', 'Projects.Settings._saveProjectDescription');
+                    telemetry.save();
+                })
+                ;
         },
         _saveProjectName: function(e) {
             e.preventDefault();
@@ -1936,7 +1960,7 @@ define([
                     var telemetry = new Backbone.Agave.Model.Telemetry();
                     telemetry.set('error', JSON.stringify(error));
                     telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
-                    telemetry.set('view', 'Projects.Settings');
+                    telemetry.set('view', 'Projects.Settings._saveProjectName');
                     telemetry.save();
                 })
                 ;
