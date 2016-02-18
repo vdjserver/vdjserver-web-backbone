@@ -1858,13 +1858,13 @@ define([
             var that = this;
 
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                that.listenTo(App.Datastore.Collection.ProjectCollection, 'sync', function() {
+                this.listenTo(App.Datastore.Collection.ProjectCollection, 'sync', function() {
                     that.model = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
                     that.render();
                 });
             } else {
-              that.model = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
-              that.render();
+                this.model = App.Datastore.Collection.ProjectCollection.get(this.projectUuid);
+                this.render();
             }
 
             // User settings
@@ -1894,21 +1894,22 @@ define([
 
         },
         serialize: function() {
-                return {
-                    project: this.model.toJSON(),
-                    users: this.permissions.toJSON()
-                };
+            return {
+                project: this.model.toJSON(),
+                users: this.permissions.toJSON(),
+            };
         },
-        afterRender: function(){
-          this.tenantUsers.remove(EnvironmentConfig.agave.serviceAccountUsername);
-          this._usernameTypeahead(this.permissions, this.tenantUsers);
+        afterRender: function() {
+            this.tenantUsers.remove(EnvironmentConfig.agave.serviceAccountUsername);
+            this._usernameTypeahead(this.permissions, this.tenantUsers);
         },
         events: {
             'click #launch-delete-project-modal': '_launchDeleteProjectModal',
             'click #delete-project': '_deleteProject',
             'click #save-project-name': '_saveProjectName',
+            'click #save-project-description': '_saveProjectDescription',
             'click #add-user': '_addUserToProject',
-            'click .remove-user-from-project': '_removeUserFromProject'
+            'click .remove-user-from-project': '_removeUserFromProject',
         },
 
         // Private Methods
@@ -1917,6 +1918,29 @@ define([
             e.preventDefault();
 
             $('#delete-modal').modal('show');
+        },
+        _saveProjectDescription: function(e) {
+            e.preventDefault();
+
+            var newProjectDescription = $('#project-description').val();
+
+            var value = this.model.get('value');
+
+            value.description = newProjectDescription;
+
+            this.model.set('value', value);
+
+            this.model.save()
+                .done(function() {
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
+                    telemetry.set('view', 'Projects.Settings._saveProjectDescription');
+                    telemetry.save();
+                })
+                ;
         },
         _saveProjectName: function(e) {
             e.preventDefault();
@@ -1936,7 +1960,7 @@ define([
                     var telemetry = new Backbone.Agave.Model.Telemetry();
                     telemetry.set('error', JSON.stringify(error));
                     telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
-                    telemetry.set('view', 'Projects.Settings');
+                    telemetry.set('view', 'Projects.Settings._saveProjectName');
                     telemetry.save();
                 })
                 ;
@@ -2007,6 +2031,7 @@ define([
                         {
                             minLength: 1,
                             highlight: true,
+                            hint: false,
                         },
                         {
                             displayKey: function(value) {
@@ -2030,9 +2055,9 @@ define([
 
             // Check that username exists before adding
             var tenantUsers = this.tenantUsers.clone();
-            if (_.has(tenantUsers._byId, username)){
-              var that = this;
-              var newUserPermission = this.permissions.create(
+            if (_.has(tenantUsers._byId, username)) {
+                var that = this;
+                var newUserPermission = this.permissions.create(
                   {
                       username: username,
                       permission: 'READ_WRITE',

@@ -42,6 +42,15 @@ define([
         'vdjpipe-custom-demultiplex-barcode-bottom'
     );
 
+    Handlebars.registerHelper('ifGreaterThan', function(v1, v2, options) {
+
+        if (v1 > v2) {
+            return options.fn(this);
+        }
+
+        return options.inverse(this);
+    });
+
     var Vdjpipe = {};
 
     Vdjpipe.AmbiguousWindowFilter = App.Views.Generic.Vdjpipe.BaseOptionView.extend({

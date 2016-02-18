@@ -104,9 +104,19 @@ define([
             var jobSubview = this.getView('#job-staging-subview');
 
             jobSubview.stageJob(formData)
+                .done(function() {
+
+                    $('#job-modal').one('hidden.bs.modal', function(e) {
+
+                        App.router.navigate('project/' + that.projectModel.get('uuid') + '/jobs', {
+                            trigger: true,
+                        });
+                    });
+                })
                 .fail(function() {
                     that._uiCancelJobLoadingView();
-                });
+                })
+                ;
         },
 
         _validateJobForm: function(formData) {

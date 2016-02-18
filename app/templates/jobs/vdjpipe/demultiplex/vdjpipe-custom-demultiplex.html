@@ -13,6 +13,16 @@
             checked
         >
 
+        {{#ifGreaterThan files.length 1}}
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <div class="alert alert-warning">
+                        Warning: Multiple files are not treated independently when demultiplexing. For most use cases, demultiplexing should be done one file at a time.
+                    </div>
+                </div>
+            </div>
+        {{/ifGreaterThan}}
+
         <div class="row row-with-spacer">
             <div class="col-md-6">
 
