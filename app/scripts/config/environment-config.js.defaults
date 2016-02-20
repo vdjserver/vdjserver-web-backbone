@@ -4,13 +4,20 @@
 var EnvironmentConfig = {
     agave: {
         executionSystems: {
+            ls5: 'ls5.tacc.utexas.edu',
             lonestar: 'lonestar.tacc.utexas.edu',
             vdjExec01: 'vdj-exec-01.tacc.utexas.edu',
         },
-        host: 'https://wso2-elb.tacc.utexas.edu',
+        host: 'https://vdj-agave-api.tacc.utexas.edu',
         serviceAccountUsername: 'vdj',
         storageSystems: {
             corral: 'data.vdjserver.org',
+        },
+        apps: {
+            vdjPipe: 'vdj_pipe-0.1.6u1',
+            vdjPipeSmall: 'vdj_pipe-small-0.1.6u1',
+            igBlast: 'igblast-lonestar-1.4.0u7',
+            presto: '',
         },
     },
     debug: {
