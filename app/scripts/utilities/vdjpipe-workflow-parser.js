@@ -648,16 +648,17 @@ define(['app'], function(App) {
                                         + '.fasta'
                                         //+ parameters[key + '-out-group-unique']
                                         ,
+                    'out_group_duplicates': findSharedVariables
+                                        + '-unique'
+                                        + '.duplicates.tsv'
+                                        ,
                     'out_summary': 'find-unique-summary.txt',
                 };
             }
             else {
                 configuredParameter.find_shared = {
-                    'out_group_unique': jobName
-                                  + '-unique'
-                                  + '.fasta'
-                                  //+ parameters[key + '-out-group-unique']
-                                  ,
+                    'out_group_unique': 'find-unique.fasta',
+                    'out_duplicates': 'find-unique.duplicates.tsv',
                 };
             }
 

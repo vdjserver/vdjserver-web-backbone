@@ -65,6 +65,8 @@ define([
                         ||
                         doubleFileExtension === 'rc_out.tsv'
                         ||
+                        doubleFileExtension === 'duplicates.tsv'
+                        ||
                         filename === 'summary.txt'
                     ) {
                         return true;
@@ -503,6 +505,7 @@ define([
                             'find_shared': {
                                 'out_group_unique':'.fasta',
                                 'group_variable': 'MID1',
+                                'out_group_duplicates': 'unique_duplicates.tsv',
                             },
                         },
                         {
@@ -522,6 +525,7 @@ define([
                             'find_shared': {
                                 'out_group_unique':'.fasta',
                                 'group_variable': 'MID1',
+                                'out_group_duplicates': 'unique_duplicates.tsv',
                             },
                         },
                     ],
