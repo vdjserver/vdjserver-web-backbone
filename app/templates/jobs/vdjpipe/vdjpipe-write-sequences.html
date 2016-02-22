@@ -1,95 +1,27 @@
 {{> vdjpipe-base-view-top}}
 
-    <input
-        class="job-form-item hidden"
-        name="{{inputCount}}-{{parameterType}}-output-path"
-        placeholder="text"
-        type="text"
-        value="{{options.out_path}}"
-    >
-    {{#if options.unset_value}}
-        <input
-            class="job-form-item hidden"
-            name="{{inputCount}}-{{parameterType}}-unset-value"
-            placeholder="text"
-            type="text"
-            value="{{options.unset_value}}"
-        >
-    {{else}}
-        <input
-            class="job-form-item hidden"
-            name="{{inputCount}}-{{parameterType}}-unset-value"
-            placeholder="text"
-            type="text"
-            value="unassigned"
-        >
-    {{/if}}
+    <div class="row row-with-spacer">
+        <div class="col-md-6">
 
+            {{> vdjpipe-paired-reads-direction-limited-fragment}}
 
-    {{!--
-        <div class="row row-with-spacer">
-            <div class="col-md-12">
-                {{#if options.trimmed}}
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Output Filename
+                    &nbsp;
                     <input
                         class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-trimmed"
-                        type="checkbox"
-                        checked
+                        name="{{inputCount}}-{{parameterType}}-out-prefix"
+                        placeholder="text"
+                        type="text"
+                        value="{{options.out_prefix}}"
                     >
-                {{else}}
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-trimmed"
-                        type="checkbox"
-                    >
-                {{/if}}
-
-                &nbsp;
-                Trimmed
+                </div>
             </div>
         </div>
-        <div class="row row-with-spacer">
-            <div class="col-md-12">
-                {{#if options.reverse_complemented}}
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-reverse-complemented"
-                        type="checkbox"
-                        checked
-                    >
-                {{else}}
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-reverse-complemented"
-                        type="checkbox"
-                    >
-                {{/if}}
-
-                &nbsp;
-                Reverse Complemented
-            </div>
+        <div class="col-md-6">
+            This module saves the processed sequence reads into the specified output filename. Demultiplexing will generate multiple files based upon the barcode names prefixed with the specified output filename.
         </div>
-        <div class="row row-with-spacer">
-            <div class="col-md-12">
-                {{#if options.skip_empty}}
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-skip-empty"
-                        type="checkbox"
-                        checked
-                    >
-                {{else}}
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-skip-empty"
-                        type="checkbox"
-                    >
-                {{/if}}
-
-                &nbsp;
-                Skip Empty
-            </div>
-        </div>
-    --}}
+    </div>
 
 {{> vdjpipe-base-view-bottom}}

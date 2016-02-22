@@ -41,6 +41,7 @@ function(
                 var chartType = false;
 
                 switch (filename) {
+                    case 'stats_composition.csv':
                     case 'pre-filter_composition.csv':
                     case 'post-filter_composition.csv':
                     case 'pre-filter-fwd-composition.csv':
@@ -53,6 +54,7 @@ function(
                         chartType = this.CHART_TYPE_0;
                         break;
 
+                    case 'stats_gc_hist.csv':
                     case 'pre-filter_gc_hist.csv':
                     case 'post-filter_gc_hist.csv':
                     case 'pre-filter-fwd-gc_hist.csv':
@@ -65,6 +67,7 @@ function(
                         chartType = this.CHART_TYPE_1;
                         break;
 
+                    case 'stats_heat_map.csv':
                     case 'pre-heat_map.csv':
                     case 'post-heat_map.csv':
                     case 'pre-filter-fwd-heat_map.csv':
@@ -76,6 +79,7 @@ function(
                     case 'reverse-heat_map.csv':
                         break;
 
+                    case 'stats_len_hist.csv':
                     case 'pre-filter_len_hist.csv':
                     case 'post-filter_len_hist.csv':
                     case 'pre-filter-fwd-len_hist.csv':
@@ -88,6 +92,7 @@ function(
                         chartType = this.CHART_TYPE_3;
                         break;
 
+                    case 'stats_mean_q_hist.csv':
                     case 'pre-filter_mean_q_hist.csv':
                     case 'post-filter_mean_q_hist.csv':
                     case 'pre-filter-fwd-mean_q_hist.csv':
@@ -100,6 +105,7 @@ function(
                         chartType = this.CHART_TYPE_4;
                         break;
 
+                    case 'stats_qstats.csv':
                     case 'pre-filter_qstats.csv':
                     case 'post-filter_qstats.csv':
                     case 'pre-filter-fwd-qstats.csv':
