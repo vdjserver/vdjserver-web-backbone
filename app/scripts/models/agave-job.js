@@ -207,7 +207,7 @@ function(
                     {},
                     Backbone.Agave.JobModel.prototype.defaults,
                     {
-                        appId: 'igblast-lonestar-1.4.0u7',
+                        appId: EnvironmentConfig.agave.apps.igBlast,
                         inputs: {
                             query: '',
                         },
@@ -269,8 +269,9 @@ function(
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: 'vdj_pipe-0.1.5u6',
-                }
+                    appId: EnvironmentConfig.agave.apps.vdjPipe,
+                    executionSystem: EnvironmentConfig.agave.executionSystems.ls5,
+               }
             );
         },
         initialize: function(options) {
@@ -281,7 +282,7 @@ function(
             if (_.isNumber(fileSize)) {
                 if (fileSize < 5000000) {
                     this.set({
-                        'appId': 'vdj_pipe-small-0.1.5u1',
+                        'appId': EnvironmentConfig.agave.apps.vdjPipeSmall,
                         'executionSystem': EnvironmentConfig.agave.executionSystems.vdjExec01,
                     });
 
