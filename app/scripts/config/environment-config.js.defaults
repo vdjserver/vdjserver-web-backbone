@@ -14,8 +14,8 @@ var EnvironmentConfig = {
             corral: 'data.vdjserver.org',
         },
         apps: {
-            vdjPipe: 'vdj_pipe-0.1.6u1',
-            vdjPipeSmall: 'vdj_pipe-small-0.1.6u1',
+            vdjPipe: 'vdj_pipe-0.1.6u3',
+            vdjPipeSmall: 'vdj_pipe-small-0.1.6u3',
             igBlast: 'igblast-lonestar-1.4.0u7',
             presto: '',
         },
