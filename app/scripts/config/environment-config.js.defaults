@@ -7,6 +7,7 @@ var EnvironmentConfig = {
             ls5: 'ls5.tacc.utexas.edu',
             lonestar: 'lonestar.tacc.utexas.edu',
             vdjExec01: 'vdj-exec-01.tacc.utexas.edu',
+            vdjExec02: 'vdj-exec-02.tacc.utexas.edu',
         },
         host: 'https://vdj-agave-api.tacc.utexas.edu',
         serviceAccountUsername: 'vdj',
@@ -15,7 +16,7 @@ var EnvironmentConfig = {
         },
         apps: {
             vdjPipe: 'vdj_pipe-0.1.6u3',
-            vdjPipeSmall: 'vdj_pipe-small-0.1.6u3',
+            vdjPipeSmall: 'vdj_pipe-small-0.1.6u4',
             igBlast: 'igblast-lonestar-1.4.0u7',
             presto: '',
         },

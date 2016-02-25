@@ -289,7 +289,7 @@ function(
                 if (fileSize < 5000000) {
                     this.set({
                         'appId': EnvironmentConfig.agave.apps.vdjPipeSmall,
-                        'executionSystem': EnvironmentConfig.agave.executionSystems.vdjExec01,
+                        'executionSystem': EnvironmentConfig.agave.executionSystems.vdjExec02,
                     });
 
                     this.unset('maxRunTime');
