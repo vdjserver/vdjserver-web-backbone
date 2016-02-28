@@ -251,7 +251,7 @@ define([
             archivePath: '',
             archiveSystem: EnvironmentConfig.agave.storageSystems.corral,
             batchQueue: 'normal',
-            executionSystem: EnvironmentConfig.agave.executionSystems.lonestar,
+            executionSystem: EnvironmentConfig.agave.executionSystems.ls5,
             //id: 0,
             inputs: {},
             maxRunTime: '48:00:00',
