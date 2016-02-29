@@ -276,7 +276,6 @@ function(
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
                     appId: EnvironmentConfig.agave.apps.vdjPipe,
-                    executionSystem: EnvironmentConfig.agave.executionSystems.ls5,
                }
             );
         },

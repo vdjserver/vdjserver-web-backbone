@@ -17,7 +17,7 @@ var EnvironmentConfig = {
         apps: {
             vdjPipe: 'vdj_pipe-0.1.6u3',
             vdjPipeSmall: 'vdj_pipe-small-0.1.6u4',
-            igBlast: 'igblast-lonestar-1.4.0u7',
+            igBlast: 'igblast-ls5-1.4.0u1',
             presto: '',
         },
     },
