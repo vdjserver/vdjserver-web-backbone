@@ -32,11 +32,10 @@ define([
                 'method': 'GET',
                 'maxUses': 1,
                 'lifetime': 3600,
-                'noauth': true,
+                'noauth': false,
             }),
         })
         .then(function(response) {
-            response = JSON.parse(response);
 
             var targetUrl = response.result._links.self.href;
 
