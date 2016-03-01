@@ -5,7 +5,7 @@ var EnvironmentConfig = {
     agave: {
         executionSystems: {
             lonestar: 'lonestar.tacc.utexas.edu',
-            vdjExec01: 'vdj-exec-01.tacc.utexas.edu',
+            vdjExec02: 'vdj-exec-02.tacc.utexas.edu',
         },
         host: 'https://wso2-elb.tacc.utexas.edu',
         serviceAccountUsername: 'vdj',
