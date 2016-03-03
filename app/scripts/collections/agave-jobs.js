@@ -208,11 +208,11 @@ define([
         setPredefinedWorkflows: function() {
 
             // single function workflows
-            let preconfiguredWorkflows = this._preconfiguredWorkflows();
-            for (let i = 0; i < preconfiguredWorkflows.length; i++) {
-                let preconfiguredWorkflow = preconfiguredWorkflows[i];
+            var preconfiguredWorkflows = this._preconfiguredWorkflows();
+            for (var i = 0; i < preconfiguredWorkflows.length; i++) {
+                var preconfiguredWorkflow = preconfiguredWorkflows[i];
 
-                let workflow = new Backbone.Agave.Model.Job.Workflow();
+                var workflow = new Backbone.Agave.Model.Job.Workflow();
                 workflow.sync = workflow.fakeSync;
                 workflow.set('predefined', true);
                 workflow.set('single', true);
@@ -222,17 +222,17 @@ define([
             }
 
             // complete workflows
-            let preconfiguredCompleteWorkflows = this._preconfiguredCompleteWorkflows();
-            for (let i = 0; i < preconfiguredCompleteWorkflows.length; i++) {
-                let preconfiguredWorkflow = preconfiguredCompleteWorkflows[i];
+            var preconfiguredCompleteWorkflows = this._preconfiguredCompleteWorkflows();
+            for (var j = 0; j < preconfiguredCompleteWorkflows.length; j++) {
+                var preconfiguredCompleteWorkflow = preconfiguredCompleteWorkflows[j];
 
-                let workflow = new Backbone.Agave.Model.Job.Workflow();
-                workflow.sync = workflow.fakeSync;
-                workflow.set('predefined', true);
-                workflow.set('complete', true);
+                var completeWorkflow = new Backbone.Agave.Model.Job.Workflow();
+                completeWorkflow.sync = completeWorkflow.fakeSync;
+                completeWorkflow.set('predefined', true);
+                completeWorkflow.set('complete', true);
 
-                workflow.setConfigFromPreconfiguredData(preconfiguredWorkflow);
-                this.unshift(workflow);
+                completeWorkflow.setConfigFromPreconfiguredData(preconfiguredCompleteWorkflow);
+                this.unshift(completeWorkflow);
             }
         },
 
