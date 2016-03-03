@@ -4,10 +4,7 @@
             <thead>
                 <tr>
                     <th class="text-center">
-                        Title
-                    </th>
-                    <th class="text-center">
-                        Type
+                        Sequence Read File
                     </th>
                     <th class="text-center">
                         Associated Quality Score File
@@ -16,34 +13,24 @@
             </thead>
             <tbody>
                 {{#each fastaMetadatas}}
-                    <tr class="text-center">
-                        <td>
-                            <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}">{{value.name}}</a>
-                        </td>
-                        <td>
-                            <select
-                                class="project-file-type"
-                                data-fileuuid="{{uuid}}"
-                            >
-                                {{#each ../fileTypes}}
-                                <option {{ifCondSelected @index ../value.fileType}} value="{{@index}}">
-                                        {{this}}
-                                    </option>
-                                {{/each}}
-                            </select>
-                        </td>
-                        <td>
-                            <select
-                                class="quality-score"
-                                data-fastauuid="{{uuid}}"
-                            >
-                                <option></option>
-                                {{#each ../qualMetadatas}}
-                                    <option {{ifCondSelected this.uuid ../value.qualityScoreMetadataUuid}}>{{this.value.name}}</option>
-                                {{/each}}
-                            </select>
-                        </td>
-                    </tr>
+                    {{#ifCond value.fileType 2}}
+                        <tr class="text-center">
+                            <td>
+                                <a class="download-file" href="#" data-bypass=true data-filename="{{value.name}}">{{value.name}}</a>
+                            </td>
+                            <td>
+                                <select
+                                    class="quality-score"
+                                    data-fastauuid="{{uuid}}"
+                                >
+                                    <option></option>
+                                    {{#each ../../qualMetadatas}}
+                                        <option {{ifCondSelected this.uuid ../value.qualityScoreMetadataUuid}}>{{this.value.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </td>
+                        </tr>
+                    {{/ifCond}}
                 {{/each}}
             </tbody>
         </table>

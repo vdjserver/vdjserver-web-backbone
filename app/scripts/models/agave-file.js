@@ -688,7 +688,11 @@ function(
             FILE_TYPE_1: 'Primer Sequences',
             FILE_TYPE_2: 'Read-Level Data',
             FILE_TYPE_3: 'Barcode Combinations',
-            FILE_TYPE_4: 'Specify Later',
+            FILE_TYPE_4: 'Quality Scores',
+            FILE_TYPE_5: 'Unknown',
+            FILE_TYPE_6: 'TAB-separated Text',
+            FILE_TYPE_7: 'Comma-separated Text',
+            FILE_TYPE_8: 'VDJML',
 
             getFileTypeById: function(fileTypeId) {
 
@@ -715,6 +719,22 @@ function(
                         fileType = this.FILE_TYPE_4;
                         break;
 
+                    case 5:
+                        fileType = this.FILE_TYPE_5;
+                        break;
+
+                    case 6:
+                        fileType = this.FILE_TYPE_6;
+                        break;
+
+                    case 7:
+                        fileType = this.FILE_TYPE_7;
+                        break;
+
+                    case 8:
+                        fileType = this.FILE_TYPE_8;
+                        break;
+
                     default:
                         break;
                 }
@@ -729,6 +749,7 @@ function(
                     this.FILE_TYPE_2,
                     this.FILE_TYPE_3,
                     this.FILE_TYPE_4,
+                    this.FILE_TYPE_5,
                 ];
             },
 
@@ -751,14 +772,11 @@ function(
 
             doesFileTypeIdHaveReadDirection: function(fileTypeId) {
 
-                var hasReadDirection = true;
+                var hasReadDirection = false;
 
                 switch (fileTypeId) {
-                    case 0:
-                    case 1:
-                    case 3:
-                    case 4:
-                        hasReadDirection = false;
+                    case 2:
+                        hasReadDirection = true;
                         break;
 
                     default:

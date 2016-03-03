@@ -137,7 +137,7 @@ function(Backbone, EnvironmentConfig, _string) {
             getQualCollection: function() {
 
                 var qualModels = _.filter(this.models, function(model) {
-                    return model.getFileExtension() === 'qual';
+                    return model.getFileType() === 4;
                 });
 
                 var newCollection = this.clone();
