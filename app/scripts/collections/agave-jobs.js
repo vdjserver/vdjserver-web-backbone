@@ -209,12 +209,28 @@ define([
 
             var preconfiguredWorkflows = this._preconfiguredWorkflows();
 
+            // single function workflows
             for (var i = 0; i < preconfiguredWorkflows.length; i++) {
                 var preconfiguredWorkflow = preconfiguredWorkflows[i];
 
                 var workflow = new Backbone.Agave.Model.Job.Workflow();
                 workflow.sync = workflow.fakeSync;
                 workflow.set('predefined', true);
+                workflow.set('single', true);
+
+                workflow.setConfigFromPreconfiguredData(preconfiguredWorkflow);
+                this.unshift(workflow);
+            }
+
+            // complete workflows
+            preconfiguredWorkflows = this._preconfiguredCompleteWorkflows();
+            for (var i = 0; i < preconfiguredWorkflows.length; i++) {
+                var preconfiguredWorkflow = preconfiguredWorkflows[i];
+
+                var workflow = new Backbone.Agave.Model.Job.Workflow();
+                workflow.sync = workflow.fakeSync;
+                workflow.set('predefined', true);
+                workflow.set('complete', true);
 
                 workflow.setConfigFromPreconfiguredData(preconfiguredWorkflow);
                 this.unshift(workflow);
@@ -222,7 +238,7 @@ define([
         },
 
         // Private Methods
-        _preconfiguredWorkflows: function() {
+        _preconfiguredCompleteWorkflows: function() {
 
             var workflows = [
 /*
@@ -516,6 +532,14 @@ define([
                         },
                     ],
                 },
+
+            ];
+
+            return workflows;
+        },
+        _preconfiguredWorkflows: function() {
+
+            var workflows = [
 
                 {
                     'workflow-name': 'Find Unique Sequences',
