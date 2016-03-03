@@ -207,14 +207,29 @@ define([
         },
         setPredefinedWorkflows: function() {
 
-            var preconfiguredWorkflows = this._preconfiguredWorkflows();
+            // single function workflows
+            let preconfiguredWorkflows = this._preconfiguredWorkflows();
+            for (let i = 0; i < preconfiguredWorkflows.length; i++) {
+                let preconfiguredWorkflow = preconfiguredWorkflows[i];
 
-            for (var i = 0; i < preconfiguredWorkflows.length; i++) {
-                var preconfiguredWorkflow = preconfiguredWorkflows[i];
-
-                var workflow = new Backbone.Agave.Model.Job.Workflow();
+                let workflow = new Backbone.Agave.Model.Job.Workflow();
                 workflow.sync = workflow.fakeSync;
                 workflow.set('predefined', true);
+                workflow.set('single', true);
+
+                workflow.setConfigFromPreconfiguredData(preconfiguredWorkflow);
+                this.unshift(workflow);
+            }
+
+            // complete workflows
+            let preconfiguredCompleteWorkflows = this._preconfiguredCompleteWorkflows();
+            for (let i = 0; i < preconfiguredCompleteWorkflows.length; i++) {
+                let preconfiguredWorkflow = preconfiguredCompleteWorkflows[i];
+
+                let workflow = new Backbone.Agave.Model.Job.Workflow();
+                workflow.sync = workflow.fakeSync;
+                workflow.set('predefined', true);
+                workflow.set('complete', true);
 
                 workflow.setConfigFromPreconfiguredData(preconfiguredWorkflow);
                 this.unshift(workflow);
@@ -222,7 +237,7 @@ define([
         },
 
         // Private Methods
-        _preconfiguredWorkflows: function() {
+        _preconfiguredCompleteWorkflows: function() {
 
             var workflows = [
 /*
@@ -516,6 +531,14 @@ define([
                         },
                     ],
                 },
+
+            ];
+
+            return workflows;
+        },
+        _preconfiguredWorkflows: function() {
+
+            var workflows = [
 
                 {
                     'workflow-name': 'Find Unique Sequences',
