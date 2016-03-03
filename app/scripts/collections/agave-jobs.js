@@ -207,13 +207,12 @@ define([
         },
         setPredefinedWorkflows: function() {
 
-            var preconfiguredWorkflows = this._preconfiguredWorkflows();
-
             // single function workflows
-            for (var i = 0; i < preconfiguredWorkflows.length; i++) {
-                var preconfiguredWorkflow = preconfiguredWorkflows[i];
+            let preconfiguredWorkflows = this._preconfiguredWorkflows();
+            for (let i = 0; i < preconfiguredWorkflows.length; i++) {
+                let preconfiguredWorkflow = preconfiguredWorkflows[i];
 
-                var workflow = new Backbone.Agave.Model.Job.Workflow();
+                let workflow = new Backbone.Agave.Model.Job.Workflow();
                 workflow.sync = workflow.fakeSync;
                 workflow.set('predefined', true);
                 workflow.set('single', true);
@@ -223,11 +222,11 @@ define([
             }
 
             // complete workflows
-            preconfiguredWorkflows = this._preconfiguredCompleteWorkflows();
-            for (var i = 0; i < preconfiguredWorkflows.length; i++) {
-                var preconfiguredWorkflow = preconfiguredWorkflows[i];
+            let preconfiguredCompleteWorkflows = this._preconfiguredCompleteWorkflows();
+            for (let i = 0; i < preconfiguredCompleteWorkflows.length; i++) {
+                let preconfiguredWorkflow = preconfiguredCompleteWorkflows[i];
 
-                var workflow = new Backbone.Agave.Model.Job.Workflow();
+                let workflow = new Backbone.Agave.Model.Job.Workflow();
                 workflow.sync = workflow.fakeSync;
                 workflow.set('predefined', true);
                 workflow.set('complete', true);
