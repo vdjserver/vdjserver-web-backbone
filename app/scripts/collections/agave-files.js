@@ -125,7 +125,7 @@ function(Backbone, EnvironmentConfig, _string) {
             getPrimerCollection: function() {
 
                 var primerModels = _.filter(this.models, function(model) {
-                    return model.getFileType() === 1;
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_PRIMER;
                 });
 
                 var newCollection = this.clone();
@@ -137,7 +137,7 @@ function(Backbone, EnvironmentConfig, _string) {
             getQualCollection: function() {
 
                 var qualModels = _.filter(this.models, function(model) {
-                    return model.getFileType() === 4;
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_QUALITY;
                 });
 
                 var newCollection = this.clone();
@@ -151,9 +151,9 @@ function(Backbone, EnvironmentConfig, _string) {
                 var models = _.filter(this.models, function(model) {
 
                     return (
-                            model.getFileType() === 2
+                            model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ
                                 ||
-                            model.getFileType() === 4
+                            model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_QUALITY
                            )
                            &&
                            model.getFileExtension() !== 'fastq'
@@ -183,7 +183,7 @@ function(Backbone, EnvironmentConfig, _string) {
             getReadLevelCollection: function() {
 
                 var readLevelModels = _.filter(this.models, function(model) {
-                    return model.getFileType() === 2
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ
                            ;
                 });
 
@@ -196,7 +196,7 @@ function(Backbone, EnvironmentConfig, _string) {
             getPairedReadCollection: function() {
 
                 var pairedReadModels = _.filter(this.models, function(model) {
-                    return model.getFileType() === 2
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ
                            &&
                            model.getPairedReadMetadataUuid() !== undefined
                            ;
@@ -535,7 +535,7 @@ function(Backbone, EnvironmentConfig, _string) {
 
                 // Filter down to files that are known barcodes and have the .fasta extension
                 var barcodeModels = _.filter(this.models, function(model) {
-                    return model.getFileType() === 0
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_BARCODE
                            ;
                 });
 
@@ -552,7 +552,7 @@ function(Backbone, EnvironmentConfig, _string) {
 
                 // Filter down to files that are unspecified and have the .fasta extension
                 var barcodeModels = _.filter(this.models, function(model) {
-                    return model.getFileType() === 4
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_UNSPECIFIED
                            ;
                 });
 

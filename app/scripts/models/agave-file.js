@@ -194,6 +194,35 @@ function(
         {
             CANCEL_UPLOAD: 'cancelUpload',
             UPLOAD_PROGRESS: 'uploadProgress',
+
+            fileTypeCodes: {
+                FILE_TYPE_BARCODE: 0,
+                FILE_TYPE_PRIMER: 1,
+                FILE_TYPE_READ: 2,
+                FILE_TYPE_BARCODE_COMBO: 3, // deprecated
+                FILE_TYPE_UNSPECIFIED: 4,
+                FILE_TYPE_QUALITY: 5,
+                FILE_TYPE_TSV: 6,
+                FILE_TYPE_CSV: 7,
+                FILE_TYPE_VDJML: 8,
+                FILE_TYPE_FASTA: 9,
+                FILE_TYPE_FASTQ: 10,
+            },
+
+            // index should map to codes
+            fileTypeNames: [
+                'Barcode Sequences',
+                'Primer Sequences',
+                'Read-Level Data',
+                'Barcode Combinations', // deprecated
+                'Unspecified',
+                'Quality Scores',
+                'TAB-separated Text',
+                'Comma-separated Text',
+                'VDJML',
+                'Read-Level (FASTA) Data',
+                'Read-Level (FASTQ) Data',
+            ],
         }
     );
 
@@ -684,72 +713,19 @@ function(
             },
         }),
         {
-            FILE_TYPE_0: 'Barcode Sequences',
-            FILE_TYPE_1: 'Primer Sequences',
-            FILE_TYPE_2: 'Read-Level Data',
-            FILE_TYPE_3: 'Barcode Combinations',
-            FILE_TYPE_4: 'Quality Scores',
-            FILE_TYPE_5: 'Unknown',
-            FILE_TYPE_6: 'TAB-separated Text',
-            FILE_TYPE_7: 'Comma-separated Text',
-            FILE_TYPE_8: 'VDJML',
 
             getFileTypeById: function(fileTypeId) {
-
-                var fileType = '';
-
-                switch (fileTypeId) {
-                    case 0:
-                        fileType = this.FILE_TYPE_0;
-                        break;
-
-                    case 1:
-                        fileType = this.FILE_TYPE_1;
-                        break;
-
-                    case 2:
-                        fileType = this.FILE_TYPE_2;
-                        break;
-
-                    case 3:
-                        fileType = this.FILE_TYPE_3;
-                        break;
-
-                    case 4:
-                        fileType = this.FILE_TYPE_4;
-                        break;
-
-                    case 5:
-                        fileType = this.FILE_TYPE_5;
-                        break;
-
-                    case 6:
-                        fileType = this.FILE_TYPE_6;
-                        break;
-
-                    case 7:
-                        fileType = this.FILE_TYPE_7;
-                        break;
-
-                    case 8:
-                        fileType = this.FILE_TYPE_8;
-                        break;
-
-                    default:
-                        break;
-                }
-
-                return fileType;
+                return File.fileTypeNames[fileTypeId];
             },
 
             getFileTypes: function() {
                 return [
-                    this.FILE_TYPE_0,
-                    this.FILE_TYPE_1,
-                    this.FILE_TYPE_2,
-                    this.FILE_TYPE_3,
-                    this.FILE_TYPE_4,
-                    this.FILE_TYPE_5,
+                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_BARCODE],
+                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_PRIMER],
+                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_READ],
+                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_BARCODE_COMBO],
+                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_UNSPECIFIED],
+                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_QUALITY],
                 ];
             },
 
@@ -757,8 +733,8 @@ function(
                 var isQualAssociable = false;
 
                 switch (fileTypeId) {
-                    case 2:
-                    case 4:
+                    case File.fileTypeCodes.FILE_TYPE_READ:
+                    case File.fileTypeCodes.FILE_TYPE_QUALITY:
                         isQualAssociable = true;
                         break;
 
@@ -775,7 +751,7 @@ function(
                 var hasReadDirection = false;
 
                 switch (fileTypeId) {
-                    case 2:
+                    case File.fileTypeCodes.FILE_TYPE_READ:
                         hasReadDirection = true;
                         break;
 
