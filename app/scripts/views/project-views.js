@@ -1095,6 +1095,7 @@ define([
                     pairedReadFileListings: this.pairedReads,
                     readDirections: Backbone.Agave.Model.File.Metadata.getReadDirections(),
                     fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
+                    fileTypeNames: Backbone.Agave.Model.File.Metadata.getNamesForFileTypes(Backbone.Agave.Model.File.Metadata.getFileTypes()),
                 };
             },
             events: {
@@ -1400,6 +1401,7 @@ define([
             return {
                 file: this.model.toJSON(),
                 fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
+                fileTypeNames: Backbone.Agave.Model.File.Metadata.getNamesForFileTypes(Backbone.Agave.Model.File.Metadata.getFileTypes()),
             };
         },
     });
@@ -1739,6 +1741,7 @@ define([
                         fastaMetadatas: this.fastaMetadatas.toJSON(),
                         qualMetadatas: this.qualMetadatas.toJSON(),
                         fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
+                        fileTypeNames: Backbone.Agave.Model.File.Metadata.getNamesForFileTypes(Backbone.Agave.Model.File.Metadata.getFileTypes()),
                     };
                 }
             },

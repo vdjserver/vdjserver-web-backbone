@@ -720,13 +720,22 @@ function(
 
             getFileTypes: function() {
                 return [
-                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_BARCODE],
-                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_PRIMER],
-                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_READ],
-                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_BARCODE_COMBO],
-                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_UNSPECIFIED],
-                    File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_QUALITY],
+                    File.fileTypeCodes.FILE_TYPE_BARCODE,
+                    File.fileTypeCodes.FILE_TYPE_PRIMER,
+                    File.fileTypeCodes.FILE_TYPE_READ,
+                    File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
+                    File.fileTypeCodes.FILE_TYPE_QUALITY,
                 ];
+            },
+
+            getNamesForFileTypes: function(fileTypeIds) {
+                var fileTypeNames = [];
+
+                for (var i = 0; i < fileTypeIds.length; ++i) {
+                    fileTypeNames.push(this.getFileTypeById(fileTypeIds[i]));
+                }
+
+                return fileTypeNames;
             },
 
             isFileTypeIdQualAssociable: function(fileTypeId) {
