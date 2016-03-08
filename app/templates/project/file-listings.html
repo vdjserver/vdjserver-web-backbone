@@ -165,8 +165,8 @@
                                                     data-fileuuid="{{uuid}}"
                                                 >
                                                     {{#each ../../../fileTypes}}
-                                                    <option {{ifCondSelected @index ../../value.fileType}} value="{{@index}}">
-                                                            {{this}}
+                                                        <option {{ifCondSelected this ../../value.fileType}} value="{{this}}">
+                                                            {{#with (lookup ../../../../fileTypeNames @index)}} {{this}} {{/with}}
                                                         </option>
                                                     {{/each}}
                                                 </select>
