@@ -133,7 +133,7 @@ define([
             fileModel.downloadFileToDisk()
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.File.Community.downloadFileToDisk()');
                     telemetry.set('view', 'Community.Detail');
                     telemetry.save();

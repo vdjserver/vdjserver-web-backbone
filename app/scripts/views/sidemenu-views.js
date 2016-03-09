@@ -61,7 +61,7 @@ define([
                     })
                     .fail(function(error) {
                         var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Collection.Projects().fetch()');
                         telemetry.set('view', 'Sidemenu.List');
                         telemetry.save();

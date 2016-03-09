@@ -93,7 +93,7 @@ define([
                 if (e.responseJSON.message === 'Recaptcha response invalid: incorrect-captcha-sol') {
 
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(e.responseJSON.message));
+                    telemetry.setError(e);
                     telemetry.set('method', 'Backbone.Agave.Model.FeedbackModel().save()');
                     telemetry.set('view', 'Feedback.Form');
                     telemetry.save();
@@ -200,7 +200,7 @@ define([
                             .fail(function(error) {
 
                                 var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.setError(error);
                                 telemetry.set('method', 'Backbone.Agave.Model.UserFeedback().save()');
                                 telemetry.set('view', 'UserFeedback.Form');
                                 telemetry.save();

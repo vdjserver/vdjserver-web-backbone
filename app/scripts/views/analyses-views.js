@@ -162,6 +162,7 @@ define([
                 .fail(function(error) {
 
                     var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
                     telemetry.set('error', JSON.stringify(error));
                     telemetry.set('method', 'Backbone.Agave.Collection.Jobs.Listings().save()');
                     telemetry.set('view', 'Analyses.OutputList');
@@ -269,7 +270,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Job.Detail().fetch()');
                     telemetry.set('view', 'Analyses.OutputList');
                     telemetry.save();
@@ -383,7 +384,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().fetch()');
                     telemetry.set('view', 'Analyses.SelectAnalyses');
                     telemetry.save();
@@ -636,7 +637,7 @@ define([
                     var errorMessage = that.getErrorMessageFromResponse(response);
 
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(errorMessage));
+                    telemetry.setError(errorMessage);
                     telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().save()');
                     telemetry.set('view', 'Analyses.SelectAnalyses');
                     telemetry.set('jobId', that.jobId);
@@ -697,7 +698,7 @@ define([
             outputFile.downloadFileToDisk()
                 .fail(function(error) {
                       var telemetry = new Backbone.Agave.Model.Telemetry();
-                      telemetry.set('error', JSON.stringify(error));
+                      telemetry.setError(error);
                       telemetry.set('method', 'Backbone.Agave.Model.Job.OutputFile.downloadFileToDisk()');
                       telemetry.set('view', 'Analyses.SelectAnalyses');
                       telemetry.save();

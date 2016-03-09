@@ -86,7 +86,7 @@ define(['app', 'backbone.syphon'], function(App) {
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.setError(error);
                             telemetry.set('method', 'Backbone.Agave.Model.PasswordReset().save()');
                             telemetry.set('view', 'ForgotPassword.Form');
                             telemetry.save();

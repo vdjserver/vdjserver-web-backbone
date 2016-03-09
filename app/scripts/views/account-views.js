@@ -118,7 +118,7 @@ define([
                         })
                         .fail(function(jqXhr, errorText, errorThrown) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', jqXhr);
+                            telemetry.setError(jqXhr);
                             telemetry.set('username', formData.username);
                             telemetry.set('method', 'Backbone.Agave.Model.Account.NewAccount().save()');
                             telemetry.set('view', 'Account.CreateAccount');
@@ -191,7 +191,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('username', username);
                     telemetry.set('method', 'Backbone.Agave.Model.Account.ResendVerificationEmail().save()');
                     telemetry.set('view', 'Account.VerificationPending');
@@ -257,7 +257,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Account.VerifyEmail().save()');
                     telemetry.set('view', 'Account.VerificationPending');
                     telemetry.save();
@@ -343,7 +343,7 @@ define([
                             })
                             .fail(function(error) {
                                 var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.setError(error);
                                 telemetry.set('method', 'Backbone.Agave.Model.Account.VerifyAccount().save()');
                                 telemetry.set('view', 'Account.VerifyAccount');
                                 telemetry.save();

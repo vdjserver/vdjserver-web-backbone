@@ -568,7 +568,7 @@ define([
                             })
                             .fail(function(error) {
                                 var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.setError(error);
                                 telemetry.set('method', 'Backbone.Agave.Model.Job.Workflow().save()');
                                 telemetry.set('view', 'Jobs.WorkflowEditor');
                                 telemetry.save();
@@ -627,7 +627,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Notification.Job().save()');
                     telemetry.set('view', 'Jobs.StagingBase');
                     telemetry.save();
@@ -770,7 +770,7 @@ define([
                     })
                     .fail(function(error) {
                         var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.Job.Workflow().save()');
                         telemetry.set('view', 'Jobs.VdjpipeStaging');
                         telemetry.save();
@@ -820,7 +820,7 @@ define([
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.setError(error);
                             telemetry.set('method', 'Backbone.Agave.Model.Job.Workflow().destroy()');
                             telemetry.set('view', 'Jobs.VdjpipeStaging');
                             telemetry.save();

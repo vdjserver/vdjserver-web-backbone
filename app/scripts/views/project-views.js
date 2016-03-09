@@ -276,7 +276,7 @@ define([
                             })
                             .fail(function(error) {
                                 var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.setError(error);
                                 telemetry.set('method', 'Backbone.Agave.Model.Project().save()');
                                 telemetry.set('view', 'Projects.Create');
                                 telemetry.save();
@@ -506,7 +506,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata().fetch()');
                     telemetry.set('view', 'Projects.Detail');
                     telemetry.save();
@@ -531,7 +531,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Collection.Permissions().fetch()');
                     telemetry.set('view', 'Projects.Detail');
                     telemetry.save();
@@ -645,7 +645,7 @@ define([
                                         })
                                         .fail(function(error) {
                                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                                            telemetry.set('error', JSON.stringify(error));
+                                            telemetry.setError(error);
                                             telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
                                             telemetry.set('view', 'Projects.Detail');
                                             telemetry.save();
@@ -676,7 +676,7 @@ define([
                                         })
                                         .fail(function(error) {
                                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                                            telemetry.set('error', JSON.stringify(error));
+                                            telemetry.setError(error);
                                             telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
                                             telemetry.set('view', 'Projects.Detail');
                                             telemetry.save();
@@ -892,7 +892,7 @@ define([
                     })
                     .fail(function(error) {
                         var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.setError(error);
                         telemetry.set('method', 'fileMetadataModel.removeQualityScoreMetadataUuid()');
                         telemetry.set('view', 'Projects.Detail');
                         telemetry.save();
@@ -994,7 +994,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'softDelete()');
                     telemetry.set('view', 'Projects.Detail');
                     telemetry.save();
@@ -1030,7 +1030,7 @@ define([
                     tmpFileModel.downloadFileToDisk()
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.setError(error);
                             telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.downloadFileToDisk()');
                             telemetry.set('view', 'Projects.Detail');
                             telemetry.save();
@@ -1140,7 +1140,7 @@ define([
                         that._uiShowSaveErrorAnimation(e.target);
 
                         var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.updateFileType()');
                         telemetry.set('view', 'Projects.FileListings');
                         telemetry.save();
@@ -1162,7 +1162,7 @@ define([
                         that._uiShowSaveErrorAnimation(e.target);
 
                         var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.setReadDirection()');
                         telemetry.set('view', 'Projects.FileListings');
                         telemetry.save();
@@ -1184,7 +1184,7 @@ define([
                         that._uiShowSaveErrorAnimation(e.target);
 
                         var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.updateTags()');
                         telemetry.set('view', 'Projects.FileListings');
                         telemetry.save();
@@ -1593,7 +1593,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'file.save()');
                     telemetry.set('view', 'Projects.FileTransfer');
                     telemetry.save();
@@ -1625,7 +1625,7 @@ define([
                     })
                     .fail(function(error) {
                         var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata()');
                         telemetry.set('view', 'Projects.PairedReadFileAssociations');
                         telemetry.save();
@@ -1676,7 +1676,7 @@ define([
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.setError(error);
                             telemetry.set('method', 'setPairedReadMetadataUuid()');
                             telemetry.set('view', 'Projects.PairedReadFileAssociations');
                             telemetry.save();
@@ -1697,7 +1697,7 @@ define([
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.setError(error);
                             telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads()');
                             telemetry.set('view', 'Projects.PairedReadFileAssociations');
                             telemetry.save();
@@ -1728,7 +1728,7 @@ define([
                     })
                     .fail(function(error) {
                         var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.fetch()');
                         telemetry.set('view', 'Projects.QualFileAssociations');
                         telemetry.save();
@@ -1774,7 +1774,7 @@ define([
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.setError(error);
                             telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.setQualityScoreMetadataUuid()');
                             telemetry.set('view', 'Projects.QualFileAssociations');
                             telemetry.save();
@@ -1791,7 +1791,7 @@ define([
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.setError(error);
                             telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.removeQualityScoreMetadataUuid()');
                             telemetry.set('view', 'Projects.QualFileAssociations');
                             telemetry.save();
@@ -1835,7 +1835,7 @@ define([
                         that._uiShowSaveErrorAnimation(e.target);
 
                         var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.updateFileType()');
                         telemetry.set('view', 'Projects.QualFileAssociations');
                         telemetry.save();
@@ -1880,7 +1880,7 @@ define([
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.setError(error);
                             telemetry.set('method', 'Backbone.Agave.Collection.TenantUsers.fetch()');
                             telemetry.set('view', 'Projects.ManageUsers');
                             telemetry.save();
@@ -1889,7 +1889,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Collection.Permissions.fetch()');
                     telemetry.set('view', 'Projects.ManageUsers');
                     telemetry.save();
@@ -1938,7 +1938,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
                     telemetry.set('view', 'Projects.Settings._saveProjectDescription');
                     telemetry.save();
@@ -1961,7 +1961,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
                     telemetry.set('view', 'Projects.Settings._saveProjectName');
                     telemetry.save();
@@ -1993,7 +1993,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Project.destroy()');
                     telemetry.set('view', 'Projects.Settings');
                     telemetry.save();
@@ -2070,38 +2070,39 @@ define([
             if (_.has(tenantUsers._byId, username)) {
                 var that = this;
                 var newUserPermission = this.permissions.create(
-                  {
-                      username: username,
-                      permission: 'READ_WRITE',
-                      uuid: this.permissions.uuid,
-                  },
-                  {
-                      success: function() {
+                    {
+                        username: username,
+                        permission: 'READ_WRITE',
+                        uuid: this.permissions.uuid,
+                    },
+                    {
+                        success: function() {
 
-                          newUserPermission.addUserToProject()
-                              .then(function() {
-                              })
-                              .fail(function(error) {
-                                  var telemetry = new Backbone.Agave.Model.Telemetry();
-                                  telemetry.set('error', JSON.stringify(error));
-                                  telemetry.set('method', 'Backbone.Agave.Model.Permission.addUserToProject()');
-                                  telemetry.set('view', 'Projects.ManageUsers');
-                                  telemetry.save();
-                              });
+                            newUserPermission.addUserToProject()
+                                .then(function() {
+                                })
+                                .fail(function(error) {
+                                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                                    telemetry.setError(error);
+                                    telemetry.set('method', 'Backbone.Agave.Model.Permission.addUserToProject()');
+                                    telemetry.set('view', 'Projects.ManageUsers');
+                                    telemetry.save();
+                                })
+                                ;
 
-                          that.permissions.add(newUserPermission);
-                          that.render();
-                          that._usernameTypeahead(that.permissions, that.tenantUsers);
-                      },
-                      error: function() {
-                          var telemetry = new Backbone.Agave.Model.Telemetry();
-                          telemetry.set('error', JSON.stringify(error));
-                          telemetry.set('method', 'Backbone.Agave.Model.Permission.create()');
-                          telemetry.set('view', 'Projects.ManageUsers');
-                          telemetry.save();
-                      },
-                  }
-              );
+                            that.permissions.add(newUserPermission);
+                            that.render();
+                            that._usernameTypeahead(that.permissions, that.tenantUsers);
+                        },
+                        error: function() {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.setError(error);
+                            telemetry.set('method', 'Backbone.Agave.Model.Permission.create()');
+                            telemetry.set('view', 'Projects.ManageUsers');
+                            telemetry.save();
+                        },
+                    }
+                );
             }
         },
         _removeUserFromProject: function(e) {
@@ -2124,7 +2125,7 @@ define([
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.setError(error);
                             telemetry.set('method', 'Backbone.Agave.Model.Permission.destroy()');
                             telemetry.set('view', 'Projects.ManageUsers');
                             telemetry.save();
@@ -2133,7 +2134,7 @@ define([
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Permission.removeUserFromProject()');
                     telemetry.set('view', 'Projects.ManageUsers');
                     telemetry.save();
