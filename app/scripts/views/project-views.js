@@ -1976,9 +1976,18 @@ define([
                 .always(function() {
                     $('#delete-modal').modal('hide')
                         .on('hidden.bs.modal', function() {
-                            App.router.navigate('/project', {
-                                trigger: true
-                            });
+
+                            if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
+                                App.router.navigate('/project/create', {
+                                    trigger: true,
+                                });
+                            }
+                            else {
+                                App.router.navigate('/project', {
+                                    trigger: true,
+                                });
+                            }
+
                         })
                     ;
                 })
