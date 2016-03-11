@@ -1,7 +1,11 @@
 define([
     'app',
+    'environment-config',
     'backbone.syphon',
-], function(App) {
+], function(
+    App,
+    EnvironmentConfig
+) {
 
     'use strict';
 
@@ -14,6 +18,10 @@ define([
         },
         afterRender: function() {
             this.setupModalView();
+
+            grecaptcha.render('recaptcha', {
+                sitekey: EnvironmentConfig.recaptchaPublicKey,
+            });
         },
         setupModalView: function() {
 
@@ -38,9 +46,21 @@ define([
         validateForm: function(formData) {
 
             this.model.set(formData);
-
             this.model.isValid();
-            var errors = this.model.validationError;
+
+            var recaptchaModel = new App.Models.Recaptcha();
+            recaptchaModel.set(formData);
+            recaptchaModel.isValid();
+
+            var errors = [];
+
+            if (Array.isArray(this.model.validationError)) {
+                errors = errors.concat(this.model.validationError);
+            }
+
+            if (Array.isArray(recaptchaModel.validationError)) {
+                errors = errors.concat(recaptchaModel.validationError);
+            }
 
             return errors;
         },
@@ -83,10 +103,9 @@ define([
 
             var formData = Backbone.Syphon.serialize(this);
             var formErrors = this.validateForm(formData);
-
             this.displayFormErrors(formErrors);
 
-            if (_.isArray(formErrors)) {
+            if (_.isArray(formErrors) && formErrors.length > 0) {
                 return false;
             }
 
@@ -105,6 +124,9 @@ define([
                             password: formData.password,
                             email:    formData.email,
                         })
+                        .always(function() {
+                            grecaptcha.reset();
+                        })
                         .done(function() {
 
                             $('#modal-message')
@@ -117,16 +139,23 @@ define([
 
                         })
                         .fail(function(jqXhr, errorText, errorThrown) {
+
+                            // Recaptcha telemetry
+                            if (jqXhr.responseJSON.message === App.Models.Recaptcha.RECAPTCHA_ERROR_MESSAGE) {
+                                var captchaTelemetry = new Backbone.Agave.Model.Telemetry();
+                                captchaTelemetry.setError(jqXhr);
+                                captchaTelemetry.set('method', 'Backbone.Agave.Model.NewAccount().save()');
+                                captchaTelemetry.set('view', 'Account.CreateAccount');
+                                captchaTelemetry.save();
+                            }
+
+                            // Account telemetry
                             var telemetry = new Backbone.Agave.Model.Telemetry();
                             telemetry.setError(jqXhr);
                             telemetry.set('username', formData.username);
                             telemetry.set('method', 'Backbone.Agave.Model.Account.NewAccount().save()');
                             telemetry.set('view', 'Account.CreateAccount');
                             telemetry.save();
-
-                            var errorMessage = JSON.parse(jqXhr.responseText).message;
-
-                            var parsedErrorMessage = that.model.parseApiErrorMessage(errorMessage);
 
                             $('#modal-message').modal('hide');
 
@@ -140,6 +169,9 @@ define([
                                     ;
                             }
 
+                            var errorMessage = jqXhr.responseText.message;
+
+                            var parsedErrorMessage = that.model.parseApiErrorMessage(errorMessage);
                             that.displayFormErrors([parsedErrorMessage]);
                         });
                 });

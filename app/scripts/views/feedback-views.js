@@ -19,7 +19,7 @@ define([
         },
         afterRender: function() {
             grecaptcha.render('recaptcha', {
-              sitekey: EnvironmentConfig.recaptchaPublicKey,
+                sitekey: EnvironmentConfig.recaptchaPublicKey,
             });
         },
         events: {
@@ -28,7 +28,21 @@ define([
         validateForm: function(formData) {
             this.model.set(formData);
             this.model.isValid();
-            var errors = this.model.validationError;
+
+            var recaptchaModel = new App.Models.Recaptcha();
+            recaptchaModel.set(formData);
+            recaptchaModel.isValid();
+
+            var errors = [];
+
+            if (Array.isArray(this.model.validationError)) {
+                errors = errors.concat(this.model.validationError);
+            }
+
+            if (Array.isArray(recaptchaModel.validationError)) {
+                errors = errors.concat(recaptchaModel.validationError);
+            }
+
             return errors;
         },
         displayFormErrors: function(formErrors) {
@@ -49,11 +63,11 @@ define([
                     this.$el
                         .find('.public-view')
                         .prepend(
-                                $('<div class="alert alert-danger">')
-                                    .text(message)
-                                    .fadeIn()
+                            $('<div class="alert alert-danger">')
+                                .text(message)
+                                .fadeIn()
                         )
-                    ;
+                        ;
                     $('#' + type + '-container').addClass('has-error');
                 }
             }
@@ -68,7 +82,7 @@ define([
             var formErrors = this.validateForm(formData);
             this.displayFormErrors(formErrors);
 
-            if (_.isArray(formErrors)) {
+            if (_.isArray(formErrors) && formErrors.length > 0) {
                 return false;
             }
 
@@ -76,6 +90,9 @@ define([
 
             this.model.save({
                 feedback: formData.feedback,
+            })
+            .always(function() {
+                grecaptcha.reset();
             })
             .done(function() {
                 that.$el.find('.form-control').val('');
@@ -86,11 +103,10 @@ define([
                     ).fadeIn()
                 );
 
-                grecaptcha.reset();
                 that.model.set(that.model.defaults);
             })
             .fail(function(e) {
-                if (e.responseJSON.message === 'Recaptcha response invalid: incorrect-captcha-sol') {
+                if (e.responseJSON.message === App.Models.Recaptcha.RECAPTCHA_ERROR_MESSAGE) {
 
                     var telemetry = new Backbone.Agave.Model.Telemetry();
                     telemetry.setError(e);
@@ -98,7 +114,6 @@ define([
                     telemetry.set('view', 'Feedback.Form');
                     telemetry.save();
 
-                    grecaptcha.reset();
                     that.model.set(that.model.defaults);
                     var formData = Backbone.Syphon.serialize(that);
                     var formErrors = that.validateForm(formData);

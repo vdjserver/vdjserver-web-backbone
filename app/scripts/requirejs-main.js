@@ -27,6 +27,7 @@ define([
 
     // Regular Models
     'error',
+    'recaptcha',
 
     // Agave
     'backbone-agave',

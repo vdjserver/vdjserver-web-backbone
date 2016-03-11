@@ -41,6 +41,7 @@ require.config({
 
         // Regular Models
         'error': 'models/error',
+        'recaptcha': 'models/recaptcha',
 
         // Agave - Models/Collections
         'telemetry': 'models/telemetry',
