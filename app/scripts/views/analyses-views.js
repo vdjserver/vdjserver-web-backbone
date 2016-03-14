@@ -122,6 +122,9 @@ define([
 
             this.jobs = new Backbone.Agave.Collection.Jobs();
 
+            this.pendingJobs = new Backbone.Agave.Collection.Jobs.Pending();
+            this.pendingJobs.projectUuid = this.projectUuid;
+
             this.paginationSets = 0;
             this.paginationIterator = 10;
 
@@ -245,6 +248,15 @@ define([
             ;
 
             $.when(deferred)
+                .then(function() {
+
+                    return that.pendingJobs.fetch()
+                        .then(function() {
+                            // Merge in pending jobs with Agave jobs
+                            that.jobs.add(that.pendingJobs.toJSON());
+                        })
+                        ;
+                })
                 .always(function() {
                     for (var i = 0; i < jobModels.length; i++) {
 

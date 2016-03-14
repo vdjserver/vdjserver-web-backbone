@@ -28,6 +28,15 @@ define([
         },
     });
 
+    Jobs.Pending = Backbone.Agave.Collection.extend({
+        model: Backbone.Agave.Model.Job.Detail,
+        apiHost: EnvironmentConfig.vdjApi.host,
+        authType: 'basic',
+        url: function() {
+            return '/jobs/queue/pending/?projectUuid=' + this.projectUuid;
+        },
+    });
+
     Jobs.OutputFiles = Backbone.Agave.Collection.extend({
         model: Backbone.Agave.Model.Job.OutputFile,
         initialize: function(parameters) {

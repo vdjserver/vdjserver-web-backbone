@@ -78,9 +78,15 @@ define([
                 }
 
                 if (_.has(xhr, 'setRequestHeader')) {
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
+                    if (model.authType === 'oauth') {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
+                    }
+                    else {
+                        xhr.setRequestHeader('Authorization', 'Basic ' + btoa(agaveToken.get('username') + ':' + agaveToken.get('access_token')));
+                    }
                 }
             };
+
         }
 
         if (!model.requiresAuth) {
@@ -138,6 +144,7 @@ define([
             this.retrySyncLimit = 3;
         },
         apiHost: EnvironmentConfig.agave.host,
+        authType: 'oauth',
         sync: Backbone.RetrySync,
         requiresAuth: true,
         parse: function(response) {
@@ -159,6 +166,7 @@ define([
             this.retrySyncLimit = 3;
         },
         apiHost: EnvironmentConfig.agave.host,
+        authType: 'oauth',
         sync: Backbone.RetrySync,
         requiresAuth: true,
         parse: function(response) {
