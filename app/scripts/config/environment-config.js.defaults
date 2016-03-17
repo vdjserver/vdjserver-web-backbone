@@ -6,6 +6,7 @@ var EnvironmentConfig = {
         executionSystems: {
             ls5: 'ls5.tacc.utexas.edu',
             lonestar: 'lonestar.tacc.utexas.edu',
+            stampede: 'stampede.tacc.utexas.edu',
             vdjExec01: 'vdj-exec-01.tacc.utexas.edu',
             vdjExec02: 'vdj-exec-02.tacc.utexas.edu',
         },
@@ -16,8 +17,10 @@ var EnvironmentConfig = {
         },
         apps: {
             vdjPipe: 'vdj_pipe-0.1.6u3',
+            vdjPipeStampede: 'vdj_pipe-stampede-0.1.6u1',
             vdjPipeSmall: 'vdj_pipe-small-0.1.6u4',
-            igBlast: 'igblast-ls5-1.4.0u2',
+            igBlast: 'igblast-ls5-1.4.0u3',
+            igBlastStampede: 'igblast-stampede-1.4.0u1',
             presto: '',
         },
     },
