@@ -7,7 +7,6 @@ var EnvironmentConfig = {
             ls5: 'ls5.tacc.utexas.edu',
             lonestar: 'lonestar.tacc.utexas.edu',
             stampede: 'stampede.tacc.utexas.edu',
-            vdjExec01: 'vdj-exec-01.tacc.utexas.edu',
             vdjExec02: 'vdj-exec-02.tacc.utexas.edu',
         },
         host: 'https://vdj-agave-api.tacc.utexas.edu',
