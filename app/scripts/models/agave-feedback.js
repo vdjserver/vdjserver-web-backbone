@@ -12,8 +12,7 @@ function(Backbone, EnvironmentConfig) {
     Feedback.Public = Backbone.Agave.Model.extend({
         defaults: {
             feedback: '',
-            recaptcha_challenge_field:   '',
-            recaptcha_response_field: '',
+            email: '',
         },
         apiHost: EnvironmentConfig.vdjApi.host,
         url: function() {
@@ -24,26 +23,17 @@ function(Backbone, EnvironmentConfig) {
             var errors = [];
 
             // Missing attributes
-            if (!attributes.feedback) {
+            if (!attributes.email) {
                 errors.push({
-                    'message': 'No feedback provided.',
+                    'message': 'No email provided.',
                     'type': 'feedback'
                 });
             }
 
-            /*
-            if(! attributes.recaptcha_challenge_field) {
-              errors.push({
-                  'message': 'Missing Recaptcha Challenge.',
-                  'type': 'recaptcha_challenge_field'
-              });
-            }
-            */
-
-            if (!attributes.recaptcha_response_field) {
+            if (!attributes.feedback) {
                 errors.push({
-                    'message': 'Incorrect captcha response.',
-                    'type': 'recaptcha'
+                    'message': 'No feedback provided.',
+                    'type': 'feedback'
                 });
             }
 

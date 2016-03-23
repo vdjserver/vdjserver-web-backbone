@@ -648,16 +648,17 @@ define(['app'], function(App) {
                                         + '.fasta'
                                         //+ parameters[key + '-out-group-unique']
                                         ,
-                    'out_summary': 'demultiplexing-summary.txt',
+                    'out_group_duplicates': findSharedVariables
+                                        + '-unique'
+                                        + '.duplicates.tsv'
+                                        ,
+                    'out_summary': 'find-unique-summary.txt',
                 };
             }
             else {
                 configuredParameter.find_shared = {
-                    'out_group_unique': jobName
-                                  + '-unique'
-                                  + '.fasta'
-                                  //+ parameters[key + '-out-group-unique']
-                                  ,
+                    'out_group_unique': 'find-unique.fasta',
+                    'out_duplicates': 'find-unique.duplicates.tsv',
                 };
             }
 
@@ -747,8 +748,42 @@ define(['app'], function(App) {
 
         this.getWriteSequence = function(paramOutput) {
 
-            //TODO: fix/update this section
+            // Default value
+            var writeSequenceVariables = '';
 
+            if (combinationValue.length > 0) {
+                writeSequenceVariables = '{' + combinationValue + '}';
+            }
+            else {
+                for (var i = 0; i < sharedVariables.length; i++) {
+                    writeSequenceVariables += '{' + sharedVariables[i] + '}';
+
+                    if (i < sharedVariables.length - 1) {
+                        writeSequenceVariables += '-';
+                    }
+                }
+            }
+
+            var configuredParameter = {
+                'write_sequence': {},
+            };
+
+            if (writeSequenceVariables.length > 0) {
+                configuredParameter.write_sequence = {
+                    'out_path': parameters[key + '-out-prefix']
+                                + writeSequenceVariables
+                                + '.fastq'
+                };
+            }
+            else {
+                configuredParameter.write_sequence = {
+                    'out_path': parameters[key + '-out-prefix']
+                                + '.fastq'
+                };
+            }
+
+/*
+            //TODO: fix/update this section
             // extract demultiplex variables
             var demultiplexVariablePath = this.createDemultiplexBarcodeVariablePath(paramOutput);
 
@@ -770,6 +805,7 @@ define(['app'], function(App) {
             if (parameters[key + '-skip-empty']) {
                 configuredParameter['write_sequence']['skip_empty'] = parameters[key + '-skip-empty'];
             }
+*/
 
             return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };

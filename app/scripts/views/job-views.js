@@ -104,9 +104,19 @@ define([
             var jobSubview = this.getView('#job-staging-subview');
 
             jobSubview.stageJob(formData)
+                .done(function() {
+
+                    $('#job-modal').one('hidden.bs.modal', function(e) {
+
+                        App.router.navigate('project/' + that.projectModel.get('uuid') + '/jobs', {
+                            trigger: true,
+                        });
+                    });
+                })
                 .fail(function() {
                     that._uiCancelJobLoadingView();
-                });
+                })
+                ;
         },
 
         _validateJobForm: function(formData) {
@@ -155,14 +165,14 @@ define([
             $('#job-submit-loading-view').removeClass('alert alert-danger');
 
             var message = new App.Models.MessageModel({
-              'body': 'Your job has been launched!'
+                'body': 'Your job has been launched!'
             });
 
             var alertView = new App.Views.Util.Alert({
-              options:{
-                type: 'success'
-              },
-              model: message
+                options: {
+                    type: 'success'
+                },
+                model: message
             });
 
             this.setView('#job-submit-loading-view', alertView);
@@ -291,7 +301,6 @@ define([
                 /**
                  * Serialize data onto view template.
                  *
-                 * @returns {array}
                  */
                 _customSerialize: function(editableWorkflow) {
 
@@ -559,7 +568,7 @@ define([
                             })
                             .fail(function(error) {
                                 var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.setError(error);
                                 telemetry.set('method', 'Backbone.Agave.Model.Job.Workflow().save()');
                                 telemetry.set('view', 'Jobs.WorkflowEditor');
                                 telemetry.save();
@@ -592,9 +601,6 @@ define([
         },
         startJob: function(jobModel) {
 
-            var jobNotification = new Backbone.Agave.Model.Notification.Job();
-            jobNotification.projectUuid = this.projectModel.get('uuid');
-
             // DEBUG
             if (EnvironmentConfig.debug.console) {
                 if (jobModel.get('parameters') && jobModel.get('parameters').json) {
@@ -613,24 +619,15 @@ define([
                 return;
             }
 
+            var that = this;
+
             return jobModel.submitJob(this.projectModel.get('uuid'))
                 .then(function() {
-                    jobNotification.set('associatedUuid', jobModel.get('id'));
-                    jobNotification.set('name', jobModel.get('name'));
-                    return jobNotification.save();
-                })
-                .then(function() {
-
-                    App.Instances.WebsocketManager.subscribeToEvent(jobNotification.get('associatedUuid'));
-
-                    var listView = App.Layouts.sidebar.getView('.sidebar');
-                    listView.addNotification(jobNotification);
-
-                    return $('#job-modal').modal('hide').promise();
+                    //return $('#job-modal').modal('hide').promise();
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Notification.Job().save()');
                     telemetry.set('view', 'Jobs.StagingBase');
                     telemetry.save();
@@ -773,7 +770,7 @@ define([
                     })
                     .fail(function(error) {
                         var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.set('error', JSON.stringify(error));
+                        telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.Job.Workflow().save()');
                         telemetry.set('view', 'Jobs.VdjpipeStaging');
                         telemetry.save();
@@ -823,7 +820,7 @@ define([
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.set('error', JSON.stringify(error));
+                            telemetry.setError(error);
                             telemetry.set('method', 'Backbone.Agave.Model.Job.Workflow().destroy()');
                             telemetry.set('view', 'Jobs.VdjpipeStaging');
                             telemetry.save();

@@ -1,146 +1,157 @@
 <div class="row">
     <div class="col-sm-12">
 
-        <div class="text-center">
-            <ul class="pagination">
+        {{#unless jobs}}
 
-                <li class="job-pagination-previous">
-                    <a
-                        href="#"
-                        data-bypass=true
-                    >
-                        &laquo;
-                    </a>
-                </li>
+            <div class="alert alert-info">
+                You will need to launch a job in order to to see output here. 
+                <br>
+                <br>
+                You can launch jobs and upload files on the <a href="project/{{projectUuid}}">"Upload and Browse Project Data"</a> page.
+            </div>
 
-                {{#each paginationSets}}
-                    <li class="job-pagination-wrapper job-pagination-wrapper-{{this}}">
+        {{else}}
+            <div class="text-center">
+                <ul class="pagination">
+
+                    <li class="job-pagination-previous">
                         <a
-                            class="job-pagination"
                             href="#"
                             data-bypass=true
-                            data-id="{{this}}"
                         >
-                            {{this}}
+                            &laquo;
                         </a>
                     </li>
-                {{/each}}
 
-                <li class="job-pagination-next">
-                    <a
-                        href="#"
-                        data-bypass=true
-                    >
-                        &raquo;
-                    </a>
-                </li>
+                    {{#each paginationSets}}
+                        <li class="job-pagination-wrapper job-pagination-wrapper-{{this}}">
+                            <a
+                                class="job-pagination"
+                                href="#"
+                                data-bypass=true
+                                data-id="{{this}}"
+                            >
+                                {{this}}
+                            </a>
+                        </li>
+                    {{/each}}
 
-            </ul>
-        </div>
+                    <li class="job-pagination-next">
+                        <a
+                            href="#"
+                            data-bypass=true
+                        >
+                            &raquo;
+                        </a>
+                    </li>
 
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Job Name</th>
-                        <th>Status</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>App</th>
-                        <th>Owner</th>
-                        <th>View Analyses</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each jobs}}
+                </ul>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>{{name}}</td>
-                            <td>
-                                <div id="job-status-{{id}}">
+                            <th>Job Name</th>
+                            <th>Status</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>App</th>
+                            <th>Owner</th>
+                            <th>View Analyses</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each jobs}}
+                            <tr>
+                                <td>{{name}}</td>
+                                <td>
+                                    <div id="job-status-{{id}}">
+                                        {{#IsJobFrozen this}}
+                                            Job Failed
+                                        {{else}}
+                                            {{status}}
+                                        {{/IsJobFrozen}}
+                                    </div>
+                                </td>
+                                <td>
+                                    {{#if submitTime}}
+                                        {{FormatAgaveDate submitTime}}
+                                    {{/if}}
+                                </td>
+                                <td>
                                     {{#IsJobFrozen this}}
                                         Job Failed
-                                    {{else}}
-                                        {{status}}
-                                    {{/IsJobFrozen}}
-                                </div>
-                            </td>
-                            <td>
-                                {{#if submitTime}}
-                                    {{FormatAgaveDate submitTime}}
-                                {{/if}}
-                            </td>
-                            <td>
-                                {{#IsJobFrozen this}}
-                                    Job Failed
 
-                                {{else}}
-                                    {{#if endTime}}
-                                        {{FormatAgaveDate endTime}}
-                                    {{/if}}
-                                {{/IsJobFrozen}}
-
-                            </td>
-                            <td>{{appId}}</td>
-                            <td>{{owner}}</td>
-                            <td>
-                                {{#IsJobFrozen this}}
-                                    <button type="button" class="btn btn-danger view-config" data-jobid={{id}}>Job Failed - View Config File</button>
-                                {{else}}
-                                    {{#JobSuccessCheck this}}
-                                        <a href="project/{{../../../projectUuid}}/jobs/{{id}}" class="disabled">
-                                            <button type="button" class="btn btn-primary">View Output</button>
-                                        </a>
                                     {{else}}
-                                        {{#if submitTime}}
-                                            <button type="button" class="btn btn-warning" disabled="disabled">In Progress</button>
-                                        {{else}}
-                                            <button type="button" class="btn btn-warning" disabled="disabled">Job Information Unavailable</button>
+                                        {{#if endTime}}
+                                            {{FormatAgaveDate endTime}}
                                         {{/if}}
-                                    {{/JobSuccessCheck}}
-                                {{/IsJobFrozen}}
-                            </td>
-                        </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
+                                    {{/IsJobFrozen}}
 
-        <div class="text-center">
-            <ul class="pagination">
+                                </td>
+                                <td>{{appId}}</td>
+                                <td>{{owner}}</td>
+                                <td>
+                                    {{#IsJobFrozen this}}
+                                        <button type="button" class="btn btn-danger view-config" data-jobid={{id}}>Job Failed - View Config File</button>
+                                    {{else}}
+                                        {{#JobSuccessCheck this}}
+                                            <a href="project/{{../../../projectUuid}}/jobs/{{id}}" class="disabled">
+                                                <button type="button" class="btn btn-primary">View Output</button>
+                                            </a>
+                                        {{else}}
+                                            {{#if submitTime}}
+                                                <button type="button" class="btn btn-warning" disabled="disabled">In Progress</button>
+                                            {{else}}
+                                                <button type="button" class="btn btn-warning" disabled="disabled">Job Information Unavailable</button>
+                                            {{/if}}
+                                        {{/JobSuccessCheck}}
+                                    {{/IsJobFrozen}}
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
 
-                <li class="job-pagination-previous">
-                    <a
-                        href="#"
-                        data-bypass=true
-                    >
-                        &laquo;
-                    </a>
-                </li>
+            <div class="text-center">
+                <ul class="pagination">
 
-                {{#each paginationSets}}
-                    <li class="job-pagination-wrapper job-pagination-wrapper-{{this}}">
+                    <li class="job-pagination-previous">
                         <a
-                            class="job-pagination"
                             href="#"
                             data-bypass=true
-                            data-id="{{this}}"
                         >
-                            {{this}}
+                            &laquo;
                         </a>
                     </li>
-                {{/each}}
 
-                <li class="job-pagination-next">
-                    <a
-                        href="#"
-                        data-bypass=true
-                    >
-                        &raquo;
-                    </a>
-                </li>
+                    {{#each paginationSets}}
+                        <li class="job-pagination-wrapper job-pagination-wrapper-{{this}}">
+                            <a
+                                class="job-pagination"
+                                href="#"
+                                data-bypass=true
+                                data-id="{{this}}"
+                            >
+                                {{this}}
+                            </a>
+                        </li>
+                    {{/each}}
 
-            </ul>
-        </div>
+                    <li class="job-pagination-next">
+                        <a
+                            href="#"
+                            data-bypass=true
+                        >
+                            &raquo;
+                        </a>
+                    </li>
 
+                </ul>
+            </div>
+
+        {{/unless}}
     </div>
 </div>

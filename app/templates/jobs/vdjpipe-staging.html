@@ -4,8 +4,17 @@
         <div class="input-group">
             <select class="form-control" id="select-workflow">
                 <option value="">Select a workflow</option>
+                <option disabled>-- Complete Workflows --</option>
                 {{#each workflows}}
-                    <option value="{{this.uuid}}" data-name="{{value.workflowName}}" data-type="custom-workflow">{{value.workflowName}}</option>
+                    {{#if this.complete}}
+                        <option value="{{this.uuid}}" data-name="{{value.workflowName}}" data-type="custom-workflow">{{value.workflowName}}</option>
+                    {{/if}}
+                {{/each}}
+                <option disabled>-- Single Functions --</option>
+                {{#each workflows}}
+                    {{#if this.single}}
+                        <option value="{{this.uuid}}" data-name="{{value.workflowName}}" data-type="custom-workflow">{{value.workflowName}}</option>
+                    {{/if}}
                 {{/each}}
             </select>
             <div class="input-group-btn">

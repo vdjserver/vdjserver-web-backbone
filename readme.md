@@ -12,6 +12,7 @@ VDJServer Backbone is a next generation immune repertoire analysis portal.
 ##Development Guidelines
 
 **Code Style**
+
  * Code should roughly follow Google Javascript Style Guide conventions: <https://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml>.
 
  * A jscs.rc file (Javascript Code Style Checker) file has been provided in the project repo for any developers who use it.
@@ -24,16 +25,35 @@ VDJServer Backbone is a next generation immune repertoire analysis portal.
 
 
 **Git Structure**
+
  * This project uses the Git Flow methodology for code management and development: <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>.
 
  * New development and features should be done on branches that are cloned from the *develop* branch, and then merged into this branch when completed. New release candidates should be branched from *develop*, and then merged into *master* once they have been tested/verified. Once a release branch is ready for production, it should be merged into *master* and tagged appropriately.
 
 ##Development Setup
+
 ```
 - Clone project
 git clone git@bitbucket.org:vdjserver/vdjserver-backbone.git
 
-cd <project location>
+cd [project location]
+
+- Install node.js
+# Mac OS X (assuming that the homebrew package manager is already installed)
+brew install node
+
+# Debian
+sudo apt-get install nodejs nodejs-legacy
+
+- Install compass/sass dependencies
+# Mac OS X 
+sudo gem install sass compass
+
+# Debian 
+sudo apt-get install ruby ruby-dev && sudo gem install sass compass
+
+- Install global npm modules
+npm install -g bower grunt grunt-cli
 
 - Pull npm dependencies
 npm install

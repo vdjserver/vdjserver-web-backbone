@@ -1,11 +1,16 @@
 <ul class="projects-list">
     <li class="projects-list-vdj-logo-wrapper">
-        <a href="/project">
-            <img
-                class="projects-list-vdj-logo"
-                src="../images/Final-Logo-Clean-cropped.png"
-            >
-        </a>
+
+        {{#unless projects}}
+            <a href="/project/create">
+        {{else}}
+            <a href="/project">
+        {{/unless}}
+                <img
+                    class="projects-list-vdj-logo"
+                    src="../images/Final-Logo-Clean-cropped.png"
+                >
+            </a>
     </li>
 
     <li class="project-create-menu">
@@ -32,11 +37,11 @@
             </a>
         </li>
 
-        <li class="project-submenu hidden {{uuid}}-section-5">
+        <!-- <li class="project-submenu hidden {{uuid}}-section-5">
             <a href="/project/{{uuid}}/users" class="manage-users" data-id="{{uuid}}">
                 Project Users
             </a>
-        </li>
+        </li> -->
 
         <li class="project-submenu hidden {{uuid}}-section-1">
             <a href="/project/{{uuid}}" class="">
@@ -50,13 +55,13 @@
             </a>
         </li>
 
-        <!--
+{{!--
         <li class="project-submenu hidden {{uuid}}-section-2">
             <a href="/project/{{uuid}}/associations/paired-reads" class="" data-id="{{uuid}}">
                 Paired Read Associations
             </a>
         </li>
-        -->
+--}}
 
         <li class="project-submenu hidden {{uuid}}-section-6">
             <a href="/project/{{uuid}}/jobs" class="select-analyses" data-id="{{uuid}}">

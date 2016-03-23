@@ -26,7 +26,7 @@ define(['backbone'], function(Backbone) {
                    + encodeURIComponent(
                        '{'
                          + '"name":"profile",'
-                         + '"value.name":' + '"' + Backbone.Agave.instance.token().get('username') + '"'
+                         + '"owner":' + '"' + Backbone.Agave.instance.token().get('username') + '"'
                      + '}'
                    )
                    + '&limit=5000'

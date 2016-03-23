@@ -328,21 +328,6 @@ define(['app'], function(App) {
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
-        projectManageUsers: function(projectUuid) {
-
-            var destinationRoute = function() {
-                _setProjectSubviews(
-                    projectUuid,
-                    App.Views.Sidemenu.List.Sections.ProjectManageUsers
-                );
-
-                App.Layouts.content.setView('.content', new App.Views.Projects.ManageUsers({projectUuid: projectUuid}));
-                App.Layouts.content.render();
-            };
-
-            _routeWithTokenRefreshCheck(destinationRoute);
-        },
-
         projectJobHistory: function(projectUuid) {
 
             var destinationRoute = function() {

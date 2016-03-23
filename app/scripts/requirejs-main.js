@@ -21,15 +21,13 @@ define([
     'highcharts-more',
     'highcharts-exporting',
 
-    //Library for using google's recaptcha-ajax
-    'recaptcha-ajax',
-
     //jquery.event.drag/drop
     'jquery.event.drag',
     'jquery.event.drop',
 
     // Regular Models
     'error',
+    'recaptcha',
 
     // Agave
     'backbone-agave',
@@ -63,8 +61,10 @@ define([
     'agave-system',
     'agave-systems',
 
-    // Regular Models
+    // Regular Collections and Models
     'models/message',
+    'models/notification',
+    'collections/notifications',
 
     // Handlebars Helpers
     'handlebars-utilities',
@@ -79,8 +79,7 @@ define([
     'generic-vdjpipe-option-views',
 
     // Mixins
-    'file-download-detection-mixin',
-    'file-transfer-sidebar-ui-mixin',
+    'file-transfer-project-ui-mixin',
     'comparators-mixin',
     'file-transfer-mixins',
 

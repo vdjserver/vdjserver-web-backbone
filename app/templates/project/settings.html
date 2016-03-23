@@ -1,6 +1,7 @@
 <div class="project-detail-controls">
     <div class="row">
         <div class="col-md-12">
+            <h4>Project Settings</h4>
             <form class="form-horizontal">
                 <div class="form-group">
                     <label class="col-md-2 control-label">Project Name</label>
@@ -9,6 +10,17 @@
                             <input class="form-control" type="text" value="{{project.value.name}}" id="project-name">
                             <span class="input-group-btn">
                                 <button id="save-project-name" class="btn btn-success" type="button">Save</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Project Description</label>
+                    <div class="col-md-5">
+                        <div class="input-group">
+                            <textarea class="form-control" id="project-description">{{project.value.description}}</textarea>
+                            <span class="input-group-btn">
+                                <button id="save-project-description" class="btn btn-success" type="button">Save</button>
                             </span>
                         </div>
                     </div>
@@ -49,6 +61,52 @@
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
             </div>
+        </div>
+    </div>
+
+    <div class="row-with-spacer">
+        <div class="col-md-12">
+            <h4>Project Users</h4>
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <label class="sr-only" for="add-username">Username</label>
+                        <input type="text" id="add-username" class="form-control" placeholder="Enter username...">
+                </div>
+                <button type="submit" class="btn btn-success" id="add-user">Add user to project</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row-with-spacer">
+        <div class="col-md-12 table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            Username
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#users}}
+                        <tr>
+                            <td>
+                                {{this.username}}
+                            </td>
+                            <td>
+                                {{#ManageUsersShouldDisableDelete this}}
+                                    <button class="btn btn-danger remove-user-from-project" data-id="{{username}}" disabled="disabled">Delete</button>
+                                {{else}}
+                                    <button class="btn btn-danger remove-user-from-project" data-id="{{username}}">Delete</button>
+                                {{/ManageUsersShouldDisableDelete}}
+                            </td>
+                        </tr>
+                    {{/users}}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

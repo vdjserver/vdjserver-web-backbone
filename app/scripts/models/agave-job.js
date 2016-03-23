@@ -41,6 +41,7 @@ function(
                 var chartType = false;
 
                 switch (filename) {
+                    case 'stats_composition.csv':
                     case 'pre-filter_composition.csv':
                     case 'post-filter_composition.csv':
                     case 'pre-filter-fwd-composition.csv':
@@ -53,6 +54,7 @@ function(
                         chartType = this.CHART_TYPE_0;
                         break;
 
+                    case 'stats_gc_hist.csv':
                     case 'pre-filter_gc_hist.csv':
                     case 'post-filter_gc_hist.csv':
                     case 'pre-filter-fwd-gc_hist.csv':
@@ -65,6 +67,7 @@ function(
                         chartType = this.CHART_TYPE_1;
                         break;
 
+                    case 'stats_heat_map.csv':
                     case 'pre-heat_map.csv':
                     case 'post-heat_map.csv':
                     case 'pre-filter-fwd-heat_map.csv':
@@ -76,6 +79,7 @@ function(
                     case 'reverse-heat_map.csv':
                         break;
 
+                    case 'stats_len_hist.csv':
                     case 'pre-filter_len_hist.csv':
                     case 'post-filter_len_hist.csv':
                     case 'pre-filter-fwd-len_hist.csv':
@@ -88,6 +92,7 @@ function(
                         chartType = this.CHART_TYPE_3;
                         break;
 
+                    case 'stats_mean_q_hist.csv':
                     case 'pre-filter_mean_q_hist.csv':
                     case 'post-filter_mean_q_hist.csv':
                     case 'pre-filter-fwd-mean_q_hist.csv':
@@ -100,6 +105,7 @@ function(
                         chartType = this.CHART_TYPE_4;
                         break;
 
+                    case 'stats_qstats.csv':
                     case 'pre-filter_qstats.csv':
                     case 'post-filter_qstats.csv':
                     case 'pre-filter-fwd-qstats.csv':
@@ -137,46 +143,47 @@ function(
         }
     );
 
-    Job.OutputFile = Backbone.Agave.Model.extend({
-        idAttribute: 'name',
-        downloadFileToCache: function() {
+    Job.OutputFile = Backbone.Agave.Model.extend(
+        _.extend({}, FileTransferMixins, {
+            idAttribute: 'name',
+            downloadFileToCache: function() {
 
-            var link = this.get('_links').self.href;
-            link = this._fixBadAgaveLink(link);
+                var url = this.get('_links').self.href;
+                url = this._fixBadAgaveUrl(url);
 
-            var jqxhr = $.ajax({
-                headers: Backbone.Agave.oauthHeader(),
-                type:    'GET',
-                url:     link,
-            });
-            return jqxhr;
-        },
-        downloadFileToDisk: function() {
-
-            var link = this.get('_links').self.href;
-            link = this._fixBadAgaveLink(link);
-
-            var totalSize = this.get('length');
-            var that = this;
-
-            var jqxhr = $.ajax(
-                _.extend({}, FileTransferMixins.progressJqxhr(that, totalSize), {
+                var jqxhr = $.ajax({
                     headers: Backbone.Agave.oauthHeader(),
                     type:    'GET',
-                    url:     link,
-                })
-            );
+                    url:     url,
+                });
+                return jqxhr;
+            },
+            downloadFileToDisk: function() {
 
-            return jqxhr;
-        },
-        _fixBadAgaveLink: function(link) {
-            var link = link.split('/');
-            link[4] = 'v2';
-            link = link.join('/');
+                var url = this.get('_links').self.href;
+                url = this._fixBadAgaveUrl(url);
+                url = this._urlencodeOutputPath(url);
 
-            return link;
-        },
-    });
+                var jqxhr = this.downloadUrlByPostit(url);
+
+                return jqxhr;
+            },
+            _fixBadAgaveUrl: function(url) {
+                var url = url.split('/');
+                url[4] = 'v2';
+                url = url.join('/');
+
+                return url;
+            },
+            _urlencodeOutputPath: function(url) {
+                var url = url.split('/');
+                url[url.length - 1] = encodeURIComponent(url[url.length - 1]);
+                url = url.join('/');
+
+                return url;
+            },
+        })
+    );
 
     Job.Listing = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
@@ -206,7 +213,7 @@ function(
                     {},
                     Backbone.Agave.JobModel.prototype.defaults,
                     {
-                        appId: 'igblast-lonestar-1.4.0u6',
+                        appId: EnvironmentConfig.agave.apps.igBlast,
                         inputs: {
                             query: '',
                         },
@@ -268,7 +275,7 @@ function(
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: 'vdj_pipe-0.1.5u6',
+                    appId: EnvironmentConfig.agave.apps.vdjPipe,
                 }
             );
         },
@@ -280,7 +287,7 @@ function(
             if (_.isNumber(fileSize)) {
                 if (fileSize < 5000000) {
                     this.set({
-                        'appId': 'vdj_pipe-small-0.1.6u4',
+                        'appId': EnvironmentConfig.agave.apps.vdjPipeSmall,
                         'executionSystem': EnvironmentConfig.agave.executionSystems.vdjExec02,
                     });
 

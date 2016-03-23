@@ -118,64 +118,23 @@ define([
             var that = this;
 
             var uuid = e.target.dataset.uuid;
-            var fileName = e.target.dataset.filename;
+            var filename = e.target.dataset.filename;
+
             var fileModel = new Backbone.Agave.Model.File.Community({
                 relativeUrl: '//community'
                            + '/' + uuid
                            + '/files'
-                           + '/' + fileName
+                           + '/' + filename
                            ,
             });
 
-            var progressWrapper = $('<div class="progress file-upload-progress-wrapper"></div>');
-            var progressBar = $('<div class="progress-bar progress-striped active progress-bar-success"></div>');
-
-            if ($(e.currentTarget).siblings('.progress').length) {
-                $(e.currentTarget).siblings('.progress').remove();
-            }
-
-            $(e.currentTarget).after(progressWrapper.append(progressBar));
-
-            fileModel.fetch()
-                .then(function(response) {
-                    var xhr = fileModel.downloadFileToDisk();
-                    var totalSize = fileModel.get('length');
-
-                    xhr.addEventListener(
-                        'progress',
-                        function(progress) {
-
-                            var percentCompleted = 0;
-
-                            if (progress.lengthComputable) {
-                                percentCompleted = progress.loaded / progress.total;
-                            }
-                            else {
-                                percentCompleted = progress.loaded / totalSize;
-                            }
-
-                            percentCompleted *= 100;
-                            progressBar.attr('aria-valuenow', percentCompleted);
-                            progressBar.attr('style', 'width:' + percentCompleted + '%');
-                            progressBar.text(percentCompleted.toFixed(2) + '%');
-                        },
-                        false
-                    );
-
-                    xhr.addEventListener(
-                        'load',
-                        function() {},
-                        false
-                    );
-                })
+            fileModel.set('communityUuid', uuid);
+            fileModel.set('filename', filename);
+            fileModel.downloadFileToDisk()
                 .fail(function(error) {
-                    progressBar.remove();
-                    var errorMessage = $('<div class="text-warning text-center">Could not download file</div>');
-                    progressWrapper.append(errorMessage);
-
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
-                    telemetry.set('method', 'Backbone.Agave.Collection.CommunityDatas.fetch()');
+                    telemetry.setError(error);
+                    telemetry.set('method', 'Backbone.Agave.Model.File.Community.downloadFileToDisk()');
                     telemetry.set('view', 'Community.Detail');
                     telemetry.save();
                 })

@@ -37,6 +37,12 @@ function(Backbone, EnvironmentConfig, detect) {
             this.set('os', os);
             this.set('username', username);
         },
+        setError: function(error) {
+            error.responseText = JSON.parse(error.responseText);
+            delete error.responseJSON;
+
+            this.set('error', error);
+        },
         _detectBrowser: function() {
             var ua = detect.parse(navigator.userAgent);
 

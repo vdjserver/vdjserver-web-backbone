@@ -46,7 +46,7 @@ define(['app', 'backbone.syphon'], function(App) {
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.set('error', JSON.stringify(error));
+                    telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Profile().fetch()');
                     telemetry.set('view', 'Profile.Form');
                     telemetry.save();
@@ -119,7 +119,7 @@ define(['app', 'backbone.syphon'], function(App) {
                             .fail(function(error) {
 
                                 var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.setError(error);
                                 telemetry.set('method', 'Backbone.Agave.Model.Profile().save()');
                                 telemetry.set('view', 'Profile.Form');
                                 telemetry.save();
@@ -142,7 +142,7 @@ define(['app', 'backbone.syphon'], function(App) {
                     .end()
                     .prepend(
                         $('<div class="alert alert-danger">')
-                            .text('Profile update failed. Please try again.')
+                            .text('Email is required. Profile was not updated.')
                             .fadeIn()
                     );
             }
@@ -243,7 +243,7 @@ define(['app', 'backbone.syphon'], function(App) {
                             })
                             .fail(function(error) {
                                 var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.set('error', JSON.stringify(error));
+                                telemetry.setError(error);
                                 telemetry.set('method', 'Backbone.Agave.Model.PasswordChange().callSave()');
                                 telemetry.set('view', 'Profile.ChangePasswordForm');
                                 telemetry.save();

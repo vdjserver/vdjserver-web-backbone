@@ -31,7 +31,6 @@ require.config({
         'd3':               '../bower_components/d3/d3.min',
         'nvd3':             '../bower_components/nvd3/nv.d3.min',
         'socket-io':        '../bower_components/socket.io-client/socket.io',
-        'recaptcha-ajax':   '../bower_components/recaptcha-ajax/recaptcha_ajax',
         'simple-statistics':'../bower_components/simple-statistics/src/simple_statistics',
 
         // Config
@@ -42,6 +41,7 @@ require.config({
 
         // Regular Models
         'error': 'models/error',
+        'recaptcha': 'models/recaptcha',
 
         // Agave - Models/Collections
         'telemetry': 'models/telemetry',
@@ -92,8 +92,7 @@ require.config({
         'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
 
         // Mixins
-        'file-download-detection-mixin': 'mixins/file-download-detection-mixin',
-        'file-transfer-sidebar-ui-mixin': 'mixins/file-transfer-sidebar-ui-mixin',
+        'file-transfer-project-ui-mixin': 'mixins/file-transfer-project-ui-mixin',
         'comparators-mixin': 'collections/mixins/comparators-mixin',
         'file-transfer-mixins': 'models/mixins/file-transfer-mixins',
 
@@ -173,9 +172,6 @@ require.config({
         'nvd3': {
             deps:['d3'],
             exports: 'nv'
-        },
-        'recaptcha-ajax': {
-            exports: 'Recaptcha'
         },
         'typeahead': {
             deps: ['jquery']

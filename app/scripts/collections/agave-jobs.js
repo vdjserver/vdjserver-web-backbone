@@ -28,6 +28,15 @@ define([
         },
     });
 
+    Jobs.Pending = Backbone.Agave.Collection.extend({
+        model: Backbone.Agave.Model.Job.Detail,
+        apiHost: EnvironmentConfig.vdjApi.host,
+        authType: 'basic',
+        url: function() {
+            return '/jobs/queue/pending/?projectUuid=' + this.projectUuid;
+        },
+    });
+
     Jobs.OutputFiles = Backbone.Agave.Collection.extend({
         model: Backbone.Agave.Model.Job.OutputFile,
         initialize: function(parameters) {
@@ -64,6 +73,8 @@ define([
                         fileExtension === 'vdjml'
                         ||
                         doubleFileExtension === 'rc_out.tsv'
+                        ||
+                        doubleFileExtension === 'duplicates.tsv'
                         ||
                         filename === 'summary.txt'
                     ) {
@@ -205,22 +216,37 @@ define([
         },
         setPredefinedWorkflows: function() {
 
+            // single function workflows
             var preconfiguredWorkflows = this._preconfiguredWorkflows();
-
             for (var i = 0; i < preconfiguredWorkflows.length; i++) {
                 var preconfiguredWorkflow = preconfiguredWorkflows[i];
 
                 var workflow = new Backbone.Agave.Model.Job.Workflow();
                 workflow.sync = workflow.fakeSync;
                 workflow.set('predefined', true);
+                workflow.set('single', true);
 
                 workflow.setConfigFromPreconfiguredData(preconfiguredWorkflow);
                 this.unshift(workflow);
             }
+
+            // complete workflows
+            var preconfiguredCompleteWorkflows = this._preconfiguredCompleteWorkflows();
+            for (var j = 0; j < preconfiguredCompleteWorkflows.length; j++) {
+                var preconfiguredCompleteWorkflow = preconfiguredCompleteWorkflows[j];
+
+                var completeWorkflow = new Backbone.Agave.Model.Job.Workflow();
+                completeWorkflow.sync = completeWorkflow.fakeSync;
+                completeWorkflow.set('predefined', true);
+                completeWorkflow.set('complete', true);
+
+                completeWorkflow.setConfigFromPreconfiguredData(preconfiguredCompleteWorkflow);
+                this.unshift(completeWorkflow);
+            }
         },
 
         // Private Methods
-        _preconfiguredWorkflows: function() {
+        _preconfiguredCompleteWorkflows: function() {
 
             var workflows = [
 /*
@@ -503,6 +529,128 @@ define([
                             'find_shared': {
                                 'out_group_unique':'.fasta',
                                 'group_variable': 'MID1',
+                                'out_group_duplicates': 'unique_duplicates.tsv',
+                            },
+                        },
+                        {
+                            'write_sequence': {
+                                'out_prefix': 'final_reads',
+                                'out_path':'.fastq',
+                            },
+                        },
+                    ],
+                },
+
+            ];
+
+            return workflows;
+        },
+        _preconfiguredWorkflows: function() {
+
+            var workflows = [
+
+                {
+                    'workflow-name': 'Find Unique Sequences',
+                    'summary_output_path': 'unique_summary.txt',
+                    'steps': [
+                        {
+                            'find_shared': {
+                                'out_group_unique':'.fasta',
+                                'group_variable': 'MID1',
+                                'out_group_duplicates': 'unique_duplicates.tsv',
+                            },
+                        },
+                    ],
+                },
+
+                {
+                    'workflow-name': 'Primer Triming',
+                    'summary_output_path': 'primer_summary.txt',
+                    'steps': [
+                        {
+                            'custom_v_primer_trimming': {},
+                        },
+                        {
+                            'custom_j_primer_trimming': {},
+                        },
+                        {
+                            'write_sequence': {
+                                'out_prefix': 'primer_trimmed_reads',
+                                'out_path':'.fastq',
+                            },
+                        },
+                    ],
+                },
+
+                {
+                    'workflow-name': 'Barcode Demultiplexing',
+                    'summary_output_path': 'barcode_summary.txt',
+                    'steps': [
+                        {
+                            'match': {
+                                'reverse': true,
+                                'elements': [
+                                    {
+                                        'max_mismatches': 1,
+                                        'required': true,
+                                        'start': {},
+                                        'cut_lower': {
+                                            'after': 0,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            'write_sequence': {
+                                'out_prefix': '',
+                                'out_path':'.fastq',
+                            },
+                        },
+                    ],
+                },
+
+                {
+                    'workflow-name': 'Sequence Filters',
+                    'summary_output_path': 'filter_summary.txt',
+                    'steps': [
+                        {
+                            'length_filter': {
+                                //'min': 200,
+                                'min': 0,
+                            },
+                        },
+                        {
+                            'average_quality_filter': {
+                                'custom_value': 35,
+                            },
+                        },
+                        {
+                            'homopolymer_filter': {
+                                'custom_value': 20,
+                            },
+                        },
+                        {
+                            'write_sequence': {
+                                'out_prefix': 'filtered_reads',
+                                'out_path':'.fastq',
+                            },
+                        },
+                    ],
+                },
+
+                {
+                    'workflow-name': 'Sequence Statistics',
+                    'summary_output_path': 'stats_summary.txt',
+                    'steps': [
+                        {
+                            'quality_stats': {
+                                'out_prefix': 'stats_',
+                            },
+                        },
+                        {
+                            'composition_stats': {
+                                'out_prefix': 'stats_',
                             },
                         },
                     ],
@@ -514,7 +662,12 @@ define([
         },
         _getPredefinedWorkflowNames: function() {
             var predefinedWorkflowNames = [
-                'Single Reads',
+                //'Single Reads',
+                'Find Unique Sequences',
+                'Primer Trimming',
+                'Barcode Demultiplexing',
+                'Sequence Filters',
+                'Sequence Statistics',
                 //'Paired Reads',
             ];
 

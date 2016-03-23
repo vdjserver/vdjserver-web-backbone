@@ -79,8 +79,9 @@ define([
             App.router.navigate('');
 
             App.Datastore = {};
-            App.Datastore.Model = {};
             App.Datastore.Collection = {};
+            App.Datastore.Model = {};
+            App.Datastore.Notifications = new App.Collections.Notifications();
         },
         setMessage: function(message, timeout) {
 
@@ -109,6 +110,8 @@ define([
         },
         start: function() {
             App.init();
+            App.Instances.WebsocketManager = new App.Utilities.WebsocketManager();
+
             Backbone.history.start({pushState: true, root: App.root});
 
             $(document).on('click', 'a[href]:not([data-bypass])', function(evt) {
@@ -124,8 +127,6 @@ define([
                     Backbone.history.navigate(href.attr, true);
                 }
             });
-
-            App.Instances.WebsocketManager = new App.Utilities.WebsocketManager();
         },
         // Properties
         Collections: {},

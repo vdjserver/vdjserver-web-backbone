@@ -13,6 +13,16 @@
             checked
         >
 
+        {{#ifGreaterThan files.length 1}}
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    <div class="alert alert-warning">
+                        Warning: Multiple files are not treated independently when demultiplexing. For most use cases, demultiplexing should be done one file at a time.
+                    </div>
+                </div>
+            </div>
+        {{/ifGreaterThan}}
+
         <div class="row row-with-spacer">
             <div class="col-md-6">
 
@@ -22,17 +32,30 @@
                     <div class="col-md-12">
                         Number of Barcodes per Read
                         &nbsp;
+                        {{!--
+                            <input
+                                id="{{inputCount}}-barcodes"
+                                class="job-form-item"
+                                type="number"
+                                step="1"
+                                min="1"
+                                max="2"
+                                pattern="\d+"
+                            >
+                        --}}
                         <input
                             id="{{inputCount}}-barcodes"
                             class="job-form-item"
                             type="number"
                             step="1"
                             min="1"
-                            max="2"
+                            max="1"
                             pattern="\d+"
+                            readonly
                         >
                     </div>
                 </div>
+
                 <div class="row row-with-spacer">
                     <div class="col-md-12">
                         Location
