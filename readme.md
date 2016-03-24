@@ -5,8 +5,8 @@ VDJServer Backbone is a next generation immune repertoire analysis portal.
 
 ##Deployments
 
- * Development: (rodeo vm - ip is dynamic and may occasionally change) <https://rodeo.tacc.utexas.edu/dashboard/project/instances/>
- * Staging: <https://vdj-dev.tacc.utexas.edu>
+ * Development: <https://vdj-dev.tacc.utexas.edu>
+ * Staging: <https://vdj-staging.tacc.utexas.edu>
  * Production: <https://vdjserver.org>
 
 ##Development Guidelines
@@ -19,7 +19,7 @@ VDJServer Backbone is a next generation immune repertoire analysis portal.
 
  * A git pre-commit hook is available via the file pre-commit.sh. To use it, just symlink it as follows: ```ln -s ../../pre-commit.sh .git/hooks/pre-commit```
 
- * Spaces are preferred over tabs, and indentation is set at 4 spaces.  
+ * Spaces are preferred over tabs, and indentation is set at 4 spaces.
 
  *  Vimrc settings: ```set shiftwidth=4, softtabstop=4, expandtab```
 
@@ -36,7 +36,7 @@ VDJServer Backbone is a next generation immune repertoire analysis portal.
 - Clone project
 git clone git@bitbucket.org:vdjserver/vdjserver-backbone.git
 
-cd [project location]
+cd [project location]/component
 
 - Install node.js
 # Mac OS X (assuming that the homebrew package manager is already installed)
@@ -46,10 +46,10 @@ brew install node
 sudo apt-get install nodejs nodejs-legacy
 
 - Install compass/sass dependencies
-# Mac OS X 
+# Mac OS X
 sudo gem install sass compass
 
-# Debian 
+# Debian
 sudo apt-get install ruby ruby-dev && sudo gem install sass compass
 
 - Install global npm modules
@@ -64,6 +64,8 @@ bower install
 - Setup local environment config file
 cp app/scripts/config/environment-config.js.defaults app/scripts/config/environment-config.js
 
+vim app/scripts/config/environment-config.js
+
 - Start local instance
 grunt server
 ```
@@ -71,12 +73,22 @@ grunt server
 ##Running through docker
 The vdj-backbone build system can be run via docker as follows:
 
-Running a development server that monitors file changes:
+**Setup environment config:**
+
 ```
-docker run -t -p 9001:9001 -v $(pwd)/:/vdjserver-backbone vdj server --force
+cp component/app/scripts/config/environment-config.js docker/environment-config/environment-config.js
+
+vim docker/environment-config/environment-config.js
 ```
 
-Building for deployment:
+**Running a development server that monitors file changes:**
+
+```
+docker run -t -p 9001:9001 -v $(pwd)/component:/vdjserver-backbone vdj server --force
+```
+
+**Building for deployment:**
+
 ```
 docker run -t -p 9001:9001 vdj build
 ```

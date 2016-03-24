@@ -1,11 +1,2 @@
-# Grunt/npm Files
-.sass-cache
-.tmp
-app/bower_components
-dist
-live-site
-live-site-backup
-node_modules
-
 # OS X Noise
 .DS_Store
