@@ -42,6 +42,6 @@ WORKDIR /var/www/html/vdjserver-backbone
 RUN ["/usr/local/bin/grunt","build"]
 
 # Copy environment settings over cached build layer
-COPY docker/environment-config/environment-config.js /var/www/html/vdjserver-backbone/dist/scripts/config/environment-config.js
+COPY docker/environment-config/ /var/www/html/vdjserver-backbone/dist/scripts/config/
 
 VOLUME ["/var/www/html/vdjserver-backbone/dist"]
