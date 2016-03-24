@@ -17,8 +17,8 @@
 
                     <hr>
 
-                    <div class="form-group">
-                        <label for="fileList" class="control-label col-lg-2">Selected Read Level Files</label>
+                    <div class="form-group" id="input-file-list">
+                        <label for="fileList" class="control-label col-lg-2">Selected Files</label>
                         <div class="col-lg-3">
                             {{#each selectedFileListings}}
                                 <div class="row">
@@ -33,6 +33,11 @@
                         </div>
                         <div class="col-lg-7 help-block">
                             <div class="row">
+                                <div class="col-sm-12">
+                                    * At least one read level file must be included.
+                                </div>
+                            </div>
+                            <div class="row row-with-spacer">
                                 <div class="col-sm-12">
                                     * Fasta files must be linked to qual files using the ".fasta/.qual Associations" section.
                                 </div>

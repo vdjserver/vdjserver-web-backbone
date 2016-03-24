@@ -679,9 +679,28 @@ define([
                 'click #delete-workflow': '_deleteWorkflow',
             },
             validateJobForm: function() {
+
                 var validationError = false;
 
+                // Check if read level files are present
+                var readLevelFiles = this.selectedFileListings.filter(function(file) {
+
+                    if (file.get('value').fileType === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ) {
+                        return file;
+                    }
+                });
+
+                if (readLevelFiles.length === 0) {
+
+                    $('#input-file-list')
+                        .addClass('has-error')
+                        ;
+
+                    validationError = true;
+                }
+
                 if ($.trim($('#workflow-staging-area').html()) === '') {
+
                     $('#select-workflow')
                         .closest('.form-group')
                         .addClass('has-error')
