@@ -49,7 +49,7 @@ define([
         },
         comparator: 'name',
         url: function() {
-            return '/jobs/v2/' + this.jobId + '/outputs/listings';
+            return '/jobs/v2/' + this.jobId + '/outputs/listings?limit=1000';
         },
         getProjectFileOutput: function() {
             var filteredCollection = this.filter(function(model) {
