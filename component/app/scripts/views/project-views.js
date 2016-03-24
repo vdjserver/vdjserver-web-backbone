@@ -1906,11 +1906,20 @@ define([
         },
         events: {
             'click #launch-delete-project-modal': '_launchDeleteProjectModal',
-            'click #delete-project': '_deleteProject',
-            'click #save-project-name': '_saveProjectName',
-            'click #save-project-description': '_saveProjectDescription',
-            'click #add-user': '_addUserToProject',
+
             'click .remove-user-from-project': '_removeUserFromProject',
+
+            'click  #delete-project': '_deleteProject',
+            'submit #project-delete-form': '_deleteProject',
+
+            'click  #save-project-name': '_saveProjectName',
+            'submit #project-name-form': '_saveProjectName',
+
+            'click  #save-project-description': '_saveProjectDescription',
+            'submit #project-description-form': '_saveProjectDescription',
+
+            'click  #add-user': '_addUserToProject',
+            'submit #user-add-form': '_addUserToProject',
         },
 
         // Private Methods

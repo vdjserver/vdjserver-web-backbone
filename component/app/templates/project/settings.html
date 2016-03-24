@@ -1,8 +1,10 @@
 <div class="project-detail-controls">
     <div class="row">
         <div class="col-md-12">
+
             <h4>Project Settings</h4>
-            <form class="form-horizontal">
+
+            <form id="project-name-form" class="form-horizontal">
                 <div class="form-group">
                     <label class="col-md-2 control-label">Project Name</label>
                     <div class="col-md-5">
@@ -14,6 +16,8 @@
                         </div>
                     </div>
                 </div>
+             </form>
+             <form id="project-description-form" class="form-horizontal">
                 <div class="form-group">
                     <label class="col-md-2 control-label">Project Description</label>
                     <div class="col-md-5">
@@ -25,12 +29,16 @@
                         </div>
                     </div>
                 </div>
+             </form>
+             <form class="form-horizontal">
                 <div class="form-group">
                     <label class="col-md-2 control-label">Created</label>
                     <div class="col-md-5">
                         <span class="form-text-align">{{FormatAgaveDate project.created}}</span>
                     </div>
                 </div>
+             </form>
+             <form id="project-delete-form" class="form-horizontal">
                 <div class="form-group">
                     <label class="col-md-2 control-label">Delete Project</label>
                     <div class="col-md-5">
@@ -66,13 +74,15 @@
 
     <div class="row-with-spacer">
         <div class="col-md-12">
+
             <h4>Project Users</h4>
+
             <form class="form-inline" role="form">
                 <div class="form-group">
                     <label class="sr-only" for="add-username">Username</label>
                         <input type="text" id="add-username" class="form-control" placeholder="Enter username...">
                 </div>
-                <button type="submit" class="btn btn-success" id="add-user">Add user to project</button>
+                <button class="btn btn-success" id="add-user">Add user to project</button>
             </form>
         </div>
     </div>
