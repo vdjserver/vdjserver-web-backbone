@@ -657,7 +657,7 @@ define(['app'], function(App) {
             }
             else {
                 configuredParameter.find_shared = {
-                    'out_group_unique': 'find-unique.fasta',
+                    'out_group_unique': 'find-' + parameters[key + '-out-prefix'] + '.fasta',
                     'out_duplicates': 'find-unique.duplicates.tsv',
                 };
             }

@@ -216,8 +216,11 @@ define([
         },
         setPredefinedWorkflows: function() {
 
+            // unique identifier to add to output filenames
+            var tmpName = (Math.round(Math.random() * 0x10000)).toString(16);
+
             // single function workflows
-            var preconfiguredWorkflows = this._preconfiguredWorkflows();
+            var preconfiguredWorkflows = this._preconfiguredWorkflows(tmpName);
             for (var i = 0; i < preconfiguredWorkflows.length; i++) {
                 var preconfiguredWorkflow = preconfiguredWorkflows[i];
 
@@ -231,7 +234,7 @@ define([
             }
 
             // complete workflows
-            var preconfiguredCompleteWorkflows = this._preconfiguredCompleteWorkflows();
+            var preconfiguredCompleteWorkflows = this._preconfiguredCompleteWorkflows(tmpName);
             for (var j = 0; j < preconfiguredCompleteWorkflows.length; j++) {
                 var preconfiguredCompleteWorkflow = preconfiguredCompleteWorkflows[j];
 
@@ -246,7 +249,7 @@ define([
         },
 
         // Private Methods
-        _preconfiguredCompleteWorkflows: function() {
+        _preconfiguredCompleteWorkflows: function(tmpName) {
 
             var workflows = [
 /*
@@ -527,6 +530,7 @@ define([
                         },
                         {
                             'find_shared': {
+                                'out_prefix': 'unique-' + tmpName,
                                 'out_group_unique':'.fasta',
                                 'group_variable': 'MID1',
                                 'out_group_duplicates': 'unique_duplicates.tsv',
@@ -534,7 +538,7 @@ define([
                         },
                         {
                             'write_sequence': {
-                                'out_prefix': 'final_reads',
+                                'out_prefix': 'final_reads-' + tmpName,
                                 'out_path':'.fastq',
                             },
                         },
@@ -545,7 +549,7 @@ define([
 
             return workflows;
         },
-        _preconfiguredWorkflows: function() {
+        _preconfiguredWorkflows: function(tmpName) {
 
             var workflows = [
 
@@ -555,6 +559,7 @@ define([
                     'steps': [
                         {
                             'find_shared': {
+                                'out_prefix': 'unique-' + tmpName,
                                 'out_group_unique':'.fasta',
                                 'group_variable': 'MID1',
                                 'out_group_duplicates': 'unique_duplicates.tsv',
@@ -575,7 +580,7 @@ define([
                         },
                         {
                             'write_sequence': {
-                                'out_prefix': 'primer_trimmed_reads',
+                                'out_prefix': 'primer_trimmed_reads-' + tmpName,
                                 'out_path':'.fastq',
                             },
                         },
@@ -632,7 +637,7 @@ define([
                         },
                         {
                             'write_sequence': {
-                                'out_prefix': 'filtered_reads',
+                                'out_prefix': 'filtered_reads-' + tmpName,
                                 'out_path':'.fastq',
                             },
                         },
