@@ -107,7 +107,7 @@ define([
 
     Handlebars.registerHelper('GetHumanReadableFileSize', function(data) {
         if (data) {
-            return filesize(data);
+            return filesize(data, {base: 10});
         }
     });
 
