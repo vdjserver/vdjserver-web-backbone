@@ -71,24 +71,47 @@ grunt server
 ```
 
 ##Running through docker
-The vdj-backbone build system can be run via docker as follows:
 
-**Setup environment config:**
+The vdj-backbone project can be run through docker in two ways:
 
-```
-cp component/app/scripts/config/environment-config.js docker/environment-config/environment-config.js
+A.) Using a prebuilt image: https://hub.docker.com/r/vdjserver/backbone/
 
-vim docker/environment-config/environment-config.js
-```
+or
 
-**Running a development server that monitors file changes:**
+B.) Building a local image
 
-```
-docker run -t -p 9001:9001 -v $(pwd)/component:/vdjserver-backbone vdj server --force
-```
-
-**Building for deployment:**
+You will need to create a local environment-config file with either option. A sample config file is available in this repository at "component/app/scripts/config/environment-config.js.defaults".
 
 ```
-docker run -t -p 9001:9001 vdj build
+cp component/app/scripts/config/environment-config.js.defaults ~/environment-config.js
+
+vim ~/environment-config.js
+```
+
+**Using a prebuilt image**
+
+After the config is set up, you can run the image as follows:
+
+```
+docker run -t -p 9001:9001 -v ~/environment-config.js:/var/www/html/vdjserver-backbone/app/scripts/config/environment-config.js vdjserver/backbone:release-1 grunt server --force
+```
+
+You can also mount your source code directory in the container if you would prefer to make code changes:
+
+```
+cp ~/environment-config.js [vdjserver-backbone repo location]/component/app/scripts/config/
+
+docker run -t -p 9001:9001 -v $(pwd)/component:/var/www/html/vdjserver-backbone vdjserver/backbone:release-1 bash -c "bower install && npm install && grunt server --force"
+```
+
+**Building a local image for development**
+
+```
+cp ~/environment-config.js [vdjserver-backbone repo location]/component/app/scripts/config/
+
+cd [vdjserver-backbone repo location]
+
+docker build -t vdj-dev .
+
+docker run -t -p 9001:9001 -v $(pwd)/component:/var/www/html/vdjserver-backbone vdj-dev bash -c "bower install && npm install && grunt server --force"
 ```
