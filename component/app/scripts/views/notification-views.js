@@ -30,6 +30,19 @@ define([
         },
         _selectMessage: function(e) {
             e.preventDefault();
+
+            var jobId = this.notification.get('notification').jobId;
+            var projectUuid = this.notification.get('notification').projectUuid;
+
+            App.router.navigate(
+                'project'
+                + '/' + projectUuid
+                + '/jobs'
+                + '/' + jobId,
+                {
+                    trigger: true
+                }
+            );
         },
         _getMessageForJobStatus: function(notification) {
             var statusText = _string.capitalize(notification.get('notification').jobStatus.toLowerCase());
