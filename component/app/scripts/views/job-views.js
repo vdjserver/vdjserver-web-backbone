@@ -80,6 +80,8 @@ define([
         events: {
             'click .remove-file-from-job': '_removeFileFromJob',
             'submit form': '_submitJobForm',
+            'click #job-submit-exit': '_exitJobForm',
+            'click #job-submit-status': '_navigateToJobsListView',
         },
 
         // Private Methods
@@ -87,6 +89,28 @@ define([
             var datetime = moment().format('D-MMM-YYYY h:mm:ss a');
 
             return 'My Job ' + datetime;
+        },
+        _exitJobForm: function(e) {
+            e.preventDefault();
+
+            var that = this;
+
+            $('#job-modal').one('hidden.bs.modal', function(e) {
+                App.router.navigate('project/' + that.projectModel.get('uuid'), {
+                    trigger: true,
+                });
+            });
+        },
+        _navigateToJobsListView: function(e) {
+            e.preventDefault();
+
+            var that = this;
+
+            $('#job-modal').one('hidden.bs.modal', function(e) {
+                App.router.navigate('project/' + that.projectModel.get('uuid') + '/jobs', {
+                    trigger: true,
+                });
+            });
         },
         _submitJobForm: function(e) {
             e.preventDefault();
@@ -107,13 +131,6 @@ define([
 
             jobSubview.stageJob(formData)
                 .done(function() {
-
-                    $('#job-modal').one('hidden.bs.modal', function(e) {
-
-                        App.router.navigate('project/' + that.projectModel.get('uuid') + '/jobs', {
-                            trigger: true,
-                        });
-                    });
                 })
                 .fail(function() {
                     that._uiCancelJobLoadingView();
