@@ -732,16 +732,24 @@ define([
 
             var selectedFileMetadataUuids = this._getSelectedFileUuids();
             var selectedFileListings = this.projectFiles.getNewCollectionForUuids(selectedFileMetadataUuids);
+            var filteredFileListings = this.projectFiles.getNewCollectionForUuids(selectedFileMetadataUuids);
+
+            // Remove qual files here
+            selectedFileListings.forEach(function(model) {
+                if (model.get('value')['fileType'] === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_QUALITY) {
+                    filteredFileListings.remove(model);
+                }
+            });
 
             // TODO: rename selectedFileListings param
             var jobSubmitView = new App.Views.Jobs.Submit({
-                selectedFileListings: selectedFileListings,
+                selectedFileListings: filteredFileListings,
                 projectModel: this.projectModel,
                 allFiles: this.projectFiles,
             });
 
             var stagingSubview = new StagingSubview({
-                selectedFileListings: selectedFileListings,
+                selectedFileListings: filteredFileListings,
                 projectModel: this.projectModel,
                 allFiles: this.projectFiles,
             });
@@ -848,16 +856,24 @@ define([
 
             $('.selected-files:checked').each(function() {
                 var uuid = $(this).val();
+                selectedFileMetadataUuids.push(uuid);
 
                 var model = that.projectFiles.get(uuid);
+
                 var pairedUuid = model.getPairedReadMetadataUuid();
 
-                selectedFileMetadataUuids.push(uuid);
+                if (model.getQualityScoreMetadataUuid()) {
+                    var qualModel = that.projectFiles.get(model.getQualityScoreMetadataUuid());
+                    var qualUuid = qualModel.get('uuid');
+                    selectedFileMetadataUuids.push(qualUuid);
+                }
 
                 // If we're dealing with a paired read,
                 // then include the other paired file too
                 if (pairedUuid) {
                     selectedFileMetadataUuids.push(pairedUuid);
+
+                    // TODO: add paired read qual
                 }
             });
 
@@ -916,6 +932,7 @@ define([
                 telemetry.save();
             })
             ;
+
         },
         _clickDownloadMultipleFiles: function(e) {
             e.preventDefault();
