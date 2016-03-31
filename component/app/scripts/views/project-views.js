@@ -787,7 +787,7 @@ define([
                                             var telemetry = new Backbone.Agave.Model.Telemetry();
                                             telemetry.setError(error);
                                             telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
-                                            telemetry.set('view', 'Projects.Detail');
+                                            telemetry.set('view', 'Projects.DetailActions');
                                             telemetry.save();
                                         })
                                         ;
@@ -818,7 +818,7 @@ define([
                                             var telemetry = new Backbone.Agave.Model.Telemetry();
                                             telemetry.setError(error);
                                             telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
-                                            telemetry.set('view', 'Projects.Detail');
+                                            telemetry.set('view', 'Projects.DetailActions');
                                             telemetry.save();
                                         })
                                         ;
@@ -928,7 +928,7 @@ define([
                 var telemetry = new Backbone.Agave.Model.Telemetry();
                 telemetry.setError(error);
                 telemetry.set('method', 'softDelete()');
-                telemetry.set('view', 'Projects.Detail');
+                telemetry.set('view', 'Projects.DetailActions');
                 telemetry.save();
             })
             ;
@@ -953,7 +953,7 @@ define([
                         var telemetry = new Backbone.Agave.Model.Telemetry();
                         telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.downloadFileToDisk()');
-                        telemetry.set('view', 'Projects.Detail');
+                        telemetry.set('view', 'Projects.DetailActions');
                         telemetry.save();
                     })
                     ;
@@ -1125,7 +1125,7 @@ define([
                         var telemetry = new Backbone.Agave.Model.Telemetry();
                         telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.downloadFileToDisk()');
-                        telemetry.set('view', 'Projects.Detail');
+                        telemetry.set('view', 'Projects.DetailFiles');
                         telemetry.save();
                     })
                     ;
@@ -1165,7 +1165,7 @@ define([
                         var telemetry = new Backbone.Agave.Model.Telemetry();
                         telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.updateFileType()');
-                        telemetry.set('view', 'Projects.FileListings');
+                        telemetry.set('view', 'Projects.DetailFiles');
                         telemetry.save();
                     })
                     ;
@@ -1187,7 +1187,7 @@ define([
                         var telemetry = new Backbone.Agave.Model.Telemetry();
                         telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.setReadDirection()');
-                        telemetry.set('view', 'Projects.FileListings');
+                        telemetry.set('view', 'Projects.DetailFiles');
                         telemetry.save();
                     })
                     ;
@@ -1209,7 +1209,7 @@ define([
                         var telemetry = new Backbone.Agave.Model.Telemetry();
                         telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.updateTags()');
-                        telemetry.set('view', 'Projects.FileListings');
+                        telemetry.set('view', 'Projects.DetailFiles');
                         telemetry.save();
                     })
                     ;
@@ -1374,6 +1374,12 @@ define([
                     .fail(function() {
                         that._mixinUiSetUploadProgress(that.fileUniqueIdentifier, 0);
                         that._mixinUiSetErrorMessage(that.fileUniqueIdentifier, 'Import error. Please check your URLs and try again.');
+
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.setError(error);
+                        telemetry.set('method', 'Backbone.Agave.Model.File.UrlImport.save()');
+                        telemetry.set('view', 'Projects.FileUrlTransfer');
+                        telemetry.save();
                     })
                     ;
                 }
