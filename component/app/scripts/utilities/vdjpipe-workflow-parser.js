@@ -1025,7 +1025,7 @@ define(['app'], function(App) {
                 if (model.getQualityScoreMetadataUuid()) {
                     var qualModel = allFileMetadatas.get(model.getQualityScoreMetadataUuid());
 
-                    if (qualModel.getReadDirection() === 'F') {
+                    if (model.getReadDirection() === 'F') {
                         stanza['forward_qual'] = qualModel.get('value')['name'];
                     }
                     else {
