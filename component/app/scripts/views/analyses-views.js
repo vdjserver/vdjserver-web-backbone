@@ -191,7 +191,7 @@ define([
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
                     telemetry.setError(error);
-                    telemetry.set('method', 'Backbone.Agave.Model.Job.Detail().fetch()');
+                    telemetry.set('method', 'Backbone.Agave.Collection.Jobs.fetch()');
                     telemetry.set('view', 'Analyses.OutputList');
                     telemetry.save();
                 })
