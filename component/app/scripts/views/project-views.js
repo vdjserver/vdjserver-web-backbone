@@ -1589,7 +1589,9 @@ define([
                             that._mixinUiProgressBar(totalProgressLength, totalLength);
                         });
 
-                        return file.save()
+                        var deferred = $.Deferred();
+
+                        file.save()
                             .then(function() {
                                 return file.notifyApiUploadComplete();
                             })
@@ -1601,8 +1603,21 @@ define([
                                     'addFileImportPlaceholder',
                                     notificationData
                                 );
+
+                                deferred.resolve();
+                            })
+                            .fail(function(error) {
+                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                telemetry.setError(error);
+                                telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.save()');
+                                telemetry.set('view', 'Projects.FileTransfer');
+                                telemetry.save();
+
+                                deferred.resolve();
                             })
                             ;
+
+                        return deferred;
                     };
                 });
 
