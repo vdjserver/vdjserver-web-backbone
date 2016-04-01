@@ -116,22 +116,21 @@ define([
     Analyses.OutputList = Backbone.View.extend({
         template: 'analyses/output-list',
         initialize: function(parameters) {
-            this.projectUuid = parameters.projectUuid;
-
-            this.jobMetadatas = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid});
 
             this.jobs = new Backbone.Agave.Collection.Jobs();
+            this.paginatedJobs = new Backbone.Agave.Collection.Jobs();
+            this.jobs.projectUuid = this.projectUuid;
 
-            this.pendingJobs = new Backbone.Agave.Collection.Jobs.Pending();
-            this.pendingJobs.projectUuid = this.projectUuid;
+            this.iteratorRange = 10;
 
-            this.paginationSets = 0;
-            this.paginationIterator = 10;
+            if (_.isNumber(this.paginationIndex) !== true) {
+                this.paginationIndex = 1;
+            }
+            this.currentIterationIndex = this.paginationIndex;
 
-            this.currentPaginationSet = 1;
-            this.maxPaginationSet = 1;
+            this.maxIteratorIndexes = 0;
 
-            this.fetchJobMetadatas();
+            this.fetchJobs();
         },
         events: {
             'click .job-pagination-previous': 'jobPaginationPrevious',
@@ -141,130 +140,29 @@ define([
         },
         serialize: function() {
             return {
-                jobs: this.jobs.toJSON(),
+                jobs: this.paginatedJobs.toJSON(),
                 projectUuid: this.projectUuid,
                 paginationSets: this.paginationSets,
             };
         },
-        fetchJobMetadatas: function() {
+        fetchJobs: function() {
             var loadingView = new App.Views.Util.Loading({keep: true});
             this.setView(loadingView);
             loadingView.render();
 
             var that = this;
 
-            this.jobMetadatas.fetch()
-                .always(function() {
-                    loadingView.remove();
-                    that.render();
-                })
-                .done(function() {
-                    that.calculatePaginationSets();
-                    that.fetchPaginatedJobModels();
-                })
-                .fail(function(error) {
+            var pendingJobs = new Backbone.Agave.Collection.Jobs.Pending();
+            pendingJobs.projectUuid = this.projectUuid;
 
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.setError(error);
-                    telemetry.set('error', JSON.stringify(error));
-                    telemetry.set('method', 'Backbone.Agave.Collection.Jobs.Listings().save()');
-                    telemetry.set('view', 'Analyses.OutputList');
-                    telemetry.save();
-                });
-        },
-        _handleJobStatusUpdate: function(jobStatusUpdate) {
-
-            $('#job-status-' + jobStatusUpdate.jobId).html(jobStatusUpdate.jobStatus);
-
-            if (jobStatusUpdate.jobStatus === 'FINISHED') {
-                this.render();
-            }
-        },
-        calculatePaginationSets: function() {
-            var tmpPaginationSets = Math.ceil(this.jobMetadatas.models.length / this.paginationIterator);
-
-            this.paginationSets = [];
-            for (var i = 1; i < tmpPaginationSets + 1; i++) {
-                this.paginationSets.push(i);
-            }
-
-            this.maxPaginationSet = _.last(this.paginationSets);
-        },
-        fetchPaginatedJobModels: function() {
-            var loadingView = new App.Views.Util.Loading({keep: true});
-            this.setView(loadingView);
-            loadingView.render();
-
-            var that = this;
-
-            var jobModels = [];
-
-            var indexLimit = this.getIndexLimit();
-            var currentIndex = this.getCurrentIndex();
-
-            // Create empty job models and set ids for all job listing results
-            for (var i = currentIndex; i < indexLimit; i++) {
-
-                var job = new Backbone.Agave.Model.Job.Detail({
-                    id: this.jobMetadatas.at([i]).get('value').jobUuid,
-                });
-
-                jobModels.push(job);
-            }
-
-            if (jobModels.length === 0) {
-                loadingView.remove();
-                this.render();
-
-                return;
-            }
-
-            this.jobs = new Backbone.Agave.Collection.Jobs();
-
-            /*
-                30/July/2015
-
-                This is a hack to fetch all jobs without stopping for errors.
-                The Agave jobs endpoint is throwing a 404/400 for some fetches,
-                and this was causing errors to propagate through fetches using
-                promise arrays. So, this workaround guarantees that any
-                successful fetches will bind data back onto models.
-            */
-            var deferred = $.Deferred();
-            var counter = 0;
-
-            jobModels.forEach(function(jobModel) {
-                jobModel.fetch()
-                    .always(function() {
-                        that.jobs.add(jobModel);
-                        counter++;
-
-                        if (counter === jobModels.length) {
-                            deferred.resolve();
-                        }
-                    })
-                    ;
-            })
-            ;
-
-            $.when(deferred)
+            $.when(this.jobs.fetch(), pendingJobs.fetch())
+                // Add VDJ API pending jobs to Agave jobs
                 .then(function() {
-
-                    return that.pendingJobs.fetch()
-                        .then(function() {
-                            // Merge in pending jobs with Agave jobs
-                            that.jobs.add(that.pendingJobs.toJSON());
-                        })
-                        ;
+                    that.jobs.add(pendingJobs.toJSON());
                 })
-                .always(function() {
-                    for (var i = 0; i < jobModels.length; i++) {
-
-                        // check for websockets
-                        var job = that.jobs.get(jobModels[i]);
-
+                .then(function() {
+                    that.jobs.forEach(function(job) {
                         if (_.has(job, 'get') && job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
-
                             App.Instances.WebsocketManager.subscribeToEvent(job.get('id'));
 
                             that.listenTo(
@@ -273,8 +171,18 @@ define([
                                 that._handleJobStatusUpdate
                             );
                         }
-                    }
-
+                    });
+                })
+                .then(function() {
+                    that.calculateMaxIteratorIndexes();
+                })
+                .then(function() {
+                    that.setPaginatedCollection();
+                })
+                .then(function() {
+                    that.serializeIterationIndexes();
+                })
+                .then(function() {
                     loadingView.remove();
                     that.render();
 
@@ -289,24 +197,33 @@ define([
                 })
                 ;
         },
+        _handleJobStatusUpdate: function(jobStatusUpdate) {
 
-        getIndexLimit: function() {
+            $('#job-status-' + jobStatusUpdate.jobId).html(jobStatusUpdate.jobStatus);
 
-            // Index limit should never go above max model count
-            var indexLimit = Math.min(
-                this.paginationIterator * this.currentPaginationSet,
-                this.jobMetadatas.models.length
-            );
-
-            return indexLimit;
+            if (jobStatusUpdate.jobStatus === 'FINISHED') {
+                this.render();
+            }
         },
 
-        getCurrentIndex: function() {
+        calculateMaxIteratorIndexes: function() {
+            this.maxIteratorIndexes = Math.ceil(this.jobs.models.length / this.iteratorRange);
+        },
 
-            // The current index should be the beginning of the current pagination set
-            var currentIndex = (this.currentPaginationSet * this.paginationIterator) - this.paginationIterator;
+        setPaginatedCollection: function() {
+            this.paginatedJobs = new Backbone.Agave.Collection.Jobs();
 
-            return currentIndex;
+            var min = this.currentIterationIndex * this.iteratorRange - this.iteratorRange;
+
+            this.paginatedJobs.add(
+                this.jobs.slice(
+                    this.currentIterationIndex * this.iteratorRange - this.iteratorRange,
+                    Math.min(
+                        this.currentIterationIndex * this.iteratorRange,
+                        this.jobs.length
+                    )
+                )
+            );
         },
 
         viewConfig: function(e) {
@@ -326,28 +243,57 @@ define([
         jobPaginationPrevious: function(e) {
             e.preventDefault();
 
-            if (this.currentPaginationSet - 1 >= 1) {
+            if (this.currentIterationIndex - 1 >= 1) {
+                this.currentIterationIndex -= 1;
 
-                this.currentPaginationSet -= 1;
-                this.fetchPaginatedJobModels();
+                this.setPaginatedCollection();
+                this.render();
+                this.uiSetActivePaginationSet();
+
+                App.router.navigate('project/' + this.projectUuid + '/jobs?index=' + this.currentIterationIndex, {
+                    trigger: false,
+                });
             }
         },
 
         jobPaginationNext: function(e) {
             e.preventDefault();
 
-            if (this.currentPaginationSet + 1 <= this.maxPaginationSet) {
-                this.currentPaginationSet += 1;
-                this.fetchPaginatedJobModels();
+            if (this.currentIterationIndex + 1 <= this.maxIteratorIndexes) {
+                this.currentIterationIndex += 1;
+
+                this.setPaginatedCollection();
+                this.render();
+                this.uiSetActivePaginationSet();
+
+                App.router.navigate('project/' + this.projectUuid + '/jobs?index=' + this.currentIterationIndex, {
+                    trigger: false,
+                });
             }
         },
 
         jobPaginationIndex: function(e) {
             e.preventDefault();
 
-            this.currentPaginationSet = parseInt(e.target.dataset.id);
+            this.currentIterationIndex = parseInt(e.target.dataset.id);
 
-            this.fetchPaginatedJobModels();
+            this.setPaginatedCollection();
+            this.render();
+            this.uiSetActivePaginationSet();
+
+            App.router.navigate('project/' + this.projectUuid + '/jobs?index=' + this.currentIterationIndex, {
+                trigger: false,
+            });
+        },
+
+        serializeIterationIndexes: function() {
+            this.paginationSets = [];
+
+            var counter = 1;
+            for (var i = 0; i < this.jobs.length; i += this.iteratorRange) {
+                this.paginationSets.push(counter);
+                counter++;
+            };
         },
 
         uiSetActivePaginationSet: function() {
@@ -355,13 +301,13 @@ define([
             $('.job-pagination-previous').removeClass('disabled');
             $('.job-pagination-next').removeClass('disabled');
 
-            $('.job-pagination-wrapper-' + this.currentPaginationSet).addClass('active');
+            $('.job-pagination-wrapper-' + this.currentIterationIndex).addClass('active');
 
-            if (this.currentPaginationSet === 1) {
+            if (this.currentIterationIndex === 1) {
                 $('.job-pagination-previous').addClass('disabled');
             }
 
-            if (this.currentPaginationSet === this.maxPaginationSet) {
+            if (this.currentIterationIndex === this.maxIteratorIndexes) {
                 $('.job-pagination-next').addClass('disabled');
             }
         },

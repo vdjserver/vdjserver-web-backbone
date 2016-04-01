@@ -26,6 +26,9 @@ define([
             // Equal
             return 0;
         },
+        url: function() {
+            return '/jobs/v2/?archivePath.like=/projects/' + this.projectUuid + '*';
+        },
     });
 
     Jobs.Pending = Backbone.Agave.Collection.extend({
