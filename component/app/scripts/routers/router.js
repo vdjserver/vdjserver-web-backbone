@@ -36,7 +36,7 @@ define(['app'], function(App) {
 
     var _setPublicSubviews = function() {
         if (App.Layouts.main.template !== 'layouts/public') {
-            App.Layouts.main.template = 'layouts/public/public-main';
+            App.Layouts.main.template = 'layouts/public/public-wrapper';
 
             App.Layouts.main.setView('#nav-container', new App.Views.Navbar.Public());
         }
@@ -44,8 +44,8 @@ define(['app'], function(App) {
 
     var _setProjectSubviews = function(projectUuid, section) {
 
-        if (App.Layouts.main.template !== 'layouts/project/project-main') {
-            App.Layouts.main.template = 'layouts/project/project-main';
+        if (App.Layouts.main.template !== 'layouts/project/project-wrapper') {
+            App.Layouts.main.template = 'layouts/project/project-wrapper';
             App.Layouts.main.setView('#sidebar-wrapper', App.Layouts.sidebar);
             App.Layouts.main.setView('#main-wrapper', App.Layouts.content);
             App.Layouts.main.render();

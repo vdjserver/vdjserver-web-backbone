@@ -22,37 +22,37 @@ define([
     'use strict';
 
     HandlebarsUtilities.registerRawPartial(
-        'project/fragments/file-transfer-common',
+        'project/detail/fragments/file-transfer-common',
         'file-transfer-common'
     );
 
     HandlebarsUtilities.registerRawPartial(
-        'project/fragments/project-file-list-title',
+        'project/detail/fragments/project-file-list-title',
         'project-file-list-title'
     );
 
     HandlebarsUtilities.registerRawPartial(
-        'project/fragments/project-file-list-last-modified',
+        'project/detail/fragments/project-file-list-last-modified',
         'project-file-list-last-modified'
     );
 
     HandlebarsUtilities.registerRawPartial(
-        'project/fragments/project-file-list-size',
+        'project/detail/fragments/project-file-list-size',
         'project-file-list-size'
     );
 
     HandlebarsUtilities.registerRawPartial(
-        'project/fragments/project-file-list-origin',
+        'project/detail/fragments/project-file-list-origin',
         'project-file-list-origin'
     );
 
     HandlebarsUtilities.registerRawPartial(
-        'project/fragments/project-file-list-tags',
+        'project/detail/fragments/project-file-list-tags',
         'project-file-list-tags'
     );
 
     HandlebarsUtilities.registerRawPartial(
-        'project/fragments/project-file-list-spacer',
+        'project/detail/fragments/project-file-list-spacer',
         'project-file-list-spacer'
     );
 
@@ -193,7 +193,7 @@ define([
 
     Projects.Index = Backbone.View.extend({
         initialize: function() {
-            $('html,body').animate({scrollTop:0});
+            $('html,body').animate({scrollTop: 0});
 
             // Get File Listings
             var loadingView = new App.Views.Util.Loading({keep: true});
@@ -308,35 +308,77 @@ define([
     });
 
     Projects.Detail = Backbone.View.extend({
-        template: 'project/detail',
+        template: 'project/detail/detail',
         initialize: function(parameters) {
 
-            this.projectUuid = parameters.projectUuid;
+            this.projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: this.projectUuid});
 
-            this.fileListings = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
-
-            /*
-                This is a little tricky. If we're arriving from a page
-                refresh, then we are stuck with two asynchronous fetches.
-                If the file list loads faster than the project list, then
-                we'll need to re-insert our subview and re-render the page
-                once the project list data has been fetched.
-            */
+            // This is a little tricky. If we're arriving from a page
+            // refresh, then we are stuck with two asynchronous fetches.
+            // If the file list loads faster than the project list, then
+            // we'll need to re-insert our subview and re-render the page
+            // once the project list data has been fetched.
             var that = this;
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                that.listenTo(App.Datastore.Collection.ProjectCollection, 'sync', function() {
-                    that.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
-                    that._initialDependencyDataSetup();
+                that.listenToOnce(App.Datastore.Collection.ProjectCollection, 'sync', function() {
+                    that.projectModel = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
+                    that._setupSubviews();
                 });
             }
             else {
-                this.projectModel = App.Datastore.Collection.ProjectCollection.get(parameters.projectUuid);
-                this._initialDependencyDataSetup();
+                this.projectModel = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
+                this._setupSubviews();
             }
 
-            this.handleWebsocketEvents();
+            this._handleWebsocketEvents();
         },
-        handleWebsocketEvents: function() {
+        getSubviewParameters: function() {
+            return {
+                parentView: this,
+                projectModel: this.projectModel,
+                projectUuid: this.projectUuid,
+                projectFiles: this.projectFiles,
+            };
+        },
+        _setupSubviews: function() {
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('', loadingView);
+            loadingView.render();
+
+            var subviewParameters = this.getSubviewParameters();
+            var that = this;
+
+            this.projectFiles.fetch()
+                .then(function() {
+                    loadingView.remove();
+                    that.render();
+
+                    // Setup subviews
+                    var headerView = new Projects.DetailHeader(subviewParameters);
+                    that.setView('#project-header', headerView);
+
+                    var actionsView = new Projects.DetailActions(subviewParameters);
+                    that.setView('#project-actions', actionsView);
+
+                    var errorsView = new Projects.DetailErrors(subviewParameters);
+                    that.setView('#project-errors', errorsView);
+                    errorsView.render();
+
+                    var filesView = new Projects.DetailFiles(subviewParameters);
+                    that.setView('#project-files', filesView);
+                    filesView.render();
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata().fetch()');
+                    telemetry.set('view', 'Projects.Detail');
+                    telemetry.save();
+                })
+                ;
+        },
+        _handleWebsocketEvents: function() {
 
             var that = this;
 
@@ -351,14 +393,9 @@ define([
 
                     fileMetadata.addPlaceholderMarker();
 
-                    that.fileListings.add(fileMetadata);
+                    that.projectFiles.add(fileMetadata);
 
-                    // var fileListingsView = that.getView('.file-listings');
-                    //
-                    // NOTE: layoutManager/jquery are not able to reliably retrieve this view
-                    // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
-
-                    var fileListingsView = that.fileListingsView;
+                    var fileListingsView = that.getView('#project-files');
 
                     // Putting this in |singleReadListings| for now. If we ever
                     // support paired file uploads, then it will need to be updated.
@@ -383,12 +420,7 @@ define([
 
                     var percentCompleted = progress + '%';
 
-                    // var fileListingsView = that.getView('.file-listings');
-                    //
-                    // NOTE: layoutManager/jquery are not able to reliably retrieve this view
-                    // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
-
-                    var fileListingsView = that.fileListingsView;
+                    var fileListingsView = that.getView('#project-files');
 
                     fileListingsView.updatePlaceholderFileProgress(
                         '.placeholder-guid-' + nameGuid,
@@ -407,335 +439,38 @@ define([
                     var fileMetadata = new Backbone.Agave.Model.File.Metadata();
                     fileMetadata.set(fileMetadataResponse);
 
-                    var modelMatch = that.fileListings.getModelForName(fileMetadata.get('value').name);
+                    var modelMatch = that.projectFiles.getModelForName(fileMetadata.get('value').name);
 
-                    // var fileListingsView = that.getView('.file-listings');
-                    //
-                    // NOTE: layoutManager/jquery are not able to reliably retrieve this view
-                    // so I'm using a model scoped ref as a workaround instead (that.fileListingsView)
-
-                    var fileListingsView = that.fileListingsView;
+                    var fileListingsView = that.getView('#project-files');
                     fileListingsView.singleReadFileListings.remove(modelMatch);
-                    that.fileListings.remove(modelMatch);
+                    that.projectFiles.remove(modelMatch);
 
                     fileListingsView.singleReadFileListings.add(fileMetadata);
-                    that.fileListings.add(fileMetadata);
+                    that.projectFiles.add(fileMetadata);
 
                     fileListingsView.render();
-                }
-            });
-
-        },
-        serialize: function() {
-            if (this.projectModel && this.fileListings && this.projectUsers) {
-                return {
-                    projectDetail: this.projectModel.toJSON(),
-                    fileListingCount: this.fileListings.getFileCount() + ' files',
-                    systems: this.systems.toJSON(),
-                    userCount: this.projectUsers.getUserCount(),
-                };
-            }
-        },
-        afterRender: function() {
-            // Tooltips
-            $('.has-tooltip').tooltip();
-        },
-        events: {
-            // File Upload/Import
-            'click #file-upload':    '_uploadFileFromComputer',
-            'click #dropbox-upload': '_dropboxUpload',
-            'click #url-upload': '_urlUpload',
-            'change #file-listings-dialog':   '_openFileDialog',
-
-            // Select files
-            'click .selected-files': '_uiToggleDisabledButtonStatus',
-            'change #select-all-files-checkbox': '_toggleSelectAllFiles',
-
-            'click .unlink-qual':   '_unlinkQual',
-            'click .unlink-paired-read':   '_unlinkPairedRead',
-            'click #run-job-button':  '_clickJobDropdown',
-            'click .run-job':       '_clickRunJob',
-            'change #search-text':  '_searchFileListings',
-            'click .delete-files':  '_clickDeleteFiles',
-            'click .download-file': '_clickDownloadFile',
-            'click .download-multiple-files': '_clickDownloadMultipleFiles',
-        },
-
-        // Private Methods
-
-        // Loading
-        _setupLoadingViews: function() {
-
-            var fileListingsLoadingView = new App.Views.Util.Loading({keep: true});
-            this.setView('.file-listings', fileListingsLoadingView);
-            fileListingsLoadingView.render();
-
-            var detailsLoadingView = new App.Views.Util.Loading({keep: true});
-            this.setView('.project-details-loading-view', detailsLoadingView);
-            detailsLoadingView.render();
-        },
-        _removeLoadingViews: function() {
-
-            var fileListingsLoadingView = this.getView('.file-listings');
-            if (fileListingsLoadingView) {
-                fileListingsLoadingView.remove();
-            }
-
-            var detailsLoadingView = this.getView('.project-details-loading-view');
-            if (detailsLoadingView) {
-                detailsLoadingView.remove();
-            }
-        },
-
-        // Data Management
-        _fetchAndRenderFileListings: function() {
-
-            var that = this;
-            this.fileListings.reset();
-
-            return this.fileListings.fetch()
-                .then(function() {
-                    that._removeLoadingViews();
-
-                    // Need to render main view before rendering fileListing subview
                     that.render();
-
-                    that._setupFileListingsView(that.fileListings);
-                })
-                .fail(function(error) {
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.setError(error);
-                    telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata().fetch()');
-                    telemetry.set('view', 'Projects.Detail');
-                    telemetry.save();
-                });
-        },
-
-        _initialDependencyDataSetup: function() {
-
-            this._setupLoadingViews();
-
-            var that = this;
-
-            this.projectUsers = new Backbone.Agave.Collection.Permissions({
-                uuid: this.projectModel.get('uuid')
-            });
-
-            this.systems = new Backbone.Agave.Collection.Systems();
-
-            $.when(this.systems.fetch(), this.projectUsers.fetch())
-                .always(function(results) {
-                    that._fetchAndRenderFileListings();
-                })
-                .fail(function(error) {
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.setError(error);
-                    telemetry.set('method', 'Backbone.Agave.Collection.Permissions().fetch()');
-                    telemetry.set('view', 'Projects.Detail');
-                    telemetry.save();
-                })
-                ;
-        },
-
-        _getSelectedFileUuids: function() {
-
-            var that = this;
-
-            var selectedFileMetadataUuids = [];
-
-            $('.selected-files:checked').each(function() {
-                var uuid = $(this).val();
-
-                var model = that.fileListings.get(uuid);
-                var pairedUuid = model.getPairedReadMetadataUuid();
-
-                selectedFileMetadataUuids.push(uuid);
-
-                // If we're dealing with a paired read,
-                // then include the other paired file too
-                if (pairedUuid) {
-                    selectedFileMetadataUuids.push(pairedUuid);
                 }
             });
 
-            return selectedFileMetadataUuids;
         },
+    });
 
-        // File Listings
-        _setupFileListingsView: function(fileListings) {
-
-            var fileListingsView = new Projects.FileListings({fileListings: fileListings});
-
-            // LayoutManager/jquery workaround: create model scoped var reference for websocket file upload view updates
-            this.fileListingsView = fileListingsView;
-
-            // listen to events on fileListingsView
-            this._fileListingsViewEvents(fileListingsView);
-            this.setView('.file-listings', fileListingsView);
-            fileListingsView.render();
-        },
-        _fileListingsViewEvents: function(fileListingsView) {
+    Projects.DetailErrors = Backbone.View.extend({
+        template: 'project/detail/errors',
+        initialize: function(parameters) {
 
             var that = this;
 
-            fileListingsView.on('fileDragDrop', function(files) {
-                var renderPromise = that._uploadFileFromComputer(undefined, files);
+            this.listenTo(this.parentView, 'duplicateFileError', function(filename) {
+                that.uiDisplayDuplicateFileMessage(filename);
             });
         },
-        _openFileDialog: function(e) {
-            e.preventDefault();
-
-            var selectedFiles = e.target.files;
-
-            this._uploadFileFromComputer(undefined, selectedFiles);
-
-        },
-        // Job Staging
-        _showJobStagingView: function(StagingSubview) {
-
-            this.removeView('#job-submit');
-            this.removeView('#workflow-modal');
-            this.removeView('#job-staging-subview');
-
-            var selectedFileMetadataUuids = this._getSelectedFileUuids();
-            var selectedFileListings = this.fileListings.getNewCollectionForUuids(selectedFileMetadataUuids);
-
-            var jobSubmitView = new App.Views.Jobs.Submit({
-                selectedFileListings: selectedFileListings,
-                projectModel: this.projectModel,
-                allFiles: this.fileListings,
-            });
-
-            var stagingSubview = new StagingSubview({
-                selectedFileListings: selectedFileListings,
-                projectModel: this.projectModel,
-                allFiles: this.fileListings,
-            });
-
-            jobSubmitView.setView('#job-staging-subview', stagingSubview);
-            stagingSubview.render();
-
-            this.setView('#job-submit', jobSubmitView);
-
-            var that = this;
-
-            stagingSubview.fetchNetworkData()
-                .done(function() {
-                    jobSubmitView.render();
-
-                    that.listenToOnce(
-                        jobSubmitView,
-                        App.Views.Jobs.WorkflowEditor.events.openWorkflowCreateView,
-                        function() {
-
-                            $('#job-modal')
-                                .modal('hide')
-                                .on('hidden.bs.modal', function() {
-
-                                    var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
-
-                                    that.setView('#job-submit', workflowEditorView);
-
-                                    workflowEditorView.fetchNetworkData()
-                                        .done(function() {
-                                            workflowEditorView.render();
-                                            that._handleWorkflowViewEvents(workflowEditorView);
-                                        })
-                                        .fail(function(error) {
-                                            var telemetry = new Backbone.Agave.Model.Telemetry();
-                                            telemetry.setError(error);
-                                            telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
-                                            telemetry.set('view', 'Projects.Detail');
-                                            telemetry.save();
-                                        })
-                                        ;
-                                });
-                        }
-                    );
-
-                    that.listenToOnce(
-                        jobSubmitView,
-                        App.Views.Jobs.WorkflowEditor.events.openWorkflowEditorView,
-                        function(editableWorkflow) {
-                            $('#job-modal')
-                                .modal('hide')
-                                .on('hidden.bs.modal', function() {
-
-                                    var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
-
-                                    // The editable workflow needs to be set before render is called.
-                                    workflowEditorView.editableWorkflow = editableWorkflow;
-                                    that.setView('#job-submit', workflowEditorView);
-
-                                    workflowEditorView.fetchNetworkData()
-                                        .done(function() {
-                                            workflowEditorView.render();
-                                            that._handleWorkflowViewEvents(workflowEditorView);
-                                        })
-                                        .fail(function(error) {
-                                            var telemetry = new Backbone.Agave.Model.Telemetry();
-                                            telemetry.setError(error);
-                                            telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
-                                            telemetry.set('view', 'Projects.Detail');
-                                            telemetry.save();
-                                        })
-                                        ;
-                                });
-                        }
-                    );
-
-                })
-                ;
-        },
-
-        _handleWorkflowViewEvents: function(workflowEditorView) {
-
-            var that = this;
-
-            this.listenToOnce(
-                workflowEditorView,
-                App.Views.Jobs.WorkflowEditor.events.closeWorkflowEditorView,
-                function() {
-                    $('#workflow-modal')
-                        .modal('hide')
-                        .on('hidden.bs.modal', function() {
-                            that._showJobStagingView();
-                        });
-                }
-            );
-        },
-
-        // Search
-        _setupFileSearchNoResultsView: function() {
-            var fileSearchNoResultsView = new Projects.FileSearchNoResults();
-
-            this.setView('.file-listings', fileSearchNoResultsView);
-            fileSearchNoResultsView.render();
-        },
-
-        _searchFileListings: function() {
-            var searchString = $('#search-text').val();
-
-            if (!searchString) {
-                this._setupFileListingsView(this.fileListings);
-            }
-            else {
-                var filteredFileListings = this.fileListings.search(searchString);
-
-                if (filteredFileListings.length > 0) {
-                    this._setupFileListingsView(filteredFileListings);
-                }
-                else {
-                    this._setupFileSearchNoResultsView();
-                }
-            }
-        },
-
-        // UI
         uiDisplayDuplicateFileMessage: function(filename) {
+
             $('html,body').animate({scrollTop: 0});
 
-            $('#file-staging-errors')
+            $('#file-error-details')
                 .html(
                     'Unable to upload!'
                     + '<br><br>The file "' + filename  + '" can not be uploaded because another file exists with the same name.'
@@ -746,9 +481,96 @@ define([
                 .fadeIn()
                 ;
         },
+    });
 
-        _uiToggleDisabledButtonStatus: function() {
-            if ($('.selected-files:checked').length) {
+    Projects.DetailHeader = Backbone.View.extend({
+        template: 'project/detail/header',
+        initialize: function(parameters) {
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('', loadingView);
+            loadingView.render();
+
+            this.projectUsers = new Backbone.Agave.Collection.Permissions({
+                uuid: this.projectUuid
+            });
+
+            var that = this;
+
+            this.projectUsers.fetch()
+                .then(function() {
+                    loadingView.remove();
+
+                    that.render();
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', 'Backbone.Agave.Collection.Permissions().fetch()');
+                    telemetry.set('view', 'Projects.DetailHeader');
+                    telemetry.save();
+                })
+                ;
+
+            this.listenTo(this.projectFiles, 'remove add', function() {
+                that.render();
+            });
+        },
+        serialize: function() {
+            return {
+                project: this.projectModel.toJSON(),
+                fileListingCount: this.projectFiles.getFileCount() + ' files',
+                userCount: this.projectUsers.getUserCount(),
+            };
+        },
+    });
+
+    Projects.DetailActions = Backbone.View.extend({
+        template: 'project/detail/actions',
+        initialize: function(parameters) {
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('', loadingView);
+            loadingView.render();
+
+            this.systems = new Backbone.Agave.Collection.Systems();
+
+            var that = this;
+
+            this.systems.fetch()
+                .then(function() {
+                    loadingView.remove();
+
+                    that.render();
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', 'Backbone.Agave.Collection.Systems().fetch()');
+                    telemetry.set('view', 'Projects.DetailActions');
+                    telemetry.save();
+                })
+                ;
+
+            this.listenTo(this.parentView, 'filesSelected', function(selectedStatus) {
+                that._uiToggleDisabledButtonStatus(selectedStatus);
+            });
+
+            this.listenTo(this.parentView, 'openFileDialog', function(selectedFiles) {
+                that._uploadFileFromComputer(undefined, selectedFiles);
+            });
+        },
+        serialize: function() {
+            return {
+                systems: this.systems.toJSON(),
+            };
+        },
+
+        /**
+         * UI
+         */
+        _uiToggleDisabledButtonStatus: function(selectedStatus) {
+            if (selectedStatus === true) {
                 $('.files-selected-button').removeClass('disabled');
             }
             else {
@@ -756,7 +578,28 @@ define([
             }
         },
 
-        // Event Responders
+        events: {
+            // File Upload/Import
+            'click #file-upload': '_uploadFileFromComputer',
+            'click #dropbox-upload': '_dropboxUpload',
+            'click #url-upload': '_urlUpload',
+
+            // Jobs
+            'click #run-job-button':  '_clickJobDropdown',
+            'click .run-job': '_clickRunJob',
+
+            // File Actions
+            'click .delete-files':  '_clickDeleteFiles',
+            'click .download-multiple-files': '_clickDownloadMultipleFiles',
+
+            // Search
+            'change #search-text': '_searchFileListings',
+            'submit #file-search-form': '_searchFileListings',
+        },
+
+        /**
+         * Files
+         */
         _uploadFileFromComputer: function(e, stagedFiles) {
             if (e !== undefined) {
                 e.preventDefault();
@@ -764,8 +607,8 @@ define([
 
             var viewOptions = {
                 projectUuid: this.projectModel.get('uuid'),
-                fileListings: this.fileListings,
-                projectDetailView: this,
+                fileListings: this.projectFiles,
+                projectDetailView: this.parentView,
             };
 
             if (stagedFiles !== undefined) {
@@ -773,20 +616,7 @@ define([
             }
 
             var fileTransferView = new Projects.FileTransfer(viewOptions);
-
-            this.setView('#file-staging', fileTransferView);
-            return fileTransferView.render();
-        },
-        _urlUpload: function(e) {
-            e.preventDefault();
-
-            var fileTransferView = new Projects.FileUrlTransfer({
-                projectUuid: this.projectModel.get('uuid'),
-                fileListings: this.fileListings,
-                projectDetailView: this,
-            });
-
-            this.setView('#file-staging', fileTransferView);
+            this.parentView.setView('#project-file-staging', fileTransferView);
             fileTransferView.render();
         },
         _dropboxUpload: function(e) {
@@ -800,7 +630,7 @@ define([
                     var duplicateFilename = '';
 
                     for (var i = 0; i < files.length; i++) {
-                        isDuplicate = that.fileListings.checkForDuplicateFilename(files[i].name);
+                        isDuplicate = that.projectFiles.checkForDuplicateFilename(files[i].name);
 
                         if (isDuplicate === true) {
                             duplicateFilename = files[i].name;
@@ -809,7 +639,7 @@ define([
                     };
 
                     if (isDuplicate === true) {
-                        that.uiDisplayDuplicateFileMessage(duplicateFilename);
+                        that.projectDetailView.trigger('duplicateFileError', duplicateFilename);
                     }
                     else {
 
@@ -843,7 +673,12 @@ define([
                         )
                         .then(function() {
                         })
-                        .fail(function() {
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.setError(error);
+                            telemetry.set('method', 'Backbone.Agave.Model.File.UrlImport().save()');
+                            telemetry.set('view', 'Projects.DetailActions');
+                            telemetry.save();
                         })
                         ;
                     }
@@ -854,84 +689,19 @@ define([
 
             Dropbox.choose(options);
         },
-        _toggleSelectAllFiles: function(e) {
+        _urlUpload: function(e) {
             e.preventDefault();
 
-            if (e.target.checked === true) {
-                $('.selected-files').each(function() {
-                    this.checked = true;
-                });
-            }
-            else {
-                $('.selected-files').each(function() {
-                    this.checked = false;
-                });
-            }
-
-            this._uiToggleDisabledButtonStatus();
-        },
-        _unlinkQual: function(e) {
-            e.preventDefault();
-
-            // Use this instead of e.target.id because the click event will
-            // sometimes land on a child element instead of the button itself.
-            // If that happens, e.target.id will refer to the child and not the button.
-            var uuid = $(e.target).closest('button').attr('id');
-
-            var fileMetadataModel = this.fileListings.get(uuid);
-
-            if (fileMetadataModel) {
-
-                var that = this;
-
-                fileMetadataModel.removeQualityScoreMetadataUuid()
-                    .done(function() {
-                        that._fetchAndRenderFileListings();
-                    })
-                    .fail(function(error) {
-                        var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.setError(error);
-                        telemetry.set('method', 'fileMetadataModel.removeQualityScoreMetadataUuid()');
-                        telemetry.set('view', 'Projects.Detail');
-                        telemetry.save();
-                    })
-                    ;
-            }
-        },
-        _unlinkPairedRead: function(e) {
-            e.preventDefault();
-
-            // Use this instead of e.target.id because the click event will
-            // sometimes land on a child element instead of the button itself.
-            // If that happens, e.target.id will refer to the child and not the button.
-            var uuid = $(e.target).closest('button').attr('id');
-
-            var pairFile1Model = this.fileListings.get(uuid);
-
-            var pairFile2Model = this.fileListings.get(pairFile1Model.getPairedReadMetadataUuid());
-
-            if (pairFile1Model && pairFile2Model) {
-
-                var that = this;
-
-                Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads(pairFile1Model, pairFile2Model)
-                    .then(function() {
-                        // Workaround for occasional rendering failure
-                        setTimeout(function() {
-                            that._fetchAndRenderFileListings();
-                        }, 100);
-                    })
-                    ;
-            }
-        },
-        _clickJobDropdown: function(e) {
-            e.preventDefault();
-
-            $('.not-job-selectable').each(function() {
-                this.checked = false;
+            var fileTransferView = new Projects.FileUrlTransfer({
+                projectUuid: this.projectModel.get('uuid'),
+                fileListings: this.projectFiles,
+                projectDetailView: this.parentView,
             });
 
+            this.parentView.setView('#project-file-staging', fileTransferView);
+            fileTransferView.render();
         },
+
         _clickRunJob: function(e) {
             e.preventDefault();
 
@@ -955,56 +725,214 @@ define([
                     break;
             }
         },
+        // TODO: simplify this
+        _showJobStagingView: function(StagingSubview) {
+
+            this.parentView.removeView('#project-job-staging');
+
+            var selectedFileMetadataUuids = this._getSelectedFileUuids();
+            var selectedFileListings = this.projectFiles.getNewCollectionForUuids(selectedFileMetadataUuids);
+            var filteredFileListings = this.projectFiles.getNewCollectionForUuids(selectedFileMetadataUuids);
+
+            // Remove qual files here
+            selectedFileListings.forEach(function(model) {
+                if (model.get('value')['fileType'] === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_QUALITY) {
+                    filteredFileListings.remove(model);
+                }
+            });
+
+            // TODO: rename selectedFileListings param
+            var jobSubmitView = new App.Views.Jobs.Submit({
+                selectedFileListings: filteredFileListings,
+                projectModel: this.projectModel,
+                allFiles: this.projectFiles,
+            });
+
+            var stagingSubview = new StagingSubview({
+                selectedFileListings: filteredFileListings,
+                projectModel: this.projectModel,
+                allFiles: this.projectFiles,
+            });
+
+            jobSubmitView.setView('#job-staging-subview', stagingSubview);
+            stagingSubview.render();
+
+            this.parentView.setView('#project-job-staging', jobSubmitView);
+
+            var that = this;
+
+            stagingSubview.fetchNetworkData()
+                .done(function() {
+                    jobSubmitView.render();
+
+                    that.listenToOnce(
+                        jobSubmitView,
+                        App.Views.Jobs.WorkflowEditor.events.openWorkflowCreateView,
+                        function() {
+
+                            $('#job-modal')
+                                .modal('hide')
+                                .on('hidden.bs.modal', function() {
+
+                                    var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
+
+                                    that.setView('#job-submit', workflowEditorView);
+
+                                    workflowEditorView.fetchNetworkData()
+                                        .done(function() {
+                                            workflowEditorView.render();
+                                            that._handleWorkflowViewEvents(workflowEditorView);
+                                        })
+                                        .fail(function(error) {
+                                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                                            telemetry.setError(error);
+                                            telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
+                                            telemetry.set('view', 'Projects.DetailActions');
+                                            telemetry.save();
+                                        })
+                                        ;
+                                });
+                        }
+                    );
+
+                    that.listenToOnce(
+                        jobSubmitView,
+                        App.Views.Jobs.WorkflowEditor.events.openWorkflowEditorView,
+                        function(editableWorkflow) {
+                            $('#job-modal')
+                                .modal('hide')
+                                .on('hidden.bs.modal', function() {
+
+                                    var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
+
+                                    // The editable workflow needs to be set before render is called.
+                                    workflowEditorView.editableWorkflow = editableWorkflow;
+                                    that.setView('#job-submit', workflowEditorView);
+
+                                    workflowEditorView.fetchNetworkData()
+                                        .done(function() {
+                                            workflowEditorView.render();
+                                            that._handleWorkflowViewEvents(workflowEditorView);
+                                        })
+                                        .fail(function(error) {
+                                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                                            telemetry.setError(error);
+                                            telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
+                                            telemetry.set('view', 'Projects.DetailActions');
+                                            telemetry.save();
+                                        })
+                                        ;
+                                });
+                        }
+                    );
+
+                })
+                ;
+        },
+        _handleWorkflowViewEvents: function(workflowEditorView) {
+
+            var that = this;
+
+            this.listenToOnce(
+                workflowEditorView,
+                App.Views.Jobs.WorkflowEditor.events.closeWorkflowEditorView,
+                function() {
+                    $('#workflow-modal')
+                        .modal('hide')
+                        .on('hidden.bs.modal', function() {
+                            that._showJobStagingView();
+                        });
+                }
+            );
+        },
+        /**
+         *  Files
+         */
+        _getSelectedFileUuids: function() {
+
+            var that = this;
+
+            var selectedFileMetadataUuids = [];
+
+            $('.selected-files:checked').each(function() {
+                var uuid = $(this).val();
+                selectedFileMetadataUuids.push(uuid);
+
+                var model = that.projectFiles.get(uuid);
+
+                var pairedUuid = model.getPairedReadMetadataUuid();
+
+                if (model.getQualityScoreMetadataUuid()) {
+                    var qualModel = that.projectFiles.get(model.getQualityScoreMetadataUuid());
+                    var qualUuid = qualModel.get('uuid');
+                    selectedFileMetadataUuids.push(qualUuid);
+                }
+
+                // If we're dealing with a paired read,
+                // then include the other paired file too
+                if (pairedUuid) {
+                    selectedFileMetadataUuids.push(pairedUuid);
+
+                    // TODO: add paired read qual
+                }
+            });
+
+            return selectedFileMetadataUuids;
+        },
         _clickDeleteFiles: function(e) {
             e.preventDefault();
 
+            var that = this;
+
             var selectedFileMetadataUuids = this._getSelectedFileUuids();
 
-            var createFileSoftDeletePromise = function(model) {
-                return model.softDelete();
-            };
+            var promises = [];
 
-            var createFileMetadataSoftDeletePromise = function(model) {
-                return model.softDelete();
-            };
+            // Set up promises
+            selectedFileMetadataUuids.map(function(uuid) {
 
-            var filePromises = [];
-            var metadataPromises = [];
+                var fileMetadataModel = that.projectFiles.get(uuid);
 
-            for (var i = 0; i < selectedFileMetadataUuids.length; i++) {
-                var fileMetadataModel = this.fileListings.get(selectedFileMetadataUuids[i]);
-
+                // only delete 'projectFile' files
                 if (fileMetadataModel.get('name') === 'projectFile') {
 
                     var fileModel = fileMetadataModel.getFileModel();
 
-                    filePromises[filePromises.length] = createFileSoftDeletePromise(fileModel);
+                    promises[promises.length] = function() {
+                        return fileModel.softDelete();
+                    };
                 }
 
-                metadataPromises[i] = createFileMetadataSoftDeletePromise(fileMetadataModel);
-            }
+                // delete any matching metadata
+                promises[promises.length] = function() {
+                    return fileMetadataModel.softDelete();
+                };
+            });
 
-            var that = this;
+            // Execute promises
+            var sequentialPromiseResults = promises.reduce(
+                function(previous, current) {
+                    return previous.then(current);
+                },
+                $.Deferred().resolve()
+            )
+            .always(function() {
+                that.projectFiles.remove(selectedFileMetadataUuids);
 
-            $.when.apply($, filePromises, metadataPromises)
-                .always(function() {
-                    that._fetchAndRenderFileListings();
-                })
-                .fail(function(error) {
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.setError(error);
-                    telemetry.set('method', 'softDelete()');
-                    telemetry.set('view', 'Projects.Detail');
-                    telemetry.save();
-                })
-                ;
-        },
-        _clickDownloadFile: function(e) {
-            e.preventDefault();
+                var subviewParameters = that.parentView.getSubviewParameters();
+                var filesView = new Projects.DetailFiles(subviewParameters);
+                that.parentView.setView('#project-files', filesView);
+                filesView.render();
+            })
+            .fail(function(error) {
+                var telemetry = new Backbone.Agave.Model.Telemetry();
+                telemetry.setError(error);
+                telemetry.set('method', 'softDelete()');
+                telemetry.set('view', 'Projects.DetailActions');
+                telemetry.save();
+            })
+            ;
 
-            var metadataUuid = [e.target.dataset.metadatauuid];
-
-            this._downloadProjectFilesForMetadataUuids(metadataUuid);
         },
         _clickDownloadMultipleFiles: function(e) {
             e.preventDefault();
@@ -1016,77 +944,107 @@ define([
         _downloadProjectFilesForMetadataUuids: function(metadataUuids) {
             var that = this;
 
-            var fileModels = [];
-
-            for (var i = 0; i < metadataUuids.length; i++) {
-                var metadataUuid = metadataUuids[i];
-
-                var fileMetadataModel = this.fileListings.get(metadataUuids[i]);
+            metadataUuids.forEach(function(metadataUuid) {
+                var fileMetadataModel = that.projectFiles.get(metadataUuid);
                 var fileModel = fileMetadataModel.getFileModel();
 
-                var createDownloadAction = function(tmpFileModel) {
-                    tmpFileModel.downloadFileToDisk()
-                        .fail(function(error) {
-                            var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.setError(error);
-                            telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.downloadFileToDisk()');
-                            telemetry.set('view', 'Projects.Detail');
-                            telemetry.save();
-                        })
-                        ;
-                };
+                fileModel.downloadFileToDisk()
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.setError(error);
+                        telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.downloadFileToDisk()');
+                        telemetry.set('view', 'Projects.DetailActions');
+                        telemetry.save();
+                    })
+                    ;
+            });
 
-                createDownloadAction(fileModel);
-            };
+        },
+        /**
+         *  Search
+         */
+        _searchFileListings: function(e) {
+            e.preventDefault();
 
+            var searchString = $('#search-text').val();
+
+            var subviewParameters = this.parentView.getSubviewParameters();
+            var filesView = new Projects.DetailFiles(subviewParameters);
+
+            if (!searchString) {
+
+                this.parentView.setView('#project-files', filesView);
+                filesView.render();
+            }
+            else {
+
+                var filteredFileListings = this.projectFiles.search(searchString);
+
+                // results
+                if (filteredFileListings.length > 0) {
+                    subviewParameters.projectFiles = filteredFileListings;
+
+                    filesView = new Projects.DetailFiles(subviewParameters);
+
+                    this.parentView.setView('#project-files', filesView);
+                    filesView.render();
+                }
+                // no results
+                else {
+
+                    var fileSearchNoResultsView = new Projects.FileSearchNoResults();
+                    this.parentView.setView('#project-files', fileSearchNoResultsView);
+                    fileSearchNoResultsView.render();
+                }
+            }
         },
     });
 
-    Projects.FileSearchNoResults = Backbone.View.extend({
-        template: 'project/file-search-no-results',
-    });
-
-    Projects.FileListings = Backbone.View.extend(
+    Projects.DetailFiles = Backbone.View.extend(
         _.extend({}, ProjectMixin, {
+            template: 'project/detail/files',
 
             // Public Methods
             initialize: function() {
+                var loadingView = new App.Views.Util.Loading({keep: true});
+                this.setView('', loadingView);
+                loadingView.render();
 
                 /*
-                    1.) get paired reads
-                    2.) add quals to paired reads
+                    1. get paired reads
+                    2. add quals to paired reads
 
-                    3.) remove paired reads + quals from single reads
-                    4.) add quals to single reads
+                    3. remove paired reads + quals from single reads
+                    4. add quals to single reads
                 */
 
                 // Paired Reads w/ quals
                 // 1.
-                this.pairedReadFileListings = this.fileListings.getPairedReadCollection();
+                this.pairedReadFileListings = this.projectFiles.getPairedReadCollection();
 
                 // 2.
-                this.pairedReadFileListings = this.pairedReadFileListings.embedQualModels(this.fileListings);
+                this.pairedReadFileListings = this.pairedReadFileListings.embedQualModels(this.projectFiles);
                 this.pairedReads = this.pairedReadFileListings.getSerializableOrganizedPairedReads();
 
                 // Single Reads w/ quals
-                var embeddedPairedReadQualModels = this.pairedReadFileListings.getAllEmbeddedQualModels(this.fileListings);
+                var embeddedPairedReadQualModels = this.pairedReadFileListings.getAllEmbeddedQualModels(this.projectFiles);
 
-                this.singleReadFileListings = this.fileListings.clone();
+                this.singleReadFileListings = this.projectFiles.clone();
 
                 // 3.
                 this.singleReadFileListings.remove(embeddedPairedReadQualModels);
 
                 // 4.
-                this.singleReadFileListings = this.singleReadFileListings.embedQualModels(this.fileListings);
+                this.singleReadFileListings = this.singleReadFileListings.embedQualModels(this.projectFiles);
 
-                var embeddedSingleReadQualModels = this.singleReadFileListings.getEmbeddedQualModels(this.fileListings);
+                var embeddedSingleReadQualModels = this.singleReadFileListings.getEmbeddedQualModels(this.projectFiles);
 
                 // Remove associated quals from file listing since they're embedded now
                 this.singleReadFileListings.remove(embeddedSingleReadQualModels);
 
                 //this.render();
+                loadingView.remove();
             },
-            template: 'project/file-listings',
             serialize: function() {
                 return {
                     singleReadFileListings: this.singleReadFileListings.toJSON(),
@@ -1101,9 +1059,76 @@ define([
                 'change .project-file-type': '_updateFileType',
                 'change .project-file-read-direction': '_updateReadDirection',
                 'change .project-file-tags': '_updateFileTags',
+
+                'click .download-file': '_clickDownloadFile',
+
+                // Select files
+                'click .selected-files': '_selectFiles',
+                'change #select-all-files-checkbox': '_selectAllFiles',
+
+                'change #file-listings-dialog': '_openFileDialog',
             },
             afterRender: function() {
                 this._setupDragDropEventHandlers();
+            },
+            _openFileDialog: function(e) {
+                e.preventDefault();
+
+                var selectedFiles = e.target.files;
+
+                this.parentView.trigger('openFileDialog', selectedFiles);
+            },
+
+            _selectFiles: function(e) {
+
+                if ($('.selected-files:checked').length) {
+                    this.parentView.trigger('filesSelected', true);
+                }
+                else {
+                    this.parentView.trigger('filesSelected', false);
+                }
+            },
+
+            _selectAllFiles: function(e) {
+
+                if (this.selectedAllFiles === true) {
+
+                    this.selectedAllFiles = false;
+
+                    $('.selected-files').each(function() {
+                        this.checked = false;
+                    });
+
+                    this.parentView.trigger('filesSelected', false);
+                }
+                else {
+                    this.selectedAllFiles = true;
+
+                    $('.selected-files').each(function() {
+                        this.checked = true;
+                    });
+
+                    this.parentView.trigger('filesSelected', true);
+                }
+            },
+
+            _clickDownloadFile: function(e) {
+                e.preventDefault();
+
+                var metadataUuid = e.target.dataset.metadatauuid;
+
+                var fileMetadataModel = this.projectFiles.get(metadataUuid);
+                var fileModel = fileMetadataModel.getFileModel();
+
+                fileModel.downloadFileToDisk()
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.setError(error);
+                        telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.downloadFileToDisk()');
+                        telemetry.set('view', 'Projects.DetailFiles');
+                        telemetry.save();
+                    })
+                    ;
             },
 
             updatePlaceholderFileProgress: function(selector, percentCompleted) {
@@ -1122,7 +1147,7 @@ define([
 
                 var fileTypeId = parseInt(e.currentTarget.value);
 
-                var fileMetadata = this.fileListings.get(e.target.dataset.fileuuid);
+                var fileMetadata = this.projectFiles.get(e.target.dataset.fileuuid);
 
                 fileMetadata.updateFileType(fileTypeId)
                     .then(function() {
@@ -1140,7 +1165,7 @@ define([
                         var telemetry = new Backbone.Agave.Model.Telemetry();
                         telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.updateFileType()');
-                        telemetry.set('view', 'Projects.FileListings');
+                        telemetry.set('view', 'Projects.DetailFiles');
                         telemetry.save();
                     })
                     ;
@@ -1150,7 +1175,7 @@ define([
 
                 var that = this;
 
-                var fileMetadata = this.fileListings.get(e.target.dataset.fileuuid);
+                var fileMetadata = this.projectFiles.get(e.target.dataset.fileuuid);
 
                 fileMetadata.setReadDirection(e.target.value)
                     .done(function() {
@@ -1162,7 +1187,7 @@ define([
                         var telemetry = new Backbone.Agave.Model.Telemetry();
                         telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.setReadDirection()');
-                        telemetry.set('view', 'Projects.FileListings');
+                        telemetry.set('view', 'Projects.DetailFiles');
                         telemetry.save();
                     })
                     ;
@@ -1173,7 +1198,7 @@ define([
 
                 var that = this;
 
-                var fileMetadata = this.fileListings.get(e.target.dataset.fileuuid);
+                var fileMetadata = this.projectFiles.get(e.target.dataset.fileuuid);
                 fileMetadata.updateTags(e.target.value)
                     .done(function() {
                         that._uiShowSaveSuccessAnimation(e.target);
@@ -1184,14 +1209,14 @@ define([
                         var telemetry = new Backbone.Agave.Model.Telemetry();
                         telemetry.setError(error);
                         telemetry.set('method', 'Backbone.Agave.Model.File.Metadata.updateTags()');
-                        telemetry.set('view', 'Projects.FileListings');
+                        telemetry.set('view', 'Projects.DetailFiles');
                         telemetry.save();
                     })
                     ;
             },
             _setupDragDropEventHandlers: function() {
 
-                //if (this.fileListings.models.length === 0) {
+                //if (this.projectFiles.models.length === 0) {
                 if (
                     this.singleReadFileListings.models.length === 0
                     &&
@@ -1225,9 +1250,8 @@ define([
 
                 var files = e.dataTransfer.files;
 
-                //Hand off these file handlers to the parent view through this event.
-
-                this.trigger('fileDragDrop', files);
+                // Hand off these file handlers to the parent view through this event.
+                this.parentView.trigger('openFileDialog', files);
             },
 
             // Event Responders
@@ -1243,15 +1267,16 @@ define([
         })
     );
 
+    Projects.FileSearchNoResults = Backbone.View.extend({
+        template: 'project/detail/file-search-no-results',
+    });
+
     Projects.FileUrlTransfer = Backbone.View.extend(
         _.extend({}, FileTransferProjectUiMixin, {
 
             // Public Methods
-            template: 'project/file-url-transfer',
+            template: 'project/detail/file-url-transfer',
             initialize: function(parameters) {
-                if (parameters && parameters.projectUuid) {
-                    this.projectUuid = parameters.projectUuid;
-                }
 
                 var chance = new Chance();
 
@@ -1349,6 +1374,12 @@ define([
                     .fail(function() {
                         that._mixinUiSetUploadProgress(that.fileUniqueIdentifier, 0);
                         that._mixinUiSetErrorMessage(that.fileUniqueIdentifier, 'Import error. Please check your URLs and try again.');
+
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.setError(error);
+                        telemetry.set('method', 'Backbone.Agave.Model.File.UrlImport.save()');
+                        telemetry.set('view', 'Projects.FileUrlTransfer');
+                        telemetry.save();
                     })
                     ;
                 }
@@ -1385,7 +1416,7 @@ define([
                 };
 
                 if (isDuplicate) {
-                    this.projectDetailView.uiDisplayDuplicateFileMessage(duplicateFilename);
+                    this.projectDetailView.trigger('duplicateFileError', duplicateFilename);
                 }
 
                 return isDuplicate;
@@ -1394,7 +1425,7 @@ define([
     );
 
     Projects.FileUploadSelected = Backbone.View.extend({
-        template: 'project/file-upload-from-computer-detail',
+        template: 'project/detail/file-upload-from-computer-detail',
         serialize: function() {
             return {
                 file: this.model.toJSON(),
@@ -1408,12 +1439,8 @@ define([
         _.extend({}, FileTransferProjectUiMixin, {
 
             // Public Methods
-            template: 'project/file-upload-from-computer',
+            template: 'project/detail/file-upload-from-computer',
             initialize: function(parameters) {
-                if (parameters && parameters.projectUuid) {
-                    this.projectUuid = parameters.projectUuid;
-                }
-
 
                 this.models = [];
 
@@ -1492,7 +1519,7 @@ define([
                 var isDuplicate = this.fileListings.checkForDuplicateFilename(filename);
 
                 if (isDuplicate === true) {
-                    this.projectDetailView.uiDisplayDuplicateFileMessage(filename);
+                    this.projectDetailView.trigger('duplicateFileError', filename);
                 }
 
                 return isDuplicate;
@@ -1562,7 +1589,9 @@ define([
                             that._mixinUiProgressBar(totalProgressLength, totalLength);
                         });
 
-                        return file.save()
+                        var deferred = $.Deferred();
+
+                        file.save()
                             .then(function() {
                                 return file.notifyApiUploadComplete();
                             })
@@ -1574,8 +1603,21 @@ define([
                                     'addFileImportPlaceholder',
                                     notificationData
                                 );
+
+                                deferred.resolve();
+                            })
+                            .fail(function(error) {
+                                var telemetry = new Backbone.Agave.Model.Telemetry();
+                                telemetry.setError(error);
+                                telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.save()');
+                                telemetry.set('view', 'Projects.FileTransfer');
+                                telemetry.save();
+
+                                deferred.resolve();
                             })
                             ;
+
+                        return deferred;
                     };
                 });
 
@@ -1851,7 +1893,6 @@ define([
         initialize: function(parameters) {
 
             // Project settings
-            this.projectUuid = parameters.projectUuid;
             this.permissions = new Backbone.Agave.Collection.Permissions({uuid: this.projectUuid});
             this.tenantUsers = new Backbone.Agave.Collection.TenantUsers();
             this.model = new Backbone.Agave.Model.Project();

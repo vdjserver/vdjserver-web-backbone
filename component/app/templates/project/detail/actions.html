@@ -1,40 +1,3 @@
-<div class="row">
-    <div class="col-md-3">
-        <div class="project-details-loading-view"></div>
-            {{#if projectDetail}}
-                <table class="project-details">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <strong>Name:</strong>
-                            </td>
-                            <td>
-                                {{projectDetail.value.name}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Data:</strong>
-                            </td>
-                            <td>
-                                {{fileListingCount}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <strong>Members:</strong>
-                            </td>
-                            <td>
-                                {{userCount}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            {{/if}}
-        </div>
-    </div>
-</div>
-
 {{#checkSystemUpStatus systems}}
 {{else}}
     <div class="alert alert-warning">
@@ -181,36 +144,30 @@
         </div>
 
         <div class="col-sm-6">
-            <div class="input-group project-search">
-                <input
-                    id="search-text"
-                    class="form-control has-tooltip"
-                    name="search"
-                    type="text"
-                    placeholder="name:exampleSearchFile.fastq   tag:exampleSearchTag"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title="You can search by general search terms or with search decorators. Currently supported decorators are 'name:' and 'tag:'. Example -> 'name:myFile  tag:myTag'"
-                >
-                <span class="input-group-btn">
-                    <button
-                        id="search-button"
-                        class="btn btn-default"
-                        type="button"
+            <form id="file-search-form">
+                <div class="input-group project-search">
+                    <input
+                        id="search-text"
+                        class="form-control has-tooltip"
+                        name="search"
+                        type="text"
+                        placeholder="name:exampleSearchFile.fastq   tag:exampleSearchTag"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="You can search by general search terms or with search decorators. Currently supported decorators are 'name:' and 'tag:'. Example -> 'name:myFile  tag:myTag'"
                     >
-                        SEARCH
-                    </button>
-                </span>
-            </div>
+                    <span class="input-group-btn">
+                        <button
+                            id="search-button"
+                            class="btn btn-default"
+                            type="button"
+                        >
+                            SEARCH
+                        </button>
+                    </span>
+                </div>
+            </form>
         </div>
 
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div id="file-staging-errors" class="alert alert-danger hidden"></div>
-        <div id="file-staging"></div>
-        <div class="file-listings"></div>
     </div>
 </div>
