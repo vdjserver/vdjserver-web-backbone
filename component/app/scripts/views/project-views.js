@@ -56,19 +56,6 @@ define([
         'project-file-list-spacer'
     );
 
-    Handlebars.registerHelper('checkSystemUpStatus', function(systems, options) {
-
-        var lonestarUp = Backbone.Agave.Collection.Systems.checkSystemUpStatus(systems, EnvironmentConfig.agave.executionSystems.lonestar);
-        var storageUp = Backbone.Agave.Collection.Systems.checkSystemUpStatus(systems, EnvironmentConfig.agave.storageSystems.corral);
-
-        if (lonestarUp === true && storageUp === true) {
-            return options.fn(systems);
-        }
-        else {
-            return options.inverse(systems);
-        }
-    });
-
     Handlebars.registerHelper('IfJobSelectableFileType', function(filename, fileType, options) {
 
         if (filename === undefined) {
@@ -539,6 +526,7 @@ define([
 
             this.systems.fetch()
                 .then(function() {
+
                     loadingView.remove();
 
                     that.render();
@@ -563,6 +551,7 @@ define([
         serialize: function() {
             return {
                 systems: this.systems.toJSON(),
+                executionSystemsAvailable: this.systems.largeExecutionSystemAvailable(),
             };
         },
 

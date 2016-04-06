@@ -9,21 +9,31 @@ define(['backbone'], function(Backbone) {
         url: function() {
             return '/systems/v2/';
         },
-    },
-    {
-        checkSystemUpStatus: function(systems, systemId) {
+        largeExecutionSystemAvailable: function() {
 
-            var systemUp = true;
+            var ls5 = this.get(EnvironmentConfig.agave.executionSystems.ls5);
+            var stampede = this.get(EnvironmentConfig.agave.executionSystems.stampede);
 
-            var filteredSystems = _.where(systems, {id: systemId});
+            if (ls5.get('status') === 'UP' || stampede.get('status') === 'UP') {
+                return true;
+            }
+            else {
+                return false;
+            }
+        },
+        getLargeExecutionSystem: function() {
+            var ls5 = this.get(EnvironmentConfig.agave.executionSystems.ls5);
+            var stampede = this.get(EnvironmentConfig.agave.executionSystems.stampede);
 
-            if (filteredSystems.length === 1) {
-                if (filteredSystems[0].status !== 'UP') {
-                    systemUp = false;
-                }
+            if (ls5.get('status') === 'UP') {
+                return EnvironmentConfig.agave.executionSystems.ls5;
+            }
+            else if (stampede.get('status') === 'UP') {
+                return EnvironmentConfig.agave.executionSystems.stampede;
             }
 
-            return systemUp;
+            // default to ls5 if unsure
+            return EnvironmentConfig.agave.executionSystems.ls5;
         },
     });
 

@@ -640,9 +640,24 @@ define([
 
             var that = this;
 
-            return jobModel.submitJob(this.projectModel.get('uuid'))
+            var systems = new Backbone.Agave.Collection.Systems();
+
+            return systems.fetch()
                 .then(function() {
-                    //return $('#job-modal').modal('hide').promise();
+
+                    if (jobModel.get('executionSystem') !== EnvironmentConfig.agave.executionSystems.vdjExec02) {
+                        var executionHost = systems.getLargeExecutionSystem();
+
+                        jobModel.configureExecutionHost(executionHost);
+                    }
+                })
+                .then(function() {
+
+                    return jobModel.submitJob(that.projectModel.get('uuid'))
+                        .then(function() {
+                            //return $('#job-modal').modal('hide').promise();
+                        })
+                        ;
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();

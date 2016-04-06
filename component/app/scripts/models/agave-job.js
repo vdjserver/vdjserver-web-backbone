@@ -228,6 +228,30 @@ function(
 
                 this.inputParameterName = 'query';
             },
+            configureExecutionHost: function(executionHost) {
+                switch (executionHost) {
+
+                    case EnvironmentConfig.agave.executionSystems.ls5:
+                        this.set({
+                            'appId': EnvironmentConfig.agave.apps.igBlast,
+                            'executionSystem': EnvironmentConfig.agave.executionSystems.ls5,
+                        });
+
+                        break;
+
+                    case EnvironmentConfig.agave.executionSystems.stampede:
+                        this.set({
+                            'appId': EnvironmentConfig.agave.apps.igBlastStampede,
+                            'executionSystem': EnvironmentConfig.agave.executionSystems.stampede,
+                        });
+
+                        break;
+
+                    default:
+                        break;
+                }
+
+            },
             prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
                 var parameters = this._serializeFormData(formData);
@@ -294,6 +318,30 @@ function(
                     this.unset('processorsPerNode');
                 }
             }
+        },
+        configureExecutionHost: function(executionHost) {
+            switch(executionHost) {
+
+                case EnvironmentConfig.agave.executionSystems.ls5:
+                    this.set({
+                        'appId': EnvironmentConfig.agave.apps.vdjPipe,
+                        'executionSystem': EnvironmentConfig.agave.executionSystems.ls5,
+                    });
+
+                    break;
+
+                case EnvironmentConfig.agave.executionSystems.stampede:
+                    this.set({
+                        'appId': EnvironmentConfig.agave.apps.vdjPipeStampede,
+                        'executionSystem': EnvironmentConfig.agave.executionSystems.stampede,
+                    });
+
+                    break;
+
+                default:
+                    break;
+            }
+
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
