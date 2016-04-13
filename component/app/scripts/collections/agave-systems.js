@@ -11,15 +11,24 @@ define(['backbone'], function(Backbone) {
         },
         largeExecutionSystemAvailable: function() {
 
-            var ls5 = this.get(EnvironmentConfig.agave.systems.execution.ls5.hostname);
-            var stampede = this.get(EnvironmentConfig.agave.systems.execution.stampede.hostname);
+            var that = this;
 
-            if (ls5.get('status') === 'UP' || stampede.get('status') === 'UP') {
-                return true;
-            }
-            else {
-                return false;
-            }
+            var keys = Object.keys(EnvironmentConfig.agave.systems.execution);
+
+            var upStatus = keys.some(function(key) {
+
+                var systemConfig = EnvironmentConfig.agave.systems.execution[key];
+                var system = that.get(systemConfig.hostname);
+
+                if (systemConfig.type === 'large' && system.get('status') === 'UP') {
+                    return false;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            return upStatus;
         },
         getLargeExecutionSystem: function() {
             var ls5 = this.get(EnvironmentConfig.agave.systems.execution.ls5.hostname);
