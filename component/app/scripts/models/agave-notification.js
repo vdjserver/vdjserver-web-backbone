@@ -13,7 +13,7 @@ function(
     Notification.Job = Backbone.Agave.Model.extend({
         defaults: {
             event: '*',
-            url: EnvironmentConfig.vdjApi.host + '/notifications/jobs/${JOB_ID}?status=${JOB_STATUS}&event=${EVENT}&error=${JOB_ERROR}',
+            url: EnvironmentConfig.vdjApi.hostname + '/notifications/jobs/${JOB_ID}?status=${JOB_STATUS}&event=${EVENT}&error=${JOB_ERROR}',
             associatedUuid: '',
             persistent: true,
         },

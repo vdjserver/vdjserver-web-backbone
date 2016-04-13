@@ -211,7 +211,7 @@ function(
                     {},
                     Backbone.Agave.JobModel.prototype.defaults,
                     {
-                        appId: EnvironmentConfig.agave.apps.igBlast,
+                        appId: EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast,
                         inputs: {
                             query: '',
                         },
@@ -231,18 +231,18 @@ function(
             configureExecutionHost: function(executionHost) {
                 switch (executionHost) {
 
-                    case EnvironmentConfig.agave.executionSystems.ls5:
+                    case EnvironmentConfig.agave.systems.execution.ls5.hostname:
                         this.set({
-                            'appId': EnvironmentConfig.agave.apps.igBlast,
-                            'executionSystem': EnvironmentConfig.agave.executionSystems.ls5,
+                            'appId': EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast,
+                            'executionSystem': EnvironmentConfig.agave.systems.execution.ls5.hostname,
                         });
 
                         break;
 
-                    case EnvironmentConfig.agave.executionSystems.stampede:
+                    case EnvironmentConfig.agave.systems.execution.stampede.hostname:
                         this.set({
-                            'appId': EnvironmentConfig.agave.apps.igBlastStampede,
-                            'executionSystem': EnvironmentConfig.agave.executionSystems.stampede,
+                            'appId': EnvironmentConfig.agave.systems.execution.stampede.apps.igBlast,
+                            'executionSystem': EnvironmentConfig.agave.systems.execution.stampede.hostname,
                         });
 
                         break;
@@ -297,7 +297,7 @@ function(
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: EnvironmentConfig.agave.apps.vdjPipe,
+                    appId: EnvironmentConfig.agave.systems.execution.ls5.apps.vdjPipe,
                 }
             );
         },
@@ -309,8 +309,8 @@ function(
             if (_.isNumber(fileSize)) {
                 if (fileSize < 5000000) {
                     this.set({
-                        'appId': EnvironmentConfig.agave.apps.vdjPipeSmall,
-                        'executionSystem': EnvironmentConfig.agave.executionSystems.vdjExec02,
+                        'appId': EnvironmentConfig.agave.systems.execution.vdjExec02.apps.vdjPipe,
+                        'executionSystem': EnvironmentConfig.agave.systems.execution.vdjExec02.hostname,
                     });
 
                     this.unset('maxRunTime');
@@ -322,18 +322,18 @@ function(
         configureExecutionHost: function(executionHost) {
             switch(executionHost) {
 
-                case EnvironmentConfig.agave.executionSystems.ls5:
+                case EnvironmentConfig.agave.systems.execution.ls5.hostname:
                     this.set({
-                        'appId': EnvironmentConfig.agave.apps.vdjPipe,
-                        'executionSystem': EnvironmentConfig.agave.executionSystems.ls5,
+                        'appId': EnvironmentConfig.agave.systems.execution.ls5.apps.vdjPipe,
+                        'executionSystem': EnvironmentConfig.agave.systems.execution.ls5.hostname,
                     });
 
                     break;
 
-                case EnvironmentConfig.agave.executionSystems.stampede:
+                case EnvironmentConfig.agave.systems.execution.stampede.hostname:
                     this.set({
-                        'appId': EnvironmentConfig.agave.apps.vdjPipeStampede,
-                        'executionSystem': EnvironmentConfig.agave.executionSystems.stampede,
+                        'appId': EnvironmentConfig.agave.systems.execution.stampede.apps.vdjPipe,
+                        'executionSystem': EnvironmentConfig.agave.systems.execution.stampede.hostname,
                     });
 
                     break;

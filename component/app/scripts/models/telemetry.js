@@ -22,7 +22,7 @@ function(
             browser: '',
             os: '',
         },
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/telemetry';
         },

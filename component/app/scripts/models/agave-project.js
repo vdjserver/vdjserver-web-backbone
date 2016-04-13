@@ -30,7 +30,7 @@ function(
         sync: function(method, model, options) {
 
             if (this.get('uuid') === '') {
-                options.apiHost = EnvironmentConfig.vdjApi.host;
+                options.apiHost = EnvironmentConfig.vdjApi.hostname;
                 options.url = '/projects';
 
                 var value = this.get('value');

@@ -11,8 +11,8 @@ define(['backbone'], function(Backbone) {
         },
         largeExecutionSystemAvailable: function() {
 
-            var ls5 = this.get(EnvironmentConfig.agave.executionSystems.ls5);
-            var stampede = this.get(EnvironmentConfig.agave.executionSystems.stampede);
+            var ls5 = this.get(EnvironmentConfig.agave.systems.execution.ls5.hostname);
+            var stampede = this.get(EnvironmentConfig.agave.systems.execution.stampede.hostname);
 
             if (ls5.get('status') === 'UP' || stampede.get('status') === 'UP') {
                 return true;
@@ -22,18 +22,18 @@ define(['backbone'], function(Backbone) {
             }
         },
         getLargeExecutionSystem: function() {
-            var ls5 = this.get(EnvironmentConfig.agave.executionSystems.ls5);
-            var stampede = this.get(EnvironmentConfig.agave.executionSystems.stampede);
+            var ls5 = this.get(EnvironmentConfig.agave.systems.execution.ls5.hostname);
+            var stampede = this.get(EnvironmentConfig.agave.systems.execution.stampede.hostname);
 
             if (ls5.get('status') === 'UP') {
-                return EnvironmentConfig.agave.executionSystems.ls5;
+                return EnvironmentConfig.agave.systems.execution.ls5.hostname;
             }
             else if (stampede.get('status') === 'UP') {
-                return EnvironmentConfig.agave.executionSystems.stampede;
+                return EnvironmentConfig.agave.systems.execution.stampede.hostname;
             }
 
             // default to ls5 if unsure
-            return EnvironmentConfig.agave.executionSystems.ls5;
+            return EnvironmentConfig.agave.systems.execution.ls5.hostname;
         },
     });
 

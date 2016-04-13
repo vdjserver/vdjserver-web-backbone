@@ -645,7 +645,7 @@ define([
             return systems.fetch()
                 .then(function() {
 
-                    if (jobModel.get('executionSystem') !== EnvironmentConfig.agave.executionSystems.vdjExec02) {
+                    if (jobModel.get('executionSystem') !== EnvironmentConfig.agave.systems.execution.vdjExec02.hostname) {
                         var executionHost = systems.getLargeExecutionSystem();
 
                         jobModel.configureExecutionHost(executionHost);

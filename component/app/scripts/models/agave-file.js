@@ -67,7 +67,7 @@ function(
                 },
                 url: function() {
                     return '/files/v2/listings/system'
-                        + '/' + EnvironmentConfig.agave.storageSystems.corral
+                        + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
                         + this.relativeUrl
                     ;
                 },
@@ -158,7 +158,7 @@ function(
                     }
 
                     return $.ajax({
-                        url: EnvironmentConfig.vdjApi.host
+                        url: EnvironmentConfig.vdjApi.hostname
                                 + '/notifications'
                                 + '/files'
                                 + '/import'
@@ -272,7 +272,7 @@ function(
             // Public methods
             url: function() {
                 return '/files/v2/media/system'
-                       + '/' + EnvironmentConfig.agave.storageSystems.corral
+                       + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
                        + '//projects'
                        + '/' + this.get('projectUuid')
                        + '/files/';
@@ -287,7 +287,7 @@ function(
                     }),
                     headers: Backbone.Agave.basicAuthHeader(),
                     type: 'POST',
-                    url: EnvironmentConfig.vdjApi.host + '/permissions/files'
+                    url: EnvironmentConfig.vdjApi.hostname + '/permissions/files'
                 });
 
                 return jqxhr;
@@ -300,7 +300,7 @@ function(
                 var path = '';
 
                 if (this.get('jobUuid')) {
-                    path = EnvironmentConfig.agave.host
+                    path = EnvironmentConfig.agave.hostname
                          + '/jobs'
                          + '/v2'
                          + '/' + this.get('jobUuid')
@@ -310,12 +310,12 @@ function(
                          ;
                 }
                 else {
-                    path = EnvironmentConfig.agave.host
+                    path = EnvironmentConfig.agave.hostname
                          + '/files'
                          + '/v2'
                          + '/media'
                          + '/system'
-                         + '/' + EnvironmentConfig.agave.storageSystems.corral
+                         + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
 
                          // NOTE: this uses agave // paths
                          + '/' + this.get('path')
@@ -331,12 +331,12 @@ function(
             },
             downloadFileToDisk: function(totalSize) {
 
-                var url = EnvironmentConfig.agave.host
+                var url = EnvironmentConfig.agave.hostname
                         + '/files'
                         + '/v2'
                         + '/media'
                         + '/system'
-                        + '/' + EnvironmentConfig.agave.storageSystems.corral
+                        + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
 
                         // NOTE: this uses agave // paths
                         + '/' + this.get('path')
@@ -344,7 +344,7 @@ function(
 
                 if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
 
-                    url = EnvironmentConfig.agave.host
+                    url = EnvironmentConfig.agave.hostname
                         + '/jobs'
                         + '/v2'
                         + '/' + this.get('jobUuid')
@@ -370,9 +370,9 @@ function(
                     headers: Backbone.Agave.oauthHeader(),
                     type:   'PUT',
 
-                    url:    EnvironmentConfig.agave.host
+                    url:    EnvironmentConfig.agave.hostname
                             + '/files/v2/media/system'
-                            + '/' + EnvironmentConfig.agave.storageSystems.corral
+                            + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
                             + '//projects'
                             + '/' + this.get('projectUuid')
                             + '/deleted/',
@@ -390,9 +390,9 @@ function(
                             headers: Backbone.Agave.oauthHeader(),
                             type:   'PUT',
 
-                            url:    EnvironmentConfig.agave.host
+                            url:    EnvironmentConfig.agave.hostname
                                     + '/files/v2/media/system'
-                                    + '/' + EnvironmentConfig.agave.storageSystems.corral
+                                    + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
                                     + '/' + that.get('path'),
 
                             success: function() {
@@ -417,12 +417,12 @@ function(
 
                 var url = '';
 
-                url = EnvironmentConfig.agave.host
+                url = EnvironmentConfig.agave.hostname
                     + '/files'
                     + '/v2'
                     + '/media'
                     + '/system'
-                    + '/' + EnvironmentConfig.agave.storageSystems.corral
+                    + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
                     + '//community'
                     + '/' + this.get('communityUuid')
                     + '/files'
@@ -439,7 +439,7 @@ function(
     File.UrlImport = File.extend({
         url: function() {
             return '/files/v2/media/system'
-                + '/' + EnvironmentConfig.agave.storageSystems.corral
+                + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
                 + '//projects'
                 + '/' + this.get('projectUuid')
                 + '/files/'
@@ -486,7 +486,7 @@ function(
                         */
                         data: {
                             urlToIngest: this.get('urlToIngest'),
-                            callbackURL: EnvironmentConfig.vdjApi.host
+                            callbackURL: EnvironmentConfig.vdjApi.hostname
                                         + '/notifications'
                                         + '/files'
                                         + '/import'
@@ -548,7 +548,7 @@ function(
                     }),
                     headers: Backbone.Agave.basicAuthHeader(),
                     type: 'POST',
-                    url: EnvironmentConfig.vdjApi.host + '/permissions/metadata'
+                    url: EnvironmentConfig.vdjApi.hostname + '/permissions/metadata'
                 });
 
                 return jqxhr;
