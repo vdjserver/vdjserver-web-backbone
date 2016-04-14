@@ -228,29 +228,12 @@ function(
 
                 this.inputParameterName = 'query';
             },
-            configureExecutionHost: function(executionHost) {
-                switch (executionHost) {
+            configureLargeExecutionHost: function(systemName) {
 
-                    case EnvironmentConfig.agave.systems.execution.ls5.hostname:
-                        this.set({
-                            'appId': EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast,
-                            'executionSystem': EnvironmentConfig.agave.systems.execution.ls5.hostname,
-                        });
-
-                        break;
-
-                    case EnvironmentConfig.agave.systems.execution.stampede.hostname:
-                        this.set({
-                            'appId': EnvironmentConfig.agave.systems.execution.stampede.apps.igBlast,
-                            'executionSystem': EnvironmentConfig.agave.systems.execution.stampede.hostname,
-                        });
-
-                        break;
-
-                    default:
-                        break;
-                }
-
+                this.set({
+                    'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.igBlast,
+                    'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
+                });
             },
             prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
@@ -308,9 +291,13 @@ function(
 
             if (_.isNumber(fileSize)) {
                 if (fileSize < 5000000) {
+
+                    // TODO: pull in upStatus from the systems collection and automatically switch to another system if this one is down
+                    var smallExecutionSystem = EnvironmentConfig.agave.systems.smallExecutionSystemPreference[0];
+
                     this.set({
-                        'appId': EnvironmentConfig.agave.systems.execution.vdjExec02.apps.vdjPipe,
-                        'executionSystem': EnvironmentConfig.agave.systems.execution.vdjExec02.hostname,
+                        'appId': EnvironmentConfig.agave.systems.execution[smallExecutionSystem].apps.vdjPipe,
+                        'executionSystem': EnvironmentConfig.agave.systems.execution[smallExecutionSystem].hostname,
                     });
 
                     this.unset('maxRunTime');
@@ -319,29 +306,12 @@ function(
                 }
             }
         },
-        configureExecutionHost: function(executionHost) {
-            switch(executionHost) {
+        configureLargeExecutionHost: function(systemName) {
 
-                case EnvironmentConfig.agave.systems.execution.ls5.hostname:
-                    this.set({
-                        'appId': EnvironmentConfig.agave.systems.execution.ls5.apps.vdjPipe,
-                        'executionSystem': EnvironmentConfig.agave.systems.execution.ls5.hostname,
-                    });
-
-                    break;
-
-                case EnvironmentConfig.agave.systems.execution.stampede.hostname:
-                    this.set({
-                        'appId': EnvironmentConfig.agave.systems.execution.stampede.apps.vdjPipe,
-                        'executionSystem': EnvironmentConfig.agave.systems.execution.stampede.hostname,
-                    });
-
-                    break;
-
-                default:
-                    break;
-            }
-
+            this.set({
+                'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.vdjPipe,
+                'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
+            });
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 

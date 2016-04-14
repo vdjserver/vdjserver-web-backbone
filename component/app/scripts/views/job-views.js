@@ -620,24 +620,6 @@ define([
         },
         startJob: function(jobModel) {
 
-            // DEBUG
-            if (EnvironmentConfig.debug.console) {
-                if (jobModel.get('parameters') && jobModel.get('parameters').json) {
-
-                    var tmpDebugJobModelLog = JSON.stringify(jobModel.get('parameters').json)
-                                                .replace(/\\"/g, '"')
-                                                 //.replace(/^"/, '\'')
-                                                 //.replace(/"$/, '\'');
-                                                ;
-
-                    console.log('jobModel is: ' + tmpDebugJobModelLog);
-                }
-            }
-
-            if (EnvironmentConfig.debug.disableJobs) {
-                return;
-            }
-
             var that = this;
 
             var systems = new Backbone.Agave.Collection.Systems();
@@ -645,13 +627,33 @@ define([
             return systems.fetch()
                 .then(function() {
 
-                    if (jobModel.get('executionSystem') !== EnvironmentConfig.agave.systems.execution.vdjExec02.hostname) {
-                        var executionHost = systems.getLargeExecutionSystem();
+                    var jobExecutionSystemHostname = jobModel.get('executionSystem');
+                    var isSmallSystem = systems.isSmallExecutionSystem(jobExecutionSystemHostname);
 
-                        jobModel.configureExecutionHost(executionHost);
+                    if (isSmallSystem === false) {
+                        var executionSystemName = systems.getLargeExecutionSystem();
+
+                        jobModel.configureLargeExecutionHost(executionSystemName);
                     }
                 })
                 .then(function() {
+                    // DEBUG
+                    if (EnvironmentConfig.debug.console) {
+                        if (jobModel.has('parameters')) {
+
+                            var tmpDebugJobModelLog = JSON.stringify(jobModel.get('parameters'))
+                                                        .replace(/\\"/g, '"')
+                                                         //.replace(/^"/, '\'')
+                                                         //.replace(/"$/, '\'');
+                                                        ;
+                            console.log('DEBUG - job parameters are: ' + JSON.stringify(tmpDebugJobModelLog));
+                            console.log('DEBUG - job is: ' + JSON.stringify(jobModel));
+                        }
+                    }
+
+                    if (EnvironmentConfig.debug.disableJobs) {
+                        return;
+                    }
 
                     return jobModel.submitJob(that.projectModel.get('uuid'))
                         .then(function() {
@@ -752,6 +754,7 @@ define([
             stageJob: function(formData) {
                 var job = new Backbone.Agave.Model.Job.VdjPipe();
 
+                // TODO: refactor this to be called during |Jobs.StagingBase.startJob()|
                 var totalFileSize = this.selectedFileListings.getTotalFileSize();
                 job.configureExecutionHostForFileSize(totalFileSize);
 

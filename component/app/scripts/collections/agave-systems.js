@@ -9,6 +9,22 @@ define(['backbone'], function(Backbone) {
         url: function() {
             return '/systems/v2/';
         },
+        isSmallExecutionSystem: function(hostname) {
+            var keys = Object.keys(EnvironmentConfig.agave.systems.execution);
+
+            var isSmallSystem = keys.some(function(key) {
+                var systemConfig = EnvironmentConfig.agave.systems.execution[key];
+
+                if (systemConfig.hostname === hostname && systemConfig.type === 'small') {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            return isSmallSystem;
+        },
         largeExecutionSystemAvailable: function() {
 
             var that = this;
@@ -21,7 +37,7 @@ define(['backbone'], function(Backbone) {
                 var system = that.get(systemConfig.hostname);
 
                 if (systemConfig.type === 'large' && system.get('status') === 'UP') {
-                    return false;
+                    return true;
                 }
                 else {
                     return false;
@@ -31,18 +47,23 @@ define(['backbone'], function(Backbone) {
             return upStatus;
         },
         getLargeExecutionSystem: function() {
-            var ls5 = this.get(EnvironmentConfig.agave.systems.execution.ls5.hostname);
-            var stampede = this.get(EnvironmentConfig.agave.systems.execution.stampede.hostname);
+            var that = this;
 
-            if (ls5.get('status') === 'UP') {
-                return EnvironmentConfig.agave.systems.execution.ls5.hostname;
-            }
-            else if (stampede.get('status') === 'UP') {
-                return EnvironmentConfig.agave.systems.execution.stampede.hostname;
+            var systemName = EnvironmentConfig.agave.systems.executionSystemPreference.find(function(systemName) {
+                var systemConfig = EnvironmentConfig.agave.systems.execution[systemName];
+                var system = that.get(systemConfig.hostname);
+
+                if (system.get('status') === 'UP') {
+                    return systemName;
+                }
+            });
+
+            // default to first preferred system if unsure
+            if (systemName === undefined) {
+                systemName = EnvironmentConfig.agave.systems.executionSystemPreference[0];
             }
 
-            // default to ls5 if unsure
-            return EnvironmentConfig.agave.systems.execution.ls5.hostname;
+            return systemName;
         },
     });
 
