@@ -1,0 +1,213 @@
+<div class="row">
+    <div class="col-md-3 table-responsive">
+        <table class="project-details">
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>Job Name:</strong>
+                    </td>
+                    <td>
+                        {{jobDetail.name}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>App:</strong>
+                    </td>
+                    <td>
+                        {{jobDetail.appId}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Date:</strong>
+                    </td>
+                    <td>
+                        {{FormatAgaveDate jobDetail.submitTime}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>
+                <div class="alert alert-primary">
+                    Project Output Files
+                </div>
+            </h2>
+        </div>
+
+        <div class="col-md-12 table-responsive text-center">
+            <table class="table table-bordered table-headings">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            Name
+                        </th>
+                        <th class="text-center">
+                            Size
+                        </th>
+                        <th class="text-center">
+                            Availability
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each projectFiles}}
+                        <tr class="text-center">
+                            <td>
+                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{name}}">{{name}}</button>
+                            </td>
+
+                            <td>
+                                {{GetHumanReadableFileSize length}}
+                            </td>
+
+                            <td>
+                                {{#FileTypeAvailableInProjectFileList this.name}}
+                                    File Available in <a href="/project/{{../../projectUuid}}">Project Data Area</a>
+                                {{/FileTypeAvailableInProjectFileList}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>
+                <div class="alert alert-primary">
+                    Chart Files
+                </div>
+            </h2>
+        </div>
+
+        <div class="col-md-12 table-responsive text-center">
+            <table class="table table-bordered table-headings">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            Name
+                        </th>
+                        <th class="text-center">
+                            Size
+                        </th>
+                        <th class="text-center">
+                            Chart
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each chartFiles}}
+                        <tr class="text-center" id="chart-{{this.name}}">
+                            <td>
+                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{name}}">{{name}}</button>
+                            </td>
+
+                            <td>
+                                {{GetHumanReadableFileSize length}}
+                            </td>
+
+                            <td>
+                                {{#FileTypeHasChart this.name}}
+                                    <div id="show-chart" class="btn btn-primary show-chart" data-id="{{name}}">
+                                        {{ChartButtonText this.name}}
+                                    </div>
+
+                                    <div id="hide-chart" class="btn-group hidden" role="group">
+                                        <button class="btn btn-default hide-chart" data-id="{{name}}">
+                                            Hide Chart
+                                        </button>
+
+                                        <button class="btn btn-primary download-chart" data-id="{{name}}">
+                                            Download Chart
+                                        </button>
+                                    </div>
+                                {{else}}
+                                    <div class="btn btn-warning" disabled>Chart Coming Soon</div>
+                                {{/FileTypeHasChart}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>
+                <div class="alert alert-vdj-red">
+                    Log Files
+                </div>
+            </h2>
+        </div>
+
+        <div class="col-md-12 table-responsive text-center">
+            <table class="table table-bordered table-headings">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            Name
+                        </th>
+                        <th class="text-center">
+                            Size
+                        </th>
+                        <th class="text-center">
+                            Display
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each logFiles}}
+                        <tr class="text-center">
+                            <td>
+                                <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
+                            </td>
+
+                            <td>
+                                {{GetHumanReadableFileSize length}}
+                            </td>
+                            <td>
+                                <button class="btn btn-default hide-log hidden" data-id="{{name}}">
+                                    Hide Log
+                                </button>
+                                <button class="btn btn-default show-log" data-id="{{name}}">
+                                    Show Log
+                                </button>
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div class="analyses">
+    {{!--
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <div class="btn-group">
+                    <button id="chart-legend" class="btn btn-default toggle-legend-btn" style="display:none;">Toggle Legend</button>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-md-offset-7">
+                <em>
+                    <div id="chart-right-announcement"></div>
+                </em>
+            </div>
+        </div>
+    </div>
+    --}}
+
+	<div class="alert alert-danger alert-message chart-warning" style="display:none;"></div>
+
+</div>

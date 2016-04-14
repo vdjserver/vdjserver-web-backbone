@@ -1,0 +1,133 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="public-view">
+                <div class="alert alert-info">
+                    <i class="fa fa-user"></i> Create a new VDJServer account. Already have an account? <a href="">Log in</a>.
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            <span class="required-field">*</span> <i>Required Field</i>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <form method="post" class="form-horizontal" role="form">
+                            <div class="form-group" id="firstName-container">
+                                <label for="firstName" class="col-sm-2 control-label">First Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="First Name" name="firstName" id="firstName" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group" id="lastName-container">
+                                <label for="lastName" class="col-sm-2 control-label">Last Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="Last Name" name="lastName" id="lastName" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group" id="email-container">
+                                <label for="email" class="col-sm-2 control-label">Email <span class="required-field">*</span></label>
+                                <div class="col-sm-10">
+                                    <input type="email" placeholder="Email" name="email" id="email" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group" id="city-container">
+                                <label for="city" class="col-sm-2 control-label">City</label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="City" name="city" id="city" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group" id="state-container">
+                                <label for="state" class="col-sm-2 control-label">State</label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="State" name="state" id="state" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group" id="country-container">
+                                <label for="country" class="col-sm-2 control-label">Country</label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="Country" name="country" id="country" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group" id="affiliation-container">
+                                <label for="affiliation" class="col-sm-2 control-label">Affiliation</label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="Affiliation" name="affiliation" id="affiliation" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="username-container">
+                                <label for="username" class="col-sm-2 control-label">Username <span class="required-field">*</span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="Username" name="username" id="username" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10 col-sm-offset-2">
+                                    <p class="form-control-static">
+                                        Username should be:
+                                        <ul class="unstyled-list">
+                                            <li>Alphanumeric</li>
+                                            <li>Lowercase</li>
+                                        </ul>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="password-container">
+                                <label for="password" class="col-sm-2 control-label">Password <span class="required-field">*</span></label>
+                                <div class="col-sm-10">
+                                    <input type="password" placeholder="Password" name="password" id="password" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10 col-sm-offset-2">
+                                    <p class="form-control-static">
+                                        Password should be:
+                                        <ul class="unstyled-list">
+                                            <li>6-32 characters</li>
+                                            <li>
+                                                Composed of letters, numbers and/or symbols
+                                                <ul>
+                                                    <li>The symbol '%' is not allowed.</li>
+                                                </ul>
+                                            </li>
+                                            <li>Different from email address</li>
+                                        </ul>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="passwordCheck-container">
+                                <label for="password" class="col-sm-2 control-label">Password Check <span class="required-field">*</span></label>
+                                <div class="col-sm-10">
+                                    <input type="password" placeholder="Password Check" name="passwordCheck" id="passwordCheck" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="recaptcha-container">
+                                <label for="recaptcha" class="col-sm-2 control-label">Prove You Are Human</label>
+                                <div class="col-sm-10">
+                                    <div class="recaptcha" id="recaptcha"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input type="submit" value="Create Account" class="btn btn-success btn-block">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

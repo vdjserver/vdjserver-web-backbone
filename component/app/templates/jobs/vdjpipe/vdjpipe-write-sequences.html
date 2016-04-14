@@ -1,0 +1,27 @@
+{{> vdjpipe-base-view-top}}
+
+    <div class="row row-with-spacer">
+        <div class="col-md-6">
+
+            {{> vdjpipe-paired-reads-direction-limited-fragment}}
+
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Output Filename
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-out-prefix"
+                        placeholder="text"
+                        type="text"
+                        value="{{options.out_prefix}}"
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            This module saves the processed sequence reads into the specified output filename. Demultiplexing will generate multiple files based upon the barcode names prefixed with the specified output filename.
+        </div>
+    </div>
+
+{{> vdjpipe-base-view-bottom}}

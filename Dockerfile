@@ -27,25 +27,21 @@ RUN gem install \
 RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-backbone
 
 # Install npm dependencies (optimized for cache)
-COPY package.json /var/www/html/vdjserver-backbone/
+COPY ./component/package.json /var/www/html/vdjserver-backbone/
 RUN cd /var/www/html/vdjserver-backbone && npm install
 
 # Install bower dependencies
-COPY .bowerrc /var/www/html/vdjserver-backbone/
-COPY bower.json /var/www/html/vdjserver-backbone/
+COPY ./component/.bowerrc /var/www/html/vdjserver-backbone/
+COPY ./component/bower.json /var/www/html/vdjserver-backbone/
 RUN cd /var/www/html/vdjserver-backbone && bower --allow-root install
 
 # Copy project source
-COPY . /var/www/html/vdjserver-backbone
+COPY ./component/ /var/www/html/vdjserver-backbone
 
 WORKDIR /var/www/html/vdjserver-backbone
-#RUN "/usr/local/bin/grunt --gruntfile /var/www/html/vdjserver-backbone/Gruntfile.js build"
 RUN ["/usr/local/bin/grunt","build"]
 
-#ENTRYPOINT ["/usr/local/bin/grunt"]
-#CMD "/usr/local/bin/grunt --gruntfile /vdjserver-backbone/Gruntfile.js --help"
-#ENTRYPOINT ["/usr/local/bin/grunt
-#CMD ["--gruntfile /vdjserver-backbone/Gruntfile.js"]
-#CMD ["--help"]
+# Copy environment settings over cached build layer
+COPY docker/environment-config/ /var/www/html/vdjserver-backbone/dist/scripts/config/
 
-VOLUME ["/var/www/html/vdjserver-backbone/live-site"]
+VOLUME ["/var/www/html/vdjserver-backbone/dist"]

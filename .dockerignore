@@ -4,4 +4,5 @@
 .dockerignore
 Dockerfile
 
-node_modules
+component/node_modules
+component/app/scripts/config

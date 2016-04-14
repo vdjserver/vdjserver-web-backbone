@@ -1,0 +1,124 @@
+{{> vdjpipe-base-view-top}}
+
+    <div class="row row-with-spacer">
+        <div class="col-md-6">
+
+            {{> vdjpipe-paired-reads-direction-fragment}}
+
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Output Filename
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}-out-prefix"
+                        placeholder="text"
+                        type="text"
+                        value="{{options.out_prefix}}"
+                    >
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            This module identifies replicate read sequences and collapses them to a single sequence.
+        </div>
+
+        {{#if options.group_variable}}
+            <input
+                class="job-form-item hidden"
+                name="{{inputCount}}-{{parameterType}}-group-variable"
+                value="{{options.group_variable}}"
+            >
+        {{/if}}
+
+        {{#if options.out_group_unique}}
+            <input
+                class="job-form-item hidden"
+                name="{{inputCount}}-{{parameterType}}-out-group-unique"
+                value="{{options.out_group_unique}}"
+            >
+        {{else}}
+            <input
+                class="job-form-item hidden"
+                name="{{inputCount}}-{{parameterType}}-out-group-unique"
+                value=".fasta"
+            >
+        {{/if}}
+
+    </div>
+
+
+
+{{!--
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            Min Length
+            &nbsp;
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-min-length"
+                type="number"
+                value="{{options.min_length}}"
+                step="1"
+                min="0"
+                pattern="\d+"
+            >
+        </div>
+    </div>
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+            <div class="btn-group">
+                <button
+                    id="{{parameterType}}-ignore-ends-button"
+                    class="btn btn-default {{parameterType}}-filter-button job-form-item"
+                    type="button"
+                >
+                    Ignore Ends
+                </button>
+
+                <button
+                    id="{{parameterType}}-fraction-match-button"
+                    class="btn btn-default {{parameterType}}-filter-button job-form-item"
+                    type="button"
+                >
+                    Fraction Match
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-with-spacer {{parameterType}}-fraction-match hidden {{parameterType}}-filter-param">
+        <div class="col-md-12">
+            Fraction Match
+            &nbsp;
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-fraction-match"
+                placeholder="float"
+                type="number"
+                value="{{options.fraction_match}}"
+                step="0.01"
+            >
+        </div>
+    </div>
+
+    <div class="row row-with-spacer {{parameterType}}-ignore-ends hidden {{parameterType}}-filter-param">
+        <div class="col-md-12">
+            Ignore Ends
+            &nbsp;
+            <input
+                class="job-form-item"
+                name="{{inputCount}}-{{parameterType}}-ignore-ends"
+                type="number"
+                value="{{options.ignore_ends}}"
+                step="1"
+                min="0"
+                pattern="\d+"
+            >
+        </div>
+    </div>
+--}}
+
+
+{{> vdjpipe-base-view-bottom}}

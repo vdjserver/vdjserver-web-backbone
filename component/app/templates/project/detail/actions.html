@@ -1,0 +1,173 @@
+{{#checkSystemUpStatus systems}}
+{{else}}
+    <div class="alert alert-warning">
+        Jobs are temporarily unavailable. We apologize for the inconvenience, and will reenable them as soon as possible.
+    </div>
+{{/checkSystemUpStatus}}
+
+<div class="project-detail-controls">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="btn-group btn-group-justified">
+
+                <div class="btn-group">
+                    <button
+                        id="upload-file-dropdown"
+                        class="btn btn-success dropdown-toggle"
+                        data-toggle="dropdown"
+                    >
+                        <i class="fa fa-upload"></i>
+                        &nbsp;&nbsp;Upload&nbsp;&nbsp;
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+
+                    <ul class="dropdown-menu" role="menu">
+
+                        <li class="file-actions">
+                            <a
+                                class=""
+                                id="file-upload"
+                                href="#"
+                                data-bypass=true
+                            >
+                                <i class="fa fa-laptop"></i>&nbsp;&nbsp;Upload from your computer
+                            </a>
+                        </li>
+
+                        <li class="file-actions">
+                            <a
+                                id="dropbox-upload"
+                                class=""
+                                href="#"
+                                data-bypass=true
+                            >
+                                <i class="fa fa-dropbox"></i>&nbsp;&nbsp;Upload from Dropbox
+                            </a>
+                        </li>
+
+                        <li class="file-actions">
+                            <a
+                                class=""
+                                id="url-upload"
+                                href="#"
+                                data-bypass=true
+                            >
+                                <i class="fa fa-cloud-upload"></i>&nbsp;&nbsp;Upload from a URL (http/ftp)
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <div class="btn-group">
+                    <button
+                        id="run-job-button"
+                        class="btn btn-primary disabled dropdown-toggle files-selected-button"
+                        data-toggle="dropdown"
+
+                        {{#checkSystemUpStatus systems}}
+                        {{else}}
+                            disabled
+                        {{/checkSystemUpStatus}}
+                    >
+                        Run Job
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+
+                    <ul class="dropdown-menu" role="menu">
+
+                        <li class="file-actions">
+                            <a
+                                class="run-job has-tooltip"
+                                href="#"
+                                data-bypass=true
+                                data-jobtype="vdjpipe"
+
+                                {{!-- Dropdown --}}
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="Run an HPC job using the VDJPipe tool"
+                            >
+                                VDJPipe
+                            </a>
+                        </li>
+
+                        <li class="file-actions">
+                            <a
+                                class="run-job"
+                                href="#"
+                                data-bypass=true
+                                data-jobtype="igblast"
+                            >
+                                IgBlast
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button
+                        id="file-action-button"
+                        class="btn btn-primary disabled dropdown-toggle files-selected-button"
+                        data-toggle="dropdown"
+                    >
+                        File Actions
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+
+                    <ul
+                        class="dropdown-menu"
+                        role="menu"
+                    >
+                        <li class="file-actions">
+                            <a
+                                class="download-multiple-files"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Download
+                            </a>
+                        </li>
+
+                        <li class="file-actions">
+                            <a
+                                class="delete-files"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Delete
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <form id="file-search-form">
+                <div class="input-group project-search">
+                    <input
+                        id="search-text"
+                        class="form-control has-tooltip"
+                        name="search"
+                        type="text"
+                        placeholder="name:exampleSearchFile.fastq   tag:exampleSearchTag"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="You can search by general search terms or with search decorators. Currently supported decorators are 'name:' and 'tag:'. Example -> 'name:myFile  tag:myTag'"
+                    >
+                    <span class="input-group-btn">
+                        <button
+                            id="search-button"
+                            class="btn btn-default"
+                            type="button"
+                        >
+                            SEARCH
+                        </button>
+                    </span>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

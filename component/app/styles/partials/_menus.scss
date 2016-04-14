@@ -1,0 +1,261 @@
+.project-create-menu {
+
+    @extend .text-center;
+
+    list-style: none;
+
+    padding: 15px 0 15px 0;
+    //margin-left: 30px;
+    font-family: 'Aleo-Regular';
+    font-size: 21px;
+    font-color: #404040;
+
+    background-color: #ffffff;
+
+    border-right: 1px solid $projectListBorderColor;
+
+    a {
+        text-decoration: none;
+        color: #000000;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.projects-list {
+    @extend .list-group;
+
+    list-style: none;
+
+    background-color: $projectSubmenuColor;
+    //margin-top: -20px;
+
+}
+
+.project-menu-notification {
+    font-size: 12px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    white-space: nowrap;
+}
+
+.projects-list-vdj-logo-wrapper {
+    @extend .text-center;
+
+    background-color: #ffffff;
+    border-bottom: 3px solid #533436;
+
+    border-right: 1px solid $projectListBorderColor;
+}
+
+.projects-list-vdj-logo {
+    height: 106px;
+}
+
+.project-menu {
+
+    list-style: none;
+    //font-family: 'Aleo-Bold';
+    font-family: 'Aleo-Regular';
+    font-size: 18px;
+    word-wrap: break-word;
+
+    //margin-left: 15px;
+
+    background-color: $projectMenuLightColor;
+
+    border-right: 1px solid $projectListBorderColor;
+
+    &.active {
+        border-bottom: 3px solid #aaaaaa;
+    }
+
+    a {
+        @extend .list-group-item;
+
+        background-color: $projectMenuLightColor;
+        color: $projectMenuTextColor;
+    }
+}
+
+.project-submenu {
+
+    @extend .list-group-item;
+
+    font-family: 'Aleo-Bold';
+    font-size: 16px;
+    background-color: $projectSubmenuColor;
+    color: $projectSubmenuTextColor;
+
+    //margin: 0 0 0 15px;
+
+    border: none;
+
+    text-align: center;
+
+    border-right: 1px solid $projectListBorderColor;
+
+    a {
+        color: inherit;
+    }
+
+    a:visited, a:focus {
+        text-decoration: none;
+    }
+}
+
+.project-submenu.active, .project-submenu.active:hover {
+    background-color: #b7674b;
+}
+
+.project-menu {
+
+    a:focus, a:active {
+        background-color: #184450;
+        color: #ffffff;
+    }
+
+    a:hover {
+        background-color: #ffffff;
+        color: #000000;
+    }
+}
+
+.project-detail-controls {
+    padding: 20px 0 20px 0;
+    border-top: 1px solid #d8d8d8;
+}
+
+.project-search {
+    //padding-top: 10px;
+}
+
+.project-navbar-item {
+
+    //@extend .btn;
+    //@extend .btn-primary;
+
+    border: 1px solid $projectListBorderColor;
+
+    background-color: $projectNavbarButtonColor;
+    font-family: 'Aleo-Regular';
+    font-size: 25px;
+    font-weight: lighter;
+    top: 0;
+    bottom: 0;
+
+    a {
+        color: #ffffff;
+    }
+}
+/*
+.project-login-button-wrapper {
+    @extend .btn-group;
+
+    margin: 40px 0 0 0;
+    padding: 0;
+    top: 0;
+    bottom: 0;
+    float: right;
+}
+*/
+
+.project-login-button {
+    //@extend .btn;
+    //@extend .btn-primary;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.project-navbar-list-wrapper {
+    margin: 0;
+    padding: 0;
+}
+
+
+.project-navbar-list {
+    @extend .list-inline;
+
+    margin: 0;
+    padding: 0;
+
+    .project-navbar-item:nth-child(n) {
+        margin: 0 5px 0 0px;
+    }
+
+    .project-navbar-item:first-child {
+        margin: 0 5px 0 0;
+    }
+}
+
+#project-navbar {
+    //background-image: url('../images/navbar-background.jpg');
+    background-size: cover;
+    border-bottom: 3px solid $projectNavbarBorderColor;
+    padding: 0;
+    margin: 0;
+    overflow-y: visible;
+}
+/*
+.navbar-buttons {
+    padding: 0;
+    margin: 0;
+}
+*/
+
+.project-settings {
+    @extend .list-unstyled;
+
+    li {
+        padding-bottom: 20px;
+    }
+
+    li:last-of-type {
+        padding: 0;
+    }
+}
+
+.vdjpipe-list {
+    @extend .list-group;
+    border: none;
+
+    li {
+        @extend .list-group-item;
+        border: none;
+    }
+}
+
+.file-listing-spacer {
+    padding: 20px 0 0 0;
+}
+
+.file-listing-title-block {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.notification-empty {
+    color: #000000 !important;
+}
+
+#notification-menu {
+    color: $brand-success;
+}
+
+.navbar-dropdown {
+    font-size: 20px;
+
+    background-color: #ffffff;
+    border-top: 3px solid $projectNavbarBorderColor;
+    border-bottom: 3px solid #ffffff;
+    border-right: 3px solid;
+
+    top: 3px;
+    bottom: 0;
+    margin: 0;
+}
