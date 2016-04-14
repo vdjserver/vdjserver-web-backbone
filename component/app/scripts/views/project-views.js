@@ -628,7 +628,7 @@ define([
                     };
 
                     if (isDuplicate === true) {
-                        that.projectDetailView.trigger('duplicateFileError', duplicateFilename);
+                        that.parentView.trigger('duplicateFileError', duplicateFilename);
                     }
                     else {
 
@@ -1405,7 +1405,7 @@ define([
                 };
 
                 if (isDuplicate) {
-                    this.projectDetailView.trigger('duplicateFileError', duplicateFilename);
+                    this.parentView.trigger('duplicateFileError', duplicateFilename);
                 }
 
                 return isDuplicate;
@@ -1508,7 +1508,7 @@ define([
                 var isDuplicate = this.fileListings.checkForDuplicateFilename(filename);
 
                 if (isDuplicate === true) {
-                    this.projectDetailView.trigger('duplicateFileError', filename);
+                    this.parentView.trigger('duplicateFileError', filename);
                 }
 
                 return isDuplicate;

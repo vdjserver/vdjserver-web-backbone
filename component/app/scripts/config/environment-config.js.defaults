@@ -18,12 +18,14 @@ var EnvironmentConfig = {
                         'vdjPipe': 'vdj_pipe-0.1.6u4',
                         'igBlast': 'igblast-ls5-1.4.0u8',
                     },
+                    'type': 'large',
                 },
                 'vdjExec02': {
                     'hostname': 'vdj-exec-02.tacc.utexas.edu',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-small-0.1.6u5',
                     },
+                    'type': 'small',
                 },
                 'stampede': {
                     'hostname': 'stampede.tacc.utexas.edu',
@@ -31,6 +33,7 @@ var EnvironmentConfig = {
                         'vdjPipe': 'vdj_pipe-stampede-0.1.6u2',
                         'igBlast': 'igblast-stampede-1.4.0u5',
                     },
+                    'type': 'large',
                 },
             },
             'executionSystemPreference': [

@@ -449,6 +449,10 @@ function(
             var urlSplit = this.get('urlToIngest').split('/');
             var filename = urlSplit.pop();
 
+            if (filename.search('\\?')) {
+                filename = filename.split('?').shift();
+            }
+
             return filename;
         },
         sync: function(method, model, options) {
