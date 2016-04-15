@@ -582,7 +582,7 @@ function(
                 var disassociatePairedReadPromises = [];
 
                 var createDisassociatePairedReadPromise = function(model) {
-                    model.removePairedReadMetadataUuid();
+                    return model.removePairedReadMetadataUuid();
                 };
 
                 disassociatePairedReadPromises.push(createDisassociatePairedReadPromise(modelA));

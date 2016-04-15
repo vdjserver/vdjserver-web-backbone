@@ -1063,6 +1063,7 @@ define([
                 'change .project-file-read-direction': '_updateReadDirection',
                 'change .project-file-tags': '_updateFileTags',
                 'click .unlink-qual': '_unlinkQual',
+                'click .unlink-paired-read':   '_unlinkPairedRead',
 
                 'click .download-file': '_clickDownloadFile',
 
@@ -1248,6 +1249,44 @@ define([
                             var telemetry = new Backbone.Agave.Model.Telemetry();
                             telemetry.setError(error);
                             telemetry.set('method', 'fileMetadataModel.removeQualityScoreMetadataUuid()');
+                            telemetry.set('view', 'Projects.DetailFiles');
+                            telemetry.save();
+                        })
+                        ;
+                }
+            },
+            _unlinkPairedRead: function(e) {
+                e.preventDefault();
+
+                // Use this instead of e.target.id because the click event will
+                // sometimes land on a child element instead of the button itself.
+                // If that happens, e.target.id will refer to the child and not the button.
+                var uuid = $(e.target).closest('button').attr('id');
+
+                var pairFile1Model = this.projectFiles.get(uuid);
+
+                var pairFile2Model = this.projectFiles.get(pairFile1Model.getPairedReadMetadataUuid());
+
+                if (pairFile1Model && pairFile2Model) {
+
+                    var that = this;
+
+                    Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads(pairFile1Model, pairFile2Model)
+                        .then(function() {
+                            that.projectFiles.reset();
+
+                            return that.projectFiles.fetch();
+                        })
+                        .then(function() {
+                            that.setupFileListings();
+                        })
+                        .done(function() {
+                            that.render();
+                        })
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.setError(error);
+                            telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads()');
                             telemetry.set('view', 'Projects.DetailFiles');
                             telemetry.save();
                         })
