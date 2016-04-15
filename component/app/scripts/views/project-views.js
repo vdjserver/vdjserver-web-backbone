@@ -999,6 +999,12 @@ define([
                 this.setView('', loadingView);
                 loadingView.render();
 
+                this.setupFileListings();
+
+                loadingView.remove();
+                this.render();
+            },
+            setupFileListings: function() {
                 /*
                     1. get paired reads
                     2. add quals to paired reads
@@ -1030,9 +1036,6 @@ define([
 
                 // Remove associated quals from file listing since they're embedded now
                 this.singleReadFileListings.remove(embeddedSingleReadQualModels);
-
-                //this.render();
-                loadingView.remove();
             },
             serialize: function() {
                 return {
@@ -1048,6 +1051,7 @@ define([
                 'change .project-file-type': '_updateFileType',
                 'change .project-file-read-direction': '_updateReadDirection',
                 'change .project-file-tags': '_updateFileTags',
+                'click .unlink-qual': '_unlinkQual',
 
                 'click .download-file': '_clickDownloadFile',
 
@@ -1202,6 +1206,42 @@ define([
                         telemetry.save();
                     })
                     ;
+            },
+            _unlinkQual: function(e) {
+                e.preventDefault();
+
+                // Use this instead of e.target.id because the click event will
+                // sometimes land on a child element instead of the button itself.
+                // If that happens, e.target.id will refer to the child and not the button.
+                var uuid = $(e.target).closest('button').attr('id');
+
+                var fileMetadataModel = this.projectFiles.get(uuid);
+
+                if (fileMetadataModel) {
+
+                    var that = this;
+
+                    fileMetadataModel.removeQualityScoreMetadataUuid()
+                        .then(function() {
+                            that.projectFiles.reset();
+
+                            return that.projectFiles.fetch();
+                        })
+                        .then(function() {
+                            that.setupFileListings();
+                        })
+                        .done(function() {
+                            that.render();
+                        })
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.setError(error);
+                            telemetry.set('method', 'fileMetadataModel.removeQualityScoreMetadataUuid()');
+                            telemetry.set('view', 'Projects.DetailFiles');
+                            telemetry.save();
+                        })
+                        ;
+                }
             },
             _setupDragDropEventHandlers: function() {
 
