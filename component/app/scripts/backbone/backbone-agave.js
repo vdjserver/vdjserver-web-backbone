@@ -141,7 +141,7 @@ define([
             this.retrySyncEngine = Agave.sync;
             this.retrySyncLimit = 3;
         },
-        apiHost: EnvironmentConfig.agave.host,
+        apiHost: EnvironmentConfig.agave.hostname,
         authType: 'oauth',
         sync: Backbone.RetrySync,
         requiresAuth: true,
@@ -163,7 +163,7 @@ define([
             this.retrySyncEngine = Agave.sync;
             this.retrySyncLimit = 3;
         },
-        apiHost: EnvironmentConfig.agave.host,
+        apiHost: EnvironmentConfig.agave.hostname,
         authType: 'oauth',
         sync: Backbone.RetrySync,
         requiresAuth: true,
@@ -255,9 +255,9 @@ define([
             archive: true,
             //archive: false,
             archivePath: '',
-            archiveSystem: EnvironmentConfig.agave.storageSystems.corral,
+            archiveSystem: EnvironmentConfig.agave.systems.storage.corral.hostname,
             batchQueue: 'normal',
-            executionSystem: EnvironmentConfig.agave.executionSystems.ls5,
+            executionSystem: EnvironmentConfig.agave.systems.execution.ls5.hostname,
             //id: 0,
             inputs: {},
             maxRunTime: '48:00:00',
@@ -276,7 +276,7 @@ define([
             //this.retrySyncEngine = Agave.PutOverrideSync;
             this.retrySyncLimit = 3;
         },
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/jobs/queue';
         },
@@ -291,7 +291,7 @@ define([
                 type: 'POST',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
-                url: EnvironmentConfig.vdjApi.host + '/jobs/queue',
+                url: EnvironmentConfig.vdjApi.hostname + '/jobs/queue',
             });
 
             return jqxhr;
@@ -325,9 +325,9 @@ define([
                 data:   'action=mkdir&path=' + relativeArchivePath,
                 headers: Backbone.Agave.oauthHeader(),
                 type:   'PUT',
-                url:    EnvironmentConfig.agave.host
+                url:    EnvironmentConfig.agave.hostname
                         + '/files/v2/media/system'
-                        + '/' + EnvironmentConfig.agave.storageSystems.corral
+                        + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
                         + '//projects'
                         + '/' + projectUuid
                         + '/analyses',
@@ -344,7 +344,7 @@ define([
                     jobUuid: this.get('id'),
                 }),
                 contentType: 'application/json',
-                url: EnvironmentConfig.vdjApi.host + '/jobs/metadata',
+                url: EnvironmentConfig.vdjApi.hostname + '/jobs/metadata',
             });
 
             return jqxhr;
@@ -358,7 +358,7 @@ define([
                     jobUuid: this.get('id'),
                 }),
                 contentType: 'application/json',
-                url: EnvironmentConfig.vdjApi.host + '/permissions/jobs',
+                url: EnvironmentConfig.vdjApi.hostname + '/permissions/jobs',
             });
 
             return jqxhr;
@@ -371,7 +371,7 @@ define([
                 var fileMetadata = fileMetadatas.at(i);
 
                 filePaths.push(
-                    'agave://' + EnvironmentConfig.agave.storageSystems.corral
+                    'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
                     + '/' + fileMetadata.getFilePath()
                 );
             }
@@ -397,7 +397,7 @@ define([
             'refresh_token': null,
             'access_token':  null,
         },
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         url: '/token',
         sync: function(method, model, options) {
 
@@ -425,7 +425,7 @@ define([
                     break;
             }
 
-            options.url = EnvironmentConfig.vdjApi.host + '/token',
+            options.url = EnvironmentConfig.vdjApi.hostname + '/token',
 
             options.headers = {
                 'Authorization': 'Basic ' + btoa(username + ':' + password),

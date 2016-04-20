@@ -15,7 +15,7 @@ function(
             feedback: '',
             email: '',
         },
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/feedback/public';
         },
@@ -54,7 +54,7 @@ function(
 
             return defaultValues;
         },
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/feedback';
         },

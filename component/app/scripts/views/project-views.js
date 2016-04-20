@@ -56,19 +56,6 @@ define([
         'project-file-list-spacer'
     );
 
-    Handlebars.registerHelper('checkSystemUpStatus', function(systems, options) {
-
-        var lonestarUp = Backbone.Agave.Collection.Systems.checkSystemUpStatus(systems, EnvironmentConfig.agave.executionSystems.lonestar);
-        var storageUp = Backbone.Agave.Collection.Systems.checkSystemUpStatus(systems, EnvironmentConfig.agave.storageSystems.corral);
-
-        if (lonestarUp === true && storageUp === true) {
-            return options.fn(systems);
-        }
-        else {
-            return options.inverse(systems);
-        }
-    });
-
     Handlebars.registerHelper('IfJobSelectableFileType', function(filename, fileType, options) {
 
         if (filename === undefined) {
@@ -539,6 +526,7 @@ define([
 
             this.systems.fetch()
                 .then(function() {
+
                     loadingView.remove();
 
                     that.render();
@@ -563,6 +551,7 @@ define([
         serialize: function() {
             return {
                 systems: this.systems.toJSON(),
+                executionSystemsAvailable: this.systems.largeExecutionSystemAvailable(),
             };
         },
 
@@ -759,91 +748,7 @@ define([
 
             this.parentView.setView('#project-job-staging', jobSubmitView);
 
-            var that = this;
-
-            stagingSubview.fetchNetworkData()
-                .done(function() {
-                    jobSubmitView.render();
-
-                    that.listenToOnce(
-                        jobSubmitView,
-                        App.Views.Jobs.WorkflowEditor.events.openWorkflowCreateView,
-                        function() {
-
-                            $('#job-modal')
-                                .modal('hide')
-                                .on('hidden.bs.modal', function() {
-
-                                    var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
-
-                                    that.setView('#job-submit', workflowEditorView);
-
-                                    workflowEditorView.fetchNetworkData()
-                                        .done(function() {
-                                            workflowEditorView.render();
-                                            that._handleWorkflowViewEvents(workflowEditorView);
-                                        })
-                                        .fail(function(error) {
-                                            var telemetry = new Backbone.Agave.Model.Telemetry();
-                                            telemetry.setError(error);
-                                            telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
-                                            telemetry.set('view', 'Projects.DetailActions');
-                                            telemetry.save();
-                                        })
-                                        ;
-                                });
-                        }
-                    );
-
-                    that.listenToOnce(
-                        jobSubmitView,
-                        App.Views.Jobs.WorkflowEditor.events.openWorkflowEditorView,
-                        function(editableWorkflow) {
-                            $('#job-modal')
-                                .modal('hide')
-                                .on('hidden.bs.modal', function() {
-
-                                    var workflowEditorView = new App.Views.Jobs.WorkflowEditor();
-
-                                    // The editable workflow needs to be set before render is called.
-                                    workflowEditorView.editableWorkflow = editableWorkflow;
-                                    that.setView('#job-submit', workflowEditorView);
-
-                                    workflowEditorView.fetchNetworkData()
-                                        .done(function() {
-                                            workflowEditorView.render();
-                                            that._handleWorkflowViewEvents(workflowEditorView);
-                                        })
-                                        .fail(function(error) {
-                                            var telemetry = new Backbone.Agave.Model.Telemetry();
-                                            telemetry.setError(error);
-                                            telemetry.set('method', 'workflowEditorView.fetchNetworkData()');
-                                            telemetry.set('view', 'Projects.DetailActions');
-                                            telemetry.save();
-                                        })
-                                        ;
-                                });
-                        }
-                    );
-
-                })
-                ;
-        },
-        _handleWorkflowViewEvents: function(workflowEditorView) {
-
-            var that = this;
-
-            this.listenToOnce(
-                workflowEditorView,
-                App.Views.Jobs.WorkflowEditor.events.closeWorkflowEditorView,
-                function() {
-                    $('#workflow-modal')
-                        .modal('hide')
-                        .on('hidden.bs.modal', function() {
-                            that._showJobStagingView();
-                        });
-                }
-            );
+            jobSubmitView.render();
         },
         /**
          *  Files

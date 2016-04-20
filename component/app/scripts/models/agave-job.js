@@ -211,7 +211,7 @@ function(
                     {},
                     Backbone.Agave.JobModel.prototype.defaults,
                     {
-                        appId: EnvironmentConfig.agave.apps.igBlast,
+                        appId: EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast,
                         inputs: {
                             query: '',
                         },
@@ -227,6 +227,13 @@ function(
                 Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
 
                 this.inputParameterName = 'query';
+            },
+            configureLargeExecutionHost: function(systemName) {
+
+                this.set({
+                    'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.igBlast,
+                    'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
+                });
             },
             prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
@@ -273,7 +280,7 @@ function(
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: EnvironmentConfig.agave.apps.vdjPipe,
+                    appId: EnvironmentConfig.agave.systems.execution.ls5.apps.vdjPipe,
                 }
             );
         },
@@ -284,9 +291,13 @@ function(
 
             if (_.isNumber(fileSize)) {
                 if (fileSize < 5000000) {
+
+                    // TODO: pull in upStatus from the systems collection and automatically switch to another system if this one is down
+                    var smallExecutionSystem = EnvironmentConfig.agave.systems.smallExecutionSystemPreference[0];
+
                     this.set({
-                        'appId': EnvironmentConfig.agave.apps.vdjPipeSmall,
-                        'executionSystem': EnvironmentConfig.agave.executionSystems.vdjExec02,
+                        'appId': EnvironmentConfig.agave.systems.execution[smallExecutionSystem].apps.vdjPipe,
+                        'executionSystem': EnvironmentConfig.agave.systems.execution[smallExecutionSystem].hostname,
                     });
 
                     this.unset('maxRunTime');
@@ -294,6 +305,13 @@ function(
                     this.unset('processorsPerNode');
                 }
             }
+        },
+        configureLargeExecutionHost: function(systemName) {
+
+            this.set({
+                'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.vdjPipe,
+                'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
+            });
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 

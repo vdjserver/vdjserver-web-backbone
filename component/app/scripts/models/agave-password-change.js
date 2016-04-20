@@ -17,7 +17,7 @@ function(
             newPassword: '',
             passwordCheck: ''
         },
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/user/change-password';
         },
@@ -30,7 +30,7 @@ function(
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
-                url: EnvironmentConfig.vdjApi.host + this.url(),
+                url: EnvironmentConfig.vdjApi.hostname + this.url(),
             });
 
             return jqxhr;

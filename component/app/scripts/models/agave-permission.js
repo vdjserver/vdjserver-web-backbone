@@ -58,7 +58,7 @@ function(
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
-                url: EnvironmentConfig.vdjApi.host + '/permissions/username',
+                url: EnvironmentConfig.vdjApi.hostname + '/permissions/username',
             });
 
             return jqxhr;
@@ -73,7 +73,7 @@ function(
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'DELETE',
-                url: EnvironmentConfig.vdjApi.host + '/permissions/username',
+                url: EnvironmentConfig.vdjApi.hostname + '/permissions/username',
             });
 
             return jqxhr;

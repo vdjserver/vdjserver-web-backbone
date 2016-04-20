@@ -15,7 +15,7 @@ function(
             username:  '',
             uuid:  ''
         },
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             var url = '/user/reset-password';
             if (this.get('uuid')) {

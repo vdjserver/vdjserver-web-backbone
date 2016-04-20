@@ -33,7 +33,7 @@ define([
 
     Jobs.Pending = Backbone.Agave.Collection.extend({
         model: Backbone.Agave.Model.Job.Detail,
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         authType: 'basic',
         url: function() {
             return '/jobs/queue/pending/?projectUuid=' + this.projectUuid;
