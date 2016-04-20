@@ -18,7 +18,7 @@ define([
             this.setupModalView();
 
             grecaptcha.render('recaptcha', {
-                sitekey: EnvironmentConfig.recaptchaPublicKey,
+                sitekey: EnvironmentConfig.recaptcha.publicKey,
             });
         },
         setupModalView: function() {

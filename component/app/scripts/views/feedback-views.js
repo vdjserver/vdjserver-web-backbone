@@ -17,7 +17,7 @@ define([
         },
         afterRender: function() {
             grecaptcha.render('recaptcha', {
-                sitekey: EnvironmentConfig.recaptchaPublicKey,
+                sitekey: EnvironmentConfig.recaptcha.publicKey,
             });
         },
         events: {

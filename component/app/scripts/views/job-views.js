@@ -219,29 +219,46 @@ define([
     Jobs.StagingBase = Backbone.View.extend({
         startJob: function(jobModel) {
 
-            // DEBUG
-            if (EnvironmentConfig.debug.console) {
-                if (jobModel.get('parameters') && jobModel.get('parameters').json) {
-
-                    var tmpDebugJobModelLog = JSON.stringify(jobModel.get('parameters').json)
-                                                .replace(/\\"/g, '"')
-                                                 //.replace(/^"/, '\'')
-                                                 //.replace(/"$/, '\'');
-                                                ;
-
-                    console.log('jobModel is: ' + tmpDebugJobModelLog);
-                }
-            }
-
-            if (EnvironmentConfig.debug.disableJobs) {
-                return;
-            }
-
             var that = this;
 
-            return jobModel.submitJob(this.projectModel.get('uuid'))
+            var systems = new Backbone.Agave.Collection.Systems();
+
+            return systems.fetch()
                 .then(function() {
-                    //return $('#job-modal').modal('hide').promise();
+
+                    var jobExecutionSystemHostname = jobModel.get('executionSystem');
+                    var isSmallSystem = systems.isSmallExecutionSystem(jobExecutionSystemHostname);
+
+                    if (isSmallSystem === false) {
+                        var executionSystemName = systems.getLargeExecutionSystem();
+
+                        jobModel.configureLargeExecutionHost(executionSystemName);
+                    }
+                })
+                .then(function() {
+                    // DEBUG
+                    if (EnvironmentConfig.debug.console) {
+                        if (jobModel.has('parameters')) {
+
+                            var tmpDebugJobModelLog = JSON.stringify(jobModel.get('parameters'))
+                                                        .replace(/\\"/g, '"')
+                                                         //.replace(/^"/, '\'')
+                                                         //.replace(/"$/, '\'');
+                                                        ;
+                            console.log('DEBUG - job parameters are: ' + JSON.stringify(tmpDebugJobModelLog));
+                            console.log('DEBUG - job is: ' + JSON.stringify(jobModel));
+                        }
+                    }
+
+                    if (EnvironmentConfig.debug.disableJobs) {
+                        return;
+                    }
+
+                    return jobModel.submitJob(that.projectModel.get('uuid'))
+                        .then(function() {
+                            //return $('#job-modal').modal('hide').promise();
+                        })
+                        ;
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -317,6 +334,7 @@ define([
             stageJob: function(formData) {
                 var job = new Backbone.Agave.Model.Job.VdjPipe();
 
+                // TODO: refactor this to be called during |Jobs.StagingBase.startJob()|
                 var totalFileSize = this.selectedFileListings.getTotalFileSize();
                 job.configureExecutionHostForFileSize(totalFileSize);
 
