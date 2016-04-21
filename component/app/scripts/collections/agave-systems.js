@@ -9,21 +9,61 @@ define(['backbone'], function(Backbone) {
         url: function() {
             return '/systems/v2/';
         },
-    },
-    {
-        checkSystemUpStatus: function(systems, systemId) {
+        isSmallExecutionSystem: function(hostname) {
+            var keys = Object.keys(EnvironmentConfig.agave.systems.execution);
 
-            var systemUp = true;
+            var isSmallSystem = keys.some(function(key) {
+                var systemConfig = EnvironmentConfig.agave.systems.execution[key];
 
-            var filteredSystems = _.where(systems, {id: systemId});
-
-            if (filteredSystems.length === 1) {
-                if (filteredSystems[0].status !== 'UP') {
-                    systemUp = false;
+                if (systemConfig.hostname === hostname && systemConfig.type === 'small') {
+                    return true;
                 }
+                else {
+                    return false;
+                }
+            });
+
+            return isSmallSystem;
+        },
+        largeExecutionSystemAvailable: function() {
+
+            var that = this;
+
+            var keys = Object.keys(EnvironmentConfig.agave.systems.execution);
+
+            var upStatus = keys.some(function(key) {
+
+                var systemConfig = EnvironmentConfig.agave.systems.execution[key];
+                var system = that.get(systemConfig.hostname);
+
+                if (systemConfig.type === 'large' && system.get('status') === 'UP') {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            });
+
+            return upStatus;
+        },
+        getLargeExecutionSystem: function() {
+            var that = this;
+
+            var systemName = EnvironmentConfig.agave.systems.executionSystemPreference.find(function(systemName) {
+                var systemConfig = EnvironmentConfig.agave.systems.execution[systemName];
+                var system = that.get(systemConfig.hostname);
+
+                if (system.get('status') === 'UP') {
+                    return systemName;
+                }
+            });
+
+            // default to first preferred system if unsure
+            if (systemName === undefined) {
+                systemName = EnvironmentConfig.agave.systems.executionSystemPreference[0];
             }
 
-            return systemUp;
+            return systemName;
         },
     });
 

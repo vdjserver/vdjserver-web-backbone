@@ -9,7 +9,7 @@ function(Backbone) {
     var Account = {};
 
     Account.VerifyAccount = Backbone.Agave.Model.extend({
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/user'
                    + '/verify'
@@ -20,7 +20,7 @@ function(Backbone) {
     });
 
     Account.ResendVerificationEmail = Backbone.Agave.Model.extend({
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
             return '/user'
                    + '/' + this.get('username')
@@ -38,7 +38,7 @@ function(Backbone) {
             passwordCheck: '',
             email:     '',
         },
-        apiHost: EnvironmentConfig.vdjApi.host,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         sync: Backbone.Agave.sync,
         url: function() {
             return '/user';

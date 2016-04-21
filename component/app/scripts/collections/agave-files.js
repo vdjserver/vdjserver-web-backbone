@@ -26,7 +26,7 @@ function(
         },
         url: function() {
             return '/files/v2/listings/system'
-                + '/' + EnvironmentConfig.agave.storageSystems.corral
+                + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
                 + this.relativeUrl
                 ;
         },

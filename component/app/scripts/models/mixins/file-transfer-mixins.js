@@ -23,7 +23,7 @@ define([
                 }
             ),
             type:    'POST',
-            url:     EnvironmentConfig.agave.host
+            url:     EnvironmentConfig.agave.hostname
                         + '/postits'
                         + '/v2'
                         ,
