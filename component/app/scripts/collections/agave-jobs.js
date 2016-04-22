@@ -256,6 +256,7 @@ define([
 
             var workflows = [
 
+/*
                 {
                     'workflow-name': 'Paired Reads',
                     'base_path_input': '',
@@ -446,7 +447,7 @@ define([
                         },
                     ],
                 },
-
+*/
                 {
                     'workflow-name': 'Single Reads',
                     'summary_output_path': 'summary.txt',
@@ -680,6 +681,27 @@ define([
             ];
 
             return predefinedWorkflowNames;
+        },
+        getMergePairedReadsConfig: function() {
+            var config = {
+                'workflow-name': 'Merge Paired Reads',
+                'summary_output_path': 'summary.txt',
+                'steps': [
+                    {
+                        'merge_paired': {
+                            'min_score': 10,
+                        },
+                    },
+                    {
+                        'write_sequence': {
+                            'out_prefix': '',
+                            'out_path': '.fastq',
+                        },
+                    },
+                ],
+            };
+
+            return config;
         },
     });
 

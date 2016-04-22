@@ -463,6 +463,20 @@ function(
 
                 return totalSize;
             },
+            hasPairedReads: function() {
+
+                // check if collection contains paired reads
+                var hasPairedReads = this.some(function(file) {
+
+                    if (file.get('value').hasOwnProperty('pairedReadMetadataUuid') && file.get('value').pairedReadMetadataUuid.length > 0) {
+                        return true;
+                    }
+
+                    return false;
+                });
+
+                return hasPairedReads;
+            },
 
             // Private Methods
             _searchGetDecoratorValue: function(searchString, decorator) {
