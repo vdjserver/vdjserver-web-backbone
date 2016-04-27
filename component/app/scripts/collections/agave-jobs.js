@@ -72,6 +72,8 @@ define([
                         ||
                         fileExtension === 'vdjml'
                         ||
+                        fileExtension === 'zip'
+                        ||
                         doubleFileExtension === 'rc_out.tsv'
                         ||
                         doubleFileExtension === 'duplicates.tsv'
