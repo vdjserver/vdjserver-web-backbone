@@ -344,6 +344,12 @@ function(
 
             this._setFilesParameter(selectedFileMetadatas);
         },
+        setPairedReadConfig: function(pairedReadConfig) {
+            var jobParameters = job.get('parameters');
+            jobParameters['paired_json'] = JSON.stringify(pairedReadConfig);
+            jobParameters['workflow'] = 'paired';
+            job.set('parameters', jobParameters);
+        },
 
         // Private Methods
         _updateSelectedFileMetadatasForBarcodeQualityScores: function(formData, selectedFileMetadatas, allFileMetadatas) {
@@ -505,6 +511,7 @@ function(
                 'parameters',
                 {
                     'json': JSON.stringify(workflowConfig),
+                    'workflow': 'single',
                 }
             );
         },

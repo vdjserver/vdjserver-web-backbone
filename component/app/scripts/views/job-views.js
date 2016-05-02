@@ -348,13 +348,6 @@ define([
                 var selectedFileListings = _.extend({}, this.selectedFileListings);
                 var allFiles = _.extend({}, this.allFiles);
 
-                var pairedReadForm = Backbone.Syphon.serialize($('#vdjpipe-paired-read-form')[0]);
-                var pairedReadConfig = App.Utilities.Vdjpipe.WorkflowParser.ConvertFormDataToWorkflowConfig(
-                    pairedReadForm,
-                    selectedFileListings,
-                    allFiles
-                );
-
                 job.prepareJob(
                     singleReadForm,
                     selectedFileListings,
@@ -363,9 +356,15 @@ define([
                 );
 
                 if (this.hasPairedReads === true) {
-                    var jobParameters = job.get('parameters');
-                    jobParameters['pairedReads'] = JSON.stringify(pairedReadConfig);
-                    job.set('parameters', jobParameters);
+
+                    var pairedReadForm = Backbone.Syphon.serialize($('#vdjpipe-paired-read-form')[0]);
+                    var pairedReadConfig = App.Utilities.Vdjpipe.WorkflowParser.ConvertFormDataToWorkflowConfig(
+                        pairedReadForm,
+                        selectedFileListings,
+                        allFiles
+                    );
+
+                    job.setPairedReadConfig(pairedReadConfig);
                 }
 
                 return this.startJob(job);
