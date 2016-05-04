@@ -345,10 +345,10 @@ function(
             this._setFilesParameter(selectedFileMetadatas);
         },
         setPairedReadConfig: function(pairedReadConfig) {
-            var jobParameters = job.get('parameters');
+            var jobParameters = this.get('parameters');
             jobParameters['paired_json'] = JSON.stringify(pairedReadConfig);
             jobParameters['workflow'] = 'paired';
-            job.set('parameters', jobParameters);
+            this.set('parameters', jobParameters);
         },
 
         // Private Methods
