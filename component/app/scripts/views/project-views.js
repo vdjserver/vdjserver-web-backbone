@@ -1642,8 +1642,8 @@ define([
 
                 fileMetadatas.fetch()
                     .done(function() {
-                        that.readLevelMetadatas = fileMetadatas.getReadLevelCollection();
-                        that.pairableMetadatas = fileMetadatas.getReadLevelCollection();
+                        that.readLevelMetadatas = fileMetadatas.getForwardReadLevelCollection();
+                        that.pairableMetadatas = fileMetadatas.getReverseReadLevelCollection();
 
                         that.render();
                     })
@@ -1678,7 +1678,7 @@ define([
                 var fileUuid = e.target.value;
 
                 var pairModel = this.readLevelMetadatas.get(pairUuid);
-                var fileModel = this.readLevelMetadatas.get(fileUuid);
+                var fileModel = this.pairableMetadatas.get(fileUuid);
 
                 if (fileUuid.length > 0) {
 
@@ -1710,7 +1710,7 @@ define([
                 else {
 
                     fileUuid = pairModel.getPairedReadMetadataUuid();
-                    fileModel = this.readLevelMetadatas.get(fileUuid);
+                    fileModel = this.pairableMetadatas.get(fileUuid);
 
                     Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads(fileModel, pairModel)
                         .then(function() {

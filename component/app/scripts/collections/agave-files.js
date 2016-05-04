@@ -195,6 +195,34 @@ function(
 
                 return newCollection;
             },
+            getForwardReadLevelCollection: function() {
+
+                var forwardReadLevelModels = _.filter(this.models, function(model) {
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ
+                           && model.getReadDirection() === 'F'
+                           ;
+                });
+
+                var newCollection = this.clone();
+                newCollection.reset();
+                newCollection.add(forwardReadLevelModels);
+
+                return newCollection;
+            },
+            getReverseReadLevelCollection: function() {
+
+                var reverseReadLevelModels = _.filter(this.models, function(model) {
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ
+                           && model.getReadDirection() === 'R'
+                           ;
+                });
+
+                var newCollection = this.clone();
+                newCollection.reset();
+                newCollection.add(reverseReadLevelModels);
+
+                return newCollection;
+            },
             getPairedReadCollection: function() {
 
                 var pairedReadModels = _.filter(this.models, function(model) {
