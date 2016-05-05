@@ -510,7 +510,121 @@ function(
         },
     });
 
-    Job.Workflow = Backbone.Agave.MetadataModel.extend({
+    Job.Presto = Backbone.Agave.JobModel.extend({
+        // Public Methods
+        defaults: function() {
+            return _.extend(
+                {},
+                Backbone.Agave.JobModel.prototype.defaults,
+                {
+                    appId: EnvironmentConfig.agave.systems.execution.ls5.apps.presto,
+                    inputs: {
+                        query: '',
+                    },
+                    parameters: {
+                    },
+                }
+            );
+        },
+        initialize: function(options) {
+            Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
+        },
+        configureLargeExecutionHost: function(systemName) {
+
+            this.set({
+                'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.presto,
+                'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
+            });
+        },
+        prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
+
+            var parameters = this._serializeFormData(formData);
+            this.set('parameters', parameters);
+            this.set('name', formData['job-name']);
+            this._setArchivePath(projectUuid);
+
+            // TODO: set SequenceFiles
+            // TODO: set VprimerFile
+            // TODO: set JprimerFile
+            // TODO: set BarcodeOrUMIFile
+            this._setFilesParameter(selectedFileMetadatas);
+        },
+        _serializeFormData: function(formData) {
+
+            var parameters = {};
+
+            if (formData.hasOwnProperty('barcode-max-error')) {
+                // TODO: add UMI support
+                parameters['Barcode'] = 'barcode';
+            }
+
+            if (formData.hasOwnProperty('barcode-max-error')) {
+                parameters['BarcodeMaxError'] = parseFloat(formData['barcode-max-error']);
+            }
+
+            if (formData.hasOwnProperty('barcode-start-position')) {
+                parameters['BarcodeStartPosition'] = parseInt(formData['barcode-start-position']);
+            }
+
+            if (formData.hasOwnProperty('barcode-split-flag')) {
+                parameters['BarcodeSplitFlag'] = formData['barcode-split-flag'];
+            }
+
+            if (formData.hasOwnProperty('final-output-filename')) {
+                parameters['FinalOutputFilename'] = formData['final-output-filename'];
+            }
+
+            if (formData.hasOwnProperty('find-unique-max-nucleotides')) {
+                parameters['FindUniqueMaxNucleotides'] = parseInt(formData['find-unique-max-nucleotides']);
+            }
+
+            if (formData.hasOwnProperty('find-unique-exclude')) {
+                parameters['FindUniqueExclude'] = formData['find-unique-exclude'];
+            }
+
+            if (formData.hasOwnProperty('j-primer-max-error')) {
+                parameters['JPrimerFlag'] = true;
+                parameters['JPrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
+            }
+
+            if (formData.hasOwnProperty('j-primer-start-position')) {
+                parameters['JPrimerFlag'] = true;
+                parameters['JPrimerStartPosition'] = parseInt(formData['j-primer-start-position']);
+            }
+
+            if (formData.hasOwnProperty('output-file-prefix')) {
+                parameters['OutputFilePrefix'] = formData['output-file-prefix'];
+            }
+
+            if (formData.hasOwnProperty('minimum-length')) {
+                parameters['FilterFlag'] = true;
+                parameters['MinimumLength'] = parseInt(formData['minimum-length']);
+            }
+
+            if (formData.hasOwnProperty('minimum-quality')) {
+                parameters['FilterFlag'] = true;
+                parameters['MinimumQuality'] = parseInt(formData['minimum-quality']);
+            }
+
+            if (formData.hasOwnProperty('sequence-file-types')) {
+                parameters['SequenceFileTypes'] = formData['sequence-file-types'];
+            }
+
+            if (formData.hasOwnProperty('v-primer-max-error')) {
+                parameters['VPrimerFlag'] = true;
+                parameters['VPrimerMaxError'] = parseFloat(formData['v-primer-max-error']);
+            }
+
+            if (formData.hasOwnProperty('v-primer-start-position')) {
+                parameters['VPrimerFlag'] = true;
+                parameters['VPrimerStartPosition'] = parseInt(formData['v-primer-start-position']);
+            }
+
+            return parameters;
+        },
+    });
+
+    Job.VdjpipeWorkflow = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
             return _.extend(
                 {},

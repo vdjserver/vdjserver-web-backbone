@@ -279,7 +279,7 @@ define([
             initialize: function(parameters) {
                 this.projectModel = parameters.projectModel;
 
-                this.workflows = new Backbone.Agave.Collection.Jobs.Workflows();
+                this.workflows = new Backbone.Agave.Collection.Jobs.VdjpipeWorkflows();
                 this.workflows.setPredefinedWorkflows();
             },
             serialize: function() {
@@ -516,6 +516,108 @@ define([
             }
 
             return validationError;
+        },
+    });
+
+    Jobs.PrestoStaging = Jobs.StagingBase.extend({
+        template: 'jobs/presto-staging',
+        initialize: function(parameters) {
+            this.workflows = new Backbone.Agave.Collection.Jobs.PrestoWorkflows();
+
+            var that = this;
+            /*
+            this.render().promise().done(function() {
+                that._showWorkflow();
+            })
+            */
+            ;
+        },
+        stageJob: function(formData) {
+
+            var job = new Backbone.Agave.Model.Job.Presto();
+
+            job.prepareJob(
+                formData,
+                this.selectedFileListings,
+                this.allFiles,
+                this.projectModel.get('uuid')
+            );
+
+            return this.startJob(job);
+        },
+        events: {
+            //'change #select-workflow': '_showWorkflow',
+        },
+        afterRender: function() {
+            this._showWorkflow();
+        },
+        validateJobForm: function() {
+
+            var validationError = false;
+
+            // TODO: add form validation here
+
+            return validationError;
+        },
+        // Private Methods
+        _adjustModalHeight: function() {
+            var modalHeight = $('.modal-dialog').innerHeight();
+            $('.modal-backdrop').css({height: modalHeight + 100});
+        },
+        _showWorkflow: function(/*e*/) {
+            //e.preventDefault();
+
+            var that = this;
+
+            // Do housekeeping first
+            this.removeView('#workflow-staging-area');
+            $('#workflow-staging-area').empty();
+
+            // Setup and insert new workflow views
+            //var workflowId = e.target.value;
+
+            // Only continue if there's actually a workflow selected
+
+            // TODO: replace this with selected workflow
+            var workflow = this.workflows.getWorkflows()[0];
+
+            var workflowViews = new App.Utilities.PrestoViewFactory.GenerateWorkflowViews(
+                workflow['steps']
+            );
+
+            /*
+                I'd love to use insertViews instead, but as of 24/July/2014
+                it seems to work on the parent layout instead of the view
+                represented by |this|.
+
+                This behavior might be a bug in layout manager, so the
+                following loop is a workaround for now.
+            */
+
+            // Note: views will change places in the dom as they render asynchronously
+            // So we need to make sure that they're all inserted properly before calling render.
+
+            var workflowLayout = new Backbone.View();
+            this.insertView('#workflow-staging-area', workflowLayout);
+
+            for (var i = 0; i < workflowViews.length; i++) {
+                var view = workflowViews[i];
+
+                workflowLayout.insertView(view);
+            }
+
+            this.listenTo(
+                workflowLayout,
+                'FixModalBackdrop',
+                function() {
+                    that._adjustModalHeight();
+                }
+            );
+
+            // Render all workflow views
+            workflowLayout.render().promise().done(function() {
+                that._adjustModalHeight();
+            });
         },
     });
 

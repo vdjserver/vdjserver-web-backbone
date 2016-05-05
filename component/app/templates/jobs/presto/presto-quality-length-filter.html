@@ -1,0 +1,37 @@
+{{> presto-base-view-top}}
+
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+
+            Length Filter
+            &nbsp;
+            <input
+              class="job-form-item"
+              name="minimum-length"
+              type="number"
+              value="250"
+              step="1"
+              min="0"
+              pattern="\d+"
+            >
+        </div>
+    </div>
+
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+
+            Quality Filter
+            &nbsp;
+            <input
+              class="job-form-item"
+              name="minimum-quality"
+              type="number"
+              value="20"
+              step="1"
+              min="0"
+              pattern="\d+"
+            >
+        </div>
+    </div>
+
+{{> presto-base-view-bottom}}

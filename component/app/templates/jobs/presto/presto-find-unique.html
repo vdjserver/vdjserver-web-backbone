@@ -1,0 +1,32 @@
+{{> presto-base-view-top}}
+
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+
+            Max Nucleotides
+            &nbsp;
+            <input
+              class="job-form-item"
+              name="find-unique-max-nucleotides"
+              type="number"
+              value="0"
+              step="1"
+              min="0"
+            >
+        </div>
+    </div>
+
+    <div class="row row-with-spacer">
+        <div class="col-md-12">
+
+            Exclude Consecutive Missing Characters at Sequence Ends
+            &nbsp;
+            <input
+              class="job-form-item"
+              name="find-unique-exclude"
+              type="checkbox"
+            >
+        </div>
+    </div>
+
+{{> presto-base-view-bottom}}
