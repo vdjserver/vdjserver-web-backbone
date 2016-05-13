@@ -500,12 +500,27 @@ function(
                                         + '&system=${SYSTEM}'
                                         + '&projectUuid=' + this.get('projectUuid')
                                         ,
+                            fileName: this.getFilenameFromSourceUrl(),
+                            fileType: '',
+                            notifications: '',
                         },
                         method: 'POST',
 
                     })
-                    .then(function() {
+                    .then(function(response) {
                         that.set('name', that.getFilenameFromSourceUrl());
+                        that.set('readDirection', 'F');
+                        that.set('vdjFileType', 4);
+                        that.set('path', '//projects'
+                                         + '/' + that.get('projectUuid')
+                                         + '/files'
+                                         + '/' + that.getFilenameFromSourceUrl()
+                        );
+
+                        that.set('uuid', response.result.uuid);
+                    })
+                    .then(function() {
+                        that.notifyApiUploadComplete();
                     })
                     ;
             }
