@@ -45,9 +45,9 @@ define(['app'], function(App) {
             'steps': paramOutput,
         };
 
-        if (readType['paired_reads']) {
-            _.extend(outputConfig, readType);
-        }
+        //if (readType['paired_reads']) {
+        //    _.extend(outputConfig, readType);
+        //}
 
         return outputConfig;
     };
@@ -710,7 +710,8 @@ define(['app'], function(App) {
                 },
             };
 
-            return that.wrapIfPairedReads(parameters, key, configuredParameter);
+            return configuredParameter;
+            //return that.wrapIfPairedReads(parameters, key, configuredParameter);
         };
 
         this.getMinQualityFilter = function() {
@@ -750,6 +751,10 @@ define(['app'], function(App) {
 
             // Default value
             var writeSequenceVariables = '';
+
+            if (parameters['paired_reads']) {
+                writeSequenceVariables = 'merged';
+            }
 
             if (combinationValue.length > 0) {
                 writeSequenceVariables = '{' + combinationValue + '}';
@@ -831,10 +836,11 @@ define(['app'], function(App) {
         // Extras
         this.wrapIfPairedReads = function(parameters, key, configuredParameter) {
 
-            if (parameters[key + '-paired-read-direction']) {
+            //if (parameters[key + '-paired-read-direction']) {
+            if (parameters['paired_reads']) {
                 return {
                     'apply': {
-                        'to': parameters[key + '-paired-read-direction'],
+                        'to': 'merged',
                         'step': configuredParameter,
                     },
                 };

@@ -355,14 +355,19 @@ define([
                     this.projectModel.get('uuid')
                 );
 
+
                 if (this.hasPairedReads === true) {
 
                     var pairedReadForm = Backbone.Syphon.serialize($('#vdjpipe-paired-read-form')[0]);
+                    _.extend(pairedReadForm, { 'paired_reads': true });
                     var pairedReadConfig = App.Utilities.Vdjpipe.WorkflowParser.ConvertFormDataToWorkflowConfig(
                         pairedReadForm,
                         selectedFileListings,
                         allFiles
                     );
+
+                    _.extend(pairedReadConfig, { 'paired_reads': true });
+                    pairedReadConfig['summary_output_path'] ='merge_summary.txt';
 
                     job.setPairedReadConfig(pairedReadConfig);
                 }
@@ -482,7 +487,7 @@ define([
                     });
 
                     if (this.hasPairedReads === true) {
-                        $('#workflow-staging-area').append(
+                        $('#paired-read-workflow-staging-area').append(
                             '<input type="radio" class="hidden" name="paired_reads" id="paired_reads" checked>'
                         );
                     }

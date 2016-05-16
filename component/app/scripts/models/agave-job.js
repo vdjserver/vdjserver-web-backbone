@@ -348,6 +348,13 @@ function(
             var jobParameters = this.get('parameters');
             jobParameters['paired_json'] = JSON.stringify(pairedReadConfig);
             jobParameters['workflow'] = 'paired';
+
+            // the input for the standard json needs to be the output of paired_json
+            var fileName = pairedReadConfig['steps'][1]['apply']['step']['write_sequence']['out_path'];
+            var workConfig = JSON.parse(jobParameters.json);
+            workConfig['input'] = [{'sequence': fileName}];
+            jobParameters['json'] = JSON.stringify(workConfig);
+
             this.set('parameters', jobParameters);
         },
 

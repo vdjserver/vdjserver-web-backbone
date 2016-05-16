@@ -2,17 +2,21 @@
 
     <div class="row row-with-spacer">
         <div class="col-md-6">
-            Minimum Score
-            &nbsp;
-            <input
-                class="job-form-item"
-                name="{{inputCount}}-{{parameterType}}"
-                type="number"
-                value="{{options.min_score.custom_value}}"
-                step="1"
-                min="0"
-                pattern="\d+"
-            >
+            <div class="row row-with-spacer">
+                <div class="col-md-12">
+                    Mininmum Score
+                    &nbsp;
+                    <input
+                        class="job-form-item"
+                        name="{{inputCount}}-{{parameterType}}"
+                        type="number"
+                        value="{{options.min_score}}"
+                        step="1"
+                        min="0"
+                        pattern="\d+"
+                    >
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
             This module is used to merge forward and reverse reads to assemble a full length sequence. This step is only applicable for processing paired reads.

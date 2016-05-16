@@ -82,6 +82,8 @@ define([
                         doubleFileExtension === 'duplicates.tsv'
                         ||
                         filename === 'summary.txt'
+                        ||
+                        filename === 'merge_summary.txt'
                     ) {
                         return true;
                     }
@@ -148,6 +150,8 @@ define([
                         fileExtension === 'out'
                         ||
                         filename === 'vdjpipe_config.json'
+                        ||
+                        filename === 'vdjpipe_paired_config.json'
                     ) {
                         return true;
                     }
@@ -258,200 +262,8 @@ define([
 
             var workflows = [
 
-/*
                 {
-                    'workflow-name': 'Paired Reads',
-                    'base_path_input': '',
-                    'base_path_output': '',
-                    'paired_reads': true,
-                    'input': [
-                        {
-                            'forward_seq': 'sample_01f.fasta',
-                            'forward_qual': 'sample_01f.qual',
-                            'reverse_seq': 'sample_01r.fasta',
-                            'reverse_qual': 'sample_01r.qual',
-                        },
-                        {
-                            'forward_seq': 'emid_1_frw.fastq',
-                            'reverse_seq': 'emid_1_rev.fastq',
-                        },
-                    ],
-                    'steps': [
-                        {
-                            'apply': {
-                                'to': 'forward',
-                                'step': {
-                                    'quality_stats': {
-                                        'out_prefix': 'pre-filter-fwd-',
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            'apply': {
-                                'to': 'reverse',
-                                'step': {
-                                    'quality_stats': {
-                                        'out_prefix': 'pre-filter-rev-',
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            'apply': {
-                                'to': 'forward',
-                                'step': {
-                                    'composition_stats': {
-                                        'out_prefix': 'pre-filter-fwd-',
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            'apply': {
-                                'to': 'reverse',
-                                'step': {
-                                    'composition_stats': {
-                                        'out_prefix': 'pre-filter-rev-',
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            'merge_paired': {
-                                'min_score': {
-                                    'custom_value': 50,
-                                },
-                            },
-                        },
-                        {
-                            'apply': {
-                                'to': 'merged',
-                                'step': {
-                                    'match': {
-                                        'elements': [
-                                            // forward barcode element
-                                            {
-                                                'max_mismatches': 1,
-                                                'required': true,
-                                                'start': {},
-                                                'cut_lower': {
-                                                    'after': 0,
-                                                },
-                                            },
-                                        ],
-                                    },
-                                },
-                            },
-                        },
-                        //{
-                        //  'apply': {
-                        //      'to': 'merged',
-                        //      'step': {
-                        //          'custom_demultiplex': {
-                        //              'custom_location': '1',
-                        //              'elements': [
-                        //                  // forward barcode element
-                        //                  {
-                        //                      'custom_histogram': true,
-                        //                      'custom_trim': true,
-                        //                      'cut_lower': {
-                        //                          'after': 0,
-                        //                      },
-                        //                      'max_mismatches': 1,
-                        //                      'require_best': true,
-                        //                      'required': true,
-                        //                      'score_name': 'MID1-score',
-                        //                      'seq_file': 'mid1.fasta',
-                        //                      'start': {},
-                        //                      'value_name': 'MID1',
-                        //                  },
-                        //              ],
-                        //          },
-                        //      },
-                        //  },
-                        //},
-
-    //These histograms should be generated as part of custom_demultiplex
-    //
-    //                    {
-    //                        'histogram': {
-    //                            'name': 'DemultiplexBarcode1',
-    //                            'out_path': 'DemultiplexBarcode1.csv',
-    //                        },
-    //                    },
-    //                    {
-    //                        'histogram': {
-    //                            'name': 'DemultiplexBarcode1-score',
-    //                            'out_path': 'DemultiplexBarcode1-score.csv',
-    //                        },
-    //                    },
-
-                        {
-                            'apply': {
-                                'to': 'merged',
-                                'step': {
-                                    'length_filter': {
-                                        'min': 200,
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            'apply': {
-                                'to': 'merged',
-                                'step': {
-                                    'average_quality_filter': {
-                                        'custom_value': 35,
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            'apply': {
-                                'to': 'merged',
-                                'step': {
-                                    'homopolymer_filter': {
-                                        'custom_value': 20,
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            'apply': {
-                                'to': 'merged',
-                                'step': {
-                                    'quality_stats': {
-                                        'out_prefix': 'merged-',
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            'apply': {
-                                'to': 'merged',
-                                'step': {
-                                    'composition_stats': {
-                                        'out_prefix': 'merged-',
-                                    },
-                                },
-                            },
-                        },
-                        {
-                            'apply': {
-                                'to': 'merged',
-                                'step': {
-                                    'find_shared': {
-                                        'out_group_unique': '.fasta',
-                                    },
-                                },
-                            },
-                        },
-                    ],
-                },
-*/
-                {
-                    'workflow-name': 'Single Reads',
+                    'workflow-name': 'All Processing Steps',
                     'summary_output_path': 'summary.txt',
                     'steps': [
                         {
@@ -687,7 +499,8 @@ define([
         getMergePairedReadsConfig: function() {
             var config = {
                 'workflow-name': 'Merge Paired Reads',
-                'summary_output_path': 'summary.txt',
+                'summary_output_path': 'merge_summary.txt',
+                'paired_reads': true,
                 'steps': [
                     {
                         'merge_paired': {
@@ -695,9 +508,14 @@ define([
                         },
                     },
                     {
-                        'write_sequence': {
-                            'out_prefix': '',
-                            'out_path': '.fastq',
+                        'apply': {
+                            'to': 'merged',
+                            'step': {
+                                'write_sequence': {
+                                    'out_prefix': '',
+                                    'out_path': 'merged.fastq',
+                                }
+                            }
                         },
                     },
                 ],
