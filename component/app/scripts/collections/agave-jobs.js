@@ -372,6 +372,13 @@ define([
             var workflows = [
 
                 {
+                    'workflow-name': 'Merge Paired Reads',
+                    'summary_output_path': 'summary.txt',
+                    'steps': [
+                    ],
+                },
+
+                {
                     'workflow-name': 'Find Unique Sequences',
                     'summary_output_path': 'unique_summary.txt',
                     'steps': [
@@ -485,7 +492,7 @@ define([
         },
         _getPredefinedWorkflowNames: function() {
             var predefinedWorkflowNames = [
-                //'Single Reads',
+                'Merge Paired Reads',
                 'Find Unique Sequences',
                 'Primer Trimming',
                 'Barcode Demultiplexing',
