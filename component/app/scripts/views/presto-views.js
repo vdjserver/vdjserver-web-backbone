@@ -67,6 +67,7 @@ define([
         serialize: function() {
             return {
                 title: this.title,
+                isRemovable: true,
             };
         },
     });
