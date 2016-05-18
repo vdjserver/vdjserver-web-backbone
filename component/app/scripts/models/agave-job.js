@@ -545,9 +545,27 @@ function(
 
             // TODO: set SequenceFiles
             // TODO: set VprimerFile
-            // TODO: set JprimerFile
             // TODO: set BarcodeOrUMIFile
+            selectedFileMetadatas = this._updateSelectedFileMetadatasForJPrimers(
+                formData,
+                selectedFileMetadatas,
+                allFileMetadatas
+            );
+
             this._setFilesParameter(selectedFileMetadatas);
+        },
+        _updateSelectedFileMetadatasForJPrimer: function(formData, selectedFileMetadatas, allFileMetadatas) {
+
+            if (formData.hasOwnProperty('j-primer-file')) {
+
+                var jPrimerFilename = formData['j-primer-file'];
+
+                var jPrimerFile = allFileMetadatas.getModelForName(jPrimerFilename);
+
+                selectedFileMetadatas.add(jPrimerFile);
+            }
+
+            return selectedFileMetadatas;
         },
         _serializeFormData: function(formData) {
 
@@ -585,6 +603,10 @@ function(
             if (formData.hasOwnProperty('j-primer-max-error')) {
                 parameters['JPrimerFlag'] = true;
                 parameters['JPrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
+                parameters['JPrimerFile'] = parseFloat(formData['j-primer-max-error']);
+            }
+            else {
+                parameters['JPrimerFlag'] = false;
             }
 
             if (formData.hasOwnProperty('j-primer-start-position')) {

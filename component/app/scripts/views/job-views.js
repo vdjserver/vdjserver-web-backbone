@@ -617,6 +617,11 @@ define([
 
                 for (var i = 0; i < workflowViews.length; i++) {
                     var view = workflowViews[i];
+                    view.allFiles = this.allFiles;
+
+                    if (typeof view.prepareFiles === 'function') {
+                        view.prepareFiles();
+                    }
 
                     workflowLayout.insertView(view);
                 }
