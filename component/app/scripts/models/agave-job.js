@@ -544,9 +544,14 @@ function(
             this._setArchivePath(projectUuid);
 
             // TODO: set SequenceFiles
-            // TODO: set VprimerFile
             // TODO: set BarcodeOrUMIFile
-            selectedFileMetadatas = this._updateSelectedFileMetadatasForJPrimers(
+            selectedFileMetadatas = this._updateSelectedFileMetadatasForJPrimer(
+                formData,
+                selectedFileMetadatas,
+                allFileMetadatas
+            );
+
+            selectedFileMetadatas = this._updateSelectedFileMetadatasForVPrimer(
                 formData,
                 selectedFileMetadatas,
                 allFileMetadatas
@@ -563,6 +568,19 @@ function(
                 var jPrimerFile = allFileMetadatas.getModelForName(jPrimerFilename);
 
                 selectedFileMetadatas.add(jPrimerFile);
+            }
+
+            return selectedFileMetadatas;
+        },
+        _updateSelectedFileMetadatasForVPrimer: function(formData, selectedFileMetadatas, allFileMetadatas) {
+
+            if (formData.hasOwnProperty('v-primer-file')) {
+
+                var vPrimerFilename = formData['v-primer-file'];
+
+                var vPrimerFile = allFileMetadatas.getModelForName(vPrimerFilename);
+
+                selectedFileMetadatas.add(vPrimerFile);
             }
 
             return selectedFileMetadatas;
@@ -603,7 +621,7 @@ function(
             if (formData.hasOwnProperty('j-primer-max-error')) {
                 parameters['JPrimerFlag'] = true;
                 parameters['JPrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
-                parameters['JPrimerFile'] = parseFloat(formData['j-primer-max-error']);
+                parameters['JPrimerFile'] = formData['j-primer-file'];
             }
             else {
                 parameters['JPrimerFlag'] = false;
@@ -635,6 +653,10 @@ function(
             if (formData.hasOwnProperty('v-primer-max-error')) {
                 parameters['VPrimerFlag'] = true;
                 parameters['VPrimerMaxError'] = parseFloat(formData['v-primer-max-error']);
+                parameters['VPrimerFile'] = formData['v-primer-file'];
+            }
+            else {
+                parameters['VPrimerFlag'] = false;
             }
 
             if (formData.hasOwnProperty('v-primer-start-position')) {

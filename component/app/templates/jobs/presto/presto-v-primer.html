@@ -1,36 +1,87 @@
 {{> presto-base-view-top}}
 
     <div class="row row-with-spacer">
-        <div class="col-md-12">
+        {{#unless primerFiles}}
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    Warning: there are no primer files available. Please upload primer files on the project file list and set their type as "Primer Sequences".
+                </div>
+            </div>
+        {{else}}
+            <div class="col-md-6">
 
-            Max Error
-            &nbsp;
-            <input
-              class="job-form-item"
-              name="v-primer-max-error"
-              type="number"
-              value="0"
-              step="0.01"
-              min="0"
-            >
-        </div>
-    </div>
+                <div class="row">
+                    <div class="col-md-12">
 
-    <div class="row row-with-spacer">
-        <div class="col-md-12">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Fasta Primer File
+                                    </td>
+                                    <td>
+                                        <select
+                                            class="job-form-item"
+                                            id="v-primer-file"
+                                            name="v-primer-file"
+                                        >
+                                            {{#each primerFiles}}
+                                                <option value={{value.name}}>{{value.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Max Error
+                                    </td>
+                                    <td>
+                                        <input
+                                          class="job-form-item"
+                                          name="v-primer-max-error"
+                                          type="number"
+                                          value="0"
+                                          step="0.01"
+                                          min="0"
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Start Position
+                                    </td>
+                                    <td>
+                                        <input
+                                          class="job-form-item"
+                                          name="v-primer-start-position"
+                                          type="number"
+                                          value="0"
+                                          step="1"
+                                          min="0"
+                                          pattern="\d+"
+                                        >
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-            Start Position
-            &nbsp;
-            <input
-              class="job-form-item"
-              name="v-primer-start-position"
-              type="number"
-              value="0"
-              step="1"
-              min="0"
-              pattern="\d+"
-            >
-        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        This module locates v primer regions within reads.
+                    </div>
+                </div>
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+                        This step can be removed from the workflow template.
+                    </div>
+                </div>
+            </div>
+        {{/unless}}
     </div>
 
 {{> presto-base-view-bottom}}

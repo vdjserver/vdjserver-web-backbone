@@ -118,11 +118,15 @@ define([
         template: 'jobs/presto/presto-v-primer',
         initialize: function(options) {
             this.title = 'V Primer';
-            this.render();
+        },
+        prepareFiles: function() {
+            this.primerFiles = this.allFiles.getPrimerCollection();
         },
         serialize: function() {
             return {
                 title: this.title,
+                isRemovable: true,
+                primerFiles: this.primerFiles.toJSON(),
             };
         },
     });
