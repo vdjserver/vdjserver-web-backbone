@@ -199,13 +199,13 @@ define([
                 {
                     'workflow-name': 'Single Read',
                     'steps': [
-                        'barcode',
                         'sequenceType',
-                        'findUnique',
                         'outputFilePrefix',
                         'qualityLengthFilter',
-                        'jPrimer',
+                        'barcode',
                         'vPrimer',
+                        'jPrimer',
+                        'findUnique',
                         'finalOutputFilename',
                     ],
                 },
