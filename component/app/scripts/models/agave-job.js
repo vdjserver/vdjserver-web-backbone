@@ -544,7 +544,11 @@ function(
             this._setArchivePath(projectUuid);
 
             // TODO: set SequenceFiles
-            // TODO: set BarcodeOrUMIFile
+            selectedFileMetadatas = this._updateSelectedFileMetadatasForBarcode(
+                formData,
+                selectedFileMetadatas,
+                allFileMetadatas
+            );
             selectedFileMetadatas = this._updateSelectedFileMetadatasForJPrimer(
                 formData,
                 selectedFileMetadatas,
@@ -558,6 +562,19 @@ function(
             );
 
             this._setFilesParameter(selectedFileMetadatas);
+        },
+        _updateSelectedFileMetadatasForBarcode: function(formData, selectedFileMetadatas, allFileMetadatas) {
+
+            if (formData.hasOwnProperty('barcode-file')) {
+
+                var barcodeFilename = formData['barcode-file'];
+
+                var barcodeFile = allFileMetadatas.getModelForName(barcodeFilename);
+
+                selectedFileMetadatas.add(barcodeFile);
+            }
+
+            return selectedFileMetadatas;
         },
         _updateSelectedFileMetadatasForJPrimer: function(formData, selectedFileMetadatas, allFileMetadatas) {
 
@@ -592,6 +609,10 @@ function(
             if (formData.hasOwnProperty('barcode-max-error')) {
                 // TODO: add UMI support
                 parameters['Barcode'] = 'barcode';
+                parameters['BarcodeOrUMIFile'] = formData['barcode-file'];
+            }
+            else {
+                parameters['Barcode'] = 'none';
             }
 
             if (formData.hasOwnProperty('barcode-max-error')) {

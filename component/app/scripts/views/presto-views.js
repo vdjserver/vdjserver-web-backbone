@@ -23,11 +23,16 @@ define([
         template: 'jobs/presto/presto-barcode',
         initialize: function(options) {
             this.title = 'Barcodes';
-            this.render();
+        },
+        prepareFiles: function() {
+            this.barcodeFiles = this.allFiles.getBarcodeCollection();
         },
         serialize: function() {
+
             return {
                 title: this.title,
+                isRemovable: true,
+                barcodeFiles: this.barcodeFiles.toJSON(),
             };
         },
     });
