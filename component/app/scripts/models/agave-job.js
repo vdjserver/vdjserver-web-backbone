@@ -539,11 +539,16 @@ function(
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
             var parameters = this._serializeFormData(formData);
+
+            parameters.SequenceFiles = this._getSequenceFilenames(
+                parameters,
+                selectedFileMetadatas
+            );
+
             this.set('parameters', parameters);
             this.set('name', formData['job-name']);
             this._setArchivePath(projectUuid);
 
-            // TODO: set SequenceFiles
             selectedFileMetadatas = this._updateSelectedFileMetadatasForBarcode(
                 formData,
                 selectedFileMetadatas,
@@ -562,6 +567,14 @@ function(
             );
 
             this._setFilesParameter(selectedFileMetadatas);
+        },
+        _getSequenceFilenames: function(parameters, selectedFileMetadatas) {
+
+            var sequenceFiles = selectedFileMetadatas.map(function(fileMetadata) {
+                return fileMetadata.get('value').name;
+            });
+
+            return sequenceFiles;
         },
         _updateSelectedFileMetadatasForBarcode: function(formData, selectedFileMetadatas, allFileMetadatas) {
 
