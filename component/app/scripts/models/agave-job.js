@@ -648,9 +648,9 @@ function(
                 parameters['JPrimerFlag'] = false;
             }
 
-            if (formData.hasOwnProperty('j-primer-start-position')) {
+            if (formData.hasOwnProperty('j-primer-max-length')) {
                 parameters['JPrimerFlag'] = true;
-                parameters['JPrimerStartPosition'] = parseInt(formData['j-primer-start-position']);
+                parameters['JPrimerMaxLength'] = parseInt(formData['j-primer-max-length']);
             }
 
             if (formData.hasOwnProperty('output-file-prefix')) {
@@ -680,9 +680,9 @@ function(
                 parameters['VPrimerFlag'] = false;
             }
 
-            if (formData.hasOwnProperty('v-primer-start-position')) {
+            if (formData.hasOwnProperty('v-primer-max-length')) {
                 parameters['VPrimerFlag'] = true;
-                parameters['VPrimerStartPosition'] = parseInt(formData['v-primer-start-position']);
+                parameters['VPrimerMaxLength'] = parseInt(formData['v-primer-max-length']);
             }
 
             return parameters;
