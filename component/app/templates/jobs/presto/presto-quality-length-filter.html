@@ -1,43 +1,60 @@
 {{> presto-base-view-top}}
 
     <div class="row row-with-spacer">
-        <div class="col-md-6">
 
-            Minimum Length
-            &nbsp;
-            <input
-              class="job-form-item"
-              name="minimum-length"
-              type="number"
-              value="250"
-              step="1"
-              min="0"
-              pattern="\d+"
-            >
-        </div>
         <div class="col-md-6">
-            This module removes reads with a length below the minimum threshold provided.
-        </div>
-    </div>
+            <div class="row">
+                <div class="col-md-12">
 
-    <div class="row row-with-spacer">
-        <div class="col-md-6">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Minimum Length
+                                </td>
+                                <td>
+                                    <input
+                                      class="job-form-item"
+                                      name="minimum-length"
+                                      type="number"
+                                      value="250"
+                                      step="1"
+                                      min="0"
+                                      pattern="\d+"
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Minimum Quality
+                                </td>
+                                <td>
+                                    <input
+                                      class="job-form-item"
+                                      name="minimum-quality"
+                                      type="number"
+                                      value="20"
+                                      step="1"
+                                      min="0"
+                                      pattern="\d+"
+                                    >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-            Minimum Quality
-            &nbsp;
-            <input
-              class="job-form-item"
-              name="minimum-quality"
-              type="number"
-              value="20"
-              step="1"
-              min="0"
-              pattern="\d+"
-            >
+                </div>
+            </div>
         </div>
+
         <div class="col-md-6">
-            This module removes reads containing nucleotides with a quality score below the threshold provided.
+            <div class="row">
+                <div class="col-md-12">
+                    This module removes reads with a length or contains nucleotides with a quality score below the thresholds provided.
+                </div>
+            </div>
         </div>
+
     </div>
 
 {{> presto-base-view-bottom}}
