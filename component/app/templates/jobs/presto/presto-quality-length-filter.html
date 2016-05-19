@@ -1,37 +1,60 @@
 {{> presto-base-view-top}}
 
     <div class="row row-with-spacer">
-        <div class="col-md-12">
 
-            Length Filter
-            &nbsp;
-            <input
-              class="job-form-item"
-              name="minimum-length"
-              type="number"
-              value="250"
-              step="1"
-              min="0"
-              pattern="\d+"
-            >
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Length Filter
+                                </td>
+                                <td>
+                                    <input
+                                      class="job-form-item"
+                                      name="minimum-length"
+                                      type="number"
+                                      value="250"
+                                      step="1"
+                                      min="0"
+                                      pattern="\d+"
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Quality Filter
+                                </td>
+                                <td>
+                                    <input
+                                      class="job-form-item"
+                                      name="minimum-quality"
+                                      type="number"
+                                      value="20"
+                                      step="1"
+                                      min="0"
+                                      pattern="\d+"
+                                    >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="row row-with-spacer">
-        <div class="col-md-12">
-
-            Quality Filter
-            &nbsp;
-            <input
-              class="job-form-item"
-              name="minimum-quality"
-              type="number"
-              value="20"
-              step="1"
-              min="0"
-              pattern="\d+"
-            >
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    This module removes reads with an average quality score or length below the thresholds provided.
+                </div>
+            </div>
         </div>
+
     </div>
 
 {{> presto-base-view-bottom}}
