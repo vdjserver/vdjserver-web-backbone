@@ -538,35 +538,23 @@ function(
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
-            var parameters = this._serializeFormData(formData);
+            this.set('name', formData['job-name']);
+            this._setArchivePath(projectUuid);
 
+            var inputFiles = {};
+            inputFiles = this._serializeFileInputs(
+                inputFiles,
+                formData,
+                selectedFileMetadatas
+            );
+            this.set('input', inputFiles);
+
+            var parameters = this._serializeFormData(formData);
             parameters.SequenceFiles = this._getSequenceFilenames(
                 parameters,
                 selectedFileMetadatas
             );
-
             this.set('parameters', parameters);
-            this.set('name', formData['job-name']);
-            this._setArchivePath(projectUuid);
-
-            selectedFileMetadatas = this._updateSelectedFileMetadatasForBarcode(
-                formData,
-                selectedFileMetadatas,
-                allFileMetadatas
-            );
-            selectedFileMetadatas = this._updateSelectedFileMetadatasForJPrimer(
-                formData,
-                selectedFileMetadatas,
-                allFileMetadatas
-            );
-
-            selectedFileMetadatas = this._updateSelectedFileMetadatasForVPrimer(
-                formData,
-                selectedFileMetadatas,
-                allFileMetadatas
-            );
-
-            this._setFilesParameter(selectedFileMetadatas);
         },
         _getSequenceFilenames: function(parameters, selectedFileMetadatas) {
 
@@ -576,44 +564,27 @@ function(
 
             return sequenceFiles;
         },
-        _updateSelectedFileMetadatasForBarcode: function(formData, selectedFileMetadatas, allFileMetadatas) {
+        _serializeFileInputs: function(fileInputs, formData, selectedFileMetadatas) {
 
             if (formData.hasOwnProperty('barcode-file')) {
-
-                var barcodeFilename = formData['barcode-file'];
-
-                var barcodeFile = allFileMetadatas.getModelForName(barcodeFilename);
-
-                selectedFileMetadatas.add(barcodeFile);
+                fileInputs['BarcodeOrUMIFile'] = formData['barcode-file'];
             }
-
-            return selectedFileMetadatas;
-        },
-        _updateSelectedFileMetadatasForJPrimer: function(formData, selectedFileMetadatas, allFileMetadatas) {
 
             if (formData.hasOwnProperty('j-primer-file')) {
-
-                var jPrimerFilename = formData['j-primer-file'];
-
-                var jPrimerFile = allFileMetadatas.getModelForName(jPrimerFilename);
-
-                selectedFileMetadatas.add(jPrimerFile);
+                fileInputs['JPrimerFile'] = formData['j-primer-file'];
             }
-
-            return selectedFileMetadatas;
-        },
-        _updateSelectedFileMetadatasForVPrimer: function(formData, selectedFileMetadatas, allFileMetadatas) {
 
             if (formData.hasOwnProperty('v-primer-file')) {
-
-                var vPrimerFilename = formData['v-primer-file'];
-
-                var vPrimerFile = allFileMetadatas.getModelForName(vPrimerFilename);
-
-                selectedFileMetadatas.add(vPrimerFile);
+                fileInputs['VPrimerFile'] = formData['v-primer-file'];
             }
 
-            return selectedFileMetadatas;
+            var files = selectedFileMetadatas.map(function(fileMetadata) {
+                return fileMetadata.get('value').name;
+            });
+
+            fileInputs['SequenceFiles'] = files;
+
+            return fileInputs;
         },
         _serializeFormData: function(formData) {
 
@@ -625,7 +596,6 @@ function(
             if (formData.hasOwnProperty('barcode-max-error')) {
                 // TODO: add UMI support
                 parameters['Barcode'] = 'barcode';
-                parameters['BarcodeOrUMIFile'] = formData['barcode-file'];
             }
             else {
                 parameters['Barcode'] = 'none';
@@ -658,7 +628,6 @@ function(
             if (formData.hasOwnProperty('j-primer-max-error')) {
                 parameters['JPrimerFlag'] = true;
                 parameters['JPrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
-                parameters['JPrimerFile'] = formData['j-primer-file'];
             }
             else {
                 parameters['JPrimerFlag'] = false;
@@ -690,7 +659,6 @@ function(
             if (formData.hasOwnProperty('v-primer-max-error')) {
                 parameters['VPrimerFlag'] = true;
                 parameters['VPrimerMaxError'] = parseFloat(formData['v-primer-max-error']);
-                parameters['VPrimerFile'] = formData['v-primer-file'];
             }
             else {
                 parameters['VPrimerFlag'] = false;
