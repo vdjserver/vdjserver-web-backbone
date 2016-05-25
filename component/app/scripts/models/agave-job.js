@@ -545,7 +545,8 @@ function(
             inputFiles = this._serializeFileInputs(
                 inputFiles,
                 formData,
-                selectedFileMetadatas
+                selectedFileMetadatas,
+                allFileMetadatas
             );
             this.set('input', inputFiles);
 
@@ -564,25 +565,21 @@ function(
 
             return sequenceFiles;
         },
-        _serializeFileInputs: function(fileInputs, formData, selectedFileMetadatas) {
+        _serializeFileInputs: function(fileInputs, formData, selectedFileMetadatas, allFileMetadatas) {
 
             if (formData.hasOwnProperty('barcode-file')) {
-                fileInputs['BarcodeOrUMIFile'] = formData['barcode-file'];
+                fileInputs['BarcodeOrUMIFile'] = this._getTranslatedFilePath(formData['barcode-file'], allFileMetadatas);
             }
 
             if (formData.hasOwnProperty('j-primer-file')) {
-                fileInputs['JPrimerFile'] = formData['j-primer-file'];
+                fileInputs['JPrimerFile'] = this._getTranslatedFilePath(formData['j-primer-file'], allFileMetadatas);
             }
 
             if (formData.hasOwnProperty('v-primer-file')) {
-                fileInputs['VPrimerFile'] = formData['v-primer-file'];
+                fileInputs['VPrimerFile'] = this._getTranslatedFilePath(formData['v-primer-file'], allFileMetadatas);
             }
 
-            var files = selectedFileMetadatas.map(function(fileMetadata) {
-                return fileMetadata.get('value').name;
-            });
-
-            fileInputs['SequenceFiles'] = files;
+            fileInputs['SequenceFiles'] = this._getTranslatedFilePaths(selectedFileMetadatas);
 
             return fileInputs;
         },

@@ -383,6 +383,30 @@ define([
 
             this.set('inputs', inputParameters);
         },
+        _getTranslatedFilePaths: function(fileMetadatas) {
+
+            var filePaths = [];
+            for (var i = 0; i < fileMetadatas.models.length; i++) {
+
+                var fileMetadata = fileMetadatas.at(i);
+
+                filePaths.push(
+                    'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
+                    + '/' + fileMetadata.getFilePath()
+                );
+            }
+
+            return filePaths;
+        },
+        _getTranslatedFilePath: function(fileName, fileMetadatas) {
+
+            var fileMeta = _.filter(fileMetadatas.models, function(fileMetadata) {
+                  return fileMetadata.get('value').name == fileName;
+                });
+
+            return 'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
+                    + '/' + fileMeta[0].getFilePath();
+        },
     });
 
     // Required Auth package
