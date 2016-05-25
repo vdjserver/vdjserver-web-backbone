@@ -918,7 +918,6 @@ define([
                 this.setupFileListings();
 
                 loadingView.remove();
-                this.render();
             },
             setupFileListings: function() {
                 /*
