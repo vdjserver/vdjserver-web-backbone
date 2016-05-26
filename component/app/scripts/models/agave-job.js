@@ -128,6 +128,30 @@ function(
                 }
                 */
 
+                if (filename.substr(-16) === '.composition.csv') {
+                    chartType = this.CHART_TYPE_0;
+                }
+
+                if (filename.substr(-12) === '.gc_hist.csv') {
+                    chartType = this.CHART_TYPE_1;
+                }
+
+                if (filename.substr(-13) === '.heat_map.csv') {
+                    //chartType = this.CHART_TYPE_2;
+                }
+
+                if (filename.substr(-13) === '.len_hist.csv') {
+                    chartType = this.CHART_TYPE_3;
+                }
+
+                if (filename.substr(-16) === '.mean_q_hist.csv') {
+                    chartType = this.CHART_TYPE_4;
+                }
+
+                if (filename.substr(-11) === '.qstats.csv') {
+                    chartType = this.CHART_TYPE_5;
+                }
+
                 if (filename.substr(-14) === '.cdr3_hist.tsv') {
                     chartType = this.CHART_TYPE_7;
                 }
@@ -541,6 +565,12 @@ function(
             this.set('name', formData['job-name']);
             this._setArchivePath(projectUuid);
 
+            var parameters = this._serializeFormData(formData);
+            parameters.SequenceFiles = this._getSequenceFilenames(
+                parameters,
+                selectedFileMetadatas
+            );
+
             var inputFiles = {};
             inputFiles = this._serializeFileInputs(
                 inputFiles,
@@ -550,11 +580,9 @@ function(
             );
             this.set('input', inputFiles);
 
-            var parameters = this._serializeFormData(formData);
-            parameters.SequenceFiles = this._getSequenceFilenames(
-                parameters,
-                selectedFileMetadatas
-            );
+            if (inputFiles['SequenceForwardPairedFiles'] !== undefined)
+                parameters['Workflow'] = 'paired';
+
             this.set('parameters', parameters);
         },
         _getSequenceFilenames: function(parameters, selectedFileMetadatas) {
@@ -579,7 +607,14 @@ function(
                 fileInputs['VPrimerFile'] = this._getTranslatedFilePath(formData['v-primer-file'], allFileMetadatas);
             }
 
-            fileInputs['SequenceFiles'] = this._getTranslatedFilePaths(selectedFileMetadatas);
+            var pairedReads = selectedFileMetadatas.getOrganizedPairedReadCollection();
+            if (pairedReads.length > 0) {
+              fileInputs['SequenceForwardPairedFiles'] = this._getTranslatedFilePaths(pairedReads[0]);
+              fileInputs['SequenceReversePairedFiles'] = this._getTranslatedFilePaths(pairedReads[1]);
+            }
+
+            var singleReads = selectedFileMetadatas.getNonPairedReadCollection();
+            fileInputs['SequenceFiles'] = this._getTranslatedFilePaths(singleReads);
 
             return fileInputs;
         },
@@ -615,10 +650,12 @@ function(
             }
 
             if (formData.hasOwnProperty('find-unique-max-nucleotides')) {
+                parameters['FindUniqueFlag'] = true;
                 parameters['FindUniqueMaxNucleotides'] = parseInt(formData['find-unique-max-nucleotides']);
             }
 
             if (formData.hasOwnProperty('find-unique-exclude')) {
+                parameters['FindUniqueFlag'] = true;
                 parameters['FindUniqueExclude'] = formData['find-unique-exclude'];
             }
 
@@ -642,11 +679,15 @@ function(
             if (formData.hasOwnProperty('minimum-length')) {
                 parameters['FilterFlag'] = true;
                 parameters['MinimumLength'] = parseInt(formData['minimum-length']);
+                parameters['PreFilterStatisticsFlag'] = true;
+                parameters['PostFilterStatisticsFlag'] = true;
             }
 
             if (formData.hasOwnProperty('minimum-quality')) {
                 parameters['FilterFlag'] = true;
                 parameters['MinimumQuality'] = parseInt(formData['minimum-quality']);
+                parameters['PreFilterStatisticsFlag'] = true;
+                parameters['PostFilterStatisticsFlag'] = true;
             }
 
             if (formData.hasOwnProperty('sequence-file-types')) {
