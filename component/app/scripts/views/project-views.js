@@ -642,6 +642,9 @@ define([
 
                                 return agaveFile.save()
                                     .then(function() {
+                                        return agaveFile.notifyApiUploadComplete();
+                                    })
+                                    .then(function() {
 
                                         var notificationData = agaveFile.getFileStagedNotificationData();
 
@@ -1322,6 +1325,9 @@ define([
                             });
 
                             return agaveFile.save()
+                                .then(function() {
+                                    return agaveFile.notifyApiUploadComplete();
+                                })
                                 .then(function() {
                                     var notificationData = agaveFile.getFileStagedNotificationData();
 
