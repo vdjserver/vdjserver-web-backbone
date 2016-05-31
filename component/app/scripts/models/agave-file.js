@@ -101,7 +101,7 @@ function(
 
                             var that = this;
 
-                            var request = $.ajax({
+                            var request = Backbone.Agave.ajax({
                                 beforeSend: function(xhr) {
                                     xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
                                 },
@@ -322,7 +322,7 @@ function(
                          ;
                 }
 
-                return $.ajax({
+                return Backbone.Agave.ajax({
                     url: path,
                     headers: {
                         'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token'),
@@ -365,7 +365,7 @@ function(
 
                 var softDeletePromise = $.Deferred();
 
-                $.ajax({
+                Backbone.Agave.ajax({
                     data:   'action=mkdir&path=' + datetimeDir,
                     headers: Backbone.Agave.oauthHeader(),
                     type:   'PUT',
@@ -379,7 +379,7 @@ function(
 
                     complete: function() {
 
-                        $.ajax({
+                        Backbone.Agave.ajax({
                             data:   'action=move&path='
                                     + '//projects'
                                     + '/' + that.get('projectUuid')
@@ -470,7 +470,7 @@ function(
 
                     //var that = this;
 
-                    return $.ajax({
+                    return Backbone.Agave.ajax({
                         url: this.apiHost + this.url(),
                         headers: {
                             'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token'),

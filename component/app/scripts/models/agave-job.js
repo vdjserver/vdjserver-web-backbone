@@ -149,7 +149,7 @@ function(
                 var url = this.get('_links').self.href;
                 url = this._fixBadAgaveUrl(url);
 
-                var jqxhr = $.ajax({
+                var jqxhr = Backbone.Agave.ajax({
                     headers: Backbone.Agave.oauthHeader(),
                     type:    'GET',
                     url:     url,

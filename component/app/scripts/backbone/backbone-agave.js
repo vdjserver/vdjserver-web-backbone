@@ -41,6 +41,21 @@ define([
 
     });
 
+    Agave.ajax = function(config) {
+
+        var jqxhr = $.ajax(config);
+
+        return jqxhr
+            .fail(function(response) {
+
+                if (response.status === 401) {
+                    Agave.instance.destroyToken();
+                }
+
+            })
+            ;
+    };
+
     Agave.basicAuthHeader = function() {
         return {
             'Authorization': 'Basic ' + btoa(Agave.instance.token().get('username') + ':' + Agave.instance.token().get('access_token')),
@@ -99,7 +114,16 @@ define([
                 C.) Abandon ship
             */
             if (Agave.instance.token().isActive()) {
-                return Backbone.sync(method, model, options);
+
+                return Backbone.sync(method, model, options)
+                    .fail(function(response) {
+
+                        if (response.status === 401) {
+                            Agave.instance.destroyToken();
+                        }
+
+                    })
+                    ;
             }
             else if (!Agave.instance.token().isActive() && Agave.instance.token().get('refresh_token')) {
 
@@ -321,7 +345,7 @@ define([
 
             var relativeArchivePath = this._getRelativeArchivePath();
 
-            var jqxhr = $.ajax({
+            var jqxhr = Agave.ajax({
                 data:   'action=mkdir&path=' + relativeArchivePath,
                 headers: Backbone.Agave.oauthHeader(),
                 type:   'PUT',
