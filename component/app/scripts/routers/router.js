@@ -328,7 +328,16 @@ define(['app'], function(App) {
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
-        projectJobHistory: function(projectUuid) {
+        projectJobHistory: function(projectUuid, args) {
+
+            var paginationIndex = 1;
+            if (_.isString(args)) {
+                var tmpPaginationIndex = args.split('=')[1];
+
+                if (parseInt(tmpPaginationIndex)) {
+                    paginationIndex = parseInt(tmpPaginationIndex);
+                }
+            }
 
             var destinationRoute = function() {
                 _setProjectSubviews(
@@ -336,7 +345,7 @@ define(['app'], function(App) {
                     App.Views.Sidemenu.List.Sections.ProjectAnalyses
                 );
 
-                App.Layouts.content.setView('.content', new App.Views.Analyses.OutputList({projectUuid: projectUuid}));
+                App.Layouts.content.setView('.content', new App.Views.Analyses.OutputList({projectUuid: projectUuid, paginationIndex: paginationIndex}));
                 App.Layouts.content.render();
             };
 

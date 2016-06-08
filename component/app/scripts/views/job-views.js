@@ -79,7 +79,7 @@ define([
         },
         events: {
             'click .remove-file-from-job': '_removeFileFromJob',
-            'submit form': '_submitJobForm',
+            'click #submit-job': '_submitJobForm',
             'click #job-submit-exit': '_exitJobForm',
             'click #job-submit-status': '_navigateToJobsListView',
         },
@@ -117,7 +117,7 @@ define([
 
             var that = this;
 
-            var formData = Backbone.Syphon.serialize(this);
+            var formData = Backbone.Syphon.serialize($('#job-form')[0]);
 
             var validationError = this._validateJobForm(formData);
 
@@ -281,11 +281,13 @@ define([
 
                 this.workflows = new Backbone.Agave.Collection.Jobs.Workflows();
                 this.workflows.setPredefinedWorkflows();
+                this.hasPairedReads = this.selectedFileListings.hasPairedReads();
             },
             serialize: function() {
                 return {
                     selectedFileListings: this.selectedFileListings.toJSON(),
                     workflows: this.workflows.toJSON(),
+                    hasPairedReads: this.hasPairedReads,
                 };
             },
             events: {
@@ -331,7 +333,12 @@ define([
 
                 return validationError;
             },
-            stageJob: function(formData) {
+            stageJob: function(generalFormData) {
+
+                // Mix in general form data with single read form data
+                var singleReadForm = Backbone.Syphon.serialize($('#vdjpipe-single-read-form')[0]);
+                singleReadForm = _.extend(generalFormData, singleReadForm);
+
                 var job = new Backbone.Agave.Model.Job.VdjPipe();
 
                 // TODO: refactor this to be called during |Jobs.StagingBase.startJob()|
@@ -342,11 +349,28 @@ define([
                 var allFiles = _.extend({}, this.allFiles);
 
                 job.prepareJob(
-                    formData,
+                    singleReadForm,
                     selectedFileListings,
                     allFiles,
                     this.projectModel.get('uuid')
                 );
+
+
+                if (this.hasPairedReads === true) {
+
+                    var pairedReadForm = Backbone.Syphon.serialize($('#vdjpipe-paired-read-form')[0]);
+                    _.extend(pairedReadForm, { 'paired_reads': true });
+                    var pairedReadConfig = App.Utilities.Vdjpipe.WorkflowParser.ConvertFormDataToWorkflowConfig(
+                        pairedReadForm,
+                        selectedFileListings,
+                        allFiles
+                    );
+
+                    _.extend(pairedReadConfig, { 'paired_reads': true });
+                    pairedReadConfig['summary_output_path'] ='merge_summary.txt';
+
+                    job.setPairedReadConfig(pairedReadConfig);
+                }
 
                 return this.startJob(job);
             },
@@ -385,6 +409,7 @@ define([
                 if (workflowId) {
 
                     var workflow = this.workflows.get(workflowId);
+                    var workflowConfig = workflow.get('value');
 
                     var workflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(
                         workflow.get('value').config
@@ -419,6 +444,35 @@ define([
                         workflowLayout.insertView(view);
                     }
 
+                    if (this.hasPairedReads === true) {
+                        this.removeView('#paired-read-workflow-staging-area');
+                        $('#paired-read-workflow-staging-area').empty();
+
+                        var pairedReadWorkflow = this.workflows.getMergePairedReadsConfig();
+                        var pairedReadWorkflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(
+                            pairedReadWorkflow
+                        );
+
+                        var pairedReadWorkflowLayout = new Backbone.View();
+                        this.insertView('#paired-read-workflow-staging-area', pairedReadWorkflowLayout);
+
+                        for (var i = 0; i < pairedReadWorkflowViews.length; i++) {
+                            var pairedReadView = pairedReadWorkflowViews[i];
+
+                            pairedReadView.isRemovable = false;
+                            pairedReadView.isOrderable = false;
+                            pairedReadView.files = this.selectedFileListings;
+                            pairedReadView.allFiles = this.allFiles;
+                            pairedReadView.layoutView = workflowLayout;
+
+                            pairedReadView.prepareFiles();
+
+                            pairedReadWorkflowLayout.insertView(pairedReadView);
+                        }
+
+                        pairedReadWorkflowLayout.render();
+                    }
+
                     this.listenTo(
                         workflowLayout,
                         'FixModalBackdrop',
@@ -432,9 +486,8 @@ define([
                         that._adjustModalHeight();
                     });
 
-                    var workflowConfig = workflow.get('value');
-                    if (workflowConfig['config']['paired_reads'] === true) {
-                        $('#workflow-staging-area').append(
+                    if (this.hasPairedReads === true) {
+                        $('#paired-read-workflow-staging-area').append(
                             '<input type="radio" class="hidden" name="paired_reads" id="paired_reads" checked>'
                         );
                     }
@@ -450,12 +503,15 @@ define([
 
     Jobs.IgBlastStaging = Jobs.StagingBase.extend({
         template: 'jobs/igblast-staging',
-        stageJob: function(formData) {
+        stageJob: function(generalFormData) {
+
+            var igblastForm = Backbone.Syphon.serialize($('#igblast-form')[0]);
+            igblastForm = _.extend(generalFormData, igblastForm);
 
             var job = new Backbone.Agave.Model.Job.IgBlast();
 
             job.prepareJob(
-                formData,
+                igblastForm,
                 this.selectedFileListings,
                 this.allFiles,
                 this.projectModel.get('uuid')

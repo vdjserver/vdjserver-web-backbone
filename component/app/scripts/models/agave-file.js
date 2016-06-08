@@ -490,6 +490,7 @@ function(
                         */
                         data: {
                             urlToIngest: this.get('urlToIngest'),
+                            /*
                             callbackURL: EnvironmentConfig.vdjApi.hostname
                                         + '/notifications'
                                         + '/files'
@@ -502,11 +503,14 @@ function(
                                         + '&system=${SYSTEM}'
                                         + '&projectUuid=' + this.get('projectUuid')
                                         ,
+                            */
                         },
                         method: 'POST',
 
                     })
-                    .then(function() {
+                    .then(function(response) {
+                        that.set('uuid', response.result.uuid);
+                        that.set('path', '/vdjZ' + response.result.path);
                         that.set('name', that.getFilenameFromSourceUrl());
                     })
                     ;

@@ -642,6 +642,9 @@ define([
 
                                 return agaveFile.save()
                                     .then(function() {
+                                        return agaveFile.notifyApiUploadComplete();
+                                    })
+                                    .then(function() {
 
                                         var notificationData = agaveFile.getFileStagedNotificationData();
 
@@ -918,7 +921,6 @@ define([
                 this.setupFileListings();
 
                 loadingView.remove();
-                this.render();
             },
             setupFileListings: function() {
                 /*
@@ -968,6 +970,7 @@ define([
                 'change .project-file-read-direction': '_updateReadDirection',
                 'change .project-file-tags': '_updateFileTags',
                 'click .unlink-qual': '_unlinkQual',
+                'click .unlink-paired-read':   '_unlinkPairedRead',
 
                 'click .download-file': '_clickDownloadFile',
 
@@ -1159,6 +1162,44 @@ define([
                         ;
                 }
             },
+            _unlinkPairedRead: function(e) {
+                e.preventDefault();
+
+                // Use this instead of e.target.id because the click event will
+                // sometimes land on a child element instead of the button itself.
+                // If that happens, e.target.id will refer to the child and not the button.
+                var uuid = $(e.target).closest('button').attr('id');
+
+                var pairFile1Model = this.projectFiles.get(uuid);
+
+                var pairFile2Model = this.projectFiles.get(pairFile1Model.getPairedReadMetadataUuid());
+
+                if (pairFile1Model && pairFile2Model) {
+
+                    var that = this;
+
+                    Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads(pairFile1Model, pairFile2Model)
+                        .then(function() {
+                            that.projectFiles.reset();
+
+                            return that.projectFiles.fetch();
+                        })
+                        .then(function() {
+                            that.setupFileListings();
+                        })
+                        .done(function() {
+                            that.render();
+                        })
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.setError(error);
+                            telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads()');
+                            telemetry.set('view', 'Projects.DetailFiles');
+                            telemetry.save();
+                        })
+                        ;
+                }
+            },
             _setupDragDropEventHandlers: function() {
 
                 //if (this.projectFiles.models.length === 0) {
@@ -1284,6 +1325,9 @@ define([
                             });
 
                             return agaveFile.save()
+                                .then(function() {
+                                    return agaveFile.notifyApiUploadComplete();
+                                })
                                 .then(function() {
                                     var notificationData = agaveFile.getFileStagedNotificationData();
 
@@ -1603,8 +1647,8 @@ define([
 
                 fileMetadatas.fetch()
                     .done(function() {
-                        that.readLevelMetadatas = fileMetadatas.getReadLevelCollection();
-                        that.pairableMetadatas = fileMetadatas.getReadLevelCollection();
+                        that.readLevelMetadatas = fileMetadatas.getForwardReadLevelCollection();
+                        that.pairableMetadatas = fileMetadatas.getReverseReadLevelCollection();
 
                         that.render();
                     })
@@ -1639,7 +1683,7 @@ define([
                 var fileUuid = e.target.value;
 
                 var pairModel = this.readLevelMetadatas.get(pairUuid);
-                var fileModel = this.readLevelMetadatas.get(fileUuid);
+                var fileModel = this.pairableMetadatas.get(fileUuid);
 
                 if (fileUuid.length > 0) {
 
@@ -1671,7 +1715,7 @@ define([
                 else {
 
                     fileUuid = pairModel.getPairedReadMetadataUuid();
-                    fileModel = this.readLevelMetadatas.get(fileUuid);
+                    fileModel = this.pairableMetadatas.get(fileUuid);
 
                     Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads(fileModel, pairModel)
                         .then(function() {

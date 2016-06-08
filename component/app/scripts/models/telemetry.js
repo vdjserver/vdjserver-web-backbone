@@ -40,7 +40,10 @@ function(
             this.set('username', username);
         },
         setError: function(error) {
-            error.responseText = JSON.parse(error.responseText);
+            try {
+                error.responseText = JSON.parse(error.responseText);
+            } catch(e) {
+            }
             delete error.responseJSON;
 
             this.set('error', error);
