@@ -16,7 +16,7 @@ var EnvironmentConfig = {
                     'hostname': 'ls5.tacc.utexas.edu',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-0.1.6u5',
-                        'igBlast': 'igblast-ls5-1.4.0u8',
+                        'igBlast': 'igblast-ls5-1.4.0u9',
                     },
                     'type': 'large',
                 },
@@ -31,7 +31,7 @@ var EnvironmentConfig = {
                     'hostname': 'stampede.tacc.utexas.edu',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-stampede-0.1.6u3',
-                        'igBlast': 'igblast-stampede-1.4.0u5',
+                        'igBlast': 'igblast-stampede-1.4.0u6',
                     },
                     'type': 'large',
                 },
