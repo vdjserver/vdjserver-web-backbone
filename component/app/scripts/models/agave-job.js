@@ -636,16 +636,13 @@ function(
 
             var parameters = {};
 
-            // TODO: paired read workflow
+            // default to single but overridden if paired-end read files selected
             parameters['Workflow'] = 'single';
 
-            if (formData.hasOwnProperty('barcode-max-error')) {
-                // TODO: add UMI support
-                parameters['Barcode'] = 'barcode';
-            }
-            else {
+            if (formData.hasOwnProperty('barcode-or-umi'))
+                parameters['Barcode'] = formData['barcode-or-umi'];
+            else
                 parameters['Barcode'] = 'none';
-            }
 
             if (formData.hasOwnProperty('barcode-max-error')) {
                 parameters['BarcodeMaxError'] = parseFloat(formData['barcode-max-error']);
@@ -657,6 +654,18 @@ function(
 
             if (formData.hasOwnProperty('barcode-split-flag')) {
                 parameters['BarcodeSplitFlag'] = formData['barcode-split-flag'];
+            }
+
+            if (formData.hasOwnProperty('umi-max-error')) {
+                parameters['UMIMaxError'] = parseFloat(formData['umi-max-error']);
+            }
+
+            if (formData.hasOwnProperty('umi-max-gap')) {
+                parameters['UMIMaxGap'] = parseFloat(formData['umi-max-gap']);
+            }
+
+            if (formData.hasOwnProperty('umi-min-frequency')) {
+                parameters['UMIMinFrequency'] = parseFloat(formData['umi-min-frequency']);
             }
 
             if (formData.hasOwnProperty('final-output-filename')) {
@@ -673,17 +682,36 @@ function(
                 parameters['FindUniqueExclude'] = formData['find-unique-exclude'];
             }
 
-            if (formData.hasOwnProperty('j-primer-max-error')) {
-                parameters['JPrimerFlag'] = true;
-                parameters['JPrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
+            if (formData.hasOwnProperty('j-primer-type')) {
+                parameters['JPrimerFlag'] = formData['j-primer-type'];
+
+                if (formData.hasOwnProperty('j-primer-max-error'))
+                    parameters['JPrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
+
+                if (formData.hasOwnProperty('j-primer-max-length'))
+                    parameters['JPrimerMaxLength'] = parseInt(formData['j-primer-max-length']);
+
+                if (formData.hasOwnProperty('j-primer-start-position'))
+                    parameters['JPrimerStartPosition'] = parseInt(formData['j-primer-start-position']);
             }
             else {
-                parameters['JPrimerFlag'] = false;
+                parameters['JPrimerFlag'] = 'none';
             }
 
-            if (formData.hasOwnProperty('j-primer-max-length')) {
-                parameters['JPrimerFlag'] = true;
-                parameters['JPrimerMaxLength'] = parseInt(formData['j-primer-max-length']);
+            if (formData.hasOwnProperty('v-primer-type')) {
+                parameters['VPrimerFlag'] = formData['v-primer-type'];
+
+                if (formData.hasOwnProperty('v-primer-max-error'))
+                    parameters['VPrimerMaxError'] = parseFloat(formData['v-primer-max-error']);
+
+                if (formData.hasOwnProperty('v-primer-max-length'))
+                    parameters['VPrimerMaxLength'] = parseInt(formData['v-primer-max-length']);
+
+                if (formData.hasOwnProperty('v-primer-start-position'))
+                    parameters['VPrimerStartPosition'] = parseInt(formData['v-primer-start-position']);
+            }
+            else {
+                parameters['VPrimerFlag'] = 'none';
             }
 
             if (formData.hasOwnProperty('output-file-prefix')) {
@@ -706,19 +734,6 @@ function(
 
             if (formData.hasOwnProperty('sequence-file-types')) {
                 parameters['SequenceFileTypes'] = formData['sequence-file-types'];
-            }
-
-            if (formData.hasOwnProperty('v-primer-max-error')) {
-                parameters['VPrimerFlag'] = true;
-                parameters['VPrimerMaxError'] = parseFloat(formData['v-primer-max-error']);
-            }
-            else {
-                parameters['VPrimerFlag'] = false;
-            }
-
-            if (formData.hasOwnProperty('v-primer-max-length')) {
-                parameters['VPrimerFlag'] = true;
-                parameters['VPrimerMaxLength'] = parseInt(formData['v-primer-max-length']);
             }
 
             return parameters;

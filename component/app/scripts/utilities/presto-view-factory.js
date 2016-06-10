@@ -30,9 +30,23 @@ define([
 
         switch (viewName) {
 
+            case 'barcodeOrUMI': {
+
+                view = new App.Views.Presto.BarcodeOrUMI();
+
+                break;
+            }
+
             case 'barcode': {
 
                 view = new App.Views.Presto.Barcode();
+
+                break;
+            }
+
+            case 'UMI': {
+
+                view = new App.Views.Presto.UMI();
 
                 break;
             }

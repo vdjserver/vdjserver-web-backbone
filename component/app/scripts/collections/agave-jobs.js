@@ -206,7 +206,7 @@ define([
                         'sequenceType',
                         'outputFilePrefix',
                         'qualityLengthFilter',
-                        'barcode',
+                        'barcodeOrUMI',
                         'vPrimer',
                         'jPrimer',
                         'findUnique',

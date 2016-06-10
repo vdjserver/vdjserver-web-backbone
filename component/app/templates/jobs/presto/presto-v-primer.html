@@ -33,16 +33,49 @@
                                 </tr>
                                 <tr>
                                     <td>
+                                        <input
+                                          class="job-form-item v-primer-type"
+                                          name="v-primer-type"
+                                          type="radio"
+                                          value="score"
+                                          checked
+                                        > score
+                                        <input
+                                          class="job-form-item v-primer-type"
+                                          name="v-primer-type"
+                                          type="radio"
+                                          value="align"
+                                        > align
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Start Position
+                                    </td>
+                                    <td>
+                                        <input
+                                          class="job-form-item v-score-fields"
+                                          name="v-primer-start-position"
+                                          type="number"
+                                          value="0"
+                                          step="1"
+                                          min="0"
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
                                         Maximum Error
                                     </td>
                                     <td>
                                         <input
-                                          class="job-form-item"
+                                          class="job-form-item v-align-fields"
                                           name="v-primer-max-error"
                                           type="number"
                                           value="0.3"
                                           step="0.01"
                                           min="0"
+                                          disabled
                                         >
                                     </td>
                                 </tr>
@@ -52,13 +85,14 @@
                                     </td>
                                     <td>
                                         <input
-                                          class="job-form-item"
+                                          class="job-form-item v-align-fields"
                                           name="v-primer-max-length"
                                           type="number"
                                           value="50"
                                           step="1"
                                           min="0"
                                           pattern="\d+"
+                                          disabled
                                         >
                                     </td>
                                 </tr>

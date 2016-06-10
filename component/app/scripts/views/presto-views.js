@@ -24,8 +24,8 @@ define([
         initialize: function(options) {
             this.title = 'Barcodes';
         },
-        prepareFiles: function() {
-            this.barcodeFiles = this.allFiles.getBarcodeCollection();
+        prepareFiles: function(allFiles) {
+            this.barcodeFiles = allFiles.getBarcodeCollection();
         },
         serialize: function() {
 
@@ -34,6 +34,53 @@ define([
                 isRemovable: true,
                 barcodeFiles: this.barcodeFiles.toJSON(),
             };
+        },
+    });
+
+    Presto.UMI = Backbone.View.extend({
+        template: 'jobs/presto/presto-umi',
+        initialize: function(options) {
+            this.title = 'Barcodes';
+        },
+        serialize: function() {
+
+            return {
+                title: this.title,
+            };
+        },
+    });
+
+    Presto.BarcodeOrUMI = Backbone.View.extend({
+        template: 'jobs/presto/presto-barcode-or-umi',
+        initialize: function(options) {
+            this.title = 'Barcodes or UMI';
+
+						// Setup subviews
+						this.barcodeView = new Presto.Barcode();
+						this.umiView = new Presto.UMI();
+						this.setView('#presto-barcode-umi', this.barcodeView);
+        },
+        prepareFiles: function() {
+            this.barcodeView.prepareFiles(this.allFiles);
+        },
+        serialize: function() {
+
+            return {
+                title: this.title,
+                isRemovable: true,
+            };
+        },
+        events: {
+            'change .barcode-or-umi': 'swapView',
+        },
+        swapView: function(e) {
+            if (e.target.value == 'barcode') {
+                this.setView('#presto-barcode-umi', this.barcodeView);
+                this.barcodeView.render();
+            } else {
+                this.setView('#presto-barcode-umi', this.umiView);
+                this.umiView.render();
+            }
         },
     });
 
@@ -78,6 +125,18 @@ define([
                 primerFiles: this.primerFiles.toJSON(),
             };
         },
+        events: {
+            'change .j-primer-type': 'swapPrimerFields',
+        },
+		    swapPrimerFields: function(e){
+		        if (e.target.value == 'align') {
+                $('.j-align-fields').prop('disabled', false);
+                $('.j-score-fields').prop('disabled', true);
+            } else {
+                $('.j-align-fields').prop('disabled', true);
+                $('.j-score-fields').prop('disabled', false);
+            }
+		    },
     });
 
     Presto.OutputFilePrefix = Backbone.View.extend({
@@ -134,6 +193,18 @@ define([
                 primerFiles: this.primerFiles.toJSON(),
             };
         },
+        events: {
+            'change .v-primer-type': 'swapPrimerFields',
+        },
+		    swapPrimerFields: function(e){
+		        if (e.target.value == 'align') {
+                $('.v-align-fields').prop('disabled', false);
+                $('.v-score-fields').prop('disabled', true);
+            } else {
+                $('.v-align-fields').prop('disabled', true);
+                $('.v-score-fields').prop('disabled', false);
+            }
+		    },
     });
 
     App.Views.Presto = Presto;
