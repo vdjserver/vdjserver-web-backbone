@@ -642,6 +642,9 @@ define([
 
                                 return agaveFile.save()
                                     .then(function() {
+                                        return agaveFile.notifyApiUploadComplete();
+                                    })
+                                    .then(function() {
 
                                         var notificationData = agaveFile.getFileStagedNotificationData();
 
@@ -849,25 +852,66 @@ define([
             e.preventDefault();
 
             var selectedFileMetadataUuids = this._getSelectedFileUuids();
-
             this._downloadProjectFilesForMetadataUuids(selectedFileMetadataUuids);
         },
         _downloadProjectFilesForMetadataUuids: function(metadataUuids) {
             var that = this;
 
+            // NOTE: this is cleaner and more efficient than the current download code.
+            // Swap out the current download code with this once the Safari "Frame Load Interrupted" bug is fixed.
+            /*
+            var downloadPromises = metadataUuids.map(function(metadataUuid) {
+
+                return function() {
+
+                    var fileMetadataModel = that.projectFiles.get(metadataUuid);
+                    var fileModel = fileMetadataModel.getFileModel();
+
+                    return fileModel.downloadFileToDisk()
+                        .fail(function(error) {
+
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.setError(error);
+                            telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.downloadFileToDisk()');
+                            telemetry.set('view', 'Projects.DetailActions');
+                            telemetry.save();
+                        })
+                        ;
+
+                };
+
+            });
+
+            var sequentialPromiseResults = downloadPromises.reduce(
+                function(previous, current) {
+                    return previous.then(current);
+                },
+                $.Deferred().resolve()
+            )
+            ;
+            */
+
+            var timer = 0;
+            var timerValue = 7000;
+
             metadataUuids.forEach(function(metadataUuid) {
                 var fileMetadataModel = that.projectFiles.get(metadataUuid);
                 var fileModel = fileMetadataModel.getFileModel();
 
-                fileModel.downloadFileToDisk()
-                    .fail(function(error) {
-                        var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.setError(error);
-                        telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.downloadFileToDisk()');
-                        telemetry.set('view', 'Projects.DetailActions');
-                        telemetry.save();
-                    })
-                    ;
+                setTimeout(function() {
+
+                    fileModel.downloadFileToDisk()
+                        .fail(function(error) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.setError(error);
+                            telemetry.set('method', 'Backbone.Agave.Model.File.ProjectFile.downloadFileToDisk()');
+                            telemetry.set('view', 'Projects.DetailActions');
+                            telemetry.save();
+                        })
+                        ;
+                }, timer);
+
+                timer += timerValue;
             });
 
         },
@@ -924,7 +968,6 @@ define([
                 this.setupFileListings();
 
                 loadingView.remove();
-                this.render();
             },
             setupFileListings: function() {
                 /*
@@ -1330,6 +1373,9 @@ define([
 
                             return agaveFile.save()
                                 .then(function() {
+                                    return agaveFile.notifyApiUploadComplete();
+                                })
+                                .then(function() {
                                     var notificationData = agaveFile.getFileStagedNotificationData();
 
                                     App.Instances.WebsocketManager.trigger(
@@ -1648,8 +1694,8 @@ define([
 
                 fileMetadatas.fetch()
                     .done(function() {
-                        that.readLevelMetadatas = fileMetadatas.getReadLevelCollection();
-                        that.pairableMetadatas = fileMetadatas.getReadLevelCollection();
+                        that.readLevelMetadatas = fileMetadatas.getForwardReadLevelCollection();
+                        that.pairableMetadatas = fileMetadatas.getReverseReadLevelCollection();
 
                         that.render();
                     })
@@ -1684,7 +1730,7 @@ define([
                 var fileUuid = e.target.value;
 
                 var pairModel = this.readLevelMetadatas.get(pairUuid);
-                var fileModel = this.readLevelMetadatas.get(fileUuid);
+                var fileModel = this.pairableMetadatas.get(fileUuid);
 
                 if (fileUuid.length > 0) {
 
@@ -1716,7 +1762,7 @@ define([
                 else {
 
                     fileUuid = pairModel.getPairedReadMetadataUuid();
-                    fileModel = this.readLevelMetadatas.get(fileUuid);
+                    fileModel = this.pairableMetadatas.get(fileUuid);
 
                     Backbone.Agave.Collection.Files.Metadata.disassociatePairedReads(fileModel, pairModel)
                         .then(function() {

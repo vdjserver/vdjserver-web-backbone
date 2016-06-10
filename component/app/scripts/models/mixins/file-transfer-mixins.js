@@ -14,7 +14,7 @@ define([
 
         url += '?force=true';
 
-        var jqxhr = $.ajax({
+        var jqxhr = Backbone.Agave.ajax({
             headers: _.extend(
                 {},
                 Backbone.Agave.oauthHeader(),

@@ -173,7 +173,7 @@ function(
                 var url = this.get('_links').self.href;
                 url = this._fixBadAgaveUrl(url);
 
-                var jqxhr = $.ajax({
+                var jqxhr = Backbone.Agave.ajax({
                     headers: Backbone.Agave.oauthHeader(),
                     type:    'GET',
                     url:     url,
@@ -368,6 +368,19 @@ function(
 
             this._setFilesParameter(selectedFileMetadatas);
         },
+        setPairedReadConfig: function(pairedReadConfig) {
+            var jobParameters = this.get('parameters');
+            jobParameters['paired_json'] = JSON.stringify(pairedReadConfig);
+            jobParameters['workflow'] = 'paired';
+
+            // the input for the standard json needs to be the output of paired_json
+            var fileName = pairedReadConfig['steps'][1]['apply']['step']['write_sequence']['out_path'];
+            var workConfig = JSON.parse(jobParameters.json);
+            workConfig['input'] = [{'sequence': fileName}];
+            jobParameters['json'] = JSON.stringify(workConfig);
+
+            this.set('parameters', jobParameters);
+        },
 
         // Private Methods
         _updateSelectedFileMetadatasForBarcodeQualityScores: function(formData, selectedFileMetadatas, allFileMetadatas) {
@@ -529,6 +542,7 @@ function(
                 'parameters',
                 {
                     'json': JSON.stringify(workflowConfig),
+                    'workflow': 'single',
                 }
             );
         },
