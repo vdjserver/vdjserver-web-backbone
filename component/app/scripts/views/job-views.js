@@ -593,10 +593,13 @@ define([
             },
             stageJob: function(formData) {
 
+                var prestoForm = Backbone.Syphon.serialize($('#presto-form')[0]);
+                prestoForm = _.extend(formData, prestoForm);
+
                 var job = new Backbone.Agave.Model.Job.Presto();
 
                 job.prepareJob(
-                    formData,
+                    prestoForm,
                     this.selectedFileListings,
                     this.allFiles,
                     this.projectModel.get('uuid')

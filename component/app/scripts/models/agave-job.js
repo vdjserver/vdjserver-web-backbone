@@ -683,7 +683,7 @@ function(
             }
 
             if (formData.hasOwnProperty('j-primer-type')) {
-                parameters['JPrimerFlag'] = formData['j-primer-type'];
+                parameters['JPrimer'] = formData['j-primer-type'];
 
                 if (formData.hasOwnProperty('j-primer-max-error'))
                     parameters['JPrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
@@ -695,11 +695,11 @@ function(
                     parameters['JPrimerStartPosition'] = parseInt(formData['j-primer-start-position']);
             }
             else {
-                parameters['JPrimerFlag'] = 'none';
+                parameters['JPrimer'] = 'none';
             }
 
             if (formData.hasOwnProperty('v-primer-type')) {
-                parameters['VPrimerFlag'] = formData['v-primer-type'];
+                parameters['VPrimer'] = formData['v-primer-type'];
 
                 if (formData.hasOwnProperty('v-primer-max-error'))
                     parameters['VPrimerMaxError'] = parseFloat(formData['v-primer-max-error']);
@@ -711,7 +711,7 @@ function(
                     parameters['VPrimerStartPosition'] = parseInt(formData['v-primer-start-position']);
             }
             else {
-                parameters['VPrimerFlag'] = 'none';
+                parameters['VPrimer'] = 'none';
             }
 
             if (formData.hasOwnProperty('output-file-prefix')) {
