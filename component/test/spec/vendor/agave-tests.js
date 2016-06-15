@@ -1,6 +1,9 @@
 /*global describe, it */
 
-define(['app', 'backbone-agave'], function(App) {
+define([
+    'app',
+    'backbone-agave',
+], function(App) {
 
     'use strict';
 
@@ -19,28 +22,28 @@ define(['app', 'backbone-agave'], function(App) {
         it('Should perform login', function(done) {
 
             should.exist(App);
-            App.init();
+            App.start();
 
             should.exist(App.Agave);
 
             var model = App.Agave.token();
-
-            console.log(model);
             App.Agave.destroyToken();
 
             // TODO: need to pull this in from config/env
             var formData = {
                 username: '',
-                password: ''
+                password: '',
             };
 
             model.save(formData, {password: formData.password})
-                .done(function() {
+                .then(function(doneModel) {
                     //assert.strictEqual(jqXHR.statusCode, 200);
+
+                    console.log("token is: " + JSON.stringify(model));
 
                     var projectUuid = '9057880830218530330-242ac11b-0001-012';
                     var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: projectUuid});
-                    projectFiles.fetch()
+                    return projectFiles.fetch()
                         .then(function() {
                             console.log('Got projectFiles');
                             console.log(projectFiles);
@@ -52,7 +55,6 @@ define(['app', 'backbone-agave'], function(App) {
 
                 })
                 .fail(function(error) {
-                
                     console.log("hit error: " + error);
                     done(error);
                 })
