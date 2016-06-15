@@ -16,7 +16,7 @@ define(['app', 'backbone-agave'], function(App) {
             should.exist(authTokenModel);
         });
 
-        it('Should perform login', function() {
+        it('Should perform login', function(done) {
 
             should.exist(App);
             App.init();
@@ -36,7 +36,6 @@ define(['app', 'backbone-agave'], function(App) {
 
             model.save(formData, {password: formData.password})
                 .done(function() {
-
                     //assert.strictEqual(jqXHR.statusCode, 200);
 
                     var projectUuid = '9057880830218530330-242ac11b-0001-012';
@@ -45,12 +44,19 @@ define(['app', 'backbone-agave'], function(App) {
                         .then(function() {
                             console.log('Got projectFiles');
                             console.log(projectFiles);
+                            done();
                         })
                         .fail(function(error) {
                             console.log(error);
                         });
 
-                });
+                })
+                .fail(function(error) {
+                
+                    console.log("hit error: " + error);
+                    done(error);
+                })
+                ;
         });
 
     });
