@@ -57,4 +57,8 @@ var EnvironmentConfig = {
     'vdjApi': {
         'hostname': 'https://vdjserver.org/api/v1',
     },
+    'test': {
+        'username': 'apitest',
+        'password': '',
+    },
 };
