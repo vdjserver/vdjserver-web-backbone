@@ -30,15 +30,15 @@ define([
             var model = App.Agave.token();
             App.Agave.destroyToken();
 
-            // TODO: need to pull this in from config/env
+            // simulate form data
             var formData = {
                 username: EnvironmentConfig.test.username,
                 password: EnvironmentConfig.test.password,
             };
 
             model.save(formData, {password: formData.password})
-                .then(function(doneModel) {
-                    //assert.strictEqual(jqXHR.statusCode, 200);
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.console) console.log(response);
 
                     assert.isDefined(model.get('access_token'));
                     assert.isDefined(model.get('expires'));
@@ -51,20 +51,9 @@ define([
                     assert.equal(model.get('username'), formData.username);
                     assert.equal(model.get('password'), formData.password);
 
-                    console.log("token is: " + JSON.stringify(model));
+                    if (EnvironmentConfig.debug.console) console.log("token is: " + JSON.stringify(model));
 
-                    var projectUuid = '9057880830218530330-242ac11b-0001-012';
-                    var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: projectUuid});
-                    return projectFiles.fetch()
-                        .then(function() {
-                            console.log('Got projectFiles');
-                            console.log(projectFiles);
-                            done();
-                        })
-                        .fail(function(error) {
-                            console.log(error);
-                        });
-
+                    done();
                 })
                 .fail(function(error) {
                     console.log("login error: " + JSON.stringify(error));

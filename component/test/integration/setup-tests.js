@@ -38,15 +38,15 @@ define([
             var model = App.Agave.token();
             App.Agave.destroyToken();
 
-            // TODO: need to pull this in from config/env
+            // simulate form data
             var formData = {
                 username: EnvironmentConfig.test.username,
                 password: EnvironmentConfig.test.password,
             };
 
             model.save(formData, {password: formData.password})
-                .then(function(doneModel) {
-                    //assert.strictEqual(jqXHR.statusCode, 200);
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.console) console.log(response);
 
                     assert.isDefined(model.get('access_token'));
                     assert.isDefined(model.get('expires'));
@@ -78,7 +78,8 @@ define([
                         + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
             })
             .then(function(response) {
-                //console.log(response);
+                if (EnvironmentConfig.debug.console) console.log(response);
+
                 assert.equal(response.status, 'success');
 
                 assert.isDefined(response.result);
@@ -109,7 +110,8 @@ define([
                         + '/' + EnvironmentConfig.agave.systems.execution.ls5.hostname
             })
             .then(function(response) {
-                //console.log(response);
+                if (EnvironmentConfig.debug.console) console.log(response);
+
                 assert.equal(response.status, 'success');
 
                 assert.isDefined(response.result);
@@ -140,7 +142,8 @@ define([
                         + '/' + EnvironmentConfig.agave.systems.execution.vdjExec02.hostname
             })
             .then(function(response) {
-                //console.log(response);
+                if (EnvironmentConfig.debug.console) console.log(response);
+
                 assert.equal(response.status, 'success');
 
                 assert.isDefined(response.result);
@@ -171,7 +174,8 @@ define([
                         + '/' + EnvironmentConfig.agave.systems.execution.stampede.hostname
             })
             .then(function(response) {
-                //console.log(response);
+                if (EnvironmentConfig.debug.console) console.log(response);
+
                 assert.equal(response.status, 'success');
 
                 assert.isDefined(response.result);
@@ -202,7 +206,8 @@ define([
                         + '/' + EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast
             })
             .then(function(response) {
-                console.log(response);
+                if (EnvironmentConfig.debug.console) console.log(response);
+
                 assert.equal(response.status, 'success');
 
                 assert.isDefined(response.result);
@@ -234,7 +239,8 @@ define([
                         + '/' + EnvironmentConfig.agave.systems.execution.ls5.apps.vdjPipe
             })
             .then(function(response) {
-                console.log(response);
+                if (EnvironmentConfig.debug.console) console.log(response);
+
                 assert.equal(response.status, 'success');
 
                 assert.isDefined(response.result);
@@ -266,7 +272,8 @@ define([
                         + '/' + EnvironmentConfig.agave.systems.execution.stampede.apps.igBlast
             })
             .then(function(response) {
-                console.log(response);
+                if (EnvironmentConfig.debug.console) console.log(response);
+
                 assert.equal(response.status, 'success');
 
                 assert.isDefined(response.result);
@@ -298,7 +305,8 @@ define([
                         + '/' + EnvironmentConfig.agave.systems.execution.stampede.apps.vdjPipe
             })
             .then(function(response) {
-                console.log(response);
+                if (EnvironmentConfig.debug.console) console.log(response);
+
                 assert.equal(response.status, 'success');
 
                 assert.isDefined(response.result);
@@ -330,7 +338,8 @@ define([
                         + '/' + EnvironmentConfig.agave.systems.execution.vdjExec02.apps.vdjPipe
             })
             .then(function(response) {
-                console.log(response);
+                if (EnvironmentConfig.debug.console) console.log(response);
+
                 assert.equal(response.status, 'success');
 
                 assert.isDefined(response.result);

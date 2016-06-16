@@ -32,8 +32,8 @@
         <script>
 
             require.onError = function (err) {
-                console.log("require onError hit");
-                console.log(err.requireType);
+                //console.log("require onError hit");
+                //console.log(err.requireType);
                 if (err.requireType === 'timeout') {
                     console.log('modules: ' + err.requireModules);
                 }
@@ -442,6 +442,7 @@
 
                 '../integration/setup-tests',
                 '../integration/account-tests',
+                '../integration/project-tests',
 
             ], function() {
                 'use strict';
