@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y \
 RUN npm install -g \
     bower \
     grunt \
-    grunt-cli
+    grunt-cli \
+    phantomjs
 
 # Install sass dependencies
 RUN gem install \
@@ -37,8 +38,9 @@ RUN cd /var/www/html/vdjserver-backbone && bower --allow-root install
 
 # Copy project source
 COPY ./component/ /var/www/html/vdjserver-backbone
+RUN cd /var/www/html/vdjserver-backbone/test && bower --allow-root install
 
 WORKDIR /var/www/html/vdjserver-backbone
 RUN ["/usr/local/bin/grunt","build"]
 
-VOLUME ["/var/www/html/vdjserver-backbone/dist"]
+VOLUME ["/var/www/html/vdjserver-backbone"]
