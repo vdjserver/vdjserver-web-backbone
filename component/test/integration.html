@@ -11,7 +11,7 @@
 
         <div id="mocha"></div>
         <script src="bower_components/mocha/mocha.js"></script>
-        <script>mocha.setup('tdd')</script>
+        <script>mocha.setup('bdd')</script>
 
         <script src="bower_components/chai/chai.js"></script>
         <script>
@@ -441,9 +441,9 @@
                 'router',
 
                 //'../integration/setup-tests',
-                //'../integration/account-tests',
+                '../integration/account-tests',
                 //'../integration/project-tests',
-                '../integration/file-tests',
+                //'../integration/file-tests',
 
             ], function() {
                 'use strict';
