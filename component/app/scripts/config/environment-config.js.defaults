@@ -60,5 +60,9 @@ var EnvironmentConfig = {
     'test': {
         'username': 'apitest',
         'password': '',
+        'username2': 'another',  // needs to be different
+        'password2': '',
+        'serviceAccountKey': '',
+        'serviceAccountSecret': '',
     },
 };
