@@ -65,27 +65,31 @@ define([
                 notification.set('type', App.Models.Notification.FILE_IMPORT_NOTIFICATION);
                 notification.set('notification', fileImportUpdate);
 
-                App.Datastore.Notifications.push(notification);
-
-                // TODO: reexamine websocket trigger
-                that.trigger('fileImportUpdate', fileImportUpdate);
-
-                if (fileImportUpdate.fileImportStatus === 'finished') {
-                    that.trigger('addFileToProject', fileImportUpdate.fileInformation.metadata);
+                if (fileImportUpdate.hasOwnProperty('error')) {
+                    that.trigger('fileImportError', fileImportUpdate);
                 }
                 else {
-                    if (fileImportUpdate.fileImportStatus === 'permissions') {
-                        //permissions
-                        var filename = fileImportUpdate.fileInformation.filePath.split('/').pop();
+                    App.Datastore.Notifications.push(notification);
 
-                        fileImportUpdate.fileInformation.metadata = {
-                            value: {
-                                'name': filename,
-                            },
-                        };
+                    that.trigger('fileImportUpdate', fileImportUpdate);
+
+                    if (fileImportUpdate.hasOwnProperty(fileImportStatus) && fileImportUpdate.fileImportStatus === 'finished') {
+                        that.trigger('addFileToProject', fileImportUpdate.fileInformation.metadata);
                     }
+                    else if (fileImportUpdate.hasOwnProperty(fileImportStatus) && fileImportUpdate.fileImportStatus === 'permissions') {
+                        if (fileImportUpdate.fileImportStatus === 'permissions') {
+                            //permissions
+                            var filename = fileImportUpdate.fileInformation.filePath.split('/').pop();
 
-                    that.trigger('updateFileImportProgress', fileImportUpdate);
+                            fileImportUpdate.fileInformation.metadata = {
+                                value: {
+                                    'name': filename,
+                                },
+                            };
+                        }
+
+                        that.trigger('updateFileImportProgress', fileImportUpdate);
+                    }
                 }
             });
         },

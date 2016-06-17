@@ -113,19 +113,32 @@ define([
         });
 
         it('Upload file from URL', function(done) {
+
+            this.timeout(50000);
+
             assert.isDefined(data.project);
             var model = data.project;
 
+            App.Instances.WebsocketManager.subscribeToEvent(model.get('uuid'));
+
             model.listenTo(App.Instances.WebsocketManager, 'addFileImportPlaceholder', function(fileMetadataResponse) {
-                console.log('got addFileImportPlaceholder');
+                console.log('addFileImportPlaceholder: ' + JSON.stringify(fileMetadataResponse));
             });
 
             model.listenTo(App.Instances.WebsocketManager, 'updateFileImportProgress', function(fileMetadataResponse) {
-                console.log('got updateFileImportProgress');
+                console.log('updateFileImportProgress: ' + JSON.stringify(fileMetadataResponse));
             });
 
             model.listenTo(App.Instances.WebsocketManager, 'addFileToProject', function(fileMetadataResponse) {
-                console.log('got addFileToProject');
+                console.log('addFileToProject: ' + JSON.stringify(fileMetadataResponse));
+
+                done();
+            });
+
+            model.listenTo(App.Instances.WebsocketManager, 'fileImportError', function(fileMetadataResponse) {
+                console.log('fileImportError hit: ' + JSON.stringify(fileMetadataResponse));
+
+                done(new Error('Could not upload file.'));
             });
 
             var agaveFile = new Backbone.Agave.Model.File.UrlImport({
@@ -135,24 +148,23 @@ define([
 
             agaveFile.save()
                 .then(function() {
-                    agaveFile.notifyApiUploadComplete()
-                        .then(function() {
-                            var notificationData = agaveFile.getFileStagedNotificationData();
+                    return agaveFile.notifyApiUploadComplete();
 
-                            if (EnvironmentConfig.debug.console) console.log(notificationData);
+                })
+                .then(function() {
+                    var notificationData = agaveFile.getFileStagedNotificationData();
 
-                        })
+                    if (EnvironmentConfig.debug.console) {
+                        console.log('stagedNotificationData is: ' + JSON.stringify(notificationData));;
+                    }
 
-                    done();
                 })
                 .fail(function(error) {
-                    console.log("response error: " + JSON.stringify(error));
-                    done(new Error("Could not upload file."));
+                    done(new Error('Could not upload file.'));
                 })
                 ;
 
         });
-
 
 /*
         it('Delete the project', function(done) {
