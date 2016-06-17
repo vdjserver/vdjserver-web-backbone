@@ -1,0 +1,212 @@
+define([
+    'app',
+    'handlebars-utilities',
+    'handlebars',
+    'serialization-tools',
+], function(App, HandlebarsUtilities, Handlebars, SerializationTools) {
+
+    'use strict';
+
+    HandlebarsUtilities.registerRawPartial(
+        'jobs/presto/fragments/presto-base-view-top',
+        'presto-base-view-top'
+    );
+
+    HandlebarsUtilities.registerRawPartial(
+        'jobs/presto/fragments/presto-base-view-bottom',
+        'presto-base-view-bottom'
+    );
+
+    var Presto = {};
+
+    Presto.Barcode = Backbone.View.extend({
+        template: 'jobs/presto/presto-barcode',
+        initialize: function(options) {
+            this.title = 'Barcodes';
+        },
+        prepareFiles: function(allFiles) {
+            this.barcodeFiles = allFiles.getBarcodeCollection();
+        },
+        serialize: function() {
+
+            return {
+                title: this.title,
+                isRemovable: true,
+                barcodeFiles: this.barcodeFiles.toJSON(),
+            };
+        },
+    });
+
+    Presto.UMI = Backbone.View.extend({
+        template: 'jobs/presto/presto-umi',
+        initialize: function(options) {
+            this.title = 'Barcodes';
+        },
+        serialize: function() {
+
+            return {
+                title: this.title,
+            };
+        },
+    });
+
+    Presto.BarcodeOrUMI = Backbone.View.extend({
+        template: 'jobs/presto/presto-barcode-or-umi',
+        initialize: function(options) {
+            this.title = 'Barcodes or UMI';
+
+						// Setup subviews
+						this.barcodeView = new Presto.Barcode();
+						this.umiView = new Presto.UMI();
+						this.setView('#presto-barcode-umi', this.barcodeView);
+        },
+        prepareFiles: function() {
+            this.barcodeView.prepareFiles(this.allFiles);
+        },
+        serialize: function() {
+
+            return {
+                title: this.title,
+                isRemovable: true,
+            };
+        },
+        events: {
+            'change .barcode-or-umi': 'swapView',
+        },
+        swapView: function(e) {
+            if (e.target.value == 'barcode') {
+                this.setView('#presto-barcode-umi', this.barcodeView);
+                this.barcodeView.render();
+            } else {
+                this.setView('#presto-barcode-umi', this.umiView);
+                this.umiView.render();
+            }
+        },
+    });
+
+    Presto.FinalOutputFilename = Backbone.View.extend({
+        template: 'jobs/presto/presto-final-output-filename',
+        initialize: function(options) {
+            this.title = 'Final Output Filename';
+            this.render();
+        },
+        serialize: function() {
+            return {
+                title: this.title,
+            };
+        },
+    });
+
+    Presto.FindUnique = Backbone.View.extend({
+        template: 'jobs/presto/presto-find-unique',
+        initialize: function(options) {
+            this.title = 'Find Unique';
+            this.render();
+        },
+        serialize: function() {
+            return {
+                title: this.title,
+            };
+        },
+    });
+
+    Presto.JPrimer = Backbone.View.extend({
+        template: 'jobs/presto/presto-j-primer',
+        initialize: function(options) {
+            this.title = 'J Primer';
+        },
+        prepareFiles: function() {
+            this.primerFiles = this.allFiles.getPrimerCollection();
+        },
+        serialize: function() {
+            return {
+                title: this.title,
+                isRemovable: true,
+                primerFiles: this.primerFiles.toJSON(),
+            };
+        },
+        events: {
+            'change .j-primer-type': 'swapPrimerFields',
+        },
+		    swapPrimerFields: function(e){
+		        if (e.target.value == 'align') {
+                $('.j-align-fields').prop('disabled', false);
+                $('.j-score-fields').prop('disabled', true);
+            } else {
+                $('.j-align-fields').prop('disabled', true);
+                $('.j-score-fields').prop('disabled', false);
+            }
+		    },
+    });
+
+    Presto.OutputFilePrefix = Backbone.View.extend({
+        template: 'jobs/presto/presto-output-file-prefix',
+        initialize: function(options) {
+            this.title = 'Output File Prefix';
+            this.render();
+        },
+        serialize: function() {
+            return {
+                title: this.title,
+            };
+        },
+    });
+
+    Presto.QualityLengthFilter = Backbone.View.extend({
+        template: 'jobs/presto/presto-quality-length-filter',
+        initialize: function(options) {
+            this.title = 'Length/Quality Filter';
+            this.render();
+        },
+        serialize: function() {
+            return {
+                title: this.title,
+            };
+        },
+    });
+
+    Presto.SequenceType = Backbone.View.extend({
+        template: 'jobs/presto/presto-sequence-type',
+        initialize: function(options) {
+            this.title = 'Sequence Type';
+            this.render();
+        },
+        serialize: function() {
+            return {
+                title: this.title,
+            };
+        },
+    });
+
+    Presto.VPrimer = Backbone.View.extend({
+        template: 'jobs/presto/presto-v-primer',
+        initialize: function(options) {
+            this.title = 'V Primer';
+        },
+        prepareFiles: function() {
+            this.primerFiles = this.allFiles.getPrimerCollection();
+        },
+        serialize: function() {
+            return {
+                title: this.title,
+                isRemovable: true,
+                primerFiles: this.primerFiles.toJSON(),
+            };
+        },
+        events: {
+            'change .v-primer-type': 'swapPrimerFields',
+        },
+		    swapPrimerFields: function(e){
+		        if (e.target.value == 'align') {
+                $('.v-align-fields').prop('disabled', false);
+                $('.v-score-fields').prop('disabled', true);
+            } else {
+                $('.v-align-fields').prop('disabled', true);
+                $('.v-score-fields').prop('disabled', false);
+            }
+		    },
+    });
+
+    App.Views.Presto = Presto;
+    return Presto;
+});

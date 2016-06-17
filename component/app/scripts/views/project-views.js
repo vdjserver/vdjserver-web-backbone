@@ -707,6 +707,12 @@ define([
 
                     break;
 
+                case 'presto':
+                    var prestoView = App.Views.Jobs.PrestoStaging;
+                    this._showJobStagingView(prestoView);
+
+                    break;
+
                 case 'vdjpipe':
                     var vdjpipeView = App.Views.Jobs.VdjpipeStaging;
                     this._showJobStagingView(vdjpipeView);

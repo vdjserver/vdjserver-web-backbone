@@ -76,6 +76,33 @@
 
                         <li class="file-actions">
                             <a
+                                class="run-job"
+                                href="#"
+                                data-bypass=true
+                                data-jobtype="igblast"
+                            >
+                                IgBlast
+                            </a>
+                        </li>
+
+                        <li class="file-actions">
+                            <a
+                                class="run-job has-tooltip"
+                                href="#"
+                                data-bypass=true
+                                data-jobtype="presto"
+
+                                {{!-- Dropdown --}}
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="Run an HPC job using the Presto tool"
+                            >
+                                Presto
+                            </a>
+                        </li>
+
+                        <li class="file-actions">
+                            <a
                                 class="run-job has-tooltip"
                                 href="#"
                                 data-bypass=true
@@ -90,16 +117,6 @@
                             </a>
                         </li>
 
-                        <li class="file-actions">
-                            <a
-                                class="run-job"
-                                href="#"
-                                data-bypass=true
-                                data-jobtype="igblast"
-                            >
-                                IgBlast
-                            </a>
-                        </li>
                     </ul>
                 </div>
                 <div class="btn-group">

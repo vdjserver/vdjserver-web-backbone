@@ -238,6 +238,52 @@ function(
 
                 return newCollection;
             },
+            getNonPairedReadCollection: function() {
+
+                var pairedReadModels = _.filter(this.models, function(model) {
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ
+                           &&
+                           model.getPairedReadMetadataUuid() == undefined
+                           ;
+                });
+
+                var newCollection = this.clone();
+                newCollection.reset();
+                newCollection.add(pairedReadModels);
+
+                return newCollection;
+            },
+
+            getOrganizedPairedReadCollection: function() {
+
+                var pairedReads = [];
+                var forwardCollection = this.clone();
+                forwardCollection.reset();
+                var reverseCollection = this.clone();
+                reverseCollection.reset();
+
+                var that = this;
+                this.each(function(model) {
+
+                    if (model.getReadDirection() == 'F') {
+                        var pairUuid = model.getPairedReadMetadataUuid();
+
+                        if (pairUuid !== undefined) {
+                            var pairedModel = that.get(pairUuid);
+
+                            forwardCollection.add(model);
+                            reverseCollection.add(pairedModel);
+                        }
+                    }
+                });
+
+                if (forwardCollection.length > 0) {
+                    pairedReads.push(forwardCollection);
+                    pairedReads.push(reverseCollection);
+                }
+
+                return pairedReads;
+            },
 
             /**
                 Returns arrays of deep copied paired reads.
