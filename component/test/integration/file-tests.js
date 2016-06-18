@@ -27,7 +27,7 @@ define([
 
             model.save(formData, {password: formData.password})
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.isDefined(model.get('access_token'));
                     assert.isDefined(model.get('expires'));
@@ -65,8 +65,8 @@ define([
 
             model.save()
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
-                    if (EnvironmentConfig.debug.console) console.log(model);
+                    if (EnvironmentConfig.debug.test) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(model);
 
                     assert.equal(model.get('name'), 'project', 'name attribute');
                     assert.equal(model.get('projectName'), formData.name, 'project name');
@@ -96,7 +96,7 @@ define([
 
             projectFiles.fetch()
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.equal(response.status, 'success');
                     assert.isNull(response.message);
@@ -122,21 +122,22 @@ define([
             App.Instances.WebsocketManager.subscribeToEvent(model.get('uuid'));
 
             model.listenTo(App.Instances.WebsocketManager, 'addFileImportPlaceholder', function(fileMetadataResponse) {
-                console.log('addFileImportPlaceholder: ' + JSON.stringify(fileMetadataResponse));
+                if (EnvironmentConfig.debug.test) console.log('addFileImportPlaceholder: ' + JSON.stringify(fileMetadataResponse));
+
             });
 
             model.listenTo(App.Instances.WebsocketManager, 'updateFileImportProgress', function(fileMetadataResponse) {
-                console.log('updateFileImportProgress: ' + JSON.stringify(fileMetadataResponse));
+                if (EnvironmentConfig.debug.test) console.log('updateFileImportProgress: ' + JSON.stringify(fileMetadataResponse));
             });
 
             model.listenTo(App.Instances.WebsocketManager, 'addFileToProject', function(fileMetadataResponse) {
-                console.log('addFileToProject: ' + JSON.stringify(fileMetadataResponse));
+                if (EnvironmentConfig.debug.test) console.log('addFileToProject: ' + JSON.stringify(fileMetadataResponse));
 
                 done();
             });
 
             model.listenTo(App.Instances.WebsocketManager, 'fileImportError', function(fileMetadataResponse) {
-                console.log('fileImportError hit: ' + JSON.stringify(fileMetadataResponse));
+                if (EnvironmentConfig.debug.test) console.log('fileImportError hit: ' + JSON.stringify(fileMetadataResponse));
 
                 done(new Error('Could not upload file.'));
             });
@@ -154,7 +155,7 @@ define([
                 .then(function() {
                     var notificationData = agaveFile.getFileStagedNotificationData();
 
-                    if (EnvironmentConfig.debug.console) {
+                    if (EnvironmentConfig.debug.test) {
                         console.log('stagedNotificationData is: ' + JSON.stringify(notificationData));;
                     }
 
@@ -173,7 +174,7 @@ define([
 
             model.destroy()
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.equal(response.status, 'success');
                     assert.isNull(response.message);

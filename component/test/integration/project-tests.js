@@ -26,7 +26,7 @@ define([
 
             model.save(formData, {password: formData.password})
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.isDefined(model.get('access_token'));
                     assert.isDefined(model.get('expires'));
@@ -64,8 +64,8 @@ define([
 
             model.save()
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
-                    if (EnvironmentConfig.debug.console) console.log(model);
+                    if (EnvironmentConfig.debug.test) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(model);
 
                     assert.equal(model.get('name'), 'project', 'name attribute');
                     assert.equal(model.get('projectName'), formData.name, 'project name');
@@ -95,8 +95,8 @@ define([
 
             permissions.fetch()
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
-                    if (EnvironmentConfig.debug.console) console.log(permissions);
+                    if (EnvironmentConfig.debug.test) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(permissions);
 
                     assert.equal(response.status, 'success');
                     assert.isNull(response.message);
@@ -139,7 +139,7 @@ define([
                         + '//projects/' + model.get('uuid')
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.equal(response.status, 'success');
 
@@ -188,7 +188,7 @@ define([
                         + '//projects/' + model.get('uuid')
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.equal(response.status, 'success');
 
@@ -229,7 +229,7 @@ define([
                         + '//projects/' + model.get('uuid') + '/analyses'
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.equal(response.status, 'success');
 
@@ -269,7 +269,7 @@ define([
                         + '//projects/' + model.get('uuid') + '/deleted'
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.equal(response.status, 'success');
 
@@ -309,7 +309,7 @@ define([
                         + '//projects/' + model.get('uuid') + '/files'
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.equal(response.status, 'success');
 
@@ -342,7 +342,7 @@ define([
 
             model.destroy()
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.equal(response.status, 'success');
                     assert.isNull(response.message);

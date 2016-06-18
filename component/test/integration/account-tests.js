@@ -46,12 +46,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Created account without username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -88,12 +88,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Created account without password"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -130,12 +130,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Created account without email"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -177,12 +177,12 @@ define([
                 email:    formData.email,
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Created account with invalid recaptcha"));
             })
             .fail(function(response, errorText, errorThrown) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -218,12 +218,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password without username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -253,7 +253,7 @@ define([
 
             model.save(formData, {password: formData.password})
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.isDefined(model.get('access_token'));
                     assert.isDefined(model.get('expires'));
@@ -266,7 +266,7 @@ define([
                     assert.equal(model.get('username'), formData.username);
                     assert.equal(model.get('password'), formData.password);
 
-                    if (EnvironmentConfig.debug.console) console.log("token is: " + JSON.stringify(model));
+                    if (EnvironmentConfig.debug.test) console.log("token is: " + JSON.stringify(model));
 
                     done();
                 })
@@ -297,12 +297,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password without username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 // TODO: vdj-api should handle this error better
                 assert.isDefined(response);
@@ -338,12 +338,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password with bad access token"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -374,12 +374,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password without password"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -410,12 +410,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password without new password"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -447,12 +447,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password with wrong password"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 // TODO: vdj-api should handle this error better
                 assert.isDefined(response);
@@ -485,7 +485,7 @@ define([
                 contentType: 'application/json',
             })
             .then(function(responseText, responseStatus, response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.strictEqual(response.status, 200);
@@ -496,7 +496,7 @@ define([
                 done();
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Could not change password"));
             })
@@ -516,7 +516,7 @@ define([
 
             model.callSave()
                 .then(function(responseText, responseStatus, response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.isDefined(response);
                     assert.strictEqual(response.status, 200);
@@ -527,7 +527,7 @@ define([
                     done();
                 })
                 .fail(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     done(new Error("Could not change password"));
                 })
@@ -549,12 +549,12 @@ define([
 
             model.save()
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Reset password with invalid username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -585,12 +585,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Reset password without username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -621,7 +621,7 @@ define([
 
             model.save()
                 .then(function(responseText, responseStatus, response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.isDefined(response);
                     assert.strictEqual(response.status, 200);
@@ -640,9 +640,9 @@ define([
 
                     token.save(serviceData, {password: serviceData.password})
                     .then(function(response) {
-                        if (EnvironmentConfig.debug.console) console.log(response);
+                        if (EnvironmentConfig.debug.test) console.log(response);
 
-                        if (EnvironmentConfig.debug.console) console.log("token is: " + JSON.stringify(token));
+                        if (EnvironmentConfig.debug.test) console.log("token is: " + JSON.stringify(token));
 
                         // get the metadata item
                         var jqxhr = Backbone.Agave.ajax({
@@ -658,7 +658,7 @@ define([
                                         )
                         })
                         .then(function(response) {
-                            if (EnvironmentConfig.debug.console) console.log(response);
+                            if (EnvironmentConfig.debug.test) console.log(response);
 
                             assert.equal(response.status, 'success');
 
@@ -685,7 +685,7 @@ define([
                                         + '/meta/v2/data/' + uuid + '/pems'
                             })
                             .then(function(response) {
-                                if (EnvironmentConfig.debug.console) console.log(response);
+                                if (EnvironmentConfig.debug.test) console.log(response);
 
                                 assert.equal(response.status, 'success');
 
@@ -717,7 +717,7 @@ define([
                     ;
                 })
                 .fail(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     done(new Error("Could not reset password"));
                 })
@@ -744,9 +744,9 @@ define([
 
             token.save(formData, {password: formData.password})
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
-                if (EnvironmentConfig.debug.console) console.log("token is: " + JSON.stringify(token));
+                if (EnvironmentConfig.debug.test) console.log("token is: " + JSON.stringify(token));
 
                 // get the metadata item
                 var jqxhr = Backbone.Agave.ajax({
@@ -756,12 +756,12 @@ define([
                             + '/meta/v2/data/' + data.uuid
                 })
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     done(new Error("User account can access metadata"));
                 })
                 .fail(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.isDefined(response);
                     assert.isDefined(response.responseText);
@@ -802,9 +802,9 @@ define([
 
             token.save(formData, {password: formData.password})
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
-                if (EnvironmentConfig.debug.console) console.log("token is: " + JSON.stringify(token));
+                if (EnvironmentConfig.debug.test) console.log("token is: " + JSON.stringify(token));
 
                 // get the metadata item
                 var jqxhr = Backbone.Agave.ajax({
@@ -814,12 +814,12 @@ define([
                             + '/meta/v2/data/' + data.uuid + '/pems'
                 })
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     done(new Error("User account can access metadata permissions"));
                 })
                 .fail(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.isDefined(response);
                     assert.isDefined(response.responseText);
@@ -864,12 +864,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password without username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -908,12 +908,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password without username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -952,12 +952,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password without username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -996,12 +996,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password without username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -1040,12 +1040,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password without username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
@@ -1084,12 +1084,12 @@ define([
                 contentType: 'application/json',
             })
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Changed password without username"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 // TODO: vdj-api should handle this error better
                 assert.isDefined(response);
@@ -1127,7 +1127,7 @@ define([
 
             model.save()
             .then(function(responseText, responseStatus, response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 assert.isDefined(response);
                 assert.strictEqual(response.status, 200);
@@ -1138,7 +1138,7 @@ define([
                 done();
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Could not reset password"));
             })
@@ -1165,9 +1165,9 @@ define([
 
             token.save(formData, {password: formData.password})
             .then(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
-                if (EnvironmentConfig.debug.console) console.log("token is: " + JSON.stringify(token));
+                if (EnvironmentConfig.debug.test) console.log("token is: " + JSON.stringify(token));
 
                 // get the metadata item
                 var jqxhr = Backbone.Agave.ajax({
@@ -1177,12 +1177,12 @@ define([
                             + '/meta/v2/data/' + data.uuid
                 })
                 .then(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     done(new Error("User account can access metadata"));
                 })
                 .fail(function(response) {
-                    if (EnvironmentConfig.debug.console) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
                     assert.isDefined(response);
                     assert.isDefined(response.responseText);
@@ -1225,12 +1225,12 @@ define([
 
             model.save()
             .then(function(responseText, responseStatus, response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 done(new Error("Reset password with stale uuid"));
             })
             .fail(function(response) {
-                if (EnvironmentConfig.debug.console) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(response);
 
                 // TODO: vdj-api should handle this error better
                 assert.isDefined(response);

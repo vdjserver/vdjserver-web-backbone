@@ -50,6 +50,7 @@ var EnvironmentConfig = {
     'debug': {
         'console': false,
         'disableJobs': false,
+        'test': true
     },
     'recaptcha': {
         'publicKey': '6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc',
