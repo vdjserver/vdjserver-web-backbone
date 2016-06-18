@@ -71,7 +71,7 @@ define([
                     assert.equal(model.get('name'), 'project', 'name attribute');
                     assert.equal(model.get('projectName'), formData.name, 'project name');
                     assert.equal(model.get('created'), model.get('lastUpdated'), 'data fields');
-                    assert.equal(model.get('owner'), 'vdj', 'owner attribute');
+                    assert.equal(model.get('owner'), EnvironmentConfig.test.serviceAccountKey, 'owner attribute');
                     assert.equal(model.get('username'), EnvironmentConfig.test.username, 'username attribute');
                     assert.isDefined(model.get('uuid'), 'id attribute');
                     assert.isNotNull(model.get('uuid'), 'id attribute');
@@ -89,7 +89,7 @@ define([
         });
 
         it('New project has no files', function(done) {
-            assert.isDefined(data.project);
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
             var model = data.project;
 
             var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
@@ -116,28 +116,48 @@ define([
 
             this.timeout(50000);
 
-            assert.isDefined(data.project);
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
             var model = data.project;
 
             App.Instances.WebsocketManager.subscribeToEvent(model.get('uuid'));
 
-            model.listenTo(App.Instances.WebsocketManager, 'addFileImportPlaceholder', function(fileMetadataResponse) {
-                if (EnvironmentConfig.debug.test) console.log('addFileImportPlaceholder: ' + JSON.stringify(fileMetadataResponse));
-
-            });
-
             model.listenTo(App.Instances.WebsocketManager, 'updateFileImportProgress', function(fileMetadataResponse) {
-                if (EnvironmentConfig.debug.test) console.log('updateFileImportProgress: ' + JSON.stringify(fileMetadataResponse));
+                if (EnvironmentConfig.debug.test) console.log('updateFileImportProgress:');
+                if (EnvironmentConfig.debug.test) console.log(fileMetadataResponse);
+
+                assert.isDefined(fileMetadataResponse);
+                assert.isNotNull(fileMetadataResponse);
+                assert.equal(fileMetadataResponse.fileInformation.projectUuid, model.get('uuid'));
+                assert.equal(fileMetadataResponse.fileInformation.vdjFileType, Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ);
+                assert.equal(fileMetadataResponse.fileInformation.tags, 'test file');
+                assert.equal(fileMetadataResponse.fileInformation.readDirection, 'F');
             });
 
             model.listenTo(App.Instances.WebsocketManager, 'addFileToProject', function(fileMetadataResponse) {
-                if (EnvironmentConfig.debug.test) console.log('addFileToProject: ' + JSON.stringify(fileMetadataResponse));
+                if (EnvironmentConfig.debug.test) console.log('addFileToProject:');
+                if (EnvironmentConfig.debug.test) console.log(fileMetadataResponse);
+
+                assert.isDefined(fileMetadataResponse);
+                assert.isNotNull(fileMetadataResponse);
+                assert.isDefined(fileMetadataResponse.uuid);
+                assert.isNotNull(fileMetadataResponse.uuid);
+                assert.equal(fileMetadataResponse.owner, EnvironmentConfig.test.serviceAccountKey);
+                assert.equal(fileMetadataResponse.name, 'projectFile');
+                assert.equal(fileMetadataResponse.created, fileMetadataResponse.lastUpdated, 'data fields');
+                assert.equal(fileMetadataResponse.value.projectUuid, model.get('uuid'));
+                assert.deepEqual(fileMetadataResponse.value.publicAttributes.tags, ['test file']);
+                assert.equal(fileMetadataResponse.value.readDirection, 'F');
+                assert.equal(fileMetadataResponse.value.name, 'all_plates.fastq');
+                assert.isFalse(fileMetadataResponse.value.isDeleted);
+
+                data.fileUuid = fileMetadataResponse.uuid;
 
                 done();
             });
 
             model.listenTo(App.Instances.WebsocketManager, 'fileImportError', function(fileMetadataResponse) {
-                if (EnvironmentConfig.debug.test) console.log('fileImportError hit: ' + JSON.stringify(fileMetadataResponse));
+                if (EnvironmentConfig.debug.test) console.log('fileImportError hit:');
+                if (EnvironmentConfig.debug.test) console.log(fileMetadataResponse);
 
                 done(new Error('Could not upload file.'));
             });
@@ -146,18 +166,24 @@ define([
                 projectUuid: model.get('uuid'),
                 urlToIngest: 'http://wiki.vdjserver.org/test/all_plates.fastq'
             });
+            assert.isDefined(agaveFile);
+            assert.isNotNull(agaveFile);
 
+            agaveFile.set('vdjFileType', Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ);
+            agaveFile.set('tags', 'test file');
+            agaveFile.set('readDirection', 'F');
             agaveFile.save()
                 .then(function() {
+                    data.agaveFile = agaveFile;
+
                     return agaveFile.notifyApiUploadComplete();
 
                 })
                 .then(function() {
                     var notificationData = agaveFile.getFileStagedNotificationData();
 
-                    if (EnvironmentConfig.debug.test) {
-                        console.log('stagedNotificationData is: ' + JSON.stringify(notificationData));;
-                    }
+                    if (EnvironmentConfig.debug.test) console.log('stagedNotificationData:');
+                    if (EnvironmentConfig.debug.test) console.log(notificationData);
 
                 })
                 .fail(function(error) {
@@ -167,7 +193,222 @@ define([
 
         });
 
-/*
+        it('New project has one file', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.fileUuid, 'this test requires file uuid from prior test');
+
+            var model = data.project;
+
+            var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
+
+            projectFiles.fetch()
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    assert.equal(response.status, 'success');
+                    assert.isNull(response.message);
+
+                    assert.strictEqual(projectFiles.length, 1);
+                    var agaveFile = projectFiles.at(0);
+
+                    assert.equal(agaveFile.get('uuid'), data.fileUuid);
+                    assert.equal(agaveFile.get('owner'), EnvironmentConfig.test.serviceAccountKey);
+                    assert.equal(agaveFile.get('name'), 'projectFile');
+                    assert.equal(agaveFile.get('created'), agaveFile.get('lastUpdated'), 'data fields');
+
+                    var value = agaveFile.get('value');
+                    assert.equal(value.projectUuid, model.get('uuid'));
+                    assert.deepEqual(value.publicAttributes.tags, ['test file']);
+                    assert.equal(value.fileType, Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ);
+                    assert.equal(value.readDirection, 'F');
+                    assert.equal(value.name, 'all_plates.fastq');
+                    assert.isFalse(value.isDeleted);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("response error: " + JSON.stringify(error));
+                    done(new Error("Could not delete project."));
+                })
+                ;
+        });
+
+        it.skip('Notify vdj-api upload, already notified', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without file uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 500);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'File uuid required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it.skip('Notify vdj-api upload without file uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        //+ '?fileUuid=' + agaveFile.get('uuid')
+                        + '?path=' + agaveFile.get('path')
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without file uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 500);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'File uuid required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it.skip('Notify vdj-api upload without project uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + agaveFile.get('path')
+                        //+ '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without project uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 500);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Project uuid required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it.skip('Notify vdj-api upload without file path', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        //+ '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without project uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 500);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Project uuid required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
         it('Delete the project', function(done) {
             assert.isDefined(data.project);
             var model = data.project;
@@ -187,7 +428,7 @@ define([
                 })
                 ;
         });
-*/
-    });
+
+    }); // describe
 
 });

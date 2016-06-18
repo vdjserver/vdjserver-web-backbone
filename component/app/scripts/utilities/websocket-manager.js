@@ -73,20 +73,18 @@ define([
 
                     that.trigger('fileImportUpdate', fileImportUpdate);
 
-                    if (fileImportUpdate.hasOwnProperty(fileImportStatus) && fileImportUpdate.fileImportStatus === 'finished') {
+                    if (fileImportUpdate.hasOwnProperty('fileImportStatus') && fileImportUpdate.fileImportStatus === 'finished') {
                         that.trigger('addFileToProject', fileImportUpdate.fileInformation.metadata);
                     }
-                    else if (fileImportUpdate.hasOwnProperty(fileImportStatus) && fileImportUpdate.fileImportStatus === 'permissions') {
-                        if (fileImportUpdate.fileImportStatus === 'permissions') {
-                            //permissions
-                            var filename = fileImportUpdate.fileInformation.filePath.split('/').pop();
+                    else if (fileImportUpdate.hasOwnProperty('fileImportStatus') && fileImportUpdate.fileImportStatus === 'permissions') {
+                        //permissions
+                        var filename = fileImportUpdate.fileInformation.filePath.split('/').pop();
 
-                            fileImportUpdate.fileInformation.metadata = {
-                                value: {
-                                    'name': filename,
-                                },
-                            };
-                        }
+                        fileImportUpdate.fileInformation.metadata = {
+                            value: {
+                                'name': filename,
+                            },
+                        };
 
                         that.trigger('updateFileImportProgress', fileImportUpdate);
                     }
