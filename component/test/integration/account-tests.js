@@ -277,7 +277,7 @@ define([
                 ;
         });
 
-        it('Change password with garbage authorization', function(done) {
+        it.skip('Change password with garbage authorization', function(done) {
 
             // simulate form data
             var formData = {
@@ -319,7 +319,7 @@ define([
         });
 
         // TODO: Not sure if this is an error or not
-        it('Change password with bad access token', function(done) {
+        it.skip('Change password with bad access token', function(done) {
 
             // simulate form data
             var formData = {
@@ -430,7 +430,7 @@ define([
             ;
         });
 
-        it('Change password with wrong password', function(done) {
+        it.skip('Change password with wrong password', function(done) {
 
             // simulate form data
             var formData = {
@@ -1060,7 +1060,7 @@ define([
             ;
         });
 
-        it('Forgot password - verify with garbage uuid', function(done) {
+        it.skip('Forgot password - verify with garbage uuid', function(done) {
 
             assert.isDefined(data.uuid, 'this test requires uuid from prior test');
             assert.isNotNull(data.uuid, 'this test requires uuid from prior test');
@@ -1203,7 +1203,7 @@ define([
             ;
         });
 
-        it('Forgot password - set new password with stale uuid', function(done) {
+        it.skip('Forgot password - set new password with stale uuid', function(done) {
 
             assert.isDefined(data.uuid, 'this test requires uuid from prior test');
             assert.isNotNull(data.uuid, 'this test requires uuid from prior test');
