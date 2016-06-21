@@ -8,7 +8,7 @@ define([
     describe('VDJServer-Agave Integration Tests (Projects)', function()  {
         this.timeout(100000);
 
-        it('Should be able to login', function(done) {
+        it('Login as user1', function(done) {
 
             should.exist(App);
             App.init();
@@ -336,7 +336,7 @@ define([
             ;
         });
 
-        it('Add user to project', function(done) {
+        it('Add user2 to project', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
@@ -599,7 +599,7 @@ define([
             ;
         });
 
-        it('Login as 2nd user', function(done) {
+        it('Login as user2', function(done) {
 
             var model = App.Agave.token();
             App.Agave.destroyToken();
@@ -1338,7 +1338,7 @@ define([
             ;
         });
 
-        it('Remove user from project', function(done) {
+        it('Remove user1 from project', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
@@ -1382,7 +1382,7 @@ define([
             ;
         });
 
-        it('Add same user back to project', function(done) {
+        it('Add same user1 back to project', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
@@ -1464,6 +1464,120 @@ define([
             ;
         });
 
+        it('Login as user1', function(done) {
+
+            var model = App.Agave.token();
+            App.Agave.destroyToken();
+
+            // simulate form data
+            var formData = {
+                username: EnvironmentConfig.test.username,
+                password: EnvironmentConfig.test.password,
+            };
+
+            model.save(formData, {password: formData.password})
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    assert.isDefined(model.get('access_token'));
+                    assert.isDefined(model.get('expires'));
+                    assert.isDefined(model.get('expires_in'));
+                    assert.isDefined(model.get('refresh_token'));
+                    assert.isDefined(model.get('token_type'));
+                    assert.isDefined(model.get('username'));
+                    assert.isDefined(model.get('password'));
+                    assert.equal(model.get('token_type'), 'bearer');
+                    assert.equal(model.get('username'), formData.username);
+                    assert.equal(model.get('password'), formData.password);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("login error: " + JSON.stringify(error));
+                    done(new Error("Could not login."));
+                })
+                ;
+        });
+
+        it('Remove user2 from project', function(done) {
+            assert.isDefined(data.project, 'this test requires the project from prior test');
+            var model = data.project;
+
+            var permissions = new Backbone.Agave.Collection.Permissions({uuid: model.get('uuid')});
+
+            permissions.fetch()
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+                if (EnvironmentConfig.debug.test) console.log(permissions);
+
+                var userPermission = permissions.findWhere({username: EnvironmentConfig.test.username2});
+
+                userPermission.removeUserFromProject()
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    userPermission.destroy()
+                    .then(function(response) {
+                        if (EnvironmentConfig.debug.test) console.log(response);
+
+                        done();
+                    })
+                    .fail(function(error) {
+                        if (EnvironmentConfig.debug.test) console.log(response);
+
+                        done(new Error("Could not delete user permission."));
+                    })
+                    ;
+                })
+                .fail(function(error) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    done(new Error("Could not remove user from project."));
+                })
+                ;
+            })
+            .fail(function(error) {
+                console.log("response error: " + JSON.stringify(error));
+                done(new Error("Could not get project permissions."));
+            })
+            ;
+        });
+
+        it('Login as user2', function(done) {
+
+            var model = App.Agave.token();
+            App.Agave.destroyToken();
+
+            // simulate form data
+            var formData = {
+                username: EnvironmentConfig.test.username2,
+                password: EnvironmentConfig.test.password2,
+            };
+
+            model.save(formData, {password: formData.password})
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    assert.isDefined(model.get('access_token'));
+                    assert.isDefined(model.get('expires'));
+                    assert.isDefined(model.get('expires_in'));
+                    assert.isDefined(model.get('refresh_token'));
+                    assert.isDefined(model.get('token_type'));
+                    assert.isDefined(model.get('username'));
+                    assert.isDefined(model.get('password'));
+                    assert.equal(model.get('token_type'), 'bearer');
+                    assert.equal(model.get('username'), formData.username);
+                    assert.equal(model.get('password'), formData.password);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("login error: " + JSON.stringify(error));
+                    done(new Error("Could not login."));
+                })
+                ;
+        });
+
         it('Delete the project - unauthorized user', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
@@ -1482,6 +1596,41 @@ define([
                     assert.strictEqual(response.status, 401);
 
                     done();
+                })
+                ;
+        });
+
+        it('Login as user1', function(done) {
+
+            var model = App.Agave.token();
+            App.Agave.destroyToken();
+
+            // simulate form data
+            var formData = {
+                username: EnvironmentConfig.test.username,
+                password: EnvironmentConfig.test.password,
+            };
+
+            model.save(formData, {password: formData.password})
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    assert.isDefined(model.get('access_token'));
+                    assert.isDefined(model.get('expires'));
+                    assert.isDefined(model.get('expires_in'));
+                    assert.isDefined(model.get('refresh_token'));
+                    assert.isDefined(model.get('token_type'));
+                    assert.isDefined(model.get('username'));
+                    assert.isDefined(model.get('password'));
+                    assert.equal(model.get('token_type'), 'bearer');
+                    assert.equal(model.get('username'), formData.username);
+                    assert.equal(model.get('password'), formData.password);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("login error: " + JSON.stringify(error));
+                    done(new Error("Could not login."));
                 })
                 ;
         });
@@ -1520,41 +1669,6 @@ define([
                 done();
             })
             ;
-        });
-
-        it('Login as 1st user', function(done) {
-
-            var model = App.Agave.token();
-            App.Agave.destroyToken();
-
-            // simulate form data
-            var formData = {
-                username: EnvironmentConfig.test.username,
-                password: EnvironmentConfig.test.password,
-            };
-
-            model.save(formData, {password: formData.password})
-                .then(function(response) {
-                    if (EnvironmentConfig.debug.test) console.log(response);
-
-                    assert.isDefined(model.get('access_token'));
-                    assert.isDefined(model.get('expires'));
-                    assert.isDefined(model.get('expires_in'));
-                    assert.isDefined(model.get('refresh_token'));
-                    assert.isDefined(model.get('token_type'));
-                    assert.isDefined(model.get('username'));
-                    assert.isDefined(model.get('password'));
-                    assert.equal(model.get('token_type'), 'bearer');
-                    assert.equal(model.get('username'), formData.username);
-                    assert.equal(model.get('password'), formData.password);
-
-                    done();
-                })
-                .fail(function(error) {
-                    console.log("login error: " + JSON.stringify(error));
-                    done(new Error("Could not login."));
-                })
-                ;
         });
 
         it('Delete the project', function(done) {
