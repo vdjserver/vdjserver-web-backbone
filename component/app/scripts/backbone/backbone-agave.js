@@ -260,8 +260,62 @@ define([
         initialize: function() {
             this.retrySyncEngine = Agave.PutOverrideSync;
             this.retrySyncLimit = 3;
+
+            this.offset = 0;
+            this.limit = 100;
         },
         sync: Backbone.RetrySync,
+        /*
+            Fetch data in multiple smaller sets instead of one giant collection.
+            This fetch method will automatically fetch an entire collection by subsets.
+
+            This will be useful to us as VDJServer grows because it will allow us to
+            scale project and project file metadata requests. It could also be
+            updated for lazy loading and/or user invoked pagination.
+        */
+        fetch: function() {
+            var that = this;
+
+            var deferred = $.Deferred();
+
+            let models = [];
+
+            var offsetFetch = function() {
+                // Reuse parent fetch/sync methods so we don't have to reconfigure everything all over again
+                Backbone.Agave.Collection.prototype.fetch.call(that, {})
+                .then(function(response) {
+                    response = that.parse(response);
+
+                    return response;
+                })
+                .then(function(response) {
+
+                    // Response array has greater than 0 objects, so we'll need to fetch the next set too
+                    if (response.length > 0) {
+
+                        that.offset += response.length;
+
+                        models = models.concat(that.reset(response));
+                        offsetFetch();
+                    }
+                    // The most recent fetch had 0 objects, so we're done now
+                    // Put the collection in the correct state and exit the promise
+                    else {
+                        that.offset = 0;
+                        that.reset(models);
+                        deferred.resolve();
+                    }
+                })
+                .fail(function(error) {
+                    deferred.reject(error);
+                })
+                ;
+            };
+
+            offsetFetch();
+
+            return deferred;
+        },
         getSaveUrl: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },

@@ -186,7 +186,8 @@ define([
                         + '"name":"projectJob",'
                         + '"value.projectUuid":"' + this.projectUuid + '"'
                     + '}')
-                    + '&limit=5000'
+                    + '&limit=' + this.limit
+                    + '&offset=' + this.offset
                     ;
             },
         })
@@ -228,7 +229,8 @@ define([
                 + encodeURIComponent('{'
                     + '"name":"vdjpipeWorkflow"'
                 + '}')
-                + '&limit=5000'
+                + '&limit=' + this.limit
+                + '&offset=' + this.offset
                 ;
         },
         getWorkflowNames: function() {
