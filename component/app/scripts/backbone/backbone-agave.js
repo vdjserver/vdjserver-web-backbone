@@ -219,7 +219,7 @@ define([
 
             var deferred = $.Deferred();
 
-            let models = [];
+            var models = [];
 
             var offsetFetch = function() {
                 // Reuse parent fetch/sync methods so we don't have to reconfigure everything all over again
