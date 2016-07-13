@@ -112,6 +112,89 @@ define([
                 ;
         });
 
+        it('Upload local file', function(done) {
+
+            this.timeout(50000);
+
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            var model = data.project;
+
+            App.Instances.WebsocketManager.subscribeToEvent(model.get('uuid'));
+
+            model.listenTo(App.Instances.WebsocketManager, 'updateFileImportProgress', function(fileMetadataResponse) {
+                if (EnvironmentConfig.debug.test) console.log('updateFileImportProgress:');
+                if (EnvironmentConfig.debug.test) console.log(fileMetadataResponse);
+
+                assert.isDefined(fileMetadataResponse);
+                assert.isNotNull(fileMetadataResponse);
+                assert.equal(fileMetadataResponse.fileInformation.projectUuid, model.get('uuid'));
+                assert.equal(fileMetadataResponse.fileInformation.tags, '');
+                assert.equal(fileMetadataResponse.fileInformation.readDirection, '');
+            });
+
+            model.listenTo(App.Instances.WebsocketManager, 'addFileToProject', function(fileMetadataResponse) {
+                if (EnvironmentConfig.debug.test) console.log('addFileToProject:');
+                if (EnvironmentConfig.debug.test) console.log(fileMetadataResponse);
+
+                assert.isDefined(fileMetadataResponse);
+                assert.isNotNull(fileMetadataResponse);
+                assert.isDefined(fileMetadataResponse.uuid);
+                assert.isNotNull(fileMetadataResponse.uuid);
+                assert.equal(fileMetadataResponse.owner, EnvironmentConfig.test.serviceAccountKey);
+                assert.equal(fileMetadataResponse.name, 'projectFile');
+                assert.equal(fileMetadataResponse.created, fileMetadataResponse.lastUpdated, 'data fields');
+                assert.equal(fileMetadataResponse.value.projectUuid, model.get('uuid'));
+                assert.deepEqual(fileMetadataResponse.value.publicAttributes.tags, []);
+                assert.equal(fileMetadataResponse.value.readDirection, '');
+                assert.equal(fileMetadataResponse.value.name, 'blob');
+                assert.isFalse(fileMetadataResponse.value.isDeleted);
+
+                data.fileUuid = fileMetadataResponse.uuid;
+
+                done();
+            });
+
+            model.listenTo(App.Instances.WebsocketManager, 'fileImportError', function(fileMetadataResponse) {
+                if (EnvironmentConfig.debug.test) console.log('fileImportError hit:');
+                if (EnvironmentConfig.debug.test) console.log(fileMetadataResponse);
+
+                done(new Error('Could not upload file.'));
+            });
+
+            var blob = new Blob(['test123456'], {type: 'text/plain'});
+
+            var agaveFile = new Backbone.Agave.Model.File.ProjectFile({
+                name: 'blob',
+                length: 11,
+                lastModified: 'Thu Jun 18 2015 15:17:36 GMT-0500 (CDT)',
+                projectUuid: model.get('uuid'),
+                fileReference: blob,
+                formElementGuid: '12345',
+            });
+
+            assert.isDefined(agaveFile);
+            assert.isNotNull(agaveFile);
+
+            agaveFile.save()
+                .then(function() {
+                    data.agaveFile = agaveFile;
+
+                    return agaveFile.notifyApiUploadComplete();
+                })
+                .then(function() {
+                    var notificationData = agaveFile.getFileStagedNotificationData();
+
+                    if (EnvironmentConfig.debug.test) console.log('stagedNotificationData:');
+                    if (EnvironmentConfig.debug.test) console.log(notificationData);
+
+                })
+                .fail(function(error) {
+                    done(new Error('Could not upload file.'));
+                })
+                ;
+
+        });
+
         it('Upload file from URL', function(done) {
 
             this.timeout(50000);
