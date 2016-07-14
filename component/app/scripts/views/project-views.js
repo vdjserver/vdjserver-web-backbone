@@ -707,6 +707,12 @@ define([
 
                     break;
 
+                case 'presto':
+                    var prestoView = App.Views.Jobs.PrestoStaging;
+                    this._showJobStagingView(prestoView);
+
+                    break;
+
                 case 'vdjpipe':
                     var vdjpipeView = App.Views.Jobs.VdjpipeStaging;
                     this._showJobStagingView(vdjpipeView);
@@ -1549,7 +1555,7 @@ define([
                 var isDuplicate = this.fileListings.checkForDuplicateFilename(filename);
 
                 if (isDuplicate === true) {
-                    this.parentView.trigger('duplicateFileError', filename);
+                    this.projectDetailView.trigger('duplicateFileError', filename);
                 }
 
                 return isDuplicate;

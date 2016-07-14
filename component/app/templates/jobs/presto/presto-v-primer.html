@@ -1,0 +1,121 @@
+{{> presto-base-view-top}}
+
+    <div class="row row-with-spacer">
+        {{#unless primerFiles}}
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    Warning: there are no primer files available. Please upload primer files on the project file list and set their type as "Primer Sequences".
+                </div>
+            </div>
+        {{else}}
+            <div class="col-md-6">
+
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Fasta Primer File
+                                    </td>
+                                    <td>
+                                        <select
+                                            class="job-form-item"
+                                            id="v-primer-file"
+                                            name="v-primer-file"
+                                        >
+                                            {{#each primerFiles}}
+                                                <option value={{value.name}}>{{value.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input
+                                          class="job-form-item v-primer-type"
+                                          name="v-primer-type"
+                                          type="radio"
+                                          value="score"
+                                          checked
+                                        > score
+                                        <input
+                                          class="job-form-item v-primer-type"
+                                          name="v-primer-type"
+                                          type="radio"
+                                          value="align"
+                                        > align
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Start Position
+                                    </td>
+                                    <td>
+                                        <input
+                                          class="job-form-item v-score-fields"
+                                          name="v-primer-start-position"
+                                          type="number"
+                                          value="0"
+                                          step="1"
+                                          min="0"
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Maximum Error
+                                    </td>
+                                    <td>
+                                        <input
+                                          class="job-form-item v-align-fields"
+                                          name="v-primer-max-error"
+                                          type="number"
+                                          value="0.3"
+                                          step="0.01"
+                                          min="0"
+                                          disabled
+                                        >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Maximum Length
+                                    </td>
+                                    <td>
+                                        <input
+                                          class="job-form-item v-align-fields"
+                                          name="v-primer-max-length"
+                                          type="number"
+                                          value="50"
+                                          step="1"
+                                          min="0"
+                                          pattern="\d+"
+                                          disabled
+                                        >
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12">
+                        This module locates v primer regions within reads.
+                    </div>
+                </div>
+                <div class="row row-with-spacer">
+                    <div class="col-md-12">
+                        This step can be removed from the workflow template.
+                    </div>
+                </div>
+            </div>
+        {{/unless}}
+    </div>
+
+{{> presto-base-view-bottom}}
