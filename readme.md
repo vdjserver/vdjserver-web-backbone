@@ -62,11 +62,15 @@ npm install
 bower install
 
 - Setup local environment config file
-cp app/scripts/config/environment-config.js.defaults app/scripts/config/environment-config.js
+cd [project location]/docker
 
-vim app/scripts/config/environment-config.js
+cp environment-config/environment-config.js.defaults environment-config/environment-config.js
+
+vim environment-config/environment-config.js
 
 - Start local instance
+cd [project location]/component
+
 grunt server
 ```
 
@@ -83,7 +87,7 @@ B.) Building a local image
 You will need to create a local environment-config file with either option. A sample config file is available in this repository at "component/app/scripts/config/environment-config.js.defaults".
 
 ```
-cp component/app/scripts/config/environment-config.js.defaults ~/environment-config.js
+cp docker/environment-config/environment-config.js.defaults ~/environment-config.js
 
 vim ~/environment-config.js
 ```
