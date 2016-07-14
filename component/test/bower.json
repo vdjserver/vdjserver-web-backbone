@@ -2,8 +2,8 @@
     "name": "testing",
     "private": true,
     "dependencies": {
-        "chai": "1.8.0",
-        "mocha": "1.14.0",
+        "chai": "3.5.0",
+        "mocha": "2.4.5",
         "requirejs": "2.1.16",
         "sinon": "1.11.1"
     },
