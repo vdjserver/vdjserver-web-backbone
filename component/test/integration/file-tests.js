@@ -150,6 +150,7 @@ define([
                 assert.isFalse(fileMetadataResponse.value.isDeleted);
 
                 data.fileUuid = fileMetadataResponse.uuid;
+                model.stopListening();
 
                 done();
             });
@@ -157,6 +158,7 @@ define([
             model.listenTo(App.Instances.WebsocketManager, 'fileImportError', function(fileMetadataResponse) {
                 if (EnvironmentConfig.debug.test) console.log('fileImportError hit:');
                 if (EnvironmentConfig.debug.test) console.log(fileMetadataResponse);
+                model.stopListening();
 
                 done(new Error('Could not upload file.'));
             });
@@ -193,6 +195,46 @@ define([
                 })
                 ;
 
+        });
+
+        it('New project has one file', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.fileUuid, 'this test requires file uuid from prior test');
+
+            var model = data.project;
+
+            var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
+
+            projectFiles.fetch()
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    assert.equal(response.status, 'success');
+                    assert.isNull(response.message);
+
+                    assert.strictEqual(projectFiles.length, 1);
+                    var agaveFile = projectFiles.at(0);
+
+                    assert.equal(agaveFile.get('uuid'), data.fileUuid);
+                    assert.equal(agaveFile.get('owner'), EnvironmentConfig.test.serviceAccountKey);
+                    assert.equal(agaveFile.get('name'), 'projectFile');
+                    assert.equal(agaveFile.get('created'), agaveFile.get('lastUpdated'), 'data fields');
+
+                    var value = agaveFile.get('value');
+                    assert.equal(value.projectUuid, model.get('uuid'));
+                    assert.deepEqual(value.publicAttributes.tags, []);
+                    //assert.equal(value.fileType, Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_UNSPECIFIED);
+                    assert.equal(value.readDirection, '');
+                    assert.equal(value.name, 'blob');
+                    assert.isFalse(value.isDeleted);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("response error: " + JSON.stringify(error));
+                    done(new Error("Could not delete project."));
+                })
+                ;
         });
 
         it('Upload file from URL', function(done) {
@@ -234,6 +276,7 @@ define([
                 assert.isFalse(fileMetadataResponse.value.isDeleted);
 
                 data.fileUuid = fileMetadataResponse.uuid;
+                model.stopListening();
 
                 done();
             });
@@ -241,6 +284,7 @@ define([
             model.listenTo(App.Instances.WebsocketManager, 'fileImportError', function(fileMetadataResponse) {
                 if (EnvironmentConfig.debug.test) console.log('fileImportError hit:');
                 if (EnvironmentConfig.debug.test) console.log(fileMetadataResponse);
+                model.stopListening();
 
                 done(new Error('Could not upload file.'));
             });
@@ -276,7 +320,7 @@ define([
 
         });
 
-        it('New project has one file', function(done) {
+        it('New project has two files', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             assert.isDefined(data.fileUuid, 'this test requires file uuid from prior test');
 
@@ -291,8 +335,9 @@ define([
                     assert.equal(response.status, 'success');
                     assert.isNull(response.message);
 
-                    assert.strictEqual(projectFiles.length, 1);
+                    assert.strictEqual(projectFiles.length, 2);
                     var agaveFile = projectFiles.at(0);
+                    if (agaveFile.get('uuid') != data.fileUuid) agaveFile = projectFiles.at(1);
 
                     assert.equal(agaveFile.get('uuid'), data.fileUuid);
                     assert.equal(agaveFile.get('owner'), EnvironmentConfig.test.serviceAccountKey);
