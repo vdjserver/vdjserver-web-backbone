@@ -6,7 +6,7 @@ define([
     'use strict';
 
     describe('VDJServer-Agave Integration Tests (Files)', function()  {
-        this.timeout(50000);
+        this.timeout(500000);
 
         it('Should be able to login', function(done) {
 
