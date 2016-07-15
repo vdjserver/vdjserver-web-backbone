@@ -5,6 +5,10 @@ define([
 
     'use strict';
 
+    // some tests are altered for agave-staging due to permissions differences
+    var isAgaveStaging = false;
+    if (EnvironmentConfig.agave.hostname == 'https://dev.tenants.staging.agaveapi.co') isAgaveStaging = true;
+
     describe('VDJServer-Agave Integration Tests (Projects)', function()  {
         this.timeout(100000);
 
@@ -206,7 +210,9 @@ define([
                 var result = response.result;
 
                 // two permission entries, one for the user and one for vdj account
-                assert.strictEqual(result.length, 2);
+                // except on agave-staging where system role gives permissions for all users
+                if (isAgaveStaging) assert.strictEqual(result.length, 3);
+                else assert.strictEqual(result.length, 2);
 
                 var found_vdj = false;
                 var found_user1 = false;
@@ -259,7 +265,9 @@ define([
                 var result = response.result;
 
                 // two permission entries, one for the user and one for vdj account
-                assert.strictEqual(result.length, 2);
+                // except on agave-staging where system role gives permissions for all users
+                if (isAgaveStaging) assert.strictEqual(result.length, 3);
+                else assert.strictEqual(result.length, 2);
 
                 var found_vdj = false;
                 var found_user1 = false;
@@ -311,7 +319,9 @@ define([
                 var result = response.result;
 
                 // two permission entries, one for the user and one for vdj account
-                assert.strictEqual(result.length, 2);
+                // except on agave-staging where system role gives permissions for all users
+                if (isAgaveStaging) assert.strictEqual(result.length, 3);
+                else assert.strictEqual(result.length, 2);
 
                 var found_vdj = false;
                 var found_user1 = false;
@@ -363,7 +373,9 @@ define([
                 var result = response.result;
 
                 // two permission entries, one for the user and one for vdj account
-                assert.strictEqual(result.length, 2);
+                // except on agave-staging where system role gives permissions for all users
+                if (isAgaveStaging) assert.strictEqual(result.length, 3);
+                else assert.strictEqual(result.length, 2);
 
                 var found_vdj = false;
                 var found_user1 = false;
@@ -1864,7 +1876,9 @@ define([
                 var result = response.result;
 
                 // two permission entries, one for the user and one for vdj account
-                assert.strictEqual(result.length, 2);
+                // except on agave-staging where system role gives permissions for all users
+                if (isAgaveStaging) assert.strictEqual(result.length, 3);
+                else assert.strictEqual(result.length, 2);
 
                 var found_vdj = false;
                 var found_user1 = false;
@@ -1917,7 +1931,9 @@ define([
                 var result = response.result;
 
                 // two permission entries, one for the user and one for vdj account
-                assert.strictEqual(result.length, 2);
+                // except on agave-staging where system role gives permissions for all users
+                if (isAgaveStaging) assert.strictEqual(result.length, 3);
+                else assert.strictEqual(result.length, 2);
 
                 var found_vdj = false;
                 var found_user1 = false;
@@ -1969,7 +1985,9 @@ define([
                 var result = response.result;
 
                 // two permission entries, one for the user and one for vdj account
-                assert.strictEqual(result.length, 2);
+                // except on agave-staging where system role gives permissions for all users
+                if (isAgaveStaging) assert.strictEqual(result.length, 3);
+                else assert.strictEqual(result.length, 2);
 
                 var found_vdj = false;
                 var found_user1 = false;
@@ -2021,7 +2039,9 @@ define([
                 var result = response.result;
 
                 // two permission entries, one for the user and one for vdj account
-                assert.strictEqual(result.length, 2);
+                // except on agave-staging where system role gives permissions for all users
+                if (isAgaveStaging) assert.strictEqual(result.length, 3);
+                else assert.strictEqual(result.length, 2);
 
                 var found_vdj = false;
                 var found_user1 = false;
