@@ -94,6 +94,7 @@ define(['app'], function(App) {
             'project/:id/associations/qual':    'projectFileQualAssociations',
             'project/:id/associations/paired-reads': 'projectFilePairedReadAssociations',
             'project/:id/settings':             'projectSettings',
+            'project/:id/metadata':             'projectMetadata',
             'project/:id/users':                'projectManageUsers',
             'project/:id/jobs':                 'projectJobHistory',
             'project/:id/jobs/:jobId':          'projectJobOutput',
@@ -322,6 +323,21 @@ define(['app'], function(App) {
                 );
 
                 App.Layouts.content.setView('.content', new App.Views.Projects.Settings({projectUuid: projectUuid}));
+                App.Layouts.content.render();
+            };
+
+            _routeWithTokenRefreshCheck(destinationRoute);
+        },
+
+        projectMetadata: function(projectUuid) {
+
+            var destinationRoute = function() {
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectMetadata
+                );
+
+                App.Layouts.content.setView('.content', new App.Views.Projects.Metadata({projectUuid: projectUuid}));
                 App.Layouts.content.render();
             };
 

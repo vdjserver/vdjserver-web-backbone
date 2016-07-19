@@ -2221,6 +2221,116 @@ define([
         },
     });
 
+    Projects.StudyMetadata = Backbone.View.extend({
+
+        // Public Methods
+        template: 'project/study-metadata',
+        initialize: function(parameters) {
+
+            // Project settings
+            this.permissions = new Backbone.Agave.Collection.Permissions({uuid: this.projectUuid});
+            this.model = new Backbone.Agave.Model.Project();
+
+            var that = this;
+
+            if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
+                this.listenTo(App.Datastore.Collection.ProjectCollection, 'sync', function() {
+                    that.model = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
+                    that.render();
+                });
+            } else {
+                this.model = App.Datastore.Collection.ProjectCollection.get(this.projectUuid);
+                this.render();
+            }
+
+        },
+        serialize: function() {
+            return {
+                project: this.model.toJSON(),
+                users: this.permissions.toJSON(),
+            };
+        },
+        afterRender: function() {
+        },
+        events: {
+            'click  #save-project-metadata': '_saveProjectMetadata',
+            'submit #project-metadata-form': '_saveProjectMetadata',
+
+            'click  #revert-project-modal': '_revertModal',
+            'click  #revert-project': '_revertProjectMetadata',
+        },
+
+        // Private Methods
+        // Event Responders
+        _saveProjectMetadata: function(e) {
+            e.preventDefault();
+
+            var value = this.model.get('value');
+            var d = Backbone.Agave.Model.Project.prototype.defaults.call();
+
+            for (var p in d.value) {
+              value[p] = $('#project-' + p).val();
+            }
+
+            this.model.set('value', value);
+
+            this.model.save()
+                .done(function() {
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
+                    telemetry.set('view', 'Projects.Metadata._saveProjectMetadata');
+                    telemetry.save();
+                })
+                ;
+        },
+
+        _revertModal: function(e) {
+            e.preventDefault();
+
+            $('#revert-modal').modal('show');
+        },
+
+        _revertProjectMetadata: function(e) {
+            var that = this;
+            $('#revert-modal').modal('hide')
+                .on('hidden.bs.modal', function() {
+                    that.render();
+                })
+            ;
+        },
+    });
+
+    Projects.Metadata = Backbone.View.extend({
+        template: 'project/metadata',
+        initialize: function() {
+
+            // Setup subviews
+            this.projectView = new Projects.StudyMetadata({ projectUuid: this.projectUuid });
+            this.setView('#project-metadata-entry', this.projectView);
+            this.projectView.render();
+
+            //that.sampleView = new Query.Expression({ fields: sampleFields });
+            //that.setView('#sample-query-expressions', that.sampleView);
+            //that.sampleView.render();
+
+            //that.sequenceView = new Query.Expression({ fields: sequenceFields });
+            //that.setView('#sequence-query-expressions', that.sequenceView);
+            //that.sequenceView.render();
+
+            this.render;
+        },
+        serialize: function() {
+            return {
+            };
+        },
+        events: {
+        },
+
+    });
+
     App.Views.Projects = Projects;
     return Projects;
 });

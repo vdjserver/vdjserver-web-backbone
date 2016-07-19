@@ -19,7 +19,19 @@ function(
                     name: 'project',
                     owner: '',
                     value: {
-                        'name':  ''
+                        'name':  '',
+                        'description': '',
+                        'project_type': '',
+                        'grant_agency': '',
+                        'supporting_grants': '',
+                        'pi_name': '',
+                        'pi_institution': '',
+                        'pi_email': '',
+                        'contact_name': '',
+                        'contact_institution': '',
+                        'contact_email': '',
+                        'publications': '',
+                        'ncbi_bioproject': ''
                     }
                 }
             );

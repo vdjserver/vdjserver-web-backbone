@@ -1,0 +1,104 @@
+        <form id="project-metadata-form" class="form-horizontal">
+          <div class="form-group">
+            <label for="project-name" class="col-md-2 control-label">Title:</label>
+            <div class="col-md-10">
+              <input type="text" class="form-control" id="project-name" placeholder="Title" value="{{project.value.name}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="project-description" class="col-md-2 control-label">Description:</label>
+            <div class="col-md-10">
+              <textarea class="form-control" id="project-description">{{project.value.description}}</textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="project-project_type" class="col-md-2 control-label">Type:</label>
+            <div class="col-md-4">
+              <input type="text" class="form-control" id="project-project_type" placeholder="Project Type" value="{{project.value.project_type}}">
+            </div>
+            <label for="project-uuid" class="col-md-2 control-label">VDJServer UUID:</label>
+            <div class="col-md-4">
+              <input type="text" class="form-control" id="project-uuid" readonly value="{{project.uuid}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="project-pi_name" class="col-md-2 control-label">Principal Investigator:</label>
+            <div class="col-md-2">
+              <input type="text" class="form-control" id="project-pi_name" placeholder="PI Name" value="{{project.value.pi_name}}">
+            </div>
+            <label for="project-pi_institution" class="col-md-1 control-label">Institution:</label>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="project-pi_institution" placeholder="PI Institution Name" value="{{project.value.pi_institution}}">
+            </div>
+            <label for="project-pi_email" class="col-md-1 control-label">Email:</label>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="project-pi_email" placeholder="PI Email" value="{{project.value.pi_email}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="project-contact_name" class="col-md-2 control-label">Contact:</label>
+            <div class="col-md-2">
+              <input type="text" class="form-control" id="project-contact_name" placeholder="Contact Name" value="{{project.value.contact_name}}">
+            </div>
+            <label for="project-contact_institution" class="col-md-1 control-label">Institution:</label>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="project-contact_institution" placeholder="Contact Institution Name" value="{{project.value.contact_institution}}">
+            </div>
+            <label for="project-contact_email" class="col-md-1 control-label">Email:</label>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="project-contact_email" placeholder="Contact Email" value="{{project.value.contact_email}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="project-grant_agency" class="col-md-2 control-label">Funding Agency:</label>
+            <div class="col-md-3">
+              <input type="text" class="form-control" id="project-grant_agency" placeholder="Agency Name" value="{{project.value.grant_agency}}">
+            </div>
+            <label for="project-supporting_grants" class="col-md-1 control-label">Grants:</label>
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="project-supporting_grants" placeholder="Supporting Grants" value="{{project.value.supporting_grants}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="project-publications" class="col-md-2 control-label">Publications:</label>
+            <div class="col-md-6">
+              <input type="text" class="form-control" id="project-publications" placeholder="Publication List" value="{{project.value.publications}}">
+            </div>
+            <label for="project-ncbi_bioproject" class="col-md-2 control-label">NCBI BioProject:</label>
+            <div class="col-md-2">
+              <input type="text" class="form-control" id="project-ncbi_bioproject" readonly placeholder="PRJNA79689" value="{{project.value.ncbi_bioproject}}">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+              <button id="save-project-metadata" type="submit" class="btn btn-success">Save Project Metadata</button>
+            </div>
+            <div class="col-md-3">
+              <button id="revert-project-modal" class="btn btn-warning">Revert Changes</button>
+            </div>
+          </div>
+        </form>
+
+        <div>
+            <div class="modal fade" id="revert-modal" tabindex="-1" role="dialog" aria-labelledby="revert-modal-label" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="revert-modal-label">Revert Metadata Changes</h4>
+                        </div>
+                        <form id="revert-project-form" role="form">
+                            <div class="modal-body">
+                                Are you sure that you want to throw away your changes?
+                            </div>
+                            <div class="modal-footer">
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                    <input type="button" class="btn btn-danger" id="revert-project" value="Revert">
+                                </div>
+                            </div>
+                        </form>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div>
