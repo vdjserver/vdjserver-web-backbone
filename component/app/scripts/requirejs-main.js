@@ -58,6 +58,9 @@ define([
     'agave-system',
     'agave-systems',
 
+    'agave-sample-metadata',
+    'agave-samples-metadata',
+
     // Regular Collections and Models
     'models/message',
     'models/notification',
