@@ -22,10 +22,10 @@ define([
     Presto.Barcode = Backbone.View.extend({
         template: 'jobs/presto/presto-barcode',
         initialize: function(options) {
-            this.title = 'Barcodes';
+            this.title = 'Demultiplex Barcodes';
         },
         prepareFiles: function(allFiles) {
-            this.barcodeFiles = allFiles.getBarcodeCollection();
+            this.barcodeFiles = this.allFiles.getBarcodeCollection();
         },
         serialize: function() {
 
@@ -40,48 +40,29 @@ define([
     Presto.UMI = Backbone.View.extend({
         template: 'jobs/presto/presto-umi',
         initialize: function(options) {
-            this.title = 'Barcodes';
+            this.title = 'Universal Molecular Identifiers (UMI)';
         },
         serialize: function() {
 
             return {
                 title: this.title,
-            };
-        },
-    });
-
-    Presto.BarcodeOrUMI = Backbone.View.extend({
-        template: 'jobs/presto/presto-barcode-or-umi',
-        initialize: function(options) {
-            this.title = 'Barcodes or UMI';
-
-						// Setup subviews
-						this.barcodeView = new Presto.Barcode();
-						this.umiView = new Presto.UMI();
-						this.setView('#presto-barcode-umi', this.barcodeView);
-        },
-        prepareFiles: function() {
-            this.barcodeView.prepareFiles(this.allFiles);
-        },
-        serialize: function() {
-
-            return {
-                title: this.title,
-                isRemovable: true,
             };
         },
         events: {
-            'change .barcode-or-umi': 'swapView',
+            'change #umi-consensus': 'swapFields',
+            'click #umi-consensus': 'swapFields',
         },
-        swapView: function(e) {
-            if (e.target.value == 'barcode') {
-                this.setView('#presto-barcode-umi', this.barcodeView);
-                this.barcodeView.render();
+		    swapFields: function(e){
+		        if (e.target.checked) {
+                $('#umi-max-error').prop('disabled', false);
+                $('#umi-max-gap').prop('disabled', false);
+                $('#umi-min-frequency').prop('disabled', false);
             } else {
-                this.setView('#presto-barcode-umi', this.umiView);
-                this.umiView.render();
+                $('#umi-max-error').prop('disabled', true);
+                $('#umi-max-gap').prop('disabled', true);
+                $('#umi-min-frequency').prop('disabled', true);
             }
-        },
+		    },
     });
 
     Presto.FinalOutputFilename = Backbone.View.extend({
@@ -111,9 +92,9 @@ define([
     });
 
     Presto.JPrimer = Backbone.View.extend({
-        template: 'jobs/presto/presto-j-primer',
+        template: 'jobs/presto/presto-reverse-primer',
         initialize: function(options) {
-            this.title = 'J Primer';
+            this.title = 'Reverse Primer';
         },
         prepareFiles: function() {
             this.primerFiles = this.allFiles.getPrimerCollection();
@@ -179,9 +160,9 @@ define([
     });
 
     Presto.VPrimer = Backbone.View.extend({
-        template: 'jobs/presto/presto-v-primer',
+        template: 'jobs/presto/presto-forward-primer',
         initialize: function(options) {
-            this.title = 'V Primer';
+            this.title = 'Forward Primer';
         },
         prepareFiles: function() {
             this.primerFiles = this.allFiles.getPrimerCollection();

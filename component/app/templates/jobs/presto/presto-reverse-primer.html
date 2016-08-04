@@ -8,9 +8,6 @@
                 </div>
             </div>
         {{else}}
-            <div class="col-md-6">
-
-                <div class="row">
                     <div class="col-md-12">
 
                         <table class="table">
@@ -22,30 +19,60 @@
                                     <td>
                                         <select
                                             class="job-form-item"
-                                            id="v-primer-file"
-                                            name="v-primer-file"
+                                            id="j-primer-file"
+                                            name="j-primer-file"
                                         >
                                             {{#each primerFiles}}
                                                 <option value={{value.name}}>{{value.name}}</option>
                                             {{/each}}
                                         </select>
                                     </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        This module locates the primer region within reverse orientation reads.
+                                        </p>
+                                        <p>
+                                        This step can be removed from the workflow.
+                                        </p>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
+                                        Reverse UMI
+                                    </td>
+                                    <td>
                                         <input
-                                          class="job-form-item v-primer-type"
-                                          name="v-primer-type"
+                                          class="job-form-item"
+                                          name="reverse-umi"
+                                          type="checkbox"
+                                        >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Specify to encode sequences with unique molecular identifiers (UMI) found preceding the primer region.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan=2>
+                                        <input
+                                          class="job-form-item j-primer-type"
+                                          name="j-primer-type"
                                           type="radio"
                                           value="score"
                                           checked
                                         > score
                                         <input
-                                          class="job-form-item v-primer-type"
-                                          name="v-primer-type"
+                                          class="job-form-item j-primer-type"
+                                          name="j-primer-type"
                                           type="radio"
                                           value="align"
                                         > align
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Indicate whether primer matches are found by scoring at a fixed position, or using pairwise local alignment.
+                                        </p>
                                     </td>
                                 </tr>
                                 <tr>
@@ -54,13 +81,18 @@
                                     </td>
                                     <td>
                                         <input
-                                          class="job-form-item v-score-fields"
-                                          name="v-primer-start-position"
+                                          class="job-form-item j-score-fields"
+                                          name="j-primer-start-position"
                                           type="number"
                                           value="0"
                                           step="1"
                                           min="0"
                                         >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        The starting position of the primer. This also defines the UMI length.
+                                        </p>
                                     </td>
                                 </tr>
                                 <tr>
@@ -69,14 +101,19 @@
                                     </td>
                                     <td>
                                         <input
-                                          class="job-form-item v-align-fields"
-                                          name="v-primer-max-error"
+                                          class="job-form-item j-align-fields"
+                                          name="j-primer-max-error"
                                           type="number"
                                           value="0.3"
                                           step="0.01"
                                           min="0"
                                           disabled
                                         >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Maximum allowable error rate.
+                                        </p>
                                     </td>
                                 </tr>
                                 <tr>
@@ -85,8 +122,8 @@
                                     </td>
                                     <td>
                                         <input
-                                          class="job-form-item v-align-fields"
-                                          name="v-primer-max-length"
+                                          class="job-form-item j-align-fields"
+                                          name="j-primer-max-length"
                                           type="number"
                                           value="50"
                                           step="1"
@@ -95,26 +132,16 @@
                                           disabled
                                         >
                                     </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Length of the sequence window to scan for primers.
+                                        </p>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
 
                     </div>
-                </div>
-
-            </div>
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-12">
-                        This module locates v primer regions within reads.
-                    </div>
-                </div>
-                <div class="row row-with-spacer">
-                    <div class="col-md-12">
-                        This step can be removed from the workflow template.
-                    </div>
-                </div>
-            </div>
         {{/unless}}
     </div>
 
