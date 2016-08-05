@@ -1555,7 +1555,7 @@ define([
                 var isDuplicate = this.fileListings.checkForDuplicateFilename(filename);
 
                 if (isDuplicate === true) {
-                    this.parentView.trigger('duplicateFileError', filename);
+                    this.projectDetailView.trigger('duplicateFileError', filename);
                 }
 
                 return isDuplicate;
