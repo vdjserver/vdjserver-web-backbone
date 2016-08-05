@@ -1,11 +1,27 @@
-    <div class="row row-with-spacer">
-            <div class="col-md-6">
+{{> presto-base-view-top}}
 
-                <div class="row">
+    <div class="row row-with-spacer">
                     <div class="col-md-12">
 
                         <table class="table">
                             <tbody>
+                                <tr>
+                                    <td>
+                                    Build UMI Consensus
+                                    </td>
+                                    <td>
+                                        <input
+
+                                          class="job-form-item"
+                                          name="umi-consensus"
+                                          id="umi-consensus"
+                                          type="checkbox"
+                                        >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                    This module generates consensus sequence from Unique Molecular Identifiers (UMI).
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td>
                                         Maximum Error
@@ -14,11 +30,16 @@
                                         <input
                                           class="job-form-item"
                                           name="umi-max-error"
+                                          id="umi-max-error"
                                           type="number"
                                           value="0.1"
                                           step="0.01"
                                           min="0"
+                                          disabled
                                         >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                    Remove read groups exceeding the given error threshold.
                                     </td>
                                 </tr>
                                 <tr>
@@ -29,11 +50,16 @@
                                         <input
                                           class="job-form-item"
                                           name="umi-max-gap"
+                                          id="umi-max-gap"
                                           type="number"
                                           value="0.5"
                                           step="0.01"
                                           min="0"
+                                          disabled
                                         >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                    Threshold for the frequency of allowed gap values for each position. Positions exceeding the threshold are deleted from the consensus.
                                     </td>
                                 </tr>
                                 <tr>
@@ -44,25 +70,21 @@
                                         <input
                                           class="job-form-item"
                                           name="umi-min-frequency"
+                                          id="umi-min-frequency"
                                           type="number"
                                           value="0.6"
                                           step="0.01"
                                           min="0"
+                                          disabled
                                         >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                    Fraction of character occurrences under which an ambiguous character is assigned.
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
 
                     </div>
-                </div>
-
-            </div>
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-12">
-                        This module generates consensus barcode sequence from Unique Molecular Identifiers (UMI).
-                    </div>
-                </div>
-            </div>
-</div>
+    </div>
+{{> presto-base-view-bottom}}

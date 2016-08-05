@@ -610,7 +610,7 @@ function(
         _serializeFileInputs: function(fileInputs, formData, selectedFileMetadatas, allFileMetadatas) {
 
             if (formData.hasOwnProperty('barcode-file')) {
-                fileInputs['BarcodeOrUMIFile'] = this._getTranslatedFilePath(formData['barcode-file'], allFileMetadatas);
+                fileInputs['BarcodeFile'] = this._getTranslatedFilePath(formData['barcode-file'], allFileMetadatas);
             }
 
             if (formData.hasOwnProperty('j-primer-file')) {
@@ -639,10 +639,10 @@ function(
             // default to single but overridden if paired-end read files selected
             parameters['Workflow'] = 'single';
 
-            if (formData.hasOwnProperty('barcode-or-umi'))
-                parameters['Barcode'] = formData['barcode-or-umi'];
+            if (formData.hasOwnProperty('barcode-file'))
+                parameters['Barcode'] = true;
             else
-                parameters['Barcode'] = 'none';
+                parameters['Barcode'] = false;
 
             if (formData.hasOwnProperty('barcode-max-error')) {
                 parameters['BarcodeMaxError'] = parseFloat(formData['barcode-max-error']);
@@ -656,16 +656,20 @@ function(
                 parameters['BarcodeSplitFlag'] = formData['barcode-split-flag'];
             }
 
-            if (formData.hasOwnProperty('umi-max-error')) {
-                parameters['UMIMaxError'] = parseFloat(formData['umi-max-error']);
-            }
+            if (formData.hasOwnProperty('umi-consensus')) {
+                parameters['UMIConsensus'] = formData['umi-consensus'];
 
-            if (formData.hasOwnProperty('umi-max-gap')) {
-                parameters['UMIMaxGap'] = parseFloat(formData['umi-max-gap']);
-            }
+                if (formData.hasOwnProperty('umi-max-error')) {
+                    parameters['UMIMaxError'] = parseFloat(formData['umi-max-error']);
+                }
 
-            if (formData.hasOwnProperty('umi-min-frequency')) {
-                parameters['UMIMinFrequency'] = parseFloat(formData['umi-min-frequency']);
+                if (formData.hasOwnProperty('umi-max-gap')) {
+                    parameters['UMIMaxGap'] = parseFloat(formData['umi-max-gap']);
+                }
+
+                if (formData.hasOwnProperty('umi-min-frequency')) {
+                    parameters['UMIMinFrequency'] = parseFloat(formData['umi-min-frequency']);
+                }
             }
 
             if (formData.hasOwnProperty('final-output-filename')) {
@@ -685,6 +689,9 @@ function(
             if (formData.hasOwnProperty('j-primer-type')) {
                 parameters['JPrimer'] = formData['j-primer-type'];
 
+                if (formData.hasOwnProperty('reverse-umi'))
+                    parameters['JPrimerUMI'] = formData['reverse-umi'];
+
                 if (formData.hasOwnProperty('j-primer-max-error'))
                     parameters['JPrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
 
@@ -700,6 +707,9 @@ function(
 
             if (formData.hasOwnProperty('v-primer-type')) {
                 parameters['VPrimer'] = formData['v-primer-type'];
+
+                if (formData.hasOwnProperty('forward-umi'))
+                    parameters['VPrimerUMI'] = formData['forward-umi'];
 
                 if (formData.hasOwnProperty('v-primer-max-error'))
                     parameters['VPrimerMaxError'] = parseFloat(formData['v-primer-max-error']);
