@@ -268,8 +268,11 @@ define([
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                var totalFileSize = projectFiles.getTotalFileSize();
-                job.configureExecutionHostForFileSize(totalFileSize);
+		job.set('totalFileSize', 100); // small size so it goes to small execution system
+		job._configureExecutionHostForFileSize();
+                job.unset('maxRunTime');
+                job.unset('nodeCount');
+                job.unset('processorsPerNode');
 
                 var allFiles = projectFiles.clone();
                 var selectedFileListings = _.extend({}, projectFiles);

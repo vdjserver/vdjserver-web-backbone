@@ -154,7 +154,7 @@ define([
             ;
         });
 
-        it('Account without recaptcha', function(done) {
+        it.skip('Account without recaptcha', function(done) {
 
             var model = new Backbone.Agave.Model.Account.NewAccount();
 
