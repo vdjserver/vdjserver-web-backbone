@@ -164,7 +164,7 @@ define([
 
         });
 
-        it('Check for execution system (' + EnvironmentConfig.agave.systems.execution.stampede.hostname + ')', function(done) {
+        it.skip('Check for execution system (' + EnvironmentConfig.agave.systems.execution.stampede.hostname + ')', function(done) {
 
             var jqxhr = Backbone.Agave.ajax({
                 headers: Backbone.Agave.oauthHeader(),
@@ -196,7 +196,7 @@ define([
 
         });
 
-        it('Check for application (' + EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast + ')', function(done) {
+        it.skip('Check for application (' + EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast + ')', function(done) {
 
             var jqxhr = Backbone.Agave.ajax({
                 headers: Backbone.Agave.oauthHeader(),
@@ -229,7 +229,7 @@ define([
 
         });
 
-        it('Check for application (' + EnvironmentConfig.agave.systems.execution.ls5.apps.vdjPipe + ')', function(done) {
+        it.skip('Check for application (' + EnvironmentConfig.agave.systems.execution.ls5.apps.vdjPipe + ')', function(done) {
 
             var jqxhr = Backbone.Agave.ajax({
                 headers: Backbone.Agave.oauthHeader(),
@@ -262,7 +262,7 @@ define([
 
         });
 
-        it('Check for application (' + EnvironmentConfig.agave.systems.execution.stampede.apps.igBlast + ')', function(done) {
+        it.skip('Check for application (' + EnvironmentConfig.agave.systems.execution.stampede.apps.igBlast + ')', function(done) {
 
             var jqxhr = Backbone.Agave.ajax({
                 headers: Backbone.Agave.oauthHeader(),
@@ -295,7 +295,7 @@ define([
 
         });
 
-        it('Check for application (' + EnvironmentConfig.agave.systems.execution.stampede.apps.vdjPipe + ')', function(done) {
+        it.skip('Check for application (' + EnvironmentConfig.agave.systems.execution.stampede.apps.vdjPipe + ')', function(done) {
 
             var jqxhr = Backbone.Agave.ajax({
                 headers: Backbone.Agave.oauthHeader(),

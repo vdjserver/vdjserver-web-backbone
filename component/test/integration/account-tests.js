@@ -303,7 +303,7 @@ define([
       // skip the create account test case, hard code the username in the next
       // test case, and run the metadata verify; this will allow you to use
       // that data in subsequent tests without creating a new account for each run.
-      describe.skip('Account creation', function()  {
+      describe('Account creation', function()  {
 
         it('Create Account - send email', function(done) {
 
@@ -671,7 +671,7 @@ define([
         });
       }); // describe
 
-      describe.skip('Resend verification email', function()  {
+      describe('Resend verification email', function()  {
 
         it.skip('Resend verification email - invalid username', function(done) {
 
@@ -769,14 +769,14 @@ define([
             .fail(function(response, errorText, errorThrown) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                done(new Error("Sent verification email with invalid username"));
+                done(new Error("Could not resend verification email"));
             })
             ;
         });
 
       }); // describe
 
-      describe.skip('Verify Account', function()  {
+      describe('Verify Account', function()  {
 
         it.skip('Verify New Account - invalid uuid', function(done) {
 
@@ -1030,7 +1030,7 @@ define([
 
       }); // describe
 
-      describe.skip('Account change password', function()  {
+      describe('Account change password', function()  {
 
         it('Change password, unauthorized', function(done) {
 
@@ -1367,7 +1367,7 @@ define([
         });
       });
 
-      describe.skip('Account forgot password', function()  {
+      describe('Account forgot password', function()  {
 
         it('Forgot password with invalid username', function(done) {
 
