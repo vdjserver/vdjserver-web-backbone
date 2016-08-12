@@ -71,11 +71,20 @@ var EnvironmentConfig = {
     'debug': {
         'console': false,
         'disableJobs': false,
+        'test': true
     },
     'recaptcha': {
         'publicKey': '6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc',
     },
     'vdjApi': {
         'hostname': 'https://vdjserver.org/api/v1',
+    },
+    'test': {
+        'username': 'apitest',
+        'password': '',
+        'username2': 'another',  // needs to be different
+        'password2': '',
+        'serviceAccountKey': '',
+        'serviceAccountSecret': '',
     },
 };

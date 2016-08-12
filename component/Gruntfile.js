@@ -500,8 +500,9 @@ module.exports = function(grunt) {
         'clean:server',
         'coffee',
         'connect:test',
-        'mocha',
+        //'mocha',
         //'watch:test',
+        'watch'
     ]);
 
     grunt.registerTask('lint', [

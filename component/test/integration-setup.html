@@ -21,7 +21,6 @@
         </script>
 
 
-
         <!-- include source files here... -->
         <script src="scripts/config/environment-config.js"></script>
 
@@ -33,8 +32,8 @@
         <script>
 
             require.onError = function (err) {
-                console.log("require onError hit");
-                console.log(err.requireType);
+                //console.log("require onError hit");
+                //console.log(err.requireType);
                 if (err.requireType === 'timeout') {
                     console.log('modules: ' + err.requireModules);
                 }
@@ -441,13 +440,8 @@
                 // Routers
                 'router',
 
-                //'../spec/test',
-                '../spec/app-tests',
-                '../spec/vendor/agave-tests',
-                '../spec/models/agave-profile-tests',
-                '../spec/models/agave-project-tests',
-                //'../spec/collections/agave-projects-tests',
-                //'../spec/models/agave-job-tests',
+                // setup and basic checks for integration tests
+                '../integration/setup-tests',
 
             ], function() {
                 'use strict';
