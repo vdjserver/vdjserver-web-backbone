@@ -84,6 +84,7 @@ require.config({
         'serialization-tools': 'utilities/serialization-tools',
         'vdjpipe-workflow-parser': 'utilities/vdjpipe-workflow-parser',
         'vdjpipe-view-factory': 'utilities/vdjpipe-view-factory',
+        'presto-view-factory': 'utilities/presto-view-factory',
 
         // Generic Views
         'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
@@ -111,6 +112,7 @@ require.config({
         'public-views': 'views/public-views',
         'analyses-views': 'views/analyses-views',
         'vdjpipe-views': 'views/vdjpipe-views',
+        'presto-views': 'views/presto-views',
         'feedback-views': 'views/feedback-views',
         'software-views': 'views/software-views',
         'community-views': 'views/community-views',

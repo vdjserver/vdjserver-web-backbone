@@ -1,14 +1,8 @@
 <li>
-    <div class="panel panel-primary vdj-pipe-parameter job-parameter">
+    <div class="panel panel-primary presto-parameter job-parameter">
         <div class="panel-heading">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="pull-left">
-                        {{#if isOrderable}}
-                            <i class="fa fa-bars"></i>
-                            &nbsp;
-                        {{/if}}
-                    </div>
 
                     <div class="pull-right">
                         {{#if isRemovable}}
@@ -19,12 +13,10 @@
                     </div>
 
                     <div class="text-center">
-                        <strong>{{vdjpipeOptionTitle}}</strong>
+                        <strong>{{title}}</strong>
                     </div>
-
                 </div>
             </div>
-
         </div>
 
         <div class="panel-body">
@@ -33,7 +25,7 @@
                     <input
                         class="job-form-item"
                         type="hidden"
-                        name="{{inputCount}}-{{parameterType}}"
+                        name="{{parameterType}}"
                     >
                 </div>
             </div>
