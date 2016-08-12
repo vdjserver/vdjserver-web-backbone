@@ -226,15 +226,7 @@ define([
 
             return systems.fetch()
                 .then(function() {
-
-                    var jobExecutionSystemHostname = jobModel.get('executionSystem');
-                    var isSmallSystem = systems.isSmallExecutionSystem(jobExecutionSystemHostname);
-
-                    if (isSmallSystem === false) {
-                        var executionSystemName = systems.getLargeExecutionSystem();
-
-                        jobModel.configureLargeExecutionHost(executionSystemName);
-                    }
+                    jobModel.configureExecutionHost(systems);
                 })
                 .then(function() {
                     // DEBUG
@@ -342,9 +334,7 @@ define([
 
                 var job = new Backbone.Agave.Model.Job.VdjPipe();
 
-                // TODO: refactor this to be called during |Jobs.StagingBase.startJob()|
-                var totalFileSize = this.selectedFileListings.getTotalFileSize();
-                job.configureExecutionHostForFileSize(totalFileSize);
+                job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
 
                 var selectedFileListings = _.extend({}, this.selectedFileListings);
                 var allFiles = _.extend({}, this.allFiles);
@@ -511,6 +501,8 @@ define([
 
             var job = new Backbone.Agave.Model.Job.IgBlast();
 
+            job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
+
             job.prepareJob(
                 igblastForm,
                 this.selectedFileListings,
@@ -597,6 +589,8 @@ define([
                 prestoForm = _.extend(formData, prestoForm);
 
                 var job = new Backbone.Agave.Model.Job.Presto();
+
+                job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
 
                 job.prepareJob(
                     prestoForm,
