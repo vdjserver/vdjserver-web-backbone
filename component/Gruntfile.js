@@ -233,6 +233,20 @@ module.exports = function(grunt) {
             },
         },
         copy: {
+            environmentConfig: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        flatten: true,
+                        cwd: '<%= yeoman.app %>',
+                        dest: '<%= yeoman.app %>/scripts/config',
+                        src: [
+                            '../../docker/environment-config/environment-config.js'
+                        ]
+                    }
+                ]
+            },
             fontAwesome: {
                 files: [
                     {
@@ -487,6 +501,7 @@ module.exports = function(grunt) {
             'clean:server',
             'copy:fontAwesome',
             'copy:bowerCss',
+            'copy:environmentConfig',
             'coffee:dist',
             'sass:dev',
             'concat:dev',
@@ -499,6 +514,7 @@ module.exports = function(grunt) {
     grunt.registerTask('test', [
         'clean:server',
         'coffee',
+        'copy:environmentConfig',
         'connect:test',
         //'mocha',
         //'watch:test',
