@@ -30,13 +30,6 @@ define([
 
         switch (viewName) {
 
-            case 'barcodeOrUMI': {
-
-                view = new App.Views.Presto.BarcodeOrUMI();
-
-                break;
-            }
-
             case 'barcode': {
 
                 view = new App.Views.Presto.Barcode();
@@ -65,7 +58,7 @@ define([
                 break;
             }
 
-            case 'jPrimer': {
+            case 'reversePrimer': {
 
                 view = new App.Views.Presto.JPrimer();
 
@@ -93,7 +86,7 @@ define([
                 break;
             }
 
-            case 'vPrimer': {
+            case 'forwardPrimer': {
 
                 view = new App.Views.Presto.VPrimer();
 

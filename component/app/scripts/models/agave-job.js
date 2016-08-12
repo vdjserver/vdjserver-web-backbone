@@ -236,6 +236,7 @@ function(
                     Backbone.Agave.JobModel.prototype.defaults,
                     {
                         appId: EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast,
+                        appName: 'igBlast',
                         inputs: {
                             query: '',
                         },
@@ -251,13 +252,6 @@ function(
                 Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
 
                 this.inputParameterName = 'query';
-            },
-            configureLargeExecutionHost: function(systemName) {
-
-                this.set({
-                    'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.igBlast,
-                    'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
-                });
             },
             prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
@@ -305,37 +299,12 @@ function(
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
                     appId: EnvironmentConfig.agave.systems.execution.ls5.apps.vdjPipe,
+                    appName: 'vdjPipe',
                 }
             );
         },
         initialize: function(options) {
             Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
-        },
-        configureExecutionHostForFileSize: function(fileSize) {
-
-            if (_.isNumber(fileSize)) {
-                if (fileSize < 5000000) {
-
-                    // TODO: pull in upStatus from the systems collection and automatically switch to another system if this one is down
-                    var smallExecutionSystem = EnvironmentConfig.agave.systems.smallExecutionSystemPreference[0];
-
-                    this.set({
-                        'appId': EnvironmentConfig.agave.systems.execution[smallExecutionSystem].apps.vdjPipe,
-                        'executionSystem': EnvironmentConfig.agave.systems.execution[smallExecutionSystem].hostname,
-                    });
-
-                    this.unset('maxRunTime');
-                    this.unset('nodeCount');
-                    this.unset('processorsPerNode');
-                }
-            }
-        },
-        configureLargeExecutionHost: function(systemName) {
-
-            this.set({
-                'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.vdjPipe,
-                'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
-            });
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
@@ -556,6 +525,7 @@ function(
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
                     appId: EnvironmentConfig.agave.systems.execution.ls5.apps.presto,
+                    appName: 'presto',
                     inputs: {
                         query: '',
                     },
@@ -566,13 +536,6 @@ function(
         },
         initialize: function(options) {
             Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
-        },
-        configureLargeExecutionHost: function(systemName) {
-
-            this.set({
-                'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.presto,
-                'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
-            });
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
@@ -610,7 +573,7 @@ function(
         _serializeFileInputs: function(fileInputs, formData, selectedFileMetadatas, allFileMetadatas) {
 
             if (formData.hasOwnProperty('barcode-file')) {
-                fileInputs['BarcodeOrUMIFile'] = this._getTranslatedFilePath(formData['barcode-file'], allFileMetadatas);
+                fileInputs['BarcodeFile'] = this._getTranslatedFilePath(formData['barcode-file'], allFileMetadatas);
             }
 
             if (formData.hasOwnProperty('j-primer-file')) {
@@ -639,10 +602,10 @@ function(
             // default to single but overridden if paired-end read files selected
             parameters['Workflow'] = 'single';
 
-            if (formData.hasOwnProperty('barcode-or-umi'))
-                parameters['Barcode'] = formData['barcode-or-umi'];
+            if (formData.hasOwnProperty('barcode-file'))
+                parameters['Barcode'] = true;
             else
-                parameters['Barcode'] = 'none';
+                parameters['Barcode'] = false;
 
             if (formData.hasOwnProperty('barcode-max-error')) {
                 parameters['BarcodeMaxError'] = parseFloat(formData['barcode-max-error']);
@@ -656,16 +619,20 @@ function(
                 parameters['BarcodeSplitFlag'] = formData['barcode-split-flag'];
             }
 
-            if (formData.hasOwnProperty('umi-max-error')) {
-                parameters['UMIMaxError'] = parseFloat(formData['umi-max-error']);
-            }
+            if (formData.hasOwnProperty('umi-consensus')) {
+                parameters['UMIConsensus'] = formData['umi-consensus'];
 
-            if (formData.hasOwnProperty('umi-max-gap')) {
-                parameters['UMIMaxGap'] = parseFloat(formData['umi-max-gap']);
-            }
+                if (formData.hasOwnProperty('umi-max-error')) {
+                    parameters['UMIMaxError'] = parseFloat(formData['umi-max-error']);
+                }
 
-            if (formData.hasOwnProperty('umi-min-frequency')) {
-                parameters['UMIMinFrequency'] = parseFloat(formData['umi-min-frequency']);
+                if (formData.hasOwnProperty('umi-max-gap')) {
+                    parameters['UMIMaxGap'] = parseFloat(formData['umi-max-gap']);
+                }
+
+                if (formData.hasOwnProperty('umi-min-frequency')) {
+                    parameters['UMIMinFrequency'] = parseFloat(formData['umi-min-frequency']);
+                }
             }
 
             if (formData.hasOwnProperty('final-output-filename')) {
@@ -685,6 +652,9 @@ function(
             if (formData.hasOwnProperty('j-primer-type')) {
                 parameters['JPrimer'] = formData['j-primer-type'];
 
+                if (formData.hasOwnProperty('reverse-umi'))
+                    parameters['JPrimerUMI'] = formData['reverse-umi'];
+
                 if (formData.hasOwnProperty('j-primer-max-error'))
                     parameters['JPrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
 
@@ -700,6 +670,9 @@ function(
 
             if (formData.hasOwnProperty('v-primer-type')) {
                 parameters['VPrimer'] = formData['v-primer-type'];
+
+                if (formData.hasOwnProperty('forward-umi'))
+                    parameters['VPrimerUMI'] = formData['forward-umi'];
 
                 if (formData.hasOwnProperty('v-primer-max-error'))
                     parameters['VPrimerMaxError'] = parseFloat(formData['v-primer-max-error']);
