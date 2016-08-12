@@ -65,7 +65,8 @@ function(
                            + '"value.projectUuid":"' + this.projectUuid + '",'
                            + '"value.isDeleted":false'
                        + '}')
-                       + '&limit=5000'
+                       + '&limit=' + this.limit
+                       + '&offset=' + this.offset
                        ;
             },
             getFileCount: function() {

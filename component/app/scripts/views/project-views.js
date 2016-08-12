@@ -307,7 +307,7 @@ define([
             // once the project list data has been fetched.
             var that = this;
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                that.listenToOnce(App.Datastore.Collection.ProjectCollection, 'sync', function() {
+                that.listenToOnce(App.Datastore.Collection.ProjectCollection, 'initialFetchComplete', function() {
                     that.projectModel = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
                     that._setupSubviews();
                 });
@@ -1936,7 +1936,7 @@ define([
             var that = this;
 
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                this.listenTo(App.Datastore.Collection.ProjectCollection, 'sync', function() {
+                this.listenTo(App.Datastore.Collection.ProjectCollection, 'initialFetchComplete', function() {
                     that.model = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
                     that.render();
                 });
