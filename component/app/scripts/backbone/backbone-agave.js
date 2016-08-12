@@ -340,6 +340,7 @@ define([
             executionSystem: EnvironmentConfig.agave.systems.execution.ls5.hostname,
             //id: 0,
             inputs: {},
+            totalFileSize: 0,
             maxRunTime: '48:00:00',
             //memoryPerNode: '1',
             outputPath: '',
@@ -375,6 +376,29 @@ define([
             });
 
             return jqxhr;
+        },
+        configureExecutionHost: function(systems) {
+
+            this._configureExecutionHostForFileSize();
+
+            var jobExecutionSystemHostname = this.get('executionSystem');
+            var isSmallSystem = systems.isSmallExecutionSystem(jobExecutionSystemHostname);
+
+            if (isSmallSystem) {
+                // TODO: failover for small systems
+                this.unset('maxRunTime');
+                this.unset('nodeCount');
+                this.unset('processorsPerNode');
+            } else {
+                // allow for failover for large systems
+                var systemName = systems.getLargeExecutionSystem();
+                var appName = this.get('appName');
+
+                this.set({
+                    'appId': EnvironmentConfig.agave.systems.execution[systemName].apps[appName],
+                    'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
+                });
+            }
         },
 
         // Private Methods
@@ -487,6 +511,39 @@ define([
             return 'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
                     + '/' + fileMeta[0].getFilePath();
         },
+        _configureExecutionHostForFileSize: function() {
+
+            var fileSize = this.get('totalFileSize');
+            var executionLevels = EnvironmentConfig.agave.systems.executionLevels;
+            var appName = this.get('appName');
+
+            // not defined, use the defaults
+            if (fileSize === undefined) return;
+            if (executionLevels === undefined) return;
+            if (appName === undefined) return;
+
+            var levelList = executionLevels[appName];
+            if (levelList === undefined) return;
+
+            // find lowest level for the file sizes
+            for (var i = 0; i < levelList.length; ++i) {
+                var level = levelList[i];
+                if (fileSize <= level['inputSize']) {
+                    var executionSystem = EnvironmentConfig.agave.systems.executionSystemPreference[0];
+                    if (level['system'] == 'small')
+                        executionSystem = EnvironmentConfig.agave.systems.smallExecutionSystemPreference[0];
+
+                    this.set({
+                        'appId': EnvironmentConfig.agave.systems.execution[executionSystem].apps[appName],
+                        'executionSystem': EnvironmentConfig.agave.systems.execution[executionSystem].hostname,
+                        'maxRunTime': level['time'],
+                    });
+
+                    break;
+                }
+            }
+        },
+
     });
 
     // Required Auth package

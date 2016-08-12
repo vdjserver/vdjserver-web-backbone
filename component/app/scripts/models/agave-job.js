@@ -236,6 +236,7 @@ function(
                     Backbone.Agave.JobModel.prototype.defaults,
                     {
                         appId: EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast,
+                        appName: 'igBlast',
                         inputs: {
                             query: '',
                         },
@@ -251,13 +252,6 @@ function(
                 Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
 
                 this.inputParameterName = 'query';
-            },
-            configureLargeExecutionHost: function(systemName) {
-
-                this.set({
-                    'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.igBlast,
-                    'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
-                });
             },
             prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
@@ -305,37 +299,12 @@ function(
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
                     appId: EnvironmentConfig.agave.systems.execution.ls5.apps.vdjPipe,
+                    appName: 'vdjPipe',
                 }
             );
         },
         initialize: function(options) {
             Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
-        },
-        configureExecutionHostForFileSize: function(fileSize) {
-
-            if (_.isNumber(fileSize)) {
-                if (fileSize < 5000000) {
-
-                    // TODO: pull in upStatus from the systems collection and automatically switch to another system if this one is down
-                    var smallExecutionSystem = EnvironmentConfig.agave.systems.smallExecutionSystemPreference[0];
-
-                    this.set({
-                        'appId': EnvironmentConfig.agave.systems.execution[smallExecutionSystem].apps.vdjPipe,
-                        'executionSystem': EnvironmentConfig.agave.systems.execution[smallExecutionSystem].hostname,
-                    });
-
-                    this.unset('maxRunTime');
-                    this.unset('nodeCount');
-                    this.unset('processorsPerNode');
-                }
-            }
-        },
-        configureLargeExecutionHost: function(systemName) {
-
-            this.set({
-                'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.vdjPipe,
-                'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
-            });
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
@@ -556,6 +525,7 @@ function(
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
                     appId: EnvironmentConfig.agave.systems.execution.ls5.apps.presto,
+                    appName: 'presto',
                     inputs: {
                         query: '',
                     },
@@ -566,13 +536,6 @@ function(
         },
         initialize: function(options) {
             Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
-        },
-        configureLargeExecutionHost: function(systemName) {
-
-            this.set({
-                'appId': EnvironmentConfig.agave.systems.execution[systemName].apps.presto,
-                'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
-            });
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
