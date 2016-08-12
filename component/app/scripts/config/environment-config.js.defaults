@@ -17,6 +17,7 @@ var EnvironmentConfig = {
                     'apps': {
                         'vdjPipe': 'vdj_pipe-0.1.6u5',
                         'igBlast': 'igblast-ls5-1.4.0u9',
+                        'presto': 'presto-ls5-0.5.2u3',
                     },
                     'type': 'large',
                 },
@@ -24,6 +25,7 @@ var EnvironmentConfig = {
                     'hostname': 'vdj-exec-02.tacc.utexas.edu',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-small-0.1.6u6',
+                        'presto': 'presto-small-0.5.2u1',
                     },
                     'type': 'small',
                 },
@@ -45,6 +47,25 @@ var EnvironmentConfig = {
                 'ls5',
                 'stampede',
             ],
+            'executionLevels': {
+                'igBlast': [
+                    { 'inputSize':   5e7, 'system': 'large', 'time': '02:00:00' },
+                    { 'inputSize':   1e10, 'system': 'large', 'time': '08:00:00' },
+                    { 'inputSize':   5e10, 'system': 'large', 'time': '24:00:00' },
+                ],
+                'vdjPipe': [
+                    { 'inputSize':   5e7, 'system': 'small' },
+                    { 'inputSize':   4e8, 'system': 'large', 'time': '02:00:00' },
+                    { 'inputSize':   1e10, 'system': 'large', 'time': '08:00:00' },
+                    { 'inputSize':   5e10, 'system': 'large', 'time': '24:00:00' },
+                ],
+                'presto': [
+                    { 'inputSize':   5e6, 'system': 'small' },
+                    { 'inputSize':   4e8, 'system': 'large', 'time': '02:00:00' },
+                    { 'inputSize':   2e9, 'system': 'large', 'time': '08:00:00' },
+                    { 'inputSize':   1e10, 'system': 'large', 'time': '24:00:00' },
+                ],
+            },
         },
     },
     'debug': {

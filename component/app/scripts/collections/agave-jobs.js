@@ -192,10 +192,38 @@ define([
         })
     );
 
-    Jobs.Workflows = Backbone.Agave.MetadataCollection.extend({
+    Jobs.PrestoWorkflows = Backbone.Agave.MetadataCollection.extend({
+        model: Backbone.Agave.MetadataModel,
+        initialize: function(parameters) {
+            Backbone.Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+        },
+        getWorkflows: function() {
+
+            var workflows = [
+                {
+                    'workflow-name': 'Single Read',
+                    'steps': [
+                        'sequenceType',
+                        'outputFilePrefix',
+                        'qualityLengthFilter',
+                        'barcode',
+                        'UMI',
+                        'forwardPrimer',
+                        'reversePrimer',
+                        'findUnique',
+                        'finalOutputFilename',
+                    ],
+                },
+            ];
+
+            return workflows;
+        },
+    });
+
+    Jobs.VdjpipeWorkflows = Backbone.Agave.MetadataCollection.extend({
 
         // Public Methods
-        model: Backbone.Agave.Model.Job.Workflow,
+        model: Backbone.Agave.Model.Job.VdjpipeWorkflow,
         url: function() {
             return '/meta/v2/data?q='
                 + encodeURIComponent('{'
@@ -233,7 +261,7 @@ define([
             for (var i = 0; i < preconfiguredWorkflows.length; i++) {
                 var preconfiguredWorkflow = preconfiguredWorkflows[i];
 
-                var workflow = new Backbone.Agave.Model.Job.Workflow();
+                var workflow = new Backbone.Agave.Model.Job.VdjpipeWorkflow();
                 workflow.sync = workflow.fakeSync;
                 workflow.set('predefined', true);
                 workflow.set('single', true);
@@ -247,7 +275,7 @@ define([
             for (var j = 0; j < preconfiguredCompleteWorkflows.length; j++) {
                 var preconfiguredCompleteWorkflow = preconfiguredCompleteWorkflows[j];
 
-                var completeWorkflow = new Backbone.Agave.Model.Job.Workflow();
+                var completeWorkflow = new Backbone.Agave.Model.Job.VdjpipeWorkflow();
                 completeWorkflow.sync = completeWorkflow.fakeSync;
                 completeWorkflow.set('predefined', true);
                 completeWorkflow.set('complete', true);

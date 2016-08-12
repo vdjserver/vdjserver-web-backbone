@@ -1,0 +1,56 @@
+{{> presto-base-view-top}}
+
+    <div class="row row-with-spacer">
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Maximum Missing Nucleotides
+                                </td>
+                                <td>
+                                    <input
+                                      class="job-form-item"
+                                      name="find-unique-max-nucleotides"
+                                      type="number"
+                                      value="20"
+                                      step="1"
+                                      min="0"
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Exclude Consecutive Missing Characters at Sequence Ends
+                                </td>
+                                <td>
+                                    <input
+                                      class="job-form-item"
+                                      name="find-unique-exclude"
+                                      type="checkbox"
+                                      checked
+                                    >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    This module identifies replicate read sequences and collapses them to a single sequence.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{{> presto-base-view-bottom}}
