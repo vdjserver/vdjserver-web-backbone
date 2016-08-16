@@ -22,13 +22,15 @@ define([
 
         it('EnvironmentConfig.agave is defined', function() {
             assert.isDefined(EnvironmentConfig.agave);
+            assert.isDefined(EnvironmentConfig.agave.hostname);
         });
 
         it('EnvironmentConfig.vdjApi is defined', function() {
             assert.isDefined(EnvironmentConfig.vdjApi);
+            assert.isDefined(EnvironmentConfig.vdjApi.hostname);
         });
 
-        it('Should be able to login with service account', function(done) {
+        it('Should be able to login with service account at ' + EnvironmentConfig.vdjApi.hostname, function(done) {
 
             should.exist(App);
             App.init();

@@ -154,7 +154,7 @@ define([
             ;
         });
 
-        it.skip('Account without recaptcha', function(done) {
+        it('Account without recaptcha', function(done) {
 
             var model = new Backbone.Agave.Model.Account.NewAccount();
 
@@ -190,7 +190,7 @@ define([
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 400);
+                assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
                 assert.equal(responseText.message, 'Recaptcha response invalid: missing-input-response');
@@ -201,7 +201,7 @@ define([
             ;
         });
 
-        it.skip('Account with invalid recaptcha', function(done) {
+        it('Account with invalid recaptcha', function(done) {
 
             var model = new Backbone.Agave.Model.Account.NewAccount();
 
@@ -238,7 +238,7 @@ define([
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 400);
+                assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
                 assert.equal(responseText.message, 'Recaptcha response invalid: invalid-input-response');
@@ -673,7 +673,7 @@ define([
 
       describe('Resend verification email', function()  {
 
-        it.skip('Resend verification email - invalid username', function(done) {
+        it('Resend verification email - invalid username', function(done) {
 
             var model = new Backbone.Agave.Model.Account.ResendVerificationEmail({username: 'quyiuegnbuauejs'});
 
@@ -692,7 +692,7 @@ define([
                 assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Non-existent verification for username');
+                assert.equal(responseText.message, 'Non-existent verification for username: ' + model.get('username'));
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -700,7 +700,7 @@ define([
             ;
         });
 
-        it.skip('Resend verification email - invalid username', function(done) {
+        it('Resend verification email - invalid username', function(done) {
 
             var model = new Backbone.Agave.Model.Account.ResendVerificationEmail();
 
@@ -719,7 +719,7 @@ define([
                 assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Username required.');
+                assert.equal(responseText.message, 'Non-existent verification for username: undefined');
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -745,7 +745,7 @@ define([
                 assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'UserController.resendVerificationEmail - error - verification metadata failed comparison for ' + EnvironmentConfig.test.username);
+                assert.equal(responseText.message, 'Non-existent verification for username: ' + EnvironmentConfig.test.username);
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -778,7 +778,7 @@ define([
 
       describe('Verify Account', function()  {
 
-        it.skip('Verify New Account - invalid uuid', function(done) {
+        it('Verify New Account - invalid uuid', function(done) {
 
             var model = new Backbone.Agave.Model.Account.VerifyAccount({verificationId: '123456'});
 
@@ -797,7 +797,7 @@ define([
                 assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Invalid verification id');
+                assert.equal(responseText.message, 'Invalid verification id: ' + model.get('verificationId'));
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -805,34 +805,7 @@ define([
             ;
         });
 
-        // TODO: Should this be an error?
-        it.skip('Verify New Account - valid uuid but for wrong account', function(done) {
-
-            var model = new Backbone.Agave.Model.Account.VerifyAccount({verificationId: '4039667090080076261-242ac11c-0001-012'});
-
-            model.save()
-            .then(function(response) {
-                if (EnvironmentConfig.debug.test) console.log(response);
-
-                done(new Error("Verified account with invalid uuid"));
-            })
-            .fail(function(response, errorText, errorThrown) {
-                if (EnvironmentConfig.debug.test) console.log(response);
-
-                assert.isDefined(response);
-                assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 500);
-
-                var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Invalid verification id');
-                assert.equal(responseText.status, 'error');
-
-                done();
-            })
-            ;
-        });
-
-        it.skip('Verify New Account - valid uuid but for wrong metadata type', function(done) {
+        it('Verify New Account - valid uuid but for wrong metadata type', function(done) {
 
             //var model = new Backbone.Agave.Model.Account.VerifyAccount({verificationId: '3258481531092275686-242ac1110-0001-012'});
             var model = new Backbone.Agave.Model.Account.VerifyAccount({verificationId: '1295759335974769126-242ac1110-0001-012'});
@@ -851,7 +824,7 @@ define([
                 assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Invalid verification id');
+                assert.equal(responseText.message, 'Invalid verification id: ' + model.get('verificationId'));
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -877,10 +850,10 @@ define([
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 500);
+                assert.strictEqual(response.status, 400);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'UserController.verifyUser - error - verification metadata failed comparison for  ');
+                assert.equal(responseText.message, 'Verification Id required.');
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -1109,7 +1082,7 @@ define([
                 ;
         });
 
-        it.skip('Change password with garbage authorization', function(done) {
+        it('Change password with garbage authorization', function(done) {
 
             // simulate form data
             var formData = {
@@ -1136,13 +1109,12 @@ define([
             .fail(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                // TODO: vdj-api should handle this error better
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 400);
+                assert.strictEqual(response.status, 401);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Username required.');
+                assert.equal(responseText.message, 'Invalid authorization');
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -1150,8 +1122,7 @@ define([
             ;
         });
 
-        // TODO: Not sure if this is an error or not
-        it.skip('Change password with bad access token', function(done) {
+        it('Change password with bad access token', function(done) {
 
             // simulate form data
             var formData = {
@@ -1179,10 +1150,10 @@ define([
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 400);
+                assert.strictEqual(response.status, 401);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Username required.');
+                assert.equal(responseText.message, 'Invalid authorization');
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -1262,7 +1233,7 @@ define([
             ;
         });
 
-        it.skip('Change password with wrong password', function(done) {
+        it('Change password with wrong password', function(done) {
 
             // simulate form data
             var formData = {
@@ -1286,18 +1257,58 @@ define([
             .fail(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                // TODO: vdj-api should handle this error better
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
                 assert.strictEqual(response.status, 401);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Password is incorrect.');
+                assert.equal(responseText.message, 'Invalid authorization');
                 assert.equal(responseText.status, 'error');
 
                 done();
             })
             ;
+        });
+
+        it('Login as user1', function(done) {
+
+            should.exist(App);
+            App.init();
+            should.exist(App.Agave);
+
+            var model = App.Agave.token();
+            App.Agave.destroyToken();
+
+            // simulate form data
+            var formData = {
+                username: EnvironmentConfig.test.username,
+                password: EnvironmentConfig.test.password,
+            };
+
+            model.save(formData, {password: formData.password})
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    assert.isDefined(model.get('access_token'));
+                    assert.isDefined(model.get('expires'));
+                    assert.isDefined(model.get('expires_in'));
+                    assert.isDefined(model.get('refresh_token'));
+                    assert.isDefined(model.get('token_type'));
+                    assert.isDefined(model.get('username'));
+                    assert.isDefined(model.get('password'));
+                    assert.equal(model.get('token_type'), 'bearer');
+                    assert.equal(model.get('username'), formData.username);
+                    assert.equal(model.get('password'), formData.password);
+
+                    if (EnvironmentConfig.debug.test) console.log("token is: " + JSON.stringify(model));
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("login error: " + JSON.stringify(error));
+                    done(new Error("Could not login."));
+                })
+                ;
         });
 
         it('Change password with direct HTTP', function(done) {
@@ -1892,7 +1903,7 @@ define([
             ;
         });
 
-        it.skip('Forgot password - verify with garbage uuid', function(done) {
+        it('Forgot password - verify with garbage uuid', function(done) {
 
             assert.isDefined(data.uuid, 'this test requires uuid from prior test');
             assert.isNotNull(data.uuid, 'this test requires uuid from prior test');
@@ -1923,13 +1934,12 @@ define([
             .fail(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                // TODO: vdj-api should handle this error better
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
                 assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Invalid metadata id.');
+                assert.equal(responseText.message, 'Invalid metadata id: ' + formData.uuid);
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -2035,7 +2045,7 @@ define([
             ;
         });
 
-        it.skip('Forgot password - set new password with stale uuid', function(done) {
+        it('Forgot password - set new password with stale uuid', function(done) {
 
             assert.isDefined(data.uuid, 'this test requires uuid from prior test');
             assert.isNotNull(data.uuid, 'this test requires uuid from prior test');
@@ -2070,7 +2080,7 @@ define([
                 assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Invalid metadata id.');
+                assert.equal(responseText.message, 'Invalid metadata id: ' + formData.uuid);
                 assert.equal(responseText.status, 'error');
 
                 done();
