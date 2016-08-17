@@ -127,6 +127,7 @@ define([
                 assert.isFalse(fileMetadataResponse.value.isDeleted);
 
                 data.fileUuid = fileMetadataResponse.uuid;
+                model.stopListening();
 
                 done();
             });
@@ -134,6 +135,7 @@ define([
             model.listenTo(App.Instances.WebsocketManager, 'fileImportError', function(fileMetadataResponse) {
                 if (EnvironmentConfig.debug.test) console.log('fileImportError hit:');
                 if (EnvironmentConfig.debug.test) console.log(fileMetadataResponse);
+                model.stopListening();
 
                 done(new Error('Could not upload file.'));
             });
@@ -178,11 +180,8 @@ define([
             var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
 
             projectFiles.fetch()
-                .then(function(response) {
-                    if (EnvironmentConfig.debug.test) console.log(response);
-
-                    assert.equal(response.status, 'success');
-                    assert.isNull(response.message);
+                .then(function() {
+                    // paginated fetch no longer returns a response object
 
                     assert.strictEqual(projectFiles.length, 1);
                     var agaveFile = projectFiles.at(0);
@@ -236,6 +235,7 @@ define([
                       assert.equal(jobUpdate.jobId, data.jobUuid);
                       assert.equal(jobUpdate.projectUuid, model.get('uuid'));
                       assert.equal(jobUpdate.jobName, 'test job');
+                      model.stopListening();
 
                       done();
                 }
@@ -265,11 +265,11 @@ define([
             var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
 
             projectFiles.fetch()
-            .then(function(response) {
-                if (EnvironmentConfig.debug.test) console.log(response);
+            .then(function() {
+                // paginated fetch no longer returns a response object
 
-		job.set('totalFileSize', 100); // small size so it goes to small execution system
-		job._configureExecutionHostForFileSize();
+		            job.set('totalFileSize', 100); // small size so it goes to small execution system
+		            job._configureExecutionHostForFileSize();
                 job.unset('maxRunTime');
                 job.unset('nodeCount');
                 job.unset('processorsPerNode');
@@ -289,6 +289,7 @@ define([
             })
             .fail(function(error) {
                 console.log("response error: " + JSON.stringify(error));
+                model.stopListening();
                 done(new Error("Could not submit job."));
             })
             ;
@@ -343,6 +344,10 @@ define([
             var model = data.project;
             var jobs = new Backbone.Agave.Collection.Jobs();
             jobs.projectUuid = model.get('uuid');
+            //jobs.projectUuid = '4969802863779638810-242ac114-0001-012';
+            //data.jobUuid = '2832970734673718810-242ac114-0001-007';
+            //jobs.projectUuid = '8300682565076521446-242ac114-0001-012';
+            //data.jobUuid = '8051706606084550170-242ac114-0001-007';
 
             jobs.fetch()
             .then(function(response) {
@@ -365,16 +370,138 @@ define([
                 var jobFiles = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: data.jobUuid});
 
                 jobFiles.fetch()
-                .then(function(response) {
-                    if (EnvironmentConfig.debug.test) console.log(response);
-
-                    assert.equal(response.status, 'success');
-                    assert.isNull(response.message);
+                .then(function() {
+                    // paginated fetch does not return response
 
                     console.log(jobFiles);
                     assert.strictEqual(jobFiles.length, 17);
 
                     done();
+                })
+                .fail(function(error) {
+                    console.log("caught error: " + JSON.stringify(error));
+                    done(new Error("Could not retrieve jobs files."));
+                })
+            })
+            .fail(function(error) {
+                console.log("response error: " + JSON.stringify(error));
+                done(new Error("Could not retrieve jobs."));
+            })
+            ;
+        });
+
+        it('Add user2 to project', function(done) {
+            assert.isDefined(data.project, 'this test requires the project from prior test');
+            var model = data.project;
+
+            var permissions = new Backbone.Agave.Collection.Permissions({uuid: model.get('uuid')});
+
+            var newUserPermission = permissions.create(
+                {
+                    username: EnvironmentConfig.test.username2,
+                    permission: 'READ_WRITE',
+                    uuid: permissions.uuid,
+                },
+                {
+                    success: function() {
+
+                        newUserPermission.addUserToProject()
+                            .then(function(response) {
+                                if (EnvironmentConfig.debug.test) console.log(response);
+
+                                done();
+                            })
+                            .fail(function(error) {
+                                console.log("response error: " + JSON.stringify(error));
+                                done(new Error("Could not add user to project."));
+                            })
+                            ;
+
+                        permissions.add(newUserPermission);
+                    },
+                    error: function() {
+                        console.log("response error: " + JSON.stringify(error));
+                        done(new Error("Could not create user permission."));
+                    },
+                }
+            );
+        });
+
+        it('Login as user2', function(done) {
+
+            var model = App.Agave.token();
+            App.Agave.destroyToken();
+
+            // simulate form data
+            var formData = {
+                username: EnvironmentConfig.test.username2,
+                password: EnvironmentConfig.test.password2,
+            };
+
+            model.save(formData, {password: formData.password})
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    assert.isDefined(model.get('access_token'));
+                    assert.isDefined(model.get('expires'));
+                    assert.isDefined(model.get('expires_in'));
+                    assert.isDefined(model.get('refresh_token'));
+                    assert.isDefined(model.get('token_type'));
+                    assert.isDefined(model.get('username'));
+                    assert.isDefined(model.get('password'));
+                    assert.equal(model.get('token_type'), 'bearer');
+                    assert.equal(model.get('username'), formData.username);
+                    assert.equal(model.get('password'), formData.password);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("login error: " + JSON.stringify(error));
+                    done(new Error("Could not login."));
+                })
+                ;
+        });
+
+        it('Check user can retrieve project jobs', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+            var jobs = new Backbone.Agave.Collection.Jobs();
+            jobs.projectUuid = model.get('uuid');
+
+            jobs.fetch()
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.equal(response.status, 'success');
+                assert.isNull(response.message);
+
+                assert.strictEqual(jobs.length, 1);
+                var agaveJob = jobs.at(0);
+
+                assert.equal(agaveJob.get('id'), data.jobUuid);
+                assert.equal(agaveJob.get('name'), 'test job');
+                assert.equal(agaveJob.get('owner'), EnvironmentConfig.test.serviceAccountKey);
+                assert.equal(agaveJob.get('appId'), EnvironmentConfig.agave.systems.execution.vdjExec02.apps.vdjPipe);
+                assert.equal(agaveJob.get('executionSystem'), EnvironmentConfig.agave.systems.execution.vdjExec02.hostname);
+                assert.equal(agaveJob.get('status'), 'FINISHED');
+            })
+            .then(function() {
+                var jobFiles = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: data.jobUuid});
+
+                jobFiles.fetch()
+                .then(function() {
+                    // paginated fetch does not return response
+
+                    console.log(jobFiles);
+                    assert.strictEqual(jobFiles.length, 17);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("caught error: " + JSON.stringify(error));
+                    done(new Error("Could not retrieve jobs files."));
                 })
             })
             .fail(function(error) {

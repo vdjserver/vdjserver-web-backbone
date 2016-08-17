@@ -95,11 +95,8 @@ define([
             var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
 
             projectFiles.fetch()
-                .then(function(response) {
-                    if (EnvironmentConfig.debug.test) console.log(response);
-
-                    assert.equal(response.status, 'success');
-                    assert.isNull(response.message);
+                .then(function() {
+                    // paginated fetch no longer returns a response object
 
                     assert.strictEqual(projectFiles.length, 0);
 
@@ -206,11 +203,8 @@ define([
             var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
 
             projectFiles.fetch()
-                .then(function(response) {
-                    if (EnvironmentConfig.debug.test) console.log(response);
-
-                    assert.equal(response.status, 'success');
-                    assert.isNull(response.message);
+                .then(function() {
+                    // paginated fetch no longer returns a response object
 
                     assert.strictEqual(projectFiles.length, 1);
                     var agaveFile = projectFiles.at(0);
@@ -329,11 +323,8 @@ define([
             var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
 
             projectFiles.fetch()
-                .then(function(response) {
-                    if (EnvironmentConfig.debug.test) console.log(response);
-
-                    assert.equal(response.status, 'success');
-                    assert.isNull(response.message);
+                .then(function() {
+                    // paginated fetch no longer returns a response object
 
                     assert.strictEqual(projectFiles.length, 2);
                     var agaveFile = projectFiles.at(0);
