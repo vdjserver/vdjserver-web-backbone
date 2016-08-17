@@ -78,7 +78,7 @@ define([
 
     Handlebars.registerHelper('FormatAgaveDate', function(agaveDate) {
 
-        var formattedDate = moment(agaveDate).format('D-MMM-YYYY hh:mm');
+        var formattedDate = moment(new Date(agaveDate)).format('D-MMM-YYYY hh:mm');
 
         return formattedDate;
     });

@@ -13,8 +13,8 @@ define([
 
         // Sort by reverse date order
         comparator: function(modelA, modelB) {
-            var modelAEndDate = moment(modelA.get('submitTime'));
-            var modelBEndDate = moment(modelB.get('submitTime'));
+            var modelAEndDate = moment(modelA.get('startTime'));
+            var modelBEndDate = moment(modelB.get('startTime'));
 
             if (modelAEndDate > modelBEndDate) {
                 return -1;
