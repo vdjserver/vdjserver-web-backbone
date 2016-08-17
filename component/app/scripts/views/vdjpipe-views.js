@@ -82,7 +82,7 @@ define([
 
     Vdjpipe.CustomJPrimerTrimming = App.Views.Generic.Vdjpipe.PrimerTrimming.extend({
         initialize: function(options) {
-            this.vdjpipeOptionTitle = '3\' PCR Primer Matching (J Primer)';
+            this.vdjpipeOptionTitle = 'Reverse PCR Primer Matching';
             App.Views.Generic.Vdjpipe.PrimerTrimming.prototype.initialize.apply(this, [options]);
             this.render();
 
@@ -115,7 +115,7 @@ define([
 
     Vdjpipe.CustomVPrimerTrimming = App.Views.Generic.Vdjpipe.PrimerTrimming.extend({
         initialize: function(options) {
-            this.vdjpipeOptionTitle = '5\' PCR Primer Matching (V Primer)';
+            this.vdjpipeOptionTitle = 'Forward PCR Primer Matching';
             App.Views.Generic.Vdjpipe.PrimerTrimming.prototype.initialize.apply(this, [options]);
             this.render();
 
