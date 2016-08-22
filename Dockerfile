@@ -3,6 +3,12 @@ FROM debian:jessie
 
 MAINTAINER Walter Scarborough <wscarbor@tacc.utexas.edu>
 
+# PROXY: uncomment these if building behind UTSW proxy
+#ENV http_proxy 'http://proxy.swmed.edu:3128/'
+#ENV https_proxy 'https://proxy.swmed.edu:3128/'
+#ENV HTTP_PROXY 'http://proxy.swmed.edu:3128/'
+#ENV HTTPS_PROXY 'https://proxy.swmed.edu:3128/'
+
 # Install OS Dependencies
 RUN apt-get update && apt-get install -y \
     git \
@@ -13,6 +19,10 @@ RUN apt-get update && apt-get install -y \
     ruby-dev \
     vim \
     xdg-utils
+
+# PROXY: More UTSW proxy settings
+#RUN npm config set proxy http://proxy.swmed.edu:3128
+#RUN npm config set https-proxy http://proxy.swmed.edu:3128
 
 RUN npm install -g \
     bower \
@@ -33,6 +43,9 @@ RUN cd /var/www/html/vdjserver-backbone && npm install
 
 # Install bower dependencies
 COPY ./component/.bowerrc /var/www/html/vdjserver-backbone/
+# PROXY: Copy .bowerrc with proxy settings
+#COPY ./component/.bowerrc.proxy /var/www/html/vdjserver-backbone/.bowerrc
+
 COPY ./component/bower.json /var/www/html/vdjserver-backbone/
 RUN cd /var/www/html/vdjserver-backbone && bower --allow-root install
 
