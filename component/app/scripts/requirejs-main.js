@@ -74,6 +74,7 @@ define([
     'serialization-tools',
     'vdjpipe-workflow-parser',
     'vdjpipe-view-factory',
+    'presto-view-factory',
 
     // Generic Views
     'generic-vdjpipe-option-views',
@@ -102,6 +103,7 @@ define([
     'public-views',
     'analyses-views',
     'vdjpipe-views',
+    'presto-views',
     'feedback-views',
     'software-views',
 

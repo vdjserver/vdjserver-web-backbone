@@ -13,7 +13,8 @@ define([
             url: function() {
                 return '/meta/v2/data?q='
                        + encodeURIComponent('{"name":"project"}')
-                       + '&limit=5000'
+                       + '&limit=' + this.limit
+                       + '&offset=' + this.offset
                        ;
             },
         })

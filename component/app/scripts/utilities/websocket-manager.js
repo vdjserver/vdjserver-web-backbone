@@ -65,16 +65,18 @@ define([
                 notification.set('type', App.Models.Notification.FILE_IMPORT_NOTIFICATION);
                 notification.set('notification', fileImportUpdate);
 
-                App.Datastore.Notifications.push(notification);
-
-                // TODO: reexamine websocket trigger
-                that.trigger('fileImportUpdate', fileImportUpdate);
-
-                if (fileImportUpdate.fileImportStatus === 'finished') {
-                    that.trigger('addFileToProject', fileImportUpdate.fileInformation.metadata);
+                if (fileImportUpdate.hasOwnProperty('error')) {
+                    that.trigger('fileImportError', fileImportUpdate);
                 }
                 else {
-                    if (fileImportUpdate.fileImportStatus === 'permissions') {
+                    App.Datastore.Notifications.push(notification);
+
+                    that.trigger('fileImportUpdate', fileImportUpdate);
+
+                    if (fileImportUpdate.hasOwnProperty('fileImportStatus') && fileImportUpdate.fileImportStatus === 'finished') {
+                        that.trigger('addFileToProject', fileImportUpdate.fileInformation.metadata);
+                    }
+                    else if (fileImportUpdate.hasOwnProperty('fileImportStatus') && fileImportUpdate.fileImportStatus === 'permissions') {
                         //permissions
                         var filename = fileImportUpdate.fileInformation.filePath.split('/').pop();
 
@@ -83,9 +85,9 @@ define([
                                 'name': filename,
                             },
                         };
-                    }
 
-                    that.trigger('updateFileImportProgress', fileImportUpdate);
+                        that.trigger('updateFileImportProgress', fileImportUpdate);
+                    }
                 }
             });
         },

@@ -1,0 +1,104 @@
+{{> presto-base-view-top}}
+
+    <div class="row row-with-spacer">
+        {{#unless barcodeFiles}}
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    Warning: there is no barcode file available. Please upload barcode file on the project file list and set its type as "Barcode Sequences". Or remove this processing step from the workflow if it is not needed.
+                </div>
+            </div>
+        {{else}}
+                    <div class="col-md-12">
+
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Barcode File
+                                    </td>
+                                    <td>
+                                        <select
+                                            class="job-form-item"
+                                            id="barcode-file"
+                                            name="barcode-file"
+                                        >
+                                            {{#each barcodeFiles}}
+                                                <option value={{value.name}}>{{value.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        This module demultiplexes reads based upon barcode sequences.
+                                        </p>
+                                        <p>
+                                        This step can be removed from the workflow.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Barcode Maximum Error
+                                    </td>
+                                    <td>
+                                        <input
+                                          class="job-form-item"
+                                          name="barcode-max-error"
+                                          type="number"
+                                          value="0.1"
+                                          step="0.01"
+                                          min="0"
+                                        >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Maximum allowable error rate.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Barcode Start Position
+                                    </td>
+                                    <td>
+                                        <input
+                                          class="job-form-item"
+                                          name="barcode-start-position"
+                                          type="number"
+                                          value="0"
+                                          step="1"
+                                          min="0"
+                                          pattern="\d+"
+                                        >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        The starting position of the barcode sequence.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Split Barcode Reads
+                                    </td>
+                                    <td>
+                                        <input
+                                          class="job-form-item"
+                                          name="barcode-split-flag"
+                                          type="checkbox"
+                                        >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Saves each demultiplexed group of reads into separate files, otherwise reads are tagged and left in a single file.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+        {{/unless}}
+    </div>
+
+{{> presto-base-view-bottom}}
