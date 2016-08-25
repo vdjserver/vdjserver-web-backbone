@@ -78,7 +78,7 @@ define([
 
     Handlebars.registerHelper('FormatAgaveDate', function(agaveDate) {
 
-        var formattedDate = moment(agaveDate).format('D-MMM-YYYY hh:mm');
+        var formattedDate = moment(new Date(agaveDate)).format('D-MMM-YYYY hh:mm');
 
         return formattedDate;
     });
@@ -307,7 +307,7 @@ define([
             // once the project list data has been fetched.
             var that = this;
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                that.listenToOnce(App.Datastore.Collection.ProjectCollection, 'sync', function() {
+                that.listenToOnce(App.Datastore.Collection.ProjectCollection, 'initialFetchComplete', function() {
                     that.projectModel = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
                     that._setupSubviews();
                 });
@@ -704,6 +704,12 @@ define([
                 case 'igblast':
                     var igBlastView = App.Views.Jobs.IgBlastStaging;
                     this._showJobStagingView(igBlastView);
+
+                    break;
+
+                case 'presto':
+                    var prestoView = App.Views.Jobs.PrestoStaging;
+                    this._showJobStagingView(prestoView);
 
                     break;
 
@@ -1549,7 +1555,7 @@ define([
                 var isDuplicate = this.fileListings.checkForDuplicateFilename(filename);
 
                 if (isDuplicate === true) {
-                    this.parentView.trigger('duplicateFileError', filename);
+                    this.projectDetailView.trigger('duplicateFileError', filename);
                 }
 
                 return isDuplicate;
@@ -1930,7 +1936,7 @@ define([
             var that = this;
 
             if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                this.listenTo(App.Datastore.Collection.ProjectCollection, 'sync', function() {
+                this.listenTo(App.Datastore.Collection.ProjectCollection, 'initialFetchComplete', function() {
                     that.model = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
                     that.render();
                 });

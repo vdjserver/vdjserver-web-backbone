@@ -1,0 +1,60 @@
+{{> presto-base-view-top}}
+
+    <div class="row row-with-spacer">
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Minimum Length
+                                </td>
+                                <td>
+                                    <input
+                                      class="job-form-item"
+                                      name="minimum-length"
+                                      type="number"
+                                      value="250"
+                                      step="1"
+                                      min="0"
+                                      pattern="\d+"
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Minimum Quality
+                                </td>
+                                <td>
+                                    <input
+                                      class="job-form-item"
+                                      name="minimum-quality"
+                                      type="number"
+                                      value="20"
+                                      step="1"
+                                      min="0"
+                                      pattern="\d+"
+                                    >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    This module removes reads with a length or contains nucleotides with a quality score below the thresholds provided.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{{> presto-base-view-bottom}}

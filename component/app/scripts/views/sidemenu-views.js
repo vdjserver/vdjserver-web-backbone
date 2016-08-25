@@ -28,15 +28,6 @@ define([
 
                 App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects();
 
-                App.Datastore.Collection.ProjectCollection.on('sync', function() {
-                    var projects = App.Datastore.Collection.ProjectCollection.each(function(project) {
-
-                        var projectUuid = project.get('uuid');
-
-                        App.Instances.WebsocketManager.subscribeToEvent(projectUuid);
-                    });
-                });
-
                 var loadingView = new App.Views.Util.Loading({keep: true});
                 this.insertView(loadingView);
                 loadingView.render();
@@ -44,12 +35,31 @@ define([
                 var that = this;
 
                 App.Datastore.Collection.ProjectCollection.fetch()
-                    .done(function() {
+                    .then(function() {
+                        // Don't listen to sync until after the fetch
+                        // Otherwise, paginated fetch could cause unwanted early sync events
+                        App.Datastore.Collection.ProjectCollection.on('sync', function() {
+                            var projects = App.Datastore.Collection.ProjectCollection.each(function(project) {
+
+                                var projectUuid = project.get('uuid');
+
+                                App.Instances.WebsocketManager.subscribeToEvent(projectUuid);
+                            });
+                        });
+                    })
+                    .then(function() {
                         loadingView.remove();
+                    })
+                    .then(function() {
+                        App.Datastore.Collection.ProjectCollection.trigger('initialFetchComplete');
+                    })
+                    .then(function() {
 
                         App.Datastore.Collection.ProjectCollection.on('change add remove destroy', function() {
                             that.render();
                         });
+                    })
+                    .done(function() {
 
                         that.render();
 

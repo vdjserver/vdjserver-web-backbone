@@ -4,7 +4,7 @@
         {{#unless jobs}}
 
             <div class="alert alert-info">
-                You will need to launch a job in order to to see output here. 
+                You will need to launch a job in order to to see output here.
                 <br>
                 <br>
                 You can launch jobs and upload files on the <a href="project/{{projectUuid}}">"Upload and Browse Project Data"</a> page.
@@ -75,8 +75,8 @@
                                     </div>
                                 </td>
                                 <td>
-                                    {{#if submitTime}}
-                                        {{FormatAgaveDate submitTime}}
+                                    {{#if startTime}}
+                                        {{FormatAgaveDate startTime}}
                                     {{/if}}
                                 </td>
                                 <td>

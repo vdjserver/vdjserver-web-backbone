@@ -199,6 +199,67 @@ define([
         },
     });
 
+    Agave.PaginatedCollection = Agave.Collection.extend({
+        initialize: function(parameters) {
+            Backbone.Agave.Collection.prototype.initialize.apply(this, [parameters]);
+
+            this.offset = 0;
+            this.limit = 100;
+        },
+        /*
+            Fetch data in multiple smaller sets instead of one giant collection.
+            This fetch method will automatically fetch an entire collection by subsets.
+
+            This will be useful to us as VDJServer grows because it will allow us to
+            scale project and project file metadata requests. It could also be
+            updated for lazy loading and/or user invoked pagination.
+        */
+        fetch: function() {
+            var that = this;
+
+            var deferred = $.Deferred();
+
+            var models = [];
+
+            var offsetFetch = function() {
+                // Reuse parent fetch/sync methods so we don't have to reconfigure everything all over again
+                Backbone.Agave.Collection.prototype.fetch.call(that, {})
+                .then(function(response) {
+                    response = that.parse(response);
+
+                    return response;
+                })
+                .then(function(response) {
+
+                    // Response array has greater than 0 objects, so we'll need to fetch the next set too
+                    if (response.length > 0) {
+
+                        that.offset += response.length;
+
+                        models = models.concat(that.reset(response));
+                        offsetFetch();
+                    }
+                    // The most recent fetch had 0 objects, so we're done now
+                    // Put the collection in the correct state and exit the promise
+                    else {
+                        that.offset = 0;
+                        that.reset(models);
+                        deferred.resolve();
+                    }
+                })
+                .fail(function(error) {
+                    deferred.reject(error);
+                })
+                ;
+            };
+
+            offsetFetch();
+
+            return deferred;
+        },
+    });
+
+    // Agave extension of default Backbone.Model that uses Agave sync
     Agave.MetadataModel = Agave.Model.extend({
         idAttribute: 'uuid',
         defaults: {
@@ -255,12 +316,7 @@ define([
         */
     });
 
-    // Agave extension of default Backbone.Model that uses Agave sync
-    Agave.MetadataCollection = Agave.Collection.extend({
-        initialize: function() {
-            this.retrySyncEngine = Agave.PutOverrideSync;
-            this.retrySyncLimit = 3;
-        },
+    Agave.MetadataCollection = Agave.PaginatedCollection.extend({
         sync: Backbone.RetrySync,
         getSaveUrl: function() {
             return '/meta/v2/data/' + this.get('uuid');
@@ -284,6 +340,7 @@ define([
             executionSystem: EnvironmentConfig.agave.systems.execution.ls5.hostname,
             //id: 0,
             inputs: {},
+            totalFileSize: 0,
             maxRunTime: '48:00:00',
             //memoryPerNode: '1',
             outputPath: '',
@@ -319,6 +376,29 @@ define([
             });
 
             return jqxhr;
+        },
+        configureExecutionHost: function(systems) {
+
+            this._configureExecutionHostForFileSize();
+
+            var jobExecutionSystemHostname = this.get('executionSystem');
+            var isSmallSystem = systems.isSmallExecutionSystem(jobExecutionSystemHostname);
+
+            if (isSmallSystem) {
+                // TODO: failover for small systems
+                this.unset('maxRunTime');
+                this.unset('nodeCount');
+                this.unset('processorsPerNode');
+            } else {
+                // allow for failover for large systems
+                var systemName = systems.getLargeExecutionSystem();
+                var appName = this.get('appName');
+
+                this.set({
+                    'appId': EnvironmentConfig.agave.systems.execution[systemName].apps[appName],
+                    'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
+                });
+            }
         },
 
         // Private Methods
@@ -407,6 +487,63 @@ define([
 
             this.set('inputs', inputParameters);
         },
+        _getTranslatedFilePaths: function(fileMetadatas) {
+
+            var filePaths = [];
+            for (var i = 0; i < fileMetadatas.models.length; i++) {
+
+                var fileMetadata = fileMetadatas.at(i);
+
+                filePaths.push(
+                    'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
+                    + '/' + fileMetadata.getFilePath()
+                );
+            }
+
+            return filePaths;
+        },
+        _getTranslatedFilePath: function(fileName, fileMetadatas) {
+
+            var fileMeta = _.filter(fileMetadatas.models, function(fileMetadata) {
+                  return fileMetadata.get('value').name == fileName;
+                });
+
+            return 'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
+                    + '/' + fileMeta[0].getFilePath();
+        },
+        _configureExecutionHostForFileSize: function() {
+
+            var fileSize = this.get('totalFileSize');
+            var executionLevels = EnvironmentConfig.agave.systems.executionLevels;
+            var appName = this.get('appName');
+
+            // not defined, use the defaults
+            if (fileSize === undefined) return;
+            if (executionLevels === undefined) return;
+            if (appName === undefined) return;
+
+            var levelList = executionLevels[appName];
+            if (levelList === undefined) return;
+
+            // find lowest level for the file sizes
+            for (var i = 0; i < levelList.length; ++i) {
+                var level = levelList[i];
+                if (fileSize <= level['inputSize']) {
+                    var executionSystem = EnvironmentConfig.agave.systems.executionSystemPreference[0];
+                    if (level['system'] == 'small')
+                        executionSystem = EnvironmentConfig.agave.systems.smallExecutionSystemPreference[0];
+
+                    this.set({
+                        'appId': EnvironmentConfig.agave.systems.execution[executionSystem].apps[appName],
+                        'executionSystem': EnvironmentConfig.agave.systems.execution[executionSystem].hostname,
+                        'maxRunTime': level['time'],
+                    });
+
+                    break;
+                }
+            }
+        },
+
     });
 
     // Required Auth package
