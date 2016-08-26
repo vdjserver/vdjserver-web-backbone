@@ -1,0 +1,54 @@
+    <div class="row">
+        <div class="col-md-12">
+            <h2>
+                <div class="alert alert-primary">
+                    Analysis Charts
+                </div>
+            </h2>
+        </div>
+
+        <div class="col-md-12 table-responsive text-center">
+            <table class="table table-bordered table-headings">
+                <thead>
+                    <tr>
+                        <th class="text-center">
+                            Name
+                        </th>
+                        <th class="text-center">
+                            Chart
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each chartFiles}}
+                        <tr class="text-center" id="chart-{{this.id}}">
+                            <td>
+                                <h5>{{name}}</h5>
+                            </td>
+
+                            <td>
+                                <div id="show-chart" class="btn btn-primary show-chart" data-id="{{this.id}}">
+                                    {{ChartButtonText this.name}}
+                                </div>
+
+                                <div id="hide-chart" class="btn-group hidden" role="group">
+                                    <button class="btn btn-default hide-chart" data-id="{{this.id}}">
+                                        Hide Chart
+                                    </button>
+
+                                    <button class="btn btn-primary download-chart" data-id="{{this.id}}">
+                                        Download Chart
+                                    </button>
+                                </div>
+
+                                <div id="download-data" class="btn btn-primary download-data" data-id="{{this.id}}">
+                                    Download Data
+                                </div>
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+

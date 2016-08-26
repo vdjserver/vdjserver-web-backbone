@@ -61,6 +61,9 @@ define([
                    + '&offset=' + this.offset
                    ;
         },
+        getProcessMetadataFile: function() {
+            return this.get('processMetadata.json');
+        },
         getProjectFileOutput: function() {
             var filteredCollection = this.filter(function(model) {
 

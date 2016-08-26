@@ -337,8 +337,38 @@ define([
                     return that.collection.fetch();
                 })
                 .done(function() {
-                    loadingView.remove();
-                    that.render();
+
+                    // setup analysis charts subview based upon process metadata
+                    var processMetadataFile = that.collection.getProcessMetadataFile();
+                    if (processMetadataFile) {
+                        processMetadataFile.downloadFileToCache()
+                            .then(function(tmpFileData) {
+                                try {
+                                    that.processMetadata = JSON.parse(tmpFileData);
+                                    that.processMetadata.process = {};
+                                    that.processMetadata.process.appName = 'vdjPipe';
+
+                                    switch (that.processMetadata.process.appName) {
+                                        case('vdjPipe'):
+                                        case('presto'):
+                                            that.chartView = new Analyses.Statistics({selectAnalyses: that});
+                                            that.setView('#analysis-charts', that.chartView);
+                                            break;
+                                        case('igBlast'):
+                                            break;
+
+                                    }
+                                } catch (error) {
+                                    // TODO
+                                } finally {
+                                    loadingView.remove();
+                                    that.render();
+                                }
+                            })
+                    } else {
+                        loadingView.remove();
+                        that.render();
+                    }
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -353,7 +383,7 @@ define([
             return {
                 jobDetail: this.jobDetail.toJSON(),
                 projectFiles: this.collection.getProjectFileOutput().toJSON(),
-                chartFiles: this.collection.getChartFileOutput().toJSON(),
+                //chartFiles: this.collection.getChartFileOutput().toJSON(),
                 logFiles: this.collection.getLogFileOutput().toJSON(),
 
                 //outputFiles: this.collection.toJSON(),
@@ -362,14 +392,14 @@ define([
             };
         },
         events: {
-            'click .show-chart': 'showChart',
-            'click .hide-chart': 'hideChart',
+            //'click .show-chart': 'showChart',
+            //'click .hide-chart': 'hideChart',
 
             'click .show-log': 'showLog',
             'click .hide-log': 'hideLog',
 
-            'click .download-chart': 'downloadChart',
-            'click .download-file': 'downloadFile',
+            //'click .download-chart': 'downloadChart',
+            //'click .download-file': 'downloadFile',
 
             'click .toggle-legend-btn': 'toggleLegend',
         },
@@ -710,24 +740,371 @@ define([
         },
     });
 
-    Analyses.Charts.LengthHistogram = function(fileHandle, text, classSelector) {
+    Analyses.Statistics = Backbone.View.extend({
+        template: 'analyses/statistics-charts',
+        initialize: function(parameters) {
 
-        //remove commented out lines (header info)
-        text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+            // access data from superview instead of reloading
+            this.selectAnalyses = parameters.selectAnalyses;
 
-        var data = d3.tsv.parse(text);
-        var otherD = [];
-        data.forEach(function(d) {
-            otherD.push({
-                x: +d['read_length'],
-                y: +d['count'],
+            this.chartHeight = 360;
+            this.isComparison = true;
+
+            var pm = this.selectAnalyses.processMetadata;
+            for (var key in pm.groups) {
+                if (key == 'stats') {
+                    this.isComparison = false;
+                }
+            }
+
+            this.chartFiles = [
+                { id: 'composition', name: 'Nucleotide Composition' },
+                { id: 'gc_histogram', name: 'GC% Histogram' },
+                { id: 'heatmap', name: 'Heatmap' },
+                { id: 'length_histogram', name: 'Sequence Length Histogram' },
+                { id: 'mean_quality_histogram', name: 'Mean Quality Histogram' },
+                { id: 'quality', name: 'Quality Scores' },
+            ]
+
+            this.render();
+
+/*
+            this.jobDetail.fetch()
+                .then(function() {
+                    return that.collection.fetch();
+                })
+                .done(function() {
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().fetch()');
+                    telemetry.set('view', 'Analyses.SelectAnalyses');
+                    telemetry.save();
+                })
+                ; */
+        },
+        serialize: function() {
+            return {
+                chartFiles: this.chartFiles,
+                //canDownloadFiles: this.canDownloadFiles,
+                //projectUuid: this.projectUuid,
+            };
+        },
+        events: {
+            'click .show-chart': 'showChart',
+            'click .hide-chart': 'hideChart',
+
+            'click .download-chart': 'downloadChart',
+            'click .download-file': 'downloadFile',
+
+            'click .toggle-legend-btn': 'toggleLegend',
+        },
+
+        hideChart: function(e) {
+            e.preventDefault();
+            $(e.target).parent().prev('#show-chart').removeClass('hidden');
+            $(e.target).closest('#hide-chart').addClass('hidden');
+
+            var elOffset = $( e.target ).offset().top;
+            var elHeight = $( e.target ).height();
+            var windowHeight = $(window).height();
+            var offset;
+
+            if (elHeight < windowHeight) {
+              offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+            } else {
+              offset = elOffset;
+            }
+
+            $('html, body').animate({scrollTop: offset}, 1000);
+
+            $(e.target.closest('tr')).next().hide(1500, function(){
+              $(e.target.closest('tr')).next().remove();
             });
-        });
+        },
 
-        var myData = [{
-            key: 'Sequence Length',
-            values: otherD,
-        }];
+        showChart: function(e) {
+            e.preventDefault();
+
+            this._uiBeginChartLoading(e.target);
+
+            var chartId = e.target.dataset.id;
+
+            var classSelector = chance.string({
+                pool: 'abcdefghijklmnopqrstuvwxyz',
+                length: 15,
+            });
+
+            // remove if it exists
+            if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
+              $(e.target.closest('tr')).next().remove();
+            }
+
+            $(e.target.closest('tr')).after(
+                '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
+                    + '<td colspan=3>'
+                        + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'
+                            + '<svg style="height: 0px;" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>'
+                        + '</div>'
+                        + '<div class="' + classSelector + '-d3-tip d3-tip hidden"></div>'
+                    + '</td>'
+                + '</tr>'
+            );
+
+            $(e.target).addClass('hidden');
+            $(e.target).nextAll('#hide-chart').removeClass('hidden');
+
+            // Enable download button
+            $(e.target).nextAll('#hide-chart').children('.download-chart').attr('data-chart-class-selector', classSelector);
+
+            // Clean up any charts that are currently displayed
+            this.selectAnalyses.hideWarning();
+            $('#chart-legend').hide();
+
+            var that = this;
+            var chartData;
+
+            this._loadChartData(chartId)
+            .then(function(tmpChartData) {
+                chartData = tmpChartData;
+            })
+            .then(function() {
+                return $('#chart-tr-' + classSelector).animate({
+                    // Unfortunately, this '30' is a bit of a magic number.
+                    // It helps create enough spacer for horizontal scroll
+                    // bars on the qstats chart not to overlay on other
+                    // chart buttons.
+                    height: (that.chartHeight + 30) + 'px',
+                }, 500).promise();
+            })
+            .then(function() {
+                $('.' + classSelector + ' svg').css('height', that.chartHeight);
+            })
+            .done(function() {
+
+                that._uiEndChartLoading();
+
+                var fileHandle;
+                var fileData;
+                if (that.isComparison) fileData = chartData.pre;
+                else fileData = chartData.stats;
+
+                switch (chartId) {
+                    case 'composition':
+                        $('#chart-legend').show();
+                        Analyses.Charts.Composition(that.isComparison, chartData, classSelector);
+                        break;
+
+                    case 'gc_histogram':
+                        $('#chart-legend').show();
+                        Analyses.Charts.PercentageGcHistogram(that.isComparison, chartData, classSelector);
+                        break;
+
+                    case 'heatmap':
+                        break;
+
+                    case 'length_histogram':
+                        $('#chart-legend').show();
+                        Analyses.Charts.LengthHistogram(that.isComparison, chartData, classSelector);
+                        break;
+
+                    case 'mean_quality_histogram':
+                        Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, classSelector);
+                        break;
+
+                    case 'quality':
+                        Analyses.Charts.QualityScore(fileHandle, fileData, classSelector, that.chartHeight);
+                        break;
+
+                    default:
+                        break;
+                }
+/*
+                switch (chartType) {
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
+                        $('#chart-legend').show();
+                        Analyses.Charts.Composition(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_1:
+                        $('#chart-legend').show();
+                        Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_3:
+                        $('#chart-legend').show();
+                        Analyses.Charts.LengthHistogram(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
+                        Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
+                        Analyses.Charts.QualityScore(fileHandle, fileData, classSelector, that.chartHeight);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
+                        Analyses.Charts.GiantTable(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_7:
+                        Analyses.Charts.Cdr3(fileHandle, fileData, classSelector);
+                        break;
+
+                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_8:
+                        Analyses.Charts.GeneDistribution(fileHandle, fileData, classSelector);
+                        break;
+
+                    default:
+                        break;
+                }
+*/
+
+                // Scroll down to chart
+                $('html, body').animate({
+                    scrollTop: $('.' + classSelector).offset().top
+                }, 1000);
+            })
+            .fail(function(response) {
+                var errorMessage = this.getErrorMessageFromResponse(response);
+                this.selectAnalyses.showWarning(errorMessage);
+            })
+            ;
+        },
+
+        downloadChart: function(e) {
+
+            var that = this;
+
+            var chartClassSelector = e.target.dataset.chartClassSelector;
+
+            var filename = e.target.dataset.id;
+            //filename = filename.split('.');
+            //filename.pop();
+            //filename = filename.join('.');
+
+            var cssUrl = location.protocol + '//' + location.host + '/styles/charts.css';
+
+            $.get(cssUrl)
+                .done(function(cssText) {
+
+                    var widthPx = $('#' + chartClassSelector + ' svg').css('width');
+
+                    /*
+                        Grabbing all content specifically from the svg
+                        element ensures that we won't pick up any other
+                        random elements that are also children of
+                        |classSelector|.
+                    */
+                    var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
+                                  + '\n'
+                                  + '<svg '
+                                        + ' style="height: ' + that.chartHeight + 'px; width:' + widthPx + ';"'
+                                        + ' version="1.1"'
+                                        + ' xmlns="http://www.w3.org/2000/svg"'
+                                        + ' class="box"'
+                                  + '>'
+                                        + $('.' + chartClassSelector + ' svg').html()
+                                  + '</svg>'
+                                  ;
+
+                    if (typeof safari !== 'undefined') {
+                        window.open("data:image/svg+xml," + encodeURIComponent(svgString));
+                    } else {
+                        var blob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+                        saveAs(blob, filename + '.svg');
+                    }
+                })
+                ;
+        },
+
+        // private methods
+        _uiBeginChartLoading: function(selector) {
+            // Disable other buttons
+            $('.show-chart').prop('disabled', true);
+
+            $(selector).after('<div class="chart-loading-view"></div>');
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('.chart-loading-view', loadingView);
+            loadingView.render();
+        },
+        _uiEndChartLoading: function() {
+
+            // Restore buttons
+            $('.show-chart').prop('disabled', false);
+
+            // Remove loading view
+            $('.chart-loading-view').remove();
+        },
+        _loadChartData: function(chartId) {
+            var pm = this.selectAnalyses.processMetadata;
+            var that = this;
+            if (this.isComparison) {
+                var g1f = pm.groups.pre.files;
+                var filename = pm.files[g1f][chartId];
+                var fileHandle = this.selectAnalyses.collection.get(filename);
+                var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+
+                return fileHandle.downloadFileToCache()
+                .then(function(g1FileData) {
+                    var g2f = pm.groups.post.files;
+                    var filename = pm.files[g2f][chartId];
+                    var fileHandle = that.selectAnalyses.collection.get(filename);
+                    var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+
+                    return fileHandle.downloadFileToCache()
+                    .then(function(g2FileData) {
+                        return { pre: g1FileData, post: g2FileData };
+                    })
+                })
+            } else {
+                var g1f = pm.groups.stats.files;
+                var filename = pm.files[g1f][chartId];
+                var fileHandle = this.selectAnalyses.collection.get(filename);
+
+                var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+
+                return fileHandle.downloadFileToCache()
+                .then(function(tmpFileData) {
+                    return { stats: tmpFileData };
+                })
+            }
+        }
+    });
+
+    Analyses.Charts.LengthHistogram = function(isComparison, chartData, classSelector) {
+
+        var myData = [];
+
+        for (var group in chartData) {
+            //remove commented out lines (header info)
+            var text = chartData[group].replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+
+            var data = d3.tsv.parse(text);
+            var otherD = [];
+            data.forEach(function(d) {
+                otherD.push({
+                    x: +d['read_length'],
+                    y: +d['count'],
+                });
+            });
+
+            var name = '';
+            var color = 'red';
+            if (isComparison) {
+                if (group == 'pre') name = 'Pre-filter ';
+                else { name = 'Post-filter '; color = 'blue'; }
+            }
+
+            myData.push({
+                key: name + 'Sequence Length',
+                values: otherD,
+                color: color
+            });
+        }
 
         nv.addGraph(function() {
             var chart = nv.models.lineChart()
@@ -1149,34 +1526,46 @@ define([
       chart.xAxis[0].setExtremes(0, 20);
     };
 
-    Analyses.Charts.PercentageGcHistogram = function(fileHandle, text, classSelector) {
+    Analyses.Charts.PercentageGcHistogram = function(isComparison, chartData, classSelector) {
 
-        //remove commented out lines (header info)
-        text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+        var myData = [];
 
-        var otherD = [];
-        var data = d3.tsv.parse(text);
-        data.forEach(function(d) {
-            otherD.push({
-                x: +d['GC%'],
-                y: +d['read_count'],
-            });
-        });
+        for (var group in chartData) {
+            //remove commented out lines (header info)
+            var text = chartData[group].replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-        //fill in any up to 100
-        for (var i = 0; i <= 100; i++) {
-            if (!otherD[i]) {
+            var otherD = [];
+            var data = d3.tsv.parse(text);
+            data.forEach(function(d) {
                 otherD.push({
-                    x: +i,
-                    y: 0,
+                    x: +d['GC%'],
+                    y: +d['read_count'],
                 });
-            }
-        }
+            });
 
-        var myData = [{
-            key: 'Mean GC %',
-            values: otherD,
-        }];
+            //fill in any up to 100
+            for (var i = 0; i <= 100; i++) {
+                if (!otherD[i]) {
+                    otherD.push({
+                        x: +i,
+                        y: 0,
+                    });
+                }
+            }
+
+            var name = '';
+            var color = 'red';
+            if (isComparison) {
+                if (group == 'pre') name = 'Pre-filter ';
+                else { name = 'Post-filter '; color = 'blue'; }
+            }
+
+            myData.push({
+                key: name + 'Mean GC %',
+                values: otherD,
+                color: color
+            });
+        }
 
         nv.addGraph(function() {
             var chart = nv.models.lineChart()
@@ -1844,90 +2233,92 @@ define([
         });
     };
 
-    Analyses.Charts.Composition = function(fileHandle, response, classSelector) {
+    Analyses.Charts.Composition = function(isComparison, chartData, classSelector) {
 
         $('#chart-right-announcement').text('Click to toggle displayed data.');
 
-        response = response.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+        var myData = [];
+        for (var group in chartData) {
+            // eliminate comment lines
+            var response = chartData[group].replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-        var data = d3.tsv.parse(response);
-        var aData = [];
-        var cData = [];
-        var gData = [];
-        var tData = [];
-        var nData = [];
-        var gcData = [];
+            var data = d3.tsv.parse(response);
+            var aData = [];
+            var cData = [];
+            var gData = [];
+            var tData = [];
+            var nData = [];
+            var gcData = [];
 
-        data.forEach(function(d) {
-            aData.push({
-                x: +d['position'],
-                y: +d['A%'],
+            data.forEach(function(d) {
+                aData.push({
+                    x: +d['position'],
+                    y: +d['A%'],
+                });
+
+                cData.push({
+                    x: +d['position'],
+                    y: +d['C%'],
+                });
+
+                gData.push({
+                    x: +d['position'],
+                    y: +d['G%'],
+                });
+
+                tData.push({
+                    x: +d['position'],
+                    y: +d['T%'],
+                });
+
+                nData.push({
+                    x: +d['position'],
+                    y: +d['N%'],
+                });
+
+                gcData.push({
+                    x: +d['position'],
+                    y: +d['GC%'],
+                });
             });
 
-            cData.push({
-                x: +d['position'],
-                y: +d['C%'],
+            myData.push({
+                    key: group + ' A%',
+                    values: aData,
+                    disabled: true,
+                    color: 'red',
             });
-
-            gData.push({
-                x: +d['position'],
-                y: +d['G%'],
+            myData.push({
+                    key: group + ' C%',
+                    values: cData,
+                    disabled: true,
+                    color: 'blue',
             });
-
-            tData.push({
-                x: +d['position'],
-                y: +d['T%'],
+            myData.push({
+                    key: group + ' G%',
+                    values: gData,
+                    disabled: true,
+                    color: 'black',
             });
-
-            nData.push({
-                x: +d['position'],
-                y: +d['N%'],
+            myData.push({
+                    key: group + ' T%',
+                    values: tData,
+                    disabled: true,
+                    color: 'green',
             });
-
-            gcData.push({
-                x: +d['position'],
-                y: +d['GC%'],
+            myData.push({
+                    key: group + ' N%',
+                    values: nData,
+                    disabled: false,
+                    color: 'purple',
             });
-        });
-
-        var myData = [
-            {
-                key: 'A%',
-                values: aData,
-                disabled: true,
-                color: 'red',
-            },
-            {
-                key: 'C%',
-                values: cData,
-                disabled: true,
-                color: 'blue',
-            },
-            {
-                key: 'G%',
-                values: gData,
-                disabled: true,
-                color: 'black',
-            },
-            {
-                key: 'T%',
-                values: tData,
-                disabled: true,
-                color: 'green',
-            },
-            {
-                key: 'N%',
-                values: nData,
-                disabled: false,
-                color: 'purple',
-            },
-            {
-                key: 'GC%',
-                values: gcData,
-                disabled: true,
-                color: 'orange',
-            },
-        ];
+            myData.push({
+                    key: group + ' GC%',
+                    values: gcData,
+                    disabled: true,
+                    color: 'orange',
+            });
+        }
 
         nv.addGraph(function() {
             var chart = nv.models.lineChart()
