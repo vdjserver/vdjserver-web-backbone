@@ -353,7 +353,7 @@ function(
         },
 
         // Private Methods
-        _setJobInputSpecification(formData, selectedFileMetadatas, projectUuid) {
+        _setJobInputSpecification: function(formData, selectedFileMetadatas, projectUuid) {
             var processMetadata = {
                 process: {
                     appName: this.appName
