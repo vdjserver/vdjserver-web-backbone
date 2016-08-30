@@ -338,37 +338,25 @@ define([
                 })
                 .done(function() {
 
-                    // setup analysis charts subview based upon process metadata
-                    var processMetadataFile = that.collection.getProcessMetadataFile();
-                    if (processMetadataFile) {
-                        processMetadataFile.downloadFileToCache()
-                            .then(function(tmpFileData) {
-                                try {
-                                    that.processMetadata = JSON.parse(tmpFileData);
-                                    that.processMetadata.process = {};
-                                    that.processMetadata.process.appName = 'vdjPipe';
+                    // setup analysis charts subview based upon application
+                    var chartApp;
+                    var appId = that.jobDetail.get('appId');
+                    if (appId.indexOf('vdj_pipe') >= 0) chartApp = 'statistics';
+                    if (appId.indexOf('presto') >= 0) chartApp = 'statistics';
+                    if (appId.indexOf('repsum') >= 0) chartApp = 'repertoire';
 
-                                    switch (that.processMetadata.process.appName) {
-                                        case('vdjPipe'):
-                                        case('presto'):
-                                            that.chartView = new Analyses.Statistics({selectAnalyses: that});
-                                            that.setView('#analysis-charts', that.chartView);
-                                            break;
-                                        case('igBlast'):
-                                            break;
-
-                                    }
-                                } catch (error) {
-                                    // TODO
-                                } finally {
-                                    loadingView.remove();
-                                    that.render();
-                                }
-                            })
-                    } else {
-                        loadingView.remove();
-                        that.render();
+                    switch (chartApp) {
+                        case 'statistics':
+                            that.chartView = new Analyses.Statistics({selectAnalyses: that});
+                            if (that.chartView.isValid)
+                                that.setView('#analysis-charts', that.chartView);
+                            break;
+                        case 'repertoire':
+                            break;
                     }
+
+                    loadingView.remove();
+                    that.render();
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -399,7 +387,7 @@ define([
             'click .hide-log': 'hideLog',
 
             //'click .download-chart': 'downloadChart',
-            //'click .download-file': 'downloadFile',
+            'click .download-file': 'downloadFile',
 
             'click .toggle-legend-btn': 'toggleLegend',
         },
@@ -712,6 +700,16 @@ define([
             $('.chart-warning').text(message);
             $('.chart-warning').show();
         },
+        showError: function(errorMessage) {
+            var message = 'An error occurred.';
+
+            if (errorMessage) {
+                message = message + ' ' + errorMessage;
+            }
+
+            $('.chart-warning').text(message);
+            $('.chart-warning').show();
+        },
         hideWarning: function() {
             $('.chart-warning').hide();
         },
@@ -750,39 +748,25 @@ define([
             this.chartHeight = 360;
             this.isComparison = true;
 
-            var pm = this.selectAnalyses.processMetadata;
-            for (var key in pm.groups) {
-                if (key == 'stats') {
-                    this.isComparison = false;
-                }
+            var fileHandle = this.selectAnalyses.collection.get('stats_composition.csv');
+            if (fileHandle) this.isComparison = false;
+            fileHandle = this.selectAnalyses.collection.get('pre-filter_composition.csv');
+
+            this.isValid = true;
+            if (this.isComparison && !fileHandle) {
+                this.isValid = false;
+            } else {
+                this.chartFiles = [
+                    { id: 'composition', name: 'Nucleotide Composition' },
+                    { id: 'gc_hist', name: 'GC% Histogram' },
+                    { id: 'heat_map', name: 'Heatmap' },
+                    { id: 'len_hist', name: 'Sequence Length Histogram' },
+                    { id: 'mean_q_hist', name: 'Mean Quality Histogram' },
+                    { id: 'qstats', name: 'Quality Scores' },
+                ]
+
+                this.render();
             }
-
-            this.chartFiles = [
-                { id: 'composition', name: 'Nucleotide Composition' },
-                { id: 'gc_histogram', name: 'GC% Histogram' },
-                { id: 'heatmap', name: 'Heatmap' },
-                { id: 'length_histogram', name: 'Sequence Length Histogram' },
-                { id: 'mean_quality_histogram', name: 'Mean Quality Histogram' },
-                { id: 'quality', name: 'Quality Scores' },
-            ]
-
-            this.render();
-
-/*
-            this.jobDetail.fetch()
-                .then(function() {
-                    return that.collection.fetch();
-                })
-                .done(function() {
-                })
-                .fail(function(error) {
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.setError(error);
-                    telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().fetch()');
-                    telemetry.set('view', 'Analyses.SelectAnalyses');
-                    telemetry.save();
-                })
-                ; */
         },
         serialize: function() {
             return {
@@ -831,6 +815,10 @@ define([
 
             var chartId = e.target.dataset.id;
 
+            // need more space for comparison chart
+            if (chartId == 'qstats' && this.isComparison) this.chartHeight = 720;
+            else this.chartHeight = 360;
+
             var classSelector = chance.string({
                 pool: 'abcdefghijklmnopqrstuvwxyz',
                 length: 15,
@@ -863,9 +851,12 @@ define([
             $('#chart-legend').hide();
 
             var that = this;
-            var chartData;
+            var fileHandles;
+            if (this.isComparison) fileHandles = { pre: 'pre-filter_' + chartId + '.csv', post: 'post-filter_' + chartId + '.csv'};
+            else fileHandles = { stats: 'stats_' + chartId + '.csv' };
 
-            this._loadChartData(chartId)
+            var chartData;
+            this._loadChartData(fileHandles)
             .then(function(tmpChartData) {
                 chartData = tmpChartData;
             })
@@ -896,25 +887,25 @@ define([
                         Analyses.Charts.Composition(that.isComparison, chartData, classSelector);
                         break;
 
-                    case 'gc_histogram':
+                    case 'gc_hist':
                         $('#chart-legend').show();
                         Analyses.Charts.PercentageGcHistogram(that.isComparison, chartData, classSelector);
                         break;
 
-                    case 'heatmap':
+                    case 'heat_map':
                         break;
 
-                    case 'length_histogram':
+                    case 'len_hist':
                         $('#chart-legend').show();
                         Analyses.Charts.LengthHistogram(that.isComparison, chartData, classSelector);
                         break;
 
-                    case 'mean_quality_histogram':
-                        Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, classSelector);
+                    case 'mean_q_hist':
+                        Analyses.Charts.MeanQualityScoreHistogram(that.isComparison, chartData, classSelector);
                         break;
 
-                    case 'quality':
-                        Analyses.Charts.QualityScore(fileHandle, fileData, classSelector, that.chartHeight);
+                    case 'qstats':
+                        Analyses.Charts.QualityScore(that.isComparison, chartData, classSelector, that.chartHeight);
                         break;
 
                     default:
@@ -967,9 +958,9 @@ define([
                     scrollTop: $('.' + classSelector).offset().top
                 }, 1000);
             })
-            .fail(function(response) {
-                var errorMessage = this.getErrorMessageFromResponse(response);
-                this.selectAnalyses.showWarning(errorMessage);
+            .fail(function(errorMessage) {
+                //var errorMessage = this.getErrorMessageFromResponse(response);
+                that.selectAnalyses.showError(errorMessage);
             })
             ;
         },
@@ -1039,30 +1030,25 @@ define([
             // Remove loading view
             $('.chart-loading-view').remove();
         },
-        _loadChartData: function(chartId) {
-            var pm = this.selectAnalyses.processMetadata;
+        _loadChartData: function(files) {
             var that = this;
             if (this.isComparison) {
-                var g1f = pm.groups.pre.files;
-                var filename = pm.files[g1f][chartId];
+                var filename = files.pre;
                 var fileHandle = this.selectAnalyses.collection.get(filename);
-                var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+                if (!fileHandle) return $.Deferred().reject('Project is missing statistics file: ' + filename);
 
                 return fileHandle.downloadFileToCache()
-                .then(function(g1FileData) {
-                    var g2f = pm.groups.post.files;
-                    var filename = pm.files[g2f][chartId];
+                .then(function(preFileData) {
+                    var filename = files.post;
                     var fileHandle = that.selectAnalyses.collection.get(filename);
-                    var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
 
                     return fileHandle.downloadFileToCache()
-                    .then(function(g2FileData) {
-                        return { pre: g1FileData, post: g2FileData };
+                    .then(function(postFileData) {
+                        return { pre: preFileData, post: postFileData };
                     })
                 })
             } else {
-                var g1f = pm.groups.stats.files;
-                var filename = pm.files[g1f][chartId];
+                var filename = files.stats;
                 var fileHandle = this.selectAnalyses.collection.get(filename);
 
                 var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
@@ -1106,6 +1092,35 @@ define([
             });
         }
 
+         // pre/post difference
+        if (isComparison) {
+            var diffD = [];
+            var otherD = [];
+            var preIdx, postIdx;
+            if (myData[0].key == 'Pre-filter Sequence Length') { preIdx = 0; postIdx = 1; }
+            else { preIdx = 1; postIdx = 0; }
+            var preData = myData[preIdx].values;
+            var postData = myData[postIdx].values;
+            for (var i = 0; i < preData.length; ++i) {
+                diffD[i] = preData[i].y;
+            }
+            for (var i = 0; i < postData.length; ++i) {
+                diffD[i] -= postData[i].y;
+            }
+            for (var i = 0; i < diffD.length; ++i) {
+                otherD.push({
+                    x: i,
+                    y: diffD[i]
+                });
+            }
+
+            myData.push({
+                key: 'Pre/Post Difference',
+                values: otherD,
+                color: 'magenta'
+            });
+        }
+
         nv.addGraph(function() {
             var chart = nv.models.lineChart()
                 .margin({left: 100, right:50})  //Adjust chart margins to give the x-axis some breathing room.
@@ -1141,45 +1156,95 @@ define([
         });
     };
 
-    Analyses.Charts.MeanQualityScoreHistogram = function(fileHandle, text, classSelector) {
+    Analyses.Charts.MeanQualityScoreHistogram = function(isComparison, chartData, classSelector) {
 
-        //remove commented out lines (header info)
-        text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+        var myData = [];
+        var preMedian;
+        var preQuality;
+        var postMedian;
+        var postQuality;
 
-        var csv = d3.tsv.parse(text);
+        for (var group in chartData) {
+            //remove commented out lines (header info)
+            var text = chartData[group].replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-        // build quality score line
-        var qualityScore = [];
-        _.each(csv, function(row) {
-            qualityScore.push(parseInt(row['count']));
-        });
+            var csv = d3.tsv.parse(text);
 
-        // calculate xAxis median
-        var total = 0;
-        _.each(csv, function(row) {
-            if (row['count'] !== '0') {
-                total += parseInt(row['count']);
+            // build quality score line
+            var qualityScore = [];
+            _.each(csv, function(row) {
+                qualityScore.push(parseInt(row['count']));
+            });
+
+            // calculate xAxis median
+            var total = 0;
+            _.each(csv, function(row) {
+                if (row['count'] !== '0') {
+                    total += parseInt(row['count']);
+                }
+            });
+
+            var runningTotal = 0;
+            var xMedian = _.find(csv, function(row) {
+                runningTotal += parseInt(row['count']);
+                if (runningTotal >= total / 2) {
+                    return row;
+                }
+            });
+
+            // build median line
+            var medianScore = [];
+            _.each(csv, function(row) {
+                if (parseInt(row['count']) <= parseInt(xMedian['count']) && row['read_quality'] !== '0') {
+                    medianScore.push({
+                        x: parseInt(xMedian['read_quality']),
+                        y: parseInt(row['count'])
+                    });
+                }
+            });
+
+            var name = '';
+            var color = 'red';
+            var mcolor = 'magenta';
+            if (isComparison) {
+                if (group == 'pre') {
+                    name = 'Pre-filter ';
+                    preMedian = xMedian;
+                    preQuality = qualityScore;
+                } else {
+                    name = 'Post-filter ';
+                    color = 'blue';
+                    mcolor = 'black';
+                    postMedian = xMedian;
+                    postQuality = qualityScore;
+                }
+            } else {
+                preMedian = xMedian;
+                preQuality = qualityScore;
             }
-        });
 
-        var runningTotal = 0;
-        var xMedian = _.find(csv, function(row) {
-            runningTotal += parseInt(row['count']);
-            if (runningTotal >= total / 2) {
-                return row;
-            }
-        });
-
-        // build median line
-        var medianScore = [];
-        _.each(csv, function(row) {
-            if (parseInt(row['count']) <= parseInt(xMedian['count']) && row['read_quality'] !== '0') {
-                medianScore.push({
-                    x: parseInt(xMedian['read_quality']),
-                    y: parseInt(row['count'])
-                });
-            }
-        });
+            myData.push({
+                name: name + 'Median Score',
+                data: medianScore,
+                pointStart: 1,
+                color: mcolor,
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 0
+                }
+            });
+            myData.push({
+                name: name + 'Read Count',
+                data: qualityScore,
+                color: color,
+                marker: {
+                    enabled: true,
+                    symbol: 'circle',
+                    radius: 0
+                }
+            });
+        }
 
         var chart = new Highcharts.Chart({
             chart: {
@@ -1260,24 +1325,20 @@ define([
                 formatter: function() {
 
                     var tooltip = '';
-                    for (var i = 0, length = this.series.points.length; i < length; i++) {
-                        var point = this.series.points[i];
-                        if (point.series.name === 'Median Score') {
-                            tooltip = '<b>Median Score: </b>' + xMedian['read_quality'] + '<br/>';
-                        }
-                        if (point.series.name === 'Quality Score') {
-                            if (this.y === 0) {
-                                tooltip = '<b>Quality Read: </b>' + this.x + '<br/>' +
-                                    '<b>Read Count: </b>' + this.y + '<br/>' +
-                                    '<b>Median Score: </b> 0';
-                            } else {
-                                tooltip = '<b>Quality Read: </b>' + this.x + '<br/>' +
-                                    '<b>Read Count: </b>' + this.y + '<br/>' +
-                                    '<b>Median Score: </b>' + xMedian['read_quality'];
-                            }
-
-                        }
+                    if (isComparison) {
+                        tooltip = '<b>Quality Score: </b>' + this.x + '<br/>';
+                        if (preQuality[this.x]) tooltip += '<b>Pre-filter Read Count: </b>' + preQuality[this.x] + '<br/>';
+                        else tooltip += '<b>Pre-filter Read Count: </b>0<br/>';
+                        tooltip += '<b>Pre-filter Median Score: </b>' + preMedian.read_quality + '<br/>';
+                        if (postQuality[this.x]) tooltip += '<b>Post-filter Read Count: </b>' + postQuality[this.x] + '<br/>';
+                        else tooltip += '<b>Post-filter Read Count: </b>0<br/>';
+                        tooltip += '<b>Post-filter Median Score: </b>' + postMedian.read_quality;
+                    } else {
+                        tooltip = '<b>Quality Score: </b>' + this.x + '<br/>' +
+                                '<b>Read Count: </b>' + preQuality[this.x] + '<br/>' +
+                                '<b>Median Score: </b>' + preMedian.read_quality;
                     }
+
                     return tooltip;
                 }
             },
@@ -1287,79 +1348,195 @@ define([
                 verticalAlign: 'top',
             },
 
-            series: [{
-                name: 'Median Score',
-                data: medianScore,
-                pointStart: 1,
-                color: '#6EB76A',
-                marker: {
-                    enabled: false,
-                    symbol: 'circle',
-                    radius: 0
-                }
-            }, {
-                name: 'Quality Score',
-                data: qualityScore,
-                color: '#2A7EB8',
-                marker: {
-                    enabled: true,
-                    symbol: 'circle',
-                    radius: 0
-                }
-            }]
+            series: myData
         });
     };
 
-    Analyses.Charts.QualityScore = function(fileHandle, text, classSelector, chartHeight) {
+    Analyses.Charts.QualityScore = function(isComparison, chartData, classSelector, chartHeight) {
 
-      //remove commented out lines (header info)
-      text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+        var myData = [];
+        var maxPosition = 0;
 
-      var csv = d3.tsv.parse(text);
+        for (var group in chartData) {
+            //remove commented out lines (header info)
+            var text = chartData[group].replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-      var data = [];
-      var boxPlot = [];
-      var mean = [];
-      var categories = []; // navigator xAxis ticks for our purposes
-      var backgroundBottom = [];
-      var backgroundMiddle = [];
-      var backgroundTop = [];
-      var max = 0;
+            var csv = d3.tsv.parse(text);
 
-      _.each(csv, function(row, index) {
-        var data = new Array();
-        data.push(parseInt(row['10%']));
-        data.push(parseInt(row['25%']));
-        data.push(parseInt(row['50%']));
-        data.push(parseInt(row['75%']));
-        data.push(parseInt(row['90%']));
-        boxPlot[index] = data;
-        mean.push(parseFloat(row['mean']));
-        categories.push(parseInt(row['position']));
-      });
+            var data = [];
+            var boxPlot = [];
+            var mean = [];
+            var categories = []; // navigator xAxis ticks for our purposes
+            var backgroundBottom = [];
+            var backgroundMiddle = [];
+            var backgroundTop = [];
+            var max = 0;
 
-      _.each(boxPlot, function(row, index) {
-        var temp = _.max(row);
-        if (temp > max) {
-            max = temp;
+            _.each(csv, function(row, index) {
+              var data = new Array();
+              data.push(parseInt(row['10%']));
+              data.push(parseInt(row['25%']));
+              data.push(parseInt(row['50%']));
+              data.push(parseInt(row['75%']));
+              data.push(parseInt(row['90%']));
+              boxPlot[index] = data;
+              mean.push(parseFloat(row['mean']));
+              categories.push(parseInt(row['position']));
+              if (parseInt(row['position']) > maxPosition) maxPosition = parseInt(row['position']);
+            });
+
+            _.each(boxPlot, function(row, index) {
+              var temp = _.max(row);
+              if (temp > max) {
+                  max = temp;
+              }
+            });
+
+            _.each(boxPlot, function(row, index) {
+              backgroundBottom.push(20);
+              backgroundMiddle.push(8);
+              backgroundTop.push(max - 28);
+            });
+
+            var name = '';
+            var yAxis = 0;
+            if (isComparison) {
+                if (group == 'pre') {
+                    name = 'Pre-filter ';
+                } else {
+                    name = 'Post-filter ';
+                    yAxis = 1;
+                }
+            }
+
+            myData.push({
+                type: 'area',
+                data: backgroundTop,
+                color: '#CEFCDB',
+                stack: 0,
+                yAxis: yAxis
+            });
+
+            myData.push({
+                type: 'area',
+                data: backgroundMiddle,
+                color: '#FCFCCE',
+                stack: 0,
+                yAxis: yAxis
+            });
+
+            myData.push({
+                type: 'area',
+                data: backgroundBottom,
+                color: '#F4D7D8',
+                stack: 0,
+                yAxis: yAxis
+            });
+
+            myData.push({
+                type: 'boxplot',
+                data: boxPlot,
+                yAxis: yAxis
+            });
+
+            myData.push({
+                type: 'spline',
+                data: mean,
+                marker: {
+                    enabled: true,
+                    radius: 2,
+                    symbol: 'circle'
+                },
+                color: '#FB000D',
+                yAxis: yAxis
+            });
+
+            if (!yAxis) {
+                myData.push({
+                    // dummy series needed to obtain a continous xAxis with navigator in place
+                    type: 'line',
+                    data: categories,
+                    visible: false,
+                });
+            }
         }
-      });
 
-      _.each(boxPlot, function(row, index) {
-        backgroundBottom.push(20);
-        backgroundMiddle.push(8);
-        backgroundTop.push(max - 28);
-      });
+      var yAxis;
+      if (isComparison) {
+          yAxis = [{
+              title: {
+                  text: 'Pre-filter Quality',
+                  style: {
+                      color: '#000000',
+                      fontSize: '12px'
+                  }
+              },
+              max: max,
+              opposite: false,
+              labels: {
+                  align: 'right',
+                  enabled: true,
+                  style: {
+                      color: '#000000'
+                  }
+              },
+              height: '40%',
+              showLastLabel: true
+            },{
+              title: {
+                  text: 'Post-filter Quality',
+                  style: {
+                      color: '#000000',
+                      fontSize: '12px'
+                  }
+              },
+              max: max,
+              opposite: false,
+              labels: {
+                  align: 'right',
+                  enabled: true,
+                  style: {
+                      color: '#000000'
+                  }
+              },
+              offset: 0,
+              top: '50%',
+              height: '40%',
+              showLastLabel: true
+          }];
+      } else {
+          yAxis = [{
+              title: {
+                  text: 'Quality',
+                  style: {
+                      color: '#000000',
+                      fontSize: '12px'
+                  }
+              },
+              max: max,
+              opposite: false,
+              labels: {
+                  align: 'right',
+                  enabled: true,
+                  style: {
+                      color: '#000000'
+                  }
+              },
+              height: '100%',
+              showLastLabel: true
+        }];
+      }
 
       var chart = new Highcharts.StockChart({
         chart: {
+            height: chartHeight,
             renderTo: classSelector,
             panning: true,
             style: {
                 fontFamily: 'Arial',
             },
         },
-
+/*
         title: {
             text: 'Quality Scores',
             style: {
@@ -1367,7 +1544,7 @@ define([
                 fontSize: '12px'
             }
         },
-
+*/
         plotOptions: {
             series: {
                 stacking: 'normal',
@@ -1390,23 +1567,50 @@ define([
         tooltip: {
             formatter: function() {
 
-                var tooltip = '';
+                // expects series to be in a specific order
+                var tooltip = '<b>Read position: <b>' + this.x + '<br/>';
 
-                for (var i = 0, length = this.points.length; i < length; i++) {
-                    var point = this.points[i];
+                if (isComparison) {
+                    if (this.points[4].series.options.data[this.x])
+                        tooltip += '<b>Pre-filter Mean: <b>' + this.points[4].series.options.data[this.x] + '<br/>';
+                    if (this.points[3].series.options.data[this.x][4])
+                        tooltip += '<b>Pre-filter 90%: <b>' + this.points[3].series.options.data[this.x][4] + '<br/>';
+                    if (this.points[3].series.options.data[this.x][3])
+                        tooltip += '<b>Pre-filter 75%: <b>' + this.points[3].series.options.data[this.x][3] + '<br/>';
+                    if (this.points[3].series.options.data[this.x][2])
+                        tooltip += '<b>Pre-filter 50%: <b>' + this.points[3].series.options.data[this.x][2] + '<br/>';
+                    if (this.points[3].series.options.data[this.x][1])
+                        tooltip += '<b>Pre-filter 25%: <b>' + this.points[3].series.options.data[this.x][1] + '<br/>';
+                    if (this.points[3].series.options.data[this.x][0])
+                        tooltip += '<b>Pre-filter 10%: <b>' + this.points[3].series.options.data[this.x][0] + '<br/>';
 
-                    if (this.points[i].series.name === 'Series 4') {
-                        tooltip = '<b>Read position: <b>' + this.x + '<br/>' +
-                            '<b>90%: <b>' + this.points[i].series.options.data[i][4] + '<br/>' +
-                            '<b>75%: <b>' + this.points[i].series.options.data[i][3] + '<br/>' +
-                            '<b>50%: <b>' + this.points[i].series.options.data[i][2] + '<br/>' +
-                            '<b>25%: <b>' + this.points[i].series.options.data[i][1] + '<br/>' +
-                            '<b>10%: <b>' + this.points[i].series.options.data[i][0] + '<br/>';
-                    }
-                    if (this.points[i].series.name === 'Series 5') {
-                        tooltip += '<b>Mean: <b>' + point.series.options.data[this.x] + '<br/>';
-                    }
+                    if (this.points[9].series.options.data[this.x])
+                        tooltip += '<b>Post-filter Mean: <b>' + this.points[9].series.options.data[this.x] + '<br/>';
+                    if (this.points[8].series.options.data[this.x][4])
+                        tooltip += '<b>Post-filter 90%: <b>' + this.points[8].series.options.data[this.x][4] + '<br/>';
+                    if (this.points[8].series.options.data[this.x][3])
+                        tooltip += '<b>Post-filter 75%: <b>' + this.points[8].series.options.data[this.x][3] + '<br/>';
+                    if (this.points[8].series.options.data[this.x][2])
+                        tooltip += '<b>Post-filter 50%: <b>' + this.points[8].series.options.data[this.x][2] + '<br/>';
+                    if (this.points[8].series.options.data[this.x][1])
+                        tooltip += '<b>Post-filter 25%: <b>' + this.points[8].series.options.data[this.x][1] + '<br/>';
+                    if (this.points[8].series.options.data[this.x][0])
+                        tooltip += '<b>Post-filter 10%: <b>' + this.points[8].series.options.data[this.x][0] + '<br/>';
+                } else {
+                    if (this.points[4].series.options.data[this.x])
+                        tooltip += '<b>Mean: <b>' + this.points[4].series.options.data[this.x] + '<br/>';
+                    if (this.points[3].series.options.data[this.x][4])
+                        tooltip += '<b>90%: <b>' + this.points[3].series.options.data[this.x][4] + '<br/>';
+                    if (this.points[3].series.options.data[this.x][3])
+                        tooltip += '<b>75%: <b>' + this.points[3].series.options.data[this.x][3] + '<br/>';
+                    if (this.points[3].series.options.data[this.x][2])
+                        tooltip += '<b>50%: <b>' + this.points[3].series.options.data[this.x][2] + '<br/>';
+                    if (this.points[3].series.options.data[this.x][1])
+                        tooltip += '<b>25%: <b>' + this.points[3].series.options.data[this.x][1] + '<br/>';
+                    if (this.points[3].series.options.data[this.x][0])
+                        tooltip += '<b>10%: <b>' + this.points[3].series.options.data[this.x][0] + '<br/>';
                 }
+
                 return tooltip;
             }
         },
@@ -1419,27 +1623,7 @@ define([
             enabled: false
         },
 
-        yAxis: {
-            title: {
-                text: 'Quality',
-                style: {
-                    color: '#000000',
-                    fontSize: '12px'
-                }
-            },
-            max: max,
-            opposite: false,
-            labels: {
-                align: 'right',
-                enabled: true,
-                style: {
-                    color: '#000000'
-                }
-            },
-            height: '100%',
-            showLastLabel: true
-        },
-
+        yAxis: yAxis,
 
         xAxis: {
             title: {
@@ -1485,45 +1669,12 @@ define([
                     }
                 },
             },
-
-
         },
 
-        series: [{
-            type: 'area',
-            data: backgroundTop,
-            color: '#CEFCDB',
-            stack: 0,
-        }, {
-            type: 'area',
-            data: backgroundMiddle,
-            color: '#FCFCCE',
-            stack: 0,
-        }, {
-            type: 'area',
-            data: backgroundBottom,
-            color: '#F4D7D8',
-            stack: 0,
-        }, {
-            type: 'boxplot',
-            data: boxPlot,
-        }, {
-            type: 'spline',
-            data: mean,
-            marker: {
-                enabled: true,
-                radius: 2,
-                symbol: 'circle'
-            },
-            color: '#FB000D',
-        }, {
-            // dummy series needed to obtain a continous xAxis with navigator in place
-            type: 'line',
-            data: categories,
-            visible: false,
-        }]
+        series: myData
       });
-      chart.xAxis[0].setExtremes(0, 20);
+
+      chart.xAxis[0].setExtremes(0, maxPosition);
     };
 
     Analyses.Charts.PercentageGcHistogram = function(isComparison, chartData, classSelector) {
@@ -2282,38 +2433,47 @@ define([
                 });
             });
 
+            var name = '';
+            if (isComparison) {
+                if (group == 'pre') {
+                    name = 'Pre-filter ';
+                } else {
+                    name = 'Post-filter ';
+                }
+            }
+
             myData.push({
-                    key: group + ' A%',
+                    key: name + 'A%',
                     values: aData,
                     disabled: true,
                     color: 'red',
             });
             myData.push({
-                    key: group + ' C%',
+                    key: name + 'C%',
                     values: cData,
                     disabled: true,
                     color: 'blue',
             });
             myData.push({
-                    key: group + ' G%',
+                    key: name + 'G%',
                     values: gData,
                     disabled: true,
                     color: 'black',
             });
             myData.push({
-                    key: group + ' T%',
+                    key: name + 'T%',
                     values: tData,
                     disabled: true,
                     color: 'green',
             });
             myData.push({
-                    key: group + ' N%',
+                    key: name + 'N%',
                     values: nData,
                     disabled: false,
                     color: 'purple',
             });
             myData.push({
-                    key: group + ' GC%',
+                    key: name + 'GC%',
                     values: gcData,
                     disabled: true,
                     color: 'orange',
