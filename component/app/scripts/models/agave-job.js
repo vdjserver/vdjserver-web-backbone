@@ -310,7 +310,6 @@ function(
 
             this._setJobConfigFromWorkflowFormData(formData, selectedFileMetadatas, allFileMetadatas);
             this._setArchivePath(projectUuid);
-            this._setJobInputSpecification(formData, selectedFileMetadatas, projectUuid);
 
             selectedFileMetadatas = this._updateSelectedFileMetadatasForPrimers(
                 formData,
@@ -353,81 +352,6 @@ function(
         },
 
         // Private Methods
-        _setJobInputSpecification: function(formData, selectedFileMetadatas, projectUuid) {
-            var processMetadata = {
-                process: {
-                    appName: this.appName
-                },
-                groups: {
-                },
-                files: {
-                },
-                calculations: [
-                ]
-            };
-
-            // determine if two statistics (pre, post) or just one
-            // TODO: out-prefix key will go away when hard-code the prefix
-            var count = 0;
-            for (var key in formData) {
-                if (formData.hasOwnProperty(key)) {
-                    if (key.indexOf('quality_stats-out-prefix') >= 0) ++count;
-                }
-            }
-            if (count == 1) {
-                // running singular statistics workflow
-                processMetadata['groups'] = {
-                    stats: {
-                        type: 'statistics',
-                        files: 'stats'
-                    }
-                };
-                processMetadata['files'] = {
-                    stats: {
-                        composition: 'stats_composition.csv',
-                        gc_histogram: 'stats_gc_hist.csv',
-                        heatmap: 'stats_heat_map.csv',
-                        length_histogram: 'stats_len_hist.csv',
-                        mean_quality_histogram: 'stats_mean_q_hist.csv',
-                        quality: 'stats_qstats.csv'
-                    }
-                };
-            } else if (count == 2) {
-                // running full workflow with pre/post statistics
-                processMetadata['groups'] = {
-                    pre: {
-                        type: 'statistics',
-                        files: 'pre'
-                    },
-                    post: {
-                        type: 'statistics',
-                        files: 'post'
-                    }
-                };
-                processMetadata['files'] = {
-                    pre: {
-                        composition: 'pre-filter_composition.csv',
-                        gc_histogram: 'pre-filter_gc_hist.csv',
-                        heatmap: 'pre-filter_heat_map.csv',
-                        length_histogram: 'pre-filter_len_hist.csv',
-                        mean_quality_histogram: 'pre-filter_mean_q_hist.csv',
-                        quality: 'pre-filter_qstats.csv'
-                    },
-                    post: {
-                        composition: 'post-filter_composition.csv',
-                        gc_histogram: 'post-filter_gc_hist.csv',
-                        heatmap: 'post-filter_heat_map.csv',
-                        length_histogram: 'post-filter_len_hist.csv',
-                        mean_quality_histogram: 'post-filter_mean_q_hist.csv',
-                        quality: 'post-filter_qstats.csv'
-                    }
-                };
-            } else {
-                // error wrong count
-            }
-
-            this.set('processMetadata', processMetadata);
-        },
         _updateSelectedFileMetadatasForBarcodeQualityScores: function(formData, selectedFileMetadatas, allFileMetadatas) {
 
             for (var i = 0; i < selectedFileMetadatas.models.length; i++) {
