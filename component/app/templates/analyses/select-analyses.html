@@ -77,8 +77,10 @@
         </div>
     </div>
 
-    <div id="analysis-charts">
-    </div>
+    {{#each analysisCharts}}
+        <div id="analysis-charts-{{this.groupId}}">
+        </div>
+    {{/each}}
 
     <div class="row">
         <div class="col-md-12">

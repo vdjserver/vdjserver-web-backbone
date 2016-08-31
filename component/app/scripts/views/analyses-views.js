@@ -330,6 +330,9 @@ define([
 
             this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
 
+            this.analysisCharts = [];
+            this.chartViews = [];
+
             var that = this;
 
             this.jobDetail.fetch()
@@ -338,25 +341,54 @@ define([
                 })
                 .done(function() {
 
-                    // setup analysis charts subview based upon application
-                    var chartApp;
-                    var appId = that.jobDetail.get('appId');
-                    if (appId.indexOf('vdj_pipe') >= 0) chartApp = 'statistics';
-                    if (appId.indexOf('presto') >= 0) chartApp = 'statistics';
-                    if (appId.indexOf('repsum') >= 0) chartApp = 'repertoire';
+                    // check for process metadata
+                    var processMetadataFile = that.collection.getProcessMetadataFile();
+                    if (processMetadataFile) {
+                        processMetadataFile.downloadFileToCache()
+                            .then(function(tmpFileData) {
+                                try {
+                                    that.processMetadata = JSON.parse(tmpFileData);
 
-                    switch (chartApp) {
-                        case 'statistics':
-                            that.chartView = new Analyses.Statistics({selectAnalyses: that});
-                            if (that.chartView.isValid)
-                                that.setView('#analysis-charts', that.chartView);
-                            break;
-                        case 'repertoire':
-                            break;
+                                    switch (that.processMetadata.process.appName) {
+                                        case('vdjPipe'):
+                                            break;
+                                        case('presto'):
+                                            for (var group in that.processMetadata.groups) {
+                                                console.log(group);
+                                                that.analysisCharts.push({ groupId: group });
+                                                var chart = new Analyses.Statistics({selectAnalyses: that, groupId: group});
+                                                if (chart.isValid) {
+                                                    that.chartViews.push(chart);
+                                                    that.setView('#analysis-charts-'+group, chart);
+                                                }
+                                            }
+                                            break;
+                                        case('igBlast'):
+                                            break;
+
+                                    }
+                                } catch (error) {
+                                    // TODO
+                                } finally {
+                                    loadingView.remove();
+                                    that.render();
+                                }
+                            })
+                    } else {
+                        // only vdjpipe
+                        var appId = that.jobDetail.get('appId');
+                        if (appId.indexOf('vdj_pipe') >= 0) {
+                            that.analysisCharts.push({ groupId: 'group0' });
+                            var chart = new Analyses.Statistics({selectAnalyses: that});
+                            if (chart.isValid) {
+                                that.chartViews.push(chart);
+                                that.setView('#analysis-charts-group0', chart);
+                            }
+                        }
+
+                        loadingView.remove();
+                        that.render();
                     }
-
-                    loadingView.remove();
-                    that.render();
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -373,6 +405,7 @@ define([
                 projectFiles: this.collection.getProjectFileOutput().toJSON(),
                 //chartFiles: this.collection.getChartFileOutput().toJSON(),
                 logFiles: this.collection.getLogFileOutput().toJSON(),
+                analysisCharts: this.analysisCharts,
 
                 //outputFiles: this.collection.toJSON(),
                 canDownloadFiles: this.canDownloadFiles,
@@ -744,18 +777,41 @@ define([
 
             // access data from superview instead of reloading
             this.selectAnalyses = parameters.selectAnalyses;
+            this.groupId = parameters.groupId;
 
             this.chartHeight = 360;
             this.isComparison = true;
-
-            var fileHandle = this.selectAnalyses.collection.get('stats_composition.csv');
-            if (fileHandle) this.isComparison = false;
-            fileHandle = this.selectAnalyses.collection.get('pre-filter_composition.csv');
-
             this.isValid = true;
-            if (this.isComparison && !fileHandle) {
-                this.isValid = false;
+
+            if (this.groupId) {
+              // we are using process metadata
+              var pm = this.selectAnalyses.processMetadata;
+              for (var key in pm.groups[this.groupId]) {
+                  if (key == 'stats') {
+                      this.isComparison = false;
+                      var fileKey = pm.groups[this.groupId][key]['files'];
+                      var filename = pm.files[fileKey]['composition'];
+                      var fileHandle = this.selectAnalyses.collection.get(filename);
+                      if (!fileHandle) this.isValid = false;
+                  }
+                  if (key == 'pre') {
+                      this.isComparison = true;
+                      var fileKey = pm.groups[this.groupId][key]['files'];
+                      var filename = pm.files[fileKey]['composition'];
+                      var fileHandle = this.selectAnalyses.collection.get(filename);
+                      if (!fileHandle) this.isValid = false;
+                  }
+              }
             } else {
+                // hard-coded filenames
+                var fileHandle = this.selectAnalyses.collection.get('stats_composition.csv');
+                if (fileHandle) this.isComparison = false;
+                fileHandle = this.selectAnalyses.collection.get('pre-filter_composition.csv');
+
+                if (this.isComparison && !fileHandle) this.isValid = false;
+            }
+
+            if (this.isValid) {
                 this.chartFiles = [
                     { id: 'composition', name: 'Nucleotide Composition' },
                     { id: 'gc_hist', name: 'GC% Histogram' },
@@ -851,12 +907,8 @@ define([
             $('#chart-legend').hide();
 
             var that = this;
-            var fileHandles;
-            if (this.isComparison) fileHandles = { pre: 'pre-filter_' + chartId + '.csv', post: 'post-filter_' + chartId + '.csv'};
-            else fileHandles = { stats: 'stats_' + chartId + '.csv' };
-
             var chartData;
-            this._loadChartData(fileHandles)
+            this._loadChartData(this._chartFilenames(chartId))
             .then(function(tmpChartData) {
                 chartData = tmpChartData;
             })
@@ -1029,6 +1081,28 @@ define([
 
             // Remove loading view
             $('.chart-loading-view').remove();
+        },
+        _chartFilenames: function(chartId) {
+            var filenames;
+            if (this.groupId) {
+                var pm = this.selectAnalyses.processMetadata;
+                if (this.isComparison) {
+                    var fileKey = pm.groups[this.groupId]['pre']['files'];
+                    var preName = pm.files[fileKey][chartId];
+                    fileKey = pm.groups[this.groupId]['post']['files'];
+                    var postName = pm.files[fileKey][chartId];
+                    filenames = { pre: preName, post: postName };
+                } else {
+                    var fileKey = pm.groups[this.groupId]['stats']['files'];
+                    var statsName = pm.files[fileKey][chartId];
+                    filenames = { stats: statsName };
+                }
+            } else {
+                // hard-coded files
+                if (this.isComparison) filenames = { pre: 'pre-filter_' + chartId + '.csv', post: 'post-filter_' + chartId + '.csv'};
+                else filenames = { stats: 'stats_' + chartId + '.csv' };
+            }
+            return filenames;
         },
         _loadChartData: function(files) {
             var that = this;
@@ -1571,44 +1645,35 @@ define([
                 var tooltip = '<b>Read position: <b>' + this.x + '<br/>';
 
                 if (isComparison) {
-                    if (this.points[4].series.options.data[this.x])
+                    if (this.points[4])
                         tooltip += '<b>Pre-filter Mean: <b>' + this.points[4].series.options.data[this.x] + '<br/>';
-                    if (this.points[3].series.options.data[this.x][4])
+                    if (this.points[3]) {
                         tooltip += '<b>Pre-filter 90%: <b>' + this.points[3].series.options.data[this.x][4] + '<br/>';
-                    if (this.points[3].series.options.data[this.x][3])
                         tooltip += '<b>Pre-filter 75%: <b>' + this.points[3].series.options.data[this.x][3] + '<br/>';
-                    if (this.points[3].series.options.data[this.x][2])
                         tooltip += '<b>Pre-filter 50%: <b>' + this.points[3].series.options.data[this.x][2] + '<br/>';
-                    if (this.points[3].series.options.data[this.x][1])
                         tooltip += '<b>Pre-filter 25%: <b>' + this.points[3].series.options.data[this.x][1] + '<br/>';
-                    if (this.points[3].series.options.data[this.x][0])
                         tooltip += '<b>Pre-filter 10%: <b>' + this.points[3].series.options.data[this.x][0] + '<br/>';
+                    }
 
-                    if (this.points[9].series.options.data[this.x])
+                    if (this.points[9])
                         tooltip += '<b>Post-filter Mean: <b>' + this.points[9].series.options.data[this.x] + '<br/>';
-                    if (this.points[8].series.options.data[this.x][4])
+                    if (this.points[8]) {
                         tooltip += '<b>Post-filter 90%: <b>' + this.points[8].series.options.data[this.x][4] + '<br/>';
-                    if (this.points[8].series.options.data[this.x][3])
                         tooltip += '<b>Post-filter 75%: <b>' + this.points[8].series.options.data[this.x][3] + '<br/>';
-                    if (this.points[8].series.options.data[this.x][2])
                         tooltip += '<b>Post-filter 50%: <b>' + this.points[8].series.options.data[this.x][2] + '<br/>';
-                    if (this.points[8].series.options.data[this.x][1])
                         tooltip += '<b>Post-filter 25%: <b>' + this.points[8].series.options.data[this.x][1] + '<br/>';
-                    if (this.points[8].series.options.data[this.x][0])
                         tooltip += '<b>Post-filter 10%: <b>' + this.points[8].series.options.data[this.x][0] + '<br/>';
+                    }
                 } else {
-                    if (this.points[4].series.options.data[this.x])
+                    if (this.points[4])
                         tooltip += '<b>Mean: <b>' + this.points[4].series.options.data[this.x] + '<br/>';
-                    if (this.points[3].series.options.data[this.x][4])
+                    if (this.points[3]) {
                         tooltip += '<b>90%: <b>' + this.points[3].series.options.data[this.x][4] + '<br/>';
-                    if (this.points[3].series.options.data[this.x][3])
                         tooltip += '<b>75%: <b>' + this.points[3].series.options.data[this.x][3] + '<br/>';
-                    if (this.points[3].series.options.data[this.x][2])
                         tooltip += '<b>50%: <b>' + this.points[3].series.options.data[this.x][2] + '<br/>';
-                    if (this.points[3].series.options.data[this.x][1])
                         tooltip += '<b>25%: <b>' + this.points[3].series.options.data[this.x][1] + '<br/>';
-                    if (this.points[3].series.options.data[this.x][0])
                         tooltip += '<b>10%: <b>' + this.points[3].series.options.data[this.x][0] + '<br/>';
+                    }
                 }
 
                 return tooltip;
