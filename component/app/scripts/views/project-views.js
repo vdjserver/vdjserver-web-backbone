@@ -710,19 +710,21 @@ define([
                 case 'igblast':
                     var igBlastView = App.Views.Jobs.IgBlastStaging;
                     this._showJobStagingView(igBlastView);
-
                     break;
 
                 case 'presto':
                     var prestoView = App.Views.Jobs.PrestoStaging;
                     this._showJobStagingView(prestoView);
-
                     break;
 
                 case 'vdjpipe':
                     var vdjpipeView = App.Views.Jobs.VdjpipeStaging;
                     this._showJobStagingView(vdjpipeView);
+                    break;
 
+                case 'repcalc':
+                    var repcalcView = App.Views.Jobs.RepCalcStaging;
+                    this._showJobStagingView(repcalcView);
                     break;
 
                 default:

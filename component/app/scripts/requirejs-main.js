@@ -75,6 +75,7 @@ define([
     'vdjpipe-workflow-parser',
     'vdjpipe-view-factory',
     'presto-view-factory',
+    'repcalc-view-factory',
 
     // Generic Views
     'generic-vdjpipe-option-views',
@@ -104,6 +105,7 @@ define([
     'analyses-views',
     'vdjpipe-views',
     'presto-views',
+    'repcalc-views',
     'feedback-views',
     'software-views',
 

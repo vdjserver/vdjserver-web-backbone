@@ -1,0 +1,61 @@
+{{> repcalc-base-view-top}}
+  <div class="row col-md-10 col-md-offset-1">
+  This module calculates gene segment usage for the specified summary levels, summarizes by
+  the desired groups, and includes only annotations that meet the given filters.
+  </div>
+
+  <div class="row">
+    <label class="col-md-offset-1 control-label">Summary Levels</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-type">Gene Type
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-family">Gene Family
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-gene" checked>Gene
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-allele">Allele
+    </label>
+  </div>
+
+  <div class="row row-with-spacer">
+    <label class="col-md-offset-1 control-label">Summarize By</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-sample" checked>Sample
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-group" checked>Sample Group
+    </label>
+  </div>
+
+  <div class="row row-with-spacer">
+    <label class="col-md-offset-1 control-label">Calculations</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-absolute" checked>Absolute Counts
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-relative">Relative Counts
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-average">Averages
+    </label>
+  </div>
+
+  <div class="row row-with-spacer">
+    <label class="col-md-offset-1 control-label">Filters</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="filter-productive" checked>Productive
+    </label>
+  </div>
+
+{{> repcalc-base-view-bottom}}

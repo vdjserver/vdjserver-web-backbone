@@ -1,0 +1,67 @@
+{{> repcalc-base-view-top}}
+
+  <div class="row col-md-10 col-md-offset-1">
+  This module calculates diversity metrics for the specified summary levels, summarizes by
+  the desired groups, and includes only annotations that meet the given filters.
+  </div>
+
+  <div class="row">
+    <label class="col-md-offset-1 control-label">Summary Levels</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="diversity-type">Gene Type
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="diversity-family">Gene Family
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="diversity-gene" checked>Gene
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="diversity-allele">Allele
+    </label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="diversity-nucleotide">CDR3 Nucleotide
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="diversity-aa" checked>CDR3 Amino Acid
+    </label>
+  </div>
+
+  <div class="row row-with-spacer">
+    <label class="col-md-offset-1 control-label">Summarize By</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="diversity-sample" checked>Sample
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="diversity-group" checked>Sample Group
+    </label>
+  </div>
+
+  <div class="row row-with-spacer">
+    <label class="col-md-offset-1 control-label">Calculations</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="diversity-shannon" checked>Shannon Diversity
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="diversity-profile">Diversity Profile
+    </label>
+  </div>
+
+  <div class="row row-with-spacer">
+    <label class="col-md-offset-1 control-label">Filters</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="filter-productive" checked>Productive
+    </label>
+  </div>
+
+{{> repcalc-base-view-bottom}}

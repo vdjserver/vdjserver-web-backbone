@@ -291,6 +291,138 @@ function(
         }
     );
 
+    Job.RepCalc = Backbone.Agave.JobModel.extend(
+        {
+            // Public Methods
+            defaults: function() {
+                return _.extend(
+                    {},
+                    Backbone.Agave.JobModel.prototype.defaults,
+                    {
+                        appId: EnvironmentConfig.agave.systems.execution.ls5.apps.RepCalc,
+                        appName: 'RepCalc',
+                        inputs: {
+                            vdjml: '',
+                            summary: '',
+                        },
+                        parameters: {
+                        },
+                    }
+                );
+            },
+            initialize: function(options) {
+                Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
+
+                //this.inputParameterName = 'query';
+            },
+            prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
+
+                var parameters = this._serializeFormData(formData);
+
+                this.set('parameters', parameters);
+
+                this.set('name', formData['job-name']);
+
+                this._setArchivePath(projectUuid);
+
+                this._setFilesParameter(selectedFileMetadatas);
+            },
+            _serializeFormData: function(formData) {
+                var parameters = {
+                    metadata: 'metadata.json',
+                    groups: {},
+                    files: {},
+                    calculations: []
+                };
+
+                // gene segment usage
+                if (formData.hasOwnProperty('gs-sample')) {
+                    var calc = {
+                        'type': 'gene segment usage',
+                        'levels': [],
+                        'summarize_by': [],
+                        'operations': [],
+                        'filters': []
+		                };
+                    if (formData['gs-type']) calc.levels.push('type');
+                    if (formData['gs-family']) calc.levels.push('family');
+                    if (formData['gs-gene']) calc.levels.push('gene');
+                    if (formData['gs-allele']) calc.levels.push('allele');
+
+                    if (formData['gs-sample']) calc.summarize_by.push('sample');
+                    if (formData['gs-group']) calc.summarize_by.push('group');
+
+                    if (formData['gs-absolute']) calc.operations.push('absolute');
+                    if (formData['gs-relative']) calc.operations.push('relative');
+                    if (formData['gs-average']) calc.operations.push('average');
+
+                    if (formData['filter-productive']) calc.filters.push('productive');
+
+                    parameters.calculations.push(calc);
+                }
+
+                // CDR3
+                if (formData.hasOwnProperty('cdr3-sample')) {
+                    var calc = {
+                        'type': 'cdr3',
+                        'levels': [],
+                        'summarize_by': [],
+                        'operations': [],
+                        'filters': []
+		                };
+                    if (formData['cdr3-nucleotide']) calc.levels.push('nucleotide');
+                    if (formData['cdr3-aa']) calc.levels.push('aa');
+
+                    if (formData['cdr3-sample']) calc.summarize_by.push('sample');
+                    if (formData['cdr3-group']) calc.summarize_by.push('group');
+
+                    if (formData['cdr3-absolute']) calc.operations.push('absolute');
+                    if (formData['cdr3-relative']) calc.operations.push('relative');
+                    if (formData['cdr3-length']) calc.operations.push('length');
+                    if (formData['cdr3-shared']) calc.operations.push('shared');
+                    if (formData['cdr3-unique']) calc.operations.push('unique');
+
+                    if (formData['filter-productive']) calc.filters.push('productive');
+
+                    parameters.calculations.push(calc);
+                }
+
+                // Diversity
+                if (formData.hasOwnProperty('diversity-sample')) {
+                    var calc = {
+                        'type': 'diversity',
+                        'levels': [],
+                        'summarize_by': [],
+                        'operations': [],
+                        'filters': []
+		                };
+                    if (formData['diversity-type']) calc.levels.push('type');
+                    if (formData['diversity-family']) calc.levels.push('family');
+                    if (formData['diversity-gene']) calc.levels.push('gene');
+                    if (formData['diversity-allele']) calc.levels.push('allele');
+                    if (formData['diversity-nucleotide']) calc.levels.push('nucleotide');
+                    if (formData['diversity-aa']) calc.levels.push('aa');
+
+                    if (formData['diversity-sample']) calc.summarize_by.push('sample');
+                    if (formData['diversity-group']) calc.summarize_by.push('group');
+
+                    if (formData['diversity-shannon']) calc.operations.push('shannon');
+                    if (formData['diversity-profile']) calc.operations.push('profile');
+
+                    if (formData['filter-productive']) calc.filters.push('productive');
+
+                    parameters.calculations.push(calc);
+                }
+
+                // Mutations
+
+                // Clones
+
+                return parameters;
+            },
+        }
+    );
+
     Job.VdjPipe = Backbone.Agave.JobModel.extend({
         // Public Methods
         defaults: function() {

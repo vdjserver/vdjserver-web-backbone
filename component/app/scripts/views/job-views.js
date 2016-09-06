@@ -695,6 +695,128 @@ define([
         })
     );
 
+    Jobs.RepCalcStaging = Jobs.StagingBase.extend(
+        _.extend({}, WorkflowParametersMixin, {
+
+            template: 'jobs/repcalc-staging',
+            initialize: function(parameters) {
+                this.workflows = new Backbone.Agave.Collection.Jobs.RepCalcWorkflows();
+                this.workflowNames = this.workflows.getWorkflowNames();
+            },
+            serialize: function() {
+                return {
+                    workflows: this.workflowNames,
+                };
+            },
+            stageJob: function(formData) {
+
+                var repcalcForm = Backbone.Syphon.serialize($('#repcalc-form')[0]);
+                repcalcForm = _.extend(formData, repcalcForm);
+
+                var job = new Backbone.Agave.Model.Job.RepCalc();
+
+                job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
+
+                job.prepareJob(
+                    repcalcForm,
+                    this.selectedFileListings,
+                    this.allFiles,
+                    this.projectModel.get('uuid')
+                );
+
+                return this.startJob(job);
+            },
+            events: {
+                'change #select-workflow': '_showWorkflow',
+                'click .remove-job-parameter': '_removeJobEvent',
+            },
+            validateJobForm: function() {
+
+                var validationError = false;
+
+                // TODO: add form validation here
+
+                return validationError;
+            },
+            // Private Methods
+            _removeJobEvent: function(e) {
+                e.preventDefault();
+
+                var that = this;
+
+                this._removeJobParameter(e)
+                    .done(function() {
+                        that._adjustModalHeight();
+                    })
+                    ;
+            },
+            _adjustModalHeight: function() {
+                var modalHeight = $('.modal-dialog').innerHeight();
+                $('.modal-backdrop').css({height: modalHeight + 100});
+            },
+            _showWorkflow: function(e) {
+                e.preventDefault();
+
+                var that = this;
+
+                // Do housekeeping first
+                this.removeView('#workflow-staging-area');
+                $('#workflow-staging-area').empty();
+
+                // Setup and insert new workflow views
+                var workflowId = e.target.value;
+
+                // Only continue if there's actually a workflow selected
+
+                // TODO: replace this with selected workflow
+                var workflow = this.workflows.workflowWithName(workflowId);
+
+                var workflowViews = new App.Utilities.RepCalcViewFactory.GenerateWorkflowViews(
+                    workflow['steps']
+                );
+
+                /*
+                    I'd love to use insertViews instead, but as of 24/July/2014
+                    it seems to work on the parent layout instead of the view
+                    represented by |this|.
+
+                    This behavior might be a bug in layout manager, so the
+                    following loop is a workaround for now.
+                */
+
+                // Note: views will change places in the dom as they render asynchronously
+                // So we need to make sure that they're all inserted properly before calling render.
+
+                var workflowLayout = new Backbone.View();
+                this.insertView('#workflow-staging-area', workflowLayout);
+
+                for (var i = 0; i < workflowViews.length; i++) {
+                    var view = workflowViews[i];
+                    view.allFiles = this.allFiles;
+
+                    if (typeof view.prepareFiles === 'function') {
+                        view.prepareFiles();
+                    }
+
+                    workflowLayout.insertView(view);
+                }
+
+                this.listenTo(
+                    workflowLayout,
+                    'FixModalBackdrop',
+                    function() {
+                        that._adjustModalHeight();
+                    }
+                );
+
+                // Render all workflow views
+                workflowLayout.render().promise().done(function() {
+                    that._adjustModalHeight();
+                });
+            },
+        })
+    );
+
     App.Views.Jobs = Jobs;
     return Jobs;
 });

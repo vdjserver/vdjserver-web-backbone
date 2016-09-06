@@ -1,0 +1,27 @@
+<form method="post" class="form-horizontal" role="form">
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="workflowList" class="control-label col-lg-2">Workflows</label>
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <select class="form-control" id="select-workflow">
+                        <option value="">Select a workflow</option>
+                        {{#each workflows}}
+                            <option value="{{this}}" data-name="{{this}}" data-type="custom-workflow">{{this}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form method="post" class="form-horizontal" id="repcalc-form" role="form">
+    <div class="modal-body">
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-8">
+                <ul id="workflow-staging-area" class="list-unstyled"></ul>
+            </div>
+        </div>
+    </div>
+</form>

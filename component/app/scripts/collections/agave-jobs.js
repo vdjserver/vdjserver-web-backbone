@@ -231,6 +231,64 @@ define([
         },
     });
 
+    Jobs.RepCalcWorkflows = Backbone.Agave.MetadataCollection.extend({
+        model: Backbone.Agave.MetadataModel,
+        initialize: function(parameters) {
+            Backbone.Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+        },
+        getWorkflowNames: function() {
+            var workflows = this.getWorkflows();
+
+            var workflowNames = _.pluck(workflows, 'workflow-name');
+
+            return workflowNames;
+        },
+        workflowWithName: function(name) {
+            var workflows = this.getWorkflows();
+            for (var i = 0; i < workflows.length; ++i) {
+                if (workflows[i]['workflow-name'] == name) return workflows[i];
+            }
+            return null;
+        },
+        getWorkflows: function() {
+
+            var workflows = [
+                {
+                    'workflow-name': 'Gene Segment Usage',
+                    'steps': [
+                        'geneSegment',
+                    ],
+                },
+                {
+                    'workflow-name': 'CDR3 Analysis',
+                    'steps': [
+                        'CDR3',
+                    ],
+                },
+                {
+                    'workflow-name': 'Diversity Analysis',
+                    'steps': [
+                        'diversity',
+                    ],
+                },
+                {
+                    'workflow-name': 'Mutational Analysis',
+                    'steps': [
+                        'mutations',
+                    ],
+                },
+                {
+                    'workflow-name': 'Clonal Analysis',
+                    'steps': [
+                        'clones',
+                    ],
+                },
+            ];
+
+            return workflows;
+        },
+    });
+
     Jobs.VdjpipeWorkflows = Backbone.Agave.MetadataCollection.extend({
 
         // Public Methods

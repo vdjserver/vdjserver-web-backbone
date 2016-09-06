@@ -61,7 +61,7 @@
                 <div class="btn-group">
                     <button
                         id="run-job-button"
-                        class="btn btn-primary disabled dropdown-toggle files-selected-button"
+                        class="btn btn-primary dropdown-toggle"
                         data-toggle="dropdown"
 
                         {{#unless executionSystemsAvailable}}
@@ -74,12 +74,49 @@
 
                     <ul class="dropdown-menu" role="menu">
 
-                        <li class="file-actions">
+                        <li class="file-actions disabled files-selected-button">
                             <a
-                                class="run-job"
+                                class="run-job has-tooltip"
+                                href="#"
+                                data-bypass=true
+                                data-jobtype="presto"
+
+                                {{!-- Dropdown --}}
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="Perform pre-processing using the pRESTO tool"
+                            >
+                                Presto
+                            </a>
+                        </li>
+
+                        <li class="file-actions disabled files-selected-button">
+                            <a
+                                class="run-job has-tooltip"
+                                href="#"
+                                data-bypass=true
+                                data-jobtype="vdjpipe"
+
+                                {{!-- Dropdown --}}
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="Perform pre-processing using the VDJPipe tool"
+                            >
+                                VDJPipe
+                            </a>
+                        </li>
+
+                        <li class="file-actions disabled files-selected-button">
+                            <a
+                                class="run-job has-tooltip"
                                 href="#"
                                 data-bypass=true
                                 data-jobtype="igblast"
+
+                                {{!-- Dropdown --}}
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                title="Perform V(D)J assignment using the IgBlast tool"
                             >
                                 IgBlast
                             </a>
@@ -90,30 +127,14 @@
                                 class="run-job has-tooltip"
                                 href="#"
                                 data-bypass=true
-                                data-jobtype="presto"
+                                data-jobtype="repcalc"
 
                                 {{!-- Dropdown --}}
                                 data-toggle="tooltip"
                                 data-placement="right"
-                                title="Run an HPC job using the Presto tool"
+                                title="Perform repertoire comparison using the RepCalc tool"
                             >
-                                Presto
-                            </a>
-                        </li>
-
-                        <li class="file-actions">
-                            <a
-                                class="run-job has-tooltip"
-                                href="#"
-                                data-bypass=true
-                                data-jobtype="vdjpipe"
-
-                                {{!-- Dropdown --}}
-                                data-toggle="tooltip"
-                                data-placement="right"
-                                title="Run an HPC job using the VDJPipe tool"
-                            >
-                                VDJPipe
+                                RepCalc
                             </a>
                         </li>
 

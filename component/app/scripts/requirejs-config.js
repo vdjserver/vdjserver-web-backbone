@@ -88,6 +88,7 @@ require.config({
         'vdjpipe-workflow-parser': 'utilities/vdjpipe-workflow-parser',
         'vdjpipe-view-factory': 'utilities/vdjpipe-view-factory',
         'presto-view-factory': 'utilities/presto-view-factory',
+        'repcalc-view-factory': 'utilities/repcalc-view-factory',
 
         // Generic Views
         'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
@@ -116,6 +117,7 @@ require.config({
         'analyses-views': 'views/analyses-views',
         'vdjpipe-views': 'views/vdjpipe-views',
         'presto-views': 'views/presto-views',
+        'repcalc-views': 'views/repcalc-views',
         'feedback-views': 'views/feedback-views',
         'software-views': 'views/software-views',
         'community-views': 'views/community-views',
