@@ -351,13 +351,12 @@ define([
 
                                     switch (that.processMetadata.process.appName) {
                                         case('vdjPipe'):
-                                            break;
                                         case('presto'):
                                             for (var group in that.processMetadata.groups) {
                                                 console.log(group);
-                                                that.analysisCharts.push({ groupId: group });
                                                 var chart = new Analyses.Statistics({selectAnalyses: that, groupId: group});
                                                 if (chart.isValid) {
+                                                    that.analysisCharts.push({ groupId: group });
                                                     that.chartViews.push(chart);
                                                     that.setView('#analysis-charts-'+group, chart);
                                                 }
@@ -605,8 +604,10 @@ define([
             $(e.target.closest('tr')).after(
                 '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
                     + '<td colspan=3>'
+                    + '<pre>'
                         + '<div id="' + classSelector + '" class="text-left ' + classSelector + '" style="word-break: break-all;">'
                         + '</div>'
+                    + '</pre>'
                     + '</td>'
                 + '</tr>'
             );
@@ -781,20 +782,22 @@ define([
 
             this.chartHeight = 360;
             this.isComparison = true;
-            this.isValid = true;
+            this.isValid = false;
 
             if (this.groupId) {
               // we are using process metadata
               var pm = this.selectAnalyses.processMetadata;
               for (var key in pm.groups[this.groupId]) {
-                  if (key == 'stats') {
+                  if ((key == 'stats') && (pm.groups[this.groupId][key]['type'] == 'statistics')) {
+                      this.isValid = true;
                       this.isComparison = false;
                       var fileKey = pm.groups[this.groupId][key]['files'];
                       var filename = pm.files[fileKey]['composition'];
                       var fileHandle = this.selectAnalyses.collection.get(filename);
                       if (!fileHandle) this.isValid = false;
                   }
-                  if (key == 'pre') {
+                  if ((key == 'pre')  && (pm.groups[this.groupId][key]['type'] == 'statistics')) {
+                      this.isValid = true;
                       this.isComparison = true;
                       var fileKey = pm.groups[this.groupId][key]['files'];
                       var filename = pm.files[fileKey]['composition'];
@@ -804,6 +807,7 @@ define([
               }
             } else {
                 // hard-coded filenames
+                this.isValid = true;
                 var fileHandle = this.selectAnalyses.collection.get('stats_composition.csv');
                 if (fileHandle) this.isComparison = false;
                 fileHandle = this.selectAnalyses.collection.get('pre-filter_composition.csv');
