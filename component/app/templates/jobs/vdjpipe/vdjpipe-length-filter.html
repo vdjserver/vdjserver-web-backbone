@@ -11,24 +11,9 @@
                     &nbsp;
                     <input
                         class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-min"
+                        name="{{parameterType}}-min"
                         type="number"
                         value="{{options.min}}"
-                        step="1"
-                        min="0"
-                        pattern="\d+"
-                    >
-                </div>
-            </div>
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Max
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{inputCount}}-{{parameterType}}-max"
-                        type="number"
-                        value="{{options.max}}"
                         step="1"
                         min="0"
                         pattern="\d+"
@@ -38,7 +23,7 @@
         </div>
         <div class="col-md-6">
             <p>
-                This module removes reads with a length below the minimum threshold provided or above the maximum threshold provided.
+                This module removes reads with a length below the minimum threshold provided.
             </p>
             <p>
                 Note the read length used here is the length after removing barcodes or primers if the trim option is selected for those modules.

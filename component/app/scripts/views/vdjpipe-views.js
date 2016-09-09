@@ -146,6 +146,41 @@ define([
         },
     });
 
+    Vdjpipe.BarcodeDemultiplex = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
+
+        template: 'jobs/vdjpipe/vdjpipe-barcode',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Barcode Demultiplexing';
+            App.Views.Generic.Vdjpipe.BaseOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+
+            this.barcodeFiles = {};
+        },
+        prepareFiles: function() {
+            this.barcodeFiles = this.allFiles.getBarcodeCollection();
+        },
+        beforeRender: function() {
+            // Apparently, this vdjpipe step should always be removable.
+            this.isRemovable = true;
+        },
+        serialize: function() {
+
+            var files = SerializationTools.GetSerializedModel(this.files);
+            var barcodeFiles = SerializationTools.GetSerializedModel(this.barcodeFiles);
+
+            return {
+                isOrderable: this.isOrderable,
+                isRemovable: this.isRemovable,
+                parameterType: this.parameterType,
+                inputCount: this.inputCount,
+                files: files,
+                options: this.options,
+                vdjpipeOptionTitle: this.vdjpipeOptionTitle,
+                barcodeFiles: barcodeFiles,
+            };
+        },
+    });
+
     Vdjpipe.CustomDemultiplex = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
 
         template: 'jobs/vdjpipe/demultiplex/vdjpipe-custom-demultiplex',
@@ -887,6 +922,16 @@ define([
             this.render();
         },
     });
+
+    Vdjpipe.Statistics = App.Views.Generic.Vdjpipe.BaseOptionView.extend({
+        template: 'jobs/vdjpipe/vdjpipe-statistics',
+        initialize: function(options) {
+            this.vdjpipeOptionTitle = 'Generate Quality and Composition Statistics';
+            App.Views.Generic.Vdjpipe.BaseOptionView.prototype.initialize.apply(this, [options]);
+            this.render();
+        },
+    });
+
 
     /*
     Vdjpipe.TextImmutable = App.Views.Generic.Vdjpipe.BaseOptionView.extend({

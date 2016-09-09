@@ -286,6 +286,34 @@ function(
                 return pairedReads;
             },
 
+            getOrganizedPairedQualityCollection: function(allFileMetadatas) {
+
+                var pairedReads = [];
+                var seqCollection = this.clone();
+                seqCollection.reset();
+                var qualCollection = this.clone();
+                qualCollection.reset();
+
+                var that = this;
+                this.each(function(model) {
+
+                    var qualUuid = model.getQualityScoreMetadataUuid();
+                    if (qualUuid !== undefined) {
+                        var qualModel = allFileMetadatas.get(qualUuid);
+
+                        seqCollection.add(model);
+                        qualCollection.add(qualModel);
+                    }
+                });
+
+                if (seqCollection.length > 0) {
+                    pairedReads.push(seqCollection);
+                    pairedReads.push(qualCollection);
+                }
+
+                return pairedReads;
+            },
+
             /**
                 Returns arrays of deep copied paired reads.
 

@@ -273,13 +273,13 @@ define([
                 this.projectModel = parameters.projectModel;
 
                 this.workflows = new Backbone.Agave.Collection.Jobs.VdjpipeWorkflows();
-                this.workflows.setPredefinedWorkflows();
+                this.workflowList = this.workflows.getWorkflows();
                 this.hasPairedReads = this.selectedFileListings.hasPairedReads();
             },
             serialize: function() {
                 return {
                     selectedFileListings: this.selectedFileListings.toJSON(),
-                    workflows: this.workflows.toJSON(),
+                    workflows: this.workflowList,
                     hasPairedReads: this.hasPairedReads,
                 };
             },
@@ -332,6 +332,14 @@ define([
                 var singleReadForm = Backbone.Syphon.serialize($('#vdjpipe-single-read-form')[0]);
                 singleReadForm = _.extend(generalFormData, singleReadForm);
 
+                // Mix in paired read form data
+                if (this.hasPairedReads === true) {
+                    var pairedReadForm = Backbone.Syphon.serialize($('#vdjpipe-paired-read-form')[0]);
+                    _.extend(pairedReadForm, { 'paired_reads': true });
+
+                    singleReadForm = _.extend(generalFormData, pairedReadForm);
+                }
+
                 var job = new Backbone.Agave.Model.Job.VdjPipe();
 
                 job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
@@ -345,23 +353,6 @@ define([
                     allFiles,
                     this.projectModel.get('uuid')
                 );
-
-
-                if (this.hasPairedReads === true) {
-
-                    var pairedReadForm = Backbone.Syphon.serialize($('#vdjpipe-paired-read-form')[0]);
-                    _.extend(pairedReadForm, { 'paired_reads': true });
-                    var pairedReadConfig = App.Utilities.Vdjpipe.WorkflowParser.ConvertFormDataToWorkflowConfig(
-                        pairedReadForm,
-                        selectedFileListings,
-                        allFiles
-                    );
-
-                    _.extend(pairedReadConfig, { 'paired_reads': true });
-                    pairedReadConfig['summary_output_path'] ='merge_summary.txt';
-
-                    job.setPairedReadConfig(pairedReadConfig);
-                }
 
                 return this.startJob(job);
             },
@@ -399,21 +390,11 @@ define([
                 // Only continue if there's actually a workflow selected
                 if (workflowId) {
 
-                    var workflow = this.workflows.get(workflowId);
-                    var workflowConfig = workflow.get('value');
+                    var workflow = this.workflows.workflowWithName(workflowId);
 
                     var workflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(
-                        workflow.get('value').config
+                        workflow['steps']
                     );
-
-                    /*
-                        I'd love to use insertViews instead, but as of 24/July/2014
-                        it seems to work on the parent layout instead of the view
-                        represented by |this|.
-
-                        This behavior might be a bug in layout manager, so the
-                        following loop is a workaround for now.
-                    */
 
                     // Note: views will change places in the dom as they render asynchronously
                     // So we need to make sure that they're all inserted properly before calling render.
@@ -423,14 +404,11 @@ define([
 
                     for (var i = 0; i < workflowViews.length; i++) {
                         var view = workflowViews[i];
-
-                        view.isRemovable = false;
-                        view.isOrderable = false;
-                        view.files = this.selectedFileListings;
                         view.allFiles = this.allFiles;
-                        view.layoutView = workflowLayout;
 
-                        view.prepareFiles();
+                        if (typeof view.prepareFiles === 'function') {
+                            view.prepareFiles();
+                        }
 
                         workflowLayout.insertView(view);
                     }
@@ -441,7 +419,7 @@ define([
 
                         var pairedReadWorkflow = this.workflows.getMergePairedReadsConfig();
                         var pairedReadWorkflowViews = new App.Utilities.VdjpipeViewFactory.GenerateVdjpipeWorkflowViews(
-                            pairedReadWorkflow
+                            pairedReadWorkflow['steps']
                         );
 
                         var pairedReadWorkflowLayout = new Backbone.View();

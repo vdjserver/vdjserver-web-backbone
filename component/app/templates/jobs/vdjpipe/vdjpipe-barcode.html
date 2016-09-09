@@ -1,0 +1,162 @@
+{{> vdjpipe-base-view-top}}
+
+    <div class="row row-with-spacer">
+        {{#unless barcodeFiles}}
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    Warning: there is no barcode file available. Please upload barcode file on the project file list and set its type as "Barcode Sequences". Or remove this processing step from the workflow if it is not needed.
+                </div>
+            </div>
+        {{else}}
+                    <div class="col-md-12">
+
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Barcode File
+                                    </td>
+                                    <td>
+                                        <select
+                                            class="job-form-item"
+                                            id="barcode-file"
+                                            name="barcode-file"
+                                        >
+                                            {{#each barcodeFiles}}
+                                                <option value={{value.name}}>{{value.name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        This module demultiplexes reads based upon barcode sequences.
+                                        </p>
+                                        <p>
+                                        This step can be removed from the workflow.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Barcode Location
+                                    </td>
+                                    <td>
+                                        <select
+                                            id="barcode-location"
+                                            class="job-form-item"
+                                            name="{{parameterType}}-location"
+                                        >
+                                            <option value="forward">Forward (V-region)</option>
+                                            <option value="reverse">Reverse (J-region)</option>
+                                        </select>
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Barcode is located on the forward or reverse orientation.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Discard Reads Without Barcodes?
+                                    </td>
+                                    <td>
+                                        <input
+                                            class="job-form-item"
+                                            name="{{parameterType}}-discard"
+                                            type="checkbox"
+                                            checked
+                                        >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Reads without a matching barcode are discarded.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Maximum Number of Mismatches
+                                    </td>
+                                    <td>
+                                        <input
+                                            class="job-form-item"
+                                            name="{{parameterType}}-maximum-mismatches"
+                                            type="number"
+                                            value="0"
+                                            step="1"
+                                            min="0"
+                                            pattern="\d+"
+                                        >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Number of mismatches allowed.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Trim Barcode
+                                    </td>
+                                    <td>
+                                        <input
+                                            class="job-form-item"
+                                            name="{{parameterType}}-trim"
+                                            type="checkbox"
+                                            checked
+                                        >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Trim the barcode from the sequence.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Search Window
+                                    </td>
+                                    <td>
+                                        <input
+                                            class="job-form-item"
+                                            name="{{parameterType}}-search-window"
+                                            type="number"
+                                            value="20"
+                                            step="1"
+                                            min="0"
+                                            pattern="\d+"
+                                        >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Size of search window for the barcode.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Split Barcode Reads
+                                    </td>
+                                    <td>
+                                        <input
+                                          class="job-form-item"
+                                          name="barcode-split-flag"
+                                          type="checkbox"
+                                          checked
+                                        >
+                                    </td>
+                                    <td style="border-width: 0px;">
+                                        <p>
+                                        Saves each demultiplexed group of reads into separate files, otherwise reads are tagged and left in a single file.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+        {{/unless}}
+    </div>
+
+{{> vdjpipe-base-view-bottom}}

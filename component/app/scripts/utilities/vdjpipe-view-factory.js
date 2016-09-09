@@ -7,18 +7,12 @@ define([
     var VdjpipeViewFactory = {};
 
     VdjpipeViewFactory.GenerateVdjpipeWorkflowViews = function(config) {
-        var parameters;
-
-        if (config['steps']) {
-            parameters = config['steps'];
-        }
-
         var workflowViews = [];
 
-        for (var counter = 0; counter < parameters.length; counter++) {
+        for (var counter = 0; counter < config.length; counter++) {
 
-            var key = Object.keys(parameters[counter])[0];
-            var options = parameters[counter][key];
+            var key = Object.keys(config[counter])[0];
+            var options = config[counter][key];
 
             var vdjPipeView = VdjpipeViewFactory.GetVdjpipeView(
                 key,
@@ -63,11 +57,11 @@ define([
 
     VdjpipeViewFactory.GetVdjpipeView = function(key, counter, options) {
 
-        var unwrappedKey = VdjpipeViewFactory.UnwrapPairedReadKey(key, options);
-        var unwrappedOptions = VdjpipeViewFactory.UnwrapPairedReadOptions(key, options);
+        //var unwrappedKey = VdjpipeViewFactory.UnwrapPairedReadKey(key, options);
+        //var unwrappedOptions = VdjpipeViewFactory.UnwrapPairedReadOptions(key, options);
 
-        key = unwrappedKey;
-        options = unwrappedOptions;
+        //key = unwrappedKey;
+        //options = unwrappedOptions;
 
         var initAttributes = {
             'parameterType': key,
@@ -101,6 +95,8 @@ define([
                 break;
 
             case 'composition_stats':
+            case 'pre_composition_stats':
+            case 'post_composition_stats':
                 vdjPipeView = new App.Views.Vdjpipe.CompositionStats(initAttributes);
 
                 break;
@@ -139,7 +135,7 @@ define([
                 vdjPipeView = new App.Views.Vdjpipe.LengthFilter(initAttributes);
 
                 break;
-
+/*
             case 'match':
                 //TODO: switch between match types here w/ detection
 
@@ -169,6 +165,11 @@ define([
                 }
 
                 break;
+*/
+            case 'barcode':
+                vdjPipeView = new App.Views.Vdjpipe.BarcodeDemultiplex(initAttributes);
+
+                break;
 
             case 'merge_paired':
                 vdjPipeView = new App.Views.Vdjpipe.MergePairedReads(initAttributes);
@@ -185,12 +186,15 @@ define([
 
                 break;
 
-            case 'quality_stats':
-                vdjPipeView = new App.Views.Vdjpipe.QualityStats(initAttributes);
+            case 'statistics':
+            case 'pre_statistics':
+            case 'post_statistics':
+                vdjPipeView = new App.Views.Vdjpipe.Statistics(initAttributes);
 
                 break;
 
             case 'write_sequence':
+            case 'merge_write_sequence':
                 vdjPipeView = new App.Views.Vdjpipe.WriteSequence(initAttributes);
 
                 break;
