@@ -11,10 +11,15 @@ define([
     Jobs = Backbone.Agave.Collection.extend({
         model: Backbone.Agave.Model.Job.Detail,
 
+        // TODO: we really want submission time
         // Sort by reverse date order
         comparator: function(modelA, modelB) {
-            var modelAEndDate = moment(modelA.get('startTime'));
-            var modelBEndDate = moment(modelB.get('startTime'));
+            // pending/queued/running etc on top
+            if (modelA.get('status') !== 'FINISHED' && modelA.get('status') !== 'FAILED') return -1;
+            if (modelA.get('submitTime').length == 0) return -1;
+
+            var modelAEndDate = moment(modelA.get('submitTime'));
+            var modelBEndDate = moment(modelB.get('submitTime'));
 
             if (modelAEndDate > modelBEndDate) {
                 return -1;
@@ -27,7 +32,7 @@ define([
             return 0;
         },
         url: function() {
-            return '/jobs/v2/?archivePath.like=/projects/' + this.projectUuid + '*';
+            return '/jobs/v2/?filter=*&archivePath.like=/projects/' + this.projectUuid + '*';
         },
     });
 
@@ -162,6 +167,8 @@ define([
                         filename === 'summary.txt'
                         ||
                         filename === 'merge_summary.txt'
+                        ||
+                        filename === 'processMetadata.json'
                     ) {
                         return true;
                     }
