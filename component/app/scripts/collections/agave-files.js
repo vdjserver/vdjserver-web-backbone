@@ -57,17 +57,31 @@ function(
                 if (parameters && parameters.projectUuid) {
                     this.projectUuid = parameters.projectUuid;
                 }
+                this.includeJobFiles = true;
+                if (parameters && !parameters.includeJobFiles) this.includeJobFiles = false;
             },
             url: function() {
-                return '/meta/v2/data?q='
-                       + encodeURIComponent('{'
-                           + '"name": { $in: ["projectFile", "projectJobFile"] },'
-                           + '"value.projectUuid":"' + this.projectUuid + '",'
-                           + '"value.isDeleted":false'
-                       + '}')
-                       + '&limit=' + this.limit
-                       + '&offset=' + this.offset
-                       ;
+                if (this.includeJobFiles) {
+                    return '/meta/v2/data?q='
+                           + encodeURIComponent('{'
+                               + '"name": { $in: ["projectFile", "projectJobFile"] },'
+                               + '"value.projectUuid":"' + this.projectUuid + '",'
+                               + '"value.isDeleted":false'
+                           + '}')
+                           + '&limit=' + this.limit
+                           + '&offset=' + this.offset
+                           ;
+                } else {
+                    return '/meta/v2/data?q='
+                           + encodeURIComponent('{'
+                               + '"name": "projectFile",'
+                               + '"value.projectUuid":"' + this.projectUuid + '",'
+                               + '"value.isDeleted":false'
+                           + '}')
+                           + '&limit=' + this.limit
+                           + '&offset=' + this.offset
+                           ;
+                }
             },
             getFileCount: function() {
                 if (this.length > 0) {
@@ -282,6 +296,61 @@ function(
                     pairedReads.push(forwardCollection);
                     pairedReads.push(reverseCollection);
                 }
+
+                return pairedReads;
+            },
+
+            serializedPairedReadCollection: function() {
+
+                var pairedReads = [];
+
+                var that = this;
+                this.each(function(model) {
+
+                    if (model.getReadDirection() == 'F') {
+                        var pairUuid = model.getPairedReadMetadataUuid();
+
+                        if (pairUuid !== undefined) {
+                            var pairedModel = that.get(pairUuid);
+
+                            pairedReads.push({forward: model.toJSON(), reverse: pairedModel.toJSON()});
+                        }
+                    }
+                });
+
+                return pairedReads;
+            },
+
+            serializedNonPairedReadCollection: function() {
+
+                var pairedReads = [];
+
+                var that = this;
+                this.each(function(model) {
+                    var pairUuid = model.getPairedReadMetadataUuid();
+                    var qualUuid = model.getQualityScoreMetadataUuid();
+                    if (model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ
+                        && pairUuid == undefined && qualUuid == undefined) {
+                        pairedReads.push({read: model.toJSON()});
+                    }
+                });
+
+                return pairedReads;
+            },
+
+            serializedPairedQualityCollection: function() {
+
+                var pairedReads = [];
+
+                var that = this;
+                this.each(function(model) {
+                    var qualUuid = model.getQualityScoreMetadataUuid();
+                    if (qualUuid !== undefined) {
+                        var qualModel = that.get(qualUuid);
+
+                        pairedReads.push({read: model.toJSON(), qual: qualModel.toJSON()});
+                    }
+                });
 
                 return pairedReads;
             },
