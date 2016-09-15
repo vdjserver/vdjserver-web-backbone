@@ -256,6 +256,7 @@ function(
             prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
                 var parameters = this._serializeFormData(formData);
+                parameters['Creator'] = Backbone.Agave.instance.token().get('username');
 
                 this.set('parameters', parameters);
 
@@ -318,6 +319,7 @@ function(
             prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
                 var parameters = this._serializeFormData(formData);
+                parameters['Creator'] = Backbone.Agave.instance.token().get('username');
 
                 this.set('parameters', parameters);
 
@@ -445,6 +447,7 @@ function(
             this._setArchivePath(projectUuid);
 
             var parameters = this._serializeFormData(formData);
+            parameters['Creator'] = Backbone.Agave.instance.token().get('username');
 
             var inputFiles = {};
             inputFiles = this._serializeFileInputs(
@@ -453,7 +456,7 @@ function(
                 selectedFileMetadatas,
                 allFileMetadatas
             );
-            this.set('input', inputFiles);
+            this.set('inputs', inputFiles);
 
             this.set('parameters', parameters);
         },
@@ -616,6 +619,7 @@ function(
             this._setArchivePath(projectUuid);
 
             var parameters = this._serializeFormData(formData);
+            parameters['Creator'] = Backbone.Agave.instance.token().get('username');
             parameters.SequenceFiles = this._getSequenceFilenames(
                 parameters,
                 selectedFileMetadatas
@@ -628,7 +632,7 @@ function(
                 selectedFileMetadatas,
                 allFileMetadatas
             );
-            this.set('input', inputFiles);
+            this.set('inputs', inputFiles);
 
             if (inputFiles['SequenceForwardPairedFiles'] !== undefined)
                 parameters['Workflow'] = 'paired';
