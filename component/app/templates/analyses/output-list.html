@@ -57,7 +57,7 @@
                             <th>Submit Time</th>
                             <th>End Time</th>
                             <th>App</th>
-                            <th>Owner</th>
+                            <th>Creator</th>
                             <th>View Analyses</th>
                         </tr>
                     </thead>
@@ -91,7 +91,7 @@
 
                                 </td>
                                 <td>{{appId}}</td>
-                                <td>{{owner}}</td>
+                                <td>{{parameters.Creator}}</td>
                                 <td>
                                     {{#IsJobFrozen this}}
                                         <button type="button" class="btn btn-danger view-config" data-jobid={{id}}>Job Failed - View Config File</button>
