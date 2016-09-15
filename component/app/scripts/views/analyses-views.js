@@ -155,6 +155,14 @@ define([
             var pendingJobs = new Backbone.Agave.Collection.Jobs.Pending();
             pendingJobs.projectUuid = this.projectUuid;
 
+/*
+            pendingJobs.fetch()
+              .then(function() {
+                  return that.jobs.fetch();
+              }
+              .then
+*/
+
             $.when(this.jobs.fetch(), pendingJobs.fetch())
                 // Add VDJ API pending jobs to Agave jobs
                 .then(function() {
@@ -162,7 +170,7 @@ define([
                 })
                 .then(function() {
                     that.jobs.forEach(function(job) {
-                        if (_.has(job, 'get') && job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
+                        if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
                             App.Instances.WebsocketManager.subscribeToEvent(job.get('id'));
 
                             that.listenTo(
@@ -601,8 +609,9 @@ define([
                 length: 15,
             });
 
-            $(e.target.closest('tr')).after(
-                '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
+            var htmlCode;
+            if (filename.substr(-5) === '.json') {
+                htmlCode = '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
                     + '<td colspan=3>'
                     + '<pre>'
                         + '<div id="' + classSelector + '" class="text-left ' + classSelector + '" style="word-break: break-all;">'
@@ -610,7 +619,16 @@ define([
                     + '</pre>'
                     + '</td>'
                 + '</tr>'
-            );
+            } else {
+                htmlCode = '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
+                    + '<td colspan=3>'
+                        + '<div id="' + classSelector + '" class="text-left ' + classSelector + '" style="word-break: break-all;">'
+                        + '</div>'
+                    + '</td>'
+                + '</tr>'
+            }
+
+            $(e.target.closest('tr')).after(htmlCode);
 
             $(e.target).addClass('hidden');
             $(e.target).prev('.hide-log').removeClass('hidden');
