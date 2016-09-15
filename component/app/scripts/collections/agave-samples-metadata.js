@@ -20,7 +20,8 @@ define([
             url: function() {
                 return '/meta/v2/data?q='
                        + encodeURIComponent('{"name":"sample","value.project_uuid":"' + this.projectUuid + '"}')
-                       + '&limit=5000'
+                       + '&limit=' + this.limit
+                       + '&offset=' + this.offset
                        ;
             },
         })
