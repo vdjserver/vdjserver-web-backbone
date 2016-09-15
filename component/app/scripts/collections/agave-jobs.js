@@ -34,6 +34,19 @@ define([
         url: function() {
             return '/jobs/v2/?filter=*&archivePath.like=/projects/' + this.projectUuid + '*';
         },
+        getFinishedVDJAssignmentJobs: function() {
+            var jobModels = _.filter(this.models, function(model) {
+                return model.get('status') === 'FINISHED'
+                        && model.get('appId').substr(0, 7) === 'igblast'
+                       ;
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(jobModels);
+
+            return newCollection;
+        },
     });
 
     Jobs.Pending = Backbone.Agave.Collection.extend({
@@ -67,7 +80,7 @@ define([
                    ;
         },
         getProcessMetadataFile: function() {
-            return this.get('processMetadata.json');
+            return this.get('process_metadata.json');
         },
         getProjectFileOutput: function() {
             var filteredCollection = this.filter(function(model) {
@@ -168,7 +181,7 @@ define([
                         ||
                         filename === 'merge_summary.txt'
                         ||
-                        filename === 'processMetadata.json'
+                        filename === 'process_metadata.json'
                     ) {
                         return true;
                     }

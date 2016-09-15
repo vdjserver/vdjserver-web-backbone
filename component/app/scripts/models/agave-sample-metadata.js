@@ -24,9 +24,9 @@ function(
                         'name': '',
                         'description': '',
                         'bio_processing_uuid': '',
-                        'data_association': 'barcode',
+                        'data_association': '',
                         'barcode': '',
-                        'projectFile': '',
+                        'project_file': '',
                         'software_processing_uuid': ''
                     }
                 }
