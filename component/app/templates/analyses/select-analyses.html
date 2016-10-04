@@ -34,7 +34,7 @@
         <div class="col-md-12">
             <h2>
                 <div class="alert alert-primary">
-                    Project Output Files
+                    Job Output Files
                 </div>
             </h2>
         </div>
@@ -58,11 +58,11 @@
                     {{#each projectFiles}}
                         <tr class="text-center">
                             <td>
-                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{name}}">{{name}}</button>
+                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{uuid}}">{{value.name}}</button>
                             </td>
 
                             <td>
-                                {{GetHumanReadableFileSize length}}
+                                {{GetHumanReadableFileSize value.length}}
                             </td>
 
                             <td>
@@ -110,17 +110,17 @@
                     {{#each logFiles}}
                         <tr class="text-center">
                             <td>
-                                <a class="download-file" href="#" data-bypass=true data-filename="{{name}}">{{name}}</a>
+                                <a class="download-file" href="#" data-bypass=true data-filename="{{uuid}}">{{value.name}}</a>
                             </td>
 
                             <td>
-                                {{GetHumanReadableFileSize length}}
+                                {{GetHumanReadableFileSize value.length}}
                             </td>
                             <td>
-                                <button class="btn btn-default hide-log hidden" data-id="{{name}}">
+                                <button class="btn btn-default hide-log hidden" data-id="{{uuid}}">
                                     Hide Log
                                 </button>
-                                <button class="btn btn-default show-log" data-id="{{name}}">
+                                <button class="btn btn-default show-log" data-id="{{uuid}}">
                                     Show Log
                                 </button>
                             </td>

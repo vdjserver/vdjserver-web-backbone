@@ -68,8 +68,17 @@ define([
                 this.jobId = parameters.jobId;
             }
         },
-        comparator: 'name',
+        //comparator: 'name',
         url: function() {
+                return '/meta/v2/data?q='
+                    + encodeURIComponent('{'
+                        + '"name":"projectJobFile",'
+                        + '"value.jobUuid":"' + this.jobId + '"'
+                    + '}')
+                    + '&limit=' + this.limit
+                    + '&offset=' + this.offset
+                    ;
+        /*
             return '/jobs'
                    + '/v2'
                    + '/' + this.jobId
@@ -77,17 +86,35 @@ define([
                    + '/listings'
                    + '?limit=' + this.limit
                    + '&offset=' + this.offset
-                   ;
+                   ; */
         },
         getProcessMetadataFile: function() {
-            return this.get('process_metadata.json');
+            for (var j = 0; j < this.models.length; j++) {
+                var model = this.at([j]);
+
+                var modelName = model.get('value').name;
+
+                if (modelName === 'process_metadata.json') return model;
+            }
+            return undefined;
+        },
+        getFileByName: function(name) {
+            for (var j = 0; j < this.models.length; j++) {
+                var model = this.at([j]);
+
+                var modelName = model.get('value').name;
+
+                if (modelName === name) return model;
+            }
+            return undefined;
         },
         getProjectFileOutput: function() {
             var filteredCollection = this.filter(function(model) {
 
-                if (model.get('name')) {
+                var value = model.get('value');
+                if (value.name) {
 
-                    var filename = model.get('name');
+                    var filename = value.name;
 
                     var fileNameSplit = filename.split('.');
                     var fileExtension = fileNameSplit[fileNameSplit.length - 1];
@@ -126,11 +153,12 @@ define([
         getChartFileOutput: function() {
             var filteredCollection = this.filter(function(model) {
 
-                if (model.get('name')) {
+                var value = model.get('value');
+                if (value.name) {
 
-                    var hasChart = Backbone.Agave.Model.Job.Detail.getChartType(model.get('name'));
+                    var hasChart = Backbone.Agave.Model.Job.Detail.getChartType(value.name);
 
-                    var filename = model.get('name');
+                    var filename = value.name;
 
                     var fileNameSplit = filename.split('.');
                     var fileExtension = fileNameSplit[fileNameSplit.length - 1];
@@ -160,9 +188,10 @@ define([
         getLogFileOutput: function() {
             var filteredCollection = this.filter(function(model) {
 
-                if (model.get('name')) {
+                var value = model.get('value');
+                if (value.name) {
 
-                    var filename = model.get('name');
+                    var filename = value.name;
 
                     var fileNameSplit = filename.split('.');
                     var fileExtension = fileNameSplit[fileNameSplit.length - 1];

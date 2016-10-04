@@ -78,7 +78,7 @@ define([
 
     Handlebars.registerHelper('FormatAgaveDate', function(agaveDate) {
 
-        var formattedDate = moment(new Date(agaveDate)).format('D-MMM-YYYY hh:mm');
+        var formattedDate = moment(new Date(agaveDate)).format('D-MMM-YYYY h:mm a');
 
         return formattedDate;
     });
@@ -120,6 +120,12 @@ define([
     Handlebars.registerHelper('ifCondChecked', function(v1, v2 /*, options*/) {
         if (v1 === v2) {
             return 'checked';
+        }
+    });
+
+    Handlebars.registerHelper('ifCondEnabled', function(v1, v2 /*, options*/) {
+        if (v1 !== v2) {
+            return 'disabled';
         }
     });
 
@@ -709,22 +715,26 @@ define([
             switch (e.currentTarget.dataset.jobtype) {
                 case 'igblast':
                     var igBlastView = App.Views.Jobs.IgBlastStaging;
-                    this._showJobStagingView(igBlastView);
+                    var selectionView = App.Views.Jobs.SelectedFiles;
+                    this._showJobStagingView(igBlastView, selectionView);
                     break;
 
                 case 'presto':
                     var prestoView = App.Views.Jobs.PrestoStaging;
-                    this._showJobStagingView(prestoView);
+                    var selectionView = App.Views.Jobs.SelectedFiles;
+                    this._showJobStagingView(prestoView, selectionView);
                     break;
 
                 case 'vdjpipe':
                     var vdjpipeView = App.Views.Jobs.VdjpipeStaging;
-                    this._showJobStagingView(vdjpipeView);
+                    var selectionView = App.Views.Jobs.SelectedFiles;
+                    this._showJobStagingView(vdjpipeView, selectionView);
                     break;
 
                 case 'repcalc':
                     var repcalcView = App.Views.Jobs.RepCalcStaging;
-                    this._showJobStagingView(repcalcView);
+                    var selectionView = App.Views.Jobs.SelectedMetadata;
+                    this._showJobStagingView(repcalcView, selectionView);
                     break;
 
                 default:
@@ -732,7 +742,7 @@ define([
             }
         },
         // TODO: simplify this
-        _showJobStagingView: function(StagingSubview) {
+        _showJobStagingView: function(StagingSubview, SelectionSubview) {
 
             this.parentView.removeView('#project-job-staging');
 
@@ -759,6 +769,15 @@ define([
                 projectModel: this.projectModel,
                 allFiles: this.projectFiles,
             });
+
+            var selectionSubview = new SelectionSubview({
+                selectedFileListings: filteredFileListings,
+                projectModel: this.projectModel,
+                allFiles: this.projectFiles,
+            });
+
+            jobSubmitView.setView('#job-selection-subview', selectionSubview);
+            selectionSubview.render();
 
             jobSubmitView.setView('#job-staging-subview', stagingSubview);
             stagingSubview.render();
@@ -2242,26 +2261,15 @@ define([
         initialize: function(parameters) {
 
             // Project settings
-            this.permissions = new Backbone.Agave.Collection.Permissions({uuid: this.projectUuid});
-            this.model = new Backbone.Agave.Model.Project();
+            //this.permissions = new Backbone.Agave.Collection.Permissions({uuid: this.model.get('uuid')});
 
-            var that = this;
-
-            if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                this.listenTo(App.Datastore.Collection.ProjectCollection, 'sync', function() {
-                    that.model = App.Datastore.Collection.ProjectCollection.get(that.projectUuid);
-                    that.render();
-                });
-            } else {
-                this.model = App.Datastore.Collection.ProjectCollection.get(this.projectUuid);
-                this.render();
-            }
+            this.render();
 
         },
         serialize: function() {
             return {
                 project: this.model.toJSON(),
-                users: this.permissions.toJSON(),
+                //users: this.permissions.toJSON(),
             };
         },
         afterRender: function() {
@@ -2329,16 +2337,29 @@ define([
             this.setView('', loadingView);
             loadingView.render();
 
-            this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.projectUuid});
+            this.projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: this.model.get('uuid'), includeJobFiles: false});
+            this.nonpairedFiles = [];
+            this.pairedFiles = [];
+            this.pairedQualFiles = [];
+
+            this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.model.get('uuid')});
             this.workSamples.fetch()
             .then(function() {
                 // save clone of original metadata collection
                 that.samples = that.workSamples.getClonedCollection();
                 //that.samples = that.workSamples.clone();
 
-                loadingView.remove();
+                that.projectFiles.fetch()
+                .then(function() {
 
-                that.render();
+                    that.nonpairedFiles = that.projectFiles.serializedNonPairedReadCollection();
+                    that.pairedFiles = that.projectFiles.serializedPairedReadCollection();
+                    that.pairedQualFiles = that.projectFiles.serializedPairedQualityCollection();
+
+                    loadingView.remove();
+
+                    that.render();
+                })
             })
             .fail(function(error) {
                 var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -2352,6 +2373,9 @@ define([
         serialize: function() {
             return {
                 workSamples: this.workSamples.toJSON(),
+                nonpairedFiles: this.nonpairedFiles,
+                pairedFiles: this.pairedFiles,
+                pairedQualFiles: this.pairedQualFiles,
             };
         },
         afterRender: function() {
@@ -2367,6 +2391,7 @@ define([
             'click #addSample': '_addSample',
             'click .removeSample': '_removeSample',
             'change .sampleMetadata': '_changeSampleMetadata',
+            'change .dataAssociation': '_changeDataAssociation',
         },
 
         // Private Methods
@@ -2390,22 +2415,40 @@ define([
 
         // Event Responders
         _addSample: function(e){
-            var model = new Backbone.Agave.Model.SampleMetadata({projectUuid: this.projectUuid})
-            model.set('uuid', model.cid);
-            this.workSamples.add(model);
+            var m = new Backbone.Agave.Model.SampleMetadata({projectUuid: this.model.get('uuid')})
+            m.set('uuid', m.cid);
+            this.workSamples.add(m);
             this.render();
         },
         _removeSample: function(e){
-            var model = this.workSamples.at(e.target.dataset.tuple);
-            this.workSamples.remove(model);
+            var m = this.workSamples.at(e.target.dataset.tuple);
+            this.workSamples.remove(m);
             this.render();
         },
         _changeSampleMetadata: function(e) {
-            var model = this.workSamples.at(e.target.dataset.tuple);
-            var value = model.get('value');
+            e.preventDefault();
+            var m = this.workSamples.at(e.target.dataset.tuple);
+            var value = m.get('value');
             var field = e.target.id.replace('sample-', '');
             value[field] = e.target.value;
-            model.set('value', value);
+            m.set('value', value);
+        },
+        _changeDataAssociation: function(e) {
+            e.preventDefault();
+            var m = this.workSamples.at(e.target.dataset.tuple);
+            var value = m.get('value');
+            if (e.target.checked) {
+                $('#sample-barcode').prop('disabled', false);
+                var field = e.target.id.replace('sample-', '');
+                value[field] = e.target.value;
+                m.set('value', value);
+            } else {
+                var field = e.target.id.replace('sample-', '');
+                value[field] = '';
+                value['barcode'] = '';
+                m.set('value', value);
+                $('#sample-barcode').prop('disabled', true);
+            }
         },
         _saveSampleMetadata: function(e) {
             e.preventDefault();
@@ -2424,24 +2467,24 @@ define([
             // Set up promises
             // deletions
             deletedModels.map(function(uuid) {
-                var model = that.samples.get(uuid);
+                var m = that.samples.get(uuid);
                 promises[promises.length] = function() {
-                    return model.destroy();
+                    return m.destroy();
                 }
             });
 
             // updates and new
             that.workSamples.map(function(uuid) {
-                var model = that.workSamples.get(uuid);
+                var m = that.workSamples.get(uuid);
                 promises[promises.length] = function() {
                     // clear uuid for new entries so they get created
-                    if (model.get('uuid') == model.cid) model.set('uuid', '');
+                    if (m.get('uuid') == m.cid) m.set('uuid', '');
                     else { // if existing entry, check if attributes changed
                         var origModel = that.samples.get(uuid);
-                        var changed = model.changedAttributes(origModel.attributes);
+                        var changed = m.changedAttributes(origModel.attributes);
                         if (!changed) return;
                     }
-                    return model.save();
+                    return m.save();
                 }
             });
 
@@ -2497,20 +2540,35 @@ define([
         template: 'project/metadata',
         initialize: function() {
 
-            // Setup subviews
-            this.projectView = new Projects.StudyMetadata({ projectUuid: this.projectUuid });
-            this.setView('#project-metadata-entry', this.projectView);
-            this.projectView.render();
+            // explicitly fetch model instead of waiting for side menu view
+            this.model = new Backbone.Agave.Model.Project({ uuid: this.projectUuid});
+            var that = this;
 
-            //that.sampleView = new Query.Expression({ fields: sampleFields });
-            //that.setView('#sample-query-expressions', that.sampleView);
-            //that.sampleView.render();
+            this.model.fetch()
+            .then(function() {
+                // Setup subviews
+                that.projectView = new Projects.StudyMetadata({ model: that.model, projectUuid: this.projectUuid });
+                that.setView('#project-metadata-entry', that.projectView);
+                that.projectView.render();
 
-            this.sampleView = new Projects.SampleMetadata({ projectUuid: this.projectUuid });
-            this.setView('#sample-metadata-entry', this.sampleView);
-            this.sampleView.render();
+                //that.sampleView = new Query.Expression({ fields: sampleFields });
+                //that.setView('#sample-query-expressions', that.sampleView);
+                //that.sampleView.render();
 
-            this.render;
+                that.sampleView = new Projects.SampleMetadata({ model: that.model, projectUuid: this.projectUuid });
+                that.setView('#sample-metadata-entry', that.sampleView);
+                that.sampleView.render();
+
+                //that.render();
+            })
+            .fail(function(error) {
+                var telemetry = new Backbone.Agave.Model.Telemetry();
+                telemetry.setError(error);
+                telemetry.set('method', 'Backbone.Agave.Model.Project.fetch()');
+                telemetry.set('view', 'Projects.Metadata');
+                telemetry.save();
+            })
+            ;
         },
         serialize: function() {
             return {

@@ -165,13 +165,18 @@ function(
         }
     );
 
-    Job.OutputFile = Backbone.Agave.Model.extend(
+    Job.OutputFile = Backbone.Agave.MetadataModel.extend(
         _.extend({}, FileTransferMixins, {
-            idAttribute: 'name',
+            idAttribute: 'uuid',
             downloadFileToCache: function() {
 
-                var url = this.get('_links').self.href;
-                url = this._fixBadAgaveUrl(url);
+                var value = this.get('value');
+                var url = EnvironmentConfig.agave.hostname
+                         + '/jobs'
+                         + '/v2'
+                         + '/' + value.jobUuid
+                         + '/outputs/media/'
+                         + '/' + value.name;
 
                 var jqxhr = Backbone.Agave.ajax({
                     headers: Backbone.Agave.oauthHeader(),
@@ -182,13 +187,45 @@ function(
             },
             downloadFileToDisk: function() {
 
-                var url = this.get('_links').self.href;
-                url = this._fixBadAgaveUrl(url);
+                var value = this.get('value');
+                var url = EnvironmentConfig.agave.hostname
+                         + '/jobs'
+                         + '/v2'
+                         + '/' + value.jobUuid
+                         + '/outputs/media/'
+                         + '/' + value.name;
+                //var url = this.get('_links').self.href;
+                //url = this._fixBadAgaveUrl(url);
                 url = this._urlencodeOutputPath(url);
 
                 var jqxhr = this.downloadUrlByPostit(url);
 
                 return jqxhr;
+            },
+            getFilePath: function() {
+
+                var value = this.get('value');
+                var filePath = '';
+
+                if (this.get('name') === 'projectFile') {
+
+                    filePath = '/projects'
+                             + '/' + value['projectUuid']
+                             + '/files'
+                             + '/' + encodeURIComponent(value['name'])
+                             ;
+                }
+                else if (this.get('name') === 'projectJobFile') {
+
+                    filePath = '/projects'
+                             + '/' + value['projectUuid']
+                             + '/analyses'
+                             + '/' + value['relativeArchivePath']
+                             + '/' + encodeURIComponent(value['name'])
+                             ;
+                }
+
+                return filePath;
             },
             _fixBadAgaveUrl: function(url) {
                 var url = url.split('/');
@@ -316,104 +353,126 @@ function(
 
                 //this.inputParameterName = 'query';
             },
-            prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
+            prepareJob: function(formData, VDJMLFileMetadatas, SummaryFileMetadatas, allFileMetadatas, projectUuid) {
 
                 var parameters = this._serializeFormData(formData);
                 parameters['Creator'] = Backbone.Agave.instance.token().get('username');
-
-                this.set('parameters', parameters);
 
                 this.set('name', formData['job-name']);
 
                 this._setArchivePath(projectUuid);
 
-                this._setFilesParameter(selectedFileMetadatas);
+                var inputFiles = {};
+                this._serializeFileInputs(
+                    inputFiles,
+                    formData,
+                    VDJMLFileMetadatas,
+                    SummaryFileMetadatas,
+                    allFileMetadatas
+                );
+                this.set('inputs', inputFiles);
+
+                var metaList = [];
+                for (var i = 0; i < VDJMLFileMetadatas.models.length; i++) {
+                    var fileMetadata = VDJMLFileMetadatas.at(i);
+                    metaList.push(fileMetadata.get('uuid'));
+                }
+                parameters['VDJMLFileMetadata'] = metaList;
+
+                var metaList = [];
+                for (var i = 0; i < SummaryFileMetadatas.models.length; i++) {
+                    var fileMetadata = SummaryFileMetadatas.at(i);
+                    metaList.push(fileMetadata.get('uuid'));
+                }
+                parameters['SummaryFileMetadata'] = metaList;
+
+                this.set('parameters', parameters);
             },
+            // Private Methods
             _serializeFormData: function(formData) {
-                var parameters = {
-                    metadata: 'metadata.json',
-                    groups: {},
-                    files: {},
-                    calculations: []
-                };
+                var parameters = {};
+                var list = [];
 
                 // gene segment usage
                 if (formData.hasOwnProperty('gs-sample')) {
-                    var calc = {
-                        'type': 'gene segment usage',
-                        'levels': [],
-                        'summarize_by': [],
-                        'operations': [],
-                        'filters': []
-		                };
-                    if (formData['gs-type']) calc.levels.push('type');
-                    if (formData['gs-family']) calc.levels.push('family');
-                    if (formData['gs-gene']) calc.levels.push('gene');
-                    if (formData['gs-allele']) calc.levels.push('allele');
+                    parameters['GeneSegmentFlag'] = true;
 
-                    if (formData['gs-sample']) calc.summarize_by.push('sample');
-                    if (formData['gs-group']) calc.summarize_by.push('group');
+                    list = [];
+                    if (formData['gs-type']) list.push('type');
+                    if (formData['gs-family']) list.push('family');
+                    if (formData['gs-gene']) list.push('gene');
+                    if (formData['gs-allele']) list.push('allele');
+                    if (list.length > 0) parameters['GeneSegmentLevels'] = list;
 
-                    if (formData['gs-absolute']) calc.operations.push('absolute');
-                    if (formData['gs-relative']) calc.operations.push('relative');
-                    if (formData['gs-average']) calc.operations.push('average');
+                    list = [];
+                    if (formData['gs-sample']) list.push('sample');
+                    if (formData['gs-group']) list.push('group');
+                    if (list.length > 0) parameters['GeneSegmentSummarizeBy'] = list;
 
-                    if (formData['filter-productive']) calc.filters.push('productive');
+                    list = [];
+                    if (formData['gs-absolute']) list.push('absolute');
+                    if (formData['gs-relative']) list.push('relative');
+                    if (formData['gs-average']) list.push('average');
+                    if (list.length > 0) parameters['GeneSegmentOperations'] = list;
 
-                    parameters.calculations.push(calc);
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['GeneSegmentFilters'] = list;
                 }
 
                 // CDR3
                 if (formData.hasOwnProperty('cdr3-sample')) {
-                    var calc = {
-                        'type': 'cdr3',
-                        'levels': [],
-                        'summarize_by': [],
-                        'operations': [],
-                        'filters': []
-		                };
-                    if (formData['cdr3-nucleotide']) calc.levels.push('nucleotide');
-                    if (formData['cdr3-aa']) calc.levels.push('aa');
+                    parameters['CDR3Flag'] = true;
 
-                    if (formData['cdr3-sample']) calc.summarize_by.push('sample');
-                    if (formData['cdr3-group']) calc.summarize_by.push('group');
+                    list = [];
+                    if (formData['cdr3-nucleotide']) list.push('nucleotide');
+                    if (formData['cdr3-aa']) list.push('aa');
+                    if (list.length > 0) parameters['CDR3Levels'] = list;
 
-                    if (formData['cdr3-absolute']) calc.operations.push('absolute');
-                    if (formData['cdr3-relative']) calc.operations.push('relative');
-                    if (formData['cdr3-length']) calc.operations.push('length');
-                    if (formData['cdr3-shared']) calc.operations.push('shared');
-                    if (formData['cdr3-unique']) calc.operations.push('unique');
+                    list = [];
+                    if (formData['cdr3-sample']) list.push('sample');
+                    if (formData['cdr3-group']) list.push('group');
+                    if (list.length > 0) parameters['CDR3SummarizeBy'] = list;
 
-                    if (formData['filter-productive']) calc.filters.push('productive');
+                    list = [];
+                    if (formData['cdr3-absolute']) list.push('absolute');
+                    if (formData['cdr3-relative']) list.push('relative');
+                    if (formData['cdr3-length']) list.push('length');
+                    if (formData['cdr3-shared']) list.push('shared');
+                    if (formData['cdr3-unique']) list.push('unique');
+                    if (list.length > 0) parameters['CDR3Operations'] = list;
 
-                    parameters.calculations.push(calc);
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['CDR3Filters'] = list;
                 }
 
                 // Diversity
                 if (formData.hasOwnProperty('diversity-sample')) {
-                    var calc = {
-                        'type': 'diversity',
-                        'levels': [],
-                        'summarize_by': [],
-                        'operations': [],
-                        'filters': []
-		                };
-                    if (formData['diversity-type']) calc.levels.push('type');
-                    if (formData['diversity-family']) calc.levels.push('family');
-                    if (formData['diversity-gene']) calc.levels.push('gene');
-                    if (formData['diversity-allele']) calc.levels.push('allele');
-                    if (formData['diversity-nucleotide']) calc.levels.push('nucleotide');
-                    if (formData['diversity-aa']) calc.levels.push('aa');
+                    parameters['DiversityFlag'] = true;
 
-                    if (formData['diversity-sample']) calc.summarize_by.push('sample');
-                    if (formData['diversity-group']) calc.summarize_by.push('group');
+                    list = [];
+                    if (formData['diversity-type']) list.push('type');
+                    if (formData['diversity-family']) list.push('family');
+                    if (formData['diversity-gene']) list.push('gene');
+                    if (formData['diversity-allele']) list.push('allele');
+                    if (formData['diversity-nucleotide']) list.push('nucleotide');
+                    if (formData['diversity-aa']) list.push('aa');
+                    if (list.length > 0) parameters['DiversityLevels'] = list;
 
-                    if (formData['diversity-shannon']) calc.operations.push('shannon');
-                    if (formData['diversity-profile']) calc.operations.push('profile');
+                    list = [];
+                    if (formData['diversity-sample']) list.push('sample');
+                    if (formData['diversity-group']) list.push('group');
+                    if (list.length > 0) parameters['DiversitySummarizeBy'] = list;
 
-                    if (formData['filter-productive']) calc.filters.push('productive');
+                    list = [];
+                    if (formData['diversity-shannon']) list.push('shannon');
+                    if (formData['diversity-profile']) list.push('profile');
+                    if (list.length > 0) parameters['DiversityOperations'] = list;
 
-                    parameters.calculations.push(calc);
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['DiversityFilters'] = list;
                 }
 
                 // Mutations
@@ -421,6 +480,10 @@ function(
                 // Clones
 
                 return parameters;
+            },
+            _serializeFileInputs: function(fileInputs, formData, VDJMLFileMetadatas, SummaryFileMetadatas, allFileMetadatas) {
+                fileInputs['VDJMLFiles'] = this._getTranslatedFilePaths(VDJMLFileMetadatas);
+                fileInputs['SummaryFiles'] = this._getTranslatedFilePaths(SummaryFileMetadatas);
             },
         }
     );

@@ -604,13 +604,16 @@ define([
 
             var filename = e.target.dataset.id;
 
+            var fileHandle = this.collection.get(filename);
+            var value = fileHandle.get('value');
+
             var classSelector = chance.string({
                 pool: 'abcdefghijklmnopqrstuvwxyz',
                 length: 15,
             });
 
             var htmlCode;
-            if (filename.substr(-5) === '.json') {
+            if (value.name.substr(-5) === '.json') {
                 htmlCode = '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
                     + '<td colspan=3>'
                     + '<pre>'
@@ -634,8 +637,6 @@ define([
             $(e.target).prev('.hide-log').removeClass('hidden');
 
             var that = this;
-
-            var fileHandle = this.collection.get(filename);
 
             var fileData;
 
