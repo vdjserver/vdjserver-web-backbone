@@ -8,64 +8,55 @@ function(
 
     'use strict';
 
-    var Sample = {};
+    var SubjectMetadata = {};
 
-    Sample = Backbone.Agave.MetadataModel.extend({
+    SubjectMetadata = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
             return _.extend(
                 {},
                 Backbone.Agave.MetadataModel.prototype.defaults,
                 {
-                    name: 'sample',
+                    name: 'subject',
                     owner: '',
                     value: {
-                        'project': '',
-                        'specimen_source_id': '',
-                        'specimen_category': '',
-                        'specimen_source_species': '',
-                        'specimen_source_species_strain': '',
-                        'specimen_source_common_name': '',
-                        'specimen_source_gender': '',
-                        'specimen_source_age': '',
-                        'specimen_source_age_unit': '',
-                        'specimen_source_health_status': '',
-                        'specimen_source_disease': '',
-                        'specimen_collection_date': '',
-                        'specimen_collection_location_latitude': '',
-                        'specimen_collection_location_longitude': '',
-                        'specimen_collection_location': '',
-                        'specimen_collection_location_country': '',
+                        'project_uuid': '',
+                        'name': '',
+                        'category': '',
+                        'species': '',
+                        'species_strain': '',
+                        'common_name': '',
+                        'gender': '',
+                        'age': '',
+                        'age_unit': '',
+                        'health_status': '',
+                        'disease': '',
+                        'collection_date': '',
+                        'collection_location_latitude': '',
+                        'collection_location_longitude': '',
+                        'collection_location': '',
+                        'collection_location_country': '',
                         'specimen_id': '',
                         'specimen_type': '',
-                        'specimen_repository': '',
-                        'specimen_repository_sample_id': '',
-                        'specimen_collector_name': '',
-                        'specimen_collector_institution': '',
-                        'specimen_collector_email': ''
+                        'repository': '',
+                        'repository_sample_id': '',
+                        'collector_name': '',
+                        'collector_institution': '',
+                        'collector_email': ''
                     }
                 }
             );
+        },
+        initialize: function(parameters) {
+            var value = this.get('value');
+            if ((value['project_uuid'] == undefined) || (value['project_uuid'] == '')) {
+                value['project_uuid'] = this.get('projectUuid');
+                this.set('value', value);
+            }
         },
         url: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },
         sync: function(method, model, options) {
-
-            if (this.get('uuid') === '') {
-                options.apiHost = EnvironmentConfig.vdjApi.hostname;
-                options.url = '/sample';
-
-                var value = this.get('value');
-                var projectName = value.name;
-                var username = Backbone.Agave.instance.token().get('username');
-
-                this.clear();
-                this.set({
-                    username: username,
-                    projectName: projectName
-                });
-            }
-
             return Backbone.Agave.PutOverrideSync(method, this, options);
         },
         setAttributesFromFormData: function(formData) {
@@ -73,6 +64,6 @@ function(
         },
     });
 
-    Backbone.Agave.Model.Sample = Sample;
-    return Sample;
+    Backbone.Agave.Model.SubjectMetadata = SubjectMetadata;
+    return SubjectMetadata;
 });

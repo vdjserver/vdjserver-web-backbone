@@ -2325,6 +2325,177 @@ define([
         },
     });
 
+    Projects.SubjectMetadata = Backbone.View.extend({
+
+        // Public Methods
+        template: 'project/subject-metadata',
+        initialize: function(parameters) {
+
+            var that = this;
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('', loadingView);
+            loadingView.render();
+
+            this.pageSubjects = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: this.model.get('uuid')});
+            //this.pageSubjects = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.model.get('uuid')});
+            this.pageSubjects.fetch()
+            .then(function() {
+                // save clone of original metadata collection
+                that.subjects = that.pageSubjects.getClonedCollection();
+
+                loadingView.remove();
+
+                that.render();
+            })
+        },
+
+        serialize: function() {
+            return {
+                pageSubjects: this.pageSubjects.toJSON(),
+            };
+        },
+        afterRender: function() {
+            this.setupModalView();
+        },
+        events: {
+            'click  #save-subject-metadata': '_saveSubjectMetadata',
+            'submit #subject-metadata-form': '_saveSubjectMetadata',
+
+            'click  #revert-subject-modal': '_revertSubjectModal',
+            'click  #revert-metadata': '_revertSubjectMetadata',
+
+            'click #addSubject': '_addSubject',
+            'click .removeSubject': '_removeSubject',
+            'change .subjectMetadata': '_changeSubjectMetadata',
+        },
+
+        // Private Methods
+        setupModalView: function() {
+
+            var message = new App.Models.MessageModel({
+                'header': 'Saving Metadata',
+                'body':   '<p>Please wait while we save the metadata to the server...</p>'
+            });
+
+            var modal = new App.Views.Util.ModalMessageConfirm({
+                model: message
+            });
+
+            $('<div id="modal-view">').appendTo(this.el);
+
+            this.setView('#modal-view', modal);
+            modal.render();
+
+        },
+
+        // Event Responders
+        _addSubject: function(e){
+            var that = this;
+            var m = new Backbone.Agave.Model.SubjectMetadata({projectUuid: this.model.get('uuid')})
+            m.set('uuid', m.cid);
+            this.pageSubjects.add(m);
+            this.render();
+        },
+        _removeSubject: function(e){
+            var m = this.pageSubjects.at(e.target.dataset.tuple);
+            this.pageSubjects.remove(m);
+            this.render();
+        },
+        _changeSubjectMetadata: function(e) {
+            // we use ids with attribute name embedded to have a generic change method
+            e.preventDefault();
+            var m = this.pageSubjects.at(e.target.dataset.tuple);
+            var value = m.get('value');
+            var field = e.target.id.replace('subject-', '');
+            value[field] = e.target.value;
+            m.set('value', value);
+        },
+        _saveSubjectMetadata: function(e) {
+            e.preventDefault();
+
+            var that = this;
+
+            $('#modal-message').modal('show')
+                .on('shown.bs.modal', function() {
+
+            // see if any are deleted
+            var deletedModels = that.subjects.getMissingModels(that.pageSubjects);
+
+            var promises = [];
+
+            // Set up promises
+            // deletions
+            deletedModels.map(function(uuid) {
+                var m = that.subjects.get(uuid);
+                promises[promises.length] = function() {
+                    return m.destroy();
+                }
+            });
+
+            // updates and new
+            that.pageSubjects.map(function(uuid) {
+                var m = that.pageSubjects.get(uuid);
+                promises[promises.length] = function() {
+                    // clear uuid for new entries so they get created
+                    if (m.get('uuid') == m.cid) m.set('uuid', '');
+                    else { // if existing entry, check if attributes changed
+                        var origModel = that.subjects.get(uuid);
+                        var changed = m.changedAttributes(origModel.attributes);
+                        if (!changed) return;
+                    }
+                    return m.save();
+                }
+            });
+
+            // Execute promises
+            var sequentialPromiseResults = promises.reduce(
+                function(previous, current) {
+                    return previous.then(current);
+                },
+                $.Deferred().resolve()
+            )
+            .always(function() {
+                $('#modal-message')
+                  .modal('hide')
+                  .on('hidden.bs.modal', function() {
+
+                      // new original collection
+                      that.subjects = that.pageSubjects.getClonedCollection();
+
+                      that.render();
+                  })
+            })
+            .fail(function(error) {
+                var telemetry = new Backbone.Agave.Model.Telemetry();
+                telemetry.setError(error);
+                telemetry.set('method', '_saveSubjectMetadata()');
+                telemetry.set('view', 'Projects.SubjectMetadata');
+                telemetry.save();
+            })
+            ;
+            })
+        },
+
+        _revertSubjectModal: function(e) {
+            e.preventDefault();
+
+            $('#revert-subject').modal('show');
+        },
+
+        _revertSubjectMetadata: function(e) {
+            var that = this;
+            $('#revert-subject').modal('hide')
+                .on('hidden.bs.modal', function() {
+                    // revert work samples back to original collection
+                    that.pageSubjects = that.subjects.getClonedCollection();
+
+                    that.render();
+                })
+            ;
+        },
+    });
+
     Projects.SampleMetadata = Backbone.View.extend({
 
         // Public Methods
@@ -2347,19 +2518,18 @@ define([
             .then(function() {
                 // save clone of original metadata collection
                 that.samples = that.workSamples.getClonedCollection();
-                //that.samples = that.workSamples.clone();
 
-                that.projectFiles.fetch()
-                .then(function() {
+                return that.projectFiles.fetch();
+            })
+            .then(function() {
 
-                    that.nonpairedFiles = that.projectFiles.serializedNonPairedReadCollection();
-                    that.pairedFiles = that.projectFiles.serializedPairedReadCollection();
-                    that.pairedQualFiles = that.projectFiles.serializedPairedQualityCollection();
+                that.nonpairedFiles = that.projectFiles.serializedNonPairedReadCollection();
+                that.pairedFiles = that.projectFiles.serializedPairedReadCollection();
+                that.pairedQualFiles = that.projectFiles.serializedPairedQualityCollection();
 
-                    loadingView.remove();
+                loadingView.remove();
 
-                    that.render();
-                })
+                that.render();
             })
             .fail(function(error) {
                 var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -2389,9 +2559,9 @@ define([
             'click  #revert-metadata': '_revertSampleMetadata',
 
             'click #addSample': '_addSample',
+            'click #duplicateSample': '_duplicateSample',
             'click .removeSample': '_removeSample',
             'change .sampleMetadata': '_changeSampleMetadata',
-            'change .dataAssociation': '_changeDataAssociation',
         },
 
         // Private Methods
@@ -2420,6 +2590,13 @@ define([
             this.workSamples.add(m);
             this.render();
         },
+        _duplicateSample: function(e){
+            var tf = $(":focus");
+            //var m = new Backbone.Agave.Model.SampleMetadata({projectUuid: this.model.get('uuid')})
+            //m.set('uuid', m.cid);
+            //this.workSamples.add(m);
+            //this.render();
+        },
         _removeSample: function(e){
             var m = this.workSamples.at(e.target.dataset.tuple);
             this.workSamples.remove(m);
@@ -2433,87 +2610,69 @@ define([
             value[field] = e.target.value;
             m.set('value', value);
         },
-        _changeDataAssociation: function(e) {
-            e.preventDefault();
-            var m = this.workSamples.at(e.target.dataset.tuple);
-            var value = m.get('value');
-            if (e.target.checked) {
-                $('#sample-barcode').prop('disabled', false);
-                var field = e.target.id.replace('sample-', '');
-                value[field] = e.target.value;
-                m.set('value', value);
-            } else {
-                var field = e.target.id.replace('sample-', '');
-                value[field] = '';
-                value['barcode'] = '';
-                m.set('value', value);
-                $('#sample-barcode').prop('disabled', true);
-            }
-        },
         _saveSampleMetadata: function(e) {
             e.preventDefault();
-            //this.setupModalView();
 
             var that = this;
 
             $('#modal-message').modal('show')
-                .on('shown.bs.modal', function() {
+              .on('shown.bs.modal', function() {
 
-            // see if any are deleted
-            var deletedModels = that.samples.getMissingModels(that.workSamples);
+                // see if any are deleted
+                var deletedModels = that.samples.getMissingModels(that.workSamples);
 
-            var promises = [];
+                var promises = [];
 
-            // Set up promises
-            // deletions
-            deletedModels.map(function(uuid) {
-                var m = that.samples.get(uuid);
-                promises[promises.length] = function() {
-                    return m.destroy();
-                }
-            });
-
-            // updates and new
-            that.workSamples.map(function(uuid) {
-                var m = that.workSamples.get(uuid);
-                promises[promises.length] = function() {
-                    // clear uuid for new entries so they get created
-                    if (m.get('uuid') == m.cid) m.set('uuid', '');
-                    else { // if existing entry, check if attributes changed
-                        var origModel = that.samples.get(uuid);
-                        var changed = m.changedAttributes(origModel.attributes);
-                        if (!changed) return;
+                // Set up promises
+                // deletions
+                deletedModels.map(function(uuid) {
+                    var m = that.samples.get(uuid);
+                    promises[promises.length] = function() {
+                        return m.destroy();
                     }
-                    return m.save();
-                }
-            });
+                });
 
-            // Execute promises
-            var sequentialPromiseResults = promises.reduce(
-                function(previous, current) {
-                    return previous.then(current);
-                },
-                $.Deferred().resolve()
-            )
-            .always(function() {
-                $('#modal-message')
-                  .modal('hide')
-                  .on('hidden.bs.modal', function() {
+                // updates and new
+                that.workSamples.map(function(uuid) {
+                    var m = that.workSamples.get(uuid);
+                    promises[promises.length] = function() {
+                        // clear uuid for new entries so they get created
+                        if (m.get('uuid') == m.cid) m.set('uuid', '');
+                        else { // if existing entry, check if attributes changed
+                            var origModel = that.samples.get(uuid);
+                            var changed = m.changedAttributes(origModel.attributes);
+                            if (!changed) return;
+                        }
+                        return m.save();
+                    }
+                });
 
-                      // new original collection
-                      that.samples = that.workSamples.getClonedCollection();
-                      //that.samples = that.workSamples.clone();
-                      that.render();
-                  })
-            })
-            .fail(function(error) {
-                var telemetry = new Backbone.Agave.Model.Telemetry();
-                telemetry.setError(error);
-                telemetry.set('method', '_saveSampleMetadata()');
-                telemetry.set('view', 'Projects.SampleMetadata');
-                telemetry.save();
-            })
-            ;
+                // Execute promises
+                var sequentialPromiseResults = promises.reduce(
+                    function(previous, current) {
+                        return previous.then(current);
+                    },
+                    $.Deferred().resolve()
+                )
+                .always(function() {
+                    $('#modal-message')
+                      .modal('hide')
+                      .on('hidden.bs.modal', function() {
+
+                          // new original collection
+                          that.samples = that.workSamples.getClonedCollection();
+                          //that.samples = that.workSamples.clone();
+                          that.render();
+                      })
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', '_saveSampleMetadata()');
+                    telemetry.set('view', 'Projects.SampleMetadata');
+                    telemetry.save();
+                })
+                ;
             })
         },
 
@@ -2554,6 +2713,10 @@ define([
                 //that.sampleView = new Query.Expression({ fields: sampleFields });
                 //that.setView('#sample-query-expressions', that.sampleView);
                 //that.sampleView.render();
+
+                that.subjectView = new Projects.SubjectMetadata({ model: that.model, projectUuid: this.projectUuid });
+                that.setView('#subject-metadata-entry', that.subjectView);
+                that.subjectView.render();
 
                 that.sampleView = new Projects.SampleMetadata({ model: that.model, projectUuid: this.projectUuid });
                 that.setView('#sample-metadata-entry', that.sampleView);

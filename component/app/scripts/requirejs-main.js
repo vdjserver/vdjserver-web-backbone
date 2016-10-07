@@ -63,6 +63,8 @@ define([
 
     'agave-sample-metadata',
     'agave-samples-metadata',
+    'agave-subject-metadata',
+    'agave-subjects-metadata',
 
     // Regular Collections and Models
     'models/message',

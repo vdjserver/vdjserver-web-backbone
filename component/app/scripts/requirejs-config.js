@@ -79,6 +79,8 @@ require.config({
 
         'agave-sample-metadata': 'models/agave-sample-metadata',
         'agave-samples-metadata': 'collections/agave-samples-metadata',
+        'agave-subject-metadata': 'models/agave-subject-metadata',
+        'agave-subjects-metadata': 'collections/agave-subjects-metadata',
 
         // Misc.
         'box': 'vendor/box',
@@ -300,6 +302,14 @@ require.config({
         'agave-samples-metadata': {
             deps: ['backbone', 'backbone-agave', 'agave-sample-metadata'],
             exports: 'Backbone.Agave.Collection.SamplesMetadata'
+        },
+        'agave-subject-metadata': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.SubjectMetadata'
+        },
+        'agave-subjects-metadata': {
+            deps: ['backbone', 'backbone-agave', 'agave-subject-metadata'],
+            exports: 'Backbone.Agave.Collection.SubjectsMetadata'
         },
 
         //Analyses
