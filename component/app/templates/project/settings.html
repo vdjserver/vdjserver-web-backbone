@@ -40,11 +40,62 @@
              </form>
              <form id="project-delete-form" class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-md-2 control-label">Delete Project</label>
-                    <div class="col-md-5">
-                        <button id="launch-delete-project-modal" class="btn btn-danger">Delete Project</button>
-                    </div>
-                </div>
+                    <label class="col-md-2 control-label">Project Actions</label>
+                <div class="btn-group">
+                    <button
+                        id="project-action-button"
+                        class="btn btn-danger dropdown-toggle"
+                        data-toggle="dropdown"
+                    >
+                        Project Actions
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+
+                    <ul
+                        class="dropdown-menu"
+                        role="menu"
+                    >
+                        <li class="project-actions">
+                            <a
+                                class="download-multiple-files"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Show Archived Jobs
+                            </a>
+                        </li>
+
+                        <li class="project-actions">
+                            <a
+                                class="download-multiple-files"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Duplicate Project
+                            </a>
+                        </li>
+
+                        <li class="project-actions">
+                            <a
+                                class="download-multiple-files"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Publish Project
+                            </a>
+                        </li>
+
+                        <li class="project-actions">
+                            <a
+                                class="delete-files"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Delete Project
+                            </a>
+                        </li>
+                    </ul>
+
             </form>
             <div>
                 <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">

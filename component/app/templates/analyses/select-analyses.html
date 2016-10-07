@@ -66,9 +66,7 @@
                             </td>
 
                             <td>
-                                {{#FileTypeAvailableInProjectFileList this.name}}
-                                    File Available in <a href="/project/{{../../projectUuid}}">Project Data Area</a>
-                                {{/FileTypeAvailableInProjectFileList}}
+                                <button type="button" class="btn btn-primary" data-filename="{{uuid}}">Make Available in Project Data Area</button>
                             </td>
                         </tr>
                     {{/each}}
