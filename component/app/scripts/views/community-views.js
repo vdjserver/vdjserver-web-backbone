@@ -33,7 +33,7 @@ define([
                 })
                 .then(function() {
                     loadingView.remove();
-                    var communityTable = that.$('#community').dataTable({
+                    var communityTable = that.$('#community').DataTable({
                         responsive: true,
                         pageLength: 10,
                     });
@@ -82,18 +82,18 @@ define([
                 })
                 .then(function() {
                     loadingView.remove();
-                    var communityProject = that.$('#community-project').dataTable({
-                        bInfo: false,
-                        bPaginate: false,
-                        bSort: false,
+                    var communityProject = that.$('#community-project').DataTable({
+                        info: false,
+                        paging: false,
+                        ordering: false,
                         responsive: true,
                     });
 
-                    var communityProjectExperiments = that.$('#community-project-experiments').dataTable({
-                        bInfo: false,
-                        bLengthChange: false,
-                        bPaginate: false,
-                        bSort: false,
+                    var communityProjectExperiments = that.$('#community-project-experiments').DataTable({
+                        info: false,
+                        lengthChange: false,
+                        paging: false,
+                        ordering: false,
                         pageLength: 20,
                         responsive: true,
                     });

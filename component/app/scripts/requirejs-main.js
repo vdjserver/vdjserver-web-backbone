@@ -10,7 +10,10 @@ define([
     // Libs for JS visualization
     'nvd3',
     'box', // box for help with the box and whisker plot
+    'datatables',
     'datatables-responsive',
+    //'datatables.net',
+    //'datatables.net-bs',
 
     'highcharts',
     'highcharts-data',
