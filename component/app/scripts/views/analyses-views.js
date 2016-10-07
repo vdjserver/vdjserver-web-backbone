@@ -460,7 +460,7 @@ define([
 
             this._uiBeginChartLoading(e.target);
 
-            var filename = e.target.dataset.id;
+            var uuid = e.target.dataset.id;
 
             var classSelector = chance.string({
                 pool: 'abcdefghijklmnopqrstuvwxyz',
@@ -495,9 +495,10 @@ define([
 
             var that = this;
 
-            var fileHandle = this.collection.get(filename);
+            var fileHandle = this.collection.get(uuid);
+            var value = fileHandle.get('value');
 
-            var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+            var chartType = Backbone.Agave.Model.Job.Detail.getChartType(value.name);
 
             var fileData;
 
@@ -602,9 +603,9 @@ define([
 
             this._uiBeginChartLoading(e.target);
 
-            var filename = e.target.dataset.id;
+            var uuid = e.target.dataset.id;
 
-            var fileHandle = this.collection.get(filename);
+            var fileHandle = this.collection.get(uuid);
             var value = fileHandle.get('value');
 
             var classSelector = chance.string({
@@ -721,8 +722,8 @@ define([
         downloadFile: function(e) {
             e.preventDefault();
 
-            var filename = e.target.dataset.filename;
-            var outputFile = this.collection.get(filename);
+            var uuid = e.target.dataset.filename;
+            var outputFile = this.collection.get(uuid);
 
             outputFile.downloadFileToDisk()
                 .fail(function(error) {
@@ -812,7 +813,7 @@ define([
                       this.isComparison = false;
                       var fileKey = pm.groups[this.groupId][key]['files'];
                       var filename = pm.files[fileKey]['composition'];
-                      var fileHandle = this.selectAnalyses.collection.get(filename);
+                      var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
                       if (!fileHandle) this.isValid = false;
                   }
                   if ((key == 'pre')  && (pm.groups[this.groupId][key]['type'] == 'statistics')) {
@@ -820,16 +821,16 @@ define([
                       this.isComparison = true;
                       var fileKey = pm.groups[this.groupId][key]['files'];
                       var filename = pm.files[fileKey]['composition'];
-                      var fileHandle = this.selectAnalyses.collection.get(filename);
+                      var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
                       if (!fileHandle) this.isValid = false;
                   }
               }
             } else {
                 // hard-coded filenames
                 this.isValid = true;
-                var fileHandle = this.selectAnalyses.collection.get('stats_composition.csv');
+                var fileHandle = this.selectAnalyses.collection.getFileByName('stats_composition.csv');
                 if (fileHandle) this.isComparison = false;
-                fileHandle = this.selectAnalyses.collection.get('pre-filter_composition.csv');
+                fileHandle = this.selectAnalyses.collection.getFileByName('pre-filter_composition.csv');
 
                 if (this.isComparison && !fileHandle) this.isValid = false;
             }
@@ -1131,13 +1132,13 @@ define([
             var that = this;
             if (this.isComparison) {
                 var filename = files.pre;
-                var fileHandle = this.selectAnalyses.collection.get(filename);
+                var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
                 if (!fileHandle) return $.Deferred().reject('Project is missing statistics file: ' + filename);
 
                 return fileHandle.downloadFileToCache()
                 .then(function(preFileData) {
                     var filename = files.post;
-                    var fileHandle = that.selectAnalyses.collection.get(filename);
+                    var fileHandle = that.selectAnalyses.collection.getFileByName(filename);
 
                     return fileHandle.downloadFileToCache()
                     .then(function(postFileData) {
@@ -1146,7 +1147,7 @@ define([
                 })
             } else {
                 var filename = files.stats;
-                var fileHandle = this.selectAnalyses.collection.get(filename);
+                var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
 
                 var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
 
