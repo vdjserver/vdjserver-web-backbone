@@ -1,0 +1,87 @@
+<form id="sample-group-metadata-form" class="form-horizontal">
+{{#each workSamples}}
+  <div class="form-group">
+    <div class="col-md-1">
+				<img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeSample center-block" data-tuple="{{@index}}">
+    </div>
+    <label for="sample-name" class="col-md-1 control-label">Name:</label>
+    <div class="col-md-2">
+      <input type="text" class="form-control sampleMetadata" id="sample-name" placeholder="Sample Name" value="{{this.value.name}}" data-tuple="{{@index}}">
+    </div>
+    <label for="sample-description" class="col-md-1 control-label">Description:</label>
+    <div class="col-md-7">
+      <input type="text" class="form-control sampleMetadata" id="sample-description" placeholder="Sample Description" value="{{this.value.description}}" data-tuple="{{@index}}">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-md-2 control-label">Data Association:</label>
+    <div class="checkbox col-md-1">
+      <label>
+        <input type="checkbox" class="dataAssociation" id="sample-data_association" value="barcode" {{ifCondChecked this.value.data_association "barcode"}} data-tuple="{{@index}}">
+        Barcode
+      </label>
+    </div>
+    <div class="col-md-2">
+      <input type="text" class="form-control sampleMetadata" {{ifCondEnabled this.value.data_association "barcode"}} id="sample-barcode" placeholder="Barcode Identifier" value="{{this.value.barcode}}" data-tuple="{{@index}}">
+    </div>
+    <label for="sample-project-file" class="col-md-2 control-label">Samples:</label>
+    <div class="col-md-5">
+        <select class="sampleMetadata" id="sample-groups-{{@index}}-project_file" data-tuple="{{@index}}" multiple="multiple">
+            {{#each ../nonpairedFiles}}
+            <option {{ifCondSelected this.read.uuid ../this.value.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}}</option>
+            {{/each}}
+            {{#each ../pairedFiles}}
+            <option {{ifCondSelected this.forward.uuid ../this.value.project_file}} value="{{this.forward.uuid}}">{{this.forward.value.name}} / {{this.reverse.value.name}}</option>
+            {{/each}}
+            {{#each ../pairedQualFiles}}
+            <option {{ifCondSelected this.read.uuid ../this.value.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}} / {{this.qual.value.name}}</option>
+            {{/each}}
+        </select>
+    </div>
+  </div>
+          <div class="form-group">
+            <label for="sample-uuid" class="col-md-2 control-label">VDJServer UUID:</label>
+            <div class="col-md-4">
+              <input type="text" class="form-control" id="sample-uuid" readonly value="{{this.uuid}}">
+            </div>
+          </div>
+{{/each}}
+
+  <div class="form-group">
+    <div class="col-md-1">
+        <img src="../images/rodentia-icons_emblem-plus-300px.png" class="center-block" style="width:30px;height:30px;" id="addSample">
+    </div>
+    <div class="col-md-offset-1 col-md-3">
+      <button id="save-sample-metadata" type="submit" class="btn btn-success">Save Sample Metadata</button>
+    </div>
+    <div class="col-md-3">
+      <button id="revert-sample-modal" class="btn btn-warning">Revert Changes</button>
+    </div>
+  </div>
+
+</form>
+
+
+<div>
+    <div class="modal fade" id="revert-sample" tabindex="-1" role="dialog" aria-labelledby="revert-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="revert-modal-label">Revert Sample Metadata Changes</h4>
+                </div>
+                <form id="revert-metadata-form" role="form">
+                    <div class="modal-body">
+                        Are you sure that you want to throw away your changes?
+                    </div>
+                    <div class="modal-footer">
+                        <div class="text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <input type="button" class="btn btn-danger" id="revert-metadata" value="Revert">
+                        </div>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
