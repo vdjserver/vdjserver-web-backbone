@@ -7,6 +7,7 @@ require.config({
         'backbone.syphon':  '../bower_components/marionette.backbone.syphon/lib/backbone.syphon',
         'backbone-retry-sync': '../bower_components/backbone-retry-sync/backbone-retry-sync',
         'bootstrap':        '../bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap',
+        'bootstrap-multiselect': '../bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect',
         'chance':           '../bower_components/chance/chance',
         'datatables':       '../bower_components/datatables/media/js/jquery.dataTables',
         'datatables-responsive': '../bower_components/datatables-responsive/js/dataTables.responsive',
@@ -142,6 +143,9 @@ require.config({
     shim: {
         'bootstrap': {
             deps: ['jquery']
+        },
+        'bootstrap-multiselect': {
+            deps: ['bootstrap']
         },
         'jquery.event.drag': {
             deps: ['jquery']

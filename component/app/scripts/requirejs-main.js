@@ -6,6 +6,7 @@ define([
     'bootstrap',
     'typeahead',
     'file-saver',
+    'bootstrap-multiselect',
 
     // Libs for JS visualization
     'nvd3',

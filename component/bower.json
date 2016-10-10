@@ -6,6 +6,7 @@
     "backbone": "1.1.2",
     "backbone.analytics": "f5648f583ed9cf073c123ec61b9e31dd9c77c4f9",
     "backbone-retry-sync": "0.0.2",
+    "bootstrap-multiselect": "0.9.13",
     "chance": "0.7.3",
     "d3": "3.4.11",
     "datatables": "1.10.8",
