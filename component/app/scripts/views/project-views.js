@@ -2338,7 +2338,7 @@ define([
             loadingView.render();
 
             this.pageSubjects = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: this.model.get('uuid')});
-            //this.pageSubjects = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.model.get('uuid')});
+
             this.pageSubjects.fetch()
             .then(function() {
                 // save clone of original metadata collection
@@ -2368,6 +2368,9 @@ define([
             'click #addSubject': '_addSubject',
             'click .removeSubject': '_removeSubject',
             'change .subjectMetadata': '_changeSubjectMetadata',
+
+            'click #importFromFile': '_importFromFile',
+            'click #exportToFile': '_exportToFile',
         },
 
         // Private Methods
@@ -2410,6 +2413,26 @@ define([
             var field = e.target.id.replace('subject-', '');
             value[field] = e.target.value;
             m.set('value', value);
+        },
+        _importFromFile: function(e) {
+        },
+        _exportToFile: function(e) {
+            var that = this;
+            this.pageSubjects.createExportFile()
+              .then(function(response) {
+                  if (response.status == 'success') return that.pageSubjects.downloadExportFileToDisk();
+                  else return $.Deferred().reject('Unable to export subject metadata.');
+              })
+              .then(function() {
+              })
+              .fail(function(error) {
+                  var telemetry = new Backbone.Agave.Model.Telemetry();
+                  telemetry.setError(error);
+                  telemetry.set('method', '_exportToFile()');
+                  telemetry.set('view', 'Projects.SubjectMetadata');
+                  telemetry.save();
+              })
+              ;
         },
         _saveSubjectMetadata: function(e) {
             e.preventDefault();
@@ -2559,7 +2582,8 @@ define([
             'click  #revert-metadata': '_revertSampleMetadata',
 
             'click #addSample': '_addSample',
-            'click #duplicateSample': '_duplicateSample',
+            'click #importFromFile': '_importFromFile',
+            'click #exportToFile': '_exportToFile',
             'click .removeSample': '_removeSample',
             'change .sampleMetadata': '_changeSampleMetadata',
         },
@@ -2590,12 +2614,25 @@ define([
             this.workSamples.add(m);
             this.render();
         },
-        _duplicateSample: function(e){
-            var tf = $(":focus");
-            //var m = new Backbone.Agave.Model.SampleMetadata({projectUuid: this.model.get('uuid')})
-            //m.set('uuid', m.cid);
-            //this.workSamples.add(m);
-            //this.render();
+        _importFromFile: function(e){
+        },
+        _exportToFile: function(e){
+            var that = this;
+            this.workSamples.createExportFile()
+              .then(function(response) {
+                  if (response.status == 'success') return that.workSamples.downloadExportFileToDisk();
+                  else return $.Deferred().reject('Unable to export sample metadata.');
+              })
+              .then(function() {
+              })
+              .fail(function(error) {
+                  var telemetry = new Backbone.Agave.Model.Telemetry();
+                  telemetry.setError(error);
+                  telemetry.set('method', 'Backbone.Agave.Collection.SamplesMetadata._exportToFile()');
+                  telemetry.set('view', 'Projects.SampleMetadata');
+                  telemetry.save();
+              })
+              ;
         },
         _removeSample: function(e){
             var m = this.workSamples.at(e.target.dataset.tuple);

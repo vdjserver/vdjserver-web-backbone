@@ -1,14 +1,15 @@
 define([
     'backbone',
     'comparators-mixin',
-], function(Backbone, ComparatorsMixin) {
+    'file-transfer-mixins',
+], function(Backbone, ComparatorsMixin, FileTransferMixins) {
 
     'use strict';
 
     var SubjectsMetadata = {};
 
     SubjectsMetadata = Backbone.Agave.MetadataCollection.extend(
-        _.extend({}, ComparatorsMixin.reverseChronologicalCreatedTime, {
+        _.extend({}, ComparatorsMixin.reverseChronologicalCreatedTime, FileTransferMixins, {
             model: Backbone.Agave.Model.SubjectMetadata,
             initialize: function(parameters) {
                 Backbone.Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
@@ -23,6 +24,33 @@ define([
                        + '&limit=' + this.limit
                        + '&offset=' + this.offset
                        ;
+            },
+
+            createExportFile: function() {
+                var jqxhr = $.ajax({
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'GET',
+                    url: EnvironmentConfig.vdjApi.hostname
+                        + '/projects/' + this.projectUuid + '/metadata/subject/export'
+                        + '?format=JSON',
+                });
+
+                return jqxhr;
+            },
+
+            downloadExportFileToDisk: function() {
+                var url = EnvironmentConfig.agave.hostname
+                        + '/files'
+                        + '/v2'
+                        + '/media'
+                        + '/system'
+                        + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
+                        + '//projects/' + this.projectUuid + '/files/subject_metadata.json'
+                        ;
+
+                var jqxhr = this.downloadUrlByPostit(url);
+
+                return jqxhr;
             },
         })
     );
