@@ -372,6 +372,14 @@ define([
                                             break;
                                         case('igBlast'):
                                             break;
+                                        case('RepCalc'):
+                                            var chart = new Analyses.RepertoireComparison({selectAnalyses: that});
+                                            if (chart.isValid) {
+                                                that.analysisCharts.push({ groupId: 'repertoire-comparison' });
+                                                that.chartViews.push(chart);
+                                                that.setView('#analysis-charts-repertoire-comparison', chart);
+                                            }
+                                            break;
 
                                     }
                                 } catch (error) {
@@ -420,158 +428,12 @@ define([
             };
         },
         events: {
-            //'click .show-chart': 'showChart',
-            //'click .hide-chart': 'hideChart',
-
             'click .show-log': 'showLog',
             'click .hide-log': 'hideLog',
 
-            //'click .download-chart': 'downloadChart',
             'click .download-file': 'downloadFile',
 
             'click .toggle-legend-btn': 'toggleLegend',
-        },
-
-        hideChart: function(e) {
-            e.preventDefault();
-            $(e.target).parent().prev('#show-chart').removeClass('hidden');
-            $(e.target).closest('#hide-chart').addClass('hidden');
-
-            var elOffset = $( e.target ).offset().top;
-            var elHeight = $( e.target ).height();
-            var windowHeight = $(window).height();
-            var offset;
-
-            if (elHeight < windowHeight) {
-              offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
-            } else {
-              offset = elOffset;
-            }
-
-            $('html, body').animate({scrollTop: offset}, 1000);
-
-            $(e.target.closest('tr')).next().hide(1500, function(){
-              $(e.target.closest('tr')).next().remove();
-            });
-        },
-
-        showChart: function(e) {
-            e.preventDefault();
-
-            this._uiBeginChartLoading(e.target);
-
-            var uuid = e.target.dataset.id;
-
-            var classSelector = chance.string({
-                pool: 'abcdefghijklmnopqrstuvwxyz',
-                length: 15,
-            });
-
-            // remove if it exists
-            if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
-              $(e.target.closest('tr')).next().remove();
-            }
-
-            $(e.target.closest('tr')).after(
-                '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
-                    + '<td colspan=3>'
-                        + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'
-                            + '<svg style="height: 0px;" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>'
-                        + '</div>'
-                        + '<div class="' + classSelector + '-d3-tip d3-tip hidden"></div>'
-                    + '</td>'
-                + '</tr>'
-            );
-
-            $(e.target).addClass('hidden');
-            $(e.target).nextAll('#hide-chart').removeClass('hidden');
-
-            // Enable download button
-            $(e.target).nextAll('#hide-chart').children('.download-chart').attr('data-chart-class-selector', classSelector);
-
-            // Clean up any charts that are currently displayed
-            this.hideWarning();
-            $('#chart-legend').hide();
-
-            var that = this;
-
-            var fileHandle = this.collection.get(uuid);
-            var value = fileHandle.get('value');
-
-            var chartType = Backbone.Agave.Model.Job.Detail.getChartType(value.name);
-
-            var fileData;
-
-            fileHandle.downloadFileToCache()
-            .then(function(tmpFileData) {
-                fileData = tmpFileData;
-            })
-            .then(function() {
-                return $('#chart-tr-' + classSelector).animate({
-                    // Unfortunately, this '30' is a bit of a magic number.
-                    // It helps create enough spacer for horizontal scroll
-                    // bars on the qstats chart not to overlay on other
-                    // chart buttons.
-                    height: (that.chartHeight + 30) + 'px',
-                }, 500).promise();
-            })
-            .then(function() {
-                $('.' + classSelector + ' svg').css('height', that.chartHeight);
-            })
-            .done(function() {
-
-                that._uiEndChartLoading();
-
-                switch (chartType) {
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
-                        $('#chart-legend').show();
-                        Analyses.Charts.Composition(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_1:
-                        $('#chart-legend').show();
-                        Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_3:
-                        $('#chart-legend').show();
-                        Analyses.Charts.LengthHistogram(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
-                        Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
-                        Analyses.Charts.QualityScore(fileHandle, fileData, classSelector, that.chartHeight);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
-                        Analyses.Charts.GiantTable(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_7:
-                        Analyses.Charts.Cdr3(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_8:
-                        Analyses.Charts.GeneDistribution(fileHandle, fileData, classSelector);
-                        break;
-
-                    default:
-                        break;
-                }
-
-                // Scroll down to chart
-                $('html, body').animate({
-                    scrollTop: $('.' + classSelector).offset().top
-                }, 1000);
-            })
-            .fail(function(response) {
-                var errorMessage = this.getErrorMessageFromResponse(response);
-                this.showWarning(errorMessage);
-            })
-            ;
         },
 
         hideLog: function(e){
@@ -601,7 +463,7 @@ define([
         showLog: function(e) {
             e.preventDefault();
 
-            this._uiBeginChartLoading(e.target);
+            this._uiBeginDataLoading(e.target);
 
             var uuid = e.target.dataset.id;
 
@@ -654,7 +516,7 @@ define([
                 })
                 .done(function() {
 
-                    that._uiEndChartLoading();
+                    that._uiEndDataLoading();
 
                     $('#' + classSelector).html(fileData);
 
@@ -674,47 +536,6 @@ define([
                     telemetry.save();
 
                     that.showWarning(errorMessage);
-                })
-                ;
-        },
-        downloadChart: function(e) {
-
-            var that = this;
-
-            var chartClassSelector = e.target.dataset.chartClassSelector;
-
-            var filename = e.target.dataset.id;
-            filename = filename.split('.');
-            filename.pop();
-            filename = filename.join('.');
-
-            var cssUrl = location.protocol + '//' + location.host + '/styles/charts.css';
-
-            $.get(cssUrl)
-                .done(function(cssText) {
-
-                    var widthPx = $('#' + chartClassSelector + ' svg').css('width');
-
-                    /*
-                        Grabbing all content specifically from the svg
-                        element ensures that we won't pick up any other
-                        random elements that are also children of
-                        |classSelector|.
-                    */
-                    var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
-                                  + '\n'
-                                  + '<svg '
-                                        + ' style="height: ' + that.chartHeight + 'px; width:' + widthPx + ';"'
-                                        + ' version="1.1"'
-                                        + ' xmlns="http://www.w3.org/2000/svg"'
-                                        + ' class="box"'
-                                  + '>'
-                                        + $('.' + chartClassSelector + ' svg').html()
-                                  + '</svg>'
-                                  ;
-
-                    var blob = new Blob([svgString], {type: 'text/plain;charset=utf-8'});
-                    saveAs(blob, filename + '.svg');
                 })
                 ;
         },
@@ -767,28 +588,19 @@ define([
         hideWarning: function() {
             $('.chart-warning').hide();
         },
-        toggleLegend: function() {
-            $('.nv-legendWrap').toggle();
-        },
 
         // private methods
-        _uiBeginChartLoading: function(selector) {
-            // Disable other buttons
-            $('.show-chart').prop('disabled', true);
-
-            $(selector).after('<div class="chart-loading-view"></div>');
+        _uiBeginDataLoading: function(selector) {
+            // loading view
+            $(selector).after('<div class="data-loading-view"></div>');
 
             var loadingView = new App.Views.Util.Loading({keep: true});
-            this.setView('.chart-loading-view', loadingView);
+            this.setView('.data-loading-view', loadingView);
             loadingView.render();
         },
-        _uiEndChartLoading: function() {
-
-            // Restore buttons
-            $('.show-chart').prop('disabled', false);
-
+        _uiEndDataLoading: function() {
             // Remove loading view
-            $('.chart-loading-view').remove();
+            $('.data-loading-view').remove();
         },
     });
 
@@ -1156,6 +968,249 @@ define([
                     return { stats: tmpFileData };
                 })
             }
+        }
+    });
+
+    Analyses.RepertoireComparison = Backbone.View.extend({
+        template: 'analyses/repertoire-comparison-charts',
+        initialize: function(parameters) {
+
+            // access data from superview instead of reloading
+            this.selectAnalyses = parameters.selectAnalyses;
+
+            this.chartHeight = 360;
+            this.isValid = false;
+
+            // we require process metadata
+            var pm = this.selectAnalyses.processMetadata;
+            if (!pm) return;
+
+            var geneSegmentChart = false;
+            for (var group in pm.groups) {
+                if (pm.groups[group]['gene_segment_usage']) geneSegmentChart = true;
+            }
+
+            this.chartFiles = [];
+            if (geneSegmentChart) {
+                this.isValid = true;
+                this.chartFiles.push({ id: 'gene_segment_usage', name: 'Gene Segment Usage' });
+            }
+
+            if (this.isValid) {
+                this.render();
+            }
+        },
+        serialize: function() {
+            return {
+                chartFiles: this.chartFiles,
+                //canDownloadFiles: this.canDownloadFiles,
+                //projectUuid: this.projectUuid,
+            };
+        },
+        events: {
+            'click .show-chart': 'showChart',
+            'click .hide-chart': 'hideChart',
+
+            'click .download-chart': 'downloadChart',
+            'click .download-file': 'downloadFile',
+
+            'click .toggle-legend-btn': 'toggleLegend',
+        },
+
+        hideChart: function(e) {
+            e.preventDefault();
+            $(e.target).parent().prev('#show-chart').removeClass('hidden');
+            $(e.target).closest('#hide-chart').addClass('hidden');
+
+            var elOffset = $( e.target ).offset().top;
+            var elHeight = $( e.target ).height();
+            var windowHeight = $(window).height();
+            var offset;
+
+            if (elHeight < windowHeight) {
+              offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+            } else {
+              offset = elOffset;
+            }
+
+            $('html, body').animate({scrollTop: offset}, 1000);
+
+            $(e.target.closest('tr')).next().hide(1500, function(){
+              $(e.target.closest('tr')).next().remove();
+            });
+        },
+
+        showChart: function(e) {
+            e.preventDefault();
+
+            this._uiBeginChartLoading(e.target);
+
+            var chartId = e.target.dataset.id;
+
+            // need more space for comparison chart
+            if (chartId == 'qstats' && this.isComparison) this.chartHeight = 720;
+            else this.chartHeight = 360;
+
+            var classSelector = chance.string({
+                pool: 'abcdefghijklmnopqrstuvwxyz',
+                length: 15,
+            });
+
+            // remove if it exists
+            if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
+              $(e.target.closest('tr')).next().remove();
+            }
+
+            $(e.target.closest('tr')).after(
+                '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
+                    + '<td colspan=3>'
+                        + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'
+                            + '<svg style="height: 0px;" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>'
+                        + '</div>'
+                        + '<div class="' + classSelector + '-d3-tip d3-tip hidden"></div>'
+                    + '</td>'
+                + '</tr>'
+            );
+
+            $(e.target).addClass('hidden');
+            $(e.target).nextAll('#hide-chart').removeClass('hidden');
+
+            // Enable download button
+            $(e.target).nextAll('#hide-chart').children('.download-chart').attr('data-chart-class-selector', classSelector);
+
+            // Clean up any charts that are currently displayed
+            this.selectAnalyses.hideWarning();
+            $('#chart-legend').hide();
+
+            var that = this;
+            var chartData;
+            this._loadChartData(this._chartFilenames(chartId))
+            .then(function(tmpChartData) {
+                chartData = tmpChartData;
+            })
+            .then(function() {
+                return $('#chart-tr-' + classSelector).animate({
+                    // Unfortunately, this '30' is a bit of a magic number.
+                    // It helps create enough spacer for horizontal scroll
+                    // bars on the qstats chart not to overlay on other
+                    // chart buttons.
+                    height: (that.chartHeight + 30) + 'px',
+                }, 500).promise();
+            })
+            .then(function() {
+                $('.' + classSelector + ' svg').css('height', that.chartHeight);
+            })
+            .done(function() {
+
+                that._uiEndChartLoading();
+
+                var fileHandle;
+                var fileData = chartData.absolute_counts;
+
+                switch (chartId) {
+                    case 'gene_segment_usage':
+                        $('#chart-legend').show();
+                        Analyses.Charts.GeneDistribution(chartData, classSelector);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                // Scroll down to chart
+                $('html, body').animate({
+                    scrollTop: $('.' + classSelector).offset().top
+                }, 1000);
+            })
+            .fail(function(errorMessage) {
+                //var errorMessage = this.getErrorMessageFromResponse(response);
+                that.selectAnalyses.showError(errorMessage);
+            })
+            ;
+        },
+
+        downloadChart: function(e) {
+
+            var that = this;
+
+            var chartClassSelector = e.target.dataset.chartClassSelector;
+
+            var filename = e.target.dataset.id;
+            //filename = filename.split('.');
+            //filename.pop();
+            //filename = filename.join('.');
+
+            var cssUrl = location.protocol + '//' + location.host + '/styles/charts.css';
+
+            $.get(cssUrl)
+                .done(function(cssText) {
+
+                    var widthPx = $('#' + chartClassSelector + ' svg').css('width');
+
+                    /*
+                        Grabbing all content specifically from the svg
+                        element ensures that we won't pick up any other
+                        random elements that are also children of
+                        |classSelector|.
+                    */
+                    var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
+                                  + '\n'
+                                  + '<svg '
+                                        + ' style="height: ' + that.chartHeight + 'px; width:' + widthPx + ';"'
+                                        + ' version="1.1"'
+                                        + ' xmlns="http://www.w3.org/2000/svg"'
+                                        + ' class="box"'
+                                  + '>'
+                                        + $('.' + chartClassSelector + ' svg').html()
+                                  + '</svg>'
+                                  ;
+
+                    if (typeof safari !== 'undefined') {
+                        window.open("data:image/svg+xml," + encodeURIComponent(svgString));
+                    } else {
+                        var blob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+                        saveAs(blob, filename + '.svg');
+                    }
+                })
+                ;
+        },
+
+        // private methods
+        _uiBeginChartLoading: function(selector) {
+            // Disable other buttons
+            $('.show-chart').prop('disabled', true);
+
+            $(selector).after('<div class="chart-loading-view"></div>');
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('.chart-loading-view', loadingView);
+            loadingView.render();
+        },
+        _uiEndChartLoading: function() {
+
+            // Restore buttons
+            $('.show-chart').prop('disabled', false);
+
+            // Remove loading view
+            $('.chart-loading-view').remove();
+        },
+        _chartFilenames: function(chartId) {
+            var filenames;
+
+            filenames = { 'absolute_counts': 'file0_segment_counts.json' };
+
+            return filenames;
+        },
+        _loadChartData: function(files) {
+            var that = this;
+            var filename = files.absolute_counts;
+            var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
+            if (!fileHandle) return $.Deferred().reject('Project is missing chart data file: ' + filename);
+
+            return fileHandle.downloadFileToCache()
+            .then(function(tmpFileData) {
+                return { absolute_counts: tmpFileData };
+            })
         }
     });
 
@@ -1842,9 +1897,9 @@ define([
         });
     };
 
-    Analyses.Charts.GeneDistribution = function(fileHandle, text, classSelector) {
+    Analyses.Charts.GeneDistribution = function(text, classSelector) {
 
-        var distribution = JSON.parse(text);
+        var distribution = JSON.parse(text.absolute_counts);
         // build series
         var series = {
           id: distribution.label,
