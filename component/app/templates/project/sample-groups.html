@@ -1,74 +1,159 @@
-<form id="sample-group-metadata-form" class="form-horizontal">
-{{#each workSamples}}
-  <div class="form-group">
-    <div class="col-md-1">
-				<img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeSample center-block" data-tuple="{{@index}}">
-    </div>
-    <label for="sample-name" class="col-md-1 control-label">Name:</label>
-    <div class="col-md-2">
-      <input type="text" class="form-control sampleMetadata" id="sample-name" placeholder="Sample Name" value="{{this.value.name}}" data-tuple="{{@index}}">
-    </div>
-    <label for="sample-description" class="col-md-1 control-label">Description:</label>
-    <div class="col-md-7">
-      <input type="text" class="form-control sampleMetadata" id="sample-description" placeholder="Sample Description" value="{{this.value.description}}" data-tuple="{{@index}}">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="col-md-2 control-label">Data Association:</label>
-    <div class="checkbox col-md-1">
-      <label>
-        <input type="checkbox" class="dataAssociation" id="sample-data_association" value="barcode" {{ifCondChecked this.value.data_association "barcode"}} data-tuple="{{@index}}">
-        Barcode
-      </label>
-    </div>
-    <div class="col-md-2">
-      <input type="text" class="form-control sampleMetadata" {{ifCondEnabled this.value.data_association "barcode"}} id="sample-barcode" placeholder="Barcode Identifier" value="{{this.value.barcode}}" data-tuple="{{@index}}">
-    </div>
-    <label for="sample-project-file" class="col-md-2 control-label">Samples:</label>
-    <div class="col-md-5">
-        <select class="sampleMetadata" id="sample-groups-{{@index}}-project_file" data-tuple="{{@index}}" multiple="multiple">
-            {{#each ../nonpairedFiles}}
-            <option {{ifCondSelected this.read.uuid ../this.value.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}}</option>
-            {{/each}}
-            {{#each ../pairedFiles}}
-            <option {{ifCondSelected this.forward.uuid ../this.value.project_file}} value="{{this.forward.uuid}}">{{this.forward.value.name}} / {{this.reverse.value.name}}</option>
-            {{/each}}
-            {{#each ../pairedQualFiles}}
-            <option {{ifCondSelected this.read.uuid ../this.value.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}} / {{this.qual.value.name}}</option>
-            {{/each}}
-        </select>
-    </div>
-  </div>
-          <div class="form-group">
-            <label for="sample-uuid" class="col-md-2 control-label">VDJServer UUID:</label>
-            <div class="col-md-4">
-              <input type="text" class="form-control" id="sample-uuid" readonly value="{{this.uuid}}">
-            </div>
-          </div>
-{{/each}}
+<form id="sample-groups-form" class="form-horizontal">
+  <div class="row">
+    <div class="col-md-12">
+      {{#each sampleGroups}}
+      <div class="form-group">
+        <div class="col-md-1">
+            <img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeSampleGroup center-block" data-tuple="{{@index}}">
+        </div>
+        <label for="sample-groups-name" class="col-md-1 control-label">Name:</label>
+        <div class="col-md-2">
+          <input type="text" class="form-control sampleGroup" id="sample-groups-name" placeholder="Group Name" value="{{this.value.name}}" data-tuple="{{@index}}">
+        </div>
+        <label for="sample-groups-description" class="col-md-2 control-label">Description:</label>
+        <div class="col-md-6">
+          <input type="text" class="form-control sampleGroup" id="sample-groups-description" placeholder="Group Description" value="{{this.value.description}}" data-tuple="{{@index}}">
+        </div>
+      </div>
 
-  <div class="form-group">
-    <div class="col-md-1">
-        <img src="../images/rodentia-icons_emblem-plus-300px.png" class="center-block" style="width:30px;height:30px;" id="addSample">
-    </div>
-    <div class="col-md-offset-1 col-md-3">
-      <button id="save-sample-metadata" type="submit" class="btn btn-success">Save Sample Metadata</button>
-    </div>
-    <div class="col-md-3">
-      <button id="revert-sample-modal" class="btn btn-warning">Revert Changes</button>
+      <div class="form-group">
+        <label for="sample-groups-category" class="col-md-2 control-label">Category Field:</label>
+        <div class="col-md-2">
+            <select class="form-control sampleGroup" id="sample-groups-category" data-tuple="{{@index}}">
+                <option></option>
+                <optgroup label="Subject Fields">
+                <option {{ifCondSelected "subject.species" this.value.category}} value="subject.species">Species</option>
+                <option {{ifCondSelected "subject.strain" this.value.category}} value="subject.strain">Strain</option>
+                <option {{ifCondSelected "subject.gender" this.value.category}} value="subject.gender">Gender</option>
+                </optgroup>
+                <optgroup label="Sample Fields">
+                <option {{ifCondSelected "sample.barcode" this.value.category}} value="sample.barcode">Barcode</option>
+                </optgroup>
+            </select>
+        </div>
+        <label for="sample-groups-logical" class="col-md-2 control-label">Logical:</label>
+        <div class="col-md-2">
+            <select class="form-control sampleGroup" id="sample-groups-logical_field" data-tuple="{{@index}}">
+                <option></option>
+                <optgroup label="Subject Fields">
+                <option {{ifCondSelected "subject.species" this.value.logical_field}} value="subject.species">Species</option>
+                <option {{ifCondSelected "subject.strain" this.value.logical_field}} value="subject.strain">Strain</option>
+                <option {{ifCondSelected "subject.gender" this.value.logical_field}} value="subject.gender">Gender</option>
+                </optgroup>
+                <optgroup label="Sample Fields">
+                <option {{ifCondSelected "sample.barcode" this.value.logical_field}} value="sample.barcode">Barcode</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select class="form-control sampleGroup" id="sample-groups-logical_operator" data-tuple="{{@index}}">
+              <option></option>
+              <option value="=" {{ifCondSelected this.value.logical_operator "="}}>=</option>
+              <option value="!=" {{ifCondSelected this.value.logical_operator "!="}}>!=</option>
+              <option value=">" {{ifCondSelected this.value.logical_operator ">"}}>></option>
+              <option value=">=" {{ifCondSelected this.value.logical_operator ">="}}>>=</option>
+              <option value="<" {{ifCondSelected this.value.logical_operator "<"}}><</option>
+              <option value="<=" {{ifCondSelected this.value.logical_operator "<="}}><=</option>
+              <option value="contains" {{ifCondSelected this.value.logical_operator "contains"}}>contains</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+          <input type="text" class="form-control sampleGroup" id="sample-groups-logical_value" placeholder="Value" value="{{this.value.logical_value}}" data-tuple="{{@index}}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="sample-groups-sample" class="col-md-2 control-label">Samples:</label>
+        <div class="col-md-4">
+            <select id="sample-groups-{{@index}}-samples" data-tuple="{{@index}}" multiple="multiple">
+                {{#each ../workSamples}}
+                <option value="{{this.uuid}}">{{this.value.name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <label for="sample-groups-uuid" class="col-md-2 control-label">VDJServer UUID:</label>
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="sample-groups-uuid" readonly value="{{this.uuid}}">
+        </div>
+      </div>
+
+      <div class="form-group">
+      </div>
+      {{/each}}
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-md-12">
+    <div class="form-group">
+      <div class="col-md-2">
+        <div class="btn-group">
+            <button
+                id="metadata-action-button"
+                class="btn btn-primary dropdown-toggle"
+                data-toggle="dropdown"
+            >
+                Metadata Actions
+                <i class="fa fa-caret-down"></i>
+            </button>
+
+            <ul
+                class="dropdown-menu"
+                role="menu"
+            >
+                <li class="metadata-actions">
+                    <a
+                        class="metadata-add-entry"
+                        id="addSampleGroup"
+                        data-bypass=true
+                    >
+                        Add Sample Group Entry
+                    </a>
+                </li>
+
+                <li class="metadata-actions">
+                    <a
+                        class="download-multiple-files"
+                        id="importFromFile"
+                        data-bypass=true
+                    >
+                        Import from File
+                    </a>
+                </li>
+
+                <li class="metadata-actions">
+                    <a
+                        class="download-multiple-files"
+                        id="importToFile"
+                        data-bypass=true
+                    >
+                        Export to File
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+      </div>
+      <div class="col-md-3">
+        <button id="save-sample-groups" type="submit" class="btn btn-success"
+          {{#unless sampleGroups}} disabled {{/unless}}>Save Sample Groups</button>
+      </div>
+      <div class="col-md-3">
+        <button id="revert-sample-groups-modal" class="btn btn-warning">Revert Changes</button>
+      </div>
+    </div>
+  </div>
+  </div>
 </form>
 
 
 <div>
-    <div class="modal fade" id="revert-sample" tabindex="-1" role="dialog" aria-labelledby="revert-modal-label" aria-hidden="true">
+    <div class="modal fade" id="revert-groups" tabindex="-1" role="dialog" aria-labelledby="revert-modal-label" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="revert-modal-label">Revert Sample Metadata Changes</h4>
+                    <h4 class="modal-title" id="revert-modal-label">Revert Sample Groups Changes</h4>
                 </div>
                 <form id="revert-metadata-form" role="form">
                     <div class="modal-body">

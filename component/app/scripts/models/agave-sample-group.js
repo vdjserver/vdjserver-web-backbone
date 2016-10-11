@@ -8,9 +8,9 @@ function(
 
     'use strict';
 
-    var SampleGroupMetadata = {};
+    var SampleGroup = {};
 
-    SampleGroupMetadata = Backbone.Agave.MetadataModel.extend({
+    SampleGroup = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
             return _.extend(
                 {},
@@ -23,7 +23,10 @@ function(
                         'name': '',
                         'description': '',
                         'samples': [],
-                        'field_logicals': []
+                        'category': '',
+                        'logical_field': '',
+                        'logical_operator': '',
+                        'logical_value': '',
                     }
                 }
             );
@@ -46,6 +49,6 @@ function(
         },
     });
 
-    Backbone.Agave.Model.SampleGroupMetadata = SampleGroupMetadata;
-    return SampleGroupMetadata;
+    Backbone.Agave.Model.SampleGroup = SampleGroup;
+    return SampleGroup;
 });
