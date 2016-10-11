@@ -1,85 +1,91 @@
 <form id="sample-groups-form" class="form-horizontal">
   <div class="row">
     <div class="col-md-12">
-      {{#each sampleGroups}}
-      <div class="form-group">
-        <div class="col-md-1">
-            <img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeSampleGroup center-block" data-tuple="{{@index}}">
+      {{#if sampleGroups}}
+        {{#each sampleGroups}}
+        <div class="form-group">
+          <div class="col-md-1">
+              <img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeSampleGroup center-block" data-tuple="{{@index}}">
+          </div>
+          <label for="sample-groups-name" class="col-md-1 control-label">Name:</label>
+          <div class="col-md-2">
+            <input type="text" class="form-control sampleGroup" id="sample-groups-name" placeholder="Group Name" value="{{this.value.name}}" data-tuple="{{@index}}">
+          </div>
+          <label for="sample-groups-description" class="col-md-2 control-label">Description:</label>
+          <div class="col-md-6">
+            <input type="text" class="form-control sampleGroup" id="sample-groups-description" placeholder="Group Description" value="{{this.value.description}}" data-tuple="{{@index}}">
+          </div>
         </div>
-        <label for="sample-groups-name" class="col-md-1 control-label">Name:</label>
-        <div class="col-md-2">
-          <input type="text" class="form-control sampleGroup" id="sample-groups-name" placeholder="Group Name" value="{{this.value.name}}" data-tuple="{{@index}}">
-        </div>
-        <label for="sample-groups-description" class="col-md-2 control-label">Description:</label>
-        <div class="col-md-6">
-          <input type="text" class="form-control sampleGroup" id="sample-groups-description" placeholder="Group Description" value="{{this.value.description}}" data-tuple="{{@index}}">
-        </div>
-      </div>
 
-      <div class="form-group">
-        <label for="sample-groups-category" class="col-md-2 control-label">Category Field:</label>
-        <div class="col-md-2">
-            <select class="form-control sampleGroup" id="sample-groups-category" data-tuple="{{@index}}">
+        <div class="form-group">
+          <label for="sample-groups-category" class="col-md-2 control-label">Category Field:</label>
+          <div class="col-md-2">
+              <select class="form-control sampleGroup" id="sample-groups-category" data-tuple="{{@index}}">
+                  <option></option>
+                  <optgroup label="Subject Fields">
+                  <option {{ifCondSelected "subject.species" this.value.category}} value="subject.species">Species</option>
+                  <option {{ifCondSelected "subject.strain" this.value.category}} value="subject.strain">Strain</option>
+                  <option {{ifCondSelected "subject.gender" this.value.category}} value="subject.gender">Gender</option>
+                  </optgroup>
+                  <optgroup label="Sample Fields">
+                  <option {{ifCondSelected "sample.barcode" this.value.category}} value="sample.barcode">Barcode</option>
+                  </optgroup>
+              </select>
+          </div>
+          <label for="sample-groups-logical" class="col-md-2 control-label">Logical:</label>
+          <div class="col-md-2">
+              <select class="form-control sampleGroup" id="sample-groups-logical_field" data-tuple="{{@index}}">
+                  <option></option>
+                  <optgroup label="Subject Fields">
+                  <option {{ifCondSelected "subject.species" this.value.logical_field}} value="subject.species">Species</option>
+                  <option {{ifCondSelected "subject.strain" this.value.logical_field}} value="subject.strain">Strain</option>
+                  <option {{ifCondSelected "subject.gender" this.value.logical_field}} value="subject.gender">Gender</option>
+                  </optgroup>
+                  <optgroup label="Sample Fields">
+                  <option {{ifCondSelected "sample.barcode" this.value.logical_field}} value="sample.barcode">Barcode</option>
+                  </optgroup>
+              </select>
+          </div>
+          <div class="col-md-2">
+              <select class="form-control sampleGroup" id="sample-groups-logical_operator" data-tuple="{{@index}}">
                 <option></option>
-                <optgroup label="Subject Fields">
-                <option {{ifCondSelected "subject.species" this.value.category}} value="subject.species">Species</option>
-                <option {{ifCondSelected "subject.strain" this.value.category}} value="subject.strain">Strain</option>
-                <option {{ifCondSelected "subject.gender" this.value.category}} value="subject.gender">Gender</option>
-                </optgroup>
-                <optgroup label="Sample Fields">
-                <option {{ifCondSelected "sample.barcode" this.value.category}} value="sample.barcode">Barcode</option>
-                </optgroup>
-            </select>
+                <option value="=" {{ifCondSelected this.value.logical_operator "="}}>=</option>
+                <option value="!=" {{ifCondSelected this.value.logical_operator "!="}}>!=</option>
+                <option value=">" {{ifCondSelected this.value.logical_operator ">"}}>></option>
+                <option value=">=" {{ifCondSelected this.value.logical_operator ">="}}>>=</option>
+                <option value="<" {{ifCondSelected this.value.logical_operator "<"}}><</option>
+                <option value="<=" {{ifCondSelected this.value.logical_operator "<="}}><=</option>
+                <option value="contains" {{ifCondSelected this.value.logical_operator "contains"}}>contains</option>
+              </select>
+          </div>
+          <div class="col-md-2">
+            <input type="text" class="form-control sampleGroup" id="sample-groups-logical_value" placeholder="Value" value="{{this.value.logical_value}}" data-tuple="{{@index}}">
+          </div>
         </div>
-        <label for="sample-groups-logical" class="col-md-2 control-label">Logical:</label>
-        <div class="col-md-2">
-            <select class="form-control sampleGroup" id="sample-groups-logical_field" data-tuple="{{@index}}">
-                <option></option>
-                <optgroup label="Subject Fields">
-                <option {{ifCondSelected "subject.species" this.value.logical_field}} value="subject.species">Species</option>
-                <option {{ifCondSelected "subject.strain" this.value.logical_field}} value="subject.strain">Strain</option>
-                <option {{ifCondSelected "subject.gender" this.value.logical_field}} value="subject.gender">Gender</option>
-                </optgroup>
-                <optgroup label="Sample Fields">
-                <option {{ifCondSelected "sample.barcode" this.value.logical_field}} value="sample.barcode">Barcode</option>
-                </optgroup>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <select class="form-control sampleGroup" id="sample-groups-logical_operator" data-tuple="{{@index}}">
-              <option></option>
-              <option value="=" {{ifCondSelected this.value.logical_operator "="}}>=</option>
-              <option value="!=" {{ifCondSelected this.value.logical_operator "!="}}>!=</option>
-              <option value=">" {{ifCondSelected this.value.logical_operator ">"}}>></option>
-              <option value=">=" {{ifCondSelected this.value.logical_operator ">="}}>>=</option>
-              <option value="<" {{ifCondSelected this.value.logical_operator "<"}}><</option>
-              <option value="<=" {{ifCondSelected this.value.logical_operator "<="}}><=</option>
-              <option value="contains" {{ifCondSelected this.value.logical_operator "contains"}}>contains</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-          <input type="text" class="form-control sampleGroup" id="sample-groups-logical_value" placeholder="Value" value="{{this.value.logical_value}}" data-tuple="{{@index}}">
-        </div>
-      </div>
 
-      <div class="form-group">
-        <label for="sample-groups-sample" class="col-md-2 control-label">Samples:</label>
-        <div class="col-md-4">
-            <select id="sample-groups-{{@index}}-samples" data-tuple="{{@index}}" multiple="multiple">
-                {{#each ../workSamples}}
-                <option value="{{this.uuid}}">{{this.value.name}}</option>
-                {{/each}}
-            </select>
+        <div class="form-group">
+          <label for="sample-groups-sample" class="col-md-2 control-label">Samples:</label>
+          <div class="col-md-4">
+              <select id="sample-groups-{{@index}}-samples" data-tuple="{{@index}}" multiple="multiple">
+                  {{#each ../workSamples}}
+                  <option value="{{this.uuid}}">{{this.value.name}}</option>
+                  {{/each}}
+              </select>
+          </div>
+          <label for="sample-groups-uuid" class="col-md-2 control-label">VDJServer UUID:</label>
+          <div class="col-md-4">
+            <input type="text" class="form-control" id="sample-groups-uuid" readonly value="{{this.uuid}}">
+          </div>
         </div>
-        <label for="sample-groups-uuid" class="col-md-2 control-label">VDJServer UUID:</label>
-        <div class="col-md-4">
-          <input type="text" class="form-control" id="sample-groups-uuid" readonly value="{{this.uuid}}">
-        </div>
-      </div>
 
-      <div class="form-group">
-      </div>
-      {{/each}}
+        <div class="form-group">
+        </div>
+        {{/each}}
+      {{else}}
+        <div class="alert alert-danger">
+            No Sample Groups defined. Create new entries or Import using the Action menu below.
+        </div>
+      {{/if}}
     </div>
   </div>
 
@@ -135,8 +141,7 @@
         </div>
       </div>
       <div class="col-md-3">
-        <button id="save-sample-groups" type="submit" class="btn btn-success"
-          {{#unless sampleGroups}} disabled {{/unless}}>Save Sample Groups</button>
+        <button id="save-sample-groups" type="submit" class="btn btn-success">Save Sample Groups</button>
       </div>
       <div class="col-md-3">
         <button id="revert-sample-groups-modal" class="btn btn-warning">Revert Changes</button>
