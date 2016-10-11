@@ -762,11 +762,11 @@ define([
             template: 'jobs/repcalc-staging',
             initialize: function(parameters) {
                 this.workflows = new Backbone.Agave.Collection.Jobs.RepCalcWorkflows();
-                this.workflowNames = this.workflows.getWorkflowNames();
+                //this.workflowNames = this.workflows.getWorkflowNames();
             },
             serialize: function() {
                 return {
-                    workflows: this.workflowNames,
+                    //workflows: this.workflowNames,
                 };
             },
             stageJob: function(formData) {
@@ -827,8 +827,11 @@ define([
                   })
             },
             events: {
-                'change #select-workflow': '_showWorkflow',
+                //'change #select-workflow': '_showWorkflow',
                 'click .remove-job-parameter': '_removeJobEvent',
+            },
+            afterRender: function() {
+                this._showWorkflow();
             },
             validateJobForm: function() {
 
@@ -855,7 +858,7 @@ define([
                 $('.modal-backdrop').css({height: modalHeight + 100});
             },
             _showWorkflow: function(e) {
-                e.preventDefault();
+                //e.preventDefault();
 
                 var that = this;
 
@@ -864,12 +867,13 @@ define([
                 $('#workflow-staging-area').empty();
 
                 // Setup and insert new workflow views
-                var workflowId = e.target.value;
+                //var workflowId = e.target.value;
 
                 // Only continue if there's actually a workflow selected
 
                 // TODO: replace this with selected workflow
-                var workflow = this.workflows.workflowWithName(workflowId);
+                var workflow = this.workflows.getWorkflows()[0];
+                //var workflow = this.workflows.workflowWithName(workflowId);
 
                 var workflowViews = new App.Utilities.RepCalcViewFactory.GenerateWorkflowViews(
                     workflow['steps']

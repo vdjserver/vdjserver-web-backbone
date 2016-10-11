@@ -303,35 +303,15 @@ define([
 
             var workflows = [
                 {
-                    'workflow-name': 'Gene Segment Usage',
+                    'workflow-name': 'Repertoire Calculations',
                     'steps': [
                         'geneSegment',
-                    ],
-                },
-                {
-                    'workflow-name': 'CDR3 Analysis',
-                    'steps': [
                         'CDR3',
-                    ],
-                },
-                {
-                    'workflow-name': 'Diversity Analysis',
-                    'steps': [
                         'diversity',
-                    ],
-                },
-                {
-                    'workflow-name': 'Mutational Analysis',
-                    'steps': [
                         'mutations',
+                        'clones'
                     ],
-                },
-                {
-                    'workflow-name': 'Clonal Analysis',
-                    'steps': [
-                        'clones',
-                    ],
-                },
+                }
             ];
 
             return workflows;
