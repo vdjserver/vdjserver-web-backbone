@@ -2707,24 +2707,17 @@ define([
             this.setView('', loadingView);
             loadingView.render();
 
-            this.projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: this.model.get('uuid'), includeJobFiles: false});
-            this.nonpairedFiles = [];
-            this.pairedFiles = [];
-            this.pairedQualFiles = [];
-
+            this.sampleGroups = new Backbone.Agave.Collection.SampleGroups({projectUuid: this.model.get('uuid')});
             this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.model.get('uuid')});
-            this.workSamples.fetch()
+
+            this.sampleGroups.fetch()
             .then(function() {
                 // save clone of original metadata collection
-                that.samples = that.workSamples.getClonedCollection();
+                that.groups = that.sampleGroups.getClonedCollection();
 
-                return that.projectFiles.fetch();
+                return that.workSamples.fetch();
             })
             .then(function() {
-
-                that.nonpairedFiles = that.projectFiles.serializedNonPairedReadCollection();
-                that.pairedFiles = that.projectFiles.serializedPairedReadCollection();
-                that.pairedQualFiles = that.projectFiles.serializedPairedQualityCollection();
 
                 loadingView.remove();
 
@@ -2742,40 +2735,73 @@ define([
         },
         serialize: function() {
             return {
+                sampleGroups: this.sampleGroups.toJSON(),
                 workSamples: this.workSamples.toJSON(),
-                nonpairedFiles: this.nonpairedFiles,
-                pairedFiles: this.pairedFiles,
-                pairedQualFiles: this.pairedQualFiles,
             };
         },
         afterRender: function() {
             this.setupModalView();
 
-            for (var i = 0; i < this.workSamples.models.length; ++i) {
+            var that = this;
+            for (var i = 0; i < this.sampleGroups.models.length; ++i) {
                 $(document).ready(function() {
-                    $('#sample-groups-' + i + '-project_file').multiselect({
-                        includeSelectAllOption: true,
+                    $('#sample-groups-' + i + '-samples').multiselect({
+                        sampleGroupIndex: i,
+                        //enableFiltering: true,
+                        //includeSelectAllOption: true,
+                        //selectAllJustVisible: false,
+                        onChange: function(option, checked, select) {
+                            if (option) {
+                                var m = that.sampleGroups.at(this.options.sampleGroupIndex);
+                                var value = m.get('value');
+                                var samples = _.clone(value.samples);
+                                if (checked) samples.push($(option).val());
+                                else samples.splice(samples.indexOf($(option).val()), 1);
+                                value.samples = samples;
+                                m.set('value', value);
+                            }
+                        },
+/*                        onSelectAll: function() {
+                            var m = that.sampleGroups.at(this.sampleGroupIndex);
+                            var value = m.get('value');
+                            value.samples = [ 'all' ];
+                            m.set('value', value);
+                        },
+                        onDeselectAll: function() {
+                            var m = that.sampleGroups.at(this.sampleGroupIndex);
+                            var value = m.get('value');
+                            value.samples = [ ];
+                            m.set('value', value);
+                        }, */
                     });
+
+                    var m = that.sampleGroups.at(i);
+                    var value = m.get('value');
+                    //if ((value.samples.length == 1) && (value.samples[0] == 'all'))
+                        //$('#sample-groups-' + i + '-samples').multiselect('selectAll', false);
+                    //else
+                        $('#sample-groups-' + i + '-samples').multiselect('select', value.samples);
+                    $('#sample-groups-' + i + '-samples').multiselect('updateButtonText');
                 });
             }
         },
         events: {
-            'click  #save-sample-metadata': '_saveSampleMetadata',
-            'submit #sample-metadata-form': '_saveSampleMetadata',
+            //'click  #save-sample-groups': '_saveSampleGroups',
+            'submit #sample-groups-form': '_saveSampleGroups',
 
-            'click  #revert-sample-modal': '_revertSampleModal',
-            'click  #revert-metadata': '_revertSampleMetadata',
+            'click  #revert-sample-groups-modal': '_revertSampleGroupsModal',
+            'click  #revert-metadata': '_revertSampleGroups',
 
-            'click #addSample': '_addSample',
-            'click .removeSample': '_removeSample',
-            'change .sampleMetadata': '_changeSampleMetadata',
+            'click #addSampleGroup': '_addSampleGroup',
+            'click .removeSampleGroup': '_removeSampleGroup',
+            'change .sampleGroup': '_changeSampleGroup',
         },
 
         // Private Methods
         setupModalView: function() {
 
             var message = new App.Models.MessageModel({
-                'header': 'Saving Metadata',
+                'header': 'Saving Sample Groups',
                 'body':   '<p>Please wait while we save the metadata to the server...</p>'
             });
 
@@ -2791,26 +2817,29 @@ define([
         },
 
         // Event Responders
-        _addSample: function(e){
-            var m = new Backbone.Agave.Model.SampleMetadata({projectUuid: this.model.get('uuid')})
+        _addSampleGroup: function(e){
+            var m = new Backbone.Agave.Model.SampleGroup({projectUuid: this.model.get('uuid')})
             m.set('uuid', m.cid);
-            this.workSamples.add(m);
+            this.sampleGroups.add(m);
             this.render();
         },
-        _removeSample: function(e){
-            var m = this.workSamples.at(e.target.dataset.tuple);
-            this.workSamples.remove(m);
+        _removeSampleGroup: function(e){
+            var m = this.sampleGroups.at(e.target.dataset.tuple);
+            this.sampleGroups.remove(m);
             this.render();
         },
-        _changeSampleMetadata: function(e) {
+        _changeSampleGroup: function(e) {
             e.preventDefault();
-            var m = this.workSamples.at(e.target.dataset.tuple);
+            var m = this.sampleGroups.at(e.target.dataset.tuple);
             var value = m.get('value');
-            var field = e.target.id.replace('sample-', '');
+            var field = e.target.id.replace('sample-groups-', '');
             value[field] = e.target.value;
             m.set('value', value);
         },
-        _saveSampleMetadata: function(e) {
+        _changeSampleSelection: function(i, option, checked, select) {
+            var m = this.sampleGroups.at(i);
+        },
+        _saveSampleGroups: function(e) {
             e.preventDefault();
 
             var that = this;
@@ -2819,27 +2848,27 @@ define([
               .on('shown.bs.modal', function() {
 
                 // see if any are deleted
-                var deletedModels = that.samples.getMissingModels(that.workSamples);
+                var deletedModels = that.groups.getMissingModels(that.sampleGroups);
 
                 var promises = [];
 
                 // Set up promises
                 // deletions
                 deletedModels.map(function(uuid) {
-                    var m = that.samples.get(uuid);
+                    var m = that.groups.get(uuid);
                     promises[promises.length] = function() {
                         return m.destroy();
                     }
                 });
 
                 // updates and new
-                that.workSamples.map(function(uuid) {
-                    var m = that.workSamples.get(uuid);
+                that.sampleGroups.map(function(uuid) {
+                    var m = that.sampleGroups.get(uuid);
                     promises[promises.length] = function() {
                         // clear uuid for new entries so they get created
                         if (m.get('uuid') == m.cid) m.set('uuid', '');
                         else { // if existing entry, check if attributes changed
-                            var origModel = that.samples.get(uuid);
+                            var origModel = that.groups.get(uuid);
                             var changed = m.changedAttributes(origModel.attributes);
                             if (!changed) return;
                         }
@@ -2860,35 +2889,35 @@ define([
                       .on('hidden.bs.modal', function() {
 
                           // new original collection
-                          that.samples = that.workSamples.getClonedCollection();
-                          //that.samples = that.workSamples.clone();
+                          that.groups = that.sampleGroups.getClonedCollection();
+
                           that.render();
                       })
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
                     telemetry.setError(error);
-                    telemetry.set('method', '_saveSampleMetadata()');
-                    telemetry.set('view', 'Projects.SampleMetadata');
+                    telemetry.set('method', '_saveSampleGroups()');
+                    telemetry.set('view', 'Projects.SampleGroups');
                     telemetry.save();
                 })
                 ;
             })
         },
 
-        _revertSampleModal: function(e) {
+        _revertSampleGroupsModal: function(e) {
             e.preventDefault();
 
-            $('#revert-sample').modal('show');
+            $('#revert-groups').modal('show');
         },
 
-        _revertSampleMetadata: function(e) {
+        _revertSampleGroups: function(e) {
             var that = this;
-            $('#revert-sample').modal('hide')
+            $('#revert-groups').modal('hide')
                 .on('hidden.bs.modal', function() {
-                    // revert work samples back to original collection
-                    that.workSamples = that.samples.getClonedCollection();
-                    //that.workSamples = that.samples.clone();
+                    // revert back to original collection
+                    that.sampleGroups = that.groups.getClonedCollection();
+
                     that.render();
                 })
             ;
