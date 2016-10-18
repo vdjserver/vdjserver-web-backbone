@@ -8,15 +8,11 @@
             <thead>
               <tr>
                 <th></th>
+                {{#each columnNames}}
                 <th style="min-width: 10em">
-                  <strong>Name</strong>
+                  <strong>{{this}}</strong>
                 </th>
-                <th style="min-width: 25em">
-                  <strong>Description</strong>
-                </th>
-                <th style="min-width: 8em">
-                  <strong>Barcode</strong>
-                </th>
+                {{/each}}
                 <th style="min-width: 25em">
                   <strong>Project File</strong>
                 </th>
@@ -26,23 +22,23 @@
               </tr>
             </thead>
             <tbody>
-            {{#each workSamples}}
+            {{#each rowValues}}
               <tr>
                 <td><img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeSample center-block" data-tuple="{{@index}}"></td>
-                <td><input type="text" class="form-control sampleMetadata" id="sample-name" placeholder="Sample Name" value="{{this.value.name}}" data-tuple="{{@index}}"></td>
-                <td><input type="text" class="form-control sampleMetadata" id="sample-description" placeholder="Sample Description" value="{{this.value.description}}" data-tuple="{{@index}}"></td>
-                <td><input type="text" class="form-control sampleMetadata" id="sample-barcode" placeholder="Sequence" value="{{this.value.barcode}}" data-tuple="{{@index}}"></td>
+                {{#each this.row}}
+                <td><input type="text" class="form-control sampleMetadata" id="sample-{{this.name}}" placeholder="Sample {{this.name}}" value="{{this.value}}" data-tuple="{{@../index}}"></td>
+                {{/each}}
                 <td>
                   <select class="form-control sampleMetadata" id="sample-project_file" data-tuple="{{@index}}">
                       <option></option>
                       {{#each ../nonpairedFiles}}
-                      <option {{ifCondSelected this.read.uuid ../this.value.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}}</option>
+                      <option {{ifCondSelected this.read.uuid ../this.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}}</option>
                       {{/each}}
                       {{#each ../pairedFiles}}
-                      <option {{ifCondSelected this.forward.uuid ../this.value.project_file}} value="{{this.forward.uuid}}">{{this.forward.value.name}} / {{this.reverse.value.name}}</option>
+                      <option {{ifCondSelected this.forward.uuid ../this.project_file}} value="{{this.forward.uuid}}">{{this.forward.value.name}} / {{this.reverse.value.name}}</option>
                       {{/each}}
                       {{#each ../pairedQualFiles}}
-                      <option {{ifCondSelected this.read.uuid ../this.value.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}} / {{this.qual.value.name}}</option>
+                      <option {{ifCondSelected this.read.uuid ../this.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}} / {{this.qual.value.name}}</option>
                       {{/each}}
                   </select>
                 </td>
@@ -130,6 +126,9 @@
 
 <!--
 
+                <td><input type="text" class="form-control sampleMetadata" id="sample-name" placeholder="Sample Name" value="{{this.value.name}}" data-tuple="{{@index}}"></td>
+                <td><input type="text" class="form-control sampleMetadata" id="sample-description" placeholder="Sample Description" value="{{this.value.description}}" data-tuple="{{@index}}"></td>
+                <td><input type="text" class="form-control sampleMetadata" id="sample-barcode" placeholder="Sequence" value="{{this.value.barcode}}" data-tuple="{{@index}}"></td>
 
 <form id="sample-metadata-form" class="form-horizontal">
 {{#each workSamples}}
@@ -219,3 +218,5 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 </div>
+
+<div id="import-metadata-staging"></div>

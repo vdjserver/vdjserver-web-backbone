@@ -2257,7 +2257,7 @@ define([
     Projects.StudyMetadata = Backbone.View.extend({
 
         // Public Methods
-        template: 'project/study-metadata',
+        template: 'project/metadata/study-metadata',
         initialize: function(parameters) {
 
             // Project settings
@@ -2328,7 +2328,7 @@ define([
     Projects.SubjectMetadata = Backbone.View.extend({
 
         // Public Methods
-        template: 'project/subject-metadata',
+        template: 'project/metadata/subject-metadata',
         initialize: function(parameters) {
 
             var that = this;
@@ -2522,7 +2522,7 @@ define([
     Projects.SampleMetadata = Backbone.View.extend({
 
         // Public Methods
-        template: 'project/sample-metadata',
+        template: 'project/metadata/sample-metadata',
         initialize: function(parameters) {
 
             var that = this;
@@ -2536,6 +2536,9 @@ define([
             this.pairedFiles = [];
             this.pairedQualFiles = [];
 
+            this.sampleColumns = new Backbone.Agave.Model.SampleColumns({projectUuid: this.model.get('uuid')});
+            this.columnNames = ['Name', 'Description', 'Barcode'];
+
             this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.model.get('uuid')});
             this.workSamples.fetch()
             .then(function() {
@@ -2545,6 +2548,15 @@ define([
                 return that.projectFiles.fetch();
             })
             .then(function() {
+                return that.sampleColumns.fetch();
+            })
+            .then(function() {
+
+                if (that.sampleColumns.get('uuid').length > 0) {
+                    var value = that.sampleColumns.get('value');
+                    for (var i = 0; i < value.columns.length; ++i)
+                        if (that.columnNames.indexOf(value.columns[i]) < 0) that.columnNames.push(value.columns[i]);
+                }
 
                 that.nonpairedFiles = that.projectFiles.serializedNonPairedReadCollection();
                 that.pairedFiles = that.projectFiles.serializedPairedReadCollection();
@@ -2564,11 +2576,25 @@ define([
             ;
         },
         serialize: function() {
+            var rowValues = [];
+            for (var i = 0; i < this.workSamples.models.length; ++i) {
+                var m = this.workSamples.at(i);
+                var value = m.get('value');
+                var values = [];
+                for (var j = 0; j < this.columnNames.length; ++j)
+                    values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
+                rowValues[i] = { row: values };
+                rowValues[i]['project_file'] = value['project_file'];
+                rowValues[i]['uuid'] = m.get('uuid');
+            }
+
             return {
+                rowValues: rowValues,
                 workSamples: this.workSamples.toJSON(),
                 nonpairedFiles: this.nonpairedFiles,
                 pairedFiles: this.pairedFiles,
                 pairedQualFiles: this.pairedQualFiles,
+                columnNames: this.columnNames,
             };
         },
         afterRender: function() {
@@ -2582,10 +2608,11 @@ define([
             'click  #revert-metadata': '_revertSampleMetadata',
 
             'click #addSample': '_addSample',
-            'click #importFromFile': '_importFromFile',
-            'click #exportToFile': '_exportToFile',
             'click .removeSample': '_removeSample',
             'change .sampleMetadata': '_changeSampleMetadata',
+
+            'click #importFromFile': '_importFromFile',
+            'click #exportToFile': '_exportToFile',
         },
 
         // Private Methods
@@ -2614,31 +2641,13 @@ define([
             this.workSamples.add(m);
             this.render();
         },
-        _importFromFile: function(e){
-        },
-        _exportToFile: function(e){
-            var that = this;
-            this.workSamples.createExportFile()
-              .then(function(response) {
-                  if (response.status == 'success') return that.workSamples.downloadExportFileToDisk();
-                  else return $.Deferred().reject('Unable to export sample metadata.');
-              })
-              .then(function() {
-              })
-              .fail(function(error) {
-                  var telemetry = new Backbone.Agave.Model.Telemetry();
-                  telemetry.setError(error);
-                  telemetry.set('method', 'Backbone.Agave.Collection.SamplesMetadata._exportToFile()');
-                  telemetry.set('view', 'Projects.SampleMetadata');
-                  telemetry.save();
-              })
-              ;
-        },
+
         _removeSample: function(e){
             var m = this.workSamples.at(e.target.dataset.tuple);
             this.workSamples.remove(m);
             this.render();
         },
+
         _changeSampleMetadata: function(e) {
             e.preventDefault();
             var m = this.workSamples.at(e.target.dataset.tuple);
@@ -2647,6 +2656,7 @@ define([
             value[field] = e.target.value;
             m.set('value', value);
         },
+
         _saveSampleMetadata: function(e) {
             e.preventDefault();
 
@@ -2730,12 +2740,47 @@ define([
                 })
             ;
         },
+
+        _importFromFile: function(e) {
+            var importView = new Projects.MetadataImport({
+                projectUuid: this.model.get('uuid'),
+                metadataName: 'Sample Metadata',
+                parentView: this,
+                projectFiles: this.projectFiles
+            });
+
+            this.setView('#import-metadata-staging', importView);
+            importView.render();
+        },
+
+        _performImport: function(file, op) {
+            return this.workSamples.importFromFile(file, op);
+        },
+
+        _exportToFile: function(e) {
+            var that = this;
+            this.workSamples.createExportFile()
+              .then(function(response) {
+                  if (response.status == 'success') return that.workSamples.downloadExportFileToDisk();
+                  else return $.Deferred().reject('Unable to export sample metadata.');
+              })
+              .then(function() {
+              })
+              .fail(function(error) {
+                  var telemetry = new Backbone.Agave.Model.Telemetry();
+                  telemetry.setError(error);
+                  telemetry.set('method', 'Backbone.Agave.Collection.SamplesMetadata._exportToFile()');
+                  telemetry.set('view', 'Projects.SampleMetadata');
+                  telemetry.save();
+              })
+              ;
+        },
     });
 
     Projects.SampleGroups = Backbone.View.extend({
 
         // Public Methods
-        template: 'project/sample-groups',
+        template: 'project/metadata/sample-groups',
         initialize: function(parameters) {
 
             var that = this;
@@ -2860,11 +2905,13 @@ define([
             this.sampleGroups.add(m);
             this.render();
         },
+
         _removeSampleGroup: function(e){
             var m = this.sampleGroups.at(e.target.dataset.tuple);
             this.sampleGroups.remove(m);
             this.render();
         },
+
         _changeSampleGroup: function(e) {
             e.preventDefault();
             var m = this.sampleGroups.at(e.target.dataset.tuple);
@@ -2873,9 +2920,11 @@ define([
             value[field] = e.target.value;
             m.set('value', value);
         },
+
         _changeSampleSelection: function(i, option, checked, select) {
             var m = this.sampleGroups.at(i);
         },
+
         _saveSampleGroups: function(e) {
             e.preventDefault();
 
@@ -2961,8 +3010,109 @@ define([
         },
     });
 
+    Projects.MetadataImport = Backbone.View.extend({
+        // Public Methods
+        template: 'project/metadata/import-metadata',
+        initialize: function(parameters) {
+            this.tsvFiles = this.projectFiles.getTSVCollection();
+        },
+        serialize: function() {
+            return {
+                metadataName: this.metadataName,
+                tsvFiles: this.tsvFiles.toJSON(),
+            };
+        },
+        afterRender: function() {
+            $('#import-modal').modal('show');
+        },
+        events: {
+            'click #submit-import': '_submitImportForm',
+            'click #import-exit': '_exitImportForm',
+        },
+
+        // Private Methods
+        _exitImportForm: function(e) {
+            e.preventDefault();
+
+            var that = this;
+
+            $('#import-modal').on('hidden.bs.modal', function(e) {
+                // force reload of page
+                Backbone.history.loadUrl(Backbone.history.fragment);
+            });
+        },
+
+        _submitImportForm: function(e) {
+            var that = this;
+            var fileUuid = $('#file-import-name').val();
+            var op = $('#data-operation').val();
+            var file = this.tsvFiles.get(fileUuid);
+
+            this._uiShowImportProcessingView();
+
+            this.parentView._performImport(file, op)
+              .then(function(response) {
+                  that._uiCancelJobLoadingView();
+              })
+              .fail(function(error) {
+                  that._uiCancelJobLoadingView(error.responseText);
+
+                  var telemetry = new Backbone.Agave.Model.Telemetry();
+                  telemetry.setError(error);
+                  telemetry.set('method', 'performImport()');
+                  telemetry.set('view', 'Projects.MetadataImport');
+                  telemetry.save();
+              })
+              ;
+        },
+
+        // UI
+        _uiShowImportProcessingView: function() {
+            // Clear out any previous errors
+            $('#import-processing-view').html('');
+            $('#import-processing-view').removeClass('alert alert-danger');
+
+            var alertView = new App.Views.Util.Loading({ displayText: 'Importing... Please Wait.', keep: true});
+
+            this.setView('#import-processing-view', alertView);
+            alertView.render();
+
+            $('.import-form-item').prop('disabled', true)
+            $('.import-submit-button').prop('disabled', true)
+        },
+
+        _uiCancelJobLoadingView: function(error) {
+            this.removeView('#import-processing-view');
+
+            $('#import-processing-view').removeClass('alert alert-info');
+            $('.import-submit-button').addClass('hidden');
+            $('#import-exit').removeClass('hidden');
+
+            if (error) {
+                $('#import-processing-view').addClass('alert alert-danger');
+                var msg = 'There was an error importing the metadata.<br/>';
+                msg += error + '<br/>';
+                $('#import-processing-view').append(msg);
+            } else {
+                var message = new App.Models.MessageModel({
+                    'body': 'Import was successful!'
+                });
+
+                var alertView = new App.Views.Util.Alert({
+                    options: {
+                        type: 'success'
+                    },
+                    model: message
+                });
+
+                this.setView('#import-processing-view', alertView);
+                alertView.render();
+            }
+        },
+    });
+
     Projects.Metadata = Backbone.View.extend({
-        template: 'project/metadata',
+        template: 'project/metadata/metadata',
         initialize: function() {
 
             // explicitly fetch model instead of waiting for side menu view

@@ -215,8 +215,8 @@ function(
                 'Barcode Combinations', // deprecated
                 'Unspecified',
                 'Quality Scores',
-                'TAB-separated Text',
-                'Comma-separated Text',
+                'TAB-separated Values',
+                'Comma-separated Values',
                 'VDJML',
                 'Read-Level (FASTA) Data',
                 'Read-Level (FASTQ) Data',
@@ -731,6 +731,7 @@ function(
                     File.fileTypeCodes.FILE_TYPE_READ,
                     File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
                     File.fileTypeCodes.FILE_TYPE_QUALITY,
+                    File.fileTypeCodes.FILE_TYPE_TSV,
                 ];
             },
 

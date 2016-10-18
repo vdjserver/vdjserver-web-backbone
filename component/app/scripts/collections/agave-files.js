@@ -151,6 +151,18 @@ function(
 
                 return newCollection;
             },
+            getTSVCollection: function() {
+
+                var tsvModels = _.filter(this.models, function(model) {
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_TSV;
+                });
+
+                var newCollection = this.clone();
+                newCollection.reset();
+                newCollection.add(tsvModels);
+
+                return newCollection;
+            },
             getQualCollection: function() {
 
                 var qualModels = _.filter(this.models, function(model) {

@@ -52,6 +52,25 @@ define([
 
                 return jqxhr;
             },
+
+            importFromFile: function(file, op) {
+                var value = file.get('value');
+
+                var jqxhr = $.ajax({
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        fileUuid: file.get('uuid'),
+                        fileName: value.name,
+                        operation: op
+                    }),
+                    url: EnvironmentConfig.vdjApi.hostname
+                        + '/projects/' + this.projectUuid + '/metadata/sample/import'
+                });
+
+                return jqxhr;
+            },
         })
     );
 

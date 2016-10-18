@@ -8,26 +8,19 @@ function(
 
     'use strict';
 
-    var SampleMetadata = {};
+    var SampleColumns = {};
 
-    SampleMetadata = Backbone.Agave.MetadataModel.extend({
+    SampleColumns = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
             return _.extend(
                 {},
                 Backbone.Agave.MetadataModel.prototype.defaults,
                 {
-                    name: 'sample',
+                    name: 'sampleColumns',
                     owner: '',
                     value: {
                         'project_uuid': '',
-                        'subject_uuid': '',
-                        'Name': '',
-                        'Description': '',
-                        'bio_processing_uuid': '',
-                        'data_association': '',
-                        'Barcode': '',
-                        'project_file': '',
-                        'software_processing_uuid': ''
+                        'columns': []
                     }
                 }
             );
@@ -40,7 +33,11 @@ function(
             }
         },
         url: function() {
-            return '/meta/v2/data/' + this.get('uuid');
+            return '/meta/v2/data?q='
+                   + encodeURIComponent('{"name":"sampleColumns","value.project_uuid":"' + this.get('projectUuid') + '"}')
+                   + '&limit=1'
+                   + '&offset=0'
+                   ;
         },
         sync: function(method, model, options) {
             return Backbone.Agave.PutOverrideSync(method, this, options);
@@ -50,6 +47,6 @@ function(
         },
     });
 
-    Backbone.Agave.Model.SampleMetadata = SampleMetadata;
-    return SampleMetadata;
+    Backbone.Agave.Model.SampleColumns = SampleColumns;
+    return SampleColumns;
 });
