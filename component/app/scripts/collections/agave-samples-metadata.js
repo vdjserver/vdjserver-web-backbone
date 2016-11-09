@@ -20,7 +20,7 @@ define([
             },
             url: function() {
                 return '/meta/v2/data?q='
-                       + encodeURIComponent('{"name":"sample","value.project_uuid":"' + this.projectUuid + '"}')
+                       + encodeURIComponent('{"name":"sample","associationIds":"' + this.projectUuid + '"}')
                        + '&limit=' + this.limit
                        + '&offset=' + this.offset
                        ;
@@ -45,7 +45,7 @@ define([
                         + '/media'
                         + '/system'
                         + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
-                        + '//projects/' + this.projectUuid + '/files/sample_metadata.json'
+                        + '//projects/' + this.projectUuid + '/deleted/sample_metadata.tsv'
                         ;
 
                 var jqxhr = this.downloadUrlByPostit(url);

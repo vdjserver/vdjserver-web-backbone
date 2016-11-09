@@ -8,15 +8,15 @@ function(
 
     'use strict';
 
-    var SampleColumns = {};
+    var SubjectColumns = {};
 
-    SampleColumns = Backbone.Agave.MetadataModel.extend({
+    SubjectColumns = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
             return _.extend(
                 {},
                 Backbone.Agave.MetadataModel.prototype.defaults,
                 {
-                    name: 'sampleColumns',
+                    name: 'subjectColumns',
                     owner: '',
                     value: {
                         'columns': []
@@ -30,11 +30,11 @@ function(
                 this.set('associationIds', [ parameters.projectUuid ]);
             }
 
-            this.defaultColumns = ['Name', 'Description', 'Barcode'];
+            this.defaultColumns = ['Name', 'Category', 'Species', 'Strain', 'Gender', 'Age'];
         },
         url: function() {
             return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"sampleColumns","associationIds":"' + this.get('projectUuid') + '"}')
+                   + encodeURIComponent('{"name":"subjectColumns","associationIds":"' + this.get('projectUuid') + '"}')
                    + '&limit=1'
                    + '&offset=0'
                    ;
@@ -56,6 +56,6 @@ function(
         }
     });
 
-    Backbone.Agave.Model.SampleColumns = SampleColumns;
-    return SampleColumns;
+    Backbone.Agave.Model.SubjectColumns = SubjectColumns;
+    return SubjectColumns;
 });

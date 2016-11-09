@@ -19,7 +19,6 @@ function(
                     name: 'sample',
                     owner: '',
                     value: {
-                        'project_uuid': '',
                         'subject_uuid': '',
                         'Name': '',
                         'Description': '',
@@ -33,10 +32,9 @@ function(
             );
         },
         initialize: function(parameters) {
-            var value = this.get('value');
-            if ((value['project_uuid'] == undefined) || (value['project_uuid'] == '')) {
-                value['project_uuid'] = this.get('projectUuid');
-                this.set('value', value);
+            if (parameters && parameters.projectUuid) {
+                this.projectUuid = parameters.projectUuid;
+                this.set('associationIds', [ parameters.projectUuid ]);
             }
         },
         url: function() {

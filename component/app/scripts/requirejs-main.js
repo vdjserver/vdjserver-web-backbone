@@ -66,6 +66,7 @@ define([
     'agave-samples-metadata',
     'agave-subject-metadata',
     'agave-subjects-metadata',
+    'agave-subject-columns',
     'agave-sample-group',
     'agave-sample-groups',
     'agave-sample-columns',

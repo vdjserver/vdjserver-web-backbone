@@ -20,7 +20,7 @@ define([
             },
             url: function() {
                 return '/meta/v2/data?q='
-                       + encodeURIComponent('{"name":"subject","value.project_uuid":"' + this.projectUuid + '"}')
+                       + encodeURIComponent('{"name":"subject","associationIds":"' + this.projectUuid + '"}')
                        + '&limit=' + this.limit
                        + '&offset=' + this.offset
                        ;
@@ -45,13 +45,33 @@ define([
                         + '/media'
                         + '/system'
                         + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
-                        + '//projects/' + this.projectUuid + '/files/subject_metadata.json'
+                        + '//projects/' + this.projectUuid + '/deleted/subject_metadata.tsv'
                         ;
 
                 var jqxhr = this.downloadUrlByPostit(url);
 
                 return jqxhr;
             },
+
+            importFromFile: function(file, op) {
+                var value = file.get('value');
+
+                var jqxhr = $.ajax({
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        fileUuid: file.get('uuid'),
+                        fileName: value.name,
+                        operation: op
+                    }),
+                    url: EnvironmentConfig.vdjApi.hostname
+                        + '/projects/' + this.projectUuid + '/metadata/subject/import'
+                });
+
+                return jqxhr;
+            },
+
         })
     );
 

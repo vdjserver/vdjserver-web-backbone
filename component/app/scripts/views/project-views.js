@@ -2337,12 +2337,28 @@ define([
             this.setView('', loadingView);
             loadingView.render();
 
+            this.subjectColumns = new Backbone.Agave.Model.SubjectColumns({projectUuid: this.model.get('uuid')});
+            this.columnNames = [];
+
+            this.projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: this.model.get('uuid'), includeJobFiles: false});
+
             this.pageSubjects = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: this.model.get('uuid')});
 
             this.pageSubjects.fetch()
             .then(function() {
                 // save clone of original metadata collection
                 that.subjects = that.pageSubjects.getClonedCollection();
+
+                return that.projectFiles.fetch();
+            })
+            .then(function() {
+                return that.subjectColumns.fetch();
+            })
+            .then(function() {
+
+                if (that.subjectColumns.get('uuid').length > 0) {
+                    that.columnNames = that.subjectColumns.getColumnNames();
+                }
 
                 loadingView.remove();
 
@@ -2351,7 +2367,20 @@ define([
         },
 
         serialize: function() {
+            var rowValues = [];
+            for (var i = 0; i < this.pageSubjects.models.length; ++i) {
+                var m = this.pageSubjects.at(i);
+                var value = m.get('value');
+                var values = [];
+                for (var j = 0; j < this.columnNames.length; ++j)
+                    values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
+                rowValues[i] = { row: values };
+                rowValues[i]['uuid'] = m.get('uuid');
+            }
+
             return {
+                rowValues: rowValues,
+                columnNames: this.columnNames,
                 pageSubjects: this.pageSubjects.toJSON(),
             };
         },
@@ -2414,8 +2443,23 @@ define([
             value[field] = e.target.value;
             m.set('value', value);
         },
+
         _importFromFile: function(e) {
+            var importView = new Projects.MetadataImport({
+                projectUuid: this.model.get('uuid'),
+                metadataName: 'Subject Metadata',
+                parentView: this,
+                projectFiles: this.projectFiles
+            });
+
+            this.setView('#import-metadata-staging', importView);
+            importView.render();
         },
+
+        _performImport: function(file, op) {
+            return this.pageSubjects.importFromFile(file, op);
+        },
+
         _exportToFile: function(e) {
             var that = this;
             this.pageSubjects.createExportFile()
@@ -2537,7 +2581,7 @@ define([
             this.pairedQualFiles = [];
 
             this.sampleColumns = new Backbone.Agave.Model.SampleColumns({projectUuid: this.model.get('uuid')});
-            this.columnNames = ['Name', 'Description', 'Barcode'];
+            this.columnNames = [];
 
             this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.model.get('uuid')});
             this.workSamples.fetch()
@@ -2553,9 +2597,7 @@ define([
             .then(function() {
 
                 if (that.sampleColumns.get('uuid').length > 0) {
-                    var value = that.sampleColumns.get('value');
-                    for (var i = 0; i < value.columns.length; ++i)
-                        if (that.columnNames.indexOf(value.columns[i]) < 0) that.columnNames.push(value.columns[i]);
+                    that.columnNames = that.sampleColumns.getColumnNames();
                 }
 
                 that.nonpairedFiles = that.projectFiles.serializedNonPairedReadCollection();
@@ -2792,6 +2834,12 @@ define([
             this.sampleGroups = new Backbone.Agave.Collection.SampleGroups({projectUuid: this.model.get('uuid')});
             this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.model.get('uuid')});
 
+            this.sampleColumns = new Backbone.Agave.Model.SampleColumns({projectUuid: this.model.get('uuid')});
+            this.sampleColumnNames = [];
+
+            this.subjectColumns = new Backbone.Agave.Model.SubjectColumns({projectUuid: this.model.get('uuid')});
+            this.subjectColumnNames = [];
+
             this.sampleGroups.fetch()
             .then(function() {
                 // save clone of original metadata collection
@@ -2800,6 +2848,27 @@ define([
                 return that.workSamples.fetch();
             })
             .then(function() {
+                return that.sampleColumns.fetch();
+            })
+            .then(function() {
+
+                if (that.sampleColumns.get('uuid').length > 0) {
+                    var columnNames = that.sampleColumns.getColumnNames();
+                    for (var i = 0; i < columnNames.length; ++i) {
+                        that.sampleColumnNames.push({ name: columnNames[i], value: 'sample.' + columnNames[i]});
+                    }
+                }
+
+                return that.subjectColumns.fetch();
+            })
+            .then(function() {
+
+                if (that.subjectColumns.get('uuid').length > 0) {
+                    var columnNames = that.subjectColumns.getColumnNames();
+                    for (var i = 0; i < columnNames.length; ++i) {
+                        that.subjectColumnNames.push({ name: columnNames[i], value: 'subject.' + columnNames[i]});
+                    }
+                }
 
                 loadingView.remove();
 
@@ -2817,6 +2886,8 @@ define([
         },
         serialize: function() {
             return {
+                sampleColumnNames: this.sampleColumnNames,
+                subjectColumnNames: this.subjectColumnNames,
                 sampleGroups: this.sampleGroups.toJSON(),
                 workSamples: this.workSamples.toJSON(),
             };

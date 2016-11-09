@@ -19,7 +19,7 @@ define([
             },
             url: function() {
                 return '/meta/v2/data?q='
-                       + encodeURIComponent('{"name":"sampleGroup","value.project_uuid":"' + this.projectUuid + '"}')
+                       + encodeURIComponent('{"name":"sampleGroup","associationIds":"' + this.projectUuid + '"}')
                        + '&limit=' + this.limit
                        + '&offset=' + this.offset
                        ;

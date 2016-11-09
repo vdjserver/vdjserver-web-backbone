@@ -23,12 +23,14 @@
               <select class="form-control sampleGroup" id="sample-groups-category" data-tuple="{{@index}}">
                   <option></option>
                   <optgroup label="Subject Fields">
-                  <option {{ifCondSelected "subject.species" this.value.category}} value="subject.species">Species</option>
-                  <option {{ifCondSelected "subject.strain" this.value.category}} value="subject.strain">Strain</option>
-                  <option {{ifCondSelected "subject.gender" this.value.category}} value="subject.gender">Gender</option>
+                  {{#each ../subjectColumnNames}}
+                  <option {{ifCondSelected this.value ../this.value.category}} value="{{this.value}}">{{this.name}}</option>
+                  {{/each}}
                   </optgroup>
                   <optgroup label="Sample Fields">
-                  <option {{ifCondSelected "sample.barcode" this.value.category}} value="sample.barcode">Barcode</option>
+                  {{#each ../sampleColumnNames}}
+                  <option {{ifCondSelected this.value ../this.value.category}} value="{{this.value}}">{{this.name}}</option>
+                  {{/each}}
                   </optgroup>
               </select>
           </div>
@@ -37,12 +39,14 @@
               <select class="form-control sampleGroup" id="sample-groups-logical_field" data-tuple="{{@index}}">
                   <option></option>
                   <optgroup label="Subject Fields">
-                  <option {{ifCondSelected "subject.species" this.value.logical_field}} value="subject.species">Species</option>
-                  <option {{ifCondSelected "subject.strain" this.value.logical_field}} value="subject.strain">Strain</option>
-                  <option {{ifCondSelected "subject.gender" this.value.logical_field}} value="subject.gender">Gender</option>
+                  {{#each ../subjectColumnNames}}
+                  <option {{ifCondSelected this.value ../this.value.logical_field}} value="{{this.value}}">{{this.name}}</option>
+                  {{/each}}
                   </optgroup>
                   <optgroup label="Sample Fields">
-                  <option {{ifCondSelected "sample.barcode" this.value.logical_field}} value="sample.barcode">Barcode</option>
+                  {{#each ../sampleColumnNames}}
+                  <option {{ifCondSelected this.value ../this.value.logical_field}} value="{{this.value}}">{{this.name}}</option>
+                  {{/each}}
                   </optgroup>
               </select>
           </div>
@@ -68,7 +72,7 @@
           <div class="col-md-4">
               <select id="sample-groups-{{@index}}-samples" data-tuple="{{@index}}" multiple="multiple">
                   {{#each ../workSamples}}
-                  <option value="{{this.uuid}}">{{this.value.name}}</option>
+                  <option value="{{this.uuid}}">{{this.value.Name}}</option>
                   {{/each}}
               </select>
           </div>
@@ -117,7 +121,7 @@
                     </a>
                 </li>
 
-                <li class="metadata-actions">
+                <li class="metadata-actions disabled">
                     <a
                         class="download-multiple-files"
                         id="importFromFile"
@@ -127,7 +131,7 @@
                     </a>
                 </li>
 
-                <li class="metadata-actions">
+                <li class="metadata-actions disabled">
                     <a
                         class="download-multiple-files"
                         id="importToFile"
