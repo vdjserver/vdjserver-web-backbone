@@ -327,6 +327,37 @@ define([
             }
             return response;
         },
+
+        // clones both the collection and the models within
+        getClonedCollection: function() {
+
+            var newCollection = this.clone();
+            newCollection.reset();
+
+            for (var i = 0; i < this.length; i++) {
+                var model = this.at(i);
+                var m = model.clone();
+                m.set('value', _.clone(model.get('value')));
+                newCollection.add(m);
+            }
+
+            return newCollection;
+        },
+
+        // models in this collection that do not exist in given collection
+        getMissingModels: function(checkCollection) {
+
+            var newCollection = this.clone();
+            newCollection.reset();
+
+            for (var i = 0; i < this.length; i++) {
+                var model = this.at(i);
+                var m = checkCollection.get(model.get('uuid'));
+                if (!m) newCollection.add(model);
+            }
+
+            return newCollection;
+        },
     });
 
     Agave.JobModel = Agave.Model.extend({

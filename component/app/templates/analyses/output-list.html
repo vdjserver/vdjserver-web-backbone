@@ -54,11 +54,12 @@
                         <tr>
                             <th>Job Name</th>
                             <th>Status</th>
-                            <th>Start Time</th>
+                            <th>Submit Time</th>
                             <th>End Time</th>
                             <th>App</th>
-                            <th>Owner</th>
+                            <th>Creator</th>
                             <th>View Analyses</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,8 +76,8 @@
                                     </div>
                                 </td>
                                 <td>
-                                    {{#if startTime}}
-                                        {{FormatAgaveDate startTime}}
+                                    {{#if submitTime}}
+                                        {{FormatAgaveDate submitTime}}
                                     {{/if}}
                                 </td>
                                 <td>
@@ -91,7 +92,66 @@
 
                                 </td>
                                 <td>{{appId}}</td>
-                                <td>{{owner}}</td>
+                                <td>{{parameters.Creator}}</td>
+                                <td>
+                <div class="btn-group">
+                    <button
+                        id="job-action-button"
+                        class="btn btn-info dropdown-toggle"
+                        data-toggle="dropdown"
+                    >
+                        Job Actions
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+
+                    <ul
+                        class="dropdown-menu"
+                        role="menu"
+                    >
+                        <li class="job-actions">
+                            <a
+                                class="job-history"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Rename Job
+                            </a>
+                        </li>
+
+                        <li class="job-actions">
+                            <a
+                                class="job-history"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Show Job History
+                            </a>
+                        </li>
+
+                        <li class="job-actions">
+                            <a
+                                class="job-history"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Show in Project Data
+                            </a>
+                        </li>
+
+                        <li class="job-actions">
+                            <a
+                                class="archive-job"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Archive Job
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+
+                                </td>
                                 <td>
                                     {{#IsJobFrozen this}}
                                         <button type="button" class="btn btn-danger view-config" data-jobid={{id}}>Job Failed - View Config File</button>

@@ -155,6 +155,14 @@ define([
             var pendingJobs = new Backbone.Agave.Collection.Jobs.Pending();
             pendingJobs.projectUuid = this.projectUuid;
 
+/*
+            pendingJobs.fetch()
+              .then(function() {
+                  return that.jobs.fetch();
+              }
+              .then
+*/
+
             $.when(this.jobs.fetch(), pendingJobs.fetch())
                 // Add VDJ API pending jobs to Agave jobs
                 .then(function() {
@@ -162,7 +170,7 @@ define([
                 })
                 .then(function() {
                     that.jobs.forEach(function(job) {
-                        if (_.has(job, 'get') && job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
+                        if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
                             App.Instances.WebsocketManager.subscribeToEvent(job.get('id'));
 
                             that.listenTo(
@@ -330,6 +338,9 @@ define([
 
             this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
 
+            this.analysisCharts = [];
+            this.chartViews = [];
+
             var that = this;
 
             this.jobDetail.fetch()
@@ -337,8 +348,62 @@ define([
                     return that.collection.fetch();
                 })
                 .done(function() {
-                    loadingView.remove();
-                    that.render();
+
+                    // check for process metadata
+                    var processMetadataFile = that.collection.getProcessMetadataFile();
+                    if (processMetadataFile) {
+                        processMetadataFile.downloadFileToCache()
+                            .then(function(tmpFileData) {
+                                try {
+                                    that.processMetadata = JSON.parse(tmpFileData);
+
+                                    switch (that.processMetadata.process.appName) {
+                                        case('vdjPipe'):
+                                        case('presto'):
+                                            for (var group in that.processMetadata.groups) {
+                                                console.log(group);
+                                                var chart = new Analyses.Statistics({selectAnalyses: that, groupId: group});
+                                                if (chart.isValid) {
+                                                    that.analysisCharts.push({ groupId: group });
+                                                    that.chartViews.push(chart);
+                                                    that.setView('#analysis-charts-'+group, chart);
+                                                }
+                                            }
+                                            break;
+                                        case('igBlast'):
+                                            break;
+                                        case('RepCalc'):
+                                            var chart = new Analyses.RepertoireComparison({selectAnalyses: that});
+                                            if (chart.isValid) {
+                                                that.analysisCharts.push({ groupId: 'repertoire-comparison' });
+                                                that.chartViews.push(chart);
+                                                that.setView('#analysis-charts-repertoire-comparison', chart);
+                                            }
+                                            break;
+
+                                    }
+                                } catch (error) {
+                                    // TODO
+                                } finally {
+                                    loadingView.remove();
+                                    that.render();
+                                }
+                            })
+                    } else {
+                        // only vdjpipe
+                        var appId = that.jobDetail.get('appId');
+                        if (appId.indexOf('vdj_pipe') >= 0) {
+                            that.analysisCharts.push({ groupId: 'group0' });
+                            var chart = new Analyses.Statistics({selectAnalyses: that});
+                            if (chart.isValid) {
+                                that.chartViews.push(chart);
+                                that.setView('#analysis-charts-group0', chart);
+                            }
+                        }
+
+                        loadingView.remove();
+                        that.render();
+                    }
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -353,8 +418,9 @@ define([
             return {
                 jobDetail: this.jobDetail.toJSON(),
                 projectFiles: this.collection.getProjectFileOutput().toJSON(),
-                chartFiles: this.collection.getChartFileOutput().toJSON(),
+                //chartFiles: this.collection.getChartFileOutput().toJSON(),
                 logFiles: this.collection.getLogFileOutput().toJSON(),
+                analysisCharts: this.analysisCharts,
 
                 //outputFiles: this.collection.toJSON(),
                 canDownloadFiles: this.canDownloadFiles,
@@ -362,11 +428,248 @@ define([
             };
         },
         events: {
-            'click .show-chart': 'showChart',
-            'click .hide-chart': 'hideChart',
-
             'click .show-log': 'showLog',
             'click .hide-log': 'hideLog',
+
+            'click .download-file': 'downloadFile',
+
+            'click .toggle-legend-btn': 'toggleLegend',
+        },
+
+        hideLog: function(e){
+            e.preventDefault();
+
+            $(e.target).next('.show-log').removeClass('hidden');
+            $(e.target).addClass('hidden');
+
+            var elOffset = $( e.target ).offset().top;
+            var elHeight = $( e.target ).height();
+            var windowHeight = $(window).height();
+            var offset;
+
+            if (elHeight < windowHeight) {
+              offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+            } else {
+              offset = elOffset;
+            }
+
+            $('html, body').animate({scrollTop: offset}, 1000);
+
+            $(e.target.closest('tr')).next().hide(1500, function(){
+              $(e.target.closest('tr')).next().remove();
+            });
+        },
+
+        showLog: function(e) {
+            e.preventDefault();
+
+            this._uiBeginDataLoading(e.target);
+
+            var uuid = e.target.dataset.id;
+
+            var fileHandle = this.collection.get(uuid);
+            var value = fileHandle.get('value');
+
+            var classSelector = chance.string({
+                pool: 'abcdefghijklmnopqrstuvwxyz',
+                length: 15,
+            });
+
+            var htmlCode;
+            if (value.name.substr(-5) === '.json') {
+                htmlCode = '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
+                    + '<td colspan=3>'
+                    + '<pre>'
+                        + '<div id="' + classSelector + '" class="text-left ' + classSelector + '" style="word-break: break-all;">'
+                        + '</div>'
+                    + '</pre>'
+                    + '</td>'
+                + '</tr>'
+            } else {
+                htmlCode = '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
+                    + '<td colspan=3>'
+                        + '<div id="' + classSelector + '" class="text-left ' + classSelector + '" style="word-break: break-all;">'
+                        + '</div>'
+                    + '</td>'
+                + '</tr>'
+            }
+
+            $(e.target.closest('tr')).after(htmlCode);
+
+            $(e.target).addClass('hidden');
+            $(e.target).prev('.hide-log').removeClass('hidden');
+
+            var that = this;
+
+            var fileData;
+
+            fileHandle.downloadFileToCache()
+                .then(function(tmpFileData) {
+                    tmpFileData = tmpFileData.replace(/\n/g, '<br>');
+
+                    fileData = tmpFileData;
+                })
+                .then(function() {
+                    return $('#chart-tr-' + classSelector).animate({
+                        height: '200px',
+                    }, 500).promise();
+                })
+                .done(function() {
+
+                    that._uiEndDataLoading();
+
+                    $('#' + classSelector).html(fileData);
+
+                    // Scroll down to chart
+                    $('html, body').animate({
+                        scrollTop: $('.' + classSelector).offset().top
+                    }, 1000);
+                })
+                .fail(function(response) {
+                    var errorMessage = that.getErrorMessageFromResponse(response);
+
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(errorMessage);
+                    telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().save()');
+                    telemetry.set('view', 'Analyses.SelectAnalyses');
+                    telemetry.set('jobId', that.jobId);
+                    telemetry.save();
+
+                    that.showWarning(errorMessage);
+                })
+                ;
+        },
+
+        downloadFile: function(e) {
+            e.preventDefault();
+
+            var uuid = e.target.dataset.filename;
+            var outputFile = this.collection.get(uuid);
+
+            outputFile.downloadFileToDisk()
+                .fail(function(error) {
+                      var telemetry = new Backbone.Agave.Model.Telemetry();
+                      telemetry.setError(error);
+                      telemetry.set('method', 'Backbone.Agave.Model.Job.OutputFile.downloadFileToDisk()');
+                      telemetry.set('view', 'Analyses.SelectAnalyses');
+                      telemetry.save();
+                  })
+                  ;
+        },
+        getErrorMessageFromResponse: function(response) {
+            var txt;
+
+            if (response && response.responseText) {
+                txt = JSON.parse(response.responseText);
+            }
+
+            return txt;
+        },
+        showWarning: function(messageFragment) {
+            var message = 'An error occurred.';
+
+            if (messageFragment) {
+                message = message + ' ' + messageFragment.message;
+            }
+
+            $('.chart-warning').text(message);
+            $('.chart-warning').show();
+        },
+        showError: function(errorMessage) {
+            var message = 'An error occurred.';
+
+            if (errorMessage) {
+                message = message + ' ' + errorMessage;
+            }
+
+            $('.chart-warning').text(message);
+            $('.chart-warning').show();
+        },
+        hideWarning: function() {
+            $('.chart-warning').hide();
+        },
+
+        // private methods
+        _uiBeginDataLoading: function(selector) {
+            // loading view
+            $(selector).after('<div class="data-loading-view"></div>');
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('.data-loading-view', loadingView);
+            loadingView.render();
+        },
+        _uiEndDataLoading: function() {
+            // Remove loading view
+            $('.data-loading-view').remove();
+        },
+    });
+
+    Analyses.Statistics = Backbone.View.extend({
+        template: 'analyses/statistics-charts',
+        initialize: function(parameters) {
+
+            // access data from superview instead of reloading
+            this.selectAnalyses = parameters.selectAnalyses;
+            this.groupId = parameters.groupId;
+
+            this.chartHeight = 360;
+            this.isComparison = true;
+            this.isValid = false;
+
+            if (this.groupId) {
+              // we are using process metadata
+              var pm = this.selectAnalyses.processMetadata;
+              for (var key in pm.groups[this.groupId]) {
+                  if ((key == 'stats') && (pm.groups[this.groupId][key]['type'] == 'statistics')) {
+                      this.isValid = true;
+                      this.isComparison = false;
+                      var fileKey = pm.groups[this.groupId][key]['files'];
+                      var filename = pm.files[fileKey]['composition'];
+                      var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
+                      if (!fileHandle) this.isValid = false;
+                  }
+                  if ((key == 'pre')  && (pm.groups[this.groupId][key]['type'] == 'statistics')) {
+                      this.isValid = true;
+                      this.isComparison = true;
+                      var fileKey = pm.groups[this.groupId][key]['files'];
+                      var filename = pm.files[fileKey]['composition'];
+                      var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
+                      if (!fileHandle) this.isValid = false;
+                  }
+              }
+            } else {
+                // hard-coded filenames
+                this.isValid = true;
+                var fileHandle = this.selectAnalyses.collection.getFileByName('stats_composition.csv');
+                if (fileHandle) this.isComparison = false;
+                fileHandle = this.selectAnalyses.collection.getFileByName('pre-filter_composition.csv');
+
+                if (this.isComparison && !fileHandle) this.isValid = false;
+            }
+
+            if (this.isValid) {
+                this.chartFiles = [
+                    { id: 'composition', name: 'Nucleotide Composition' },
+                    { id: 'gc_hist', name: 'GC% Histogram' },
+                    { id: 'heat_map', name: 'Heatmap' },
+                    { id: 'len_hist', name: 'Sequence Length Histogram' },
+                    { id: 'mean_q_hist', name: 'Mean Quality Histogram' },
+                    { id: 'qstats', name: 'Quality Scores' },
+                ]
+
+                this.render();
+            }
+        },
+        serialize: function() {
+            return {
+                chartFiles: this.chartFiles,
+                //canDownloadFiles: this.canDownloadFiles,
+                //projectUuid: this.projectUuid,
+            };
+        },
+        events: {
+            'click .show-chart': 'showChart',
+            'click .hide-chart': 'hideChart',
 
             'click .download-chart': 'downloadChart',
             'click .download-file': 'downloadFile',
@@ -402,7 +705,11 @@ define([
 
             this._uiBeginChartLoading(e.target);
 
-            var filename = e.target.dataset.id;
+            var chartId = e.target.dataset.id;
+
+            // need more space for comparison chart
+            if (chartId == 'qstats' && this.isComparison) this.chartHeight = 720;
+            else this.chartHeight = 360;
 
             var classSelector = chance.string({
                 pool: 'abcdefghijklmnopqrstuvwxyz',
@@ -432,20 +739,14 @@ define([
             $(e.target).nextAll('#hide-chart').children('.download-chart').attr('data-chart-class-selector', classSelector);
 
             // Clean up any charts that are currently displayed
-            this.hideWarning();
+            this.selectAnalyses.hideWarning();
             $('#chart-legend').hide();
 
             var that = this;
-
-            var fileHandle = this.collection.get(filename);
-
-            var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
-
-            var fileData;
-
-            fileHandle.downloadFileToCache()
-            .then(function(tmpFileData) {
-                fileData = tmpFileData;
+            var chartData;
+            this._loadChartData(this._chartFilenames(chartId))
+            .then(function(tmpChartData) {
+                chartData = tmpChartData;
             })
             .then(function() {
                 return $('#chart-tr-' + classSelector).animate({
@@ -463,6 +764,42 @@ define([
 
                 that._uiEndChartLoading();
 
+                var fileHandle;
+                var fileData;
+                if (that.isComparison) fileData = chartData.pre;
+                else fileData = chartData.stats;
+
+                switch (chartId) {
+                    case 'composition':
+                        $('#chart-legend').show();
+                        Analyses.Charts.Composition(that.isComparison, chartData, classSelector);
+                        break;
+
+                    case 'gc_hist':
+                        $('#chart-legend').show();
+                        Analyses.Charts.PercentageGcHistogram(that.isComparison, chartData, classSelector);
+                        break;
+
+                    case 'heat_map':
+                        break;
+
+                    case 'len_hist':
+                        $('#chart-legend').show();
+                        Analyses.Charts.LengthHistogram(that.isComparison, chartData, classSelector);
+                        break;
+
+                    case 'mean_q_hist':
+                        Analyses.Charts.MeanQualityScoreHistogram(that.isComparison, chartData, classSelector);
+                        break;
+
+                    case 'qstats':
+                        Analyses.Charts.QualityScore(that.isComparison, chartData, classSelector, that.chartHeight);
+                        break;
+
+                    default:
+                        break;
+                }
+/*
                 switch (chartType) {
                     case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
                         $('#chart-legend').show();
@@ -502,109 +839,20 @@ define([
                     default:
                         break;
                 }
+*/
 
                 // Scroll down to chart
                 $('html, body').animate({
                     scrollTop: $('.' + classSelector).offset().top
                 }, 1000);
             })
-            .fail(function(response) {
-                var errorMessage = this.getErrorMessageFromResponse(response);
-                this.showWarning(errorMessage);
+            .fail(function(errorMessage) {
+                //var errorMessage = this.getErrorMessageFromResponse(response);
+                that.selectAnalyses.showError(errorMessage);
             })
             ;
         },
 
-        hideLog: function(e){
-            e.preventDefault();
-
-            $(e.target).next('.show-log').removeClass('hidden');
-            $(e.target).addClass('hidden');
-
-            var elOffset = $( e.target ).offset().top;
-            var elHeight = $( e.target ).height();
-            var windowHeight = $(window).height();
-            var offset;
-
-            if (elHeight < windowHeight) {
-              offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
-            } else {
-              offset = elOffset;
-            }
-
-            $('html, body').animate({scrollTop: offset}, 1000);
-
-            $(e.target.closest('tr')).next().hide(1500, function(){
-              $(e.target.closest('tr')).next().remove();
-            });
-        },
-
-        showLog: function(e) {
-            e.preventDefault();
-
-            this._uiBeginChartLoading(e.target);
-
-            var filename = e.target.dataset.id;
-
-            var classSelector = chance.string({
-                pool: 'abcdefghijklmnopqrstuvwxyz',
-                length: 15,
-            });
-
-            $(e.target.closest('tr')).after(
-                '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
-                    + '<td colspan=3>'
-                        + '<div id="' + classSelector + '" class="text-left ' + classSelector + '" style="word-break: break-all;">'
-                        + '</div>'
-                    + '</td>'
-                + '</tr>'
-            );
-
-            $(e.target).addClass('hidden');
-            $(e.target).prev('.hide-log').removeClass('hidden');
-
-            var that = this;
-
-            var fileHandle = this.collection.get(filename);
-
-            var fileData;
-
-            fileHandle.downloadFileToCache()
-                .then(function(tmpFileData) {
-                    tmpFileData = tmpFileData.replace(/\n/g, '<br>');
-
-                    fileData = tmpFileData;
-                })
-                .then(function() {
-                    return $('#chart-tr-' + classSelector).animate({
-                        height: '200px',
-                    }, 500).promise();
-                })
-                .done(function() {
-
-                    that._uiEndChartLoading();
-
-                    $('#' + classSelector).html(fileData);
-
-                    // Scroll down to chart
-                    $('html, body').animate({
-                        scrollTop: $('.' + classSelector).offset().top
-                    }, 1000);
-                })
-                .fail(function(response) {
-                    var errorMessage = that.getErrorMessageFromResponse(response);
-
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.setError(errorMessage);
-                    telemetry.set('method', 'Backbone.Agave.Collection.Jobs.OutputFiles().save()');
-                    telemetry.set('view', 'Analyses.SelectAnalyses');
-                    telemetry.set('jobId', that.jobId);
-                    telemetry.save();
-
-                    that.showWarning(errorMessage);
-                })
-                ;
-        },
         downloadChart: function(e) {
 
             var that = this;
@@ -612,9 +860,9 @@ define([
             var chartClassSelector = e.target.dataset.chartClassSelector;
 
             var filename = e.target.dataset.id;
-            filename = filename.split('.');
-            filename.pop();
-            filename = filename.join('.');
+            //filename = filename.split('.');
+            //filename.pop();
+            //filename = filename.join('.');
 
             var cssUrl = location.protocol + '//' + location.host + '/styles/charts.css';
 
@@ -641,52 +889,14 @@ define([
                                   + '</svg>'
                                   ;
 
-                    var blob = new Blob([svgString], {type: 'text/plain;charset=utf-8'});
-                    saveAs(blob, filename + '.svg');
+                    if (typeof safari !== 'undefined') {
+                        window.open("data:image/svg+xml," + encodeURIComponent(svgString));
+                    } else {
+                        var blob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+                        saveAs(blob, filename + '.svg');
+                    }
                 })
                 ;
-        },
-
-        downloadFile: function(e) {
-            e.preventDefault();
-
-            var filename = e.target.dataset.filename;
-            var outputFile = this.collection.get(filename);
-
-            outputFile.downloadFileToDisk()
-                .fail(function(error) {
-                      var telemetry = new Backbone.Agave.Model.Telemetry();
-                      telemetry.setError(error);
-                      telemetry.set('method', 'Backbone.Agave.Model.Job.OutputFile.downloadFileToDisk()');
-                      telemetry.set('view', 'Analyses.SelectAnalyses');
-                      telemetry.save();
-                  })
-                  ;
-        },
-        getErrorMessageFromResponse: function(response) {
-            var txt;
-
-            if (response && response.responseText) {
-                txt = JSON.parse(response.responseText);
-            }
-
-            return txt;
-        },
-        showWarning: function(messageFragment) {
-            var message = 'An error occurred.';
-
-            if (messageFragment) {
-                message = message + ' ' + messageFragment.message;
-            }
-
-            $('.chart-warning').text(message);
-            $('.chart-warning').show();
-        },
-        hideWarning: function() {
-            $('.chart-warning').hide();
-        },
-        toggleLegend: function() {
-            $('.nv-legendWrap').toggle();
         },
 
         // private methods
@@ -708,26 +918,361 @@ define([
             // Remove loading view
             $('.chart-loading-view').remove();
         },
+        _chartFilenames: function(chartId) {
+            var filenames;
+            if (this.groupId) {
+                var pm = this.selectAnalyses.processMetadata;
+                if (this.isComparison) {
+                    var fileKey = pm.groups[this.groupId]['pre']['files'];
+                    var preName = pm.files[fileKey][chartId];
+                    fileKey = pm.groups[this.groupId]['post']['files'];
+                    var postName = pm.files[fileKey][chartId];
+                    filenames = { pre: preName, post: postName };
+                } else {
+                    var fileKey = pm.groups[this.groupId]['stats']['files'];
+                    var statsName = pm.files[fileKey][chartId];
+                    filenames = { stats: statsName };
+                }
+            } else {
+                // hard-coded files
+                if (this.isComparison) filenames = { pre: 'pre-filter_' + chartId + '.csv', post: 'post-filter_' + chartId + '.csv'};
+                else filenames = { stats: 'stats_' + chartId + '.csv' };
+            }
+            return filenames;
+        },
+        _loadChartData: function(files) {
+            var that = this;
+            if (this.isComparison) {
+                var filename = files.pre;
+                var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
+                if (!fileHandle) return $.Deferred().reject('Project is missing statistics file: ' + filename);
+
+                return fileHandle.downloadFileToCache()
+                .then(function(preFileData) {
+                    var filename = files.post;
+                    var fileHandle = that.selectAnalyses.collection.getFileByName(filename);
+
+                    return fileHandle.downloadFileToCache()
+                    .then(function(postFileData) {
+                        return { pre: preFileData, post: postFileData };
+                    })
+                })
+            } else {
+                var filename = files.stats;
+                var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
+
+                var chartType = Backbone.Agave.Model.Job.Detail.getChartType(filename);
+
+                return fileHandle.downloadFileToCache()
+                .then(function(tmpFileData) {
+                    return { stats: tmpFileData };
+                })
+            }
+        }
     });
 
-    Analyses.Charts.LengthHistogram = function(fileHandle, text, classSelector) {
+    Analyses.RepertoireComparison = Backbone.View.extend({
+        template: 'analyses/repertoire-comparison-charts',
+        initialize: function(parameters) {
 
-        //remove commented out lines (header info)
-        text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+            // access data from superview instead of reloading
+            this.selectAnalyses = parameters.selectAnalyses;
 
-        var data = d3.tsv.parse(text);
-        var otherD = [];
-        data.forEach(function(d) {
-            otherD.push({
-                x: +d['read_length'],
-                y: +d['count'],
+            this.chartHeight = 360;
+            this.isValid = false;
+
+            // we require process metadata
+            var pm = this.selectAnalyses.processMetadata;
+            if (!pm) return;
+
+            var geneSegmentChart = false;
+            for (var group in pm.groups) {
+                if (pm.groups[group]['gene_segment_usage']) geneSegmentChart = true;
+            }
+
+            this.chartFiles = [];
+            if (geneSegmentChart) {
+                this.isValid = true;
+                this.chartFiles.push({ id: 'gene_segment_usage', name: 'Gene Segment Usage' });
+            }
+
+            if (this.isValid) {
+                this.render();
+            }
+        },
+        serialize: function() {
+            return {
+                chartFiles: this.chartFiles,
+                //canDownloadFiles: this.canDownloadFiles,
+                //projectUuid: this.projectUuid,
+            };
+        },
+        events: {
+            'click .show-chart': 'showChart',
+            'click .hide-chart': 'hideChart',
+
+            'click .download-chart': 'downloadChart',
+            'click .download-file': 'downloadFile',
+
+            'click .toggle-legend-btn': 'toggleLegend',
+        },
+
+        hideChart: function(e) {
+            e.preventDefault();
+            $(e.target).parent().prev('#show-chart').removeClass('hidden');
+            $(e.target).closest('#hide-chart').addClass('hidden');
+
+            var elOffset = $( e.target ).offset().top;
+            var elHeight = $( e.target ).height();
+            var windowHeight = $(window).height();
+            var offset;
+
+            if (elHeight < windowHeight) {
+              offset = elOffset - ((windowHeight / 2) - (elHeight / 2));
+            } else {
+              offset = elOffset;
+            }
+
+            $('html, body').animate({scrollTop: offset}, 1000);
+
+            $(e.target.closest('tr')).next().hide(1500, function(){
+              $(e.target.closest('tr')).next().remove();
             });
-        });
+        },
 
-        var myData = [{
-            key: 'Sequence Length',
-            values: otherD,
-        }];
+        showChart: function(e) {
+            e.preventDefault();
+
+            this._uiBeginChartLoading(e.target);
+
+            var chartId = e.target.dataset.id;
+
+            // need more space for comparison chart
+            if (chartId == 'qstats' && this.isComparison) this.chartHeight = 720;
+            else this.chartHeight = 360;
+
+            var classSelector = chance.string({
+                pool: 'abcdefghijklmnopqrstuvwxyz',
+                length: 15,
+            });
+
+            // remove if it exists
+            if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
+              $(e.target.closest('tr')).next().remove();
+            }
+
+            $(e.target.closest('tr')).after(
+                '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
+                    + '<td colspan=3>'
+                        + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'
+                            + '<svg style="height: 0px;" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>'
+                        + '</div>'
+                        + '<div class="' + classSelector + '-d3-tip d3-tip hidden"></div>'
+                    + '</td>'
+                + '</tr>'
+            );
+
+            $(e.target).addClass('hidden');
+            $(e.target).nextAll('#hide-chart').removeClass('hidden');
+
+            // Enable download button
+            $(e.target).nextAll('#hide-chart').children('.download-chart').attr('data-chart-class-selector', classSelector);
+
+            // Clean up any charts that are currently displayed
+            this.selectAnalyses.hideWarning();
+            $('#chart-legend').hide();
+
+            var that = this;
+            var chartData;
+            this._loadChartData(this._chartFilenames(chartId))
+            .then(function(tmpChartData) {
+                chartData = tmpChartData;
+            })
+            .then(function() {
+                return $('#chart-tr-' + classSelector).animate({
+                    // Unfortunately, this '30' is a bit of a magic number.
+                    // It helps create enough spacer for horizontal scroll
+                    // bars on the qstats chart not to overlay on other
+                    // chart buttons.
+                    height: (that.chartHeight + 30) + 'px',
+                }, 500).promise();
+            })
+            .then(function() {
+                $('.' + classSelector + ' svg').css('height', that.chartHeight);
+            })
+            .done(function() {
+
+                that._uiEndChartLoading();
+
+                var fileHandle;
+                var fileData = chartData.absolute_counts;
+
+                switch (chartId) {
+                    case 'gene_segment_usage':
+                        $('#chart-legend').show();
+                        Analyses.Charts.GeneDistribution(chartData, classSelector);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                // Scroll down to chart
+                $('html, body').animate({
+                    scrollTop: $('.' + classSelector).offset().top
+                }, 1000);
+            })
+            .fail(function(errorMessage) {
+                //var errorMessage = this.getErrorMessageFromResponse(response);
+                that.selectAnalyses.showError(errorMessage);
+            })
+            ;
+        },
+
+        downloadChart: function(e) {
+
+            var that = this;
+
+            var chartClassSelector = e.target.dataset.chartClassSelector;
+
+            var filename = e.target.dataset.id;
+            //filename = filename.split('.');
+            //filename.pop();
+            //filename = filename.join('.');
+
+            var cssUrl = location.protocol + '//' + location.host + '/styles/charts.css';
+
+            $.get(cssUrl)
+                .done(function(cssText) {
+
+                    var widthPx = $('#' + chartClassSelector + ' svg').css('width');
+
+                    /*
+                        Grabbing all content specifically from the svg
+                        element ensures that we won't pick up any other
+                        random elements that are also children of
+                        |classSelector|.
+                    */
+                    var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
+                                  + '\n'
+                                  + '<svg '
+                                        + ' style="height: ' + that.chartHeight + 'px; width:' + widthPx + ';"'
+                                        + ' version="1.1"'
+                                        + ' xmlns="http://www.w3.org/2000/svg"'
+                                        + ' class="box"'
+                                  + '>'
+                                        + $('.' + chartClassSelector + ' svg').html()
+                                  + '</svg>'
+                                  ;
+
+                    if (typeof safari !== 'undefined') {
+                        window.open("data:image/svg+xml," + encodeURIComponent(svgString));
+                    } else {
+                        var blob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+                        saveAs(blob, filename + '.svg');
+                    }
+                })
+                ;
+        },
+
+        // private methods
+        _uiBeginChartLoading: function(selector) {
+            // Disable other buttons
+            $('.show-chart').prop('disabled', true);
+
+            $(selector).after('<div class="chart-loading-view"></div>');
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('.chart-loading-view', loadingView);
+            loadingView.render();
+        },
+        _uiEndChartLoading: function() {
+
+            // Restore buttons
+            $('.show-chart').prop('disabled', false);
+
+            // Remove loading view
+            $('.chart-loading-view').remove();
+        },
+        _chartFilenames: function(chartId) {
+            var filenames;
+
+            filenames = { 'absolute_counts': 'file0_segment_counts.json' };
+
+            return filenames;
+        },
+        _loadChartData: function(files) {
+            var that = this;
+            var filename = files.absolute_counts;
+            var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
+            if (!fileHandle) return $.Deferred().reject('Project is missing chart data file: ' + filename);
+
+            return fileHandle.downloadFileToCache()
+            .then(function(tmpFileData) {
+                return { absolute_counts: tmpFileData };
+            })
+        }
+    });
+
+    Analyses.Charts.LengthHistogram = function(isComparison, chartData, classSelector) {
+
+        var myData = [];
+
+        for (var group in chartData) {
+            //remove commented out lines (header info)
+            var text = chartData[group].replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+
+            var data = d3.tsv.parse(text);
+            var otherD = [];
+            data.forEach(function(d) {
+                otherD.push({
+                    x: +d['read_length'],
+                    y: +d['count'],
+                });
+            });
+
+            var name = '';
+            var color = 'red';
+            if (isComparison) {
+                if (group == 'pre') name = 'Pre-filter ';
+                else { name = 'Post-filter '; color = 'blue'; }
+            }
+
+            myData.push({
+                key: name + 'Sequence Length',
+                values: otherD,
+                color: color
+            });
+        }
+
+         // pre/post difference
+        if (isComparison) {
+            var diffD = [];
+            var otherD = [];
+            var preIdx, postIdx;
+            if (myData[0].key == 'Pre-filter Sequence Length') { preIdx = 0; postIdx = 1; }
+            else { preIdx = 1; postIdx = 0; }
+            var preData = myData[preIdx].values;
+            var postData = myData[postIdx].values;
+            for (var i = 0; i < preData.length; ++i) {
+                diffD[i] = preData[i].y;
+            }
+            for (var i = 0; i < postData.length; ++i) {
+                diffD[i] -= postData[i].y;
+            }
+            for (var i = 0; i < diffD.length; ++i) {
+                otherD.push({
+                    x: i,
+                    y: diffD[i]
+                });
+            }
+
+            myData.push({
+                key: 'Pre/Post Difference',
+                values: otherD,
+                color: 'magenta'
+            });
+        }
 
         nv.addGraph(function() {
             var chart = nv.models.lineChart()
@@ -764,45 +1309,95 @@ define([
         });
     };
 
-    Analyses.Charts.MeanQualityScoreHistogram = function(fileHandle, text, classSelector) {
+    Analyses.Charts.MeanQualityScoreHistogram = function(isComparison, chartData, classSelector) {
 
-        //remove commented out lines (header info)
-        text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+        var myData = [];
+        var preMedian;
+        var preQuality;
+        var postMedian;
+        var postQuality;
 
-        var csv = d3.tsv.parse(text);
+        for (var group in chartData) {
+            //remove commented out lines (header info)
+            var text = chartData[group].replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-        // build quality score line
-        var qualityScore = [];
-        _.each(csv, function(row) {
-            qualityScore.push(parseInt(row['count']));
-        });
+            var csv = d3.tsv.parse(text);
 
-        // calculate xAxis median
-        var total = 0;
-        _.each(csv, function(row) {
-            if (row['count'] !== '0') {
-                total += parseInt(row['count']);
+            // build quality score line
+            var qualityScore = [];
+            _.each(csv, function(row) {
+                qualityScore.push(parseInt(row['count']));
+            });
+
+            // calculate xAxis median
+            var total = 0;
+            _.each(csv, function(row) {
+                if (row['count'] !== '0') {
+                    total += parseInt(row['count']);
+                }
+            });
+
+            var runningTotal = 0;
+            var xMedian = _.find(csv, function(row) {
+                runningTotal += parseInt(row['count']);
+                if (runningTotal >= total / 2) {
+                    return row;
+                }
+            });
+
+            // build median line
+            var medianScore = [];
+            _.each(csv, function(row) {
+                if (parseInt(row['count']) <= parseInt(xMedian['count']) && row['read_quality'] !== '0') {
+                    medianScore.push({
+                        x: parseInt(xMedian['read_quality']),
+                        y: parseInt(row['count'])
+                    });
+                }
+            });
+
+            var name = '';
+            var color = 'red';
+            var mcolor = 'magenta';
+            if (isComparison) {
+                if (group == 'pre') {
+                    name = 'Pre-filter ';
+                    preMedian = xMedian;
+                    preQuality = qualityScore;
+                } else {
+                    name = 'Post-filter ';
+                    color = 'blue';
+                    mcolor = 'black';
+                    postMedian = xMedian;
+                    postQuality = qualityScore;
+                }
+            } else {
+                preMedian = xMedian;
+                preQuality = qualityScore;
             }
-        });
 
-        var runningTotal = 0;
-        var xMedian = _.find(csv, function(row) {
-            runningTotal += parseInt(row['count']);
-            if (runningTotal >= total / 2) {
-                return row;
-            }
-        });
-
-        // build median line
-        var medianScore = [];
-        _.each(csv, function(row) {
-            if (parseInt(row['count']) <= parseInt(xMedian['count']) && row['read_quality'] !== '0') {
-                medianScore.push({
-                    x: parseInt(xMedian['read_quality']),
-                    y: parseInt(row['count'])
-                });
-            }
-        });
+            myData.push({
+                name: name + 'Median Score',
+                data: medianScore,
+                pointStart: 1,
+                color: mcolor,
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 0
+                }
+            });
+            myData.push({
+                name: name + 'Read Count',
+                data: qualityScore,
+                color: color,
+                marker: {
+                    enabled: true,
+                    symbol: 'circle',
+                    radius: 0
+                }
+            });
+        }
 
         var chart = new Highcharts.Chart({
             chart: {
@@ -883,24 +1478,20 @@ define([
                 formatter: function() {
 
                     var tooltip = '';
-                    for (var i = 0, length = this.series.points.length; i < length; i++) {
-                        var point = this.series.points[i];
-                        if (point.series.name === 'Median Score') {
-                            tooltip = '<b>Median Score: </b>' + xMedian['read_quality'] + '<br/>';
-                        }
-                        if (point.series.name === 'Quality Score') {
-                            if (this.y === 0) {
-                                tooltip = '<b>Quality Read: </b>' + this.x + '<br/>' +
-                                    '<b>Read Count: </b>' + this.y + '<br/>' +
-                                    '<b>Median Score: </b> 0';
-                            } else {
-                                tooltip = '<b>Quality Read: </b>' + this.x + '<br/>' +
-                                    '<b>Read Count: </b>' + this.y + '<br/>' +
-                                    '<b>Median Score: </b>' + xMedian['read_quality'];
-                            }
-
-                        }
+                    if (isComparison) {
+                        tooltip = '<b>Quality Score: </b>' + this.x + '<br/>';
+                        if (preQuality[this.x]) tooltip += '<b>Pre-filter Read Count: </b>' + preQuality[this.x] + '<br/>';
+                        else tooltip += '<b>Pre-filter Read Count: </b>0<br/>';
+                        tooltip += '<b>Pre-filter Median Score: </b>' + preMedian.read_quality + '<br/>';
+                        if (postQuality[this.x]) tooltip += '<b>Post-filter Read Count: </b>' + postQuality[this.x] + '<br/>';
+                        else tooltip += '<b>Post-filter Read Count: </b>0<br/>';
+                        tooltip += '<b>Post-filter Median Score: </b>' + postMedian.read_quality;
+                    } else {
+                        tooltip = '<b>Quality Score: </b>' + this.x + '<br/>' +
+                                '<b>Read Count: </b>' + preQuality[this.x] + '<br/>' +
+                                '<b>Median Score: </b>' + preMedian.read_quality;
                     }
+
                     return tooltip;
                 }
             },
@@ -910,79 +1501,195 @@ define([
                 verticalAlign: 'top',
             },
 
-            series: [{
-                name: 'Median Score',
-                data: medianScore,
-                pointStart: 1,
-                color: '#6EB76A',
-                marker: {
-                    enabled: false,
-                    symbol: 'circle',
-                    radius: 0
-                }
-            }, {
-                name: 'Quality Score',
-                data: qualityScore,
-                color: '#2A7EB8',
-                marker: {
-                    enabled: true,
-                    symbol: 'circle',
-                    radius: 0
-                }
-            }]
+            series: myData
         });
     };
 
-    Analyses.Charts.QualityScore = function(fileHandle, text, classSelector, chartHeight) {
+    Analyses.Charts.QualityScore = function(isComparison, chartData, classSelector, chartHeight) {
 
-      //remove commented out lines (header info)
-      text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+        var myData = [];
+        var maxPosition = 0;
 
-      var csv = d3.tsv.parse(text);
+        for (var group in chartData) {
+            //remove commented out lines (header info)
+            var text = chartData[group].replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-      var data = [];
-      var boxPlot = [];
-      var mean = [];
-      var categories = []; // navigator xAxis ticks for our purposes
-      var backgroundBottom = [];
-      var backgroundMiddle = [];
-      var backgroundTop = [];
-      var max = 0;
+            var csv = d3.tsv.parse(text);
 
-      _.each(csv, function(row, index) {
-        var data = new Array();
-        data.push(parseInt(row['10%']));
-        data.push(parseInt(row['25%']));
-        data.push(parseInt(row['50%']));
-        data.push(parseInt(row['75%']));
-        data.push(parseInt(row['90%']));
-        boxPlot[index] = data;
-        mean.push(parseFloat(row['mean']));
-        categories.push(parseInt(row['position']));
-      });
+            var data = [];
+            var boxPlot = [];
+            var mean = [];
+            var categories = []; // navigator xAxis ticks for our purposes
+            var backgroundBottom = [];
+            var backgroundMiddle = [];
+            var backgroundTop = [];
+            var max = 0;
 
-      _.each(boxPlot, function(row, index) {
-        var temp = _.max(row);
-        if (temp > max) {
-            max = temp;
+            _.each(csv, function(row, index) {
+              var data = new Array();
+              data.push(parseInt(row['10%']));
+              data.push(parseInt(row['25%']));
+              data.push(parseInt(row['50%']));
+              data.push(parseInt(row['75%']));
+              data.push(parseInt(row['90%']));
+              boxPlot[index] = data;
+              mean.push(parseFloat(row['mean']));
+              categories.push(parseInt(row['position']));
+              if (parseInt(row['position']) > maxPosition) maxPosition = parseInt(row['position']);
+            });
+
+            _.each(boxPlot, function(row, index) {
+              var temp = _.max(row);
+              if (temp > max) {
+                  max = temp;
+              }
+            });
+
+            _.each(boxPlot, function(row, index) {
+              backgroundBottom.push(20);
+              backgroundMiddle.push(8);
+              backgroundTop.push(max - 28);
+            });
+
+            var name = '';
+            var yAxis = 0;
+            if (isComparison) {
+                if (group == 'pre') {
+                    name = 'Pre-filter ';
+                } else {
+                    name = 'Post-filter ';
+                    yAxis = 1;
+                }
+            }
+
+            myData.push({
+                type: 'area',
+                data: backgroundTop,
+                color: '#CEFCDB',
+                stack: 0,
+                yAxis: yAxis
+            });
+
+            myData.push({
+                type: 'area',
+                data: backgroundMiddle,
+                color: '#FCFCCE',
+                stack: 0,
+                yAxis: yAxis
+            });
+
+            myData.push({
+                type: 'area',
+                data: backgroundBottom,
+                color: '#F4D7D8',
+                stack: 0,
+                yAxis: yAxis
+            });
+
+            myData.push({
+                type: 'boxplot',
+                data: boxPlot,
+                yAxis: yAxis
+            });
+
+            myData.push({
+                type: 'spline',
+                data: mean,
+                marker: {
+                    enabled: true,
+                    radius: 2,
+                    symbol: 'circle'
+                },
+                color: '#FB000D',
+                yAxis: yAxis
+            });
+
+            if (!yAxis) {
+                myData.push({
+                    // dummy series needed to obtain a continous xAxis with navigator in place
+                    type: 'line',
+                    data: categories,
+                    visible: false,
+                });
+            }
         }
-      });
 
-      _.each(boxPlot, function(row, index) {
-        backgroundBottom.push(20);
-        backgroundMiddle.push(8);
-        backgroundTop.push(max - 28);
-      });
+      var yAxis;
+      if (isComparison) {
+          yAxis = [{
+              title: {
+                  text: 'Pre-filter Quality',
+                  style: {
+                      color: '#000000',
+                      fontSize: '12px'
+                  }
+              },
+              max: max,
+              opposite: false,
+              labels: {
+                  align: 'right',
+                  enabled: true,
+                  style: {
+                      color: '#000000'
+                  }
+              },
+              height: '40%',
+              showLastLabel: true
+            },{
+              title: {
+                  text: 'Post-filter Quality',
+                  style: {
+                      color: '#000000',
+                      fontSize: '12px'
+                  }
+              },
+              max: max,
+              opposite: false,
+              labels: {
+                  align: 'right',
+                  enabled: true,
+                  style: {
+                      color: '#000000'
+                  }
+              },
+              offset: 0,
+              top: '50%',
+              height: '40%',
+              showLastLabel: true
+          }];
+      } else {
+          yAxis = [{
+              title: {
+                  text: 'Quality',
+                  style: {
+                      color: '#000000',
+                      fontSize: '12px'
+                  }
+              },
+              max: max,
+              opposite: false,
+              labels: {
+                  align: 'right',
+                  enabled: true,
+                  style: {
+                      color: '#000000'
+                  }
+              },
+              height: '100%',
+              showLastLabel: true
+        }];
+      }
 
       var chart = new Highcharts.StockChart({
         chart: {
+            height: chartHeight,
             renderTo: classSelector,
             panning: true,
             style: {
                 fontFamily: 'Arial',
             },
         },
-
+/*
         title: {
             text: 'Quality Scores',
             style: {
@@ -990,7 +1697,7 @@ define([
                 fontSize: '12px'
             }
         },
-
+*/
         plotOptions: {
             series: {
                 stacking: 'normal',
@@ -1013,23 +1720,41 @@ define([
         tooltip: {
             formatter: function() {
 
-                var tooltip = '';
+                // expects series to be in a specific order
+                var tooltip = '<b>Read position: <b>' + this.x + '<br/>';
 
-                for (var i = 0, length = this.points.length; i < length; i++) {
-                    var point = this.points[i];
-
-                    if (this.points[i].series.name === 'Series 4') {
-                        tooltip = '<b>Read position: <b>' + this.x + '<br/>' +
-                            '<b>90%: <b>' + this.points[i].series.options.data[i][4] + '<br/>' +
-                            '<b>75%: <b>' + this.points[i].series.options.data[i][3] + '<br/>' +
-                            '<b>50%: <b>' + this.points[i].series.options.data[i][2] + '<br/>' +
-                            '<b>25%: <b>' + this.points[i].series.options.data[i][1] + '<br/>' +
-                            '<b>10%: <b>' + this.points[i].series.options.data[i][0] + '<br/>';
+                if (isComparison) {
+                    if (this.points[4])
+                        tooltip += '<b>Pre-filter Mean: <b>' + this.points[4].series.options.data[this.x] + '<br/>';
+                    if (this.points[3]) {
+                        tooltip += '<b>Pre-filter 90%: <b>' + this.points[3].series.options.data[this.x][4] + '<br/>';
+                        tooltip += '<b>Pre-filter 75%: <b>' + this.points[3].series.options.data[this.x][3] + '<br/>';
+                        tooltip += '<b>Pre-filter 50%: <b>' + this.points[3].series.options.data[this.x][2] + '<br/>';
+                        tooltip += '<b>Pre-filter 25%: <b>' + this.points[3].series.options.data[this.x][1] + '<br/>';
+                        tooltip += '<b>Pre-filter 10%: <b>' + this.points[3].series.options.data[this.x][0] + '<br/>';
                     }
-                    if (this.points[i].series.name === 'Series 5') {
-                        tooltip += '<b>Mean: <b>' + point.series.options.data[this.x] + '<br/>';
+
+                    if (this.points[9])
+                        tooltip += '<b>Post-filter Mean: <b>' + this.points[9].series.options.data[this.x] + '<br/>';
+                    if (this.points[8]) {
+                        tooltip += '<b>Post-filter 90%: <b>' + this.points[8].series.options.data[this.x][4] + '<br/>';
+                        tooltip += '<b>Post-filter 75%: <b>' + this.points[8].series.options.data[this.x][3] + '<br/>';
+                        tooltip += '<b>Post-filter 50%: <b>' + this.points[8].series.options.data[this.x][2] + '<br/>';
+                        tooltip += '<b>Post-filter 25%: <b>' + this.points[8].series.options.data[this.x][1] + '<br/>';
+                        tooltip += '<b>Post-filter 10%: <b>' + this.points[8].series.options.data[this.x][0] + '<br/>';
+                    }
+                } else {
+                    if (this.points[4])
+                        tooltip += '<b>Mean: <b>' + this.points[4].series.options.data[this.x] + '<br/>';
+                    if (this.points[3]) {
+                        tooltip += '<b>90%: <b>' + this.points[3].series.options.data[this.x][4] + '<br/>';
+                        tooltip += '<b>75%: <b>' + this.points[3].series.options.data[this.x][3] + '<br/>';
+                        tooltip += '<b>50%: <b>' + this.points[3].series.options.data[this.x][2] + '<br/>';
+                        tooltip += '<b>25%: <b>' + this.points[3].series.options.data[this.x][1] + '<br/>';
+                        tooltip += '<b>10%: <b>' + this.points[3].series.options.data[this.x][0] + '<br/>';
                     }
                 }
+
                 return tooltip;
             }
         },
@@ -1042,27 +1767,7 @@ define([
             enabled: false
         },
 
-        yAxis: {
-            title: {
-                text: 'Quality',
-                style: {
-                    color: '#000000',
-                    fontSize: '12px'
-                }
-            },
-            max: max,
-            opposite: false,
-            labels: {
-                align: 'right',
-                enabled: true,
-                style: {
-                    color: '#000000'
-                }
-            },
-            height: '100%',
-            showLastLabel: true
-        },
-
+        yAxis: yAxis,
 
         xAxis: {
             title: {
@@ -1108,75 +1813,54 @@ define([
                     }
                 },
             },
-
-
         },
 
-        series: [{
-            type: 'area',
-            data: backgroundTop,
-            color: '#CEFCDB',
-            stack: 0,
-        }, {
-            type: 'area',
-            data: backgroundMiddle,
-            color: '#FCFCCE',
-            stack: 0,
-        }, {
-            type: 'area',
-            data: backgroundBottom,
-            color: '#F4D7D8',
-            stack: 0,
-        }, {
-            type: 'boxplot',
-            data: boxPlot,
-        }, {
-            type: 'spline',
-            data: mean,
-            marker: {
-                enabled: true,
-                radius: 2,
-                symbol: 'circle'
-            },
-            color: '#FB000D',
-        }, {
-            // dummy series needed to obtain a continous xAxis with navigator in place
-            type: 'line',
-            data: categories,
-            visible: false,
-        }]
+        series: myData
       });
-      chart.xAxis[0].setExtremes(0, 20);
+
+      chart.xAxis[0].setExtremes(0, maxPosition);
     };
 
-    Analyses.Charts.PercentageGcHistogram = function(fileHandle, text, classSelector) {
+    Analyses.Charts.PercentageGcHistogram = function(isComparison, chartData, classSelector) {
 
-        //remove commented out lines (header info)
-        text = text.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+        var myData = [];
 
-        var otherD = [];
-        var data = d3.tsv.parse(text);
-        data.forEach(function(d) {
-            otherD.push({
-                x: +d['GC%'],
-                y: +d['read_count'],
-            });
-        });
+        for (var group in chartData) {
+            //remove commented out lines (header info)
+            var text = chartData[group].replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-        //fill in any up to 100
-        for (var i = 0; i <= 100; i++) {
-            if (!otherD[i]) {
+            var otherD = [];
+            var data = d3.tsv.parse(text);
+            data.forEach(function(d) {
                 otherD.push({
-                    x: +i,
-                    y: 0,
+                    x: +d['GC%'],
+                    y: +d['read_count'],
                 });
-            }
-        }
+            });
 
-        var myData = [{
-            key: 'Mean GC %',
-            values: otherD,
-        }];
+            //fill in any up to 100
+            for (var i = 0; i <= 100; i++) {
+                if (!otherD[i]) {
+                    otherD.push({
+                        x: +i,
+                        y: 0,
+                    });
+                }
+            }
+
+            var name = '';
+            var color = 'red';
+            if (isComparison) {
+                if (group == 'pre') name = 'Pre-filter ';
+                else { name = 'Post-filter '; color = 'blue'; }
+            }
+
+            myData.push({
+                key: name + 'Mean GC %',
+                values: otherD,
+                color: color
+            });
+        }
 
         nv.addGraph(function() {
             var chart = nv.models.lineChart()
@@ -1213,9 +1897,9 @@ define([
         });
     };
 
-    Analyses.Charts.GeneDistribution = function(fileHandle, text, classSelector) {
+    Analyses.Charts.GeneDistribution = function(text, classSelector) {
 
-        var distribution = JSON.parse(text);
+        var distribution = JSON.parse(text.absolute_counts);
         // build series
         var series = {
           id: distribution.label,
@@ -1844,90 +2528,101 @@ define([
         });
     };
 
-    Analyses.Charts.Composition = function(fileHandle, response, classSelector) {
+    Analyses.Charts.Composition = function(isComparison, chartData, classSelector) {
 
         $('#chart-right-announcement').text('Click to toggle displayed data.');
 
-        response = response.replace(/^[##][^\r\n]+[\r\n]+/mg, '');
+        var myData = [];
+        for (var group in chartData) {
+            // eliminate comment lines
+            var response = chartData[group].replace(/^[##][^\r\n]+[\r\n]+/mg, '');
 
-        var data = d3.tsv.parse(response);
-        var aData = [];
-        var cData = [];
-        var gData = [];
-        var tData = [];
-        var nData = [];
-        var gcData = [];
+            var data = d3.tsv.parse(response);
+            var aData = [];
+            var cData = [];
+            var gData = [];
+            var tData = [];
+            var nData = [];
+            var gcData = [];
 
-        data.forEach(function(d) {
-            aData.push({
-                x: +d['position'],
-                y: +d['A%'],
+            data.forEach(function(d) {
+                aData.push({
+                    x: +d['position'],
+                    y: +d['A%'],
+                });
+
+                cData.push({
+                    x: +d['position'],
+                    y: +d['C%'],
+                });
+
+                gData.push({
+                    x: +d['position'],
+                    y: +d['G%'],
+                });
+
+                tData.push({
+                    x: +d['position'],
+                    y: +d['T%'],
+                });
+
+                nData.push({
+                    x: +d['position'],
+                    y: +d['N%'],
+                });
+
+                gcData.push({
+                    x: +d['position'],
+                    y: +d['GC%'],
+                });
             });
 
-            cData.push({
-                x: +d['position'],
-                y: +d['C%'],
-            });
+            var name = '';
+            if (isComparison) {
+                if (group == 'pre') {
+                    name = 'Pre-filter ';
+                } else {
+                    name = 'Post-filter ';
+                }
+            }
 
-            gData.push({
-                x: +d['position'],
-                y: +d['G%'],
+            myData.push({
+                    key: name + 'A%',
+                    values: aData,
+                    disabled: true,
+                    color: 'red',
             });
-
-            tData.push({
-                x: +d['position'],
-                y: +d['T%'],
+            myData.push({
+                    key: name + 'C%',
+                    values: cData,
+                    disabled: true,
+                    color: 'blue',
             });
-
-            nData.push({
-                x: +d['position'],
-                y: +d['N%'],
+            myData.push({
+                    key: name + 'G%',
+                    values: gData,
+                    disabled: true,
+                    color: 'black',
             });
-
-            gcData.push({
-                x: +d['position'],
-                y: +d['GC%'],
+            myData.push({
+                    key: name + 'T%',
+                    values: tData,
+                    disabled: true,
+                    color: 'green',
             });
-        });
-
-        var myData = [
-            {
-                key: 'A%',
-                values: aData,
-                disabled: true,
-                color: 'red',
-            },
-            {
-                key: 'C%',
-                values: cData,
-                disabled: true,
-                color: 'blue',
-            },
-            {
-                key: 'G%',
-                values: gData,
-                disabled: true,
-                color: 'black',
-            },
-            {
-                key: 'T%',
-                values: tData,
-                disabled: true,
-                color: 'green',
-            },
-            {
-                key: 'N%',
-                values: nData,
-                disabled: false,
-                color: 'purple',
-            },
-            {
-                key: 'GC%',
-                values: gcData,
-                disabled: true,
-                color: 'orange',
-            },
-        ];
+            myData.push({
+                    key: name + 'N%',
+                    values: nData,
+                    disabled: false,
+                    color: 'purple',
+            });
+            myData.push({
+                    key: name + 'GC%',
+                    values: gcData,
+                    disabled: true,
+                    color: 'orange',
+            });
+        }
 
         nv.addGraph(function() {
             var chart = nv.models.lineChart()

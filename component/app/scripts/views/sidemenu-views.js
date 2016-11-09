@@ -207,6 +207,7 @@ define([
                 'ProjectSettings': 4,
                 'ProjectManageUsers': 5,
                 'ProjectAnalyses': 6,
+                'ProjectMetadata': 7,
             },
         }
     );

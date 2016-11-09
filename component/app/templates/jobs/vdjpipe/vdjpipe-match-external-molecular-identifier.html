@@ -6,7 +6,7 @@
             &nbsp;
             <input
                 class="job-form-item"
-                name="{{inputCount}}-{{parameterType}}-value-name"
+                name="{{parameterType}}-value-name"
                 placeholder="text"
                 type="text"
                 value="{{options.value_name}}"
@@ -19,7 +19,7 @@
             &nbsp;
             <select
                 class="job-form-item"
-                name="{{inputCount}}-{{parameterType}}-fasta-file"
+                name="{{parameterType}}-fasta-file"
             >
                 {{#each files}}
                     <option value={{value.name}}>{{value.name}}</option>
@@ -33,7 +33,7 @@
             &nbsp;
             <select
                 class="job-form-item"
-                name="{{inputCount}}-{{parameterType}}-pairs-file"
+                name="{{parameterType}}-pairs-file"
             >
                 {{#each files}}
                     <option value={{value.name}}>{{value.name}}</option>
