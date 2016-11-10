@@ -393,6 +393,8 @@ function(
                 var parameters = {};
                 var list = [];
 
+                parameters['JobSelected'] = formData['job-selected'];
+
                 // gene segment usage
                 if (formData.hasOwnProperty('gs-sample')) {
                     parameters['GeneSegmentFlag'] = true;
