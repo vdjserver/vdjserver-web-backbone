@@ -155,19 +155,21 @@ define([
             var pendingJobs = new Backbone.Agave.Collection.Jobs.Pending();
             pendingJobs.projectUuid = this.projectUuid;
 
-/*
+
             pendingJobs.fetch()
               .then(function() {
                   return that.jobs.fetch();
-              }
-              .then
-*/
+              })
+              .then(function() {
+                  that.jobs.add(pendingJobs.toJSON());
+              })
 
+/*
             $.when(this.jobs.fetch(), pendingJobs.fetch())
                 // Add VDJ API pending jobs to Agave jobs
                 .then(function() {
                     that.jobs.add(pendingJobs.toJSON());
-                })
+                }) */
                 .then(function() {
                     that.jobs.forEach(function(job) {
                         if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
@@ -985,15 +987,26 @@ define([
             var pm = this.selectAnalyses.processMetadata;
             if (!pm) return;
 
+            for (var group in pm.groups) {
+            }
+
+            this.fileList = [];
+            this.sampleList = [];
+            this.sampleGroupList = [];
             var geneSegmentChart = false;
             for (var group in pm.groups) {
                 if (pm.groups[group]['gene_segment_usage']) geneSegmentChart = true;
+                if (pm.groups[group]['type'] == 'file') this.fileList.push(group);
+                if (pm.groups[group]['type'] == 'sample') this.sampleList.push(group);
+                if (pm.groups[group]['type'] == 'group') this.sampleGroupList.push(group);
             }
 
+            this.chartViews = {};
             this.chartFiles = [];
+            this.cachedGroups = {};
             if (geneSegmentChart) {
                 this.isValid = true;
-                this.chartFiles.push({ id: 'gene_segment_usage', name: 'Gene Segment Usage' });
+                this.chartFiles.push({ id: 'gene_segment_usage', name: 'Gene Segment Usage', files: [], samples: [], sampleGroups: [] });
             }
 
             if (this.isValid) {
@@ -1003,8 +1016,9 @@ define([
         serialize: function() {
             return {
                 chartFiles: this.chartFiles,
-                //canDownloadFiles: this.canDownloadFiles,
-                //projectUuid: this.projectUuid,
+                fileList: this.fileList,
+                sampleList: this.sampleList,
+                sampleGroupList: this.sampleGroupList,
             };
         },
         events: {
@@ -1015,6 +1029,119 @@ define([
             'click .download-file': 'downloadFile',
 
             'click .toggle-legend-btn': 'toggleLegend',
+        },
+
+        afterRender: function() {
+            var that = this;
+            for (var i = 0; i < this.chartFiles.length; ++i) {
+                $(document).ready(function() {
+                    // multi select for files
+                    $('#file-list-' + i).multiselect({
+                        listIndex: i,
+                        onChange: function(option, checked, select) {
+                            if (option) {
+                                var chartId = that.chartFiles[this.options.listIndex];
+                                var groups = chartId['files'];
+                                var newGroups = _.clone(groups);
+                                var groupName = $(option).val();
+                                if (checked) newGroups.push(groupName);
+                                else newGroups.splice(newGroups.indexOf(groupName), 1);
+                                chartId['files'] = newGroups;
+
+                                // redisplay chart
+                                var chart = chartId['view'];
+                                var classSelector = chartId['classSelector'];
+                                if (chart) {
+                                    chart.chart.showLoading('Loading Data...');
+                                    return that._loadChartData(that._chartFilenames(chartId))
+                                    .then(function() {
+                                        var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
+                                        chart.chart.hideLoading();
+                                        return chart.generateChart(chartGroups, that.cachedGroups, classSelector);
+                                    })
+                                }
+                            }
+                        },
+                    });
+
+                    // multi select for samples
+                    $('#sample-list-' + i).multiselect({
+                        listIndex: i,
+                        onChange: function(option, checked, select) {
+                            if (option) {
+                                var chartId = that.chartFiles[this.options.listIndex];
+                                var groups = chartId['samples'];
+                                var newGroups = _.clone(groups);
+                                var groupName = $(option).val();
+                                if (checked) newGroups.push(groupName);
+                                else newGroups.splice(newGroups.indexOf(groupName), 1);
+                                chartId['samples'] = newGroups;
+
+                                // redisplay chart
+                                var chart = chartId['view'];
+                                var classSelector = chartId['classSelector'];
+                                if (chart) {
+                                    chart.chart.showLoading('Loading Data...');
+                                    return that._loadChartData(that._chartFilenames(chartId))
+                                    .then(function() {
+                                        var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
+                                        chart.chart.hideLoading();
+                                        return chart.generateChart(chartGroups, that.cachedGroups, classSelector);
+                                    })
+                                }
+                            }
+                        },
+                    });
+
+                    // multi select for sample groups
+                    $('#sample-group-list-' + i).multiselect({
+                        listIndex: i,
+                        onChange: function(option, checked, select) {
+                            if (option) {
+                                var chartId = that.chartFiles[this.options.listIndex];
+                                var groups = chartId['samples'];
+                                var newGroups = _.clone(groups);
+                                var groupName = $(option).val();
+                                if (checked) newGroups.push(groupName);
+                                else newGroups.splice(newGroups.indexOf(groupName), 1);
+                                chartId['samples'] = newGroups;
+
+                                // redisplay chart
+                                var chart = chartId['view'];
+                                var classSelector = chartId['classSelector'];
+                                if (chart) {
+                                    chart.chart.showLoading('Loading Data...');
+                                    return that._loadChartData(that._chartFilenames(chartId))
+                                    .then(function() {
+                                        var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
+                                        chart.chart.hideLoading();
+                                        return chart.generateChart(chartGroups, that.cachedGroups, classSelector);
+                                    })
+                                }
+                            }
+                        },
+                    });
+
+                    // select one sample by default
+                    // or if no samples then one file
+                    // or if no files then one sample group
+                    // otherwise nothing
+                    var chartId = that.chartFiles[i];
+                    if (that.sampleList.length > 0) {
+                        chartId['samples'] = [ that.sampleList[0] ];
+                        $('#sample-list-' + i).multiselect('select', chartId['samples']);
+                        $('#sample-list-' + i).multiselect('updateButtonText');
+                    } else if (that.fileList.length > 0) {
+                        chartId['files'] = [ that.fileList[0] ];
+                        $('#file-list-' + i).multiselect('select', that.fileList[0]);
+                        $('#file-list-' + i).multiselect('updateButtonText');
+                    } else if (that.sampleGroupList.length > 0) {
+                        chartId['sampleGroups'] = [ that.sampleGroupList[0] ];
+                        $('#sample-group-list-' + i).multiselect('select', that.sampleGroupList[0]);
+                        $('#sample-group-list-' + i).multiselect('updateButtonText');
+                    }
+                });
+            }
         },
 
         hideChart: function(e) {
@@ -1035,27 +1162,32 @@ define([
 
             $('html, body').animate({scrollTop: offset}, 1000);
 
-            $(e.target.closest('tr')).next().hide(1500, function(){
-              $(e.target.closest('tr')).next().remove();
+            $(e.target).parent().parent().parent().next().next().hide(1500, function(){
+              $(e.target).parent().parent().parent().next().next().remove();
             });
+
+/*            $(e.target.closest('tr')).next().hide(1500, function(){
+              $(e.target.closest('tr')).next().remove();
+            }); */
         },
 
         showChart: function(e) {
             e.preventDefault();
 
-            this._uiBeginChartLoading(e.target);
+            var insertPoint = $(e.target).parent().parent().next();
+            this._uiBeginChartLoading(insertPoint);
 
-            var chartId = e.target.dataset.id;
+            var chartId = this.chartFiles[e.target.dataset.tuple];
 
-            // need more space for comparison chart
-            if (chartId == 'qstats' && this.isComparison) this.chartHeight = 720;
-            else this.chartHeight = 360;
+            this.chartHeight = 360;
 
             var classSelector = chance.string({
                 pool: 'abcdefghijklmnopqrstuvwxyz',
                 length: 15,
             });
+            chartId['classSelector'] = classSelector;
 
+/*
             // remove if it exists
             if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
               $(e.target.closest('tr')).next().remove();
@@ -1071,12 +1203,32 @@ define([
                     + '</td>'
                 + '</tr>'
             );
+*/
+
+
+            $(e.target).parent().parent().next().after(
+                '<div>'
+                + '<div class="form-group">'
+                + '<div id="chart-tr-' + classSelector  + '" class="col-md-12">'
+                        + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'
+                            + '<svg style="height: 0px;" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>'
+                        + '</div>'
+                        + '<div class="' + classSelector + '-d3-tip d3-tip hidden"></div>'
+                    + '</div>'
+                    + '</div><hr>'
+                    + '</div>'
+            );
+
 
             $(e.target).addClass('hidden');
             $(e.target).nextAll('#hide-chart').removeClass('hidden');
 
             // Enable download button
             $(e.target).nextAll('#hide-chart').children('.download-chart').attr('data-chart-class-selector', classSelector);
+
+            $('#file-label').removeClass('hidden');
+            $('#sample-label').removeClass('hidden');
+            $('#sample-group-label').removeClass('hidden');
 
             // Clean up any charts that are currently displayed
             this.selectAnalyses.hideWarning();
@@ -1105,12 +1257,13 @@ define([
                 that._uiEndChartLoading();
 
                 var fileHandle;
-                var fileData = chartData.absolute_counts;
+                var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
 
-                switch (chartId) {
+                switch (chartId.id) {
                     case 'gene_segment_usage':
                         $('#chart-legend').show();
-                        Analyses.Charts.GeneDistribution(chartData, classSelector);
+                        chartId['view'] = Analyses.Charts.GeneDistribution;
+                        chartId['view'].generateChart(chartGroups, that.cachedGroups, classSelector);
                         break;
 
                     default:
@@ -1195,22 +1348,51 @@ define([
             $('.chart-loading-view').remove();
         },
         _chartFilenames: function(chartId) {
-            var filenames;
+            var filenames = {};
 
-            filenames = { 'absolute_counts': 'file0_segment_counts.json' };
+            var groups = this.selectAnalyses.processMetadata.groups;
+            var files = this.selectAnalyses.processMetadata.files;
+
+            for (var i = 0; i < chartId['files'].length; ++i) {
+                var g = chartId['files'][i];
+                var group = groups[g][chartId.id];
+                if (group) filenames[g] = files[group['files']].absolute_counts;
+            }
+
+            for (var i = 0; i < chartId['samples'].length; ++i) {
+                var g = chartId['samples'][i];
+                var group = groups[g][chartId.id];
+                if (group) filenames[g] = files[group['files']].absolute_counts;
+            }
 
             return filenames;
         },
         _loadChartData: function(files) {
             var that = this;
-            var filename = files.absolute_counts;
-            var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
-            if (!fileHandle) return $.Deferred().reject('Project is missing chart data file: ' + filename);
 
-            return fileHandle.downloadFileToCache()
-            .then(function(tmpFileData) {
-                return { absolute_counts: tmpFileData };
+            var promises = Object.keys(files).map(function(f) {
+                return function() {
+                    if (that.cachedGroups[f]) return that.cachedGroups[f];
+                    else {
+                        var filename = files[f];
+                        var fileHandle = that.selectAnalyses.collection.getFileByName(filename);
+                        if (!fileHandle) return $.Deferred().reject('Project is missing chart data file: ' + filename);
+
+                        return fileHandle.downloadFileToCache()
+                        .then(function(tmpFileData) {
+                            return that.cachedGroups[f] = tmpFileData;
+                        })
+                    }
+                }
             })
+
+            // Execute promises
+            return promises.reduce(
+                function(previous, current) {
+                    return previous.then(current);
+                },
+                $.Deferred().resolve()
+            )
         }
     });
 
@@ -1897,161 +2079,242 @@ define([
         });
     };
 
-    Analyses.Charts.GeneDistribution = function(text, classSelector) {
+    Analyses.Charts.GeneDistribution = {
 
-        var distribution = JSON.parse(text.absolute_counts);
-        // build series
-        var series = {
-          id: distribution.label,
-          name: distribution.label,
-          data: new Array()
-        };
+        generateChart: function(chartGroups, cachedGroups, classSelector) {
 
-        _.each(distribution.children, function(gene){
-          series.data.push({
-            id: 'parent',
-            name: gene.label,
-            y: gene.value,
-            drilldown: gene.label,
-            color: '#7B94B5'
-          });
-        });
+            var myData = [];
+            var drilldown = {
+              series: new Array()
+            };
 
-        // build drilldown
-        var drilldown = {
-          series: new Array()
-        };
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                var text = cachedGroups[group];
+                var distribution = JSON.parse(text);
 
-        // drilldown level 1
-        _.each(distribution.children, function(gene){
-          var data = [];
-          _.each(gene.children, function(geneChild){
-            data.push({
-              id: 'child',
-              name: geneChild.label,
-              y: geneChild.value,
-              drilldown: geneChild.label,
-              color: '#7B94B5'
+                // build series
+                var series = {
+                  id: group + '.' + distribution.label,
+                  name: group + '.' + distribution.label,
+                  data: new Array()
+                };
+
+                _.each(distribution.children, function(gene){
+                  series.data.push({
+                    id: 'parent',
+                    name: gene.label,
+                    y: gene.absolute,
+                    drilldown: group + '.' + gene.label,
+                    color: '#7B94B5'
+                  });
+                });
+
+                // drilldown level 1
+                _.each(distribution.children, function(gene){
+                  var data = [];
+                  _.each(gene.children, function(geneChild){
+                    data.push({
+                      id: 'child',
+                      name: geneChild.label,
+                      y: geneChild.absolute,
+                      drilldown: group + '.' + geneChild.label,
+                      color: '#7B94B5'
+                    });
+                  });
+                  drilldown.series.push({
+                    id: group + '.' + gene.label,
+                    name: gene.label,
+                    data: data
+                  });
+                });
+
+                // drilldown level 2
+                _.each(distribution.children, function(gene){
+                  _.each(gene.children, function(geneChild){
+                    var data = [];
+                    _.each(geneChild.children, function(geneGrandchild){
+                      data.push({
+                        id: 'grandchild',
+                        name: geneGrandchild.label,
+                        y: geneGrandchild.absolute,
+                        alleles: geneGrandchild.children
+                      });
+                    });
+                    drilldown.series.push({
+                      id: group + '.' + geneChild.label,
+                      name: geneChild.label,
+                      data: data
+                    });
+                  });
+                });
+
+                myData.push(series);
+            }
+
+            Highcharts.setOptions({
+              lang: {
+                thousandsSep: ','
+              }
             });
-          });
-          drilldown.series.push({
-            id: gene.label,
-            name: gene.label,
-            data: data
-          });
-        });
 
-        // drilldown level 2
-        _.each(distribution.children, function(gene){
-          _.each(gene.children, function(geneChild){
-            var data = [];
-            _.each(geneChild.children, function(geneGrandchild){
-              data.push({
-                id: 'grandchild',
-                name: geneGrandchild.label,
-                y: geneGrandchild.value,
-                alleles: geneGrandchild.children
-              });
-            });
-            drilldown.series.push({
-              id: geneChild.label,
-              name: geneChild.label,
-              data: data
-            });
-          });
-        });
+            if (this.chart) { this.chart.destroy(); this.chart = null; }
 
-        Highcharts.setOptions({
-          lang: {
-            thousandsSep: ','
-          }
-        });
-
-        var chart = new Highcharts.Chart({
-            chart: {
-                renderTo: classSelector,
-                type: 'column',
-            },
-            title: {
-                text: ''
-            },
-            credits: {
-               enabled: false
-            },
-            exporting: {
-                enabled: false
-            },
-            xAxis: {
-                labels: {
-                  style: {
-                    color: '#000000',
-                  },
-                  rotation: -90,
+            this.chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: classSelector,
+                    type: 'column',
                 },
-                type: 'category',
-                tickInterval: 1
-            },
-            yAxis: {
                 title: {
                     text: ''
                 },
-                labels: {
-                    style: {
-                        color: '#000000'
+                credits: {
+                   enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    labels: {
+                      style: {
+                        color: '#000000',
+                      },
+                      rotation: -90,
                     },
-                    formatter: function () {
-                        return this.value;
+                    type: 'category',
+                    tickInterval: 1
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    },
+                    labels: {
+                        style: {
+                            color: '#000000'
+                        },
+                        formatter: function () {
+                            return this.value;
+                        }
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                // plotOptions: {
+                //     series: {
+                //         style: {
+                //             color: '#000000'
+                //         },
+                //         borderWidth: 0,
+                //         dataLabels: {
+                //             enabled: true,
+                //             rotation: -45,
+                //             format: '{point.y:,.2f}'
+                //         }
+                //     }
+                // },
+
+                tooltip: {
+                    headerFormat: '<b>Parent: </b> {series.name}<br/>',
+                    pointFormat: '<b>{point.name}: </b>{point.y:,.2f}<br/>',
+                    formatter: function(){
+                      var tooltip = '';
+                      for(var i = 0, length = this.series.points.length; i < length; i++) {
+                        var point = this.series.points[i];
+
+                        if (point.id === 'parent' || point.id === 'child'){
+                          tooltip = '<b>Parent: </b>' + this.series.name + '<br/>'+
+                                    '<b>' + this.key + ': </b>' + Highcharts.numberFormat(this.y, 2) + '<br/>';
+                        }
+
+                        if (point.id === 'grandchild'){
+                          tooltip = '<b>Parent: </b>' + this.series.name + '<br/>'+
+                                    '<b>' + this.key + ': </b>' + Highcharts.numberFormat(this.y, 2) + '<br/>';
+                          if (typeof(this.point.alleles) !== 'undefined'){
+                            tooltip += '<b>Alleles:</b><br/>';
+                            _.each(this.point.alleles, function(allele){
+                              tooltip += '<b>' + allele.label + ': </b>' + Highcharts.numberFormat(allele.count, 2) + '<br/>';
+
+                            });
+                          }
+                        }
+                      }
+                      return tooltip;
                     }
                 },
-            },
-            legend: {
-                enabled: false
-            },
-            // plotOptions: {
-            //     series: {
-            //         style: {
-            //             color: '#000000'
-            //         },
-            //         borderWidth: 0,
-            //         dataLabels: {
-            //             enabled: true,
-            //             rotation: -45,
-            //             format: '{point.y:,.2f}'
-            //         }
-            //     }
-            // },
+                series: myData,
+                drilldown: drilldown
+            });
 
-            tooltip: {
-                headerFormat: '<b>Parent: </b> {series.name}<br/>',
-                pointFormat: '<b>{point.name}: </b>{point.y:,.2f}<br/>',
-                formatter: function(){
-                  var tooltip = '';
-                  for(var i = 0, length = this.series.points.length; i < length; i++) {
-                    var point = this.series.points[i];
+            return this.chart;
+        },
 
-                    if (point.id === 'parent' || point.id === 'child'){
-                      tooltip = '<b>Parent: </b>' + this.series.name + '<br/>'+
-                                '<b>' + this.key + ': </b>' + Highcharts.numberFormat(this.y, 2) + '<br/>';
-                    }
+        addSeries: function(group, cachedGroups) {
+            var that = this;
+            var text = cachedGroups[group];
+            var distribution = JSON.parse(text);
 
-                    if (point.id === 'grandchild'){
-                      tooltip = '<b>Parent: </b>' + this.series.name + '<br/>'+
-                                '<b>' + this.key + ': </b>' + Highcharts.numberFormat(this.y, 2) + '<br/>';
-                      if (typeof(this.point.alleles) !== 'undefined'){
-                        tooltip += '<b>Alleles:</b><br/>';
-                        _.each(this.point.alleles, function(allele){
-                          tooltip += '<b>' + allele.label + ': </b>' + Highcharts.numberFormat(allele.value, 2) + '<br/>';
+            // build series
+            var series = {
+              id: group + '.' + distribution.label,
+              name: group + '.' + distribution.label,
+              data: new Array()
+            };
 
-                        });
-                      }
-                    }
-                  }
-                  return tooltip;
-                }
-            },
-            series: [series],
-            drilldown: drilldown
-          });
+            _.each(distribution.children, function(gene){
+              series.data.push({
+                id: 'parent',
+                name: gene.label,
+                y: gene.absolute,
+                drilldown: group + '.' + gene.label,
+                color: '#7B94B5'
+              });
+            });
+            this.chart.addSeries(series, true);
+
+            // drilldown level 1
+            _.each(distribution.children, function(gene){
+              var data = [];
+              _.each(gene.children, function(geneChild){
+                data.push({
+                  id: 'child',
+                  name: geneChild.label,
+                  y: geneChild.absolute,
+                  drilldown: group + '.' + geneChild.label,
+                  color: '#7B94B5'
+                });
+              });
+              that.chart.addSeriesAsDrilldown({
+                id: group + '.' + gene.label,
+                name: gene.label,
+                data: data
+              });
+            });
+
+            // drilldown level 2
+            _.each(distribution.children, function(gene){
+              _.each(gene.children, function(geneChild){
+                var data = [];
+                _.each(geneChild.children, function(geneGrandchild){
+                  data.push({
+                    id: 'grandchild',
+                    name: geneGrandchild.label,
+                    y: geneGrandchild.absolute,
+                    alleles: geneGrandchild.children
+                  });
+                });
+                that.chart.addSeriesAsDrilldown({
+                  id: group + '.' + geneChild.label,
+                  name: geneChild.label,
+                  data: data
+                });
+              });
+            });
+
+        },
+
+        removeSeries: function(groupName, cachedGroups) {
+        },
     };
 
     Analyses.Charts.Cdr3 = function(fileHandle, text, classSelector) {
