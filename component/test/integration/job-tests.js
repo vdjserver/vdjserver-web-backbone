@@ -247,19 +247,13 @@ define([
             var formData = {
                 'job-name':  'test job',
                 'single_reads': 'on',
-                '0-quality_stats': '',
-                '0-quality_stats-out-prefix': 'pre-filter_',
-                '1-composition_stats': '',
-                '1-composition_stats-out-prefix': 'pre-filter_',
-                '5-length_filter': '',
-                '5-length_filter-max': '',
-                '5-length_filter-min': '0',
-                '6-average_quality_filter': '35',
-                '7-homopolymer_filter': '20',
-                '8-quality_stats': '',
-                '8-quality_stats-out-prefix': 'post-filter_',
-                '9-composition_stats': '',
-                '9-composition_stats-out-prefix': 'post-filter_',
+                'pre_statistics': '',
+                'length_filter': '',
+                'length_filter-max': '',
+                'length_filter-min': '0',
+                'average_quality_filter-min': '35',
+                'homopolymer_filter-max': '20',
+                'post_statistics': '',
             };
 
             var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
