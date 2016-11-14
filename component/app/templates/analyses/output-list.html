@@ -110,9 +110,10 @@
                     >
                         <li class="job-actions">
                             <a
-                                class="job-history"
+                                class="rename-job"
                                 href="#"
                                 data-bypass=true
+                                data-id="{{id}}"
                             >
                                 Rename Job
                             </a>
@@ -123,6 +124,7 @@
                                 class="job-history"
                                 href="#"
                                 data-bypass=true
+                                data-id="{{id}}"
                             >
                                 Show Job History
                             </a>
@@ -130,9 +132,10 @@
 
                         <li class="job-actions">
                             <a
-                                class="job-history"
+                                class="job-to-project-data"
                                 href="#"
                                 data-bypass=true
+                                data-id="{{id}}"
                             >
                                 Show in Project Data
                             </a>
@@ -143,6 +146,7 @@
                                 class="archive-job"
                                 href="#"
                                 data-bypass=true
+                                data-id="{{id}}"
                             >
                                 Archive Job
                             </a>
@@ -215,3 +219,5 @@
         {{/unless}}
     </div>
 </div>
+
+<section id="project-job-history"></section>

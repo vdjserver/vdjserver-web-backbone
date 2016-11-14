@@ -137,6 +137,8 @@ define([
             'click .job-pagination-next': 'jobPaginationNext',
             'click .job-pagination': 'jobPaginationIndex',
             'click .view-config': 'viewConfig',
+
+            'click .job-history': 'showJobHistory',
         },
         serialize: function() {
             return {
@@ -320,6 +322,22 @@ define([
             if (this.currentIterationIndex === this.maxIteratorIndexes) {
                 $('.job-pagination-next').addClass('disabled');
             }
+        },
+
+        showJobHistory: function(e) {
+            e.preventDefault();
+
+            var jobId = e.target.dataset.id;
+
+            this.removeView('#project-job-history');
+
+            var jobHistoryView = new App.Views.Jobs.History({
+                job: this.jobs.get(jobId),
+            });
+
+            this.setView('#project-job-history', jobHistoryView);
+
+            //jobHistoryView.render();
         },
     });
 
