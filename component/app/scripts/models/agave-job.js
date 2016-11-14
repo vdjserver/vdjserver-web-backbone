@@ -685,10 +685,10 @@ function(
 
             var parameters = this._serializeFormData(formData);
             parameters['Creator'] = Backbone.Agave.instance.token().get('username');
-            parameters.SequenceFiles = this._getSequenceFilenames(
-                parameters,
-                selectedFileMetadatas
-            );
+            //parameters.SequenceFiles = this._getSequenceFilenames(
+            //    parameters,
+            //    selectedFileMetadatas
+            //);
 
             var inputFiles = {};
             inputFiles = this._serializeFileInputs(
