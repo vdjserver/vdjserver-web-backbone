@@ -15,18 +15,18 @@ var EnvironmentConfig = {
                 'ls5': {
                     'hostname': 'ls5.tacc.utexas.edu',
                     'apps': {
-                        'vdjPipe': 'vdj_pipe-0.1.6u5',
-                        'igBlast': 'igblast-ls5-1.4.0u10',
-                        'presto': 'presto-ls5-0.5.2u3',
-                        'RepCalc': 'repcalc-ls5-1.0.0'
+                        'vdjPipe': 'vdj_pipe-0.1.6u6',
+                        'igBlast': 'igblast-ls5-1.4.0u13',
+                        'presto': 'presto-ls5-0.5.2u4',
+                        'RepCalc': 'repcalc-ls5-1.0.0u1'
                     },
                     'type': 'large',
                 },
                 'vdjExec02': {
                     'hostname': 'vdj-exec-02.tacc.utexas.edu',
                     'apps': {
-                        'vdjPipe': 'vdj_pipe-small-0.1.6u6',
-                        'presto': 'presto-small-0.5.2u1',
+                        'vdjPipe': 'vdj_pipe-small-0.1.6u7',
+                        'presto': 'presto-small-0.5.2u2',
                     },
                     'type': 'small',
                 },
