@@ -58,7 +58,13 @@
                     {{#each projectFiles}}
                         <tr class="text-center">
                             <td>
-                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{uuid}}">{{value.name}}</button>
+                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{uuid}}">
+                                {{#if this.description}}
+                                    {{this.description}}
+                                {{else}}
+                                    {{value.name}}
+                                {{/if}}
+                                </button>
                             </td>
 
                             <td>
@@ -108,7 +114,13 @@
                     {{#each logFiles}}
                         <tr class="text-center">
                             <td>
-                                <a class="download-file" href="#" data-bypass=true data-filename="{{uuid}}">{{value.name}}</a>
+                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{uuid}}">
+                                {{#if this.description}}
+                                    {{this.description}}
+                                {{else}}
+                                    {{value.name}}
+                                {{/if}}
+                                </button>
                             </td>
 
                             <td>

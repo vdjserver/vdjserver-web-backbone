@@ -264,6 +264,42 @@ function(
         },
     });
 
+    Job.ProcessMetadata = Backbone.Agave.MetadataModel.extend({
+        defaults: function() {
+            return _.extend(
+                {},
+                Backbone.Agave.MetadataModel.prototype.defaults,
+                {
+                    name: 'processMetadata',
+                    owner: '',
+                    value: {
+                    },
+                }
+            );
+        },
+        url: function() {
+            return '/meta/v2/data?q='
+                + encodeURIComponent('{'
+                    + '"name":"processMetadata",'
+                    + '"associationIds":"' + this.get('jobId') + '"'
+                + '}')
+                + '&limit=1';
+        },
+        getDescriptionForFilename: function(filename) {
+            var value = this.get('value');
+            if (!value) return null;
+            if (!value['files']) return null;
+
+            var files = value['files'];
+            for (var f in files) {
+                for (var t in files[f]) {
+                    if (files[f][t]['value'] == filename) return files[f][t]['description'];
+                }
+            }
+            return null;
+        },
+    });
+
     Job.IgBlast = Backbone.Agave.JobModel.extend(
         {
             // Public Methods

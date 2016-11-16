@@ -336,8 +336,6 @@ define([
             });
 
             this.setView('#project-job-history', jobHistoryView);
-
-            //jobHistoryView.render();
         },
     });
 
@@ -358,6 +356,8 @@ define([
 
             this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
 
+            this.processMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: this.jobId});
+
             this.analysisCharts = [];
             this.chartViews = [];
 
@@ -366,6 +366,17 @@ define([
             this.jobDetail.fetch()
                 .then(function() {
                     return that.collection.fetch();
+                })
+                .then(function() {
+                    return that.processMetadata.fetch();
+                })
+                .then(function() {
+                    for (var i = 0; i < that.collection.models.length; ++i) {
+                        var m = that.collection.at(i);
+                        var value = m.get('value');
+                        var desc = that.processMetadata.getDescriptionForFilename(value.name);
+                        if (desc) m.set('description', desc);
+                    }
                 })
                 .done(function() {
 
