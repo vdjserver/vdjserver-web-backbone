@@ -2011,6 +2011,8 @@ define([
         events: {
             'click #launch-delete-project-modal': '_launchDeleteProjectModal',
 
+            'click .switch-archived-jobs': '_switchArchivedJobs',
+
             'click .remove-user-from-project': '_removeUserFromProject',
 
             'click  #delete-project': '_deleteProject',
@@ -2075,6 +2077,30 @@ define([
                     telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
                     telemetry.set('view', 'Projects.Settings._saveProjectName');
+                    telemetry.save();
+                })
+                ;
+        },
+        _switchArchivedJobs: function(e) {
+            e.preventDefault();
+
+            var value = this.model.get('value');
+
+            if (value.showArchivedJobs) value.showArchivedJobs = false;
+            else value.showArchivedJobs = true;
+
+            this.model.set('value', value);
+
+            var that = this;
+            this.model.save()
+                .done(function() {
+                    that.render();
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
+                    telemetry.set('view', 'Projects.Settings._switchArchivedJobs');
                     telemetry.save();
                 })
                 ;
