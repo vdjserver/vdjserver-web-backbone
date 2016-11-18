@@ -99,6 +99,9 @@
                         id="job-action-button"
                         class="btn btn-info dropdown-toggle"
                         data-toggle="dropdown"
+                        {{#unless submitTime}}
+                        disabled
+                        {{/unless}}
                     >
                         Job Actions
                         <i class="fa fa-caret-down"></i>
@@ -108,11 +111,12 @@
                         class="dropdown-menu"
                         role="menu"
                     >
-                        <li class="job-actions">
+                        <li class="job-actions disabled">
                             <a
-                                class="job-history"
+                                class="rename-job"
                                 href="#"
                                 data-bypass=true
+                                data-id="{{id}}"
                             >
                                 Rename Job
                             </a>
@@ -123,6 +127,7 @@
                                 class="job-history"
                                 href="#"
                                 data-bypass=true
+                                data-id="{{id}}"
                             >
                                 Show Job History
                             </a>
@@ -130,19 +135,32 @@
 
                         <li class="job-actions">
                             <a
-                                class="job-history"
+                                class="job-add-project-data"
                                 href="#"
                                 data-bypass=true
+                                data-id="{{id}}"
                             >
-                                Show in Project Data
+                                Add into Project Data
                             </a>
                         </li>
 
                         <li class="job-actions">
                             <a
+                                class="job-remove-project-data"
+                                href="#"
+                                data-bypass=true
+                                data-id="{{id}}"
+                            >
+                                Remove from Project Data
+                            </a>
+                        </li>
+
+                        <li class="job-actions disabled">
+                            <a
                                 class="archive-job"
                                 href="#"
                                 data-bypass=true
+                                data-id="{{id}}"
                             >
                                 Archive Job
                             </a>
@@ -215,3 +233,5 @@
         {{/unless}}
     </div>
 </div>
+
+<section id="project-job-history"></section>

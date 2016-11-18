@@ -216,6 +216,43 @@ define([
         },
     });
 
+    Jobs.History = Backbone.View.extend({
+        // Public Methods
+        template: 'jobs/job-history',
+        initialize: function(parameters) {
+            this.job = parameters.job;
+
+            this.jobHistory = new Backbone.Agave.JobHistory({ jobUuid: this.job.get('id') });
+
+            var that = this;
+            this.jobHistory.fetch()
+            .then(function() {
+                //console.log(that.jobHistory.get('result'));
+                that.render();
+            })
+            .fail(function(error) {
+                var telemetry = new Backbone.Agave.Model.Telemetry();
+                telemetry.setError(error);
+                telemetry.set('method', 'Backbone.Agave.JobHistory.fetch()');
+                telemetry.set('view', 'Jobs.History');
+                telemetry.save();
+            })
+            ;
+        },
+        serialize: function() {
+            return {
+                job: this.job.toJSON(),
+                jobHistoryItems: this.jobHistory.get('result'),
+            };
+        },
+        afterRender: function() {
+            $('#job-modal').modal('show');
+            $('#job-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+    });
+
     Jobs.SelectedFiles = Backbone.View.extend({
         // Public Methods
         template: 'jobs/job-selected-files',

@@ -311,6 +311,8 @@ define([
         initialize: function(parameters) {
 
             this.projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: this.projectUuid});
+            this.projectJobFiles = new Backbone.Agave.Collection.Files.ProjectJobFiles({projectUuid: this.projectUuid});
+            this.projectJobs = new Backbone.Agave.Collection.Jobs.Subset();
 
             // This is a little tricky. If we're arriving from a page
             // refresh, then we are stuck with two asynchronous fetches.
@@ -337,6 +339,8 @@ define([
                 projectModel: this.projectModel,
                 projectUuid: this.projectUuid,
                 projectFiles: this.projectFiles,
+                projectJobFiles: this.projectJobFiles,
+                projectJobs: this.projectJobs,
             };
         },
         _setupSubviews: function() {
@@ -349,6 +353,33 @@ define([
             var that = this;
 
             this.projectFiles.fetch()
+                .then(function() {
+                    return that.projectJobFiles.fetch();
+                })
+                .then(function() {
+                    var jobs = new Set();
+                    for (var i = 0; i < that.projectJobFiles.models.length; ++i) {
+                        var m = that.projectJobFiles.at(i);
+                        var value = m.get('value');
+                        jobs.add(value.jobUuid);
+                    }
+
+                    var entries = jobs.values();
+                    var jobList = '';
+                    var first = true;
+                    var e = entries.next().value;
+                    while (e) {
+                        if (!first) jobList += ',';
+                        jobList += e;
+                        first = false;
+                        e = entries.next().value;
+                    }
+
+                    if (jobList.length > 0) {
+                        that.projectJobs.jobList = jobList;
+                        return that.projectJobs.fetch();
+                    }
+                })
                 .then(function() {
                     loadingView.remove();
                     that.render();
@@ -516,9 +547,10 @@ define([
             });
         },
         serialize: function() {
+            var fileCount = this.projectFiles.getFileCount() + this.projectJobFiles.getFileCount();
             return {
                 project: this.projectModel.toJSON(),
-                fileListingCount: this.projectFiles.getFileCount() + ' files',
+                fileListingCount: fileCount + ' files',
                 userCount: this.projectUsers.getUserCount(),
             };
         },
@@ -746,9 +778,16 @@ define([
 
             this.parentView.removeView('#project-job-staging');
 
-            var selectedFileMetadataUuids = this._getSelectedFileUuids();
+            var selectedFileMetadataUuids = this._getSelectedFileUuids(true);
             var selectedFileListings = this.projectFiles.getNewCollectionForUuids(selectedFileMetadataUuids);
             var filteredFileListings = this.projectFiles.getNewCollectionForUuids(selectedFileMetadataUuids);
+
+            selectedFileMetadataUuids = this._getSelectedFileUuids(false);
+            selectedFileListings.add(this.projectJobFiles.getNewCollectionForUuids(selectedFileMetadataUuids).models);
+            filteredFileListings.add(this.projectJobFiles.getNewCollectionForUuids(selectedFileMetadataUuids).models);
+
+            var allFiles = this.projectFiles.clone();
+            allFiles.add(this.projectJobFiles.models);
 
             // Remove qual files here
             selectedFileListings.forEach(function(model) {
@@ -761,19 +800,19 @@ define([
             var jobSubmitView = new App.Views.Jobs.Submit({
                 selectedFileListings: filteredFileListings,
                 projectModel: this.projectModel,
-                allFiles: this.projectFiles,
+                allFiles: allFiles,
             });
 
             var stagingSubview = new StagingSubview({
                 selectedFileListings: filteredFileListings,
                 projectModel: this.projectModel,
-                allFiles: this.projectFiles,
+                allFiles: allFiles,
             });
 
             var selectionSubview = new SelectionSubview({
                 selectedFileListings: filteredFileListings,
                 projectModel: this.projectModel,
-                allFiles: this.projectFiles,
+                allFiles: allFiles,
             });
 
             jobSubmitView.setView('#job-selection-subview', selectionSubview);
@@ -789,7 +828,7 @@ define([
         /**
          *  Files
          */
-        _getSelectedFileUuids: function() {
+        _getSelectedFileUuids: function(forProject) {
 
             var that = this;
 
@@ -797,16 +836,22 @@ define([
 
             $('.selected-files:checked').each(function() {
                 var uuid = $(this).val();
-                selectedFileMetadataUuids.push(uuid);
 
-                var model = that.projectFiles.get(uuid);
+                var model;
+                if (forProject) model = that.projectFiles.get(uuid);
+                else model = that.projectJobFiles.get(uuid);
+
+                if (!model) return;
+                selectedFileMetadataUuids.push(uuid);
 
                 var pairedUuid = model.getPairedReadMetadataUuid();
 
                 if (model.getQualityScoreMetadataUuid()) {
-                    var qualModel = that.projectFiles.get(model.getQualityScoreMetadataUuid());
-                    var qualUuid = qualModel.get('uuid');
-                    selectedFileMetadataUuids.push(qualUuid);
+                    if (forProject) {
+                        var qualModel = that.projectFiles.get(model.getQualityScoreMetadataUuid());
+                        var qualUuid = qualModel.get('uuid');
+                        selectedFileMetadataUuids.push(qualUuid);
+                    }
                 }
 
                 // If we're dealing with a paired read,
@@ -1028,14 +1073,24 @@ define([
 
                 // Remove associated quals from file listing since they're embedded now
                 this.singleReadFileListings.remove(embeddedSingleReadQualModels);
+
             },
             serialize: function() {
+                // Job output files
+                for (var i = 0; i < this.projectJobs.models.length; ++i) {
+                    var m = this.projectJobs.at(i);
+                    var fileCollection = this.projectJobFiles.getFilesForJobId(m.get('id'));
+                    fileCollection = fileCollection.getProjectFileOutput();
+                    m.set('fileCollection', fileCollection.toJSON());
+                }
+
                 return {
                     singleReadFileListings: this.singleReadFileListings.toJSON(),
                     pairedReadFileListings: this.pairedReads,
                     readDirections: Backbone.Agave.Model.File.Metadata.getReadDirections(),
                     fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
                     fileTypeNames: Backbone.Agave.Model.File.Metadata.getNamesForFileTypes(Backbone.Agave.Model.File.Metadata.getFileTypes()),
+                    projectJobs: this.projectJobs.toJSON(),
                 };
             },
             events: {
@@ -1134,6 +1189,7 @@ define([
                 var fileTypeId = parseInt(e.currentTarget.value);
 
                 var fileMetadata = this.projectFiles.get(e.target.dataset.fileuuid);
+                if (!fileMetadata) fileMetadata = this.projectJobFiles.get(e.target.dataset.fileuuid);
 
                 fileMetadata.updateFileType(fileTypeId)
                     .then(function() {
@@ -1162,6 +1218,7 @@ define([
                 var that = this;
 
                 var fileMetadata = this.projectFiles.get(e.target.dataset.fileuuid);
+                if (!fileMetadata) fileMetadata = this.projectJobFiles.get(e.target.dataset.fileuuid);
 
                 fileMetadata.setReadDirection(e.target.value)
                     .done(function() {
@@ -1185,6 +1242,8 @@ define([
                 var that = this;
 
                 var fileMetadata = this.projectFiles.get(e.target.dataset.fileuuid);
+                if (!fileMetadata) fileMetadata = this.projectJobFiles.get(e.target.dataset.fileuuid);
+
                 fileMetadata.updateTags(e.target.value)
                     .done(function() {
                         that._uiShowSaveSuccessAnimation(e.target);
@@ -2011,6 +2070,8 @@ define([
         events: {
             'click #launch-delete-project-modal': '_launchDeleteProjectModal',
 
+            'click .switch-archived-jobs': '_switchArchivedJobs',
+
             'click .remove-user-from-project': '_removeUserFromProject',
 
             'click  #delete-project': '_deleteProject',
@@ -2075,6 +2136,30 @@ define([
                     telemetry.setError(error);
                     telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
                     telemetry.set('view', 'Projects.Settings._saveProjectName');
+                    telemetry.save();
+                })
+                ;
+        },
+        _switchArchivedJobs: function(e) {
+            e.preventDefault();
+
+            var value = this.model.get('value');
+
+            if (value.showArchivedJobs) value.showArchivedJobs = false;
+            else value.showArchivedJobs = true;
+
+            this.model.set('value', value);
+
+            var that = this;
+            this.model.save()
+                .done(function() {
+                    that.render();
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', 'Backbone.Agave.Model.Project.save()');
+                    telemetry.set('view', 'Projects.Settings._switchArchivedJobs');
                     telemetry.save();
                 })
                 ;

@@ -31,7 +31,8 @@ function(
                         'contact_institution': '',
                         'contact_email': '',
                         'publications': '',
-                        'ncbi_bioproject': ''
+                        'ncbi_bioproject': '',
+                        'showArchivedJobs': false
                     }
                 }
             );

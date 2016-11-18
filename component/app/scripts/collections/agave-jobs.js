@@ -58,6 +58,30 @@ define([
         },
     });
 
+    Jobs.Subset = Backbone.Agave.Collection.extend({
+        model: Backbone.Agave.Model.Job.Detail,
+        comparator: function(modelA, modelB) {
+            // pending/queued/running etc on top
+            if (modelA.get('submitTime').length == 0) return -1;
+
+            var modelAEndDate = moment(modelA.get('submitTime'));
+            var modelBEndDate = moment(modelB.get('submitTime'));
+
+            if (modelAEndDate > modelBEndDate) {
+                return -1;
+            }
+            else if (modelBEndDate > modelAEndDate) {
+                return 1;
+            }
+
+            // Equal
+            return 0;
+        },
+        url: function() {
+            return '/jobs/v2/?filter=*&id.in=' + this.jobList;
+        },
+    });
+
     Jobs.OutputFiles = Backbone.Agave.PaginatedCollection.extend({
         model: Backbone.Agave.Model.Job.OutputFile,
         initialize: function(parameters) {
@@ -227,7 +251,43 @@ define([
             return newCollection;
         },
     });
+/*
+    Jobs.ProjectDataFiles = Jobs.OutputFiles.extend({
+        initialize: function(parameters) {
 
+            Jobs.OutputFiles.prototype.initialize.apply(this, [parameters]);
+
+            if (parameters && parameters.projectUuid) {
+                this.projectUuid = parameters.projectUuid;
+            }
+        },
+        url: function() {
+            return '/meta/v2/data?q='
+                   + encodeURIComponent('{'
+                       + '"name": "projectJobFile",'
+                       + '"value.projectUuid":"' + this.projectUuid + '",'
+                       + '"value.isDeleted":false,"value.showInProjectData":true'
+                   + '}')
+                   + '&limit=' + this.limit
+                   + '&offset=' + this.offset
+                   ;
+        },
+        getFilesForJobId: function(jobId) {
+
+            // Filter down to files for the given job
+            var fileModels = _.filter(this.models, function(model) {
+                var value = model.get('value');
+                return value.jobUuid === jobId;
+            });
+
+            var fileCollection = this.clone();
+            fileCollection.reset();
+            fileCollection.add(fileModels);
+
+            return fileCollection;
+        },
+    });
+*/
     Jobs.Listings = Backbone.Agave.MetadataCollection.extend(
         _.extend({}, ComparatorsMixin.reverseChronologicalCreatedTime, {
             model: Backbone.Agave.Model.Job.Listing,

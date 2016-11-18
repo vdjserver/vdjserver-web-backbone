@@ -577,6 +577,29 @@ define([
 
     });
 
+    // job history is not normal Agave metadata
+    Agave.JobHistory = Agave.Model.extend({
+        initialize: function(parameters) {
+            if (parameters && parameters.jobUuid) {
+                this.jobUuid = parameters.jobUuid;
+            }
+
+            this.retrySyncEngine = Agave.sync;
+            this.retrySyncLimit = 3;
+        },
+        apiHost: EnvironmentConfig.agave.hostname,
+        authType: 'oauth',
+        sync: Backbone.RetrySync,
+        requiresAuth: true,
+        url: function() {
+            return '/jobs/v2/' + this.jobUuid + '/history';
+        },
+        parse: function(response) {
+            // override Backbone.Agave.Model to return full response
+            return response;
+        },
+    });
+
     // Required Auth package
     var Auth = Agave.Auth = {};
 

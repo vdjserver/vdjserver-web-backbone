@@ -58,7 +58,13 @@
                     {{#each projectFiles}}
                         <tr class="text-center">
                             <td>
-                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{uuid}}">{{value.name}}</button>
+                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{uuid}}">
+                                {{#if this.description}}
+                                    {{this.description}}
+                                {{else}}
+                                    {{value.name}}
+                                {{/if}}
+                                </button>
                             </td>
 
                             <td>
@@ -66,7 +72,11 @@
                             </td>
 
                             <td>
-                                <button type="button" class="btn btn-primary" data-filename="{{uuid}}">Make Available in Project Data Area</button>
+                                {{#if value.showInProjectData}}
+                                <button type="button" class="btn btn-warning switch-project-data" data-filename="{{uuid}}">Remove from Project Data Area</button>
+                                {{else}}
+                                <button type="button" class="btn btn-primary switch-project-data" data-filename="{{uuid}}">Make Available in Project Data Area</button>
+                                {{/if}}
                             </td>
                         </tr>
                     {{/each}}
@@ -108,7 +118,13 @@
                     {{#each logFiles}}
                         <tr class="text-center">
                             <td>
-                                <a class="download-file" href="#" data-bypass=true data-filename="{{uuid}}">{{value.name}}</a>
+                                <button class="btn btn-default download-file" data-bypass=true data-filename="{{uuid}}">
+                                {{#if this.description}}
+                                    {{this.description}}
+                                {{else}}
+                                    {{value.name}}
+                                {{/if}}
+                                </button>
                             </td>
 
                             <td>

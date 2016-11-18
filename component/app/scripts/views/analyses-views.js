@@ -121,6 +121,8 @@ define([
             this.paginatedJobs = new Backbone.Agave.Collection.Jobs();
             this.jobs.projectUuid = this.projectUuid;
 
+            this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid});
+
             this.iteratorRange = 10;
 
             if (_.isNumber(this.paginationIndex) !== true) {
@@ -137,6 +139,10 @@ define([
             'click .job-pagination-next': 'jobPaginationNext',
             'click .job-pagination': 'jobPaginationIndex',
             'click .view-config': 'viewConfig',
+
+            'click .job-history': 'showJobHistory',
+            'click .job-add-project-data': 'addJobOutputToProjectData',
+            'click .job-remove-project-data': 'removeJobOutputFromProjectData',
         },
         serialize: function() {
             return {
@@ -145,6 +151,10 @@ define([
                 paginationSets: this.paginationSets,
             };
         },
+        afterRender: function() {
+            this.setupModalView();
+        },
+
         fetchJobs: function() {
             var loadingView = new App.Views.Util.Loading({keep: true});
             this.setView(loadingView);
@@ -156,20 +166,13 @@ define([
             pendingJobs.projectUuid = this.projectUuid;
 
 
-            pendingJobs.fetch()
-              .then(function() {
-                  return that.jobs.fetch();
-              })
-              .then(function() {
-                  that.jobs.add(pendingJobs.toJSON());
-              })
-
-/*
             $.when(this.jobs.fetch(), pendingJobs.fetch())
                 // Add VDJ API pending jobs to Agave jobs
                 .then(function() {
                     that.jobs.add(pendingJobs.toJSON());
-                }) */
+
+                    return that.jobListings.fetch();
+                })
                 .then(function() {
                     that.jobs.forEach(function(job) {
                         if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
@@ -252,6 +255,7 @@ define([
 
         jobPaginationPrevious: function(e) {
             e.preventDefault();
+            this.removeView('#project-job-history');
 
             if (this.currentIterationIndex - 1 >= 1) {
                 this.currentIterationIndex -= 1;
@@ -268,6 +272,7 @@ define([
 
         jobPaginationNext: function(e) {
             e.preventDefault();
+            this.removeView('#project-job-history');
 
             if (this.currentIterationIndex + 1 <= this.maxIteratorIndexes) {
                 this.currentIterationIndex += 1;
@@ -284,6 +289,7 @@ define([
 
         jobPaginationIndex: function(e) {
             e.preventDefault();
+            this.removeView('#project-job-history');
 
             this.currentIterationIndex = parseInt(e.target.dataset.id);
 
@@ -321,6 +327,146 @@ define([
                 $('.job-pagination-next').addClass('disabled');
             }
         },
+
+        showJobHistory: function(e) {
+            e.preventDefault();
+
+            var jobId = e.target.dataset.id;
+
+            this.removeView('#project-job-history');
+
+            var jobHistoryView = new App.Views.Jobs.History({
+                job: this.jobs.get(jobId),
+            });
+
+            this.setView('#project-job-history', jobHistoryView);
+        },
+
+        setupModalView: function() {
+
+            var message = new App.Models.MessageModel({
+                'header': 'Job Output in Project Data',
+                'body':   '<p>Please wait while modifying job output for project data...</p>'
+            });
+
+            var modal = new App.Views.Util.ModalMessageConfirm({
+                model: message
+            });
+
+            $('<div id="modal-view">').appendTo(this.el);
+
+            this.setView('#modal-view', modal);
+            modal.render();
+
+        },
+
+        addJobOutputToProjectData: function(e) {
+            e.preventDefault();
+
+            var jobId = e.target.dataset.id;
+
+            var that = this;
+
+            $('#modal-message').modal('show')
+              .on('shown.bs.modal', function() {
+
+                // see if any are deleted
+                var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId});
+
+                fileCollection.fetch()
+                .then(function() {
+                      var projectFiles = fileCollection.getProjectFileOutput();
+                      var promises = [];
+
+                      // Set up promises
+                      projectFiles.map(function(outputFile) {
+                          promises[promises.length] = function() {
+                              var value = outputFile.get('value');
+                              value.showInProjectData = true;
+                              outputFile.set('value', value);
+                              return outputFile.save();
+                          }
+                      });
+
+                      // Execute promises
+                      return promises.reduce(
+                          function(previous, current) {
+                              return previous.then(current);
+                          },
+                          $.Deferred().resolve()
+                      )
+                })
+                .always(function() {
+                    $('#modal-message')
+                      .modal('hide')
+                      .on('hidden.bs.modal', function() {
+                          that.render();
+                      })
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', 'addJobOutputToProjectData()');
+                    telemetry.set('view', 'Analyses.OutputList');
+                    telemetry.save();
+                })
+                ;
+            })
+        },
+
+        removeJobOutputFromProjectData: function(e) {
+            e.preventDefault();
+
+            var jobId = e.target.dataset.id;
+
+            var that = this;
+
+            $('#modal-message').modal('show')
+              .on('shown.bs.modal', function() {
+
+                // see if any are deleted
+                var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId});
+
+                fileCollection.fetch()
+                .then(function() {
+                      var projectFiles = fileCollection.getProjectFileOutput();
+                      var promises = [];
+
+                      // Set up promises
+                      projectFiles.map(function(outputFile) {
+                          promises[promises.length] = function() {
+                              var value = outputFile.get('value');
+                              value.showInProjectData = false;
+                              outputFile.set('value', value);
+                              return outputFile.save();
+                          }
+                      });
+
+                      // Execute promises
+                      return promises.reduce(
+                          function(previous, current) {
+                              return previous.then(current);
+                          },
+                          $.Deferred().resolve()
+                      )
+                })
+                .always(function() {
+                    $('#modal-message')
+                      .modal('hide')
+                      .on('hidden.bs.modal', function() {
+                          that.render();
+                      })
+                })
+                .fail(function(error) {
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', 'removeJobOutputFromProjectData()');
+                    telemetry.set('view', 'Analyses.OutputList');
+                    telemetry.save();
+                })
+                ;
+            })
+        },
     });
 
     Analyses.SelectAnalyses = Backbone.View.extend({
@@ -340,6 +486,8 @@ define([
 
             this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
 
+            this.jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: this.jobId});
+
             this.analysisCharts = [];
             this.chartViews = [];
 
@@ -349,48 +497,50 @@ define([
                 .then(function() {
                     return that.collection.fetch();
                 })
+                .then(function() {
+                    return that.jobProcessMetadata.fetch();
+                })
+                .then(function() {
+                    for (var i = 0; i < that.collection.models.length; ++i) {
+                        var m = that.collection.at(i);
+                        var value = m.get('value');
+                        var desc = that.jobProcessMetadata.getDescriptionForFilename(value.name);
+                        if (desc) m.set('description', desc);
+                    }
+                })
                 .done(function() {
 
                     // check for process metadata
-                    var processMetadataFile = that.collection.getProcessMetadataFile();
-                    if (processMetadataFile) {
-                        processMetadataFile.downloadFileToCache()
-                            .then(function(tmpFileData) {
-                                try {
-                                    that.processMetadata = JSON.parse(tmpFileData);
-
-                                    switch (that.processMetadata.process.appName) {
-                                        case('vdjPipe'):
-                                        case('presto'):
-                                            for (var group in that.processMetadata.groups) {
-                                                console.log(group);
-                                                var chart = new Analyses.Statistics({selectAnalyses: that, groupId: group});
-                                                if (chart.isValid) {
-                                                    that.analysisCharts.push({ groupId: group });
-                                                    that.chartViews.push(chart);
-                                                    that.setView('#analysis-charts-'+group, chart);
-                                                }
-                                            }
-                                            break;
-                                        case('igBlast'):
-                                            break;
-                                        case('RepCalc'):
-                                            var chart = new Analyses.RepertoireComparison({selectAnalyses: that});
-                                            if (chart.isValid) {
-                                                that.analysisCharts.push({ groupId: 'repertoire-comparison' });
-                                                that.chartViews.push(chart);
-                                                that.setView('#analysis-charts-repertoire-comparison', chart);
-                                            }
-                                            break;
-
+                    that.processMetadata = that.jobProcessMetadata.get('value');
+                    if (that.processMetadata) {
+                        switch (that.processMetadata.process.appName) {
+                            case('vdjPipe'):
+                            case('presto'):
+                                for (var group in that.processMetadata.groups) {
+                                    console.log(group);
+                                    var chart = new Analyses.Statistics({selectAnalyses: that, groupId: group});
+                                    if (chart.isValid) {
+                                        that.analysisCharts.push({ groupId: group });
+                                        that.chartViews.push(chart);
+                                        that.setView('#analysis-charts-'+group, chart);
                                     }
-                                } catch (error) {
-                                    // TODO
-                                } finally {
-                                    loadingView.remove();
-                                    that.render();
                                 }
-                            })
+                                break;
+                            case('igBlast'):
+                                break;
+                            case('RepCalc'):
+                                var chart = new Analyses.RepertoireComparison({selectAnalyses: that});
+                                if (chart.isValid) {
+                                    that.analysisCharts.push({ groupId: 'repertoire-comparison' });
+                                    that.chartViews.push(chart);
+                                    that.setView('#analysis-charts-repertoire-comparison', chart);
+                                }
+                                break;
+
+                        }
+
+                        loadingView.remove();
+                        that.render();
                     } else {
                         // only vdjpipe
                         var appId = that.jobDetail.get('appId');
@@ -434,6 +584,8 @@ define([
             'click .hide-log': 'hideLog',
 
             'click .download-file': 'downloadFile',
+
+            'click .switch-project-data': 'switchProjectData',
 
             'click .toggle-legend-btn': 'toggleLegend',
         },
@@ -558,6 +710,33 @@ define([
                   })
                   ;
         },
+
+        switchProjectData: function(e) {
+            e.preventDefault();
+
+            var uuid = e.target.dataset.filename;
+            var outputFile = this.collection.get(uuid);
+
+            var value = outputFile.get('value');
+            if (value.showInProjectData) value.showInProjectData = false;
+            else value.showInProjectData = true;
+            outputFile.set('value', value);
+
+            var that = this;
+            outputFile.save()
+                .then(function() {
+                    that.render();
+                })
+                .fail(function(error) {
+                      var telemetry = new Backbone.Agave.Model.Telemetry();
+                      telemetry.setError(error);
+                      telemetry.set('method', 'Backbone.Agave.Model.Job.OutputFile.save()');
+                      telemetry.set('view', 'Analyses.SelectAnalyses.switchProjectData');
+                      telemetry.save();
+                  })
+                  ;
+        },
+
         getErrorMessageFromResponse: function(response) {
             var txt;
 
@@ -626,7 +805,7 @@ define([
                       this.isValid = true;
                       this.isComparison = false;
                       var fileKey = pm.groups[this.groupId][key]['files'];
-                      var filename = pm.files[fileKey]['composition'];
+                      var filename = pm.files[fileKey]['composition']['value'];
                       var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
                       if (!fileHandle) this.isValid = false;
                   }
@@ -634,7 +813,7 @@ define([
                       this.isValid = true;
                       this.isComparison = true;
                       var fileKey = pm.groups[this.groupId][key]['files'];
-                      var filename = pm.files[fileKey]['composition'];
+                      var filename = pm.files[fileKey]['composition']['value'];
                       var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
                       if (!fileHandle) this.isValid = false;
                   }
@@ -926,13 +1105,13 @@ define([
                 var pm = this.selectAnalyses.processMetadata;
                 if (this.isComparison) {
                     var fileKey = pm.groups[this.groupId]['pre']['files'];
-                    var preName = pm.files[fileKey][chartId];
+                    var preName = pm.files[fileKey][chartId]['value'];
                     fileKey = pm.groups[this.groupId]['post']['files'];
-                    var postName = pm.files[fileKey][chartId];
+                    var postName = pm.files[fileKey][chartId]['value'];
                     filenames = { pre: preName, post: postName };
                 } else {
                     var fileKey = pm.groups[this.groupId]['stats']['files'];
-                    var statsName = pm.files[fileKey][chartId];
+                    var statsName = pm.files[fileKey][chartId]['value'];
                     filenames = { stats: statsName };
                 }
             } else {

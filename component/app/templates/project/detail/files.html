@@ -337,18 +337,58 @@
                     {{/each}}
                     {{!-- End Paired Reads --}}
 
+                    {{!-- Start Project Job Files --}}
+                    {{#each projectJobs}}
+                        <tr class="text-left">
+                            <td colspan=8>
+                                <b>Output Files for Job: {{this.name}}</b>
+                            </td>
+                        </tr>
+                        {{#each this.fileCollection}}
+                        <tr class="text-center">
+                            <td>
+                                <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
+                            </td>
+                            <td>
+                                {{this.value.name}}
+                            </td>
+                            <td>
+                                {{> project-file-list-last-modified this}}
+                            </td>
+                            <td>
+                                {{> project-file-list-size this}}
+                            </td>
+                            <td>
+                                {{> project-file-list-origin this}}
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <select
+                                            class="project-file-type"
+                                            data-fileuuid="{{uuid}}"
+                                        >
+                                            {{#each ../../fileTypes}}
+                                                <option {{ifCondSelected this ../this.value.fileType}} value="{{this}}">
+                                                    {{#with (lookup ../../../fileTypeNames @index)}} {{this}} {{/with}}
+                                                </option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {{> project-file-list-tags this}}
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    {{/each}}
+                    {{!-- End Project Job Files --}}
 
                 </tbody>
             </table>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h2>
-                <div class="alert alert-primary">
-                    Job Output Files
-                </div>
-            </h2>
         </div>
     </div>
 {{else}}

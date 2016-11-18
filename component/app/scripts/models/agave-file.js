@@ -194,11 +194,11 @@ function(
             UPLOAD_PROGRESS: 'uploadProgress',
 
             fileTypeCodes: {
-                FILE_TYPE_BARCODE: 0,
+                FILE_TYPE_UNSPECIFIED: 0,
                 FILE_TYPE_PRIMER: 1,
                 FILE_TYPE_READ: 2,
                 FILE_TYPE_BARCODE_COMBO: 3, // deprecated
-                FILE_TYPE_UNSPECIFIED: 4,
+                FILE_TYPE_BARCODE: 4,
                 FILE_TYPE_QUALITY: 5,
                 FILE_TYPE_TSV: 6,
                 FILE_TYPE_CSV: 7,
@@ -209,11 +209,11 @@ function(
 
             // index should map to codes
             fileTypeNames: [
-                'Barcode Sequences',
+                'Unspecified',
                 'Primer Sequences',
                 'Read-Level Data',
                 'Barcode Combinations', // deprecated
-                'Unspecified',
+                'Barcode Sequences',
                 'Quality Scores',
                 'TAB-separated Values',
                 'Comma-separated Values',
@@ -726,12 +726,13 @@ function(
 
             getFileTypes: function() {
                 return [
+                    File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
+                    File.fileTypeCodes.FILE_TYPE_READ,
                     File.fileTypeCodes.FILE_TYPE_BARCODE,
                     File.fileTypeCodes.FILE_TYPE_PRIMER,
-                    File.fileTypeCodes.FILE_TYPE_READ,
-                    File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
                     File.fileTypeCodes.FILE_TYPE_QUALITY,
                     File.fileTypeCodes.FILE_TYPE_TSV,
+                    File.fileTypeCodes.FILE_TYPE_VDJML,
                 ];
             },
 
