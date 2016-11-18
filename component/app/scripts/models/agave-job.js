@@ -168,6 +168,12 @@ function(
     Job.OutputFile = Backbone.Agave.MetadataModel.extend(
         _.extend({}, FileTransferMixins, {
             idAttribute: 'uuid',
+            sync: function(method, model, options) {
+                return Backbone.Agave.PutOverrideSync(method, this, options);
+            },
+            url: function() {
+                return '/meta/v2/data/' + this.get('uuid');
+            },
             downloadFileToCache: function() {
 
                 var value = this.get('value');

@@ -57,8 +57,8 @@ function(
                 if (parameters && parameters.projectUuid) {
                     this.projectUuid = parameters.projectUuid;
                 }
-                this.includeJobFiles = true;
-                if (parameters && !parameters.includeJobFiles) this.includeJobFiles = false;
+                this.includeJobFiles = false;
+                //if (parameters && parameters.includeJobFiles) this.includeJobFiles = true;
             },
             url: function() {
                 if (this.includeJobFiles) {
@@ -791,6 +791,78 @@ function(
             },
         }
     );
+
+    Files.ProjectJobFiles = Files.Metadata.extend({
+        url: function() {
+            return '/meta/v2/data?q='
+                   + encodeURIComponent('{'
+                       + '"name": "projectJobFile",'
+                       + '"value.projectUuid":"' + this.projectUuid + '",'
+                       + '"value.isDeleted":false,"value.showInProjectData":true'
+                   + '}')
+                   + '&limit=' + this.limit
+                   + '&offset=' + this.offset
+                   ;
+        },
+
+        getFilesForJobId: function(jobId) {
+
+            // Filter down to files for the given job
+            var fileModels = _.filter(this.models, function(model) {
+                var value = model.get('value');
+                return value.jobUuid === jobId;
+            });
+
+            var fileCollection = this.clone();
+            fileCollection.reset();
+            fileCollection.add(fileModels);
+
+            return fileCollection;
+        },
+
+        getProjectFileOutput: function() {
+            var filteredCollection = this.filter(function(model) {
+
+                var value = model.get('value');
+                if (value.name) {
+
+                    var filename = value.name;
+
+                    var fileNameSplit = filename.split('.');
+                    var fileExtension = fileNameSplit[fileNameSplit.length - 1];
+
+                    var doubleFileExtension = fileNameSplit[fileNameSplit.length - 2] + '.' + fileNameSplit[fileNameSplit.length - 1];
+
+                    var test = fileNameSplit[fileNameSplit.length - 100];
+
+                    // Whitelisted files
+                    if (fileExtension === 'fasta'
+                        ||
+                        fileExtension === 'fastq'
+                        ||
+                        fileExtension === 'vdjml'
+                        ||
+                        fileExtension === 'zip'
+                        ||
+                        doubleFileExtension === 'rc_out.tsv'
+                        ||
+                        doubleFileExtension === 'duplicates.tsv'
+                    ) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(filteredCollection);
+
+            return newCollection;
+        },
+    });
 
     Backbone.Agave.Collection.Files = Files;
     return Files;

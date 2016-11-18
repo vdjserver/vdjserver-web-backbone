@@ -99,6 +99,9 @@
                         id="job-action-button"
                         class="btn btn-info dropdown-toggle"
                         data-toggle="dropdown"
+                        {{#unless submitTime}}
+                        disabled
+                        {{/unless}}
                     >
                         Job Actions
                         <i class="fa fa-caret-down"></i>
@@ -108,7 +111,7 @@
                         class="dropdown-menu"
                         role="menu"
                     >
-                        <li class="job-actions">
+                        <li class="job-actions disabled">
                             <a
                                 class="rename-job"
                                 href="#"
@@ -132,16 +135,27 @@
 
                         <li class="job-actions">
                             <a
-                                class="job-to-project-data"
+                                class="job-add-project-data"
                                 href="#"
                                 data-bypass=true
                                 data-id="{{id}}"
                             >
-                                Show in Project Data
+                                Add into Project Data
                             </a>
                         </li>
 
                         <li class="job-actions">
+                            <a
+                                class="job-remove-project-data"
+                                href="#"
+                                data-bypass=true
+                                data-id="{{id}}"
+                            >
+                                Remove from Project Data
+                            </a>
+                        </li>
+
+                        <li class="job-actions disabled">
                             <a
                                 class="archive-job"
                                 href="#"
