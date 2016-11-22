@@ -814,53 +814,58 @@ define([
                 // collect files from selected job
                 this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: repcalcForm['job-selected']});
 
+                this.jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: repcalcForm['job-selected']});
+
                 var that = this;
 
                 return this.collection.fetch()
                   .then(function() {
-                      var processMetadataFile = that.collection.getProcessMetadataFile();
-                      if (processMetadataFile) return processMetadataFile.downloadFileToCache();
-                      else return $.Deferred().reject('Job is missing process metadata.');
+                      return that.jobProcessMetadata.fetch();
                   })
-                  .then(function(tmpFileData) {
-                      that.processMetadata = JSON.parse(tmpFileData);
+                  .then(function() {
+                      // check for process metadata
+                      that.processMetadata = that.jobProcessMetadata.get('value');
 
-                      // gather list of output files
-                      var outputFiles = [];
-                      for (var group in that.processMetadata.groups) {
-                          for (var gtype in that.processMetadata.groups[group]) {
-                              if (that.processMetadata.groups[group][gtype].type == 'output')
-                                  outputFiles.push(that.processMetadata.groups[group][gtype].files);
+                      if (that.processMetadata.groups) {
+                          // gather list of output files
+                          var outputFiles = [];
+                          for (var group in that.processMetadata.groups) {
+                              for (var gtype in that.processMetadata.groups[group]) {
+                                  if (that.processMetadata.groups[group][gtype].type == 'output')
+                                      outputFiles.push(that.processMetadata.groups[group][gtype].files);
+                              }
                           }
+
+                          // get VDJML and summary files from output list
+                          that.VDJMLFiles = that.selectedFileListings.clone();
+                          that.VDJMLFiles.reset();
+                          that.SummaryFiles = that.selectedFileListings.clone();
+                          that.SummaryFiles.reset();
+                          for (var i = 0; i < outputFiles.length; ++i) {
+                              if (that.processMetadata.files[outputFiles[i]].vdjml) {
+                                  that.VDJMLFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].vdjml.value));
+                              }
+                              if (that.processMetadata.files[outputFiles[i]].summary) {
+                                  that.SummaryFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].summary.value));
+                              }
+                          }
+
+                          var job = new Backbone.Agave.Model.Job.RepCalc();
+
+                          job.set('totalFileSize', that.selectedFileListings.getTotalFileSize());
+
+                          job.prepareJob(
+                              repcalcForm,
+                              that.VDJMLFiles,
+                              that.SummaryFiles,
+                              that.allFiles,
+                              that.projectModel.get('uuid')
+                          );
+
+                          return that.startJob(job);
+                      } else {
+                          return $.Deferred().reject('Job is missing process metadata.');
                       }
-
-                      // get VDJML and summary files from output list
-                      that.VDJMLFiles = that.selectedFileListings.clone();
-                      that.VDJMLFiles.reset();
-                      that.SummaryFiles = that.selectedFileListings.clone();
-                      that.SummaryFiles.reset();
-                      for (var i = 0; i < outputFiles.length; ++i) {
-                          if (that.processMetadata.files[outputFiles[i]].vdjml) {
-                              that.VDJMLFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].vdjml));
-                          }
-                          if (that.processMetadata.files[outputFiles[i]].summary) {
-                              that.SummaryFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].summary));
-                          }
-                      }
-
-                      var job = new Backbone.Agave.Model.Job.RepCalc();
-
-                      job.set('totalFileSize', that.selectedFileListings.getTotalFileSize());
-
-                      job.prepareJob(
-                          repcalcForm,
-                          that.VDJMLFiles,
-                          that.SummaryFiles,
-                          that.allFiles,
-                          that.projectModel.get('uuid')
-                      );
-
-                      return that.startJob(job);
                   })
             },
             events: {
