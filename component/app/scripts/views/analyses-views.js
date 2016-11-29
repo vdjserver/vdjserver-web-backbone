@@ -1173,11 +1173,13 @@ define([
             this.sampleList = [];
             this.sampleGroupList = [];
             var geneSegmentChart = false;
+            var CDR3Histogram = false;
             for (var group in pm.groups) {
                 if (pm.groups[group]['gene_segment_usage']) geneSegmentChart = true;
+                if (pm.groups[group]['cdr3_length']) CDR3Histogram = true;
                 if (pm.groups[group]['type'] == 'file') this.fileList.push(group);
                 if (pm.groups[group]['type'] == 'sample') this.sampleList.push(group);
-                if (pm.groups[group]['type'] == 'group') this.sampleGroupList.push(group);
+                if (pm.groups[group]['type'] == 'sampleGroup') this.sampleGroupList.push(group);
             }
 
             this.chartViews = {};
@@ -1185,7 +1187,24 @@ define([
             this.cachedGroups = {};
             if (geneSegmentChart) {
                 this.isValid = true;
-                this.chartFiles.push({ id: 'gene_segment_usage', name: 'Gene Segment Usage', files: [], samples: [], sampleGroups: [] });
+                this.chartFiles.push({ id: 'relative_gene_segment_usage',
+                                       type: 'gene_segment_usage',
+                                       name: 'Relative Gene Segment Usage',
+                                       view: Analyses.Charts.RelativeGeneDistribution,
+                                       files: [], samples: [], sampleGroups: [] });
+                this.chartFiles.push({ id: 'gene_segment_usage',
+                                       type: 'gene_segment_usage',
+                                       name: 'Gene Segment Usage',
+                                       view: Analyses.Charts.GeneDistribution,
+                                       files: [], samples: [], sampleGroups: [] });
+            }
+            if (CDR3Histogram) {
+                this.isValid = true;
+                this.chartFiles.push({ id: 'cdr3_length',
+                                       type: 'cdr3_length',
+                                       name: 'CDR3 Length Histogram',
+                                       view: Analyses.Charts.CDR3,
+                                       files: [], samples: [], sampleGroups: [] });
             }
 
             if (this.isValid) {
@@ -1228,15 +1247,16 @@ define([
                                 chartId['files'] = newGroups;
 
                                 // redisplay chart
-                                var chart = chartId['view'];
+                                var chart = chartId['chart'];
+                                var chartView = chartId['view'];
                                 var classSelector = chartId['classSelector'];
                                 if (chart) {
-                                    chart.chart.showLoading('Loading Data...');
-                                    return that._loadChartData(that._chartFilenames(chartId))
+                                    chart.showLoading('Loading Data...');
+                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata))
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
-                                        chart.chart.hideLoading();
-                                        return chart.generateChart(chartGroups, that.cachedGroups, classSelector);
+                                        chart.hideLoading();
+                                        return chartId['chart'] = chartView.generateChart(chartGroups, that.cachedGroups, classSelector);
                                     })
                                 }
                             }
@@ -1257,15 +1277,16 @@ define([
                                 chartId['samples'] = newGroups;
 
                                 // redisplay chart
-                                var chart = chartId['view'];
+                                var chart = chartId['chart'];
+                                var chartView = chartId['view'];
                                 var classSelector = chartId['classSelector'];
                                 if (chart) {
-                                    chart.chart.showLoading('Loading Data...');
-                                    return that._loadChartData(that._chartFilenames(chartId))
+                                    chart.showLoading('Loading Data...');
+                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata))
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
-                                        chart.chart.hideLoading();
-                                        return chart.generateChart(chartGroups, that.cachedGroups, classSelector);
+                                        chart.hideLoading();
+                                        return chartId['chart'] = chartView.generateChart(chartGroups, that.cachedGroups, classSelector);
                                     })
                                 }
                             }
@@ -1278,23 +1299,24 @@ define([
                         onChange: function(option, checked, select) {
                             if (option) {
                                 var chartId = that.chartFiles[this.options.listIndex];
-                                var groups = chartId['samples'];
+                                var groups = chartId['sampleGroups'];
                                 var newGroups = _.clone(groups);
                                 var groupName = $(option).val();
                                 if (checked) newGroups.push(groupName);
                                 else newGroups.splice(newGroups.indexOf(groupName), 1);
-                                chartId['samples'] = newGroups;
+                                chartId['sampleGroups'] = newGroups;
 
                                 // redisplay chart
-                                var chart = chartId['view'];
+                                var chart = chartId['chart'];
+                                var chartView = chartId['view'];
                                 var classSelector = chartId['classSelector'];
                                 if (chart) {
-                                    chart.chart.showLoading('Loading Data...');
-                                    return that._loadChartData(that._chartFilenames(chartId))
+                                    chart.showLoading('Loading Data...');
+                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata))
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
-                                        chart.chart.hideLoading();
-                                        return chart.generateChart(chartGroups, that.cachedGroups, classSelector);
+                                        chart.hideLoading();
+                                        return chartId['chart'] = chartView.generateChart(chartGroups, that.cachedGroups, classSelector);
                                     })
                                 }
                             }
@@ -1415,7 +1437,7 @@ define([
 
             var that = this;
             var chartData;
-            this._loadChartData(this._chartFilenames(chartId))
+            this._loadChartData(chartId['view'].chartFilenames(chartId, that.selectAnalyses.processMetadata))
             .then(function(tmpChartData) {
                 chartData = tmpChartData;
             })
@@ -1438,16 +1460,7 @@ define([
                 var fileHandle;
                 var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
 
-                switch (chartId.id) {
-                    case 'gene_segment_usage':
-                        $('#chart-legend').show();
-                        chartId['view'] = Analyses.Charts.GeneDistribution;
-                        chartId['view'].generateChart(chartGroups, that.cachedGroups, classSelector);
-                        break;
-
-                    default:
-                        break;
-                }
+                chartId['chart'] = chartId['view'].generateChart(chartGroups, that.cachedGroups, classSelector);
 
                 // Scroll down to chart
                 $('html, body').animate({
@@ -1526,7 +1539,7 @@ define([
             // Remove loading view
             $('.chart-loading-view').remove();
         },
-        _chartFilenames: function(chartId) {
+/*        _chartFilenames: function(chartId) {
             var filenames = {};
 
             var groups = this.selectAnalyses.processMetadata.groups;
@@ -1534,18 +1547,24 @@ define([
 
             for (var i = 0; i < chartId['files'].length; ++i) {
                 var g = chartId['files'][i];
-                var group = groups[g][chartId.id];
-                if (group) filenames[g] = files[group['files']].absolute_counts;
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['counts']['value'];
             }
 
             for (var i = 0; i < chartId['samples'].length; ++i) {
                 var g = chartId['samples'][i];
-                var group = groups[g][chartId.id];
-                if (group) filenames[g] = files[group['files']].absolute_counts;
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['counts']['value'];
+            }
+
+            for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
+                var g = chartId['sampleGroups'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['counts']['value'];
             }
 
             return filenames;
-        },
+        }, */
         _loadChartData: function(files) {
             var that = this;
 
@@ -2260,6 +2279,33 @@ define([
 
     Analyses.Charts.GeneDistribution = {
 
+        chartFilenames: function(chartId, processMetadata) {
+            var filenames = {};
+
+            var groups = processMetadata.groups;
+            var files = processMetadata.files;
+
+            for (var i = 0; i < chartId['files'].length; ++i) {
+                var g = chartId['files'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['counts']['value'];
+            }
+
+            for (var i = 0; i < chartId['samples'].length; ++i) {
+                var g = chartId['samples'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['counts']['value'];
+            }
+
+            for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
+                var g = chartId['sampleGroups'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['counts']['value'];
+            }
+
+            return filenames;
+        },
+
         generateChart: function(chartGroups, cachedGroups, classSelector) {
 
             var myData = [];
@@ -2337,9 +2383,9 @@ define([
               }
             });
 
-            if (this.chart) { this.chart.destroy(); this.chart = null; }
+            //if (this.chart) { this.chart.destroy(); this.chart = null; }
 
-            this.chart = new Highcharts.Chart({
+            var chart = new Highcharts.Chart({
                 chart: {
                     renderTo: classSelector,
                     type: 'column',
@@ -2365,7 +2411,7 @@ define([
                 },
                 yAxis: {
                     title: {
-                        text: ''
+                        text: 'Total Read Counts'
                     },
                     labels: {
                         style: {
@@ -2425,89 +2471,291 @@ define([
                 drilldown: drilldown
             });
 
-            return this.chart;
+            return chart;
         },
 
     };
 
-    Analyses.Charts.Cdr3 = function(fileHandle, text, classSelector) {
+    Analyses.Charts.RelativeGeneDistribution = {
 
-        // Data Formatting
-        var cdr3Data = d3.tsv.parse(text);
+        chartFilenames: function(chartId, processMetadata) {
+            var filenames = {};
 
-        var imgtData = [];
-        var kabatData = [];
+            var groups = processMetadata.groups;
+            var files = processMetadata.files;
 
-        for (var i = 0; i < cdr3Data.length; i++) {
-            var length = cdr3Data[i]['CDR3_LENGTH'];
-            var imgtDataPoint = cdr3Data[i]['imgt'];
-            var kabatDataPoint = cdr3Data[i]['kabat'];
-
-            // 27/May/2015 - Small hack to fix legacy charts with incorrect x-axis data.
-            // Apparently cdr3 charts should never include -1 x-axis values,
-            // and our older versions of IgBlast wrappers have been including -1 values.
-            if (length === '-1') {
-                continue;
+            for (var i = 0; i < chartId['files'].length; ++i) {
+                var g = chartId['files'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['counts']['value'];
             }
 
-            var imgtStanza = {
-                'x': length,
-                'y': parseInt(imgtDataPoint),
+            for (var i = 0; i < chartId['samples'].length; ++i) {
+                var g = chartId['samples'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['counts']['value'];
+            }
+
+            for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
+                var g = chartId['sampleGroups'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['counts']['value'];
+            }
+
+            return filenames;
+        },
+
+        generateChart: function(chartGroups, cachedGroups, classSelector) {
+
+            var myData = [];
+            var drilldown = {
+              series: new Array()
             };
 
-            var kabatStanza = {
-                'x': length,
-                'y': parseInt(kabatDataPoint),
-            };
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                var text = cachedGroups[group];
+                var distribution = JSON.parse(text);
 
-            imgtData.push(imgtStanza);
-            kabatData.push(kabatStanza);
-        }
+                // build series
+                var series = {
+                  id: group + '.' + distribution.label,
+                  name: group + '.' + distribution.label,
+                  data: new Array()
+                };
 
-        cdr3Data = [
-            {
-                key: 'IMGT',
-                values: imgtData,
-            },
-            {
-                key: 'Kabat',
-                values: kabatData,
-            },
-        ];
+                _.each(distribution.children, function(gene){
+                  series.data.push({
+                    id: 'parent',
+                    name: gene.label,
+                    y: gene.absolute > 0 ? 1.0 : 0.0,
+                    drilldown: group + '.' + gene.label,
+                    color: '#7B94B5'
+                  });
+                });
 
-        // Begin Chart Code
-        nv.addGraph(function() {
-            var chart = nv.models.multiBarChart()
-                .transitionDuration(350)
-                .reduceXTicks(true)   //If 'false', every single x-axis tick label will be rendered.
-                .rotateLabels(0)      //Angle to rotate x-axis labels.
-                .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
-                .tooltips(true)
-                .groupSpacing(0.1)    //Distance between each group of bars.
-                .margin({left: 100})
-            ;
+                // drilldown level 1
+                _.each(distribution.children, function(gene){
+                  var data = [];
+                  _.each(gene.children, function(geneChild){
+                    data.push({
+                      id: 'child',
+                      name: geneChild.label,
+                      y: geneChild.relative,
+                      drilldown: group + '.' + geneChild.label,
+                      color: '#7B94B5'
+                    });
+                  });
+                  drilldown.series.push({
+                    id: group + '.' + gene.label,
+                    name: gene.label,
+                    data: data
+                  });
+                });
 
-            chart.xAxis
-                .axisLabel('CDR3 Length')
-                .tickFormat(d3.format(',f'))
-            ;
+                // drilldown level 2
+                _.each(distribution.children, function(gene){
+                  _.each(gene.children, function(geneChild){
+                    var data = [];
+                    _.each(geneChild.children, function(geneGrandchild){
+                      data.push({
+                        id: 'grandchild',
+                        name: geneGrandchild.label,
+                        y: geneGrandchild.relative,
+                        alleles: geneGrandchild.children
+                      });
+                    });
+                    drilldown.series.push({
+                      id: group + '.' + geneChild.label,
+                      name: geneChild.label,
+                      data: data
+                    });
+                  });
+                });
 
-            chart.yAxis
-                .axisLabel('Read Count')
-                .tickFormat(d3.format(',.1f'))
-            ;
+                myData.push(series);
+            }
 
-            d3.select('.' + classSelector + ' svg')
-                .datum(cdr3Data)
-                .call(chart)
-            ;
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: classSelector,
+                    type: 'column',
+                },
+                title: {
+                    text: ''
+                },
+                credits: {
+                   enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    labels: {
+                      style: {
+                        color: '#000000',
+                      },
+                      rotation: -90,
+                    },
+                    type: 'category',
+                    tickInterval: 1
+                },
+                yAxis: {
+                    title: {
+                        text: 'Relative Read Counts'
+                    },
+                    labels: {
+                        style: {
+                            color: '#000000'
+                        },
+                        formatter: function () {
+                            return this.value;
+                        }
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                tooltip: {
+                    headerFormat: '<b>Parent: </b> {series.name}<br/>',
+                    pointFormat: '<b>{point.name}: </b>{point.y:,.2f}<br/>',
+                    formatter: function(){
+                      var tooltip = '';
+                      for(var i = 0, length = this.series.points.length; i < length; i++) {
+                        var point = this.series.points[i];
 
-            nv.utils.windowResize(function() {
-                chart.update();
+                        if (point.id === 'parent' || point.id === 'child'){
+                          tooltip = '<b>Parent: </b>' + this.series.name + '<br/>'+
+                                    '<b>' + this.key + ': </b>' + Highcharts.numberFormat(this.y, 2) + '<br/>';
+                        }
+
+                        if (point.id === 'grandchild'){
+                          tooltip = '<b>Parent: </b>' + this.series.name + '<br/>'+
+                                    '<b>' + this.key + ': </b>' + Highcharts.numberFormat(this.y, 2) + '<br/>';
+                          if (typeof(this.point.alleles) !== 'undefined'){
+                            tooltip += '<b>Alleles:</b><br/>';
+                            _.each(this.point.alleles, function(allele){
+                              tooltip += '<b>' + allele.label + ': </b>' + Highcharts.numberFormat(allele.count, 2) + '<br/>';
+
+                            });
+                          }
+                        }
+                      }
+                      return tooltip;
+                    }
+                },
+                series: myData,
+                drilldown: drilldown
             });
 
             return chart;
-        });
+        },
+
+    };
+
+    Analyses.Charts.CDR3 = {
+
+        chartFilenames: function(chartId, processMetadata) {
+            var filenames = {};
+
+            var groups = processMetadata.groups;
+            var files = processMetadata.files;
+
+            for (var i = 0; i < chartId['files'].length; ++i) {
+                var g = chartId['files'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['aa']['value'];
+            }
+
+            for (var i = 0; i < chartId['samples'].length; ++i) {
+                var g = chartId['samples'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['aa']['value'];
+            }
+
+            for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
+                var g = chartId['sampleGroups'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['aa']['value'];
+            }
+
+            return filenames;
+        },
+
+        generateChart: function(chartGroups, cachedGroups, classSelector) {
+
+            var myData = [];
+
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                var text = cachedGroups[group];
+                var cdr3Data = d3.tsv.parse(text);
+
+                // build series
+                var series = {
+                  //id: group + '.CDR3_LENGTH',
+                  type: 'column',
+                  name: group + '.CDR3_LENGTH',
+                  data: new Array()
+                };
+
+                for (var j = 0; j < cdr3Data.length; j++) {
+                    var length = cdr3Data[j]['CDR3_LENGTH'];
+                    var dataPoint = cdr3Data[j]['CDR3_RELATIVE'];
+
+                    series.data.push([parseInt(length), parseFloat(dataPoint)]);
+                }
+
+                myData.push(series);
+            }
+
+            Highcharts.setOptions({
+              lang: {
+                thousandsSep: ','
+              }
+            });
+
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: classSelector,
+                    type: 'column',
+                },
+                title: {
+                    text: ''
+                },
+                credits: {
+                   enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    title: {
+                        text: 'CDR3 Length'
+                    },
+                    tickInterval: 1
+                },
+                yAxis: {
+                    title: {
+                        text: 'Relative Read Counts'
+                    },
+                    labels: {
+                        style: {
+                            color: '#000000'
+                        },
+                        formatter: function () {
+                            return this.value;
+                        }
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                series: myData,
+            });
+
+            return chart;
+        },
     };
 
     Analyses.Charts.GiantTableType = function(filename) {
