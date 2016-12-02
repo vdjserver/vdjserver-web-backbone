@@ -841,6 +841,8 @@ define([
                           that.VDJMLFiles.reset();
                           that.SummaryFiles = that.selectedFileListings.clone();
                           that.SummaryFiles.reset();
+                          that.ChangeOFiles = that.selectedFileListings.clone();
+                          that.ChangeOFiles.reset();
                           for (var i = 0; i < outputFiles.length; ++i) {
                               if (that.processMetadata.files[outputFiles[i]].vdjml) {
                                   that.VDJMLFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].vdjml.value));
@@ -848,16 +850,23 @@ define([
                               if (that.processMetadata.files[outputFiles[i]].summary) {
                                   that.SummaryFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].summary.value));
                               }
+                              if (that.processMetadata.files[outputFiles[i]].changeo) {
+                                  that.ChangeOFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].changeo.value));
+                              }
                           }
 
                           var job = new Backbone.Agave.Model.Job.RepCalc();
 
-                          job.set('totalFileSize', that.selectedFileListings.getTotalFileSize());
+                          var fileSize = that.VDJMLFiles.getTotalFileSize();
+                          fileSize += that.ChangeOFiles.getTotalFileSize();
+                          fileSize += that.SummaryFiles.getTotalFileSize();
+                          job.set('totalFileSize', fileSize);
 
                           job.prepareJob(
                               repcalcForm,
                               that.VDJMLFiles,
                               that.SummaryFiles,
+                              that.ChangeOFiles,
                               that.allFiles,
                               that.projectModel.get('uuid')
                           );

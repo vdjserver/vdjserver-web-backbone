@@ -1,7 +1,24 @@
 {{> repcalc-base-view-top}}
-    <div class="row row-with-spacer">
-        <div class="col-md-12">
+  <div class="row col-md-10 col-md-offset-1">
+  This module defines clones and performs clonal analysis calculations.
+  </div>
+  <input class="hidden" name="clonal-analysis" value="true">
 
-        </div>
-    </div>
+  <div class="row row-with-spacer">
+    <label class="col-md-offset-1 control-label">Calculations</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="clonal-abundance" checked>Abundance
+    </label>
+  </div>
+
+  <div class="row row-with-spacer">
+    <label class="col-md-offset-1 control-label">Filters</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="filter-productive" checked>Productive
+    </label>
+  </div>
 {{> repcalc-base-view-bottom}}

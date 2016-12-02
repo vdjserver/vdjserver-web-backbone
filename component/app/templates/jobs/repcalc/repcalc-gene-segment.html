@@ -1,38 +1,8 @@
 {{> repcalc-base-view-top}}
   <div class="row col-md-10 col-md-offset-1">
-  This module calculates gene segment usage for the specified summary levels, summarizes by
-  the desired groups, and includes only annotations that meet the given filters.
+  This module calculates gene segment usage for gene types, gene families, genes and alleles.
   </div>
-
-  <div class="row">
-    <label class="col-md-offset-1 control-label">Summary Levels</label>
-  </div>
-  <div class="row col-md-offset-1">
-    <label class="checkbox-inline">
-      <input type="checkbox" name="gs-type">Gene Type
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="gs-family">Gene Family
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="gs-gene" checked>Gene
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="gs-allele">Allele
-    </label>
-  </div>
-
-  <div class="row row-with-spacer">
-    <label class="col-md-offset-1 control-label">Summarize By</label>
-  </div>
-  <div class="row col-md-offset-1">
-    <label class="checkbox-inline">
-      <input type="checkbox" name="gs-sample" checked>Sample
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="gs-group" checked>Sample Group
-    </label>
-  </div>
+  <input class="hidden" name="gene-segment-usage" value="true">
 
   <div class="row row-with-spacer">
     <label class="col-md-offset-1 control-label">Calculations</label>
@@ -42,10 +12,7 @@
       <input type="checkbox" name="gs-absolute" checked>Absolute Counts
     </label>
     <label class="checkbox-inline">
-      <input type="checkbox" name="gs-relative">Relative Counts
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" name="gs-average">Averages
+      <input type="checkbox" name="gs-relative" checked>Relative Counts
     </label>
   </div>
 
