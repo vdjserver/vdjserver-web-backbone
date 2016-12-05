@@ -2441,9 +2441,9 @@ define([
             })
             .then(function() {
 
-                if (that.subjectColumns.get('uuid').length > 0) {
+                //if (that.subjectColumns.get('uuid').length > 0) {
                     that.columnNames = that.subjectColumns.getColumnNames();
-                }
+                //}
 
                 loadingView.remove();
 
@@ -2681,9 +2681,9 @@ define([
             })
             .then(function() {
 
-                if (that.sampleColumns.get('uuid').length > 0) {
+                //if (that.sampleColumns.get('uuid').length > 0) {
                     that.columnNames = that.sampleColumns.getColumnNames();
-                }
+                //}
 
                 that.nonpairedFiles = that.projectFiles.serializedNonPairedReadCollection();
                 that.pairedFiles = that.projectFiles.serializedPairedReadCollection();
