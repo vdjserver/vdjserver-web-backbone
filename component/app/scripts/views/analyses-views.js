@@ -1174,9 +1174,12 @@ define([
             this.sampleGroupList = [];
             var geneSegmentChart = false;
             var CDR3Histogram = false;
+            var clonalAbundance = false;
             for (var group in pm.groups) {
                 if (pm.groups[group]['gene_segment_usage']) geneSegmentChart = true;
                 if (pm.groups[group]['cdr3_length']) CDR3Histogram = true;
+                if (pm.groups[group]['clonal_abundance']) clonalAbundance = true;
+
                 if (pm.groups[group]['type'] == 'file') this.fileList.push(group);
                 if (pm.groups[group]['type'] == 'sample') this.sampleList.push(group);
                 if (pm.groups[group]['type'] == 'sampleGroup') this.sampleGroupList.push(group);
@@ -1184,19 +1187,18 @@ define([
 
             this.chartViews = {};
             this.chartFiles = [];
-            this.cachedGroups = {};
             if (geneSegmentChart) {
                 this.isValid = true;
                 this.chartFiles.push({ id: 'relative_gene_segment_usage',
                                        type: 'gene_segment_usage',
                                        name: 'Relative Gene Segment Usage',
                                        view: Analyses.Charts.RelativeGeneDistribution,
-                                       files: [], samples: [], sampleGroups: [] });
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
                 this.chartFiles.push({ id: 'gene_segment_usage',
                                        type: 'gene_segment_usage',
                                        name: 'Gene Segment Usage',
                                        view: Analyses.Charts.GeneDistribution,
-                                       files: [], samples: [], sampleGroups: [] });
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
             }
             if (CDR3Histogram) {
                 this.isValid = true;
@@ -1204,7 +1206,15 @@ define([
                                        type: 'cdr3_length',
                                        name: 'CDR3 Length Histogram',
                                        view: Analyses.Charts.CDR3,
-                                       files: [], samples: [], sampleGroups: [] });
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
+            }
+            if (clonalAbundance) {
+                this.isValid = true;
+                this.chartFiles.push({ id: 'clonal_abundance',
+                                       type: 'clonal_abundance',
+                                       name: 'Clonal Abundance',
+                                       view: Analyses.Charts.ClonalAbundance,
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
             }
 
             if (this.isValid) {
@@ -1252,11 +1262,11 @@ define([
                                 var classSelector = chartId['classSelector'];
                                 if (chart) {
                                     chart.showLoading('Loading Data...');
-                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata))
+                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata), chartId['cachedGroups'])
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(chartGroups, that.cachedGroups, classSelector);
+                                        return chartId['chart'] = chartView.generateChart(chartGroups, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1282,11 +1292,11 @@ define([
                                 var classSelector = chartId['classSelector'];
                                 if (chart) {
                                     chart.showLoading('Loading Data...');
-                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata))
+                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata), chartId['cachedGroups'])
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(chartGroups, that.cachedGroups, classSelector);
+                                        return chartId['chart'] = chartView.generateChart(chartGroups, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1312,11 +1322,11 @@ define([
                                 var classSelector = chartId['classSelector'];
                                 if (chart) {
                                     chart.showLoading('Loading Data...');
-                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata))
+                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata), chartId['cachedGroups'])
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(chartGroups, that.cachedGroups, classSelector);
+                                        return chartId['chart'] = chartView.generateChart(chartGroups, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1437,7 +1447,7 @@ define([
 
             var that = this;
             var chartData;
-            this._loadChartData(chartId['view'].chartFilenames(chartId, that.selectAnalyses.processMetadata))
+            this._loadChartData(chartId['view'].chartFilenames(chartId, that.selectAnalyses.processMetadata), chartId['cachedGroups'])
             .then(function(tmpChartData) {
                 chartData = tmpChartData;
             })
@@ -1460,7 +1470,7 @@ define([
                 var fileHandle;
                 var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
 
-                chartId['chart'] = chartId['view'].generateChart(chartGroups, that.cachedGroups, classSelector);
+                chartId['chart'] = chartId['view'].generateChart(chartGroups, chartId['cachedGroups'], classSelector);
 
                 // Scroll down to chart
                 $('html, body').animate({
@@ -1539,38 +1549,12 @@ define([
             // Remove loading view
             $('.chart-loading-view').remove();
         },
-/*        _chartFilenames: function(chartId) {
-            var filenames = {};
-
-            var groups = this.selectAnalyses.processMetadata.groups;
-            var files = this.selectAnalyses.processMetadata.files;
-
-            for (var i = 0; i < chartId['files'].length; ++i) {
-                var g = chartId['files'][i];
-                var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['counts']['value'];
-            }
-
-            for (var i = 0; i < chartId['samples'].length; ++i) {
-                var g = chartId['samples'][i];
-                var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['counts']['value'];
-            }
-
-            for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
-                var g = chartId['sampleGroups'][i];
-                var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['counts']['value'];
-            }
-
-            return filenames;
-        }, */
-        _loadChartData: function(files) {
+        _loadChartData: function(files, cachedGroups) {
             var that = this;
 
             var promises = Object.keys(files).map(function(f) {
                 return function() {
-                    if (that.cachedGroups[f]) return that.cachedGroups[f];
+                    if (cachedGroups[f]) return cachedGroups[f];
                     else {
                         var filename = files[f];
                         var fileHandle = that.selectAnalyses.collection.getFileByName(filename);
@@ -1578,7 +1562,7 @@ define([
 
                         return fileHandle.downloadFileToCache()
                         .then(function(tmpFileData) {
-                            return that.cachedGroups[f] = tmpFileData;
+                            return cachedGroups[f] = tmpFileData;
                         })
                     }
                 }
@@ -2738,6 +2722,131 @@ define([
                 yAxis: {
                     title: {
                         text: 'Relative Read Counts'
+                    },
+                    labels: {
+                        style: {
+                            color: '#000000'
+                        },
+                        formatter: function () {
+                            return this.value;
+                        }
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                series: myData,
+            });
+
+            return chart;
+        },
+    };
+
+    Analyses.Charts.ClonalAbundance = {
+
+        chartFilenames: function(chartId, processMetadata) {
+            var filenames = {};
+
+            var groups = processMetadata.groups;
+            var files = processMetadata.files;
+
+            for (var i = 0; i < chartId['files'].length; ++i) {
+                var g = chartId['files'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['clonal_abundance']['value'];
+            }
+
+            for (var i = 0; i < chartId['samples'].length; ++i) {
+                var g = chartId['samples'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['clonal_abundance']['value'];
+            }
+
+            for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
+                var g = chartId['sampleGroups'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['clonal_abundance']['value'];
+            }
+
+            return filenames;
+        },
+
+        generateChart: function(chartGroups, cachedGroups, classSelector) {
+
+            var myData = [];
+
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                var text = cachedGroups[group];
+                var data = d3.tsv.parse(text);
+
+                // build series
+                var series = {
+                  name: group + '.ABUNDANCE',
+                  zIndex: 1,
+                  data: new Array()
+                };
+
+                for (var j = 0; j < data.length; j++) {
+                    var clone = data[j]['RANK'];
+                    var dataPoint = parseFloat(data[j]['P']) * 100.0;
+                    if (dataPoint < 0.01) continue;
+
+                    series.data.push([parseInt(clone), dataPoint]);
+                }
+                myData.push(series);
+
+                series = {
+                  name: group + '.RANGE',
+                  type: 'arearange',
+                  lineWidth: 0,
+                  linkedTo: ':previous',
+                  fillOpacity: 0.3,
+                  zIndex: 0,
+                  data: new Array()
+                };
+
+                for (var j = 0; j < data.length; j++) {
+                    var clone = data[j]['RANK'];
+                    var dataPoint = parseFloat(data[j]['P']) * 100.0;
+                    if (dataPoint < 0.01) continue;
+                    var lower = parseFloat(data[j]['LOWER']) * 100.0;
+                    var upper = parseFloat(data[j]['UPPER']) * 100.0;
+
+                    series.data.push([parseInt(clone), lower, upper]);
+                }
+                myData.push(series);
+            }
+
+            Highcharts.setOptions({
+              lang: {
+                thousandsSep: ','
+              }
+            });
+
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: classSelector,
+                },
+                title: {
+                    text: ''
+                },
+                credits: {
+                   enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    type: 'logarithmic',
+                    title: {
+                        text: 'Rank'
+                    },
+                    minorTickInterval: 0.1
+                },
+                yAxis: {
+                    title: {
+                        text: 'Abundance Percentage (%)'
                     },
                     labels: {
                         style: {
