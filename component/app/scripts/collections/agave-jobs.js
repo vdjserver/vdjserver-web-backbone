@@ -122,6 +122,16 @@ define([
             }
             return undefined;
         },
+        getStudyMetadataFile: function() {
+            for (var j = 0; j < this.models.length; j++) {
+                var model = this.at([j]);
+
+                var modelName = model.get('value').name;
+
+                if (modelName === 'study_metadata.json') return model;
+            }
+            return undefined;
+        },
         getFileByName: function(name) {
             for (var j = 0; j < this.models.length; j++) {
                 var model = this.at([j]);
@@ -235,6 +245,8 @@ define([
                         filename === 'merge_summary.txt'
                         ||
                         filename === 'process_metadata.json'
+                        ||
+                        filename === 'study_metadata.json'
                     ) {
                         return true;
                     }
