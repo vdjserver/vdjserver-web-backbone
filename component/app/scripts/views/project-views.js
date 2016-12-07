@@ -2665,6 +2665,8 @@ define([
             this.pairedFiles = [];
             this.pairedQualFiles = [];
 
+            this.workSubjects = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: this.model.get('uuid')});
+
             this.sampleColumns = new Backbone.Agave.Model.SampleColumns({projectUuid: this.model.get('uuid')});
             this.columnNames = [];
 
@@ -2678,6 +2680,9 @@ define([
             })
             .then(function() {
                 return that.sampleColumns.fetch();
+            })
+            .then(function() {
+                return that.workSubjects.fetch();
             })
             .then(function() {
 
@@ -2711,6 +2716,7 @@ define([
                 for (var j = 0; j < this.columnNames.length; ++j)
                     values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
                 rowValues[i] = { row: values };
+                rowValues[i]['subject_uuid'] = value['subject_uuid'];
                 rowValues[i]['project_file'] = value['project_file'];
                 rowValues[i]['uuid'] = m.get('uuid');
             }
@@ -2718,6 +2724,7 @@ define([
             return {
                 rowValues: rowValues,
                 workSamples: this.workSamples.toJSON(),
+                workSubjects: this.workSubjects.toJSON(),
                 nonpairedFiles: this.nonpairedFiles,
                 pairedFiles: this.pairedFiles,
                 pairedQualFiles: this.pairedQualFiles,

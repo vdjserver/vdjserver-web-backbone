@@ -14,6 +14,9 @@
                 </th>
                 {{/each}}
                 <th style="min-width: 25em">
+                  <strong>Subject</strong>
+                </th>
+                <th style="min-width: 25em">
                   <strong>Project File</strong>
                 </th>
                 <th style="min-width: 25em">
@@ -28,6 +31,14 @@
                 {{#each this.row}}
                 <td><input type="text" class="form-control sampleMetadata" id="sample-{{this.name}}" placeholder="Sample {{this.name}}" value="{{this.value}}" data-tuple="{{@../index}}"></td>
                 {{/each}}
+                <td>
+                  <select class="form-control sampleMetadata" id="sample-subject_uuid" data-tuple="{{@index}}">
+                      <option></option>
+                      {{#each ../workSubjects}}
+                      <option {{ifCondSelected this.uuid ../this.subject_uuid}} value="{{this.uuid}}">{{this.value.Name}}</option>
+                      {{/each}}
+                  </select>
+                </td>
                 <td>
                   <select class="form-control sampleMetadata" id="sample-project_file" data-tuple="{{@index}}">
                       <option></option>
