@@ -187,6 +187,24 @@ function(
                         'uuid': nameGuid,
                     };
                 },
+                guessTypeFromName: function() {
+                    var guessType = File.fileTypeCodes.FILE_TYPE_UNSPECIFIED;
+                    var components = this.get('name').split('.');
+                    if (components.length > 1) {
+                        var idx = components.length - 1;
+                        if ((components[idx] == 'gz') ||
+                            (components[idx] == 'zip') ||
+                            (components[idx] == 'bz2')) --idx;
+                        if (components[idx] == 'fasta') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+                        if (components[idx] == 'fastq') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+                        if (components[idx] == 'fna') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+                        if (components[idx] == 'qual') guessType = File.fileTypeCodes.FILE_TYPE_QUALITY;
+                        if (components[idx] == 'tsv') guessType = File.fileTypeCodes.FILE_TYPE_TSV;
+                        if (components[idx] == 'vdjml') guessType = File.fileTypeCodes.FILE_TYPE_VDJML;
+                    }
+
+                    return guessType;
+                },
             }
         ),
         {

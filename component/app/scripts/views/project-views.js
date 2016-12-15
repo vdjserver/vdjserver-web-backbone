@@ -1627,6 +1627,8 @@ define([
                     if (this._checkDuplicateFile(file.name) === true) {
                         continue;
                     }
+                    var guessType = stagedFile.guessTypeFromName();
+                    stagedFile.set('type', guessType);
 
                     this.models.push(stagedFile);
 
