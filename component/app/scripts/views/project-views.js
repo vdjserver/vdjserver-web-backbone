@@ -870,7 +870,7 @@ define([
 
             var that = this;
 
-            var selectedFileMetadataUuids = this._getSelectedFileUuids();
+            var selectedFileMetadataUuids = this._getSelectedFileUuids(true);
 
             var promises = [];
 
@@ -923,7 +923,7 @@ define([
         _clickDownloadMultipleFiles: function(e) {
             e.preventDefault();
 
-            var selectedFileMetadataUuids = this._getSelectedFileUuids();
+            var selectedFileMetadataUuids = this._getSelectedFileUuids(true);
             this._downloadProjectFilesForMetadataUuids(selectedFileMetadataUuids);
         },
         _downloadProjectFilesForMetadataUuids: function(metadataUuids) {
@@ -3220,7 +3220,8 @@ define([
                   that._uiCancelJobLoadingView();
               })
               .fail(function(error) {
-                  that._uiCancelJobLoadingView(error.responseText);
+                  if (error.responseText) that._uiCancelJobLoadingView(error.responseText);
+                  else that._uiCancelJobLoadingView('Unknown server error.');
 
                   var telemetry = new Backbone.Agave.Model.Telemetry();
                   telemetry.setError(error);
