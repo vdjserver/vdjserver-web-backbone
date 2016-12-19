@@ -1188,10 +1188,12 @@ define([
             var geneSegmentChart = false;
             var CDR3Histogram = false;
             var clonalAbundance = false;
+            var diversityCurve = false;
             for (var group in pm.groups) {
                 if (pm.groups[group]['gene_segment_usage']) geneSegmentChart = true;
                 if (pm.groups[group]['cdr3_length']) CDR3Histogram = true;
                 if (pm.groups[group]['clonal_abundance']) clonalAbundance = true;
+                if (pm.groups[group]['diversity_curve']) diversityCurve = true;
 
                 if (pm.groups[group]['type'] == 'file') {
                     var name = null;
@@ -1263,6 +1265,14 @@ define([
                                        type: 'clonal_abundance',
                                        name: 'Clonal Abundance',
                                        view: Analyses.Charts.ClonalAbundance,
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
+            }
+            if (diversityCurve) {
+                this.isValid = true;
+                this.chartFiles.push({ id: 'diversity_curve',
+                                       type: 'diversity_curve',
+                                       name: 'Diversity Curve',
+                                       view: Analyses.Charts.DiversityCurve,
                                        files: [], samples: [], sampleGroups: [], cachedGroups: {} });
             }
 
@@ -2935,6 +2945,140 @@ define([
                 yAxis: {
                     title: {
                         text: 'Abundance Percentage (%)'
+                    },
+                    labels: {
+                        style: {
+                            color: '#000000'
+                        },
+                        formatter: function () {
+                            return this.value;
+                        }
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                series: myData,
+            });
+
+            return chart;
+        },
+    };
+
+    Analyses.Charts.DiversityCurve = {
+
+        chartFilenames: function(chartId, processMetadata) {
+            var filenames = {};
+
+            var groups = processMetadata.groups;
+            var files = processMetadata.files;
+
+            for (var i = 0; i < chartId['files'].length; ++i) {
+                var g = chartId['files'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['diversity_curve']['value'];
+            }
+
+            for (var i = 0; i < chartId['samples'].length; ++i) {
+                var g = chartId['samples'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['diversity_curve']['value'];
+            }
+
+            for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
+                var g = chartId['sampleGroups'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['diversity_curve']['value'];
+            }
+
+            return filenames;
+        },
+
+        generateChart: function(chartGroups, chartGroupNames, cachedGroups, classSelector) {
+
+            var myData = [];
+
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                var text = cachedGroups[group];
+                var data = d3.tsv.parse(text);
+
+                var groupName = group;
+                for (var j = 0; j < chartGroupNames.length; ++j) {
+                    var n = chartGroupNames[j];
+                    if (n.id == group) {
+                        groupName = n.name;
+                        break;
+                    }
+                }
+
+                // build series
+                var series = {
+                  name: groupName,
+                  zIndex: 1,
+                  data: new Array()
+                };
+
+                for (var j = 0; j < data.length; j++) {
+                    var x = parseFloat(data[j]['Q']);
+                    if (x == 0) x = 0.01;
+                    var y = parseFloat(data[j]['D']);
+
+                    series.data.push([x, y]);
+                }
+                myData.push(series);
+
+                series = {
+                  name: groupName,
+                  type: 'arearange',
+                  lineWidth: 0,
+                  linkedTo: ':previous',
+                  fillOpacity: 0.3,
+                  zIndex: 0,
+                  data: new Array()
+                };
+
+                for (var j = 0; j < data.length; j++) {
+                    var x = parseFloat(data[j]['Q']);
+                    if (x == 0) x = 0.01;
+
+                    var lower = parseFloat(data[j]['D_LOWER']);
+                    var upper = parseFloat(data[j]['D_UPPER']);
+
+                    series.data.push([x, lower, upper]);
+                }
+                myData.push(series);
+            }
+
+            Highcharts.setOptions({
+              lang: {
+                thousandsSep: ','
+              }
+            });
+
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: classSelector,
+                },
+                title: {
+                    text: ''
+                },
+                credits: {
+                   enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    type: 'logarithmic',
+                    title: {
+                        text: 'Order (Q)'
+                    },
+                    minorTickInterval: 0.1
+                },
+                yAxis: {
+                    title: {
+                        text: 'Diversity (D)'
                     },
                     labels: {
                         style: {
