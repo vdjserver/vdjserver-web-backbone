@@ -1189,11 +1189,13 @@ define([
             var CDR3Histogram = false;
             var clonalAbundance = false;
             var diversityCurve = false;
+            var selectionPressure = false;
             for (var group in pm.groups) {
                 if (pm.groups[group]['gene_segment_usage']) geneSegmentChart = true;
                 if (pm.groups[group]['cdr3_length']) CDR3Histogram = true;
                 if (pm.groups[group]['clonal_abundance']) clonalAbundance = true;
                 if (pm.groups[group]['diversity_curve']) diversityCurve = true;
+                if (pm.groups[group]['selection_pressure']) selectionPressure = true;
 
                 if (pm.groups[group]['type'] == 'file') {
                     var name = null;
@@ -1275,6 +1277,14 @@ define([
                                        view: Analyses.Charts.DiversityCurve,
                                        files: [], samples: [], sampleGroups: [], cachedGroups: {} });
             }
+            if (selectionPressure) {
+                this.isValid = true;
+                this.chartFiles.push({ id: 'selection_pressure',
+                                       type: 'selection_pressure',
+                                       name: 'Selection Pressure',
+                                       view: Analyses.Charts.SelectionPressure,
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
+            }
 
             if (this.isValid) {
                 this.render();
@@ -1326,7 +1336,7 @@ define([
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.processMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1357,7 +1367,7 @@ define([
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.processMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1388,7 +1398,7 @@ define([
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.processMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1532,7 +1542,7 @@ define([
                 var fileHandle;
                 var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
 
-                chartId['chart'] = chartId['view'].generateChart(chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                chartId['chart'] = chartId['view'].generateChart(that.selectAnalyses.processMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
 
                 // Scroll down to chart
                 $('html, body').animate({
@@ -2352,7 +2362,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var myData = [];
             var drilldown = {
@@ -2363,6 +2373,7 @@ define([
                 var group = chartGroups[i];
                 var text = cachedGroups[group];
                 var distribution = JSON.parse(text);
+                var groupType = processMetadata.groups[group]['type'];
 
                 var groupName = group;
                 for (var j = 0; j < chartGroupNames.length; ++j) {
@@ -2390,9 +2401,29 @@ define([
                   });
                 });
 
+                myData.push(series);
+
+                if (groupType == 'sampleGroup') {
+                    var errorSeries = {
+                      name: groupName + ' error',
+                      linkedTo: group + '.' + distribution.label,
+                      type: 'errorbar',
+                      data: new Array()
+                    };
+
+                    _.each(distribution.children, function(gene){
+                        var dataPoint = parseFloat(gene.absolute);
+                        var stdError = parseFloat(gene.absolute_std);
+                        errorSeries.data.push([dataPoint - stdError, dataPoint + stdError]);
+                    });
+
+                    myData.push(errorSeries);
+                }
+
                 // drilldown level 1
                 _.each(distribution.children, function(gene){
                   var data = [];
+                  var errorData = [];
                   _.each(gene.children, function(geneChild){
                     data.push({
                       id: 'child',
@@ -2401,12 +2432,33 @@ define([
                       drilldown: group + '.' + geneChild.label,
                       //color: '#7B94B5'
                     });
+                    if (groupType == 'sampleGroup') {
+                        var dataPoint = parseFloat(geneChild.absolute);
+                        var stdError = parseFloat(geneChild.absolute_std);
+                        errorData.push([dataPoint - stdError, dataPoint + stdError]);
+                    }
                   });
                   drilldown.series.push({
                     id: group + '.' + gene.label,
                     name: groupName,
                     data: data
                   });
+                  if (groupType == 'sampleGroup') {
+                      var errorSeries = {
+                        name: groupName + ' error',
+                        linkedTo: group + '.' + gene.label,
+                        type: 'errorbar',
+                        data: errorData
+                      };
+                      //myData.push(errorSeries);
+
+                      /*drilldown.series.push({
+                        linkedTo: group + '.' + gene.label,
+                        type: 'errorbar',
+                        name: groupName + ' error',
+                        data: errorData
+                      }); */
+                  }
                 });
 
                 // drilldown level 2
@@ -2428,8 +2480,6 @@ define([
                     });
                   });
                 });
-
-                myData.push(series);
             }
 
             Highcharts.setOptions({
@@ -2560,7 +2610,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var myData = [];
             var drilldown = {
@@ -2746,7 +2796,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var myData = [];
 
@@ -2754,6 +2804,7 @@ define([
                 var group = chartGroups[i];
                 var text = cachedGroups[group];
                 var cdr3Data = d3.tsv.parse(text);
+                var groupType = processMetadata.groups[group]['type'];
 
                 var groupName = group;
                 for (var j = 0; j < chartGroupNames.length; ++j) {
@@ -2780,6 +2831,23 @@ define([
                 }
 
                 myData.push(series);
+
+                if (groupType == 'sampleGroup') {
+                    var errorSeries = {
+                        type: 'errorbar',
+                        name: groupName + ' error',
+                        data: new Array()
+                    };
+
+                    for (var j = 0; j < cdr3Data.length; j++) {
+                        var length = cdr3Data[j]['CDR3_LENGTH'];
+                        var dataPoint = parseFloat(cdr3Data[j]['CDR3_RELATIVE']);
+                        var stdError = parseFloat(cdr3Data[j]['CDR3_RELATIVE_STD']);
+
+                        errorSeries.data.push([parseInt(length), dataPoint - stdError, dataPoint + stdError]);
+                    }
+                    myData.push(errorSeries);
+                }
             }
 
             Highcharts.setOptions({
@@ -2860,7 +2928,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var myData = [];
 
@@ -2994,7 +3062,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var myData = [];
 
@@ -3079,6 +3147,136 @@ define([
                 yAxis: {
                     title: {
                         text: 'Diversity (D)'
+                    },
+                    labels: {
+                        style: {
+                            color: '#000000'
+                        },
+                        formatter: function () {
+                            return this.value;
+                        }
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                series: myData,
+            });
+
+            return chart;
+        },
+    };
+
+    Analyses.Charts.SelectionPressure = {
+
+        chartFilenames: function(chartId, processMetadata) {
+            var filenames = {};
+
+            var groups = processMetadata.groups;
+            var files = processMetadata.files;
+
+            for (var i = 0; i < chartId['files'].length; ++i) {
+                var g = chartId['files'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['selection_pressure']['value'];
+            }
+
+            for (var i = 0; i < chartId['samples'].length; ++i) {
+                var g = chartId['samples'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['selection_pressure']['value'];
+            }
+
+            for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
+                var g = chartId['sampleGroups'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['selection_pressure']['value'];
+            }
+
+            return filenames;
+        },
+
+        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+
+            var myData = [];
+
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                var text = cachedGroups[group];
+                if (!text) continue;
+                var data = d3.tsv.parse(text);
+                var groupType = processMetadata.groups[group]['type'];
+
+                var groupName = group;
+                for (var j = 0; j < chartGroupNames.length; ++j) {
+                    var n = chartGroupNames[j];
+                    if (n.id == group) {
+                        groupName = n.name;
+                        break;
+                    }
+                }
+
+                // build series
+                var series = {
+                  id: group + '.SP',
+                  type: 'column',
+                  name: groupName,
+                  data: new Array()
+                };
+
+                for (var j = 0; j < data.length; j++) {
+                    var dataPoint = data[j]['BASELINE_SIGMA'];
+
+                    series.data.push(parseFloat(dataPoint));
+                }
+                myData.push(series);
+
+                var errorSeries = {
+                    type: 'errorbar',
+                    name: groupName + ' error',
+                    linkedTo: group + '.SP',
+                    data: new Array()
+                };
+
+                for (var j = 0; j < data.length; j++) {
+                    var lower = parseFloat(data[j]['BASELINE_CI_LOWER']);
+                    var upper = parseFloat(data[j]['BASELINE_CI_UPPER']);
+
+                    errorSeries.data.push([lower, upper]);
+                }
+                myData.push(errorSeries);
+            }
+
+            Highcharts.setOptions({
+              lang: {
+                thousandsSep: ','
+              }
+            });
+
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: classSelector,
+                    type: 'column',
+                },
+                title: {
+                    text: ''
+                },
+                credits: {
+                   enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    title: {
+                        text: 'Selection Pressure'
+                    },
+                    categories: [ 'CDR', 'FWR', 'CDR1', 'CDR2', 'FWR1', 'FWR2', 'FWR3' ],
+                    tickInterval: 1
+                },
+                yAxis: {
+                    title: {
+                        text: 'BASELINE SIGMA'
                     },
                     labels: {
                         style: {

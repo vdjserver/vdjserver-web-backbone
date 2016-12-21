@@ -482,6 +482,19 @@ function(
                     if (list.length > 0) parameters['CDR3Filters'] = list;
                 }
 
+                // Clones
+                if (formData.hasOwnProperty('clonal-analysis')) {
+                    parameters['ClonalFlag'] = true;
+
+                    list = [];
+                    if (formData['clonal-abundance']) list.push('abundance');
+                    if (list.length > 0) parameters['ClonalOperations'] = list;
+
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['ClonalFilters'] = list;
+                }
+
                 // Diversity
                 if (formData.hasOwnProperty('diversity-analysis')) {
                     parameters['DiversityFlag'] = true;
@@ -506,20 +519,18 @@ function(
                 }
 
                 // Mutations
-
-                // Clones
-                // gene segment usage
-                if (formData.hasOwnProperty('clonal-analysis')) {
-                    parameters['ClonalFlag'] = true;
+                if (formData.hasOwnProperty('mutational-analysis')) {
+                    parameters['MutationalFlag'] = true;
 
                     list = [];
-                    if (formData['clonal-abundance']) list.push('abundance');
-                    if (list.length > 0) parameters['ClonalOperations'] = list;
+                    if (formData['clonal-selection']) list.push('selection');
+                    if (list.length > 0) parameters['MutationalOperations'] = list;
 
                     list = [];
                     if (formData['filter-productive']) list.push('productive');
-                    if (list.length > 0) parameters['ClonalFilters'] = list;
+                    if (list.length > 0) parameters['MutationalFilters'] = list;
                 }
+
 
                 return parameters;
             },

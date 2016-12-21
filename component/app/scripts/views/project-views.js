@@ -2994,6 +2994,7 @@ define([
                 $(document).ready(function() {
                     $('#sample-groups-' + i + '-samples').multiselect({
                         sampleGroupIndex: i,
+                        nonSelectedText: 'All Samples',
                         //enableFiltering: true,
                         //includeSelectAllOption: true,
                         //selectAllJustVisible: false,

@@ -379,9 +379,9 @@ define([
                     'steps': [
                         'geneSegment',
                         'CDR3',
+                        'clones',
                         'diversity',
-                        'mutations',
-                        'clones'
+                        'mutations'
                     ],
                 }
             ];
