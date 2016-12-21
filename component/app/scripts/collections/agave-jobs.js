@@ -321,6 +321,38 @@ define([
                     + '&offset=' + this.offset
                     ;
             },
+            linkToJobs: function(jobList) {
+                for (var i = 0; i < this.length; ++i) {
+                    var m = this.at(i);
+                    var value = m.get('value');
+                    var job = jobList.get(value.jobUuid);
+                    if (job) job.set('metadataLink', m.get('uuid'));
+                }
+            },
+        })
+    );
+
+    Jobs.Archived = Backbone.Agave.MetadataCollection.extend(
+        _.extend({}, ComparatorsMixin.reverseChronologicalCreatedTime, {
+            model: Backbone.Agave.Model.Job.Listing,
+            initialize: function(parameters) {
+
+                Backbone.Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+
+                if (parameters && parameters.projectUuid) {
+                    this.projectUuid = parameters.projectUuid;
+                }
+            },
+            url: function() {
+                return '/meta/v2/data?q='
+                    + encodeURIComponent('{'
+                        + '"name":"archivedProjectJob",'
+                        + '"value.projectUuid":"' + this.projectUuid + '"'
+                    + '}')
+                    + '&limit=' + this.limit
+                    + '&offset=' + this.offset
+                    ;
+            },
         })
     );
 

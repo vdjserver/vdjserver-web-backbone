@@ -65,7 +65,7 @@
                     <tbody>
                         {{#each jobs}}
                             <tr>
-                                <td>{{name}}</td>
+                                <td>{{displayName}}</td>
                                 <td>
                                     <div id="job-status-{{id}}">
                                         {{#IsJobFrozen this}}
@@ -111,7 +111,7 @@
                         class="dropdown-menu"
                         role="menu"
                     >
-                        <li class="job-actions disabled">
+                        <li class="job-actions">
                             <a
                                 class="rename-job"
                                 href="#"
@@ -235,3 +235,4 @@
 </div>
 
 <section id="project-job-history"></section>
+<section id="project-job-rename"></section>

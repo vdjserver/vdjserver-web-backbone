@@ -216,6 +216,67 @@ define([
         },
     });
 
+    Jobs.Rename = Backbone.View.extend({
+        // Public Methods
+        template: 'jobs/job-rename',
+        initialize: function(parameters) {
+            this.job = parameters.job;
+            this.jobMetadata = parameters.jobMetadata;
+            this.parentView = parameters.parentView;
+
+            // TODO: no jobMetadata so cannot be renamed
+
+        },
+        events: {
+            'click #submit-rename': '_submitRenameForm',
+        },
+        serialize: function() {
+            var jobData = this.job.toJSON();
+            jobData.displayName = jobData.name;
+            if (this.jobMetadata) {
+                var value = this.jobMetadata.get('value');
+                if (value.displayName) jobData.displayName = value.displayName;
+            }
+
+            return {
+                job: jobData,
+            };
+        },
+        afterRender: function() {
+            $('#rename-modal').modal('show');
+            $('#rename-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+        _submitRenameForm: function(e) {
+            e.preventDefault();
+
+            var that = this;
+            var name = $('#job-name').val();
+            if (this.jobMetadata) {
+                var value = this.jobMetadata.get('value');
+                value.displayName = name;
+                this.jobMetadata.set('value', value);
+                this.jobMetadata.save()
+                    .always(function() {
+                        $('#rename-modal')
+                          .modal('hide')
+                          .on('hidden.bs.modal', function() {
+                              that.parentView.doneRenameJob();
+                          })
+                    })
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.setError(error);
+                        telemetry.set('method', '_submitRenameForm()');
+                        telemetry.set('view', 'Jobs.Rename');
+                        telemetry.save();
+                    })
+                    ;
+            }
+        },
+    });
+
     Jobs.History = Backbone.View.extend({
         // Public Methods
         template: 'jobs/job-history',

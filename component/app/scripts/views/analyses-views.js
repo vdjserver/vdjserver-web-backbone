@@ -140,13 +140,24 @@ define([
             'click .job-pagination': 'jobPaginationIndex',
             'click .view-config': 'viewConfig',
 
+            'click .rename-job': 'renameJob',
             'click .job-history': 'showJobHistory',
             'click .job-add-project-data': 'addJobOutputToProjectData',
             'click .job-remove-project-data': 'removeJobOutputFromProjectData',
         },
         serialize: function() {
+            var jobData = this.paginatedJobs.toJSON();
+            for (var i = 0; i < jobData.length; ++i) {
+                jobData[i].displayName = jobData[i].name;
+                if (jobData[i].metadataLink) {
+                    var m = this.jobListings.get(jobData[i].metadataLink);
+                    var value = m.get('value');
+                    if (value.displayName) jobData[i].displayName = value.displayName;
+                }
+            }
+
             return {
-                jobs: this.paginatedJobs.toJSON(),
+                jobs: jobData,
                 projectUuid: this.projectUuid,
                 paginationSets: this.paginationSets,
             };
@@ -174,6 +185,9 @@ define([
                     return that.jobListings.fetch();
                 })
                 .then(function() {
+                    // link jobs to their metadata record
+                    that.jobListings.linkToJobs(that.jobs);
+
                     that.jobs.forEach(function(job) {
                         if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
                             App.Instances.WebsocketManager.subscribeToEvent(job.get('id'));
@@ -326,6 +340,32 @@ define([
             if (this.currentIterationIndex === this.maxIteratorIndexes) {
                 $('.job-pagination-next').addClass('disabled');
             }
+        },
+
+        renameJob: function(e) {
+            e.preventDefault();
+
+            var jobId = e.target.dataset.id;
+
+            this.removeView('#project-job-rename');
+
+            var job = this.jobs.get(jobId);
+            var jobMetadata = job.get('metadataLink');
+            if (jobMetadata) jobMetadata = this.jobListings.get(jobMetadata);
+
+            var jobRenameView = new App.Views.Jobs.Rename({
+                job: job,
+                jobMetadata: jobMetadata,
+                parentView: this
+            });
+
+            this.setView('#project-job-rename', jobRenameView);
+            jobRenameView.render();
+        },
+
+        doneRenameJob: function() {
+            this.removeView('#project-job-rename');
+            this.render();
         },
 
         showJobHistory: function(e) {
