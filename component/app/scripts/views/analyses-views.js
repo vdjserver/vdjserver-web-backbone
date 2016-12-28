@@ -121,7 +121,11 @@ define([
             this.paginatedJobs = new Backbone.Agave.Collection.Jobs();
             this.jobs.projectUuid = this.projectUuid;
 
+            this.projectModel = new Backbone.Agave.Model.Project({ uuid: this.projectUuid});
+
             this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid});
+            this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: this.projectUuid});
+            this.showArchivedJobs = false;
 
             this.iteratorRange = 10;
 
@@ -144,8 +148,11 @@ define([
             'click .job-history': 'showJobHistory',
             'click .job-add-project-data': 'addJobOutputToProjectData',
             'click .job-remove-project-data': 'removeJobOutputFromProjectData',
+            'click .archive-job': 'archiveJob',
+            'click .unarchive-job': 'unarchiveJob',
         },
         serialize: function() {
+            // combine agave job data with our metadata
             var jobData = this.paginatedJobs.toJSON();
             for (var i = 0; i < jobData.length; ++i) {
                 jobData[i].displayName = jobData[i].name;
@@ -153,6 +160,13 @@ define([
                     var m = this.jobListings.get(jobData[i].metadataLink);
                     var value = m.get('value');
                     if (value.displayName) jobData[i].displayName = value.displayName;
+                } else {
+                    if (jobData[i].metadataArchive) {
+                        var m = this.archivedJobs.get(jobData[i].metadataArchive);
+                        var value = m.get('value');
+                        if (value.displayName) jobData[i].displayName = value.displayName;
+                        jobData[i].isArchived = true;
+                    }
                 }
             }
 
@@ -182,11 +196,25 @@ define([
                 .then(function() {
                     that.jobs.add(pendingJobs.toJSON());
 
+                    return that.projectModel.fetch();
+                })
+                .then(function() {
+                    var value = that.projectModel.get('value');
+                    if (value.showArchivedJobs) that.showArchivedJobs = true;
+
                     return that.jobListings.fetch();
                 })
                 .then(function() {
                     // link jobs to their metadata record
                     that.jobListings.linkToJobs(that.jobs);
+
+                    return that.archivedJobs.fetch();
+                })
+                .then(function() {
+                    if (that.showArchivedJobs)
+                        that.archivedJobs.linkToJobs(that.jobs);
+                    else
+                        that.jobs.remove(that.archivedJobs.jobUuids());
 
                     that.jobs.forEach(function(job) {
                         if (job.get('status') !== 'FINISHED' && job.get('status') !== 'FAILED') {
@@ -506,6 +534,58 @@ define([
                 })
                 ;
             })
+        },
+
+        archiveJob: function(e) {
+            e.preventDefault();
+
+            var jobId = e.target.dataset.id;
+
+            this.removeView('#project-job-archive');
+
+            var job = this.jobs.get(jobId);
+            var jobMetadata = job.get('metadataLink');
+            if (jobMetadata) jobMetadata = this.jobListings.get(jobMetadata);
+
+            var jobArchiveView = new App.Views.Jobs.Archive({
+                job: job,
+                jobMetadata: jobMetadata,
+                parentView: this
+            });
+
+            this.setView('#project-job-archive', jobArchiveView);
+            jobArchiveView.render();
+        },
+
+        doneArchiveJob: function() {
+            // force reload of page
+            Backbone.history.loadUrl('project/' + this.projectUuid + '/jobs');
+        },
+
+        unarchiveJob: function(e) {
+            e.preventDefault();
+
+            var jobId = e.target.dataset.id;
+
+            this.removeView('#project-job-archive');
+
+            var job = this.jobs.get(jobId);
+            var jobMetadata = job.get('metadataLink');
+            if (jobMetadata) jobMetadata = this.jobListings.get(jobMetadata);
+
+            var jobUnarchiveView = new App.Views.Jobs.Unarchive({
+                job: job,
+                jobMetadata: jobMetadata,
+                parentView: this
+            });
+
+            this.setView('#project-job-archive', jobUnarchiveView);
+            jobUnarchiveView.render();
+        },
+
+        doneUnarchiveJob: function() {
+            // force reload of page
+            Backbone.history.loadUrl('project/' + this.projectUuid + '/jobs');
         },
     });
 

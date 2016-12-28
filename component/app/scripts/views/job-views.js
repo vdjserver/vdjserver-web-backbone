@@ -314,6 +314,195 @@ define([
         },
     });
 
+    Jobs.Archive = Backbone.View.extend({
+        // Public Methods
+        template: 'jobs/job-archive',
+        initialize: function(parameters) {
+            this.job = parameters.job;
+            this.jobMetadata = parameters.jobMetadata;
+            this.parentView = parameters.parentView;
+        },
+        events: {
+            'click #submit-archive': '_submitArchiveForm',
+            'click #archive-exit': '_exitForm',
+        },
+        serialize: function() {
+            var jobData = this.job.toJSON();
+            jobData.displayName = jobData.name;
+            if (this.jobMetadata) {
+                var value = this.jobMetadata.get('value');
+                if (value.displayName) jobData.displayName = value.displayName;
+            }
+
+            return {
+                job: jobData,
+            };
+        },
+        afterRender: function() {
+            $('#archive-modal').modal('show');
+            $('#archive-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+
+        _exitForm: function(e) {
+            e.preventDefault();
+
+            var that = this;
+            $('#archive-modal').on('hidden.bs.modal', function(e) {
+                // force reload of page
+                Backbone.history.loadUrl(Backbone.history.fragment);
+            });
+        },
+
+        _submitArchiveForm: function(e) {
+            e.preventDefault();
+
+            $('.archive-submit-button').addClass('disabled');
+
+            var that = this;
+            this.job.archiveJob()
+                .then(function() {
+                    that._uiDoneArchiveJobView();
+                })
+                .fail(function(error) {
+                    if (error.responseText) that._uiDoneArchiveJobView(error.responseText);
+                    else that._uiDoneArchiveJobView('Unknown server error.');
+
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', '_submitArchiveForm()');
+                    telemetry.set('view', 'Jobs.Archive');
+                    telemetry.save();
+                })
+                ;
+        },
+
+        _uiDoneArchiveJobView: function(error) {
+            this.removeView('#archive-processing-view');
+
+            $('#archive-processing-view').removeClass('alert alert-info');
+            $('.archive-submit-button').addClass('hidden');
+            $('#archive-exit').removeClass('hidden');
+
+            if (error) {
+                $('#archive-processing-view').addClass('alert alert-danger');
+                var msg = 'There was an error archiving the job.<br/>';
+                msg += error + '<br/>';
+                $('#archive-processing-view').append(msg);
+            } else {
+                var message = new App.Models.MessageModel({
+                    'body': 'Archive was successful!'
+                });
+
+                var alertView = new App.Views.Util.Alert({
+                    options: {
+                        type: 'success'
+                    },
+                    model: message
+                });
+
+                this.setView('#archive-processing-view', alertView);
+                alertView.render();
+            }
+        },
+
+    });
+
+    Jobs.Unarchive = Backbone.View.extend({
+        // Public Methods
+        template: 'jobs/job-unarchive',
+        initialize: function(parameters) {
+            this.job = parameters.job;
+            this.jobMetadata = parameters.jobMetadata;
+            this.parentView = parameters.parentView;
+        },
+        events: {
+            'click #submit-unarchive': '_submitUnarchiveForm',
+            'click #unarchive-exit': '_exitForm',
+        },
+        serialize: function() {
+            var jobData = this.job.toJSON();
+            jobData.displayName = jobData.name;
+            if (this.jobMetadata) {
+                var value = this.jobMetadata.get('value');
+                if (value.displayName) jobData.displayName = value.displayName;
+            }
+
+            return {
+                job: jobData,
+            };
+        },
+        afterRender: function() {
+            $('#unarchive-modal').modal('show');
+            $('#unarchive-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+
+        _exitForm: function(e) {
+            e.preventDefault();
+
+            var that = this;
+            $('#unarchive-modal').on('hidden.bs.modal', function(e) {
+                // force reload of page
+                Backbone.history.loadUrl(Backbone.history.fragment);
+            });
+        },
+
+        _submitUnarchiveForm: function(e) {
+            e.preventDefault();
+
+            $('.unarchive-submit-button').addClass('disabled');
+
+            var that = this;
+            this.job.unarchiveJob()
+                .then(function() {
+                    that._uiDoneUnarchiveJobView();
+                })
+                .fail(function(error) {
+                    if (error.responseText) that._uiDoneUnarchiveJobView(error.responseText);
+                    else that._uiDoneUnarchiveJobView('Unknown server error.');
+
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', '_submitUnarchiveForm()');
+                    telemetry.set('view', 'Jobs.Unarchive');
+                    telemetry.save();
+                })
+                ;
+        },
+
+        _uiDoneUnarchiveJobView: function(error) {
+            this.removeView('#unarchive-processing-view');
+
+            $('#unarchive-processing-view').removeClass('alert alert-info');
+            $('.unarchive-submit-button').addClass('hidden');
+            $('#unarchive-exit').removeClass('hidden');
+
+            if (error) {
+                $('#unarchive-processing-view').addClass('alert alert-danger');
+                var msg = 'There was an error unarchiving the job.<br/>';
+                msg += error + '<br/>';
+                $('#unarchive-processing-view').append(msg);
+            } else {
+                var message = new App.Models.MessageModel({
+                    'body': 'Unarchive was successful!'
+                });
+
+                var alertView = new App.Views.Util.Alert({
+                    options: {
+                        type: 'success'
+                    },
+                    model: message
+                });
+
+                this.setView('#unarchive-processing-view', alertView);
+                alertView.render();
+            }
+        },
+    });
+
     Jobs.SelectedFiles = Backbone.View.extend({
         // Public Methods
         template: 'jobs/job-selected-files',

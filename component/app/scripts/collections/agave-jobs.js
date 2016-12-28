@@ -346,12 +346,29 @@ define([
             url: function() {
                 return '/meta/v2/data?q='
                     + encodeURIComponent('{'
-                        + '"name":"archivedProjectJob",'
+                        + '"name":"projectJobArchive",'
                         + '"value.projectUuid":"' + this.projectUuid + '"'
                     + '}')
                     + '&limit=' + this.limit
                     + '&offset=' + this.offset
                     ;
+            },
+            linkToJobs: function(jobList) {
+                for (var i = 0; i < this.length; ++i) {
+                    var m = this.at(i);
+                    var value = m.get('value');
+                    var job = jobList.get(value.jobUuid);
+                    if (job) job.set('metadataArchive', m.get('uuid'));
+                }
+            },
+            jobUuids: function() {
+                var jobUuids = [];
+                for (var i = 0; i < this.length; ++i) {
+                    var m = this.at(i);
+                    var value = m.get('value');
+                    jobUuids.push(value.jobUuid);
+                }
+                return jobUuids;
             },
         })
     );

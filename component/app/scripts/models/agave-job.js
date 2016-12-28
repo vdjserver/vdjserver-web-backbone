@@ -22,6 +22,36 @@ function(
             url: function() {
                 return '/jobs/v2/' + this.get('id');
             },
+
+            archiveJob: function() {
+                var jqxhr = $.ajax({
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        jobId: this.get('id')
+                    }),
+                    url: EnvironmentConfig.vdjApi.hostname
+                        + '/jobs/archive/' + this.get('id')
+                });
+
+                return jqxhr;
+            },
+
+            unarchiveJob: function() {
+                var jqxhr = $.ajax({
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        jobId: this.get('id')
+                    }),
+                    url: EnvironmentConfig.vdjApi.hostname
+                        + '/jobs/unarchive/' + this.get('id')
+                });
+
+                return jqxhr;
+            },
         },
         {
             CHART_TYPE_0: 'composition',
