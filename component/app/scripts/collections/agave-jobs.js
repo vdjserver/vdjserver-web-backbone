@@ -142,38 +142,49 @@ define([
             }
             return undefined;
         },
-        getProjectFileOutput: function() {
+        getProjectFileOutput: function(processMetadata) {
+            var pmFiles = [];
+            if (processMetadata) pmFiles = processMetadata.getProjectFileOutputList();
+
             var filteredCollection = this.filter(function(model) {
 
                 var value = model.get('value');
                 if (value.name) {
 
-                    var filename = value.name;
+                    // only those in process metadata
+                    if (processMetadata) {
+                        var idx = pmFiles.indexOf(value.name);
+                        if (idx >= 0) return true;
+                        else return false;
+                    } else {
+                        // otherwise go by file extension
+                        var filename = value.name;
 
-                    var fileNameSplit = filename.split('.');
-                    var fileExtension = fileNameSplit[fileNameSplit.length - 1];
+                        var fileNameSplit = filename.split('.');
+                        var fileExtension = fileNameSplit[fileNameSplit.length - 1];
 
-                    var doubleFileExtension = fileNameSplit[fileNameSplit.length - 2] + '.' + fileNameSplit[fileNameSplit.length - 1];
+                        var doubleFileExtension = fileNameSplit[fileNameSplit.length - 2] + '.' + fileNameSplit[fileNameSplit.length - 1];
 
-                    var test = fileNameSplit[fileNameSplit.length - 100];
+                        var test = fileNameSplit[fileNameSplit.length - 100];
 
-                    // Whitelisted files
-                    if (fileExtension === 'fasta'
-                        ||
-                        fileExtension === 'fastq'
-                        ||
-                        fileExtension === 'vdjml'
-                        ||
-                        fileExtension === 'zip'
-                        ||
-                        doubleFileExtension === 'rc_out.tsv'
-                        ||
-                        doubleFileExtension === 'duplicates.tsv'
-                    ) {
-                        return true;
-                    }
-                    else {
-                        return false;
+                        // Whitelisted files
+                        if (fileExtension === 'fasta'
+                            ||
+                            fileExtension === 'fastq'
+                            ||
+                            fileExtension === 'vdjml'
+                            ||
+                            fileExtension === 'zip'
+                            ||
+                            doubleFileExtension === 'rc_out.tsv'
+                            ||
+                            doubleFileExtension === 'duplicates.tsv'
+                        ) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
                     }
                 }
             });
@@ -262,6 +273,20 @@ define([
 
             return newCollection;
         },
+        getShowInProjectData: function() {
+            var filteredCollection = this.filter(function(model) {
+
+                var value = model.get('value');
+                if (value.showInProjectData) return true;
+                else return false;
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(filteredCollection);
+
+            return newCollection;
+        },
     });
 /*
     Jobs.ProjectDataFiles = Jobs.OutputFiles.extend({
@@ -326,7 +351,12 @@ define([
                     var m = this.at(i);
                     var value = m.get('value');
                     var job = jobList.get(value.jobUuid);
-                    if (job) job.set('metadataLink', m.get('uuid'));
+                    if (job) {
+                        job.set('metadataLink', m.get('uuid'));
+                        job.initDisplayName();
+                        if (value.displayName) job.set('displayName', value.displayName);
+                        job.set('isArchived', false);
+                    }
                 }
             },
         })
@@ -358,7 +388,12 @@ define([
                     var m = this.at(i);
                     var value = m.get('value');
                     var job = jobList.get(value.jobUuid);
-                    if (job) job.set('metadataArchive', m.get('uuid'));
+                    if (job) {
+                        job.set('metadataArchive', m.get('uuid'));
+                        job.initDisplayName();
+                        if (value.displayName) job.set('displayName', value.displayName);
+                        job.set('isArchived', true);
+                    }
                 }
             },
             jobUuids: function() {

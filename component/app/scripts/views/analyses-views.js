@@ -152,26 +152,8 @@ define([
             'click .unarchive-job': 'unarchiveJob',
         },
         serialize: function() {
-            // combine agave job data with our metadata
-            var jobData = this.paginatedJobs.toJSON();
-            for (var i = 0; i < jobData.length; ++i) {
-                jobData[i].displayName = jobData[i].name;
-                if (jobData[i].metadataLink) {
-                    var m = this.jobListings.get(jobData[i].metadataLink);
-                    var value = m.get('value');
-                    if (value.displayName) jobData[i].displayName = value.displayName;
-                } else {
-                    if (jobData[i].metadataArchive) {
-                        var m = this.archivedJobs.get(jobData[i].metadataArchive);
-                        var value = m.get('value');
-                        if (value.displayName) jobData[i].displayName = value.displayName;
-                        jobData[i].isArchived = true;
-                    }
-                }
-            }
-
             return {
-                jobs: jobData,
+                jobs: this.paginatedJobs.toJSON(),
                 projectUuid: this.projectUuid,
                 paginationSets: this.paginationSets,
             };
@@ -440,10 +422,15 @@ define([
 
                 // see if any are deleted
                 var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId});
+                var jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: jobId});
 
+                var that = this;
                 fileCollection.fetch()
                 .then(function() {
-                      var projectFiles = fileCollection.getProjectFileOutput();
+                    return jobProcessMetadata.fetch();
+                })
+                .then(function() {
+                      var projectFiles = fileCollection.getProjectFileOutput(jobProcessMetadata);
                       var promises = [];
 
                       // Set up promises
@@ -466,10 +453,10 @@ define([
                 })
                 .always(function() {
                     $('#modal-message')
-                      .modal('hide')
-                      .on('hidden.bs.modal', function() {
-                          that.render();
-                      })
+                      .modal('hide');
+                      //.on('hidden.bs.modal', function() {
+                      //    that.render();
+                      //})
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -495,9 +482,10 @@ define([
                 // see if any are deleted
                 var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId});
 
+                var that = this;
                 fileCollection.fetch()
                 .then(function() {
-                      var projectFiles = fileCollection.getProjectFileOutput();
+                      var projectFiles = fileCollection.getShowInProjectData();
                       var promises = [];
 
                       // Set up promises
@@ -521,9 +509,9 @@ define([
                 .always(function() {
                     $('#modal-message')
                       .modal('hide')
-                      .on('hidden.bs.modal', function() {
-                          that.render();
-                      })
+                      //.on('hidden.bs.modal', function() {
+                      //    that.render();
+                      //})
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -702,7 +690,7 @@ define([
         serialize: function() {
             return {
                 jobDetail: this.jobDetail.toJSON(),
-                projectFiles: this.collection.getProjectFileOutput().toJSON(),
+                projectFiles: this.collection.getProjectFileOutput(this.jobProcessMetadata).toJSON(),
                 //chartFiles: this.collection.getChartFileOutput().toJSON(),
                 logFiles: this.collection.getLogFileOutput().toJSON(),
                 analysisCharts: this.analysisCharts,

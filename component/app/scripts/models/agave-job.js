@@ -23,6 +23,11 @@ function(
                 return '/jobs/v2/' + this.get('id');
             },
 
+            initDisplayName: function() {
+                var dName = this.get('displayName');
+                if (!dName) this.set('displayName', this.get('name'));
+            },
+
             archiveJob: function() {
                 var jqxhr = $.ajax({
                     headers: Backbone.Agave.basicAuthHeader(),
@@ -333,6 +338,24 @@ function(
                 }
             }
             return null;
+        },
+
+        getProjectFileOutputList: function() {
+            var pmFiles = [];
+
+            var processMetadata = this.get('value');
+            if (!processMetadata) return pmFiles;
+
+            for (var group in processMetadata.groups) {
+                if (processMetadata.groups[group]['type'] == 'file') {
+                    var fileKey = processMetadata.groups[group][processMetadata.process.appName]['files'];
+                    for (var fileEntry in processMetadata.files[fileKey]) {
+                        pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+                    }
+                }
+            }
+
+            return pmFiles;
         },
     });
 

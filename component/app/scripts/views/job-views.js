@@ -327,15 +327,8 @@ define([
             'click #archive-exit': '_exitForm',
         },
         serialize: function() {
-            var jobData = this.job.toJSON();
-            jobData.displayName = jobData.name;
-            if (this.jobMetadata) {
-                var value = this.jobMetadata.get('value');
-                if (value.displayName) jobData.displayName = value.displayName;
-            }
-
             return {
-                job: jobData,
+                job: this.job.toJSON(),
             };
         },
         afterRender: function() {
@@ -422,15 +415,8 @@ define([
             'click #unarchive-exit': '_exitForm',
         },
         serialize: function() {
-            var jobData = this.job.toJSON();
-            jobData.displayName = jobData.name;
-            if (this.jobMetadata) {
-                var value = this.jobMetadata.get('value');
-                if (value.displayName) jobData.displayName = value.displayName;
-            }
-
             return {
-                job: jobData,
+                job: this.job.toJSON(),
             };
         },
         afterRender: function() {
@@ -547,6 +533,9 @@ define([
             this.workJobs = new Backbone.Agave.Collection.Jobs();
             this.workJobs.projectUuid = that.projectModel.get('uuid');
 
+            this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: that.projectModel.get('uuid')});
+            this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: that.projectModel.get('uuid')});
+
             this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.projectModel.get('uuid')});
             this.workSamples.fetch()
             .then(function() {
@@ -556,6 +545,15 @@ define([
                 return that.workJobs.fetch();
             })
             .then(function() {
+                return that.jobListings.fetch();
+            })
+            .then(function() {
+                that.jobListings.linkToJobs(that.workJobs);
+                return that.archivedJobs.fetch();
+            })
+            .then(function() {
+                that.workJobs.remove(that.archivedJobs.jobUuids());
+
                 that.workJobs = that.workJobs.getFinishedVDJAssignmentJobs();
 
                 if (that.workJobs.length > 0) that.hasJobs = true;

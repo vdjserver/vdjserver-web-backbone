@@ -314,6 +314,9 @@ define([
             this.projectJobFiles = new Backbone.Agave.Collection.Files.ProjectJobFiles({projectUuid: this.projectUuid});
             this.projectJobs = new Backbone.Agave.Collection.Jobs.Subset();
 
+            this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid});
+            this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: this.projectUuid});
+
             // This is a little tricky. If we're arriving from a page
             // refresh, then we are stuck with two asynchronous fetches.
             // If the file list loads faster than the project list, then
@@ -381,6 +384,20 @@ define([
                     }
                 })
                 .then(function() {
+                    // job metadata
+                    return that.jobListings.fetch();
+                })
+                .then(function() {
+                    // link jobs to their metadata record
+                    that.jobListings.linkToJobs(that.projectJobs);
+
+                    // archive jobs
+                    return that.archivedJobs.fetch();
+                })
+                .then(function() {
+                    // remove archived jobs
+                    that.projectJobs.remove(that.archivedJobs.jobUuids());
+
                     loadingView.remove();
                     that.render();
 
@@ -1080,7 +1097,7 @@ define([
                 for (var i = 0; i < this.projectJobs.models.length; ++i) {
                     var m = this.projectJobs.at(i);
                     var fileCollection = this.projectJobFiles.getFilesForJobId(m.get('id'));
-                    fileCollection = fileCollection.getProjectFileOutput();
+                    //fileCollection = fileCollection.getProjectFileOutput();
                     m.set('fileCollection', fileCollection.toJSON());
                 }
 
