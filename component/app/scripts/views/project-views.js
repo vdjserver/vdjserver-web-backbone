@@ -2615,7 +2615,10 @@ define([
                         var changed = m.changedAttributes(origModel.attributes);
                         if (!changed) return;
                     }
-                    return m.save();
+                    return m.save()
+                        .then(function() {
+                            return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
+                        });
                 }
             });
 
@@ -2843,7 +2846,10 @@ define([
                             var changed = m.changedAttributes(origModel.attributes);
                             if (!changed) return;
                         }
-                        return m.save();
+                        return m.save()
+                            .then(function() {
+                                return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
+                            });
                     }
                 });
 
@@ -3141,7 +3147,10 @@ define([
                             var changed = m.changedAttributes(origModel.attributes);
                             if (!changed) return;
                         }
-                        return m.save();
+                        return m.save()
+                            .then(function() {
+                                return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
+                            });
                     }
                 });
 
