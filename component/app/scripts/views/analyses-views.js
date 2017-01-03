@@ -974,7 +974,7 @@ define([
             'click .hide-chart': 'hideChart',
 
             'click .download-chart': 'downloadChart',
-            'click .download-file': 'downloadFile',
+            'click .download-data': 'downloadData',
 
             'click .toggle-legend-btn': 'toggleLegend',
         },
@@ -1101,47 +1101,6 @@ define([
                     default:
                         break;
                 }
-/*
-                switch (chartType) {
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_0:
-                        $('#chart-legend').show();
-                        Analyses.Charts.Composition(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_1:
-                        $('#chart-legend').show();
-                        Analyses.Charts.PercentageGcHistogram(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_3:
-                        $('#chart-legend').show();
-                        Analyses.Charts.LengthHistogram(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_4:
-                        Analyses.Charts.MeanQualityScoreHistogram(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_5:
-                        Analyses.Charts.QualityScore(fileHandle, fileData, classSelector, that.chartHeight);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_6:
-                        Analyses.Charts.GiantTable(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_7:
-                        Analyses.Charts.Cdr3(fileHandle, fileData, classSelector);
-                        break;
-
-                    case Backbone.Agave.Model.Job.Detail.CHART_TYPE_8:
-                        Analyses.Charts.GeneDistribution(fileHandle, fileData, classSelector);
-                        break;
-
-                    default:
-                        break;
-                }
-*/
 
                 // Scroll down to chart
                 $('html, body').animate({
@@ -1199,6 +1158,43 @@ define([
                     }
                 })
                 ;
+        },
+
+        downloadData: function(e) {
+            e.preventDefault();
+
+            var chartId = e.target.dataset.id;
+
+            this._doDownloadData(this._chartFilenames(chartId))
+                .fail(function(error) {
+                      var telemetry = new Backbone.Agave.Model.Telemetry();
+                      telemetry.setError(error);
+                      telemetry.set('method', 'downloadData()');
+                      telemetry.set('view', 'Analyses.Statistics');
+                      telemetry.save();
+                  })
+                  ;
+        },
+
+        _doDownloadData: function(files) {
+            var that = this;
+            if (this.isComparison) {
+                var fileList = [];
+                var filename = files.pre;
+                var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
+                fileList.push(fileHandle);
+
+                filename = files.post;
+                fileHandle = that.selectAnalyses.collection.getFileByName(filename);
+                fileList.push(fileHandle);
+
+                return fileHandle.downloadFileListToDisk(fileList);
+            } else {
+                var filename = files.stats;
+                var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
+
+                return fileHandle.downloadFileToDisk()
+            }
         },
 
         // private methods
@@ -1411,7 +1407,7 @@ define([
             'click .hide-chart': 'hideChart',
 
             'click .download-chart': 'downloadChart',
-            'click .download-file': 'downloadFile',
+            'click .download-data': 'downloadData',
 
             'click .toggle-legend-btn': 'toggleLegend',
         },
@@ -1708,6 +1704,27 @@ define([
                     }
                 })
                 ;
+        },
+
+        downloadData: function(e) {
+            e.preventDefault();
+
+            var chartId = this.chartFiles[e.target.dataset.tuple];
+            var appGroup = this.selectAnalyses.processMetadata.groups[this.selectAnalyses.processMetadata.process.appName];
+            var fileKey = appGroup[chartId['type']]['files'];
+            var fileEntry = this.selectAnalyses.processMetadata.files[fileKey]['chart_data'];
+            var filename = fileEntry['value'];
+            var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
+
+            fileHandle.downloadFileToDisk()
+                .fail(function(error) {
+                      var telemetry = new Backbone.Agave.Model.Telemetry();
+                      telemetry.setError(error);
+                      telemetry.set('method', 'downloadData()');
+                      telemetry.set('view', 'Analyses.RepertoireComparison');
+                      telemetry.save();
+                  })
+                  ;
         },
 
         // private methods

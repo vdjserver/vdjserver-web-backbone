@@ -243,6 +243,19 @@ function(
 
                 return jqxhr;
             },
+            downloadFileListToDisk: function(files) {
+                function downloadNext(i) {
+                    if (i >= files.length) {
+                        return;
+                    }
+
+                    files[i].downloadFileToDisk();
+
+                    setTimeout(function () { downloadNext(i + 1); }, 5000);
+                }
+
+                downloadNext(0);
+            },
             getFilePath: function() {
 
                 var value = this.get('value');
