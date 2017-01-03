@@ -98,6 +98,7 @@ function(
 
                             var formData = new FormData();
                             formData.append('fileToUpload', model.get('fileReference'));
+                            if (model.get('name')) formData.append('fileName', model.get('name'));
 
                             var that = this;
 
