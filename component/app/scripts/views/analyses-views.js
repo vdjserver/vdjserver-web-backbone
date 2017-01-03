@@ -1667,48 +1667,8 @@ define([
 
             var chartId = this.chartFiles[e.target.dataset.tuple];
 
+            // All our currently Highcharts so use their export function
             chartId['chart'].exportChart();
-/*
-            var chartClassSelector = e.target.dataset.chartClassSelector;
-
-            var filename = e.target.dataset.id;
-            //filename = filename.split('.');
-            //filename.pop();
-            //filename = filename.join('.');
-
-            var cssUrl = location.protocol + '//' + location.host + '/styles/charts.css';
-
-            $.get(cssUrl)
-                .done(function(cssText) {
-
-                    var widthPx = $('#' + chartClassSelector + ' svg').css('width');
-*/
-                    /*
-                        Grabbing all content specifically from the svg
-                        element ensures that we won't pick up any other
-                        random elements that are also children of
-                        |classSelector|.
-                    */ /*
-                    var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
-                                  + '\n'
-                                  + '<svg '
-                                        + ' style="height: ' + that.chartHeight + 'px; width:' + widthPx + ';"'
-                                        + ' version="1.1"'
-                                        + ' xmlns="http://www.w3.org/2000/svg"'
-                                        + ' class="box"'
-                                  + '>'
-                                        + $('.' + chartClassSelector + ' svg').html()
-                                  + '</svg>'
-                                  ;
-
-                    if (typeof safari !== 'undefined') {
-                        window.open("data:image/svg+xml," + encodeURIComponent(svgString));
-                    } else {
-                        var blob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
-                        saveAs(blob, filename + '.svg');
-                    }
-                })
-                ; */
         },
 
         downloadData: function(e) {
