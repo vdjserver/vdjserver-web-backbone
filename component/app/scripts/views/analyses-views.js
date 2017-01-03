@@ -1661,9 +1661,14 @@ define([
         },
 
         downloadChart: function(e) {
+            e.preventDefault();
 
             var that = this;
 
+            var chartId = this.chartFiles[e.target.dataset.tuple];
+
+            chartId['chart'].exportChart();
+/*
             var chartClassSelector = e.target.dataset.chartClassSelector;
 
             var filename = e.target.dataset.id;
@@ -1677,13 +1682,13 @@ define([
                 .done(function(cssText) {
 
                     var widthPx = $('#' + chartClassSelector + ' svg').css('width');
-
+*/
                     /*
                         Grabbing all content specifically from the svg
                         element ensures that we won't pick up any other
                         random elements that are also children of
                         |classSelector|.
-                    */
+                    */ /*
                     var svgString = '<?xml-stylesheet type="text/css" href="data:text/css;charset=utf-8;base64,' + btoa(cssText) + '" ?>'
                                   + '\n'
                                   + '<svg '
@@ -1703,7 +1708,7 @@ define([
                         saveAs(blob, filename + '.svg');
                     }
                 })
-                ;
+                ; */
         },
 
         downloadData: function(e) {

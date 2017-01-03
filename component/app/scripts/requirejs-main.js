@@ -21,6 +21,7 @@ define([
     'highcharts-drilldown',
     'highcharts-more',
     'highcharts-exporting',
+    'highcharts-offline-exporting',
 
     //jquery.event.drag/drop
     'jquery.event.drag',
