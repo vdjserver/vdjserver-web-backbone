@@ -314,6 +314,9 @@ define([
             this.projectJobFiles = new Backbone.Agave.Collection.Files.ProjectJobFiles({projectUuid: this.projectUuid});
             this.projectJobs = new Backbone.Agave.Collection.Jobs.Subset();
 
+            this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid});
+            this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: this.projectUuid});
+
             // This is a little tricky. If we're arriving from a page
             // refresh, then we are stuck with two asynchronous fetches.
             // If the file list loads faster than the project list, then
@@ -381,6 +384,20 @@ define([
                     }
                 })
                 .then(function() {
+                    // job metadata
+                    return that.jobListings.fetch();
+                })
+                .then(function() {
+                    // link jobs to their metadata record
+                    that.jobListings.linkToJobs(that.projectJobs);
+
+                    // archive jobs
+                    return that.archivedJobs.fetch();
+                })
+                .then(function() {
+                    // remove archived jobs
+                    that.projectJobs.remove(that.archivedJobs.jobUuids());
+
                     loadingView.remove();
                     that.render();
 
@@ -870,7 +887,7 @@ define([
 
             var that = this;
 
-            var selectedFileMetadataUuids = this._getSelectedFileUuids();
+            var selectedFileMetadataUuids = this._getSelectedFileUuids(true);
 
             var promises = [];
 
@@ -923,7 +940,7 @@ define([
         _clickDownloadMultipleFiles: function(e) {
             e.preventDefault();
 
-            var selectedFileMetadataUuids = this._getSelectedFileUuids();
+            var selectedFileMetadataUuids = this._getSelectedFileUuids(true);
             this._downloadProjectFilesForMetadataUuids(selectedFileMetadataUuids);
         },
         _downloadProjectFilesForMetadataUuids: function(metadataUuids) {
@@ -1080,7 +1097,7 @@ define([
                 for (var i = 0; i < this.projectJobs.models.length; ++i) {
                     var m = this.projectJobs.at(i);
                     var fileCollection = this.projectJobFiles.getFilesForJobId(m.get('id'));
-                    fileCollection = fileCollection.getProjectFileOutput();
+                    //fileCollection = fileCollection.getProjectFileOutput();
                     m.set('fileCollection', fileCollection.toJSON());
                 }
 
@@ -1627,6 +1644,8 @@ define([
                     if (this._checkDuplicateFile(file.name) === true) {
                         continue;
                     }
+                    var guessType = stagedFile.guessTypeFromName();
+                    stagedFile.set('type', guessType);
 
                     this.models.push(stagedFile);
 
@@ -2441,9 +2460,9 @@ define([
             })
             .then(function() {
 
-                if (that.subjectColumns.get('uuid').length > 0) {
+                //if (that.subjectColumns.get('uuid').length > 0) {
                     that.columnNames = that.subjectColumns.getColumnNames();
-                }
+                //}
 
                 loadingView.remove();
 
@@ -2596,7 +2615,10 @@ define([
                         var changed = m.changedAttributes(origModel.attributes);
                         if (!changed) return;
                     }
-                    return m.save();
+                    return m.save()
+                        .then(function() {
+                            return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
+                        });
                 }
             });
 
@@ -2665,6 +2687,8 @@ define([
             this.pairedFiles = [];
             this.pairedQualFiles = [];
 
+            this.workSubjects = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: this.model.get('uuid')});
+
             this.sampleColumns = new Backbone.Agave.Model.SampleColumns({projectUuid: this.model.get('uuid')});
             this.columnNames = [];
 
@@ -2680,10 +2704,13 @@ define([
                 return that.sampleColumns.fetch();
             })
             .then(function() {
+                return that.workSubjects.fetch();
+            })
+            .then(function() {
 
-                if (that.sampleColumns.get('uuid').length > 0) {
+                //if (that.sampleColumns.get('uuid').length > 0) {
                     that.columnNames = that.sampleColumns.getColumnNames();
-                }
+                //}
 
                 that.nonpairedFiles = that.projectFiles.serializedNonPairedReadCollection();
                 that.pairedFiles = that.projectFiles.serializedPairedReadCollection();
@@ -2711,6 +2738,7 @@ define([
                 for (var j = 0; j < this.columnNames.length; ++j)
                     values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
                 rowValues[i] = { row: values };
+                rowValues[i]['subject_uuid'] = value['subject_uuid'];
                 rowValues[i]['project_file'] = value['project_file'];
                 rowValues[i]['uuid'] = m.get('uuid');
             }
@@ -2718,6 +2746,7 @@ define([
             return {
                 rowValues: rowValues,
                 workSamples: this.workSamples.toJSON(),
+                workSubjects: this.workSubjects.toJSON(),
                 nonpairedFiles: this.nonpairedFiles,
                 pairedFiles: this.pairedFiles,
                 pairedQualFiles: this.pairedQualFiles,
@@ -2817,7 +2846,10 @@ define([
                             var changed = m.changedAttributes(origModel.attributes);
                             if (!changed) return;
                         }
-                        return m.save();
+                        return m.save()
+                            .then(function() {
+                                return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
+                            });
                     }
                 });
 
@@ -2985,6 +3017,7 @@ define([
                 $(document).ready(function() {
                     $('#sample-groups-' + i + '-samples').multiselect({
                         sampleGroupIndex: i,
+                        nonSelectedText: 'All Samples',
                         //enableFiltering: true,
                         //includeSelectAllOption: true,
                         //selectAllJustVisible: false,
@@ -3114,7 +3147,10 @@ define([
                             var changed = m.changedAttributes(origModel.attributes);
                             if (!changed) return;
                         }
-                        return m.save();
+                        return m.save()
+                            .then(function() {
+                                return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
+                            });
                     }
                 });
 
@@ -3211,7 +3247,8 @@ define([
                   that._uiCancelJobLoadingView();
               })
               .fail(function(error) {
-                  that._uiCancelJobLoadingView(error.responseText);
+                  if (error.responseText) that._uiCancelJobLoadingView(error.responseText);
+                  else that._uiCancelJobLoadingView('Unknown server error.');
 
                   var telemetry = new Backbone.Agave.Model.Telemetry();
                   telemetry.setError(error);

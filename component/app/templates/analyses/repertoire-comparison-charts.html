@@ -14,7 +14,7 @@
             <div class="col-md-3">
               <input type="text" class="form-control text-center" id="project-uuid" readonly value="{{name}}">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div id="show-chart" class="btn btn-primary show-chart" data-id="{{this.id}}" data-tuple="{{@index}}">
                     Show Chart
                 </div>
@@ -42,7 +42,7 @@
                     {{#if ../fileList}}
                       <select id="file-list-{{@index}}" data-tuple="{{@index}}" multiple="multiple">
                           {{#each ../../fileList}}
-                          <option value="{{this}}">{{this}}</option>
+                          <option value="{{this.id}}">{{this.name}}</option>
                           {{/each}}
                       </select>
                     {{else}}
@@ -54,7 +54,7 @@
                 <div class="col-md-2">
                     <select id="sample-list-{{@index}}" data-tuple="{{@index}}" multiple="multiple">
                         {{#each ../sampleList}}
-                        <option value="{{this}}">{{this}}</option>
+                        <option value="{{this.id}}">{{this.name}}</option>
                         {{/each}}
                     </select>
                 </div>
@@ -63,7 +63,7 @@
                 <div class="col-md-2">
                     <select id="sample-group-list-{{@index}}" data-tuple="{{@index}}" multiple="multiple">
                         {{#each ../sampleGroupList}}
-                        <option value="{{this}}">{{this}}</option>
+                        <option value="{{this.id}}">{{this.name}}</option>
                         {{/each}}
                     </select>
                 </div>

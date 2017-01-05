@@ -1,0 +1,71 @@
+<div class="modal fade" id="unarchive-modal" tabindex="-1" role="dialog" aria-labelledby="job-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="job-modal-label">Unarchive Job</h4>
+            </div>
+            <form method="post" class="form-horizontal" id="job-form" role="form">
+                <div class="modal-body">
+
+                    <div class="form-group">
+                      <label for="job-name" class="col-md-2 control-label">Job Name:</label>
+                      <div class="col-md-4">
+                        <input type="text" class="form-control" id="job-name" placeholder="" readonly value="{{job.displayName}}">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="job-id" class="col-md-2 control-label">VDJServer UUID:</label>
+                      <div class="col-md-4">
+                        <input type="text" class="form-control" id="job-id" readonly value="{{job.id}}">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="alert alert-danger col-md-10 col-md-offset-1">
+                          Unarchiving will make job data accessible within View Analyses and Results.
+                          Note that job data from older versions of VDJServer may not be usable with newer VDJServer features.
+                      </div>
+                    </div>
+
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-offset-4 col-lg-4">
+                        <div id="unarchive-processing-view" class="text-center"></div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button
+                        class="btn btn-default unarchive-submit-button"
+                        type="button"
+                        data-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+
+                    <input
+                        id="submit-unarchive"
+                        class="btn btn-success unarchive-submit-button"
+                        type="button"
+                        value="Unarchive"
+                    >
+
+                    <button
+                        id="unarchive-exit"
+                        class="btn btn-success hidden"
+                        type="button"
+                        data-dismiss="modal"
+                    >
+                        Exit
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

@@ -22,6 +22,41 @@ function(
             url: function() {
                 return '/jobs/v2/' + this.get('id');
             },
+
+            initDisplayName: function() {
+                var dName = this.get('displayName');
+                if (!dName) this.set('displayName', this.get('name'));
+            },
+
+            archiveJob: function() {
+                var jqxhr = $.ajax({
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        jobId: this.get('id')
+                    }),
+                    url: EnvironmentConfig.vdjApi.hostname
+                        + '/jobs/archive/' + this.get('id')
+                });
+
+                return jqxhr;
+            },
+
+            unarchiveJob: function() {
+                var jqxhr = $.ajax({
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        jobId: this.get('id')
+                    }),
+                    url: EnvironmentConfig.vdjApi.hostname
+                        + '/jobs/unarchive/' + this.get('id')
+                });
+
+                return jqxhr;
+            },
         },
         {
             CHART_TYPE_0: 'composition',
@@ -208,6 +243,19 @@ function(
 
                 return jqxhr;
             },
+            downloadFileListToDisk: function(files) {
+                function downloadNext(i) {
+                    if (i >= files.length) {
+                        return;
+                    }
+
+                    files[i].downloadFileToDisk();
+
+                    setTimeout(function () { downloadNext(i + 1); }, 5000);
+                }
+
+                downloadNext(0);
+            },
             getFilePath: function() {
 
                 var value = this.get('value');
@@ -304,6 +352,24 @@ function(
             }
             return null;
         },
+
+        getProjectFileOutputList: function() {
+            var pmFiles = [];
+
+            var processMetadata = this.get('value');
+            if (!processMetadata) return pmFiles;
+
+            for (var group in processMetadata.groups) {
+                if (processMetadata.groups[group]['type'] == 'file') {
+                    var fileKey = processMetadata.groups[group][processMetadata.process.appName]['files'];
+                    for (var fileEntry in processMetadata.files[fileKey]) {
+                        pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+                    }
+                }
+            }
+
+            return pmFiles;
+        },
     });
 
     Job.IgBlast = Backbone.Agave.JobModel.extend(
@@ -395,7 +461,7 @@ function(
 
                 //this.inputParameterName = 'query';
             },
-            prepareJob: function(formData, VDJMLFileMetadatas, SummaryFileMetadatas, allFileMetadatas, projectUuid) {
+            prepareJob: function(formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas, projectUuid) {
 
                 var parameters = this._serializeFormData(formData);
                 parameters['Creator'] = Backbone.Agave.instance.token().get('username');
@@ -410,6 +476,7 @@ function(
                     formData,
                     VDJMLFileMetadatas,
                     SummaryFileMetadatas,
+                    ChangeOFileMetadatas,
                     allFileMetadatas
                 );
                 this.set('inputs', inputFiles);
@@ -428,6 +495,13 @@ function(
                 }
                 parameters['SummaryFileMetadata'] = metaList;
 
+                var metaList = [];
+                for (var i = 0; i < ChangeOFileMetadatas.models.length; i++) {
+                    var fileMetadata = ChangeOFileMetadatas.at(i);
+                    metaList.push(fileMetadata.get('uuid'));
+                }
+                parameters['ChangeOFileMetadata'] = metaList;
+
                 this.set('parameters', parameters);
             },
             // Private Methods
@@ -438,20 +512,8 @@ function(
                 parameters['JobSelected'] = formData['job-selected'];
 
                 // gene segment usage
-                if (formData.hasOwnProperty('gs-sample')) {
+                if (formData.hasOwnProperty('gene-segment-usage')) {
                     parameters['GeneSegmentFlag'] = true;
-
-                    list = [];
-                    if (formData['gs-type']) list.push('type');
-                    if (formData['gs-family']) list.push('family');
-                    if (formData['gs-gene']) list.push('gene');
-                    if (formData['gs-allele']) list.push('allele');
-                    if (list.length > 0) parameters['GeneSegmentLevels'] = list;
-
-                    list = [];
-                    if (formData['gs-sample']) list.push('sample');
-                    if (formData['gs-group']) list.push('group');
-                    if (list.length > 0) parameters['GeneSegmentSummarizeBy'] = list;
 
                     list = [];
                     if (formData['gs-absolute']) list.push('absolute');
@@ -465,18 +527,13 @@ function(
                 }
 
                 // CDR3
-                if (formData.hasOwnProperty('cdr3-sample')) {
+                if (formData.hasOwnProperty('cdr3-analysis')) {
                     parameters['CDR3Flag'] = true;
 
                     list = [];
                     if (formData['cdr3-nucleotide']) list.push('nucleotide');
                     if (formData['cdr3-aa']) list.push('aa');
                     if (list.length > 0) parameters['CDR3Levels'] = list;
-
-                    list = [];
-                    if (formData['cdr3-sample']) list.push('sample');
-                    if (formData['cdr3-group']) list.push('group');
-                    if (list.length > 0) parameters['CDR3SummarizeBy'] = list;
 
                     list = [];
                     if (formData['cdr3-absolute']) list.push('absolute');
@@ -491,8 +548,21 @@ function(
                     if (list.length > 0) parameters['CDR3Filters'] = list;
                 }
 
+                // Clones
+                if (formData.hasOwnProperty('clonal-analysis')) {
+                    parameters['ClonalFlag'] = true;
+
+                    list = [];
+                    if (formData['clonal-abundance']) list.push('abundance');
+                    if (list.length > 0) parameters['ClonalOperations'] = list;
+
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['ClonalFilters'] = list;
+                }
+
                 // Diversity
-                if (formData.hasOwnProperty('diversity-sample')) {
+                if (formData.hasOwnProperty('diversity-analysis')) {
                     parameters['DiversityFlag'] = true;
 
                     list = [];
@@ -505,11 +575,6 @@ function(
                     if (list.length > 0) parameters['DiversityLevels'] = list;
 
                     list = [];
-                    if (formData['diversity-sample']) list.push('sample');
-                    if (formData['diversity-group']) list.push('group');
-                    if (list.length > 0) parameters['DiversitySummarizeBy'] = list;
-
-                    list = [];
                     if (formData['diversity-shannon']) list.push('shannon');
                     if (formData['diversity-profile']) list.push('profile');
                     if (list.length > 0) parameters['DiversityOperations'] = list;
@@ -520,14 +585,25 @@ function(
                 }
 
                 // Mutations
+                if (formData.hasOwnProperty('mutational-analysis')) {
+                    parameters['MutationalFlag'] = true;
 
-                // Clones
+                    list = [];
+                    if (formData['clonal-selection']) list.push('selection');
+                    if (list.length > 0) parameters['MutationalOperations'] = list;
+
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['MutationalFilters'] = list;
+                }
+
 
                 return parameters;
             },
-            _serializeFileInputs: function(fileInputs, formData, VDJMLFileMetadatas, SummaryFileMetadatas, allFileMetadatas) {
+            _serializeFileInputs: function(fileInputs, formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas) {
                 fileInputs['VDJMLFiles'] = this._getTranslatedFilePaths(VDJMLFileMetadatas);
                 fileInputs['SummaryFiles'] = this._getTranslatedFilePaths(SummaryFileMetadatas);
+                fileInputs['ChangeOFiles'] = this._getTranslatedFilePaths(ChangeOFileMetadatas);
             },
         }
     );

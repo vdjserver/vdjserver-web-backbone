@@ -65,14 +65,18 @@
                     <tbody>
                         {{#each jobs}}
                             <tr>
-                                <td>{{name}}</td>
+                                <td>{{displayName}}</td>
                                 <td>
                                     <div id="job-status-{{id}}">
-                                        {{#IsJobFrozen this}}
-                                            Job Failed
+                                        {{#if isArchived}}
+                                            ARCHIVED
                                         {{else}}
-                                            {{status}}
-                                        {{/IsJobFrozen}}
+                                            {{#IsJobFrozen this}}
+                                                Job Failed
+                                            {{else}}
+                                                {{status}}
+                                            {{/IsJobFrozen}}
+                                        {{/if}}
                                     </div>
                                 </td>
                                 <td>
@@ -111,7 +115,19 @@
                         class="dropdown-menu"
                         role="menu"
                     >
-                        <li class="job-actions disabled">
+                    {{#if isArchived}}
+                        <li class="job-actions">
+                            <a
+                                class="unarchive-job"
+                                href="#"
+                                data-bypass=true
+                                data-id="{{id}}"
+                            >
+                                Unarchive Job
+                            </a>
+                        </li>
+                    {{else}}
+                        <li class="job-actions">
                             <a
                                 class="rename-job"
                                 href="#"
@@ -155,7 +171,7 @@
                             </a>
                         </li>
 
-                        <li class="job-actions disabled">
+                        <li class="job-actions">
                             <a
                                 class="archive-job"
                                 href="#"
@@ -165,17 +181,20 @@
                                 Archive Job
                             </a>
                         </li>
+                    {{/if}}
                     </ul>
 
                 </div>
 
                                 </td>
                                 <td>
+                                    {{#if isArchived}}
+                                    {{else}}
                                     {{#IsJobFrozen this}}
                                         <button type="button" class="btn btn-danger view-config" data-jobid={{id}}>Job Failed - View Config File</button>
                                     {{else}}
                                         {{#JobSuccessCheck this}}
-                                            <a href="project/{{../../../projectUuid}}/jobs/{{id}}" class="disabled">
+                                            <a href="project/{{../../../../projectUuid}}/jobs/{{id}}" class="disabled">
                                                 <button type="button" class="btn btn-primary">View Output</button>
                                             </a>
                                         {{else}}
@@ -186,6 +205,7 @@
                                             {{/if}}
                                         {{/JobSuccessCheck}}
                                     {{/IsJobFrozen}}
+                                    {{/if}}
                                 </td>
                             </tr>
                         {{/each}}
@@ -235,3 +255,5 @@
 </div>
 
 <section id="project-job-history"></section>
+<section id="project-job-rename"></section>
+<section id="project-job-archive"></section>

@@ -22,7 +22,7 @@
         <label class="control-label alert">File Type</label>
         <select class="form-control user-selectable file-type" name="file-type-{{file.formElementGuid}}">
             {{#each fileTypes}}
-                <option {{ifCondSelected this 4}} value="{{this}}">
+                <option {{ifCondSelected this ../file.type}} value="{{this}}">
                     {{#with (lookup ../fileTypeNames @index)}} {{this}} {{/with}}
                 </option>
             {{/each}}

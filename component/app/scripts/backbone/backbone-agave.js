@@ -296,6 +296,21 @@ define([
 
             return response;
         },
+        syncMetadataPermissionsWithProjectPermissions: function(projectUuid) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectUuid: projectUuid,
+                    uuid: this.get('uuid')
+                }),
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/permissions/metadata'
+            });
+
+            return jqxhr;
+        },
         /*
         parseDate: function(result) {
 

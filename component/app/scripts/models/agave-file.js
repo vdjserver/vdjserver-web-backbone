@@ -98,6 +98,7 @@ function(
 
                             var formData = new FormData();
                             formData.append('fileToUpload', model.get('fileReference'));
+                            if (model.get('name')) formData.append('fileName', model.get('name'));
 
                             var that = this;
 
@@ -186,6 +187,24 @@ function(
                         'projectUuid': this.get('projectUuid'),
                         'uuid': nameGuid,
                     };
+                },
+                guessTypeFromName: function() {
+                    var guessType = File.fileTypeCodes.FILE_TYPE_UNSPECIFIED;
+                    var components = this.get('name').split('.');
+                    if (components.length > 1) {
+                        var idx = components.length - 1;
+                        if ((components[idx] == 'gz') ||
+                            (components[idx] == 'zip') ||
+                            (components[idx] == 'bz2')) --idx;
+                        if (components[idx] == 'fasta') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+                        if (components[idx] == 'fastq') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+                        if (components[idx] == 'fna') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+                        if (components[idx] == 'qual') guessType = File.fileTypeCodes.FILE_TYPE_QUALITY;
+                        if (components[idx] == 'tsv') guessType = File.fileTypeCodes.FILE_TYPE_TSV;
+                        if (components[idx] == 'vdjml') guessType = File.fileTypeCodes.FILE_TYPE_VDJML;
+                    }
+
+                    return guessType;
                 },
             }
         ),
@@ -329,7 +348,7 @@ function(
                     },
                 });
             },
-            downloadFileToDisk: function(totalSize) {
+            downloadFileToDisk: function() {
 
                 var url = EnvironmentConfig.agave.hostname
                         + '/files'
@@ -358,6 +377,21 @@ function(
 
                 return jqxhr;
             },
+
+            downloadFileListToDisk: function(files) {
+                function downloadNext(i) {
+                    if (i >= files.length) {
+                        return;
+                    }
+
+                    files[i].downloadFileToDisk();
+
+                    setTimeout(function () { downloadNext(i + 1); }, 5000);
+                }
+
+                downloadNext(0);
+            },
+
             softDelete: function() {
 
                 var that = this;

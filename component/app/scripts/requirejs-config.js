@@ -26,6 +26,7 @@ require.config({
         'highcharts-drilldown': '../bower_components/highstock-release/modules/drilldown',
         'highcharts-more':  '../bower_components/highstock-release/highcharts-more',
         'highcharts-exporting': '../bower_components/highstock-release/modules/exporting',
+        'highcharts-offline-exporting': '../bower_components/highstock-release/modules/offline-exporting',
 
 
         'jquery':           '../bower_components/jquery/dist/jquery',
@@ -176,6 +177,9 @@ require.config({
         },
         'highcharts-exporting': {
             deps:['highcharts'],
+        },
+        'highcharts-offline-exporting': {
+            deps:['highcharts-exporting'],
         },
 
         'layoutmanager': {

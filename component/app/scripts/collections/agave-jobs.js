@@ -122,6 +122,16 @@ define([
             }
             return undefined;
         },
+        getStudyMetadataFile: function() {
+            for (var j = 0; j < this.models.length; j++) {
+                var model = this.at([j]);
+
+                var modelName = model.get('value').name;
+
+                if (modelName === 'study_metadata.json') return model;
+            }
+            return undefined;
+        },
         getFileByName: function(name) {
             for (var j = 0; j < this.models.length; j++) {
                 var model = this.at([j]);
@@ -132,38 +142,49 @@ define([
             }
             return undefined;
         },
-        getProjectFileOutput: function() {
+        getProjectFileOutput: function(processMetadata) {
+            var pmFiles = [];
+            if (processMetadata) pmFiles = processMetadata.getProjectFileOutputList();
+
             var filteredCollection = this.filter(function(model) {
 
                 var value = model.get('value');
                 if (value.name) {
 
-                    var filename = value.name;
+                    // only those in process metadata
+                    if (processMetadata) {
+                        var idx = pmFiles.indexOf(value.name);
+                        if (idx >= 0) return true;
+                        else return false;
+                    } else {
+                        // otherwise go by file extension
+                        var filename = value.name;
 
-                    var fileNameSplit = filename.split('.');
-                    var fileExtension = fileNameSplit[fileNameSplit.length - 1];
+                        var fileNameSplit = filename.split('.');
+                        var fileExtension = fileNameSplit[fileNameSplit.length - 1];
 
-                    var doubleFileExtension = fileNameSplit[fileNameSplit.length - 2] + '.' + fileNameSplit[fileNameSplit.length - 1];
+                        var doubleFileExtension = fileNameSplit[fileNameSplit.length - 2] + '.' + fileNameSplit[fileNameSplit.length - 1];
 
-                    var test = fileNameSplit[fileNameSplit.length - 100];
+                        var test = fileNameSplit[fileNameSplit.length - 100];
 
-                    // Whitelisted files
-                    if (fileExtension === 'fasta'
-                        ||
-                        fileExtension === 'fastq'
-                        ||
-                        fileExtension === 'vdjml'
-                        ||
-                        fileExtension === 'zip'
-                        ||
-                        doubleFileExtension === 'rc_out.tsv'
-                        ||
-                        doubleFileExtension === 'duplicates.tsv'
-                    ) {
-                        return true;
-                    }
-                    else {
-                        return false;
+                        // Whitelisted files
+                        if (fileExtension === 'fasta'
+                            ||
+                            fileExtension === 'fastq'
+                            ||
+                            fileExtension === 'vdjml'
+                            ||
+                            fileExtension === 'zip'
+                            ||
+                            doubleFileExtension === 'rc_out.tsv'
+                            ||
+                            doubleFileExtension === 'duplicates.tsv'
+                        ) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
                     }
                 }
             });
@@ -235,6 +256,8 @@ define([
                         filename === 'merge_summary.txt'
                         ||
                         filename === 'process_metadata.json'
+                        ||
+                        filename === 'study_metadata.json'
                     ) {
                         return true;
                     }
@@ -242,6 +265,20 @@ define([
                         return false;
                     }
                 }
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(filteredCollection);
+
+            return newCollection;
+        },
+        getShowInProjectData: function() {
+            var filteredCollection = this.filter(function(model) {
+
+                var value = model.get('value');
+                if (value.showInProjectData) return true;
+                else return false;
             });
 
             var newCollection = this.clone();
@@ -309,6 +346,65 @@ define([
                     + '&offset=' + this.offset
                     ;
             },
+            linkToJobs: function(jobList) {
+                for (var i = 0; i < this.length; ++i) {
+                    var m = this.at(i);
+                    var value = m.get('value');
+                    var job = jobList.get(value.jobUuid);
+                    if (job) {
+                        job.set('metadataLink', m.get('uuid'));
+                        job.initDisplayName();
+                        if (value.displayName) job.set('displayName', value.displayName);
+                        job.set('isArchived', false);
+                    }
+                }
+            },
+        })
+    );
+
+    Jobs.Archived = Backbone.Agave.MetadataCollection.extend(
+        _.extend({}, ComparatorsMixin.reverseChronologicalCreatedTime, {
+            model: Backbone.Agave.Model.Job.Listing,
+            initialize: function(parameters) {
+
+                Backbone.Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+
+                if (parameters && parameters.projectUuid) {
+                    this.projectUuid = parameters.projectUuid;
+                }
+            },
+            url: function() {
+                return '/meta/v2/data?q='
+                    + encodeURIComponent('{'
+                        + '"name":"projectJobArchive",'
+                        + '"value.projectUuid":"' + this.projectUuid + '"'
+                    + '}')
+                    + '&limit=' + this.limit
+                    + '&offset=' + this.offset
+                    ;
+            },
+            linkToJobs: function(jobList) {
+                for (var i = 0; i < this.length; ++i) {
+                    var m = this.at(i);
+                    var value = m.get('value');
+                    var job = jobList.get(value.jobUuid);
+                    if (job) {
+                        job.set('metadataArchive', m.get('uuid'));
+                        job.initDisplayName();
+                        if (value.displayName) job.set('displayName', value.displayName);
+                        job.set('isArchived', true);
+                    }
+                }
+            },
+            jobUuids: function() {
+                var jobUuids = [];
+                for (var i = 0; i < this.length; ++i) {
+                    var m = this.at(i);
+                    var value = m.get('value');
+                    jobUuids.push(value.jobUuid);
+                }
+                return jobUuids;
+            },
         })
     );
 
@@ -367,9 +463,9 @@ define([
                     'steps': [
                         'geneSegment',
                         'CDR3',
+                        'clones',
                         'diversity',
-                        'mutations',
-                        'clones'
+                        'mutations'
                     ],
                 }
             ];

@@ -216,6 +216,67 @@ define([
         },
     });
 
+    Jobs.Rename = Backbone.View.extend({
+        // Public Methods
+        template: 'jobs/job-rename',
+        initialize: function(parameters) {
+            this.job = parameters.job;
+            this.jobMetadata = parameters.jobMetadata;
+            this.parentView = parameters.parentView;
+
+            // TODO: no jobMetadata so cannot be renamed
+
+        },
+        events: {
+            'click #submit-rename': '_submitRenameForm',
+        },
+        serialize: function() {
+            var jobData = this.job.toJSON();
+            jobData.displayName = jobData.name;
+            if (this.jobMetadata) {
+                var value = this.jobMetadata.get('value');
+                if (value.displayName) jobData.displayName = value.displayName;
+            }
+
+            return {
+                job: jobData,
+            };
+        },
+        afterRender: function() {
+            $('#rename-modal').modal('show');
+            $('#rename-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+        _submitRenameForm: function(e) {
+            e.preventDefault();
+
+            var that = this;
+            var name = $('#job-name').val();
+            if (this.jobMetadata) {
+                var value = this.jobMetadata.get('value');
+                value.displayName = name;
+                this.jobMetadata.set('value', value);
+                this.jobMetadata.save()
+                    .always(function() {
+                        $('#rename-modal')
+                          .modal('hide')
+                          .on('hidden.bs.modal', function() {
+                              that.parentView.doneRenameJob();
+                          })
+                    })
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.setError(error);
+                        telemetry.set('method', '_submitRenameForm()');
+                        telemetry.set('view', 'Jobs.Rename');
+                        telemetry.save();
+                    })
+                    ;
+            }
+        },
+    });
+
     Jobs.History = Backbone.View.extend({
         // Public Methods
         template: 'jobs/job-history',
@@ -250,6 +311,181 @@ define([
             $('#job-modal').on('shown.bs.modal', function() {
                 $('#job-name').focus();
             });
+        },
+    });
+
+    Jobs.Archive = Backbone.View.extend({
+        // Public Methods
+        template: 'jobs/job-archive',
+        initialize: function(parameters) {
+            this.job = parameters.job;
+            this.jobMetadata = parameters.jobMetadata;
+            this.parentView = parameters.parentView;
+        },
+        events: {
+            'click #submit-archive': '_submitArchiveForm',
+            'click #archive-exit': '_exitForm',
+        },
+        serialize: function() {
+            return {
+                job: this.job.toJSON(),
+            };
+        },
+        afterRender: function() {
+            $('#archive-modal').modal('show');
+            $('#archive-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+
+        _exitForm: function(e) {
+            e.preventDefault();
+
+            var that = this;
+            $('#archive-modal').on('hidden.bs.modal', function(e) {
+                // force reload of page
+                Backbone.history.loadUrl(Backbone.history.fragment);
+            });
+        },
+
+        _submitArchiveForm: function(e) {
+            e.preventDefault();
+
+            $('.archive-submit-button').addClass('disabled');
+
+            var that = this;
+            this.job.archiveJob()
+                .then(function() {
+                    that._uiDoneArchiveJobView();
+                })
+                .fail(function(error) {
+                    if (error.responseText) that._uiDoneArchiveJobView(error.responseText);
+                    else that._uiDoneArchiveJobView('Unknown server error.');
+
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', '_submitArchiveForm()');
+                    telemetry.set('view', 'Jobs.Archive');
+                    telemetry.save();
+                })
+                ;
+        },
+
+        _uiDoneArchiveJobView: function(error) {
+            this.removeView('#archive-processing-view');
+
+            $('#archive-processing-view').removeClass('alert alert-info');
+            $('.archive-submit-button').addClass('hidden');
+            $('#archive-exit').removeClass('hidden');
+
+            if (error) {
+                $('#archive-processing-view').addClass('alert alert-danger');
+                var msg = 'There was an error archiving the job.<br/>';
+                msg += error + '<br/>';
+                $('#archive-processing-view').append(msg);
+            } else {
+                var message = new App.Models.MessageModel({
+                    'body': 'Archive was successful!'
+                });
+
+                var alertView = new App.Views.Util.Alert({
+                    options: {
+                        type: 'success'
+                    },
+                    model: message
+                });
+
+                this.setView('#archive-processing-view', alertView);
+                alertView.render();
+            }
+        },
+
+    });
+
+    Jobs.Unarchive = Backbone.View.extend({
+        // Public Methods
+        template: 'jobs/job-unarchive',
+        initialize: function(parameters) {
+            this.job = parameters.job;
+            this.jobMetadata = parameters.jobMetadata;
+            this.parentView = parameters.parentView;
+        },
+        events: {
+            'click #submit-unarchive': '_submitUnarchiveForm',
+            'click #unarchive-exit': '_exitForm',
+        },
+        serialize: function() {
+            return {
+                job: this.job.toJSON(),
+            };
+        },
+        afterRender: function() {
+            $('#unarchive-modal').modal('show');
+            $('#unarchive-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+
+        _exitForm: function(e) {
+            e.preventDefault();
+
+            var that = this;
+            $('#unarchive-modal').on('hidden.bs.modal', function(e) {
+                // force reload of page
+                Backbone.history.loadUrl(Backbone.history.fragment);
+            });
+        },
+
+        _submitUnarchiveForm: function(e) {
+            e.preventDefault();
+
+            $('.unarchive-submit-button').addClass('disabled');
+
+            var that = this;
+            this.job.unarchiveJob()
+                .then(function() {
+                    that._uiDoneUnarchiveJobView();
+                })
+                .fail(function(error) {
+                    if (error.responseText) that._uiDoneUnarchiveJobView(error.responseText);
+                    else that._uiDoneUnarchiveJobView('Unknown server error.');
+
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('method', '_submitUnarchiveForm()');
+                    telemetry.set('view', 'Jobs.Unarchive');
+                    telemetry.save();
+                })
+                ;
+        },
+
+        _uiDoneUnarchiveJobView: function(error) {
+            this.removeView('#unarchive-processing-view');
+
+            $('#unarchive-processing-view').removeClass('alert alert-info');
+            $('.unarchive-submit-button').addClass('hidden');
+            $('#unarchive-exit').removeClass('hidden');
+
+            if (error) {
+                $('#unarchive-processing-view').addClass('alert alert-danger');
+                var msg = 'There was an error unarchiving the job.<br/>';
+                msg += error + '<br/>';
+                $('#unarchive-processing-view').append(msg);
+            } else {
+                var message = new App.Models.MessageModel({
+                    'body': 'Unarchive was successful!'
+                });
+
+                var alertView = new App.Views.Util.Alert({
+                    options: {
+                        type: 'success'
+                    },
+                    model: message
+                });
+
+                this.setView('#unarchive-processing-view', alertView);
+                alertView.render();
+            }
         },
     });
 
@@ -297,6 +533,9 @@ define([
             this.workJobs = new Backbone.Agave.Collection.Jobs();
             this.workJobs.projectUuid = that.projectModel.get('uuid');
 
+            this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: that.projectModel.get('uuid')});
+            this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: that.projectModel.get('uuid')});
+
             this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.projectModel.get('uuid')});
             this.workSamples.fetch()
             .then(function() {
@@ -306,6 +545,15 @@ define([
                 return that.workJobs.fetch();
             })
             .then(function() {
+                return that.jobListings.fetch();
+            })
+            .then(function() {
+                that.jobListings.linkToJobs(that.workJobs);
+                return that.archivedJobs.fetch();
+            })
+            .then(function() {
+                that.workJobs.remove(that.archivedJobs.jobUuids());
+
                 that.workJobs = that.workJobs.getFinishedVDJAssignmentJobs();
 
                 if (that.workJobs.length > 0) that.hasJobs = true;
@@ -814,53 +1062,67 @@ define([
                 // collect files from selected job
                 this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: repcalcForm['job-selected']});
 
+                this.jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: repcalcForm['job-selected']});
+
                 var that = this;
 
                 return this.collection.fetch()
                   .then(function() {
-                      var processMetadataFile = that.collection.getProcessMetadataFile();
-                      if (processMetadataFile) return processMetadataFile.downloadFileToCache();
-                      else return $.Deferred().reject('Job is missing process metadata.');
+                      return that.jobProcessMetadata.fetch();
                   })
-                  .then(function(tmpFileData) {
-                      that.processMetadata = JSON.parse(tmpFileData);
+                  .then(function() {
+                      // check for process metadata
+                      that.processMetadata = that.jobProcessMetadata.get('value');
 
-                      // gather list of output files
-                      var outputFiles = [];
-                      for (var group in that.processMetadata.groups) {
-                          for (var gtype in that.processMetadata.groups[group]) {
-                              if (that.processMetadata.groups[group][gtype].type == 'output')
-                                  outputFiles.push(that.processMetadata.groups[group][gtype].files);
+                      if (that.processMetadata.groups) {
+                          // gather list of output files
+                          var outputFiles = [];
+                          for (var group in that.processMetadata.groups) {
+                              for (var gtype in that.processMetadata.groups[group]) {
+                                  if (that.processMetadata.groups[group][gtype].type == 'output')
+                                      outputFiles.push(that.processMetadata.groups[group][gtype].files);
+                              }
                           }
+
+                          // get VDJML and summary files from output list
+                          that.VDJMLFiles = that.selectedFileListings.clone();
+                          that.VDJMLFiles.reset();
+                          that.SummaryFiles = that.selectedFileListings.clone();
+                          that.SummaryFiles.reset();
+                          that.ChangeOFiles = that.selectedFileListings.clone();
+                          that.ChangeOFiles.reset();
+                          for (var i = 0; i < outputFiles.length; ++i) {
+                              if (that.processMetadata.files[outputFiles[i]].vdjml) {
+                                  that.VDJMLFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].vdjml.value));
+                              }
+                              if (that.processMetadata.files[outputFiles[i]].summary) {
+                                  that.SummaryFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].summary.value));
+                              }
+                              if (that.processMetadata.files[outputFiles[i]].changeo) {
+                                  that.ChangeOFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].changeo.value));
+                              }
+                          }
+
+                          var job = new Backbone.Agave.Model.Job.RepCalc();
+
+                          var fileSize = that.VDJMLFiles.getTotalFileSize();
+                          fileSize += that.ChangeOFiles.getTotalFileSize();
+                          fileSize += that.SummaryFiles.getTotalFileSize();
+                          job.set('totalFileSize', fileSize);
+
+                          job.prepareJob(
+                              repcalcForm,
+                              that.VDJMLFiles,
+                              that.SummaryFiles,
+                              that.ChangeOFiles,
+                              that.allFiles,
+                              that.projectModel.get('uuid')
+                          );
+
+                          return that.startJob(job);
+                      } else {
+                          return $.Deferred().reject('Job is missing process metadata.');
                       }
-
-                      // get VDJML and summary files from output list
-                      that.VDJMLFiles = that.selectedFileListings.clone();
-                      that.VDJMLFiles.reset();
-                      that.SummaryFiles = that.selectedFileListings.clone();
-                      that.SummaryFiles.reset();
-                      for (var i = 0; i < outputFiles.length; ++i) {
-                          if (that.processMetadata.files[outputFiles[i]].vdjml) {
-                              that.VDJMLFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].vdjml));
-                          }
-                          if (that.processMetadata.files[outputFiles[i]].summary) {
-                              that.SummaryFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].summary));
-                          }
-                      }
-
-                      var job = new Backbone.Agave.Model.Job.RepCalc();
-
-                      job.set('totalFileSize', that.selectedFileListings.getTotalFileSize());
-
-                      job.prepareJob(
-                          repcalcForm,
-                          that.VDJMLFiles,
-                          that.SummaryFiles,
-                          that.allFiles,
-                          that.projectModel.get('uuid')
-                      );
-
-                      return that.startJob(job);
                   })
             },
             events: {
