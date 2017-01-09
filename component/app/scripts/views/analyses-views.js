@@ -375,6 +375,11 @@ define([
 
         doneRenameJob: function() {
             this.removeView('#project-job-rename');
+
+            // redo the links to get the new name
+            this.jobListings.linkToJobs(this.jobs);
+            if (this.showArchivedJobs) this.archivedJobs.linkToJobs(this.jobs);
+
             this.render();
         },
 
