@@ -1377,6 +1377,11 @@ define([
                                        name: 'Clonal Abundance',
                                        view: Analyses.Charts.ClonalAbundance,
                                        files: [], samples: [], sampleGroups: [], cachedGroups: {} });
+                this.chartFiles.push({ id: 'clonal_cumulative_abundance',
+                                       type: 'clonal_abundance',
+                                       name: 'Clonal Cumulative Abundance',
+                                       view: Analyses.Charts.ClonalCumulative,
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
             }
             if (diversityCurve) {
                 this.isValid = true;
@@ -3108,6 +3113,147 @@ define([
                 yAxis: {
                     title: {
                         text: 'Abundance Percentage (%)'
+                    },
+                    labels: {
+                        style: {
+                            color: '#000000'
+                        },
+                        formatter: function () {
+                            return this.value;
+                        }
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                series: myData,
+            });
+
+            return chart;
+        },
+    };
+
+    Analyses.Charts.ClonalCumulative = {
+
+        chartFilenames: function(chartId, processMetadata) {
+            var filenames = {};
+
+            var groups = processMetadata.groups;
+            var files = processMetadata.files;
+
+            for (var i = 0; i < chartId['files'].length; ++i) {
+                var g = chartId['files'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['clonal_abundance']['value'];
+            }
+
+            for (var i = 0; i < chartId['samples'].length; ++i) {
+                var g = chartId['samples'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['clonal_abundance']['value'];
+            }
+
+            for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
+                var g = chartId['sampleGroups'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['clonal_abundance']['value'];
+            }
+
+            return filenames;
+        },
+
+        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+
+            var myData = [];
+
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                var text = cachedGroups[group];
+                var data = d3.tsv.parse(text);
+
+                var groupName = group;
+                for (var j = 0; j < chartGroupNames.length; ++j) {
+                    var n = chartGroupNames[j];
+                    if (n.id == group) {
+                        groupName = n.name;
+                        break;
+                    }
+                }
+
+                // build series
+                var series = {
+                  name: groupName,
+                  zIndex: 1,
+                  data: new Array()
+                };
+
+                var cumulative = 0.0;
+                for (var j = 0; j < data.length; j++) {
+                    var clone = data[j]['RANK'];
+                    var dataPoint = parseFloat(data[j]['P']) * 100.0;
+                    if (dataPoint < 0.01) continue;
+                    cumulative += dataPoint;
+
+                    series.data.push([parseInt(clone), cumulative]);
+                }
+                myData.push(series);
+
+                series = {
+                  name: groupName,
+                  type: 'arearange',
+                  lineWidth: 0,
+                  linkedTo: ':previous',
+                  fillOpacity: 0.3,
+                  zIndex: 0,
+                  data: new Array()
+                };
+
+                var cumulative = 0.0;
+                for (var j = 0; j < data.length; j++) {
+                    var clone = data[j]['RANK'];
+                    var dataPoint = parseFloat(data[j]['P']) * 100.0;
+                    if (dataPoint < 0.01) continue;
+                    cumulative += dataPoint;
+
+                    var lower = parseFloat(data[j]['LOWER']) * 100.0;
+                    lower = lower - dataPoint + cumulative;
+                    var upper = parseFloat(data[j]['UPPER']) * 100.0;
+                    upper = upper - dataPoint + cumulative;
+
+                    series.data.push([parseInt(clone), lower, upper]);
+                }
+                myData.push(series);
+            }
+
+            Highcharts.setOptions({
+              lang: {
+                thousandsSep: ','
+              }
+            });
+
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: classSelector,
+                },
+                title: {
+                    text: ''
+                },
+                credits: {
+                   enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    type: 'logarithmic',
+                    title: {
+                        text: 'Rank'
+                    },
+                    minorTickInterval: 0.1
+                },
+                yAxis: {
+                    title: {
+                        text: 'Cumulative Abundance Percentage (%)'
                     },
                     labels: {
                         style: {
