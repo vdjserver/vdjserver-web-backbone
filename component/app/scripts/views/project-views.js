@@ -360,6 +360,7 @@ define([
                     return that.projectJobFiles.fetch();
                 })
                 .then(function() {
+                    // determine subset of jobs which are displaying output files
                     var jobs = new Set();
                     for (var i = 0; i < that.projectJobFiles.models.length; ++i) {
                         var m = that.projectJobFiles.at(i);
@@ -381,6 +382,38 @@ define([
                     if (jobList.length > 0) {
                         that.projectJobs.jobList = jobList;
                         return that.projectJobs.fetch();
+                    }
+                })
+                .then(function() {
+                    var promises = [];
+
+                    // Set up promises
+                    // process metadata
+                    that.projectJobs.map(function(jobModel) {
+                        var m = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: jobModel.get('id')});
+                        jobModel.set('processMetadata', m);
+                        promises[promises.length] = function() {
+                            return m.fetch();
+                        }
+                    });
+
+                    // Execute promises
+                    return promises.reduce(
+                        function(previous, current) {
+                            return previous.then(current);
+                        },
+                        $.Deferred().resolve()
+                    )
+                })
+                .then(function() {
+                    // job output file descriptions
+                    for (var i = 0; i < that.projectJobFiles.length; ++i) {
+                        var m = that.projectJobFiles.at(i);
+                        var value = m.get('value');
+                        var jobModel = that.projectJobs.get(value.jobUuid);
+                        var pm = jobModel.get('processMetadata');
+                        var desc = pm.getDescriptionForFilename(value.name);
+                        if (desc) m.set('description', desc);
                     }
                 })
                 .then(function() {

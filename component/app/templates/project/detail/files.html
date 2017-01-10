@@ -350,7 +350,11 @@
                                 <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
                             </td>
                             <td>
-                                {{this.value.name}}
+                                {{#if this.description}}
+                                    {{this.description}}
+                                {{else}}
+                                    {{this.value.name}}
+                                {{/if}}
                             </td>
                             <td>
                                 {{> project-file-list-last-modified this}}
