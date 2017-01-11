@@ -3539,13 +3539,19 @@ define([
                   id: group + '.SP',
                   type: 'column',
                   name: groupName,
+                  dataLabels: {
+                      enabled: true,
+                      allowOverlap: true,
+                      formatter: function () {return 'p = ' + Highcharts.numberFormat(Math.abs(this.point.pvalue),3)},
+                  },
                   data: new Array()
                 };
 
                 for (var j = 0; j < data.length; j++) {
                     var dataPoint = data[j]['BASELINE_SIGMA'];
+                    var pvalue = data[j]['BASELINE_CI_PVALUE'];
 
-                    series.data.push(parseFloat(dataPoint));
+                    series.data.push({y: parseFloat(dataPoint), pvalue: parseFloat(pvalue)});
                 }
                 myData.push(series);
 
