@@ -370,6 +370,19 @@ function(
 
             return pmFiles;
         },
+
+        getSampleKeyNameFromUuid: function(sampleUuid) {
+            var processMetadata = this.get('value');
+            if (!processMetadata) return null;
+
+            for (var group in processMetadata.groups) {
+                if (processMetadata.groups[group]['type'] == 'sample') {
+                    for (var sample in processMetadata.groups[group]['samples'])
+                        if (sample == sampleUuid) return group;
+                }
+            }
+            return null;
+        },
     });
 
     Job.IgBlast = Backbone.Agave.JobModel.extend(

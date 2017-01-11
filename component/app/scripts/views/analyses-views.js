@@ -1446,11 +1446,11 @@ define([
                                 var classSelector = chartId['classSelector'];
                                 if (chart) {
                                     chart.showLoading('Loading Data...');
-                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata), chartId['cachedGroups'])
+                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.jobProcessMetadata), chartId['cachedGroups'])
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.processMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.jobProcessMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1477,11 +1477,11 @@ define([
                                 var classSelector = chartId['classSelector'];
                                 if (chart) {
                                     chart.showLoading('Loading Data...');
-                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata), chartId['cachedGroups'])
+                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.jobProcessMetadata), chartId['cachedGroups'])
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.processMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.jobProcessMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1508,11 +1508,11 @@ define([
                                 var classSelector = chartId['classSelector'];
                                 if (chart) {
                                     chart.showLoading('Loading Data...');
-                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.processMetadata), chartId['cachedGroups'])
+                                    return that._loadChartData(chartView.chartFilenames(chartId, that.selectAnalyses.jobProcessMetadata), chartId['cachedGroups'])
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.processMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.jobProcessMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1633,7 +1633,7 @@ define([
 
             var that = this;
             var chartData;
-            this._loadChartData(chartId['view'].chartFilenames(chartId, that.selectAnalyses.processMetadata), chartId['cachedGroups'])
+            this._loadChartData(chartId['view'].chartFilenames(chartId, that.selectAnalyses.jobProcessMetadata), chartId['cachedGroups'])
             .then(function(tmpChartData) {
                 chartData = tmpChartData;
             })
@@ -1656,7 +1656,7 @@ define([
                 var fileHandle;
                 var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
 
-                chartId['chart'] = chartId['view'].generateChart(that.selectAnalyses.processMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                chartId['chart'] = chartId['view'].generateChart(that.selectAnalyses.jobProcessMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
 
                 // Scroll down to chart
                 $('html, body').animate({
@@ -2435,9 +2435,10 @@ define([
 
     Analyses.Charts.GeneDistribution = {
 
-        chartFilenames: function(chartId, processMetadata) {
+        chartFilenames: function(chartId, jobProcessMetadata) {
             var filenames = {};
 
+            var processMetadata = jobProcessMetadata.get('value');
             var groups = processMetadata.groups;
             var files = processMetadata.files;
 
@@ -2462,8 +2463,9 @@ define([
             return filenames;
         },
 
-        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
+            var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
             var drilldown = {
               series: new Array()
@@ -2683,9 +2685,10 @@ define([
 
     Analyses.Charts.RelativeGeneDistribution = {
 
-        chartFilenames: function(chartId, processMetadata) {
+        chartFilenames: function(chartId, jobProcessMetadata) {
             var filenames = {};
 
+            var processMetadata = jobProcessMetadata.get('value');
             var groups = processMetadata.groups;
             var files = processMetadata.files;
 
@@ -2710,8 +2713,9 @@ define([
             return filenames;
         },
 
-        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
+            var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
             var drilldown = {
               series: new Array()
@@ -2869,9 +2873,10 @@ define([
 
     Analyses.Charts.CDR3 = {
 
-        chartFilenames: function(chartId, processMetadata) {
+        chartFilenames: function(chartId, jobProcessMetadata) {
             var filenames = {};
 
+            var processMetadata = jobProcessMetadata.get('value');
             var groups = processMetadata.groups;
             var files = processMetadata.files;
 
@@ -2896,8 +2901,9 @@ define([
             return filenames;
         },
 
-        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
+            var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
 
             for (var i = 0; i < chartGroups.length; ++i) {
@@ -3001,9 +3007,10 @@ define([
 
     Analyses.Charts.ClonalAbundance = {
 
-        chartFilenames: function(chartId, processMetadata) {
+        chartFilenames: function(chartId, jobProcessMetadata) {
             var filenames = {};
 
+            var processMetadata = jobProcessMetadata.get('value');
             var groups = processMetadata.groups;
             var files = processMetadata.files;
 
@@ -3021,19 +3028,27 @@ define([
 
             for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
                 var g = chartId['sampleGroups'][i];
-                var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['clonal_abundance']['value'];
+                // sample group is just set of samples
+                for (var sample in groups[g]['samples']) {
+                    var sampleKey = jobProcessMetadata.getSampleKeyNameFromUuid(sample);
+                    if (sampleKey) {
+                        var group = groups[sampleKey][chartId.type];
+                        if (group) filenames[sampleKey] = files[group['files']]['clonal_abundance']['value'];
+                    }
+                }
             }
 
             return filenames;
         },
 
-        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
+            var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
 
-            for (var i = 0; i < chartGroups.length; ++i) {
-                var group = chartGroups[i];
+            var colors = Highcharts.getOptions().colors;
+
+            var addSeries = function(group, index) {
                 var text = cachedGroups[group];
                 var data = d3.tsv.parse(text);
 
@@ -3050,6 +3065,7 @@ define([
                 var series = {
                   name: groupName,
                   zIndex: 1,
+                  color: colors[index % colors.length],
                   data: new Array()
                 };
 
@@ -3069,6 +3085,7 @@ define([
                   linkedTo: ':previous',
                   fillOpacity: 0.3,
                   zIndex: 0,
+                  color: colors[index % colors.length],
                   data: new Array()
                 };
 
@@ -3082,6 +3099,18 @@ define([
                     series.data.push([parseInt(clone), lower, upper]);
                 }
                 myData.push(series);
+            }
+
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                if (processMetadata.groups[group]['type'] == 'sampleGroup') {
+                    for (var sample in processMetadata.groups[group]['samples']) {
+                        var sampleKey = jobProcessMetadata.getSampleKeyNameFromUuid(sample);
+                        if (sampleKey) addSeries(sampleKey, i);
+                    }
+                } else {
+                    addSeries(group, i);
+                }
             }
 
             Highcharts.setOptions({
@@ -3135,9 +3164,10 @@ define([
 
     Analyses.Charts.ClonalCumulative = {
 
-        chartFilenames: function(chartId, processMetadata) {
+        chartFilenames: function(chartId, jobProcessMetadata) {
             var filenames = {};
 
+            var processMetadata = jobProcessMetadata.get('value');
             var groups = processMetadata.groups;
             var files = processMetadata.files;
 
@@ -3155,19 +3185,27 @@ define([
 
             for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
                 var g = chartId['sampleGroups'][i];
-                var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['clonal_abundance']['value'];
+                // sample group is just set of samples
+                for (var sample in groups[g]['samples']) {
+                    var sampleKey = jobProcessMetadata.getSampleKeyNameFromUuid(sample);
+                    if (sampleKey) {
+                        var group = groups[sampleKey][chartId.type];
+                        if (group) filenames[sampleKey] = files[group['files']]['clonal_abundance']['value'];
+                    }
+                }
             }
 
             return filenames;
         },
 
-        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
+            var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
 
-            for (var i = 0; i < chartGroups.length; ++i) {
-                var group = chartGroups[i];
+            var colors = Highcharts.getOptions().colors;
+
+            var addSeries = function(group, index) {
                 var text = cachedGroups[group];
                 var data = d3.tsv.parse(text);
 
@@ -3184,6 +3222,7 @@ define([
                 var series = {
                   name: groupName,
                   zIndex: 1,
+                  color: colors[index % colors.length],
                   data: new Array()
                 };
 
@@ -3205,6 +3244,7 @@ define([
                   linkedTo: ':previous',
                   fillOpacity: 0.3,
                   zIndex: 0,
+                  color: colors[index % colors.length],
                   data: new Array()
                 };
 
@@ -3223,6 +3263,18 @@ define([
                     series.data.push([parseInt(clone), lower, upper]);
                 }
                 myData.push(series);
+            }
+
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                if (processMetadata.groups[group]['type'] == 'sampleGroup') {
+                    for (var sample in processMetadata.groups[group]['samples']) {
+                        var sampleKey = jobProcessMetadata.getSampleKeyNameFromUuid(sample);
+                        if (sampleKey) addSeries(sampleKey, i);
+                    }
+                } else {
+                    addSeries(group, i);
+                }
             }
 
             Highcharts.setOptions({
@@ -3276,9 +3328,10 @@ define([
 
     Analyses.Charts.DiversityCurve = {
 
-        chartFilenames: function(chartId, processMetadata) {
+        chartFilenames: function(chartId, jobProcessMetadata) {
             var filenames = {};
 
+            var processMetadata = jobProcessMetadata.get('value');
             var groups = processMetadata.groups;
             var files = processMetadata.files;
 
@@ -3296,19 +3349,27 @@ define([
 
             for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
                 var g = chartId['sampleGroups'][i];
-                var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['diversity_curve']['value'];
+                // sample group is just set of samples
+                for (var sample in groups[g]['samples']) {
+                    var sampleKey = jobProcessMetadata.getSampleKeyNameFromUuid(sample);
+                    if (sampleKey) {
+                        var group = groups[sampleKey][chartId.type];
+                        if (group) filenames[sampleKey] = files[group['files']]['diversity_curve']['value'];
+                    }
+                }
             }
 
             return filenames;
         },
 
-        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
+            var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
 
-            for (var i = 0; i < chartGroups.length; ++i) {
-                var group = chartGroups[i];
+            var colors = Highcharts.getOptions().colors;
+
+            var addSeries = function(group, index) {
                 var text = cachedGroups[group];
                 var data = d3.tsv.parse(text);
 
@@ -3325,6 +3386,7 @@ define([
                 var series = {
                   name: groupName,
                   zIndex: 1,
+                  color: colors[index % colors.length],
                   data: new Array()
                 };
 
@@ -3344,6 +3406,7 @@ define([
                   linkedTo: ':previous',
                   fillOpacity: 0.3,
                   zIndex: 0,
+                  color: colors[index % colors.length],
                   data: new Array()
                 };
 
@@ -3357,6 +3420,18 @@ define([
                     series.data.push([x, lower, upper]);
                 }
                 myData.push(series);
+            }
+
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                if (processMetadata.groups[group]['type'] == 'sampleGroup') {
+                    for (var sample in processMetadata.groups[group]['samples']) {
+                        var sampleKey = jobProcessMetadata.getSampleKeyNameFromUuid(sample);
+                        if (sampleKey) addSeries(sampleKey, i);
+                    }
+                } else {
+                    addSeries(group, i);
+                }
             }
 
             Highcharts.setOptions({
@@ -3410,9 +3485,10 @@ define([
 
     Analyses.Charts.SelectionPressure = {
 
-        chartFilenames: function(chartId, processMetadata) {
+        chartFilenames: function(chartId, jobProcessMetadata) {
             var filenames = {};
 
+            var processMetadata = jobProcessMetadata.get('value');
             var groups = processMetadata.groups;
             var files = processMetadata.files;
 
@@ -3437,8 +3513,9 @@ define([
             return filenames;
         },
 
-        generateChart: function(processMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
+            var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
 
             for (var i = 0; i < chartGroups.length; ++i) {
