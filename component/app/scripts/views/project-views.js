@@ -368,16 +368,13 @@ define([
                         jobs.add(value.jobUuid);
                     }
 
-                    var entries = jobs.values();
                     var jobList = '';
                     var first = true;
-                    var e = entries.next().value;
-                    while (e) {
+                    jobs.forEach(function(e) {
                         if (!first) jobList += ',';
                         jobList += e;
                         first = false;
-                        e = entries.next().value;
-                    }
+                    })
 
                     if (jobList.length > 0) {
                         that.projectJobs.jobList = jobList;
