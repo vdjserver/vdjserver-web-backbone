@@ -1376,12 +1376,14 @@ define([
                                        type: 'clonal_abundance',
                                        name: 'Clonal Abundance',
                                        view: Analyses.Charts.ClonalAbundance,
-                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {},
+                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/26069265' });
                 this.chartFiles.push({ id: 'clonal_cumulative_abundance',
                                        type: 'clonal_abundance',
                                        name: 'Clonal Cumulative Abundance',
                                        view: Analyses.Charts.ClonalCumulative,
-                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {},
+                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/26069265' });
             }
             if (diversityCurve) {
                 this.isValid = true;
@@ -1389,7 +1391,8 @@ define([
                                        type: 'diversity_curve',
                                        name: 'Diversity Curve',
                                        view: Analyses.Charts.DiversityCurve,
-                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {},
+                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/26069265' });
             }
             if (selectionPressure) {
                 this.isValid = true;
@@ -1397,7 +1400,8 @@ define([
                                        type: 'selection_pressure',
                                        name: 'Selection Pressure',
                                        view: Analyses.Charts.SelectionPressure,
-                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {},
+                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/26069265' });
             }
 
             if (this.isValid) {

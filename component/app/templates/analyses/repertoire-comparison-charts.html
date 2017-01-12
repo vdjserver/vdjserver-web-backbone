@@ -14,6 +14,11 @@
             <div class="col-md-3">
               <input type="text" class="form-control text-center" id="project-uuid" readonly value="{{name}}">
             </div>
+            {{#if this.citation}}
+                <div class="col-md-1">
+                    <a class="btn btn-info" href={{this.citation}} role="button" target="_blank">Citation</a>
+                </div>
+            {{/if}}
             <div class="col-md-6">
                 <div id="show-chart" class="btn btn-primary show-chart" data-id="{{this.id}}" data-tuple="{{@index}}">
                     Show Chart
