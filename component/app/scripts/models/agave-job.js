@@ -358,12 +358,15 @@ function(
 
             var processMetadata = this.get('value');
             if (!processMetadata) return pmFiles;
+            if (!processMetadata.process) return pmFiles;
 
             for (var group in processMetadata.groups) {
                 if (processMetadata.groups[group]['type'] == 'file') {
-                    var fileKey = processMetadata.groups[group][processMetadata.process.appName]['files'];
-                    for (var fileEntry in processMetadata.files[fileKey]) {
-                        pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+                    if (processMetadata.groups[group][processMetadata.process.appName]) {
+                        var fileKey = processMetadata.groups[group][processMetadata.process.appName]['files'];
+                        for (var fileEntry in processMetadata.files[fileKey]) {
+                            pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+                        }
                     }
                 }
             }
@@ -374,6 +377,7 @@ function(
         getSampleKeyNameFromUuid: function(sampleUuid) {
             var processMetadata = this.get('value');
             if (!processMetadata) return null;
+            if (!processMetadata.process) return null;
 
             for (var group in processMetadata.groups) {
                 if (processMetadata.groups[group]['type'] == 'sample') {

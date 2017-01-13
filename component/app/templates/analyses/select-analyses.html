@@ -30,6 +30,18 @@
         </table>
     </div>
 
+    {{#unless validProcessMetadata}}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                Warning: This job was executed with an older (possibly incompatible) version of VDJServer.
+                Not all files or capabilities may be accessible.
+                Please rerun the job to take advantage of all the new functionality in VDJServer.
+            </div>
+        </div>
+    </div>
+    {{/unless}}
+
     <div class="row">
         <div class="col-md-12">
             <h2>

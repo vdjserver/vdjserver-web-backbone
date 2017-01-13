@@ -600,6 +600,7 @@ define([
             this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
 
             this.jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: this.jobId});
+            this.validProcessMetadata = true;
 
             this.analysisCharts = [];
             this.chartViews = [];
@@ -638,7 +639,10 @@ define([
 
                     // check for process metadata
                     that.processMetadata = that.jobProcessMetadata.get('value');
-                    if (that.processMetadata) {
+                    if (that.processMetadata.process) {
+                        if (!that.processMetadata.process.version) that.validProcessMetadata = false;
+                        else if (that.processMetadata.process.version < EnvironmentConfig.processMetadata.version) that.validProcessMetadata = false;
+
                         switch (that.processMetadata.process.appName) {
                             case('vdjPipe'):
                             case('presto'):
@@ -668,6 +672,7 @@ define([
                         loadingView.remove();
                         that.render();
                     } else {
+                        this.validProcessMetadata = false;
                         // only vdjpipe
                         var appId = that.jobDetail.get('appId');
                         if (appId.indexOf('vdj_pipe') >= 0) {
@@ -694,6 +699,7 @@ define([
         },
         serialize: function() {
             return {
+                validProcessMetadata: this.validProcessMetadata,
                 jobDetail: this.jobDetail.toJSON(),
                 projectFiles: this.collection.getProjectFileOutput(this.jobProcessMetadata).toJSON(),
                 //chartFiles: this.collection.getChartFileOutput().toJSON(),
