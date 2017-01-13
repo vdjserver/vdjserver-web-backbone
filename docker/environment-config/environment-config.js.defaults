@@ -15,27 +15,27 @@ var EnvironmentConfig = {
                 'ls5': {
                     'hostname': 'ls5.tacc.utexas.edu',
                     'apps': {
-                        'vdjPipe': 'vdj_pipe-0.1.6u8',
-                        'igBlast': 'igblast-ls5-1.4.0u15',
-                        'presto': 'presto-ls5-0.5.2u6',
-                        'RepCalc': 'repcalc-ls5-1.0.0u3'
+                        'vdjPipe': 'vdj_pipe-0.1.6u9',
+                        'igBlast': 'igblast-ls5-1.4.0u16',
+                        'presto': 'presto-ls5-0.5.2u7',
+                        'RepCalc': 'repcalc-ls5-1.0.0u4'
                     },
                     'type': 'large',
                 },
                 'vdjExec02': {
                     'hostname': 'vdj-exec-02.tacc.utexas.edu',
                     'apps': {
-                        'vdjPipe': 'vdj_pipe-small-0.1.6u9',
-                        'presto': 'presto-small-0.5.2u4',
+                        'vdjPipe': 'vdj_pipe-small-0.1.6u10',
+                        'presto': 'presto-small-0.5.2u5',
                     },
                     'type': 'small',
                 },
                 'stampede': {
                     'hostname': 'stampede.tacc.utexas.edu',
                     'apps': {
-                        'vdjPipe': 'vdj_pipe-stampede-0.1.6u5',
-                        'igBlast': 'igblast-stampede-1.4.0u10',
-                        'RepCalc': 'repcalc-stampede-1.0.0u2'
+                        'vdjPipe': 'vdj_pipe-stampede-0.1.6u6',
+                        'igBlast': 'igblast-stampede-1.4.0u11',
+                        'RepCalc': 'repcalc-stampede-1.0.0u3'
                     },
                     'type': 'large',
                 },
@@ -68,12 +68,16 @@ var EnvironmentConfig = {
                     { 'inputSize':   1e10, 'system': 'large', 'time': '24:00:00' },
                 ],
                 'RepCalc': [
-                    { 'inputSize':   5e7, 'system': 'large', 'time': '02:00:00' },
+                    { 'inputSize':   5e6, 'system': 'large', 'time': '02:00:00' },
+                    { 'inputSize':   5e7, 'system': 'large', 'time': '04:00:00' },
                     { 'inputSize':   1e10, 'system': 'large', 'time': '08:00:00' },
                     { 'inputSize':   5e10, 'system': 'large', 'time': '24:00:00' },
                 ],
             },
         },
+    },
+    'processMetadata': {
+    	'version': 2,
     },
     'debug': {
         'console': false,
