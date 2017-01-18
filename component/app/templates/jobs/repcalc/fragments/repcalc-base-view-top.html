@@ -1,0 +1,31 @@
+<li>
+    <div class="panel panel-primary repcalc-parameter job-parameter">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="pull-right">
+                        {{#if isRemovable}}
+                            <button class="btn btn-danger btn-xs remove-job-parameter">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        {{/if}}
+                    </div>
+
+                    <div class="text-center">
+                        <strong>{{title}}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <input
+                        class="job-form-item"
+                        type="hidden"
+                        name="{{parameterType}}"
+                    >
+                </div>
+            </div>

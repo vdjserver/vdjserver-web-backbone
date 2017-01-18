@@ -1,0 +1,82 @@
+    <div class="row">
+        <div class="col-md-12">
+            <h2>
+                <div class="alert alert-primary">
+                    Analysis Charts
+                </div>
+            </h2>
+        </div>
+
+  {{#each chartFiles}}
+<form class="form-horizontal">
+          <div class="form-group">
+            <label for="project-name" class="col-md-1 text-center control-label">Chart:</label>
+            <div class="col-md-3">
+              <input type="text" class="form-control text-center" id="project-uuid" readonly value="{{name}}">
+            </div>
+            {{#if this.citation}}
+                <div class="col-md-1">
+                    <a class="btn btn-info" href={{this.citation}} role="button" target="_blank">Citation</a>
+                </div>
+            {{/if}}
+            <div class="col-md-6">
+                <div id="show-chart" class="btn btn-primary show-chart" data-id="{{this.id}}" data-tuple="{{@index}}">
+                    Show Chart
+                </div>
+
+                <div id="hide-chart" class="btn-group hidden" role="group">
+                    <button class="btn btn-default hide-chart" data-id="{{this.id}}" data-tuple="{{@index}}">
+                        Hide Chart
+                    </button>
+
+                    <button class="btn btn-primary download-chart" data-id="{{this.id}}" data-tuple="{{@index}}">
+                        Download Chart
+                    </button>
+                </div>
+
+                <div id="download-data" class="btn btn-primary download-data" data-id="{{this.id}}" data-tuple="{{@index}}">
+                    Download Data
+                </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-md-1 control-label">Files:</label>
+
+                <div class="col-md-2">
+                    {{#if ../fileList}}
+                      <select id="file-list-{{@index}}" data-tuple="{{@index}}" multiple="multiple">
+                          {{#each ../../fileList}}
+                          <option value="{{this.id}}">{{this.name}}</option>
+                          {{/each}}
+                      </select>
+                    {{else}}
+                      None Defined
+                    {{/if}}
+                </div>
+
+            <label for="project-name" class="col-md-1 control-label">Samples:</label>
+                <div class="col-md-2">
+                    <select id="sample-list-{{@index}}" data-tuple="{{@index}}" multiple="multiple">
+                        {{#each ../sampleList}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+            <label for="project-name" class="col-md-2 control-label">Sample Groups:</label>
+                <div class="col-md-2">
+                    <select id="sample-group-list-{{@index}}" data-tuple="{{@index}}" multiple="multiple">
+                        {{#each ../sampleGroupList}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+
+    </div>
+</form>
+
+<br>
+  {{/each}}
+
+</div>

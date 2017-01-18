@@ -7,9 +7,16 @@ require.config({
         'backbone.syphon':  '../bower_components/marionette.backbone.syphon/lib/backbone.syphon',
         'backbone-retry-sync': '../bower_components/backbone-retry-sync/backbone-retry-sync',
         'bootstrap':        '../bower_components/twbs-bootstrap-sass/assets/javascripts/bootstrap',
+        'bootstrap-multiselect': '../bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect',
         'chance':           '../bower_components/chance/chance',
         'datatables':       '../bower_components/datatables/media/js/jquery.dataTables',
         'datatables-responsive': '../bower_components/datatables-responsive/js/dataTables.responsive',
+        //'datatables.net':       '../bower_components/datatables.net/js/jquery.dataTables',
+        //'datatables.net-bs':       '../bower_components/datatables.net-bs/js/dataTables.bootstrap',
+        //'datatables.net-select':       '../bower_components/datatables.net-select/js/dataTables.select',
+        //'datatables.net-scroller':       '../bower_components/datatables.net-scroller/js/dataTables.scroller',
+        //'datatables.net-responsive': '../bower_components/datatables.net-responsive/js/dataTables.responsive',
+        //'datatables.net-responsive-bs': '../bower_components/datatables.net-responsive-bs/js/responsive.bootstrap',
         'detect':           '../bower_components/Detect.js/detect',
         'filesize':         '../bower_components/filesize/lib/filesize',
         'file-saver':       '../bower_components/file-saver/FileSaver',
@@ -19,6 +26,7 @@ require.config({
         'highcharts-drilldown': '../bower_components/highstock-release/modules/drilldown',
         'highcharts-more':  '../bower_components/highstock-release/highcharts-more',
         'highcharts-exporting': '../bower_components/highstock-release/modules/exporting',
+        'highcharts-offline-exporting': '../bower_components/highstock-release/modules/offline-exporting',
 
 
         'jquery':           '../bower_components/jquery/dist/jquery',
@@ -71,6 +79,15 @@ require.config({
 
         'agave-profile': 'models/agave-profile',
 
+        'agave-sample-metadata': 'models/agave-sample-metadata',
+        'agave-samples-metadata': 'collections/agave-samples-metadata',
+        'agave-subject-metadata': 'models/agave-subject-metadata',
+        'agave-subjects-metadata': 'collections/agave-subjects-metadata',
+        'agave-subject-columns': 'models/agave-subject-columns',
+        'agave-sample-group': 'models/agave-sample-group',
+        'agave-sample-groups': 'collections/agave-sample-groups',
+        'agave-sample-columns': 'models/agave-sample-columns',
+
         // Misc.
         'box': 'vendor/box',
         'jquery.event.drag':'vendor/jquery.event.drag',
@@ -85,6 +102,7 @@ require.config({
         'vdjpipe-workflow-parser': 'utilities/vdjpipe-workflow-parser',
         'vdjpipe-view-factory': 'utilities/vdjpipe-view-factory',
         'presto-view-factory': 'utilities/presto-view-factory',
+        'repcalc-view-factory': 'utilities/repcalc-view-factory',
 
         // Generic Views
         'generic-vdjpipe-option-views': 'views/generic/generic-vdjpipe-option-views',
@@ -113,6 +131,7 @@ require.config({
         'analyses-views': 'views/analyses-views',
         'vdjpipe-views': 'views/vdjpipe-views',
         'presto-views': 'views/presto-views',
+        'repcalc-views': 'views/repcalc-views',
         'feedback-views': 'views/feedback-views',
         'software-views': 'views/software-views',
         'community-views': 'views/community-views',
@@ -129,6 +148,9 @@ require.config({
     shim: {
         'bootstrap': {
             deps: ['jquery']
+        },
+        'bootstrap-multiselect': {
+            deps: ['bootstrap']
         },
         'jquery.event.drag': {
             deps: ['jquery']
@@ -155,6 +177,9 @@ require.config({
         },
         'highcharts-exporting': {
             deps:['highcharts'],
+        },
+        'highcharts-offline-exporting': {
+            deps:['highcharts-exporting'],
         },
 
         'layoutmanager': {
@@ -279,6 +304,40 @@ require.config({
         'agave-projects': {
             deps: ['backbone', 'backbone-agave', 'agave-project'],
             exports: 'Backbone.Agave.Collection.Projects'
+        },
+
+        // Metadata Entry
+        'agave-sample-columns': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.SampleColumns'
+        },
+        'agave-sample-metadata': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.SampleMetadata'
+        },
+        'agave-samples-metadata': {
+            deps: ['backbone', 'backbone-agave', 'agave-sample-metadata'],
+            exports: 'Backbone.Agave.Collection.SamplesMetadata'
+        },
+        'agave-subject-columns': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.SubjectColumns'
+        },
+        'agave-subject-metadata': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.SubjectMetadata'
+        },
+        'agave-subjects-metadata': {
+            deps: ['backbone', 'backbone-agave', 'agave-subject-metadata'],
+            exports: 'Backbone.Agave.Collection.SubjectsMetadata'
+        },
+        'agave-sample-group': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.SampleGroup'
+        },
+        'agave-sample-groups': {
+            deps: ['backbone', 'backbone-agave', 'agave-sample-group'],
+            exports: 'Backbone.Agave.Collection.SampleGroups'
         },
 
         //Analyses

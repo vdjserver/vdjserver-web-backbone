@@ -296,6 +296,21 @@ define([
 
             return response;
         },
+        syncMetadataPermissionsWithProjectPermissions: function(projectUuid) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectUuid: projectUuid,
+                    uuid: this.get('uuid')
+                }),
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/permissions/metadata'
+            });
+
+            return jqxhr;
+        },
         /*
         parseDate: function(result) {
 
@@ -326,6 +341,37 @@ define([
                 return response.result;
             }
             return response;
+        },
+
+        // clones both the collection and the models within
+        getClonedCollection: function() {
+
+            var newCollection = this.clone();
+            newCollection.reset();
+
+            for (var i = 0; i < this.length; i++) {
+                var model = this.at(i);
+                var m = model.clone();
+                m.set('value', _.clone(model.get('value')));
+                newCollection.add(m);
+            }
+
+            return newCollection;
+        },
+
+        // models in this collection that do not exist in given collection
+        getMissingModels: function(checkCollection) {
+
+            var newCollection = this.clone();
+            newCollection.reset();
+
+            for (var i = 0; i < this.length; i++) {
+                var model = this.at(i);
+                var m = checkCollection.get(model.get('uuid'));
+                if (!m) newCollection.add(model);
+            }
+
+            return newCollection;
         },
     });
 
@@ -544,6 +590,29 @@ define([
             }
         },
 
+    });
+
+    // job history is not normal Agave metadata
+    Agave.JobHistory = Agave.Model.extend({
+        initialize: function(parameters) {
+            if (parameters && parameters.jobUuid) {
+                this.jobUuid = parameters.jobUuid;
+            }
+
+            this.retrySyncEngine = Agave.sync;
+            this.retrySyncLimit = 3;
+        },
+        apiHost: EnvironmentConfig.agave.hostname,
+        authType: 'oauth',
+        sync: Backbone.RetrySync,
+        requiresAuth: true,
+        url: function() {
+            return '/jobs/v2/' + this.jobUuid + '/history';
+        },
+        parse: function(response) {
+            // override Backbone.Agave.Model to return full response
+            return response;
+        },
     });
 
     // Required Auth package

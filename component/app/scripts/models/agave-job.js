@@ -22,6 +22,41 @@ function(
             url: function() {
                 return '/jobs/v2/' + this.get('id');
             },
+
+            initDisplayName: function() {
+                var dName = this.get('displayName');
+                if (!dName) this.set('displayName', this.get('name'));
+            },
+
+            archiveJob: function() {
+                var jqxhr = $.ajax({
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        jobId: this.get('id')
+                    }),
+                    url: EnvironmentConfig.vdjApi.hostname
+                        + '/jobs/archive/' + this.get('id')
+                });
+
+                return jqxhr;
+            },
+
+            unarchiveJob: function() {
+                var jqxhr = $.ajax({
+                    headers: Backbone.Agave.basicAuthHeader(),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        jobId: this.get('id')
+                    }),
+                    url: EnvironmentConfig.vdjApi.hostname
+                        + '/jobs/unarchive/' + this.get('id')
+                });
+
+                return jqxhr;
+            },
         },
         {
             CHART_TYPE_0: 'composition',
@@ -165,13 +200,24 @@ function(
         }
     );
 
-    Job.OutputFile = Backbone.Agave.Model.extend(
+    Job.OutputFile = Backbone.Agave.MetadataModel.extend(
         _.extend({}, FileTransferMixins, {
-            idAttribute: 'name',
+            idAttribute: 'uuid',
+            sync: function(method, model, options) {
+                return Backbone.Agave.PutOverrideSync(method, this, options);
+            },
+            url: function() {
+                return '/meta/v2/data/' + this.get('uuid');
+            },
             downloadFileToCache: function() {
 
-                var url = this.get('_links').self.href;
-                url = this._fixBadAgaveUrl(url);
+                var value = this.get('value');
+                var url = EnvironmentConfig.agave.hostname
+                         + '/jobs'
+                         + '/v2'
+                         + '/' + value.jobUuid
+                         + '/outputs/media/'
+                         + '/' + value.name;
 
                 var jqxhr = Backbone.Agave.ajax({
                     headers: Backbone.Agave.oauthHeader(),
@@ -182,13 +228,58 @@ function(
             },
             downloadFileToDisk: function() {
 
-                var url = this.get('_links').self.href;
-                url = this._fixBadAgaveUrl(url);
+                var value = this.get('value');
+                var url = EnvironmentConfig.agave.hostname
+                         + '/jobs'
+                         + '/v2'
+                         + '/' + value.jobUuid
+                         + '/outputs/media/'
+                         + '/' + value.name;
+                //var url = this.get('_links').self.href;
+                //url = this._fixBadAgaveUrl(url);
                 url = this._urlencodeOutputPath(url);
 
                 var jqxhr = this.downloadUrlByPostit(url);
 
                 return jqxhr;
+            },
+            downloadFileListToDisk: function(files) {
+                function downloadNext(i) {
+                    if (i >= files.length) {
+                        return;
+                    }
+
+                    files[i].downloadFileToDisk();
+
+                    setTimeout(function () { downloadNext(i + 1); }, 5000);
+                }
+
+                downloadNext(0);
+            },
+            getFilePath: function() {
+
+                var value = this.get('value');
+                var filePath = '';
+
+                if (this.get('name') === 'projectFile') {
+
+                    filePath = '/projects'
+                             + '/' + value['projectUuid']
+                             + '/files'
+                             + '/' + encodeURIComponent(value['name'])
+                             ;
+                }
+                else if (this.get('name') === 'projectJobFile') {
+
+                    filePath = '/projects'
+                             + '/' + value['projectUuid']
+                             + '/analyses'
+                             + '/' + value['relativeArchivePath']
+                             + '/' + encodeURIComponent(value['name'])
+                             ;
+                }
+
+                return filePath;
             },
             _fixBadAgaveUrl: function(url) {
                 var url = url.split('/');
@@ -227,6 +318,77 @@ function(
         },
     });
 
+    Job.ProcessMetadata = Backbone.Agave.MetadataModel.extend({
+        defaults: function() {
+            return _.extend(
+                {},
+                Backbone.Agave.MetadataModel.prototype.defaults,
+                {
+                    name: 'processMetadata',
+                    owner: '',
+                    value: {
+                    },
+                }
+            );
+        },
+        url: function() {
+            return '/meta/v2/data?q='
+                + encodeURIComponent('{'
+                    + '"name":"processMetadata",'
+                    + '"associationIds":"' + this.get('jobId') + '"'
+                + '}')
+                + '&limit=1';
+        },
+        getDescriptionForFilename: function(filename) {
+            var value = this.get('value');
+            if (!value) return null;
+            if (!value['files']) return null;
+
+            var files = value['files'];
+            for (var f in files) {
+                for (var t in files[f]) {
+                    if (files[f][t]['value'] == filename) return files[f][t]['description'];
+                }
+            }
+            return null;
+        },
+
+        getProjectFileOutputList: function() {
+            var pmFiles = [];
+
+            var processMetadata = this.get('value');
+            if (!processMetadata) return pmFiles;
+            if (!processMetadata.process) return pmFiles;
+
+            for (var group in processMetadata.groups) {
+                if (processMetadata.groups[group]['type'] == 'file') {
+                    if (processMetadata.groups[group][processMetadata.process.appName]) {
+                        var fileKey = processMetadata.groups[group][processMetadata.process.appName]['files'];
+                        for (var fileEntry in processMetadata.files[fileKey]) {
+                            pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+                        }
+                    }
+                }
+            }
+
+            return pmFiles;
+        },
+
+        getSampleKeyNameFromUuid: function(sampleUuid) {
+            var processMetadata = this.get('value');
+            if (!processMetadata) return null;
+            if (!processMetadata.process) return null;
+
+            for (var group in processMetadata.groups) {
+                if (processMetadata.groups[group]['type'] == 'sample') {
+                    for (var sample in processMetadata.groups[group]['samples'])
+                        if (sample == sampleUuid) return group;
+                }
+            }
+            return null;
+        },
+    });
+
     Job.IgBlast = Backbone.Agave.JobModel.extend(
         {
             // Public Methods
@@ -256,6 +418,7 @@ function(
             prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
                 var parameters = this._serializeFormData(formData);
+                parameters['Creator'] = Backbone.Agave.instance.token().get('username');
 
                 this.set('parameters', parameters);
 
@@ -291,6 +454,177 @@ function(
         }
     );
 
+    Job.RepCalc = Backbone.Agave.JobModel.extend(
+        {
+            // Public Methods
+            defaults: function() {
+                return _.extend(
+                    {},
+                    Backbone.Agave.JobModel.prototype.defaults,
+                    {
+                        appId: EnvironmentConfig.agave.systems.execution.ls5.apps.RepCalc,
+                        appName: 'RepCalc',
+                        inputs: {
+                            vdjml: '',
+                            summary: '',
+                        },
+                        parameters: {
+                        },
+                    }
+                );
+            },
+            initialize: function(options) {
+                Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
+
+                //this.inputParameterName = 'query';
+            },
+            prepareJob: function(formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas, projectUuid) {
+
+                var parameters = this._serializeFormData(formData);
+                parameters['Creator'] = Backbone.Agave.instance.token().get('username');
+
+                this.set('name', formData['job-name']);
+
+                this._setArchivePath(projectUuid);
+
+                var inputFiles = {};
+                this._serializeFileInputs(
+                    inputFiles,
+                    formData,
+                    VDJMLFileMetadatas,
+                    SummaryFileMetadatas,
+                    ChangeOFileMetadatas,
+                    allFileMetadatas
+                );
+                this.set('inputs', inputFiles);
+
+                var metaList = [];
+                for (var i = 0; i < VDJMLFileMetadatas.models.length; i++) {
+                    var fileMetadata = VDJMLFileMetadatas.at(i);
+                    metaList.push(fileMetadata.get('uuid'));
+                }
+                parameters['VDJMLFileMetadata'] = metaList;
+
+                var metaList = [];
+                for (var i = 0; i < SummaryFileMetadatas.models.length; i++) {
+                    var fileMetadata = SummaryFileMetadatas.at(i);
+                    metaList.push(fileMetadata.get('uuid'));
+                }
+                parameters['SummaryFileMetadata'] = metaList;
+
+                var metaList = [];
+                for (var i = 0; i < ChangeOFileMetadatas.models.length; i++) {
+                    var fileMetadata = ChangeOFileMetadatas.at(i);
+                    metaList.push(fileMetadata.get('uuid'));
+                }
+                parameters['ChangeOFileMetadata'] = metaList;
+
+                this.set('parameters', parameters);
+            },
+            // Private Methods
+            _serializeFormData: function(formData) {
+                var parameters = {};
+                var list = [];
+
+                parameters['JobSelected'] = formData['job-selected'];
+
+                // gene segment usage
+                if (formData.hasOwnProperty('gene-segment-usage')) {
+                    parameters['GeneSegmentFlag'] = true;
+
+                    list = [];
+                    if (formData['gs-absolute']) list.push('absolute');
+                    if (formData['gs-relative']) list.push('relative');
+                    if (formData['gs-average']) list.push('average');
+                    if (list.length > 0) parameters['GeneSegmentOperations'] = list;
+
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['GeneSegmentFilters'] = list;
+                }
+
+                // CDR3
+                if (formData.hasOwnProperty('cdr3-analysis')) {
+                    parameters['CDR3Flag'] = true;
+
+                    list = [];
+                    if (formData['cdr3-nucleotide']) list.push('nucleotide');
+                    if (formData['cdr3-aa']) list.push('aa');
+                    if (list.length > 0) parameters['CDR3Levels'] = list;
+
+                    list = [];
+                    if (formData['cdr3-absolute']) list.push('absolute');
+                    if (formData['cdr3-relative']) list.push('relative');
+                    if (formData['cdr3-length']) list.push('length');
+                    if (formData['cdr3-shared']) list.push('shared');
+                    if (formData['cdr3-unique']) list.push('unique');
+                    if (list.length > 0) parameters['CDR3Operations'] = list;
+
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['CDR3Filters'] = list;
+                }
+
+                // Clones
+                if (formData.hasOwnProperty('clonal-analysis')) {
+                    parameters['ClonalFlag'] = true;
+
+                    list = [];
+                    if (formData['clonal-abundance']) list.push('abundance');
+                    if (list.length > 0) parameters['ClonalOperations'] = list;
+
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['ClonalFilters'] = list;
+                }
+
+                // Diversity
+                if (formData.hasOwnProperty('diversity-analysis')) {
+                    parameters['DiversityFlag'] = true;
+
+                    list = [];
+                    if (formData['diversity-type']) list.push('type');
+                    if (formData['diversity-family']) list.push('family');
+                    if (formData['diversity-gene']) list.push('gene');
+                    if (formData['diversity-allele']) list.push('allele');
+                    if (formData['diversity-nucleotide']) list.push('nucleotide');
+                    if (formData['diversity-aa']) list.push('aa');
+                    if (list.length > 0) parameters['DiversityLevels'] = list;
+
+                    list = [];
+                    if (formData['diversity-shannon']) list.push('shannon');
+                    if (formData['diversity-profile']) list.push('profile');
+                    if (list.length > 0) parameters['DiversityOperations'] = list;
+
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['DiversityFilters'] = list;
+                }
+
+                // Mutations
+                if (formData.hasOwnProperty('mutational-analysis')) {
+                    parameters['MutationalFlag'] = true;
+
+                    list = [];
+                    if (formData['clonal-selection']) list.push('selection');
+                    if (list.length > 0) parameters['MutationalOperations'] = list;
+
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['MutationalFilters'] = list;
+                }
+
+
+                return parameters;
+            },
+            _serializeFileInputs: function(fileInputs, formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas) {
+                fileInputs['VDJMLFiles'] = this._getTranslatedFilePaths(VDJMLFileMetadatas);
+                fileInputs['SummaryFiles'] = this._getTranslatedFilePaths(SummaryFileMetadatas);
+                fileInputs['ChangeOFiles'] = this._getTranslatedFilePaths(ChangeOFileMetadatas);
+            },
+        }
+    );
+
     Job.VdjPipe = Backbone.Agave.JobModel.extend({
         // Public Methods
         defaults: function() {
@@ -308,212 +642,154 @@ function(
         },
         prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
-            this._setJobConfigFromWorkflowFormData(formData, selectedFileMetadatas, allFileMetadatas);
+            //this._setJobConfigFromWorkflowFormData(formData, selectedFileMetadatas, allFileMetadatas);
+            this.set('name', formData['job-name']);
             this._setArchivePath(projectUuid);
 
-            selectedFileMetadatas = this._updateSelectedFileMetadatasForPrimers(
+            var parameters = this._serializeFormData(formData);
+            parameters['Creator'] = Backbone.Agave.instance.token().get('username');
+
+            var inputFiles = {};
+            inputFiles = this._serializeFileInputs(
+                inputFiles,
                 formData,
                 selectedFileMetadatas,
                 allFileMetadatas
             );
+            this.set('inputs', inputFiles);
 
-            selectedFileMetadatas = this._updateSelectedFileMetadatasForBarcodes(
-                formData,
-                selectedFileMetadatas,
-                allFileMetadatas
-            );
-
-            selectedFileMetadatas = this._updateSelectedFileMetadatasForBarcodeQualityScores(
-                formData,
-                selectedFileMetadatas,
-                allFileMetadatas
-            );
-
-            selectedFileMetadatas = this._updateSelectedFileMetadatasForCombinationCsv(
-                formData,
-                selectedFileMetadatas,
-                allFileMetadatas
-            );
-
-            this._setFilesParameter(selectedFileMetadatas);
-        },
-        setPairedReadConfig: function(pairedReadConfig) {
-            var jobParameters = this.get('parameters');
-            jobParameters['paired_json'] = JSON.stringify(pairedReadConfig);
-            jobParameters['workflow'] = 'paired';
-
-            // the input for the standard json needs to be the output of paired_json
-            var fileName = pairedReadConfig['steps'][1]['apply']['step']['write_sequence']['out_path'];
-            var workConfig = JSON.parse(jobParameters.json);
-            workConfig['input'] = [{'sequence': fileName}];
-            jobParameters['json'] = JSON.stringify(workConfig);
-
-            this.set('parameters', jobParameters);
+            this.set('parameters', parameters);
         },
 
         // Private Methods
-        _updateSelectedFileMetadatasForBarcodeQualityScores: function(formData, selectedFileMetadatas, allFileMetadatas) {
+        _serializeFileInputs: function(fileInputs, formData, selectedFileMetadatas, allFileMetadatas) {
 
-            for (var i = 0; i < selectedFileMetadatas.models.length; i++) {
-
-                var selectedFileMetadata = selectedFileMetadatas.at(i);
-
-                var qualUuid = selectedFileMetadata.getQualityScoreMetadataUuid();
-
-                if (qualUuid) {
-                    var qualFileMetadata = allFileMetadatas.get(qualUuid);
-
-                    selectedFileMetadatas.add(qualFileMetadata);
-                }
+            if (formData.hasOwnProperty('barcode-file')) {
+                fileInputs['BarcodeFile'] = this._getTranslatedFilePath(formData['barcode-file'], allFileMetadatas);
             }
 
-            return selectedFileMetadatas;
+            if (formData.hasOwnProperty('custom_v_primer_trimming-primer-file')) {
+                fileInputs['ForwardPrimerFile'] = this._getTranslatedFilePath(formData['custom_v_primer_trimming-primer-file'], allFileMetadatas);
+            }
+
+            if (formData.hasOwnProperty('custom_j_primer_trimming-primer-file')) {
+                fileInputs['ReversePrimerFile'] = this._getTranslatedFilePath(formData['custom_j_primer_trimming-primer-file'], allFileMetadatas);
+            }
+
+            var pairedReads = selectedFileMetadatas.getOrganizedPairedReadCollection();
+            if (pairedReads.length > 0) {
+              fileInputs['SequenceForwardPairedFiles'] = this._getTranslatedFilePaths(pairedReads[0]);
+              fileInputs['SequenceReversePairedFiles'] = this._getTranslatedFilePaths(pairedReads[1]);
+            }
+
+            var qualReads = selectedFileMetadatas.getOrganizedPairedQualityCollection(allFileMetadatas);
+            if (qualReads.length > 0) {
+              fileInputs['SequenceFASTA'] = this._getTranslatedFilePaths(qualReads[0]);
+              fileInputs['SequenceQualityFiles'] = this._getTranslatedFilePaths(qualReads[1]);
+            }
+
+            var singleReads = selectedFileMetadatas.getNonPairedReadCollection();
+            fileInputs['SequenceFASTQ'] = this._getTranslatedFilePaths(singleReads);
+
+            return fileInputs;
         },
-        _updateSelectedFileMetadatasForBarcodes: function(formData, selectedFileMetadatas, allFileMetadatas) {
-            var keys = Object.keys(formData);
 
-            // Find if any keys known to have extra files are present
-            var matches = [];
+        _serializeFormData: function(formData) {
 
-            (function() {
-                for (var i = 0; i < keys.length; i++) {
-                    var search = keys[i].search('element-sequence-file');
+            var parameters = {};
 
-                    if (search > -1) {
-                        matches.push(keys[i]);
+            // workflow
+            if (formData.hasOwnProperty('paired_reads')) {
+                parameters['Workflow'] = 'paired';
+                if (formData.hasOwnProperty('merge_paired-min-score'))
+                    parameters['MergeMinimumScore'] = parseInt(formData['merge_paired-min-score']);
+                if (formData.hasOwnProperty('merge_write_sequence-out-prefix'))
+                    if (formData['merge_write_sequence-out-prefix'].length != 0)
+                        parameters['MergeOutputFilename'] = formData['merge_write_sequence-out-prefix'] + ".fastq";
+            } else
+                parameters['Workflow'] = 'single';
+
+            // statistics
+            parameters['PreFilterStatisticsFlag'] = false;
+            if (formData.hasOwnProperty('pre_statistics')) {
+                parameters['PreFilterStatisticsFlag'] = true;
+                parameters['PreFilterStatisticsFilename'] = 'pre-filter_';
+            }
+            if (formData.hasOwnProperty('statistics')) {
+                parameters['PreFilterStatisticsFlag'] = true;
+                parameters['PreFilterStatisticsFilename'] = 'stats_';
+            }
+
+            if (formData.hasOwnProperty('post_statistics')) {
+                parameters['PostFilterStatisticsFlag'] = true;
+                parameters['PostFilterStatisticsFilename'] = 'post-filter_';
+            } else
+                parameters['PostFilterStatisticsFlag'] = false;
+
+            // filtering
+            if (formData.hasOwnProperty('length_filter')) {
+                parameters['FilterFlag'] = true;
+                parameters['MinimumLength'] = parseInt(formData['length_filter-min']);
+                parameters['MinimumAverageQuality'] = parseInt(formData['average_quality_filter-min']);
+                parameters['MaximumHomopolymer'] = parseInt(formData['homopolymer_filter-max']);
+            } else
+                parameters['FilterFlag'] = false;
+
+            // barcode
+            if (formData.hasOwnProperty('barcode')) {
+                parameters['Barcode'] = true;
+                parameters['BarcodeLocation'] = formData['barcode-location'];
+                parameters['BarcodeDiscard'] = formData['barcode-discard'];
+                parameters['BarcodeMaximumMismatches'] = parseInt(formData['barcode-maximum-mismatches']);
+                parameters['BarcodeTrim'] = formData['barcode-trim'];
+                parameters['BarcodeSearchWindow'] = parseInt(formData['barcode-search-window']);
+                parameters['BarcodeSplitFlag'] = formData['barcode-split-flag'];
+            } else
+                parameters['Barcode'] = false;
+
+            // forward primer
+            if (formData.hasOwnProperty('custom_v_primer_trimming')) {
+                parameters['ForwardPrimer'] = true;
+                parameters['ForwardPrimerMaximumMismatches'] = parseInt(formData['custom_v_primer_trimming-maximum-mismatches']);
+                parameters['ForwardPrimerTrim'] = formData['custom_v_primer_trimming-trim-primer'];
+                parameters['ForwardPrimerSearchWindow'] = parseInt(formData['custom_v_primer_trimming-element-length']);
+            }
+            else
+                parameters['ForwardPrimer'] = false;
+
+            // reverse primer
+            if (formData.hasOwnProperty('custom_j_primer_trimming')) {
+                parameters['ReversePrimer'] = true;
+                parameters['ReversePrimerMaximumMismatches'] = parseInt(formData['custom_j_primer_trimming-maximum-mismatches']);
+                parameters['ReversePrimerTrim'] = formData['custom_j_primer_trimming-trim-primer'];
+                parameters['ReversePrimerSearchWindow'] = parseInt(formData['custom_j_primer_trimming-element-length']);
+            }
+            else
+                parameters['ReversePrimer'] = false;
+
+            // find unique
+            if (formData.hasOwnProperty('find_shared')) {
+                parameters['FindUniqueFlag'] = true;
+                if (formData.hasOwnProperty('find_shared-out-prefix'))
+                    if (formData['find_shared-out-prefix'].length != 0) {
+                        parameters['FindUniqueOutputFilename'] = formData['find_shared-out-prefix'] + ".fasta";
+                        parameters['FindUniqueDuplicatesFilename'] = formData['find_shared-out-prefix'] + "-duplicates.tsv";
                     }
-                }
-            })();
+            } else
+                parameters['FindUniqueFlag'] = false;
 
-            // Extract filenames from form
-            var files = [];
+            // write final sequences
+            if (formData.hasOwnProperty('write_sequence')) {
+                if (formData.hasOwnProperty('write_sequence-out-prefix'))
+                    if (formData['write_sequence-out-prefix'].length != 0)
+                        if (parameters['BarcodeSplitFlag']) {
+                            parameters['FinalOutputFilename'] = formData['write_sequence-out-prefix'] + "-{MID}.fastq";
+                        } else {
+                            parameters['FinalOutputFilename'] = formData['write_sequence-out-prefix'] + ".fastq";
+                        }
+            }
 
-            (function() {
-                for (var i = 0; i < matches.length; i++) {
-                    var fasta = formData[matches[i]];
-
-                    files.push(fasta);
-                }
-            })();
-
-            // Extract file metadata for filenames
-            (function() {
-
-                for (var i = 0; i < files.length; i++) {
-                    var fastaMetadata = allFileMetadatas.getModelForName(files[i]);
-
-                    // Add qual files
-                    var qualUuid = fastaMetadata.getQualityScoreMetadataUuid();
-
-                    var qualMetadata = allFileMetadatas.get(qualUuid);
-
-                    selectedFileMetadatas.add(fastaMetadata);
-                    selectedFileMetadatas.add(qualMetadata);
-                }
-
-            })();
-
-            return selectedFileMetadatas;
-        },
-
-        _updateSelectedFileMetadatasForCombinationCsv: function(formData, selectedFileMetadatas, allFileMetadatas) {
-            var keys = Object.keys(formData);
-
-            // Find if any keys known to have extra files are present
-            var matches = [];
-
-            (function() {
-                for (var i = 0; i < keys.length; i++) {
-                    var search = keys[i].search('combination-csv-file');
-
-                    if (search > -1) {
-                        matches.push(keys[i]);
-                    }
-                }
-            })();
-
-            // Extract filenames from form
-            var files = [];
-
-            (function() {
-                for (var i = 0; i < matches.length; i++) {
-                    var fasta = formData[matches[i]];
-
-                    files.push(fasta);
-                }
-            })();
-
-            // Extract file metadata for filenames
-            (function() {
-
-                for (var i = 0; i < files.length; i++) {
-                    var csvMetadata = allFileMetadatas.getModelForName(files[i]);
-
-                    selectedFileMetadatas.add(csvMetadata);
-                }
-
-            })();
-
-            return selectedFileMetadatas;
-        },
-        _updateSelectedFileMetadatasForPrimers: function(formData, selectedFileMetadatas, allFileMetadatas) {
-            var keys = Object.keys(formData);
-
-            // Find if any keys known to have extra files are present
-            var matches = [];
-
-            (function() {
-                for (var i = 0; i < keys.length; i++) {
-                    var search = keys[i].search('primer-file');
-
-                    if (search > -1) {
-                        matches.push(keys[i]);
-                    }
-                }
-            })();
-
-            // Extract filenames from form
-            var files = [];
-
-            (function() {
-                for (var i = 0; i < matches.length; i++) {
-                    var fasta = formData[matches[i]];
-
-                    files.push(fasta);
-                }
-            })();
-
-            // Extract file metadata for filenames
-            (function() {
-
-                for (var i = 0; i < files.length; i++) {
-                    var primerMetadata = allFileMetadatas.getModelForName(files[i]);
-
-                    selectedFileMetadatas.add(primerMetadata);
-                }
-
-            })();
-
-            return selectedFileMetadatas;
-        },
-
-        _setJobConfigFromWorkflowFormData: function(formData, fileMetadatas, allFileMetadatas) {
-
-            var workflowConfig = App.Utilities.Vdjpipe.WorkflowParser.ConvertFormDataToWorkflowConfig(
-                formData,
-                fileMetadatas,
-                allFileMetadatas
-            );
-
-            this.set('name', formData['job-name']);
-
-            this.set(
-                'parameters',
-                {
-                    'json': JSON.stringify(workflowConfig),
-                    'workflow': 'single',
-                }
-            );
+            return parameters;
         },
     });
 
@@ -543,10 +819,11 @@ function(
             this._setArchivePath(projectUuid);
 
             var parameters = this._serializeFormData(formData);
-            parameters.SequenceFiles = this._getSequenceFilenames(
-                parameters,
-                selectedFileMetadatas
-            );
+            parameters['Creator'] = Backbone.Agave.instance.token().get('username');
+            //parameters.SequenceFiles = this._getSequenceFilenames(
+            //    parameters,
+            //    selectedFileMetadatas
+            //);
 
             var inputFiles = {};
             inputFiles = this._serializeFileInputs(
@@ -555,7 +832,7 @@ function(
                 selectedFileMetadatas,
                 allFileMetadatas
             );
-            this.set('input', inputFiles);
+            this.set('inputs', inputFiles);
 
             if (inputFiles['SequenceForwardPairedFiles'] !== undefined)
                 parameters['Workflow'] = 'paired';
@@ -713,6 +990,7 @@ function(
         },
     });
 
+/*
     Job.VdjpipeWorkflow = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
             return _.extend(
@@ -794,7 +1072,7 @@ function(
                 return errors;
             }
         },
-    });
+    }); */
 
     Backbone.Agave.Model.Job = Job;
     return Job;

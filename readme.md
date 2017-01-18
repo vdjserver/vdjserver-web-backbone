@@ -34,7 +34,7 @@ VDJServer Backbone is a next generation immune repertoire analysis portal.
 
 ```
 - Clone project
-git clone git@bitbucket.org:vdjserver/vdjserver-backbone.git
+git clone http://bitbucket.org/vdjserver/vdjserver-web-backbone.git
 
 cd [project location]/component
 

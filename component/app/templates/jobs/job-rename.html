@@ -1,0 +1,49 @@
+<div class="modal fade" id="rename-modal" tabindex="-1" role="dialog" aria-labelledby="job-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="job-modal-label">Rename Job</h4>
+            </div>
+            <form method="post" class="form-horizontal" id="job-form" role="form">
+                <div class="modal-body">
+
+                    <div class="form-group">
+                      <label for="job-name" class="col-md-2 control-label">Job Name:</label>
+                      <div class="col-md-4">
+                        <input type="text" class="form-control" id="job-name" placeholder="" value="{{job.displayName}}">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="job-id" class="col-md-2 control-label">VDJServer UUID:</label>
+                      <div class="col-md-4">
+                        <input type="text" class="form-control" id="job-id" readonly value="{{job.id}}">
+                      </div>
+                    </div>
+
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <div class="text-center">
+                    <button
+                        class="btn btn-default job-submit-button"
+                        type="button"
+                        data-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+
+                    <input
+                        id="submit-rename"
+                        class="btn btn-success rename-submit-button"
+                        type="button"
+                        value="Rename"
+                    >
+                </div>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

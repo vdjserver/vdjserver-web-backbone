@@ -247,19 +247,13 @@ define([
             var formData = {
                 'job-name':  'test job',
                 'single_reads': 'on',
-                '0-quality_stats': '',
-                '0-quality_stats-out-prefix': 'pre-filter_',
-                '1-composition_stats': '',
-                '1-composition_stats-out-prefix': 'pre-filter_',
-                '5-length_filter': '',
-                '5-length_filter-max': '',
-                '5-length_filter-min': '0',
-                '6-average_quality_filter': '35',
-                '7-homopolymer_filter': '20',
-                '8-quality_stats': '',
-                '8-quality_stats-out-prefix': 'post-filter_',
-                '9-composition_stats': '',
-                '9-composition_stats-out-prefix': 'post-filter_',
+                'pre_statistics': '',
+                'length_filter': '',
+                'length_filter-max': '',
+                'length_filter-min': '0',
+                'average_quality_filter-min': '35',
+                'homopolymer_filter-max': '20',
+                'post_statistics': '',
             };
 
             var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
@@ -367,6 +361,27 @@ define([
                 assert.equal(agaveJob.get('status'), 'FINISHED');
             })
             .then(function() {
+                var jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: model.get('uuid')});
+
+                jobListings.fetch()
+                .then(function() {
+                    // paginated fetch does not return response
+
+                    console.log(jobListings);
+                    assert.strictEqual(jobListings.length, 1);
+                    var agaveJob = jobListings.at(0);
+
+                    var value = agaveJob.get('value');
+                    assert.isDefined(value, 'value attribute');
+                    assert.equal(value.projectUuid, model.get('uuid'));
+                    assert.equal(value.jobUuid, data.jobUuid);
+                })
+                .fail(function(error) {
+                    console.log("caught error: " + JSON.stringify(error));
+                    done(new Error("Could not retrieve job metadata."));
+                })
+            })
+            .then(function() {
                 var jobFiles = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: data.jobUuid});
 
                 jobFiles.fetch()
@@ -374,7 +389,7 @@ define([
                     // paginated fetch does not return response
 
                     console.log(jobFiles);
-                    assert.strictEqual(jobFiles.length, 17);
+                    assert.strictEqual(jobFiles.length, 19);
 
                     done();
                 })
@@ -386,6 +401,38 @@ define([
             .fail(function(error) {
                 console.log("response error: " + JSON.stringify(error));
                 done(new Error("Could not retrieve jobs."));
+            })
+            ;
+        });
+
+        it('Check process metadata', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+            var jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: data.jobUuid});
+
+            jobProcessMetadata.fetch()
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.equal(response.status, 'success');
+                assert.isNull(response.message);
+
+                var value = jobProcessMetadata.get('value');
+                assert.isDefined(value, 'value attribute');
+                assert.isDefined(value.process, 'process dictionary');
+                assert.equal(value.process.appName, 'vdjPipe');
+                assert.equal(value.process.jobId, data.jobUuid);
+                assert.isDefined(value.files, 'files dictionary');
+                assert.isDefined(value.groups, 'groups dictionary');
+                assert.isDefined(value.calculations, 'calculations dictionary');
+
+                done();
+            })
+            .fail(function(error) {
+                console.log("response error: " + JSON.stringify(error));
+                done(new Error("Could not retrieve process metadata."));
             })
             ;
         });
@@ -488,6 +535,27 @@ define([
                 assert.equal(agaveJob.get('status'), 'FINISHED');
             })
             .then(function() {
+                var jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: model.get('uuid')});
+
+                jobListings.fetch()
+                .then(function() {
+                    // paginated fetch does not return response
+
+                    console.log(jobListings);
+                    assert.strictEqual(jobListings.length, 1);
+                    var agaveJob = jobListings.at(0);
+
+                    var value = agaveJob.get('value');
+                    assert.isDefined(value, 'value attribute');
+                    assert.equal(value.projectUuid, model.get('uuid'));
+                    assert.equal(value.jobUuid, data.jobUuid);
+                })
+                .fail(function(error) {
+                    console.log("caught error: " + JSON.stringify(error));
+                    done(new Error("Could not retrieve job metadata."));
+                })
+            })
+            .then(function() {
                 var jobFiles = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: data.jobUuid});
 
                 jobFiles.fetch()
@@ -495,7 +563,7 @@ define([
                     // paginated fetch does not return response
 
                     console.log(jobFiles);
-                    assert.strictEqual(jobFiles.length, 17);
+                    assert.strictEqual(jobFiles.length, 19);
 
                     done();
                 })
@@ -507,6 +575,38 @@ define([
             .fail(function(error) {
                 console.log("response error: " + JSON.stringify(error));
                 done(new Error("Could not retrieve jobs."));
+            })
+            ;
+        });
+
+        it('Check process metadata', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+            var jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: data.jobUuid});
+
+            jobProcessMetadata.fetch()
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.equal(response.status, 'success');
+                assert.isNull(response.message);
+
+                var value = jobProcessMetadata.get('value');
+                assert.isDefined(value, 'value attribute');
+                assert.isDefined(value.process, 'process dictionary');
+                assert.equal(value.process.appName, 'vdjPipe');
+                assert.equal(value.process.jobId, data.jobUuid);
+                assert.isDefined(value.files, 'files dictionary');
+                assert.isDefined(value.groups, 'groups dictionary');
+                assert.isDefined(value.calculations, 'calculations dictionary');
+
+                done();
+            })
+            .fail(function(error) {
+                console.log("response error: " + JSON.stringify(error));
+                done(new Error("Could not retrieve process metadata."));
             })
             ;
         });

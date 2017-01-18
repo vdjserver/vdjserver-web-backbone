@@ -98,6 +98,7 @@ function(
 
                             var formData = new FormData();
                             formData.append('fileToUpload', model.get('fileReference'));
+                            if (model.get('name')) formData.append('fileName', model.get('name'));
 
                             var that = this;
 
@@ -187,6 +188,24 @@ function(
                         'uuid': nameGuid,
                     };
                 },
+                guessTypeFromName: function() {
+                    var guessType = File.fileTypeCodes.FILE_TYPE_UNSPECIFIED;
+                    var components = this.get('name').split('.');
+                    if (components.length > 1) {
+                        var idx = components.length - 1;
+                        if ((components[idx] == 'gz') ||
+                            (components[idx] == 'zip') ||
+                            (components[idx] == 'bz2')) --idx;
+                        if (components[idx] == 'fasta') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+                        if (components[idx] == 'fastq') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+                        if (components[idx] == 'fna') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+                        if (components[idx] == 'qual') guessType = File.fileTypeCodes.FILE_TYPE_QUALITY;
+                        if (components[idx] == 'tsv') guessType = File.fileTypeCodes.FILE_TYPE_TSV;
+                        if (components[idx] == 'vdjml') guessType = File.fileTypeCodes.FILE_TYPE_VDJML;
+                    }
+
+                    return guessType;
+                },
             }
         ),
         {
@@ -194,11 +213,11 @@ function(
             UPLOAD_PROGRESS: 'uploadProgress',
 
             fileTypeCodes: {
-                FILE_TYPE_BARCODE: 0,
+                FILE_TYPE_UNSPECIFIED: 0,
                 FILE_TYPE_PRIMER: 1,
                 FILE_TYPE_READ: 2,
                 FILE_TYPE_BARCODE_COMBO: 3, // deprecated
-                FILE_TYPE_UNSPECIFIED: 4,
+                FILE_TYPE_BARCODE: 4,
                 FILE_TYPE_QUALITY: 5,
                 FILE_TYPE_TSV: 6,
                 FILE_TYPE_CSV: 7,
@@ -209,14 +228,14 @@ function(
 
             // index should map to codes
             fileTypeNames: [
-                'Barcode Sequences',
+                'Unspecified',
                 'Primer Sequences',
                 'Read-Level Data',
                 'Barcode Combinations', // deprecated
-                'Unspecified',
+                'Barcode Sequences',
                 'Quality Scores',
-                'TAB-separated Text',
-                'Comma-separated Text',
+                'TAB-separated Values',
+                'Comma-separated Values',
                 'VDJML',
                 'Read-Level (FASTA) Data',
                 'Read-Level (FASTQ) Data',
@@ -329,7 +348,7 @@ function(
                     },
                 });
             },
-            downloadFileToDisk: function(totalSize) {
+            downloadFileToDisk: function() {
 
                 var url = EnvironmentConfig.agave.hostname
                         + '/files'
@@ -358,6 +377,21 @@ function(
 
                 return jqxhr;
             },
+
+            downloadFileListToDisk: function(files) {
+                function downloadNext(i) {
+                    if (i >= files.length) {
+                        return;
+                    }
+
+                    files[i].downloadFileToDisk();
+
+                    setTimeout(function () { downloadNext(i + 1); }, 5000);
+                }
+
+                downloadNext(0);
+            },
+
             softDelete: function() {
 
                 var that = this;
@@ -726,11 +760,13 @@ function(
 
             getFileTypes: function() {
                 return [
+                    File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
+                    File.fileTypeCodes.FILE_TYPE_READ,
                     File.fileTypeCodes.FILE_TYPE_BARCODE,
                     File.fileTypeCodes.FILE_TYPE_PRIMER,
-                    File.fileTypeCodes.FILE_TYPE_READ,
-                    File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
                     File.fileTypeCodes.FILE_TYPE_QUALITY,
+                    File.fileTypeCodes.FILE_TYPE_TSV,
+                    File.fileTypeCodes.FILE_TYPE_VDJML,
                 ];
             },
 

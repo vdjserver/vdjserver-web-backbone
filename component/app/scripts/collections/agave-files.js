@@ -57,17 +57,31 @@ function(
                 if (parameters && parameters.projectUuid) {
                     this.projectUuid = parameters.projectUuid;
                 }
+                this.includeJobFiles = false;
+                //if (parameters && parameters.includeJobFiles) this.includeJobFiles = true;
             },
             url: function() {
-                return '/meta/v2/data?q='
-                       + encodeURIComponent('{'
-                           + '"name": { $in: ["projectFile", "projectJobFile"] },'
-                           + '"value.projectUuid":"' + this.projectUuid + '",'
-                           + '"value.isDeleted":false'
-                       + '}')
-                       + '&limit=' + this.limit
-                       + '&offset=' + this.offset
-                       ;
+                if (this.includeJobFiles) {
+                    return '/meta/v2/data?q='
+                           + encodeURIComponent('{'
+                               + '"name": { $in: ["projectFile", "projectJobFile"] },'
+                               + '"value.projectUuid":"' + this.projectUuid + '",'
+                               + '"value.isDeleted":false'
+                           + '}')
+                           + '&limit=' + this.limit
+                           + '&offset=' + this.offset
+                           ;
+                } else {
+                    return '/meta/v2/data?q='
+                           + encodeURIComponent('{'
+                               + '"name": "projectFile",'
+                               + '"value.projectUuid":"' + this.projectUuid + '",'
+                               + '"value.isDeleted":false'
+                           + '}')
+                           + '&limit=' + this.limit
+                           + '&offset=' + this.offset
+                           ;
+                }
             },
             getFileCount: function() {
                 if (this.length > 0) {
@@ -134,6 +148,18 @@ function(
                 var newCollection = this.clone();
                 newCollection.reset();
                 newCollection.add(primerModels);
+
+                return newCollection;
+            },
+            getTSVCollection: function() {
+
+                var tsvModels = _.filter(this.models, function(model) {
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_TSV;
+                });
+
+                var newCollection = this.clone();
+                newCollection.reset();
+                newCollection.add(tsvModels);
 
                 return newCollection;
             },
@@ -281,6 +307,89 @@ function(
                 if (forwardCollection.length > 0) {
                     pairedReads.push(forwardCollection);
                     pairedReads.push(reverseCollection);
+                }
+
+                return pairedReads;
+            },
+
+            serializedPairedReadCollection: function() {
+
+                var pairedReads = [];
+
+                var that = this;
+                this.each(function(model) {
+
+                    if (model.getReadDirection() == 'F') {
+                        var pairUuid = model.getPairedReadMetadataUuid();
+
+                        if (pairUuid !== undefined) {
+                            var pairedModel = that.get(pairUuid);
+
+                            pairedReads.push({forward: model.toJSON(), reverse: pairedModel.toJSON()});
+                        }
+                    }
+                });
+
+                return pairedReads;
+            },
+
+            serializedNonPairedReadCollection: function() {
+
+                var pairedReads = [];
+
+                var that = this;
+                this.each(function(model) {
+                    var pairUuid = model.getPairedReadMetadataUuid();
+                    var qualUuid = model.getQualityScoreMetadataUuid();
+                    if (model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ
+                        && pairUuid == undefined && qualUuid == undefined) {
+                        pairedReads.push({read: model.toJSON()});
+                    }
+                });
+
+                return pairedReads;
+            },
+
+            serializedPairedQualityCollection: function() {
+
+                var pairedReads = [];
+
+                var that = this;
+                this.each(function(model) {
+                    var qualUuid = model.getQualityScoreMetadataUuid();
+                    if (qualUuid !== undefined) {
+                        var qualModel = that.get(qualUuid);
+
+                        pairedReads.push({read: model.toJSON(), qual: qualModel.toJSON()});
+                    }
+                });
+
+                return pairedReads;
+            },
+
+            getOrganizedPairedQualityCollection: function(allFileMetadatas) {
+
+                var pairedReads = [];
+                var seqCollection = this.clone();
+                seqCollection.reset();
+                var qualCollection = this.clone();
+                qualCollection.reset();
+
+                var that = this;
+                this.each(function(model) {
+
+                    var qualUuid = model.getQualityScoreMetadataUuid();
+                    if (qualUuid !== undefined) {
+                        var qualModel = allFileMetadatas.get(qualUuid);
+
+                        seqCollection.add(model);
+                        qualCollection.add(qualModel);
+                    }
+                });
+
+                if (seqCollection.length > 0) {
+                    pairedReads.push(seqCollection);
+                    pairedReads.push(qualCollection);
                 }
 
                 return pairedReads;
@@ -682,6 +791,78 @@ function(
             },
         }
     );
+
+    Files.ProjectJobFiles = Files.Metadata.extend({
+        url: function() {
+            return '/meta/v2/data?q='
+                   + encodeURIComponent('{'
+                       + '"name": "projectJobFile",'
+                       + '"value.projectUuid":"' + this.projectUuid + '",'
+                       + '"value.isDeleted":false,"value.showInProjectData":true'
+                   + '}')
+                   + '&limit=' + this.limit
+                   + '&offset=' + this.offset
+                   ;
+        },
+
+        getFilesForJobId: function(jobId) {
+
+            // Filter down to files for the given job
+            var fileModels = _.filter(this.models, function(model) {
+                var value = model.get('value');
+                return value.jobUuid === jobId;
+            });
+
+            var fileCollection = this.clone();
+            fileCollection.reset();
+            fileCollection.add(fileModels);
+
+            return fileCollection;
+        },
+
+        getProjectFileOutput: function() {
+            var filteredCollection = this.filter(function(model) {
+
+                var value = model.get('value');
+                if (value.name) {
+
+                    var filename = value.name;
+
+                    var fileNameSplit = filename.split('.');
+                    var fileExtension = fileNameSplit[fileNameSplit.length - 1];
+
+                    var doubleFileExtension = fileNameSplit[fileNameSplit.length - 2] + '.' + fileNameSplit[fileNameSplit.length - 1];
+
+                    var test = fileNameSplit[fileNameSplit.length - 100];
+
+                    // Whitelisted files
+                    if (fileExtension === 'fasta'
+                        ||
+                        fileExtension === 'fastq'
+                        ||
+                        fileExtension === 'vdjml'
+                        ||
+                        fileExtension === 'zip'
+                        ||
+                        doubleFileExtension === 'rc_out.tsv'
+                        ||
+                        doubleFileExtension === 'duplicates.tsv'
+                    ) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            });
+
+            var newCollection = this.clone();
+            newCollection.reset();
+            newCollection.add(filteredCollection);
+
+            return newCollection;
+        },
+    });
 
     Backbone.Agave.Collection.Files = Files;
     return Files;

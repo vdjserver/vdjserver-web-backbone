@@ -1,0 +1,25 @@
+{{> repcalc-base-view-top}}
+  <div class="row col-md-10 col-md-offset-1">
+  This module performs mutational analysis calculations.
+  </div>
+  <input class="hidden" name="mutational-analysis" value="true">
+
+  <div class="row row-with-spacer">
+    <label class="col-md-offset-1 control-label">Calculations</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="mutational-selection" checked>Selection Pressure
+    </label>
+  </div>
+
+  <div class="row row-with-spacer">
+    <label class="col-md-offset-1 control-label">Filters</label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="filter-productive" checked>Productive
+    </label>
+  </div>
+
+{{> repcalc-base-view-bottom}}

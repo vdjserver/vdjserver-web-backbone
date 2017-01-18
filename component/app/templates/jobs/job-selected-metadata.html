@@ -1,0 +1,34 @@
+<div class="form-group" id="input-metadata-list">
+    <label class="control-label col-lg-2">Sample Metadata</label>
+    <div class="col-lg-8">
+        {{#if hasMetadata}}
+            <input type="text" class="form-control" value="Project has sample metadata." readonly>
+        {{else}}
+            <div class="alert alert-danger">
+                Warning: This project has no sample metadata defined. Samples and/or Sample Groups should be defined for repertoire calculations and comparisons.
+                RepCalc will attempt to define sample groups for each VDJML file it finds.
+            </div>
+        {{/if}}
+    </div>
+</div>
+
+<div class="form-group" id="input-job-list">
+    <label class="control-label col-lg-2">Job Data</label>
+    <div class="col-lg-8">
+        {{#if hasJobs}}
+            <select class="form-control workJobs" id="job-selected" name="job-selected">
+                {{#each workJobs}}
+                <option value="{{this.id}}"
+                    {{#if @first}}
+                    selected
+                    {{/if}}
+                >{{this.displayName}}</option>
+                {{/each}}
+            </select>
+        {{else}}
+            <div class="alert alert-danger">
+                Warning: This project has no jobs with V(D)J assignment data.
+            </div>
+        {{/if}}
+    </div>
+</div>

@@ -6,17 +6,22 @@ define([
     'bootstrap',
     'typeahead',
     'file-saver',
+    'bootstrap-multiselect',
 
     // Libs for JS visualization
     'nvd3',
     'box', // box for help with the box and whisker plot
+    'datatables',
     'datatables-responsive',
+    //'datatables.net',
+    //'datatables.net-bs',
 
     'highcharts',
     'highcharts-data',
     'highcharts-drilldown',
     'highcharts-more',
     'highcharts-exporting',
+    'highcharts-offline-exporting',
 
     //jquery.event.drag/drop
     'jquery.event.drag',
@@ -58,6 +63,15 @@ define([
     'agave-system',
     'agave-systems',
 
+    'agave-sample-metadata',
+    'agave-samples-metadata',
+    'agave-subject-metadata',
+    'agave-subjects-metadata',
+    'agave-subject-columns',
+    'agave-sample-group',
+    'agave-sample-groups',
+    'agave-sample-columns',
+
     // Regular Collections and Models
     'models/message',
     'models/notification',
@@ -72,6 +86,7 @@ define([
     'vdjpipe-workflow-parser',
     'vdjpipe-view-factory',
     'presto-view-factory',
+    'repcalc-view-factory',
 
     // Generic Views
     'generic-vdjpipe-option-views',
@@ -101,6 +116,7 @@ define([
     'analyses-views',
     'vdjpipe-views',
     'presto-views',
+    'repcalc-views',
     'feedback-views',
     'software-views',
 

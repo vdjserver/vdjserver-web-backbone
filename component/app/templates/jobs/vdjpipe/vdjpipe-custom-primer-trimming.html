@@ -18,8 +18,8 @@
                             <td>
                                 <select
                                     class="job-form-item"
-                                    id="{{inputCount}}-{{parameterType}}-primer-file"
-                                    name="{{inputCount}}-{{parameterType}}-primer-file"
+                                    id="{{parameterType}}-primer-file"
+                                    name="{{parameterType}}-primer-file"
                                 >
                                     {{#each primerFiles}}
                                         <option value={{value.name}}>{{value.name}}</option>
@@ -53,14 +53,14 @@
                                 {{#if options.required}}
                                     <input
                                         class="job-form-item"
-                                        name="{{inputCount}}-{{parameterType}}-required"
+                                        name="{{parameterType}}-required"
                                         type="checkbox"
                                         checked
                                     >
                                 {{else}}
                                     <input
                                         class="job-form-item"
-                                        name="{{inputCount}}-{{parameterType}}-required"
+                                        name="{{parameterType}}-required"
                                         type="checkbox"
                                     >
                                 {{/if}}
@@ -76,7 +76,7 @@
                                 {{#if options.max_mismatches}}
                                     <input
                                         class="job-form-item"
-                                        name="{{inputCount}}-{{parameterType}}-maximum-mismatches"
+                                        name="{{parameterType}}-maximum-mismatches"
                                         type="number"
                                         value="{{options.max_mismatches}}"
                                         step="1"
@@ -86,7 +86,7 @@
                                 {{else}}
                                     <input
                                         class="job-form-item"
-                                        name="{{inputCount}}-{{parameterType}}-maximum-mismatches"
+                                        name="{{parameterType}}-maximum-mismatches"
                                         type="number"
                                         value="0"
                                         step="1"
@@ -104,14 +104,14 @@
                                 {{#if options.custom_trim}}
                                     <input
                                         class="job-form-item"
-                                        name="{{inputCount}}-{{parameterType}}-trim-primer"
+                                        name="{{parameterType}}-trim-primer"
                                         type="checkbox"
                                         checked
                                     >
                                 {{else}}
                                     <input
                                         class="job-form-item"
-                                        name="{{inputCount}}-{{parameterType}}-trim-primer"
+                                        name="{{parameterType}}-trim-primer"
                                         type="checkbox"
                                     >
                                 {{/if}}
@@ -125,7 +125,7 @@
                                 {{#if options.length}}
                                     <input
                                         class="job-form-item"
-                                        name="{{inputCount}}-{{parameterType}}-element-length"
+                                        name="{{parameterType}}-element-length"
                                         type="number"
                                         value="{{options.length}}"
                                         step="1"
@@ -135,7 +135,7 @@
                                 {{else}}
                                     <input
                                         class="job-form-item"
-                                        name="{{inputCount}}-{{parameterType}}-element-length"
+                                        name="{{parameterType}}-element-length"
                                         type="number"
                                         value="30"
                                         step="1"
