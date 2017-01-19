@@ -249,12 +249,14 @@ function(
                         return;
                     }
 
-                    files[i].downloadFileToDisk();
+                    var jqxhr = files[i].downloadFileToDisk();
 
                     setTimeout(function () { downloadNext(i + 1); }, 5000);
+
+                    return jqxhr;
                 }
 
-                downloadNext(0);
+                return downloadNext(0);
             },
             getFilePath: function() {
 
