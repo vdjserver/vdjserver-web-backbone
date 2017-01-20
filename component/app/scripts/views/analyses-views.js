@@ -964,7 +964,7 @@ define([
                 this.chartFiles = [
                     { id: 'composition', name: 'Nucleotide Composition' },
                     { id: 'gc_hist', name: 'GC% Histogram' },
-                    { id: 'heat_map', name: 'Heatmap' },
+                    //{ id: 'heat_map', name: 'Heatmap' },
                     { id: 'len_hist', name: 'Sequence Length Histogram' },
                     { id: 'mean_q_hist', name: 'Mean Quality Histogram' },
                     { id: 'qstats', name: 'Quality Scores' },
