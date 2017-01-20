@@ -596,6 +596,7 @@ define([
             loadingView.render();
 
             this.jobDetail = new Backbone.Agave.Model.Job.Detail({id: this.jobId});
+            this.jobListing = new Backbone.Agave.Model.Job.Listing({jobId: this.jobId});
 
             this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
 
@@ -609,6 +610,11 @@ define([
 
             this.jobDetail.fetch()
                 .then(function() {
+                    return that.jobListing.fetch();
+                })
+                .then(function() {
+                    that.jobDetail.linkToJob(that.jobListing);
+
                     return that.collection.fetch();
                 })
                 .then(function() {

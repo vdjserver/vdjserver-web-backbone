@@ -57,6 +57,15 @@ function(
 
                 return jqxhr;
             },
+
+            linkToJob: function(jobMetadata) {
+                if (!jobMetadata) return;
+                var value = jobMetadata.get('value');
+                this.set('metadataLink', jobMetadata.get('uuid'));
+                this.initDisplayName();
+                if (value.displayName) this.set('displayName', value.displayName);
+            },
+
         },
         {
             CHART_TYPE_0: 'composition',
@@ -316,7 +325,12 @@ function(
             );
         },
         url: function() {
-            return '/meta/v2/data/' + this.get('uuid');
+            return '/meta/v2/data?q='
+                + encodeURIComponent('{'
+                    + '"name":"projectJob",'
+                    + '"associationIds":"' + this.get('jobId') + '"'
+                + '}')
+                + '&limit=1';
         },
     });
 
