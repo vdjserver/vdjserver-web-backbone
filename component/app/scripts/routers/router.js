@@ -51,6 +51,8 @@ define(['app'], function(App) {
             App.Layouts.main.render();
         }
 
+        App.Routers.currentProjectUuid = projectUuid;
+
         if (!App.Layouts.sidebar.getView('.sidebar')) {
             App.Layouts.sidebar.setView(
                 '.sidebar',
@@ -150,6 +152,7 @@ define(['app'], function(App) {
                     ;
             };
 
+            App.Routers.currentRouteView = 'community';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -169,17 +172,20 @@ define(['app'], function(App) {
                     ;
             };
 
+            App.Routers.currentRouteView = 'communityDetail';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         // Verification Pending
         verificationPending: function() {
+            App.Routers.currentRouteView = 'verificationPending';
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.Account.VerificationPending());
             App.Layouts.main.render();
         },
 
         verifyAccount: function(verificationId) {
+            App.Routers.currentRouteView = 'verifyAccount';
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.Account.VerifyAccount({'verificationId': verificationId}));
             App.Layouts.main.render();
@@ -187,6 +193,7 @@ define(['app'], function(App) {
 
         // Forgot Password
         forgotPassword: function(uuid) {
+            App.Routers.currentRouteView = 'forgotPassword';
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.ForgotPassword.Form({'uuid': uuid}));
             App.Layouts.main.render();
@@ -194,6 +201,7 @@ define(['app'], function(App) {
 
         // Feedback
         feedback: function() {
+            App.Routers.currentRouteView = 'feedback';
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.Feedback.PublicForm());
             App.Layouts.main.render();
@@ -208,6 +216,7 @@ define(['app'], function(App) {
                 App.Layouts.main.render();
             };
 
+            App.Routers.currentRouteView = 'accountProfile';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -220,6 +229,7 @@ define(['app'], function(App) {
                 App.Layouts.main.render();
             };
 
+            App.Routers.currentRouteView = 'userFeedback';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -232,6 +242,7 @@ define(['app'], function(App) {
                 App.Layouts.main.render();
             };
 
+            App.Routers.currentRouteView = 'changePassword';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -256,6 +267,7 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Routers.currentRouteView = 'projectIndex';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -267,6 +279,7 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Routers.currentRouteView = 'projectCreate';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -281,6 +294,7 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Routers.currentRouteView = 'projectDetail';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -296,6 +310,7 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Routers.currentRouteView = 'projectFilePairedReadAssociations';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -311,6 +326,7 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Routers.currentRouteView = 'projectFileQualAssociations';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -326,6 +342,7 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Routers.currentRouteView = 'projectSettings';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -341,6 +358,7 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Routers.currentRouteView = 'projectMetadata';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -365,6 +383,7 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Routers.currentRouteView = 'projectJobHistory';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -380,6 +399,7 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Routers.currentRouteView = 'projectJobOutput';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
@@ -392,6 +412,7 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Routers.currentRouteView = 'software';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 

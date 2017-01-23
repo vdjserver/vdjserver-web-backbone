@@ -220,8 +220,11 @@ define([
                     that.serializeIterationIndexes();
                 })
                 .then(function() {
-                    loadingView.remove();
-                    that.render();
+                    // don't render if user has moved to a different view
+                    if ((App.Routers.currentRouteView == 'projectJobHistory') && (App.Routers.currentProjectUuid == that.projectUuid)) {
+                        loadingView.remove();
+                        that.render();
+                    }
 
                     that.uiSetActivePaginationSet();
                 })
@@ -674,9 +677,6 @@ define([
                                 break;
 
                         }
-
-                        loadingView.remove();
-                        that.render();
                     } else {
                         this.validProcessMetadata = false;
                         // only vdjpipe
@@ -689,7 +689,10 @@ define([
                                 that.setView('#analysis-charts-group0', chart);
                             }
                         }
+                    }
 
+                    // don't render if user has moved to a different view
+                    if ((App.Routers.currentRouteView == 'projectJobOutput') && (App.Routers.currentProjectUuid == that.projectUuid)) {
                         loadingView.remove();
                         that.render();
                     }
