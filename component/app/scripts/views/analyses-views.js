@@ -678,7 +678,7 @@ define([
 
                         }
                     } else {
-                        this.validProcessMetadata = false;
+                        that.validProcessMetadata = false;
                         // only vdjpipe
                         var appId = that.jobDetail.get('appId');
                         if (appId.indexOf('vdj_pipe') >= 0) {
