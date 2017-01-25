@@ -1548,12 +1548,12 @@ define([
                         $('#sample-list-' + i).multiselect('select', chartId['samples']);
                         $('#sample-list-' + i).multiselect('updateButtonText');
                     } else if (that.fileList.length > 0) {
-                        chartId['files'] = [ that.fileList[0] ];
-                        $('#file-list-' + i).multiselect('select', that.fileList[0]);
+                        chartId['files'] = [ that.fileList[0].id ];
+                        $('#file-list-' + i).multiselect('select', chartId['files']);
                         $('#file-list-' + i).multiselect('updateButtonText');
                     } else if (that.sampleGroupList.length > 0) {
-                        chartId['sampleGroups'] = [ that.sampleGroupList[0] ];
-                        $('#sample-group-list-' + i).multiselect('select', that.sampleGroupList[0]);
+                        chartId['sampleGroups'] = [ that.sampleGroupList[0].id ];
+                        $('#sample-group-list-' + i).multiselect('select', chartId['sampleGroups']);
                         $('#sample-group-list-' + i).multiselect('updateButtonText');
                     }
                 });
