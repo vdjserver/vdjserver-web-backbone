@@ -3,6 +3,8 @@
 
 var EnvironmentConfig = {
     'agave': {
+        'maintenance': false,
+        'maintenanceMessage': '',
         'hostname': 'https://vdj-agave-api.tacc.utexas.edu',
         'serviceAccountUsername': 'vdj',
         'systems': {
