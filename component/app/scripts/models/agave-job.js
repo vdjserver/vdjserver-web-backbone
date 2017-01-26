@@ -57,6 +57,15 @@ function(
 
                 return jqxhr;
             },
+
+            linkToJob: function(jobMetadata) {
+                if (!jobMetadata) return;
+                var value = jobMetadata.get('value');
+                this.set('metadataLink', jobMetadata.get('uuid'));
+                this.initDisplayName();
+                if (value.displayName) this.set('displayName', value.displayName);
+            },
+
         },
         {
             CHART_TYPE_0: 'composition',
@@ -249,12 +258,14 @@ function(
                         return;
                     }
 
-                    files[i].downloadFileToDisk();
+                    var jqxhr = files[i].downloadFileToDisk();
 
                     setTimeout(function () { downloadNext(i + 1); }, 5000);
+
+                    return jqxhr;
                 }
 
-                downloadNext(0);
+                return downloadNext(0);
             },
             getFilePath: function() {
 
@@ -314,7 +325,12 @@ function(
             );
         },
         url: function() {
-            return '/meta/v2/data/' + this.get('uuid');
+            return '/meta/v2/data?q='
+                + encodeURIComponent('{'
+                    + '"name":"projectJob",'
+                    + '"associationIds":"' + this.get('jobId') + '"'
+                + '}')
+                + '&limit=1';
         },
     });
 

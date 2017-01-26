@@ -49,14 +49,17 @@ define(['backbone'], function(Backbone) {
         getLargeExecutionSystem: function() {
             var that = this;
 
-            var systemName = EnvironmentConfig.agave.systems.executionSystemPreference.find(function(systemName) {
-                var systemConfig = EnvironmentConfig.agave.systems.execution[systemName];
+            var systemName;
+            for (var i = 0; i < EnvironmentConfig.agave.systems.executionSystemPreference.length; ++i) {
+                var name = EnvironmentConfig.agave.systems.executionSystemPreference[i];
+                var systemConfig = EnvironmentConfig.agave.systems.execution[name];
                 var system = that.get(systemConfig.hostname);
 
                 if (system.get('status') === 'UP') {
-                    return systemName;
+                    systemName = name;
+                    break;
                 }
-            });
+            }
 
             // default to first preferred system if unsure
             if (systemName === undefined) {

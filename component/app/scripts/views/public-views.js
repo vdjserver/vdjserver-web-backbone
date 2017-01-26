@@ -16,7 +16,9 @@ define([
         },
         serialize: function() {
             return {
-                'username': this.model.get('username')
+                'username': this.model.get('username'),
+                'maintenance': EnvironmentConfig.agave.maintenance,
+                'maintenanceMessage': EnvironmentConfig.agave.maintenanceMessage
             };
         },
         afterRender: function() {

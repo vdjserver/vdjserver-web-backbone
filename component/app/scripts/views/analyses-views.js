@@ -220,8 +220,11 @@ define([
                     that.serializeIterationIndexes();
                 })
                 .then(function() {
-                    loadingView.remove();
-                    that.render();
+                    // don't render if user has moved to a different view
+                    if ((App.Routers.currentRouteView == 'projectJobHistory') && (App.Routers.currentProjectUuid == that.projectUuid)) {
+                        loadingView.remove();
+                        that.render();
+                    }
 
                     that.uiSetActivePaginationSet();
                 })
@@ -596,6 +599,7 @@ define([
             loadingView.render();
 
             this.jobDetail = new Backbone.Agave.Model.Job.Detail({id: this.jobId});
+            this.jobListing = new Backbone.Agave.Model.Job.Listing({jobId: this.jobId});
 
             this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
 
@@ -609,6 +613,11 @@ define([
 
             this.jobDetail.fetch()
                 .then(function() {
+                    return that.jobListing.fetch();
+                })
+                .then(function() {
+                    that.jobDetail.linkToJob(that.jobListing);
+
                     return that.collection.fetch();
                 })
                 .then(function() {
@@ -668,11 +677,8 @@ define([
                                 break;
 
                         }
-
-                        loadingView.remove();
-                        that.render();
                     } else {
-                        this.validProcessMetadata = false;
+                        that.validProcessMetadata = false;
                         // only vdjpipe
                         var appId = that.jobDetail.get('appId');
                         if (appId.indexOf('vdj_pipe') >= 0) {
@@ -683,7 +689,10 @@ define([
                                 that.setView('#analysis-charts-group0', chart);
                             }
                         }
+                    }
 
+                    // don't render if user has moved to a different view
+                    if ((App.Routers.currentRouteView == 'projectJobOutput') && (App.Routers.currentProjectUuid == that.projectUuid)) {
                         loadingView.remove();
                         that.render();
                     }
@@ -964,7 +973,7 @@ define([
                 this.chartFiles = [
                     { id: 'composition', name: 'Nucleotide Composition' },
                     { id: 'gc_hist', name: 'GC% Histogram' },
-                    { id: 'heat_map', name: 'Heatmap' },
+                    //{ id: 'heat_map', name: 'Heatmap' },
                     { id: 'len_hist', name: 'Sequence Length Histogram' },
                     { id: 'mean_q_hist', name: 'Mean Quality Histogram' },
                     { id: 'qstats', name: 'Quality Scores' },
@@ -1539,12 +1548,12 @@ define([
                         $('#sample-list-' + i).multiselect('select', chartId['samples']);
                         $('#sample-list-' + i).multiselect('updateButtonText');
                     } else if (that.fileList.length > 0) {
-                        chartId['files'] = [ that.fileList[0] ];
-                        $('#file-list-' + i).multiselect('select', that.fileList[0]);
+                        chartId['files'] = [ that.fileList[0].id ];
+                        $('#file-list-' + i).multiselect('select', chartId['files']);
                         $('#file-list-' + i).multiselect('updateButtonText');
                     } else if (that.sampleGroupList.length > 0) {
-                        chartId['sampleGroups'] = [ that.sampleGroupList[0] ];
-                        $('#sample-group-list-' + i).multiselect('select', that.sampleGroupList[0]);
+                        chartId['sampleGroups'] = [ that.sampleGroupList[0].id ];
+                        $('#sample-group-list-' + i).multiselect('select', chartId['sampleGroups']);
                         $('#sample-group-list-' + i).multiselect('updateButtonText');
                     }
                 });

@@ -428,23 +428,26 @@ define([
                     // remove archived jobs
                     that.projectJobs.remove(that.archivedJobs.jobUuids());
 
-                    loadingView.remove();
-                    that.render();
+                    // don't render if user has moved to a different view
+                    if ((App.Routers.currentRouteView == 'projectDetail') && (App.Routers.currentProjectUuid == that.projectUuid)) {
+                        loadingView.remove();
+                        that.render();
 
-                    // Setup subviews
-                    var headerView = new Projects.DetailHeader(subviewParameters);
-                    that.setView('#project-header', headerView);
+                        // Setup subviews
+                        var headerView = new Projects.DetailHeader(subviewParameters);
+                        that.setView('#project-header', headerView);
 
-                    var actionsView = new Projects.DetailActions(subviewParameters);
-                    that.setView('#project-actions', actionsView);
+                        var actionsView = new Projects.DetailActions(subviewParameters);
+                        that.setView('#project-actions', actionsView);
 
-                    var errorsView = new Projects.DetailErrors(subviewParameters);
-                    that.setView('#project-errors', errorsView);
-                    errorsView.render();
+                        var errorsView = new Projects.DetailErrors(subviewParameters);
+                        that.setView('#project-errors', errorsView);
+                        errorsView.render();
 
-                    var filesView = new Projects.DetailFiles(subviewParameters);
-                    that.setView('#project-files', filesView);
-                    filesView.render();
+                        var filesView = new Projects.DetailFiles(subviewParameters);
+                        that.setView('#project-files', filesView);
+                        filesView.render();
+                    }
                 })
                 .fail(function(error) {
                     var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -1832,7 +1835,10 @@ define([
                         that.readLevelMetadatas = fileMetadatas.getForwardReadLevelCollection();
                         that.pairableMetadatas = fileMetadatas.getReverseReadLevelCollection();
 
-                        that.render();
+                        // don't render if user has moved to a different view
+                        if ((App.Routers.currentRouteView == 'projectFilePairedReadAssociations') && (App.Routers.currentProjectUuid == parameters.projectUuid)) {
+                            that.render();
+                        }
                     })
                     .fail(function(error) {
                         var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -1935,7 +1941,10 @@ define([
                         that.fastaMetadatas = fileMetadatas.getQualAssociableFastaCollection();
                         that.qualMetadatas  = fileMetadatas.getQualCollection();
 
-                        that.render();
+                        // don't render if user has moved to a different view
+                        if ((App.Routers.currentRouteView == 'projectFileQualAssociations') && (App.Routers.currentProjectUuid == parameters.projectUuid)) {
+                            that.render();
+                        }
                     })
                     .fail(function(error) {
                         var telemetry = new Backbone.Agave.Model.Telemetry();
@@ -2086,7 +2095,10 @@ define([
                     that.permissions.remove(EnvironmentConfig.agave.serviceAccountUsername);
                     that.tenantUsers.fetch()
                         .done(function() {
-                            that.render();
+                            // don't render if user has moved to a different view
+                            if ((App.Routers.currentRouteView == 'projectSettings') && (App.Routers.currentProjectUuid == that.projectUuid)) {
+                                that.render();
+                            }
                         })
                         .fail(function(error) {
                             var telemetry = new Backbone.Agave.Model.Telemetry();
