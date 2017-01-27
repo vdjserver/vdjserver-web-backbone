@@ -231,6 +231,21 @@ define([
                       assert.equal(jobUpdate.projectUuid, model.get('uuid'));
                       assert.equal(jobUpdate.jobName, 'test job');
                       break;
+                  case 'STAGED':
+                      data.jobUuid = jobUpdate.jobId;
+                      assert.equal(jobUpdate.projectUuid, model.get('uuid'));
+                      assert.equal(jobUpdate.jobName, 'test job');
+                      break;
+                  case 'QUEUED':
+                      data.jobUuid = jobUpdate.jobId;
+                      assert.equal(jobUpdate.projectUuid, model.get('uuid'));
+                      assert.equal(jobUpdate.jobName, 'test job');
+                      break;
+                  case 'RUNNING':
+                      data.jobUuid = jobUpdate.jobId;
+                      assert.equal(jobUpdate.projectUuid, model.get('uuid'));
+                      assert.equal(jobUpdate.jobName, 'test job');
+                      break;
                   case 'FINISHED':
                       assert.equal(jobUpdate.jobId, data.jobUuid);
                       assert.equal(jobUpdate.projectUuid, model.get('uuid'));
