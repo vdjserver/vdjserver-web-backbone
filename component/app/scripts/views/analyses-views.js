@@ -845,6 +845,9 @@ define([
                 .fail(function(error) {
                       var telemetry = new Backbone.Agave.Model.Telemetry();
                       telemetry.setError(error);
+                      telemetry.set('projectId', that.projectUuid);
+                      telemetry.set('jobId', that.jobId);
+                      telemetry.set('filename', uuid);
                       telemetry.set('method', 'Backbone.Agave.Model.Job.OutputFile.downloadFileToDisk()');
                       telemetry.set('view', 'Analyses.SelectAnalyses');
                       telemetry.save();
