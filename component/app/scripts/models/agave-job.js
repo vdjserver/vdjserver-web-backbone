@@ -448,7 +448,7 @@ function(
                 var parameters = {
                     'species': formData['species'],
                     'ig_seqtype': formData['sequence-type'],
-                    'domain_system': formData['domain-system'],
+                    'domain_system': 'imgt',
                 };
 
                 return parameters;

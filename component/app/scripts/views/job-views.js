@@ -860,7 +860,7 @@ define([
         },
         events: {
             'change #sequence-type': 'changeSequenceType',
-            'change #domain-system': 'changeDomainSystem',
+            //'change #domain-system': 'changeDomainSystem',
         },
         changeSequenceType: function(e) {
             e.preventDefault();
@@ -901,7 +901,7 @@ define([
 
                 validationError = true;
             }
-
+/*
             if ($('#domain-system').val() === '') {
                 $('#igblast-domain-group')
                     .addClass('has-error')
@@ -909,7 +909,7 @@ define([
 
                 validationError = true;
             }
-
+*/
             return validationError;
         },
     });
