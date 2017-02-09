@@ -54,6 +54,230 @@ define([
 
         var data = {};
 
+        it('Create project - missing project name', function(done) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: EnvironmentConfig.test.username
+                }),
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/projects',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Created project without name"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Project name required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Create project - missing username', function(done) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectName: "Test Project"
+                }),
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/projects',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Created project without username"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Username required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Create project - bogus username', function(done) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectName: "Test Project",
+                    username: "f4q89hg3qhudf"
+                }),
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/projects',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Created project with bogus username"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Invalid username.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Create project - different username', function(done) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectName: "Test Project",
+                    username: EnvironmentConfig.test.username2
+                }),
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/projects',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Created project for a different username"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Cannot create project for another user.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Create project - authentication with bad token', function(done) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectName: "Test Project",
+                    username: EnvironmentConfig.test.username
+                }),
+                headers: { 'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + 'junk_token') },
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/projects',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Created project - authentication with bad token"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Create project - authentication with bad username', function(done) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectName: "Test Project",
+                    username: EnvironmentConfig.test.username
+                }),
+                headers: { 'Authorization': 'Basic ' + btoa('bogus_username' + ':' + Backbone.Agave.instance.token().get('access_token')) },
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/projects',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Created project - authentication with bad username"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Create project - no authentication', function(done) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectName: "Test Project",
+                    username: EnvironmentConfig.test.username
+                }),
+                headers: { },
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/projects',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Created project - authentication with bad username"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+                assert.equal(response.responseText, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
         it('Create a new project', function(done) {
 
             should.exist(Backbone.Agave.Model.Project);
@@ -1122,7 +1346,8 @@ define([
             ;
         });
 
-        it.skip('Add garbage user to project', function(done) {
+        // agave does not enforce valid users when adding permissions
+        it('Add garbage user to project', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
@@ -1144,7 +1369,11 @@ define([
                                 done(new Error("Added garbage user to project."));
                             })
                             .fail(function(error) {
-                                console.log("response error: " + JSON.stringify(error));
+                                if (EnvironmentConfig.debug.test) console.log(error);
+
+                                var responseText = JSON.parse(error.responseText);
+                                assert.equal(responseText.message, 'Invalid username.');
+                                assert.equal(responseText.status, 'error');
 
                                 done();
                             })
@@ -1204,6 +1433,7 @@ define([
             );
         });
 
+        // current API does not use the permissions attribute
         it.skip('Create user permission - missing permissions', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
@@ -1294,6 +1524,76 @@ define([
             ;
         });
 
+        it('Add user to project - authorization bad username', function(done) {
+            assert.isDefined(data.project, 'this test requires the project from prior test');
+            var model = data.project;
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectUuid: model.get('uuid'),
+                    username: 'garbage'
+                }),
+                headers: { 'Authorization': 'Basic ' + btoa('bogus_username' + ':' + Backbone.Agave.instance.token().get('access_token')) },
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/permissions/username',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Added user to project without authorization"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it('Add user to project - authorization bad token', function(done) {
+            assert.isDefined(data.project, 'this test requires the project from prior test');
+            var model = data.project;
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectUuid: model.get('uuid'),
+                    username: 'garbage'
+                }),
+                headers: { 'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + 'junk_token') },
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/permissions/username',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Added user to project without authorization"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
         it('Add user to project - missing project uuid', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
@@ -1302,7 +1602,7 @@ define([
                 contentType: 'application/json',
                 data: JSON.stringify({
                     //projectUuid: model.get('uuid'),
-                    username: 'garbage'
+                    username: EnvironmentConfig.test.username
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',
@@ -1321,7 +1621,7 @@ define([
                 assert.strictEqual(response.status, 400);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Project Uuid required.');
+                assert.equal(responseText.message, 'Project uuid required.');
                 assert.equal(responseText.status, 'error');
 
                 done();
