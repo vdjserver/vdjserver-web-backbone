@@ -798,25 +798,25 @@ define([
                 case 'igblast':
                     var igBlastView = App.Views.Jobs.IgBlastStaging;
                     var selectionView = App.Views.Jobs.SelectedFiles;
-                    this._showJobStagingView(igBlastView, selectionView);
+                    this._showJobStagingView(igBlastView, selectionView, true);
                     break;
 
                 case 'presto':
                     var prestoView = App.Views.Jobs.PrestoStaging;
                     var selectionView = App.Views.Jobs.SelectedFiles;
-                    this._showJobStagingView(prestoView, selectionView);
+                    this._showJobStagingView(prestoView, selectionView, true);
                     break;
 
                 case 'vdjpipe':
                     var vdjpipeView = App.Views.Jobs.VdjpipeStaging;
                     var selectionView = App.Views.Jobs.SelectedFiles;
-                    this._showJobStagingView(vdjpipeView, selectionView);
+                    this._showJobStagingView(vdjpipeView, selectionView, true);
                     break;
 
                 case 'repcalc':
                     var repcalcView = App.Views.Jobs.RepCalcStaging;
                     var selectionView = App.Views.Jobs.SelectedMetadata;
-                    this._showJobStagingView(repcalcView, selectionView);
+                    this._showJobStagingView(repcalcView, selectionView, false);
                     break;
 
                 default:
@@ -824,7 +824,7 @@ define([
             }
         },
         // TODO: simplify this
-        _showJobStagingView: function(StagingSubview, SelectionSubview) {
+        _showJobStagingView: function(StagingSubview, SelectionSubview, requireFiles) {
 
             this.parentView.removeView('#project-job-staging');
 
@@ -845,6 +845,8 @@ define([
                     filteredFileListings.remove(model);
                 }
             });
+
+            if (requireFiles && filteredFileListings.length == 0) return;
 
             // TODO: rename selectedFileListings param
             var jobSubmitView = new App.Views.Jobs.Submit({
