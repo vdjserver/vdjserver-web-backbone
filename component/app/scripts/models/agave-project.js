@@ -45,6 +45,7 @@ function(
             if (this.get('uuid') === '') {
                 options.apiHost = EnvironmentConfig.vdjApi.hostname;
                 options.url = '/projects';
+                options.authType = 'basic';
 
                 var value = this.get('value');
                 var projectName = value.name;
