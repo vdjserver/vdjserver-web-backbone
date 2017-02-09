@@ -79,6 +79,8 @@ define([
 
         if (model.requiresAuth) {
             var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
+            var authType = model.authType;
+            if (options.authType) authType = options.authType;
 
             // Allow user-provided before send, but protect ours, too.
             if (options.beforeSend) {
@@ -91,7 +93,7 @@ define([
                 }
 
                 if (_.has(xhr, 'setRequestHeader')) {
-                    if (model.authType === 'oauth') {
+                    if (authType === 'oauth') {
                         xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
                     }
                     else {
