@@ -1347,7 +1347,7 @@ define([
         });
 
         // agave does not enforce valid users when adding permissions
-        it('Add garbage user to project', function(done) {
+        it.skip('Add garbage user to project', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
