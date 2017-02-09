@@ -99,5 +99,6 @@ var EnvironmentConfig = {
         'password2': '',
         'serviceAccountKey': '',
         'serviceAccountSecret': '',
+        'testAccount': '',
     },
 };
