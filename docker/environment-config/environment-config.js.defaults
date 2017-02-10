@@ -53,8 +53,9 @@ var EnvironmentConfig = {
             ],
             'executionLevels': {
                 'igBlast': [
-                    { 'inputSize':   5e7, 'system': 'large', 'time': '02:00:00' },
-                    { 'inputSize':   1e8, 'system': 'large', 'time': '08:00:00' },
+                    { 'inputSize':   2e8, 'system': 'large', 'time': '02:00:00' },
+                    { 'inputSize':   4e8, 'system': 'large', 'time': '04:00:00' },
+                    { 'inputSize':   8e8, 'system': 'large', 'time': '08:00:00' },
                     { 'inputSize':   1e9, 'system': 'large', 'time': '24:00:00' },
                 ],
                 'vdjPipe': [
