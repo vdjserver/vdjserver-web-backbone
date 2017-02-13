@@ -1552,6 +1552,201 @@ define([
                 ;
         });
 
+        it('Sync metadata permissions with project - missing authorization', function(done) {
+            assert.isDefined(data.project, 'this test requires the project from prior test');
+            assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
+
+            var model = data.project;
+
+			var jqxhr = $.ajax({
+                //headers: Backbone.Agave.basicAuthHeader(),
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					projectUuid: model.get('uuid'),
+					uuid: data.subjectColsUuid
+				}),
+				url: EnvironmentConfig.vdjApi.hostname
+					+ '/permissions/metadata'
+			})
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Sync metadata permissions with project - missing authorization"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                // mocha-phantomjs sometimes cancels this operation
+                // when the server returns unauthorized
+                // so do not strictly enforce the response.
+                if (!response) console.log('Was expecting error response, but it is undefined.');
+                else {
+                    if (!response.responseText) console.log('Was expecting error responseText, but it is undefined.');
+                    if (response.status != 401) console.log('Was expecting error response status = 401, but it is ' + response.status);
+                }
+
+                done();
+            })
+            ;
+        });
+
+        it('Sync metadata permissions with project - authorization bad username', function(done) {
+            assert.isDefined(data.project, 'this test requires the project from prior test');
+            assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
+
+            var model = data.project;
+            assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
+
+			var jqxhr = $.ajax({
+                headers: { 'Authorization': 'Basic ' + btoa('bogus_username' + ':' + Backbone.Agave.instance.token().get('access_token')) },
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					projectUuid: model.get('uuid'),
+					uuid: data.subjectColsUuid
+				}),
+				url: EnvironmentConfig.vdjApi.hostname
+					+ '/permissions/metadata'
+			})
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Sync metadata permissions with project - authorization bad username"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it('Sync metadata permissions with project - authorization bad token', function(done) {
+            assert.isDefined(data.project, 'this test requires the project from prior test');
+            assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
+
+            var model = data.project;
+            assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
+
+			var jqxhr = $.ajax({
+                headers: { 'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + 'junk_token') },
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					projectUuid: model.get('uuid'),
+					uuid: data.subjectColsUuid
+				}),
+				url: EnvironmentConfig.vdjApi.hostname
+					+ '/permissions/metadata'
+			})
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Sync metadata permissions with project - authorization bad username"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it('Sync metadata permissions with project - invalid project uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires the project from prior test');
+            assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
+
+            var model = data.project;
+            assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
+
+			var jqxhr = $.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					projectUuid: data.subjectColsUuid,
+					uuid: data.subjectColsUuid
+				}),
+				url: EnvironmentConfig.vdjApi.hostname
+					+ '/permissions/metadata'
+			})
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Sync metadata permissions with project - invalid project uuid"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it('Sync metadata permissions with project - invalid metadata uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires the project from prior test');
+            assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
+
+            var model = data.project;
+            assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
+
+			var jqxhr = $.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					projectUuid: model.get('uuid'),
+					uuid: 'bogus_uuid'
+				}),
+				url: EnvironmentConfig.vdjApi.hostname
+					+ '/permissions/metadata'
+			})
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Sync metadata permissions with project - invalid metadata uuid"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
         it('Import sample metadata - missing authorization', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.sampleMetadataFile, 'this test requires sample metadata file from prior test');
@@ -1865,6 +2060,44 @@ define([
 					done();
 				})
                 ;
+        });
+
+        it('Sync metadata permissions with project - unauthorized user', function(done) {
+            assert.isDefined(data.project, 'this test requires the project from prior test');
+            assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
+
+            var model = data.project;
+
+			var jqxhr = $.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					projectUuid: model.get('uuid'),
+					uuid: data.subjectColsUuid
+				}),
+				url: EnvironmentConfig.vdjApi.hostname
+					+ '/permissions/metadata'
+			})
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Sync metadata permissions with project - missing authorization"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+				assert.isDefined(response);
+				assert.isDefined(response.responseText);
+				assert.strictEqual(response.status, 401);
+
+				var responseText = JSON.parse(response.responseText);
+				assert.equal(responseText.status, 'error');
+				assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
         });
 
         it('Login as user1', function(done) {
