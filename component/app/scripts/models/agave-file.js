@@ -314,6 +314,7 @@ function(
                        + '/' + this.get('projectUuid')
                        + '/files/';
             },
+            /* not used, so disabled
             syncFilePermissionsWithProjectPermissions: function() {
 
                 var jqxhr = $.ajax({
@@ -328,7 +329,7 @@ function(
                 });
 
                 return jqxhr;
-            },
+            }, */
             // TODO: merge this with agave-job model downloadFileToCache()
             downloadFileToMemory: function() {
 

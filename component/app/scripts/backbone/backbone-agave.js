@@ -501,6 +501,7 @@ define([
 
             return jqxhr;
         },
+        /* not used
         _shareJobWithProjectMembers: function(projectUuid) {
             var jqxhr = $.ajax({
                 headers: Backbone.Agave.basicAuthHeader(),
@@ -514,7 +515,7 @@ define([
             });
 
             return jqxhr;
-        },
+        }, */
         _setFilesParameter: function(fileMetadatas) {
 
             var filePaths = [];
