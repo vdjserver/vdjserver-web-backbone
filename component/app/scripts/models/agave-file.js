@@ -177,6 +177,7 @@ function(
                     }
 
                     return $.ajax({
+                        headers: Backbone.Agave.basicAuthHeader(),
                         url: EnvironmentConfig.vdjApi.hostname
                                 + '/notifications'
                                 + '/files'
