@@ -32,10 +32,6 @@ function(
                 var jqxhr = $.ajax({
                     headers: Backbone.Agave.basicAuthHeader(),
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        jobId: this.get('id')
-                    }),
                     url: EnvironmentConfig.vdjApi.hostname
                         + '/jobs/archive/' + this.get('id')
                 });
@@ -47,10 +43,6 @@ function(
                 var jqxhr = $.ajax({
                     headers: Backbone.Agave.basicAuthHeader(),
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        jobId: this.get('id')
-                    }),
                     url: EnvironmentConfig.vdjApi.hostname
                         + '/jobs/unarchive/' + this.get('id')
                 });
