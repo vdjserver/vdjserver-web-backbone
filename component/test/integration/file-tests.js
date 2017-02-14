@@ -88,6 +88,43 @@ define([
                 ;
         });
 
+        it('Create another new project', function(done) {
+
+            should.exist(Backbone.Agave.Model.Project);
+            var model = new Backbone.Agave.Model.Project();
+
+            // simulate form data
+            var formData = {
+                name:  'My project'
+            };
+
+            model.setAttributesFromFormData(formData);
+
+            model.save()
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(model);
+
+                    assert.equal(model.get('name'), 'project', 'name attribute');
+                    assert.equal(model.get('projectName'), formData.name, 'project name');
+                    assert.equal(model.get('created'), model.get('lastUpdated'), 'data fields');
+                    assert.equal(model.get('owner'), EnvironmentConfig.test.serviceAccountKey, 'owner attribute');
+                    assert.equal(model.get('username'), EnvironmentConfig.test.username, 'username attribute');
+                    assert.isDefined(model.get('uuid'), 'id attribute');
+                    assert.isNotNull(model.get('uuid'), 'id attribute');
+                    assert.isDefined(model.get('value'), 'value attribute');
+
+                    data['anotherProject'] = model;
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("response error: " + JSON.stringify(error));
+                    done(new Error("Could not create new project."));
+                })
+                ;
+        });
+
         it('New project has no files', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             var model = data.project;
@@ -104,7 +141,7 @@ define([
                 })
                 .fail(function(error) {
                     console.log("response error: " + JSON.stringify(error));
-                    done(new Error("Could not delete project."));
+                    done(new Error("Could not get file metadata."));
                 })
                 ;
         });
@@ -226,7 +263,7 @@ define([
                 })
                 .fail(function(error) {
                     console.log("response error: " + JSON.stringify(error));
-                    done(new Error("Could not delete project."));
+                    done(new Error("Could not get file metadata."));
                 })
                 ;
         });
@@ -347,12 +384,12 @@ define([
                 })
                 .fail(function(error) {
                     console.log("response error: " + JSON.stringify(error));
-                    done(new Error("Could not delete project."));
+                    done(new Error("Could not get file metadata."));
                 })
                 ;
         });
 
-        it.skip('Notify vdj-api upload, already notified', function(done) {
+        it('Notify vdj-api upload, already notified', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             assert.isDefined(data.agaveFile, 'this test requires file from prior test');
 
@@ -360,6 +397,7 @@ define([
             var agaveFile = data.agaveFile;
 
             var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
                 url: EnvironmentConfig.vdjApi.hostname
                         + '/notifications'
                         + '/files'
@@ -378,25 +416,58 @@ define([
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                done(new Error("Notify vdj-api upload without file uuid did not return error"));
+      					assert.equal(response.status, 'success');
+
+                done();
             })
             .fail(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                assert.isDefined(response);
-                assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 500);
-
-                var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'File uuid required.');
-                assert.equal(responseText.status, 'error');
-
-                done();
+                console.log("response error: " + JSON.stringify(error));
+                done(new Error("vdj-api notification returned error."));
             })
             ;
         });
 
-        it.skip('Notify vdj-api upload without file uuid', function(done) {
+        it('New project has two files', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.fileUuid, 'this test requires file uuid from prior test');
+
+            var model = data.project;
+
+            var projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: model.get('uuid')})
+
+            projectFiles.fetch()
+                .then(function() {
+                    // paginated fetch no longer returns a response object
+
+                    assert.strictEqual(projectFiles.length, 2);
+                    var agaveFile = projectFiles.at(0);
+                    if (agaveFile.get('uuid') != data.fileUuid) agaveFile = projectFiles.at(1);
+
+                    assert.equal(agaveFile.get('uuid'), data.fileUuid);
+                    assert.equal(agaveFile.get('owner'), EnvironmentConfig.test.serviceAccountKey);
+                    assert.equal(agaveFile.get('name'), 'projectFile');
+                    assert.equal(agaveFile.get('created'), agaveFile.get('lastUpdated'), 'data fields');
+
+                    var value = agaveFile.get('value');
+                    assert.equal(value.projectUuid, model.get('uuid'));
+                    assert.deepEqual(value.publicAttributes.tags, ['test file']);
+                    assert.equal(value.fileType, Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ);
+                    assert.equal(value.readDirection, 'F');
+                    assert.equal(value.name, 'all_plates.fastq');
+                    assert.isFalse(value.isDeleted);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("response error: " + JSON.stringify(error));
+                    done(new Error("Could not get file metadata."));
+                })
+                ;
+        });
+
+        it('Notify vdj-api upload without file uuid', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             assert.isDefined(data.agaveFile, 'this test requires file from prior test');
 
@@ -404,6 +475,7 @@ define([
             var agaveFile = data.agaveFile;
 
             var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
                 url: EnvironmentConfig.vdjApi.hostname
                         + '/notifications'
                         + '/files'
@@ -432,7 +504,6 @@ define([
                 assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'File uuid required.');
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -440,7 +511,7 @@ define([
             ;
         });
 
-        it.skip('Notify vdj-api upload without project uuid', function(done) {
+        it('Notify vdj-api upload with wrong file uuid', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             assert.isDefined(data.agaveFile, 'this test requires file from prior test');
 
@@ -448,6 +519,95 @@ define([
             var agaveFile = data.agaveFile;
 
             var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + model.get('uuid')
+                        + '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without file uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 500);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Notify vdj-api upload with invalid file uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + 'bogus_uuid'
+                        + '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without file uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 500);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Notify vdj-api upload without project uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
                 url: EnvironmentConfig.vdjApi.hostname
                         + '/notifications'
                         + '/files'
@@ -473,7 +633,7 @@ define([
 
                 assert.isDefined(response);
                 assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 500);
+                assert.strictEqual(response.status, 400);
 
                 var responseText = JSON.parse(response.responseText);
                 assert.equal(responseText.message, 'Project uuid required.');
@@ -484,7 +644,52 @@ define([
             ;
         });
 
-        it.skip('Notify vdj-api upload without file path', function(done) {
+        it('Notify vdj-api upload with mismatch project uuid', function(done) {
+            assert.isDefined(data.anotherProject, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.anotherProject;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + model.get('uuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without project uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 500);
+
+                var responseText = JSON.parse(response.responseText);
+                //assert.equal(responseText.message, 'Unauthorized');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Notify vdj-api upload without file path', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             assert.isDefined(data.agaveFile, 'this test requires file from prior test');
 
@@ -492,6 +697,7 @@ define([
             var agaveFile = data.agaveFile;
 
             var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
                 url: EnvironmentConfig.vdjApi.hostname
                         + '/notifications'
                         + '/files'
@@ -520,7 +726,7 @@ define([
                 assert.strictEqual(response.status, 500);
 
                 var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.message, 'Project uuid required.');
+                //assert.equal(responseText.message, 'Unauthorized');
                 assert.equal(responseText.status, 'error');
 
                 done();
@@ -528,7 +734,407 @@ define([
             ;
         });
 
-        it('Delete the project', function(done) {
+        it('Notify vdj-api upload with file path to directory', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + '/vdjZ/projects/' + agaveFile.get('projectUuid') + '/files'
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without project uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 500);
+
+                var responseText = JSON.parse(response.responseText);
+                //assert.equal(responseText.message, 'Unauthorized');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Notify vdj-api upload with file path outside of project', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + '/vdjZ/apps'
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without project uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 500);
+
+                var responseText = JSON.parse(response.responseText);
+                //assert.equal(responseText.message, 'Unauthorized');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        //
+        // Put 401 Unauthorized tests at the end because they tend
+        // to cause other error tests (i.e. the ones above) to also return 401
+        //
+        it('Notify vdj-api upload with wrong project uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + agaveFile.get('uuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without project uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Unauthorized');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Notify vdj-api upload with invalid project uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + 'bogus_uuid'
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload without project uuid did not return error"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Unauthorized');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Notify vdj-api upload - missing authorization', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                //headers: Backbone.Agave.basicAuthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Notify vdj-api upload - missing authorization"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                // mocha-phantomjs sometimes cancels this operation
+                // when the server returns unauthorized
+                // so do not strictly enforce the response.
+                if (!response) console.log('Was expecting error response, but it is undefined.');
+                else {
+                    if (!response.responseText) console.log('Was expecting error responseText, but it is undefined.');
+                    if (response.status != 401) console.log('Was expecting error response status = 401, but it is ' + response.status);
+                }
+
+                done();
+            })
+            ;
+        });
+
+        it('Notify vdj-api upload - authorization bad username', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: { 'Authorization': 'Basic ' + btoa('bogus_username' + ':' + Backbone.Agave.instance.token().get('access_token')) },
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Imported subject metadata - authorization bad username"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it('Notify vdj-api upload - authorization bad token', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: { 'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + 'junk_token') },
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Imported subject metadata - authorization bad username"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it('Login as user2', function(done) {
+
+            var model = App.Agave.token();
+            App.Agave.destroyToken();
+
+            // simulate form data
+            var formData = {
+                username: EnvironmentConfig.test.username2,
+                password: EnvironmentConfig.test.password2,
+            };
+
+            model.save(formData, {password: formData.password})
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    assert.isDefined(model.get('access_token'));
+                    assert.isDefined(model.get('expires'));
+                    assert.isDefined(model.get('expires_in'));
+                    assert.isDefined(model.get('refresh_token'));
+                    assert.isDefined(model.get('token_type'));
+                    assert.isDefined(model.get('username'));
+                    assert.isDefined(model.get('password'));
+                    assert.equal(model.get('token_type'), 'bearer');
+                    assert.equal(model.get('username'), formData.username);
+                    assert.equal(model.get('password'), formData.password);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("login error: " + JSON.stringify(error));
+                    done(new Error("Could not login."));
+                })
+                ;
+        });
+
+        it('Notify vdj-api upload - not authorized', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.agaveFile, 'this test requires file from prior test');
+
+            var model = data.project;
+            var agaveFile = data.agaveFile;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/notifications'
+                        + '/files'
+                        + '/import'
+                        + '?fileUuid=' + agaveFile.get('uuid')
+                        + '&path=' + agaveFile.get('path')
+                        + '&projectUuid=' + agaveFile.get('projectUuid')
+                        + '&vdjFileType=' + agaveFile.get('vdjFileType')
+                        + '&readDirection=' + agaveFile.get('readDirection')
+                        + '&tags=' + encodeURIComponent(agaveFile.get('tags'))
+                        ,
+                type: 'POST',
+                processData: false,
+                contentType: false,
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Imported subject metadata - authorization bad username"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it.skip('Delete the project', function(done) {
             assert.isDefined(data.project);
             var model = data.project;
 
