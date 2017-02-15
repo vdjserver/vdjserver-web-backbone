@@ -51,7 +51,7 @@ define([
 
         var data = {};
 
-      describe('Existing job', function()  {
+      describe.skip('Existing job', function()  {
 
         data.jobUuid = '7407113582588194330-242ac119-0001-007';
 
@@ -118,7 +118,7 @@ define([
 
       }); // describe
 
-      describe.skip('Setup and run job', function()  {
+      describe('Setup and run job', function()  {
 
         it('Create a new project', function(done) {
 
@@ -356,6 +356,9 @@ define([
                 var selectedFileListings = _.extend({}, projectFiles);
                 var allFiles = _.extend({}, allFiles);
 
+                data['selectedFileListings'] = selectedFileListings;
+                data['allFiles'] = allFiles;
+
                 job.prepareJob(
                     formData,
                     selectedFileListings,
@@ -412,6 +415,467 @@ define([
             })
             ;
 
+        });
+
+        it('Run vdj_pipe-small job - bogus project uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.allFiles, 'this test requires allFiles from prior test');
+            assert.isDefined(data.selectedFileListings, 'this test requires selectedFileListings from prior test');
+
+            var job = new Backbone.Agave.Model.Job.VdjPipe();
+            var model = data.project;
+
+            // simulate form data
+            var formData = {
+                'job-name':  'test job',
+                'single_reads': 'on',
+                'pre_statistics': '',
+                'length_filter': '',
+                'length_filter-max': '',
+                'length_filter-min': '0',
+                'average_quality_filter-min': '35',
+                'homopolymer_filter-max': '20',
+                'post_statistics': '',
+            };
+
+            job.set('totalFileSize', 100); // small size so it goes to small execution system
+            job._configureExecutionHostForFileSize();
+            job.unset('maxRunTime');
+            job.unset('nodeCount');
+            job.unset('processorsPerNode');
+
+            var selectedFileListings = data.selectedFileListings;
+            var allFiles = data.allFiles;
+
+            job.prepareJob(
+                formData,
+                selectedFileListings,
+                allFiles,
+                model.get('uuid')
+            );
+
+            job.submitJob('bogus_uuid')
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Run vdj_pipe-small job - bogus project uuid"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it('Run vdj_pipe-small job - missing project uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.allFiles, 'this test requires allFiles from prior test');
+            assert.isDefined(data.selectedFileListings, 'this test requires selectedFileListings from prior test');
+
+            var job = new Backbone.Agave.Model.Job.VdjPipe();
+            var model = data.project;
+
+            // simulate form data
+            var formData = {
+                'job-name':  'test job',
+                'single_reads': 'on',
+                'pre_statistics': '',
+                'length_filter': '',
+                'length_filter-max': '',
+                'length_filter-min': '0',
+                'average_quality_filter-min': '35',
+                'homopolymer_filter-max': '20',
+                'post_statistics': '',
+            };
+
+            job.set('totalFileSize', 100); // small size so it goes to small execution system
+            job._configureExecutionHostForFileSize();
+            job.unset('maxRunTime');
+            job.unset('nodeCount');
+            job.unset('processorsPerNode');
+
+            var selectedFileListings = data.selectedFileListings;
+            var allFiles = data.allFiles;
+
+            job.prepareJob(
+                formData,
+                selectedFileListings,
+                allFiles,
+                model.get('uuid')
+            );
+
+            job.submitJob(null)
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Run vdj_pipe-small job - missing project uuid"));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Project uuid required.');
+
+                done();
+            })
+            ;
+        });
+
+        it('Run vdj_pipe-small job - authorization bad username', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.allFiles, 'this test requires allFiles from prior test');
+            assert.isDefined(data.selectedFileListings, 'this test requires selectedFileListings from prior test');
+
+            var job = new Backbone.Agave.Model.Job.VdjPipe();
+            var model = data.project;
+
+            // simulate form data
+            var formData = {
+                'job-name':  'test job',
+                'single_reads': 'on',
+                'pre_statistics': '',
+                'length_filter': '',
+                'length_filter-max': '',
+                'length_filter-min': '0',
+                'average_quality_filter-min': '35',
+                'homopolymer_filter-max': '20',
+                'post_statistics': '',
+            };
+
+            job.set('totalFileSize', 100); // small size so it goes to small execution system
+            job._configureExecutionHostForFileSize();
+            job.unset('maxRunTime');
+            job.unset('nodeCount');
+            job.unset('processorsPerNode');
+
+            var selectedFileListings = data.selectedFileListings;
+            var allFiles = data.allFiles;
+
+            job.prepareJob(
+                formData,
+                selectedFileListings,
+                allFiles,
+                model.get('uuid')
+            );
+
+            var postData = {};
+            postData.config = job.toJSON();
+            postData.projectUuid = model.get('uuid');
+
+            var jqxhr = $.ajax({
+                headers: { 'Authorization': 'Basic ' + btoa('bogus_username' + ':' + Backbone.Agave.instance.token().get('access_token')) },
+                type: 'POST',
+                data: JSON.stringify(postData),
+                contentType: 'application/json',
+                url: EnvironmentConfig.vdjApi.hostname + '/jobs/queue',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Run vdj_pipe-small job - authorization bad username."));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it('Run vdj_pipe-small job - authorization bad token', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.allFiles, 'this test requires allFiles from prior test');
+            assert.isDefined(data.selectedFileListings, 'this test requires selectedFileListings from prior test');
+
+            var job = new Backbone.Agave.Model.Job.VdjPipe();
+            var model = data.project;
+
+            // simulate form data
+            var formData = {
+                'job-name':  'test job',
+                'single_reads': 'on',
+                'pre_statistics': '',
+                'length_filter': '',
+                'length_filter-max': '',
+                'length_filter-min': '0',
+                'average_quality_filter-min': '35',
+                'homopolymer_filter-max': '20',
+                'post_statistics': '',
+            };
+
+            job.set('totalFileSize', 100); // small size so it goes to small execution system
+            job._configureExecutionHostForFileSize();
+            job.unset('maxRunTime');
+            job.unset('nodeCount');
+            job.unset('processorsPerNode');
+
+            var selectedFileListings = data.selectedFileListings;
+            var allFiles = data.allFiles;
+
+            job.prepareJob(
+                formData,
+                selectedFileListings,
+                allFiles,
+                model.get('uuid')
+            );
+
+            var postData = {};
+            postData.config = job.toJSON();
+            postData.projectUuid = model.get('uuid');
+
+            var jqxhr = $.ajax({
+                headers: { 'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + 'junk_token') },
+                type: 'POST',
+                data: JSON.stringify(postData),
+                contentType: 'application/json',
+                url: EnvironmentConfig.vdjApi.hostname + '/jobs/queue',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Run vdj_pipe-small job - authorization bad token."));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it('Run vdj_pipe-small job - missing authorization', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.allFiles, 'this test requires allFiles from prior test');
+            assert.isDefined(data.selectedFileListings, 'this test requires selectedFileListings from prior test');
+
+            var job = new Backbone.Agave.Model.Job.VdjPipe();
+            var model = data.project;
+
+            // simulate form data
+            var formData = {
+                'job-name':  'test job',
+                'single_reads': 'on',
+                'pre_statistics': '',
+                'length_filter': '',
+                'length_filter-max': '',
+                'length_filter-min': '0',
+                'average_quality_filter-min': '35',
+                'homopolymer_filter-max': '20',
+                'post_statistics': '',
+            };
+
+            job.set('totalFileSize', 100); // small size so it goes to small execution system
+            job._configureExecutionHostForFileSize();
+            job.unset('maxRunTime');
+            job.unset('nodeCount');
+            job.unset('processorsPerNode');
+
+            var selectedFileListings = data.selectedFileListings;
+            var allFiles = data.allFiles;
+
+            job.prepareJob(
+                formData,
+                selectedFileListings,
+                allFiles,
+                model.get('uuid')
+            );
+
+            var postData = {};
+            postData.config = job.toJSON();
+            postData.projectUuid = model.get('uuid');
+
+            var jqxhr = $.ajax({
+                //headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                data: JSON.stringify(postData),
+                contentType: 'application/json',
+                url: EnvironmentConfig.vdjApi.hostname + '/jobs/queue',
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Run vdj_pipe-small job - missing authorization."));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                // mocha-phantomjs sometimes cancels this operation
+                // when the server returns unauthorized
+                // so do not strictly enforce the response.
+                if (!response) console.log('Was expecting error response, but it is undefined.');
+                else {
+                    if (!response.responseText) console.log('Was expecting error responseText, but it is undefined.');
+                    if (response.status != 401) console.log('Was expecting error response status = 401, but it is ' + response.status);
+                }
+
+                done();
+            })
+            ;
+        });
+
+        it('Login as user2', function(done) {
+
+            var model = App.Agave.token();
+            App.Agave.destroyToken();
+
+            // simulate form data
+            var formData = {
+                username: EnvironmentConfig.test.username2,
+                password: EnvironmentConfig.test.password2,
+            };
+
+            model.save(formData, {password: formData.password})
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    assert.isDefined(model.get('access_token'));
+                    assert.isDefined(model.get('expires'));
+                    assert.isDefined(model.get('expires_in'));
+                    assert.isDefined(model.get('refresh_token'));
+                    assert.isDefined(model.get('token_type'));
+                    assert.isDefined(model.get('username'));
+                    assert.isDefined(model.get('password'));
+                    assert.equal(model.get('token_type'), 'bearer');
+                    assert.equal(model.get('username'), formData.username);
+                    assert.equal(model.get('password'), formData.password);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("login error: " + JSON.stringify(error));
+                    done(new Error("Could not login."));
+                })
+                ;
+        });
+
+        it('Run vdj_pipe-small job - not authorized for project', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.allFiles, 'this test requires allFiles from prior test');
+            assert.isDefined(data.selectedFileListings, 'this test requires selectedFileListings from prior test');
+
+            var job = new Backbone.Agave.Model.Job.VdjPipe();
+            var model = data.project;
+
+            // simulate form data
+            var formData = {
+                'job-name':  'test job',
+                'single_reads': 'on',
+                'pre_statistics': '',
+                'length_filter': '',
+                'length_filter-max': '',
+                'length_filter-min': '0',
+                'average_quality_filter-min': '35',
+                'homopolymer_filter-max': '20',
+                'post_statistics': '',
+            };
+
+            job.set('totalFileSize', 100); // small size so it goes to small execution system
+            job._configureExecutionHostForFileSize();
+            job.unset('maxRunTime');
+            job.unset('nodeCount');
+            job.unset('processorsPerNode');
+
+            var selectedFileListings = data.selectedFileListings;
+            var allFiles = data.allFiles;
+
+            job.prepareJob(
+                formData,
+                selectedFileListings,
+                allFiles,
+                model.get('uuid')
+            );
+
+            job.submitJob(model.get('uuid'))
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error("Run vdj_pipe-small job - not authorized."));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 401);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.status, 'error');
+                assert.equal(responseText.message, 'Unauthorized');
+
+                done();
+            })
+            ;
+        });
+
+        it('Should be able to login as ' + EnvironmentConfig.test.username, function(done) {
+
+            should.exist(App);
+            App.init();
+            App.Instances.WebsocketManager = new App.Utilities.WebsocketManager();
+
+            should.exist(App.Agave);
+
+            var model = App.Agave.token();
+            App.Agave.destroyToken();
+
+            // simulate form data
+            var formData = {
+                username: EnvironmentConfig.test.username,
+                password: EnvironmentConfig.test.password,
+            };
+
+            model.save(formData, {password: formData.password})
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+
+                    assert.isDefined(model.get('access_token'));
+                    assert.isDefined(model.get('expires'));
+                    assert.isDefined(model.get('expires_in'));
+                    assert.isDefined(model.get('refresh_token'));
+                    assert.isDefined(model.get('token_type'));
+                    assert.isDefined(model.get('username'));
+                    assert.isDefined(model.get('password'));
+                    assert.equal(model.get('token_type'), 'bearer');
+                    assert.equal(model.get('username'), formData.username);
+                    assert.equal(model.get('password'), formData.password);
+
+                    done();
+                })
+                .fail(function(error) {
+                    console.log("login error: " + JSON.stringify(error));
+                    done(new Error("Could not login."));
+                })
+                ;
         });
 
       }); // describe
@@ -1498,6 +1962,377 @@ define([
             })
             ;
         });
+
+      }); // describe
+
+      describe('Job notifications', function()  {
+
+        it('Resend FINISHED job notification', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'POST',
+                url:    EnvironmentConfig.vdjApi.hostname
+                        + '/notifications/jobs/' + data.jobUuid
+                        + '?status=FINISHED'
+                        + '&event=FINISHED'
+                        + '&error=Job%20complete'
+                        + '&projectUuid=' + model.get('uuid')
+                        + '&jobName=test%20job'
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.equal(response.status, 'success');
+
+                done();
+            })
+            .fail(function(error) {
+                console.log("response: " + JSON.stringify(error));
+                done(new Error('Failed HTTP request'));
+            })
+            ;
+        });
+
+        it('Send job notification - bogus job uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'POST',
+                url:    EnvironmentConfig.vdjApi.hostname
+                        + '/notifications/jobs/' + 'bogus_uuid'
+                        + '?status=FINISHED'
+                        + '&event=FINISHED'
+                        + '&error=Job%20complete'
+                        + '&projectUuid=' + model.get('uuid')
+                        + '&jobName=test%20job'
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error('Send job notification - bogus job uuid'));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Invalid job id.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Send job notification - missing job uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'POST',
+                url:    EnvironmentConfig.vdjApi.hostname
+                        + '/notifications/jobs/' + ''
+                        + '?status=FINISHED'
+                        + '&event=FINISHED'
+                        + '&error=Job%20complete'
+                        + '&projectUuid=' + model.get('uuid')
+                        + '&jobName=test%20job'
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error('Send job notification - missing job uuid'));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.strictEqual(response.status, 404);
+
+                done();
+            })
+            ;
+        });
+
+        it('Send job notification - missing job status', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'POST',
+                url:    EnvironmentConfig.vdjApi.hostname
+                        + '/notifications/jobs/' + data.jobUuid
+                        + '?event=FINISHED'
+                        + '&error=Job%20complete'
+                        + '&projectUuid=' + model.get('uuid')
+                        + '&jobName=test%20job'
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error('Send job notification - missing job status'));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Job status required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Send job notification - missing job event', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'POST',
+                url:    EnvironmentConfig.vdjApi.hostname
+                        + '/notifications/jobs/' + data.jobUuid
+                        + '?status=FINISHED'
+                        + '&error=Job%20complete'
+                        + '&projectUuid=' + model.get('uuid')
+                        + '&jobName=test%20job'
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error('Send job notification - missing job event'));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Job event required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Send job notification - missing job message', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'POST',
+                url:    EnvironmentConfig.vdjApi.hostname
+                        + '/notifications/jobs/' + data.jobUuid
+                        + '?status=FINISHED'
+                        + '&event=FINISHED'
+                        + '&projectUuid=' + model.get('uuid')
+                        + '&jobName=test%20job'
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error('Send job notification - missing job message'));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Job message required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Send job notification - missing project uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'POST',
+                url:    EnvironmentConfig.vdjApi.hostname
+                        + '/notifications/jobs/' + data.jobUuid
+                        + '?status=FINISHED'
+                        + '&event=FINISHED'
+                        + '&error=Job%20complete'
+                        + '&jobName=test%20job'
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error('Send job notification - missing project uuid'));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'projectUuid required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Send job notification - missing job name', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'POST',
+                url:    EnvironmentConfig.vdjApi.hostname
+                        + '/notifications/jobs/' + data.jobUuid
+                        + '?status=FINISHED'
+                        + '&event=FINISHED'
+                        + '&error=Job%20complete'
+                        + '&projectUuid=' + model.get('uuid')
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error('Send job notification - missing job name'));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'jobName required.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Send job notification - bogus project uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'POST',
+                url:    EnvironmentConfig.vdjApi.hostname
+                        + '/notifications/jobs/' + data.jobUuid
+                        + '?status=FINISHED'
+                        + '&event=FINISHED'
+                        + '&error=Job%20complete'
+                        + '&projectUuid=' + 'bogus_uuid'
+                        + '&jobName=test%20job'
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error('Send job notification - bogus project uuid'));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Project uuid does not match job.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+        it('Send job notification - invalid project uuid', function(done) {
+            assert.isDefined(data.project, 'this test requires project uuid from prior test');
+            assert.isDefined(data.jobUuid, 'this test requires job uuid from prior test');
+
+            var model = data.project;
+
+            var jqxhr = Backbone.Agave.ajax({
+                headers: Backbone.Agave.oauthHeader(),
+                type:   'POST',
+                url:    EnvironmentConfig.vdjApi.hostname
+                        + '/notifications/jobs/' + data.jobUuid
+                        + '?status=FINISHED'
+                        + '&event=FINISHED'
+                        + '&error=Job%20complete'
+                        + '&projectUuid=' + data.jobUuid
+                        + '&jobName=test%20job'
+            })
+            .then(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                done(new Error('Send job notification - invalid project uuid'));
+            })
+            .fail(function(response) {
+                if (EnvironmentConfig.debug.test) console.log(response);
+
+                assert.isDefined(response);
+                assert.isDefined(response.responseText);
+                assert.strictEqual(response.status, 400);
+
+                var responseText = JSON.parse(response.responseText);
+                assert.equal(responseText.message, 'Project uuid does not match job.');
+                assert.equal(responseText.status, 'error');
+
+                done();
+            })
+            ;
+        });
+
+      }); // describe
+
+      describe.skip('Cleanup', function()  {
 
         it.skip('Delete the project', function(done) {
             assert.isDefined(data.project);
