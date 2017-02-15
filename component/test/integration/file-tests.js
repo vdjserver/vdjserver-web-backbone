@@ -538,19 +538,14 @@ define([
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                done(new Error("Notify vdj-api upload without file uuid did not return error"));
+                // Error is not thrown until notification is put in queue
+                // and the queue checks the file, so no way for us to verify
+                done();
             })
             .fail(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                assert.isDefined(response);
-                assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 500);
-
-                var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.status, 'error');
-
-                done();
+                done(new Error("Notify vdj-api upload with wrong file uuid"));
             })
             ;
         });
@@ -582,19 +577,14 @@ define([
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                done(new Error("Notify vdj-api upload without file uuid did not return error"));
+                // Error is not thrown until notification is put in queue
+                // and the queue checks the file, so no way for us to verify
+                done();
             })
             .fail(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                assert.isDefined(response);
-                assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 500);
-
-                var responseText = JSON.parse(response.responseText);
-                assert.equal(responseText.status, 'error');
-
-                done();
+                done(new Error("Notify vdj-api upload with invalid file uuid"));
             })
             ;
         });
@@ -761,20 +751,14 @@ define([
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                done(new Error("Notify vdj-api upload without project uuid did not return error"));
+                // Error is not thrown until notification is put in queue
+                // and the queue checks the file, so no way for us to verify
+                done();
             })
             .fail(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
-                assert.isDefined(response);
-                assert.isDefined(response.responseText);
-                assert.strictEqual(response.status, 500);
-
-                var responseText = JSON.parse(response.responseText);
-                //assert.equal(responseText.message, 'Unauthorized');
-                assert.equal(responseText.status, 'error');
-
-                done();
+                done(new Error("Notify vdj-api upload with file path to directory"));
             })
             ;
         });
