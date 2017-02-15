@@ -26,7 +26,8 @@ function(
         url: function() {
             return '/telemetry';
         },
-        requiresAuth: false,
+        requiresAuth: true,
+        authType: 'basic',
         initialize: function(options) {
 
             Backbone.Agave.Model.prototype.initialize.apply(this, [options]);
