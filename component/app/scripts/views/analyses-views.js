@@ -845,6 +845,9 @@ define([
                 .fail(function(error) {
                       var telemetry = new Backbone.Agave.Model.Telemetry();
                       telemetry.setError(error);
+                      telemetry.set('projectId', that.projectUuid);
+                      telemetry.set('jobId', that.jobId);
+                      telemetry.set('filename', uuid);
                       telemetry.set('method', 'Backbone.Agave.Model.Job.OutputFile.downloadFileToDisk()');
                       telemetry.set('view', 'Analyses.SelectAnalyses');
                       telemetry.save();
@@ -2489,6 +2492,8 @@ define([
             var drilldown = {
               series: new Array()
             };
+            var categoryOrder = [ 'IGHV', 'IGHD', 'IGHJ', 'IGKV', 'IGKJ', 'IGLV', 'IGLJ',
+                                  'TRBV', 'TRBD', 'TRBJ', 'TRAV', 'TRAJ', 'TRGV', 'TRGJ', 'TRDV', 'TRDD', 'TRDJ'];
 
             for (var i = 0; i < chartGroups.length; ++i) {
                 var group = chartGroups[i];
@@ -2512,15 +2517,22 @@ define([
                   data: new Array()
                 };
 
-                _.each(distribution.children, function(gene){
-                  series.data.push({
-                    id: 'parent',
-                    name: gene.label,
-                    y: gene.absolute,
-                    drilldown: group + '.' + gene.label,
-                    //color: '#7B94B5'
-                  });
-                });
+                // we want the categories in a specific order
+                for (var cidx = 0; cidx < categoryOrder.length; ++cidx) {
+                    var category = categoryOrder[cidx];
+                    for (var idx = 0; idx < distribution.children.length; ++idx) {
+                        var gene = distribution.children[idx];
+                        if (gene.label == category) {
+                            series.data.push({
+                              id: 'parent',
+                              name: gene.label,
+                              y: gene.absolute,
+                              drilldown: group + '.' + gene.label
+                            });
+                            break;
+                        }
+                    }
+                }
 
                 myData.push(series);
 
@@ -2739,6 +2751,8 @@ define([
             var drilldown = {
               series: new Array()
             };
+            var categoryOrder = [ 'IGHV', 'IGHD', 'IGHJ', 'IGKV', 'IGKJ', 'IGLV', 'IGLJ',
+                                  'TRBV', 'TRBD', 'TRBJ', 'TRAV', 'TRAJ', 'TRGV', 'TRGJ', 'TRDV', 'TRDD', 'TRDJ'];
 
             for (var i = 0; i < chartGroups.length; ++i) {
                 var group = chartGroups[i];
@@ -2761,15 +2775,22 @@ define([
                   data: new Array()
                 };
 
-                _.each(distribution.children, function(gene){
-                  series.data.push({
-                    id: 'parent',
-                    name: gene.label,
-                    y: gene.absolute > 0 ? 100 : 0.0,
-                    drilldown: group + '.' + gene.label,
-                    //color: '#7B94B5'
-                  });
-                });
+                // we want the categories in a specific order
+                for (var cidx = 0; cidx < categoryOrder.length; ++cidx) {
+                    var category = categoryOrder[cidx];
+                    for (var idx = 0; idx < distribution.children.length; ++idx) {
+                        var gene = distribution.children[idx];
+                        if (gene.label == category) {
+                            series.data.push({
+                              id: 'parent',
+                              name: gene.label,
+                              y: gene.absolute > 0 ? 100 : 0.0,
+                              drilldown: group + '.' + gene.label
+                            });
+                            break;
+                        }
+                    }
+                }
 
                 // drilldown level 1
                 _.each(distribution.children, function(gene){

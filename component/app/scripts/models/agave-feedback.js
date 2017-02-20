@@ -55,6 +55,7 @@ function(
             return defaultValues;
         },
         apiHost: EnvironmentConfig.vdjApi.hostname,
+        authType: 'basic',
         url: function() {
             return '/feedback';
         },

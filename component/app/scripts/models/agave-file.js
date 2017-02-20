@@ -29,6 +29,21 @@ function(
         return nameGuid;
     };
 
+    FilePlaceholderMixin.cleanName = function(name) {
+
+        // Replace symbols that could cause problems on file systems
+        var allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.",
+            regex = new RegExp('.', 'g');
+
+        name = name.replace(regex, function(c) {
+          var index = allowed.indexOf(c);
+          if (index >= 0) return c;
+          else return '_';
+        });
+
+        return name;
+    };
+
     var File = {};
 
     File = Backbone.Agave.Model.extend(
@@ -98,7 +113,10 @@ function(
 
                             var formData = new FormData();
                             formData.append('fileToUpload', model.get('fileReference'));
-                            if (model.get('name')) formData.append('fileName', model.get('name'));
+                            if (model.get('name')) {
+                                model.set('name', this.cleanName(model.get('name')));
+                                formData.append('fileName', model.get('name'));
+                            }
 
                             var that = this;
 
@@ -159,6 +177,7 @@ function(
                     }
 
                     return $.ajax({
+                        headers: Backbone.Agave.basicAuthHeader(),
                         url: EnvironmentConfig.vdjApi.hostname
                                 + '/notifications'
                                 + '/files'
@@ -296,6 +315,7 @@ function(
                        + '/' + this.get('projectUuid')
                        + '/files/';
             },
+            /* not used, so disabled
             syncFilePermissionsWithProjectPermissions: function() {
 
                 var jqxhr = $.ajax({
@@ -310,7 +330,7 @@ function(
                 });
 
                 return jqxhr;
-            },
+            }, */
             // TODO: merge this with agave-job model downloadFileToCache()
             downloadFileToMemory: function() {
 

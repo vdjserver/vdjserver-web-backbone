@@ -121,23 +121,19 @@ function(
                 return isDuplicate;
             },
             getBarcodeCollection: function() {
-                /*
-                    Get all known fasta files that have been categorized as either:
-                    *.) Barcode
-                    *.) Unspecified
-                */
 
-                var knownBarcodeCollection = this._getKnownBarcodeCollection();
+                var barcodeModels = _.filter(this.models, function(model) {
+                    return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_BARCODE
+                           ;
+                });
 
-                var possibleBarcodeCollection = this._getPossibleBarcodeCollection();
+                var barcodeCollection = this.clone();
+                barcodeCollection.reset();
+                barcodeCollection.add(barcodeModels);
 
-                // Merge sets together, and keep independent sorting
-                var mergedCollection = this.clone();
-                mergedCollection.reset();
-                mergedCollection.add(knownBarcodeCollection.models);
-                mergedCollection.add(possibleBarcodeCollection.models);
+                barcodeCollection.sortBy(this._sortAlphabetical());
 
-                return mergedCollection;
+                return barcodeCollection;
             },
             getPrimerCollection: function() {
 

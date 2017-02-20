@@ -186,48 +186,32 @@ define([
                 this.setupModalView();
                 var that = this;
 
-                $('#modal-message')
-                    .modal('show')
-                    .on('shown.bs.modal', function() {
+                this.model.save(formData)
+                    .then(function() {
 
-                        that.model
-                            .save(formData)
-                            .done(function() {
+                        $('.alert-success').remove();
+                        $('.alert-info').after(
+                            $('<div class="alert alert-success">').html(
+                                '<i class="fa fa-thumbs-up"></i> You have successfully submitted your feedback!'
+                            ).fadeIn()
+                        );
+                    })
+                    .fail(function(error) {
 
-                                that.$el.find('.form-control').val('');
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.setError(error);
+                        telemetry.set('method', 'Backbone.Agave.Model.UserFeedback().save()');
+                        telemetry.set('view', 'UserFeedback.Form');
+                        telemetry.save();
 
-                                $('#modal-message')
-                                    .modal('hide')
-                                    .on('hidden.bs.modal', function() {
-                                        setTimeout(function() {
-                                            $('.alert-success').remove();
-                                            $('.alert-info').after(
-                                                $('<div class="alert alert-success">').html(
-                                                    '<i class="fa fa-thumbs-up"></i> You have successfully submitted your feedback!'
-                                                ).fadeIn()
-                                            );
-                                        }, 500);
-                                    })
-                                    ;
-                            })
-                            .fail(function(error) {
-
-                                var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.setError(error);
-                                telemetry.set('method', 'Backbone.Agave.Model.UserFeedback().save()');
-                                telemetry.set('view', 'UserFeedback.Form');
-                                telemetry.save();
-
-                                that.$el.find('.alert-danger')
-                                    .remove()
-                                    .end()
-                                    .prepend(
-                                        $('<div class="alert alert-danger">')
-                                            .text('Sending feedback failed. Please try again.')
-                                            .fadeIn()
-                                    );
-                                $('#modal-message').modal('hide');
-                            });
+                        that.$el.find('.alert-danger')
+                            .remove()
+                            .end()
+                            .prepend(
+                                $('<div class="alert alert-danger">')
+                                    .text('Sending feedback failed. Please try again.')
+                                    .fadeIn()
+                            );
                     });
             }
             else {
@@ -236,7 +220,7 @@ define([
                     .end()
                     .prepend(
                         $('<div class="alert alert-danger">')
-                            .text('Sending feedback failed. Please try again.')
+                            .text('No feedback provided. Please try again.')
                             .fadeIn()
                     )
                     ;

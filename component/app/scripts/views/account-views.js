@@ -138,23 +138,6 @@ define([
                         })
                         .fail(function(jqXhr, errorText, errorThrown) {
 
-                            // Recaptcha telemetry
-                            if (jqXhr.responseJSON.message === App.Models.Recaptcha.RECAPTCHA_ERROR_MESSAGE) {
-                                var captchaTelemetry = new Backbone.Agave.Model.Telemetry();
-                                captchaTelemetry.setError(jqXhr);
-                                captchaTelemetry.set('method', 'Backbone.Agave.Model.NewAccount().save()');
-                                captchaTelemetry.set('view', 'Account.CreateAccount');
-                                captchaTelemetry.save();
-                            }
-
-                            // Account telemetry
-                            var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.setError(jqXhr);
-                            telemetry.set('username', formData.username);
-                            telemetry.set('method', 'Backbone.Agave.Model.Account.NewAccount().save()');
-                            telemetry.set('view', 'Account.CreateAccount');
-                            telemetry.save();
-
                             $('#modal-message').modal('hide');
 
                             if (errorMessage === '4' || errorMessage === '5') {
@@ -220,12 +203,6 @@ define([
                         ;
                 })
                 .fail(function(error) {
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.setError(error);
-                    telemetry.set('username', username);
-                    telemetry.set('method', 'Backbone.Agave.Model.Account.ResendVerificationEmail().save()');
-                    telemetry.set('view', 'Account.VerificationPending');
-                    telemetry.save();
 
                     var messageModel = new App.Models.MessageModel({
                         //'header': 'Verifying Account',
@@ -286,11 +263,6 @@ define([
 
                 })
                 .fail(function(error) {
-                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                    telemetry.setError(error);
-                    telemetry.set('method', 'Backbone.Agave.Model.Account.VerifyEmail().save()');
-                    telemetry.set('view', 'Account.VerificationPending');
-                    telemetry.save();
 
                     var messageModel = new App.Models.MessageModel({
                         //'header': 'Verifying Account',
@@ -372,11 +344,6 @@ define([
                                     ;
                             })
                             .fail(function(error) {
-                                var telemetry = new Backbone.Agave.Model.Telemetry();
-                                telemetry.setError(error);
-                                telemetry.set('method', 'Backbone.Agave.Model.Account.VerifyAccount().save()');
-                                telemetry.set('view', 'Account.VerifyAccount');
-                                telemetry.save();
 
                                 $('#verification-content').html(
                                     '<div class="alert alert-danger">'
