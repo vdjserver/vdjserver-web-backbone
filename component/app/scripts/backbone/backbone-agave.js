@@ -560,6 +560,35 @@ define([
             return 'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
                     + '/' + fileMeta[0].getFilePath();
         },
+        _getProjectFilesPath: function(projectUuid) {
+
+            return 'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
+                    + '//projects/' + projectUuid + '/files';
+        },
+        _getTranslatedProjectFilePaths: function(fileMetadatas) {
+
+            var filePaths = [];
+            for (var i = 0; i < fileMetadatas.models.length; i++) {
+
+                var fileMetadata = fileMetadatas.at(i);
+                var value = fileMetadata.get('value');
+
+                filePaths.push(
+                    'files/' + encodeURIComponent(value['name'])
+                );
+            }
+
+            return filePaths;
+        },
+        _getTranslatedProjectFilePath: function(fileName, fileMetadatas) {
+
+            var fileMeta = _.filter(fileMetadatas.models, function(fileMetadata) {
+                  return fileMetadata.get('value').name == fileName;
+                });
+
+            var value = fileMeta[0].get('value');
+            return 'files/' + encodeURIComponent(value['name']);
+        },
         _configureExecutionHostForFileSize: function() {
 
             var fileSize = this.get('totalFileSize');

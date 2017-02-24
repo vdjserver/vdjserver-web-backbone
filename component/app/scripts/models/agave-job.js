@@ -654,55 +654,24 @@ function(
             this.set('name', formData['job-name']);
             this._setArchivePath(projectUuid);
 
-            var parameters = this._serializeFormData(formData);
+            var parameters = this._serializeFormData(formData, selectedFileMetadatas, allFileMetadatas);
             parameters['Creator'] = Backbone.Agave.instance.token().get('username');
 
             var inputFiles = {};
-            inputFiles = this._serializeFileInputs(
+/*            inputFiles = this._serializeFileInputs(
                 inputFiles,
                 formData,
                 selectedFileMetadatas,
                 allFileMetadatas
-            );
+            ); */
+            inputFiles['ProjectFiles'] = this._getProjectFilesPath(projectUuid);
             this.set('inputs', inputFiles);
 
             this.set('parameters', parameters);
         },
 
         // Private Methods
-        _serializeFileInputs: function(fileInputs, formData, selectedFileMetadatas, allFileMetadatas) {
-
-            if (formData.hasOwnProperty('barcode-file')) {
-                fileInputs['BarcodeFile'] = this._getTranslatedFilePath(formData['barcode-file'], allFileMetadatas);
-            }
-
-            if (formData.hasOwnProperty('custom_v_primer_trimming-primer-file')) {
-                fileInputs['ForwardPrimerFile'] = this._getTranslatedFilePath(formData['custom_v_primer_trimming-primer-file'], allFileMetadatas);
-            }
-
-            if (formData.hasOwnProperty('custom_j_primer_trimming-primer-file')) {
-                fileInputs['ReversePrimerFile'] = this._getTranslatedFilePath(formData['custom_j_primer_trimming-primer-file'], allFileMetadatas);
-            }
-
-            var pairedReads = selectedFileMetadatas.getOrganizedPairedReadCollection();
-            if (pairedReads.length > 0) {
-              fileInputs['SequenceForwardPairedFiles'] = this._getTranslatedFilePaths(pairedReads[0]);
-              fileInputs['SequenceReversePairedFiles'] = this._getTranslatedFilePaths(pairedReads[1]);
-            }
-
-            var qualReads = selectedFileMetadatas.getOrganizedPairedQualityCollection(allFileMetadatas);
-            if (qualReads.length > 0) {
-              fileInputs['SequenceFASTA'] = this._getTranslatedFilePaths(qualReads[0]);
-              fileInputs['SequenceQualityFiles'] = this._getTranslatedFilePaths(qualReads[1]);
-            }
-
-            var singleReads = selectedFileMetadatas.getNonPairedReadCollection();
-            fileInputs['SequenceFASTQ'] = this._getTranslatedFilePaths(singleReads);
-
-            return fileInputs;
-        },
-
-        _serializeFormData: function(formData) {
+        _serializeFormData: function(formData, selectedFileMetadatas, allFileMetadatas) {
 
             var parameters = {};
 
@@ -716,6 +685,34 @@ function(
                         parameters['MergeOutputFilename'] = formData['merge_write_sequence-out-prefix'] + ".fastq";
             } else
                 parameters['Workflow'] = 'single';
+
+            // files
+             if (formData.hasOwnProperty('barcode-file')) {
+                parameters['BarcodeFile'] = this._getTranslatedProjectFilePath(formData['barcode-file'], allFileMetadatas);
+            }
+
+            if (formData.hasOwnProperty('custom_v_primer_trimming-primer-file')) {
+                parameters['ForwardPrimerFile'] = this._getTranslatedProjectFilePath(formData['custom_v_primer_trimming-primer-file'], allFileMetadatas);
+            }
+
+            if (formData.hasOwnProperty('custom_j_primer_trimming-primer-file')) {
+                parameters['ReversePrimerFile'] = this._getTranslatedProjectFilePath(formData['custom_j_primer_trimming-primer-file'], allFileMetadatas);
+            }
+
+            var pairedReads = selectedFileMetadatas.getOrganizedPairedReadCollection();
+            if (pairedReads.length > 0) {
+              parameters['SequenceForwardPairedFiles'] = this._getTranslatedProjectFilePaths(pairedReads[0]);
+              parameters['SequenceReversePairedFiles'] = this._getTranslatedProjectFilePaths(pairedReads[1]);
+            }
+
+            var qualReads = selectedFileMetadatas.getOrganizedPairedQualityCollection(allFileMetadatas);
+            if (qualReads.length > 0) {
+              parameters['SequenceFASTA'] = this._getTranslatedProjectFilePaths(qualReads[0]);
+              parameters['SequenceQualityFiles'] = this._getTranslatedProjectFilePaths(qualReads[1]);
+            }
+
+            var singleReads = selectedFileMetadatas.getNonPairedReadCollection();
+            parameters['SequenceFASTQ'] = this._getTranslatedProjectFilePaths(singleReads);
 
             // statistics
             parameters['PreFilterStatisticsFlag'] = false;
