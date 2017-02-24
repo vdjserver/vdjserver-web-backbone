@@ -780,8 +780,8 @@ function(
                 parameters['FindUniqueFlag'] = true;
                 if (formData.hasOwnProperty('find_shared-out-prefix'))
                     if (formData['find_shared-out-prefix'].length != 0) {
-                        parameters['FindUniqueOutputFilename'] = formData['find_shared-out-prefix'] + ".fasta";
-                        parameters['FindUniqueDuplicatesFilename'] = formData['find_shared-out-prefix'] + "-duplicates.tsv";
+                        parameters['FindUniqueOutputFilename'] = formData['find_shared-out-prefix'];
+                        parameters['FindUniqueDuplicatesFilename'] = formData['find_shared-out-prefix'] + "-duplicates";
                     }
             } else
                 parameters['FindUniqueFlag'] = false;
