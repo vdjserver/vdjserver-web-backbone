@@ -1935,6 +1935,7 @@ define([
                 this.qualMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
 
                 var fileMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+                fileMetadatas.comparator = App.Mixins.Comparators.Name.comparator;
 
                 var that = this;
 
