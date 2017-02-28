@@ -589,6 +589,27 @@ define([
             var value = fileMeta[0].get('value');
             return 'files/' + encodeURIComponent(value['name']);
         },
+        _getProjectFileUuids: function(fileMetadatas) {
+
+            var filePaths = [];
+            for (var i = 0; i < fileMetadatas.models.length; i++) {
+
+                var fileMetadata = fileMetadatas.at(i);
+                var value = fileMetadata.get('value');
+
+                filePaths.push(fileMetadata.get('uuid'));
+            }
+
+            return filePaths;
+        },
+        _getProjectFileUuid: function(fileName, fileMetadatas) {
+
+            var fileMeta = _.filter(fileMetadatas.models, function(fileMetadata) {
+                  return fileMetadata.get('value').name == fileName;
+                });
+
+            return fileMeta[0].get('uuid');
+        },
         _configureExecutionHostForFileSize: function() {
 
             var fileSize = this.get('totalFileSize');

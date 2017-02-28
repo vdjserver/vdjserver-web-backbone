@@ -680,54 +680,56 @@ function(
                 parameters['Workflow'] = 'paired';
                 if (formData.hasOwnProperty('merge_paired-min-score'))
                     parameters['MergeMinimumScore'] = parseInt(formData['merge_paired-min-score']);
-                if (formData.hasOwnProperty('merge_write_sequence-out-prefix'))
-                    if (formData['merge_write_sequence-out-prefix'].length != 0)
-                        parameters['MergeOutputFilename'] = formData['merge_write_sequence-out-prefix'] + ".fastq";
             } else
                 parameters['Workflow'] = 'single';
 
             // files
              if (formData.hasOwnProperty('barcode-file')) {
                 parameters['BarcodeFile'] = this._getTranslatedProjectFilePath(formData['barcode-file'], allFileMetadatas);
+                parameters['BarcodeFileMetadata'] = this._getProjectFileUuid(formData['barcode-file'], allFileMetadatas);
             }
 
             if (formData.hasOwnProperty('custom_v_primer_trimming-primer-file')) {
                 parameters['ForwardPrimerFile'] = this._getTranslatedProjectFilePath(formData['custom_v_primer_trimming-primer-file'], allFileMetadatas);
+                parameters['ForwardPrimerFileMetadata'] = this._getProjectFileUuid(formData['custom_v_primer_trimming-primer-file'], allFileMetadatas);
             }
 
             if (formData.hasOwnProperty('custom_j_primer_trimming-primer-file')) {
                 parameters['ReversePrimerFile'] = this._getTranslatedProjectFilePath(formData['custom_j_primer_trimming-primer-file'], allFileMetadatas);
+                parameters['ReversePrimerFileMetadata'] = this._getProjectFileUuid(formData['custom_j_primer_trimming-primer-file'], allFileMetadatas);
             }
 
             var pairedReads = selectedFileMetadatas.getOrganizedPairedReadCollection();
             if (pairedReads.length > 0) {
               parameters['SequenceForwardPairedFiles'] = this._getTranslatedProjectFilePaths(pairedReads[0]);
+              parameters['SequenceForwardPairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[0]);
               parameters['SequenceReversePairedFiles'] = this._getTranslatedProjectFilePaths(pairedReads[1]);
+              parameters['SequenceReversePairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[1]);
             }
 
             var qualReads = selectedFileMetadatas.getOrganizedPairedQualityCollection(allFileMetadatas);
             if (qualReads.length > 0) {
               parameters['SequenceFASTA'] = this._getTranslatedProjectFilePaths(qualReads[0]);
+              parameters['SequenceFASTAMetadata'] = this._getProjectFileUuids(qualReads[0]);
               parameters['SequenceQualityFiles'] = this._getTranslatedProjectFilePaths(qualReads[1]);
+              parameters['SequenceQualityFilesMetadata'] = this._getProjectFileUuids(qualReads[1]);
             }
 
             var singleReads = selectedFileMetadatas.getNonPairedReadCollection();
             parameters['SequenceFASTQ'] = this._getTranslatedProjectFilePaths(singleReads);
+            parameters['SequenceFASTQMetadata'] = this._getProjectFileUuids(singleReads);
 
             // statistics
             parameters['PreFilterStatisticsFlag'] = false;
             if (formData.hasOwnProperty('pre_statistics')) {
                 parameters['PreFilterStatisticsFlag'] = true;
-                parameters['PreFilterStatisticsFilename'] = 'pre-filter_';
             }
             if (formData.hasOwnProperty('statistics')) {
                 parameters['PreFilterStatisticsFlag'] = true;
-                parameters['PreFilterStatisticsFilename'] = 'stats_';
             }
 
             if (formData.hasOwnProperty('post_statistics')) {
                 parameters['PostFilterStatisticsFlag'] = true;
-                parameters['PostFilterStatisticsFilename'] = 'post-filter_';
             } else
                 parameters['PostFilterStatisticsFlag'] = false;
 
@@ -775,23 +777,11 @@ function(
             // find unique
             if (formData.hasOwnProperty('find_shared')) {
                 parameters['FindUniqueFlag'] = true;
-                if (formData.hasOwnProperty('find_shared-out-prefix'))
-                    if (formData['find_shared-out-prefix'].length != 0) {
-                        parameters['FindUniqueOutputFilename'] = formData['find_shared-out-prefix'];
-                        parameters['FindUniqueDuplicatesFilename'] = formData['find_shared-out-prefix'] + "-duplicates";
-                    }
             } else
                 parameters['FindUniqueFlag'] = false;
 
             // write final sequences
             if (formData.hasOwnProperty('write_sequence')) {
-                if (formData.hasOwnProperty('write_sequence-out-prefix'))
-                    if (formData['write_sequence-out-prefix'].length != 0)
-                        if (parameters['BarcodeSplitFlag']) {
-                            parameters['FinalOutputFilename'] = formData['write_sequence-out-prefix'] + "-{MID}.fastq";
-                        } else {
-                            parameters['FinalOutputFilename'] = formData['write_sequence-out-prefix'] + ".fastq";
-                        }
             }
 
             return parameters;
