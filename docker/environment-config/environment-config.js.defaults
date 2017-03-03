@@ -20,7 +20,7 @@ var EnvironmentConfig = {
                         'vdjPipe': 'vdj_pipe-0.1.6u10',
                         'igBlast': 'igblast-ls5-1.4.0u17',
                         'presto': 'presto-ls5-0.5.2u8',
-                        'RepCalc': 'repcalc-ls5-1.0.0u5'
+                        'RepCalc': 'repcalc-ls5-1.0.0u6'
                     },
                     'type': 'large',
                 },
@@ -37,7 +37,7 @@ var EnvironmentConfig = {
                     'apps': {
                         'vdjPipe': 'vdj_pipe-stampede-0.1.6u7',
                         'igBlast': 'igblast-stampede-1.4.0u12',
-                        'RepCalc': 'repcalc-stampede-1.0.0u4'
+                        'RepCalc': 'repcalc-stampede-1.0.0u5'
                     },
                     'type': 'large',
                 },
