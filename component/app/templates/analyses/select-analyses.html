@@ -1,4 +1,35 @@
 <div class="row">
+  <form id="job-details-form" class="form-horizontal">
+    <div class="form-group">
+      <label class="col-md-2 control-label">Job Name:</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" value="{{jobDetail.displayName}}" readonly>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-md-2 control-label">Application:</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" value="{{jobDetail.appId}}" readonly>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-md-2 control-label">Date:</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" value="{{FormatAgaveDate jobDetail.submitTime}}" readonly>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-md-2 control-label">VDJServer UUID:</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" value="{{jobDetail.id}}" readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="row">
+
+<!--
     <div class="col-md-5 table-responsive">
         <table class="project-details">
             <tbody>
@@ -37,12 +68,14 @@
             </tbody>
         </table>
     </div>
+-->
 
     {{#unless validProcessMetadata}}
     <div class="row">
         <div class="col-md-12">
             <div class="alert alert-danger">
                 Warning: This job was executed with an older (possibly incompatible) version of VDJServer.
+                Another possibility is that the job suffered a catastrophic failure.
                 Not all files or capabilities may be accessible.
                 Please rerun the job to take advantage of all the new functionality in VDJServer.
             </div>
