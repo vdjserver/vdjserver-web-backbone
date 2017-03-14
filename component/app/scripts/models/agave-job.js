@@ -408,9 +408,9 @@ function(
                         appId: EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast,
                         appName: 'igBlast',
                         inputs: {
-                            query: '',
                         },
                         parameters: {
+                            query: '',
                             species: '',
                             ig_seqtype: '',
                             domain_system: '',
@@ -421,27 +421,37 @@ function(
             initialize: function(options) {
                 Backbone.Agave.JobModel.prototype.initialize.apply(this, [options]);
 
-                this.inputParameterName = 'query';
+                //this.inputParameterName = 'query';
             },
             prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
-                var parameters = this._serializeFormData(formData);
+                var parameters = this._serializeFormData(formData, selectedFileMetadatas);
                 parameters['Creator'] = Backbone.Agave.instance.token().get('username');
+
+                this.set('name', formData['job-name']);
+                this._setArchivePath(projectUuid);
+
+                var inputFiles = {};
+                inputFiles['ProjectFiles'] = this._getProjectFilesPath(projectUuid);
+                inputFiles['JobFiles'] = this._getProjectJobPaths(projectUuid, selectedFileMetadatas);
+                this.set('inputs', inputFiles);
 
                 this.set('parameters', parameters);
 
-                this.set('name', formData['job-name']);
-
-                this._setArchivePath(projectUuid);
-
-                this._setFilesParameter(selectedFileMetadatas);
+                //this._setFilesParameter(selectedFileMetadatas);
             },
-            _serializeFormData: function(formData) {
+            _serializeFormData: function(formData, selectedFileMetadatas) {
                 var parameters = {
                     'species': formData['species'],
                     'ig_seqtype': formData['sequence-type'],
                     'domain_system': 'imgt',
                 };
+                var secondaryInputs = {};
+
+                secondaryInputs['QueryFilesMetadata'] = this._getProjectFileUuids(selectedFileMetadatas);
+
+                parameters['SecondaryInputsFlag'] = true;
+                this.set('secondaryInputs', secondaryInputs);
 
                 return parameters;
             },

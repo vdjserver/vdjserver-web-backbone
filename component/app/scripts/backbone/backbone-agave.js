@@ -560,6 +560,41 @@ define([
             return 'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
                     + '/' + fileMeta[0].getFilePath();
         },
+        _getProjectJobPaths: function(projectUuid, fileMetadatas) {
+
+            var jobPaths = new Set();
+            for (var i = 0; i < fileMetadatas.models.length; i++) {
+
+                var fileMetadata = fileMetadatas.at(i);
+                if (fileMetadata.get('name') == 'projectJobFile') {
+                    var value = fileMetadata.get('value');
+                    jobPaths.add(value['relativeArchivePath']);
+                }
+            }
+
+            var jobForRelativePath = function(path) {
+                for (var i = 0; i < fileMetadatas.models.length; i++) {
+                    var fileMetadata = fileMetadatas.at(i);
+                    if (fileMetadata.get('name') == 'projectJobFile') {
+                        var value = fileMetadata.get('value');
+                        if (value['relativeArchivePath'] == path)
+                            return value['jobUuid'];
+                    }
+                }
+                return null;
+            };
+
+            var filePaths = [];
+            jobPaths.forEach(function(entry) {
+                filePaths.push(
+                    'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
+                    + '//projects/' + projectUuid + '/analyses/' + entry
+                    + '/' + jobForRelativePath(entry) + '.zip'
+                );
+            });
+
+            return filePaths;
+        },
         _getProjectFilesPath: function(projectUuid) {
 
             return 'agave://' + EnvironmentConfig.agave.systems.storage.corral.hostname
@@ -573,9 +608,15 @@ define([
                 var fileMetadata = fileMetadatas.at(i);
                 var value = fileMetadata.get('value');
 
-                filePaths.push(
-                    'files/' + encodeURIComponent(value['name'])
-                );
+                if (fileMetadata.get('name') == 'projectFile') {
+                    filePaths.push(
+                        'files/' + encodeURIComponent(value['name'])
+                    );
+                } else if (fileMetadata.get('name') == 'projectJobFile') {
+                    filePaths.push(
+                        value['relativeArchivePath'] + '/' + encodeURIComponent(value['name'])
+                    );
+                }
             }
 
             return filePaths;
@@ -587,7 +628,11 @@ define([
                 });
 
             var value = fileMeta[0].get('value');
-            return 'files/' + encodeURIComponent(value['name']);
+            if (fileMeta[0].get('name') == 'projectFile')
+                return 'files/' + encodeURIComponent(value['name']);
+            if (fileMeta[0].get('name') == 'projectJobFile')
+                return value['relativeArchivePath'] + '/' + encodeURIComponent(value['name']);
+            return undefined;
         },
         _getProjectFileUuids: function(fileMetadatas) {
 
