@@ -341,7 +341,7 @@
                     {{#each projectJobs}}
                         <tr class="text-left">
                             <td colspan=8>
-                                <b>Output Files for Job: {{this.displayName}}</b>
+                                <b>Output Files for Job: <a href="/project/{{../projectUuid}}/jobs/{{this.id}}">{{this.displayName}}</a></b>
                             </td>
                         </tr>
                         {{#each this.fileCollection}}

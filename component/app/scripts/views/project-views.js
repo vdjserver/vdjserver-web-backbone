@@ -1137,6 +1137,7 @@ define([
                 }
 
                 return {
+                    projectUuid: this.projectUuid,
                     singleReadFileListings: this.singleReadFileListings.toJSON(),
                     pairedReadFileListings: this.pairedReads,
                     readDirections: Backbone.Agave.Model.File.Metadata.getReadDirections(),
