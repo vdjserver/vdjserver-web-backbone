@@ -425,33 +425,40 @@ function(
             },
             prepareJob: function(formData, selectedFileMetadatas, allFileMetadatas, projectUuid) {
 
-                var parameters = this._serializeFormData(formData, selectedFileMetadatas);
+                var parameters = this._serializeFormData(projectUuid, formData, selectedFileMetadatas);
                 parameters['Creator'] = Backbone.Agave.instance.token().get('username');
 
                 this.set('name', formData['job-name']);
                 this._setArchivePath(projectUuid);
 
-                var inputFiles = {};
-                inputFiles['ProjectFiles'] = this._getProjectFilesPath(projectUuid);
-                inputFiles['JobFiles'] = this._getProjectJobPaths(projectUuid, selectedFileMetadatas);
-                this.set('inputs', inputFiles);
-
                 this.set('parameters', parameters);
 
                 //this._setFilesParameter(selectedFileMetadatas);
             },
-            _serializeFormData: function(formData, selectedFileMetadatas) {
+            _serializeFormData: function(projectUuid, formData, selectedFileMetadatas) {
                 var parameters = {
                     'species': formData['species'],
                     'ig_seqtype': formData['sequence-type'],
                     'domain_system': 'imgt',
                 };
                 var secondaryInputs = {};
+                var inputFiles = {};
 
-                secondaryInputs['QueryFilesMetadata'] = this._getProjectFileUuids(selectedFileMetadatas);
+                // arbitrary max for igblast
+                var useSecondary = false;
+                if (selectedFileMetadatas.length > 20) useSecondary = true;
 
-                parameters['SecondaryInputsFlag'] = true;
-                this.set('secondaryInputs', secondaryInputs);
+                if (useSecondary) {
+                    secondaryInputs['QueryFilesMetadata'] = this._getProjectFileUuids(selectedFileMetadatas);
+                    inputFiles['ProjectDirectory'] = this._getProjectFilesPath(projectUuid);
+                    inputFiles['JobFiles'] = this._getProjectJobPaths(projectUuid, selectedFileMetadatas);
+                    parameters['SecondaryInputsFlag'] = true;
+                    this.set('secondaryInputs', secondaryInputs);
+                } else {
+                    parameters['QueryFilesMetadata'] = this._getProjectFileUuids(selectedFileMetadatas);
+                    inputFiles['query'] = this._getTranslatedFilePaths(selectedFileMetadatas);
+                }
+                this.set('inputs', inputFiles);
 
                 return parameters;
             },
@@ -498,51 +505,68 @@ function(
             },
             prepareJob: function(formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas, projectUuid) {
 
-                var parameters = this._serializeFormData(formData);
+                var parameters = this._serializeFormData(projectUuid, formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas);
                 parameters['Creator'] = Backbone.Agave.instance.token().get('username');
 
                 this.set('name', formData['job-name']);
 
                 this._setArchivePath(projectUuid);
 
+                this.set('parameters', parameters);
+            },
+            // Private Methods
+            _serializeFormData: function(projectUuid, formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas) {
+                var parameters = {};
+                var list = [];
+                var secondaryInputs = {};
                 var inputFiles = {};
-                this._serializeFileInputs(
-                    inputFiles,
-                    formData,
-                    VDJMLFileMetadatas,
-                    SummaryFileMetadatas,
-                    ChangeOFileMetadatas,
-                    allFileMetadatas
-                );
-                this.set('inputs', inputFiles);
+
+                // arbitrary max for repcalc, 3 * 10 = 30
+                var useSecondary = false;
+                if (VDJMLFileMetadatas.length > 10) useSecondary = true;
 
                 var metaList = [];
                 for (var i = 0; i < VDJMLFileMetadatas.models.length; i++) {
                     var fileMetadata = VDJMLFileMetadatas.at(i);
                     metaList.push(fileMetadata.get('uuid'));
                 }
-                parameters['VDJMLFileMetadata'] = metaList;
+                if (useSecondary)
+                    secondaryInputs['VDJMLFileMetadata'] = metaList;
+                else
+                    parameters['VDJMLFileMetadata'] = metaList;
 
                 var metaList = [];
                 for (var i = 0; i < SummaryFileMetadatas.models.length; i++) {
                     var fileMetadata = SummaryFileMetadatas.at(i);
                     metaList.push(fileMetadata.get('uuid'));
                 }
-                parameters['SummaryFileMetadata'] = metaList;
+                if (useSecondary)
+                    secondaryInputs['SummaryFileMetadata'] = metaList;
+                else
+                    parameters['SummaryFileMetadata'] = metaList;
 
                 var metaList = [];
                 for (var i = 0; i < ChangeOFileMetadatas.models.length; i++) {
                     var fileMetadata = ChangeOFileMetadatas.at(i);
                     metaList.push(fileMetadata.get('uuid'));
                 }
-                parameters['ChangeOFileMetadata'] = metaList;
+                if (useSecondary)
+                    secondaryInputs['ChangeOFileMetadata'] = metaList;
+                else
+                    parameters['ChangeOFileMetadata'] = metaList;
 
-                this.set('parameters', parameters);
-            },
-            // Private Methods
-            _serializeFormData: function(formData) {
-                var parameters = {};
-                var list = [];
+                if (useSecondary) {
+                    // currently no project files and just one job
+                    //inputFiles['ProjectDirectory'] = this._getProjectFilesPath(projectUuid);
+                    inputFiles['JobFiles'] = this._getProjectJobPaths(projectUuid, VDJMLFileMetadatas);
+                    parameters['SecondaryInputsFlag'] = true;
+                    this.set('secondaryInputs', secondaryInputs);
+                } else {
+                    inputFiles['VDJMLFiles'] = this._getTranslatedFilePaths(VDJMLFileMetadatas);
+                    inputFiles['SummaryFiles'] = this._getTranslatedFilePaths(SummaryFileMetadatas);
+                    inputFiles['ChangeOFiles'] = this._getTranslatedFilePaths(ChangeOFileMetadatas);
+                }
+                this.set('inputs', inputFiles);
 
                 parameters['JobSelected'] = formData['job-selected'];
 
@@ -635,11 +659,6 @@ function(
 
                 return parameters;
             },
-            _serializeFileInputs: function(fileInputs, formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas) {
-                fileInputs['VDJMLFiles'] = this._getTranslatedFilePaths(VDJMLFileMetadatas);
-                fileInputs['SummaryFiles'] = this._getTranslatedFilePaths(SummaryFileMetadatas);
-                fileInputs['ChangeOFiles'] = this._getTranslatedFilePaths(ChangeOFileMetadatas);
-            },
         }
     );
 
@@ -664,27 +683,23 @@ function(
             this.set('name', formData['job-name']);
             this._setArchivePath(projectUuid);
 
-            var parameters = this._serializeFormData(formData, selectedFileMetadatas, allFileMetadatas);
+            var parameters = this._serializeFormData(projectUuid, formData, selectedFileMetadatas, allFileMetadatas);
             parameters['Creator'] = Backbone.Agave.instance.token().get('username');
-
-            var inputFiles = {};
-/*            inputFiles = this._serializeFileInputs(
-                inputFiles,
-                formData,
-                selectedFileMetadatas,
-                allFileMetadatas
-            ); */
-            inputFiles['ProjectFiles'] = this._getProjectFilesPath(projectUuid);
-            this.set('inputs', inputFiles);
 
             this.set('parameters', parameters);
         },
 
         // Private Methods
-        _serializeFormData: function(formData, selectedFileMetadatas, allFileMetadatas) {
+        _serializeFormData: function(projectUuid, formData, selectedFileMetadatas, allFileMetadatas) {
 
             var parameters = {};
             var secondaryInputs = {};
+            var inputFiles = {};
+
+            // arbitrary max for vdjpipe
+            var useSecondary = false;
+            if (selectedFileMetadatas.length > 20) useSecondary = true;
+            //console.log(selectedFileMetadatas.length);
 
             // workflow
             if (formData.hasOwnProperty('paired_reads')) {
@@ -696,42 +711,73 @@ function(
 
             // files
              if (formData.hasOwnProperty('barcode-file')) {
-                //parameters['BarcodeFile'] = this._getTranslatedProjectFilePath(formData['barcode-file'], allFileMetadatas);
-                secondaryInputs['BarcodeFileMetadata'] = this._getProjectFileUuid(formData['barcode-file'], allFileMetadatas);
+                if (useSecondary) {
+                    secondaryInputs['BarcodeFileMetadata'] = this._getProjectFileUuid(formData['barcode-file'], allFileMetadatas);
+                } else {
+                    inputFiles['BarcodeFile'] = this._getTranslatedFilePath(formData['barcode-file'], allFileMetadatas);
+                    parameters['BarcodeFileMetadata'] = this._getProjectFileUuid(formData['barcode-file'], allFileMetadatas);
+                }
             }
 
             if (formData.hasOwnProperty('custom_v_primer_trimming-primer-file')) {
-                //parameters['ForwardPrimerFile'] = this._getTranslatedProjectFilePath(formData['custom_v_primer_trimming-primer-file'], allFileMetadatas);
-                secondaryInputs['ForwardPrimerFileMetadata'] = this._getProjectFileUuid(formData['custom_v_primer_trimming-primer-file'], allFileMetadatas);
+                if (useSecondary) {
+                    secondaryInputs['ForwardPrimerFileMetadata'] = this._getProjectFileUuid(formData['custom_v_primer_trimming-primer-file'], allFileMetadatas);
+                } else {
+                    inputFiles['ForwardPrimerFile'] = this._getTranslatedFilePath(formData['custom_v_primer_trimming-primer-file'], allFileMetadatas);
+                    parameters['ForwardPrimerFileMetadata'] = this._getProjectFileUuid(formData['custom_v_primer_trimming-primer-file'], allFileMetadatas);
+                }
             }
 
             if (formData.hasOwnProperty('custom_j_primer_trimming-primer-file')) {
-                //parameters['ReversePrimerFile'] = this._getTranslatedProjectFilePath(formData['custom_j_primer_trimming-primer-file'], allFileMetadatas);
-                secondaryInputs['ReversePrimerFileMetadata'] = this._getProjectFileUuid(formData['custom_j_primer_trimming-primer-file'], allFileMetadatas);
+                if (useSecondary) {
+                    secondaryInputs['ReversePrimerFileMetadata'] = this._getProjectFileUuid(formData['custom_j_primer_trimming-primer-file'], allFileMetadatas);
+                } else {
+                    inputFiles['ReversePrimerFile'] = this._getTranslatedFilePath(formData['custom_j_primer_trimming-primer-file'], allFileMetadatas);
+                    parameters['ReversePrimerFileMetadata'] = this._getProjectFileUuid(formData['custom_j_primer_trimming-primer-file'], allFileMetadatas);
+                }
             }
 
             var pairedReads = selectedFileMetadatas.getOrganizedPairedReadCollection();
             if (pairedReads.length > 0) {
-              //parameters['SequenceForwardPairedFiles'] = this._getTranslatedProjectFilePaths(pairedReads[0]);
-              secondaryInputs['SequenceForwardPairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[0]);
-              //parameters['SequenceReversePairedFiles'] = this._getTranslatedProjectFilePaths(pairedReads[1]);
-              secondaryInputs['SequenceReversePairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[1]);
+                if (useSecondary) {
+                    secondaryInputs['SequenceForwardPairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[0]);
+                    secondaryInputs['SequenceReversePairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[1]);
+                } else {
+                    inputFiles['SequenceForwardPairedFiles'] = this._getTranslatedFilePaths(pairedReads[0]);
+                    parameters['SequenceForwardPairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[0]);
+                    inputFiles['SequenceReversePairedFiles'] = this._getTranslatedFilePaths(pairedReads[1]);
+                    parameters['SequenceReversePairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[1]);
+                }
             }
 
             var qualReads = selectedFileMetadatas.getOrganizedPairedQualityCollection(allFileMetadatas);
             if (qualReads.length > 0) {
-              //parameters['SequenceFASTA'] = this._getTranslatedProjectFilePaths(qualReads[0]);
-              secondaryInputs['SequenceFASTAMetadata'] = this._getProjectFileUuids(qualReads[0]);
-              //parameters['SequenceQualityFiles'] = this._getTranslatedProjectFilePaths(qualReads[1]);
-              secondaryInputs['SequenceQualityFilesMetadata'] = this._getProjectFileUuids(qualReads[1]);
+                if (useSecondary) {
+                    secondaryInputs['SequenceFASTAMetadata'] = this._getProjectFileUuids(qualReads[0]);
+                    secondaryInputs['SequenceQualityFilesMetadata'] = this._getProjectFileUuids(qualReads[1]);
+                } else {
+                    inputFiles['SequenceFASTA'] = this._getTranslatedFilePaths(qualReads[0]);
+                    parameters['SequenceFASTAMetadata'] = this._getProjectFileUuids(qualReads[0]);
+                    inputFiles['SequenceQualityFiles'] = this._getTranslatedFilePaths(qualReads[1]);
+                    parameters['SequenceQualityFilesMetadata'] = this._getProjectFileUuids(qualReads[1]);
+                }
             }
 
             var singleReads = selectedFileMetadatas.getNonPairedReadCollection();
-            //parameters['SequenceFASTQ'] = this._getTranslatedProjectFilePaths(singleReads);
-            secondaryInputs['SequenceFASTQMetadata'] = this._getProjectFileUuids(singleReads);
+            if (useSecondary) {
+                secondaryInputs['SequenceFASTQMetadata'] = this._getProjectFileUuids(singleReads);
+            } else {
+                inputFiles['SequenceFASTQ'] = this._getTranslatedFilePaths(singleReads);
+                parameters['SequenceFASTQMetadata'] = this._getProjectFileUuids(singleReads);
+            }
 
-            parameters['SecondaryInputsFlag'] = true;
-            this.set('secondaryInputs', secondaryInputs);
+            if (useSecondary) {
+                parameters['SecondaryInputsFlag'] = true;
+                this.set('secondaryInputs', secondaryInputs);
+                inputFiles['ProjectDirectory'] = this._getProjectFilesPath(projectUuid);
+                inputFiles['JobFiles'] = this._getProjectJobPaths(projectUuid, selectedFileMetadatas);
+            }
+            this.set('inputs', inputFiles);
 
             // statistics
             parameters['PreFilterStatisticsFlag'] = false;
@@ -827,71 +873,84 @@ function(
             this.set('name', formData['job-name']);
             this._setArchivePath(projectUuid);
 
-            var parameters = this._serializeFormData(formData);
+            var parameters = this._serializeFormData(projectUuid, formData, selectedFileMetadatas, allFileMetadatas);
             parameters['Creator'] = Backbone.Agave.instance.token().get('username');
-            //parameters.SequenceFiles = this._getSequenceFilenames(
-            //    parameters,
-            //    selectedFileMetadatas
-            //);
-
-            var inputFiles = {};
-            inputFiles = this._serializeFileInputs(
-                inputFiles,
-                formData,
-                selectedFileMetadatas,
-                allFileMetadatas
-            );
-            this.set('inputs', inputFiles);
-
-            if (inputFiles['SequenceForwardPairedFiles'] !== undefined)
-                parameters['Workflow'] = 'paired';
 
             this.set('parameters', parameters);
         },
-        _getSequenceFilenames: function(parameters, selectedFileMetadatas) {
+        _serializeFormData: function(projectUuid, formData, selectedFileMetadatas, allFileMetadatas) {
 
-            var sequenceFiles = selectedFileMetadatas.map(function(fileMetadata) {
-                return fileMetadata.get('value').name;
-            });
+            var parameters = {};
+            var secondaryInputs = {};
+            var inputFiles = {};
 
-            return sequenceFiles;
-        },
-        _serializeFileInputs: function(fileInputs, formData, selectedFileMetadatas, allFileMetadatas) {
+            // arbitrary max for presto
+            var useSecondary = false;
+            if (selectedFileMetadatas.length > 20) useSecondary = true;
 
             if (formData.hasOwnProperty('barcode-file')) {
-                fileInputs['BarcodeFile'] = this._getTranslatedFilePath(formData['barcode-file'], allFileMetadatas);
-            }
+                parameters['Barcode'] = true;
+                if (useSecondary) {
+                    secondaryInputs['BarcodeFileMetadata'] = this._getProjectFileUuid(formData['barcode-file'], allFileMetadatas);
+                } else {
+                    inputFiles['BarcodeFile'] = this._getTranslatedFilePath(formData['barcode-file'], allFileMetadatas);
+                    parameters['BarcodeFileMetadata'] = this._getProjectFileUuid(formData['barcode-file'], allFileMetadatas);
+                }
+            } else
+                parameters['Barcode'] = false;
 
             if (formData.hasOwnProperty('j-primer-file')) {
-                fileInputs['JPrimerFile'] = this._getTranslatedFilePath(formData['j-primer-file'], allFileMetadatas);
+                if (useSecondary) {
+                    secondaryInputs['ReversePrimerFileMetadata'] = this._getProjectFileUuid(formData['j-primer-file'], allFileMetadatas);
+                } else {
+                    inputFiles['ReversePrimerFile'] = this._getTranslatedFilePath(formData['j-primer-file'], allFileMetadatas);
+                    parameters['ReversePrimerFileMetadata'] = this._getProjectFileUuid(formData['j-primer-file'], allFileMetadatas);
+                }
             }
 
             if (formData.hasOwnProperty('v-primer-file')) {
-                fileInputs['VPrimerFile'] = this._getTranslatedFilePath(formData['v-primer-file'], allFileMetadatas);
+                if (useSecondary) {
+                    secondaryInputs['ForwardPrimerFileMetadata'] = this._getProjectFileUuid(formData['v-primer-file'], allFileMetadatas);
+                } else {
+                    inputFiles['ForwardPrimerFile'] = this._getTranslatedFilePath(formData['v-primer-file'], allFileMetadatas);
+                    parameters['ForwardPrimerFileMetadata'] = this._getProjectFileUuid(formData['v-primer-file'], allFileMetadatas);
+                }
             }
 
             var pairedReads = selectedFileMetadatas.getOrganizedPairedReadCollection();
             if (pairedReads.length > 0) {
-              fileInputs['SequenceForwardPairedFiles'] = this._getTranslatedFilePaths(pairedReads[0]);
-              fileInputs['SequenceReversePairedFiles'] = this._getTranslatedFilePaths(pairedReads[1]);
+                if (useSecondary) {
+                    secondaryInputs['SequenceForwardPairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[0]);
+                    secondaryInputs['SequenceReversePairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[1]);
+                } else {
+                    inputFiles['SequenceForwardPairedFiles'] = this._getTranslatedFilePaths(pairedReads[0]);
+                    parameters['SequenceForwardPairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[0]);
+                    inputFiles['SequenceReversePairedFiles'] = this._getTranslatedFilePaths(pairedReads[1]);
+                    parameters['SequenceReversePairedFilesMetadata'] = this._getProjectFileUuids(pairedReads[1]);
+                }
             }
 
-            var singleReads = selectedFileMetadatas.getNonPairedReadCollection();
-            fileInputs['SequenceFiles'] = this._getTranslatedFilePaths(singleReads);
-
-            return fileInputs;
-        },
-        _serializeFormData: function(formData) {
-
-            var parameters = {};
-
             // default to single but overridden if paired-end read files selected
-            parameters['Workflow'] = 'single';
-
-            if (formData.hasOwnProperty('barcode-file'))
-                parameters['Barcode'] = true;
+            if (pairedReads.length > 0)
+                parameters['Workflow'] = 'paired';
             else
-                parameters['Barcode'] = false;
+                parameters['Workflow'] = 'single';
+
+            var singleReads = selectedFileMetadatas.getNonPairedReadCollection();
+            if (useSecondary) {
+                secondaryInputs['SequenceFilesMetadata'] = this._getProjectFileUuids(singleReads);
+            } else {
+                inputFiles['SequenceFiles'] = this._getTranslatedFilePaths(singleReads);
+                parameters['SequenceFilesMetadata'] = this._getProjectFileUuids(singleReads);
+            }
+
+            if (useSecondary) {
+                parameters['SecondaryInputsFlag'] = true;
+                this.set('secondaryInputs', secondaryInputs);
+                inputFiles['ProjectDirectory'] = this._getProjectFilesPath(projectUuid);
+                inputFiles['JobFiles'] = this._getProjectJobPaths(projectUuid, selectedFileMetadatas);
+            }
+            this.set('inputs', inputFiles);
 
             if (formData.hasOwnProperty('barcode-max-error')) {
                 parameters['BarcodeMaxError'] = parseFloat(formData['barcode-max-error']);
@@ -921,10 +980,6 @@ function(
                 }
             }
 
-            if (formData.hasOwnProperty('final-output-filename')) {
-                parameters['FinalOutputFilename'] = formData['final-output-filename'];
-            }
-
             if (formData.hasOwnProperty('find-unique-max-nucleotides')) {
                 parameters['FindUniqueFlag'] = true;
                 parameters['FindUniqueMaxNucleotides'] = parseInt(formData['find-unique-max-nucleotides']);
@@ -936,45 +991,41 @@ function(
             }
 
             if (formData.hasOwnProperty('j-primer-type')) {
-                parameters['JPrimer'] = formData['j-primer-type'];
+                parameters['ReversePrimer'] = formData['j-primer-type'];
 
                 if (formData.hasOwnProperty('reverse-umi'))
-                    parameters['JPrimerUMI'] = formData['reverse-umi'];
+                    parameters['ReversePrimerUMI'] = formData['reverse-umi'];
 
                 if (formData.hasOwnProperty('j-primer-max-error'))
-                    parameters['JPrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
+                    parameters['ReversePrimerMaxError'] = parseFloat(formData['j-primer-max-error']);
 
                 if (formData.hasOwnProperty('j-primer-max-length'))
-                    parameters['JPrimerMaxLength'] = parseInt(formData['j-primer-max-length']);
+                    parameters['ReversePrimerMaxLength'] = parseInt(formData['j-primer-max-length']);
 
                 if (formData.hasOwnProperty('j-primer-start-position'))
-                    parameters['JPrimerStartPosition'] = parseInt(formData['j-primer-start-position']);
+                    parameters['ReversePrimerStartPosition'] = parseInt(formData['j-primer-start-position']);
             }
             else {
-                parameters['JPrimer'] = 'none';
+                parameters['ReversePrimer'] = 'none';
             }
 
             if (formData.hasOwnProperty('v-primer-type')) {
-                parameters['VPrimer'] = formData['v-primer-type'];
+                parameters['ForwardPrimer'] = formData['v-primer-type'];
 
                 if (formData.hasOwnProperty('forward-umi'))
-                    parameters['VPrimerUMI'] = formData['forward-umi'];
+                    parameters['ForwardPrimerUMI'] = formData['forward-umi'];
 
                 if (formData.hasOwnProperty('v-primer-max-error'))
-                    parameters['VPrimerMaxError'] = parseFloat(formData['v-primer-max-error']);
+                    parameters['ForwardPrimerMaxError'] = parseFloat(formData['v-primer-max-error']);
 
                 if (formData.hasOwnProperty('v-primer-max-length'))
-                    parameters['VPrimerMaxLength'] = parseInt(formData['v-primer-max-length']);
+                    parameters['ForwardPrimerMaxLength'] = parseInt(formData['v-primer-max-length']);
 
                 if (formData.hasOwnProperty('v-primer-start-position'))
-                    parameters['VPrimerStartPosition'] = parseInt(formData['v-primer-start-position']);
+                    parameters['ForwardPrimerStartPosition'] = parseInt(formData['v-primer-start-position']);
             }
             else {
-                parameters['VPrimer'] = 'none';
-            }
-
-            if (formData.hasOwnProperty('output-file-prefix')) {
-                parameters['OutputFilePrefix'] = formData['output-file-prefix'];
+                parameters['ForwardPrimer'] = 'none';
             }
 
             if (formData.hasOwnProperty('minimum-length')) {

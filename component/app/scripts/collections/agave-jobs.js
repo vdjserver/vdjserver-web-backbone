@@ -420,14 +420,12 @@ define([
                     'workflow-name': 'Single Read',
                     'steps': [
                         'sequenceType',
-                        'outputFilePrefix',
                         'qualityLengthFilter',
                         'barcode',
                         'UMI',
                         'forwardPrimer',
                         'reversePrimer',
                         'findUnique',
-                        'finalOutputFilename',
                     ],
                 },
             ];
