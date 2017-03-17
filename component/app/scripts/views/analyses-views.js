@@ -656,7 +656,7 @@ define([
                             case('vdjPipe'):
                             case('presto'):
                                 for (var group in that.processMetadata.groups) {
-                                    console.log(group);
+                                    //console.log(group);
                                     var chart = new Analyses.Statistics({selectAnalyses: that, groupId: group});
                                     if (chart.isValid) {
                                         that.analysisCharts.push({ groupId: group });

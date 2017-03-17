@@ -1137,6 +1137,7 @@ define([
                 }
 
                 return {
+                    projectUuid: this.projectUuid,
                     singleReadFileListings: this.singleReadFileListings.toJSON(),
                     pairedReadFileListings: this.pairedReads,
                     readDirections: Backbone.Agave.Model.File.Metadata.getReadDirections(),
@@ -1935,6 +1936,7 @@ define([
                 this.qualMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
 
                 var fileMetadatas = new Backbone.Agave.Collection.Files.Metadata({projectUuid: parameters.projectUuid});
+                fileMetadatas.comparator = App.Mixins.Comparators.Name.comparator;
 
                 var that = this;
 

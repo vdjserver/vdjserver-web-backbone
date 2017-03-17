@@ -1,51 +1,15 @@
 {{> vdjpipe-base-view-top}}
 
-    <div class="row row-with-spacer">
-        <div class="col-md-6">
-
-            {{> vdjpipe-paired-reads-direction-fragment}}
-
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Output Filename
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{parameterType}}-out-prefix"
-                        placeholder="text"
-                        type="text"
-                        value="{{options.out_prefix}}"
-                    >
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
+    <div class="row">
+        <div class="col-md-12">
+            <p>
             This module identifies replicate read sequences and collapses them to a single sequence.
+            The duplication count for the number of collapsed sequences is calculated.
+            </p>
+            <p>
+            If Barcode Demultiplexing is enabled then replicated read sequences will be collapsed within each barcode group separately.
+            </p>
         </div>
-
-        {{#if options.group_variable}}
-            <input
-                class="job-form-item hidden"
-                name="{{parameterType}}-group-variable"
-                value="{{options.group_variable}}"
-            >
-        {{/if}}
-
-        {{#if options.out_group_unique}}
-            <input
-                class="job-form-item hidden"
-                name="{{parameterType}}-out-group-unique"
-                value="{{options.out_group_unique}}"
-            >
-        {{else}}
-            <input
-                class="job-form-item hidden"
-                name="{{parameterType}}-out-group-unique"
-                value=".fasta"
-            >
-        {{/if}}
-
     </div>
 
 {{> vdjpipe-base-view-bottom}}

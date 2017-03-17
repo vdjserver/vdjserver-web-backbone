@@ -2,10 +2,12 @@ define(
     [
         'backbone',
         'underscore.string',
+        'comparators-mixin',
     ],
 function(
     Backbone,
-    _string
+    _string,
+    ComparatorsMixin
 ) {
 
     'use strict';
@@ -267,6 +269,8 @@ function(
                     return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ
                            &&
                            model.getPairedReadMetadataUuid() == undefined
+                           &&
+                           model.getQualityScoreMetadataUuid() == undefined
                            ;
                 });
 
