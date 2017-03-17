@@ -2860,7 +2860,7 @@ define([
                 },
                 yAxis: {
                     title: {
-                        text: 'Relative Read Counts'
+                        text: 'Relative (%) Read Counts'
                     },
                     labels: {
                         style: {
@@ -3024,7 +3024,7 @@ define([
                 },
                 yAxis: {
                     title: {
-                        text: 'Relative Read Counts'
+                        text: 'Relative (%) Read Counts'
                     },
                     labels: {
                         style: {
