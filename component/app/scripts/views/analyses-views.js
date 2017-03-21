@@ -712,7 +712,7 @@ define([
                 jobDetail: this.jobDetail.toJSON(),
                 projectFiles: this.collection.getProjectFileOutput(this.jobProcessMetadata).toJSON(),
                 //chartFiles: this.collection.getChartFileOutput().toJSON(),
-                logFiles: this.collection.getLogFileOutput().toJSON(),
+                logFiles: this.collection.getLogFileOutput(this.jobProcessMetadata).toJSON(),
                 analysisCharts: this.analysisCharts,
 
                 //outputFiles: this.collection.toJSON(),

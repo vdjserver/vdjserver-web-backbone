@@ -230,39 +230,49 @@ define([
 
             return newCollection;
         },
-        getLogFileOutput: function() {
+        getLogFileOutput: function(processMetadata) {
+            var pmFiles = [];
+            if (processMetadata) pmFiles = processMetadata.getLogAndMetadataFileList();
+
             var filteredCollection = this.filter(function(model) {
 
                 var value = model.get('value');
                 if (value.name) {
 
-                    var filename = value.name;
+                    // only those in process metadata
+                    if (processMetadata) {
+                        var idx = pmFiles.indexOf(value.name);
+                        if (idx >= 0) return true;
+                        else return false;
+                    } else {
+                        var filename = value.name;
 
-                    var fileNameSplit = filename.split('.');
-                    var fileExtension = fileNameSplit[fileNameSplit.length - 1];
+                        var fileNameSplit = filename.split('.');
+                        var fileExtension = fileNameSplit[fileNameSplit.length - 1];
 
-                    // Whitelisted files
-                    if (
-                        fileExtension === 'err'
-                        ||
-                        fileExtension === 'out'
-                        ||
-                        filename === 'vdjpipe_config.json'
-                        ||
-                        filename === 'vdjpipe_paired_config.json'
-                        ||
-                        filename === 'summary.txt'
-                        ||
-                        filename === 'merge_summary.txt'
-                        ||
-                        filename === 'process_metadata.json'
-                        ||
-                        filename === 'study_metadata.json'
-                    ) {
-                        return true;
-                    }
-                    else {
-                        return false;
+                        // Whitelisted files
+                        if (
+                            fileExtension === 'err'
+                            ||
+                            fileExtension === 'out'
+                            ||
+                            filename === 'vdjpipe_config.json'
+                            ||
+                            filename === 'vdjpipe_paired_config.json'
+                            ||
+                            filename === 'summary.txt'
+                            ||
+                            filename === 'merge_summary.txt'
+                            ||
+                            filename === 'process_metadata.json'
+                            ||
+                            filename === 'study_metadata.json'
+                        ) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
                     }
                 }
             });

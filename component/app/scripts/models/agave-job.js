@@ -382,6 +382,30 @@ function(
             return pmFiles;
         },
 
+        getLogAndMetadataFileList: function() {
+            var pmFiles = [];
+
+            var processMetadata = this.get('value');
+            if (!processMetadata) return pmFiles;
+            if (!processMetadata.process) return pmFiles;
+
+            if (processMetadata.groups[processMetadata.process.appName] &&
+                processMetadata.groups[processMetadata.process.appName]['log']) {
+                var fileKey = processMetadata.groups[processMetadata.process.appName]['log']['files'];
+                for (var fileEntry in processMetadata.files[fileKey]) {
+                    pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+                }
+            }
+
+            if (processMetadata.files['metadata']) {
+                for (var fileEntry in processMetadata.files['metadata']) {
+                    pmFiles.push(processMetadata.files['metadata'][fileEntry]['value']);
+                }
+            }
+
+            return pmFiles;
+        },
+
         getSampleKeyNameFromUuid: function(sampleUuid) {
             var processMetadata = this.get('value');
             if (!processMetadata) return null;
