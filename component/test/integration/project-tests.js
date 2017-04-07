@@ -184,7 +184,7 @@ define([
             ;
         });
 
-        it('Create project - authentication with bad token', function(done) {
+        it.skip('Create project - authentication with bad token', function(done) {
 
             var jqxhr = $.ajax({
                 contentType: 'application/json',
@@ -216,7 +216,7 @@ define([
             ;
         });
 
-        it('Create project - authentication with bad username', function(done) {
+        it.skip('Create project - authentication with bad username', function(done) {
 
             var jqxhr = $.ajax({
                 contentType: 'application/json',
@@ -248,7 +248,7 @@ define([
             ;
         });
 
-        it('Create project - no authentication', function(done) {
+        it.skip('Create project - no authentication', function(done) {
 
             var jqxhr = $.ajax({
                 contentType: 'application/json',
@@ -1491,7 +1491,7 @@ define([
             ;
         });
 
-        it('Add user to project - missing authorization', function(done) {
+        it.skip('Add user to project - missing authorization', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
@@ -1527,7 +1527,7 @@ define([
             ;
         });
 
-        it('Add user to project - authorization bad username', function(done) {
+        it.skip('Add user to project - authorization bad username', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
@@ -1562,7 +1562,7 @@ define([
             ;
         });
 
-        it('Add user to project - authorization bad token', function(done) {
+        it.skip('Add user to project - authorization bad token', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
@@ -1776,7 +1776,7 @@ define([
             ;
         });
 
-        it('Remove user from project - missing authorization', function(done) {
+        it.skip('Remove user from project - missing authorization', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
@@ -2413,7 +2413,7 @@ define([
                 ;
         });
 
-        it('Delete the project - unauthorized user', function(done) {
+        it.skip('Delete the project - unauthorized user', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
