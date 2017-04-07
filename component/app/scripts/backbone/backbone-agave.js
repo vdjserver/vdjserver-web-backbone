@@ -740,7 +740,7 @@ define([
 
                 case 'create':
                     options.type = 'POST';
-                    password = options.password;
+                    password = encodeURIComponent(options.password);
                     break;
 
                 case 'update':
