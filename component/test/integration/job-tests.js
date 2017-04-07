@@ -938,7 +938,7 @@ define([
                     // paginated fetch does not return response
 
                     console.log(jobFiles);
-                    assert.strictEqual(jobFiles.length, 19);
+                    assert.strictEqual(jobFiles.length, 21);
 
                     done();
                 })
@@ -1761,7 +1761,7 @@ define([
                     // paginated fetch does not return response
 
                     console.log(jobFiles);
-                    assert.strictEqual(jobFiles.length, 19);
+                    assert.strictEqual(jobFiles.length, 21);
 
                     done();
                 })
