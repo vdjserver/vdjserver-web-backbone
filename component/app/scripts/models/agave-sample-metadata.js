@@ -32,6 +32,8 @@ function(
             );
         },
         initialize: function(parameters) {
+            Backbone.Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
             if (parameters && parameters.projectUuid) {
                 this.projectUuid = parameters.projectUuid;
                 this.set('associationIds', [ parameters.projectUuid ]);

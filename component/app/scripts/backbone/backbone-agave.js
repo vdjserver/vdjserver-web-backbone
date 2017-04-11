@@ -163,9 +163,17 @@ define([
 
     // Agave extension of default Backbone.Model that uses Agave sync
     Agave.Model = Backbone.Model.extend({
-        initialize: function() {
+        initialize: function(parameters) {
             this.retrySyncEngine = Agave.sync;
             this.retrySyncLimit = 3;
+            this.communityMode = false;
+            if (parameters && parameters.communityMode) {
+                this.communityMode = parameters.communityMode;
+            }
+            if (this.communityMode) {
+                this.apiHost = EnvironmentConfig.vdjGuest.hostname;
+                this.requiresAuth = false;
+            }
         },
         apiHost: EnvironmentConfig.agave.hostname,
         authType: 'oauth',
@@ -185,9 +193,17 @@ define([
 
     // Agave extension of default Backbone.Collection that uses Agave sync
     Agave.Collection = Backbone.Collection.extend({
-        initialize: function() {
+        initialize: function(parameters) {
             this.retrySyncEngine = Agave.sync;
             this.retrySyncLimit = 3;
+            this.communityMode = false;
+            if (parameters && parameters.communityMode) {
+                this.communityMode = parameters.communityMode;
+            }
+            if (this.communityMode) {
+                this.apiHost = EnvironmentConfig.vdjGuest.hostname;
+                this.requiresAuth = false;
+            }
         },
         apiHost: EnvironmentConfig.agave.hostname,
         authType: 'oauth',
@@ -271,9 +287,16 @@ define([
             created: '',
             lastUpdated: '',
         },
-        initialize: function() {
+        initialize: function(parameters) {
             this.retrySyncEngine = Agave.PutOverrideSync;
             this.retrySyncLimit = 3;
+            if (parameters && parameters.communityMode) {
+                this.communityMode = parameters.communityMode;
+            }
+            if (this.communityMode) {
+                this.apiHost = EnvironmentConfig.vdjGuest.hostname;
+                this.requiresAuth = false;
+            }
         },
         sync: Backbone.RetrySync,
         getSaveUrl: function() {
@@ -740,7 +763,7 @@ define([
 
                 case 'create':
                     options.type = 'POST';
-                    password = options.password;
+                    password = encodeURIComponent(options.password);
                     break;
 
                 case 'update':

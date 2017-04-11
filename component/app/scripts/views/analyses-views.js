@@ -117,14 +117,14 @@ define([
         template: 'analyses/output-list',
         initialize: function(parameters) {
 
-            this.jobs = new Backbone.Agave.Collection.Jobs();
-            this.paginatedJobs = new Backbone.Agave.Collection.Jobs();
+            this.jobs = new Backbone.Agave.Collection.Jobs({communityMode: App.Routers.communityMode});
+            this.paginatedJobs = new Backbone.Agave.Collection.Jobs({communityMode: App.Routers.communityMode});
             this.jobs.projectUuid = this.projectUuid;
 
-            this.projectModel = new Backbone.Agave.Model.Project({ uuid: this.projectUuid});
+            this.projectModel = new Backbone.Agave.Model.Project({ uuid: this.projectUuid, communityMode: App.Routers.communityMode});
 
-            this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid});
-            this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: this.projectUuid});
+            this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid, communityMode: App.Routers.communityMode});
+            this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: this.projectUuid, communityMode: App.Routers.communityMode});
             this.showArchivedJobs = false;
 
             this.iteratorRange = 10;
@@ -173,8 +173,12 @@ define([
             pendingJobs.projectUuid = this.projectUuid;
 
 
-            $.when(this.jobs.fetch(), pendingJobs.fetch())
+            this.jobs.fetch()
                 // Add VDJ API pending jobs to Agave jobs
+                .then(function() {
+                    if (App.Routers.communityMode) return;
+                    else return pendingJobs.fetch();
+                })
                 .then(function() {
                     that.jobs.add(pendingJobs.toJSON());
 
@@ -251,7 +255,7 @@ define([
         },
 
         setPaginatedCollection: function() {
-            this.paginatedJobs = new Backbone.Agave.Collection.Jobs();
+            this.paginatedJobs = new Backbone.Agave.Collection.Jobs({communityMode: App.Routers.communityMode});
 
             var min = this.currentIterationIndex * this.iteratorRange - this.iteratorRange;
 
@@ -429,8 +433,8 @@ define([
               .on('shown.bs.modal', function() {
 
                 // see if any are deleted
-                var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId});
-                var jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: jobId});
+                var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId, communityMode: App.Routers.communityMode});
+                var jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: jobId, communityMode: App.Routers.communityMode});
 
                 var that = this;
                 fileCollection.fetch()
@@ -488,7 +492,7 @@ define([
               .on('shown.bs.modal', function() {
 
                 // see if any are deleted
-                var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId});
+                var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId, communityMode: App.Routers.communityMode});
 
                 var that = this;
                 fileCollection.fetch()
@@ -598,12 +602,12 @@ define([
             this.setView(loadingView);
             loadingView.render();
 
-            this.jobDetail = new Backbone.Agave.Model.Job.Detail({id: this.jobId});
-            this.jobListing = new Backbone.Agave.Model.Job.Listing({jobId: this.jobId});
+            this.jobDetail = new Backbone.Agave.Model.Job.Detail({id: this.jobId, communityMode: App.Routers.communityMode});
+            this.jobListing = new Backbone.Agave.Model.Job.Listing({jobId: this.jobId, communityMode: App.Routers.communityMode});
 
-            this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
+            this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId, communityMode: App.Routers.communityMode});
 
-            this.jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: this.jobId});
+            this.jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: this.jobId, communityMode: App.Routers.communityMode});
             this.validProcessMetadata = true;
 
             this.analysisCharts = [];
@@ -1042,11 +1046,11 @@ define([
             });
 
             // remove if it exists
-            if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
-              $(e.target.closest('tr')).next().remove();
+            if ($(e.target).closest('tr').next().is('tr[id^="chart-tr-"]')) {
+              $(e.target).closest('tr').next().remove();
             }
 
-            $(e.target.closest('tr')).after(
+            $(e.target).closest('tr').after(
                 '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
                     + '<td colspan=3>'
                         + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'

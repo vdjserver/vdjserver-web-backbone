@@ -2,6 +2,7 @@
     <div class="row">
         <div class="col-sm-9">
             <ul class="project-navbar-list text-left">
+                {{#if communityMode}}
                 <li class="project-navbar-item">
 
                     {{#unless projects}}
@@ -13,20 +14,25 @@
                         PROJECTS
                     </a>
                 </li>
+                {{/if}}
 
+<!--
                 <li class="project-navbar-item">
                     <a href="/software">
                         ACCESS SOURCE CODE
                     </a>
                 </li>
+-->
 
-<!--
+                {{#if communityMode}}
+                {{else}}
                 <li class="project-navbar-item">
                     <a href="/community">
                         COMMUNITY DATA
                     </a>
                 </li>
--->
+                {{/if}}
+
                 <li class="project-navbar-item">
                     <a href="/account/user-feedback">FEEDBACK</a>
                 </li>

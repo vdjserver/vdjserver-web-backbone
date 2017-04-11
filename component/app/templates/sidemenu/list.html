@@ -13,15 +13,18 @@
             </a>
     </li>
 
+    {{#if communityMode}}
+    {{else}}
     <li class="project-create-menu">
-        <a class="" href="/project/create">
-            + ADD PROJECT
-        </a>
+            <a class="" href="/project/create">
+                + ADD PROJECT
+            </a>
     </li>
+    {{/if}}
 
     {{#projects}}
         <li id="project-{{uuid}}-menu" class="project-menu" data-id="{{uuid}}">
-            <a href="/project/{{uuid}}" id="project-{{uuid}}" data-id="{{uuid}}">
+            <a href="/{{../routePath}}/{{uuid}}" id="project-{{uuid}}" data-id="{{uuid}}">
                 {{value.name}}
                 <div
                     id="project-{{uuid}}-notification"
@@ -32,37 +35,48 @@
         </li>
 
         <li class="project-submenu hidden {{uuid}}-section-4">
-            <a href="/project/{{uuid}}/settings" class="">
+            <a href="/{{../routePath}}/{{uuid}}/settings" class="">
                 Project Settings
             </a>
         </li>
 
         <li class="project-submenu hidden {{uuid}}-section-1">
-            <a href="/project/{{uuid}}" class="">
+            <a href="/{{../routePath}}/{{uuid}}" class="">
+                {{#if ../communityMode}}
+                Browse Project Data
+                {{else}}
                 Upload and Browse Project Data
+                {{/if}}
             </a>
         </li>
 
         <li class="project-submenu hidden {{uuid}}-section-7">
-            <a href="/project/{{uuid}}/metadata" class="">
+            <a href="/{{../routePath}}/{{uuid}}/metadata" class="">
+                {{#if ../communityMode}}
+                Metadata
+                {{else}}
                 Metadata Entry
+                {{/if}}
             </a>
         </li>
 
+    {{#if ../communityMode}}
+    {{else}}
         <li class="project-submenu hidden {{uuid}}-section-3">
-            <a href="/project/{{uuid}}/associations/qual" class="" data-id="{{uuid}}">
+            <a href="/{{../../routePath}}/{{uuid}}/associations/qual" class="" data-id="{{uuid}}">
                 Link .fasta/.qual Files
             </a>
         </li>
 
         <li class="project-submenu hidden {{uuid}}-section-2">
-            <a href="/project/{{uuid}}/associations/paired-reads" class="" data-id="{{uuid}}">
+            <a href="/{{../../routePath}}/{{uuid}}/associations/paired-reads" class="" data-id="{{uuid}}">
                 Link Paired Read Files
             </a>
         </li>
+    {{/if}}
 
         <li class="project-submenu hidden {{uuid}}-section-6">
-            <a href="/project/{{uuid}}/jobs" class="select-analyses" data-id="{{uuid}}">
+            <a href="/{{../routePath}}/{{uuid}}/jobs" class="select-analyses" data-id="{{uuid}}">
                 View Analyses and Results
             </a>
         </li>
