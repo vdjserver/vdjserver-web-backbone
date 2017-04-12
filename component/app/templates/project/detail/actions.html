@@ -14,6 +14,7 @@
                         id="upload-file-dropdown"
                         class="btn btn-success dropdown-toggle"
                         data-toggle="dropdown"
+                        {{communityModeDisable}}
                     >
                         <i class="fa fa-upload"></i>
                         &nbsp;&nbsp;Upload&nbsp;&nbsp;
@@ -64,9 +65,7 @@
                         class="btn btn-primary dropdown-toggle"
                         data-toggle="dropdown"
 
-                        {{#unless executionSystemsAvailable}}
-                            disabled
-                        {{/unless}}
+                        {{communityModeDisable}}
                     >
                         Run Job
                         <i class="fa fa-caret-down"></i>
@@ -157,6 +156,7 @@
                         id="file-action-button"
                         class="btn btn-primary disabled dropdown-toggle files-selected-button"
                         data-toggle="dropdown"
+                        {{communityModeDisable}}
                     >
                         File Actions
                         <i class="fa fa-caret-down"></i>

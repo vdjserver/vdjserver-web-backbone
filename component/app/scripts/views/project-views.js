@@ -163,6 +163,24 @@ define([
         return options.inverse(this);
     });
 
+    Handlebars.registerHelper('communityModeDisable', function() {
+
+        if (App.Routers.communityMode) {
+            return 'disabled';
+        } else {
+            return '';
+        }
+    });
+
+    Handlebars.registerHelper('communityModeReadOnly', function() {
+
+        if (App.Routers.communityMode) {
+            return 'readonly';
+        } else {
+            return '';
+        }
+    });
+
     var ProjectMixin = {
         _uiShowSaveSuccessAnimation: function(domSelector) {
 
@@ -647,6 +665,7 @@ define([
             return {
                 systems: this.systems.toJSON(),
                 executionSystemsAvailable: this.systems.largeExecutionSystemAvailable(),
+                communityMode: App.Routers.communityMode
             };
         },
 
@@ -1145,6 +1164,7 @@ define([
                     fileTypes: Backbone.Agave.Model.File.Metadata.getFileTypes(),
                     fileTypeNames: Backbone.Agave.Model.File.Metadata.getNamesForFileTypes(Backbone.Agave.Model.File.Metadata.getFileTypes()),
                     projectJobs: this.projectJobs.toJSON(),
+                    communityMode: App.Routers.communityMode
                 };
             },
             events: {
@@ -2127,6 +2147,7 @@ define([
             return {
                 project: this.model.toJSON(),
                 users: this.permissions.toJSON(),
+                communityMode: App.Routers.communityMode
             };
         },
         afterRender: function() {

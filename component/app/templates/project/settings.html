@@ -9,9 +9,9 @@
                     <label class="col-md-2 control-label">Project Name</label>
                     <div class="col-md-5">
                         <div class="input-group">
-                            <input class="form-control" type="text" value="{{project.value.name}}" id="project-name">
+                            <input class="form-control" type="text" value="{{project.value.name}}" id="project-name" {{communityModeReadOnly}}>
                             <span class="input-group-btn">
-                                <button id="save-project-name" class="btn btn-success" type="button">Save</button>
+                                <button id="save-project-name" class="btn btn-success" type="button" {{communityModeDisable}}>Save</button>
                             </span>
                         </div>
                     </div>
@@ -22,15 +22,21 @@
                     <label class="col-md-2 control-label">Project Description</label>
                     <div class="col-md-5">
                         <div class="input-group">
-                            <textarea class="form-control" id="project-description">{{project.value.description}}</textarea>
+                            <textarea class="form-control" id="project-description" {{communityModeReadOnly}}>{{project.value.description}}</textarea>
                             <span class="input-group-btn">
-                                <button id="save-project-description" class="btn btn-success" type="button">Save</button>
+                                <button id="save-project-description" class="btn btn-success" type="button" {{communityModeDisable}}>Save</button>
                             </span>
                         </div>
                     </div>
                 </div>
              </form>
              <form class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-2 control-label">VDJServer UUID</label>
+                    <div class="col-md-5">
+                        <span class="form-text-align">{{project.uuid}}</span>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="col-md-2 control-label">Created</label>
                     <div class="col-md-5">
@@ -50,6 +56,8 @@
                     {{/if}}
                 </div>
              </form>
+             {{#if communityMode}}
+             {{else}}
              <form id="project-delete-form" class="form-horizontal">
                 <div class="form-group">
                     <label class="col-md-2 control-label">Project Actions</label>
@@ -122,6 +130,7 @@
                     </ul>
 
             </form>
+            {{/if}}
             <div>
                 <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
@@ -156,9 +165,9 @@
             <form class="form-inline" role="form">
                 <div class="form-group">
                     <label class="sr-only" for="add-username">Username</label>
-                        <input type="text" id="add-username" class="form-control" placeholder="Enter username...">
+                        <input type="text" id="add-username" class="form-control" placeholder="Enter username..." {{communityModeReadOnly}}>
                 </div>
-                <button class="btn btn-success" id="add-user">Add user to project</button>
+                <button class="btn btn-success" id="add-user" {{communityModeDisable}}>Add user to project</button>
             </form>
         </div>
     </div>
@@ -183,11 +192,14 @@
                                 {{this.username}}
                             </td>
                             <td>
+                                {{#if ../communityMode}}
+                                {{else}}
                                 {{#ManageUsersShouldDisableDelete this}}
                                     <button class="btn btn-danger remove-user-from-project" data-id="{{username}}" disabled="disabled">Delete</button>
                                 {{else}}
                                     <button class="btn btn-danger remove-user-from-project" data-id="{{username}}">Delete</button>
                                 {{/ManageUsersShouldDisableDelete}}
+                                {{/if}}
                             </td>
                         </tr>
                     {{/users}}
