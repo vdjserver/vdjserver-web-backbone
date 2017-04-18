@@ -163,6 +163,20 @@ define([
         return options.inverse(this);
     });
 
+    Handlebars.registerHelper('if3Or', function(v1, v2, v3, options) {
+
+        if (_.isArray(v1) && _.isArray(v2) && _.isArray(v3)) {
+            if (v1.length > 0 || v2.length > 0 || v3.length > 0) {
+                return options.fn(this);
+            }
+        }
+        else if (v1 || v2 || v3) {
+            return options.fn(this);
+        }
+
+        return options.inverse(this);
+    });
+
     var ProjectMixin = {
         _uiShowSaveSuccessAnimation: function(domSelector) {
 
@@ -1054,19 +1068,30 @@ define([
 
                 this.parentView.setView('#project-files', filesView);
                 filesView.render();
+
+                var headerView = new Projects.DetailHeader(subviewParameters);
+                this.parentView.setView('#project-header', headerView);
+                headerView.render();
             }
             else {
 
                 var filteredFileListings = this.projectFiles.search(searchString);
+                var filteredJobFileListings = this.projectJobFiles.search(searchString);
 
                 // results
-                if (filteredFileListings.length > 0) {
+                if (filteredFileListings.length > 0 || filteredJobFileListings.length > 0) {
                     subviewParameters.projectFiles = filteredFileListings;
+                    subviewParameters.projectJobFiles = filteredJobFileListings;
 
                     filesView = new Projects.DetailFiles(subviewParameters);
 
                     this.parentView.setView('#project-files', filesView);
                     filesView.render();
+
+                    var headerView = new Projects.DetailHeader(subviewParameters);
+                    this.parentView.setView('#project-header', headerView);
+                    headerView.render();
+
                 }
                 // no results
                 else {
@@ -1393,6 +1418,8 @@ define([
                     this.singleReadFileListings.models.length === 0
                     &&
                     this.pairedReads.length === 0
+                    &&
+                    this.projectJobs.length === 0
                 ) {
                     // Drag and Drop Listeners
                     var dropZone = document.getElementById('drag-and-drop-box');
