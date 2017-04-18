@@ -750,8 +750,8 @@ define([
 
             $('html, body').animate({scrollTop: offset}, 1000);
 
-            $(e.target.closest('tr')).next().hide(1500, function(){
-              $(e.target.closest('tr')).next().remove();
+            $(e.target).closest('tr').next().hide(1500, function(){
+              $(e.target).closest('tr').next().remove();
             });
         },
 
@@ -789,7 +789,7 @@ define([
                 + '</tr>'
             }
 
-            $(e.target.closest('tr')).after(htmlCode);
+            $(e.target).closest('tr').after(htmlCode);
 
             $(e.target).addClass('hidden');
             $(e.target).prev('.hide-log').removeClass('hidden');
@@ -1020,8 +1020,8 @@ define([
 
             $('html, body').animate({scrollTop: offset}, 1000);
 
-            $(e.target.closest('tr')).next().hide(1500, function(){
-              $(e.target.closest('tr')).next().remove();
+            $(e.target).closest('tr').next().hide(1500, function(){
+              $(e.target).closest('tr').next().remove();
             });
         },
 
@@ -1042,11 +1042,11 @@ define([
             });
 
             // remove if it exists
-            if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
-              $(e.target.closest('tr')).next().remove();
+            if ($(e.target).closest('tr').next().is('tr[id^="chart-tr-"]')) {
+              $(e.target).closest('tr').next().remove();
             }
 
-            $(e.target.closest('tr')).after(
+            $(e.target).closest('tr').after(
                 '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
                     + '<td colspan=3>'
                         + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'

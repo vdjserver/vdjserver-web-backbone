@@ -459,7 +459,7 @@ define([
             ;
         });
 
-        it('Create Account - login before verified', function(done) {
+        it.skip('Create Account - login before verified', function(done) {
 
             //data.username = 'vdj-test-eff7';
             assert.isDefined(data.username, 'this test requires username from prior test');
@@ -1110,7 +1110,7 @@ define([
 
       describe('Account change password', function()  {
 
-        it('Change password, unauthorized', function(done) {
+        it.skip('Change password, unauthorized', function(done) {
 
             // simulate form data
             var formData = {
@@ -1190,7 +1190,7 @@ define([
                 ;
         });
 
-        it('Change password with garbage authorization', function(done) {
+        it.skip('Change password with garbage authorization', function(done) {
 
             // simulate form data
             var formData = {
@@ -1230,7 +1230,7 @@ define([
             ;
         });
 
-        it('Change password with bad access token', function(done) {
+        it.skip('Change password with bad access token', function(done) {
 
             // simulate form data
             var formData = {
@@ -1341,7 +1341,7 @@ define([
             ;
         });
 
-        it('Change password with wrong password', function(done) {
+        it.skip('Change password with wrong password', function(done) {
 
             // simulate form data
             var formData = {
