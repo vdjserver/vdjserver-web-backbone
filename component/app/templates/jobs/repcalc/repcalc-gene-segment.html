@@ -1,6 +1,6 @@
 {{> repcalc-base-view-top}}
   <div class="row col-md-10 col-md-offset-1">
-  This module calculates gene segment usage for gene types, gene families, genes and alleles.
+  This module calculates gene segment usage and combinations for gene types, gene families, genes and alleles.
   </div>
   <input class="hidden" name="gene-segment-usage" value="true">
 
@@ -13,6 +13,14 @@
     </label>
     <label class="checkbox-inline">
       <input type="checkbox" name="gs-relative" checked>Relative Counts
+    </label>
+  </div>
+  <div class="row col-md-offset-1">
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-vj-combo" checked>VJ Combinations
+    </label>
+    <label class="checkbox-inline">
+      <input type="checkbox" name="gs-vdj-combo" checked>VDJ Combinations
     </label>
   </div>
 
