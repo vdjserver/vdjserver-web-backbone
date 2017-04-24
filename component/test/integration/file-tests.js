@@ -270,7 +270,7 @@ define([
 
         it('Upload file from URL', function(done) {
 
-            this.timeout(100000);
+            this.timeout(200000);
 
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             var model = data.project;
