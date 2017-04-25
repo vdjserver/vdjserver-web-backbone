@@ -25,8 +25,8 @@ function(
             var jqxhr = $.ajax({
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    newPassword: this.get('newPassword'),
-                    password: this.get('password'),
+                    newPassword: encodeURIComponent(this.get('newPassword')),
+                    password: encodeURIComponent(this.get('password')),
                 }),
                 headers: Backbone.Agave.basicAuthHeader(),
                 type: 'POST',

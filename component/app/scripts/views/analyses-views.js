@@ -656,7 +656,7 @@ define([
                             case('vdjPipe'):
                             case('presto'):
                                 for (var group in that.processMetadata.groups) {
-                                    console.log(group);
+                                    //console.log(group);
                                     var chart = new Analyses.Statistics({selectAnalyses: that, groupId: group});
                                     if (chart.isValid) {
                                         that.analysisCharts.push({ groupId: group });
@@ -712,7 +712,7 @@ define([
                 jobDetail: this.jobDetail.toJSON(),
                 projectFiles: this.collection.getProjectFileOutput(this.jobProcessMetadata).toJSON(),
                 //chartFiles: this.collection.getChartFileOutput().toJSON(),
-                logFiles: this.collection.getLogFileOutput().toJSON(),
+                logFiles: this.collection.getLogFileOutput(this.jobProcessMetadata).toJSON(),
                 analysisCharts: this.analysisCharts,
 
                 //outputFiles: this.collection.toJSON(),
@@ -750,8 +750,8 @@ define([
 
             $('html, body').animate({scrollTop: offset}, 1000);
 
-            $(e.target.closest('tr')).next().hide(1500, function(){
-              $(e.target.closest('tr')).next().remove();
+            $(e.target).closest('tr').next().hide(1500, function(){
+              $(e.target).closest('tr').next().remove();
             });
         },
 
@@ -789,7 +789,7 @@ define([
                 + '</tr>'
             }
 
-            $(e.target.closest('tr')).after(htmlCode);
+            $(e.target).closest('tr').after(htmlCode);
 
             $(e.target).addClass('hidden');
             $(e.target).prev('.hide-log').removeClass('hidden');
@@ -1020,8 +1020,8 @@ define([
 
             $('html, body').animate({scrollTop: offset}, 1000);
 
-            $(e.target.closest('tr')).next().hide(1500, function(){
-              $(e.target.closest('tr')).next().remove();
+            $(e.target).closest('tr').next().hide(1500, function(){
+              $(e.target).closest('tr').next().remove();
             });
         },
 
@@ -1042,11 +1042,11 @@ define([
             });
 
             // remove if it exists
-            if ($(e.target.closest('tr')).next().is('tr[id^="chart-tr-"]')) {
-              $(e.target.closest('tr')).next().remove();
+            if ($(e.target).closest('tr').next().is('tr[id^="chart-tr-"]')) {
+              $(e.target).closest('tr').next().remove();
             }
 
-            $(e.target.closest('tr')).after(
+            $(e.target).closest('tr').after(
                 '<tr id="chart-tr-' + classSelector  + '" style="height: 0px;">'
                     + '<td colspan=3>'
                         + '<div id="' + classSelector + '" class="svg-container ' + classSelector + '">'
@@ -1382,10 +1382,15 @@ define([
             }
             if (CDR3Histogram) {
                 this.isValid = true;
-                this.chartFiles.push({ id: 'cdr3_length',
+                this.chartFiles.push({ id: 'cdr3_aa_length',
                                        type: 'cdr3_length',
-                                       name: 'CDR3 Length Histogram',
-                                       view: Analyses.Charts.CDR3,
+                                       name: 'CDR3 (AA) Length Histogram',
+                                       view: Analyses.Charts.CDR3AA,
+                                       files: [], samples: [], sampleGroups: [], cachedGroups: {} });
+                this.chartFiles.push({ id: 'cdr3_na_length',
+                                       type: 'cdr3_length',
+                                       name: 'CDR3 (NA) Length Histogram',
+                                       view: Analyses.Charts.CDR3NA,
                                        files: [], samples: [], sampleGroups: [], cachedGroups: {} });
             }
             if (clonalAbundance) {
@@ -1395,13 +1400,13 @@ define([
                                        name: 'Clonal Abundance',
                                        view: Analyses.Charts.ClonalAbundance,
                                        files: [], samples: [], sampleGroups: [], cachedGroups: {},
-                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/26069265' });
+                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/?term=28179494+26589402+26069265+25675496+24618469+22641856+24298272%5Buid%5D' });
                 this.chartFiles.push({ id: 'clonal_cumulative_abundance',
                                        type: 'clonal_abundance',
                                        name: 'Clonal Cumulative Abundance',
                                        view: Analyses.Charts.ClonalCumulative,
                                        files: [], samples: [], sampleGroups: [], cachedGroups: {},
-                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/26069265' });
+                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/?term=28179494+26589402+26069265+25675496+24618469+22641856+24298272%5Buid%5D' });
             }
             if (diversityCurve) {
                 this.isValid = true;
@@ -1410,7 +1415,7 @@ define([
                                        name: 'Diversity Curve',
                                        view: Analyses.Charts.DiversityCurve,
                                        files: [], samples: [], sampleGroups: [], cachedGroups: {},
-                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/26069265' });
+                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/?term=28179494+26589402+26069265+25675496+24618469+22641856+24298272%5Buid%5D' });
             }
             if (selectionPressure) {
                 this.isValid = true;
@@ -1419,7 +1424,7 @@ define([
                                        name: 'Selection Pressure',
                                        view: Analyses.Charts.SelectionPressure,
                                        files: [], samples: [], sampleGroups: [], cachedGroups: {},
-                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/26069265' });
+                                       citation: 'https://www.ncbi.nlm.nih.gov/pubmed/?term=28179494+26589402+26069265+25675496+24618469+22641856+24298272%5Buid%5D' });
             }
 
             if (this.isValid) {
@@ -2860,7 +2865,7 @@ define([
                 },
                 yAxis: {
                     title: {
-                        text: 'Relative Read Counts'
+                        text: 'Relative (%) Read Counts'
                     },
                     labels: {
                         style: {
@@ -2911,7 +2916,7 @@ define([
 
     };
 
-    Analyses.Charts.CDR3 = {
+    Analyses.Charts.CDR3AA = {
 
         chartFilenames: function(chartId, jobProcessMetadata) {
             var filenames = {};
@@ -3024,7 +3029,141 @@ define([
                 },
                 yAxis: {
                     title: {
-                        text: 'Relative Read Counts'
+                        text: 'Relative (%) Read Counts'
+                    },
+                    labels: {
+                        style: {
+                            color: '#000000'
+                        },
+                        formatter: function () {
+                            return this.value;
+                        }
+                    },
+                },
+                legend: {
+                    enabled: false
+                },
+                series: myData,
+            });
+
+            return chart;
+        },
+    };
+
+    Analyses.Charts.CDR3NA = {
+
+        chartFilenames: function(chartId, jobProcessMetadata) {
+            var filenames = {};
+
+            var processMetadata = jobProcessMetadata.get('value');
+            var groups = processMetadata.groups;
+            var files = processMetadata.files;
+
+            for (var i = 0; i < chartId['files'].length; ++i) {
+                var g = chartId['files'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['nucleotide']['value'];
+            }
+
+            for (var i = 0; i < chartId['samples'].length; ++i) {
+                var g = chartId['samples'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['nucleotide']['value'];
+            }
+
+            for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
+                var g = chartId['sampleGroups'][i];
+                var group = groups[g][chartId.type];
+                if (group) filenames[g] = files[group['files']]['nucleotide']['value'];
+            }
+
+            return filenames;
+        },
+
+        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+
+            var processMetadata = jobProcessMetadata.get('value');
+            var myData = [];
+
+            for (var i = 0; i < chartGroups.length; ++i) {
+                var group = chartGroups[i];
+                var text = cachedGroups[group];
+                var cdr3Data = d3.tsv.parse(text);
+                var groupType = processMetadata.groups[group]['type'];
+
+                var groupName = group;
+                for (var j = 0; j < chartGroupNames.length; ++j) {
+                    var n = chartGroupNames[j];
+                    if (n.id == group) {
+                        groupName = n.name;
+                        break;
+                    }
+                }
+
+                // build series
+                var series = {
+                  //id: group + '.CDR3_LENGTH',
+                  type: 'column',
+                  name: groupName,
+                  data: new Array()
+                };
+
+                for (var j = 0; j < cdr3Data.length; j++) {
+                    var length = cdr3Data[j]['CDR3_LENGTH'];
+                    var dataPoint = cdr3Data[j]['CDR3_RELATIVE'];
+
+                    series.data.push([parseInt(length), parseFloat(dataPoint)]);
+                }
+
+                myData.push(series);
+
+                if (groupType == 'sampleGroup') {
+                    var errorSeries = {
+                        type: 'errorbar',
+                        name: groupName + ' error',
+                        data: new Array()
+                    };
+
+                    for (var j = 0; j < cdr3Data.length; j++) {
+                        var length = cdr3Data[j]['CDR3_LENGTH'];
+                        var dataPoint = parseFloat(cdr3Data[j]['CDR3_RELATIVE']);
+                        var stdError = parseFloat(cdr3Data[j]['CDR3_RELATIVE_STD']);
+
+                        errorSeries.data.push([parseInt(length), dataPoint - stdError, dataPoint + stdError]);
+                    }
+                    myData.push(errorSeries);
+                }
+            }
+
+            Highcharts.setOptions({
+              lang: {
+                thousandsSep: ','
+              }
+            });
+
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: classSelector,
+                    type: 'column',
+                },
+                title: {
+                    text: ''
+                },
+                credits: {
+                   enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                xAxis: {
+                    title: {
+                        text: 'CDR3 Length'
+                    },
+                    tickInterval: 1
+                },
+                yAxis: {
+                    title: {
+                        text: 'Relative (%) Read Counts'
                     },
                     labels: {
                         style: {

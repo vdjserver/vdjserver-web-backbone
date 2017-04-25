@@ -119,7 +119,7 @@ define([
                     that.model
                         .save({
                             username: formData.username,
-                            password: formData.password,
+                            password: encodeURIComponent(formData.password),
                             email:    formData.email,
                         })
                         .always(function() {

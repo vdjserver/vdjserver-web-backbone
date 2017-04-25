@@ -1,24 +1,13 @@
 {{> vdjpipe-base-view-top}}
 
-    <div class="row row-with-spacer">
-        <div class="col-md-6">
-
-            <div class="row row-with-spacer">
-                <div class="col-md-12">
-                    Output Filename
-                    &nbsp;
-                    <input
-                        class="job-form-item"
-                        name="{{parameterType}}-out-prefix"
-                        placeholder="text"
-                        type="text"
-                        value="{{options.out_prefix}}"
-                    >
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            This module saves the processed sequence reads into the specified output filename. Demultiplexing will generate multiple files based upon the barcode names prefixed with the specified output filename.
+    <div class="row">
+        <div class="col-md-12">
+            <p>
+            This module saves the processed sequence reads. These are the total reads before any read sequence collapsing is performed.
+            </p>
+            <p>
+            If Barcode Demultiplexing is enabled and Split is enabled then multiple files will be generated based upon the barcode names, otherwise all sequences will be put in a single file.
+            </p>
         </div>
     </div>
 

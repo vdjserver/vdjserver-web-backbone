@@ -230,39 +230,49 @@ define([
 
             return newCollection;
         },
-        getLogFileOutput: function() {
+        getLogFileOutput: function(processMetadata) {
+            var pmFiles = [];
+            if (processMetadata) pmFiles = processMetadata.getLogAndMetadataFileList();
+
             var filteredCollection = this.filter(function(model) {
 
                 var value = model.get('value');
                 if (value.name) {
 
-                    var filename = value.name;
+                    // only those in process metadata
+                    if (processMetadata) {
+                        var idx = pmFiles.indexOf(value.name);
+                        if (idx >= 0) return true;
+                        else return false;
+                    } else {
+                        var filename = value.name;
 
-                    var fileNameSplit = filename.split('.');
-                    var fileExtension = fileNameSplit[fileNameSplit.length - 1];
+                        var fileNameSplit = filename.split('.');
+                        var fileExtension = fileNameSplit[fileNameSplit.length - 1];
 
-                    // Whitelisted files
-                    if (
-                        fileExtension === 'err'
-                        ||
-                        fileExtension === 'out'
-                        ||
-                        filename === 'vdjpipe_config.json'
-                        ||
-                        filename === 'vdjpipe_paired_config.json'
-                        ||
-                        filename === 'summary.txt'
-                        ||
-                        filename === 'merge_summary.txt'
-                        ||
-                        filename === 'process_metadata.json'
-                        ||
-                        filename === 'study_metadata.json'
-                    ) {
-                        return true;
-                    }
-                    else {
-                        return false;
+                        // Whitelisted files
+                        if (
+                            fileExtension === 'err'
+                            ||
+                            fileExtension === 'out'
+                            ||
+                            filename === 'vdjpipe_config.json'
+                            ||
+                            filename === 'vdjpipe_paired_config.json'
+                            ||
+                            filename === 'summary.txt'
+                            ||
+                            filename === 'merge_summary.txt'
+                            ||
+                            filename === 'process_metadata.json'
+                            ||
+                            filename === 'study_metadata.json'
+                        ) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
                     }
                 }
             });
@@ -420,14 +430,12 @@ define([
                     'workflow-name': 'Single Read',
                     'steps': [
                         'sequenceType',
-                        'outputFilePrefix',
                         'qualityLengthFilter',
                         'barcode',
                         'UMI',
                         'forwardPrimer',
                         'reversePrimer',
                         'findUnique',
-                        'finalOutputFilename',
                     ],
                 },
             ];
@@ -502,20 +510,12 @@ define([
                             'min_score': 10,
                         },
                     },
-                    {
-                        'merge_write_sequence': {
-                            'out_prefix': '',
-                            'out_path': 'merged.fastq',
-                        }
-                    },
                 ],
             };
 
             return config;
         },
         getWorkflows: function() {
-            var tmpName = (Math.round(Math.random() * 0x10000)).toString(16);
-
             var workflows = [
                 {
                     'workflow-name': 'All Processing Steps',
@@ -553,17 +553,11 @@ define([
                             'post_statistics': {},
                         },
                         {
-                            'find_shared': {
-                                'out_prefix': 'unique-' + tmpName,
-                                'out_group_unique':'.fasta',
-                                'group_variable': 'MID1',
-                                'out_group_duplicates': 'unique_duplicates.tsv',
+                            'write_sequence': {
                             },
                         },
                         {
-                            'write_sequence': {
-                                'out_prefix': 'final_reads-' + tmpName,
-                                'out_path':'.fastq',
+                            'find_shared': {
                             },
                         },
                     ],
@@ -601,8 +595,6 @@ define([
                         },
                         {
                             'write_sequence': {
-                                'out_prefix': 'filtered_reads-' + tmpName,
-                                'out_path':'.fastq',
                             },
                         },
                     ],
@@ -618,8 +610,6 @@ define([
                         },
                         {
                             'write_sequence': {
-                                'out_prefix': '',
-                                'out_path':'.fastq',
                             },
                         },
                     ],
@@ -637,8 +627,6 @@ define([
                         },
                         {
                             'write_sequence': {
-                                'out_prefix': 'primer_trimmed_reads-' + tmpName,
-                                'out_path':'.fastq',
                             },
                         },
                     ],
@@ -650,10 +638,6 @@ define([
                     'steps': [
                         {
                             'find_shared': {
-                                'out_prefix': 'unique-' + tmpName,
-                                'out_group_unique':'.fasta',
-                                'group_variable': 'MID1',
-                                'out_group_duplicates': 'unique_duplicates.tsv',
                             },
                         },
                     ],
@@ -673,325 +657,6 @@ define([
             return workflows;
         },
     });
-
-/*
-    Jobs.VdjpipeWorkflows = Backbone.Agave.MetadataCollection.extend({
-
-        // Public Methods
-        model: Backbone.Agave.Model.Job.VdjpipeWorkflow,
-        url: function() {
-            return '/meta/v2/data?q='
-                + encodeURIComponent('{'
-                    + '"name":"vdjpipeWorkflow"'
-                + '}')
-                + '&limit=' + this.limit
-                + '&offset=' + this.offset
-                ;
-        },
-        getWorkflowNames: function() {
-            var values = this.pluck('value');
-
-            var workflowNames = _.pluck(values, 'workflowName');
-
-            return workflowNames;
-        },
-        checkIfPredefinedWorkflow: function(workflowName) {
-
-            var predefinedWorkflowNames = this._getPredefinedWorkflowNames();
-            var predefinedClash = _.indexOf(predefinedWorkflowNames, workflowName);
-
-            if (predefinedClash >= 0) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        },
-        setPredefinedWorkflows: function() {
-
-            // unique identifier to add to output filenames
-            var tmpName = (Math.round(Math.random() * 0x10000)).toString(16);
-
-            // single function workflows
-            var preconfiguredWorkflows = this._preconfiguredWorkflows(tmpName);
-            for (var i = 0; i < preconfiguredWorkflows.length; i++) {
-                var preconfiguredWorkflow = preconfiguredWorkflows[i];
-
-                var workflow = new Backbone.Agave.Model.Job.VdjpipeWorkflow();
-                workflow.sync = workflow.fakeSync;
-                workflow.set('predefined', true);
-                workflow.set('single', true);
-
-                workflow.setConfigFromPreconfiguredData(preconfiguredWorkflow);
-                this.unshift(workflow);
-            }
-
-            // complete workflows
-            var preconfiguredCompleteWorkflows = this._preconfiguredCompleteWorkflows(tmpName);
-            for (var j = 0; j < preconfiguredCompleteWorkflows.length; j++) {
-                var preconfiguredCompleteWorkflow = preconfiguredCompleteWorkflows[j];
-
-                var completeWorkflow = new Backbone.Agave.Model.Job.VdjpipeWorkflow();
-                completeWorkflow.sync = completeWorkflow.fakeSync;
-                completeWorkflow.set('predefined', true);
-                completeWorkflow.set('complete', true);
-
-                completeWorkflow.setConfigFromPreconfiguredData(preconfiguredCompleteWorkflow);
-                this.unshift(completeWorkflow);
-            }
-        },
-
-        // Private Methods
-        _preconfiguredCompleteWorkflows: function(tmpName) {
-
-            var workflows = [
-
-                {
-                    'workflow-name': 'All Processing Steps',
-                    'summary_output_path': 'summary.txt',
-                    'steps': [
-                        {
-                            'quality_stats': {
-                                'out_prefix': 'pre-filter_',
-                            },
-                        },
-                        {
-                            'composition_stats': {
-                                'out_prefix': 'pre-filter_',
-                            },
-                        },
-                        {
-                            'match': {
-                                'reverse': true,
-                                'elements': [
-                                    {
-                                        'max_mismatches': 1,
-                                        'required': true,
-                                        'start': {},
-                                        'cut_lower': {
-                                            'after': 0,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                        {
-                            'custom_v_primer_trimming': {},
-                        },
-                        {
-                            'custom_j_primer_trimming': {},
-                        },
-                        {
-                            'length_filter': {
-                                //'min': 200,
-                                'min': 0,
-                            },
-                        },
-                        {
-                            'average_quality_filter': {
-                                'custom_value': 35,
-                            },
-                        },
-                        {
-                            'homopolymer_filter': {
-                                'custom_value': 20,
-                            },
-                        },
-                        {
-                            'quality_stats': {
-                                'out_prefix': 'post-filter_',
-                            },
-                        },
-                        {
-                            'composition_stats': {
-                                'out_prefix': 'post-filter_',
-                            },
-                        },
-                        {
-                            'find_shared': {
-                                'out_prefix': 'unique-' + tmpName,
-                                'out_group_unique':'.fasta',
-                                'group_variable': 'MID1',
-                                'out_group_duplicates': 'unique_duplicates.tsv',
-                            },
-                        },
-                        {
-                            'write_sequence': {
-                                'out_prefix': 'final_reads-' + tmpName,
-                                'out_path':'.fastq',
-                            },
-                        },
-                    ],
-                },
-
-            ];
-
-            return workflows;
-        },
-        _preconfiguredWorkflows: function(tmpName) {
-
-            var workflows = [
-
-                {
-                    'workflow-name': 'Merge Paired Reads',
-                    'summary_output_path': 'summary.txt',
-                    'steps': [
-                    ],
-                },
-
-                {
-                    'workflow-name': 'Find Unique Sequences',
-                    'summary_output_path': 'unique_summary.txt',
-                    'steps': [
-                        {
-                            'find_shared': {
-                                'out_prefix': 'unique-' + tmpName,
-                                'out_group_unique':'.fasta',
-                                'group_variable': 'MID1',
-                                'out_group_duplicates': 'unique_duplicates.tsv',
-                            },
-                        },
-                    ],
-                },
-
-                {
-                    'workflow-name': 'Primer Triming',
-                    'summary_output_path': 'primer_summary.txt',
-                    'steps': [
-                        {
-                            'custom_v_primer_trimming': {},
-                        },
-                        {
-                            'custom_j_primer_trimming': {},
-                        },
-                        {
-                            'write_sequence': {
-                                'out_prefix': 'primer_trimmed_reads-' + tmpName,
-                                'out_path':'.fastq',
-                            },
-                        },
-                    ],
-                },
-
-                {
-                    'workflow-name': 'Barcode Demultiplexing',
-                    'summary_output_path': 'barcode_summary.txt',
-                    'steps': [
-                        {
-                            'match': {
-                                'reverse': true,
-                                'elements': [
-                                    {
-                                        'max_mismatches': 1,
-                                        'required': true,
-                                        'start': {},
-                                        'cut_lower': {
-                                            'after': 0,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                        {
-                            'write_sequence': {
-                                'out_prefix': '',
-                                'out_path':'.fastq',
-                            },
-                        },
-                    ],
-                },
-
-                {
-                    'workflow-name': 'Sequence Filters',
-                    'summary_output_path': 'filter_summary.txt',
-                    'steps': [
-                        {
-                            'length_filter': {
-                                //'min': 200,
-                                'min': 0,
-                            },
-                        },
-                        {
-                            'average_quality_filter': {
-                                'custom_value': 35,
-                            },
-                        },
-                        {
-                            'homopolymer_filter': {
-                                'custom_value': 20,
-                            },
-                        },
-                        {
-                            'write_sequence': {
-                                'out_prefix': 'filtered_reads-' + tmpName,
-                                'out_path':'.fastq',
-                            },
-                        },
-                    ],
-                },
-
-                {
-                    'workflow-name': 'Sequence Statistics',
-                    'summary_output_path': 'stats_summary.txt',
-                    'steps': [
-                        {
-                            'quality_stats': {
-                                'out_prefix': 'stats_',
-                            },
-                        },
-                        {
-                            'composition_stats': {
-                                'out_prefix': 'stats_',
-                            },
-                        },
-                    ],
-                },
-
-            ];
-
-            return workflows;
-        },
-        _getPredefinedWorkflowNames: function() {
-            var predefinedWorkflowNames = [
-                'Merge Paired Reads',
-                'Find Unique Sequences',
-                'Primer Trimming',
-                'Barcode Demultiplexing',
-                'Sequence Filters',
-                'Sequence Statistics',
-                //'Paired Reads',
-            ];
-
-            return predefinedWorkflowNames;
-        },
-        getMergePairedReadsConfig: function() {
-            var config = {
-                'workflow-name': 'Merge Paired Reads',
-                'summary_output_path': 'merge_summary.txt',
-                'paired_reads': true,
-                'steps': [
-                    {
-                        'merge_paired': {
-                            'min_score': 10,
-                        },
-                    },
-                    {
-                        'apply': {
-                            'to': 'merged',
-                            'step': {
-                                'write_sequence': {
-                                    'out_prefix': '',
-                                    'out_path': 'merged.fastq',
-                                }
-                            }
-                        },
-                    },
-                ],
-            };
-
-            return config;
-        },
-    }); */
 
     Backbone.Agave.Collection.Jobs = Jobs;
     return Jobs;

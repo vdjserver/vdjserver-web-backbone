@@ -257,7 +257,7 @@ define([
                 var value = this.jobMetadata.get('value');
                 value.displayName = name;
                 this.jobMetadata.set('value', value);
-                this.jobMetadata.save()
+                this.jobMetadata.save(undefined, { url: this.jobMetadata.getSaveUrl() })
                     .always(function() {
                         $('#rename-modal')
                           .modal('hide')

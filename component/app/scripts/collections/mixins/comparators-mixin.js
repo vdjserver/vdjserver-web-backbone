@@ -23,6 +23,24 @@ define([
         return 0;
     };
 
+    Comparators.Name = {};
+    Comparators.Name.comparator = function(modelA, modelB) {
+        var modelAValue = modelA.get('value');
+        var modelBValue = modelB.get('value');
+
+        if (modelAValue && modelAValue.name && modelBValue && modelBValue.name) {
+            if (modelAValue.name < modelBValue.name) {
+                return -1;
+            }
+            if (modelBValue.name < modelAValue.name) {
+                return 1;
+            }
+        }
+
+        // Equal
+        return 0;
+    };
+
     App.Mixins.Comparators = Comparators;
     return Comparators;
 });

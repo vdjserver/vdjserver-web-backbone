@@ -2,10 +2,12 @@ define(
     [
         'backbone',
         'underscore.string',
+        'comparators-mixin',
     ],
 function(
     Backbone,
-    _string
+    _string,
+    ComparatorsMixin
 ) {
 
     'use strict';
@@ -267,6 +269,8 @@ function(
                     return model.getFileType() === Backbone.Agave.Model.File.fileTypeCodes.FILE_TYPE_READ
                            &&
                            model.getPairedReadMetadataUuid() == undefined
+                           &&
+                           model.getQualityScoreMetadataUuid() == undefined
                            ;
                 });
 
@@ -609,7 +613,7 @@ function(
                     return shouldIncludeNameDecorator && shouldIncludeTagDecorator && shouldIncludeGeneralSearch;
                 });
 
-                var searchCollection = new Files.Metadata(filteredModels);
+                var searchCollection = new this.constructor(filteredModels);
 
                 // Add in fasta/qual models
                 searchCollection = this._searchResultRestoreQualAssociable(filteredModels, searchCollection);
@@ -677,6 +681,12 @@ function(
 
                 if (model.get('value').name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1) {
                     matchFound = true;
+                }
+
+                if (model.get('description')) {
+                    if (model.get('description').toLowerCase().indexOf(searchValue.toLowerCase()) > -1) {
+                        matchFound = true;
+                    }
                 }
 
                 return matchFound;
