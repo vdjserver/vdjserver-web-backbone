@@ -361,7 +361,7 @@ define([
                 ;
         });
 
-        it('Import subject metadata - missing authorization', function(done) {
+        it.skip('Import subject metadata - missing authorization', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.subjectMetadataFile, 'this test requires subject metadata file from prior test');
 
@@ -402,7 +402,7 @@ define([
             ;
         });
 
-        it('Import subject metadata - authorization bad username', function(done) {
+        it.skip('Import subject metadata - authorization bad username', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.subjectMetadataFile, 'this test requires subject metadata file from prior test');
 
@@ -442,7 +442,7 @@ define([
             ;
         });
 
-        it('Import subject metadata - authorization bad token', function(done) {
+        it.skip('Import subject metadata - authorization bad token', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.subjectMetadataFile, 'this test requires subject metadata file from prior test');
 
@@ -482,7 +482,7 @@ define([
             ;
         });
 
-        it('Export subject metadata - missing authorization', function(done) {
+        it.skip('Export subject metadata - missing authorization', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
 
             var model = data.project;
@@ -516,7 +516,7 @@ define([
             ;
         });
 
-        it('Export subject metadata - authorization bad username', function(done) {
+        it.skip('Export subject metadata - authorization bad username', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
 
             var model = data.project;
@@ -549,7 +549,7 @@ define([
             ;
         });
 
-        it('Export subject metadata - authorization bad token', function(done) {
+        it.skip('Export subject metadata - authorization bad token', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
 
             var model = data.project;
@@ -617,7 +617,7 @@ define([
                 ;
         });
 
-        it('Import subject metadata - unauthorized user', function(done) {
+        it.skip('Import subject metadata - unauthorized user', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             assert.isDefined(data.subjectMetadataFile, 'this test requires subject metadata file from prior test');
 
@@ -647,7 +647,7 @@ define([
                 ;
         });
 
-        it('Export subject metadata - unauthorized user', function(done) {
+        it.skip('Export subject metadata - unauthorized user', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
 
             var model = data.project;
@@ -1552,7 +1552,7 @@ define([
                 ;
         });
 
-        it('Sync metadata permissions with project - missing authorization', function(done) {
+        it.skip('Sync metadata permissions with project - missing authorization', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
 
@@ -1591,7 +1591,7 @@ define([
             ;
         });
 
-        it('Sync metadata permissions with project - authorization bad username', function(done) {
+        it.skip('Sync metadata permissions with project - authorization bad username', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
 
@@ -1630,7 +1630,7 @@ define([
             ;
         });
 
-        it('Sync metadata permissions with project - authorization bad token', function(done) {
+        it.skip('Sync metadata permissions with project - authorization bad token', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
 
@@ -1669,7 +1669,7 @@ define([
             ;
         });
 
-        it('Sync metadata permissions with project - invalid project uuid', function(done) {
+        it.skip('Sync metadata permissions with project - invalid project uuid', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
 
@@ -1708,7 +1708,7 @@ define([
             ;
         });
 
-        it('Sync metadata permissions with project - invalid metadata uuid', function(done) {
+        it.skip('Sync metadata permissions with project - invalid metadata uuid', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
 
@@ -1747,7 +1747,7 @@ define([
             ;
         });
 
-        it('Import sample metadata - missing authorization', function(done) {
+        it.skip('Import sample metadata - missing authorization', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.sampleMetadataFile, 'this test requires sample metadata file from prior test');
 
@@ -1788,7 +1788,7 @@ define([
             ;
         });
 
-        it('Import sample metadata - authorization bad username', function(done) {
+        it.skip('Import sample metadata - authorization bad username', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.sampleMetadataFile, 'this test requires sample metadata file from prior test');
 
@@ -1828,7 +1828,7 @@ define([
             ;
         });
 
-        it('Import sample metadata - authorization bad token', function(done) {
+        it.skip('Import sample metadata - authorization bad token', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.sampleMetadataFile, 'this test requires sample metadata file from prior test');
 
@@ -1868,7 +1868,7 @@ define([
             ;
         });
 
-        it('Export sample metadata - missing authorization', function(done) {
+        it.skip('Export sample metadata - missing authorization', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
 
             var model = data.project;
@@ -1902,7 +1902,7 @@ define([
             ;
         });
 
-        it('Export sample metadata - authorization bad username', function(done) {
+        it.skip('Export sample metadata - authorization bad username', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
 
             var model = data.project;
@@ -1935,7 +1935,7 @@ define([
             ;
         });
 
-        it('Export sample metadata - authorization bad token', function(done) {
+        it.skip('Export sample metadata - authorization bad token', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
 
             var model = data.project;
@@ -2003,7 +2003,7 @@ define([
                 ;
         });
 
-        it('Import sample metadata - unauthorized user', function(done) {
+        it.skip('Import sample metadata - unauthorized user', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             assert.isDefined(data.sampleMetadataFile, 'this test requires sample metadata file from prior test');
 
@@ -2033,7 +2033,7 @@ define([
                 ;
         });
 
-        it('Export sample metadata - unauthorized user', function(done) {
+        it.skip('Export sample metadata - unauthorized user', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
 
             var model = data.project;
@@ -2062,7 +2062,7 @@ define([
                 ;
         });
 
-        it('Sync metadata permissions with project - unauthorized user', function(done) {
+        it.skip('Sync metadata permissions with project - unauthorized user', function(done) {
             assert.isDefined(data.project, 'this test requires the project from prior test');
             assert.isDefined(data.subjectColsUuid, 'this test requires the subjectColumns uuid from prior test');
 

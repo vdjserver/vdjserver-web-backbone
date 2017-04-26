@@ -555,9 +555,9 @@ function(
                     metaList.push(fileMetadata.get('uuid'));
                 }
                 if (useSecondary)
-                    secondaryInputs['VDJMLFileMetadata'] = metaList;
+                    secondaryInputs['VDJMLFilesMetadata'] = metaList;
                 else
-                    parameters['VDJMLFileMetadata'] = metaList;
+                    parameters['VDJMLFilesMetadata'] = metaList;
 
                 var metaList = [];
                 for (var i = 0; i < SummaryFileMetadatas.models.length; i++) {
@@ -565,9 +565,9 @@ function(
                     metaList.push(fileMetadata.get('uuid'));
                 }
                 if (useSecondary)
-                    secondaryInputs['SummaryFileMetadata'] = metaList;
+                    secondaryInputs['SummaryFilesMetadata'] = metaList;
                 else
-                    parameters['SummaryFileMetadata'] = metaList;
+                    parameters['SummaryFilesMetadata'] = metaList;
 
                 var metaList = [];
                 for (var i = 0; i < ChangeOFileMetadatas.models.length; i++) {
@@ -575,9 +575,9 @@ function(
                     metaList.push(fileMetadata.get('uuid'));
                 }
                 if (useSecondary)
-                    secondaryInputs['ChangeOFileMetadata'] = metaList;
+                    secondaryInputs['ChangeOFilesMetadata'] = metaList;
                 else
-                    parameters['ChangeOFileMetadata'] = metaList;
+                    parameters['ChangeOFilesMetadata'] = metaList;
 
                 if (useSecondary) {
                     // currently no project files and just one job
@@ -601,8 +601,13 @@ function(
                     list = [];
                     if (formData['gs-absolute']) list.push('absolute');
                     if (formData['gs-relative']) list.push('relative');
-                    if (formData['gs-average']) list.push('average');
+                    if (formData['gs-vj-combo'] || formData['gs-vdj-combo'] ) list.push('combo');
                     if (list.length > 0) parameters['GeneSegmentOperations'] = list;
+
+                    list = [];
+                    if (formData['gs-vj-combo']) list.push('vj');
+                    if (formData['gs-vdj-combo']) list.push('vdj');
+                    if (list.length > 0) parameters['GeneSegmentLevels'] = list;
 
                     list = [];
                     if (formData['filter-productive']) list.push('productive');
@@ -614,8 +619,16 @@ function(
                     parameters['CDR3Flag'] = true;
 
                     list = [];
-                    if (formData['cdr3-nucleotide']) list.push('nucleotide');
-                    if (formData['cdr3-aa']) list.push('aa');
+                    if (formData['cdr3-nucleotide']) {
+                        list.push('nucleotide');
+                        if (formData['cdr3-v']) list.push('v,nucleotide');
+                        if (formData['cdr3-vj']) list.push('v,nucleotide');
+                    }
+                    if (formData['cdr3-aa']) {
+                        list.push('aa');
+                        if (formData['cdr3-v']) list.push('v,aa');
+                        if (formData['cdr3-vj']) list.push('v,aa');
+                    }
                     if (list.length > 0) parameters['CDR3Levels'] = list;
 
                     list = [];
@@ -623,7 +636,6 @@ function(
                     if (formData['cdr3-relative']) list.push('relative');
                     if (formData['cdr3-length']) list.push('length');
                     if (formData['cdr3-shared']) list.push('shared');
-                    if (formData['cdr3-unique']) list.push('unique');
                     if (list.length > 0) parameters['CDR3Operations'] = list;
 
                     list = [];

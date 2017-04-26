@@ -50,6 +50,13 @@ define(['app', 'backbone.syphon'], function(App) {
                 return false;
             }
 
+	    if (this.model.get('newPassword')) {
+		this.model.set('newPassword', encodeURIComponent(this.model.get('newPassword')));
+	    }
+            if (this.model.get('passwordCheck')) {
+                this.model.set('passwordCheck', encodeURIComponent(this.model.get('passwordCheck')));
+            }
+
             // Reset modal view - otherwise it inadvertently gets duplicated
             this.setupModalView();
 
