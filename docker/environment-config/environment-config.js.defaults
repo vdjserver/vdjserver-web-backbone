@@ -36,7 +36,7 @@ var EnvironmentConfig = {
                     'hostname': 'stampede.tacc.utexas.edu',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-stampede-0.1.7u3',
-                        'igBlast': 'igblast-stampede-1.4u4',
+                        'igBlast': 'igblast-stampede-1.4u5',
                         'RepCalc': 'repcalc-stampede-1.0u4'
                     },
                     'type': 'large',
