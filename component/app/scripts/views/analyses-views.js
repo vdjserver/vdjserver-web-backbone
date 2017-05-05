@@ -3696,6 +3696,8 @@ define([
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
+            var categories = [ 'CDR', 'FWR', 'CDR1', 'CDR2', 'CDR3', 'FWR1', 'FWR2', 'FWR3' ];
+
 
             for (var i = 0; i < chartGroups.length; ++i) {
                 var group = chartGroups[i];
@@ -3703,6 +3705,11 @@ define([
                 if (!text) continue;
                 var data = d3.tsv.parse(text);
                 var groupType = processMetadata.groups[group]['type'];
+
+                var dataByCat = {};
+                for (var j = 0; j < data.length; j++) {
+                    dataByCat[data[j]['REGION']] = categories.indexOf(data[j]['REGION']);
+                }
 
                 var groupName = group;
                 for (var j = 0; j < chartGroupNames.length; ++j) {
@@ -3726,9 +3733,13 @@ define([
                   data: new Array()
                 };
 
-                for (var j = 0; j < data.length; j++) {
-                    var dataPoint = data[j]['BASELINE_SIGMA'];
-                    var pvalue = data[j]['BASELINE_CI_PVALUE'];
+                for (var j = 0; j < categories.length; j++) {
+                    var idx = dataByCat[categories[j]];
+                    var dataPoint = 0.0, pvalue = 0.0;
+                    if (idx >= 0) {
+                        dataPoint = data[idx]['BASELINE_SIGMA'];
+                        pvalue = data[idx]['BASELINE_CI_PVALUE'];
+                    }
 
                     series.data.push({y: parseFloat(dataPoint), pvalue: parseFloat(pvalue)});
                 }
@@ -3741,9 +3752,13 @@ define([
                     data: new Array()
                 };
 
-                for (var j = 0; j < data.length; j++) {
-                    var lower = parseFloat(data[j]['BASELINE_CI_LOWER']);
-                    var upper = parseFloat(data[j]['BASELINE_CI_UPPER']);
+                for (var j = 0; j < categories.length; j++) {
+                    var idx = dataByCat[categories[j]];
+                    var lower = 0.0, upper = 0.0;
+                    if (idx >= 0) {
+                        lower = parseFloat(data[j]['BASELINE_CI_LOWER']);
+                        upper = parseFloat(data[j]['BASELINE_CI_UPPER']);
+                    }
 
                     errorSeries.data.push([lower, upper]);
                 }
@@ -3774,7 +3789,7 @@ define([
                     title: {
                         text: 'Selection Pressure'
                     },
-                    categories: [ 'CDR', 'FWR', 'CDR1', 'CDR2', 'FWR1', 'FWR2', 'FWR3' ],
+                    categories: categories,
                     tickInterval: 1
                 },
                 yAxis: {
