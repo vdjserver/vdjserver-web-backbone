@@ -56,8 +56,6 @@
                     {{/if}}
                 </div>
              </form>
-             {{#if communityMode}}
-             {{else}}
              <form id="project-delete-form" class="form-horizontal">
                 <div class="form-group">
                     <label class="col-md-2 control-label">Project Actions</label>
@@ -76,7 +74,7 @@
                         role="menu"
                     >
                       {{#if project.value.showArchivedJobs}}
-                        <li class="project-actions">
+                        <li class="project-actions {{communityModeDisable}}">
                             <a
                                 class="switch-archived-jobs"
                                 href="#"
@@ -86,7 +84,7 @@
                             </a>
                         </li>
                       {{else}}
-                        <li class="project-actions">
+                        <li class="project-actions {{communityModeDisable}}">
                             <a
                                 class="switch-archived-jobs"
                                 href="#"
@@ -107,7 +105,18 @@
                             </a>
                         </li>
 
-                        <li class="project-actions">
+                        {{#if communityMode}}
+                        <li class="project-actions {{#unless allowUnpublish}}disabled{{/unless}}">
+                            <a
+                                class="unpublish-project"
+                                href="#"
+                                data-bypass=true
+                            >
+                                Unpublish Project
+                            </a>
+                        </li>
+                        {{else}}
+                        <li class="project-actions {{communityModeDisable}}">
                             <a
                                 class="publish-project"
                                 href="#"
@@ -116,8 +125,9 @@
                                 Publish Project
                             </a>
                         </li>
+                        {{/if}}
 
-                        <li class="project-actions">
+                        <li class="project-actions {{communityModeDisable}}">
                             <a
                                 id="launch-delete-project-modal"
                                 class="launch-delete-project"
@@ -130,7 +140,6 @@
                     </ul>
 
             </form>
-            {{/if}}
             <div>
                 <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
@@ -210,3 +219,4 @@
 </div>
 
 <section id="project-publish"></section>
+<section id="project-unpublish"></section>

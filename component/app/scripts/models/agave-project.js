@@ -78,7 +78,7 @@ function(
         unpublishProject: function() {
             var jqxhr = $.ajax({
                 headers: Backbone.Agave.basicAuthHeader(),
-                type: 'POST',
+                type: 'PUT',
                 url: EnvironmentConfig.vdjApi.hostname
                     + '/projects/' + this.get('uuid') + '/unpublish'
             });

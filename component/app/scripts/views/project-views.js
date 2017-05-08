@@ -2128,6 +2128,7 @@ define([
             this.permissions = new Backbone.Agave.Collection.Permissions({uuid: this.projectUuid, communityMode: App.Routers.communityMode});
             this.tenantUsers = new Backbone.Agave.Collection.TenantUsers({communityMode: App.Routers.communityMode});
             this.model = new Backbone.Agave.Model.Project({communityMode: App.Routers.communityMode});
+            this.allowUnpublish = false;
 
             var that = this;
 
@@ -2171,10 +2172,20 @@ define([
 
         },
         serialize: function() {
+            // the service account or an original project user can unpublish
+            if (App.Routers.communityMode && this.model && this.model.get('name') == 'publicProject' && App.Agave.token().isActive()) {
+                if (Backbone.Agave.instance.token().get('username') == EnvironmentConfig.agave.serviceAccountUsername) this.allowUnpublish = true;
+                for (var i = 0; i < this.permissions.length; ++i) {
+                    var m = this.permissions.at(i);
+                    if (m.get('username') == Backbone.Agave.instance.token().get('username')) this.allowUnpublish = true;
+                }
+            }
+
             return {
                 project: this.model.toJSON(),
                 users: this.permissions.toJSON(),
-                communityMode: App.Routers.communityMode
+                communityMode: App.Routers.communityMode,
+                allowUnpublish: this.allowUnpublish
             };
         },
         afterRender: function() {
@@ -2208,6 +2219,8 @@ define([
         // Event Responders
         _launchDeleteProjectModal: function(e) {
             e.preventDefault();
+
+            if (App.Routers.communityMode) return;
 
             $('#delete-modal').modal('show');
         },
@@ -2260,6 +2273,8 @@ define([
         _switchArchivedJobs: function(e) {
             e.preventDefault();
 
+            if (App.Routers.communityMode) return;
+
             var value = this.model.get('value');
 
             if (value.showArchivedJobs) value.showArchivedJobs = false;
@@ -2283,6 +2298,8 @@ define([
         },
         _deleteProject: function(e) {
             e.preventDefault();
+
+            if (App.Routers.communityMode) return;
 
             // Note: Agave currently returns what backbone considers to be the 'wrong' http status code
             this.model.destroy()
@@ -2317,6 +2334,8 @@ define([
         _publishProject: function(e) {
             e.preventDefault();
 
+            if (App.Routers.communityMode) return;
+
             this.removeView('#project-publish');
 
             var publishProjectView = new App.Views.Projects.Publish({
@@ -2326,6 +2345,22 @@ define([
 
             this.setView('#project-publish', publishProjectView);
             publishProjectView.render();
+        },
+
+        _unpublishProject: function(e) {
+            e.preventDefault();
+
+            if (!this.allowUnpublish) return;
+
+            this.removeView('#project-unpublish');
+
+            var unpublishProjectView = new App.Views.Projects.Unpublish({
+                project: this.model,
+                parentView: this
+            });
+
+            this.setView('#project-unpublish', unpublishProjectView);
+            unpublishProjectView.render();
         },
 
         // User Private Methods
@@ -2554,6 +2589,96 @@ define([
                 });
 
                 this.setView('#publish-processing-view', alertView);
+                alertView.render();
+            }
+        },
+
+    });
+
+    Projects.Unpublish = Backbone.View.extend({
+        // Public Methods
+        template: 'project/unpublish-project',
+        initialize: function(parameters) {
+            this.project = parameters.project;
+            this.parentView = parameters.parentView;
+        },
+        events: {
+            'click #submit-unpublish': '_submitForm',
+            'click #unpublish-exit': '_exitForm',
+        },
+        serialize: function() {
+            return {
+                project: this.project.toJSON(),
+            };
+        },
+        afterRender: function() {
+            $('#unpublish-modal').modal('show');
+            $('#unpublish-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+
+        _exitForm: function(e) {
+            e.preventDefault();
+
+            var that = this;
+            $('#unpublish-modal').on('hidden.bs.modal', function(e) {
+                // force reload of page
+                App.router.navigate('/project', {
+                    trigger: true,
+                });
+            });
+        },
+
+        _submitForm: function(e) {
+            e.preventDefault();
+
+            $('.unpublish-submit-button').addClass('disabled');
+
+            var that = this;
+            this.project.unpublishProject()
+                .then(function() {
+                    that._uiDoneView();
+                })
+                .fail(function(error) {
+                    if (error.responseText) that._uiDoneView(error.responseText);
+                    else that._uiDoneView('Unknown server error.');
+
+                    var telemetry = new Backbone.Agave.Model.Telemetry();
+                    telemetry.setError(error);
+                    telemetry.set('projectId', that.project.get('uuid'));
+                    telemetry.set('method', '_submitForm()');
+                    telemetry.set('view', 'Projects.Unpublish');
+                    telemetry.save();
+                })
+                ;
+        },
+
+        _uiDoneView: function(error) {
+            this.removeView('#unpublish-processing-view');
+
+            $('#unpublish-processing-view').removeClass('alert alert-info');
+            $('.unpublish-submit-button').addClass('hidden');
+            $('#unpublish-exit').removeClass('hidden');
+
+            if (error) {
+                $('#unpublish-processing-view').addClass('alert alert-danger');
+                var msg = 'There was an error unpublishing the project.<br/>';
+                msg += error + '<br/>';
+                $('#unpublish-processing-view').append(msg);
+            } else {
+                var message = new App.Models.MessageModel({
+                    'body': 'Unpublish project has been started! You will receive an email when it is done.'
+                });
+
+                var alertView = new App.Views.Util.Alert({
+                    options: {
+                        type: 'success'
+                    },
+                    model: message
+                });
+
+                this.setView('#unpublish-processing-view', alertView);
                 alertView.render();
             }
         },
