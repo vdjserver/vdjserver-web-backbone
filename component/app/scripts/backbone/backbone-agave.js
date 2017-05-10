@@ -716,6 +716,8 @@ define([
     // job history is not normal Agave metadata
     Agave.JobHistory = Agave.Model.extend({
         initialize: function(parameters) {
+            Backbone.Agave.Model.prototype.initialize.apply(this, [parameters]);
+
             if (parameters && parameters.jobUuid) {
                 this.jobUuid = parameters.jobUuid;
             }

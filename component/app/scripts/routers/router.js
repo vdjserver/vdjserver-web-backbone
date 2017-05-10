@@ -250,6 +250,10 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Layouts.main = new App.Views.Layouts.MainLayout();
+            App.Layouts.sidebar = new App.Views.Layouts.SidebarLayout();
+            App.Layouts.content = new App.Views.Layouts.ContentLayout();
+
             App.Routers.currentRouteView = 'projectIndex';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
@@ -417,9 +421,9 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
-            //App.Layouts.main = new App.Views.Layouts.MainLayout();
-            //App.Layouts.sidebar = new App.Views.Layouts.SidebarLayout();
-            //App.Layouts.content = new App.Views.Layouts.ContentLayout();
+            App.Layouts.main = new App.Views.Layouts.MainLayout();
+            App.Layouts.sidebar = new App.Views.Layouts.SidebarLayout();
+            App.Layouts.content = new App.Views.Layouts.ContentLayout();
 
             App.Routers.currentRouteView = 'projectIndex';
             destinationRoute();

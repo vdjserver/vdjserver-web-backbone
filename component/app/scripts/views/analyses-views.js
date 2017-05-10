@@ -110,6 +110,24 @@ define([
         return chartText;
     });
 
+    Handlebars.registerHelper('communityModeDisable', function() {
+
+        if (App.Routers.communityMode) {
+            return 'disabled';
+        } else {
+            return '';
+        }
+    });
+
+    Handlebars.registerHelper('communityModeReadOnly', function() {
+
+        if (App.Routers.communityMode) {
+            return 'readonly';
+        } else {
+            return '';
+        }
+    });
+
     var Analyses = {};
     Analyses.Charts = {};
 
@@ -152,10 +170,14 @@ define([
             'click .unarchive-job': 'unarchiveJob',
         },
         serialize: function() {
+            var routePath = 'project';
+            if (App.Routers.communityMode) routePath = 'community';
             return {
                 jobs: this.paginatedJobs.toJSON(),
                 projectUuid: this.projectUuid,
                 paginationSets: this.paginationSets,
+                routePath: routePath,
+                communityMode: App.Routers.communityMode,
             };
         },
         afterRender: function() {
@@ -180,7 +202,7 @@ define([
                     else return pendingJobs.fetch();
                 })
                 .then(function() {
-                    that.jobs.add(pendingJobs.toJSON());
+                    if (!App.Routers.communityMode) that.jobs.add(pendingJobs.toJSON());
 
                     return that.projectModel.fetch();
                 })
@@ -255,7 +277,7 @@ define([
         },
 
         setPaginatedCollection: function() {
-            this.paginatedJobs = new Backbone.Agave.Collection.Jobs({communityMode: App.Routers.communityMode});
+            this.paginatedJobs = new Backbone.Agave.Collection.Jobs();
 
             var min = this.currentIterationIndex * this.iteratorRange - this.iteratorRange;
 
@@ -722,6 +744,7 @@ define([
                 //outputFiles: this.collection.toJSON(),
                 canDownloadFiles: this.canDownloadFiles,
                 projectUuid: this.projectUuid,
+                communityMode: App.Routers.communityMode,
             };
         },
         events: {
@@ -804,7 +827,8 @@ define([
 
             fileHandle.downloadFileToCache()
                 .then(function(tmpFileData) {
-                    tmpFileData = tmpFileData.replace(/\n/g, '<br>');
+                    if (typeof tmpFileData == 'object') tmpFileData = JSON.stringify(tmpFileData, null, 2);
+                    else tmpFileData = tmpFileData.replace(/\n/g, '<br>');
 
                     fileData = tmpFileData;
                 })
@@ -944,6 +968,7 @@ define([
             this.chartHeight = 360;
             this.isComparison = true;
             this.isValid = false;
+            this.inputDescription = '';
 
             if (this.groupId) {
               // we are using process metadata
@@ -956,6 +981,7 @@ define([
                       var filename = pm.files[fileKey]['composition']['value'];
                       var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
                       if (!fileHandle) this.isValid = false;
+                      this.inputDescription = filename.replace('.stats_composition.csv','');
                   }
                   if ((key == 'pre')  && (pm.groups[this.groupId][key]['type'] == 'statistics')) {
                       this.isValid = true;
@@ -964,6 +990,7 @@ define([
                       var filename = pm.files[fileKey]['composition']['value'];
                       var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
                       if (!fileHandle) this.isValid = false;
+                      this.inputDescription = filename.replace('.pre-filter_composition.csv','');
                   }
               }
             } else {
@@ -992,6 +1019,7 @@ define([
         serialize: function() {
             return {
                 chartFiles: this.chartFiles,
+                inputDescription: this.inputDescription
                 //canDownloadFiles: this.canDownloadFiles,
                 //projectUuid: this.projectUuid,
             };
@@ -3700,6 +3728,8 @@ define([
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
+            var categories = [ 'CDR', 'FWR', 'CDR1', 'CDR2', 'CDR3', 'FWR1', 'FWR2', 'FWR3' ];
+
 
             for (var i = 0; i < chartGroups.length; ++i) {
                 var group = chartGroups[i];
@@ -3707,6 +3737,11 @@ define([
                 if (!text) continue;
                 var data = d3.tsv.parse(text);
                 var groupType = processMetadata.groups[group]['type'];
+
+                var dataByCat = {};
+                for (var j = 0; j < data.length; j++) {
+                    dataByCat[data[j]['REGION']] = categories.indexOf(data[j]['REGION']);
+                }
 
                 var groupName = group;
                 for (var j = 0; j < chartGroupNames.length; ++j) {
@@ -3730,9 +3765,13 @@ define([
                   data: new Array()
                 };
 
-                for (var j = 0; j < data.length; j++) {
-                    var dataPoint = data[j]['BASELINE_SIGMA'];
-                    var pvalue = data[j]['BASELINE_CI_PVALUE'];
+                for (var j = 0; j < categories.length; j++) {
+                    var idx = dataByCat[categories[j]];
+                    var dataPoint = 0.0, pvalue = 0.0;
+                    if (idx >= 0) {
+                        dataPoint = data[idx]['BASELINE_SIGMA'];
+                        pvalue = data[idx]['BASELINE_CI_PVALUE'];
+                    }
 
                     series.data.push({y: parseFloat(dataPoint), pvalue: parseFloat(pvalue)});
                 }
@@ -3745,9 +3784,13 @@ define([
                     data: new Array()
                 };
 
-                for (var j = 0; j < data.length; j++) {
-                    var lower = parseFloat(data[j]['BASELINE_CI_LOWER']);
-                    var upper = parseFloat(data[j]['BASELINE_CI_UPPER']);
+                for (var j = 0; j < categories.length; j++) {
+                    var idx = dataByCat[categories[j]];
+                    var lower = 0.0, upper = 0.0;
+                    if (idx >= 0) {
+                        lower = parseFloat(data[j]['BASELINE_CI_LOWER']);
+                        upper = parseFloat(data[j]['BASELINE_CI_UPPER']);
+                    }
 
                     errorSeries.data.push([lower, upper]);
                 }
@@ -3778,7 +3821,7 @@ define([
                     title: {
                         text: 'Selection Pressure'
                     },
-                    categories: [ 'CDR', 'FWR', 'CDR1', 'CDR2', 'FWR1', 'FWR2', 'FWR3' ],
+                    categories: categories,
                     tickInterval: 1
                 },
                 yAxis: {

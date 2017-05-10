@@ -213,18 +213,35 @@ function(
             downloadFileToCache: function() {
 
                 var value = this.get('value');
-                var url = EnvironmentConfig.agave.hostname
+                var url, jqxhr;
+
+                if (this.collection.communityMode) {
+                    url = EnvironmentConfig.vdjGuest.hostname
+                         + '/files/v2/media//community/'
+                         + value.projectUuid
+                         + '/analyses/'
+                         + value.relativeArchivePath
+                         + '/' + value.name;
+
+                    jqxhr = Backbone.Agave.ajax({
+                        type:    'GET',
+                        url:     url,
+                    });
+                } else {
+                    url = EnvironmentConfig.agave.hostname
                          + '/jobs'
                          + '/v2'
                          + '/' + value.jobUuid
                          + '/outputs/media/'
                          + '/' + value.name;
 
-                var jqxhr = Backbone.Agave.ajax({
-                    headers: Backbone.Agave.oauthHeader(),
-                    type:    'GET',
-                    url:     url,
-                });
+                    jqxhr = Backbone.Agave.ajax({
+                        headers: Backbone.Agave.oauthHeader(),
+                        type:    'GET',
+                        url:     url,
+                    });
+                }
+
                 return jqxhr;
             },
             downloadFileToDisk: function() {

@@ -132,9 +132,11 @@ define([
             },
             loadViewForIndex: function() {
                 if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                    App.router.navigate('/project/create', {
-                        trigger: true
-                    });
+                    if (!App.Routers.communityMode) {
+                        App.router.navigate('/project/create', {
+                            trigger: true
+                        });
+                    }
                 }
                 else {
                     var projectModel = App.Datastore.Collection.ProjectCollection.at(0);
