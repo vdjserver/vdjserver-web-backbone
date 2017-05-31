@@ -688,6 +688,8 @@ define([
             if (fileSize === undefined) return;
             if (executionLevels === undefined) return;
             if (appName === undefined) return;
+            if (EnvironmentConfig.agave.systems.defaultNodeCount[appName])
+                this.set('nodeCount', EnvironmentConfig.agave.systems.nodeCount[appName]);
 
             var levelList = executionLevels[appName];
             if (levelList === undefined) return;
@@ -705,6 +707,7 @@ define([
                         'executionSystem': EnvironmentConfig.agave.systems.execution[executionSystem].hostname,
                         'maxRunTime': level['time'],
                     });
+                    if (level['nodeCount']) this.set('nodeCount', level['nodeCount']);
 
                     break;
                 }
