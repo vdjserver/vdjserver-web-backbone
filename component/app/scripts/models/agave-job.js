@@ -639,12 +639,12 @@ function(
                     if (formData['cdr3-nucleotide']) {
                         list.push('nucleotide');
                         if (formData['cdr3-v']) list.push('v,nucleotide');
-                        if (formData['cdr3-vj']) list.push('v,nucleotide');
+                        if (formData['cdr3-vj']) list.push('vj,nucleotide');
                     }
                     if (formData['cdr3-aa']) {
                         list.push('aa');
                         if (formData['cdr3-v']) list.push('v,aa');
-                        if (formData['cdr3-vj']) list.push('v,aa');
+                        if (formData['cdr3-vj']) list.push('vj,aa');
                     }
                     if (list.length > 0) parameters['CDR3Levels'] = list;
 
