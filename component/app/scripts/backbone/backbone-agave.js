@@ -688,7 +688,7 @@ define([
             if (fileSize === undefined) return;
             if (executionLevels === undefined) return;
             if (appName === undefined) return;
-            if (EnvironmentConfig.agave.systems.defaultNodeCount[appName])
+            if (EnvironmentConfig.agave.systems.nodeCount[appName])
                 this.set('nodeCount', EnvironmentConfig.agave.systems.nodeCount[appName]);
 
             var levelList = executionLevels[appName];
