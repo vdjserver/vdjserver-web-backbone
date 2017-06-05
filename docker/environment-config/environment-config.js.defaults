@@ -18,9 +18,9 @@ var EnvironmentConfig = {
                     'hostname': 'ls5.tacc.utexas.edu',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-ls5-0.1.7u7',
-                        'igBlast': 'igblast-ls5-1.4u4',
+                        'igBlast': 'igblast-ls5-1.4u6',
                         'presto': 'presto-ls5-0.5u3',
-                        'RepCalc': 'repcalc-ls5-1.0u4'
+                        'RepCalc': 'repcalc-ls5-1.0u5'
                     },
                     'type': 'large',
                 },
@@ -36,8 +36,8 @@ var EnvironmentConfig = {
                     'hostname': 'stampede.tacc.utexas.edu',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-stampede-0.1.7u3',
-                        'igBlast': 'igblast-stampede-1.4u4',
-                        'RepCalc': 'repcalc-stampede-1.0u4'
+                        'igBlast': 'igblast-stampede-1.4u7',
+                        'RepCalc': 'repcalc-stampede-1.0u5'
                     },
                     'type': 'large',
                 },
