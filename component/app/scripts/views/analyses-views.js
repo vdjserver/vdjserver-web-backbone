@@ -30,7 +30,7 @@ define([
 
     Handlebars.registerHelper('IsJobFrozen', function(data, options) {
 
-        if (data.status !== 'FINISHED') {
+        /* if (data.status !== 'FINISHED') {
             var now = moment();
 
             var submitDate = moment(data['submitTime']);
@@ -39,7 +39,7 @@ define([
             if (cutoffTime.isBefore(now)) {
                 return options.fn(data);
             }
-        }
+        } */
 
         return options.inverse(data);
     });
