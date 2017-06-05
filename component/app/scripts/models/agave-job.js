@@ -406,11 +406,12 @@ function(
             if (!processMetadata) return pmFiles;
             if (!processMetadata.process) return pmFiles;
 
-            if (processMetadata.groups[processMetadata.process.appName] &&
-                processMetadata.groups[processMetadata.process.appName]['log']) {
-                var fileKey = processMetadata.groups[processMetadata.process.appName]['log']['files'];
-                for (var fileEntry in processMetadata.files[fileKey]) {
-                    pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+            for (var groupEntry in processMetadata.groups) {
+                if (processMetadata.groups[groupEntry]['log']) {
+                    var fileKey = processMetadata.groups[groupEntry]['log']['files'];
+                    for (var fileEntry in processMetadata.files[fileKey]) {
+                        pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+                    }
                 }
             }
 
