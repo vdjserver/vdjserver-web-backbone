@@ -26,7 +26,10 @@ define([
                     this.fetchDone = false;
                 }
 
-                App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects();
+                if (App.Routers.communityMode)
+                    App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects.Public();
+                else
+                    App.Datastore.Collection.ProjectCollection = new Backbone.Agave.Collection.Projects.Private();
 
                 var loadingView = new App.Views.Util.Loading({keep: true});
                 this.insertView(loadingView);
@@ -70,19 +73,25 @@ define([
                         }
                     })
                     .fail(function(error) {
-                        var telemetry = new Backbone.Agave.Model.Telemetry();
-                        telemetry.setError(error);
-                        telemetry.set('method', 'Backbone.Agave.Collection.Projects().fetch()');
-                        telemetry.set('view', 'Sidemenu.List');
-                        telemetry.save();
+                        if (!App.Routers.communityMode) {
+                            var telemetry = new Backbone.Agave.Model.Telemetry();
+                            telemetry.setError(error);
+                            telemetry.set('method', 'Backbone.Agave.Collection.Projects().fetch()');
+                            telemetry.set('view', 'Sidemenu.List');
+                            telemetry.save();
 
-                        that.setupViews();
+                            that.setupViews();
+                        }
                     })
                     ;
             },
             serialize: function() {
+                var routePath = 'project';
+                if (App.Routers.communityMode) routePath = 'community';
                 return {
-                    projects: App.Datastore.Collection.ProjectCollection.toJSON()
+                    projects: App.Datastore.Collection.ProjectCollection.toJSON(),
+                    communityMode: App.Routers.communityMode,
+                    routePath: routePath
                 };
             },
             events: {
@@ -123,15 +132,23 @@ define([
             },
             loadViewForIndex: function() {
                 if (App.Datastore.Collection.ProjectCollection.models.length === 0) {
-                    App.router.navigate('/project/create', {
-                        trigger: true
-                    });
+                    if (!App.Routers.communityMode) {
+                        App.router.navigate('/project/create', {
+                            trigger: true
+                        });
+                    }
                 }
                 else {
                     var projectModel = App.Datastore.Collection.ProjectCollection.at(0);
-                    App.router.navigate('/project/' + projectModel.get('uuid'), {
-                        trigger: true
-                    });
+                    if (App.Routers.communityMode) {
+                        App.router.navigate('/community/' + projectModel.get('uuid'), {
+                            trigger: true
+                        });
+                    } else {
+                        App.router.navigate('/project/' + projectModel.get('uuid'), {
+                            trigger: true
+                        });
+                    }
                 }
             },
 

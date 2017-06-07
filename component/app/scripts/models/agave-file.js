@@ -241,7 +241,6 @@ function(
                 FILE_TYPE_TSV: 6,
                 FILE_TYPE_CSV: 7,
                 FILE_TYPE_VDJML: 8,
-                FILE_TYPE_AB_EXPORT_V3: 9,
             },
 
             // index should map to codes
@@ -255,7 +254,6 @@ function(
                 'TAB-separated Values',
                 'Comma-separated Values',
                 'VDJML',
-                'Adaptive Biotech Export (V3)',
             ],
         }
     );
@@ -785,7 +783,6 @@ function(
                     File.fileTypeCodes.FILE_TYPE_QUALITY,
                     File.fileTypeCodes.FILE_TYPE_TSV,
                     File.fileTypeCodes.FILE_TYPE_VDJML,
-                    File.fileTypeCodes.FILE_TYPE_AB_EXPORT_V3,
                 ];
             },
 

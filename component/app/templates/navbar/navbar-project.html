@@ -2,33 +2,37 @@
     <div class="row">
         <div class="col-sm-9">
             <ul class="project-navbar-list text-left">
-                <li class="project-navbar-item">
 
-                    {{#unless projects}}
-                        <a href="/project/create">
-                    {{else}}
-                        <a href="/project">
-                    {{/unless}}
-
-                        PROJECTS
-                    </a>
-                </li>
-
+<!--
                 <li class="project-navbar-item">
                     <a target="_blank" href="http://vdjserver.org/docs/index.html">
                         DOCUMENTATION
                     </a>
                 </li>
+-->
 
-<!--
+                {{#if communityMode}}
+                    {{#if activeToken}}
+                    <li class="project-navbar-item">
+                        <a href="/project">
+                            PROJECTS
+                        </a>
+                    </li>
+                    {{/if}}
+                {{else}}
                 <li class="project-navbar-item">
                     <a href="/community">
                         COMMUNITY DATA
                     </a>
                 </li>
--->
+                {{/if}}
+
                 <li class="project-navbar-item">
+                    {{#if communityMode}}
+                    <a href="/feedback">FEEDBACK</a>
+                    {{else}}
                     <a href="/account/user-feedback">FEEDBACK</a>
+                    {{/if}}
                 </li>
             </ul>
         </div>
@@ -45,6 +49,7 @@
                     <ul id="notification-list" class="dropdown-menu dropdown-menu-right">
                     </ul>
                 </li>
+                {{#if activeToken}}
                 <li class="dropdown navbar-dropdown" id="login-dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">
                         <span>
@@ -63,6 +68,13 @@
                         </li>
                     </ul>
                 </li>
+                {{else}}
+                <li class="project-navbar-item">
+                    <a href="/">
+                    LOGIN
+                    </a>
+                </li>
+                {{/if}}
             </ul>
         </div>
 

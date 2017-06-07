@@ -63,6 +63,28 @@ function(
         setAttributesFromFormData: function(formData) {
             this.set('value', formData);
         },
+
+        publishProject: function() {
+            var jqxhr = $.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'PUT',
+                url: EnvironmentConfig.vdjApi.hostname
+                    + '/projects/' + this.get('uuid') + '/publish'
+            });
+
+            return jqxhr;
+        },
+
+        unpublishProject: function() {
+            var jqxhr = $.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'PUT',
+                url: EnvironmentConfig.vdjApi.hostname
+                    + '/projects/' + this.get('uuid') + '/unpublish'
+            });
+
+            return jqxhr;
+        },
     });
 
     Backbone.Agave.Model.Project = Project;

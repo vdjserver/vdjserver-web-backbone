@@ -110,6 +110,24 @@ define([
         return chartText;
     });
 
+    Handlebars.registerHelper('communityModeDisable', function() {
+
+        if (App.Routers.communityMode) {
+            return 'disabled';
+        } else {
+            return '';
+        }
+    });
+
+    Handlebars.registerHelper('communityModeReadOnly', function() {
+
+        if (App.Routers.communityMode) {
+            return 'readonly';
+        } else {
+            return '';
+        }
+    });
+
     var Analyses = {};
     Analyses.Charts = {};
 
@@ -117,14 +135,14 @@ define([
         template: 'analyses/output-list',
         initialize: function(parameters) {
 
-            this.jobs = new Backbone.Agave.Collection.Jobs();
-            this.paginatedJobs = new Backbone.Agave.Collection.Jobs();
+            this.jobs = new Backbone.Agave.Collection.Jobs({communityMode: App.Routers.communityMode});
+            this.paginatedJobs = new Backbone.Agave.Collection.Jobs({communityMode: App.Routers.communityMode});
             this.jobs.projectUuid = this.projectUuid;
 
-            this.projectModel = new Backbone.Agave.Model.Project({ uuid: this.projectUuid});
+            this.projectModel = new Backbone.Agave.Model.Project({ uuid: this.projectUuid, communityMode: App.Routers.communityMode});
 
-            this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid});
-            this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: this.projectUuid});
+            this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: this.projectUuid, communityMode: App.Routers.communityMode});
+            this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: this.projectUuid, communityMode: App.Routers.communityMode});
             this.showArchivedJobs = false;
 
             this.iteratorRange = 10;
@@ -152,10 +170,14 @@ define([
             'click .unarchive-job': 'unarchiveJob',
         },
         serialize: function() {
+            var routePath = 'project';
+            if (App.Routers.communityMode) routePath = 'community';
             return {
                 jobs: this.paginatedJobs.toJSON(),
                 projectUuid: this.projectUuid,
                 paginationSets: this.paginationSets,
+                routePath: routePath,
+                communityMode: App.Routers.communityMode,
             };
         },
         afterRender: function() {
@@ -173,10 +195,14 @@ define([
             pendingJobs.projectUuid = this.projectUuid;
 
 
-            $.when(this.jobs.fetch(), pendingJobs.fetch())
+            this.jobs.fetch()
                 // Add VDJ API pending jobs to Agave jobs
                 .then(function() {
-                    that.jobs.add(pendingJobs.toJSON());
+                    if (App.Routers.communityMode) return;
+                    else return pendingJobs.fetch();
+                })
+                .then(function() {
+                    if (!App.Routers.communityMode) that.jobs.add(pendingJobs.toJSON());
 
                     return that.projectModel.fetch();
                 })
@@ -429,8 +455,8 @@ define([
               .on('shown.bs.modal', function() {
 
                 // see if any are deleted
-                var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId});
-                var jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: jobId});
+                var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId, communityMode: App.Routers.communityMode});
+                var jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: jobId, communityMode: App.Routers.communityMode});
 
                 var that = this;
                 fileCollection.fetch()
@@ -488,7 +514,7 @@ define([
               .on('shown.bs.modal', function() {
 
                 // see if any are deleted
-                var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId});
+                var fileCollection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: jobId, communityMode: App.Routers.communityMode});
 
                 var that = this;
                 fileCollection.fetch()
@@ -598,12 +624,12 @@ define([
             this.setView(loadingView);
             loadingView.render();
 
-            this.jobDetail = new Backbone.Agave.Model.Job.Detail({id: this.jobId});
-            this.jobListing = new Backbone.Agave.Model.Job.Listing({jobId: this.jobId});
+            this.jobDetail = new Backbone.Agave.Model.Job.Detail({id: this.jobId, communityMode: App.Routers.communityMode});
+            this.jobListing = new Backbone.Agave.Model.Job.Listing({jobId: this.jobId, communityMode: App.Routers.communityMode});
 
-            this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId});
+            this.collection = new Backbone.Agave.Collection.Jobs.OutputFiles({jobId: this.jobId, communityMode: App.Routers.communityMode});
 
-            this.jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: this.jobId});
+            this.jobProcessMetadata = new Backbone.Agave.Model.Job.ProcessMetadata({jobId: this.jobId, communityMode: App.Routers.communityMode});
             this.validProcessMetadata = true;
 
             this.analysisCharts = [];
@@ -718,6 +744,7 @@ define([
                 //outputFiles: this.collection.toJSON(),
                 canDownloadFiles: this.canDownloadFiles,
                 projectUuid: this.projectUuid,
+                communityMode: App.Routers.communityMode,
             };
         },
         events: {
@@ -800,7 +827,8 @@ define([
 
             fileHandle.downloadFileToCache()
                 .then(function(tmpFileData) {
-                    tmpFileData = tmpFileData.replace(/\n/g, '<br>');
+                    if (typeof tmpFileData == 'object') tmpFileData = JSON.stringify(tmpFileData, null, 2);
+                    else tmpFileData = tmpFileData.replace(/\n/g, '<br>');
 
                     fileData = tmpFileData;
                 })
@@ -940,6 +968,7 @@ define([
             this.chartHeight = 360;
             this.isComparison = true;
             this.isValid = false;
+            this.inputDescription = '';
 
             if (this.groupId) {
               // we are using process metadata
@@ -952,6 +981,7 @@ define([
                       var filename = pm.files[fileKey]['composition']['value'];
                       var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
                       if (!fileHandle) this.isValid = false;
+                      this.inputDescription = filename.replace('.stats_composition.csv','');
                   }
                   if ((key == 'pre')  && (pm.groups[this.groupId][key]['type'] == 'statistics')) {
                       this.isValid = true;
@@ -960,6 +990,7 @@ define([
                       var filename = pm.files[fileKey]['composition']['value'];
                       var fileHandle = this.selectAnalyses.collection.getFileByName(filename);
                       if (!fileHandle) this.isValid = false;
+                      this.inputDescription = filename.replace('.pre-filter_composition.csv','');
                   }
               }
             } else {
@@ -988,6 +1019,7 @@ define([
         serialize: function() {
             return {
                 chartFiles: this.chartFiles,
+                inputDescription: this.inputDescription
                 //canDownloadFiles: this.canDownloadFiles,
                 //projectUuid: this.projectUuid,
             };

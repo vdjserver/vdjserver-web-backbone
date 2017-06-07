@@ -213,18 +213,35 @@ function(
             downloadFileToCache: function() {
 
                 var value = this.get('value');
-                var url = EnvironmentConfig.agave.hostname
+                var url, jqxhr;
+
+                if (this.collection.communityMode) {
+                    url = EnvironmentConfig.vdjGuest.hostname
+                         + '/files/v2/media//community/'
+                         + value.projectUuid
+                         + '/analyses/'
+                         + value.relativeArchivePath
+                         + '/' + value.name;
+
+                    jqxhr = Backbone.Agave.ajax({
+                        type:    'GET',
+                        url:     url,
+                    });
+                } else {
+                    url = EnvironmentConfig.agave.hostname
                          + '/jobs'
                          + '/v2'
                          + '/' + value.jobUuid
                          + '/outputs/media/'
                          + '/' + value.name;
 
-                var jqxhr = Backbone.Agave.ajax({
-                    headers: Backbone.Agave.oauthHeader(),
-                    type:    'GET',
-                    url:     url,
-                });
+                    jqxhr = Backbone.Agave.ajax({
+                        headers: Backbone.Agave.oauthHeader(),
+                        type:    'GET',
+                        url:     url,
+                    });
+                }
+
                 return jqxhr;
             },
             downloadFileToDisk: function() {
@@ -389,11 +406,12 @@ function(
             if (!processMetadata) return pmFiles;
             if (!processMetadata.process) return pmFiles;
 
-            if (processMetadata.groups[processMetadata.process.appName] &&
-                processMetadata.groups[processMetadata.process.appName]['log']) {
-                var fileKey = processMetadata.groups[processMetadata.process.appName]['log']['files'];
-                for (var fileEntry in processMetadata.files[fileKey]) {
-                    pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+            for (var groupEntry in processMetadata.groups) {
+                if (processMetadata.groups[groupEntry]['log']) {
+                    var fileKey = processMetadata.groups[groupEntry]['log']['files'];
+                    for (var fileEntry in processMetadata.files[fileKey]) {
+                        pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+                    }
                 }
             }
 
@@ -622,12 +640,12 @@ function(
                     if (formData['cdr3-nucleotide']) {
                         list.push('nucleotide');
                         if (formData['cdr3-v']) list.push('v,nucleotide');
-                        if (formData['cdr3-vj']) list.push('v,nucleotide');
+                        if (formData['cdr3-vj']) list.push('vj,nucleotide');
                     }
                     if (formData['cdr3-aa']) {
                         list.push('aa');
                         if (formData['cdr3-v']) list.push('v,aa');
-                        if (formData['cdr3-vj']) list.push('v,aa');
+                        if (formData['cdr3-vj']) list.push('vj,aa');
                     }
                     if (list.length > 0) parameters['CDR3Levels'] = list;
 

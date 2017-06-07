@@ -283,7 +283,7 @@ define([
         initialize: function(parameters) {
             this.job = parameters.job;
 
-            this.jobHistory = new Backbone.Agave.JobHistory({ jobUuid: this.job.get('id') });
+            this.jobHistory = new Backbone.Agave.JobHistory({ jobUuid: this.job.get('id'), communityMode: App.Routers.communityMode });
 
             var that = this;
             this.jobHistory.fetch()

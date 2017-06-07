@@ -52,6 +52,8 @@ define([
             return {
                 projects: App.Datastore.Collection.ProjectCollection.toJSON(),
                 token: App.Agave.token().toJSON(),
+                activeToken: App.Agave.token().isActive(),
+                communityMode: App.Routers.communityMode
             };
         },
         events: {

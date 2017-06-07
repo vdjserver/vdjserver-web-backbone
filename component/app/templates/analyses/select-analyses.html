@@ -126,9 +126,9 @@
 
                             <td>
                                 {{#if value.showInProjectData}}
-                                <button type="button" class="btn btn-warning switch-project-data" data-filename="{{uuid}}">Remove from Project Data Area</button>
+                                <button type="button" class="btn btn-warning switch-project-data" data-filename="{{uuid}}" {{communityModeDisable}}>Remove from Project Data Area</button>
                                 {{else}}
-                                <button type="button" class="btn btn-primary switch-project-data" data-filename="{{uuid}}">Make Available in Project Data Area</button>
+                                <button type="button" class="btn btn-primary switch-project-data" data-filename="{{uuid}}" {{communityModeDisable}}>Make Available in Project Data Area</button>
                                 {{/if}}
                             </td>
                         </tr>
