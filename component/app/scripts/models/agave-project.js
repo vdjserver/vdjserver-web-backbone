@@ -85,6 +85,22 @@ function(
 
             return jqxhr;
         },
+
+        addUserToProject: function(username) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectUuid: this.get('uuid'),
+                    username: username
+                }),
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/permissions/username',
+            });
+
+            return jqxhr;
+        },
     });
 
     Backbone.Agave.Model.Project = Project;

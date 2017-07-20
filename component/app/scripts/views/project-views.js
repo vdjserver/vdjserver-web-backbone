@@ -2191,6 +2191,7 @@ define([
         afterRender: function() {
             this.tenantUsers.remove(EnvironmentConfig.agave.serviceAccountUsername);
             this._usernameTypeahead(this.permissions, this.tenantUsers);
+            this.setupModalView();
         },
         events: {
             'click #launch-delete-project-modal': '_launchDeleteProjectModal',
@@ -2363,6 +2364,25 @@ define([
             unpublishProjectView.render();
         },
 
+        setupModalView: function(header, body) {
+            this.removeView('#modal-view');
+
+            var message = new App.Models.MessageModel({
+                'header': header,
+                'body':   body,
+                successStyle: true
+            });
+
+            var modal = new App.Views.Util.ModalMessageConfirm({
+                model: message
+            });
+
+            $('<div id="modal-view">').appendTo(this.el);
+
+            this.setView('#modal-view', modal);
+            modal.render();
+        },
+
         // User Private Methods
         // Typeahead
         _usernameTypeahead: function(permissions, tenantUsers) {
@@ -2425,48 +2445,36 @@ define([
         _addUserToProject: function(e) {
             e.preventDefault();
 
+            if (App.Routers.communityMode) return;
+
             var username = $('#add-username').val();
 
             // Check that username exists before adding
             var tenantUsers = this.tenantUsers.clone();
             if (_.has(tenantUsers._byId, username)) {
                 var that = this;
-                var newUserPermission = this.permissions.create(
-                    {
-                        username: username,
-                        permission: 'READ_WRITE',
-                        uuid: this.permissions.uuid,
-                    },
-                    {
-                        success: function() {
+                this.setupModalView('Adding User to Project',
+                                    '<p>User is being added to project! You will receive an email when it is done.</p>');
 
-                            newUserPermission.addUserToProject()
-                                .then(function() {
-                                })
-                                .fail(function(error) {
-                                    var telemetry = new Backbone.Agave.Model.Telemetry();
-                                    telemetry.setError(error);
-                                    telemetry.set('method', 'Backbone.Agave.Model.Permission.addUserToProject()');
-                                    telemetry.set('view', 'Projects.ManageUsers');
-                                    telemetry.save();
-                                })
-                                ;
+                this.model.addUserToProject(username)
+                    .then(function() {
+                        $('#confirmation-button').removeClass('hidden');
 
-                            that.permissions.add(newUserPermission);
-                            that.render();
-                            that._usernameTypeahead(that.permissions, that.tenantUsers);
-                        },
-                        error: function() {
-                            var telemetry = new Backbone.Agave.Model.Telemetry();
-                            telemetry.setError(error);
-                            telemetry.set('method', 'Backbone.Agave.Model.Permission.create()');
-                            telemetry.set('view', 'Projects.ManageUsers');
-                            telemetry.save();
-                        },
-                    }
-                );
+                        $('#modal-message').modal('show')
+                            .on('shown.bs.modal', function() {
+                            })
+                    })
+                    .fail(function(error) {
+                        var telemetry = new Backbone.Agave.Model.Telemetry();
+                        telemetry.setError(error);
+                        telemetry.set('method', 'Backbone.Agave.Model.Permission.addUserToProject()');
+                        telemetry.set('view', 'Projects.ManageUsers');
+                        telemetry.save();
+                    })
+                    ;
             }
         },
+
         _removeUserFromProject: function(e) {
             e.preventDefault();
 
