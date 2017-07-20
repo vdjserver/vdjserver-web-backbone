@@ -419,7 +419,7 @@ define([
             nodeCount: 1,
             //notifications: [],
             parameters: {},
-            processorsPerNode: 12,
+            //processorsPerNode: 12,
         },
         initialize: function() {
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
