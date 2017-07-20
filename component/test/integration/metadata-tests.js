@@ -6,7 +6,7 @@ define([
     'use strict';
 
     describe('VDJServer-Agave Integration Tests (Metadata)', function()  {
-        this.timeout(500000);
+        this.timeout(1000000);
 
         it('Should be able to login', function(done) {
 
@@ -111,7 +111,7 @@ define([
 
         it('Upload local file', function(done) {
 
-            this.timeout(50000);
+            this.timeout(100000);
 
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             var model = data.project;
@@ -240,7 +240,7 @@ define([
 
         it('Upload file from URL', function(done) {
 
-            this.timeout(50000);
+            this.timeout(100000);
 
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             var model = data.project;
@@ -366,20 +366,20 @@ define([
             assert.isDefined(data.subjectMetadataFile, 'this test requires subject metadata file from prior test');
 
             var model = data.project;
-			var value = data.subjectMetadataFile.get('value');
+            var value = data.subjectMetadataFile.get('value');
 
-			var jqxhr = $.ajax({
-                //headers: Backbone.Agave.basicAuthHeader(),
-				type: 'POST',
-				contentType: 'application/json',
-				data: JSON.stringify({
-					fileUuid: data.subjectMetadataFile.get('uuid'),
-					fileName: value.name,
-					operation: 'replace'
-				}),
-				url: EnvironmentConfig.vdjApi.hostname
-					+ '/projects/' + model.get('uuid') + '/metadata/subject/import'
-			})
+            var jqxhr = $.ajax({
+                      //headers: Backbone.Agave.basicAuthHeader(),
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                fileUuid: data.subjectMetadataFile.get('uuid'),
+                fileName: value.name,
+                operation: 'replace'
+              }),
+              url: EnvironmentConfig.vdjApi.hostname
+                + '/projects/' + model.get('uuid') + '/metadata/subject/import'
+            })
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
@@ -407,20 +407,20 @@ define([
             assert.isDefined(data.subjectMetadataFile, 'this test requires subject metadata file from prior test');
 
             var model = data.project;
-			var value = data.subjectMetadataFile.get('value');
+            var value = data.subjectMetadataFile.get('value');
 
-			var jqxhr = $.ajax({
-                headers: { 'Authorization': 'Basic ' + btoa('bogus_username' + ':' + Backbone.Agave.instance.token().get('access_token')) },
-				type: 'POST',
-				contentType: 'application/json',
-				data: JSON.stringify({
-					fileUuid: data.subjectMetadataFile.get('uuid'),
-					fileName: value.name,
-					operation: 'replace'
-				}),
-				url: EnvironmentConfig.vdjApi.hostname
-					+ '/projects/' + model.get('uuid') + '/metadata/subject/import'
-			})
+            var jqxhr = $.ajax({
+                      headers: { 'Authorization': 'Basic ' + btoa('bogus_username' + ':' + Backbone.Agave.instance.token().get('access_token')) },
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                fileUuid: data.subjectMetadataFile.get('uuid'),
+                fileName: value.name,
+                operation: 'replace'
+              }),
+              url: EnvironmentConfig.vdjApi.hostname
+                + '/projects/' + model.get('uuid') + '/metadata/subject/import'
+            })
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
@@ -447,20 +447,20 @@ define([
             assert.isDefined(data.subjectMetadataFile, 'this test requires subject metadata file from prior test');
 
             var model = data.project;
-			var value = data.subjectMetadataFile.get('value');
+            var value = data.subjectMetadataFile.get('value');
 
-			var jqxhr = $.ajax({
-                headers: { 'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + 'junk_token') },
-				type: 'POST',
-				contentType: 'application/json',
-				data: JSON.stringify({
-					fileUuid: data.subjectMetadataFile.get('uuid'),
-					fileName: value.name,
-					operation: 'replace'
-				}),
-				url: EnvironmentConfig.vdjApi.hostname
-					+ '/projects/' + model.get('uuid') + '/metadata/subject/import'
-			})
+            var jqxhr = $.ajax({
+                      headers: { 'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + 'junk_token') },
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                fileUuid: data.subjectMetadataFile.get('uuid'),
+                fileName: value.name,
+                operation: 'replace'
+              }),
+              url: EnvironmentConfig.vdjApi.hostname
+                + '/projects/' + model.get('uuid') + '/metadata/subject/import'
+            })
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
@@ -487,13 +487,13 @@ define([
 
             var model = data.project;
 
-			var jqxhr = $.ajax({
-				//headers: Backbone.Agave.basicAuthHeader(),
-				type: 'GET',
-				url: EnvironmentConfig.vdjApi.hostname
-					+ '/projects/' + model.get('uuid') + '/metadata/subject/export'
-					+ '?format=JSON',
-			})
+            var jqxhr = $.ajax({
+              //headers: Backbone.Agave.basicAuthHeader(),
+              type: 'GET',
+              url: EnvironmentConfig.vdjApi.hostname
+                + '/projects/' + model.get('uuid') + '/metadata/subject/export'
+                + '?format=JSON',
+            })
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
@@ -521,13 +521,13 @@ define([
 
             var model = data.project;
 
-			var jqxhr = $.ajax({
-                headers: { 'Authorization': 'Basic ' + btoa('bogus_username' + ':' + Backbone.Agave.instance.token().get('access_token')) },
-				type: 'GET',
-				url: EnvironmentConfig.vdjApi.hostname
-					+ '/projects/' + model.get('uuid') + '/metadata/subject/export'
-					+ '?format=JSON',
-			})
+            var jqxhr = $.ajax({
+                      headers: { 'Authorization': 'Basic ' + btoa('bogus_username' + ':' + Backbone.Agave.instance.token().get('access_token')) },
+              type: 'GET',
+              url: EnvironmentConfig.vdjApi.hostname
+                + '/projects/' + model.get('uuid') + '/metadata/subject/export'
+                + '?format=JSON',
+            })
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
@@ -554,13 +554,13 @@ define([
 
             var model = data.project;
 
-			var jqxhr = $.ajax({
-                headers: { 'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + 'junk_token') },
-				type: 'GET',
-				url: EnvironmentConfig.vdjApi.hostname
-					+ '/projects/' + model.get('uuid') + '/metadata/subject/export'
-					+ '?format=JSON',
-			})
+            var jqxhr = $.ajax({
+                      headers: { 'Authorization': 'Basic ' + btoa(Backbone.Agave.instance.token().get('username') + ':' + 'junk_token') },
+              type: 'GET',
+              url: EnvironmentConfig.vdjApi.hostname
+                + '/projects/' + model.get('uuid') + '/metadata/subject/export'
+                + '?format=JSON',
+            })
             .then(function(response) {
                 if (EnvironmentConfig.debug.test) console.log(response);
 
@@ -1122,7 +1122,7 @@ define([
 
         it('Upload local file', function(done) {
 
-            this.timeout(50000);
+            this.timeout(100000);
 
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             var model = data.project;
@@ -1421,7 +1421,7 @@ define([
 
         it('Upload local file', function(done) {
 
-            this.timeout(50000);
+            this.timeout(100000);
 
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             assert.isDefined(data.fastqUuid, 'this test requires fastq file uuid from prior test');
@@ -2372,7 +2372,7 @@ define([
 
         it('Upload local file', function(done) {
 
-            this.timeout(50000);
+            this.timeout(100000);
 
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
             assert.isDefined(data.fastqUuid, 'this test requires fastq file uuid from prior test');
@@ -2685,37 +2685,30 @@ define([
             assert.isDefined(data.project, 'this test requires the project from prior test');
             var model = data.project;
 
-            var permissions = new Backbone.Agave.Collection.Permissions({uuid: model.get('uuid')});
+            App.Instances.WebsocketManager.subscribeToEvent(model.get('uuid'));
 
-            var newUserPermission = permissions.create(
-                {
-                    username: EnvironmentConfig.test.username2,
-                    permission: 'READ_WRITE',
-                    uuid: permissions.uuid,
-                },
-                {
-                    success: function() {
+            model.listenTo(App.Instances.WebsocketManager, 'userProjectUpdate', function(userProjectUpdate) {
+                if (EnvironmentConfig.debug.test) console.log('userProjectUpdate:');
+                if (EnvironmentConfig.debug.test) console.log(userProjectUpdate);
 
-                        newUserPermission.addUserToProject()
-                            .then(function(response) {
-                                if (EnvironmentConfig.debug.test) console.log(response);
+                assert.isDefined(userProjectUpdate);
+                assert.isNotNull(userProjectUpdate);
 
-                                done();
-                            })
-                            .fail(function(error) {
-                                console.log("response error: " + JSON.stringify(error));
-                                done(new Error("Could not add user to project."));
-                            })
-                            ;
+                assert.equal(userProjectUpdate.username, EnvironmentConfig.test.username2);
 
-                        permissions.add(newUserPermission);
-                    },
-                    error: function() {
-                        console.log("response error: " + JSON.stringify(error));
-                        done(new Error("Could not create user permission."));
-                    },
-                }
-            );
+                model.stopListening();
+                done();
+            });
+
+            model.addUserToProject(EnvironmentConfig.test.username2)
+                .then(function(response) {
+                    if (EnvironmentConfig.debug.test) console.log(response);
+                })
+                .fail(function(error) {
+                    console.log("response error: " + JSON.stringify(error));
+                    done(new Error("Could not add user to project."));
+                })
+                ;
         });
 
         it('Check subject columns permissions', function(done) {
