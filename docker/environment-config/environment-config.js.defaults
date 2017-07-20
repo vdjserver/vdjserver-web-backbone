@@ -73,7 +73,7 @@ var EnvironmentConfig = {
                 'RepCalc': [
                     { 'inputSize':   5e6, 'system': 'large', 'time': '02:00:00', 'nodeCount': 1 },
                     { 'inputSize':   5e7, 'system': 'large', 'time': '04:00:00', 'nodeCount': 1 },
-                    { 'inputSize':   1e8, 'system': 'large', 'time': '08:00:00' },
+                    { 'inputSize':   1e8, 'system': 'large', 'time': '08:00:00', 'nodeCount': 4 },
                     { 'inputSize':   4e8, 'system': 'large', 'time': '24:00:00' },
                 ],
             },
@@ -81,7 +81,7 @@ var EnvironmentConfig = {
                 'igBlast': 1,
                 'vdjPipe': 1,
                 'presto': 1,
-                'RepCalc': 4,
+                'RepCalc': 8,
             },
         },
     },
