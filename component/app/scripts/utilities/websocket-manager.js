@@ -90,6 +90,21 @@ define([
                     }
                 }
             });
+
+            this.socket.on('userProjectUpdate', function(userProjectUpdate) {
+                if (EnvironmentConfig.debug.console) {
+                    console.log('socket userProjectUpdate received: ' + JSON.stringify(userProjectUpdate));
+                }
+
+                var notification = new App.Models.Notification();
+                notification.set('type', App.Models.Notification.USER_PROJECT_NOTIFICATION);
+                notification.set('notification', userProjectUpdate);
+
+                App.Datastore.Notifications.push(notification);
+                // TODO: reexamine websocket trigger
+                that.trigger('userProjectUpdate', userProjectUpdate);
+            });
+
         },
         subscribeToEvent: function(eventId) {
             if (EnvironmentConfig.debug.console) {
