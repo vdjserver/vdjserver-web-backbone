@@ -883,12 +883,6 @@ define([
             if (requireFiles && filteredFileListings.length == 0) return;
 
             // TODO: rename selectedFileListings param
-            var jobSubmitView = new App.Views.Jobs.Submit({
-                selectedFileListings: filteredFileListings,
-                projectModel: this.projectModel,
-                allFiles: allFiles,
-            });
-
             var stagingSubview = new StagingSubview({
                 selectedFileListings: filteredFileListings,
                 projectModel: this.projectModel,
@@ -899,6 +893,13 @@ define([
                 selectedFileListings: filteredFileListings,
                 projectModel: this.projectModel,
                 allFiles: allFiles,
+            });
+
+            var jobSubmitView = new App.Views.Jobs.Submit({
+                selectedFileListings: filteredFileListings,
+                projectModel: this.projectModel,
+                allFiles: allFiles,
+                appSubview: stagingSubview,
             });
 
             jobSubmitView.setView('#job-selection-subview', selectionSubview);
