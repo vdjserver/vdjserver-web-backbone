@@ -138,6 +138,16 @@
                                 Show Job History
                             </a>
                         </li>
+                        <li class="job-actions">
+                            <a
+                                class="job-info"
+                                href="#"
+                                data-bypass=true
+                                data-id="{{id}}"
+                            >
+                                Show Job Info
+                            </a>
+                        </li>
                     {{else}}
                         {{#unless ../../communityMode}}
                         <li class="job-actions">
@@ -160,6 +170,17 @@
                                 data-id="{{id}}"
                             >
                                 Show Job History
+                            </a>
+                        </li>
+
+                        <li class="job-actions">
+                            <a
+                                class="job-info"
+                                href="#"
+                                data-bypass=true
+                                data-id="{{id}}"
+                            >
+                                Show Job Info
                             </a>
                         </li>
 
@@ -271,5 +292,6 @@
 </div>
 
 <section id="project-job-history"></section>
+<section id="project-job-info"></section>
 <section id="project-job-rename"></section>
 <section id="project-job-archive"></section>

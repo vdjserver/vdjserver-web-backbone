@@ -317,6 +317,26 @@ define([
         },
     });
 
+    Jobs.Info = Backbone.View.extend({
+        // Public Methods
+        template: 'jobs/job-info',
+        initialize: function(parameters) {
+            this.job = parameters.job;
+        },
+        serialize: function() {
+            return {
+                job: this.job.toJSON(),
+                jobInfo: JSON.stringify(this.job, null, 2),
+            };
+        },
+        afterRender: function() {
+            $('#info-modal').modal('show');
+            $('#info-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+    });
+
     Jobs.Archive = Backbone.View.extend({
         // Public Methods
         template: 'jobs/job-archive',

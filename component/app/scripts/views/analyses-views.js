@@ -164,6 +164,7 @@ define([
 
             'click .rename-job': 'renameJob',
             'click .job-history': 'showJobHistory',
+            'click .job-info': 'showJobInfo',
             'click .job-add-project-data': 'addJobOutputToProjectData',
             'click .job-remove-project-data': 'removeJobOutputFromProjectData',
             'click .archive-job': 'archiveJob',
@@ -424,6 +425,21 @@ define([
             });
 
             this.setView('#project-job-history', jobHistoryView);
+        },
+
+        showJobInfo: function(e) {
+            e.preventDefault();
+
+            var jobId = e.target.dataset.id;
+
+            this.removeView('#project-job-info');
+
+            var jobInfoView = new App.Views.Jobs.Info({
+                job: this.jobs.get(jobId),
+            });
+
+            this.setView('#project-job-info', jobInfoView);
+            jobInfoView.render();
         },
 
         setupModalView: function() {
