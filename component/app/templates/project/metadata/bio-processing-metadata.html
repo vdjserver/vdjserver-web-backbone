@@ -1,0 +1,134 @@
+<form id="bp-metadata-form">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <div class="table-responsive">
+          {{#if bpEntries}}
+          <table id="bp-metadata-list" class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th></th>
+                {{#each columnNames}}
+                <th style="min-width: 10em">
+                  <strong>{{this}}</strong>
+                </th>
+                {{/each}}
+                <th style="min-width: 25em">
+                  <strong>VDJServer UUID</strong>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            {{#each rowValues}}
+              <tr>
+                <td><img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeBioProcessing center-block" data-tuple="{{@index}}"></td>
+                {{#each this.row}}
+                <td><input type="text" class="form-control bioProcessingMetadata" id="bp-{{this.name}}" placeholder="Bio Processing {{this.name}}" value="{{this.value}}" data-tuple="{{@../index}}"></td>
+                {{/each}}
+                <td><input type="text" class="form-control" id="bp-uuid" readonly value="{{this.uuid}}"></td>
+              </tr>
+            {{/each}}
+            </tbody>
+          </table>
+          {{else}}
+            <div class="alert alert-danger">
+                No BioMaterial Processing Metadata. Create new entries or Import using the Action menu below.
+            </div>
+
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group">
+      <div class="col-md-2">
+        <div class="btn-group">
+            <button
+                id="metadata-action-button"
+                class="btn btn-primary dropdown-toggle"
+                data-toggle="dropdown"
+            >
+                Metadata Actions
+                <i class="fa fa-caret-down"></i>
+            </button>
+
+            <ul
+                class="dropdown-menu"
+                role="menu"
+            >
+                <li class="metadata-actions">
+                    <a
+                        id="addBioProcessing"
+                        data-bypass=true
+                    >
+                        Add New Metadata Entry
+                    </a>
+                </li>
+
+                <li class="metadata-actions">
+                    <a
+                        id="importFromFile"
+                        data-bypass=true
+                    >
+                        Import from File
+                    </a>
+                </li>
+
+                <li class="metadata-actions">
+                    <a
+                        id="exportToFile"
+                        data-bypass=true
+                    >
+                        Export to File
+                    </a>
+                </li>
+
+                <li class="metadata-actions disabled">
+                    <a
+                        id="customFields"
+                        data-bypass=true
+                    >
+                        Custom Fields
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+      </div>
+      <div class="col-md-3">
+        <button id="save-bp-metadata" type="submit" class="btn btn-success">Save Metadata</button>
+      </div>
+      <div class="col-md-3">
+        <button id="revert-bp-modal" class="btn btn-warning">Revert Changes</button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div>
+    <div class="modal fade" id="revert-bp" tabindex="-1" role="dialog" aria-labelledby="revert-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="revert-modal-label">Revert Metadata Changes</h4>
+                </div>
+                <form id="revert-metadata-form" role="form">
+                    <div class="modal-body">
+                        Are you sure that you want to throw away your changes?
+                    </div>
+                    <div class="modal-footer">
+                        <div class="text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                            <input type="button" class="btn btn-danger" id="revert-metadata" value="Revert">
+                        </div>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+<div id="import-metadata-staging"></div>

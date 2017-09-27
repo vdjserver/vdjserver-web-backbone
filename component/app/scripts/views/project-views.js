@@ -2796,9 +2796,7 @@ define([
             })
             .then(function() {
 
-                //if (that.subjectColumns.get('uuid').length > 0) {
-                    that.columnNames = that.subjectColumns.getColumnNames();
-                //}
+                that.columnNames = that.subjectColumns.getColumnNames();
 
                 loadingView.remove();
 
@@ -2948,6 +2946,7 @@ define([
                     if (m.get('uuid') == m.cid) m.set('uuid', '');
                     else { // if existing entry, check if attributes changed
                         var origModel = that.subjects.get(uuid);
+                        if (!origModel) return;
                         var changed = m.changedAttributes(origModel.attributes);
                         if (!changed) return;
                     }
@@ -3006,6 +3005,246 @@ define([
         },
     });
 
+    Projects.BioProcessingMetadata = Backbone.View.extend({
+
+        // Public Methods
+        template: 'project/metadata/bio-processing-metadata',
+        initialize: function(parameters) {
+
+            var that = this;
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('', loadingView);
+            loadingView.render();
+
+            this.bpColumns = new Backbone.Agave.Model.BioProcessingColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.columnNames = [];
+
+            this.projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: this.model.get('uuid'), includeJobFiles: false, communityMode: App.Routers.communityMode});
+
+            this.bpEntries = new Backbone.Agave.Collection.BioProcessesMetadata({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+
+            this.bpEntries.fetch()
+            .then(function() {
+                // save clone of original metadata collection
+                that.entries = that.bpEntries.getClonedCollection();
+
+                return that.projectFiles.fetch();
+            })
+            .then(function() {
+                return that.bpColumns.fetch();
+            })
+            .then(function() {
+
+                that.columnNames = that.bpColumns.getColumnNames();
+
+                loadingView.remove();
+
+                that.render();
+            })
+        },
+
+        serialize: function() {
+            var rowValues = [];
+            for (var i = 0; i < this.bpEntries.models.length; ++i) {
+                var m = this.bpEntries.at(i);
+                var value = m.get('value');
+                var values = [];
+                for (var j = 0; j < this.columnNames.length; ++j)
+                    values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
+                rowValues[i] = { row: values };
+                rowValues[i]['uuid'] = m.get('uuid');
+            }
+
+            return {
+                rowValues: rowValues,
+                columnNames: this.columnNames,
+                bpEntries: this.bpEntries.toJSON(),
+            };
+        },
+        afterRender: function() {
+            this.setupModalView();
+        },
+        events: {
+            'click  #save-bp-metadata': '_saveMetadata',
+            'submit #bp-metadata-form': '_saveMetadata',
+
+            'click  #revert-bp-modal': '_revertModal',
+            'click  #revert-metadata': '_revertMetadata',
+
+            'click #addBioProcessing': '_addEntry',
+            'click .removeBioProcessing': '_removeEntry',
+            'change .bioProcessingMetadata': '_changeMetadata',
+
+            'click #importFromFile': '_importFromFile',
+            'click #exportToFile': '_exportToFile',
+        },
+
+        // Private Methods
+        setupModalView: function() {
+
+            var message = new App.Models.MessageModel({
+                'header': 'Saving Metadata',
+                'body':   '<p>Please wait while we save the metadata to the server...</p>'
+            });
+
+            var modal = new App.Views.Util.ModalMessageConfirm({
+                model: message
+            });
+
+            $('<div id="modal-view">').appendTo(this.el);
+
+            this.setView('#modal-view', modal);
+            modal.render();
+
+        },
+
+        // Event Responders
+        _addEntry: function(e){
+            var that = this;
+            var m = new Backbone.Agave.Model.BioProcessingMetadata({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
+            m.set('uuid', m.cid);
+            this.bpEntries.add(m);
+            this.render();
+        },
+        _removeEntry: function(e){
+            var m = this.bpEntries.at(e.target.dataset.tuple);
+            this.bpEntries.remove(m);
+            this.render();
+        },
+        _changeMetadata: function(e) {
+            // we use ids with attribute name embedded to have a generic change method
+            e.preventDefault();
+            var m = this.bpEntries.at(e.target.dataset.tuple);
+            var value = m.get('value');
+            var field = e.target.id.replace('bp-', '');
+            value[field] = e.target.value;
+            m.set('value', value);
+        },
+
+        _importFromFile: function(e) {
+            var importView = new Projects.MetadataImport({
+                projectUuid: this.model.get('uuid'),
+                metadataName: 'BioMaterial Processing Metadata',
+                parentView: this,
+                projectFiles: this.projectFiles
+            });
+
+            this.setView('#import-metadata-staging', importView);
+            importView.render();
+        },
+
+        _performImport: function(file, op) {
+            return this.bpEntries.importFromFile(file, op);
+        },
+
+        _exportToFile: function(e) {
+            var that = this;
+            this.bpEntries.createExportFile()
+              .then(function(response) {
+                  if (response.status == 'success') return that.bpEntries.downloadExportFileToDisk();
+                  else return $.Deferred().reject('Unable to export biomaterial processing metadata.');
+              })
+              .then(function() {
+              })
+              .fail(function(error) {
+                  var telemetry = new Backbone.Agave.Model.Telemetry();
+                  telemetry.setError(error);
+                  telemetry.set('method', '_exportToFile()');
+                  telemetry.set('view', 'Projects.BioProcessingMetadata');
+                  telemetry.save();
+              })
+              ;
+        },
+        _saveMetadata: function(e) {
+            e.preventDefault();
+
+            var that = this;
+
+            $('#modal-message').modal('show')
+                .on('shown.bs.modal', function() {
+
+            // see if any are deleted
+            var deletedModels = that.entries.getMissingModels(that.bpEntries);
+
+            var promises = [];
+
+            // Set up promises
+            // deletions
+            deletedModels.map(function(uuid) {
+                var m = that.entries.get(uuid);
+                promises[promises.length] = function() {
+                    return m.destroy();
+                }
+            });
+
+            // updates and new
+            that.bpEntries.map(function(uuid) {
+                var m = that.bpEntries.get(uuid);
+                promises[promises.length] = function() {
+                    // clear uuid for new entries so they get created
+                    if (m.get('uuid') == m.cid) m.set('uuid', '');
+                    else { // if existing entry, check if attributes changed
+                        var origModel = that.entries.get(uuid);
+                        if (!origModel) return;
+                        var changed = m.changedAttributes(origModel.attributes);
+                        if (!changed) return;
+                    }
+                    return m.save()
+                        .then(function() {
+                            return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
+                        });
+                }
+            });
+
+            // Execute promises
+            var sequentialPromiseResults = promises.reduce(
+                function(previous, current) {
+                    return previous.then(current);
+                },
+                $.Deferred().resolve()
+            )
+            .always(function() {
+                $('#modal-message')
+                  .modal('hide')
+                  .on('hidden.bs.modal', function() {
+
+                      // new original collection
+                      that.entries = that.bpEntries.getClonedCollection();
+
+                      that.render();
+                  })
+            })
+            .fail(function(error) {
+                var telemetry = new Backbone.Agave.Model.Telemetry();
+                telemetry.setError(error);
+                telemetry.set('method', '_saveMetadata()');
+                telemetry.set('view', 'Projects.BioProcessingMetadata');
+                telemetry.save();
+            })
+            ;
+            })
+        },
+
+        _revertModal: function(e) {
+            e.preventDefault();
+
+            $('#revert-bp').modal('show');
+        },
+
+        _revertMetadata: function(e) {
+            var that = this;
+            $('#revert-bp').modal('hide')
+                .on('hidden.bs.modal', function() {
+                    // revert entries back to original collection
+                    that.bpEntries = that.entries.getClonedCollection();
+
+                    that.render();
+                })
+            ;
+        },
+    });
+
     Projects.SampleMetadata = Backbone.View.extend({
 
         // Public Methods
@@ -3044,9 +3283,7 @@ define([
             })
             .then(function() {
 
-                //if (that.sampleColumns.get('uuid').length > 0) {
-                    that.columnNames = that.sampleColumns.getColumnNames();
-                //}
+                that.columnNames = that.sampleColumns.getColumnNames();
 
                 that.nonpairedFiles = that.projectFiles.serializedNonPairedReadCollection();
                 that.pairedFiles = that.projectFiles.serializedPairedReadCollection();
@@ -3074,8 +3311,8 @@ define([
                 for (var j = 0; j < this.columnNames.length; ++j)
                     values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
                 rowValues[i] = { row: values };
-                rowValues[i]['subject_uuid'] = value['subject_uuid'];
-                rowValues[i]['project_file'] = value['project_file'];
+                //rowValues[i]['subject_uuid'] = value['subject_uuid'];
+                //rowValues[i]['project_file'] = value['project_file'];
                 rowValues[i]['uuid'] = m.get('uuid');
             }
 
@@ -3179,6 +3416,7 @@ define([
                         if (m.get('uuid') == m.cid) m.set('uuid', '');
                         else { // if existing entry, check if attributes changed
                             var origModel = that.samples.get(uuid);
+                            if (!origModel) return;
                             var changed = m.changedAttributes(origModel.attributes);
                             if (!changed) return;
                         }
@@ -3305,22 +3543,18 @@ define([
             })
             .then(function() {
 
-                if (that.sampleColumns.get('uuid').length > 0) {
-                    var columnNames = that.sampleColumns.getColumnNames();
-                    for (var i = 0; i < columnNames.length; ++i) {
-                        that.sampleColumnNames.push({ name: columnNames[i], value: 'sample.' + columnNames[i]});
-                    }
+                var columnNames = that.sampleColumns.getColumnNames();
+                for (var i = 0; i < columnNames.length; ++i) {
+                    that.sampleColumnNames.push({ name: columnNames[i], value: 'sample.' + columnNames[i]});
                 }
 
                 return that.subjectColumns.fetch();
             })
             .then(function() {
 
-                if (that.subjectColumns.get('uuid').length > 0) {
-                    var columnNames = that.subjectColumns.getColumnNames();
-                    for (var i = 0; i < columnNames.length; ++i) {
-                        that.subjectColumnNames.push({ name: columnNames[i], value: 'subject.' + columnNames[i]});
-                    }
+                var columnNames = that.subjectColumns.getColumnNames();
+                for (var i = 0; i < columnNames.length; ++i) {
+                    that.subjectColumnNames.push({ name: columnNames[i], value: 'subject.' + columnNames[i]});
                 }
 
                 loadingView.remove();
@@ -3480,6 +3714,7 @@ define([
                         if (m.get('uuid') == m.cid) m.set('uuid', '');
                         else { // if existing entry, check if attributes changed
                             var origModel = that.groups.get(uuid);
+                            if (!origModel) return;
                             var changed = m.changedAttributes(origModel.attributes);
                             if (!changed) return;
                         }
@@ -3658,6 +3893,10 @@ define([
                 that.subjectView = new Projects.SubjectMetadata({ model: that.model, projectUuid: this.projectUuid });
                 that.setView('#subject-metadata-entry', that.subjectView);
                 that.subjectView.render();
+
+                that.bpView = new Projects.BioProcessingMetadata({ model: that.model, projectUuid: this.projectUuid });
+                that.setView('#bp-metadata-entry', that.bpView);
+                that.bpView.render();
 
                 that.sampleView = new Projects.SampleMetadata({ model: that.model, projectUuid: this.projectUuid });
                 that.setView('#sample-metadata-entry', that.sampleView);

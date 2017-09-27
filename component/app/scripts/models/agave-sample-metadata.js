@@ -19,12 +19,21 @@ function(
                     name: 'sample',
                     owner: '',
                     value: {
+                        // AIRR minimal standards
+                        'sample_id': '',
+                        'sample_type': '',
+                        'tissue': '',
+                        'disease_state_sample': '',
+                        'collection_date': '',
+                        'collection_time_event': '',
+                        'source_commercial': '',
+                        // other defaults
+                        'name': '',
+                        'sample_description': '',
                         'subject_uuid': '',
-                        'Name': '',
-                        'Description': '',
-                        'bio_processing_uuid': '',
+                        'cell_processing_uuid': '',
                         'data_association': '',
-                        'Barcode': '',
+                        'barcode': '',
                         'project_file': '',
                         'software_processing_uuid': ''
                     }

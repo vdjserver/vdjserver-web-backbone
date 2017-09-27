@@ -8,15 +8,15 @@ function(
 
     'use strict';
 
-    var SubjectColumns = {};
+    var BioProcessingColumns = {};
 
-    SubjectColumns = Backbone.Agave.MetadataModel.extend({
+    BioProcessingColumns = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
             return _.extend(
                 {},
                 Backbone.Agave.MetadataModel.prototype.defaults,
                 {
-                    name: 'subjectColumns',
+                    name: 'bioProcessingColumns',
                     owner: '',
                     value: {
                         'columns': []
@@ -33,16 +33,20 @@ function(
             }
 
             // AIRR minimal standards and other defaults
-            this.defaultColumns = ['subject_id', 'subject_name', 'organism', 'sex', 'age', 'age_event',
-                                  'ancestry_population', 'ethnicity', 'race', 'species_name', 'strain_name',
-                                  'linked_subjects', 'link_type', 'study_group_description', 'diagnosis',
-                                  'disease_length', 'disease_stage', 'prior_therapies', 'immunogen',
-                                  'intervention', 'medical_history'];
+            this.defaultColumns = ['name', 'tissue_processing', 'cell_subset', 'cell_subset_phenotype',
+                                  'single_or_bulk', 'cell_number', 'cells_per_reaction', 'cell_storage',
+                                  'cell_quality', 'cell_isolation', 'processing_protocol', 'library_source',
+                                  'target_substrate_quality', 'library_strategy', 'library_construction_protocol',
+                                  'target_locus_PCR', 'forward_PCR_primer_target_location',
+                                  'reverse_PCR_primer_target_location', 'whole_vs_partial_sequences',
+                                  'heavy_light_paired', 'ng_template', 'total_reads_passing_qc_filter',
+                                  'protocol', 'platform', 'read_length', 'sequencing_facility',
+                                  'batch_number', 'sequencing_run_date', 'sequencing_kit'];
 
         },
         url: function() {
             return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"subjectColumns","associationIds":"' + this.get('projectUuid') + '"}')
+                   + encodeURIComponent('{"name":"bioProcessingColumns","associationIds":"' + this.get('projectUuid') + '"}')
                    + '&limit=1'
                    + '&offset=0'
                    ;
@@ -64,6 +68,6 @@ function(
         }
     });
 
-    Backbone.Agave.Model.SubjectColumns = SubjectColumns;
-    return SubjectColumns;
+    Backbone.Agave.Model.BioProcessingColumns = BioProcessingColumns;
+    return BioProcessingColumns;
 });

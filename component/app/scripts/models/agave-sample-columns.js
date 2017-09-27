@@ -32,7 +32,11 @@ function(
                 this.set('associationIds', [ parameters.projectUuid ]);
             }
 
-            this.defaultColumns = ['Name', 'Description', 'Barcode'];
+            // AIRR minimal standards and other defaults
+            this.defaultColumns = ['sample_id', 'name', 'sample_description',
+                                  'sample_type', 'tissue', 'disease_state_sample',
+                                  'collection_date', 'collection_time_event', 'source_commercial',
+                                  'subject_uuid', 'project_file', 'barcode'];
         },
         url: function() {
             return '/meta/v2/data?q='

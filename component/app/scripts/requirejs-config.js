@@ -84,6 +84,9 @@ require.config({
         'agave-subject-metadata': 'models/agave-subject-metadata',
         'agave-subjects-metadata': 'collections/agave-subjects-metadata',
         'agave-subject-columns': 'models/agave-subject-columns',
+        'agave-bio-processing-metadata': 'models/agave-bio-processing-metadata',
+        'agave-bio-processes-metadata': 'collections/agave-bio-processes-metadata',
+        'agave-bio-processing-columns': 'models/agave-bio-processing-columns',
         'agave-sample-group': 'models/agave-sample-group',
         'agave-sample-groups': 'collections/agave-sample-groups',
         'agave-sample-columns': 'models/agave-sample-columns',
@@ -330,6 +333,18 @@ require.config({
         'agave-subjects-metadata': {
             deps: ['backbone', 'backbone-agave', 'agave-subject-metadata'],
             exports: 'Backbone.Agave.Collection.SubjectsMetadata'
+        },
+        'agave-bio-processing-columns': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.BioProcessingColumns'
+        },
+        'agave-bio-processing-metadata': {
+            deps: ['backbone', 'backbone-agave'],
+            exports: 'Backbone.Agave.Model.BioProcessingMetadata'
+        },
+        'agave-bio-processes-metadata': {
+            deps: ['backbone', 'backbone-agave', 'agave-bio-processing-metadata'],
+            exports: 'Backbone.Agave.Collection.BioProcessesMetadata'
         },
         'agave-sample-group': {
             deps: ['backbone', 'backbone-agave'],
