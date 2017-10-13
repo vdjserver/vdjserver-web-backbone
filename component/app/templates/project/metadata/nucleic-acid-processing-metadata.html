@@ -1,10 +1,10 @@
-<form id="bp-metadata-form">
+<form id="nap-metadata-form">
   <div class="row">
     <div class="col-md-12">
       <div class="form-group">
         <div class="table-responsive">
-          {{#if bpEntries}}
-          <table id="bp-metadata-list" class="table table-striped table-bordered">
+          {{#if objectCollection}}
+          <table id="nap-metadata-list" class="table table-striped table-bordered">
             <thead>
               <tr>
                 <th></th>
@@ -21,18 +21,45 @@
             <tbody>
             {{#each rowValues}}
               <tr>
-                <td><img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeBioProcessing center-block" data-tuple="{{@index}}"></td>
+                <td><img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeEntry center-block" data-tuple="{{@index}}"></td>
                 {{#each this.row}}
-                <td><input type="text" class="form-control bioProcessingMetadata" id="bp-{{this.name}}" placeholder="Bio Processing {{this.name}}" value="{{this.value}}" data-tuple="{{@../index}}"></td>
+                  {{#ifLinkField this.name}}
+                    {{#ifCond this.name "cell_processing_uuid"}}
+                      <td><select class="form-control napMetadata" id="nap-cell_processing_uuid" data-tuple="{{@../index}}">
+                        <option></option>
+                        {{#each ../../../../cpCollection}}
+                          <option {{ifCondSelected this.uuid ../this.value}} value="{{this.uuid}}">{{this.value.cell_processing_id}}</option>
+                        {{/each}}
+                      </select></td>
+                    {{/ifCond}}
+
+                    {{#ifCond this.name "filename_uuid"}}
+                      <td><select class="form-control napMetadata" id="nap-filename_uuid" data-tuple="{{@../index}}">
+                        <option></option>
+                        {{#each ../../../../nonpairedFiles}}
+                        <option {{ifCondSelected this.read.uuid ../this.value}} value="{{this.read.uuid}}">{{this.read.value.name}}</option>
+                        {{/each}}
+                        {{#each ../../../../pairedFiles}}
+                        <option {{ifCondSelected this.forward.uuid ../this.value}} value="{{this.forward.uuid}}">{{this.forward.value.name}} / {{this.reverse.value.name}}</option>
+                        {{/each}}
+                        {{#each ../../../../pairedQualFiles}}
+                        <option {{ifCondSelected this.read.uuid ../this.value}} value="{{this.read.uuid}}">{{this.read.value.name}} / {{this.qual.value.name}}</option>
+                        {{/each}}
+                      </select></td>
+                    {{/ifCond}}
+
+                  {{else}}
+                    <td><input type="text" class="form-control napMetadata" id="nap-{{this.name}}" placeholder="Nucleic Acid Processing {{this.name}}" value="{{this.value}}" data-tuple="{{@../index}}"></td>
+                  {{/ifLinkField}}
                 {{/each}}
-                <td><input type="text" class="form-control" id="bp-uuid" readonly value="{{this.uuid}}"></td>
+                <td><input type="text" class="form-control" id="nap-uuid" readonly value="{{this.uuid}}"></td>
               </tr>
             {{/each}}
             </tbody>
           </table>
           {{else}}
             <div class="alert alert-danger">
-                No BioMaterial Processing Metadata. Create new entries or Import using the Action menu below.
+                No Nucleic Acid Processing Metadata. Create new entries or Import using the Action menu below.
             </div>
 
           {{/if}}
@@ -60,7 +87,7 @@
             >
                 <li class="metadata-actions">
                     <a
-                        id="addBioProcessing"
+                        id="addEntry"
                         data-bypass=true
                     >
                         Add New Metadata Entry
@@ -98,22 +125,22 @@
         </div>
       </div>
       <div class="col-md-3">
-        <button id="save-bp-metadata" type="submit" class="btn btn-success">Save Metadata</button>
+        <button id="save-nap-metadata" type="submit" class="btn btn-success">Save N.A. Processing Metadata</button>
       </div>
       <div class="col-md-3">
-        <button id="revert-bp-modal" class="btn btn-warning">Revert Changes</button>
+        <button id="revert-nap-modal" class="btn btn-warning">Revert Changes</button>
       </div>
     </div>
   </div>
 </form>
 
 <div>
-    <div class="modal fade" id="revert-bp" tabindex="-1" role="dialog" aria-labelledby="revert-modal-label" aria-hidden="true">
+    <div class="modal fade" id="revert-nap" tabindex="-1" role="dialog" aria-labelledby="revert-modal-label" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="revert-modal-label">Revert Metadata Changes</h4>
+                    <h4 class="modal-title" id="revert-modal-label">Revert Nucleic Acid Processing Metadata Changes</h4>
                 </div>
                 <form id="revert-metadata-form" role="form">
                     <div class="modal-body">
@@ -132,3 +159,4 @@
 </div>
 
 <div id="import-metadata-staging"></div>
+

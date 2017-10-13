@@ -138,6 +138,16 @@ define([
         return options.inverse(this);
     });
 
+    Handlebars.registerHelper('ifLinkField', function(v1, options) {
+
+        if (v1 == 'subject_uuid') return options.fn(this);
+        if (v1 == 'sample_uuid') return options.fn(this);
+        if (v1 == 'cell_processing_uuid') return options.fn(this);
+        if (v1 == 'filename_uuid') return options.fn(this);
+
+        return options.inverse(this);
+    });
+
     Handlebars.registerHelper('forLoop', function(from, to, options) {
 
         var total = '';
@@ -2777,26 +2787,21 @@ define([
             this.setView('', loadingView);
             loadingView.render();
 
-            this.subjectColumns = new Backbone.Agave.Model.SubjectColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.columns = new Backbone.Agave.Model.Metadata.SubjectColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
             this.columnNames = [];
 
-            this.projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: this.model.get('uuid'), includeJobFiles: false, communityMode: App.Routers.communityMode});
+            this.objectCollection = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
 
-            this.pageSubjects = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
-
-            this.pageSubjects.fetch()
+            this.objectCollection.fetch()
             .then(function() {
                 // save clone of original metadata collection
-                that.subjects = that.pageSubjects.getClonedCollection();
+                that.saveCollection = that.objectCollection.getClonedCollection();
 
-                return that.projectFiles.fetch();
-            })
-            .then(function() {
-                return that.subjectColumns.fetch();
+                return that.columns.fetch();
             })
             .then(function() {
 
-                that.columnNames = that.subjectColumns.getColumnNames();
+                that.columnNames = that.columns.getColumnNames();
 
                 loadingView.remove();
 
@@ -2806,8 +2811,8 @@ define([
 
         serialize: function() {
             var rowValues = [];
-            for (var i = 0; i < this.pageSubjects.models.length; ++i) {
-                var m = this.pageSubjects.at(i);
+            for (var i = 0; i < this.objectCollection.models.length; ++i) {
+                var m = this.objectCollection.at(i);
                 var value = m.get('value');
                 var values = [];
                 for (var j = 0; j < this.columnNames.length; ++j)
@@ -2819,262 +2824,22 @@ define([
             return {
                 rowValues: rowValues,
                 columnNames: this.columnNames,
-                pageSubjects: this.pageSubjects.toJSON(),
+                objectCollection: this.objectCollection.toJSON(),
             };
         },
         afterRender: function() {
             this.setupModalView();
         },
         events: {
-            'click  #save-subject-metadata': '_saveSubjectMetadata',
-            'submit #subject-metadata-form': '_saveSubjectMetadata',
+            'click  #save-subject-metadata': '_saveMetadata',
+            'submit #subject-metadata-form': '_saveMetadata',
 
-            'click  #revert-subject-modal': '_revertSubjectModal',
-            'click  #revert-metadata': '_revertSubjectMetadata',
-
-            'click #addSubject': '_addSubject',
-            'click .removeSubject': '_removeSubject',
-            'change .subjectMetadata': '_changeSubjectMetadata',
-
-            'click #importFromFile': '_importFromFile',
-            'click #exportToFile': '_exportToFile',
-        },
-
-        // Private Methods
-        setupModalView: function() {
-
-            var message = new App.Models.MessageModel({
-                'header': 'Saving Metadata',
-                'body':   '<p>Please wait while we save the metadata to the server...</p>'
-            });
-
-            var modal = new App.Views.Util.ModalMessageConfirm({
-                model: message
-            });
-
-            $('<div id="modal-view">').appendTo(this.el);
-
-            this.setView('#modal-view', modal);
-            modal.render();
-
-        },
-
-        // Event Responders
-        _addSubject: function(e){
-            var that = this;
-            var m = new Backbone.Agave.Model.SubjectMetadata({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
-            m.set('uuid', m.cid);
-            this.pageSubjects.add(m);
-            this.render();
-        },
-        _removeSubject: function(e){
-            var m = this.pageSubjects.at(e.target.dataset.tuple);
-            this.pageSubjects.remove(m);
-            this.render();
-        },
-        _changeSubjectMetadata: function(e) {
-            // we use ids with attribute name embedded to have a generic change method
-            e.preventDefault();
-            var m = this.pageSubjects.at(e.target.dataset.tuple);
-            var value = m.get('value');
-            var field = e.target.id.replace('subject-', '');
-            value[field] = e.target.value;
-            m.set('value', value);
-        },
-
-        _importFromFile: function(e) {
-            var importView = new Projects.MetadataImport({
-                projectUuid: this.model.get('uuid'),
-                metadataName: 'Subject Metadata',
-                parentView: this,
-                projectFiles: this.projectFiles
-            });
-
-            this.setView('#import-metadata-staging', importView);
-            importView.render();
-        },
-
-        _performImport: function(file, op) {
-            return this.pageSubjects.importFromFile(file, op);
-        },
-
-        _exportToFile: function(e) {
-            var that = this;
-            this.pageSubjects.createExportFile()
-              .then(function(response) {
-                  if (response.status == 'success') return that.pageSubjects.downloadExportFileToDisk();
-                  else return $.Deferred().reject('Unable to export subject metadata.');
-              })
-              .then(function() {
-              })
-              .fail(function(error) {
-                  var telemetry = new Backbone.Agave.Model.Telemetry();
-                  telemetry.setError(error);
-                  telemetry.set('method', '_exportToFile()');
-                  telemetry.set('view', 'Projects.SubjectMetadata');
-                  telemetry.save();
-              })
-              ;
-        },
-        _saveSubjectMetadata: function(e) {
-            e.preventDefault();
-
-            var that = this;
-
-            $('#modal-message').modal('show')
-                .on('shown.bs.modal', function() {
-
-            // see if any are deleted
-            var deletedModels = that.subjects.getMissingModels(that.pageSubjects);
-
-            var promises = [];
-
-            // Set up promises
-            // deletions
-            deletedModels.map(function(uuid) {
-                var m = that.subjects.get(uuid);
-                promises[promises.length] = function() {
-                    return m.destroy();
-                }
-            });
-
-            // updates and new
-            that.pageSubjects.map(function(uuid) {
-                var m = that.pageSubjects.get(uuid);
-                promises[promises.length] = function() {
-                    // clear uuid for new entries so they get created
-                    if (m.get('uuid') == m.cid) m.set('uuid', '');
-                    else { // if existing entry, check if attributes changed
-                        var origModel = that.subjects.get(uuid);
-                        if (!origModel) return;
-                        var changed = m.changedAttributes(origModel.attributes);
-                        if (!changed) return;
-                    }
-                    return m.save()
-                        .then(function() {
-                            return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
-                        });
-                }
-            });
-
-            // Execute promises
-            var sequentialPromiseResults = promises.reduce(
-                function(previous, current) {
-                    return previous.then(current);
-                },
-                $.Deferred().resolve()
-            )
-            .always(function() {
-                $('#modal-message')
-                  .modal('hide')
-                  .on('hidden.bs.modal', function() {
-
-                      // new original collection
-                      that.subjects = that.pageSubjects.getClonedCollection();
-
-                      that.render();
-                  })
-            })
-            .fail(function(error) {
-                var telemetry = new Backbone.Agave.Model.Telemetry();
-                telemetry.setError(error);
-                telemetry.set('method', '_saveSubjectMetadata()');
-                telemetry.set('view', 'Projects.SubjectMetadata');
-                telemetry.save();
-            })
-            ;
-            })
-        },
-
-        _revertSubjectModal: function(e) {
-            e.preventDefault();
-
-            $('#revert-subject').modal('show');
-        },
-
-        _revertSubjectMetadata: function(e) {
-            var that = this;
-            $('#revert-subject').modal('hide')
-                .on('hidden.bs.modal', function() {
-                    // revert work samples back to original collection
-                    that.pageSubjects = that.subjects.getClonedCollection();
-
-                    that.render();
-                })
-            ;
-        },
-    });
-
-    Projects.BioProcessingMetadata = Backbone.View.extend({
-
-        // Public Methods
-        template: 'project/metadata/bio-processing-metadata',
-        initialize: function(parameters) {
-
-            var that = this;
-
-            var loadingView = new App.Views.Util.Loading({keep: true});
-            this.setView('', loadingView);
-            loadingView.render();
-
-            this.bpColumns = new Backbone.Agave.Model.BioProcessingColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
-            this.columnNames = [];
-
-            this.projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: this.model.get('uuid'), includeJobFiles: false, communityMode: App.Routers.communityMode});
-
-            this.bpEntries = new Backbone.Agave.Collection.BioProcessesMetadata({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
-
-            this.bpEntries.fetch()
-            .then(function() {
-                // save clone of original metadata collection
-                that.entries = that.bpEntries.getClonedCollection();
-
-                return that.projectFiles.fetch();
-            })
-            .then(function() {
-                return that.bpColumns.fetch();
-            })
-            .then(function() {
-
-                that.columnNames = that.bpColumns.getColumnNames();
-
-                loadingView.remove();
-
-                that.render();
-            })
-        },
-
-        serialize: function() {
-            var rowValues = [];
-            for (var i = 0; i < this.bpEntries.models.length; ++i) {
-                var m = this.bpEntries.at(i);
-                var value = m.get('value');
-                var values = [];
-                for (var j = 0; j < this.columnNames.length; ++j)
-                    values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
-                rowValues[i] = { row: values };
-                rowValues[i]['uuid'] = m.get('uuid');
-            }
-
-            return {
-                rowValues: rowValues,
-                columnNames: this.columnNames,
-                bpEntries: this.bpEntries.toJSON(),
-            };
-        },
-        afterRender: function() {
-            this.setupModalView();
-        },
-        events: {
-            'click  #save-bp-metadata': '_saveMetadata',
-            'submit #bp-metadata-form': '_saveMetadata',
-
-            'click  #revert-bp-modal': '_revertModal',
+            'click  #revert-subject-modal': '_revertModal',
             'click  #revert-metadata': '_revertMetadata',
 
-            'click #addBioProcessing': '_addEntry',
-            'click .removeBioProcessing': '_removeEntry',
-            'change .bioProcessingMetadata': '_changeMetadata',
+            'click #addEntry': '_addEntry',
+            'click .removeEntry': '_removeEntry',
+            'change .subjectMetadata': '_changeEntryMetadata',
 
             'click #importFromFile': '_importFromFile',
             'click #exportToFile': '_exportToFile',
@@ -3102,22 +2867,22 @@ define([
         // Event Responders
         _addEntry: function(e){
             var that = this;
-            var m = new Backbone.Agave.Model.BioProcessingMetadata({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
+            var m = new Backbone.Agave.Model.Metadata.Subject({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
             m.set('uuid', m.cid);
-            this.bpEntries.add(m);
+            this.objectCollection.add(m);
             this.render();
         },
         _removeEntry: function(e){
-            var m = this.bpEntries.at(e.target.dataset.tuple);
-            this.bpEntries.remove(m);
+            var m = this.objectCollection.at(e.target.dataset.tuple);
+            this.objectCollection.remove(m);
             this.render();
         },
-        _changeMetadata: function(e) {
+        _changeEntryMetadata: function(e) {
             // we use ids with attribute name embedded to have a generic change method
             e.preventDefault();
-            var m = this.bpEntries.at(e.target.dataset.tuple);
+            var m = this.objectCollection.at(e.target.dataset.tuple);
             var value = m.get('value');
-            var field = e.target.id.replace('bp-', '');
+            var field = e.target.id.replace('subject-', '');
             value[field] = e.target.value;
             m.set('value', value);
         },
@@ -3125,7 +2890,7 @@ define([
         _importFromFile: function(e) {
             var importView = new Projects.MetadataImport({
                 projectUuid: this.model.get('uuid'),
-                metadataName: 'BioMaterial Processing Metadata',
+                metadataName: 'Subject Metadata',
                 parentView: this,
                 projectFiles: this.projectFiles
             });
@@ -3135,15 +2900,15 @@ define([
         },
 
         _performImport: function(file, op) {
-            return this.bpEntries.importFromFile(file, op);
+            return this.objectCollection.importFromFile(file, op);
         },
 
         _exportToFile: function(e) {
             var that = this;
-            this.bpEntries.createExportFile()
+            this.objectCollection.createExportFile()
               .then(function(response) {
-                  if (response.status == 'success') return that.bpEntries.downloadExportFileToDisk();
-                  else return $.Deferred().reject('Unable to export biomaterial processing metadata.');
+                  if (response.status == 'success') return that.objectCollection.downloadExportFileToDisk();
+                  else return $.Deferred().reject('Unable to export subject metadata.');
               })
               .then(function() {
               })
@@ -3151,7 +2916,8 @@ define([
                   var telemetry = new Backbone.Agave.Model.Telemetry();
                   telemetry.setError(error);
                   telemetry.set('method', '_exportToFile()');
-                  telemetry.set('view', 'Projects.BioProcessingMetadata');
+                  telemetry.set('view', 'Projects.SubjectMetadata');
+                  telemetry.set('project', this.model.get('uuid'));
                   telemetry.save();
               })
               ;
@@ -3165,27 +2931,27 @@ define([
                 .on('shown.bs.modal', function() {
 
             // see if any are deleted
-            var deletedModels = that.entries.getMissingModels(that.bpEntries);
+            var deletedModels = that.saveCollection.getMissingModels(that.objectCollection);
 
             var promises = [];
 
             // Set up promises
             // deletions
             deletedModels.map(function(uuid) {
-                var m = that.entries.get(uuid);
+                var m = that.saveCollection.get(uuid);
                 promises[promises.length] = function() {
                     return m.destroy();
                 }
             });
 
             // updates and new
-            that.bpEntries.map(function(uuid) {
-                var m = that.bpEntries.get(uuid);
+            that.objectCollection.map(function(uuid) {
+                var m = that.objectCollection.get(uuid);
                 promises[promises.length] = function() {
                     // clear uuid for new entries so they get created
                     if (m.get('uuid') == m.cid) m.set('uuid', '');
                     else { // if existing entry, check if attributes changed
-                        var origModel = that.entries.get(uuid);
+                        var origModel = that.saveCollection.get(uuid);
                         if (!origModel) return;
                         var changed = m.changedAttributes(origModel.attributes);
                         if (!changed) return;
@@ -3210,7 +2976,7 @@ define([
                   .on('hidden.bs.modal', function() {
 
                       // new original collection
-                      that.entries = that.bpEntries.getClonedCollection();
+                      that.saveCollection = that.objectCollection.getClonedCollection();
 
                       that.render();
                   })
@@ -3218,8 +2984,9 @@ define([
             .fail(function(error) {
                 var telemetry = new Backbone.Agave.Model.Telemetry();
                 telemetry.setError(error);
-                telemetry.set('method', '_saveMetadata()');
-                telemetry.set('view', 'Projects.BioProcessingMetadata');
+                telemetry.set('method', '_saveSubjectMetadata()');
+                telemetry.set('view', 'Projects.SubjectMetadata');
+                telemetry.set('project', this.model.get('uuid'));
                 telemetry.save();
             })
             ;
@@ -3229,15 +2996,258 @@ define([
         _revertModal: function(e) {
             e.preventDefault();
 
-            $('#revert-bp').modal('show');
+            $('#revert-subject').modal('show');
         },
 
         _revertMetadata: function(e) {
             var that = this;
-            $('#revert-bp').modal('hide')
+            $('#revert-subject').modal('hide')
                 .on('hidden.bs.modal', function() {
-                    // revert entries back to original collection
-                    that.bpEntries = that.entries.getClonedCollection();
+                    // revert work samples back to original collection
+                    that.objectCollection = that.saveCollection.getClonedCollection();
+
+                    that.render();
+                })
+            ;
+        },
+    });
+
+    Projects.DiagnosisMetadata = Backbone.View.extend({
+
+        // Public Methods
+        template: 'project/metadata/diagnosis-metadata',
+        initialize: function(parameters) {
+
+            var that = this;
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('', loadingView);
+            loadingView.render();
+
+            this.columns = new Backbone.Agave.Model.Metadata.DiagnosisColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.columnNames = [];
+
+            this.subjectCollection = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+
+            this.objectCollection = new Backbone.Agave.Collection.Metadata.Diagnosis({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+
+            this.objectCollection.fetch()
+            .then(function() {
+                // save clone of original metadata collection
+                that.saveCollection = that.objectCollection.getClonedCollection();
+
+                return that.subjectCollection.fetch();
+            })
+            .then(function() {
+                return that.columns.fetch();
+            })
+            .then(function() {
+
+                that.columnNames = that.columns.getColumnNames();
+
+                loadingView.remove();
+
+                that.render();
+            })
+        },
+
+        serialize: function() {
+            var rowValues = [];
+            for (var i = 0; i < this.objectCollection.models.length; ++i) {
+                var m = this.objectCollection.at(i);
+                var value = m.get('value');
+                var values = [];
+                for (var j = 0; j < this.columnNames.length; ++j)
+                    values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
+                rowValues[i] = { row: values };
+                rowValues[i]['uuid'] = m.get('uuid');
+            }
+
+            return {
+                rowValues: rowValues,
+                columnNames: this.columnNames,
+                objectCollection: this.objectCollection.toJSON(),
+                subjectCollection: this.subjectCollection.toJSON(),
+            };
+        },
+        afterRender: function() {
+            this.setupModalView();
+        },
+        events: {
+            'click  #save-diagnosis-metadata': '_saveMetadata',
+            'submit #diagnosis-metadata-form': '_saveMetadata',
+
+            'click  #revert-diagnosis-modal': '_revertModal',
+            'click  #revert-metadata': '_revertMetadata',
+
+            'click #addEntry': '_addEntry',
+            'click .removeEntry': '_removeEntry',
+            'change .diagnosisMetadata': '_changeEntryMetadata',
+
+            'click #importFromFile': '_importFromFile',
+            'click #exportToFile': '_exportToFile',
+        },
+
+        // Private Methods
+        setupModalView: function() {
+
+            var message = new App.Models.MessageModel({
+                'header': 'Saving Metadata',
+                'body':   '<p>Please wait while we save the metadata to the server...</p>'
+            });
+
+            var modal = new App.Views.Util.ModalMessageConfirm({
+                model: message
+            });
+
+            $('<div id="modal-view">').appendTo(this.el);
+
+            this.setView('#modal-view', modal);
+            modal.render();
+
+        },
+
+        // Event Responders
+        _addEntry: function(e){
+            var that = this;
+            var m = new Backbone.Agave.Model.Metadata.Diagnosis({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
+            m.set('uuid', m.cid);
+            this.objectCollection.add(m);
+            this.render();
+        },
+        _removeEntry: function(e){
+            var m = this.objectCollection.at(e.target.dataset.tuple);
+            this.objectCollection.remove(m);
+            this.render();
+        },
+        _changeEntryMetadata: function(e) {
+            // we use ids with attribute name embedded to have a generic change method
+            e.preventDefault();
+            var m = this.objectCollection.at(e.target.dataset.tuple);
+            var value = m.get('value');
+            var field = e.target.id.replace('diagnosis-', '');
+            value[field] = e.target.value;
+            m.set('value', value);
+        },
+
+        _importFromFile: function(e) {
+            var importView = new Projects.MetadataImport({
+                projectUuid: this.model.get('uuid'),
+                metadataName: 'Diagnosis Metadata',
+                parentView: this,
+                projectFiles: this.projectFiles
+            });
+
+            this.setView('#import-metadata-staging', importView);
+            importView.render();
+        },
+
+        _performImport: function(file, op) {
+            return this.objectCollection.importFromFile(file, op);
+        },
+
+        _exportToFile: function(e) {
+            var that = this;
+            this.objectCollection.createExportFile()
+              .then(function(response) {
+                  if (response.status == 'success') return that.objectCollection.downloadExportFileToDisk();
+                  else return $.Deferred().reject('Unable to export diagnosis metadata.');
+              })
+              .then(function() {
+              })
+              .fail(function(error) {
+                  var telemetry = new Backbone.Agave.Model.Telemetry();
+                  telemetry.setError(error);
+                  telemetry.set('method', '_exportToFile()');
+                  telemetry.set('view', 'Projects.DiagnosisMetadata');
+                  telemetry.set('project', this.model.get('uuid'));
+                  telemetry.save();
+              })
+              ;
+        },
+        _saveMetadata: function(e) {
+            e.preventDefault();
+
+            var that = this;
+
+            $('#modal-message').modal('show')
+                .on('shown.bs.modal', function() {
+
+            // see if any are deleted
+            var deletedModels = that.saveCollection.getMissingModels(that.objectCollection);
+
+            var promises = [];
+
+            // Set up promises
+            // deletions
+            deletedModels.map(function(uuid) {
+                var m = that.saveCollection.get(uuid);
+                promises[promises.length] = function() {
+                    return m.destroy();
+                }
+            });
+
+            // updates and new
+            that.objectCollection.map(function(uuid) {
+                var m = that.objectCollection.get(uuid);
+                promises[promises.length] = function() {
+                    // clear uuid for new entries so they get created
+                    if (m.get('uuid') == m.cid) m.set('uuid', '');
+                    else { // if existing entry, check if attributes changed
+                        var origModel = that.saveCollection.get(uuid);
+                        if (!origModel) return;
+                        var changed = m.changedAttributes(origModel.attributes);
+                        if (!changed) return;
+                    }
+                    return m.save()
+                        .then(function() {
+                            return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
+                        });
+                }
+            });
+
+            // Execute promises
+            var sequentialPromiseResults = promises.reduce(
+                function(previous, current) {
+                    return previous.then(current);
+                },
+                $.Deferred().resolve()
+            )
+            .always(function() {
+                $('#modal-message')
+                  .modal('hide')
+                  .on('hidden.bs.modal', function() {
+
+                      // new original collection
+                      that.saveCollection = that.objectCollection.getClonedCollection();
+
+                      that.render();
+                  })
+            })
+            .fail(function(error) {
+                var telemetry = new Backbone.Agave.Model.Telemetry();
+                telemetry.setError(error);
+                telemetry.set('method', '_saveSubjectMetadata()');
+                telemetry.set('view', 'Projects.DiagnosisMetadata');
+                telemetry.set('project', this.model.get('uuid'));
+                telemetry.save();
+            })
+            ;
+            })
+        },
+
+        _revertModal: function(e) {
+            e.preventDefault();
+
+            $('#revert-diagnosis').modal('show');
+        },
+
+        _revertMetadata: function(e) {
+            var that = this;
+            $('#revert-diagnosis').modal('hide')
+                .on('hidden.bs.modal', function() {
+                    // revert work samples back to original collection
+                    that.objectCollection = that.saveCollection.getClonedCollection();
 
                     that.render();
                 })
@@ -3262,12 +3272,12 @@ define([
             this.pairedFiles = [];
             this.pairedQualFiles = [];
 
-            this.workSubjects = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.subjectCollection = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
 
-            this.sampleColumns = new Backbone.Agave.Model.SampleColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.sampleColumns = new Backbone.Agave.Model.Metadata.SampleColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
             this.columnNames = [];
 
-            this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.workSamples = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
             this.workSamples.fetch()
             .then(function() {
                 // save clone of original metadata collection
@@ -3279,7 +3289,7 @@ define([
                 return that.sampleColumns.fetch();
             })
             .then(function() {
-                return that.workSubjects.fetch();
+                return that.subjectCollection.fetch();
             })
             .then(function() {
 
@@ -3298,6 +3308,7 @@ define([
                 telemetry.setError(error);
                 telemetry.set('method', 'Backbone.Agave.Collection.SamplesMetadata.fetch()');
                 telemetry.set('view', 'Projects.SampleMetadata');
+                telemetry.set('project', this.model.get('uuid'));
                 telemetry.save();
             })
             ;
@@ -3311,15 +3322,13 @@ define([
                 for (var j = 0; j < this.columnNames.length; ++j)
                     values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
                 rowValues[i] = { row: values };
-                //rowValues[i]['subject_uuid'] = value['subject_uuid'];
-                //rowValues[i]['project_file'] = value['project_file'];
                 rowValues[i]['uuid'] = m.get('uuid');
             }
 
             return {
                 rowValues: rowValues,
                 workSamples: this.workSamples.toJSON(),
-                workSubjects: this.workSubjects.toJSON(),
+                subjectCollection: this.subjectCollection.toJSON(),
                 nonpairedFiles: this.nonpairedFiles,
                 pairedFiles: this.pairedFiles,
                 pairedQualFiles: this.pairedQualFiles,
@@ -3365,7 +3374,7 @@ define([
 
         // Event Responders
         _addSample: function(e){
-            var m = new Backbone.Agave.Model.SampleMetadata({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
+            var m = new Backbone.Agave.Model.Metadata.Sample({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
             m.set('uuid', m.cid);
             this.workSamples.add(m);
             this.render();
@@ -3450,6 +3459,7 @@ define([
                     telemetry.setError(error);
                     telemetry.set('method', '_saveSampleMetadata()');
                     telemetry.set('view', 'Projects.SampleMetadata');
+                    telemetry.set('project', this.model.get('uuid'));
                     telemetry.save();
                 })
                 ;
@@ -3510,6 +3520,507 @@ define([
         },
     });
 
+    Projects.CellProcessingMetadata = Backbone.View.extend({
+
+        // Public Methods
+        template: 'project/metadata/cell-processing-metadata',
+        initialize: function(parameters) {
+
+            var that = this;
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('', loadingView);
+            loadingView.render();
+
+            this.columns = new Backbone.Agave.Model.Metadata.CellProcessingColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.columnNames = [];
+
+            this.sampleCollection = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+
+            this.objectCollection = new Backbone.Agave.Collection.Metadata.CellProcessing({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+
+            this.objectCollection.fetch()
+            .then(function() {
+                // save clone of original metadata collection
+                that.saveCollection = that.objectCollection.getClonedCollection();
+
+                return that.sampleCollection.fetch();
+            })
+            .then(function() {
+                return that.columns.fetch();
+            })
+            .then(function() {
+
+                that.columnNames = that.columns.getColumnNames();
+
+                loadingView.remove();
+
+                that.render();
+            })
+        },
+
+        serialize: function() {
+            var rowValues = [];
+            for (var i = 0; i < this.objectCollection.models.length; ++i) {
+                var m = this.objectCollection.at(i);
+                var value = m.get('value');
+                var values = [];
+                for (var j = 0; j < this.columnNames.length; ++j)
+                    values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
+                rowValues[i] = { row: values };
+                rowValues[i]['uuid'] = m.get('uuid');
+            }
+
+            return {
+                rowValues: rowValues,
+                columnNames: this.columnNames,
+                objectCollection: this.objectCollection.toJSON(),
+                sampleCollection: this.sampleCollection.toJSON(),
+            };
+        },
+        afterRender: function() {
+            this.setupModalView();
+        },
+        events: {
+            'click  #save-cp-metadata': '_saveMetadata',
+            'submit #cp-metadata-form': '_saveMetadata',
+
+            'click  #revert-cp-modal': '_revertModal',
+            'click  #revert-metadata': '_revertMetadata',
+
+            'click #addEntry': '_addEntry',
+            'click .removeEntry': '_removeEntry',
+            'change .cpMetadata': '_changeEntryMetadata',
+
+            'click #importFromFile': '_importFromFile',
+            'click #exportToFile': '_exportToFile',
+        },
+
+        // Private Methods
+        setupModalView: function() {
+
+            var message = new App.Models.MessageModel({
+                'header': 'Saving Metadata',
+                'body':   '<p>Please wait while we save the metadata to the server...</p>'
+            });
+
+            var modal = new App.Views.Util.ModalMessageConfirm({
+                model: message
+            });
+
+            $('<div id="modal-view">').appendTo(this.el);
+
+            this.setView('#modal-view', modal);
+            modal.render();
+
+        },
+
+        // Event Responders
+        _addEntry: function(e){
+            var that = this;
+            var m = new Backbone.Agave.Model.Metadata.CellProcessing({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
+            m.set('uuid', m.cid);
+            this.objectCollection.add(m);
+            this.render();
+        },
+        _removeEntry: function(e){
+            var m = this.objectCollection.at(e.target.dataset.tuple);
+            this.objectCollection.remove(m);
+            this.render();
+        },
+        _changeEntryMetadata: function(e) {
+            // we use ids with attribute name embedded to have a generic change method
+            e.preventDefault();
+            var m = this.objectCollection.at(e.target.dataset.tuple);
+            var value = m.get('value');
+            var field = e.target.id.replace('cp-', '');
+            value[field] = e.target.value;
+            m.set('value', value);
+        },
+
+        _importFromFile: function(e) {
+            var importView = new Projects.MetadataImport({
+                projectUuid: this.model.get('uuid'),
+                metadataName: 'Cell Processing Metadata',
+                parentView: this,
+                projectFiles: this.projectFiles
+            });
+
+            this.setView('#import-metadata-staging', importView);
+            importView.render();
+        },
+
+        _performImport: function(file, op) {
+            return this.objectCollection.importFromFile(file, op);
+        },
+
+        _exportToFile: function(e) {
+            var that = this;
+            this.objectCollection.createExportFile()
+              .then(function(response) {
+                  if (response.status == 'success') return that.objectCollection.downloadExportFileToDisk();
+                  else return $.Deferred().reject('Unable to export cell processing metadata.');
+              })
+              .then(function() {
+              })
+              .fail(function(error) {
+                  var telemetry = new Backbone.Agave.Model.Telemetry();
+                  telemetry.setError(error);
+                  telemetry.set('method', '_exportToFile()');
+                  telemetry.set('view', 'Projects.CellProcessingMetadata');
+                  telemetry.set('project', this.model.get('uuid'));
+                  telemetry.save();
+              })
+              ;
+        },
+        _saveMetadata: function(e) {
+            e.preventDefault();
+
+            var that = this;
+
+            $('#modal-message').modal('show')
+                .on('shown.bs.modal', function() {
+
+            // see if any are deleted
+            var deletedModels = that.saveCollection.getMissingModels(that.objectCollection);
+
+            var promises = [];
+
+            // Set up promises
+            // deletions
+            deletedModels.map(function(uuid) {
+                var m = that.saveCollection.get(uuid);
+                promises[promises.length] = function() {
+                    return m.destroy();
+                }
+            });
+
+            // updates and new
+            that.objectCollection.map(function(uuid) {
+                var m = that.objectCollection.get(uuid);
+                promises[promises.length] = function() {
+                    // clear uuid for new entries so they get created
+                    if (m.get('uuid') == m.cid) m.set('uuid', '');
+                    else { // if existing entry, check if attributes changed
+                        var origModel = that.saveCollection.get(uuid);
+                        if (!origModel) return;
+                        var changed = m.changedAttributes(origModel.attributes);
+                        if (!changed) return;
+                    }
+                    return m.save()
+                        .then(function() {
+                            return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
+                        });
+                }
+            });
+
+            // Execute promises
+            var sequentialPromiseResults = promises.reduce(
+                function(previous, current) {
+                    return previous.then(current);
+                },
+                $.Deferred().resolve()
+            )
+            .always(function() {
+                $('#modal-message')
+                  .modal('hide')
+                  .on('hidden.bs.modal', function() {
+
+                      // new original collection
+                      that.saveCollection = that.objectCollection.getClonedCollection();
+
+                      that.render();
+                  })
+            })
+            .fail(function(error) {
+                var telemetry = new Backbone.Agave.Model.Telemetry();
+                telemetry.setError(error);
+                telemetry.set('method', '_saveMetadata()');
+                telemetry.set('view', 'Projects.CellProcessingMetadata');
+                telemetry.set('project', this.model.get('uuid'));
+                telemetry.save();
+            })
+            ;
+            })
+        },
+
+        _revertModal: function(e) {
+            e.preventDefault();
+
+            $('#revert-cp').modal('show');
+        },
+
+        _revertMetadata: function(e) {
+            var that = this;
+            $('#revert-cp').modal('hide')
+                .on('hidden.bs.modal', function() {
+                    // revert work samples back to original collection
+                    that.objectCollection = that.saveCollection.getClonedCollection();
+
+                    that.render();
+                })
+            ;
+        },
+    });
+
+    Projects.NucleicAcidProcessingMetadata = Backbone.View.extend({
+
+        // Public Methods
+        template: 'project/metadata/nucleic-acid-processing-metadata',
+        initialize: function(parameters) {
+
+            var that = this;
+
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('', loadingView);
+            loadingView.render();
+
+            this.columns = new Backbone.Agave.Model.Metadata.NucleicAcidProcessingColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.columnNames = [];
+
+            this.projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: this.model.get('uuid'), includeJobFiles: false, communityMode: App.Routers.communityMode});
+            this.nonpairedFiles = [];
+            this.pairedFiles = [];
+            this.pairedQualFiles = [];
+
+            this.cpCollection = new Backbone.Agave.Collection.Metadata.CellProcessing({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+
+            this.objectCollection = new Backbone.Agave.Collection.Metadata.NucleicAcidProcessing({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+
+            this.objectCollection.fetch()
+            .then(function() {
+                // save clone of original metadata collection
+                that.saveCollection = that.objectCollection.getClonedCollection();
+
+                return that.cpCollection.fetch();
+            })
+            .then(function() {
+                return that.projectFiles.fetch();
+            })
+            .then(function() {
+                return that.columns.fetch();
+            })
+            .then(function() {
+
+                that.columnNames = that.columns.getColumnNames();
+
+                that.nonpairedFiles = that.projectFiles.serializedNonPairedReadCollection();
+                that.pairedFiles = that.projectFiles.serializedPairedReadCollection();
+                that.pairedQualFiles = that.projectFiles.serializedPairedQualityCollection();
+
+                loadingView.remove();
+
+                that.render();
+            })
+        },
+
+        serialize: function() {
+            var rowValues = [];
+            for (var i = 0; i < this.objectCollection.models.length; ++i) {
+                var m = this.objectCollection.at(i);
+                var value = m.get('value');
+                var values = [];
+                for (var j = 0; j < this.columnNames.length; ++j)
+                    values[j] = { name: this.columnNames[j], value: value[this.columnNames[j]] };
+                rowValues[i] = { row: values };
+                rowValues[i]['uuid'] = m.get('uuid');
+            }
+
+            return {
+                rowValues: rowValues,
+                columnNames: this.columnNames,
+                objectCollection: this.objectCollection.toJSON(),
+                cpCollection: this.cpCollection.toJSON(),
+                nonpairedFiles: this.nonpairedFiles,
+                pairedFiles: this.pairedFiles,
+                pairedQualFiles: this.pairedQualFiles,
+            };
+        },
+        afterRender: function() {
+            this.setupModalView();
+        },
+        events: {
+            'click  #save-nap-metadata': '_saveMetadata',
+            'submit #nap-metadata-form': '_saveMetadata',
+
+            'click  #revert-nap-modal': '_revertModal',
+            'click  #revert-metadata': '_revertMetadata',
+
+            'click #addEntry': '_addEntry',
+            'click .removeEntry': '_removeEntry',
+            'change .napMetadata': '_changeEntryMetadata',
+
+            'click #importFromFile': '_importFromFile',
+            'click #exportToFile': '_exportToFile',
+        },
+
+        // Private Methods
+        setupModalView: function() {
+
+            var message = new App.Models.MessageModel({
+                'header': 'Saving Metadata',
+                'body':   '<p>Please wait while we save the metadata to the server...</p>'
+            });
+
+            var modal = new App.Views.Util.ModalMessageConfirm({
+                model: message
+            });
+
+            $('<div id="modal-view">').appendTo(this.el);
+
+            this.setView('#modal-view', modal);
+            modal.render();
+
+        },
+
+        // Event Responders
+        _addEntry: function(e){
+            var that = this;
+            var m = new Backbone.Agave.Model.Metadata.NucleicAcidProcessing({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
+            m.set('uuid', m.cid);
+            this.objectCollection.add(m);
+            this.render();
+        },
+        _removeEntry: function(e){
+            var m = this.objectCollection.at(e.target.dataset.tuple);
+            this.objectCollection.remove(m);
+            this.render();
+        },
+        _changeEntryMetadata: function(e) {
+            // we use ids with attribute name embedded to have a generic change method
+            e.preventDefault();
+            var m = this.objectCollection.at(e.target.dataset.tuple);
+            var value = m.get('value');
+            var field = e.target.id.replace('nap-', '');
+            value[field] = e.target.value;
+            m.set('value', value);
+        },
+
+        _importFromFile: function(e) {
+            var importView = new Projects.MetadataImport({
+                projectUuid: this.model.get('uuid'),
+                metadataName: 'Nucleic Acid Processing Metadata',
+                parentView: this,
+                projectFiles: this.projectFiles
+            });
+
+            this.setView('#import-metadata-staging', importView);
+            importView.render();
+        },
+
+        _performImport: function(file, op) {
+            return this.objectCollection.importFromFile(file, op);
+        },
+
+        _exportToFile: function(e) {
+            var that = this;
+            this.objectCollection.createExportFile()
+              .then(function(response) {
+                  if (response.status == 'success') return that.objectCollection.downloadExportFileToDisk();
+                  else return $.Deferred().reject('Unable to export nucleic acid processing metadata.');
+              })
+              .then(function() {
+              })
+              .fail(function(error) {
+                  var telemetry = new Backbone.Agave.Model.Telemetry();
+                  telemetry.setError(error);
+                  telemetry.set('method', '_exportToFile()');
+                  telemetry.set('view', 'Projects.NucleicAcidProcessingMetadata');
+                  telemetry.set('project', this.model.get('uuid'));
+                  telemetry.save();
+              })
+              ;
+        },
+        _saveMetadata: function(e) {
+            e.preventDefault();
+
+            var that = this;
+
+            $('#modal-message').modal('show')
+                .on('shown.bs.modal', function() {
+
+            // see if any are deleted
+            var deletedModels = that.saveCollection.getMissingModels(that.objectCollection);
+
+            var promises = [];
+
+            // Set up promises
+            // deletions
+            deletedModels.map(function(uuid) {
+                var m = that.saveCollection.get(uuid);
+                promises[promises.length] = function() {
+                    return m.destroy();
+                }
+            });
+
+            // updates and new
+            that.objectCollection.map(function(uuid) {
+                var m = that.objectCollection.get(uuid);
+                promises[promises.length] = function() {
+                    // clear uuid for new entries so they get created
+                    if (m.get('uuid') == m.cid) m.set('uuid', '');
+                    else { // if existing entry, check if attributes changed
+                        var origModel = that.saveCollection.get(uuid);
+                        if (!origModel) return;
+                        var changed = m.changedAttributes(origModel.attributes);
+                        if (!changed) return;
+                    }
+                    return m.save()
+                        .then(function() {
+                            return m.syncMetadataPermissionsWithProjectPermissions(that.model.get('uuid'));
+                        });
+                }
+            });
+
+            // Execute promises
+            var sequentialPromiseResults = promises.reduce(
+                function(previous, current) {
+                    return previous.then(current);
+                },
+                $.Deferred().resolve()
+            )
+            .always(function() {
+                $('#modal-message')
+                  .modal('hide')
+                  .on('hidden.bs.modal', function() {
+
+                      // new original collection
+                      that.saveCollection = that.objectCollection.getClonedCollection();
+
+                      that.render();
+                  })
+            })
+            .fail(function(error) {
+                var telemetry = new Backbone.Agave.Model.Telemetry();
+                telemetry.setError(error);
+                telemetry.set('method', '_saveMetadata()');
+                telemetry.set('view', 'Projects.NucleicAcidProcessingMetadata');
+                telemetry.set('project', this.model.get('uuid'));
+                telemetry.save();
+            })
+            ;
+            })
+        },
+
+        _revertModal: function(e) {
+            e.preventDefault();
+
+            $('#revert-nap').modal('show');
+        },
+
+        _revertMetadata: function(e) {
+            var that = this;
+            $('#revert-nap').modal('hide')
+                .on('hidden.bs.modal', function() {
+                    // revert work samples back to original collection
+                    that.objectCollection = that.saveCollection.getClonedCollection();
+
+                    that.render();
+                })
+            ;
+        },
+    });
+
     Projects.SampleGroups = Backbone.View.extend({
 
         // Public Methods
@@ -3522,21 +4033,28 @@ define([
             this.setView('', loadingView);
             loadingView.render();
 
-            this.sampleGroups = new Backbone.Agave.Collection.SampleGroups({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
-            this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.sampleGroups = new Backbone.Agave.Collection.Metadata.SampleGroup({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
 
-            this.sampleColumns = new Backbone.Agave.Model.SampleColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.sampleCollection = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+
+            this.sampleColumns = new Backbone.Agave.Model.Metadata.SampleColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
             this.sampleColumnNames = [];
 
-            this.subjectColumns = new Backbone.Agave.Model.SubjectColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.subjectColumns = new Backbone.Agave.Model.Metadata.SubjectColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
             this.subjectColumnNames = [];
+
+            this.cpColumns = new Backbone.Agave.Model.Metadata.CellProcessingColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.cpColumnNames = [];
+
+            this.napColumns = new Backbone.Agave.Model.Metadata.NucleicAcidProcessingColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+            this.napColumnNames = [];
 
             this.sampleGroups.fetch()
             .then(function() {
                 // save clone of original metadata collection
                 that.groups = that.sampleGroups.getClonedCollection();
 
-                return that.workSamples.fetch();
+                return that.sampleCollection.fetch();
             })
             .then(function() {
                 return that.sampleColumns.fetch();
@@ -3546,6 +4064,24 @@ define([
                 var columnNames = that.sampleColumns.getColumnNames();
                 for (var i = 0; i < columnNames.length; ++i) {
                     that.sampleColumnNames.push({ name: columnNames[i], value: 'sample.' + columnNames[i]});
+                }
+
+                return that.cpColumns.fetch();
+            })
+            .then(function() {
+
+                var columnNames = that.cpColumns.getColumnNames();
+                for (var i = 0; i < columnNames.length; ++i) {
+                    that.cpColumnNames.push({ name: columnNames[i], value: 'cellProcessing.' + columnNames[i]});
+                }
+
+                return that.napColumns.fetch();
+            })
+            .then(function() {
+
+                var columnNames = that.napColumns.getColumnNames();
+                for (var i = 0; i < columnNames.length; ++i) {
+                    that.napColumnNames.push({ name: columnNames[i], value: 'nucleicAcidProcessing.' + columnNames[i]});
                 }
 
                 return that.subjectColumns.fetch();
@@ -3567,6 +4103,7 @@ define([
                 telemetry.setError(error);
                 telemetry.set('method', 'Backbone.Agave.Collection.SamplesMetadata.fetch()');
                 telemetry.set('view', 'Projects.SampleMetadata');
+                telemetry.set('project', this.model.get('uuid'));
                 telemetry.save();
             })
             ;
@@ -3574,9 +4111,11 @@ define([
         serialize: function() {
             return {
                 sampleColumnNames: this.sampleColumnNames,
+                cpColumnNames: this.cpColumnNames,
+                napColumnNames: this.napColumnNames,
                 subjectColumnNames: this.subjectColumnNames,
                 sampleGroups: this.sampleGroups.toJSON(),
-                workSamples: this.workSamples.toJSON(),
+                sampleCollection: this.sampleCollection.toJSON(),
             };
         },
         afterRender: function() {
@@ -3748,6 +4287,7 @@ define([
                     telemetry.setError(error);
                     telemetry.set('method', '_saveSampleGroups()');
                     telemetry.set('view', 'Projects.SampleGroups');
+                    telemetry.set('project', this.model.get('uuid'));
                     telemetry.save();
                 })
                 ;
@@ -3883,26 +4423,43 @@ define([
             this.model = new Backbone.Agave.Model.Project({ uuid: this.projectUuid, communityMode: App.Routers.communityMode});
             var that = this;
 
+            var loadingView = new App.Views.Util.Loading({keep: true});
+            this.setView('#project-metadata-entry', loadingView);
+            loadingView.render();
+
             this.model.fetch()
             .then(function() {
+                that.projectFiles = new Backbone.Agave.Collection.Files.Metadata({projectUuid: that.model.get('uuid'), includeJobFiles: false, communityMode: App.Routers.communityMode});
+
+                return that.projectFiles.fetch();
+            })
+            .then(function() {
                 // Setup subviews
-                that.projectView = new Projects.StudyMetadata({ model: that.model, projectUuid: this.projectUuid });
+                that.projectView = new Projects.StudyMetadata({ model: that.model, projectFiles: that.projectFiles, projectUuid: this.projectUuid });
                 that.setView('#project-metadata-entry', that.projectView);
                 that.projectView.render();
 
-                that.subjectView = new Projects.SubjectMetadata({ model: that.model, projectUuid: this.projectUuid });
+                that.subjectView = new Projects.SubjectMetadata({ model: that.model, projectFiles: that.projectFiles, projectUuid: this.projectUuid });
                 that.setView('#subject-metadata-entry', that.subjectView);
                 that.subjectView.render();
 
-                that.bpView = new Projects.BioProcessingMetadata({ model: that.model, projectUuid: this.projectUuid });
-                that.setView('#bp-metadata-entry', that.bpView);
-                that.bpView.render();
+                that.diagnosisView = new Projects.DiagnosisMetadata({ model: that.model, projectFiles: that.projectFiles, projectUuid: this.projectUuid });
+                that.setView('#diagnosis-metadata-entry', that.diagnosisView);
+                that.diagnosisView.render();
 
-                that.sampleView = new Projects.SampleMetadata({ model: that.model, projectUuid: this.projectUuid });
+                that.sampleView = new Projects.SampleMetadata({ model: that.model, projectFiles: that.projectFiles, projectUuid: this.projectUuid });
                 that.setView('#sample-metadata-entry', that.sampleView);
                 that.sampleView.render();
 
-                that.sampleGroupsView = new Projects.SampleGroups({ model: that.model, projectUuid: this.projectUuid });
+                that.cpView = new Projects.CellProcessingMetadata({ model: that.model, projectFiles: that.projectFiles, projectUuid: this.projectUuid });
+                that.setView('#cp-metadata-entry', that.cpView);
+                that.cpView.render();
+
+                that.napView = new Projects.NucleicAcidProcessingMetadata({ model: that.model, projectFiles: that.projectFiles, projectUuid: this.projectUuid });
+                that.setView('#nap-metadata-entry', that.napView);
+                that.napView.render();
+
+                that.sampleGroupsView = new Projects.SampleGroups({ model: that.model, projectFiles: that.projectFiles, projectUuid: this.projectUuid });
                 that.setView('#sample-groups-entry', that.sampleGroupsView);
                 that.sampleGroupsView.render();
             })

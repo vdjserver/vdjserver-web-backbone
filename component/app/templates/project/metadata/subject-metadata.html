@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="form-group">
         <div class="table-responsive">
-          {{#if pageSubjects}}
+          {{#if objectCollection}}
           <table id="subject-metadata-list" class="table table-striped table-bordered">
             <thead>
               <tr>
@@ -21,7 +21,7 @@
             <tbody>
             {{#each rowValues}}
               <tr>
-                <td><img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeSubject center-block" data-tuple="{{@index}}"></td>
+                <td><img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeEntry center-block" data-tuple="{{@index}}"></td>
                 {{#each this.row}}
                 <td><input type="text" class="form-control subjectMetadata" id="subject-{{this.name}}" placeholder="Subject {{this.name}}" value="{{this.value}}" data-tuple="{{@../index}}"></td>
                 {{/each}}
@@ -60,7 +60,7 @@
             >
                 <li class="metadata-actions">
                     <a
-                        id="addSubject"
+                        id="addEntry"
                         data-bypass=true
                     >
                         Add New Subject Entry
@@ -132,80 +132,3 @@
 </div>
 
 <div id="import-metadata-staging"></div>
-
-<!--
-
-<form id="subject-metadata-form">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="form-group">
-        <div class="table-responsive">
-          {{#if pageSubjects}}
-          <table id="subject-metadata-list" class="table table-striped table-bordered">
-            <thead>
-              <tr>
-                <th></th>
-                <th style="min-width: 10em">
-                  <strong>Name</strong>
-                </th>
-                <th style="min-width: 8em">
-                  <strong>Category</strong>
-                </th>
-                <th style="min-width: 12em">
-                  <strong>Species</strong>
-                </th>
-                <th style="min-width: 12em">
-                  <strong>Strain</strong>
-                </th>
-                <th style="min-width: 8em">
-                  <strong>Gender</strong>
-                </th>
-                <th style="min-width: 8em">
-                  <strong>Age</strong>
-                </th>
-                <th style="min-width: 25em">
-                  <strong>VDJServer UUID</strong>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-            {{#each pageSubjects}}
-              <tr>
-                <td><img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeSubject center-block" data-tuple="{{@index}}"></td>
-                <td><input type="text" class="form-control subjectMetadata" id="subject-name" placeholder="Subject Name" value="{{this.value.name}}" data-tuple="{{@index}}"></td>
-                <td>
-                  <select class="form-control subjectMetadata" id="subject-category" data-tuple="{{@index}}">
-                      <option></option>
-                      <option {{ifCondSelected this.value.category "Human"}} value="Human">Human</option>
-                      <option {{ifCondSelected this.value.category "Animal"}} value="Animal">Animal</option>
-                      <option {{ifCondSelected this.value.category "Synthetic"}} value="Synthetic">Synthetic</option>
-                  </select>
-                </td>
-                <td><input type="text" class="form-control subjectMetadata" id="subject-species" placeholder="species" value="{{this.value.species}}" data-tuple="{{@index}}"></td>
-                <td><input type="text" class="form-control subjectMetadata" id="subject-strain" placeholder="strain" value="{{this.value.strain}}" data-tuple="{{@index}}"></td>
-                <td>
-                  <select class="form-control subjectMetadata" id="subject-gender" data-tuple="{{@index}}">
-                      <option></option>
-                      <option {{ifCondSelected this.value.gender "Male"}} value="Male">Male</option>
-                      <option {{ifCondSelected this.value.gender "Female"}} value="Female">Female</option>
-                  </select>
-                </td>
-                <td><input type="text" class="form-control subjectMetadata" id="subject-age" placeholder="age" value="{{this.value.age}}" data-tuple="{{@index}}"></td>
-                <td><input type="text" class="form-control" id="sample-uuid" readonly value="{{this.uuid}}"></td>
-              </tr>
-            {{/each}}
-            </tbody>
-          </table>
-          {{else}}
-            <div class="alert alert-danger">
-                No Subject Metadata. Create new entries or Import using the Action menu below.
-            </div>
-
-          {{/if}}
-        </div>
-      </div>
-    </div>
-  </div>
-
-
--->
