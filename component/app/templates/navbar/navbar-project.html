@@ -3,14 +3,6 @@
         <div class="col-sm-9">
             <ul class="project-navbar-list text-left">
 
-<!--
-                <li class="project-navbar-item">
-                    <a target="_blank" href="http://vdjserver.org/docs/index.html">
-                        DOCUMENTATION
-                    </a>
-                </li>
--->
-
                 {{#if communityMode}}
                     {{#if activeToken}}
                     <li class="project-navbar-item">
@@ -26,6 +18,12 @@
                     </a>
                 </li>
                 {{/if}}
+
+                <li class="project-navbar-item">
+                    <a target="_blank" href="http://vdjserver.org/docs/index.html">
+                        DOCUMENTATION
+                    </a>
+                </li>
 
                 <li class="project-navbar-item">
                     {{#if communityMode}}
