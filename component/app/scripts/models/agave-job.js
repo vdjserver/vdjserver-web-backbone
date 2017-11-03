@@ -245,19 +245,25 @@ function(
                 return jqxhr;
             },
             downloadFileToDisk: function() {
+                var jqxhr;
 
-                var value = this.get('value');
-                var url = EnvironmentConfig.agave.hostname
-                         + '/jobs'
-                         + '/v2'
-                         + '/' + value.jobUuid
-                         + '/outputs/media/'
-                         + '/' + value.name;
-                //var url = this.get('_links').self.href;
-                //url = this._fixBadAgaveUrl(url);
-                url = this._urlencodeOutputPath(url);
+                if (App.Routers.communityMode) {
+                  var value = this.get('value');
+                  jqxhr = this.downloadPublicFileByPostit(value.projectUuid, this.get('uuid'));
+                } else {
+                  var value = this.get('value');
+                  var url = EnvironmentConfig.agave.hostname
+                           + '/jobs'
+                           + '/v2'
+                           + '/' + value.jobUuid
+                           + '/outputs/media/'
+                           + '/' + value.name;
+                  //var url = this.get('_links').self.href;
+                  //url = this._fixBadAgaveUrl(url);
+                  url = this._urlencodeOutputPath(url);
 
-                var jqxhr = this.downloadUrlByPostit(url);
+                  jqxhr = this.downloadUrlByPostit(url);
+                }
 
                 return jqxhr;
             },
@@ -410,14 +416,14 @@ function(
                 if (processMetadata.groups[groupEntry]['log']) {
                     var fileKey = processMetadata.groups[groupEntry]['log']['files'];
                     for (var fileEntry in processMetadata.files[fileKey]) {
-                        pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+                        pmFiles.push(processMetadata.files[fileKey][fileEntry]);
                     }
                 }
             }
 
             if (processMetadata.files['metadata']) {
                 for (var fileEntry in processMetadata.files['metadata']) {
-                    pmFiles.push(processMetadata.files['metadata'][fileEntry]['value']);
+                    pmFiles.push(processMetadata.files['metadata'][fileEntry]);
                 }
             }
 

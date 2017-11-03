@@ -187,9 +187,12 @@
                                 <button class="btn btn-default hide-log hidden" data-id="{{uuid}}">
                                     Hide Log
                                 </button>
+                                {{#if this.noShowLog}}
+                                {{else}}
                                 <button class="btn btn-default show-log" data-id="{{uuid}}">
                                     Show Log
                                 </button>
+                                {{/if}}
                             </td>
                         </tr>
                     {{/each}}

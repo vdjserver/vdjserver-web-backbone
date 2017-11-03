@@ -241,9 +241,13 @@ define([
 
                     // only those in process metadata
                     if (processMetadata) {
-                        var idx = pmFiles.indexOf(value.name);
-                        if (idx >= 0) return true;
-                        else return false;
+                        for (var i = 0; i < pmFiles.length; ++i) {
+                            if (pmFiles[i]['value'] == value.name) {
+                              if (pmFiles[i]['type'] == 'zip') model.set('noShowLog', true);
+                              return true;
+                            }
+                        }
+                        return false;
                     } else {
                         var filename = value.name;
 
