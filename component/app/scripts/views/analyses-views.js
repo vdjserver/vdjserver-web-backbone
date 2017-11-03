@@ -882,6 +882,8 @@ define([
         downloadFile: function(e) {
             e.preventDefault();
 
+            var that = this;
+
             var uuid = e.target.dataset.filename;
             var outputFile = this.collection.get(uuid);
 
