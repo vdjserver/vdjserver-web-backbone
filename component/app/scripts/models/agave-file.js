@@ -1,5 +1,6 @@
 define(
     [
+        'app',
         'backbone',
         'moment',
         'file-transfer-mixins',
@@ -7,6 +8,7 @@ define(
         'underscore.string',
     ],
 function(
+    App,
     Backbone,
     moment,
     FileTransferMixins,
@@ -365,31 +367,36 @@ function(
                 });
             },
             downloadFileToDisk: function() {
+                var jqxhr;
 
-                var url = EnvironmentConfig.agave.hostname
-                        + '/files'
-                        + '/v2'
-                        + '/media'
-                        + '/system'
-                        + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
+                if (App.Routers.communityMode) {
+                  jqxhr = this.downloadPublicFileByPostit(this.get('projectUuid'), this.get('fileUuid'));
+                } else {
+                  var url = EnvironmentConfig.agave.hostname
+                          + '/files'
+                          + '/v2'
+                          + '/media'
+                          + '/system'
+                          + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
 
-                        // NOTE: this uses agave // paths
-                        + '/' + this.get('path')
-                        ;
+                          // NOTE: this uses agave // paths
+                          + '/' + this.get('path')
+                          ;
 
-                if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
+                  if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
 
-                    url = EnvironmentConfig.agave.hostname
-                        + '/jobs'
-                        + '/v2'
-                        + '/' + this.get('jobUuid')
-                        + '/outputs'
-                        + '/media'
-                        + '/' + this.get('name')
-                        ;
+                      url = EnvironmentConfig.agave.hostname
+                          + '/jobs'
+                          + '/v2'
+                          + '/' + this.get('jobUuid')
+                          + '/outputs'
+                          + '/media'
+                          + '/' + this.get('name')
+                          ;
+                  }
+
+                  jqxhr = this.downloadUrlByPostit(url);
                 }
-
-                var jqxhr = this.downloadUrlByPostit(url);
 
                 return jqxhr;
             },
@@ -664,6 +671,7 @@ function(
                     projectUuid: value['projectUuid'],
                     jobUuid: value['jobUuid'],
                     name: value['name'],
+                    fileUuid: this.get('uuid'),
                 });
 
                 return fileModel;
