@@ -559,7 +559,7 @@ define([
             this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: that.projectModel.get('uuid')});
             this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: that.projectModel.get('uuid')});
 
-            this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.projectModel.get('uuid')});
+            this.workSamples = new Backbone.Agave.Collection.Metadata.NucleicAcidProcessing({projectUuid: this.projectModel.get('uuid')});
             this.workSamples.fetch()
             .then(function() {
 
@@ -587,8 +587,9 @@ define([
             .fail(function(error) {
                 var telemetry = new Backbone.Agave.Model.Telemetry();
                 telemetry.setError(error);
-                telemetry.set('method', 'Backbone.Agave.Collection.SamplesMetadata.fetch()');
+                telemetry.set('method', 'Backbone.Agave.Collection.Metadata.Sample.fetch()');
                 telemetry.set('view', 'Jobs.SelectedMetadata');
+                telemetry.set('project', that.projectModel.get('uuid'));
                 telemetry.save();
             })
             ;

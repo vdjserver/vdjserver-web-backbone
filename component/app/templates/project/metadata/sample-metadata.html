@@ -37,7 +37,7 @@
                 {{#each this.row}}
                   {{#ifLinkField this.name}}
                     {{#ifCond this.name "subject_uuid"}}
-                      <td><select class="form-control diagnosisMetadata" id="diagnosis-subject_uuid" data-tuple="{{@../index}}">
+                      <td><select class="form-control sampleMetadata" id="sample-subject_uuid" data-tuple="{{@../index}}">
                         <option></option>
                         {{#each ../../../../subjectCollection}}
                           <option {{ifCondSelected this.uuid ../this.value}} value="{{this.uuid}}">{{this.value.subject_id}}</option>

@@ -3306,7 +3306,7 @@ define([
             .fail(function(error) {
                 var telemetry = new Backbone.Agave.Model.Telemetry();
                 telemetry.setError(error);
-                telemetry.set('method', 'Backbone.Agave.Collection.SamplesMetadata.fetch()');
+                telemetry.set('method', 'Backbone.Agave.Collection.Metadata.Sample.fetch()');
                 telemetry.set('view', 'Projects.SampleMetadata');
                 telemetry.set('project', this.model.get('uuid'));
                 telemetry.save();
@@ -3512,7 +3512,7 @@ define([
               .fail(function(error) {
                   var telemetry = new Backbone.Agave.Model.Telemetry();
                   telemetry.setError(error);
-                  telemetry.set('method', 'Backbone.Agave.Collection.SamplesMetadata._exportToFile()');
+                  telemetry.set('method', 'Backbone.Agave.Collection.Metadata.Sample._exportToFile()');
                   telemetry.set('view', 'Projects.SampleMetadata');
                   telemetry.save();
               })
@@ -4101,8 +4101,8 @@ define([
             .fail(function(error) {
                 var telemetry = new Backbone.Agave.Model.Telemetry();
                 telemetry.setError(error);
-                telemetry.set('method', 'Backbone.Agave.Collection.SamplesMetadata.fetch()');
-                telemetry.set('view', 'Projects.SampleMetadata');
+                telemetry.set('method', 'Backbone.Agave.Collection.Metadata.fetch()');
+                telemetry.set('view', 'Projects.SampleGroups');
                 telemetry.set('project', this.model.get('uuid'));
                 telemetry.save();
             })
@@ -4198,7 +4198,7 @@ define([
 
         // Event Responders
         _addSampleGroup: function(e){
-            var m = new Backbone.Agave.Model.SampleGroup({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
+            var m = new Backbone.Agave.Model.Metadata.SampleGroup({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode})
             m.set('uuid', m.cid);
             this.sampleGroups.add(m);
             this.render();

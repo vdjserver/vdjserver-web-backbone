@@ -1390,9 +1390,16 @@ define([
                     var name = null;
                     if (sm) {
                         for (var sampleKey in pm.groups[group]['samples']) {
-                            var sample = sm['samples'][sampleKey];
-                            name = sample.value['Name'];
-                            if (!name) name = sample.value['name'];
+                            // handle newer and older metadata
+                            var sample;
+                            if (sm['nucleicAcidProcessingMetadata']) {
+                                sample = sm['nucleicAcidProcessingMetadata'][sampleKey];
+                                name = sample.value['nucleic_acid_processing_id'];
+                            } else if (sm['samples']) {
+                                sample = sm['samples'][sampleKey];
+                                name = sample.value['Name'];
+                                if (!name) name = sample.value['name'];
+                            }
                         }
                     }
                     if (!name) name = group;
