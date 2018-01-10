@@ -4049,6 +4049,8 @@ define([
             this.napColumns = new Backbone.Agave.Model.Metadata.NucleicAcidProcessingColumns({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
             this.napColumnNames = [];
 
+            this.sampleCollection = new Backbone.Agave.Collection.Metadata.NucleicAcidProcessing({projectUuid: this.model.get('uuid'), communityMode: App.Routers.communityMode});
+
             this.sampleGroups.fetch()
             .then(function() {
                 // save clone of original metadata collection
