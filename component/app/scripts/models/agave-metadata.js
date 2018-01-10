@@ -245,7 +245,6 @@ function(
         defaultColumns: [
                         'sample_id',
                         'subject_uuid',
-                        'filename_uuid',
                         'sample_type',
                         'tissue',
                         'anatomic_site',
