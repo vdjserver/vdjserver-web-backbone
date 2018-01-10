@@ -88,11 +88,11 @@
         </div>
 
         <div class="form-group">
-          <label for="sample-groups-sample" class="col-md-2 control-label">Samples:</label>
+          <label for="sample-groups-sample" class="col-md-2 control-label">Sequences:</label>
           <div class="col-md-4">
               <select id="sample-groups-{{@index}}-samples" data-tuple="{{@index}}" multiple="multiple">
                   {{#each ../sampleCollection}}
-                  <option value="{{this.uuid}}">{{this.value.sample_id}}</option>
+                  <option value="{{this.uuid}}">{{this.value.nucleic_acid_processing_id}}</option>
                   {{/each}}
               </select>
           </div>
