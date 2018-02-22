@@ -227,7 +227,7 @@ define([
                     assert.equal(value.name, 'subject_metadata.txt');
                     assert.isFalse(value.isDeleted);
 
-					data.subjectMetadataFile = agaveFile;
+					          data.subjectMetadataFile = agaveFile;
 
                     done();
                 })
@@ -717,7 +717,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.importFromFile(data.subjectMetadataFile, 'replace')
                 .then(function(response) {
@@ -742,7 +742,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.createExportFile()
                 .then(function(response) {
@@ -786,7 +786,7 @@ define([
                 // current plus 3 project directories
                 assert.strictEqual(result.length, 1);
                 result = result[0];
-                assert.strictEqual(result.length, 157);
+                assert.strictEqual(result.length, 314);
 
                 done();
             })
@@ -803,16 +803,16 @@ define([
 
             var model = data.project;
 
-            var subjectCols = new Backbone.Agave.Model.SubjectColumns({projectUuid: model.get('uuid')})
+            var subjectCols = new Backbone.Agave.Model.Metadata.SubjectColumns({projectUuid: model.get('uuid')})
 
             subjectCols.fetch()
                 .then(function(response) {
-					if (EnvironmentConfig.debug.test) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
-					assert.equal(response.status, 'success');
+                    assert.equal(response.status, 'success');
 
-					assert.isDefined(response.result);
-					var result = response.result;
+                    assert.isDefined(response.result);
+                    var result = response.result;
 
                     assert.strictEqual(result.length, 1);
                     result = result[0];
@@ -820,9 +820,9 @@ define([
                     assert.equal(result.name, 'subjectColumns');
                     assert.equal(result.associationIds[0], model.get('uuid'));
                     assert.strictEqual(result.value.columns.length, 6);
-                	assert.deepEqual(result.value.columns, ["Name", "Category", "Species", "Strain", "Gender", "Age"]);
+                    assert.deepEqual(result.value.columns, ["Name", "Category", "Species", "Strain", "Gender", "Age"]);
 
-					data.subjectColsUuid = result.uuid;
+                    data.subjectColsUuid = result.uuid;
 
                     done();
                 })
@@ -889,14 +889,14 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.fetch()
                 .then(function() {
                     if (EnvironmentConfig.debug.test) console.log(subjectMetadata);
 
                     assert.strictEqual(subjectMetadata.length, 3);
-					data.subjectMetadata = subjectMetadata;
+                    data.subjectMetadata = subjectMetadata;
 
                     done();
                 })
@@ -913,10 +913,10 @@ define([
 
             var model = data.project;
 
-			var uuids = data.subjectMetadata.pluck('uuid');
+            var uuids = data.subjectMetadata.pluck('uuid');
             if (EnvironmentConfig.debug.test) console.log(uuids);
 
-			var anEntry = data.subjectMetadata.at(0);
+            var anEntry = data.subjectMetadata.at(0);
             var permissions = new Backbone.Agave.Collection.Permissions({uuid: anEntry.get('uuid')});
 
             permissions.fetch()
@@ -953,9 +953,9 @@ define([
                     assert.isTrue(found_vdj);
                     assert.isTrue(found_user1);
 
-					anEntry = data.subjectMetadata.at(1);
+                anEntry = data.subjectMetadata.at(1);
             		permissions = new Backbone.Agave.Collection.Permissions({uuid: anEntry.get('uuid')});
-					return permissions.fetch();
+                return permissions.fetch();
                 })
                 .then(function(response) {
                     if (EnvironmentConfig.debug.test) console.log(response);
@@ -1042,7 +1042,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.importFromFile(data.subjectMetadataFile, 'append')
                 .then(function(response) {
@@ -1067,7 +1067,7 @@ define([
 
             var model = data.project;
 
-            var subjectCols = new Backbone.Agave.Model.SubjectColumns({projectUuid: model.get('uuid')})
+            var subjectCols = new Backbone.Agave.Model.Metadata.SubjectColumns({projectUuid: model.get('uuid')})
 
             subjectCols.fetch()
                 .then(function(response) {
@@ -1102,7 +1102,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.fetch()
                 .then(function() {
@@ -1257,7 +1257,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.importFromFile(data.subjectMetadataFile, 'append')
                 .then(function(response) {
@@ -1282,7 +1282,7 @@ define([
 
             var model = data.project;
 
-            var subjectCols = new Backbone.Agave.Model.SubjectColumns({projectUuid: model.get('uuid')})
+            var subjectCols = new Backbone.Agave.Model.Metadata.SubjectColumns({projectUuid: model.get('uuid')})
 
             subjectCols.fetch()
                 .then(function(response) {
@@ -1317,7 +1317,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.fetch()
                 .then(function() {
@@ -1341,7 +1341,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.importFromFile(data.subjectMetadataFile, 'replace')
                 .then(function(response) {
@@ -1366,7 +1366,7 @@ define([
 
             var model = data.project;
 
-            var subjectCols = new Backbone.Agave.Model.SubjectColumns({projectUuid: model.get('uuid')})
+            var subjectCols = new Backbone.Agave.Model.Metadata.SubjectColumns({projectUuid: model.get('uuid')})
 
             subjectCols.fetch()
                 .then(function(response) {
@@ -1401,7 +1401,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.fetch()
                 .then(function() {
@@ -2141,7 +2141,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: model.get('uuid')})
 
             subjectMetadata.importFromFile(data.sampleMetadataFile, 'append')
                 .then(function(response) {
@@ -2161,31 +2161,31 @@ define([
                 ;
         });
 
-        it('Fetch sample columns (6 columns)', function(done) {
+        it('Fetch sample columns (7 columns)', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
 
             var model = data.project;
 
-            var subjectCols = new Backbone.Agave.Model.SampleColumns({projectUuid: model.get('uuid')})
+            var subjectCols = new Backbone.Agave.Model.Metadata.SampleColumns({projectUuid: model.get('uuid')})
 
             subjectCols.fetch()
                 .then(function(response) {
-					if (EnvironmentConfig.debug.test) console.log(response);
+                    if (EnvironmentConfig.debug.test) console.log(response);
 
-					assert.equal(response.status, 'success');
+                    assert.equal(response.status, 'success');
 
-					assert.isDefined(response.result);
-					var result = response.result;
+                    assert.isDefined(response.result);
+                    var result = response.result;
 
                     assert.strictEqual(result.length, 1);
                     result = result[0];
                     assert.strictEqual(result.associationIds.length, 1);
                     assert.equal(result.name, 'sampleColumns');
                     assert.equal(result.associationIds[0], model.get('uuid'));
-                    assert.strictEqual(result.value.columns.length, 6);
-                	assert.deepEqual(result.value.columns, ["SampleID", "Name", "Stage", "Outcome", "Receptor", "Time"]);
+                    assert.strictEqual(result.value.columns.length, 7);
+                    assert.deepEqual(result.value.columns, ["SampleID", "Name", "Stage", "Outcome", "Receptor", "Time", "project_file"]);
 
-					data.sampleColsUuid = result.uuid;
+                    data.sampleColsUuid = result.uuid;
 
                     done();
                 })
@@ -2253,7 +2253,7 @@ define([
 
             var model = data.project;
 
-            var sampleMetadata = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: model.get('uuid')})
+            var sampleMetadata = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: model.get('uuid')})
 
             sampleMetadata.fetch()
                 .then(function() {
@@ -2262,10 +2262,11 @@ define([
                     assert.strictEqual(sampleMetadata.length, 2);
                     var m = sampleMetadata.at(0);
                     var value = m.get('value');
-                    assert.equal(value.project_file, data.fastqUuid);
+                    // project_files not linked at sample level any more
+                    //assert.equal(value.project_file, data.fastqUuid);
                     m = sampleMetadata.at(1);
                     value = m.get('value');
-                    assert.equal(value.project_file, data.fastqUuid);
+                    //assert.equal(value.project_file, data.fastqUuid);
 
 					data.sampleMetadata = sampleMetadata;
 
@@ -2510,7 +2511,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: model.get('uuid')})
 
             subjectMetadata.importFromFile(data.sampleMetadataFile2, 'append')
                 .then(function(response) {
@@ -2530,12 +2531,12 @@ define([
                 ;
         });
 
-        it('Fetch sample columns (6 + 1 = 7 columns)', function(done) {
+        it('Fetch sample columns (7 + 1 = 8 columns)', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
 
             var model = data.project;
 
-            var sampleCols = new Backbone.Agave.Model.SampleColumns({projectUuid: model.get('uuid')})
+            var sampleCols = new Backbone.Agave.Model.Metadata.SampleColumns({projectUuid: model.get('uuid')})
 
             sampleCols.fetch()
                 .then(function(response) {
@@ -2551,8 +2552,8 @@ define([
                     assert.strictEqual(result.associationIds.length, 1);
                     assert.equal(result.name, 'sampleColumns');
                     assert.equal(result.associationIds[0], model.get('uuid'));
-                    assert.strictEqual(result.value.columns.length, 7);
-                	assert.deepEqual(result.value.columns, ["SampleID", "Name", "Stage", "Outcome", "Receptor", "Time", "Another"]);
+                    assert.strictEqual(result.value.columns.length, 8);
+                    assert.deepEqual(result.value.columns, ["SampleID", "Name", "Stage", "Outcome", "Receptor", "Time", "project_file", "Another"]);
 
 					data.sampleColsUuid = result.uuid;
 
@@ -2570,7 +2571,7 @@ define([
 
             var model = data.project;
 
-            var sampleMetadata = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: model.get('uuid')})
+            var sampleMetadata = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: model.get('uuid')})
 
             sampleMetadata.fetch()
                 .then(function() {
@@ -2595,7 +2596,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: model.get('uuid')})
 
             subjectMetadata.importFromFile(data.sampleMetadataFile, 'replace')
                 .then(function(response) {
@@ -2615,12 +2616,12 @@ define([
                 ;
         });
 
-        it('Fetch sample columns (6 columns)', function(done) {
+        it('Fetch sample columns (7 columns)', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
 
             var model = data.project;
 
-            var subjectCols = new Backbone.Agave.Model.SampleColumns({projectUuid: model.get('uuid')})
+            var subjectCols = new Backbone.Agave.Model.Metadata.SampleColumns({projectUuid: model.get('uuid')})
 
             subjectCols.fetch()
                 .then(function(response) {
@@ -2636,8 +2637,8 @@ define([
                     assert.strictEqual(result.associationIds.length, 1);
                     assert.equal(result.name, 'sampleColumns');
                     assert.equal(result.associationIds[0], model.get('uuid'));
-                    assert.strictEqual(result.value.columns.length, 6);
-                	assert.deepEqual(result.value.columns, ["SampleID", "Name", "Stage", "Outcome", "Receptor", "Time"]);
+                    assert.strictEqual(result.value.columns.length, 7);
+                    assert.deepEqual(result.value.columns, ["SampleID", "Name", "Stage", "Outcome", "Receptor", "Time", "project_file"]);
 
 					data.sampleColsUuid = result.uuid;
 
@@ -2656,7 +2657,7 @@ define([
 
             var model = data.project;
 
-            var sampleMetadata = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: model.get('uuid')})
+            var sampleMetadata = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: model.get('uuid')})
 
             sampleMetadata.fetch()
                 .then(function() {
@@ -2665,10 +2666,11 @@ define([
                     assert.strictEqual(sampleMetadata.length, 2);
                     var m = sampleMetadata.at(0);
                     var value = m.get('value');
-                    assert.equal(value.project_file, data.fastqUuid);
+                    // project_file no longer linked with samples
+                    //assert.equal(value.project_file, data.fastqUuid);
                     m = sampleMetadata.at(1);
                     value = m.get('value');
-                    assert.equal(value.project_file, data.fastqUuid);
+                    //assert.equal(value.project_file, data.fastqUuid);
 
 					data.sampleMetadata = sampleMetadata;
 
@@ -2869,7 +2871,7 @@ define([
 
             var model = data.project;
 
-            var subjectCols = new Backbone.Agave.Model.SubjectColumns({projectUuid: model.get('uuid')})
+            var subjectCols = new Backbone.Agave.Model.Metadata.SubjectColumns({projectUuid: model.get('uuid')})
 
             subjectCols.fetch()
                 .then(function(response) {
@@ -2904,7 +2906,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.fetch()
                 .then(function() {
@@ -2922,12 +2924,12 @@ define([
                 ;
         });
 
-        it('Fetch sample columns (6 columns)', function(done) {
+        it('Fetch sample columns (7 columns)', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
 
             var model = data.project;
 
-            var subjectCols = new Backbone.Agave.Model.SampleColumns({projectUuid: model.get('uuid')})
+            var subjectCols = new Backbone.Agave.Model.Metadata.SampleColumns({projectUuid: model.get('uuid')})
 
             subjectCols.fetch()
                 .then(function(response) {
@@ -2943,8 +2945,8 @@ define([
                     assert.strictEqual(result.associationIds.length, 1);
                     assert.equal(result.name, 'sampleColumns');
                     assert.equal(result.associationIds[0], model.get('uuid'));
-                    assert.strictEqual(result.value.columns.length, 6);
-                	assert.deepEqual(result.value.columns, ["SampleID", "Name", "Stage", "Outcome", "Receptor", "Time"]);
+                    assert.strictEqual(result.value.columns.length, 7);
+                    assert.deepEqual(result.value.columns, ["SampleID", "Name", "Stage", "Outcome", "Receptor", "Time", "project_file"]);
 
 					data.sampleColsUuid = result.uuid;
 
@@ -2963,7 +2965,7 @@ define([
 
             var model = data.project;
 
-            var sampleMetadata = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: model.get('uuid')})
+            var sampleMetadata = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: model.get('uuid')})
 
             sampleMetadata.fetch()
                 .then(function() {
@@ -2972,10 +2974,11 @@ define([
                     assert.strictEqual(sampleMetadata.length, 2);
                     var m = sampleMetadata.at(0);
                     var value = m.get('value');
-                    assert.equal(value.project_file, data.fastqUuid);
+                    // project_file is no longer linked to samples
+                    //assert.equal(value.project_file, data.fastqUuid);
                     m = sampleMetadata.at(1);
                     value = m.get('value');
-                    assert.equal(value.project_file, data.fastqUuid);
+                    //assert.equal(value.project_file, data.fastqUuid);
 
 					data.sampleMetadata = sampleMetadata;
 
@@ -2993,7 +2996,7 @@ define([
 
             var model = data.project;
 
-            var sampleMetadata = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: model.get('uuid')})
+            var sampleMetadata = new Backbone.Agave.Collection.Metadata.Sample({projectUuid: model.get('uuid')})
 
             sampleMetadata.createExportFile()
                 .then(function(response) {
@@ -3054,7 +3057,7 @@ define([
 
             var model = data.project;
 
-            var subjectMetadata = new Backbone.Agave.Collection.SubjectsMetadata({projectUuid: model.get('uuid')})
+            var subjectMetadata = new Backbone.Agave.Collection.Metadata.Subject({projectUuid: model.get('uuid')})
 
             subjectMetadata.createExportFile()
                 .then(function(response) {
@@ -3098,7 +3101,7 @@ define([
                 // current plus 3 project directories
                 assert.strictEqual(result.length, 1);
                 result = result[0];
-                assert.strictEqual(result.length, 191);
+                assert.strictEqual(result.length, 348);
 
                 done();
             })
