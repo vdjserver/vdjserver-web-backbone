@@ -986,7 +986,7 @@ define([
             ;
         });
 
-        it('Check pending jobs', function(done) {
+        it('Check pending jobs (1)', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
 
             var model = data.project;
@@ -1802,7 +1802,7 @@ define([
             ;
         });
 
-        it('Check pending jobs', function(done) {
+        it('Check pending jobs (2)', function(done) {
             assert.isDefined(data.project, 'this test requires project uuid from prior test');
 
             var model = data.project;
