@@ -16,6 +16,7 @@ var EnvironmentConfig = {
             'execution': {
                 'ls5': {
                     'hostname': 'ls5.tacc.utexas.edu',
+                    'batchQueue': 'normal',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-ls5-0.1.7u7',
                         'igBlast': 'igblast-ls5-1.4u6',
@@ -26,6 +27,7 @@ var EnvironmentConfig = {
                 },
                 'vdjExec02': {
                     'hostname': 'vdj-exec-02.tacc.utexas.edu',
+                    'batchQueue': 'normal',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-small-0.1.7u3',
                         'presto': 'presto-small-0.5u3',
@@ -34,10 +36,22 @@ var EnvironmentConfig = {
                 },
                 'stampede': {
                     'hostname': 'stampede.tacc.utexas.edu',
+                    'batchQueue': 'normal',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-stampede-0.1.7u3',
                         'igBlast': 'igblast-stampede-1.4u7',
                         'RepCalc': 'repcalc-stampede-1.0u5'
+                    },
+                    'type': 'large',
+                },
+                'stampede2': {
+                    'hostname': 'stampede2.tacc.utexas.edu',
+                    'batchQueue': 'skx-normal',
+                    'apps': {
+                        'vdjPipe': 'vdj_pipe-stampede2-0.1.7u1',
+                        'igBlast': 'igblast-stampede2-1.8u1',
+                        'presto': 'presto-stampede2-0.5u1',
+                        'RepCalc': 'repcalc-stampede2-1.0u1'
                     },
                     'type': 'large',
                 },
@@ -53,10 +67,10 @@ var EnvironmentConfig = {
             ],
             'executionLevels': {
                 'igBlast': [
-                    { 'inputSize':   2e8, 'system': 'large', 'time': '02:00:00' },
-                    { 'inputSize':   4e8, 'system': 'large', 'time': '04:00:00' },
-                    { 'inputSize':   8e8, 'system': 'large', 'time': '08:00:00' },
-                    { 'inputSize':   1e9, 'system': 'large', 'time': '24:00:00' },
+                    { 'inputSize':   2e8, 'system': 'large', 'time': '02:00:00', 'nodeCount': 1 },
+                    { 'inputSize':   4e8, 'system': 'large', 'time': '04:00:00', 'nodeCount': 1 },
+                    { 'inputSize':   8e8, 'system': 'large', 'time': '08:00:00', 'nodeCount': 4 },
+                    { 'inputSize':   1e9, 'system': 'large', 'time': '24:00:00', 'nodeCount': 4 },
                 ],
                 'vdjPipe': [
                     { 'inputSize':   5e7, 'system': 'small' },
@@ -78,7 +92,7 @@ var EnvironmentConfig = {
                 ],
             },
             'nodeCount': {
-                'igBlast': 1,
+                'igBlast': 8,
                 'vdjPipe': 1,
                 'presto': 1,
                 'RepCalc': 8,

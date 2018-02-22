@@ -468,6 +468,7 @@ define([
                 this.set({
                     'appId': EnvironmentConfig.agave.systems.execution[systemName].apps[appName],
                     'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
+                    'batchQueue': EnvironmentConfig.agave.systems.execution[systemName].batchQueue,
                 });
             }
         },
