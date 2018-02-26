@@ -57,13 +57,13 @@ var EnvironmentConfig = {
                 },
             },
             'executionSystemPreference': [
+                'stampede2',
                 'ls5',
-                'stampede',
             ],
             'smallExecutionSystemPreference': [
                 'vdjExec02',
+                'stampede2',
                 'ls5',
-                'stampede',
             ],
             'executionLevels': {
                 'igBlast': [
