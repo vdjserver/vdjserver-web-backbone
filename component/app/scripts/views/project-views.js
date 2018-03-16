@@ -2314,7 +2314,7 @@ define([
             if (App.Routers.communityMode) return;
 
             // Note: Agave currently returns what backbone considers to be the 'wrong' http status code
-            this.model.destroy()
+            this.model.deleteProject()
                 .always(function() {
                     $('#delete-modal').modal('hide')
                         .on('hidden.bs.modal', function() {

@@ -107,6 +107,12 @@ function(
 
             return jqxhr;
         },
+
+        // don't actually delete, just rename metadata item
+        deleteProject: function() {
+            this.set('name', 'deletedProject');
+            return this.save();
+        },
     });
 
     Backbone.Agave.Model.Project = Project;
