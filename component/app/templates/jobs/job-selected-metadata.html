@@ -1,11 +1,11 @@
 <div class="form-group" id="input-metadata-list">
-    <label class="control-label col-lg-2">Sample Metadata</label>
+    <label class="control-label col-lg-2">Study Metadata</label>
     <div class="col-lg-8">
         {{#if hasMetadata}}
-            <input type="text" class="form-control" value="Project has sample metadata." readonly>
+            <input type="text" class="form-control" value="Project has study metadata." readonly>
         {{else}}
             <div class="alert alert-danger">
-                Warning: This project has no sample metadata defined. Samples and/or Sample Groups should be defined for repertoire calculations and comparisons.
+                Warning: This project has insufficient study metadata defined. Nucleic Acid Processing Metadata should be defined and associated with project files. Sample Groups should be defined for repertoire calculations and comparisons.
                 RepCalc will attempt to define sample groups for each VDJML file it finds.
             </div>
         {{/if}}

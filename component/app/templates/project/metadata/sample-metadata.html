@@ -9,16 +9,22 @@
               <tr>
                 <th></th>
                 {{#each columnNames}}
-                <th style="min-width: 10em">
-                  <strong>{{this}}</strong>
-                </th>
+                  {{#ifCond this "project_file"}}
+                    <th style="min-width: 25em">
+                      <strong>Project File</strong>
+                    </th>
+                  {{else}}
+                    {{#ifCond this "subject_uuid"}}
+                      <th style="min-width: 25em">
+                        <strong>Subject</strong>
+                      </th>
+                    {{else}}
+                      <th style="min-width: 10em">
+                        <strong>{{this}}</strong>
+                      </th>
+                    {{/ifCond}}
+                  {{/ifCond}}
                 {{/each}}
-                <th style="min-width: 25em">
-                  <strong>Subject</strong>
-                </th>
-                <th style="min-width: 25em">
-                  <strong>Project File</strong>
-                </th>
                 <th style="min-width: 25em">
                   <strong>VDJServer UUID</strong>
                 </th>
@@ -29,30 +35,35 @@
               <tr>
                 <td><img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeSample center-block" data-tuple="{{@index}}"></td>
                 {{#each this.row}}
-                <td><input type="text" class="form-control sampleMetadata" id="sample-{{this.name}}" placeholder="Sample {{this.name}}" value="{{this.value}}" data-tuple="{{@../index}}"></td>
+                  {{#ifLinkField this.name}}
+                    {{#ifCond this.name "subject_uuid"}}
+                      <td><select class="form-control sampleMetadata" id="sample-subject_uuid" data-tuple="{{@../index}}">
+                        <option></option>
+                        {{#each ../../../../subjectCollection}}
+                          <option {{ifCondSelected this.uuid ../this.value}} value="{{this.uuid}}">{{this.value.subject_id}}</option>
+                        {{/each}}
+                      </select></td>
+                    {{/ifCond}}
+
+                    {{#ifCond this.name "filename_uuid"}}
+                      <td><select class="form-control sampleMetadata" id="sample-filename_uuid" data-tuple="{{@../index}}">
+                        <option></option>
+                        {{#each ../../../../nonpairedFiles}}
+                        <option {{ifCondSelected this.read.uuid ../this.value}} value="{{this.read.uuid}}">{{this.read.value.name}}</option>
+                        {{/each}}
+                        {{#each ../../../../pairedFiles}}
+                        <option {{ifCondSelected this.forward.uuid ../this.value}} value="{{this.forward.uuid}}">{{this.forward.value.name}} / {{this.reverse.value.name}}</option>
+                        {{/each}}
+                        {{#each ../../../../pairedQualFiles}}
+                        <option {{ifCondSelected this.read.uuid ../this.value}} value="{{this.read.uuid}}">{{this.read.value.name}} / {{this.qual.value.name}}</option>
+                        {{/each}}
+                      </select></td>
+                    {{/ifCond}}
+
+                  {{else}}
+                    <td><input type="text" class="form-control sampleMetadata" id="sample-{{this.name}}" placeholder="Sample {{this.name}}" value="{{this.value}}" data-tuple="{{@../index}}"></td>
+                  {{/ifLinkField}}
                 {{/each}}
-                <td>
-                  <select class="form-control sampleMetadata" id="sample-subject_uuid" data-tuple="{{@index}}">
-                      <option></option>
-                      {{#each ../workSubjects}}
-                      <option {{ifCondSelected this.uuid ../this.subject_uuid}} value="{{this.uuid}}">{{this.value.Name}}</option>
-                      {{/each}}
-                  </select>
-                </td>
-                <td>
-                  <select class="form-control sampleMetadata" id="sample-project_file" data-tuple="{{@index}}">
-                      <option></option>
-                      {{#each ../nonpairedFiles}}
-                      <option {{ifCondSelected this.read.uuid ../this.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}}</option>
-                      {{/each}}
-                      {{#each ../pairedFiles}}
-                      <option {{ifCondSelected this.forward.uuid ../this.project_file}} value="{{this.forward.uuid}}">{{this.forward.value.name}} / {{this.reverse.value.name}}</option>
-                      {{/each}}
-                      {{#each ../pairedQualFiles}}
-                      <option {{ifCondSelected this.read.uuid ../this.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}} / {{this.qual.value.name}}</option>
-                      {{/each}}
-                  </select>
-                </td>
                 <td><input type="text" class="form-control" id="sample-uuid" readonly value="{{this.uuid}}"></td>
               </tr>
             {{/each}}
@@ -60,7 +71,7 @@
           </table>
           {{else}}
             <div class="alert alert-danger">
-                No Sample Metadata. Create new entries or Import using the Action menu below.
+                No Sample Metadata. Use the Action menu below to Create new entries, to Export a template spreadsheet, or to Import a TSV file from Project Data.
             </div>
 
           {{/if}}
@@ -134,77 +145,6 @@
     </div>
   </div>
 </form>
-
-<!--
-
-                <td><input type="text" class="form-control sampleMetadata" id="sample-name" placeholder="Sample Name" value="{{this.value.name}}" data-tuple="{{@index}}"></td>
-                <td><input type="text" class="form-control sampleMetadata" id="sample-description" placeholder="Sample Description" value="{{this.value.description}}" data-tuple="{{@index}}"></td>
-                <td><input type="text" class="form-control sampleMetadata" id="sample-barcode" placeholder="Sequence" value="{{this.value.barcode}}" data-tuple="{{@index}}"></td>
-
-<form id="sample-metadata-form" class="form-horizontal">
-{{#each workSamples}}
-  <div class="form-group">
-    <div class="col-md-1">
-				<img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:30px;height:30px;" class="removeSample center-block" data-tuple="{{@index}}">
-    </div>
-    <label for="sample-name" class="col-md-1 control-label">Name:</label>
-    <div class="col-md-2">
-      <input type="text" class="form-control sampleMetadata" id="sample-name" placeholder="Sample Name" value="{{this.value.name}}" data-tuple="{{@index}}">
-    </div>
-    <label for="sample-description" class="col-md-1 control-label">Description:</label>
-    <div class="col-md-7">
-      <input type="text" class="form-control sampleMetadata" id="sample-description" placeholder="Sample Description" value="{{this.value.description}}" data-tuple="{{@index}}">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="col-md-2 control-label">Data Association:</label>
-    <div class="checkbox col-md-1">
-      <label>
-        <input type="checkbox" class="dataAssociation" id="sample-data_association" value="barcode" {{ifCondChecked this.value.data_association "barcode"}} data-tuple="{{@index}}">
-        Barcode
-      </label>
-    </div>
-    <div class="col-md-2">
-      <input type="text" class="form-control sampleMetadata" {{ifCondEnabled this.value.data_association "barcode"}} id="sample-barcode" placeholder="Barcode Identifier" value="{{this.value.barcode}}" data-tuple="{{@index}}">
-    </div>
-    <label for="sample-project-file" class="col-md-2 control-label">Project File:</label>
-    <div class="col-md-5">
-        <select class="form-control sampleMetadata" id="sample-project_file" data-tuple="{{@index}}">
-            <option></option>
-            {{#each ../nonpairedFiles}}
-            <option {{ifCondSelected this.read.uuid ../this.value.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}}</option>
-            {{/each}}
-            {{#each ../pairedFiles}}
-            <option {{ifCondSelected this.forward.uuid ../this.value.project_file}} value="{{this.forward.uuid}}">{{this.forward.value.name}} / {{this.reverse.value.name}}</option>
-            {{/each}}
-            {{#each ../pairedQualFiles}}
-            <option {{ifCondSelected this.read.uuid ../this.value.project_file}} value="{{this.read.uuid}}">{{this.read.value.name}} / {{this.qual.value.name}}</option>
-            {{/each}}
-        </select>
-    </div>
-  </div>
-          <div class="form-group">
-            <label for="sample-uuid" class="col-md-2 control-label">VDJServer UUID:</label>
-            <div class="col-md-4">
-              <input type="text" class="form-control" id="sample-uuid" readonly value="{{this.uuid}}">
-            </div>
-          </div>
-{{/each}}
-
-  <div class="form-group">
-    <div class="col-md-1">
-        <img src="../images/rodentia-icons_emblem-plus-300px.png" class="center-block" style="width:30px;height:30px;" id="addSample">
-    </div>
-    <div class="col-md-offset-1 col-md-3">
-      <button id="save-sample-metadata" type="submit" class="btn btn-success">Save Sample Metadata</button>
-    </div>
-    <div class="col-md-3">
-      <button id="revert-sample-modal" class="btn btn-warning">Revert Changes</button>
-    </div>
-  </div>
-
-</form>
--->
 
 <div>
     <div class="modal fade" id="revert-sample" tabindex="-1" role="dialog" aria-labelledby="revert-modal-label" aria-hidden="true">

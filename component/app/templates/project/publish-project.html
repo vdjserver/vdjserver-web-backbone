@@ -1,0 +1,72 @@
+<div class="modal fade" id="publish-modal" tabindex="-1" role="dialog" aria-labelledby="job-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="job-modal-label">Publish Project</h4>
+            </div>
+            <form method="post" class="form-horizontal" id="job-form" role="form">
+                <div class="modal-body">
+
+                    <div class="form-group">
+                      <label for="project-name" class="col-md-2 control-label">Project Name:</label>
+                      <div class="col-md-4">
+                        <input type="text" class="form-control" id="project-name" placeholder="" readonly value="{{project.value.name}}">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="project-id" class="col-md-2 control-label">VDJServer UUID:</label>
+                      <div class="col-md-4">
+                        <input type="text" class="form-control" id="project-id" readonly value="{{project.uuid}}">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="alert alert-danger col-md-10 col-md-offset-1">
+                          Publishing a project will make it available within Community Data for the general public to view.
+                          All project data will be made public including project files, metadata, job files, analyses and results.
+                          No changes can be made to the project after it is published. However, the project can be unpublished which removes the project from Community Data and makes it private again, at which point the project can be altered.
+                      </div>
+                    </div>
+
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-lg-offset-4 col-lg-4">
+                        <div id="publish-processing-view" class="text-center"></div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button
+                        class="btn btn-default publish-submit-button"
+                        type="button"
+                        data-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+
+                    <input
+                        id="submit-publish"
+                        class="btn btn-success publish-submit-button"
+                        type="button"
+                        value="Publish"
+                    >
+
+                    <button
+                        id="publish-exit"
+                        class="btn btn-success hidden"
+                        type="button"
+                        data-dismiss="modal"
+                    >
+                        Exit
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

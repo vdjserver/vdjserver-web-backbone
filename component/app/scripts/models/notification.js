@@ -12,6 +12,7 @@ define(['app'], function(App) {
         {
             JOB_NOTIFICATION: 'jobNotification',
             FILE_IMPORT_NOTIFICATION: 'fileImportNotification',
+            USER_PROJECT_NOTIFICATION: 'userProjectNotification',
         }
     );
 

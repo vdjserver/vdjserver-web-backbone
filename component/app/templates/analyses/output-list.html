@@ -116,6 +116,7 @@
                         role="menu"
                     >
                     {{#if isArchived}}
+                        {{#unless ../../communityMode}}
                         <li class="job-actions">
                             <a
                                 class="unarchive-job"
@@ -126,7 +127,29 @@
                                 Unarchive Job
                             </a>
                         </li>
+                        {{/unless}}
+                        <li class="job-actions">
+                            <a
+                                class="job-history"
+                                href="#"
+                                data-bypass=true
+                                data-id="{{id}}"
+                            >
+                                Show Job History
+                            </a>
+                        </li>
+                        <li class="job-actions">
+                            <a
+                                class="job-info"
+                                href="#"
+                                data-bypass=true
+                                data-id="{{id}}"
+                            >
+                                Show Job Info
+                            </a>
+                        </li>
                     {{else}}
+                        {{#unless ../../communityMode}}
                         <li class="job-actions">
                             <a
                                 class="rename-job"
@@ -137,6 +160,7 @@
                                 Rename Job
                             </a>
                         </li>
+                        {{/unless}}
 
                         <li class="job-actions">
                             <a
@@ -149,6 +173,18 @@
                             </a>
                         </li>
 
+                        <li class="job-actions">
+                            <a
+                                class="job-info"
+                                href="#"
+                                data-bypass=true
+                                data-id="{{id}}"
+                            >
+                                Show Job Info
+                            </a>
+                        </li>
+
+                        {{#unless ../../communityMode}}
                         <li class="job-actions">
                             <a
                                 class="job-add-project-data"
@@ -181,6 +217,7 @@
                                 Archive Job
                             </a>
                         </li>
+                        {{/unless}}
                     {{/if}}
                     </ul>
 
@@ -194,7 +231,7 @@
                                         <button type="button" class="btn btn-danger view-config" data-jobid={{id}}>Job Failed - View Config File</button>
                                     {{else}}
                                         {{#JobSuccessCheck this}}
-                                            <a href="project/{{../../../../projectUuid}}/jobs/{{id}}" class="disabled">
+                                            <a href="{{../../../../routePath}}/{{../../../../projectUuid}}/jobs/{{id}}" class="disabled">
                                                 <button type="button" class="btn btn-primary">View Output</button>
                                             </a>
                                         {{else}}
@@ -255,5 +292,6 @@
 </div>
 
 <section id="project-job-history"></section>
+<section id="project-job-info"></section>
 <section id="project-job-rename"></section>
 <section id="project-job-archive"></section>

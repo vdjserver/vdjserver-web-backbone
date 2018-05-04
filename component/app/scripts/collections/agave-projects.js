@@ -1,13 +1,14 @@
 define([
+    'app',
     'backbone',
     'comparators-mixin',
-], function(Backbone, ComparatorsMixin) {
+], function(App, Backbone, ComparatorsMixin) {
 
     'use strict';
 
     var Projects = {};
 
-    Projects = Backbone.Agave.MetadataCollection.extend(
+    Projects.Private = Backbone.Agave.MetadataCollection.extend(
         _.extend({}, ComparatorsMixin.reverseChronologicalCreatedTime, {
             model: Backbone.Agave.Model.Project,
             url: function() {
@@ -16,6 +17,21 @@ define([
                        + '&limit=' + this.limit
                        + '&offset=' + this.offset
                        ;
+            },
+        })
+    );
+
+    Projects.Public = Backbone.Agave.MetadataCollection.extend(
+        _.extend({}, ComparatorsMixin.reverseChronologicalCreatedTime, {
+            model: Backbone.Agave.Model.Project,
+            apiHost: EnvironmentConfig.vdjGuest.hostname,
+            requiresAuth: false,
+            url: function() {
+              return '/meta/v2/data?q='
+                     + encodeURIComponent('{"name":"publicProject"}')
+                     + '&limit=' + this.limit
+                     + '&offset=' + this.offset
+                     ;
             },
         })
     );

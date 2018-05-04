@@ -163,9 +163,17 @@ define([
 
     // Agave extension of default Backbone.Model that uses Agave sync
     Agave.Model = Backbone.Model.extend({
-        initialize: function() {
+        initialize: function(parameters) {
             this.retrySyncEngine = Agave.sync;
             this.retrySyncLimit = 3;
+            this.communityMode = false;
+            if (parameters && parameters.communityMode) {
+                this.communityMode = parameters.communityMode;
+            }
+            if (this.communityMode) {
+                this.apiHost = EnvironmentConfig.vdjGuest.hostname;
+                this.requiresAuth = false;
+            }
         },
         apiHost: EnvironmentConfig.agave.hostname,
         authType: 'oauth',
@@ -185,9 +193,17 @@ define([
 
     // Agave extension of default Backbone.Collection that uses Agave sync
     Agave.Collection = Backbone.Collection.extend({
-        initialize: function() {
+        initialize: function(parameters) {
             this.retrySyncEngine = Agave.sync;
             this.retrySyncLimit = 3;
+            this.communityMode = false;
+            if (parameters && parameters.communityMode) {
+                this.communityMode = parameters.communityMode;
+            }
+            if (this.communityMode) {
+                this.apiHost = EnvironmentConfig.vdjGuest.hostname;
+                this.requiresAuth = false;
+            }
         },
         apiHost: EnvironmentConfig.agave.hostname,
         authType: 'oauth',
@@ -271,9 +287,16 @@ define([
             created: '',
             lastUpdated: '',
         },
-        initialize: function() {
+        initialize: function(parameters) {
             this.retrySyncEngine = Agave.PutOverrideSync;
             this.retrySyncLimit = 3;
+            if (parameters && parameters.communityMode) {
+                this.communityMode = parameters.communityMode;
+            }
+            if (this.communityMode) {
+                this.apiHost = EnvironmentConfig.vdjGuest.hostname;
+                this.requiresAuth = false;
+            }
         },
         sync: Backbone.RetrySync,
         getSaveUrl: function() {
@@ -396,7 +419,7 @@ define([
             nodeCount: 1,
             //notifications: [],
             parameters: {},
-            processorsPerNode: 12,
+            //processorsPerNode: 12,
         },
         initialize: function() {
             this.archivePathDateFormat = 'YYYY-MM-DD-HH-mm-ss-SS';
@@ -445,6 +468,8 @@ define([
                 this.set({
                     'appId': EnvironmentConfig.agave.systems.execution[systemName].apps[appName],
                     'executionSystem': EnvironmentConfig.agave.systems.execution[systemName].hostname,
+                    'batchQueue': EnvironmentConfig.agave.systems.execution[systemName].batchQueue,
+                    'processorsPerNode': EnvironmentConfig.agave.systems.execution[systemName].maxProcessorsPerNode * this.get('nodeCount'),
                 });
             }
         },
@@ -665,6 +690,8 @@ define([
             if (fileSize === undefined) return;
             if (executionLevels === undefined) return;
             if (appName === undefined) return;
+            if (EnvironmentConfig.agave.systems.nodeCount[appName])
+                this.set('nodeCount', EnvironmentConfig.agave.systems.nodeCount[appName]);
 
             var levelList = executionLevels[appName];
             if (levelList === undefined) return;
@@ -682,6 +709,7 @@ define([
                         'executionSystem': EnvironmentConfig.agave.systems.execution[executionSystem].hostname,
                         'maxRunTime': level['time'],
                     });
+                    if (level['nodeCount']) this.set('nodeCount', level['nodeCount']);
 
                     break;
                 }
@@ -693,6 +721,8 @@ define([
     // job history is not normal Agave metadata
     Agave.JobHistory = Agave.Model.extend({
         initialize: function(parameters) {
+            Backbone.Agave.Model.prototype.initialize.apply(this, [parameters]);
+
             if (parameters && parameters.jobUuid) {
                 this.jobUuid = parameters.jobUuid;
             }

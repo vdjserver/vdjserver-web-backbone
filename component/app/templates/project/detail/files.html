@@ -13,7 +13,7 @@
                 <thead>
                     <tr>
                         <th class="text-center">
-                            <input id="select-all-files-checkbox" name="select-all-files-checkbox" type="checkbox">
+                            <input id="select-all-files-checkbox" name="select-all-files-checkbox" type="checkbox" {{communityModeDisable}}>
                         </th>
                         <th class="text-center">
                             Name
@@ -51,9 +51,9 @@
                                 {{#if isPlaceholder}}
                                 {{else}}
                                     {{#IfJobSelectableFileType value.name value.fileType}}
-                                        <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
+                                        <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files" {{communityModeDisable}}>
                                     {{else}}
-                                        <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files not-job-selectable">
+                                        <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files not-job-selectable" {{communityModeDisable}}>
                                     {{/IfJobSelectableFileType}}
                                 {{/if}}
                             </td>
@@ -100,6 +100,7 @@
                                                     <div class="row">
                                                         <div class="col-sm-12">
                                                             {{#if this.qualModel}}
+                                                                <hr class="project-file-list-separator">
                                                                 <button class="download-file btn btn-default" data-filename="{{this.qualModel.value.name}}" data-metadatauuid="{{this.qualModel.uuid}}">{{this.qualModel.value.name}}</button>
                                                             {{/if}}
                                                         </div>
@@ -108,9 +109,6 @@
 
                                                 &nbsp;
 
-                                                <button class="btn btn-danger unlink-qual" id="{{uuid}}">
-                                                    <i class="fa fa-close"></i>
-                                                </button>
                                             </div>
                                         </div>
                                     {{else}}
@@ -128,6 +126,7 @@
                                     {{> project-file-list-last-modified this}}
 
                                     {{#if this.qualModel}}
+                                        <hr class="project-file-list-separator">
                                         {{> project-file-list-last-modified this.qualModel}}
                                     {{/if}}
                                 {{/if}}
@@ -138,6 +137,7 @@
                                     {{> project-file-list-size this}}
 
                                     {{#if this.qualModel}}
+                                        <hr class="project-file-list-separator">
                                         {{> project-file-list-size this.qualModel}}
                                     {{/if}}
                                 {{/if}}
@@ -148,6 +148,7 @@
                                     {{> project-file-list-origin this}}
 
                                     {{#if this.qualModel}}
+                                        <hr class="project-file-list-separator">
                                         {{> project-file-list-origin this.qualModel}}
                                     {{/if}}
                                 {{/if}}
@@ -163,6 +164,7 @@
                                                 <select
                                                     class="project-file-type"
                                                     data-fileuuid="{{uuid}}"
+                                                    {{communityModeDisable}}
                                                 >
                                                     {{#each ../../../fileTypes}}
                                                         <option {{ifCondSelected this ../../value.fileType}} value="{{this}}">
@@ -181,6 +183,7 @@
                                     {{> project-file-list-tags this}}
 
                                     {{#if this.qualModel}}
+                                        <hr class="project-file-list-separator">
                                         {{> project-file-list-tags this.qualModel}}
                                     {{/if}}
                                 {{/if}}
@@ -193,6 +196,7 @@
                                             <select
                                                 class="project-file-read-direction"
                                                 data-fileuuid="{{uuid}}"
+                                                {{communityModeDisable}}
                                             >
                                                 <option></option>
                                                 {{#each ../../../readDirections}}
@@ -208,6 +212,7 @@
                                                 <select
                                                     class="project-file-read-direction"
                                                     data-fileuuid="{{this.qualModel.uuid}}"
+                                                    {{communityModeDisable}}
                                                 >
                                                     <option></option>
                                                     {{#each ../../../../readDirections}}
@@ -228,7 +233,7 @@
                     {{#each pairedReadFileListings}}
                         <tr class="text-center">
                             <td>
-                                <input name="file-checkbox" type="checkbox" value="{{this.0.uuid}}" class="selected-files">
+                                <input name="file-checkbox" type="checkbox" value="{{this.0.uuid}}" class="selected-files" {{communityModeDisable}}>
                             </td>
                             <td>
                                 {{#each this}}
@@ -280,7 +285,7 @@
 
                                 &nbsp;
 
-                                <button class="btn btn-danger unlink-paired-read" id="{{this.[0].uuid}}">
+                                <button class="btn btn-danger unlink-paired-read" id="{{this.[0].uuid}}" {{communityModeDisable}}>
                                     <i class="fa fa-close"></i>
                                 </button>
                             </td>
@@ -303,6 +308,7 @@
                                             <select
                                                 class="project-file-read-direction"
                                                 data-fileuuid="{{uuid}}"
+                                                {{communityModeDisable}}
                                             >
                                                 <option></option>
                                                 {{#each ../../../readDirections}}
@@ -318,6 +324,7 @@
                                                 <select
                                                     class="project-file-read-direction"
                                                     data-fileuuid="{{this.qualModel.uuid}}"
+                                                    {{communityModeDisable}}
                                                 >
                                                     <option></option>
                                                     {{#each ../../../readDirections}}
@@ -347,7 +354,7 @@
                         {{#each this.fileCollection}}
                         <tr class="text-center">
                             <td>
-                                <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files">
+                                <input name="file-checkbox" type="checkbox" value="{{uuid}}" class="selected-files" {{communityModeDisable}}>
                             </td>
                             <td>
                                 {{#if this.description}}
@@ -371,6 +378,7 @@
                                         <select
                                             class="project-file-type"
                                             data-fileuuid="{{uuid}}"
+                                            {{communityModeDisable}}
                                         >
                                             {{#each ../../fileTypes}}
                                                 <option {{ifCondSelected this ../this.value.fileType}} value="{{this}}">
@@ -396,6 +404,11 @@
         </div>
     </div>
 {{else}}
+    {{#if communityMode}}
+    <div class="alert alert-danger">
+        The project has no files.
+    </div>
+    {{else}}
     <div id="file-container" class="row">
             <img src="../images/GetStartedImage.png" class="img-responsive">
         <div id="drag-and-drop-box" class="jumbotron-dashed-box col-md-12">
@@ -429,4 +442,5 @@
         </div>
         <div id="file-staging"></div>
     </div>
+    {{/if}}
 {{/if3Or}}

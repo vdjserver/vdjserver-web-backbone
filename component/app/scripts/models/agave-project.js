@@ -20,17 +20,23 @@ function(
                     owner: '',
                     value: {
                         'name':  '',
+                        'project_title': '',
                         'description': '',
                         'project_type': '',
+                        'inclusion_exclusion_criteria': '',
                         'grant_agency': '',
-                        'supporting_grants': '',
+                        'grants': '',
                         'pi_name': '',
                         'pi_institution': '',
                         'pi_email': '',
                         'contact_name': '',
                         'contact_institution': '',
                         'contact_email': '',
+                        'biomaterial_provider': '',
+                        'collected_by': '',
+                        'uploaded_by': '',
                         'publications': '',
+                        'pub_ids': '',
                         'ncbi_bioproject': '',
                         'showArchivedJobs': false
                     }
@@ -62,6 +68,50 @@ function(
         },
         setAttributesFromFormData: function(formData) {
             this.set('value', formData);
+        },
+
+        publishProject: function() {
+            var jqxhr = $.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'PUT',
+                url: EnvironmentConfig.vdjApi.hostname
+                    + '/projects/' + this.get('uuid') + '/publish'
+            });
+
+            return jqxhr;
+        },
+
+        unpublishProject: function() {
+            var jqxhr = $.ajax({
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'PUT',
+                url: EnvironmentConfig.vdjApi.hostname
+                    + '/projects/' + this.get('uuid') + '/unpublish'
+            });
+
+            return jqxhr;
+        },
+
+        addUserToProject: function(username) {
+
+            var jqxhr = $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projectUuid: this.get('uuid'),
+                    username: username
+                }),
+                headers: Backbone.Agave.basicAuthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/permissions/username',
+            });
+
+            return jqxhr;
+        },
+
+        // don't actually delete, just rename metadata item
+        deleteProject: function() {
+            this.set('name', 'deletedProject');
+            return this.save();
         },
     });
 

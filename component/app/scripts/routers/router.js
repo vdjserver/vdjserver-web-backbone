@@ -86,8 +86,7 @@ define(['app'], function(App) {
             'account/user-feedback':            'userFeedback',
             'account/change-password':          'changePassword',
             'auth/logout':                      'authLogout',
-            'community':                        'community',
-            'community/:id':                    'communityDetail',
+            'communityData':                    'community',
             'feedback':                         'feedback',
             'password-reset(/:uuid)':           'forgotPassword',
             'project':                          'projectIndex',
@@ -100,6 +99,12 @@ define(['app'], function(App) {
             'project/:id/users':                'projectManageUsers',
             'project/:id/jobs':                 'projectJobHistory',
             'project/:id/jobs/:jobId':          'projectJobOutput',
+            'community':                        'communityIndex',
+            'community/:id':                    'communityDetail',
+            'community/:id/settings':           'communitySettings',
+            'community/:id/metadata':           'communityMetadata',
+            'community/:id/jobs':               'communityJobHistory',
+            'community/:id/jobs/:jobId':        'communityJobOutput',
             'software':                         'software',
 
             // 404
@@ -108,6 +113,8 @@ define(['app'], function(App) {
 
         // Index
         index: function() {
+            App.Routers.communityMode = false;
+
             if (!App.Agave.token().isActive()) {
                 App.Agave.token().clear();
                 window.localStorage.removeItem('Agave.Token');
@@ -125,59 +132,25 @@ define(['app'], function(App) {
 
         // Auth
         authLogout: function() {
+            App.Routers.communityMode = false;
+
             // Routing *should* be handled automatically once the token is destroyed.
             App.Agave.destroyToken();
         },
 
         // Account
         createAccount: function() {
+            App.Routers.communityMode = false;
+
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.Account.CreateAccount());
             App.Layouts.main.render();
         },
 
-        // Community
-        community: function() {
-
-            var destinationRoute = function() {
-                _setProjectSubviews();
-
-                var communityDataView = new App.Views.Community.Index();
-                App.Layouts.content.setView('.content', communityDataView);
-                App.Layouts.content.render()
-                    .promise()
-                    .done(function() {
-                        communityDataView.startChart();
-                    })
-                    ;
-            };
-
-            App.Routers.currentRouteView = 'community';
-            _routeWithTokenRefreshCheck(destinationRoute);
-        },
-
-        // Community Detail
-        communityDetail: function(communityDataId) {
-
-            var destinationRoute = function() {
-                _setProjectSubviews();
-
-                var communityDetailView = new App.Views.Community.Detail({communityDataId: communityDataId});
-                App.Layouts.content.setView('.content', communityDetailView);
-                App.Layouts.content.render()
-                    .promise()
-                    .done(function() {
-                        communityDetailView.startChart();
-                    })
-                    ;
-            };
-
-            App.Routers.currentRouteView = 'communityDetail';
-            _routeWithTokenRefreshCheck(destinationRoute);
-        },
-
         // Verification Pending
         verificationPending: function() {
+            App.Routers.communityMode = false;
+
             App.Routers.currentRouteView = 'verificationPending';
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.Account.VerificationPending());
@@ -185,6 +158,8 @@ define(['app'], function(App) {
         },
 
         verifyAccount: function(verificationId) {
+            App.Routers.communityMode = false;
+
             App.Routers.currentRouteView = 'verifyAccount';
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.Account.VerifyAccount({'verificationId': verificationId}));
@@ -193,6 +168,8 @@ define(['app'], function(App) {
 
         // Forgot Password
         forgotPassword: function(uuid) {
+            App.Routers.communityMode = false;
+
             App.Routers.currentRouteView = 'forgotPassword';
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.ForgotPassword.Form({'uuid': uuid}));
@@ -201,6 +178,8 @@ define(['app'], function(App) {
 
         // Feedback
         feedback: function() {
+            App.Routers.communityMode = false;
+
             App.Routers.currentRouteView = 'feedback';
             _setPublicSubviews();
             App.Layouts.main.setView('.content', new App.Views.Feedback.PublicForm());
@@ -209,6 +188,7 @@ define(['app'], function(App) {
 
         // Profile
         accountProfile: function() {
+            App.Routers.communityMode = false;
 
             var destinationRoute = function() {
                 _setProjectSubviews();
@@ -222,6 +202,7 @@ define(['app'], function(App) {
 
         // User Feedback
         userFeedback: function() {
+            App.Routers.communityMode = false;
 
             var destinationRoute = function() {
                 _setProjectSubviews();
@@ -235,6 +216,7 @@ define(['app'], function(App) {
 
         // Change Password
         changePassword: function() {
+            App.Routers.communityMode = false;
 
             var destinationRoute = function() {
                 _setProjectSubviews();
@@ -249,6 +231,7 @@ define(['app'], function(App) {
         // Projects
 
         projectIndex: function() {
+            App.Routers.communityMode = false;
 
             var destinationRoute = function() {
                 _setProjectSubviews();
@@ -267,11 +250,16 @@ define(['app'], function(App) {
                 App.Layouts.content.render();
             };
 
+            App.Layouts.main = new App.Views.Layouts.MainLayout();
+            App.Layouts.sidebar = new App.Views.Layouts.SidebarLayout();
+            App.Layouts.content = new App.Views.Layouts.ContentLayout();
+
             App.Routers.currentRouteView = 'projectIndex';
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
         projectCreate: function() {
+            App.Routers.communityMode = false;
 
             var destinationRoute = function() {
                 _setProjectSubviews();
@@ -284,6 +272,8 @@ define(['app'], function(App) {
         },
 
         projectDetail: function(projectUuid) {
+            App.Routers.communityMode = false;
+
             var destinationRoute = function() {
                 _setProjectSubviews(
                     projectUuid,
@@ -299,6 +289,7 @@ define(['app'], function(App) {
         },
 
         projectFilePairedReadAssociations: function(projectUuid) {
+            App.Routers.communityMode = false;
 
             var destinationRoute = function() {
                 _setProjectSubviews(
@@ -315,6 +306,7 @@ define(['app'], function(App) {
         },
 
         projectFileQualAssociations: function(projectUuid) {
+            App.Routers.communityMode = false;
 
             var destinationRoute = function() {
                 _setProjectSubviews(
@@ -331,6 +323,7 @@ define(['app'], function(App) {
         },
 
         projectSettings: function(projectUuid) {
+            App.Routers.communityMode = false;
 
             var destinationRoute = function() {
                 _setProjectSubviews(
@@ -347,6 +340,7 @@ define(['app'], function(App) {
         },
 
         projectMetadata: function(projectUuid) {
+            App.Routers.communityMode = false;
 
             var destinationRoute = function() {
                 _setProjectSubviews(
@@ -363,6 +357,7 @@ define(['app'], function(App) {
         },
 
         projectJobHistory: function(projectUuid, args) {
+            App.Routers.communityMode = false;
 
             var paginationIndex = 1;
             if (_.isString(args)) {
@@ -388,6 +383,7 @@ define(['app'], function(App) {
         },
 
         projectJobOutput: function(projectUuid, jobId) {
+            App.Routers.communityMode = false;
 
             var destinationRoute = function() {
                 _setProjectSubviews(
@@ -403,8 +399,134 @@ define(['app'], function(App) {
             _routeWithTokenRefreshCheck(destinationRoute);
         },
 
+        // Community project data
+
+        communityIndex: function() {
+            App.Routers.communityMode = true;
+
+            var destinationRoute = function() {
+                _setProjectSubviews();
+
+                // Either load the index view before the fetch is done,
+                // or load after the fetch is done.
+                var projectListView = App.Layouts.sidebar.getView('.sidebar');
+                projectListView.shouldLoadViewForIndex = true;
+
+                if (projectListView.fetchDone === true) {
+                    projectListView.loadViewForIndex();
+                }
+
+                App.Layouts.content.setView('.content', new App.Views.Projects.Index());
+
+                App.Layouts.content.render();
+            };
+
+            App.Layouts.main = new App.Views.Layouts.MainLayout();
+            App.Layouts.sidebar = new App.Views.Layouts.SidebarLayout();
+            App.Layouts.content = new App.Views.Layouts.ContentLayout();
+
+            App.Routers.currentRouteView = 'projectIndex';
+            destinationRoute();
+        },
+
+        communityDetail: function(projectUuid) {
+            App.Routers.communityMode = true;
+
+            var destinationRoute = function() {
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectFiles
+                );
+
+                App.Layouts.content.setView('.content', new App.Views.Projects.Detail({projectUuid: projectUuid}));
+                App.Layouts.content.render();
+            };
+
+            App.Routers.currentRouteView = 'projectDetail';
+            destinationRoute();
+        },
+
+        communitySettings: function(projectUuid) {
+            App.Routers.communityMode = true;
+
+            var destinationRoute = function() {
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectSettings
+                );
+
+                App.Layouts.content.setView('.content', new App.Views.Projects.Settings({projectUuid: projectUuid}));
+                App.Layouts.content.render();
+            };
+
+            App.Routers.currentRouteView = 'projectSettings';
+            destinationRoute();
+        },
+
+        communityMetadata: function(projectUuid) {
+            App.Routers.communityMode = true;
+
+            var destinationRoute = function() {
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectMetadata
+                );
+
+                App.Layouts.content.setView('.content', new App.Views.Projects.Metadata({projectUuid: projectUuid}));
+                App.Layouts.content.render();
+            };
+
+            App.Routers.currentRouteView = 'projectMetadata';
+            destinationRoute();
+        },
+
+        communityJobHistory: function(projectUuid, args) {
+            App.Routers.communityMode = true;
+
+            var paginationIndex = 1;
+            if (_.isString(args)) {
+                var tmpPaginationIndex = args.split('=')[1];
+
+                if (parseInt(tmpPaginationIndex)) {
+                    paginationIndex = parseInt(tmpPaginationIndex);
+                }
+            }
+
+            var destinationRoute = function() {
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectAnalyses
+                );
+
+                App.Layouts.content.setView('.content', new App.Views.Analyses.OutputList({projectUuid: projectUuid, paginationIndex: paginationIndex}));
+                App.Layouts.content.render();
+            };
+
+            App.Routers.currentRouteView = 'projectJobHistory';
+            destinationRoute();
+        },
+
+        communityJobOutput: function(projectUuid, jobId) {
+            App.Routers.communityMode = true;
+
+            var destinationRoute = function() {
+                _setProjectSubviews(
+                    projectUuid,
+                    App.Views.Sidemenu.List.Sections.ProjectAnalyses
+                );
+
+                App.Layouts.content.setView('.content', new App.Views.Analyses.SelectAnalyses({projectUuid: projectUuid, jobId: jobId}));
+                App.Layouts.content.render();
+            };
+
+            App.Routers.currentRouteView = 'projectJobOutput';
+            destinationRoute();
+        },
+
         // Software
         software: function() {
+            App.Routers.communityMode = false;
+
             var destinationRoute = function() {
                 _setProjectSubviews();
 

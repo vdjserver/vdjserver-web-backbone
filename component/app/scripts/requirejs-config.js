@@ -78,15 +78,8 @@ require.config({
         'agave-projects': 'collections/agave-projects',
 
         'agave-profile': 'models/agave-profile',
-
-        'agave-sample-metadata': 'models/agave-sample-metadata',
-        'agave-samples-metadata': 'collections/agave-samples-metadata',
-        'agave-subject-metadata': 'models/agave-subject-metadata',
-        'agave-subjects-metadata': 'collections/agave-subjects-metadata',
-        'agave-subject-columns': 'models/agave-subject-columns',
-        'agave-sample-group': 'models/agave-sample-group',
-        'agave-sample-groups': 'collections/agave-sample-groups',
-        'agave-sample-columns': 'models/agave-sample-columns',
+        'agave-metadata': 'models/agave-metadata',
+        'agave-metadata-collections': 'collections/agave-metadata-collections',
 
         // Misc.
         'box': 'vendor/box',
@@ -307,37 +300,13 @@ require.config({
         },
 
         // Metadata Entry
-        'agave-sample-columns': {
+        'agave-metadata': {
             deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.SampleColumns'
+            exports: 'Backbone.Agave.Model.Metadata'
         },
-        'agave-sample-metadata': {
-            deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.SampleMetadata'
-        },
-        'agave-samples-metadata': {
-            deps: ['backbone', 'backbone-agave', 'agave-sample-metadata'],
-            exports: 'Backbone.Agave.Collection.SamplesMetadata'
-        },
-        'agave-subject-columns': {
-            deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.SubjectColumns'
-        },
-        'agave-subject-metadata': {
-            deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.SubjectMetadata'
-        },
-        'agave-subjects-metadata': {
-            deps: ['backbone', 'backbone-agave', 'agave-subject-metadata'],
-            exports: 'Backbone.Agave.Collection.SubjectsMetadata'
-        },
-        'agave-sample-group': {
-            deps: ['backbone', 'backbone-agave'],
-            exports: 'Backbone.Agave.Model.SampleGroup'
-        },
-        'agave-sample-groups': {
-            deps: ['backbone', 'backbone-agave', 'agave-sample-group'],
-            exports: 'Backbone.Agave.Collection.SampleGroups'
+        'agave-metadata-collections': {
+            deps: ['backbone', 'backbone-agave', 'agave-metadata'],
+            exports: 'Backbone.Agave.Collection.Metadata'
         },
 
         //Analyses

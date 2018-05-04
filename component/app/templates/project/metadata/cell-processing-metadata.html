@@ -1,10 +1,10 @@
-<form id="subject-metadata-form">
+<form id="cp-metadata-form">
   <div class="row">
     <div class="col-md-12">
       <div class="form-group">
         <div class="table-responsive">
           {{#if objectCollection}}
-          <table id="subject-metadata-list" class="table table-striped table-bordered">
+          <table id="cp-metadata-list" class="table table-striped table-bordered">
             <thead>
               <tr>
                 <th></th>
@@ -23,16 +23,27 @@
               <tr>
                 <td><img src="../images/rodentia-icons_emblem-minus-300px.png" style="width:35px;height:35px;" class="removeEntry center-block" data-tuple="{{@index}}"></td>
                 {{#each this.row}}
-                <td><input type="text" class="form-control subjectMetadata" id="subject-{{this.name}}" placeholder="Subject {{this.name}}" value="{{this.value}}" data-tuple="{{@../index}}"></td>
+                  {{#ifLinkField this.name}}
+                    {{#ifCond this.name "sample_uuid"}}
+                      <td><select class="form-control cpMetadata" id="cp-sample_uuid" data-tuple="{{@../index}}">
+                        <option></option>
+                        {{#each ../../../../sampleCollection}}
+                          <option {{ifCondSelected this.uuid ../this.value}} value="{{this.uuid}}">{{this.value.sample_id}}</option>
+                        {{/each}}
+                      </select></td>
+                    {{/ifCond}}
+                  {{else}}
+                    <td><input type="text" class="form-control cpMetadata" id="cp-{{this.name}}" placeholder="Cell Processing {{this.name}}" value="{{this.value}}" data-tuple="{{@../index}}"></td>
+                  {{/ifLinkField}}
                 {{/each}}
-                <td><input type="text" class="form-control" id="subject-uuid" readonly value="{{this.uuid}}"></td>
+                <td><input type="text" class="form-control" id="cp-uuid" readonly value="{{this.uuid}}"></td>
               </tr>
             {{/each}}
             </tbody>
           </table>
           {{else}}
             <div class="alert alert-danger">
-                No Subject Metadata. Use the Action menu below to Create new entries, to Export a template spreadsheet, or to Import a TSV file from Project Data.
+                No Cell Processing Metadata. Use the Action menu below to Create new entries, to Export a template spreadsheet, or to Import a TSV file from Project Data.
             </div>
 
           {{/if}}
@@ -63,7 +74,7 @@
                         id="addEntry"
                         data-bypass=true
                     >
-                        Add New Subject Entry
+                        Add New Metadata Entry
                     </a>
                 </li>
 
@@ -98,22 +109,22 @@
         </div>
       </div>
       <div class="col-md-3">
-        <button id="save-subject-metadata" type="submit" class="btn btn-success">Save Subject Metadata</button>
+        <button id="save-cp-metadata" type="submit" class="btn btn-success">Save Cell Processing Metadata</button>
       </div>
       <div class="col-md-3">
-        <button id="revert-subject-modal" class="btn btn-warning">Revert Changes</button>
+        <button id="revert-cp-modal" class="btn btn-warning">Revert Changes</button>
       </div>
     </div>
   </div>
 </form>
 
 <div>
-    <div class="modal fade" id="revert-subject" tabindex="-1" role="dialog" aria-labelledby="revert-modal-label" aria-hidden="true">
+    <div class="modal fade" id="revert-cp" tabindex="-1" role="dialog" aria-labelledby="revert-modal-label" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="revert-modal-label">Revert Subject Metadata Changes</h4>
+                    <h4 class="modal-title" id="revert-modal-label">Revert Cell Processing Metadata Changes</h4>
                 </div>
                 <form id="revert-metadata-form" role="form">
                     <div class="modal-body">
@@ -132,3 +143,4 @@
 </div>
 
 <div id="import-metadata-staging"></div>
+

@@ -63,14 +63,8 @@ define([
     'agave-system',
     'agave-systems',
 
-    'agave-sample-metadata',
-    'agave-samples-metadata',
-    'agave-subject-metadata',
-    'agave-subjects-metadata',
-    'agave-subject-columns',
-    'agave-sample-group',
-    'agave-sample-groups',
-    'agave-sample-columns',
+    'agave-metadata',
+    'agave-metadata-collections',
 
     // Regular Collections and Models
     'models/message',

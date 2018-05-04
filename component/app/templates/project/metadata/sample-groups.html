@@ -32,6 +32,16 @@
                   <option {{ifCondSelected this.value ../this.value.category}} value="{{this.value}}">{{this.name}}</option>
                   {{/each}}
                   </optgroup>
+                  <optgroup label="Cell Processing Fields">
+                  {{#each ../cpColumnNames}}
+                  <option {{ifCondSelected this.value ../this.value.category}} value="{{this.value}}">{{this.name}}</option>
+                  {{/each}}
+                  </optgroup>
+                  <optgroup label="Nucleic Acid Processing Fields">
+                  {{#each ../napColumnNames}}
+                  <option {{ifCondSelected this.value ../this.value.category}} value="{{this.value}}">{{this.name}}</option>
+                  {{/each}}
+                  </optgroup>
               </select>
           </div>
           <label for="sample-groups-logical" class="col-md-2 control-label">Logical:</label>
@@ -45,6 +55,16 @@
                   </optgroup>
                   <optgroup label="Sample Fields">
                   {{#each ../sampleColumnNames}}
+                  <option {{ifCondSelected this.value ../this.value.logical_field}} value="{{this.value}}">{{this.name}}</option>
+                  {{/each}}
+                  </optgroup>
+                  <optgroup label="Cell Processing Fields">
+                  {{#each ../cpColumnNames}}
+                  <option {{ifCondSelected this.value ../this.value.logical_field}} value="{{this.value}}">{{this.name}}</option>
+                  {{/each}}
+                  </optgroup>
+                  <optgroup label="Nucleic Acid Processing Fields">
+                  {{#each ../napColumnNames}}
                   <option {{ifCondSelected this.value ../this.value.logical_field}} value="{{this.value}}">{{this.name}}</option>
                   {{/each}}
                   </optgroup>
@@ -71,8 +91,8 @@
           <label for="sample-groups-sample" class="col-md-2 control-label">Samples:</label>
           <div class="col-md-4">
               <select id="sample-groups-{{@index}}-samples" data-tuple="{{@index}}" multiple="multiple">
-                  {{#each ../workSamples}}
-                  <option value="{{this.uuid}}">{{this.value.Name}}</option>
+                  {{#each ../sampleCollection}}
+                  <option value="{{this.uuid}}">{{this.value.nucleic_acid_processing_id}}</option>
                   {{/each}}
               </select>
           </div>

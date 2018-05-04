@@ -64,12 +64,15 @@ define([
         initialize: function(parameters) {
             this.projectModel = parameters.projectModel;
             this.generatedJobName = this._generateJobName();
+            this.appSubview = parameters.appSubview;
         },
         serialize: function() {
             return {
                 selectedFileListings: this.selectedFileListings.toJSON(),
                 generatedJobName: this.generatedJobName,
-                projectUuid: this.projectModel.get('uuid')
+                projectUuid: this.projectModel.get('uuid'),
+                appName: this.appSubview.job.get('appName'),
+                appId: this.appSubview.job.get('appId'),
             };
         },
         afterRender: function() {
@@ -283,7 +286,7 @@ define([
         initialize: function(parameters) {
             this.job = parameters.job;
 
-            this.jobHistory = new Backbone.Agave.JobHistory({ jobUuid: this.job.get('id') });
+            this.jobHistory = new Backbone.Agave.JobHistory({ jobUuid: this.job.get('id'), communityMode: App.Routers.communityMode });
 
             var that = this;
             this.jobHistory.fetch()
@@ -309,6 +312,26 @@ define([
         afterRender: function() {
             $('#job-modal').modal('show');
             $('#job-modal').on('shown.bs.modal', function() {
+                $('#job-name').focus();
+            });
+        },
+    });
+
+    Jobs.Info = Backbone.View.extend({
+        // Public Methods
+        template: 'jobs/job-info',
+        initialize: function(parameters) {
+            this.job = parameters.job;
+        },
+        serialize: function() {
+            return {
+                job: this.job.toJSON(),
+                jobInfo: JSON.stringify(this.job, null, 2),
+            };
+        },
+        afterRender: function() {
+            $('#info-modal').modal('show');
+            $('#info-modal').on('shown.bs.modal', function() {
                 $('#job-name').focus();
             });
         },
@@ -536,7 +559,7 @@ define([
             this.jobListings = new Backbone.Agave.Collection.Jobs.Listings({projectUuid: that.projectModel.get('uuid')});
             this.archivedJobs = new Backbone.Agave.Collection.Jobs.Archived({projectUuid: that.projectModel.get('uuid')});
 
-            this.workSamples = new Backbone.Agave.Collection.SamplesMetadata({projectUuid: this.projectModel.get('uuid')});
+            this.workSamples = new Backbone.Agave.Collection.Metadata.NucleicAcidProcessing({projectUuid: this.projectModel.get('uuid')});
             this.workSamples.fetch()
             .then(function() {
 
@@ -564,8 +587,9 @@ define([
             .fail(function(error) {
                 var telemetry = new Backbone.Agave.Model.Telemetry();
                 telemetry.setError(error);
-                telemetry.set('method', 'Backbone.Agave.Collection.SamplesMetadata.fetch()');
+                telemetry.set('method', 'Backbone.Agave.Collection.Metadata.Sample.fetch()');
                 telemetry.set('view', 'Jobs.SelectedMetadata');
+                telemetry.set('project', that.projectModel.get('uuid'));
                 telemetry.save();
             })
             ;
@@ -643,6 +667,8 @@ define([
                 this.workflows = new Backbone.Agave.Collection.Jobs.VdjpipeWorkflows();
                 this.workflowList = this.workflows.getWorkflows();
                 this.hasPairedReads = this.selectedFileListings.hasPairedReads();
+
+                this.job = new Backbone.Agave.Model.Job.VdjPipe();
             },
             serialize: function() {
                 return {
@@ -708,21 +734,21 @@ define([
                     singleReadForm = _.extend(generalFormData, pairedReadForm);
                 }
 
-                var job = new Backbone.Agave.Model.Job.VdjPipe();
+                //var job = new Backbone.Agave.Model.Job.VdjPipe();
 
-                job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
+                this.job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
 
                 var selectedFileListings = _.extend({}, this.selectedFileListings);
                 var allFiles = _.extend({}, this.allFiles);
 
-                job.prepareJob(
+                this.job.prepareJob(
                     singleReadForm,
                     selectedFileListings,
                     allFiles,
                     this.projectModel.get('uuid')
                 );
 
-                return this.startJob(job);
+                return this.startJob(this.job);
             },
 
             // Private Methods
@@ -840,23 +866,26 @@ define([
 
     Jobs.IgBlastStaging = Jobs.StagingBase.extend({
         template: 'jobs/igblast-staging',
+        initialize: function(parameters) {
+            this.job = new Backbone.Agave.Model.Job.IgBlast();
+        },
         stageJob: function(generalFormData) {
 
             var igblastForm = Backbone.Syphon.serialize($('#igblast-form')[0]);
             igblastForm = _.extend(generalFormData, igblastForm);
 
-            var job = new Backbone.Agave.Model.Job.IgBlast();
+            //var job = new Backbone.Agave.Model.Job.IgBlast();
 
-            job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
+            this.job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
 
-            job.prepareJob(
+            this.job.prepareJob(
                 igblastForm,
                 this.selectedFileListings,
                 this.allFiles,
                 this.projectModel.get('uuid')
             );
 
-            return this.startJob(job);
+            return this.startJob(this.job);
         },
         events: {
             'change #sequence-type': 'changeSequenceType',
@@ -921,31 +950,25 @@ define([
             initialize: function(parameters) {
                 this.workflows = new Backbone.Agave.Collection.Jobs.PrestoWorkflows();
 
-                var that = this;
-                /*
-                this.render().promise().done(function() {
-                    that._showWorkflow();
-                })
-                */
-                ;
+                this.job = new Backbone.Agave.Model.Job.Presto();
             },
             stageJob: function(formData) {
 
                 var prestoForm = Backbone.Syphon.serialize($('#presto-form')[0]);
                 prestoForm = _.extend(formData, prestoForm);
 
-                var job = new Backbone.Agave.Model.Job.Presto();
+                //var job = new Backbone.Agave.Model.Job.Presto();
 
-                job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
+                this.job.set('totalFileSize', this.selectedFileListings.getTotalFileSize());
 
-                job.prepareJob(
+                this.job.prepareJob(
                     prestoForm,
                     this.selectedFileListings,
                     this.allFiles,
                     this.projectModel.get('uuid')
                 );
 
-                return this.startJob(job);
+                return this.startJob(this.job);
             },
             events: {
                 //'change #select-workflow': '_showWorkflow',
@@ -1047,6 +1070,8 @@ define([
             template: 'jobs/repcalc-staging',
             initialize: function(parameters) {
                 this.workflows = new Backbone.Agave.Collection.Jobs.RepCalcWorkflows();
+
+                this.job = new Backbone.Agave.Model.Job.RepCalc();
                 //this.workflowNames = this.workflows.getWorkflowNames();
             },
             serialize: function() {
@@ -1103,14 +1128,14 @@ define([
                               }
                           }
 
-                          var job = new Backbone.Agave.Model.Job.RepCalc();
+                          //var job = new Backbone.Agave.Model.Job.RepCalc();
 
                           var fileSize = that.VDJMLFiles.getTotalFileSize();
                           fileSize += that.ChangeOFiles.getTotalFileSize();
                           fileSize += that.SummaryFiles.getTotalFileSize();
-                          job.set('totalFileSize', fileSize);
+                          that.job.set('totalFileSize', fileSize);
 
-                          job.prepareJob(
+                          that.job.prepareJob(
                               repcalcForm,
                               that.VDJMLFiles,
                               that.SummaryFiles,
@@ -1119,7 +1144,7 @@ define([
                               that.projectModel.get('uuid')
                           );
 
-                          return that.startJob(job);
+                          return that.startJob(that.job);
                       } else {
                           return $.Deferred().reject('Job is missing process metadata.');
                       }
