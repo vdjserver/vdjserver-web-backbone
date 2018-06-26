@@ -51,6 +51,8 @@ define([
 
         var data = {};
 
+      // enable this to use an existing job to test versus running a new job, useful for
+      // developing new tests without running a job each time.
       describe.skip('Existing job', function()  {
 
         data.jobUuid = '5165425361105251865-242ac11b-0001-007';
