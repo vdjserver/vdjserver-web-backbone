@@ -104,7 +104,7 @@ var EnvironmentConfig = {
         },
     },
     'processMetadata': {
-    	'version': 3,
+        'version': 3,
     },
     'debug': {
         'console': false,
