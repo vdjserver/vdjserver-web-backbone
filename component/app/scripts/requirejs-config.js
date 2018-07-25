@@ -40,6 +40,8 @@ require.config({
         'nvd3':             '../bower_components/nvd3/nv.d3.min',
         'socket-io':        '../bower_components/socket.io-client/socket.io',
         'simple-statistics':'../bower_components/simple-statistics/src/simple_statistics',
+        'js-yaml': '../bower_components/js-yaml/dist/js-yaml',
+        'text':'../bower_components/requirejs-text/text',
 
         // Backbone Extensions
         'backbone-agave':  'backbone/backbone-agave',
@@ -47,6 +49,7 @@ require.config({
         // Regular Models
         'error': 'models/error',
         'recaptcha': 'models/recaptcha',
+        'airr-schema': 'models/airr-schema',
 
         // Agave - Models/Collections
         'telemetry': 'models/telemetry',
@@ -193,7 +196,7 @@ require.config({
 
         // Agave
         'backbone-agave': {
-            deps: ['backbone'],
+            deps: ['backbone', 'airr-schema'],
             exports: 'Backbone.Agave'
         },
 

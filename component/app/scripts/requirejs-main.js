@@ -7,6 +7,7 @@ define([
     'typeahead',
     'file-saver',
     'bootstrap-multiselect',
+    'text',
 
     // Libs for JS visualization
     'nvd3',
@@ -30,6 +31,7 @@ define([
     // Regular Models
     'error',
     'recaptcha',
+    'airr-schema',
 
     // Agave
     'backbone-agave',
