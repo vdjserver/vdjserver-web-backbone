@@ -460,6 +460,7 @@ function(
                         parameters: {
                             query: '',
                             species: '',
+                            strain: '',
                             ig_seqtype: '',
                             domain_system: '',
                         },
@@ -486,6 +487,7 @@ function(
             _serializeFormData: function(projectUuid, formData, selectedFileMetadatas) {
                 var parameters = {
                     'species': formData['species'],
+                    'strain': formData['strain'],
                     'ig_seqtype': formData['sequence-type'],
                     'domain_system': 'imgt',
                 };
