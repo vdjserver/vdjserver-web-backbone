@@ -57,6 +57,8 @@ COPY ./component/bower.json /var/www/html/vdjserver-backbone/
 RUN cd /var/www/html/vdjserver-backbone && bower --allow-root install
 
 # Copy project source
+RUN mkdir /var/www/html/airr-standards
+COPY ./airr-standards/ /var/www/html/airr-standards
 COPY ./component/ /var/www/html/vdjserver-backbone
 RUN cd /var/www/html/vdjserver-backbone/test && bower --allow-root install
 
