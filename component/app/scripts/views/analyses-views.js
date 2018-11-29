@@ -3755,7 +3755,7 @@ define([
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
-            var categories = [ 'CDR', 'FWR', 'CDR1', 'CDR2', 'CDR3', 'FWR1', 'FWR2', 'FWR3' ];
+            var categories = [ 'CDR', 'FWR', 'CDR1', 'CDR2', 'FWR1', 'FWR2', 'FWR3' ];
 
 
             for (var i = 0; i < chartGroups.length; ++i) {
