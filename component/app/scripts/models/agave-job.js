@@ -662,6 +662,7 @@ function(
                     if (formData['cdr3-relative']) list.push('relative');
                     if (formData['cdr3-length']) list.push('length');
                     if (formData['cdr3-shared']) list.push('shared');
+                    if (formData['cdr3-distribution']) list.push('distribution');
                     if (list.length > 0) parameters['CDR3Operations'] = list;
 
                     list = [];
