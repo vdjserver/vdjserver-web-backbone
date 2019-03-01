@@ -719,6 +719,18 @@ function(
                     if (list.length > 0) parameters['MutationalFilters'] = list;
                 }
 
+                // Lineage reconstruction
+                if (formData.hasOwnProperty('lineage-analysis')) {
+                    parameters['LineageFlag'] = true;
+
+                    list = [];
+                    if (formData['lineage-reconstruction']) list.push('reconstruction');
+                    if (list.length > 0) parameters['LineageOperations'] = list;
+
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['LineageFilters'] = list;
+                }
 
                 return parameters;
             },
