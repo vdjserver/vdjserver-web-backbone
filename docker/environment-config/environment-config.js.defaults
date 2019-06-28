@@ -18,9 +18,9 @@ var EnvironmentConfig = {
                     'hostname': 'ls5.tacc.utexas.edu',
                     'batchQueue': 'normal',
                     'apps': {
-                        'vdjPipe': 'vdj_pipe-ls5-0.1.7u7',
+                        'vdjPipe': 'vdj_pipe-ls5-0.1.7u8',
                         'igBlast': 'igblast-ls5-1.14u1',
-                        'presto': 'presto-ls5-0.5u4',
+                        'presto': 'presto-ls5-0.5u5',
                         'RepCalc': 'repcalc-ls5-1.0u8'
                     },
                     'type': 'large',
