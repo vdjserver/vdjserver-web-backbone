@@ -414,7 +414,6 @@ define([
             totalFileSize: 0,
             maxRunTime: '48:00:00',
             //memoryPerNode: '1',
-            outputPath: '',
             name: '',
             nodeCount: 1,
             //notifications: [],
@@ -437,6 +436,11 @@ define([
             var data = {};
             data.config = this.toJSON();
             data.projectUuid = projectUuid;
+
+            // clean schema
+            delete data.config.executionSystem;
+            delete data.config.totalFileSize;
+            delete data.config.appName;
 
             var jqxhr = $.ajax({
                 headers: Backbone.Agave.basicAuthHeader(),

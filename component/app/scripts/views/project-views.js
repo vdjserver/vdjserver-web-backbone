@@ -378,6 +378,11 @@ define([
 
             this._handleWebsocketEvents();
         },
+        serialize: function() {
+            return {
+                validAccess: this.validAccess,
+            };
+        },
         getSubviewParameters: function() {
             return {
                 parentView: this,
@@ -395,9 +400,19 @@ define([
             loadingView.render();
 
             var subviewParameters = this.getSubviewParameters();
+            this.validAccess = true;
             var that = this;
 
-            this.projectFiles.fetch()
+            // use to check if user has permission to access project
+            this.projectUsers = new Backbone.Agave.Collection.Permissions({
+                uuid: this.projectUuid,
+                communityMode: App.Routers.communityMode
+            });
+
+            this.projectUsers.fetch()
+                .then(function() {
+                    return that.projectFiles.fetch();
+                })
                 .then(function() {
                     return that.projectJobFiles.fetch();
                 })
@@ -492,8 +507,16 @@ define([
                     }
                 })
                 .fail(function(error) {
+                    if (error) {
+                      // handle case where user does not have permission on project
+                      that.validAccess = false;
+                      loadingView.remove();
+                      that.render();
+                    }
+
                     var telemetry = new Backbone.Agave.Model.Telemetry();
                     telemetry.setError(error);
+                    telemetry.set('projectId', that.projectUuid);
                     telemetry.set('method', 'Backbone.Agave.Collection.Files.Metadata().fetch()');
                     telemetry.set('view', 'Projects.Detail');
                     telemetry.save();
@@ -642,9 +665,10 @@ define([
         serialize: function() {
             var fileCount = this.projectFiles.getFileCount() + this.projectJobFiles.getFileCount();
             return {
-                project: this.projectModel.toJSON(),
-                fileListingCount: fileCount + ' files',
-                userCount: this.projectUsers.getUserCount(),
+              project: this.projectModel.toJSON(),
+              fileListingCount: fileCount + ' files',
+              userCount: this.projectUsers.getUserCount(),
+              validAccess: this.validAccess,
             };
         },
     });

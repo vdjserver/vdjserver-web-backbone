@@ -888,8 +888,36 @@ define([
             return this.startJob(this.job);
         },
         events: {
-            'change #sequence-type': 'changeSequenceType',
+            'change #igblast-species': 'changeSpecies',
+            'change #igblast-sequence-type': 'changeSequenceType',
             //'change #domain-system': 'changeDomainSystem',
+        },
+        changeSpecies: function(e) {
+            e.preventDefault();
+
+            if (e.currentTarget.value === '') {
+                $('#igblast-strain').val('').change();
+                $('#igblast-strain').prop('disabled', true);
+                $('#igblast-sequence-type').val('').change();
+                $('#igblast-sequence-type').prop('disabled', false);
+            }
+            if (e.currentTarget.value === 'human') {
+                $('#igblast-strain').val('').change();
+                $('#igblast-strain').prop('disabled', true);
+                $('#igblast-sequence-type').val('').change();
+                $('#igblast-sequence-type').prop('disabled', false);
+            }
+            if (e.currentTarget.value === 'mouse') {
+                $('#igblast-strain').val('').change();
+                $('#igblast-strain').prop('disabled', true);
+                $('#igblast-sequence-type').val('').change();
+                $('#igblast-sequence-type').prop('disabled', false);
+            }
+            if (e.currentTarget.value === 'macaque') {
+                $('#igblast-strain').prop('disabled', false);
+                $('#igblast-sequence-type').val('Ig').change();
+                $('#igblast-sequence-type').prop('disabled', true);
+            }
         },
         changeSequenceType: function(e) {
             e.preventDefault();
@@ -923,7 +951,15 @@ define([
                 validationError = true;
             }
 
-            if ($('#sequence-type').val() === '') {
+            if ($('#igblast-species').val() === 'macaque') {
+                if ($('#igblast-strain').val() === '') {
+                    $('#igblast-strain-group').addClass('has-error');
+
+                    validationError = true;
+                }
+            }
+
+            if ($('#igblast-sequence-type').val() === '') {
                 $('#igblast-sequence-group')
                     .addClass('has-error')
                     ;

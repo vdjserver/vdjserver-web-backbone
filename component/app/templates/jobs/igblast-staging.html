@@ -18,11 +18,24 @@
                         <div class="row row-with-spacer">
                             <div class="col-md-offset-1 col-md-10">
                                 <div id="igblast-species-group" class="form-group">
-                                    <label class="control-label">Organism</label>
+                                    <label class="control-label">Organism Species</label>
                                     <select id="igblast-species" class="form-control igblast-form" name="species">
                                         <option value="">Select an Organism</option>
                                         <option value="human">Human</option>
                                         <option value="mouse">Mouse</option>
+                                        <option value="macaque">Rhesus Macaque</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row row-with-spacer">
+                            <div class="col-md-offset-1 col-md-10">
+                                <div id="igblast-strain-group" class="form-group">
+                                    <label class="control-label">Organism Strain</label>
+                                    <select id="igblast-strain" class="form-control igblast-form" name="strain" disabled>
+                                        <option value="">Select a Strain</option>
+                                        <option value="indian">Indian origin</option>
                                     </select>
                                 </div>
                             </div>
@@ -43,7 +56,7 @@
                             <div class="col-md-offset-1 col-md-10">
                                 <div id="igblast-sequence-group" class="form-group">
                                     <label class="control-label">Sequence Type</label>
-                                    <select class="form-control" name="sequence-type" id="sequence-type">
+                                    <select id="igblast-sequence-type" class="form-control" name="sequence-type">
                                         <option value="">Select a Sequence Type</option>
                                         <option value="Ig">Ig</option>
                                         <option value="TCR">TCR</option>

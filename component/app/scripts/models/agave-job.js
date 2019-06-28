@@ -460,6 +460,7 @@ function(
                         parameters: {
                             query: '',
                             species: '',
+                            strain: '',
                             ig_seqtype: '',
                             domain_system: '',
                         },
@@ -486,6 +487,7 @@ function(
             _serializeFormData: function(projectUuid, formData, selectedFileMetadatas) {
                 var parameters = {
                     'species': formData['species'],
+                    'strain': formData['strain'],
                     'ig_seqtype': formData['sequence-type'],
                     'domain_system': 'imgt',
                 };
@@ -660,6 +662,7 @@ function(
                     if (formData['cdr3-relative']) list.push('relative');
                     if (formData['cdr3-length']) list.push('length');
                     if (formData['cdr3-shared']) list.push('shared');
+                    if (formData['cdr3-distribution']) list.push('distribution');
                     if (list.length > 0) parameters['CDR3Operations'] = list;
 
                     list = [];
@@ -716,6 +719,18 @@ function(
                     if (list.length > 0) parameters['MutationalFilters'] = list;
                 }
 
+                // Lineage reconstruction
+                if (formData.hasOwnProperty('lineage-analysis')) {
+                    parameters['LineageFlag'] = true;
+
+                    list = [];
+                    if (formData['lineage-reconstruction']) list.push('reconstruction');
+                    if (list.length > 0) parameters['LineageOperations'] = list;
+
+                    list = [];
+                    if (formData['filter-productive']) list.push('productive');
+                    if (list.length > 0) parameters['LineageFilters'] = list;
+                }
 
                 return parameters;
             },

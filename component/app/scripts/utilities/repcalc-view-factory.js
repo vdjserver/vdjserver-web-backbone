@@ -58,6 +58,13 @@ define([
                 break;
             }
 
+            case 'lineage': {
+
+                view = new App.Views.RepCalc.LineageAnalysis();
+
+                break;
+            }
+
             case 'clones': {
 
                 view = new App.Views.RepCalc.ClonalAnalysis();

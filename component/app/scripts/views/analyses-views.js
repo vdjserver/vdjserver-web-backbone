@@ -273,6 +273,13 @@ define([
             }
         },
 
+        _removeModals: function() {
+            this.removeView('#project-job-history');
+            this.removeView('#project-job-info');
+            this.removeView('#project-job-rename');
+            this.removeView('#project-job-archive');
+        },
+
         calculateMaxIteratorIndexes: function() {
             this.maxIteratorIndexes = Math.ceil(this.jobs.models.length / this.iteratorRange);
         },
@@ -309,7 +316,7 @@ define([
 
         jobPaginationPrevious: function(e) {
             e.preventDefault();
-            this.removeView('#project-job-history');
+            this._removeModals();
 
             if (this.currentIterationIndex - 1 >= 1) {
                 this.currentIterationIndex -= 1;
@@ -326,7 +333,7 @@ define([
 
         jobPaginationNext: function(e) {
             e.preventDefault();
-            this.removeView('#project-job-history');
+            this._removeModals();
 
             if (this.currentIterationIndex + 1 <= this.maxIteratorIndexes) {
                 this.currentIterationIndex += 1;
@@ -343,7 +350,7 @@ define([
 
         jobPaginationIndex: function(e) {
             e.preventDefault();
-            this.removeView('#project-job-history');
+            this._removeModals();
 
             this.currentIterationIndex = parseInt(e.target.dataset.id);
 
@@ -384,10 +391,9 @@ define([
 
         renameJob: function(e) {
             e.preventDefault();
+            this._removeModals();
 
             var jobId = e.target.dataset.id;
-
-            this.removeView('#project-job-rename');
 
             var job = this.jobs.get(jobId);
             var jobMetadata = job.get('metadataLink');
@@ -404,7 +410,7 @@ define([
         },
 
         doneRenameJob: function() {
-            this.removeView('#project-job-rename');
+            this._removeModals();
 
             // redo the links to get the new name
             this.jobListings.linkToJobs(this.jobs);
@@ -415,10 +421,9 @@ define([
 
         showJobHistory: function(e) {
             e.preventDefault();
+            this._removeModals();
 
             var jobId = e.target.dataset.id;
-
-            this.removeView('#project-job-history');
 
             var jobHistoryView = new App.Views.Jobs.History({
                 job: this.jobs.get(jobId),
@@ -429,10 +434,9 @@ define([
 
         showJobInfo: function(e) {
             e.preventDefault();
+            this._removeModals();
 
             var jobId = e.target.dataset.id;
-
-            this.removeView('#project-job-info');
 
             var jobInfoView = new App.Views.Jobs.Info({
                 job: this.jobs.get(jobId),
@@ -576,10 +580,9 @@ define([
 
         archiveJob: function(e) {
             e.preventDefault();
+            this._removeModals();
 
             var jobId = e.target.dataset.id;
-
-            this.removeView('#project-job-archive');
 
             var job = this.jobs.get(jobId);
             var jobMetadata = job.get('metadataLink');
@@ -602,10 +605,9 @@ define([
 
         unarchiveJob: function(e) {
             e.preventDefault();
+            this._removeModals();
 
             var jobId = e.target.dataset.id;
-
-            this.removeView('#project-job-archive');
 
             var job = this.jobs.get(jobId);
             var jobMetadata = job.get('metadataLink');

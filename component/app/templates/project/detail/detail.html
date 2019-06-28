@@ -1,6 +1,14 @@
+{{#if validAccess}}
 <header id="project-header"></header>
 <section id="project-actions"></section>
 <section id="project-errors"></section>
 <section id="project-file-staging"></section>
 <section id="project-job-staging"></section>
 <section id="project-files"></section>
+{{else}}
+<div class="row">
+    <div class="alert alert-danger">
+        You do not have permission to view this project.
+    </div>
+</div>
+{{/if}}

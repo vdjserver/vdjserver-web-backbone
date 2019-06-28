@@ -69,6 +69,19 @@ define([
         },
     });
 
+    RepCalc.LineageAnalysis = Backbone.View.extend({
+        template: 'jobs/repcalc/repcalc-lineage',
+        initialize: function(options) {
+            this.title = 'Lineage Reconstruction';
+            this.render();
+        },
+        serialize: function() {
+            return {
+                title: this.title,
+            };
+        },
+    });
+
     RepCalc.ClonalAnalysis = Backbone.View.extend({
         template: 'jobs/repcalc/repcalc-clones',
         initialize: function(options) {

@@ -247,6 +247,23 @@ module.exports = function(grunt) {
                     }
                 ]
             },
+            airr: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        flatten: true,
+                        cwd: '<%= yeoman.app %>',
+                        dest: '<%= yeoman.app %>/scripts/config/',
+                        src: [
+                            '../../airr-standards/specs/airr-schema.yaml'
+                        ],
+                        rename: function(dest, src) {
+                          return dest + src.replace('.yaml','.yaml.html');
+                        }
+                    }
+                ]
+            },
             fontAwesome: {
                 files: [
                     {
@@ -502,6 +519,7 @@ module.exports = function(grunt) {
             'copy:fontAwesome',
             'copy:bowerCss',
             'copy:environmentConfig',
+            'copy:airr',
             'coffee:dist',
             'sass:dev',
             'concat:dev',
@@ -533,6 +551,7 @@ module.exports = function(grunt) {
         'copy:bowerCss',
         'copy:bowerImages',
         'copy:bowerFonts',
+        'copy:airr',
         'sass:dist',
         'handlebars',
         'copy:dist',

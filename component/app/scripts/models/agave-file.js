@@ -225,6 +225,12 @@ function(
                         if (components[idx] == 'vdjml') guessType = File.fileTypeCodes.FILE_TYPE_VDJML;
                     }
 
+                    if (components.length > 2) {
+                        var idx1 = components.length - 1;
+                        var idx2 = components.length - 2;
+                        if ((components[idx1] == 'tsv') && (components[idx2] == 'airr')) guessType = File.fileTypeCodes.FILE_TYPE_AIRR_TSV;
+                    }
+
                     return guessType;
                 },
             }
@@ -243,6 +249,7 @@ function(
                 FILE_TYPE_TSV: 6,
                 FILE_TYPE_CSV: 7,
                 FILE_TYPE_VDJML: 8,
+                FILE_TYPE_AIRR_TSV: 9,
             },
 
             // index should map to codes
@@ -256,6 +263,7 @@ function(
                 'TAB-separated Values',
                 'Comma-separated Values',
                 'VDJML',
+                'AIRR Rearrangement TSV',
             ],
         }
     );
@@ -791,6 +799,7 @@ function(
                     File.fileTypeCodes.FILE_TYPE_QUALITY,
                     File.fileTypeCodes.FILE_TYPE_TSV,
                     File.fileTypeCodes.FILE_TYPE_VDJML,
+                    File.fileTypeCodes.FILE_TYPE_AIRR_TSV,
                 ];
             },
 

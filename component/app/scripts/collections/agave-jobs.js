@@ -477,7 +477,8 @@ define([
                         'CDR3',
                         'clones',
                         'diversity',
-                        'mutations'
+                        'mutations',
+                        'lineage'
                     ],
                 }
             ];
