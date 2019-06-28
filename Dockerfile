@@ -60,6 +60,7 @@ RUN cd /var/www/html/vdjserver-backbone && bower --allow-root install
 RUN mkdir /var/www/html/airr-standards
 COPY ./airr-standards/ /var/www/html/airr-standards
 COPY ./component/ /var/www/html/vdjserver-backbone
+COPY ./airr-standards/specs/airr-schema.yaml /var/www/html/vdjserver-backbone/app/scripts/config/airr-schema.yaml.html
 RUN cd /var/www/html/vdjserver-backbone/test && bower --allow-root install
 
 WORKDIR /var/www/html/vdjserver-backbone
