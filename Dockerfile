@@ -4,10 +4,10 @@ FROM ubuntu:16.04
 MAINTAINER VDJServer <vdjserver@utsouthwestern.edu>
 
 # PROXY: uncomment these if building behind UTSW proxy
-#ENV http_proxy 'http://proxy.swmed.edu:3128/'
-#ENV https_proxy 'https://proxy.swmed.edu:3128/'
-#ENV HTTP_PROXY 'http://proxy.swmed.edu:3128/'
-#ENV HTTPS_PROXY 'https://proxy.swmed.edu:3128/'
+ENV http_proxy 'http://proxy.swmed.edu:3128/'
+ENV https_proxy 'https://proxy.swmed.edu:3128/'
+ENV HTTP_PROXY 'http://proxy.swmed.edu:3128/'
+ENV HTTPS_PROXY 'https://proxy.swmed.edu:3128/'
 
 # Install OS Dependencies
 RUN apt-get update && apt-get install -y \
@@ -31,8 +31,8 @@ RUN cp -rf /node-v8.10.0-linux-x64/include/* /usr/include
 RUN cp -rf /node-v8.10.0-linux-x64/share/* /usr/share
 
 # PROXY: More UTSW proxy settings
-#RUN npm config set proxy http://proxy.swmed.edu:3128
-#RUN npm config set https-proxy http://proxy.swmed.edu:3128
+RUN npm config set proxy http://proxy.swmed.edu:3128
+RUN npm config set https-proxy http://proxy.swmed.edu:3128
 
 RUN npm install -g \
     bower \
@@ -51,7 +51,7 @@ RUN cd /var/www/html/vdjserver-backbone && npm install
 # Install bower dependencies
 COPY ./component/.bowerrc /var/www/html/vdjserver-backbone/
 # PROXY: Copy .bowerrc with proxy settings
-#COPY ./component/.bowerrc.proxy /var/www/html/vdjserver-backbone/.bowerrc
+COPY ./component/.bowerrc.proxy /var/www/html/vdjserver-backbone/.bowerrc
 
 COPY ./component/bower.json /var/www/html/vdjserver-backbone/
 RUN cd /var/www/html/vdjserver-backbone && bower --allow-root install
@@ -61,6 +61,7 @@ RUN mkdir /var/www/html/airr-standards
 COPY ./airr-standards/ /var/www/html/airr-standards
 COPY ./component/ /var/www/html/vdjserver-backbone
 COPY ./airr-standards/specs/airr-schema.yaml /var/www/html/vdjserver-backbone/app/scripts/config/airr-schema.yaml.html
+COPY ./component/.bowerrc.proxy /var/www/html/vdjserver-backbone/test/.bowerrc
 RUN cd /var/www/html/vdjserver-backbone/test && bower --allow-root install
 
 WORKDIR /var/www/html/vdjserver-backbone
