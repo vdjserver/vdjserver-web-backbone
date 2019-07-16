@@ -3,7 +3,7 @@
 .tmp
 app/bower_components
 dist
-node_modules
+node_modules/
 
 # OS X Noise
 .DS_Store
