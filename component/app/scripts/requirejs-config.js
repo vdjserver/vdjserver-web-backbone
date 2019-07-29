@@ -20,7 +20,7 @@ require.config({
         'detect':           '../bower_components/Detect.js/detect',
         'filesize':         '../bower_components/filesize/lib/filesize',
         'file-saver':       '../bower_components/file-saver/FileSaver',
-        'handlebars':       '../bower_components/handlebars/handlebars',
+      //  'handlebars':       '../bower_components/handlebars/handlebars',
         'highcharts':       '../bower_components/highstock-release/highstock',
         'highcharts-data':  '../bower_components/highstock-release/modules/data',
         'highcharts-drilldown': '../bower_components/highstock-release/modules/drilldown',
