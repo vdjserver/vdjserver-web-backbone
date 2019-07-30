@@ -1,50 +1,31 @@
 const path = require('path');
 const webpack = require('webpack');
-// const fs = require('fs');
-
-/*
- * SplitChunksPlugin is enabled by default and replaced
- * deprecated CommonsChunkPlugin. It automatically identifies modules which
- * should be splitted of chunk by heuristics using module duplication count and
- * module category (i. e. node_modules). And splits the chunks…
- *
- * It is safe to remove "splitChunks" from the generated configuration
- * and was added as an educational example.
- *
- * https://webpack.js.org/plugins/split-chunks-plugin/
- *
- */
-
-//const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-/*
- * We've enabled HtmlWebpackPlugin for you! This generates a html
- * page for you when you compile webpack, which will make you start
- * developing and prototyping faster.
- *
- * https://github.com/jantimon/html-webpack-plugin
- *
- */
 
 module.exports = {
 	target: 'web',
 	mode: 'development',
-	entry: './app/scripts/app.js',
+	// entry: './app/scripts/entry.js',
 
-	// entry: { //'./app/scripts/entry.js',
-	// 	app: './app/scripts/app.js',
-	// 	public: './app/scripts/views/public-views.js'
-	// },
+	entry: {
+		app: './app/scripts/app.js',
+		public: './app/scripts/views/public-views.js'
+	},
 
 	output: {
-		filename: 'main.js',
+		filename: '[name].js',
 		path: path.resolve(__dirname, './app/dist')
 	},
 
 	resolve: {
+		modules: [
+			"node_modules",
+			path.resolve(__dirname, 'node_modules')
+		],
 		alias: {
-			'handlebars': '../../node_modules/handlebars/dist/handlebars'
-		}
+			'handlebars': path.resolve(__dirname,'node_modules') + '/handlebars/dist/handlebars',
+			'app': path.resolve(__dirname, 'app') + '/scripts/app.js'
+		},
+		extensions: ['.js']
 	},
 
 	plugins: [
@@ -52,8 +33,6 @@ module.exports = {
 			_: 'underscore'
 		})
 	],
-
-	//plugins: [new webpack.ProgressPlugin(), new HtmlWebpackPlugin()],
 
 	module: {
 		rules: [
@@ -78,7 +57,7 @@ module.exports = {
 			},
 			{
 				test: /\.handlebars$/,
-				// exclude:/(node_modules)/,
+				exclude:/(node_modules)/,
 				loader:"handlebars-loader"
 			}
 		]
@@ -104,3 +83,29 @@ module.exports = {
 		open: true
 	}
 };
+
+/*
+ * SplitChunksPlugin is enabled by default and replaced
+ * deprecated CommonsChunkPlugin. It automatically identifies modules which
+ * should be splitted of chunk by heuristics using module duplication count and
+ * module category (i. e. node_modules). And splits the chunks…
+ *
+ * It is safe to remove "splitChunks" from the generated configuration
+ * and was added as an educational example.
+ *
+ * https://webpack.js.org/plugins/split-chunks-plugin/
+ *
+ */
+
+//const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+/*
+ * We've enabled HtmlWebpackPlugin for you! This generates a html
+ * page for you when you compile webpack, which will make you start
+ * developing and prototyping faster.
+ *
+ * https://github.com/jantimon/html-webpack-plugin
+ *
+ */
+
+	//plugins: [new webpack.ProgressPlugin(), new HtmlWebpackPlugin()],
