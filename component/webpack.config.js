@@ -2,13 +2,12 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-	target: 'web',
+	target: 'web', //target: 'node',
 	mode: 'development',
 	// entry: './app/scripts/entry.js',
-
 	entry: {
-		app: './app/scripts/app.js',
-		public: './app/scripts/views/public-views.js'
+		app: './app/scripts/app.js'
+	//	public: './app/scripts/views/public-views.js'
 	},
 
 	output: {
@@ -18,14 +17,21 @@ module.exports = {
 
 	resolve: {
 		modules: [
-			"node_modules",
+			'node_modules',
 			path.resolve(__dirname, 'node_modules')
 		],
 		alias: {
+			// 'animate.css': path.resolve(__dirname,'node_modules') + '/animate.css/animate.min.css',
+			// 'Backbone': path.resolve(__dirname,'node_modules') + '/backbone/',
+			// 'backbone.analytics': path.resolve(__dirname,'node_modules') + '/backbone.analytics/',
+			// 'backbone.syphon': path.resolve(__dirname,'node_modules') + '/backbone.syphon/node_modules/underscore/',
+			// 'bootstrap-sass': path.resolve(__dirname,'node_modules') + '/bootstrap-sass/assets/javascripts/bootstrap.min.js',
+
 			'handlebars': path.resolve(__dirname,'node_modules') + '/handlebars/dist/handlebars',
-			'app': path.resolve(__dirname, 'app') + '/scripts/app.js'
+			'app': path.resolve(__dirname, 'app') + '/scripts/app.js',
+			//'node_modules': path.join(__dirname,'node_modules')
 		},
-		extensions: ['.js']
+		extensions: ['.tsx', '.ts', '.js', '.json']
 	},
 
 	plugins: [
@@ -59,7 +65,17 @@ module.exports = {
 				test: /\.handlebars$/,
 				exclude:/(node_modules)/,
 				loader:"handlebars-loader"
-			}
+			},
+			{
+			test: require.resolve('jquery'),
+	    use: [{
+	        loader: 'expose-loader',
+	        options: 'jQuery'
+	    },{
+	        loader: 'expose-loader',
+	        options: '$'
+	    }]
+		}
 		]
 	},
 
