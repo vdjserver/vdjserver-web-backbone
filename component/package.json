@@ -7,7 +7,7 @@
     "author": "VDJServer <vdjserver@utsouthwestern.edu>",
     "main": "./app/scripts/entry.js",
     "scripts": {
-        "dev": "webpack --mode development",
+        "dev": "webpack --mode development --display-modules",
         "watch": "webpack --watch"
     },
     "dependencies": {
