@@ -33,8 +33,10 @@ VDJServer Backbone is a next generation immune repertoire analysis portal.
 ##Development Setup
 
 ```
-- Clone project
+- Clone project and init submodules
 git clone http://bitbucket.org/vdjserver/vdjserver-web-backbone.git
+cd vdjserver-web-backbone
+git submodule update --init --recursive
 
 cd [project location]/component
 
@@ -117,5 +119,5 @@ cd [vdjserver-backbone repo location]
 
 docker build -t vdj-dev .
 
-docker run -t -p 9001:9001 -v $(pwd)/component:/var/www/html/vdjserver-backbone vdj-dev bash -c "bower install && npm install && grunt server --force"
+docker run -t -p 9001:9001 -v $(pwd)/component:/var/www/html/vdjserver-backbone vdj-dev bash -c "npm install && npm run dev && grunt server --force"
 ```
