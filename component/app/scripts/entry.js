@@ -3,9 +3,15 @@ import $ from 'jquery';
 window.jQuery = $;
 window.$ = $;
 
+import 'handlebars';
+import 'backbone';
+import 'layoutmanager';
+
 // Main JS
-import "./app.js";
-import "./views/public-views.js";
+import { App } from './app.js';
+import { Public } from "./views/public-views.js";
+App.Views.Public = Public;
+App.start();
 
 // SASS/CSS
 //

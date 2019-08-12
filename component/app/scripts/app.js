@@ -1,15 +1,19 @@
 
-define([
-    'handlebars',
-    'backbone',
-    'layoutmanager',
-], function(
-    Handlebars
-) {
+//import 'handlebars';
+//import 'backbone';
+//import 'layoutmanager';
+
+//define([
+//    'handlebars',
+//    'backbone',
+//    'layoutmanager',
+//], function(
+//    Handlebars
+//) {
 
     'use strict';
 
-    var App = {
+    export var App = {
         root: '/',
         templatePrefix: 'templates/',
         init: function() {
@@ -148,9 +152,10 @@ define([
         Websockets: {},
     };
 
-    return _.extend(
+    //module.exports = App;
+    _.extend(
         App,
         {},
         Backbone.Events
     );
-});
+//});
