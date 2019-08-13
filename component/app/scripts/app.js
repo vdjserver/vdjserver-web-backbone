@@ -3,20 +3,21 @@
 //import 'backbone';
 //import 'layoutmanager';
 
-//define([
-//    'handlebars',
-//    'backbone',
-//    'layoutmanager',
-//], function(
-//    Handlebars
-//) {
+define([
+    'handlebars',
+    'backbone',
+    'layoutmanager',
+], function(
+    Handlebars
+) {
 
     'use strict';
 
-    export var App = {
+    var App = {
         root: '/',
         templatePrefix: 'templates/',
         init: function() {
+/*
             var JST = window.JST = window.JST || {};
 
             // Configure LayoutManager with Backbone Boilerplate defaults.
@@ -49,7 +50,7 @@
                     return tmpl(context);
                 }
             });
-
+*/
             // setup agave
             App.Agave = new Backbone.Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
 
@@ -158,4 +159,4 @@
         {},
         Backbone.Events
     );
-//});
+});

@@ -4,14 +4,20 @@ window.jQuery = $;
 window.$ = $;
 
 import 'handlebars';
-import 'backbone';
-import 'layoutmanager';
+//import 'backbone';
+import './backbone/backbone-agave';
+require('layoutmanager');
+console.log(Backbone);
+console.log(Backbone.Agave);
 
 // Main JS
-import { App } from './app.js';
-import { Public } from "./views/public-views.js";
-App.Views.Public = Public;
-App.start();
+//import './requirejs-main.js'
+import 'top-level';
+//import { App } from './app.js';
+//import { Public } from "./views/public-views.js";
+//App.Views.Public = Public;
+//console.log(App);
+//App.start();
 
 // SASS/CSS
 //
