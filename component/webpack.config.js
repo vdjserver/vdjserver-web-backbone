@@ -29,9 +29,9 @@ module.exports = {
 				'top-level': './requirejs-main.js',
 
 				// Packages from RequireJS
-				Backbone: 'backbone',
+				 Backbone: 'backbone',
 				'backbone.syphon': 'backbone.syphon',
-				'backbone-retry-sync': 'backbone-retry-sync',
+				'backbone-retry-sync': path.resolve(__dirname, 'app') + '/scripts/backbone-retry-sync/backbone-retry-sync.js',
 				 bootstrap: 'bootstrap-sass',
 				'bootstrap-multiselect': path.resolve(__dirname,'node_modules') + '/bootstrap-multiselect/dist/js/bootstrap-multiselect',
 				'chance':           'chance',
@@ -148,8 +148,14 @@ module.exports = {
         'community-views': path.resolve(__dirname,'app') + '/scripts/views/community-views',
 
         // Routers
-        'router': 'routers/router'
+        'router': path.resolve(__dirname,'app') + '/scripts/routers/router',
 				//'node_modules': path.join(__dirname,'node_modules')
+
+				// Testing
+				'collections/notifications': path.resolve(__dirname,'app') + '/scripts/collections/notifications',
+				'models/message': path.resolve(__dirname,'app') + '/scripts/models/message',
+				'models/notification': path.resolve(__dirname,'app') + '/scripts/models/notification',
+				'config/airr-schema.yaml.html': path.resolve(__dirname,'app') + '/scripts/config/airr-schema.yaml.html'
 			},
 		extensions: ['.js'],
 	},
