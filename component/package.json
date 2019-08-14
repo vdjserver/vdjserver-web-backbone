@@ -58,6 +58,7 @@
         "grunt-usemin": "0.1.12",
         "handlebars": "^3.0.7",
         "handlebars-loader": "^1.7.1",
+        "highcharts": "^4.1.10",
         "highstock-release": "^2.1.9",
         "imports-loader": "^0.8.0",
         "jquery": "^2.1.3",
