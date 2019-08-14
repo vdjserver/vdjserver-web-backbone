@@ -17,7 +17,7 @@ define([
         root: '/',
         templatePrefix: 'templates/',
         init: function() {
-/*
+
             var JST = window.JST = window.JST || {};
 
             // Configure LayoutManager with Backbone Boilerplate defaults.
@@ -50,7 +50,7 @@ define([
                     return tmpl(context);
                 }
             });
-*/
+
             // setup agave
             App.Agave = new Backbone.Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
 
