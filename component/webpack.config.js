@@ -32,7 +32,7 @@ module.exports = {
 				Backbone: 'backbone',
 				'backbone.syphon': 'backbone.syphon',
 				'backbone-retry-sync': 'backbone-retry-sync',
-				//bootstrap: path.resolve(__dirname,'node_modules') + '/bootstrap',
+				 bootstrap: 'bootstrap-sass',
 				'bootstrap-multiselect': path.resolve(__dirname,'node_modules') + '/bootstrap-multiselect/dist/js/bootstrap-multiselect',
 				'chance':           'chance',
         'datatables':       'datatables',
