@@ -29,7 +29,7 @@ module.exports = {
 				'top-level': './requirejs-main.js',
 
 				// Packages from RequireJS
-				 Backbone: 'backbone',
+				'backbone': 'backbone',
 				'backbone.syphon': 'backbone.syphon',
 				'backbone-retry-sync': path.resolve(__dirname, 'app') + '/scripts/backbone-retry-sync/backbone-retry-sync.js',
 				'bootstrap': 'bootstrap-sass',
@@ -166,7 +166,6 @@ module.exports = {
 			'window.jQuery': 'jquery',
 			jQuery: 'jquery',
 			jquery: 'jquery',
-			Backbone: 'backbone',
 			_: 'underscore'
 		})
 	],
