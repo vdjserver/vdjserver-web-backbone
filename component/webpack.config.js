@@ -32,7 +32,7 @@ module.exports = {
 				 Backbone: 'backbone',
 				'backbone.syphon': 'backbone.syphon',
 				'backbone-retry-sync': path.resolve(__dirname, 'app') + '/scripts/backbone-retry-sync/backbone-retry-sync.js',
-				 bootstrap: 'bootstrap-sass',
+				'bootstrap': 'bootstrap-sass',
 				'bootstrap-multiselect': path.resolve(__dirname,'node_modules') + '/bootstrap-multiselect/dist/js/bootstrap-multiselect',
 				'chance':           'chance',
         'datatables':       'datatables',
@@ -59,7 +59,7 @@ module.exports = {
         'socket-io':        'socket.io-client',
         'simple-statistics':'simple-statistics',
         'js-yaml': 'js-yaml',
-        'text':'requirejs-text',
+        //'text':'requirejs-text/text',
 
 				// Backbone Extensions
         'backbone-agave':  path.resolve(__dirname,'app') + '/scripts/backbone/backbone-agave',
@@ -162,6 +162,8 @@ module.exports = {
 	plugins: [
 		new webpack.ProvidePlugin({
 			$: 'jquery',
+			'window.$': 'jquery',
+			'window.jQuery': 'jquery',
 			jQuery: 'jquery',
 			jquery: 'jquery',
 			Backbone: 'backbone',
