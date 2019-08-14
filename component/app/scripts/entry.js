@@ -3,12 +3,12 @@ import $ from 'jquery';
 window.jQuery = $;
 window.$ = $;
 
-import 'handlebars';
+//import 'handlebars';
 //import 'backbone';
-import './backbone/backbone-agave';
-require('layoutmanager');
-console.log(Backbone);
-console.log(Backbone.Agave);
+//import './backbone/backbone-agave';
+//require('layoutmanager');
+//console.log(Backbone);
+//console.log(Backbone.Agave);
 
 // Main JS
 //import './requirejs-main.js'
