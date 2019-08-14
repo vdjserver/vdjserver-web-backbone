@@ -41,12 +41,12 @@ module.exports = {
 				'filesize':         'filesize',
 				'file-saver':       path.resolve(__dirname,'node_modules') + '/file-saver/FileSaver',
 				'handlebars': path.resolve(__dirname,'node_modules') + '/handlebars/dist/handlebars',
-				'highcharts':       'highcharts',
-        'highcharts-data':  'highcharts',
-        'highcharts-drilldown': 'highcharts',
-        'highcharts-more':  'highcharts',
-        'highcharts-exporting': 'highcharts',
-        'highcharts-offline-exporting': 'highcharts',
+				'highcharts':       'highstock-release/highstock',
+        'highcharts-data':  'highstock-release/modules/data',
+        'highcharts-drilldown': 'highstock-release/modules/drilldown',
+        'highcharts-more':  'highstock-release/highcharts-more',
+        'highcharts-exporting': 'highstock-release/modules/exporting',
+        'highcharts-offline-exporting': 'highstock-release/modules/offline-exporting',
         'jquery':           'jquery',
         'jquery-ui':        'jquery-ui',
         'layoutmanager':    'layoutmanager',
@@ -151,7 +151,6 @@ module.exports = {
         'router': path.resolve(__dirname,'app') + '/scripts/routers/router',
 				//'node_modules': path.join(__dirname,'node_modules')
 
-				// Testing
 				'collections/notifications': path.resolve(__dirname,'app') + '/scripts/collections/notifications',
 				'models/message': path.resolve(__dirname,'app') + '/scripts/models/message',
 				'models/notification': path.resolve(__dirname,'app') + '/scripts/models/notification',
