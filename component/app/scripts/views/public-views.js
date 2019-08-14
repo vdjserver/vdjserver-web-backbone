@@ -1,16 +1,11 @@
-//define([
-//    'app',
-//    'backbone.syphon',
-//], function(App) {
+define([
+    'app',
+    'backbone.syphon',
+], function(App) {
 
     'use strict';
 
-    //var App = require('../app.js');
-    //console.log('public-views')
-    //console.log(App.Views);
-
-    export var Public = {};
-    //exports.Public = Public;
+    var Public = {};
 
     Public.Home = Backbone.View.extend({
         template: 'public/home',
@@ -123,6 +118,6 @@
         },
     });
 
-    //App.Views.Public = Public;
-    //return Public;
-//});
+    App.Views.Public = Public;
+    return Public;
+});
