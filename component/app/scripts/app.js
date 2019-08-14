@@ -154,7 +154,7 @@ define([
     };
 
     //module.exports = App;
-    _.extend(
+    return _.extend(
         App,
         {},
         Backbone.Events
