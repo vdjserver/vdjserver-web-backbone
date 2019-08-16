@@ -172,7 +172,7 @@ module.exports = {
 
 	module: {
 		rules: [
-			{
+/*			{
 				test: /.(js|jsx)$/,
 				include: [path.resolve(__dirname, 'app')],
 				loader: 'babel-loader',
@@ -191,9 +191,9 @@ module.exports = {
 					]
 				}
 			},
-
+*/
 			// Shim
-			/*
+/*
 			{
 				test: /bootstrap/,
 				use: [
@@ -287,16 +287,16 @@ module.exports = {
 					'imports-loader?this=>window,jquery'
 				]
 			},
-
+*/
 			// Agave
-			//{
-				//test: /backbone-agave/,
-				//use: [
-				//	'imports-loader?this=>window,backbone,airr-schema',
-				//	'expose-loader?Backbone.Agave'
-				//]
-			//},
-
+			{
+				test: /backbone-agave/,
+				use: [
+					'imports-loader?this=>window,backbone',
+					'expose-loader?Backbone.Agave'
+				]
+			},
+/*
 			// Agave - Models
 			{
 				test: /telemetry/,
