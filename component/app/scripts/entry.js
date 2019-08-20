@@ -20,7 +20,8 @@ import 'top-level';
 //App.start();
 
 // SASS/CSS
-//
+import '../styles/main.scss'
+
 // // node_modules
 // require('animate.css/animate.min.css');
 // // require('backbone');

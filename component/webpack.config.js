@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
 	target: 'web', //target: 'node',
@@ -167,6 +168,9 @@ module.exports = {
 			jQuery: 'jquery',
 			jquery: 'jquery',
 			_: 'underscore'
+		}),
+		new MiniCssExtractPlugin({
+			filename: 'main.css'
 		})
 	],
 
@@ -471,19 +475,49 @@ module.exports = {
 				]
 			}, */
 
-			// CSS and Fonts
+			// CSS/SCSS and Fonts
       {
-         test: /\.css$/,
+         test: /\.scss$/,
           use: [
-              { loader: "style-loader" },
-              { loader: "css-loader" }
-          ]
-      },
+              MiniCssExtractPlugin.loader,
+							"css-loader",
+							"sass-loader",
+							// "sass-loader?outputStyle=expanded&includePaths[]=" + path.resolve(__dirname, "./node_modules/compass-mixins/lib"),
+							{
+								loader: "sass-resources-loader",
+								options: {
+									// resources: [path.resolve(__dirname, "./node_modules/bootstrap-sass/assets/stylesheets/bootstrap/mixins/_mixins.scss")]
+									// resources: [path.resolve(__dirname, "./node_modules/compass-mixins/lib/compass/_compass.scss")]
 
+									resources: [path.resolve(__dirname, "./app/styles/main.scss")]
+								}
+							}
+					]
+      },
 			{
-				test: /\.(woff|woff2|ttf|eot|svg)$/,
-				use: 'file-loader?name=fonts/[name].[ext]!static'
+				 test: /\.css$/,
+					use: [
+							{ loader: "style-loader" },
+							{ loader: "css-loader" }
+					]
+			},
+			{
+				test: /.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
+        use: "url-loader?limit=100000"
 			}
+			// {
+			// 	test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+?.*$|$)/,
+			// 	use: [
+			// 		{
+			// 		loader: 'file-loader',
+			// 		options: {
+			// 			name: '[name].[ext]',
+			// 			outputPath: 'fonts/'
+			// 		}
+			// 		// options: {url: false}
+			// 	}]
+			// //	use: 'file-loader?name=fonts/[name].[ext]!static'
+			// }
 
 		// 	{
 		// 	test: require.resolve('jquery'),
