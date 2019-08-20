@@ -6,7 +6,6 @@ $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 $fa-font-path: "~font-awesome/fonts/";
 
 // Frameworks
-//@import 'compass/css3';
 @import 'vendor/bootstrap-overrides';
 @import '~bootstrap-sass/assets/stylesheets/_bootstrap.scss';
 @import '~datatables-responsive/css/responsive.dataTables.scss';
@@ -14,9 +13,9 @@ $fa-font-path: "~font-awesome/fonts/";
 
 // Modules
 @import 'modules/colors';
-// @import 'modules/font';
-// @import 'modules/sizes';
-//
+@import 'modules/font';
+@import 'modules/sizes';
+
 // // Partials
 @import 'partials/alerts';
 @import 'partials/badges';
@@ -25,15 +24,15 @@ $fa-font-path: "~font-awesome/fonts/";
 @import 'partials/buttons';
 @import 'partials/charts';
 @import 'partials/forms';
-// @import 'partials/grid';
-// @import 'partials/icons';
-// @import 'partials/layouts';
-// @import 'partials/menus';
-// @import 'partials/modals';
-// @import 'partials/navbar';
-// @import 'partials/tables';
-// @import 'partials/typeahead';
-//
+@import 'partials/grid';
+@import 'partials/icons';
+@import 'partials/layouts';
+@import 'partials/menus';
+@import 'partials/modals';
+@import 'partials/navbar';
+@import 'partials/tables';
+@import 'partials/typeahead';
+
 // // Sections
 @import 'sections/community';
 @import 'sections/create-account';
