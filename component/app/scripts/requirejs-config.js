@@ -10,7 +10,7 @@ require.config({
         'bootstrap-multiselect': '../bower_components/bootstrap-multiselect/dist/js/bootstrap-multiselect',
         'chance':           '../bower_components/chance/chance',
         'datatables':       '../bower_components/datatables/media/js/jquery.dataTables',
-        'datatables-responsive': '../bower_components/datatables-responsive/js/dataTables.responsive',
+        //'datatables-responsive': '../bower_components/datatables-responsive/js/dataTables.responsive',
         //'datatables.net':       '../bower_components/datatables.net/js/jquery.dataTables',
         //'datatables.net-bs':       '../bower_components/datatables.net-bs/js/dataTables.bootstrap',
         //'datatables.net-select':       '../bower_components/datatables.net-select/js/dataTables.select',

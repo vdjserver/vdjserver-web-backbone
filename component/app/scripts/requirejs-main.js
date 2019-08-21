@@ -13,7 +13,7 @@ define([
     'nvd3',
     'box', // box for help with the box and whisker plot
     'datatables',
-    'datatables-responsive',
+    //'datatables-responsive',
     //'datatables.net',
     //'datatables.net-bs',
 
