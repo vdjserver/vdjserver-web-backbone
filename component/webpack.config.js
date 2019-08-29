@@ -519,16 +519,16 @@ module.exports = {
 			// //	use: 'file-loader?name=fonts/[name].[ext]!static'
 			// }
 
-		// 	{
-		// 	test: require.resolve('jquery'),
-	  //   use: [{
-	  //       loader: 'expose-loader',
-	  //       options: 'jQuery'
-	  //   },{
-	  //       loader: 'expose-loader',
-	  //       options: '$'
-	  //   }]
-		// }
+			{
+			test: require.resolve('jquery'),
+	    use: [{
+	        loader: 'expose-loader',
+	        options: 'jQuery'
+	    },{
+	        loader: 'expose-loader',
+	        options: '$'
+	    }]
+		}
 		]
 	},
 	optimization: {
