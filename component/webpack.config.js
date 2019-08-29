@@ -504,7 +504,7 @@ module.exports = {
 			{
 				test: /.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
         use: "url-loader?limit=100000"
-			}
+			},
 			// {
 			// 	test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+?.*$|$)/,
 			// 	use: [
