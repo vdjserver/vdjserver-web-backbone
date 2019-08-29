@@ -502,9 +502,31 @@ module.exports = {
 					]
 			},
 			{
-				test: /.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
-        use: "url-loader?limit=100000"
+					test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/,
+					use: [
+						{
+							loader: 'file-loader',
+							options: {
+								name: '[name].[ext]',
+								outputPath: 'images/'
+							}
+						}
+					]
 			},
+			{
+				test: /\.(svg|woff|woff2|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
+				use: [
+					{
+						loader: 'file-loader',
+						options: {
+							name: '[name].[ext]',
+							outputPath: 'fonts/'
+						}
+					}
+				]
+      //  use: "url-loader?limit=100000"
+			},
+
 			// {
 			// 	test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+?.*$|$)/,
 			// 	use: [
