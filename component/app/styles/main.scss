@@ -5,6 +5,48 @@
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 $fa-font-path: "~font-awesome/fonts/";
 
+// Vendor
+@import '~font-awesome/scss/font-awesome.scss';
+@import './node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect';
+
+// Setting up fonts so browser can read them via webpack
+// @font-face {
+//     font-family: 'aleo-bold';
+//     src: url("../dist/fonts/aleo-bold-webfont.eot") format('eot');
+//     src: url("../dist/fonts/aleo-bold-webfont.eot?#iefix") format('embedded-opentype'),
+//         url("../dist/fonts/aleo-bold-webfont.svg#aleo-bold") format('svg'),
+//         url("../dist/fonts/aleo-bold-webfont.ttf") format('truetype'),
+//         url("../dist/fonts/aleo-bold-webfont.woff") format('woff'),
+// }
+//
+// @font-face {
+//   font-family: 'aleo-regular';
+//   src: url('../dist/fonts/aleo-regular-webfont.eot'); /* IE9 Compat Modes */
+//   src: url('../dist/fonts/aleo-regular-webfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+//        url('../dist/fonts/aleo-regular-webfont.svg#aleo-regular') format('svg'), /* Legacy iOS */
+//        url('../dist/fonts/aleo-regular-webfont.ttf')  format('truetype'), /* Safari, Android, iOS */
+//        url('../dist/fonts/aleo-regular-webfont.woff') format('woff'); /* Pretty Modern Browsers */
+// }
+//
+// @font-face {
+//   font-family: 'texgyreadventor-bold-webfont';
+//   src: url('../dist/fonts/texgyreadventor-bold-webfont.eot'); /* IE9 Compat Modes */
+//   src: url('../dist/fonts/texgyreadventor-bold-webfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+//        url('../dist/fonts/texgyreadventor-bold-webfont.svg#texgyreadventor-bold-webfont') format('svg'), /* Legacy iOS */
+//        url('../dist/fonts/texgyreadventor-bold-webfont.ttf')  format('truetype'), /* Safari, Android, iOS */
+//        url('../dist/fonts/texgyreadventor-bold-webfont.woff') format('woff'); /* Pretty Modern Browsers */
+// }
+//
+// @font-face {
+//   font-family: 'texgyreadventor-regular';
+//   src: url('../dist/fonts/texgyreadventor-regular-webfont.eot'); /* IE9 Compat Modes */
+//   src: url('../dist/fonts/texgyreadventor-regular-webfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+//        url('../dist/fonts/texgyreadventor-regular-webfont.svg#texgyreadventor-regular') format('svg'), /* Legacy iOS */
+//        url('../dist/fonts/texgyreadventor-regular-webfont.ttf')  format('truetype'), /* Safari, Android, iOS */
+//        url('../dist/fonts/texgyreadventor-regular-webfont.woff') format('woff'); /* Pretty Modern Browsers */
+// }
+
+
 // Frameworks
 @import 'vendor/bootstrap-overrides';
 @import '~bootstrap-sass/assets/stylesheets/_bootstrap.scss';
@@ -38,7 +80,3 @@ $fa-font-path: "~font-awesome/fonts/";
 @import 'sections/create-account';
 @import 'sections/file-upload';
 @import 'sections/home';
-
-// Vendor
-@import '~font-awesome/scss/font-awesome';
-@import './node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect';
