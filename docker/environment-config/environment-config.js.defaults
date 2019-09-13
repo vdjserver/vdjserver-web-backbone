@@ -19,9 +19,10 @@ var EnvironmentConfig = {
                     'batchQueue': 'normal',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-ls5-0.1.7u8',
-                        'igBlast': 'igblast-ls5-1.14u1',
+                        'igBlast': 'igblast-ls5-1.14u2
+                        ',
                         'presto': 'presto-ls5-0.5u5',
-                        'RepCalc': 'repcalc-ls5-1.0u8'
+                        'RepCalc': 'repcalc-ls5-1.0u10'
                     },
                     'type': 'large',
                     'maxProcessorsPerNode': 48,

@@ -16,6 +16,7 @@ define([
         comparator: function(modelA, modelB) {
             // pending/queued/running etc on top
             if (modelA.get('status') !== 'FINISHED' && modelA.get('status') !== 'FAILED') return -1;
+            if (!modelA.get('submitTime')) return -1;
             if (modelA.get('submitTime').length == 0) return -1;
 
             var modelAEndDate = moment(modelA.get('submitTime'));
