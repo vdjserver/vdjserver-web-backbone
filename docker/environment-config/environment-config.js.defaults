@@ -22,7 +22,7 @@ var EnvironmentConfig = {
                         'igBlast': 'igblast-ls5-1.14u2
                         ',
                         'presto': 'presto-ls5-0.5u5',
-                        'RepCalc': 'repcalc-ls5-1.0u9'
+                        'RepCalc': 'repcalc-ls5-1.0u10'
                     },
                     'type': 'large',
                     'maxProcessorsPerNode': 48,
