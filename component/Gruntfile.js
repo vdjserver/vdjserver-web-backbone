@@ -517,11 +517,9 @@ module.exports = function(grunt) {
         grunt.task.run([
             'clean:server',
             'copy:fontAwesome',
-            'copy:bowerCss',
             'copy:environmentConfig',
             'copy:airr',
             'coffee:dist',
-            'sass:dev',
             'concat:dev',
             'connect:livereload',
             'open',
@@ -563,6 +561,16 @@ module.exports = function(grunt) {
         'cssmin',
         'uglify',
         'usemin',
+    ]);
+
+    grunt.registerTask('webpack', [
+        'clean:server',
+        'copy:fontAwesome',
+        'copy:environmentConfig',
+        'copy:airr',
+        'coffee:dist',
+        'concat:dev',
+        'connect:livereload'
     ]);
 
     grunt.registerTask('default', [

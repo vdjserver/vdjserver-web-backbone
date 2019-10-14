@@ -8,7 +8,7 @@
         <meta name="description" content="">
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="/styles/main.css">
+        <link rel="stylesheet" href="/dist/main.css">
 
         <title>VDJServer</title>
         <base href="/"/>
@@ -39,8 +39,16 @@
         <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="zoflo1ivbcsk8fp"></script>
 
         <!-- build:js scripts/requirejs-main.js -->
-            <script data-main="/scripts/requirejs-config" src="/bower_components/requirejs/require.js"></script>
+            <!-- <script data-main="/scripts/requirejs-config" src="/bower_components/requirejs/require.js"></script> -->
         <!-- endbuild -->
+
+        <!-- Testing with Webpack -->
+        <script src="./dist/main.js"></script>
+
+        <!-- <script>
+          $('body').append('Guess what??? ($) jQuery works! :)');
+          jQuery('body').append('Guess what??? jQuery works! :)');
+        </script> -->
 
 </body>
 </html>

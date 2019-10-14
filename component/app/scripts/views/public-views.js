@@ -59,7 +59,7 @@ define([
 
             //var formData = Backbone.Syphon.serialize(this);
 
-            this.setupModalView();
+            //this.setupModalView();
 
             var that = this;
 

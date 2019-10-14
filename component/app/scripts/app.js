@@ -1,3 +1,8 @@
+
+//import 'handlebars';
+//import 'backbone';
+//import 'layoutmanager';
+
 define([
     'handlebars',
     'backbone',
@@ -12,6 +17,7 @@ define([
         root: '/',
         templatePrefix: 'templates/',
         init: function() {
+
             var JST = window.JST = window.JST || {};
 
             // Configure LayoutManager with Backbone Boilerplate defaults.
@@ -147,6 +153,7 @@ define([
         Websockets: {},
     };
 
+    //module.exports = App;
     return _.extend(
         App,
         {},

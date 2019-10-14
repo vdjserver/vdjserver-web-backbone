@@ -41,11 +41,11 @@
 }
 
 .triangle-overlay {
-    @include background-image(linear-gradient(left top, #fffcfc, #ffffff 48%, #f7f6f6 51%, #f7f6f6));
+    background-image: linear-gradient(left top, #fffcfc, #ffffff 48%, #f7f6f6 51%, #f7f6f6);
 }
 
 .boxes-shadow {
-    @include box-shadow(rgba($boxShadowColor, 0.5) 5px 5px 0px 2px);
+    box-shadow: rgba($boxShadowColor, 0.5) 5px 5px 0px 2px;
 }
 
 .boxes-action {

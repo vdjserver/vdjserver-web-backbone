@@ -7,13 +7,13 @@ define([
     'typeahead',
     'file-saver',
     'bootstrap-multiselect',
-    'text',
+    //'text',
 
     // Libs for JS visualization
     'nvd3',
     'box', // box for help with the box and whisker plot
     'datatables',
-    'datatables-responsive',
+    //'datatables-responsive',
     //'datatables.net',
     //'datatables.net-bs',
 
@@ -31,7 +31,7 @@ define([
     // Regular Models
     'error',
     'recaptcha',
-    'airr-schema',
+    //'airr-schema',
 
     // Agave
     'backbone-agave',
