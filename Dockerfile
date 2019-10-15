@@ -1,5 +1,5 @@
 # Base Image
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER VDJServer <vdjserver@utsouthwestern.edu>
 
@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     xz-utils \
     bzip2 \
+    libpng-dev \
     python
 
 # node
@@ -38,35 +39,21 @@ RUN npm config set https-proxy http://proxy.swmed.edu:3128
 RUN npm install -g \
     grunt-cli
 
-# Install sass dependencies
-#RUN gem install sass -v 3.4.25
-#RUN gem install compass
-
 RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-backbone
 
 # Install npm dependencies (optimized for cache)
 COPY ./component/package.json /var/www/html/vdjserver-backbone/
 RUN cd /var/www/html/vdjserver-backbone && npm install
 
-# Install bower dependencies
-#COPY ./component/.bowerrc /var/www/html/vdjserver-backbone/
-# PROXY: Copy .bowerrc with proxy settings
-#COPY ./component/.bowerrc.proxy /var/www/html/vdjserver-backbone/.bowerrc
-
-#COPY ./component/bower.json /var/www/html/vdjserver-backbone/
-#RUN cd /var/www/html/vdjserver-backbone && bower --allow-root install
-
 # Copy project source
 RUN mkdir /var/www/html/airr-standards
 COPY ./airr-standards/ /var/www/html/airr-standards
 COPY ./component/ /var/www/html/vdjserver-backbone
-COPY ./airr-standards/specs/airr-schema.yaml /var/www/html/vdjserver-backbone/app/scripts/config/airr-schema.yaml.html
-#COPY ./component/.bowerrc.proxy /var/www/html/vdjserver-backbone/test/.bowerrc
-#RUN cd /var/www/html/vdjserver-backbone/test && bower --allow-root install
+#COPY ./airr-standards/specs/airr-schema.yaml /var/www/html/vdjserver-backbone/app/scripts/config/airr-schema.yaml.html
 
 RUN cd /var/www/html/vdjserver-backbone && npm run dev
 
 WORKDIR /var/www/html/vdjserver-backbone
-RUN ["/usr/bin/grunt","webpack"]
+#RUN ["/usr/bin/grunt","webpack"]
 
 VOLUME ["/var/www/html/vdjserver-backbone"]

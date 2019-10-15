@@ -11,8 +11,6 @@ define([
     'chance',
     'underscore.string',
     'highcharts',
-    'datatables',
-    'simple-statistics',
 ], function(
     App,
     Handlebars,

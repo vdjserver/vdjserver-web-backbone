@@ -3,13 +3,82 @@ VDJServer Backbone
 
 VDJServer Backbone is a next generation immune repertoire analysis portal.
 
-##Deployments
+## Deployments
 
  * Development: <https://vdj-dev.tacc.utexas.edu>
  * Staging: <https://vdj-staging.tacc.utexas.edu>
  * Production: <https://vdjserver.org>
 
-##Development Guidelines
+## Development Setup
+
+The development setup is configured to mount the local directory with the source code files
+inside the docker container so that they can be modified and be available without regenerating the docker image.
+In order to support this, an `npm install` will install of the node modules into that local directory. The first
+time the docker image is run, the install will take a few minutes.
+
+```
+- Clone project and init submodules
+git clone http://bitbucket.org/vdjserver/vdjserver-web-backbone.git
+cd vdjserver-web-backbone
+git submodule update --init --recursive
+
+- Setup local environment config file
+cp docker/environment-config/environment-config.js.defaults component/app/scripts/config/environment-config.js
+vim component/app/scripts/config/environment-config.js
+
+- Build the docker image
+docker build -t vdjserver/backbone:develop .
+
+- Run docker image (with name vdjserver-backbone) with source code directory mounted
+docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-backbone vdjserver/backbone:develop bash -c "npm install && npm run dev && npm start"
+```
+
+Doing a CTRL-C will not completely stop the docker container. As the next time you perform `docker run`, you will get an error that
+the container name is already in use. You need to perform `docker stop` to completely stop the container.
+
+```
+- Stop the docker container
+docker stop vdjserver-backbone
+```
+
+Even though `webpack-dev-server` is watching the file system, and it says that it has recompiled when a file is changed,
+it doesn't seem to working correctly, nor is it able to force the browser to refresh. To force a recompile of the
+website, do this command from another terminal window. Then do a refresh of the browser to load the new code.
+
+```
+- Perform a recompile of the website within the running container
+docker exec vdjserver-backbone npm run dev
+```
+
+## Testing Setup
+
+## Production Setup
+
+In the production environment, `docker-compose` is used at the higher-level (vdjserver-web) to compose the web application,
+the web api and the web server together. These instructions are mainly to test that production setup
+for the web application outside of the production website.
+
+The production setup is configured such that everything resides within the docker image except for
+the `environment-config.js` file with the global configuration. This file is mapped into the container.
+
+```
+- Clone project and init submodules
+git clone http://bitbucket.org/vdjserver/vdjserver-web-backbone.git
+cd vdjserver-web-backbone
+git submodule update --init --recursive
+
+- Setup local environment config file
+cp docker/environment-config/environment-config.js.defaults component/app/scripts/config/environment-config.js
+vim component/app/scripts/config/environment-config.js
+
+- Build the docker image
+docker build -t vdjserver/backbone .
+
+- Run docker image (with name vdjserver-backbone) with source code directory mounted
+docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component/app/scripts/config/environment-config.js:/var/www/html/vdjserver-backbone/app/scripts/config/environment-config.js vdjserver/backbone bash -c "npm install && npm run dev && npm start"
+```
+
+## Development Guidelines
 
 **Code Style**
 
@@ -30,94 +99,3 @@ VDJServer Backbone is a next generation immune repertoire analysis portal.
 
  * New development and features should be done on branches that are cloned from the *develop* branch, and then merged into this branch when completed. New release candidates should be branched from *develop*, and then merged into *master* once they have been tested/verified. Once a release branch is ready for production, it should be merged into *master* and tagged appropriately.
 
-##Development Setup
-
-```
-- Clone project and init submodules
-git clone http://bitbucket.org/vdjserver/vdjserver-web-backbone.git
-cd vdjserver-web-backbone
-git submodule update --init --recursive
-
-cd [project location]/component
-
-- Install node.js
-# Mac OS X (assuming that the homebrew package manager is already installed)
-brew install node
-
-# Debian
-sudo apt-get install nodejs nodejs-legacy
-
-- Install compass/sass dependencies
-# Mac OS X
-sudo gem install sass compass
-
-# Debian
-sudo apt-get install ruby ruby-dev && sudo gem install sass compass
-
-- Install global npm modules
-npm install -g bower grunt grunt-cli
-
-- Pull npm dependencies
-npm install
-
-- Pull bower dependencies
-bower install
-
-- Setup local environment config file
-cd [project location]/docker
-
-cp environment-config/environment-config.js.defaults environment-config/environment-config.js
-
-vim environment-config/environment-config.js
-
-- Start local instance
-cd [project location]/component
-
-grunt server
-```
-
-##Running through docker
-
-The vdj-backbone project can be run through docker in two ways:
-
-A.) Using a prebuilt image: https://hub.docker.com/r/vdjserver/backbone/
-
-or
-
-B.) Building a local image
-
-You will need to create a local environment-config file with either option. A sample config file is available in this repository at "component/app/scripts/config/environment-config.js.defaults".
-
-```
-cp docker/environment-config/environment-config.js.defaults ~/environment-config.js
-
-vim ~/environment-config.js
-```
-
-**Using a prebuilt image**
-
-After the config is set up, you can run the image as follows:
-
-```
-docker run -t -p 9001:9001 -v ~/environment-config.js:/var/www/html/vdjserver-backbone/app/scripts/config/environment-config.js vdjserver/backbone:release-1 grunt server --force
-```
-
-You can also mount your source code directory in the container if you would prefer to make code changes:
-
-```
-cp ~/environment-config.js [vdjserver-backbone repo location]/component/app/scripts/config/
-
-docker run -t -p 9001:9001 -v $(pwd)/component:/var/www/html/vdjserver-backbone vdjserver/backbone:release-1 bash -c "bower install && npm install && grunt server --force"
-```
-
-**Building a local image for development**
-
-```
-cp ~/environment-config.js [vdjserver-backbone repo location]/component/app/scripts/config/
-
-cd [vdjserver-backbone repo location]
-
-docker build -t vdj-dev .
-
-docker run -t -p 9001:9001 -v $(pwd)/component:/var/www/html/vdjserver-backbone vdj-dev bash -c "npm install && npm run dev && grunt server --force"
-```
