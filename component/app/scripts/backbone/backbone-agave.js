@@ -1,15 +1,9 @@
-define([
-    'backbone',
-    'moment',
-    'backbone-retry-sync',
-], function(
-    Backbone,
-    moment
-) {
+import Backbone from 'backbone';
+import moment from 'moment';
 
     'use strict';
 
-    var Agave = function(options) {
+    export var Agave = function(options) {
 
         var defaults = _.extend({primary: true}, options);
         this._token = new Agave.Auth.Token({});
@@ -832,8 +826,5 @@ define([
                 return false;
             }
         },
-    }),
+    });
 
-    Backbone.Agave = Agave;
-    return Agave;
-});

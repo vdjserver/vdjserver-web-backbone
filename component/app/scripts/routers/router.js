@@ -1,79 +1,76 @@
-define(['app'], function(App) {
 
-    'use strict';
 
-    // Private Methods
-    var _redirectToLogin = function() {
-        // Routing should be done automatically when this happens.
+'use strict';
+
+// Private Methods
+var _redirectToLogin = function() {
+    // Routing should be done automatically when this happens.
+    App.Agave.destroyToken();
+};
+
+/*
+    routeWithTokenRefreshCheck states
+
+    A.) Token is good, continue routing as normal
+    B.) Token is no longer active, but can probably be refreshed and route continued
+    C.) All hope is lost
+ */
+var _routeWithTokenRefreshCheck = function(destinationRoute) {
+    if (App.Agave.token().isActive()) {
+        destinationRoute();
+    }
+    else if (!App.Agave.token().isActive() && App.Agave.token().get('refresh_token')) {
+        App.Agave.token().save()
+            .done(function() {
+                destinationRoute();
+            })
+            .fail(function() {
+                _redirectToLogin();
+            })
+            ;
+    }
+    else {
+        _redirectToLogin();
+    }
+};
+
+export default Backbone.Router.extend({
+
+    routes: {
+        '':                                 'index',
+        'project':                          'projectList',
+        'auth/logout':                      'authLogout',
+
+        // 404
+        '*notFound': 'notFound',
+    },
+
+    // Index
+    index: function() {
+        console.log('index');
+        App.showHomePage();
+    },
+
+    projectList: function() {
+        console.log('projectList');
+        App.showProjectList();
+    },
+
+    // Auth
+    authLogout: function() {
+
+        // Routing *should* be handled automatically once the token is destroyed.
         App.Agave.destroyToken();
-    };
+    },
 
-    /*
-        routeWithTokenRefreshCheck states
+    // 404
+    notFound: function() {
+      console.log('not found');
+    },
+});
 
-        A.) Token is good, continue routing as normal
-        B.) Token is no longer active, but can probably be refreshed and route continued
-        C.) All hope is lost
-     */
-    var _routeWithTokenRefreshCheck = function(destinationRoute) {
-        if (App.Agave.token().isActive()) {
-            destinationRoute();
-        }
-        else if (!App.Agave.token().isActive() && App.Agave.token().get('refresh_token')) {
-            App.Agave.token().save()
-                .done(function() {
-                    destinationRoute();
-                })
-                .fail(function() {
-                    _redirectToLogin();
-                })
-                ;
-        }
-        else {
-            _redirectToLogin();
-        }
-    };
 
-    var _setPublicSubviews = function() {
-        if (App.Layouts.main.template !== 'layouts/public') {
-            App.Layouts.main.template = 'layouts/public/public-wrapper';
-
-            App.Layouts.main.setView('#nav-container', new App.Views.Navbar.Public());
-        }
-    };
-
-    var _setProjectSubviews = function(projectUuid, section) {
-
-        if (App.Layouts.main.template !== 'layouts/project/project-wrapper') {
-            App.Layouts.main.template = 'layouts/project/project-wrapper';
-            App.Layouts.main.setView('#sidebar-wrapper', App.Layouts.sidebar);
-            App.Layouts.main.setView('#main-wrapper', App.Layouts.content);
-            App.Layouts.main.render();
-        }
-
-        App.Routers.currentProjectUuid = projectUuid;
-
-        if (!App.Layouts.sidebar.getView('.sidebar')) {
-            App.Layouts.sidebar.setView(
-                '.sidebar',
-                new App.Views.Sidemenu.List({
-                    projectUuid: projectUuid,
-                    section: section,
-                })
-            );
-            //App.Layouts.sidebar.render();
-        }
-        else {
-            var listView = App.Layouts.sidebar.getView('.sidebar');
-            listView.setSection(section);
-            listView.uiSelectProject(projectUuid);
-        }
-
-        if (!App.Layouts.content.getView('#project-navbar')) {
-            App.Layouts.content.setView('#project-navbar', new App.Views.Navbar.Navigation());
-        }
-    };
-
+/*
     // Public Methods
     var DefaultRouter = Backbone.Router.extend({
 
@@ -550,3 +547,4 @@ define(['app'], function(App) {
     App.Routers.DefaultRouter = DefaultRouter;
     return DefaultRouter;
 });
+*/

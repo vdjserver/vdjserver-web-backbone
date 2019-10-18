@@ -1,3 +1,144 @@
+import Marionette from 'backbone.marionette';
+import template from '../../templates/public/home.html';
+import modal_template from '../../templates/util/modal-message-confirm.html';
+import Handlebars from 'handlebars';
+import MessageModel from 'message';
+
+var ModalRegion = Marionette.Region.extend({
+    constructor: function() {
+        Marionette.Region.prototype.constructor.apply(this, arguments);
+        //this.ensureEl();
+        //this.$el.on('hidden', {region:this}, function(event) {
+        //    event.data.region.close();
+        //});
+    },
+    onShow: function() {
+        //this.$el.modal('show');
+        console.log('region onShow');
+        $('#modal-message').modal('show');
+    },
+    onClose: function() {
+        console.log('region onClose');
+        this.$el.modal('hide');
+    }
+});
+
+
+var ModalMessageConfirm = Marionette.View.extend({
+  template: Handlebars.compile(modal_template),
+  region: '#modal',
+  events: {
+    'shown.bs.modal': 'onShowModal',
+    'hidden.bs.modal': 'onHideModal'
+  },
+
+  modelEvents: {
+    'change:body': 'onChangeAttribute'
+  },
+
+  onChangeAttribute(model, value) {
+    console.log('New value: ' + value);
+  },
+
+  onShowModal() {
+    console.log('Show the modal');
+    //var token = App.Agave.token();
+
+    //this.getRegion().empty();
+  },
+
+  onHideModal() {
+    console.log('Hide the modal');
+    //this.getRegion().empty();
+  },
+
+});
+
+
+export default Marionette.View.extend({
+  template: Handlebars.compile(template),
+  regions: {
+    homeRegion: '#home',
+    modalRegion: {
+      el: '#modal',
+      regionClass: ModalRegion
+    }
+  },
+
+  events: {
+      'click #home-login': 'login',
+      'shown.bs.modal': 'onShowModal',
+      'hidden.bs.modal': 'onHideModal'
+  },
+
+  onShowModal() {
+    console.log('login: Show the modal');
+
+    var formData = {
+        username: $('#username').val(),
+        password: $('#password').val()
+    };
+
+    console.log(formData);
+    var that = this;
+
+    App.Agave.token().save(formData, {password: formData.password})
+      .done(function() {
+          $('#modal-message').modal('hide');
+          console.log("login pass");
+      })
+      .fail(function(error) {
+          //var message = new MessageModel({
+          //    'header': 'Logging in',
+          //    'body':   '<p>Login failed...</p>'
+          //});
+          //var view = new ModalMessageConfirm({model: message});
+          //that.showChildView('modalRegion', view);
+
+          $('#modal-message').modal('hide');
+
+          //that.getRegion('modalRegion').empty();
+          //that.getChildView('modalRegion').model.set('body', '<p>Login failed</p>');
+          //that.getChildView('modalRegion').render();
+
+          console.log("login fail");
+      });
+  },
+
+  onHideModal() {
+    console.log('login: Hide the modal');
+    //this.getRegion().empty();
+    App.router.navigate('/project', {trigger:true});
+  },
+
+  login: function(e) {
+
+      e.preventDefault();
+
+      this.$el.find('.alert-danger').fadeOut(function() {
+          this.remove();
+      });
+
+      var message = new MessageModel({
+          'header': 'Logging in',
+          'body':   '<p>Please wait while we authenticate you...</p>'
+      });
+
+      //var modal = new ModalRegion({el:'#modal-message'});
+
+      //this.addRegion('modalRegion', '#modal');
+
+      var view = new ModalMessageConfirm({model: message});
+      this.showChildView('modalRegion', view);
+      //modal.show(view);
+
+      console.log(message);
+
+  }
+});
+
+
+/*
 define([
     'app',
     'backbone.syphon',
@@ -121,3 +262,4 @@ define([
     App.Views.Public = Public;
     return Public;
 });
+*/

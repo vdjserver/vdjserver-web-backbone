@@ -6,11 +6,6 @@ module.exports = {
   target: 'web', //target: 'node',
   mode: 'development',
   entry: './app/scripts/entry.js',
-  // entry: {
-  // 	app: './app/scripts/app.js',
-  // 	public: './app/scripts/views/public-views.js'
-  // },
-
   devtool: 'inline-source-map',
 
   output: {
@@ -18,16 +13,12 @@ module.exports = {
     path: path.resolve(__dirname, './app/dist')
   },
 
-  // resolveLoader: {
-  //     modules: ['node_modules'],
-  //     extensions: ['.js', '.json'],
-  //     mainFields: ['loader', 'main']
-  //   },
   resolve: {
       alias: {
         // File
         'app': path.resolve(__dirname, 'app') + '/scripts/app.js',
         'top-level': path.resolve(__dirname, 'app') + '/scripts/top-level.js',
+        'environment-config': path.resolve(__dirname, 'app') + '/scripts/config/environment-config.js',
 
         // Packages from RequireJS
         'backbone': 'backbone',
@@ -69,6 +60,7 @@ module.exports = {
         'airr-schema': path.resolve(__dirname,'app') + '/scripts/models/airr-schema',
 
         // Agave - Models/Collections
+        'message': path.resolve(__dirname,'app') + '/scripts/models/message',
         'telemetry': path.resolve(__dirname,'app') + '/scripts/models/telemetry',
 
         'agave-account': path.resolve(__dirname,'app') + '/scripts/models/agave-account',
@@ -153,7 +145,6 @@ module.exports = {
         //'node_modules': path.join(__dirname,'node_modules')
 
         'collections/notifications': path.resolve(__dirname,'app') + '/scripts/collections/notifications',
-        'models/message': path.resolve(__dirname,'app') + '/scripts/models/message',
         'models/notification': path.resolve(__dirname,'app') + '/scripts/models/notification',
         'config/airr-schema.yaml.html': path.resolve(__dirname,'app') + '/scripts/config/airr-schema.yaml.html'
       },
@@ -185,99 +176,91 @@ module.exports = {
         ]
       },
 
-			// CSS/SCSS and Fonts
+      {
+        test: /\.(html)$/,
+        use: {
+          loader: 'html-loader',
+          options: {
+            attrs: [':data-src']
+          }
+        }
+      },
+
+      // CSS/SCSS and Fonts
       {
          test: /\.scss$/,
           use: [
               MiniCssExtractPlugin.loader,
-							"css-loader",
-							"sass-loader",
-							// "sass-loader?outputStyle=expanded&includePaths[]=" + path.resolve(__dirname, "./node_modules/compass-mixins/lib"),
-							{
-								loader: "sass-resources-loader",
-								options: {
-									// resources: [path.resolve(__dirname, "./node_modules/bootstrap-sass/assets/stylesheets/bootstrap/mixins/_mixins.scss")]
-									// resources: [path.resolve(__dirname, "./node_modules/compass-mixins/lib/compass/_compass.scss")]
-
-									resources: [path.resolve(__dirname, "./app/styles/main.scss")]
-								}
-							}
-					]
+              "css-loader",
+              "sass-loader",
+              {
+                loader: "sass-resources-loader",
+                options: {
+                  resources: [path.resolve(__dirname, "./app/styles/main.scss")]
+                }
+              }
+          ]
       },
-			{
-				 test: /\.css$/,
-					use: [
-							{ loader: "style-loader" },
-							{ loader: "css-loader" }
-					]
-			},
-			{
-					test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/,
-					use: [
-						{
-							loader: 'file-loader',
-							options: {
-								name: '[name].[ext]',
-								outputPath: 'images/'
-							}
-						}
-					]
-			},
-			{
-				test: /\.(svg|woff|woff2|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
-				use: [
-					{
-						loader: 'file-loader',
-						options: {
-							name: '[name].[ext]',
-							outputPath: 'fonts/'
-						}
-					}
-				]
-      //  use: "url-loader?limit=100000"
-			},
+      {
+        test: /\.css$/,
+        use: [
+          { loader: "style-loader" },
+          { loader: "css-loader" }
+        ]
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'images/'
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(svg|woff|woff2|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'fonts/'
+            }
+          }
+        ]
+      },
 
-			// {
-			// 	test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+?.*$|$)/,
-			// 	use: [
-			// 		{
-			// 		loader: 'file-loader',
-			// 		options: {
-			// 			name: '[name].[ext]',
-			// 			outputPath: 'fonts/'
-			// 		}
-			// 		// options: {url: false}
-			// 	}]
-			// //	use: 'file-loader?name=fonts/[name].[ext]!static'
-			// }
+      {
+      test: require.resolve('jquery'),
+     use: [{
+          loader: 'expose-loader',
+          options: 'jQuery'
+      },{
+          loader: 'expose-loader',
+          options: '$'
+      }]
+    }
+    ]
+  },
 
-			{
-			test: require.resolve('jquery'),
-	    use: [{
-	        loader: 'expose-loader',
-	        options: 'jQuery'
-	    },{
-	        loader: 'expose-loader',
-	        options: '$'
-	    }]
-		}
-		]
-	},
-	optimization: {
-		splitChunks: {
-			cacheGroups: {
-				vendors: {
-					priority: -10,
-					test: /[\\/]node_modules[\\/]/
-				}
-			},
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendors: {
+          priority: -10,
+          test: /[\\/]node_modules[\\/]/
+        }
+      },
 
-			chunks: 'async',
-			minChunks: 1,
-			minSize: 30000,
-			name: true
-		}
-	},
+      chunks: 'async',
+      minChunks: 1,
+      minSize: 30000,
+    name: true
+    }
+  },
 
   devServer: {
     // Display only errors to reduce the amount of output.

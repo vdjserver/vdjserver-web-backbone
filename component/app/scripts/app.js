@@ -1,8 +1,91 @@
+import Marionette from 'backbone.marionette';
+import Handlebars from 'handlebars';
+import PublicView from 'public-views';
+import { Agave } from 'backbone-agave';
+import Router from 'router';
+
+export default Marionette.Application.extend({
+  region: '#app',
+
+  initialize(options) {
+    console.log('Initialize');
+
+    // setup Agave
+    this.Agave = new Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
+
+    // setup router, navigate to home page
+    this.router = new Router();
+
+/*
+    this.listenTo(
+        App.Agave.token(),
+        'change',
+        function() {
+            // Necessary for browser refresh...
+            window.localStorage.setItem('Agave.Token', JSON.stringify(App.Agave.token().toJSON()));
+        }
+    );
+
+    this.listenTo(
+        App.Agave.token(),
+        'destroy',
+        function() {
+            App.Agave.token().clear();
+            window.localStorage.removeItem('Agave.Token');
+            App.router.navigate('', {'trigger': true});
+        }
+    ); */
+  },
+
+  onStart() {
+    console.log('onStart');
+    // navigate to home page
+    Backbone.history.start({pushState: true});
+    //this.router.navigate('');
+
+    //this.showView(new PublicView());
+  },
+
+  showHomePage() {
+    console.log('showHomePage');
+    this.showView(new PublicView());
+  },
+
+  showProjectList() {
+    console.log('showProjectList');
+    const collection = new Backbone.Collection();
+
+    const MyChildView = Marionette.View.extend({
+      template: Handlebars.compile('<h1>{{foo}}</h1>')
+    });
+
+    const MyCollectionView = Marionette.CollectionView.extend({
+      childView: MyChildView,
+      collection,
+    });
+
+    const myCollectionView = new MyCollectionView();
+
+    collection.reset([{foo: 'bar'}, {foo: 'foobar'}]);
+
+    this.showView(myCollectionView);
+
+    // Collection view will not re-render as it has not been rendered
+    //collection.reset([{foo: 'foo'}]);
+
+    //myCollectionView.render();
+
+    // Collection view will effectively re-render displaying the new model
+  }
+
+});
+
 
 //import 'handlebars';
 //import 'backbone';
 //import 'layoutmanager';
 
+/*
 define([
     'handlebars',
     'backbone',
@@ -160,3 +243,4 @@ define([
         Backbone.Events
     );
 });
+*/

@@ -1,3 +1,13 @@
+import Backbone from 'backbone';
+
+export default Backbone.Model.extend({
+        defaults: {
+            header: '',
+            body:   ''
+        }
+    });
+
+/*
 define(['app'], function(App) {
 
     'use strict';
@@ -12,3 +22,4 @@ define(['app'], function(App) {
     App.Models.MessageModel = MessageModel;
     return MessageModel;
 });
+*/
