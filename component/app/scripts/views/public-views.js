@@ -4,57 +4,20 @@ import modal_template from '../../templates/util/modal-message-confirm.html';
 import Handlebars from 'handlebars';
 import MessageModel from 'message';
 
+// custom region to handle a bootstrap modal view
 var ModalRegion = Marionette.Region.extend({
     constructor: function() {
         Marionette.Region.prototype.constructor.apply(this, arguments);
-        //this.ensureEl();
-        //this.$el.on('hidden', {region:this}, function(event) {
-        //    event.data.region.close();
-        //});
     },
-    onShow: function() {
-        //this.$el.modal('show');
-        console.log('region onShow');
-        $('#modal-message').modal('show');
-    },
-    onClose: function() {
-        console.log('region onClose');
-        this.$el.modal('hide');
-    }
 });
 
-
+// the bootstrap modal view
 var ModalMessageConfirm = Marionette.View.extend({
   template: Handlebars.compile(modal_template),
-  region: '#modal',
-  events: {
-    'shown.bs.modal': 'onShowModal',
-    'hidden.bs.modal': 'onHideModal'
-  },
-
-  modelEvents: {
-    'change:body': 'onChangeAttribute'
-  },
-
-  onChangeAttribute(model, value) {
-    console.log('New value: ' + value);
-  },
-
-  onShowModal() {
-    console.log('Show the modal');
-    //var token = App.Agave.token();
-
-    //this.getRegion().empty();
-  },
-
-  onHideModal() {
-    console.log('Hide the modal');
-    //this.getRegion().empty();
-  },
-
+  region: '#modal'
 });
 
-
+// login window with modal region
 export default Marionette.View.extend({
   template: Handlebars.compile(template),
   regions: {
@@ -65,72 +28,93 @@ export default Marionette.View.extend({
     }
   },
 
+  initialize: function(parameters) {
+    // we use a state variable to know what type of modal to display
+    this.loginState = 'login';
+  },
+
   events: {
       'click #home-login': 'login',
-      'shown.bs.modal': 'onShowModal',
-      'hidden.bs.modal': 'onHideModal'
+      'shown.bs.modal': 'onShownModal',
+      'hidden.bs.modal': 'onHiddenModal'
   },
 
-  onShowModal() {
+  onShownModal() {
     console.log('login: Show the modal');
 
-    var formData = {
-        username: $('#username').val(),
-        password: $('#password').val()
-    };
-
-    console.log(formData);
     var that = this;
 
-    App.Agave.token().save(formData, {password: formData.password})
-      .done(function() {
-          $('#modal-message').modal('hide');
-          console.log("login pass");
-      })
-      .fail(function(error) {
-          //var message = new MessageModel({
-          //    'header': 'Logging in',
-          //    'body':   '<p>Login failed...</p>'
-          //});
-          //var view = new ModalMessageConfirm({model: message});
-          //that.showChildView('modalRegion', view);
+    // if login state then an authenticating modal view was just shown
+    // go perform the login
+    console.log(this.loginState);
+    if (this.loginState == 'login') {
+      var formData = {
+          username: $('#username').val(),
+          password: $('#password').val()
+      };
 
-          $('#modal-message').modal('hide');
+      console.log(formData);
 
-          //that.getRegion('modalRegion').empty();
-          //that.getChildView('modalRegion').model.set('body', '<p>Login failed</p>');
-          //that.getChildView('modalRegion').render();
+      App.Agave.token().save(formData, {password: formData.password})
+        .done(function() {
+            that.loginState = 'pass';
+            $('#modal-message').modal('hide');
+            console.log("login pass");
+        })
+        .fail(function(error) {
+            // login failed so change state, hide the current modal
+            console.log(error);
+            that.loginState = 'fail';
+            $('#modal-message').modal('hide');
 
-          console.log("login fail");
-      });
+            // clear token and form password
+            App.Agave.token().clear();
+            $('#password').val('');
+
+            // prepare a new modal with the failure message
+            var message = new MessageModel({
+                'header': 'Logging in',
+                'body':   '<p>Login failed...</p>'
+            });
+            var view = new ModalMessageConfirm({model: message});
+            that.showChildView('modalRegion', view);
+            $('#confirmation-button').removeClass('hidden');
+            $('#modal-message').modal('show');
+
+            console.log("login fail");
+        });
+    } else if (that.loginState == 'fail') {
+      // if login failed, then we are showing the fail modal
+    }
   },
 
-  onHideModal() {
+  onHiddenModal() {
     console.log('login: Hide the modal');
     //this.getRegion().empty();
-    App.router.navigate('/project', {trigger:true});
+    if (this.loginState == 'pass') {
+        // login passed so route to the project list view
+        App.router.navigate('/project', {trigger:true});
+    } else if (this.loginState == 'fail') {
+        console.log("show fail modal");
+    }
   },
 
   login: function(e) {
 
       e.preventDefault();
 
-      this.$el.find('.alert-danger').fadeOut(function() {
-          this.remove();
-      });
-
+      // when login button is pressed, display an authenticating modal message
+      // we cannot perform the actual login here because the modal has not
+      // been shown to the user yet, wait for onShowModal()
+      this.loginState = 'login';
       var message = new MessageModel({
           'header': 'Logging in',
           'body':   '<p>Please wait while we authenticate you...</p>'
       });
 
-      //var modal = new ModalRegion({el:'#modal-message'});
-
-      //this.addRegion('modalRegion', '#modal');
-
       var view = new ModalMessageConfirm({model: message});
       this.showChildView('modalRegion', view);
-      //modal.show(view);
+      $('#modal-message').modal('show');
 
       console.log(message);
 
