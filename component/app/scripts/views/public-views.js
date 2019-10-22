@@ -1,5 +1,6 @@
 import Marionette from 'backbone.marionette';
 import template from '../../templates/public/home.html';
+import login_template from '../../templates/public/login.html';
 import modal_template from '../../templates/util/modal-message-confirm.html';
 import Handlebars from 'handlebars';
 import MessageModel from 'message';
@@ -17,6 +18,10 @@ var ModalMessageConfirm = Marionette.View.extend({
   region: '#modal'
 });
 
+var LoginView = Marionette.View.extend({
+  template: Handlebars.compile(login_template)
+});
+
 // login window with modal region
 export default Marionette.View.extend({
   template: Handlebars.compile(template),
@@ -31,6 +36,9 @@ export default Marionette.View.extend({
   initialize: function(parameters) {
     // we use a state variable to know what type of modal to display
     this.loginState = 'login';
+
+    var view = new LoginView();
+    this.showChildView('homeRegion', view);
   },
 
   events: {
@@ -52,8 +60,6 @@ export default Marionette.View.extend({
           username: $('#username').val(),
           password: $('#password').val()
       };
-
-      console.log(formData);
 
       App.Agave.token().save(formData, {password: formData.password})
         .done(function() {

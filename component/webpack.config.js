@@ -58,6 +58,8 @@ module.exports = {
         'error': path.resolve(__dirname,'app') + '/scripts/models/error',
         'recaptcha': path.resolve(__dirname,'app') + '/scripts/models/recaptcha',
         'airr-schema': path.resolve(__dirname,'app') + '/scripts/models/airr-schema',
+        'project-home': path.resolve(__dirname,'app') + '/scripts/views/project-home',
+        'navbar-view': path.resolve(__dirname,'app') + '/scripts/views/layouts/navbar-view',
 
         // Agave - Models/Collections
         'message': path.resolve(__dirname,'app') + '/scripts/models/message',

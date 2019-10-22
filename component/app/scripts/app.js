@@ -4,6 +4,9 @@ import PublicView from 'public-views';
 import { Agave } from 'backbone-agave';
 import Router from 'router';
 
+//import ProjectList from 'agave-projects';
+import ProjectHome from 'project-home';
+
 export default Marionette.Application.extend({
   region: '#app',
 
@@ -53,6 +56,18 @@ export default Marionette.Application.extend({
 
   showProjectList() {
     console.log('showProjectList');
+
+    var view = new ProjectHome();
+    this.showView(view);
+
+/*
+    var projects = new ProjectList();
+
+    projects.fetch()
+        .then(function() {
+          console.log(projects);
+        })
+
     const collection = new Backbone.Collection();
 
     const MyChildView = Marionette.View.extend({
@@ -74,7 +89,7 @@ export default Marionette.Application.extend({
     //collection.reset([{foo: 'foo'}]);
 
     //myCollectionView.render();
-
+*/
     // Collection view will effectively re-render displaying the new model
   }
 

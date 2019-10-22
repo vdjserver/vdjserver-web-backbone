@@ -1,0 +1,140 @@
+<div class="container home-view">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-1">
+            <div class="home-science-image">
+                <img src="../images/illustration-final.png">
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="welcome-box">
+                <form class="signup form-horizontal">
+                    <h2>Welcome!</h2>
+                    <p>
+                        VDJServer is a free, scalable resource for performing immune repertoire analysis and sharing data. Manage, analyze, and archive your data through our web resource.  You can also download our open source analysis software for local use.
+                    </p>
+
+                    {{#if maintenance}}
+                    <div class="form-group">
+                        <div class="alert alert-danger">
+                        {{maintenanceMessage}}
+                        </div>
+                    </div>
+                    {{/if}}
+
+                    <div class="form-group">
+                        <input autofocus class="form-control" type="text" placeholder="USERNAME" name="username" id="username" {{#if maintenance}}disabled{{/if}}>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="form-control" type="password" placeholder="PASSWORD" name="password" id="password" {{#if maintenance}}disabled{{/if}}>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 login-button-column">
+                            <input type="submit" value="LOGIN" id="home-login" class="login-button" {{#if maintenance}}disabled{{/if}}>
+                        </div>
+                        <div class="col-md-6 login-button-column text-center">
+                            {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 login-button-column text-center">
+                            <p>{{#if maintenance}}{{else}}<a class="home-create-account" href="/account">Create Account</a>{{/if}}</p>
+                        </div>
+                        <div class="col-md-6 login-button-column text-center">
+                            <p><a class="home-create-account" href="feedback">Send Us Feedback</a></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 login-button-column text-center">
+                            <p><a class="home-create-account" target="_blank" href="http://vdjserver.org/docs/index.html">Documentation</a></p>
+                        </div>
+                        <div class="col-md-6 login-button-column text-center">
+                            <p><a class="home-create-account" href="/community">Community Data</a></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+           <div class="large-info-box uploads">
+              <div class="community text-center">
+                 <h2>News & Announcements</h2>
+              </div>
+                    <h4 class="text-center"> June 28, 2019 - <a target="_blank" href="http://wiki.vdjserver.org/vdjserver/index.php/VDJServer_Release_Announcements">Announcing VDJServer Release 1.1.1</a></h4>
+                    <p>
+                    </p>
+        <div class="col-md-12 text-center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/DgqKP-L75CM" frameborder="0" allowfullscreen></iframe>
+                </div>
+                </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="boxes-action">
+                <h2>Upload</h2>
+                <p>
+                    <img src="../images/Upload.png" />
+                </p>
+
+                <p>
+                    Manage and archive your data leveraging our mirrored, secure, high performance datastore.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="boxes-action">
+                <h2>Analyze</h2>
+                <p>
+                    <img src="../images/Analyze.png" />
+                </p>
+                <p>
+                    Use the latest software running on powerful supercomputers to crunch data at any scale.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="boxes-action">
+                <h2>Publish</h2>
+                <p>
+                    <img src="../images/Publish.png" />
+                </p>
+                <p>
+                    Create permanent URLs to your data, analysis pipelines, and results to support journal publications.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="boxes-action">
+                <h2>Share</h2>
+                <p>
+                    <img src="../images/Share.png" />
+                </p>
+                <p>
+                    Collaborate privately with individuals or contribute your data publicly to the scientific community.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+           <div class="large-info-box uploads">
+
+                <div class="about-vdjserver">
+                     <h4>About VDJServer:</h4>
+                    <p>
+                        Funded by a National Institute of Allergy and Infectious Diseases research grant (#1R01A1097403), the “VDJ Server” project is led by The University of Texas Southwestern (UTSW) Medical Center in collaboration with the J. Craig Venter Institute and Yale University. The Texas Advanced Computing Center (TACC) at The University of Texas at Austin leads the cyberinfrastructure implementation, including the high performance computing (HPC) systems, storage, and software solutions.
+                   </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
