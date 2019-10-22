@@ -29,8 +29,11 @@ vim component/app/scripts/config/environment-config.js
 - Build the docker image
 docker build -t vdjserver/backbone:develop .
 
-- Run docker image (with name vdjserver-backbone) with source code directory mounted
+- For Mac/Linux, run docker image (with name vdjserver-backbone) with source code directory mounted
 docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-backbone vdjserver/backbone:develop bash -c "npm install && npm run dev && npm start"
+
+- For Windows, run docker image (with name vdjserver-backbone) with source code directory mounted
+docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v ${PWD}/component:/var/www/html/vdjserver-backbone vdjserver/backbone:develop bash -c "npm install && npm run dev && npm start"
 ```
 
 Doing a CTRL-C will not completely stop the docker container. As the next time you perform `docker run`, you will get an error that
