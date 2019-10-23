@@ -5,9 +5,11 @@
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 $fa-font-path: "~font-awesome/fonts/";
 
+
 // Vendor
 @import '~font-awesome/scss/font-awesome.scss';
 @import './node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect';
+// @import "~bootstrap/scss/bootstrap";
 
 // Setting up fonts so browser can read them via webpack
 // @font-face {
