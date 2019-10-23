@@ -4,7 +4,7 @@ import PublicView from 'public-views';
 import { Agave } from 'backbone-agave';
 import Router from 'router';
 
-//import ProjectList from 'agave-projects';
+import ProjectList from 'agave-projects';
 import ProjectHome from 'project-home';
 
 export default Marionette.Application.extend({
@@ -19,9 +19,8 @@ export default Marionette.Application.extend({
     // setup router, navigate to home page
     this.router = new Router();
 
-/*
     this.listenTo(
-        App.Agave.token(),
+        this.Agave.token(),
         'change',
         function() {
             // Necessary for browser refresh...
@@ -30,14 +29,14 @@ export default Marionette.Application.extend({
     );
 
     this.listenTo(
-        App.Agave.token(),
+        this.Agave.token(),
         'destroy',
         function() {
             App.Agave.token().clear();
             window.localStorage.removeItem('Agave.Token');
             App.router.navigate('', {'trigger': true});
         }
-    ); */
+    );
   },
 
   onStart() {
@@ -67,7 +66,11 @@ export default Marionette.Application.extend({
         .then(function() {
           console.log(projects);
         })
-
+        .fail(function(error) {
+          console.log(error);
+        })
+*/
+/*
     const collection = new Backbone.Collection();
 
     const MyChildView = Marionette.View.extend({

@@ -1,3 +1,21 @@
+import { Agave } from 'backbone-agave';
+import Project from 'agave-project';
+import { Comparators } from 'comparators-mixin';
+
+export default Agave.MetadataCollection.extend(
+    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
+        model: Project,
+        url: function() {
+            return '/meta/v2/data?q='
+                   + encodeURIComponent('{"name":"project"}')
+                   + '&limit=' + this.limit
+                   + '&offset=' + this.offset
+                   ;
+        },
+    })
+);
+
+/*
 define([
     'app',
     'backbone',
@@ -39,3 +57,4 @@ define([
     Backbone.Agave.Collection.Projects = Projects;
     return Projects;
 });
+*/

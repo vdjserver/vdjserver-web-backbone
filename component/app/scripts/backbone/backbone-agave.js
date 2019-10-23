@@ -1,4 +1,5 @@
 import Backbone from 'backbone';
+import RetrySync from 'backbone-retry-sync';
 import moment from 'moment';
 
     'use strict';
@@ -213,7 +214,7 @@ import moment from 'moment';
 
     Agave.PaginatedCollection = Agave.Collection.extend({
         initialize: function(parameters) {
-            Backbone.Agave.Collection.prototype.initialize.apply(this, [parameters]);
+            Agave.Collection.prototype.initialize.apply(this, [parameters]);
 
             this.offset = 0;
             this.limit = 100;
@@ -226,6 +227,8 @@ import moment from 'moment';
             scale project and project file metadata requests. It could also be
             updated for lazy loading and/or user invoked pagination.
         */
+        sync: Backbone.RetrySync,
+
         fetch: function() {
             var that = this;
 
@@ -235,7 +238,7 @@ import moment from 'moment';
 
             var offsetFetch = function() {
                 // Reuse parent fetch/sync methods so we don't have to reconfigure everything all over again
-                Backbone.Agave.Collection.prototype.fetch.call(that, {})
+                Agave.Collection.prototype.fetch.call(that, {})
                 .then(function(response) {
                     response = that.parse(response);
 

@@ -1,3 +1,67 @@
+import { Agave } from 'backbone-agave';
+
+export default Agave.MetadataModel.extend({
+        defaults: function() {
+            return _.extend(
+                {},
+                Agave.MetadataModel.prototype.defaults,
+                {
+                    name: 'project',
+                    owner: '',
+                    value: {
+                        'name':  '',
+                        'project_title': '',
+                        'description': '',
+                        'project_type': '',
+                        'inclusion_exclusion_criteria': '',
+                        'grant_agency': '',
+                        'grants': '',
+                        'pi_name': '',
+                        'pi_institution': '',
+                        'pi_email': '',
+                        'contact_name': '',
+                        'contact_institution': '',
+                        'contact_email': '',
+                        'biomaterial_provider': '',
+                        'collected_by': '',
+                        'uploaded_by': '',
+                        'publications': '',
+                        'pub_ids': '',
+                        'ncbi_bioproject': '',
+                        'showArchivedJobs': false
+                    }
+                }
+            );
+        },
+        url: function() {
+            return '/meta/v2/data/' + this.get('uuid');
+        },
+        sync: function(method, model, options) {
+
+            if (this.get('uuid') === '') {
+                options.apiHost = EnvironmentConfig.vdjApi.hostname;
+                options.url = '/projects';
+                options.authType = 'basic';
+
+                var value = this.get('value');
+                var projectName = value.name;
+                var username = App.Agave.token().get('username');
+
+                this.clear();
+                this.set({
+                    username: username,
+                    projectName: projectName
+                });
+            }
+
+            return Agave.PutOverrideSync(method, this, options);
+        },
+        setAttributesFromFormData: function(formData) {
+            this.set('value', formData);
+        },
+});
+
+/*
 define(
     [
         'backbone',
@@ -118,3 +182,4 @@ function(
     Backbone.Agave.Model.Project = Project;
     return Project;
 });
+*/
