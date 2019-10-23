@@ -33,8 +33,10 @@ docker build -t vdjserver/backbone:develop .
 docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-backbone vdjserver/backbone:develop bash -c "npm install && npm run dev && npm start"
 
 - For Windows, run docker image (with name vdjserver-backbone) with source code directory mounted
-docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v ${PWD}/component:/var/www/html/vdjserver-backbone vdjserver/backbone:develop bash -c "npm install && npm run dev && npm start"
+docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v ${PWD}/component:/var/www/html/vdjserver-backbone vdj-marionette bash -c "npm install && npm run dev && npm start"
 ```
+
+*Note for Windows users: If you run the Mac/Linux command with a Mac-crated container, (ie. `vdjserver/backbone:develop`), then `npm` will get stuck while trying to install `fsevents` (which is native to MacOS FSEvents; [read more](https://www.npmjs.com/package/fsevents)). Workaround: use a Windows-created container or the following with the Mac/Linux code:* `npm install --no-optional`
 
 Doing a CTRL-C will not completely stop the docker container. As the next time you perform `docker run`, you will get an error that
 the container name is already in use. You need to perform `docker stop` to completely stop the container.
@@ -101,4 +103,3 @@ docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component/ap
  * This project uses the Git Flow methodology for code management and development: <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>.
 
  * New development and features should be done on branches that are cloned from the *develop* branch, and then merged into this branch when completed. New release candidates should be branched from *develop*, and then merged into *master* once they have been tested/verified. Once a release branch is ready for production, it should be merged into *master* and tagged appropriately.
-
