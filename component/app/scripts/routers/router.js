@@ -40,6 +40,7 @@ export default Backbone.Router.extend({
         '':                                 'index',
         'project':                          'projectList',
         'auth/logout':                      'authLogout',
+        'single': 'projectSingle',
 
         // 404
         '*notFound': 'notFound',
@@ -54,6 +55,12 @@ export default Backbone.Router.extend({
     projectList: function() {
         console.log('projectList');
         App.showProjectList();
+    },
+
+    // For Single Project Page
+    projectSingle: function() {
+        console.log('projectSingle');
+        App.showProjectSingle();
     },
 
     // Auth

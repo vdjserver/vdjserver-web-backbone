@@ -6,6 +6,7 @@ import Router from 'router';
 
 import ProjectList from 'agave-projects';
 import ProjectHome from 'project-home';
+import ProjectSingle from './views/layouts/project-single';
 
 export default Marionette.Application.extend({
   region: '#app',
@@ -58,7 +59,13 @@ export default Marionette.Application.extend({
 
     var view = new ProjectHome();
     this.showView(view);
+  },
 
+  showProjectSingle() {
+    console.log('showProjectSingle');
+
+    var view = new ProjectSingle();
+    this.showView(view);
 /*
     var projects = new ProjectList();
 
