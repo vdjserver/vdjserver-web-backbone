@@ -5,9 +5,9 @@ MAINTAINER VDJServer <vdjserver@utsouthwestern.edu>
 
 # PROXY: uncomment these if building behind UTSW proxy
 ENV http_proxy 'http://proxy.swmed.edu:3128/'
-ENV https_proxy 'https://proxy.swmed.edu:3128/'
+ENV https_proxy 'http://proxy.swmed.edu:3128/'
 ENV HTTP_PROXY 'http://proxy.swmed.edu:3128/'
-ENV HTTPS_PROXY 'https://proxy.swmed.edu:3128/'
+ENV HTTPS_PROXY 'http://proxy.swmed.edu:3128/'
 
 # Install OS Dependencies
 RUN apt-get update && apt-get install -y \
@@ -36,9 +36,6 @@ RUN cp -rf /node-v8.10.0-linux-x64/share/* /usr/share
 RUN npm config set proxy http://proxy.swmed.edu:3128
 RUN npm config set https-proxy http://proxy.swmed.edu:3128
 
-RUN npm install -g \
-    grunt-cli
-
 RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-backbone
 
 # Install npm dependencies (optimized for cache)
@@ -49,11 +46,9 @@ RUN cd /var/www/html/vdjserver-backbone && npm install
 RUN mkdir /var/www/html/airr-standards
 COPY ./airr-standards/ /var/www/html/airr-standards
 COPY ./component/ /var/www/html/vdjserver-backbone
-#COPY ./airr-standards/specs/airr-schema.yaml /var/www/html/vdjserver-backbone/app/scripts/config/airr-schema.yaml.html
 
 RUN cd /var/www/html/vdjserver-backbone && npm run dev
 
 WORKDIR /var/www/html/vdjserver-backbone
-#RUN ["/usr/bin/grunt","webpack"]
 
 VOLUME ["/var/www/html/vdjserver-backbone"]
