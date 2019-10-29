@@ -2,14 +2,14 @@
 // http://thesassway.com/beginner/how-to-structure-a-sass-project
 
 // Setting path for Bootstrap fonts:
-$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+// $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 $fa-font-path: "~font-awesome/fonts/";
 
 
 // Vendor
 @import '~font-awesome/scss/font-awesome.scss';
 @import './node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect';
-// @import "~bootstrap/scss/bootstrap";
+@import "~bootstrap/scss/bootstrap";
 
 // Setting up fonts so browser can read them via webpack
 // @font-face {
@@ -51,7 +51,7 @@ $fa-font-path: "~font-awesome/fonts/";
 
 // Frameworks
 @import 'vendor/bootstrap-overrides';
-@import '~bootstrap-sass/assets/stylesheets/_bootstrap.scss';
+// @import '~bootstrap-sass/assets/stylesheets/_bootstrap.scss';
 //@import '~datatables-responsive/css/responsive.dataTables.scss';
 @import '~datatables/media/css/jquery.dataTables.css';
 
@@ -60,25 +60,26 @@ $fa-font-path: "~font-awesome/fonts/";
 @import 'modules/font';
 @import 'modules/sizes';
 
-// // Partials
-@import 'partials/alerts';
-@import 'partials/badges';
-@import 'partials/body';
-@import 'partials/boxes';
-@import 'partials/buttons';
-@import 'partials/charts';
-@import 'partials/forms';
-@import 'partials/grid';
-@import 'partials/icons';
-@import 'partials/layouts';
-@import 'partials/menus';
-@import 'partials/modals';
-@import 'partials/navbar';
-@import 'partials/tables';
-@import 'partials/typeahead';
+// Partials
+// @import 'partials/alerts';
+// @import 'partials/badges';
+// @import 'partials/body';
+// @import 'partials/boxes';
+// @import 'partials/buttons';
+// @import 'partials/charts';
+// @import 'partials/forms';
+// @import 'partials/grid';
+// @import 'partials/icons';
+// @import 'partials/layouts';
+// @import 'partials/menus';
+// @import 'partials/modals';
+// @import 'partials/navbar';
+// @import 'partials/tables';
+// @import 'partials/typeahead';
 
-// // Sections
+// Sections
 @import 'sections/community';
 @import 'sections/create-account';
 @import 'sections/file-upload';
 @import 'sections/home';
+@import 'sections/after-login';

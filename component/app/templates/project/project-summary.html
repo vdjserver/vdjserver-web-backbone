@@ -1,23 +1,11 @@
-<!-- <button type="button" class="btn btn-primary">Create New Project</button> -->
 
-<table class="table">
-    <thead class="thead-dark">
-        <tr>
-            <th scope="col">Projects</th>
-            <th scope="col">Summary</th>
-            <th scope="col">Date Created</th>
-            <th scope="col">Tasks</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th scope="row">Project Name: {{value.name}}</th>
-            <td>{{value.description}}</td>
-            <td>{{created}}</td>
-            <td>
-                <button type="button" class="btn btn-warning">Edit</button>
-                <button type="button" class="btn btn-secondary">Delete</button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+
+<tr>
+    <th scope="row"><a href="#">{{value.name}}</a></th>
+        <td>{{value.description}}</td>
+        <td>{{created}}</td>
+        <td>
+            <button type="button" class="btn btn-warning">Edit</button>
+            <button type="button" class="btn btn-danger">Archive</button>
+        </td>
+</tr>

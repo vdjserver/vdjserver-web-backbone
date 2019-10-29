@@ -24,7 +24,7 @@ module.exports = {
         'backbone': 'backbone',
         'backbone.syphon': 'backbone.syphon',
         'backbone-retry-sync': path.resolve(__dirname, 'app') + '/scripts/backbone-retry-sync/backbone-retry-sync.js',
-        'bootstrap': 'bootstrap-sass',
+        'bootstrap': 'bootstrap',
         'bootstrap-multiselect': path.resolve(__dirname,'node_modules') + '/bootstrap-multiselect/dist/js/bootstrap-multiselect',
         'chance':           'chance',
         'datatables':       'datatables',
@@ -161,7 +161,8 @@ module.exports = {
       'window.jQuery': 'jquery',
       jQuery: 'jquery',
       jquery: 'jquery',
-      _: 'underscore'
+      _: 'underscore',
+      Popper: ['popper.js', 'default']
     }),
     new MiniCssExtractPlugin({
       filename: 'main.css'
