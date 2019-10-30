@@ -61,10 +61,10 @@ export default Marionette.Application.extend({
     this.showView(view);
   },
 
-  showProjectSingle() {
-    console.log('showProjectSingle');
+  showProjectSingle(projectUuid) {
+    console.log('showProjectSingle: ' + projectUuid);
 
-    var view = new ProjectSingle();
+    var view = new ProjectSingle({projectUuid: projectUuid});
     this.showView(view);
 /*
     var projects = new ProjectList();
