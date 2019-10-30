@@ -271,7 +271,7 @@ module.exports = {
     // Display only errors to reduce the amount of output.
     //stats: "errors-only",
     contentBase: path.join(__dirname, 'app'),
-    host: "127.0.0.1",
+    host: "0.0.0.0",
     port: 9001,
     // insure that URLs get routed to index.html to Backbone's router can handle them
     historyApiFallback: true,
