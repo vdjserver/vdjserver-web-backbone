@@ -1,12 +1,42 @@
-<div class="container home-view">
-    <div class="row">
-        <div class="col-md-6 col-md-offset-1">
+<div class="home-view">
+    <div class="announcement">
+        <a target="_blank" href="http://wiki.vdjserver.org/vdjserver/index.php/VDJServer_Release_Announcements">Announcing VDJServer Release 1.1.1</a>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary" id="nav">
+        <a class="navbar-brand" href="/"><img src="./dist/images/logo.png" alt="VDJ Server" /></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <!-- <li class="nav-item active">
+                    <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Community Data</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Documentation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Feedback</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+<div class="container">
+    <div class="row header">
+        <div class="col-md-6">
             <div class="home-science-image">
                 <img src="../images/illustration-final.png">
             </div>
         </div>
 
-        <div class="col-md-5">
+        <div class="col-md-6">
             <div class="welcome-box">
                 <form class="signup form-horizontal">
                     <h2>Welcome!</h2>
@@ -22,20 +52,24 @@
                     </div>
                     {{/if}}
 
-                    <div class="form-group">
+                    <div class="form-group col-md-7">
                         <input autofocus class="form-control" type="text" placeholder="USERNAME" name="username" id="username" {{#if maintenance}}disabled{{/if}}>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group col-md-7">
                         <input class="form-control" type="password" placeholder="PASSWORD" name="password" id="password" {{#if maintenance}}disabled{{/if}}>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 login-button-column">
-                            <input type="submit" value="LOGIN" id="home-login" class="login-button" {{#if maintenance}}disabled{{/if}}>
-                        </div>
-                        <div class="col-md-6 login-button-column text-center">
-                            {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
+                            <button type="button" class="btn btn-warning login-button" id="home-login">
+                                Login
+                            </button>
+                            <!-- <input type="submit" value="LOGIN" id="home-login" class="login-button" {{#if maintenance}}disabled{{/if}}> -->
+                            <div class="col-md-6 login-button-column text-center">
+                                {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
+                            </div>
+
                         </div>
                     </div>
                     <div class="row">
@@ -59,21 +93,21 @@
         </div>
     </div>
 
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-12">
            <div class="large-info-box uploads">
-              <div class="community text-center">
-                 <h2>News & Announcements</h2>
-              </div>
+               <div class="community text-center">
+                   <h2>News & Announcements</h2>
+                </div>
                     <h4 class="text-center"> June 28, 2019 - <a target="_blank" href="http://wiki.vdjserver.org/vdjserver/index.php/VDJServer_Release_Announcements">Announcing VDJServer Release 1.1.1</a></h4>
                     <p>
                     </p>
-        <div class="col-md-12 text-center">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DgqKP-L75CM" frameborder="0" allowfullscreen></iframe>
+                <div class="col-md-12 text-center">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/DgqKP-L75CM" frameborder="0" allowfullscreen></iframe>
                 </div>
-                </div>
+            </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="row">
         <div class="col-md-3">
@@ -137,4 +171,5 @@
         </div>
     </div>
 
+</div>
 </div>
