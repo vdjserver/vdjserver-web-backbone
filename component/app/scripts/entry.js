@@ -4,6 +4,9 @@ import bootstrap from 'bootstrap';
 // SASS/CSS
 import '../styles/main.scss'
 
+// Images
+import logo from '../images/logo.png';
+
 // Main JS
 //import 'top-level';
 

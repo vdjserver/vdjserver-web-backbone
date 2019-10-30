@@ -219,7 +219,8 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: 'images/'
+              outputPath: 'images/',
+              resources: [path.resolve(__dirname, "./app/images")]
             }
           }
         ]
@@ -269,11 +270,12 @@ module.exports = {
   devServer: {
     // Display only errors to reduce the amount of output.
     //stats: "errors-only",
-    contentBase: path.join(__dirname, 'app/dist'),
-    host: "0.0.0.0",
+    contentBase: path.join(__dirname, 'app'),
+    host: "127.0.0.1",
     port: 9001,
     // insure that URLs get routed to index.html to Backbone's router can handle them
     historyApiFallback: true,
-    open: true
+    open: true,
+    compress: true
   }
 };
