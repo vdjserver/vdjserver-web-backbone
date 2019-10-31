@@ -1,5 +1,5 @@
 import Marionette from 'backbone.marionette';
-import template from '../../../templates/navbar/navbar.html';
+import template from '../../../templates/app/navbar.html';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 

@@ -6,7 +6,7 @@ import Router from 'router';
 
 import ProjectList from 'agave-projects';
 import ProjectHome from 'project-home';
-import ProjectSingle from './views/layouts/project-single';
+import ProjectSingle from './views/project/project-single';
 
 export default Marionette.Application.extend({
   region: '#app',

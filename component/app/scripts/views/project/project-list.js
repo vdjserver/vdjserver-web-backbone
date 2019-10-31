@@ -1,5 +1,5 @@
 import Marionette from 'backbone.marionette';
-import template from '../../templates/project/project-summary.html';
+import template from '../../../templates/project/project-summary.html';
 import Handlebars from 'handlebars';
 
 var ProjectSummaryView = Marionette.View.extend({

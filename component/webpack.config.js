@@ -58,9 +58,9 @@ module.exports = {
         'error': path.resolve(__dirname,'app') + '/scripts/models/error',
         'recaptcha': path.resolve(__dirname,'app') + '/scripts/models/recaptcha',
         'airr-schema': path.resolve(__dirname,'app') + '/scripts/models/airr-schema',
-        'project-home': path.resolve(__dirname,'app') + '/scripts/views/project-home',
-        'project-list': path.resolve(__dirname,'app') + '/scripts/views/project-list',
-        'navbar-view': path.resolve(__dirname,'app') + '/scripts/views/layouts/navbar-view',
+        'project-home': path.resolve(__dirname,'app') + '/scripts/views/project/project-home',
+        'project-list': path.resolve(__dirname,'app') + '/scripts/views/project/project-list',
+        'navbar-view': path.resolve(__dirname,'app') + '/scripts/views/app/navbar-view',
 
         // Agave - Models/Collections
         'message': path.resolve(__dirname,'app') + '/scripts/models/message',
@@ -134,7 +134,7 @@ module.exports = {
         'sidemenu-views': path.resolve(__dirname,'app') + '/scripts/views/sidemenu-views',
         'notification-views': path.resolve(__dirname,'app') + '/scripts/views/notification-views',
         'navbar-views': path.resolve(__dirname,'app') + '/scripts/views/navbar-views',
-        'public-views': path.resolve(__dirname,'app') + '/scripts/views/public-views',
+        'public-views': path.resolve(__dirname,'app') + '/scripts/views/app/public-views',
         'analyses-views': path.resolve(__dirname,'app') + '/scripts/views/analyses-views',
         'vdjpipe-views': path.resolve(__dirname,'app') + '/scripts/views/vdjpipe-views',
         'presto-views': path.resolve(__dirname,'app') + '/scripts/views/presto-views',

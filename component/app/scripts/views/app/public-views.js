@@ -1,7 +1,7 @@
 import Marionette from 'backbone.marionette';
-import template from '../../templates/public/home.html';
-import login_template from '../../templates/public/login.html';
-import modal_template from '../../templates/util/modal-message-confirm.html';
+import template from '../../../templates/app/home.html';
+import login_template from '../../../templates/app/login.html';
+import modal_template from '../../../templates/util/modal-message-confirm.html';
 import Handlebars from 'handlebars';
 import MessageModel from 'message';
 

@@ -3,7 +3,7 @@ Configuring view for a projects list page
 ********************************************************/
 
 import Marionette from 'backbone.marionette';
-import template from '../../templates/navbar/main.html';
+import template from '../../../templates/app/main.html';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import NavigationView from 'navbar-view';
