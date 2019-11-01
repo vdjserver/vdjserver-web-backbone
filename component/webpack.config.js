@@ -15,12 +15,12 @@ module.exports = {
 
   resolve: {
       alias: {
-        // File
+        // The main application
         'app': path.resolve(__dirname, 'app') + '/scripts/app.js',
-        'top-level': path.resolve(__dirname, 'app') + '/scripts/top-level.js',
+        // the global configuration
         'environment-config': path.resolve(__dirname, 'app') + '/scripts/config/environment-config.js',
 
-        // Packages from RequireJS
+        // Third party Packages
         'backbone': 'backbone',
         'backbone.syphon': 'backbone.syphon',
         'backbone-retry-sync': path.resolve(__dirname, 'app') + '/scripts/backbone-retry-sync/backbone-retry-sync.js',
@@ -55,12 +55,21 @@ module.exports = {
 
         // Backbone Extensions
         'backbone-agave':  path.resolve(__dirname,'app') + '/scripts/backbone/backbone-agave',
+
+        // Models/Collections
+        'agave-project': path.resolve(__dirname,'app') + '/scripts/models/agave-project',
+        'agave-projects': path.resolve(__dirname,'app') + '/scripts/collections/agave-projects',
+
+        // Views and Controllers
+        'navbar-controller': path.resolve(__dirname,'app') + '/scripts/views/app/navbar-controller',
+        'project-controller': path.resolve(__dirname,'app') + '/scripts/views/project/project-controller',
+
         'error': path.resolve(__dirname,'app') + '/scripts/models/error',
         'recaptcha': path.resolve(__dirname,'app') + '/scripts/models/recaptcha',
         'airr-schema': path.resolve(__dirname,'app') + '/scripts/models/airr-schema',
         'project-home': path.resolve(__dirname,'app') + '/scripts/views/project/project-home',
         'project-list': path.resolve(__dirname,'app') + '/scripts/views/project/project-list',
-        'navbar-view': path.resolve(__dirname,'app') + '/scripts/views/app/navbar-view',
+        'project-single': path.resolve(__dirname,'app') + '/scripts/views/project/project-single',
 
         // Agave - Models/Collections
         'message': path.resolve(__dirname,'app') + '/scripts/models/message',
@@ -89,8 +98,6 @@ module.exports = {
         // Agave - Metadata Models/Collections
         'agave-permission':  path.resolve(__dirname,'app') + '/scripts/models/agave-permission',
         'agave-permissions': path.resolve(__dirname,'app') + '/scripts/collections/agave-permissions',
-        'agave-project': path.resolve(__dirname,'app') + '/scripts/models/agave-project',
-        'agave-projects': path.resolve(__dirname,'app') + '/scripts/collections/agave-projects',
         'agave-profile': path.resolve(__dirname,'app') + '/scripts/models/agave-profile',
         'agave-metadata': path.resolve(__dirname,'app') + '/scripts/models/agave-metadata',
         'agave-metadata-collections': path.resolve(__dirname,'app') + '/scripts/collections/agave-metadata-collections',

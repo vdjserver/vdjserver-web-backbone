@@ -40,7 +40,7 @@ export default Backbone.Router.extend({
         '':                                 'index',
         'project':                          'projectList',
         'auth/logout':                      'authLogout',
-        'project/:id':                      'projectSingle',
+        'project/:id':                      'projectPage',
 
         // 404
         '*notFound': 'notFound',
@@ -49,19 +49,19 @@ export default Backbone.Router.extend({
     // Index
     index: function() {
         console.log('index');
-        App.showHomePage();
+        App.AppController.showHomePage();
     },
 
     // Project Summary List
     projectList: function() {
         console.log('projectList');
-        App.showProjectList();
+        App.AppController.showProjectList();
     },
 
     // For Single Project Page
-    projectSingle: function(projectUuid) {
-        console.log('projectSingle');
-        App.showProjectSingle(projectUuid);
+    projectPage: function(projectUuid) {
+        console.log('projectPage');
+        App.AppController.showProjectPage(projectUuid);
     },
 
     // Auth
