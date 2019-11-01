@@ -64,6 +64,8 @@ module.exports = {
         'navbar-controller': path.resolve(__dirname,'app') + '/scripts/views/app/navbar-controller',
         'project-controller': path.resolve(__dirname,'app') + '/scripts/views/project/project-controller',
 
+        'loading-view': path.resolve(__dirname,'app') + '/scripts/views/utilities/loading-view',
+
         'error': path.resolve(__dirname,'app') + '/scripts/models/error',
         'recaptcha': path.resolve(__dirname,'app') + '/scripts/models/recaptcha',
         'airr-schema': path.resolve(__dirname,'app') + '/scripts/models/airr-schema',

@@ -6,6 +6,8 @@ import ProjectList from 'agave-projects';
 import ProjectListView from 'project-list';
 import ProjectPageView from 'project-single';
 
+import LoadingView from 'loading-view';
+
 // Project controller
 //
 // this manages displaying project content
@@ -28,6 +30,9 @@ export default Marionette.View.extend({
         this.projectList = new ProjectList();
 
         var that = this;
+
+        // show a loading view while fetching the data
+        that.showChildView('projectRegion', new LoadingView({}));
 
         // load the projects
         this.projectList.fetch()
