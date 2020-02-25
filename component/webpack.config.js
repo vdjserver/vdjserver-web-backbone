@@ -158,7 +158,9 @@ module.exports = {
 
         'collections/notifications': path.resolve(__dirname,'app') + '/scripts/collections/notifications',
         'models/notification': path.resolve(__dirname,'app') + '/scripts/models/notification',
-        'config/airr-schema.yaml.html': path.resolve(__dirname,'app') + '/scripts/config/airr-schema.yaml.html'
+
+        // AIRR Schema
+        'airr-schema': path.resolve(__dirname,'airr-standards') + '/specs/airr-schema.yaml'
       },
     extensions: ['.js'],
   },
@@ -197,6 +199,11 @@ module.exports = {
             attrs: [':data-src']
           }
         }
+      },
+
+      {
+        test: /\.yaml$/,
+        use: 'js-yaml-loader'
       },
 
       // CSS/SCSS and Fonts

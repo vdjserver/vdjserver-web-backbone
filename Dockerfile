@@ -43,8 +43,6 @@ COPY ./component/package.json /var/www/html/vdjserver-backbone/
 RUN cd /var/www/html/vdjserver-backbone && npm install
 
 # Copy project source
-RUN mkdir /var/www/html/airr-standards
-COPY ./airr-standards/ /var/www/html/airr-standards
 COPY ./component/ /var/www/html/vdjserver-backbone
 
 RUN cd /var/www/html/vdjserver-backbone && npm run dev

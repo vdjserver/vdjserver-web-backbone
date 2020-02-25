@@ -7,6 +7,9 @@ import PublicView from 'public-views';
 import NavigationController from 'navbar-controller';
 import ProjectController from 'project-controller';
 
+// AIRR Schema
+import AIRRSchema from 'airr-schema';
+
 // Controller for the main regions for the application.
 var ApplicationController = Marionette.View.extend({
   template: Handlebars.compile('<div id="navigation"></div><div id="main"></div>'),
@@ -21,6 +24,9 @@ var ApplicationController = Marionette.View.extend({
 
   initialize(options) {
     console.log('Initialize');
+
+    // just a test to show schema is available
+    console.log(AIRRSchema['Repertoire']);
 
     // create navigation bar
     this.navController = new NavigationController();
