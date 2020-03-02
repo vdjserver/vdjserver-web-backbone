@@ -6,10 +6,11 @@
         </div>
         <div class="col-sm-9">
             <h1>Project Summary</h1>
-            <h1>{{value.name}}</h1>
-            <p>Project information would go here....</p>
+            <h2>{{value.name}}</h2>
+            <p>{{value.description}}</p>
             <button type="button" class="btn btn-info">Edit Project Metadata</button>
 
+            <div class="replist">
             <h2>Repertoires</h2>
             <button type="button" class="btn btn-success">Copy a repertoire</button>
             <table class="table table-responsive">
@@ -22,9 +23,10 @@
                         <th scope="col">Tasks</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="project">
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 </div>

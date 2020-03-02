@@ -1,5 +1,6 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import template from '../../../templates/app/main.html';
 
 import Project from 'agave-project';
 import ProjectList from 'agave-projects';
@@ -12,11 +13,12 @@ import LoadingView from 'loading-view';
 //
 // this manages displaying project content
 export default Marionette.View.extend({
-  template: Handlebars.compile('<div id="project">'),
-
+    template: Handlebars.compile(template),
+    id: '#projectsList',
   // one region for the project content
   regions: {
-    projectRegion: '#project',
+    introRegion: '#intro',
+    projectRegion: '#projectslist'
   },
 
   initialize(options) {
@@ -39,7 +41,7 @@ export default Marionette.View.extend({
         .then(function() {
             console.log(that.projectList);
             // create view with project data
-            var view = new ProjectListView({collection: that.projectList});
+            var view = new ProjectListView({collection: that.projectList, el: $(".table-list")});
             that.showChildView('projectRegion', view);
         })
         .fail(function(error) {

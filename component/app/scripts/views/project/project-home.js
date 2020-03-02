@@ -8,7 +8,7 @@ import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import NavigationView from 'navbar-view';
 import IntroView from './intro-view';
-import ProjectListView from 'project-list';
+import ProjectListView from './project-list';
 import ProjectList from 'agave-projects';
 
 export default Marionette.View.extend({

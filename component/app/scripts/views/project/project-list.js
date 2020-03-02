@@ -3,7 +3,13 @@ import template from '../../../templates/project/project-summary.html';
 import Handlebars from 'handlebars';
 
 var ProjectSummaryView = Marionette.View.extend({
-  template: Handlebars.compile(template),
+    tagName: 'tr',
+    // childViewContainer: '.list',
+    template: Handlebars.compile(template),
+
+    region: {
+        projectRegion: '#project'
+    },
 
   events: {
       'click #edit-project': 'editProject',

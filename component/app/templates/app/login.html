@@ -32,14 +32,17 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 login-button-column">
+                        <div class="login-button-column">
                             <button type="button" class="btn btn-warning login-button" id="home-login">
                                 Login
                             </button>
+
+                            {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
+                        </div>
                             <!-- <input type="submit" value="LOGIN" id="home-login" class="login-button" {{#if maintenance}}disabled{{/if}}> -->
-                            <div class="col-md-6 login-button-column text-center">
+                            <!-- <div class="col-md-6 login-button-column text-center">
                                 {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
-                            </div>
+                            </div> -->
 
                         </div>
                     </div>
@@ -141,6 +144,5 @@
             </div>
         </div>
     </div>
-
-</div>
+Footer
 </div>
