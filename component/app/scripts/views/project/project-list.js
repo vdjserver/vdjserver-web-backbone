@@ -3,13 +3,8 @@ import template from '../../../templates/project/project-summary.html';
 import Handlebars from 'handlebars';
 
 var ProjectSummaryView = Marionette.View.extend({
-    tagName: 'tr',
-    // childViewContainer: '.list',
     template: Handlebars.compile(template),
-
-    region: {
-        projectRegion: '#project'
-    },
+    tagName: 'tr',
 
   events: {
       'click #edit-project': 'editProject',
@@ -25,7 +20,10 @@ var ProjectSummaryView = Marionette.View.extend({
 });
 
 export default Marionette.CollectionView.extend({
-  initialize: function(parameters) {
+    template: Handlebars.compile("<thead class='thead-light'><tr><th scope='col'>Projects</th><th scope='col'>Summary</th><th scope='col'>Date Created</th><th scope='col'>Tasks</th></tr></thead>"),
+    tagName: 'table',
+    className: 'table table-responsive',
+    initialize: function(parameters) {
     this.childView = ProjectSummaryView;
   },
 });

@@ -13,12 +13,12 @@ import LoadingView from 'loading-view';
 //
 // this manages displaying project content
 export default Marionette.View.extend({
-    template: Handlebars.compile(template),
-    id: '#projectsList',
+    template: Handlebars.compile('<div id="project">'),
   // one region for the project content
   regions: {
-    introRegion: '#intro',
-    projectRegion: '#projectslist'
+    // introRegion: '#intro',
+    projectRegion: '#project',
+    // singleRegion: '#projectsView'
   },
 
   initialize(options) {
@@ -41,7 +41,7 @@ export default Marionette.View.extend({
         .then(function() {
             console.log(that.projectList);
             // create view with project data
-            var view = new ProjectListView({collection: that.projectList, el: $(".table-list")});
+            var view = new ProjectListView({collection: that.projectList});
             that.showChildView('projectRegion', view);
         })
         .fail(function(error) {
@@ -65,7 +65,8 @@ export default Marionette.View.extend({
                 console.log(that.project);
 
                 var view = new ProjectPageView({model: that.currentProject});
-                that.showChildView('projectRegion', view);
+                this.showChildView('projectRegion', view);
+                //that.showChildView('singleRegion', view);
             })
             .fail(function(error) {
                 console.log(error);

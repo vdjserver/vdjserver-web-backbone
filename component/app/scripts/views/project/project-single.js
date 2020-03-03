@@ -10,4 +10,5 @@ import Project from 'agave-project';
 
 export default Marionette.View.extend({
   template: Handlebars.compile(template),
+  childViewContainer: '.single-project'
 });
