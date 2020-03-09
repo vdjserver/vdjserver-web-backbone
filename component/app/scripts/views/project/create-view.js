@@ -1,14 +1,13 @@
 /******************************************************
-Configuring view for an intro content area on a page
+Configuring view for an "Create a Project" page
 ********************************************************/
 
 import Marionette from 'backbone.marionette';
-import template from '../../../templates/project/intro.html';
+import template from '../../../templates/project/create.html';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'agave-project';
 
 export default Marionette.View.extend({
   template: Handlebars.compile(template),
-  childViewContainer: '.intro'
 });

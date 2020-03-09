@@ -4,6 +4,7 @@ import { Agave } from 'backbone-agave';
 import Router from 'router';
 
 import PublicView from 'public-views';
+// import IntroView from 'intro-view';
 import NavigationController from 'navbar-controller';
 import ProjectController from 'project-controller';
 

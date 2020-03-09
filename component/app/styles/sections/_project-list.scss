@@ -3,7 +3,7 @@ SASS for Project List page
 *****************************************************/
 
 #intro {
-    margin: 2em;
+    margin: 1em;
 }
 
 .navbar-brand img {
@@ -11,5 +11,28 @@ SASS for Project List page
 }
 
 button {
-    margin-bottom: 5%;
+    margin-bottom: 3%;
+}
+
+.tabs {
+    background: #689a87;
+    color: #ffffff;
+
+    a {
+        color: #ffffff;
+    }
+
+    a:hover {
+        text-decoration: none;
+        background: #b7cec6;
+        padding: 0.5%;
+    }
+}
+
+ul.tabs-list {
+    padding: 1%;
+
+    li {
+        display: inline;
+    }
 }
