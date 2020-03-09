@@ -1,22 +1,22 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
-import template from '../../../templates/app/main.html';
 
 import Project from 'agave-project';
 import ProjectList from 'agave-projects';
 import ProjectListView from 'project-list';
 import ProjectPageView from 'project-single';
-
+import IntroView from '../../../templates/project/intro.html';
+// import IntroView from 'intro-view';
 import LoadingView from 'loading-view';
 
 // Project controller
 //
 // this manages displaying project content
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div id="project">'),
+    template: Handlebars.compile('<div id="intro"><h1>Welcome!</h1>       <p>Welcome to your "My Projects" home page. Here, you\'ll find all of your projects, as well as various tasks.</p><button type="button" class="btn btn-primary">Create New Project</button></div><div id="project">'),
   // one region for the project content
   regions: {
-    // introRegion: '#intro',
+    introRegion: '#intro',
     projectRegion: '#project',
     // singleRegion: '#projectsView'
   },
@@ -25,6 +25,15 @@ export default Marionette.View.extend({
     console.log('Initialize');
     this.projectList = null;
     this.currentProject = null;
+  },
+
+  // displaying intro text before Project List
+  showIntro: function() {
+      // create view for intro text
+
+      var that = this;
+      var introView = new IntroView({});
+      that.showChildView('introRegion', introView);
   },
 
   showProjectList: function() {

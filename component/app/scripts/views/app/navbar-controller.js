@@ -23,7 +23,7 @@ export default Marionette.View.extend({
 
   // one region for the navigation bar
   regions: {
-    navigationRegion: '#navbar',
+    navigationRegion: '#navbar'
   },
 
   initialize(options) {
