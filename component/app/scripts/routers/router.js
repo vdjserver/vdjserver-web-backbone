@@ -38,9 +38,10 @@ export default Backbone.Router.extend({
 
     routes: {
         '':                                 'index',
-        'project':                          'projectList',
         'auth/logout':                      'authLogout',
+        'project':                          'projectList',
         'project/:id':                      'projectPage',
+        'community':                        'communityList',
 
         // 404
         '*notFound': 'notFound',
@@ -62,6 +63,12 @@ export default Backbone.Router.extend({
     projectPage: function(projectUuid) {
         console.log('projectPage');
         App.AppController.showProjectPage(projectUuid);
+    },
+
+    // Community Project Summary List
+    communityList: function() {
+        console.log('communityList');
+        App.AppController.showCommunityList();
     },
 
     // Auth

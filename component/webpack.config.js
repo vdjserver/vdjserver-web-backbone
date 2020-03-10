@@ -59,10 +59,12 @@ module.exports = {
         // Models/Collections
         'agave-project': path.resolve(__dirname,'app') + '/scripts/models/agave-project',
         'agave-projects': path.resolve(__dirname,'app') + '/scripts/collections/agave-projects',
+        'agave-public-projects': path.resolve(__dirname,'app') + '/scripts/collections/agave-public-projects',
 
         // Views and Controllers
         'navbar-controller': path.resolve(__dirname,'app') + '/scripts/views/app/navbar-controller',
         'project-controller': path.resolve(__dirname,'app') + '/scripts/views/project/project-controller',
+        'community-controller': path.resolve(__dirname,'app') + '/scripts/views/project/community-controller',
 
         'loading-view': path.resolve(__dirname,'app') + '/scripts/views/utilities/loading-view',
 

@@ -7,6 +7,7 @@ import PublicView from 'public-views';
 // import IntroView from 'intro-view';
 import NavigationController from 'navbar-controller';
 import ProjectController from 'project-controller';
+import CommunityController from 'community-controller';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
@@ -76,6 +77,22 @@ var ApplicationController = Marionette.View.extend({
 
     // tell project controller to display the project page
     this.projectController.showProjectPage(projectUuid);
+  },
+
+  showCommunityList() {
+    console.log('showCommunityList');
+
+    // create community controller if needed
+    if (! this.communityController) {
+      this.communityController = new CommunityController();
+    }
+    this.showChildView('mainRegion', this.communityController);
+
+    // tell navigation controller to display its public nav bar
+    this.navController.showPublicNavigation();
+
+    // tell controller to display the project list page
+    this.communityController.showProjectList();
   },
 
 });
