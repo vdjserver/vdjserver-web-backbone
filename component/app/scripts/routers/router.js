@@ -66,17 +66,16 @@ export default Backbone.Router.extend({
         App.AppController.showProjectPage(projectUuid);
     },
 
-    // For Create a Project Page
-    createPage: function() {
-        console.log('createPage');
-        App.AppController.showCreatePage();
-    },
-
-
     // Community Project Summary List
     communityList: function() {
         console.log('communityList');
         App.AppController.showCommunityList();
+    },
+
+    // For Create a Project Page
+    createPage: function() {
+        console.log('createPage');
+        App.AppController.showCreatePage();
     },
 
     // Auth

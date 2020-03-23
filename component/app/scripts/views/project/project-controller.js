@@ -9,16 +9,15 @@ import intro_template from '../../../templates/project/intro.html';
 // import IntroView from './intro-view';
 import LoadingView from 'loading-view';
 
-var IntroView = Marionette.View.extend({
-  template: Handlebars.compile(intro_template)
-});
-
 // Project controller
 //
 // this manages displaying project content
 export default Marionette.View.extend({
     template: Handlebars.compile('<div id="intro"><h1>Welcome!</h1><p>Welcome to your "My Projects" home page. Here, you\'ll find all of your projects, as well as various tasks.</p><button type="button" class="btn btn-primary" id="create-project">Create New Project</button></div><div id="project">'),
-    //
+
+    events: {
+        'click #create-project': 'createProject'
+    },
 
   // one region for the project content
   regions: {
@@ -31,6 +30,14 @@ export default Marionette.View.extend({
     console.log('Initialize');
     this.projectList = null;
     this.currentProject = null;
+  },
+
+  createProject: function(e) {
+      console.log('child createProject');
+      e.preventDefault();
+
+      // navigate to the "Create a Project" page
+      App.router.navigate('/create', {trigger:true});
   },
 
   // displaying intro text before Project List
@@ -94,4 +101,20 @@ export default Marionette.View.extend({
         this.showChildView('projectRegion', view);
     }
   },
+
+  showCreatePage() {
+    console.log('showCreatePage');
+
+    // create project controller if needed
+    if (! this.createController) {
+      this.createController = new createController();
+    }
+    this.showChildView('mainRegion', this.createController);
+
+    // tell navigation controller to display its private nav bar
+    this.navController.showPrivateNavigation();
+
+    // tell create controller to display the create a project page
+    this.createController.showCreatePage();
+  }
 });

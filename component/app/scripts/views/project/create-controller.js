@@ -26,6 +26,22 @@ export default Marionette.View.extend({
     this.currentProject = null;
   },
 
+  showCreatePage() {
+    console.log('showCreatePage');
+
+    // create project controller if needed
+    if (! this.createController) {
+      this.createController = new createController();
+    }
+    this.showChildView('mainRegion', this.createController);
+
+    // tell navigation controller to display its private nav bar
+    this.navController.showPrivateNavigation();
+
+    // tell create controller to display the create a project page
+    this.createController.showCreatePage();
+  }
+
   // showProjectList: function() {
   //   if (! this.projectList) {
   //       this.projectList = new ProjectList();

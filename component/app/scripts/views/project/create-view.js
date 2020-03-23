@@ -9,7 +9,7 @@ import Bootstrap from 'bootstrap';
 import Project from 'agave-project';
 
 var CreateProjectView = Marionette.View.extend({
-    template: Handlebars.compile(template)
+    template: Handlebars.compile("<h1>Testing</h1>")
     // tagName: 'tr',
 
   // events: {
