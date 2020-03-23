@@ -8,6 +8,7 @@ import PublicView from 'public-views';
 import NavigationController from 'navbar-controller';
 import ProjectController from 'project-controller';
 import CommunityController from 'community-controller';
+import CreateController from 'create-controller';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
@@ -95,7 +96,23 @@ var ApplicationController = Marionette.View.extend({
     this.communityController.showProjectList();
   },
 
+    showCreatePage() {
+      console.log('showCreatePage');
+
+      // create project controller if needed
+      if (! this.createController) {
+        this.createController = new CreateController();
+      }
+      this.showChildView('mainRegion', this.CreateController);
+
+      // tell navigation controller to display its private nav bar
+      this.navController.showPrivateNavigation();
+
+      // tell project controller to display the project list page
+      this.projectController.showCreatePage();
+    }
 });
+
 
 // The main application
 export default Marionette.Application.extend({

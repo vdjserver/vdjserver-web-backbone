@@ -5,15 +5,21 @@ import Project from 'agave-project';
 import ProjectList from 'agave-projects';
 import ProjectListView from 'project-list';
 import ProjectPageView from 'project-single';
-import IntroView from '../../../templates/project/intro.html';
-// import IntroView from 'intro-view';
+import intro_template from '../../../templates/project/intro.html';
+// import IntroView from './intro-view';
 import LoadingView from 'loading-view';
+
+var IntroView = Marionette.View.extend({
+  template: Handlebars.compile(intro_template)
+});
 
 // Project controller
 //
 // this manages displaying project content
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div id="intro"><h1>Welcome!</h1>       <p>Welcome to your "My Projects" home page. Here, you\'ll find all of your projects, as well as various tasks.</p><button type="button" class="btn btn-primary">Create New Project</button></div><div id="project">'),
+    template: Handlebars.compile('<div id="intro"><h1>Welcome!</h1><p>Welcome to your "My Projects" home page. Here, you\'ll find all of your projects, as well as various tasks.</p><button type="button" class="btn btn-primary" id="create-project">Create New Project</button></div><div id="project">'),
+    //
+
   // one region for the project content
   regions: {
     introRegion: '#intro',
@@ -28,12 +34,8 @@ export default Marionette.View.extend({
   },
 
   // displaying intro text before Project List
-  showIntro: function() {
-      // create view for intro text
-
-      var that = this;
-      var introView = new IntroView({});
-      that.showChildView('introRegion', introView);
+  showIntroView() {
+      this.showChildView('introRegion', new IntroView());
   },
 
   showProjectList: function() {

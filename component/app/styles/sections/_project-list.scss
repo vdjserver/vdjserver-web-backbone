@@ -24,8 +24,6 @@ button {
 
     a:hover {
         text-decoration: none;
-        background: #b7cec6;
-        padding: 0.5%;
     }
 }
 
@@ -34,5 +32,10 @@ ul.tabs-list {
 
     li {
         display: inline;
+        padding: 0.5%;
+
+        li:hover {
+            background: #b7cec6;
+        }
     }
 }

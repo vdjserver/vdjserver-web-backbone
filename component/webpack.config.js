@@ -65,6 +65,8 @@ module.exports = {
         'navbar-controller': path.resolve(__dirname,'app') + '/scripts/views/app/navbar-controller',
         'project-controller': path.resolve(__dirname,'app') + '/scripts/views/project/project-controller',
         'community-controller': path.resolve(__dirname,'app') + '/scripts/views/project/community-controller',
+        'create-controller': path.resolve(__dirname,'app') + '/scripts/views/project/create-controller',
+        'create-view': path.resolve(__dirname,'app') + '/scripts/views/project/create-view',
 
         'loading-view': path.resolve(__dirname,'app') + '/scripts/views/utilities/loading-view',
 

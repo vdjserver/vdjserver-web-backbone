@@ -42,6 +42,7 @@ export default Backbone.Router.extend({
         'project':                          'projectList',
         'project/:id':                      'projectPage',
         'community':                        'communityList',
+        'create':                           'createPage',
 
         // 404
         '*notFound': 'notFound',
@@ -64,6 +65,13 @@ export default Backbone.Router.extend({
         console.log('projectPage');
         App.AppController.showProjectPage(projectUuid);
     },
+
+    // For Create a Project Page
+    createPage: function(projectUuid) {
+        console.log('createPage');
+        App.AppController.showCreatePage();
+    },
+
 
     // Community Project Summary List
     communityList: function() {
