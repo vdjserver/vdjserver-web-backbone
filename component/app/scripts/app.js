@@ -108,8 +108,8 @@ var ApplicationController = Marionette.View.extend({
       // tell navigation controller to display its private nav bar
       this.navController.showPrivateNavigation();
 
-      // tell project controller to display the project list page
-      this.projectController.showCreatePage();
+      // tell create controller to display the create a project page
+      this.createController.showCreatePage();
     }
 });
 

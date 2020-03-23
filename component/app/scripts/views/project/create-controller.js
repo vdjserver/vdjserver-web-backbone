@@ -15,8 +15,8 @@ export default Marionette.View.extend({
     template: Handlebars.compile('<div id="create"><h1>Testing Create Page</h1>'),
   // one region for the project content
   regions: {
-    // introRegion: '#intro',
-    // projectRegion: '#project',
+    introRegion: '#intro',
+    projectRegion: '#project',
     // singleRegion: '#projectsView'
   },
 

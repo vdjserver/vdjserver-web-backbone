@@ -11,7 +11,7 @@ import LoadingView from 'loading-view';
 //
 // this manages displaying project content
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div id="intro"><h1>Welcome!</h1>       <p>Welcome to your "My Projects" home page. Here, you\'ll find all of your projects, as well as various tasks.</p><button type="button" class="btn btn-primary">Create New Project</button></div><div id="project">'),
+    template: Handlebars.compile('<div id="intro"><h1>Welcome!</h1><p>Welcome to the Community Projects page!</p><div id="project">'),
   // one region for the project content
   regions: {
     introRegion: '#intro',

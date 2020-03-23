@@ -67,7 +67,7 @@ export default Backbone.Router.extend({
     },
 
     // For Create a Project Page
-    createPage: function(projectUuid) {
+    createPage: function() {
         console.log('createPage');
         App.AppController.showCreatePage();
     },

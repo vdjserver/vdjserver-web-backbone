@@ -45,7 +45,7 @@ export default Marionette.View.extend({
       'click #home-login': 'login',
       'shown.bs.modal': 'onShownModal',
       'hidden.bs.modal': 'onHiddenModal',
-      'click #create-project': 'create'
+      //'click #create-project': 'create'
   },
 
   onShownModal() {

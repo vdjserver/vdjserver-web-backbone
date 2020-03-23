@@ -8,6 +8,7 @@ var ProjectSummaryView = Marionette.View.extend({
 
   events: {
       'click #edit-project': 'editProject',
+      'click #create-project': 'createProject'
   },
 
   editProject: function(e) {
@@ -16,6 +17,14 @@ var ProjectSummaryView = Marionette.View.extend({
 
       // navigate to the project page
       App.router.navigate('/project/' + this.model.get('uuid'), {trigger:true});
+  },
+
+  createProject: function(e) {
+      console.log('child createProject');
+      e.preventDefault();
+
+      // navigate to the "Create a Project" page
+      App.router.navigate('/create/', {trigger:true});
   },
 });
 
