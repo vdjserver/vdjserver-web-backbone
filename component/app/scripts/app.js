@@ -103,7 +103,7 @@ var ApplicationController = Marionette.View.extend({
       if (! this.createController) {
         this.createController = new CreateController();
       }
-      this.showChildView('mainRegion', this.CreateController);
+      this.showChildView('mainRegion', this.createController);
 
       // tell navigation controller to display its private nav bar
       this.navController.showPrivateNavigation();

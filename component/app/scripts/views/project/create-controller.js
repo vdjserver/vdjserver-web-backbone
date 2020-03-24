@@ -1,18 +1,15 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
-
-// import Project from 'agave-project';
-// import ProjectList from 'agave-projects';
-// import ProjectListView from 'project-list';
-// import ProjectPageView from 'project-single';
 import CreateView from 'create-view';
 import LoadingView from 'loading-view';
+
+import create_template from '../../../templates/project/create.html';
 
 // Create Controller: manages any views associated with creating a project
 //
 // this manages displaying project content
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div id="create"><h1>Testing Create Page</h1>'),
+    template: Handlebars.compile('<div id="create">' + create_template),
   // one region for the project content
   regions: {
     introRegion: '#intro',
@@ -26,76 +23,19 @@ export default Marionette.View.extend({
     this.currentProject = null;
   },
 
-  showCreatePage() {
-    console.log('showCreatePage');
-
-    // create project controller if needed
-    if (! this.createController) {
-      this.createController = new createController();
-    }
-    this.showChildView('mainRegion', this.createController);
-
-    // tell navigation controller to display its private nav bar
-    this.navController.showPrivateNavigation();
-
-    // tell create controller to display the create a project page
-    this.createController.showCreatePage();
-  }
-
-  // showProjectList: function() {
-  //   if (! this.projectList) {
-  //       this.projectList = new ProjectList();
+  // showCreatePage() {
+  //   console.log('showCreatePage');
   //
-  //       var that = this;
-  //
-  //       // show a loading view while fetching the data
-  //       that.showChildView('projectRegion', new LoadingView({}));
-  //
-  //       // load the projects
-  //       this.projectList.fetch()
-  //       .then(function() {
-  //           console.log(that.projectList);
-  //           // create view with project data
-  //           var view = new ProjectListView({collection: that.projectList});
-  //           that.showChildView('projectRegion', view);
-  //       })
-  //       .fail(function(error) {
-  //         console.log(error);
-  //       });
-  //   } else {
-  //       // projects already loaded
-  //       // we need to create a new view each time
-  //       var view = new ProjectListView({collection: this.projectList});
-  //       this.showChildView('projectRegion', view);
+  //   // create project controller if needed
+  //   if (! this.createController) {
+  //     this.createController = new CreateController();
   //   }
-  // },
+  //   this.showChildView('mainRegion', this.createController);
   //
-  // showProjectPage(projectUuid) {
-  //   // if project list is not loaded yet, just fetch the single project
-  //   if (! this.projectList) {
-  //       this.currentProject = new Project({uuid: projectUuid});
-  //       var that = this;
-  //       this.currentProject.fetch()
-  //           .then(function() {
-  //               console.log(that.project);
+  //   // tell navigation controller to display its private nav bar
+  //   this.navController.showPrivateNavigation();
   //
-  //               var view = new ProjectPageView({model: that.currentProject});
-  //               this.showChildView('projectRegion', view);
-  //               //that.showChildView('singleRegion', view);
-  //           })
-  //           .fail(function(error) {
-  //               console.log(error);
-  //           });
-  //   } else {
-  //       // get project from the list
-  //       this.currentProject = this.projectList.get(projectUuid);
-  //       if (! this.currentProject) {
-  //           // ERROR: could not find project!
-  //       }
-  //
-  //       // show the current project view
-  //       var view = new ProjectPageView({model: this.currentProject});
-  //       this.showChildView('projectRegion', view);
-  //   }
-  // },
+  //   // tell create controller to display the create a project page
+  //   this.createController.showCreatePage();
+  // }
 });

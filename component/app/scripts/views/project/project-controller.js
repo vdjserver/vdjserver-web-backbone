@@ -107,7 +107,7 @@ export default Marionette.View.extend({
 
     // create project controller if needed
     if (! this.createController) {
-      this.createController = new createController();
+      this.createController = new CreateController();
     }
     this.showChildView('mainRegion', this.createController);
 
