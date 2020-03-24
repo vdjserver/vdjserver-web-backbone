@@ -67,16 +67,16 @@ var ApplicationController = Marionette.View.extend({
   showProjectPage(projectUuid) {
     console.log('showProjectPage');
 
-    // create project controller if needed
+    // create "project" controller if needed
     if (! this.projectController) {
       this.projectController = new ProjectController();
     }
     this.showChildView('mainRegion', this.projectController);
 
-    // tell navigation controller to display its private nav bar
+    // tell "navigation" controller to display its private nav bar
     this.navController.showPrivateNavigation();
 
-    // tell project controller to display the project page
+    // tell "project" controller to display the project page
     this.projectController.showProjectPage(projectUuid);
   },
 
@@ -99,17 +99,18 @@ var ApplicationController = Marionette.View.extend({
     showCreatePage() {
       console.log('showCreatePage');
 
-      // create project controller if needed
+      // create "create" controller if needed
       if (! this.createController) {
         this.createController = new CreateController();
       }
       this.showChildView('mainRegion', this.createController);
 
-      // tell navigation controller to display its private nav bar
+      // tell "navigation" controller to display its private nav bar
       this.navController.showPrivateNavigation();
 
-      // tell create controller to display the create a project page
+      // tell "create" controller to display the create a project page
       this.createController.showCreatePage();
+      console.log('completed showCreatePage function');
     }
 });
 

@@ -8,12 +8,13 @@ import ProjectPageView from 'project-single';
 import intro_template from '../../../templates/project/intro.html';
 // import IntroView from './intro-view';
 import LoadingView from 'loading-view';
+import CreateController from 'create-controller';
 
 // Project controller
 //
 // this manages displaying project content
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div id="intro"><h1>Welcome!</h1><p>Welcome to your "My Projects" home page. Here, you\'ll find all of your projects, as well as various tasks.</p><button type="button" class="btn btn-primary" id="create-project">Create New Project</button></div><div id="project">'),
+    template: Handlebars.compile('<div id="intro">' + intro_template + '</div><div id="project">'),
 
     events: {
         'click #create-project': 'createProject'

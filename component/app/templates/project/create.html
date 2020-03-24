@@ -1,8 +1,9 @@
 <div class="alert alert-info">
-    <i class="fa fa-info-circle"></i> Create a new VDJServer project.
+    <i class="fa fa-info-circle"></i> Create a new VDJServer project by filling out the form below.
 </div>
 
 <form method="post" role="form">
+    <h2>Project Information</h2>
     <div class="form-row">
         <div class="form-group col-md-6">
             <input type="text" class="form-control" placeholder="Project Name" name="name" id="name">
@@ -25,7 +26,7 @@
 
     <div class="form-row">
         <div class="form-group col-md-3">
-            <select class="custom-select mr-sm-2" id ="inlineFormCustomSelect">
+            <select class="form-control">
                 <option selected>Project Type</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -41,7 +42,7 @@
             <input type="text" class="form-control" placeholder="Publications" name="publications" id="publications">
         </div>
     </div>
-
+    <h2>PI and Contact Information</h2>
     <div class="form-row">
         <div class="form-group col-md-6">
             <input type="text" class="form-control" placeholder="Principal Investigator (PI)" name="PI" id="PI">
@@ -73,8 +74,8 @@
     </div>
 
     <div class="form-group">
-        <div class="col-sm-12">
-            <input type="submit" value="Create a new VDJServer Project" class="btn btn-success btn-block">
+        <div class="col-sm-12 col-md-6 mx-auto">
+            <input type="submit" value="Create a Project" class="btn btn-success btn-block">
         </div>
     </div>
 
