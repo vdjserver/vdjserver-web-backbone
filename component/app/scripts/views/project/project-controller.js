@@ -17,7 +17,8 @@ export default Marionette.View.extend({
     template: Handlebars.compile('<div id="intro">' + intro_template + '</div><div id="project">'),
 
     events: {
-        'click #create-project': 'createProject'
+        'click #create-project': 'createProject',
+        'click #create-rep': 'createRep'
     },
 
   // one region for the project content
@@ -39,6 +40,14 @@ export default Marionette.View.extend({
 
       // navigate to the "Create a Project" page
       App.router.navigate('/create', {trigger:true});
+  },
+
+  createRep: function(e) {
+      console.log('child createRep');
+      e.preventDefault();
+
+      // navigate to the "Create a Repertoire" page
+      App.router.navigate('/createrep', {trigger:true});
   },
 
   // displaying intro text before Project List

@@ -9,6 +9,7 @@ import NavigationController from 'navbar-controller';
 import ProjectController from 'project-controller';
 import CommunityController from 'community-controller';
 import CreateController from 'create-controller';
+import CreateRepController from 'createrep-controller';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
@@ -111,7 +112,24 @@ var ApplicationController = Marionette.View.extend({
       // tell "create" controller to display the create a project page
       this.createController.showCreatePage();
       console.log('completed showCreatePage function');
-    }
+  },
+
+  showCreateRep() {
+      console.log('showCreateRep');
+
+      // create "create rep" controller if needed
+      if (! this.createRepController) {
+        this.createRepController = new CreateRepController();
+      }
+      this.showChildView('mainRegion', this.createRepController);
+
+      // tell "navigation" controller to display its private nav bar
+      this.navController.showPrivateNavigation();
+
+      // tell "create" controller to display the create a project page
+      this.createRepController.showCreateRep();
+      console.log('completed showCreateRep function');
+  }
 });
 
 

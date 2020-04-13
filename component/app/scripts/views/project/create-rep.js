@@ -1,20 +1,20 @@
 /******************************************************
-Configuring view for an "Create a Project" page
+Configuring view for an "Create a Repertoire" page
 ********************************************************/
 
 import Marionette from 'backbone.marionette';
-import template from '../../../templates/project/create.html';
+import template from '../../../templates/project/create-rep.html';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'agave-project';
 
-var CreateProjectView = Marionette.View.extend({
-    template: Handlebars.compile("<h1>Testing</h1>")
+var CreateRepView = Marionette.View.extend({
+    template: Handlebars.compile("<h1>Testing Rep View</h1>")
 });
 
 export default Marionette.View.extend({
   template: Handlebars.compile("<h1>Hopefully this works!</h1>"),
   initialize: function(parameters) {
-      this.childView = CreateProjectView;
+      this.childView = CreateRepView;
     },
 });

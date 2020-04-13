@@ -43,6 +43,7 @@ export default Backbone.Router.extend({
         'project/:id':                      'projectPage',
         'community':                        'communityList',
         'create':                           'createPage',
+        'createrep':                        'createRep',
 
         // 404
         '*notFound': 'notFound',
@@ -76,6 +77,12 @@ export default Backbone.Router.extend({
     createPage: function() {
         console.log('createPage');
         App.AppController.showCreatePage();
+    },
+
+    // For Create a Repertoire Page
+    createRep: function() {
+        console.log('createRep');
+        App.AppController.showCreateRep();
     },
 
     // Auth

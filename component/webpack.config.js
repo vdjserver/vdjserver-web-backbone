@@ -68,6 +68,9 @@ module.exports = {
         'create-controller': path.resolve(__dirname,'app') + '/scripts/views/project/create-controller',
         'create-view': path.resolve(__dirname,'app') + '/scripts/views/project/create-view',
 
+        'createrep-controller': path.resolve(__dirname,'app') + '/scripts/views/project/createrep-controller',
+        'create-rep': path.resolve(__dirname,'app') + '/scripts/views/project/create-rep',
+
         'loading-view': path.resolve(__dirname,'app') + '/scripts/views/utilities/loading-view',
 
         'error': path.resolve(__dirname,'app') + '/scripts/models/error',
