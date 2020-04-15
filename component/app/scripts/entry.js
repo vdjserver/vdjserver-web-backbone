@@ -1,6 +1,9 @@
 // need this here so that it extends jQuery
 import bootstrap from 'bootstrap';
 
+// Custom jQuery
+import './_custom.js';
+
 // SASS/CSS
 import '../styles/main.scss'
 

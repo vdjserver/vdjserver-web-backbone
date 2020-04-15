@@ -1,84 +1,127 @@
-<div>
-    <h2>Project Name: {{value.name}}</h2>
+<div class="steps">
+    <ul>
+        <li class="progress-step">Subject Metadata <i class="fa fa-circle"></i></li>
+        <li class="progress-step">Diagnosis Metadata <i class="fa fa-circle"></i></li>
+        <li class="progress-step">Sample Metadata <i class="fa fa-circle"></i></li>
+        <li class="progress-step">Cell Processing Metadata <i class="fa fa-circle"></i></li>
+        <li class="progress-step">Nucleic Acid Processing Metadata <i class="fa fa-circle"></i></li>
+        <li class="progress-step">Sample Groups</li>
+    </ul>
 </div>
+
+<h2>Project Name: {{value.name}}</h2>
+
 <div class="alert alert-info">
     <i class="fa fa-info-circle"></i> Create a new repertoire by filling out the form below.
 </div>
 
 <form method="post" role="form">
     <h2>Subject Metadata</h2>
-    <!-- <div class="form-row">
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Project Name" name="name" id="name">
-        </div>
+    <button type="button" class="btn btn-warning" id="add-subject"><i class="fa fa-plus"></i> Add Subject</button>
+    <button type="button" class="btn btn-primary" id="subject-Metadata"><i class="fa fa-upload"></i> Import Subject Metadata</button>
 
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Funding Agency" name="fundingAgency" id="funding">
-        </div>
+    <table class='table'>
+        <thead class='thead-light'>
+            <tr>
+                <th scope='col'>Subject ID</th>
+                <th scope='col'>Synthetic</th>
+                <th scope='col'>Organism</th>
+                <th scope='col'>Sex</th>
+                <th scope='col'>Age</th>
+                <th scope='col'>Age Event</th>
+                <th scope='col'>Ancestry Population</th>
+                <th scope='col'>Ethnicity</th>
+                <th scope='col'>Race</th>
+                <th scope='col'>Strain Name</th>
+                <th scope='col'>Linked Subjects</th>
+                <th scope='col'>Link Types</th>
+            </tr>
+            <tbody>
+                <tr scope="row">
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Subject ID" name="subjectID" id="subjectID">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Synthetic" name="synthetic" id="synthetic">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Organism" name="organism" id="organism">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="sex" name="sex" id="sex">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="age" name="age" id="age">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Age Event" name="ageEvent" id="ageEvent">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Ancestry Population" name="ancestryPop" id="ancestryPop">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Ethnicity" name="ethnicity" id="ethnicity">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Race" name="race" id="race">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Strain Name" name="strainName" id="strainName">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Linked Subjects" name="linkedSubjects" id="linkedSubjects">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Link Types" name="linkTypes" id="linkTypes">
+                        </div>
+                    </td>
+                </tr>
+                <!-- Insert another row if "Add Another Subject" button is clicked -->
+            </tbody>
+        </thead>
+    </table>
+    <div class="rep-actions">
+        <button type="button" class="btn btn-warning" id="save-subject"><i class="fa fa-save"></i> Save</button>
+        <button type="button" class="btn btn-primary" id="add-subject"><i class="fa fa-plus"></i> Add Another Subject</button>
     </div>
-
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <textarea class="form-control" placeholder="Project Description" name="projDesc" id="description" rows="3"></textarea>
-        </div>
-
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Grants" name="grants" id="grants">
-        </div>
-    </div>
-
-    <div class="form-row">
-        <div class="form-group col-md-3">
-            <select class="form-control">
-                <option selected>Project Type</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-            </select>
-        </div>
-
-        <div class="form-group col-md-3">
-            <input type="text" class="form-control" placeholder="NCBI" name="NCBI" id="NCBI">
-        </div>
-
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Publications" name="publications" id="publications">
-        </div>
-    </div>
-    <h2>PI and Contact Information</h2>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Principal Investigator (PI)" name="PI" id="PI">
-        </div>
-
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Project Contact" name="projectContact" id="projectContact">
-        </div>
-    </div>
-
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="PI Institution" name="PIinstitution" id="PIinstitution">
-        </div>
-
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Contact Institution" name="contactInst" id="contactInst">
-        </div>
-    </div>
-
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="PI Email" name="PIEmail" id="PIEmail">
-        </div>
-
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Contact Email" name="contactEmail" id="contactEmail">
-        </div>
-    </div>
+<!--
+    <h2>Diagnosis Metadata</h2>
+    Subject ID Synthetic Organism Sex Age AgeEvent AncestryPopulation Ethnicity Race StrainName LinkedSubjects LinkTypes
+    <h2>Sample Metadata</h2>
+    SampleID Subject SampleType Tissue AnatomicSite DiseaseStateSample CollectionTimePoint(Relative) CollectionTimePoint(Reference) BiomaterialProvider
+    <h2>Cell Processing Metadata</h2>
+    CellProcessingID SampleUUID TissueProcesing CellSubset CellPhenotype SingleCell CellNumber CellsPerReaction CellStorage CellQuality CellIsolation CellProcessingProtocol
+    <h2>Nucleic Acid Processing Metadata</h2>
+    CellProcessingID SampleUUID TissueProcesing CellSubset CellPhenotype SingleCell CellNumber CellsPerReaction CellStorage CellQuality CellIsolation CellProcessingProtocol
+    <h2>Sample Groups</h2>
+    CellProcessingID SampleUUID TissueProcesing CellSubset CellPhenotype SingleCell CellNumber CellsPerReaction CellStorage CellQuality CellIsolation CellProcessingProtocol -->
 
     <div class="form-group">
         <div class="col-sm-12 col-md-4 mx-auto">
-            <input type="submit" value="Create a Project" class="btn btn-success btn-block">
+            <input type="submit" value="Create a Repertoire" class="btn btn-success btn-block">
         </div>
-    </div> -->
+    </div>
 </form>
