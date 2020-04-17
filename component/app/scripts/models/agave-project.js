@@ -1,35 +1,56 @@
+//
+// agave-project.js
+// Project model
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2020 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+
 import { Agave } from 'backbone-agave';
+
+// AIRR Schema
+import AIRRSchema from 'airr-schema';
+import repertoire_template from 'airr-repertoire-template';
 
 export default Agave.MetadataModel.extend({
         defaults: function() {
+
+            // Use AIRR schema Study object as basis
+            this.airr_schema = AIRRSchema['Study'];
+
+            // make a deep copy of study object from the template
+            var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]['study']));
+            value['study_type'] = null;
+            //console.log(value);
+
+            // add VDJServer specific fields
+            value['showArchivedJobs'] = false;
+
             return _.extend(
                 {},
                 Agave.MetadataModel.prototype.defaults,
                 {
                     name: 'project',
                     owner: '',
-                    value: {
-                        'name':  '',
-                        'project_title': '',
-                        'description': '',
-                        'project_type': '',
-                        'inclusion_exclusion_criteria': '',
-                        'grant_agency': '',
-                        'grants': '',
-                        'pi_name': '',
-                        'pi_institution': '',
-                        'pi_email': '',
-                        'contact_name': '',
-                        'contact_institution': '',
-                        'contact_email': '',
-                        'biomaterial_provider': '',
-                        'collected_by': '',
-                        'uploaded_by': '',
-                        'publications': '',
-                        'pub_ids': '',
-                        'ncbi_bioproject': '',
-                        'showArchivedJobs': false
-                    }
+                    value: value
                 }
             );
         },
@@ -38,20 +59,17 @@ export default Agave.MetadataModel.extend({
         },
         sync: function(method, model, options) {
 
+            // if uuid is not set, then we are creating a new project
             if (this.get('uuid') === '') {
                 options.apiHost = EnvironmentConfig.vdjApi.hostname;
-                options.url = '/projects';
-                options.authType = 'basic';
+                options.url = '/project';
+                options.authType = 'oauth';
 
+                // we send just the project info when creating
+                // the response will be the Tapis metadata object
                 var value = this.get('value');
-                var projectName = value.name;
-                var username = App.Agave.token().get('username');
-
                 this.clear();
-                this.set({
-                    username: username,
-                    projectName: projectName
-                });
+                this.set({ project: value });
             }
 
             return Agave.PutOverrideSync(method, this, options);
