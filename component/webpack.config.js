@@ -167,7 +167,8 @@ module.exports = {
         'models/notification': path.resolve(__dirname,'app') + '/scripts/models/notification',
 
         // AIRR Schema
-        'airr-schema': path.resolve(__dirname,'airr-standards') + '/specs/airr-schema.yaml'
+        'airr-schema': path.resolve(__dirname,'airr-standards') + '/specs/airr-schema.yaml',
+        'airr-repertoire-template': path.resolve(__dirname,'airr-standards') + '/lang/python/airr/specs/blank.airr.yaml'
       },
     extensions: ['.js'],
   },
