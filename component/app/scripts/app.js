@@ -1,3 +1,30 @@
+//
+// app.js
+// Main Application object
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2020 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+// Author: Olivia Dorsey <olivia.dorsey@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import { Agave } from 'backbone-agave';
@@ -8,13 +35,11 @@ import PublicView from 'public-views';
 import NavigationController from 'navbar-controller';
 import ProjectController from 'project-controller';
 import CommunityController from 'community-controller';
-import CreateController from 'create-controller';
-import CreateRepController from 'createrep-controller';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
 
-// Controller for the main regions for the application.
+// Controller and view for the main regions for the application.
 var ApplicationController = Marionette.View.extend({
   template: Handlebars.compile('<div id="navigation"></div><div id="main"></div>'),
 
@@ -56,7 +81,7 @@ var ApplicationController = Marionette.View.extend({
     if (! this.projectController) {
       this.projectController = new ProjectController();
     }
-    this.showChildView('mainRegion', this.projectController);
+    this.showChildView('mainRegion', this.projectController.getView());
 
     // tell navigation controller to display its private nav bar
     this.navController.showPrivateNavigation();
@@ -72,7 +97,7 @@ var ApplicationController = Marionette.View.extend({
     if (! this.projectController) {
       this.projectController = new ProjectController();
     }
-    this.showChildView('mainRegion', this.projectController);
+    this.showChildView('mainRegion', this.projectController.getView());
 
     // tell "navigation" controller to display its private nav bar
     this.navController.showPrivateNavigation();
@@ -98,38 +123,21 @@ var ApplicationController = Marionette.View.extend({
   },
 
     showCreatePage() {
-      console.log('showCreatePage');
+        console.log('showCreatePage');
 
-      // create "create" controller if needed
-      if (! this.createController) {
-        this.createController = new CreateController();
-      }
-      this.showChildView('mainRegion', this.createController);
+        // create project controller if needed
+        if (! this.projectController) {
+          this.projectController = new ProjectController();
+        }
+        this.showChildView('mainRegion', this.projectController.getView());
 
-      // tell "navigation" controller to display its private nav bar
-      this.navController.showPrivateNavigation();
+        // tell navigation controller to display its private nav bar
+        this.navController.showPrivateNavigation();
 
-      // tell "create" controller to display the create a project page
-      this.createController.showCreatePage();
-      console.log('completed showCreatePage function');
+        // tell project controller to display the create project page
+        this.projectController.showCreatePage();
   },
 
-  showCreateRep() {
-      console.log('showCreateRep');
-
-      // create "create rep" controller if needed
-      if (! this.createRepController) {
-        this.createRepController = new CreateRepController();
-      }
-      this.showChildView('mainRegion', this.createRepController);
-
-      // tell "navigation" controller to display its private nav bar
-      this.navController.showPrivateNavigation();
-
-      // tell "create" controller to display the create a project page
-      this.createRepController.showCreateRep();
-      console.log('completed showCreateRep function');
-  }
 });
 
 
