@@ -6,21 +6,35 @@
     <h2>Project Information</h2>
     <div class="form-row">
         <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Project Name" name="name" id="name">
-        </div>
-
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Funding Agency" name="fundingAgency" id="funding">
+            <input type="text" class="form-control" placeholder="Project Name" name="study_title" id="name">
         </div>
     </div>
 
     <div class="form-row">
         <div class="form-group col-md-6">
-            <textarea class="form-control" placeholder="Project Description" name="projDesc" id="description" rows="3"></textarea>
+            <textarea class="form-control" placeholder="Project Description" name="study_description" id="description" rows="3"></textarea>
         </div>
 
         <div class="form-group col-md-6">
             <input type="text" class="form-control" placeholder="Grants" name="grants" id="grants">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <textarea class="form-control" placeholder="Inclusion/Exclusion Criteria" name="inclusion_exclusion_criteria" id="criteria" rows="3"></textarea>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <select class="form-control">
+                <option selected>Study Keywords</option>
+                <option value="contains_tcr">TCR</option>
+                <option value="contains_ig">Ig</option>
+                <option value="contains_single_cell">Single Cell</option>
+                <option value="contains_paired_chain">Paired Chain</option>
+            </select>
         </div>
     </div>
 
@@ -35,47 +49,37 @@
         </div>
 
         <div class="form-group col-md-3">
-            <input type="text" class="form-control" placeholder="NCBI" name="NCBI" id="NCBI">
+            <input type="text" class="form-control" placeholder="NCBI" name="study_id" id="NCBI">
         </div>
 
         <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Publications" name="publications" id="publications">
+            <input type="text" class="form-control" placeholder="Publications" name="pub_ids" id="publications">
         </div>
     </div>
     <h2>PI and Contact Information</h2>
     <div class="form-row">
         <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Principal Investigator (PI)" name="PI" id="PI">
+            <input type="text" class="form-control" placeholder="Principal Investigator (PI)" name="lab_name" id="PI">
         </div>
 
         <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Project Contact" name="projectContact" id="projectContact">
-        </div>
-    </div>
-
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="PI Institution" name="PIinstitution" id="PIinstitution">
-        </div>
-
-        <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Contact Institution" name="contactInst" id="contactInst">
+            <input type="text" class="form-control" placeholder="Project Contact" name="lab_address" id="projectContact">
         </div>
     </div>
 
     <div class="form-row">
         <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="PI Email" name="PIEmail" id="PIEmail">
+            <input type="text" class="form-control" placeholder="Collected By" name="collected_by" id="PIinstitution">
         </div>
 
         <div class="form-group col-md-6">
-            <input type="text" class="form-control" placeholder="Contact Email" name="contactEmail" id="contactEmail">
+            <input type="text" class="form-control" placeholder="Submitted By" name="submitted_by" id="contactInst">
         </div>
     </div>
 
     <div class="form-group">
         <div class="col-sm-12 col-md-4 mx-auto">
-            <input type="submit" value="Create a Project" class="btn btn-success btn-block">
+            <input type="submit" value="Create Project" class="btn btn-success btn-block" id="create-new-project">
         </div>
     </div>
 </form>
