@@ -7,7 +7,7 @@ export default Agave.MetadataCollection.extend(
         model: Project,
         url: function() {
             return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"project"}')
+                   + encodeURIComponent('{"name":"privateProject"}')
                    + '&limit=' + this.limit
                    + '&offset=' + this.offset
                    ;
