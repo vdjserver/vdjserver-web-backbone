@@ -93,11 +93,9 @@ export default Marionette.View.extend({
         console.log(this.modalState);
         if (this.modalState == 'create') {
 
-            // pull data out of form and into model
+            // pull data out of form and put into model
             var data = Syphon.serialize(this);
-            var value = this.model.get('value');
-            for (var obj in data) value[obj] = data[obj];
-            this.model.set('value', value);
+            this.model.setAttributesFromData(data);
 
             // save the model
             console.log(this.model);
