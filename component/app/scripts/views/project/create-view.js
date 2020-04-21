@@ -30,6 +30,7 @@ import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
 import create_template from '../../../templates/project/create.html';
 import modal_template from '../../../templates/util/modal-message.html';
+import modal_confirm_template from '../../../templates/util/modal-message-confirm.html';
 import MessageModel from 'message';
 
 // custom region to handle a bootstrap modal view
@@ -40,8 +41,14 @@ var ModalRegion = Marionette.Region.extend({
 });
 
 // the bootstrap modal view
-var ModalMessageConfirm = Marionette.View.extend({
+var ModalMessage = Marionette.View.extend({
   template: Handlebars.compile(modal_template),
+  region: '#modal'
+});
+
+// the bootstrap modal view
+var ModalMessageConfirm = Marionette.View.extend({
+  template: Handlebars.compile(modal_confirm_template),
   region: '#modal'
 });
 
@@ -108,11 +115,16 @@ export default Marionette.View.extend({
                 $('#modal-message').modal('hide');
 
                 // prepare a new modal with the failure message
-                // TODO: need better message
+                var body = '<p>Server returned error code: ' + error.status + ' ' + error.statusText + '<p>';
+                try {
+                    var t = JSON.parse(error.responseText);
+                    body += '<pre>' + JSON.stringify(t,null,2) + '</pre>';
+                } catch (e) {}
                 var message = new MessageModel({
                     'header': 'Project Creation',
-                    'body':   '<p>Project creation failed...</p>'
+                    'body':   '<p>Project creation failed...</p>' + body
                 });
+
                 var view = new ModalMessageConfirm({model: message});
                 that.showChildView('modalRegion', view);
                 $('#confirmation-button').removeClass('hidden');
@@ -152,7 +164,7 @@ export default Marionette.View.extend({
           'body':   '<p>Please wait while we create the new project...</p>'
         });
 
-        var view = new ModalMessageConfirm({model: message});
+        var view = new ModalMessage({model: message});
         this.showChildView('modalRegion', view);
         $('#modal-message').modal('show');
 
