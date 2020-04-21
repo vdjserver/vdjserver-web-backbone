@@ -31,52 +31,49 @@ import AIRRSchema from 'airr-schema';
 import repertoire_template from 'airr-repertoire-template';
 
 export default Agave.MetadataModel.extend({
-        defaults: function() {
+    defaults: function() {
 
-            // Use AIRR schema Study object as basis
-            this.airr_schema = AIRRSchema['Study'];
+        // Use AIRR schema Study object as basis
+        this.airr_schema = AIRRSchema['Study'];
 
-            // make a deep copy of study object from the template
-            var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]['study']));
-            value['study_type'] = null;
-            //console.log(value);
+        // make a deep copy of study object from the template
+        var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]['study']));
+        value['study_type'] = null;
+        //console.log(value);
 
-            // add VDJServer specific fields
-            value['showArchivedJobs'] = false;
+        // add VDJServer specific fields
+        value['showArchivedJobs'] = false;
 
-            return _.extend(
-                {},
-                Agave.MetadataModel.prototype.defaults,
-                {
-                    name: 'project',
-                    owner: '',
-                    value: value
-                }
-            );
-        },
-        url: function() {
-            return '/meta/v2/data/' + this.get('uuid');
-        },
-        sync: function(method, model, options) {
-
-            // if uuid is not set, then we are creating a new project
-            if (this.get('uuid') === '') {
-                options.apiHost = EnvironmentConfig.vdjApi.hostname;
-                options.url = '/project';
-                options.authType = 'oauth';
-
-                // we send just the project info when creating
-                // the response will be the Tapis metadata object
-                var value = this.get('value');
-                this.clear();
-                this.set({ project: value });
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'project',
+                owner: '',
+                value: value
             }
+        );
+    },
+    url: function() {
+        return '/meta/v2/data/' + this.get('uuid');
+    },
+    sync: function(method, model, options) {
 
-            return Agave.PutOverrideSync(method, this, options);
-        },
-        setAttributesFromFormData: function(formData) {
-            this.set('value', formData);
-        },
+        // if uuid is not set, then we are creating a new project
+        if (this.get('uuid') === '') {
+            options.apiHost = EnvironmentConfig.vdjApi.hostname;
+            options.url = '/project';
+            options.authType = 'oauth';
+
+            // we send just the project info when creating
+            // the response will be the Tapis metadata object
+            var value = this.get('value');
+            this.clear();
+            this.set({ project: value });
+        }
+
+        return Agave.PutOverrideSync(method, this, options);
+    },
 });
 
 /*
