@@ -29,6 +29,7 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'agave-project';
+import { Repertoire, Subject, Diagnosis } from 'agave-metadata';
 
 // Sidebar view
 import sidebar_template from '../../../templates/project/project-sidebar.html';
