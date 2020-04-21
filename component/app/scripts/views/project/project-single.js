@@ -89,7 +89,7 @@ export default Marionette.View.extend({
         this.showChildView('sidebarRegion', this.sidebarView);
 
         // show project summary
-        this.summaryView = new ProjectSummaryView();
+        this.summaryView = new ProjectSummaryView({model: this.model});
         this.showChildView('summaryRegion', this.summaryView);
 
         // show repertoire as default for project detail
