@@ -13,12 +13,14 @@
         <title>VDJServer</title>
         <base href="/"/>
 
-        <!-- Testing with Webpack -->
+        <!-- Environment Config -->
         <script src="scripts/config/environment-config.js"></script>
-        <script src="dist/main.js"></script>
 
     </head>
     <body>
         <div id="app" class="container-fluid p-0"></div>
+
+    <!-- Loading Scripts last for performance -->
+    <script src="dist/main.js"></script>
     </body>
 </html>

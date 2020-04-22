@@ -1,8 +1,6 @@
-// need this here so that it extends jQuery
-import bootstrap from 'bootstrap';
-
 // Custom jQuery
 import './_custom.js';
+
 
 // SASS/CSS
 import '../styles/main.scss'
@@ -15,6 +13,9 @@ import logo from '../images/logo.png';
 
 import { Agave } from 'backbone-agave';
 import Application from 'app';
+
+// need this here so that it extends jQuery
+import bootstrap from 'bootstrap';
 
 document.addEventListener('DOMContentLoaded', () => {
   // the Agave object, attached to the global Backbone object

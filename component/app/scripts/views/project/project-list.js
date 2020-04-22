@@ -20,7 +20,7 @@ var ProjectSummaryView = Marionette.View.extend({
 });
 
 export default Marionette.CollectionView.extend({
-    template: Handlebars.compile("<thead class='thead-light'><tr><th scope='col'>Projects</th><th scope='col'>Summary</th><th scope='col'>Date Created</th><th scope='col'>Tasks</th></tr></thead>"),
+    template: Handlebars.compile("<thead class='thead-light'><tr><th scope='col'>Projects</th><th scope='col'>Summary</th><th scope='col'>Date Created</th><th scope='col'>Study Type</th></tr></thead>"),
     tagName: 'table',
     className: 'table',
     initialize: function(parameters) {

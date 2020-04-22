@@ -24,8 +24,6 @@ module.exports = {
         'backbone': 'backbone',
         'backbone.syphon': 'backbone.syphon',
         'backbone-retry-sync': path.resolve(__dirname, 'app') + '/scripts/backbone-retry-sync/backbone-retry-sync.js',
-        'bootstrap': 'bootstrap',
-        'bootstrap-multiselect': path.resolve(__dirname,'node_modules') + '/bootstrap-multiselect/dist/js/bootstrap-multiselect',
         'chance':           'chance',
         'datatables':       'datatables',
         'datatables-responsive': 'dataTables-responsive',
@@ -56,6 +54,10 @@ module.exports = {
         // Backbone Extensions
         'backbone-agave':  path.resolve(__dirname,'app') + '/scripts/backbone/backbone-agave',
 
+        // Bootstrap
+        'bootstrap': 'bootstrap',
+        'bootstrap-multiselect': path.resolve(__dirname,'node_modules') + '/bootstrap-multiselect/dist/js/bootstrap-multiselect',
+        
         // Models/Collections
         'agave-project': path.resolve(__dirname,'app') + '/scripts/models/agave-project',
         'agave-projects': path.resolve(__dirname,'app') + '/scripts/collections/agave-projects',

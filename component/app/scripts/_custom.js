@@ -1,6 +1,11 @@
-// 
-// $(document).ready(function() {
-//     console.log("jquery works");
-// });
-//
-// console.log("jquery works?");
+$(document).ready (function () {
+
+  $(function () {
+      // initializing popovers an tooltips
+      $('[data-toggle="popover"]').popover();
+      console.log("popover initialized")
+
+      $('[data-toggle="tooltip"]').tooltip();
+      console.log("tooltip initialized");
+  })
+});

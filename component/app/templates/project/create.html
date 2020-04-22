@@ -2,112 +2,249 @@
     <i class="fa fa-info-circle"></i> Create a new VDJServer project by filling out the form below.
 </div>
 
-<form method="post" role="form">
-    <h2>Project Information</h2>
-    <div class="form-row">
-        <div class="form-group col-md-6">
+<form method="post" role="form" id="project-form" class="needs-validation" novalidate>
+    <h2 class="form-section">Project Information</h2>
+        <div class="form-group col-md-8">
             <label>
-                <span class="required"><i class="fa fa-star"></i></span> Project Name
-                <i class="fa fa-question-circle" id="studytitle_help" data-toggle="tooltip" title="Add a descriptive study/project name"></i>
+                <span class="required">
+                    <!-- Tooltip -->
+                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                </span>
+
+                Project Name
+
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="studytitle_help" data-toggle="popover" title="Add a descriptive study/project name" content="Example content"></i>
             </label>
             <input type="text" class="form-control" name="study_title" id="name" required>
+            <div class="invalid-feedback">
+              Please enter a Project Name.
+            </div>
         </div>
-    </div>
 
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label>Project Description <i class="fa fa-question-circle" id="studydescription_help" data-toggle="tooltip" title="Add a description of your study"></i></label>
+        <div class="form-group col-md-8">
+            <label>Project Description
+                <i class="fa fa-question-circle" id="studydescription_help" data-toggle="popover" title="Add a description of your study"></i>
+            </label>
             <textarea class="form-control" name="study_description" id="description" rows="3"></textarea>
         </div>
 
-        <div class="form-group col-md-6">
-            <label><span class="required"><i class="fa fa-star"></i></span> Grants <i class="fa fa-question-circle" id="grants_help" data-toggle="tooltip" title="Add funding agencies and grant numbers"></i></label>
+        <div class="form-group col-md-8">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                </span>
+
+                Grants
+
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="grants_help" data-toggle="popover" title="Add funding agencies and grant numbers"></i>
+            </label>
             <input type="text" class="form-control" name="grants" id="grants" required>
+            <div class="invalid-feedback">
+              Please enter Grant information.
+            </div>
         </div>
-    </div>
 
-    <div class="form-row">
         <div class="form-group col-md-6">
-            <label><span class="required"><i class="fa fa-star"></i></span> Inclusion/Exclusion Criteria</label><textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="3" required></textarea>
-        </div>
-    </div>
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                </span>
 
-    <!-- 
-    <div class="form-group col-md-3">
-        <label>Study Keywords</label>
+                Inclusion/Exclusion Criteria
+
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="inex_help" data-toggle="popover" title="Add inclusion/exclusion criteria" content="Example content"></i>
+            </label>
+            <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="3" required></textarea>
+            <div class="invalid-feedback">
+              Please choose Inclusion/Exclusion Criteria.
+            </div>
+        </div>
+
+    <!-- <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>Study Keywords</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="study_type" id="contains_tcr" value="contains_tcr">
+                  <label class="form-check-label" for="1">
+                    TCR
+                  </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="study_type" id="contains_ig" value="contains_ig">
+                <label class="form-check-label" for="2">
+                  Ig
+                </label>
+            </div>
+
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="study_type" id="contains_tcr" value="contains_tcr">
-              <label class="form-check-label" for="1">
-                TCR
+              <input class="form-check-input" type="checkbox" name="study_type" id="contains_single_cell" value="contains_single_cell">
+              <label class="form-check-label" for="3">
+                Single Cell
               </label>
           </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="study_type" id="contains_ig" value="contains_ig">
-            <label class="form-check-label" for="2">
-              Ig
-            </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="study_type" id="contains_single_cell" value="contains_single_cell">
-          <label class="form-check-label" for="3">
-            Single Cell
-          </label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="study_type" id="contains_paired_chain" value="contains_paired_chain">
-        <label class="form-check-label" for="3">
-          Paired Chain
-        </label>
-    </div>
-    </div>-->
 
-    <div class="form-row">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="study_type" id="contains_paired_chain" value="contains_paired_chain">
+            <label class="form-check-label" for="3">
+              Paired Chain
+            </label>
+          </div>
+        </div>
+    </div> -->
+
         <div class="form-group col-md-3">
-            <label><span class="required"><i class="fa fa-star"></i></span> Project Type</label>
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                </span>
+
+                Project Type
+
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="projectType_help" data-toggle="popover" title="Add Project Type" content="Example content"></i>
+            </label>
             <select class="form-control" required>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
             </select>
+            <div class="invalid-feedback">
+              Please choose a Project Type.
+            </div>
         </div>
 
         <div class="form-group col-md-3">
-            <label><span class="required"><i class="fa fa-star"></i></span> NCBI</label><input type="text" class="form-control" name="study_id" id="NCBI">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                </span>
+
+                NCBI
+
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="NCBI_help" data-toggle="popover" title="Add NCBI" content="Example content"></i>
+            </label>
+            <input type="text" class="form-control" name="study_id" id="NCBI" required>
+            <div class="invalid-feedback">
+              Please enter NCBI information.
+            </div>
         </div>
 
         <div class="form-group col-md-6">
-            <label><span class="required"><i class="fa fa-star"></i></span> Publications</label><input type="text" class="form-control" name="pub_ids" id="publications" requied>
-        </div>
-    </div>
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                </span>
 
-    <h2>PI and Contact Information</h2>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label><span class="required"><i class="fa fa-star"></i></span> Principal Investigator (PI)</label><input type="text" class="form-control" name="lab_name" id="PI" required>
-        </div>
+                Publications
 
-        <div class="form-group col-md-6">
-            <label>Principal Investigator (PI) Email</label><input type="email" class="form-control" name="pi_email" id="PIemail" required>
-        </div>
-
-        <div class="form-group col-md-6">
-            <label>Principal Investigator (PI) Address</label><input type="email" class="form-control" name="pi_address" id="PIaddress" required>
-        </div>
-    </div>
-
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label><span class="required"><i class="fa fa-star"></i></span> Project Contact</label><input type="text" class="form-control" name="lab_address" id="projectContact" required>
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="pubs_help" data-toggle="popover" title="Add Publications" content="Example content"></i>
+            </label>
+            <input type="text" class="form-control" name="pub_ids" id="publications" required>
+            <div class="invalid-feedback">
+              Please enter publications.
+            </div>
         </div>
 
-        <div class="form-group col-md-6">
-            <label>Project Contact Email</label><input type="email" class="form-control" name="contact_email" id="contact_email">
+    <h2 class="form-section">PI Information</h2>
+        <div class="form-group col-md-5">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                </span>
+
+                Principal Investigator (PI)
+
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="piname_help" data-toggle="popover" title="Add PI name" content="Example content"></i>
+            </label>
+            <input type="text" class="form-control" name="lab_name" id="PI" required>
+            <div class="invalid-feedback">
+              Please enter PI Name.
+            </div>
         </div>
 
-        <div class="form-group col-md-6">
-            <label>Project Contact Address</label><input type="email" class="form-control" name="contact_address" id="contact_address">
+        <div class="form-group col-md-5">
+            <label>
+                Principal Investigator (PI) Email
+                <!-- Popover -->
+
+                <i class="fa fa-question-circle" id="piemail_help" data-toggle="popover" title="Add PI Email" content="Example content"></i>
+            </label>
+
+            <input type="email" class="form-control" name="pi_email" id="PIemail" required>
+            <div class="invalid-feedback">
+              Please enter PI email address.
+            </div>
         </div>
-    </div>
+
+        <div class="form-group col-md-5">
+            <label>
+                Principal Investigator (PI) Address
+
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="piaddress_help" data-toggle="popover" title="Add PI Address" content="Example content"></i>
+            </label>
+            <input type="email" class="form-control" name="pi_address" id="PIaddress" required>
+            <div class="invalid-feedback">
+              Please enter a PI address.
+            </div>
+        </div>
+
+    <h2 class="form-section">Project Contact Information</h2>
+        <div class="form-group col-md-5">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                </span>
+
+                Project Contact
+
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="contact_help" data-toggle="popover" title="Add Project Contact name" content="Example content"></i>
+            </label>
+            <input type="text" class="form-control" name="lab_address" id="projectContact" required>
+            <div class="invalid-feedback">
+              Please enter Project Contact Name.
+            </div>
+        </div>
+
+        <div class="form-group col-md-5">
+            <label>
+                Project Contact Email
+
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="contactemail_help" data-toggle="popover" title="Add Contact Email" content="Example content"></i>
+            </label>
+            <input type="email" class="form-control" name="contact_email" id="contact_email">
+            <div class="invalid-feedback">
+              Please enter a Project Contact Email.
+            </div>
+        </div>
+
+        <div class="form-group col-md-5">
+            <label>
+                Project Contact Address
+
+                <!-- Popover -->
+                <i class="fa fa-question-circle" id="contactaddress_help" data-toggle="popover" title="Add contact address" content="Example content"></i>
+            </label>
+            <input type="email" class="form-control" name="contact_address" id="contact_address">
+            <div class="invalid-feedback">
+              Please enter a Project Contact Address.
+            </div>
+        </div>
 
     <!-- <div class="form-row">
         <div class="form-group col-md-6">
@@ -120,7 +257,7 @@
     </div> -->
 
     <div class="form-group">
-        <div class="col-sm-12 col-md-4 mx-auto">
+        <div class="col-sm-12 col-md-4">
             <input type="submit" value="Create Project" class="btn btn-success btn-block" id="create-new-project">
         </div>
     </div>
