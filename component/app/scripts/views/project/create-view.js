@@ -33,6 +33,68 @@ import modal_template from '../../../templates/util/modal-message.html';
 import modal_confirm_template from '../../../templates/util/modal-message-confirm.html';
 import MessageModel from 'message';
 
+// AIRR Schema
+import AIRRSchema from 'airr-schema';
+
+// dynamically construct the popover text with AIRR schema info
+Handlebars.registerHelper('FieldHelpPopover', function(schema_name, field_name) {
+
+    // TODO: lookup field in schema
+    var schema = AIRRSchema[schema_name];
+    if (!schema) {
+        console.log('Internal ERROR: unknown schema ' + schema_name);
+        return;
+    }
+
+    var field = schema['properties'][field_name];
+    if (!field) {
+        console.log('Internal ERROR: unknown field ' + field_name+ ' in schema ' + schema_name);
+        return;
+    }
+    var title = field['x-airr']['name']; // this will be field['title']
+    var description = '';
+    if (field['x-airr']['miairr']) {
+        description += '<em>MiAIRR:</em> <b>' + field['x-airr']['miairr'] + '</b><br>';
+        description += '<em>MiAIRR field:</em> ' + field_name + '<br>';
+    }
+    if ((field['x-airr']['nullable']) || (field['x-airr']['nullable'] == undefined))
+        description += '<em>Nullable:</em> Value may be blank.<br>';
+    else
+        description += '<em>Nullable:</em> Value must be provided.<br>';
+    description += '<em>Description:</em> ' + field['description'] + '<br>';
+    if (field['example']) {
+        if (field['$ref'] == '#/Ontology')
+            description += '<br><em>Example:</em> ' + field['example']['value'];
+        else
+            description += '<br><em>Example:</em> ' + field['example'];
+    }
+    console.log(field);
+
+    return '<i class="fa fa-question-circle" id="' + field_name + '_help" data-toggle="popover" title="' + title + '" data-html="true" data-content="' + description + '"></i>';
+});
+
+// dynamically construct the MiAIRR Star with AIRR schema info
+Handlebars.registerHelper('FieldStar', function(schema_name, field_name) {
+
+    // TODO: lookup field in schema
+    var schema = AIRRSchema[schema_name];
+    if (!schema) {
+        console.log('Internal ERROR: unknown schema ' + schema_name);
+        return;
+    }
+
+    var field = schema['properties'][field_name];
+    if (!field) {
+        console.log('Internal ERROR: unknown field ' + field_name+ ' in schema ' + schema_name);
+        return;
+    }
+
+    if (field['x-airr']['miairr'])
+        return '<i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR ' + field['x-airr']['miairr'] + ' field"></i>';
+
+    return;
+});
+
 // custom region to handle a bootstrap modal view
 var ModalRegion = Marionette.Region.extend({
     constructor: function() {

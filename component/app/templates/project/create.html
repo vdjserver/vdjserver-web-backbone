@@ -2,19 +2,39 @@
     <i class="fa fa-info-circle"></i> Create a new VDJServer project by filling out the form below.
 </div>
 
+<script>$('[data-toggle="popover"]').popover();</script>
+
 <form method="post" role="form" id="project-form" class="needs-validation" novalidate>
     <h2 class="form-section">Project Information</h2>
+        <div class="form-group col-md-3">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "study_id"}}}
+                </span>
+
+                Study ID
+
+                <!-- Popover -->
+                {{{FieldHelpPopover "Study" "study_id"}}}
+            </label>
+            <input type="text" class="form-control" name="study_id" id="NCBI" required>
+            <div class="invalid-feedback">
+              Please enter NCBI information.
+            </div>
+        </div>
+
         <div class="form-group col-md-8">
             <label>
                 <span class="required">
                     <!-- Tooltip -->
-                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                    {{{FieldStar "Study" "study_title"}}}
                 </span>
 
-                Project Name
+                Project/Study Title
 
                 <!-- Popover -->
-                <i class="fa fa-question-circle" id="studytitle_help" data-toggle="popover" title="Add a descriptive study/project name" content="Example content"></i>
+                {{{FieldHelpPopover "Study" "study_title"}}}
             </label>
             <input type="text" class="form-control" name="study_title" id="name" required>
             <div class="invalid-feedback">
@@ -23,8 +43,9 @@
         </div>
 
         <div class="form-group col-md-8">
-            <label>Project Description
-                <i class="fa fa-question-circle" id="studydescription_help" data-toggle="popover" title="Add a description of your study"></i>
+            <label>Project/Study Description
+                <!-- Popover -->
+                {{{FieldHelpPopover "Study" "study_description"}}}
             </label>
             <textarea class="form-control" name="study_description" id="description" rows="3"></textarea>
         </div>
@@ -33,17 +54,17 @@
             <label>
                 <span class="required">
                     <!-- Tooltip -->
-                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                    {{{FieldStar "Study" "inclusion_exclusion_criteria"}}}
                 </span>
 
-                Grants
+                Inclusion/Exclusion Criteria
 
                 <!-- Popover -->
-                <i class="fa fa-question-circle" id="grants_help" data-toggle="popover" title="Add funding agencies and grant numbers"></i>
+                {{{FieldHelpPopover "Study" "inclusion_exclusion_criteria"}}}
             </label>
-            <input type="text" class="form-control" name="grants" id="grants" required>
+            <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="3" required></textarea>
             <div class="invalid-feedback">
-              Please enter Grant information.
+              Please choose Inclusion/Exclusion Criteria.
             </div>
         </div>
 
@@ -51,17 +72,17 @@
             <label>
                 <span class="required">
                     <!-- Tooltip -->
-                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                    {{{FieldStar "Study" "grants"}}}
                 </span>
 
-                Inclusion/Exclusion Criteria
+                Grants
 
                 <!-- Popover -->
-                <i class="fa fa-question-circle" id="inex_help" data-toggle="popover" title="Add inclusion/exclusion criteria" content="Example content"></i>
+                {{{FieldHelpPopover "Study" "grants"}}}
             </label>
-            <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="3" required></textarea>
+            <input type="text" class="form-control" name="grants" id="grants" required>
             <div class="invalid-feedback">
-              Please choose Inclusion/Exclusion Criteria.
+              Please enter Grant information.
             </div>
         </div>
 
@@ -101,13 +122,13 @@
             <label>
                 <span class="required">
                     <!-- Tooltip -->
-                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                    {{{FieldStar "Study" "study_type"}}}
                 </span>
 
-                Project Type
+                Study Type
 
                 <!-- Popover -->
-                <i class="fa fa-question-circle" id="projectType_help" data-toggle="popover" title="Add Project Type" content="Example content"></i>
+                {{{FieldHelpPopover "Study" "study_type"}}}
             </label>
             <select class="form-control" required>
                 <option value="1">1</option>
@@ -119,35 +140,17 @@
             </div>
         </div>
 
-        <div class="form-group col-md-3">
-            <label>
-                <span class="required">
-                    <!-- Tooltip -->
-                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
-                </span>
-
-                NCBI
-
-                <!-- Popover -->
-                <i class="fa fa-question-circle" id="NCBI_help" data-toggle="popover" title="Add NCBI" content="Example content"></i>
-            </label>
-            <input type="text" class="form-control" name="study_id" id="NCBI" required>
-            <div class="invalid-feedback">
-              Please enter NCBI information.
-            </div>
-        </div>
-
         <div class="form-group col-md-6">
             <label>
                 <span class="required">
                     <!-- Tooltip -->
-                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                    {{{FieldStar "Study" "pub_ids"}}}
                 </span>
 
                 Publications
 
                 <!-- Popover -->
-                <i class="fa fa-question-circle" id="pubs_help" data-toggle="popover" title="Add Publications" content="Example content"></i>
+                {{{FieldHelpPopover "Study" "pub_ids"}}}
             </label>
             <input type="text" class="form-control" name="pub_ids" id="publications" required>
             <div class="invalid-feedback">
@@ -155,64 +158,18 @@
             </div>
         </div>
 
-    <h2 class="form-section">PI Information</h2>
+    <h2 class="form-section">Data Collector Contact Information</h2>
         <div class="form-group col-md-5">
             <label>
                 <span class="required">
                     <!-- Tooltip -->
-                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
+                    {{{FieldStar "Study" "collected_by"}}}
                 </span>
 
-                Principal Investigator (PI)
+                Data Collector Name / Principal Investigator (PI)
 
                 <!-- Popover -->
-                <i class="fa fa-question-circle" id="piname_help" data-toggle="popover" title="Add PI name" content="Example content"></i>
-            </label>
-            <input type="text" class="form-control" name="lab_name" id="PI" required>
-            <div class="invalid-feedback">
-              Please enter PI Name.
-            </div>
-        </div>
-
-        <div class="form-group col-md-5">
-            <label>
-                Principal Investigator (PI) Email
-                <!-- Popover -->
-
-                <i class="fa fa-question-circle" id="piemail_help" data-toggle="popover" title="Add PI Email" content="Example content"></i>
-            </label>
-
-            <input type="email" class="form-control" name="pi_email" id="PIemail" required>
-            <div class="invalid-feedback">
-              Please enter PI email address.
-            </div>
-        </div>
-
-        <div class="form-group col-md-5">
-            <label>
-                Principal Investigator (PI) Address
-
-                <!-- Popover -->
-                <i class="fa fa-question-circle" id="piaddress_help" data-toggle="popover" title="Add PI Address" content="Example content"></i>
-            </label>
-            <input type="email" class="form-control" name="pi_address" id="PIaddress" required>
-            <div class="invalid-feedback">
-              Please enter a PI address.
-            </div>
-        </div>
-
-    <h2 class="form-section">Project Contact Information</h2>
-        <div class="form-group col-md-5">
-            <label>
-                <span class="required">
-                    <!-- Tooltip -->
-                    <i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR required field"></i>
-                </span>
-
-                Project Contact
-
-                <!-- Popover -->
-                <i class="fa fa-question-circle" id="contact_help" data-toggle="popover" title="Add Project Contact name" content="Example content"></i>
+                {{{FieldHelpPopover "Study" "collected_by"}}}
             </label>
             <input type="text" class="form-control" name="lab_address" id="projectContact" required>
             <div class="invalid-feedback">
@@ -222,10 +179,15 @@
 
         <div class="form-group col-md-5">
             <label>
-                Project Contact Email
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "collected_by"}}}
+                </span>
+
+                Data Collector Email
 
                 <!-- Popover -->
-                <i class="fa fa-question-circle" id="contactemail_help" data-toggle="popover" title="Add Contact Email" content="Example content"></i>
+                {{{FieldHelpPopover "Study" "collected_by"}}}
             </label>
             <input type="email" class="form-control" name="contact_email" id="contact_email">
             <div class="invalid-feedback">
@@ -235,10 +197,89 @@
 
         <div class="form-group col-md-5">
             <label>
-                Project Contact Address
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "lab_name"}}}
+                </span>
+
+                Lab Name / Department
 
                 <!-- Popover -->
-                <i class="fa fa-question-circle" id="contactaddress_help" data-toggle="popover" title="Add contact address" content="Example content"></i>
+                {{{FieldHelpPopover "Study" "lab_name"}}}
+            </label>
+            <input type="text" class="form-control" name="lab_name" id="PI" required>
+            <div class="invalid-feedback">
+              Please enter PI Name.
+            </div>
+        </div>
+
+        <div class="form-group col-md-5">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "lab_address"}}}
+                </span>
+
+                Lab Address
+
+                <!-- Popover -->
+                {{{FieldHelpPopover "Study" "lab_address"}}}
+            </label>
+
+            <input type="email" class="form-control" name="pi_email" id="PIemail" required>
+            <div class="invalid-feedback">
+              Please enter PI email address.
+            </div>
+        </div>
+
+    <h2 class="form-section">Data Submitter Contact Information</h2>
+        <div class="form-group col-md-5">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "submitted_by"}}}
+                </span>
+
+                Data Submitter Name
+
+                <!-- Popover -->
+                {{{FieldHelpPopover "Study" "submitted_by"}}}
+            </label>
+            <input type="text" class="form-control" name="lab_address" id="projectContact" required>
+            <div class="invalid-feedback">
+              Please enter Project Contact Name.
+            </div>
+        </div>
+
+        <div class="form-group col-md-5">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "submitted_by"}}}
+                </span>
+
+                Data Submitter Email
+
+                <!-- Popover -->
+                {{{FieldHelpPopover "Study" "submitted_by"}}}
+            </label>
+            <input type="email" class="form-control" name="contact_email" id="contact_email">
+            <div class="invalid-feedback">
+              Please enter a Project Contact Email.
+            </div>
+        </div>
+
+        <div class="form-group col-md-5">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "submitted_by"}}}
+                </span>
+
+                Data Submitter Address
+
+                <!-- Popover -->
+                {{{FieldHelpPopover "Study" "submitted_by"}}}
             </label>
             <input type="email" class="form-control" name="contact_address" id="contact_address">
             <div class="invalid-feedback">
