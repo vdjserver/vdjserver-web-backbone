@@ -3,20 +3,36 @@ SASS for "Create a Project" page
 *****************************************************/
 
 .required {
-    color: #cc6633;
+    color: $vdj-orange;
     font-weight: bold;
 }
 
 #project-form {
-    margin-left: 25%;
+    margin: 0 auto;
+    width: 80%;
 }
 
 .form-group:last-child {
     padding-bottom: 1em;
 }
 
-.form-section {
-    border-top: 1px solid #cccccc;
+.projectInfo, .collectorInfo {
+    border-bottom: 1px solid rgba($vdj-green, 0.5);
     padding: 0.5em 0em;
-    width: 60%;
+}
+
+h2.form-section {
+    padding: 0.5em 0em;
+}
+
+#cancel-project {
+    margin-right: 5%;
+}
+
+.btn-success {
+    color: $text-success;
+}
+
+.btn-light {
+    color: $text-light;
 }

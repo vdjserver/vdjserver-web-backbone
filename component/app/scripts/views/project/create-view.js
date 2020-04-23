@@ -221,7 +221,7 @@ export default Marionette.View.extend({
         this.modalState = 'create';
         var message = new MessageModel({
           'header': 'Project Creation',
-          'body':   '<p>Please wait while we create the new project...</p>'
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i></p><p>Please wait while we create the new project...</p>'
         });
 
         var view = new ModalMessage({model: message});

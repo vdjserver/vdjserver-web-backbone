@@ -51,7 +51,7 @@
 .boxes-action {
     @extend .boxes-shadow;
     @extend .triangle-overlay;
-    border: 1px solid $vdjLogoGreen;
+    border: 1px solid $vdj-green;
     background-color: #ffffff;
     height: 300px;
     max-height: 100%;
@@ -186,7 +186,7 @@
 
 .large-info-box.uploads {
     margin: 50px 0 50px 0;
-    border: 1px solid $vdjLogoGreen;
+    border: 1px solid $vdj-green;
     display: block;
     max-height: 100%;
     overflow: auto;
@@ -207,7 +207,7 @@
 
 .community {
     margin-top: 8px;
-    border-bottom: 6px solid $vdjLogoGreen;
+    border-bottom: 6px solid $vdj-green;
 }
 
 .community h2 {

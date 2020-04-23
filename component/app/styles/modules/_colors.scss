@@ -1,24 +1,46 @@
-// colors
-$red: #993333;
-$darkGray: #919191;
+// Colors
 
-$vdjLogoGreen: #558a74;
+// BootStrap Color Overrides
+$theme-colors: (
+    'danger': #D93C39,
+    'info': #4E95B8,
+    'light': #B8C0C7,
+    'success': #71B87D
+);
+
+
+$vdj-green: #689A87;
+$vdj-orange: #CC6B4C;
+$vdj-yellow: #EAE386;
+$vdj-darkgray: #6C757D;
+$vdj-medgray: #B8C0C7;
+$vdj-lightgray: #E1E1E1;
+$vdj-blue: #7FA8BD;
+
+// Elements
+$vdj-border: #E1E1E1;
+
+
+$text-danger: #FFFFFF;
+$text-info: #6C757D;
+$text-light: #FFFFFF;
+$text-success: #FFFFFF;
 
 //$projectMenuLightColor: #63c3d9;
-
-// Dark blue
-$projectMenuLightColor: #184450;
-
-// Green
-//$projectMenuLightColor: #699886;
-$projectMenuTextColor: #ffffff;
-
-$projectSubmenuColor: #f3f3f3;
-$projectSubmenuTextColor: #484848;
-$projectFileListingsAlternateColor: #f2f2f2;
-$projectNavbarBorderColor: #6e3a34;
-$projectNavbarButtonColor: #7d362f;
-
-$boxShadowColor: #767676;
-
-$projectListBorderColor: #575757;
+//
+// // Dark blue
+// $projectMenuLightColor: #184450;
+//
+// // Green
+// //$projectMenuLightColor: #699886;
+// $projectMenuTextColor: #ffffff;
+//
+// $projectSubmenuColor: #f3f3f3;
+// $projectSubmenuTextColor: #484848;
+// $projectFileListingsAlternateColor: #f2f2f2;
+// $projectNavbarBorderColor: #6e3a34;
+// $projectNavbarButtonColor: #7d362f;
+//
+// $boxShadowColor: #767676;
+//
+// $projectListBorderColor: #575757;
