@@ -120,10 +120,7 @@ export default Backbone.Router.extend({
     communityList: function() {
         console.log('communityList route');
 
-        var destinationRoute = function() {
-            App.AppController.showCommunityList();
-        };
-        _routeWithTokenRefreshCheck(destinationRoute);
+        App.AppController.showCommunityList();
     },
 
     // For Create a Project Page
