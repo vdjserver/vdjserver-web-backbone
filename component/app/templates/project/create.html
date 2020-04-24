@@ -6,6 +6,7 @@
     $('[data-toggle="popover"]').popover({
         trigger: 'hover'
     });
+
     $('[data-toggle="tooltip"]').tooltip();
 </script>
 
@@ -92,37 +93,35 @@
                 </div>
             </div>
 
-        <!-- <div class="form-row">
             <div class="form-group col-md-3">
                 <label>Study Keywords</label>
-                    <div class="form-check">
+                    <div class="form-check custom-control custom-checkbox">
                       <input class="form-check-input" type="checkbox" name="study_type" id="contains_tcr" value="contains_tcr">
                       <label class="form-check-label" for="1">
                         TCR
                       </label>
                   </div>
-                  <div class="form-check">
+                  <div class="form-check custom-control custom-checkbox">
                     <input class="form-check-input" type="checkbox" name="study_type" id="contains_ig" value="contains_ig">
                     <label class="form-check-label" for="2">
                       Ig
                     </label>
                 </div>
 
-                <div class="form-check">
+                <div class="form-check custom-control custom-checkbox">
                   <input class="form-check-input" type="checkbox" name="study_type" id="contains_single_cell" value="contains_single_cell">
                   <label class="form-check-label" for="3">
                     Single Cell
                   </label>
-              </div>
+                </div>
 
-              <div class="form-check">
+              <div class="form-check custom-control custom-checkbox">
                 <input class="form-check-input" type="checkbox" name="study_type" id="contains_paired_chain" value="contains_paired_chain">
-                <label class="form-check-label" for="3">
+                <label class="form-check-label" for="4">
                   Paired Chain
                 </label>
               </div>
             </div>
-        </div> -->
 
             <div class="form-group col-md-3">
                 <label>
@@ -179,7 +178,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "collected_by"}}}
                 </label>
-                <input type="text" class="form-control" name="lab_address" id="projectContact" required>
+                <input type="text" class="form-control" name="collectedby_name" id="collectedby_name" required>
                 <div class="invalid-feedback">
                   Please enter Project Contact Name.
                 </div>
@@ -197,7 +196,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "collected_by"}}}
                 </label>
-                <input type="email" class="form-control" name="contact_email" id="contact_email">
+                <input type="email" class="form-control" name="collectedby_email" id="collectedby_email">
                 <div class="invalid-feedback">
                   Please enter a Project Contact Email.
                 </div>
@@ -215,7 +214,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "lab_name"}}}
                 </label>
-                <input type="text" class="form-control" name="lab_name" id="PI" required>
+                <input type="text" class="form-control" name="lab_name" id="lab_name" required>
                 <div class="invalid-feedback">
                   Please enter PI Name.
                 </div>
@@ -234,7 +233,7 @@
                     {{{FieldHelpPopover "Study" "lab_address"}}}
                 </label>
 
-                <input type="email" class="form-control" name="pi_email" id="PIemail" required>
+                <input type="email" class="form-control" name="lab_address" id="lab_address" required>
                 <div class="invalid-feedback">
                   Please enter PI email address.
                 </div>
@@ -255,7 +254,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "submitted_by"}}}
                 </label>
-                <input type="text" class="form-control" name="lab_address" id="projectContact" required>
+                <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" required>
                 <div class="invalid-feedback">
                   Please enter Project Contact Name.
                 </div>
@@ -273,7 +272,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "submitted_by"}}}
                 </label>
-                <input type="email" class="form-control" name="contact_email" id="contact_email">
+                <input type="email" class="form-control" name="submittedby_email" id="submittedby_email">
                 <div class="invalid-feedback">
                   Please enter a Project Contact Email.
                 </div>
@@ -291,7 +290,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "submitted_by"}}}
                 </label>
-                <input type="email" class="form-control" name="contact_address" id="contact_address">
+                <input type="email" class="form-control" name="submittedby_address" id="submittedby_address">
                 <div class="invalid-feedback">
                   Please enter a Project Contact Address.
                 </div>
