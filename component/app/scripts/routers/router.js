@@ -78,43 +78,66 @@ export default Backbone.Router.extend({
 
     // Index
     index: function() {
-        console.log('index');
-        App.AppController.showHomePage();
+        console.log('index route');
+
+        // make sure to clear out any inactive token
+        if (!App.Agave.token().isActive()) {
+            App.Agave.token().clear();
+            window.localStorage.removeItem('Agave.Token');
+
+            // show home page
+            App.AppController.showHomePage();
+        }
+        else {
+            // if active token, send automatically to project page
+            App.router.navigate('/project', {
+                trigger: true
+            });
+        }
     },
 
     // Project Summary List
     projectList: function() {
-        console.log('projectList');
-        App.AppController.showProjectList();
+        console.log('projectList route');
+
+        var destinationRoute = function() {
+            App.AppController.showProjectList();
+        };
+        _routeWithTokenRefreshCheck(destinationRoute);
     },
 
     // For Single Project Page
     projectPage: function(projectUuid) {
-        console.log('projectPage');
-        App.AppController.showProjectPage(projectUuid);
+        console.log('projectPage route');
+
+        var destinationRoute = function() {
+            App.AppController.showProjectPage(projectUuid);
+        };
+        _routeWithTokenRefreshCheck(destinationRoute);
     },
 
     // Community Project Summary List
     communityList: function() {
-        console.log('communityList');
-        App.AppController.showCommunityList();
+        console.log('communityList route');
+
+        var destinationRoute = function() {
+            App.AppController.showCommunityList();
+        };
+        _routeWithTokenRefreshCheck(destinationRoute);
     },
 
     // For Create a Project Page
     createPage: function() {
-        console.log('createPage');
-        App.AppController.showCreatePage();
-    },
+        console.log('createPage route');
 
-    // For Create a Repertoire Page
-    createRep: function() {
-        console.log('createRep');
-        App.AppController.showCreateRep();
+        var destinationRoute = function() {
+            App.AppController.showCreatePage();
+        };
+        _routeWithTokenRefreshCheck(destinationRoute);
     },
 
     // Auth
     authLogout: function() {
-
         // Routing *should* be handled automatically once the token is destroyed.
         App.Agave.destroyToken();
     },

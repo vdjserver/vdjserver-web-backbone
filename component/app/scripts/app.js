@@ -68,10 +68,8 @@ var ApplicationController = Marionette.View.extend({
     this.navController.showPublicNavigation();
 
     // show public view
-    if (! this.publicView) {
-      this.publicView = new PublicView();
-    }
-    this.showChildView('mainRegion', this.publicView);
+    var view = new PublicView();
+    this.showChildView('mainRegion', view);
   },
 
   showProjectList() {

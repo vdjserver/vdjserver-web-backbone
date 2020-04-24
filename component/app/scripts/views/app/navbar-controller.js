@@ -19,22 +19,33 @@ var PrivateNavBar = Marionette.View.extend({
 // This manages the navigation bar with public options
 // and after the user logs in
 export default Marionette.View.extend({
-  template: Handlebars.compile('<div id="navbar">'),
+    template: Handlebars.compile('<div id="navbar">'),
 
-  // one region for the navigation bar
-  regions: {
-    navigationRegion: '#navbar'
-  },
+    // one region for the navigation bar
+    regions: {
+        navigationRegion: '#navbar'
+    },
 
-  initialize(options) {
-    console.log('Initialize');
-  },
+    events: {
+        'click #logout': 'logout',
+    },
 
-  showPublicNavigation() {
-    this.showChildView('navigationRegion', new PublicNavBar());
-  },
+    initialize(options) {
+        console.log('Initialize');
+    },
 
-  showPrivateNavigation() {
-    this.showChildView('navigationRegion', new PrivateNavBar());
-  },
+    showPublicNavigation() {
+        this.showChildView('navigationRegion', new PublicNavBar());
+    },
+
+    showPrivateNavigation() {
+        this.showChildView('navigationRegion', new PrivateNavBar());
+    },
+
+    logout(e) {
+        e.preventDefault();
+
+        // route to home page
+        App.router.navigate('auth/logout', {trigger: true});
+    }
 });

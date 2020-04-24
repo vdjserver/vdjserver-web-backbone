@@ -64,9 +64,6 @@ export default Marionette.View.extend({
     // we use a state variable to know what type of modal to display
     this.loginState = 'login';
 
-    // if we are showing the login view, then invalidate any current token
-    App.Agave.destroyToken();
-
     var view = new LoginView();
     this.showChildView('homeRegion', view);
   },
