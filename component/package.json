@@ -8,8 +8,11 @@
     "main": "./app/scripts/entry.js",
     "scripts": {
         "dev": "webpack --mode development --display-modules",
+        "dev-test": "webpack --mode development --display-modules --env.test",
         "build": "webpack --mode production --display-modules",
+        "build-test": "webpack --mode production --display-modules --env.test",
         "start": "webpack-dev-server --mode development --watch",
+        "start-dev-test": "webpack-dev-server --mode development --watch --env.test",
         "watch": "webpack --watch"
     },
     "dependencies": {
@@ -20,6 +23,7 @@
         "backbone.syphon": "^0.5.1",
         "bootstrap": "^4.3.1",
         "bootstrap-multiselect": "^0.9.13",
+        "chai": "^4.2.0",
         "chance": "^0.7.3",
         "datatables": "^1.10.8",
         "detect.js": "^2.2.2",
@@ -35,6 +39,7 @@
         "jquery-ui": "^1.12.0",
         "js-yaml": "^3.12.0",
         "layoutmanager": "^0.9.7",
+        "mocha": "^7.1.1",
         "moment": "^2.9.0",
         "nvd3": "^1.1.15-beta2",
         "sass-resources-loader": "^1.3.3",
@@ -56,6 +61,7 @@
         "html-loader": "^0.5.5",
         "html-webpack-plugin": "^3.2.0",
         "mini-css-extract-plugin": "^0.8.0",
+        "mocha-loader": "^5.0.0",
         "node-sass": "^4.12.0",
         "popper.js": "^1.16.0",
         "sass-loader": "^7.2.0",
