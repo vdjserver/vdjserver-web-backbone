@@ -1,11 +1,14 @@
-// Colors
+/* import only the necessary Bootstrap files */
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
 
 // BootStrap Color Overrides
 $theme-colors: (
     'danger': #D93C39,
     'info': #4E95B8,
     'light': #B8C0C7,
-    'success': #71B87D
+    'success': #71B87D,
+    'primary': #689A87
 );
 
 
@@ -25,6 +28,9 @@ $text-danger: #FFFFFF;
 $text-info: #6C757D;
 $text-light: #FFFFFF;
 $text-success: #FFFFFF;
+
+/* finally, import Bootstrap to set the changes! */
+@import "~bootstrap/scss/bootstrap";
 
 //$projectMenuLightColor: #63c3d9;
 //

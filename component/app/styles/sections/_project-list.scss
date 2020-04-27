@@ -2,10 +2,6 @@
 SASS for Project List page
 *****************************************************/
 
-#intro {
-    margin: 1em;
-}
-
 .navbar-brand img {
     width: 35%;
 }
@@ -55,6 +51,19 @@ td.created {
 
 
 // Summary buttons
+
+.jumbotron {
+    padding: 2rem 2rem;
+}
+
+#summary {
+    margin-bottom: 2%;
+}
+
+.project-overview {
+    border-left: 1px solid rgba(225, 225, 225, 0.37);
+    padding-left: 3%;
+}
 
 .card {
     margin: 1%;
