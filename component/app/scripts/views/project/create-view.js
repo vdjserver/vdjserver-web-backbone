@@ -182,7 +182,7 @@ export default Marionette.View.extend({
                 } catch (e) {}
                 var message = new MessageModel({
                     'header': 'Project Creation',
-                    'body':   '<p>Project creation failed...</p>' + body
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Project creation failed!</div><p>Please submit the error below to the VDJServer Administrator.' + '<code>' + body + '</code>'
                 });
 
                 var view = new ModalMessageConfirm({model: message});
@@ -202,7 +202,9 @@ export default Marionette.View.extend({
         //this.getRegion().empty();
         if (this.modalState == 'pass') {
             // create passed so route to the project view
-            App.router.navigate('project/' + this.model.get('uuid'), {trigger: true});
+            // App.router.navigate('project/' + this.model.get('uuid'), {trigger: true});
+            App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
+            this.controller.showProjectPage(this.model.get('uuid'), true);
         } else if (this.modalState == 'fail') {
             console.log("show fail modal");
         }
@@ -213,6 +215,34 @@ export default Marionette.View.extend({
         console.log(this.model);
         e.preventDefault();
 
+        // Currently validates regardless if there is an error or not. NOTE: Still submits the form
+
+        $('.needs-validation').addClass('was-validated');
+
+        // Validation Function
+        // (function() {
+        //   console.log("form validation should work");
+        //   // 'use strict';
+        //     window.addEventListener('load', function() {
+        //   //
+        //   //   // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        //     var forms = document.getElementsByClassName('needs-validation');
+        //
+        //     // Loop over them and prevent submission
+        //
+        //     var validation = Array.prototype.filter.call(forms, function(form) {
+        //       form.addEventListener('submit', function(e) {
+        //        if (form.checkValidity() === false) {
+        //           e.preventDefault();
+        //           e.stopPropagation();
+        //           $('.needs-validation').addClass('was-validated');
+        //        }
+        //
+        //       }, false);
+        //    });
+        //   }, false);
+        // })();
+
         // TODO: we need to copy all the data from the form into the Project model
 
         // when login button is pressed, display an authenticating modal message
@@ -221,7 +251,7 @@ export default Marionette.View.extend({
         this.modalState = 'create';
         var message = new MessageModel({
           'header': 'Project Creation',
-          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i></p><p>Please wait while we create the new project...</p>'
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we create the new project...</p>'
         });
 
         var view = new ModalMessage({model: message});

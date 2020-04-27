@@ -10,10 +10,10 @@
     $('[data-toggle="tooltip"]').tooltip();
 </script>
 
-<form method="post" role="form" id="project-form" class="needs-validation" novalidate>
+<form method="post" role="form" id="project-form" class="needs-validation" name="project" novalidate>
     <div class="projectInfo">
         <h2 class="form-section">Project Information</h2>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label>
                     <span class="required">
                         <!-- Tooltip -->
@@ -25,9 +25,9 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_id"}}}
                 </label>
-                <input type="text" class="form-control" name="study_id" id="NCBI" required>
+                <input type="text" class="form-control" name="study_id" id="NCBI" placeholder="PRJNA001" required>
                 <div class="invalid-feedback">
-                  Please enter NCBI information.
+                  Please enter a Study ID.
                 </div>
             </div>
 
@@ -43,9 +43,9 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_title"}}}
                 </label>
-                <input type="text" class="form-control" name="study_title" id="name" required>
+                <input type="text" class="form-control" name="study_title" id="name" placeholder="Effects of sunlight exposure of the Treg repertoire" required>
                 <div class="invalid-feedback">
-                  Please enter a Project Name.
+                  Please enter a Project/Study Title.
                 </div>
             </div>
 
@@ -69,9 +69,9 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "inclusion_exclusion_criteria"}}}
                 </label>
-                <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="3" required></textarea>
+                <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" placeholder="Include: Clinical P. falciparum infection; Exclude: Seropositive for HIV" rows="5" required></textarea>
                 <div class="invalid-feedback">
-                  Please choose Inclusion/Exclusion Criteria.
+                  Please enter Inclusion/Exclusion Criteria.
                 </div>
             </div>
 
@@ -87,7 +87,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "grants"}}}
                 </label>
-                <textarea class="form-control" name="grants" id="grants" rows="3" required></textarea>
+                <textarea class="form-control" name="grants" id="grants" rows="4" required></textarea>
                 <div class="invalid-feedback">
                   Please enter Grant information.
                 </div>
@@ -141,7 +141,7 @@
                     <option value="3">3</option>
                 </select>
                 <div class="invalid-feedback">
-                  Please choose a Project Type.
+                  Please choose at least one Study Keyword.
                 </div>
             </div>
 
@@ -159,7 +159,7 @@
                 </label>
                 <input type="text" class="form-control" name="pub_ids" id="publications" required>
                 <div class="invalid-feedback">
-                  Please enter publications.
+                  Please enter Publications.
                 </div>
             </div>
     </div>
@@ -180,7 +180,7 @@
                 </label>
                 <input type="text" class="form-control" name="collectedby_name" id="collectedby_name" required>
                 <div class="invalid-feedback">
-                  Please enter Project Contact Name.
+                  Please enter Data Collector/Principal Investigator Name.
                 </div>
             </div>
 
@@ -198,7 +198,7 @@
                 </label>
                 <input type="email" class="form-control" name="collectedby_email" id="collectedby_email">
                 <div class="invalid-feedback">
-                  Please enter a Project Contact Email.
+                  Please enter a Data Collector Email.
                 </div>
             </div>
 
@@ -216,7 +216,7 @@
                 </label>
                 <input type="text" class="form-control" name="lab_name" id="lab_name" required>
                 <div class="invalid-feedback">
-                  Please enter PI Name.
+                  Please enter Lab Name/Department.
                 </div>
             </div>
 
@@ -235,7 +235,7 @@
 
                 <input type="email" class="form-control" name="lab_address" id="lab_address" required>
                 <div class="invalid-feedback">
-                  Please enter PI email address.
+                  Please enter a Lab Address.
                 </div>
             </div>
     </div>
@@ -256,7 +256,7 @@
                 </label>
                 <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" required>
                 <div class="invalid-feedback">
-                  Please enter Project Contact Name.
+                  Please enter Data Submitter Name.
                 </div>
             </div>
 
@@ -274,7 +274,7 @@
                 </label>
                 <input type="email" class="form-control" name="submittedby_email" id="submittedby_email">
                 <div class="invalid-feedback">
-                  Please enter a Project Contact Email.
+                  Please enter a Data Submitter Email.
                 </div>
             </div>
 
@@ -292,11 +292,11 @@
                 </label>
                 <input type="email" class="form-control" name="submittedby_address" id="submittedby_address">
                 <div class="invalid-feedback">
-                  Please enter a Project Contact Address.
+                  Please enter a Data Submitter Address.
                 </div>
             </div>
         </div>
-    <div class="form-row">
+    <div class="form-row actions float-md-right">
         <div class="input-group">
             <input type="reset" value ="Cancel" class="col-md-3 btn btn-light" id="cancel-project">
             <input type="submit" value="Create Project" class=" col-md-4 btn btn-success" id="create-new-project">
@@ -306,21 +306,6 @@
 
 <script>
 // Example starter JavaScript for disabling form submissions if there are invalid fields
-(function() {
-  'use strict';
-  window.addEventListener('load', function() {
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.getElementsByClassName('needs-validation');
-    // Loop over them and prevent submission
-    var validation = Array.prototype.filter.call(forms, function(form) {
-      form.addEventListener('submit', function(event) {
-        if (form.checkValidity() === false) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-      }, false);
-    });
-  }, false);
-})();
+
+
 </script>

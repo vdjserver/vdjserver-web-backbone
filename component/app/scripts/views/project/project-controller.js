@@ -82,8 +82,8 @@ var ProjectView = Marionette.View.extend({
         this.showChildView('projectRegion', view);
     },
 
-    showProjectPage(project) {
-        console.log(this.controller);
+    showProjectPage(project, isNew) {
+        console.log(this.controller, isNew);
         var view = new ProjectPageView({model: project});
         this.showChildView('projectRegion', view);
     },
@@ -146,7 +146,7 @@ ProjectController.prototype = {
         }
     },
 
-    showProjectPage(projectUuid) {
+    showProjectPage(projectUuid, isNew) {
         // clear the current project
         this.currentProject = null;
 
@@ -169,14 +169,14 @@ ProjectController.prototype = {
                 console.log(that.currentProject);
 
                 // have the view display it
-                that.projectView.showProjectPage(that.currentProject);
+                that.projectView.showProjectPage(that.currentProject, isNew);
             })
             .fail(function(error) {
                 console.log(error);
             });
         } else {
             // have the view display it
-            this.projectView.showProjectPage(this.currentProject);
+            this.projectView.showProjectPage(this.currentProject, isNew);
         }
     },
 
@@ -202,5 +202,3 @@ ProjectController.prototype = {
     }
 };
 export default ProjectController;
-
-

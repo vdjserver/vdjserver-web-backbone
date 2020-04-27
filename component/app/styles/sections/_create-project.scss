@@ -17,7 +17,7 @@ SASS for "Create a Project" page
 }
 
 .projectInfo, .collectorInfo {
-    border-bottom: 1px solid rgba($vdj-green, 0.5);
+    border-bottom: 1.5px solid rgba($vdj-green, 0.5);
     padding: 0.5em 0em;
 }
 
@@ -27,6 +27,11 @@ h2.form-section {
 
 #cancel-project {
     margin-right: 5%;
+}
+
+.actions {
+    width: 50%;
+    margin-bottom: 5%;
 }
 
 .btn-success {
