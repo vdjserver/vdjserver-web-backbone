@@ -117,6 +117,7 @@ module.exports = function(env, argv) {
                 'project-home': path.resolve(__dirname,'app') + '/scripts/views/project/project-home',
                 'project-list': path.resolve(__dirname,'app') + '/scripts/views/project/project-list',
                 'project-single': path.resolve(__dirname,'app') + '/scripts/views/project/project-single',
+                'files-view': path.resolve(__dirname,'app') + '/scripts/views/project/files-view',
 
                 // Agave - Models/Collections
                 'message': path.resolve(__dirname,'app') + '/scripts/models/message',

@@ -38,6 +38,19 @@ var ProjectSidebarView = Marionette.View.extend({
     template: Handlebars.compile(sidebar_template)
 });
 
+// Repetoires view
+
+
+// Files view
+// import files_template from '../../../templates/project/files.html';
+//
+// var Files
+
+
+// Analyses view
+
+
+
 // Project summary view
 // TODO: merge create.html with this
 import summary_template from '../../../templates/project/single-summary.html';

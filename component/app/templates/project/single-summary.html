@@ -25,18 +25,16 @@
             <div class="row">
                 <div class="col-md-6">
                     <h3>Project Details</h3>
-                    <p>Project Type:</p>
-                    <p>NCBI: {{value.ncbi_bioproject}}</p>
-                    <p>Funding Agency:{{value.grant_agency}}</p>
-                    <p>Grants: {{value.grants}}</p>
-                    <p>Publications: {{value.publications}}</p>
+                    <p><span class="details">Project Type:<span></p>
+                    <p><span class="details">NCBI:</span> {{value.ncbi_bioproject}}</p>
+                    <p><span class="details">Funding Agency:</span>{{value.grant_agency}}</p>
+                    <p><span class="details">Grants:</span> {{value.grants}}</p>
+                    <p><span class="details">Publications:</span> {{value.publications}}</p>
                 </div>
                 <div class="col-md-6">
-                    <p>PI Name: {{value.pi_name}}</p>
-                    <p>Contact Name: {{value.contact_name}}</p>
+                    <p class="details">PI Name: {{value.pi_name}}</p>
+                    <p class="details">Contact Name: {{value.contact_name}}</p>
                 </div>
-            </div>
-            <div class="row">
                 <button type="button" class="btn btn-info">
                     Edit Project Metadata
                 </button>

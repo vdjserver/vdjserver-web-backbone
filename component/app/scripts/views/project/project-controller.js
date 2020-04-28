@@ -33,7 +33,7 @@ import ProjectList from 'agave-projects';
 import ProjectListView from 'project-list';
 import ProjectPageView from 'project-single';
 import intro_template from '../../../templates/project/intro.html';
-// import IntroView from './intro-view';
+import FilesView from 'files-view';
 import LoadingView from 'loading-view';
 import CreateProjectView from 'create-view';
 
@@ -83,6 +83,7 @@ var ProjectView = Marionette.View.extend({
     },
 
     showProjectPage(project, isNew) {
+        this.clearIntroView();
         console.log(this.controller, isNew);
         var view = new ProjectPageView({model: project});
         this.showChildView('projectRegion', view);
@@ -93,7 +94,6 @@ var ProjectView = Marionette.View.extend({
         var view = new CreateProjectView({model: project});
         this.showChildView('projectRegion', view);
     }
-
 });
 
 //
@@ -199,6 +199,17 @@ ProjectController.prototype = {
 
         // display
         this.projectView.showCreatePage(this.currentProject);
+    },
+
+    // Adding Project Files page
+    showFiles: function() {
+        console.log('showFilesPage');
+        App.router.navigate('/project/files', {trigger: false});
+        this.projectView.showFilesView(this.currentProject);
+    },
+
+    showFilesView() {
+        this.showChildView('projectRegion', new FilesView({}));
     }
 };
 export default ProjectController;

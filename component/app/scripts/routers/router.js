@@ -71,6 +71,7 @@ export default Backbone.Router.extend({
         'project/create':                   'createPage',
         'project/:id':                      'projectPage',
         'community':                        'communityList',
+        'project/files':                    'filesList',
 
         // 404
         '*notFound': 'notFound',
@@ -129,6 +130,16 @@ export default Backbone.Router.extend({
 
         var destinationRoute = function() {
             App.AppController.showCreatePage();
+        };
+        _routeWithTokenRefreshCheck(destinationRoute);
+    },
+
+    // Files List
+    filesList: function() {
+        console.log('filesList route');
+
+        var destinationRoute = function() {
+            App.AppController.showFilesView();
         };
         _routeWithTokenRefreshCheck(destinationRoute);
     },
