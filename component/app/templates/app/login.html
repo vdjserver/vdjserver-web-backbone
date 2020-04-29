@@ -31,8 +31,8 @@
                         <input class="form-control" type="password" placeholder="PASSWORD" name="password" id="password" {{#if maintenance}}disabled{{/if}}>
                     </div>
 
-                    <div class="row">
-                        <div class="login-button-column">
+                    <div class="row login-group">
+                        <div>
                             <input type="submit" class="btn btn-warning login-button" id="home-login" value="Login">
 
                             {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
@@ -41,26 +41,25 @@
                             <!-- <div class="col-md-6 login-button-column text-center">
                                 {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
                             </div> -->
-
                         </div>
+                    </form>
+                </div>
+                <div class="row login-subgroup">
+                    <div class="col-md-6">
+                        <p>{{#if maintenance}}{{else}}<a class="home-create-account" href="/account">Create Account</a>{{/if}}</p>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 login-button-column text-center">
-                            <p>{{#if maintenance}}{{else}}<a class="home-create-account" href="/account">Create Account</a>{{/if}}</p>
-                        </div>
-                        <div class="col-md-6 login-button-column text-center">
-                            <p><a class="home-create-account" href="feedback">Send Us Feedback</a></p>
-                        </div>
+                    <div class="col-md-6">
+                        <p><a class="home-create-account" href="feedback">Send Us Feedback</a></p>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 login-button-column text-center">
-                            <p><a class="home-create-account" target="_blank" href="http://vdjserver.org/docs/index.html">Documentation</a></p>
-                        </div>
-                        <div class="col-md-6 login-button-column text-center">
-                            <p><a class="home-create-account" href="/community">Community Data</a></p>
-                        </div>
+                </div>
+                <div class="row login-subgroup">
+                    <div class="col-md-6">
+                        <p><a class="home-create-account" target="_blank" href="http://vdjserver.org/docs/index.html">Documentation</a></p>
                     </div>
-                </form>
+                    <div class="col-md-6">
+                        <p><a class="home-create-account" href="/community">Community Data</a></p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
