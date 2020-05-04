@@ -93,7 +93,7 @@ var ProjectView = Marionette.View.extend({
         this.clearIntroView();
         var view = new CreateProjectView({model: project});
         this.showChildView('projectRegion', view);
-    }
+    },
 });
 
 //
@@ -199,17 +199,6 @@ ProjectController.prototype = {
 
         // display
         this.projectView.showCreatePage(this.currentProject);
-    },
-
-    // Adding Project Files page
-    showFiles: function() {
-        console.log('showFilesPage');
-        App.router.navigate('/project/files', {trigger: false});
-        this.projectView.showFilesView(this.currentProject);
-    },
-
-    showFilesView() {
-        this.showChildView('projectRegion', new FilesView({}));
     }
 };
 export default ProjectController;

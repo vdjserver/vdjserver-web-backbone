@@ -38,23 +38,39 @@ var ProjectSidebarView = Marionette.View.extend({
     template: Handlebars.compile(sidebar_template)
 });
 
-// Repetoires view
+// Repertoires Page
 
 
-// Files view
-// import files_template from '../../../templates/project/files.html';
-//
-// var Files
 
+// Files Page
+import files_template from '../../../templates/project/files.html';
+var FilesView = Marionette.View.extend({
+    template: Handlebars.compile(files_template),
+    regions: {
+        overviewRegion: '#project-overview'
+    },
 
-// Analyses view
+    showFilesPage(project) {
+        console.log('showFilesPage')
+        var view = new FilesView({model: project});
+        this.showFilesView('overviewRegion', view);
+    },
+
+    // Project Files page
+    showFiles: function() {
+        console.log('showFiles controller?');
+        App.router.navigate('/project/{{uuid}}/files', {trigger: false});
+        this.showFilesPage();
+    }
+});
+
+// Analyses Page
 
 
 
 // Project summary view
 // TODO: merge create.html with this
 import summary_template from '../../../templates/project/single-summary.html';
-// import summary_template from '../../../templates/project/single-summary.html';
 var ProjectSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template)
 });
@@ -113,7 +129,7 @@ export default Marionette.View.extend({
     },
 
     events: {
-        'click #create-rep': function() { this.detailView.createRepertoire(); }
+        'click #create-rep': function() { this.detailView.createRepertoire(); },
     },
 
 

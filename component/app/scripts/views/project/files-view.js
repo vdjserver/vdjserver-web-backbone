@@ -9,6 +9,6 @@ import Bootstrap from 'bootstrap';
 import Project from 'agave-project';
 
 export default Marionette.View.extend({
-  template: Handlebars.compile(template),
-  childViewContainer: '.files'
+  template: Handlebars.compile("the files page" + template)
+  // childViewContainer: '.files'
 });
