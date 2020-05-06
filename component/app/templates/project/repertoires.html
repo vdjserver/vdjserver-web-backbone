@@ -1,3 +1,38 @@
 <h1>{{value.study_title}}</h1>
-<h2>Repertoires</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+<div class="sidebar-content">
+    <h2>Repertoires</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+    <div id="new-repertoire-entry"></div>
+
+    <div class="replist">
+        <p>{{properties.repetoire_id}}</p>
+        <p>{{value.study}}</p>
+        <p>{{value.subject}}</p>
+        <p>{{value.sample}}</p>
+        <p>{{value.data_processing}}</p>
+        <button type="button" class="btn btn-success" id="create-rep">Create a repertoire</button>
+        <button type="button" class="btn btn-success">Copy a repertoire</button>
+        <table class="table table-responsive">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Date Created</th>
+                    <th scope="col"># of Subjects</th>
+                    <th scope="col"># of Samples</th>
+                    <th scope="col">Tasks</th>
+                </tr>
+            </thead>
+            <tbody id="project">
+                <tr>
+                  <th scope="row">..</th>
+                  <td>..</td>
+                  <td>..</td>
+                  <td>..</td>
+                  <td>..</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

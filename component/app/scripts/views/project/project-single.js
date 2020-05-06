@@ -42,31 +42,17 @@ var ProjectSidebarView = Marionette.View.extend({
 
 
 
-// Files Page
+// Project Files Page
 import files_template from '../../../templates/project/files.html';
 var FilesView = Marionette.View.extend({
     template: Handlebars.compile(files_template)
 });
 
-//     // Project Files page
-//     showFiles: function() {
-//         console.log('showFiles controller?');
-//
-//         // Navigate to the "Files" page for a particular project
-//         App.router.navigate('/project/files', {trigger: false});
-//         this.showFilesPage();
-//     },
-//
-//     showFilesPage(project) {
-//         console.log('showFilesPage')
-//         var view = new FilesView({model: project});
-//         this.showFilesView('overviewRegion', view);
-//     }
-// });
-
 // Analyses Page
-
-
+import analyses_template from '../../../templates/project/analyses.html';
+var AnalysesView = Marionette.View.extend({
+    template: Handlebars.compile(analyses_template)
+});
 
 // Project summary view
 // TODO: merge create.html with this
@@ -82,8 +68,8 @@ var CreateRepertoireView = Marionette.View.extend({
 });
 
 // Repertoire view
-import repertoire_template from '../../../templates/project/repertoire-detail.html';
-var RepertoireView = Marionette.View.extend({
+import repertoire_template from '../../../templates/project/repertoires.html';
+var RepertoiresView = Marionette.View.extend({
     template: Handlebars.compile(repertoire_template),
 
     regions: {
@@ -109,8 +95,8 @@ export default Marionette.View.extend({
     // one region for the project detail
     regions: {
         sidebarRegion: '#project-sidebar',
-        summaryRegion: '#project-summary',
-        projectRegion: '#project-detail',
+        summaryRegion: '#project-summary'
+        // projectRegion: '#project-detail',
     },
 
     initialize: function(parameters) {
@@ -124,15 +110,35 @@ export default Marionette.View.extend({
         this.showChildView('summaryRegion', this.summaryView);
 
         // show repertoire as default for project detail
-        this.detailView = new RepertoireView();
-        this.showChildView('projectRegion', this.detailView);
+        // this.detailView = new RepertoireView();
+        // this.showChildView('projectRegion', this.detailView);
     },
 
     events: {
         'click #create-rep': function() { this.detailView.createRepertoire(); },
+
+        'click #overview-tab': function() {
+            this.summaryView = new ProjectSummaryView({model: this.model});
+            this.showChildView('summaryRegion', this.summaryView);
+        },
+
+        // setting event for Repertoires page
+        'click #repertoires-tab': function() {
+            this.summaryView = new RepertoiresView({model: this.model});
+            this.showChildView('summaryRegion', this.summaryView);
+        },
+
+        // setting event for Files page
         'click #files-tab': function() {
             this.summaryView = new FilesView({model: this.model});
             this.showChildView('summaryRegion', this.summaryView);
         },
+
+        // setting event for Analyses page
+        'click #analyses-tab': function() {
+            this.summaryView = new AnalysesView({model: this.model});
+            this.showChildView('summaryRegion', this.summaryView);
+        },
+
     },
 });
