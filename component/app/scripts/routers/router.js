@@ -71,7 +71,7 @@ export default Backbone.Router.extend({
         'project/create':                   'createPage',
         'project/:id':                      'projectPage',
         'community':                        'communityList',
-        'project/:id/files':                'filesList',
+        // 'project/:id/files':                'filesList',
 
         // 404
         '*notFound': 'notFound',
@@ -135,14 +135,14 @@ export default Backbone.Router.extend({
     },
 
     // Files List
-    filesList: function() {
-        console.log('filesList route');
-
-        var destinationRoute = function() {
-            App.AppController.showFilesPage();
-        };
-        _routeWithTokenRefreshCheck(destinationRoute);
-    },
+    // filesList: function() {
+    //     console.log('filesList route');
+    //
+    //     var destinationRoute = function() {
+    //         App.AppController.showFilesPage();
+    //     };
+    //     _routeWithTokenRefreshCheck(destinationRoute);
+    // },
 
     // Auth
     authLogout: function() {

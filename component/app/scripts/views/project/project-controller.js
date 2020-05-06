@@ -33,7 +33,6 @@ import ProjectList from 'agave-projects';
 import ProjectListView from 'project-list';
 import ProjectPageView from 'project-single';
 import intro_template from '../../../templates/project/intro.html';
-import FilesView from 'files-view';
 import LoadingView from 'loading-view';
 import CreateProjectView from 'create-view';
 

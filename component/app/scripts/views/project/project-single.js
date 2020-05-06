@@ -45,24 +45,24 @@ var ProjectSidebarView = Marionette.View.extend({
 // Files Page
 import files_template from '../../../templates/project/files.html';
 var FilesView = Marionette.View.extend({
-    template: Handlebars.compile(files_template),
-    regions: {
-        overviewRegion: '#project-overview'
-    },
-
-    showFilesPage(project) {
-        console.log('showFilesPage')
-        var view = new FilesView({model: project});
-        this.showFilesView('overviewRegion', view);
-    },
-
-    // Project Files page
-    showFiles: function() {
-        console.log('showFiles controller?');
-        App.router.navigate('/project/{{uuid}}/files', {trigger: false});
-        this.showFilesPage();
-    }
+    template: Handlebars.compile(files_template)
 });
+
+//     // Project Files page
+//     showFiles: function() {
+//         console.log('showFiles controller?');
+//
+//         // Navigate to the "Files" page for a particular project
+//         App.router.navigate('/project/files', {trigger: false});
+//         this.showFilesPage();
+//     },
+//
+//     showFilesPage(project) {
+//         console.log('showFilesPage')
+//         var view = new FilesView({model: project});
+//         this.showFilesView('overviewRegion', view);
+//     }
+// });
 
 // Analyses Page
 
@@ -130,7 +130,9 @@ export default Marionette.View.extend({
 
     events: {
         'click #create-rep': function() { this.detailView.createRepertoire(); },
+        'click #files-tab': function() {
+            this.summaryView = new FilesView({model: this.model});
+            this.showChildView('summaryRegion', this.summaryView);
+        },
     },
-
-
 });
