@@ -81,10 +81,10 @@ var ProjectView = Marionette.View.extend({
         this.showChildView('projectRegion', view);
     },
 
-    showProjectPage(project, isNew) {
+    showProjectPage(project, page, isNew) {
         this.clearIntroView();
         console.log(this.controller, isNew);
-        var view = new ProjectPageView({model: project});
+        var view = new ProjectPageView({model: project, page: page});
         this.showChildView('projectRegion', view);
     },
 
@@ -145,7 +145,7 @@ ProjectController.prototype = {
         }
     },
 
-    showProjectPage(projectUuid, isNew) {
+    showProjectPage(projectUuid, page, isNew) {
         // clear the current project
         this.currentProject = null;
 
@@ -168,14 +168,17 @@ ProjectController.prototype = {
                 console.log(that.currentProject);
 
                 // have the view display it
-                that.projectView.showProjectPage(that.currentProject, isNew);
+                that.projectView.showProjectPage(that.currentProject, page, isNew);
             })
             .fail(function(error) {
+                // TODO: could not retrieve project
+                // maybe the user does not have access, or the uuid is wrong
+                // need to display some error message
                 console.log(error);
             });
         } else {
             // have the view display it
-            this.projectView.showProjectPage(this.currentProject, isNew);
+            this.projectView.showProjectPage(this.currentProject, page, isNew);
         }
     },
 

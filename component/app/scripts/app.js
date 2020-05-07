@@ -88,7 +88,7 @@ var ApplicationController = Marionette.View.extend({
     this.projectController.showProjectList();
   },
 
-  showProjectPage(projectUuid) {
+  showProjectPage(projectUuid, page) {
     console.log('showProjectPage');
 
     // create "project" controller if needed
@@ -101,7 +101,7 @@ var ApplicationController = Marionette.View.extend({
     this.navController.showPrivateNavigation();
 
     // tell "project" controller to display the project page
-    this.projectController.showProjectPage(projectUuid);
+    this.projectController.showProjectPage(projectUuid, page);
   },
 
   showCommunityList() {

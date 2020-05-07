@@ -102,12 +102,30 @@ export default Marionette.View.extend({
     initialize: function(parameters) {
 
         // show sidebar
-        this.sidebarView = new ProjectSidebarView();
+        this.sidebarView = new ProjectSidebarView({model: this.model});
         this.showChildView('sidebarRegion', this.sidebarView);
 
-        // show project summary
-        this.summaryView = new ProjectSummaryView({model: this.model});
-        this.showChildView('summaryRegion', this.summaryView);
+        // are we routing to a specific page?
+        if (parameters && parameters.page) {
+            switch (parameters.page) {
+                case 'repertoire':
+                    this.showProjectRepertoires();
+                    break;
+                case 'file':
+                    this.showProjectFiles();
+                    break;
+                case 'analysis':
+                    this.showProjectAnalyses();
+                    break;
+                case 'summary':
+                default:
+                    this.showProjectSummary();
+                    break;
+            }
+        } else {
+            // show project summary
+            this.showProjectSummary();
+        }
 
         // show repertoire as default for project detail
         // this.detailView = new RepertoireView();
@@ -118,27 +136,51 @@ export default Marionette.View.extend({
         'click #create-rep': function() { this.detailView.createRepertoire(); },
 
         'click #overview-tab': function() {
-            this.summaryView = new ProjectSummaryView({model: this.model});
-            this.showChildView('summaryRegion', this.summaryView);
+            App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
+            this.showProjectSummary();
         },
 
         // setting event for Repertoires page
         'click #repertoires-tab': function() {
-            this.summaryView = new RepertoiresView({model: this.model});
-            this.showChildView('summaryRegion', this.summaryView);
+            App.router.navigate('project/' + this.model.get('uuid') + '/repertoire', {trigger: false});
+            this.showProjectRepertoires();
         },
 
         // setting event for Files page
         'click #files-tab': function() {
-            this.summaryView = new FilesView({model: this.model});
-            this.showChildView('summaryRegion', this.summaryView);
+            App.router.navigate('project/' + this.model.get('uuid') + '/file', {trigger: false});
+            this.showProjectFiles();
         },
 
         // setting event for Analyses page
         'click #analyses-tab': function() {
-            this.summaryView = new AnalysesView({model: this.model});
-            this.showChildView('summaryRegion', this.summaryView);
+            App.router.navigate('project/' + this.model.get('uuid') + '/analysis', {trigger: false});
+            this.showProjectAnalyses();
         },
-
     },
+
+    showProjectSummary()
+    {
+        this.summaryView = new ProjectSummaryView({model: this.model});
+        this.showChildView('summaryRegion', this.summaryView);
+    },
+
+    showProjectRepertoires()
+    {
+        this.summaryView = new RepertoiresView({model: this.model});
+        this.showChildView('summaryRegion', this.summaryView);
+    },
+
+    showProjectFiles()
+    {
+        this.summaryView = new FilesView({model: this.model});
+        this.showChildView('summaryRegion', this.summaryView);
+    },
+
+    showProjectAnalyses()
+    {
+        this.summaryView = new AnalysesView({model: this.model});
+        this.showChildView('summaryRegion', this.summaryView);
+    },
+
 });

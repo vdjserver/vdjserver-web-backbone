@@ -70,8 +70,10 @@ export default Backbone.Router.extend({
         'project':                          'projectList',
         'project/create':                   'createPage',
         'project/:id':                      'projectPage',
+        'project/:id/repertoire':           'projectRepertoire',
+        'project/:id/file':                 'projectFile',
+        'project/:id/analysis':             'projectAnalysis',
         'community':                        'communityList',
-        // 'project/:id/files':                'filesList',
 
         // 404
         '*notFound': 'notFound',
@@ -108,13 +110,28 @@ export default Backbone.Router.extend({
     },
 
     // For Single Project Page
-    projectPage: function(projectUuid) {
+    projectPage: function(projectUuid, page) {
         console.log('projectPage route');
 
         var destinationRoute = function() {
-            App.AppController.showProjectPage(projectUuid);
+            App.AppController.showProjectPage(projectUuid, page);
         };
         _routeWithTokenRefreshCheck(destinationRoute);
+    },
+
+    // Repertoire page for a project
+    projectRepertoire: function(projectUuid) {
+        this.projectPage(projectUuid, 'repertoire');
+    },
+
+    // File page for a project
+    projectFile: function(projectUuid) {
+        this.projectPage(projectUuid, 'file');
+    },
+
+    // Analysis page for a project
+    projectAnalysis: function(projectUuid) {
+        this.projectPage(projectUuid, 'analysis');
     },
 
     // Community Project Summary List
