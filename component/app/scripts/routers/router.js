@@ -71,6 +71,7 @@ export default Backbone.Router.extend({
         'project/create':                   'createPage',
         'project/:id':                      'projectPage',
         'project/:id/repertoire':           'projectRepertoire',
+        'project/:id/group':                'projectGroup',
         'project/:id/file':                 'projectFile',
         'project/:id/analysis':             'projectAnalysis',
         'community':                        'communityList',
@@ -122,6 +123,11 @@ export default Backbone.Router.extend({
     // Repertoire page for a project
     projectRepertoire: function(projectUuid) {
         this.projectPage(projectUuid, 'repertoire');
+    },
+
+    // Group page for a project
+    projectGroup: function(projectUuid) {
+        this.projectPage(projectUuid, 'group');
     },
 
     // File page for a project

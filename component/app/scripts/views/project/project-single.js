@@ -40,7 +40,11 @@ var ProjectSidebarView = Marionette.View.extend({
 
 // Repertoires Page
 
-
+// Repertoire Groups Page
+import groups_template from '../../../templates/project/groups.html';
+var GroupsView = Marionette.View.extend({
+    template: Handlebars.compile(groups_template)
+});
 
 // Project Files Page
 import files_template from '../../../templates/project/files.html';
@@ -111,6 +115,9 @@ export default Marionette.View.extend({
                 case 'repertoire':
                     this.showProjectRepertoires();
                     break;
+                case 'group':
+                    this.showProjectGroups();
+                    break;
                 case 'file':
                     this.showProjectFiles();
                     break;
@@ -146,6 +153,12 @@ export default Marionette.View.extend({
             this.showProjectRepertoires();
         },
 
+        // setting event for Groups page
+        'click #groups-tab': function() {
+            App.router.navigate('project/' + this.model.get('uuid') + '/group', {trigger: false});
+            this.showProjectGroups();
+        },
+
         // setting event for Files page
         'click #files-tab': function() {
             App.router.navigate('project/' + this.model.get('uuid') + '/file', {trigger: false});
@@ -168,6 +181,12 @@ export default Marionette.View.extend({
     showProjectRepertoires()
     {
         this.summaryView = new RepertoiresView({model: this.model});
+        this.showChildView('summaryRegion', this.summaryView);
+    },
+
+    showProjectGroups()
+    {
+        this.summaryView = new GroupsView({model: this.model});
         this.showChildView('summaryRegion', this.summaryView);
     },
 
