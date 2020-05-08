@@ -28,9 +28,6 @@
 import Marionette from 'backbone.marionette';
 import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
-import create_template from '../../../templates/project/create.html';
-import modal_template from '../../../templates/util/modal-message.html';
-import modal_confirm_template from '../../../templates/util/modal-message-confirm.html';
 import MessageModel from 'message';
 
 // AIRR Schema
@@ -95,43 +92,39 @@ Handlebars.registerHelper('FieldStar', function(schema_name, field_name) {
     return;
 });
 
-// custom region to handle a bootstrap modal view
-var ModalRegion = Marionette.Region.extend({
-    constructor: function() {
-        Marionette.Region.prototype.constructor.apply(this, arguments);
-    },
-});
-
-// the bootstrap modal view
+// modal view for when the project is being created
+import mm_template from '../../../templates/util/modal-message.html';
 var ModalMessage = Marionette.View.extend({
-  template: Handlebars.compile(modal_template),
+  template: Handlebars.compile(mm_template),
   region: '#modal'
 });
 
-// the bootstrap modal view
+// modal view for failure message
+import mmc_template from '../../../templates/util/modal-message-confirm.html';
 var ModalMessageConfirm = Marionette.View.extend({
-  template: Handlebars.compile(modal_confirm_template),
+  template: Handlebars.compile(mmc_template),
   region: '#modal'
 });
 
+// project creation form
+import create_template from '../../../templates/project/create.html';
 var CreateView = Marionette.View.extend({
   template: Handlebars.compile('<h1>Create New Project</h1>' + create_template)
 });
 
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div id="create-project-region"></div><div id="modal"></div>'),
+    template: Handlebars.compile('<div id="create-project-region"></div>'),
 
     // one region for the create project content
-    // model region when saving the project
     regions: {
-        createRegion: '#create-project-region',
-        modalRegion: {
-            el: '#modal',
-            regionClass: ModalRegion
-        }
+        createRegion: '#create-project-region'
     },
 
     initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
         // we use a state variable to know what type of modal to display
         this.modalState = 'create';
 
@@ -140,79 +133,12 @@ export default Marionette.View.extend({
     },
 
     events: {
-        'click #create-new-project': 'createNewProject',
-        'shown.bs.modal': 'onShownModal',
-        'hidden.bs.modal': 'onHiddenModal',
+        'click #create-new-project': 'createNewProject'
     },
 
-    onShownModal() {
-        console.log('create: Show the modal');
-
-        var that = this;
-
-        // if login state then an authenticating modal view was just shown
-        // go perform the login
-        console.log(this.modalState);
-        if (this.modalState == 'create') {
-
-            // pull data out of form and put into model
-            var data = Syphon.serialize(this);
-            this.model.setAttributesFromData(data);
-
-            // save the model
-            console.log(this.model);
-            this.model.save()
-            .done(function() {
-                that.modalState = 'pass';
-                $('#modal-message').modal('hide');
-                console.log("create pass");
-                console.log(that.model);
-            })
-            .fail(function(error) {
-                // save failed so change state, hide the current modal
-                console.log(error);
-                that.modalState = 'fail';
-                $('#modal-message').modal('hide');
-
-                // prepare a new modal with the failure message
-                var body = '<p>Server returned error code: ' + error.status + ' ' + error.statusText + '<p>';
-                try {
-                    var t = JSON.parse(error.responseText);
-                    body += '<pre>' + JSON.stringify(t,null,2) + '</pre>';
-                } catch (e) {}
-                var message = new MessageModel({
-                    'header': 'Project Creation',
-                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Project creation failed!</div><p>Please submit the error below to the VDJServer Administrator.' + '<code>' + body + '</code>'
-                });
-
-                var view = new ModalMessageConfirm({model: message});
-                that.showChildView('modalRegion', view);
-                $('#confirmation-button').removeClass('hidden');
-                $('#modal-message').modal('show');
-
-                console.log("create fail");
-            });
-        } else if (this.modalState == 'fail') {
-          // if login failed, then we are showing the fail modal
-        }
-    },
-
-    onHiddenModal() {
-        console.log('create: Hide the modal');
-        //this.getRegion().empty();
-        if (this.modalState == 'pass') {
-            // create passed so route to the project view
-            // App.router.navigate('project/' + this.model.get('uuid'), {trigger: true});
-            App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
-            this.controller.showProjectPage(this.model.get('uuid'), true);
-        } else if (this.modalState == 'fail') {
-            console.log("show fail modal");
-        }
-    },
-
+    // handle create project event
     createNewProject: function(e) {
         console.log('create-view: createNewProject');
-        console.log(this.model);
         e.preventDefault();
 
         // Currently validates regardless if there is an error or not. NOTE: Still submits the form
@@ -243,22 +169,88 @@ export default Marionette.View.extend({
         //   }, false);
         // })();
 
-        // TODO: we need to copy all the data from the form into the Project model
+        // pull data out of form and put into model
+        var data = Syphon.serialize(this);
+        // manually hack the study_type until we have ontologies implemented
+        data['study_type'] = null;
+        this.model.setAttributesFromData(data);
+        console.log(this.model);
 
-        // when login button is pressed, display an authenticating modal message
-        // we cannot perform the actual login here because the modal has not
-        // been shown to the user yet, wait for onShowModal()
+        // display a modal while the project is being created
         this.modalState = 'create';
         var message = new MessageModel({
           'header': 'Project Creation',
           'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we create the new project...</p>'
         });
 
+        // the app controller manages the modal region
         var view = new ModalMessage({model: message});
-        this.showChildView('modalRegion', view);
+        App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
         $('#modal-message').modal('show');
 
         console.log(message);
-    }
+    },
+
+    // project creation request is sent to server after the modal is shown
+    onShownModal(context) {
+        console.log('create: Show the modal');
+
+        // use modal state variable to decide
+        console.log(context.modalState);
+        if (context.modalState == 'create') {
+
+            // save the model
+            console.log(context.model);
+            context.model.save()
+            .done(function() {
+                context.modalState = 'pass';
+                $('#modal-message').modal('hide');
+                console.log("create pass");
+                console.log(context.model);
+            })
+            .fail(function(error) {
+                // save failed so change state, hide the current modal
+                console.log(error);
+                context.modalState = 'fail';
+                $('#modal-message').modal('hide');
+
+                // prepare a new modal with the failure message
+                var body = '<p>Server returned error code: ' + error.status + ' ' + error.statusText + '<p>';
+                try {
+                    // make the JSON pretty
+                    var t = JSON.parse(error.responseText);
+                    body += '<pre>' + JSON.stringify(t,null,2) + '</pre>';
+                } catch (e) {
+                    // if response is not JSON, stick in the raw text
+                    body += '<pre>' + error.responseText + '</pre>';
+                }
+                var message = new MessageModel({
+                    'header': 'Project Creation',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Project creation failed!</div><p>Please submit the error below to the VDJServer Administrator.' + '<code>' + body + '</code>'
+                });
+
+                var view = new ModalMessageConfirm({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+
+                console.log("create fail");
+            });
+        } else if (context.modalState == 'fail') {
+          // if login failed, then we are showing the fail modal
+        }
+    },
+
+    onHiddenModal(context) {
+        console.log('create: Hide the modal');
+        if (context.modalState == 'pass') {
+            // create passed so route to the project view
+            App.router.navigate('project/' + context.model.get('uuid'), {trigger: false});
+            context.controller.showProjectPage(context.model.get('uuid'), null, true);
+        } else if (context.modalState == 'fail') {
+            console.log("show fail modal");
+            // failure modal will automatically hide when user clicks OK
+        }
+    },
+
 
 });

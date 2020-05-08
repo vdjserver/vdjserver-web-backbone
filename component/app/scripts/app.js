@@ -39,17 +39,42 @@ import CommunityController from 'community-controller';
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
 
+// custom region to handle a bootstrap modal view
+var ModalRegion = Marionette.Region.extend({
+    constructor: function() {
+        Marionette.Region.prototype.constructor.apply(this, arguments);
+    },
+});
+
+// the bootstrap modal view
+import modal_template from '../templates/util/modal-message-confirm.html';
+var ModalMessageConfirm = Marionette.View.extend({
+    template: Handlebars.compile(modal_template),
+    region: '#modal'
+});
+
 // Controller and view for the main regions for the application.
 var ApplicationController = Marionette.View.extend({
-  template: Handlebars.compile('<div id="navigation"></div><div id="main"></div>'),
+  template: Handlebars.compile('<div id="navigation"></div><div id="main"></div><div id="modal"></div>'),
 
-  // two primary regions:
+  // three regions:
   // one for the navigation bar
-  // the other for the main content
+  // another for the main content
+  // global modal region
   regions: {
     navigationRegion: '#navigation',
-    mainRegion: '#main'
+    mainRegion: '#main',
+    modalRegion: {
+        el: '#modal',
+        regionClass: ModalRegion
+    }
   },
+
+    events: {
+        // show and hide of modal
+        'shown.bs.modal': 'onShownModal',
+        'hidden.bs.modal': 'onHiddenModal',
+    },
 
   initialize(options) {
     console.log('Initialize');
@@ -134,7 +159,32 @@ var ApplicationController = Marionette.View.extend({
 
         // tell project controller to display the create project page
         this.projectController.showCreatePage();
-  },
+    },
+
+    // A single modal region is used for the whole application
+    // This mainly attaches the view to the region
+    // View creation and logic resides in the particular subview
+    // The subview performs the show and hide of the modal
+    // The show and hide events are captured and routed to given functions
+    startModal(modalView, modalContext, onShowFunction, onHideFunction) {
+        console.log('showModal');
+
+        this.modalContext = modalContext;
+        this.onShowFunction = onShowFunction;
+        this.onHideFunction = onHideFunction;
+
+        this.showChildView('modalRegion', modalView);
+    },
+
+    onShownModal() {
+        console.log('login: Show the modal');
+        if (this.onShowFunction) this.onShowFunction(this.modalContext);
+    },
+
+    onHiddenModal() {
+        console.log('login: Hide the modal');
+        if (this.onHideFunction) this.onHideFunction(this.modalContext);
+    },
 
 });
 

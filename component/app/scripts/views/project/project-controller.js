@@ -77,20 +77,20 @@ var ProjectView = Marionette.View.extend({
 
     showProjectList(projectList) {
         console.log(this.controller);
-        var view = new ProjectListView({collection: projectList});
+        var view = new ProjectListView({collection: projectList, controller: this.controller});
         this.showChildView('projectRegion', view);
     },
 
     showProjectPage(project, page, isNew) {
         this.clearIntroView();
         console.log(this.controller, isNew);
-        var view = new ProjectPageView({model: project, page: page});
+        var view = new ProjectPageView({model: project, page: page, controller: this.controller});
         this.showChildView('projectRegion', view);
     },
 
     showCreatePage(project) {
         this.clearIntroView();
-        var view = new CreateProjectView({model: project});
+        var view = new CreateProjectView({model: project, controller: this.controller});
         this.showChildView('projectRegion', view);
     },
 });
