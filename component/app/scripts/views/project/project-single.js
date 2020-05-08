@@ -33,12 +33,16 @@ import { Repertoire, Subject, Diagnosis } from 'agave-metadata';
 import { RepertoireCollection, SubjectCollection, DiagnosisCollection } from 'agave-metadata-collections';
 
 // Sidebar view
-import sidebar_template from '../../../templates/project/project-sidebar.html';
-var ProjectSidebarView = Marionette.View.extend({
-    template: Handlebars.compile(sidebar_template)
-});
+//import sidebar_template from '../../../templates/project/project-sidebar.html';
+//var ProjectSidebarView = Marionette.View.extend({
+//    template: Handlebars.compile(sidebar_template)
+//});
 
-// Repertoires Page
+// Project summary
+import summary_template from '../../../templates/project/single-summary.html';
+var ProjectSummaryView = Marionette.View.extend({
+    template: Handlebars.compile(summary_template)
+});
 
 // Repertoire Groups Page
 import groups_template from '../../../templates/project/groups.html';
@@ -58,11 +62,11 @@ var AnalysesView = Marionette.View.extend({
     template: Handlebars.compile(analyses_template)
 });
 
-// Project summary view
+// Project overview page
 // TODO: merge create.html with this
-import summary_template from '../../../templates/project/single-summary.html';
-var ProjectSummaryView = Marionette.View.extend({
-    template: Handlebars.compile(summary_template)
+import overview_template from '../../../templates/project/project-overview.html';
+var ProjectOverView = Marionette.View.extend({
+    template: Handlebars.compile(overview_template)
 });
 
 // Create new repertoire view
@@ -94,20 +98,22 @@ import template from '../../../templates/project/single.html';
 export default Marionette.View.extend({
     template: Handlebars.compile(template),
 
-    // one region for the sidebar
     // one region for the project summary
     // one region for the project detail
     regions: {
-        sidebarRegion: '#project-sidebar',
-        summaryRegion: '#project-summary'
-        // projectRegion: '#project-detail',
+        summaryRegion: '#project-summary',
+        detailRegion: '#project-detail'
     },
 
     initialize: function(parameters) {
 
         // show sidebar
-        this.sidebarView = new ProjectSidebarView({model: this.model});
-        this.showChildView('sidebarRegion', this.sidebarView);
+        //this.sidebarView = new ProjectSidebarView({model: this.model});
+        //this.showChildView('sidebarRegion', this.sidebarView);
+
+        // show project summary
+        this.summaryView = new ProjectSummaryView({model: this.model});
+        this.showChildView('summaryRegion', this.summaryView);
 
         // are we routing to a specific page?
         if (parameters && parameters.page) {
@@ -124,14 +130,14 @@ export default Marionette.View.extend({
                 case 'analysis':
                     this.showProjectAnalyses();
                     break;
-                case 'summary':
+                case 'overview':
                 default:
-                    this.showProjectSummary();
+                    this.showProjectOverview();
                     break;
             }
         } else {
             // show project summary
-            this.showProjectSummary();
+            this.showProjectOverview();
         }
 
         // show repertoire as default for project detail
@@ -144,7 +150,7 @@ export default Marionette.View.extend({
 
         'click #overview-tab': function() {
             App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
-            this.showProjectSummary();
+            this.showProjectOverview();
         },
 
         // setting event for Repertoires page
@@ -172,34 +178,34 @@ export default Marionette.View.extend({
         },
     },
 
-    showProjectSummary()
+    showProjectOverview()
     {
-        this.summaryView = new ProjectSummaryView({model: this.model});
-        this.showChildView('summaryRegion', this.summaryView);
+        this.detailView = new ProjectOverView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
     },
 
     showProjectRepertoires()
     {
-        this.summaryView = new RepertoiresView({model: this.model});
-        this.showChildView('summaryRegion', this.summaryView);
+        this.detailView = new RepertoiresView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
     },
 
     showProjectGroups()
     {
-        this.summaryView = new GroupsView({model: this.model});
-        this.showChildView('summaryRegion', this.summaryView);
+        this.detailView = new GroupsView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
     },
 
     showProjectFiles()
     {
-        this.summaryView = new FilesView({model: this.model});
-        this.showChildView('summaryRegion', this.summaryView);
+        this.detailView = new FilesView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
     },
 
     showProjectAnalyses()
     {
-        this.summaryView = new AnalysesView({model: this.model});
-        this.showChildView('summaryRegion', this.summaryView);
+        this.detailView = new AnalysesView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
     },
 
 });

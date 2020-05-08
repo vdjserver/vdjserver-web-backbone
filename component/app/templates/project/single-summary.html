@@ -1,41 +1,38 @@
             <h1>{{value.study_title}}</h1>
             <p>{{value.study_description}}</p>
             <div class="row" id="summary">
-                <div class="card col-md-3">
-                  <div class="card-body">
-                    <h5 class="card-title"><i class="fa fa-flask fa-2x"></i><br /> Summary 1</h5>
-                    <p class="card-text">Some quick example text.</p>
+                <div class="card col-md-2">
+                  <div class="card-body nav-link active" id="overview-tab">
+                    <h5 class="card-title"><i class="fa fa-flask fa-2x"></i><br /> Overview</h5>
+                    <p class="card-text"></p>
                   </div>
                 </div>
 
-                <div class="card col-md-3">
-                  <div class="card-body">
-                    <h5 class="card-title"><i class="fa fa-flask fa-2x"></i><br /> Summary 2</h5>
-                    <p class="card-text">Some quick example text.</p>
+                <div class="card col-md-2">
+                  <div class="card-body nav-link" id="repertoires-tab">
+                    <h5 class="card-title"><i class="fa fa-flask fa-2x"></i><br /> 5 Repertoires</h5>
+                    <p class="card-text"></p>
                   </div>
                 </div>
 
-                <div class="card col-md-3">
-                  <div class="card-body">
-                    <h5 class="card-title"><i class="fa fa-flask fa-2x"></i><br /> Summary 3</h5>
-                    <p class="card-text">Some quick example text.</p>
+                <div class="card col-md-2">
+                  <div class="card-body nav-link" id="groups-tab">
+                    <h5 class="card-title"><i class="fa fa-flask fa-2x"></i><br /> 3 Repertoire Groups</h5>
+                    <p class="card-text"></p>
                   </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <h3>Project Details</h3>
-                    <p><span class="details">Project Type:<span></p>
-                    <p><span class="details">NCBI:</span> {{value.ncbi_bioproject}}</p>
-                    <p><span class="details">Funding Agency:</span>{{value.grant_agency}}</p>
-                    <p><span class="details">Grants:</span> {{value.grants}}</p>
-                    <p><span class="details">Publications:</span> {{value.publications}}</p>
+
+                <div class="card col-md-2">
+                  <div class="card-body nav-link" id="files-tab">
+                    <h5 class="card-title"><i class="fa fa-flask fa-2x"></i><br /> 20 Files</h5>
+                    <p class="card-text"></p>
+                  </div>
                 </div>
-                <div class="col-md-6">
-                    <p class="details">PI Name: {{value.pi_name}}</p>
-                    <p class="details">Contact Name: {{value.contact_name}}</p>
+
+                <div class="card col-md-2">
+                  <div class="card-body nav-link" id="analyses-tab">
+                    <h5 class="card-title"><i class="fa fa-flask fa-2x"></i><br /> 5 Analyses</h5>
+                    <p class="card-text"></p>
+                  </div>
                 </div>
-                <button type="button" class="btn btn-info">
-                    Edit Project Metadata
-                </button>
             </div>
