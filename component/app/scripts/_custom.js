@@ -1,11 +1,9 @@
-$(document).ready (function () {
+$(document).ready(function() {
+    console.log("jquery works");
 
-  $(function () {
-      // initializing popovers an tooltips
-      // $('[data-toggle="popover"]').popover();
-      // console.log("popover initialized")
-      //
-      // $('[data-toggle="tooltip"]').tooltip();
-      // console.log("tooltip initialized");
-  })
+// Summary Card Active States
+      $(".card-link").click(function(){
+          console.log("card clicked");
+          $(this).addClass("card-active");
+      });
 });

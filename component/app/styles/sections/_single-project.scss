@@ -1,8 +1,8 @@
 /*****************************************************
 SASS for Single Project page
 *****************************************************/
-#project-sidebar {
-    padding-right: 5%;
+#project {
+    padding: 0% 5%;
 }
 
 .jumbotron {
@@ -26,10 +26,18 @@ SASS for Single Project page
     margin: 1%;
 }
 
+.card-active {
+    background: $vdj-lightgray;
+}
+
+.card-link:hover {
+    background: $vdj-lightgray;
+}
+
 .card-body {
     text-align: center;
 }
 
 .sidebar-content {
-    margin-top: 5%;
+    margin-top: 2%;
 }
