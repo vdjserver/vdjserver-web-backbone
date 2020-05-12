@@ -29,8 +29,6 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'agave-project';
-import { Repertoire, Subject, Diagnosis } from 'agave-metadata';
-import { RepertoireCollection, SubjectCollection, DiagnosisCollection } from 'agave-metadata-collections';
 
 // Sidebar view
 //import sidebar_template from '../../../templates/project/project-sidebar.html';
@@ -76,22 +74,7 @@ var CreateRepertoireView = Marionette.View.extend({
 });
 
 // Repertoire view
-import repertoire_template from '../../../templates/project/repertoires.html';
-var RepertoiresView = Marionette.View.extend({
-    template: Handlebars.compile(repertoire_template),
-
-    regions: {
-        createRegion: '#new-repertoire-entry'
-    },
-
-    createRepertoire() {
-        // TODO: need to create an empty Repertoire object
-
-        // show the create form
-        var view = new CreateRepertoireView();
-        this.showChildView('createRegion', view);
-    },
-});
+import RepertoireController from 'repertoire-controller';
 
 // Main project
 import template from '../../../templates/project/single.html';
@@ -146,8 +129,6 @@ export default Marionette.View.extend({
     },
 
     events: {
-        'click #create-rep': function() { this.detailView.createRepertoire(); },
-
         'click #overview-tab': function() {
             App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
             this.showProjectOverview();
@@ -186,7 +167,7 @@ export default Marionette.View.extend({
 
     showProjectRepertoires()
     {
-        this.detailView = new RepertoiresView({model: this.model});
+        this.detailView = new RepertoireController({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
 
