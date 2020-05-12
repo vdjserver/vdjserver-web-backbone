@@ -161,6 +161,12 @@ var ApplicationController = Marionette.View.extend({
         this.projectController.showCreatePage();
     },
 
+    // Using repertoire controller to display information about a specific repertoire
+    showRepPage() {
+        console.log('showRepPage');
+
+    },
+
     // A single modal region is used for the whole application
     // This mainly attaches the view to the region
     // View creation and logic resides in the particular subview

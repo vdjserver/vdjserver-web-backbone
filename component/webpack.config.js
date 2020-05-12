@@ -109,6 +109,10 @@ module.exports = function(env, argv) {
                 'createrep-controller': path.resolve(__dirname,'app') + '/scripts/views/project/createrep-controller',
                 'create-rep': path.resolve(__dirname,'app') + '/scripts/views/project/create-rep',
 
+                'repertoire-controller':
+                path.resolve(__dirname,'app') + '/scripts/views/project/repertoire-controller',
+                'rep-view': path.resolve(__dirname,'app') + '/scripts/views/project/rep-view',
+
                 'loading-view': path.resolve(__dirname,'app') + '/scripts/views/utilities/loading-view',
 
                 'error': path.resolve(__dirname,'app') + '/scripts/models/error',

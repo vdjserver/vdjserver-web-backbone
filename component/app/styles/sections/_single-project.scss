@@ -30,8 +30,10 @@ SASS for Single Project page
     background: $vdj-lightgray;
 }
 
+
 .card-link:hover {
-    background: $vdj-lightgray;
+        background: $vdj-lightgray;
+        cursor: pointer;
 }
 
 .card-body {
