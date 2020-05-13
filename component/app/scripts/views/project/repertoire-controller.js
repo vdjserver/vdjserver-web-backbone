@@ -106,8 +106,32 @@ export default Marionette.View.extend({
     initialize(options) {
         console.log('Initialize');
 
-        // TODO: should load from backend, for now create some empties
-        this.repertoireList = new RepertoireCollection();
+        // TODO: cache these lists
+        this.repertoireList = new RepertoireCollection({projectUuid:this.model.get('uuid')});
+        this.subjectList = new SubjectCollection({projectUuid:this.model.get('uuid')});
+
+        var that = this;
+
+        // show a loading view while fetching the data
+        this.showChildView('listRegion', new LoadingView({}));
+
+        // fetch the repertoires
+        this.repertoireList.fetch()
+            .then(function() {
+                // fetch the subjects
+                return that.subjectList.fetch();
+            })
+            .then(function() {
+                console.log(that.repertoireList);
+                // have the view display them
+                that.showChildView('headerRegion', new RepertoireHeaderView());
+                that.showChildView('listRegion', new RepertoireListView({collection: that.repertoireList}));
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
+
+/*
         var m = new Repertoire({projectUuid: this.model.get('uuid')});
         m.set('uuid',m.cid);
         this.repertoireList.add(m);
@@ -121,7 +145,7 @@ export default Marionette.View.extend({
 
         this.showChildView('headerRegion', new RepertoireHeaderView());
         this.showChildView('listRegion', new RepertoireListView({collection: this.repertoireList}));
-
+*/
     },
 
     createRepertoire(e) {
