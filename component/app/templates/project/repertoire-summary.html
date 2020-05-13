@@ -11,6 +11,9 @@
             <tbody>
                 <tr>
                     <td class="optional" id="rep-name">
+                        <!-- Expand/Collapse button -->
+                        <a class="fa fa-chevron-up" data-toggle="collapse" href="#expandRepertoire" aria-expanded="false" aria-controls="details"></a>
+
                         <div class="form-group col-md-12 repertoire-name hide">
                             <input type="text" class="form-control" name="repertoire_name" placeholder="Repertoire Name">
                         </div>
@@ -24,6 +27,14 @@
                         <button type="button" class="btn btn-warning show" id="edit-repertoire">Edit</button>
                         <button type="button" class="btn btn-success no-display" id="save-repertoire">Save</button>
                         <button type="button" class="btn btn-danger" id="copy-repertoire">Copy</button>
+                    </td>
+                </tr>
+                <tr class="collapse" id="expandRepertoire">
+                    <td>
+                        Subject
+                    </td>
+                    <td>
+                        Sample Processing
                     </td>
                 </tr>
             </tbody>
