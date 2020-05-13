@@ -1,39 +1,29 @@
 <!--
 - Summary view for a single repertoire
 -->
-<div class="row">
-    <div class="row">
-        <div class="form-group col-md-4">
-            <label>
-                <span class="optional">
-                    <!-- Tooltip
-                    {{{FieldStar "Repertoire" "repertoire_name"}}} -->
-                </span>
-
-                Name
-
-                <!-- Popover
-                {{{FieldHelpPopover "Repertoire" "repertoire_name"}}} -->
-            </label>
-            <input type="text" class="form-control" name="repertoire_name" placeholder="Repertoire Name">
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="form-group col-md-8">
-            <label>
-                <span class="optional">
-                    <!-- Tooltip
-                    {{{FieldStar "Repertoire" "repertoire_description"}}} -->
-                </span>
-
-                Description
-
-                <!-- Popover
-                {{{FieldHelpPopover "Repertoire" "repertoire_description"}}} -->
-            </label>
-            <input type="text" class="form-control" name="repertoire_description" placeholder="Repertoire Description">
-        </div>
-    </div>
-
-</div>
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">jkljk</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="optional" id="rep-name">
+                        <div class="form-group col-md-12 repertoire-name hide">
+                            <input type="text" class="form-control" name="repertoire_name" placeholder="Repertoire Name">
+                        </div>
+                    </td>
+                    <td class="optional repertoire-desc hide" id="rep-desc">
+                        <div class="form-group col-md-12">
+                            <textarea class="form-control" name="repertoire_description" placeholder="Repertoire Description" rows="4"></textarea>
+                        </div>
+                    </td>
+                    <td class="edit">
+                        <button type="button" class="btn btn-warning show" id="edit-repertoire">Edit</button>
+                        <button type="button" class="btn btn-success no-display" id="save-repertoire">Save</button>
+                        <button type="button" class="btn btn-danger" id="copy-repertoire">Copy</button>
+                    </td>
+                </tr>
+            </tbody>

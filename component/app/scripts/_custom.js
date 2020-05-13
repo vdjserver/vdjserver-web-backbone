@@ -6,4 +6,9 @@ $(document).ready(function() {
           console.log("card clicked");
           $(this).addClass("card-active");
       });
+// Click Edit Repertoire button
+    $("#edit-repertoire").click(function() {
+        console.log("clicked from jquery");
+        $(this).addClass("hide");
+    });
 });

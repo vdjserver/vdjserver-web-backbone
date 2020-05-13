@@ -50,7 +50,7 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection } from 'ag
 // Summary view for a single repertoire
 import rep_summary_template from '../../../templates/project/repertoire-summary.html';
 var RepertoireSummaryView = Marionette.View.extend({
-    template: Handlebars.compile(rep_summary_template),
+    template: Handlebars.compile("<table class='table table-borderless table-sm'>" + rep_summary_template + "</table>"),
 
 });
 
@@ -138,6 +138,26 @@ export default Marionette.View.extend({
         // show the create form
         //var view = new CreateRepertoireView();
         //this.showChildView('createRegion', view);
+    },
+
+    editRepertoire(e) {
+        console.log('editRepertoire');
+        $("#edit-repertoire").on("click", function() {
+            $(this).addClass("no-display");
+            $("#save-repertoire").removeClass("no-display");
+            $(".repertoire-name").removeClass("hide");
+            $(".repertoire-desc").removeClass("hide");
+        });
+    },
+
+    saveRepertoire(e) {
+        console.log('saveRepertoire');
+        $('#save-repertoire').on("click", function() {
+            $(this).addClass("no-display");
+            $("#edit-repertoire").removeClass("no-display");
+            $(".repertoire-name").addClass("hide");
+            $(".repertoire-desc").addClass("hide");
+        });
     },
 
     expandRepertoire(e) {
