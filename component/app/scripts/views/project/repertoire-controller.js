@@ -30,7 +30,7 @@ import Handlebars from 'handlebars';
 import SingleRepView from 'rep-view';
 import LoadingView from 'loading-view';
 import { Repertoire, Subject, Diagnosis } from 'agave-metadata';
-import { RepertoireCollection, SubjectCollection, DiagnosisCollection } from 'agave-metadata-collections';
+import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'agave-metadata-collections';
 
 // Repertoire Controller: manages any views associated with viewing a repertoire
 // The basic design is a repertoire collection view
@@ -106,8 +106,9 @@ export default Marionette.View.extend({
         console.log('Initialize');
 
         // TODO: cache these lists
-        this.repertoireList = new RepertoireCollection({projectUuid:this.model.get('uuid')});
-        this.subjectList = new SubjectCollection({projectUuid:this.model.get('uuid')});
+        this.repertoireList = new RepertoireCollection({projectUuid: this.model.get('uuid')});
+        this.subjectList = new SubjectCollection({projectUuid: this.model.get('uuid')});
+        this.sampleList = new SampleCollection({projectUuid: this.model.get('uuid')});
 
         var that = this;
 
@@ -121,7 +122,32 @@ export default Marionette.View.extend({
                 return that.subjectList.fetch();
             })
             .then(function() {
+                // fetch the samples
+                return that.sampleList.fetch();
+            })
+            .then(function() {
+                // attach records to the repertoire
+                for (var i=0; i < that.repertoireList.length; ++i) {
+                    var m = that.repertoireList.at(i);
+                    var value = m.get('value');
+
+                    // attach the subject record
+                    var obj = that.subjectList.get(value['subject']['vdjserver_uuid']);
+                    m.set('subject', obj.get('value'));
+
+                    // attach the sample records
+                    var samples = [];
+                    for (var j=0; j < value['sample'].length; ++j) {
+                        obj = that.sampleList.get(value['sample'][j]['vdjserver_uuid']);
+                        samples.push(obj.get('value'));
+                    }
+                    m.set('samples', samples);
+                }
+
                 console.log(that.repertoireList);
+                console.log(that.subjectList);
+                console.log(that.sampleList);
+
                 // have the view display them
                 that.showChildView('headerRegion', new RepertoireHeaderView());
                 that.showChildView('listRegion', new RepertoireListView({collection: that.repertoireList}));
