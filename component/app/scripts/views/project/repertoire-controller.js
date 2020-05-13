@@ -97,8 +97,7 @@ export default Marionette.View.extend({
     events: {
         'click #create-rep': 'createRepertoire',
 
-        'click #expand-repertoire': 'expandRepertoire',
-        'click #contract-repertoire': 'contractRepertoire',
+        'click #show-details': 'showDetails',
         'click #edit-repertoire': 'editRepertoire',
         'click #save-repertoire': 'saveRepertoire'
     },
@@ -184,9 +183,13 @@ export default Marionette.View.extend({
         });
     },
 
-    expandRepertoire(e) {
+    showDetails(e) {
         console.log('expandRepertoire');
-        e.preventDefault();
+        // e.preventDefault();
+        $("#show-details").on("click", function() {
+            $(this).removeClass("fa-chevron-up");
+            $(this).addClass("fa-chevron-down");
+        })
     },
 
 });
