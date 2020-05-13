@@ -29,7 +29,7 @@
 
 import { Agave } from 'backbone-agave';
 
-import { Repertoire, Subject, Diagnosis } from 'agave-metadata';
+import { Repertoire, Subject, Diagnosis, Sample } from 'agave-metadata';
 
 import { Comparators } from 'comparators-mixin';
 import { FileTransfers } from 'file-transfer-mixins';
@@ -147,6 +147,25 @@ export var DiagnosisCollection = Agave.MetadataCollection.extend(
     })
 );
 
+export var SampleCollection = Agave.MetadataCollection.extend(
+    _.extend({}, Comparators.reverseChronologicalCreatedTime, FileTransfers, {
+        model: Sample,
+        initialize: function(parameters) {
+            Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+
+            if (parameters && parameters.projectUuid) {
+                this.projectUuid = parameters.projectUuid;
+            }
+        },
+        url: function() {
+            return '/meta/v2/data?q='
+                   + encodeURIComponent('{"name":"sample","associationIds":"' + this.projectUuid + '"}')
+                   + '&limit=' + this.limit
+                   + '&offset=' + this.offset
+                   ;
+        },
+    })
+);
 
 /*
 define([

@@ -111,6 +111,46 @@ export var Diagnosis = Agave.MetadataModel.extend({
     },
 });
 
+// Sample model based upon AIRR Sample Processing
+// which is a composite object
+export var Sample = Agave.MetadataModel.extend({
+    defaults: function() {
+        // Use AIRR schema Subject object as basis
+        this.airr_schema = AIRRSchema['SampleProcessing'];
+
+        // make a deep copy from the template
+        var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]['sample'][0]));
+        //console.log(value);
+
+        // add VDJServer specific fields
+        //value['showArchivedJobs'] = false;
+
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'sample',
+                owner: '',
+                value: value
+            }
+        );
+    },
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if (parameters && parameters.projectUuid) {
+            this.projectUuid = parameters.projectUuid;
+            this.set('associationIds', [ parameters.projectUuid ]);
+        }
+    },
+    url: function() {
+        return '/meta/v2/data/' + this.get('uuid');
+    },
+    sync: function(method, model, options) {
+        return Agave.PutOverrideSync(method, this, options);
+    },
+});
+
 // Repertoire model based upon AIRR Repertoire
 //
 // We store the repertoire in normal-form versus
