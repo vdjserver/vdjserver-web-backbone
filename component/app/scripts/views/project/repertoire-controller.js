@@ -50,7 +50,8 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCol
 // Summary view for a single repertoire
 import rep_summary_template from '../../../templates/project/repertoire-summary.html';
 var RepertoireSummaryView = Marionette.View.extend({
-    template: Handlebars.compile("<table class='table table-borderless table-sm'>" + rep_summary_template + "</table>"),
+    template: Handlebars.compile("<div'>" + rep_summary_template + "</div>"),
+    // template: Handlebars.compile("<table class='table table-borderless table-sm'>" + rep_summary_template + "</table>"),
 
 });
 
@@ -191,31 +192,42 @@ export default Marionette.View.extend({
 
     editRepertoire(e) {
         console.log('editRepertoire');
+        e.preventDefault();
+
         $("#edit-repertoire").on("click", function() {
             $(this).addClass("no-display");
             $("#save-repertoire").removeClass("no-display");
-            $(".repertoire-name").removeClass("hide");
-            $(".repertoire-desc").removeClass("hide");
+
+            $(this).closest("#save-repertoire").removeClass("no-display");
+
+            $(".repertoire-name").removeClass("no-display");
+            $(".repertoire-desc").removeClass("no-display");
+
+            // $(this).closest(".repertoire-name").removeClass("no-display");
+            // $(this).closest(".repertoire-desc").removeClass("no-display");
         });
     },
 
     saveRepertoire(e) {
         console.log('saveRepertoire');
+        e.preventDefault();
+
         $('#save-repertoire').on("click", function() {
             $(this).addClass("no-display");
             $("#edit-repertoire").removeClass("no-display");
-            $(".repertoire-name").addClass("hide");
-            $(".repertoire-desc").addClass("hide");
+            $(".repertoire-name").addClass("no-display");
+            $(".repertoire-desc").addClass("no-display");
         });
     },
 
     showDetails(e) {
         console.log('expandRepertoire');
-        // e.preventDefault();
-        $("#show-details").on("click", function() {
-            $(this).removeClass("fa-chevron-up");
-            $(this).addClass("fa-chevron-down");
-        })
-    },
+        e.preventDefault();
+
+        // $("#show-details").click(function () {
+            $(this).closest("#expandRepertoire").toggleClass("collapse");
+            $("#show-details").toggleClass("down");
+        // });
+    }
 
 });

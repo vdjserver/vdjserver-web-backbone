@@ -1,40 +1,52 @@
 <!--
 - Summary view for a single repertoire
 -->
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">jkljk</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="optional" id="rep-name">
-                        <!-- Expand/Collapse button -->
-                        <a class="fa fa-chevron-up" data-toggle="collapse" href="#expandRepertoire" aria-expanded="false" aria-controls="details"></a>
 
-                        <div class="form-group col-md-12 repertoire-name hide">
-                            <input type="text" class="form-control" name="repertoire_name" placeholder="Repertoire Name">
-                        </div>
-                    </td>
-                    <td class="optional repertoire-desc hide" id="rep-desc">
-                        <div class="form-group col-md-12">
-                            <textarea class="form-control" name="repertoire_description" placeholder="Repertoire Description" rows="4"></textarea>
-                        </div>
-                    </td>
-                    <td class="edit">
-                        <button type="button" class="btn btn-warning show" id="edit-repertoire">Edit</button>
-                        <button type="button" class="btn btn-success no-display" id="save-repertoire">Save</button>
-                        <button type="button" class="btn btn-danger" id="copy-repertoire">Copy</button>
-                    </td>
-                </tr>
-                <tr class="collapse" id="expandRepertoire">
-                    <td>
-                        Subject: {{subject.subject_id}}
-                    </td>
-                    <td>
-                        {{samples.length}} Sample Processing
-                    </td>
-                </tr>
-            </tbody>
+<!-- Header Row -->
+<div class="row">
+    <div class="col-md-4">Name</div>
+    <div class="col-md-4">Description</div>
+    <div class="col-md-4"></div>
+</div>
+
+<!-- Repertoire Info Row -->
+<div class="row">
+    <div class="col-md-4" id="rep-name">
+        <a class="fa fa-chevron-up rotate" data-toggle="collapse" href="#details" aria-expanded="false" aria-controls="details" id="show-details"></a>
+
+    </div>
+    <div class="col-md-4">
+
+    </div>
+    <div class="col-md-4 actions">
+        <button type="button" class="btn btn-warning show" id="edit-repertoire">Edit</button>
+        <button type="button" class="btn btn-success no-display" id="save-repertoire">Save</button>
+        <button type="button" class="btn btn-danger" id="copy-repertoire">Copy</button>
+    </div>
+</div>
+
+<!-- Edit Row -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group col-md-12 repertoire-name no-display">
+            <input type="text" class="form-control" name="repertoire_name" placeholder="Repertoire Name">
+        </div>
+    </div>
+    <div class="col-md-4 optional repertoire-desc no-display" id="rep-desc">
+        <div class="form-group col-md-12">
+            <textarea class="form-control" name="repertoire_description" placeholder="Repertoire Description" rows="4"></textarea>
+        </div>
+    </div>
+</div>
+
+<!-- Details -->
+<div class="row">
+    <div class="collapse" id="expandRepertoire">
+        <div class="subject">
+            Subject: {{subject.subject_id}}v
+        </div>
+        <div class="sample">
+            {{samples.length}} Sample Processing
+        </div>
+    </div>
+</div>
