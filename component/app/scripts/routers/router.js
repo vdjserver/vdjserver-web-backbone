@@ -75,8 +75,8 @@ export default Backbone.Router.extend({
         'project/:id/file':                 'projectFile',
         'project/:id/analysis':             'projectAnalysis',
         'community':                        'communityList',
-        'project/:id/repertoire':           'createRepertoire',
-        
+        'project/:id/repertoire/create':           'createRepertoire',
+        'project/:id/repertoire/create/subject': 'addSubject',
         // 404
         '*notFound': 'notFound',
     },
@@ -144,6 +144,11 @@ export default Backbone.Router.extend({
     // Create page for a repertoire
     createRepertoire: function(projectUuid) {
         this.projectPage(projectUuid, 'createRepertoire');
+    },
+
+    // Add Subject page for a Repertoire
+    addSubject: function(projectUuid) {
+        this.projectPage(projectUuid, 'addSubject');
     },
 
     // Community Project Summary List

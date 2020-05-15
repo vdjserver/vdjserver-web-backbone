@@ -73,6 +73,12 @@ var CreateRepertoireView = Marionette.View.extend({
     template: Handlebars.compile(create_template)
 });
 
+// Add Subject to repertoire View
+import addSubject_template from '../../../templates/project/add-subject.html';
+var AddSubjectView = Marionette.View.extend({
+    template: Handlebars.compile(addSubject_template)
+});
+
 // Repertoire view
 import RepertoireController from 'repertoire-controller';
 
@@ -161,8 +167,14 @@ export default Marionette.View.extend({
         // setting event for Create a Repertoire page
         'click #create-rep': function() {
             App.router.navigate('project/' +
-            this.model.get('uuid') + '/analysis', {trigger: false});
+            this.model.get('uuid') + '/create', {trigger: false});
             this.showCreateRepertoire();
+        },
+
+        'click #add-subject': function() {
+            App.router.navigate('project/' +
+            this.model.get('uuid') + '/create/subject', {trigger: false});
+            this.showAddSubject();
         }
     },
 
@@ -201,5 +213,10 @@ export default Marionette.View.extend({
         this.detailView = new CreateRepertoireView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
+
+    showAddSubject() {
+        this.detailView = new AddSubjectView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
+    }
 
 });
