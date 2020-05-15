@@ -68,7 +68,7 @@ var ProjectOverView = Marionette.View.extend({
 });
 
 // Create new repertoire view
-import create_template from '../../../templates/project/create-rep.html';
+import create_template from '../../../templates/project/create-repertoire.html';
 var CreateRepertoireView = Marionette.View.extend({
     template: Handlebars.compile(create_template)
 });
@@ -157,6 +157,13 @@ export default Marionette.View.extend({
             App.router.navigate('project/' + this.model.get('uuid') + '/analysis', {trigger: false});
             this.showProjectAnalyses();
         },
+
+        // setting event for Create a Repertoire page
+        'click #create-rep': function() {
+            App.router.navigate('project/' +
+            this.model.get('uuid') + '/analysis', {trigger: false});
+            this.showCreateRepertoire();
+        }
     },
 
     showProjectOverview()
@@ -186,6 +193,12 @@ export default Marionette.View.extend({
     showProjectAnalyses()
     {
         this.detailView = new AnalysesView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
+    },
+
+    showCreateRepertoire()
+    {
+        this.detailView = new CreateRepertoireView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
 

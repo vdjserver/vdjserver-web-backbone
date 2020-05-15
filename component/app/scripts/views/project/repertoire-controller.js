@@ -176,14 +176,14 @@ export default Marionette.View.extend({
 
     createRepertoire(e) {
         console.log('createRepertoire');
-        e.preventDefault();
+        //e.preventDefault();
 
-        // Create an empty Repertoire object
-        this.currentRepertoire = new Repertoire({projectUuid: this.model.get('uuid')});
-        this.currentRepertoire.set('uuid',this.currentRepertoire.cid);
-
-        // Add it to the list
-        this.repertoireList.add(this.currentRepertoire);
+        // // Create an empty Repertoire object
+        // this.currentRepertoire = new Repertoire({projectUuid: this.model.get('uuid')});
+        // this.currentRepertoire.set('uuid',this.currentRepertoire.cid);
+        //
+        // // Add it to the list
+        // this.repertoireList.add(this.currentRepertoire);
 
         // show the create form
         //var view = new CreateRepertoireView();
@@ -202,9 +202,6 @@ export default Marionette.View.extend({
 
             $(".repertoire-name").removeClass("no-display");
             $(".repertoire-desc").removeClass("no-display");
-
-            // $(this).closest(".repertoire-name").removeClass("no-display");
-            // $(this).closest(".repertoire-desc").removeClass("no-display");
         });
     },
 
@@ -225,7 +222,7 @@ export default Marionette.View.extend({
         e.preventDefault();
 
         // $("#show-details").click(function () {
-            $(this).closest("#expandRepertoire").toggleClass("collapse");
+            $(this).closest("#details").toggleClass("collapse");
             $("#show-details").toggleClass("down");
         // });
     }

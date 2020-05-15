@@ -3,7 +3,7 @@ Configuring view for an "Create a Repertoire" page
 ********************************************************/
 
 import Marionette from 'backbone.marionette';
-import template from '../../../templates/project/create-rep.html';
+import template from '../../../templates/project/create-repertoire.html';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'agave-project';
