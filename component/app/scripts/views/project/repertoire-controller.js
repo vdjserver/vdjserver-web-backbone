@@ -195,7 +195,7 @@ export default Marionette.View.extend({
         console.log('editRepertoire');
         e.preventDefault();
 
-        $("#edit-repertoire").on("click", function() {
+        // $("#edit-repertoire").on("click", function() {
             $(this).addClass("no-display");
             $("#save-repertoire").removeClass("no-display");
 
@@ -203,19 +203,19 @@ export default Marionette.View.extend({
 
             $(".repertoire-name").removeClass("no-display");
             $(".repertoire-desc").removeClass("no-display");
-        });
+        // });
     },
 
     saveRepertoire(e) {
         console.log('saveRepertoire');
         e.preventDefault();
 
-        $('#save-repertoire').on("click", function() {
+        // $('#save-repertoire').on("click", function() {
             $(this).addClass("no-display");
             $("#edit-repertoire").removeClass("no-display");
             $(".repertoire-name").addClass("no-display");
             $(".repertoire-desc").addClass("no-display");
-        });
+        // });
     },
 
     showDetails(e) {

@@ -1,125 +1,273 @@
-<!-- <div class="steps">
-    <ul>
-        <li class="progress-step">Subject Metadata <i class="fa fa-circle"></i></li>
-        <li class="progress-step">Diagnosis Metadata <i class="fa fa-circle"></i></li>
-        <li class="progress-step">Sample Metadata <i class="fa fa-circle"></i></li>
-        <li class="progress-step">Cell Processing Metadata <i class="fa fa-circle"></i></li>
-        <li class="progress-step">Nucleic Acid Processing Metadata <i class="fa fa-circle"></i></li>
-        <li class="progress-step">Sample Groups</li>
-    </ul>
-</div> -->
-
 <div class="alert alert-info">
-    <i class="fa fa-info-circle"></i> Create a new repertoire by filling out the form below.
+    <i class="fa fa-info-circle"></i> Add Subject information to the repertoire by filling out the form below.
 </div>
 
 <form method="post" role="form">
-    <h2>Subject Metadata</h2>
-    <button type="button" class="btn btn-warning" id="add-subject"><i class="fa fa-plus"></i> Add Subject</button>
+    <h2>Subject Information</h2>
     <button type="button" class="btn btn-primary" id="subject-Metadata"><i class="fa fa-upload"></i> Import Subject Metadata</button>
 
-    <table class='table'>
-        <thead class='thead-light'>
+    <form method="post" role="form" id="repertoire-form" class="needs-validation" name="subject" novalidate>
+        <div class="form-group col-md-8">
+            <h3>Subject Metadata</h3>
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Subject ID
+
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="subject_id" id="subject_id" placeholder="">
+            <div class="invalid-feedback">
+                Please enter a valid Subject ID.
+            </div>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Synthetic
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="synthetic" id="synthetic" placeholder="">
+            <div class="invalid-feedback">
+                Please enter a valid Synthetic.
+            </div>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip-->
+                </span>
+                Organism
+                <!-- Popover -->
+            </label>
+            <select class="custom-select" id="organism">
+              <option value="1">Human</option>
+              <option value="2">Monkey</option>
+              <option vale="3">Mouse</option>
+            </select>
+        </div>
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Sex
+                <!-- Popover -->
+            </label>
+
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sex-female" id="sex-female" value="female" checked>
+              <label class="form-check-label" for="sex-female">
+                Female
+              </label>
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sex-male" id="sex-male" value="male">
+              <label class="form-check-label" for="sex-male">
+                Male
+              </label>
+              <div class="invalid-feedback">
+                  Please enter a valid Sex.
+              </div>
+            </div>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Age
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="age" id="age" placeholder="">
+            <div class="invalid-feedback">
+                Please enter a valid Age.
+            </div>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Age Event
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="age-event" id="age-event" placeholder="">
+            <div class="invalid-feedback">
+                Please enter a valid Age Event.
+            </div>
+        </div>
+
+        <div class="form-group col-md-8 col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Ancestry Population
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="ancestry-population" id="ancestry-population" placeholder="">
+            <div class="invalid-feedback">
+                Please enter a valid Ancestry Population.
+            </div>
+        </div>
+
+        <div class="form-group col-md-8 col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Ethnicity
+                <!-- Popover -->
+            </label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="non-hispanic" id="non-hispanic" value="non-hispanic" checked>
+            <label class="form-check-label" for="non-hispanic">
+              Non-Hispanic
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="hispanic" id="hispanic" value="hispanic">
+            <label class="form-check-label" for="hispanic">
+              Hispanic
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group col-md-8 col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip-->
+                </span>
+                Race
+                <!-- Popover -->
+            </label>
+            <select class="custom-select" id="race">
+              <option value="1">African American</option>
+              <option value="2">Asian/Pacific Islander</option>
+              <option value="3">Native American</option>
+              <option value="4">White</option>
+            </select>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Strain Event
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="strain-event" id="strain-event" placeholder="">
+            <div class="invalid-feedback">
+                Please enter a valid Strain Event.
+            </div>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Linked Subjects
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="linked-subjects" id="linked-subjects" placeholder="">
+            <div class="invalid-feedback">
+                Please enter a valid Linked Subjects.
+            </div>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Link Types
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="link-types" id="link-types" placeholder="">
+            <div class="invalid-feedback">
+                Please enter valid Link Types.
+            </div>
+        </div>
+    </form>
+
+    <!-- Display all of the subjects that have been added -->
+    <!--<table class="table">
+        <thead class="thead-light">
             <tr>
-                <th scope='col'>Subject ID</th>
-                <th scope='col'>Synthetic</th>
-                <th scope='col'>Organism</th>
-                <th scope='col'>Sex</th>
-                <th scope='col'>Age</th>
-                <th scope='col'>Age Event</th>
-                <th scope='col'>Ancestry Population</th>
-                <th scope='col'>Ethnicity</th>
-                <th scope='col'>Race</th>
-                <th scope='col'>Strain Name</th>
-                <th scope='col'>Linked Subjects</th>
-                <th scope='col'>Link Types</th>
+                <th scope="col">Subject ID</th>
+                <th scope="col">Synthetic</th>
+                <th scope="col">Organism</th>
+                <th scope="col">Sex</th>
+                <th scope="col">Age</th>
+                <th scope="col">Age Event</th>
+                <th scope="col">Ancestry Population</th>
+                <th scope="col">Ethnicity</th>
+                <th scope="col">Race</th>
+                <th scope="col">Strain Name</th>
+                <th scope="col">Linked Subjects</th>
+                <th scope="col">Link Types</th>
             </tr>
             <tbody>
                 <tr scope="row">
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Subject ID" name="subjectID" id="subjectID">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Synthetic" name="synthetic" id="synthetic">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Organism" name="organism" id="organism">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="sex" name="sex" id="sex">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="age" name="age" id="age">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Age Event" name="ageEvent" id="ageEvent">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Ancestry Population" name="ancestryPop" id="ancestryPop">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Ethnicity" name="ethnicity" id="ethnicity">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Race" name="race" id="race">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Strain Name" name="strainName" id="strainName">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Linked Subjects" name="linkedSubjects" id="linkedSubjects">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Link Types" name="linkTypes" id="linkTypes">
-                        </div>
-                    </td>
-                </tr>
-                <!-- Insert another row if "Add Another Subject" button is clicked -->
-            </tbody>
-        </thead>
-    </table>
-    <div class="rep-actions">
-        <button type="button" class="btn btn-warning" id="save-subject"><i class="fa fa-save"></i> Save</button>
-        <button type="button" class="btn btn-primary" id="add-subject"><i class="fa fa-plus"></i> Add Another Subject</button>
-    </div>
-<!--
-    <h2>Diagnosis Metadata</h2>
-    Subject ID Synthetic Organism Sex Age AgeEvent AncestryPopulation Ethnicity Race StrainName LinkedSubjects LinkTypes
-    <h2>Sample Metadata</h2>
-    SampleID Subject SampleType Tissue AnatomicSite DiseaseStateSample CollectionTimePoint(Relative) CollectionTimePoint(Reference) BiomaterialProvider
-    <h2>Cell Processing Metadata</h2>
-    CellProcessingID SampleUUID TissueProcesing CellSubset CellPhenotype SingleCell CellNumber CellsPerReaction CellStorage CellQuality CellIsolation CellProcessingProtocol
-    <h2>Nucleic Acid Processing Metadata</h2>
-    CellProcessingID SampleUUID TissueProcesing CellSubset CellPhenotype SingleCell CellNumber CellsPerReaction CellStorage CellQuality CellIsolation CellProcessingProtocol
-    <h2>Sample Groups</h2>
-    CellProcessingID SampleUUID TissueProcesing CellSubset CellPhenotype SingleCell CellNumber CellsPerReaction CellStorage CellQuality CellIsolation CellProcessingProtocol -->
+                    <td class="subject_id"
 
-    <div class="form-group">
-        <div class="col-sm-12 col-md-4 mx-auto">
-            <input type="submit" value="Create a Repertoire" class="btn btn-success btn-block">
+                    </td>
+                    <td class="synthetic">
+
+                    </td>
+                    <td class="organism">
+
+                    </td>
+                    <td class="sex">
+
+                    </td>
+                    <td class="age">
+
+                    </td>
+                    <td class="age-event">
+
+                    </td>
+                    <td class="ancestry-population">
+
+                    </td>
+                    <td class="ethnicity">
+
+                    </td>
+                    <td class="race">
+
+                    </td>
+                    <td class="strain-name">
+
+                    </td>
+                    <td class="linked-subjects">
+
+                    </td>
+                    <td class="link-types">
+
+                    </td>
+                </tr>-->
+                <!-- Insert another row if "Add Another Subject" button is clicked -->
+            <!--</tbody>
+        </thead>
+    </table>-->
+
+        <div class="rep-back-actions">
+            <button type="button" class="btn btn-primary" id="add-subject"><i class="fa fa-angle-double-left"></i> Back to Repertoire Metadata</button>
         </div>
-    </div>
-</form>
+
+        <div class="rep-next-actions">
+            <button type="button" class="btn btn-warning" id="save-subject"><i class="fa fa-save"></i> Save and Finish Later</button>
+            <button type="button" class="btn btn-primary" id="add-subject"><i class="fa fa-angle-double-right"></i> Add Diagnosis Information</button>
+        </div>

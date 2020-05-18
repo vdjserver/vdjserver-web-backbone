@@ -1,15 +1,23 @@
 /*****************************************************
 SASS for "Create a Repertoire" page
 *****************************************************/
+.steps {
+    text-align: center;
+}
+
 li.progress-step {
     display: inline;
     list-style-type: none;
+
+    .step {
+        padding: 1%;
+    }
 }
 
-.fa-circle {
-    padding: 1.25em;
+.rep-back-actions {
+    float: left;
 }
 
-.rep-actions {
+.rep-next-actions {
     float: right;
 }
