@@ -67,16 +67,28 @@ var ProjectOverView = Marionette.View.extend({
     template: Handlebars.compile(overview_template)
 });
 
-// Create new repertoire view
+// Create New Repertoire view
 import create_template from '../../../templates/project/create-repertoire.html';
 var CreateRepertoireView = Marionette.View.extend({
     template: Handlebars.compile(create_template)
 });
 
-// Add Subject to repertoire View
+// Add Subject to Repertoire View
 import addSubject_template from '../../../templates/project/add-subject.html';
 var AddSubjectView = Marionette.View.extend({
     template: Handlebars.compile(addSubject_template)
+});
+
+// Add Diagnosis to Repertoire View
+import addDiagnosis_template from '../../../templates/project/add-diagnosis.html';
+var AddDiagnosisView = Marionette.View.extend({
+    template: Handlebars.compile(addDiagnosis_template)
+});
+
+// Add Sample to Repertoire View
+import addSample_template from '../../../templates/project/add-sample.html';
+var AddSampleView = Marionette.View.extend({
+    template: Handlebars.compile(addSample_template)
 });
 
 // Repertoire view
@@ -175,6 +187,18 @@ export default Marionette.View.extend({
             App.router.navigate('project/' +
             this.model.get('uuid') + '/create/subject', {trigger: false});
             this.showAddSubject();
+        },
+
+        'click #add-diagnosis': function() {
+            App.router.navigate('project/' +
+            this.model.get('uuid') + '/create/subject/diagnosis', {trigger: false});
+            this.showAddDiagnosis();
+        },
+
+        'click #add-sample': function() {
+            App.router.navigate('project/' +
+            this.model.get('uuid') + '/create/sample', {trigger: false});
+            this.showAddSample();
         }
     },
 
@@ -216,6 +240,16 @@ export default Marionette.View.extend({
 
     showAddSubject() {
         this.detailView = new AddSubjectView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
+    },
+
+    showAddDiagnosis() {
+        this.detailView = new AddDiagnosisView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
+    },
+
+    showAddSample() {
+        this.detailView = new AddSampleView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     }
 

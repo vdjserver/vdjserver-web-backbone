@@ -101,7 +101,6 @@ export default Marionette.View.extend({
         'click #show-details': 'showDetails',
         'click #edit-repertoire': 'editRepertoire',
         'click #save-repertoire': 'saveRepertoire',
-        // 'click #add-subject': 'addSubject',
     },
 
     initialize(options) {
@@ -227,5 +226,4 @@ export default Marionette.View.extend({
             $("#show-details").toggleClass("down");
         // });
     }
-
 });

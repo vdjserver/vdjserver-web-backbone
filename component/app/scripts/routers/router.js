@@ -77,6 +77,9 @@ export default Backbone.Router.extend({
         'community':                        'communityList',
         'project/:id/repertoire/create':           'createRepertoire',
         'project/:id/repertoire/create/subject': 'addSubject',
+        'project/:id/repertoire/create/subject/diagnosis': 'addDiagnosis',
+        'project/:id/repetoire/create/sample': 'addSample',
+
         // 404
         '*notFound': 'notFound',
     },
@@ -149,6 +152,11 @@ export default Backbone.Router.extend({
     // Add Subject page for a Repertoire
     addSubject: function(projectUuid) {
         this.projectPage(projectUuid, 'addSubject');
+    },
+
+    // Add Diagnosis page for a Repertoire
+    addDiagnosis: function(projectUuid) {
+        this.projectPage(projectUuid, 'addDiagnosis');
     },
 
     // Community Project Summary List

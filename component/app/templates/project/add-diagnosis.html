@@ -1,0 +1,150 @@
+<div class="alert alert-info">
+    <i class="fa fa-info-circle"></i> Add Diagnosis information to the repertoire's subject by filling out the form below.
+</div>
+<h2>Add Diagnosis</h2>
+
+<p>Subject Information:</p>
+<!-- Display Summary of Subject Information so user knows what subject they are adding Diagnosis data to -->
+
+<form method="post" role="form" id="addDiagnosis-form" class="needs-validation" name="diagnosis" novalidate>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Study Group Description
+        <!-- Popover -->
+        </label>
+        <textarea class="form-control" name="study-group-description" id="study-group-desc" rows="3"></textarea>
+    </div>
+
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Disease Diagnosis
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="disease-diagnosis" id="disease-diagnosis" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid disease diagnosis.
+        </div>
+    </div>
+
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Disease Length
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="disease-length" id="disease-length" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid disease length.
+        </div>
+    </div>
+
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Disease Stage
+            <!-- Popover -->
+        </label>
+        <select class="custom-select" id="disease-stage">
+          <option value="1"><!-- Disease Stage Option 1 --></option>
+          <option value="2"><!-- Disease Stage Option 2 --></option>
+          <option vale="3"><!-- Disease Stage Option 3 --></option>
+        </select>
+        <div class="invalid-feedback">
+            Please enter a valid disease stage.
+        </div>
+    </div>
+
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Prior Therapies
+            <!-- Popover -->
+        </label>
+        <div class="form-check" id="disease-stage">
+            <input class="form-check-input" type="checkbox" value="" id="prior-therapy-1">
+            <label class="form-check-label" for="prior-therapy-1">
+              Prior Therapy Option 1
+            </label>
+        </div>
+
+        <div class="form-check" id="disease-stage">
+            <input class="form-check-input" type="checkbox" value="" id="prior-therapy-2">
+            <label class="form-check-label" for="prior-therapy-2">
+              Prior Therapy Option 2
+            </label>
+        </div>
+
+        <div class="form-check" id="disease-stage">
+            <input class="form-check-input" type="checkbox" value="" id="prior-therapy-3">
+            <label class="form-check-label" for="prior-therapy-3">
+              Prior Therapy Option 3
+            </label>
+        </div>
+
+        <div class="form-check" id="disease-stage">
+            <input class="form-check-input" type="checkbox" value="" id="prior-therapy-4">
+            <label class="form-check-label" for="prior-therapy-4">
+              Prior Therapy Option 4
+            </label>
+        </div>
+        <div class="invalid-feedback">
+            Please enter a valid prior therapy option.
+        </div>
+    </div>
+
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Immunogen
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="immunogen" id="immunogen" placeholder"">
+        <div class="invalid-feedback">
+            Please enter valid immunogen data.
+        </div>
+    </div>
+
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Intervention
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="intervention" id="intervention" placeholder"">
+        <div class="invalid-feedback">
+            Please enter valid intervention data.
+        </div>
+    </div>
+
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Medical History
+        <!-- Popover -->
+        </label>
+        <textarea class="form-control" name="medical-history" id="medical-history" rows="3"></textarea>
+    </div>
+</form>
+
+<div class="rep-next-actions">
+    <button type="button" class="btn btn-warning" id="save-diagnosis"><i class="fa fa-save"></i> Save and Finish Later</button>
+    <button type="button" class="btn btn-primary" id="add-sample"><i class="fa fa-angle-double-right"></i> Add Sample Information</button>
+</div>

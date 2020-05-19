@@ -162,10 +162,10 @@ var ApplicationController = Marionette.View.extend({
     },
 
     // Using repertoire controller to display information about a specific repertoire
-    showRepPage() {
-        console.log('showRepPage');
-
-    },
+    // showRepPage() {
+    //     console.log('showRepPage');
+    //
+    // },
 
     // A single modal region is used for the whole application
     // This mainly attaches the view to the region
