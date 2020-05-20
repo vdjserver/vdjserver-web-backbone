@@ -91,6 +91,24 @@ var AddSampleView = Marionette.View.extend({
     template: Handlebars.compile(addSample_template)
 });
 
+// Add Cell Processing to Repertoire View
+import addCell_template from '../../../templates/project/add-cell.html';
+var AddCellView = Marionette.View.extend({
+    template: Handlebars.compile(addCell_template)
+});
+
+// Add Nucleic Acid to Repertoire View
+import addNucleic_template from '../../../templates/project/add-nucleic.html';
+var AddNucleicView = Marionette.View.extend({
+    template: Handlebars.compile(addNucleic_template)
+});
+
+// Add Sample Groups to Repertoire View
+import addSampleGroups_template from '../../../templates/project/add-sample-groups.html';
+var AddSampleGroupsView = Marionette.View.extend({
+    template: Handlebars.compile(addSampleGroups_template)
+});
+
 // Repertoire view
 import RepertoireController from 'repertoire-controller';
 
@@ -199,7 +217,25 @@ export default Marionette.View.extend({
             App.router.navigate('project/' +
             this.model.get('uuid') + '/create/sample', {trigger: false});
             this.showAddSample();
-        }
+        },
+
+        'click #add-cell': function() {
+            App.router.navigate('project/' +
+            this.model.get('uuid') + '/create/sample/cell', {trigger: false});
+            this.showAddCell();
+        },
+
+        'click #add-nucleic': function() {
+            App.router.navigate('project/' +
+            this.model.get('uuid') + '/create/sample/nucleic', {trigger: false});
+            this.showAddNucleic();
+        },
+
+        'click #add-sample-groups': function() {
+            App.router.navigate('project/' +
+            this.model.get('uuid') + '/create/sample/sample-groups', {trigger: false});
+            this.showAddSampleGroups();
+        },
     },
 
     showProjectOverview()
@@ -251,6 +287,20 @@ export default Marionette.View.extend({
     showAddSample() {
         this.detailView = new AddSampleView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
-    }
+    },
 
+    showAddCell() {
+        this.detailView = new AddCellView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
+    },
+
+    showAddNucleic() {
+        this.detailView = new AddNucleicView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
+    },
+
+    showAddSampleGroups() {
+        this.detailView = new AddSampleGroupsView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
+    }
 });

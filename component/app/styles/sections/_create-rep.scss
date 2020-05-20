@@ -21,3 +21,25 @@ li.progress-step {
 .rep-next-actions {
     float: right;
 }
+
+// Create A Subject
+#uploadSubject {
+    width: 0.1px; // customizing file input
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+#uploadSubject + label {
+	cursor: pointer; // "hand" cursor
+}
+
+#addSubject-form {
+    width: 70%;
+}
+
+#age.form-control {
+    width: 8%;
+}

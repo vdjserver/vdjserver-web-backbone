@@ -2,9 +2,19 @@
     <i class="fa fa-info-circle"></i> Add Subject information to the repertoire by filling out the form below.
 </div>
 
-<form method="post" role="form">
+
     <h2>Subject Information</h2>
-    <button type="button" class="btn btn-primary" id="subject-Metadata"><i class="fa fa-upload"></i> Import Subject Metadata</button>
+    <form>
+        <div class="form-group">
+          <input type="file" name="uploadSubject" class="form-control-file" id="uploadSubject">
+          <label for="uploadSubject" class="btn btn-primary">
+            <i class="fa fa-upload"></i>
+            Import Subject Metadata
+          </label>
+      </div>
+  </form>
+
+    <!-- <button type="button" class="btn btn-primary" id="subject-Metadata"></button> -->
 
     <form method="post" role="form" id="addSubject-form" class="needs-validation" name="subject" novalidate>
         <div class="form-group col-md-8">
@@ -264,7 +274,7 @@
     </table>-->
 
         <div class="rep-back-actions">
-            <button type="button" class="btn btn-primary" id="add-subject"><i class="fa fa-angle-double-left"></i> Back to Repertoire Metadata</button>
+            <button type="button" class="btn btn-primary" id="repMetadata"><i class="fa fa-angle-double-left"></i> Back to Repertoire Metadata</button>
         </div>
 
         <div class="rep-next-actions">
