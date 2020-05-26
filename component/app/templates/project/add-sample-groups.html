@@ -5,7 +5,99 @@
 Select a Sample:
 
 <h2>Add Sample Groups</h2>
-
+<form method="post" role="form" id="addSampleGroups-form" class="needs-validation" name="diagnosis" novalidate>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Group Name
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="group-name" id="group-name" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid group name.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Group By
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="group-by" id="group-by" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid group by.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Samples
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="samples" id="samples" placeholder"">
+        <div class="invalid-feedback">
+            Please enter valid samples.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Group Description
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="group-description" id="group-description" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid group description.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Logical
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="logical" id="logical" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid logical.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Acid Processing Fields
+            <!-- Popover -->
+        </label>
+        <select class="custom-select" id="acid-processing">
+            <option value="1">
+                <!-- Acid Processing Fields Option 1 -->
+            </option>
+            <option value="2">
+                <!-- Acid Processing Fields Option 2 -->
+            </option>
+            <option value="3">
+                <!-- Acid Processing Fields Option 3 -->
+            </option>
+            <option value="3">
+                <!-- Acid Processing Fields Option 3 -->
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            Please enter acid processing fields.
+        </div>
+    </div>
+</form>
 <div class="rep-next-actions">
     <button type="button" class="btn btn-warning" id="save-sample-groups"><i class="fa fa-save"></i> Save</button>
 </div>

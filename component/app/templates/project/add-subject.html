@@ -12,9 +12,7 @@
             Import Subject Metadata
           </label>
       </div>
-  </form>
-
-    <!-- <button type="button" class="btn btn-primary" id="subject-Metadata"></button> -->
+    </form>
 
     <form method="post" role="form" id="addSubject-form" class="needs-validation" name="subject" novalidate>
         <div class="form-group col-md-8">
@@ -41,26 +39,37 @@
                 Synthetic
                 <!-- Popover -->
             </label>
-            <input type="text" class="form-control" name="synthetic" id="synthetic" placeholder="">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="synthetic-yes" id="synthetic-yes">
+                <label class="form-check-label" for="synthetic-yes">
+                    Yes
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="synthetic-no" id="synthetic-no">
+                <label class="form-check-label" for="synthetic-no">
+                    No
+                </label>
+            </div>
             <div class="invalid-feedback">
                 Please enter a valid Synthetic.
             </div>
         </div>
-
         <div class="form-group col-md-8">
             <label>
                 <span>
                     <!-- Tooltip-->
                 </span>
-                Organism
+                Species
                 <!-- Popover -->
             </label>
-            <select class="custom-select" id="organism">
+            <select class="custom-select" id="species" required>
               <option value="1">Human</option>
               <option value="2">Monkey</option>
               <option vale="3">Mouse</option>
             </select>
         </div>
+        <!-- AIRR Standards have Sex as a "string", so removing radio buttons-->
         <div class="form-group col-md-8">
             <label>
                 <span>
@@ -70,7 +79,7 @@
                 <!-- Popover -->
             </label>
 
-            <div class="form-check">
+            <!-- <div class="form-check">
               <input class="form-check-input" type="radio" name="sex-female" id="sex-female" value="female" checked>
               <label class="form-check-label" for="sex-female">
                 Female
@@ -81,10 +90,24 @@
               <input class="form-check-input" type="radio" name="sex-male" id="sex-male" value="male">
               <label class="form-check-label" for="sex-male">
                 Male
-              </label>
+              </label> -->
+              <input type="text" class="form-control" name="sex" id="sex" placeholder="" required>
               <div class="invalid-feedback">
                   Please enter a valid Sex.
               </div>
+            </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Minimum Age
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="age_min" id="age_min" placeholder="" required>
+            <div class="invalid-feedback">
+                Please enter a valid Minimum Age.
             </div>
         </div>
 
@@ -93,12 +116,26 @@
                 <span>
                     <!-- Tooltip -->
                 </span>
-                Age
+                Maximum Age
                 <!-- Popover -->
             </label>
-            <input type="text" class="form-control" name="age" id="age" placeholder="">
+            <input type="text" class="form-control" name="age_max" id="age_max" placeholder="" required>
             <div class="invalid-feedback">
-                Please enter a valid Age.
+                Please enter a valid Maximum Age.
+            </div>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Age Unit
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="age_unit" id="age_unit" placeholder="" required>
+            <div class="invalid-feedback">
+                Please enter a valid Age Unit.
             </div>
         </div>
 
@@ -110,63 +147,10 @@
                 Age Event
                 <!-- Popover -->
             </label>
-            <input type="text" class="form-control" name="age-event" id="age-event" placeholder="">
+            <input type="text" class="form-control" name="age_event" id="age_event" placeholder="" required>
             <div class="invalid-feedback">
                 Please enter a valid Age Event.
             </div>
-        </div>
-
-        <div class="form-group col-md-8 col-md-8">
-            <label>
-                <span>
-                    <!-- Tooltip -->
-                </span>
-                Ancestry Population
-                <!-- Popover -->
-            </label>
-            <input type="text" class="form-control" name="ancestry-population" id="ancestry-population" placeholder="">
-            <div class="invalid-feedback">
-                Please enter a valid Ancestry Population.
-            </div>
-        </div>
-
-        <div class="form-group col-md-8 col-md-8">
-            <label>
-                <span>
-                    <!-- Tooltip -->
-                </span>
-                Ethnicity
-                <!-- Popover -->
-            </label>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="non-hispanic" id="non-hispanic" value="non-hispanic" checked>
-            <label class="form-check-label" for="non-hispanic">
-              Non-Hispanic
-            </label>
-          </div>
-
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="hispanic" id="hispanic" value="hispanic">
-            <label class="form-check-label" for="hispanic">
-              Hispanic
-            </label>
-          </div>
-        </div>
-
-        <div class="form-group col-md-8 col-md-8">
-            <label>
-                <span>
-                    <!-- Tooltip-->
-                </span>
-                Race
-                <!-- Popover -->
-            </label>
-            <select class="custom-select" id="race">
-              <option value="1">African American</option>
-              <option value="2">Asian/Pacific Islander</option>
-              <option value="3">Native American</option>
-              <option value="4">White</option>
-            </select>
         </div>
 
         <div class="form-group col-md-8">
@@ -174,12 +158,55 @@
                 <span>
                     <!-- Tooltip -->
                 </span>
-                Strain Event
+                Ancestry Population
                 <!-- Popover -->
             </label>
-            <input type="text" class="form-control" name="strain-event" id="strain-event" placeholder="">
+            <input type="text" class="form-control" name="ancestry-population" id="ancestry-population" placeholder="" required>
             <div class="invalid-feedback">
-                Please enter a valid Strain Event.
+                Please enter a valid Ancestry Population.
+            </div>
+        </div>
+
+        <!-- AIRR Standards require a string for "Ethnicity" -->
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Ethnicity
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="ethnicity" id="ethnicity" placeholder="" required>
+            <div class="invalid-feedback">
+                Please enter a valid Ethnicity.
+            </div>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip-->
+                </span>
+                Race
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="race" id="race" placeholder="" required>
+            <div class="invalid-feedback">
+                Please enter a valid Race.
+            </div>
+        </div>
+
+        <div class="form-group col-md-8">
+            <label>
+                <span>
+                    <!-- Tooltip -->
+                </span>
+                Strain Name
+                <!-- Popover -->
+            </label>
+            <input type="text" class="form-control" name="strain_name" id="strain_name" placeholder="" required>
+            <div class="invalid-feedback">
+                Please enter a valid Strain Name.
             </div>
         </div>
 
@@ -191,7 +218,7 @@
                 Linked Subjects
                 <!-- Popover -->
             </label>
-            <input type="text" class="form-control" name="linked-subjects" id="linked-subjects" placeholder="">
+            <input type="text" class="form-control" name="linked_subjects" id="linked_subjects" placeholder="" required>
             <div class="invalid-feedback">
                 Please enter a valid Linked Subjects.
             </div>
@@ -202,12 +229,12 @@
                 <span>
                     <!-- Tooltip -->
                 </span>
-                Link Types
+                Link Type
                 <!-- Popover -->
             </label>
-            <input type="text" class="form-control" name="link-types" id="link-types" placeholder="">
+            <input type="text" class="form-control" name="link_type" id="link_type" placeholder="" required>
             <div class="invalid-feedback">
-                Please enter valid Link Types.
+                Please enter valid a Link Type.
             </div>
         </div>
     </form>

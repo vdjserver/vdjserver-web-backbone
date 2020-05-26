@@ -6,6 +6,147 @@ Select a repertoire:
 
 <h2>Add Sample</h2>
 
+<form method="post" role="form" id="addSample-form" class="needs-validation" name="sample" novalidate>
+    <div class="form-group col-md-3">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Sample ID
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="sample-id" id="sample-id" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid sample ID.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Subject Name
+            <!-- Popover -->
+        </label>
+        <!-- This should pre-populate with the subject's information -->
+        <input type="text" class="form-control" name="sample-id" id="sample-id" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid subject.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Sample Type
+            <!-- Popover -->
+        </label>
+        <select class="custom-select" id="sample-type">
+            <option value="1">
+                <!-- Sample Type Option 1 -->
+            </option>
+            <option value="2">
+                <!-- Sample Type Option 2 -->
+            </option>
+            <option value="3">
+                <!-- Sample Type Option 3 -->
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            Please enter a valid sample type.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Tissue
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="tissue" id="tissue" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid tissue.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Anatomic Site
+            <!-- Popover -->
+        </label>
+        <select class="custom-select" id="anatomic-site">
+            <option value="1">
+                <!-- Sample Type Option 1 -->
+            </option>
+            <option value="2">
+                <!-- Sample Type Option 2 -->
+            </option>
+            <option value="3">
+                <!-- Sample Type Option 3 -->
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            Please enter a valid anatomic site.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Disease State Sample
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="disease-state" id="disease-state" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid disease state sample.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Collection Time Point Relative
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="time-relative" id="time-relative" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid Collection Time Point Relative.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Collection Time Point Reference
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="time-reference" id="time-reference" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid Collection Time Point Reference.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Biomaterial Provider
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="biomaterial-provider" id="biomaterial-provider" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid biomaterial provider.
+        </div>
+    </div>
+</form>
+
 <div class="rep-next-actions">
     <button type="button" class="btn btn-warning" id="save-sample"><i class="fa fa-save"></i> Save and Finish Later</button>
     <button type="button" class="btn btn-primary" id="add-cell"><i class="fa fa-angle-double-right"></i> Add Cell Processing Information</button>
