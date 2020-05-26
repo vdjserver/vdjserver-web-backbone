@@ -15,23 +15,9 @@ Select a repertoire:
             Sample ID
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="sample-id" id="sample-id" placeholder"">
+        <input type="text" class="form-control" name="sample_id" id="sample_id" placeholder="" required>
         <div class="invalid-feedback">
-            Please enter a valid sample ID.
-        </div>
-    </div>
-    <div class="form-group col-md-8">
-        <label>
-            <span>
-                <!-- Tooltip -->
-            </span>
-            Subject Name
-            <!-- Popover -->
-        </label>
-        <!-- This should pre-populate with the subject's information -->
-        <input type="text" class="form-control" name="sample-id" id="sample-id" placeholder"">
-        <div class="invalid-feedback">
-            Please enter a valid subject.
+            Please enter a valid Sample ID.
         </div>
     </div>
     <div class="form-group col-md-8">
@@ -42,7 +28,7 @@ Select a repertoire:
             Sample Type
             <!-- Popover -->
         </label>
-        <select class="custom-select" id="sample-type">
+        <select class="custom-select" id="sample_type" required>
             <option value="1">
                 <!-- Sample Type Option 1 -->
             </option>
@@ -54,9 +40,11 @@ Select a repertoire:
             </option>
         </select>
         <div class="invalid-feedback">
-            Please enter a valid sample type.
+            Please enter a valid Sample Type.
         </div>
     </div>
+
+    <!-- Ontology -->
     <div class="form-group col-md-8">
         <label>
             <span>
@@ -65,7 +53,7 @@ Select a repertoire:
             Tissue
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="tissue" id="tissue" placeholder"">
+        <input type="text" class="form-control" name="tissue" id="tissue" placeholder="" required>
         <div class="invalid-feedback">
             Please enter a valid tissue.
         </div>
@@ -78,19 +66,9 @@ Select a repertoire:
             Anatomic Site
             <!-- Popover -->
         </label>
-        <select class="custom-select" id="anatomic-site">
-            <option value="1">
-                <!-- Sample Type Option 1 -->
-            </option>
-            <option value="2">
-                <!-- Sample Type Option 2 -->
-            </option>
-            <option value="3">
-                <!-- Sample Type Option 3 -->
-            </option>
-        </select>
+        <input type="text" class="form-control" name="anatomic_site" id="anatomic_site" placeholder="" required>
         <div class="invalid-feedback">
-            Please enter a valid anatomic site.
+            Please enter a valid Anatomic Site.
         </div>
     </div>
     <div class="form-group col-md-8">
@@ -101,12 +79,12 @@ Select a repertoire:
             Disease State Sample
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="disease-state" id="disease-state" placeholder"">
+        <input type="text" class="form-control" name="disease_state_sample" id="disease_state_sample" placeholder="" required>
         <div class="invalid-feedback">
-            Please enter a valid disease state sample.
+            Please enter a valid Disease State Sample.
         </div>
     </div>
-    <div class="form-group col-md-8">
+    <div class="form-group col-md-6">
         <label>
             <span>
                 <!-- Tooltip -->
@@ -114,12 +92,12 @@ Select a repertoire:
             Collection Time Point Relative
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="time-relative" id="time-relative" placeholder"">
+        <input type="text" class="form-control" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" required>
         <div class="invalid-feedback">
             Please enter a valid Collection Time Point Relative.
         </div>
     </div>
-    <div class="form-group col-md-8">
+    <div class="form-group col-md-6">
         <label>
             <span>
                 <!-- Tooltip -->
@@ -127,7 +105,7 @@ Select a repertoire:
             Collection Time Point Reference
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="time-reference" id="time-reference" placeholder"">
+        <input type="text" class="form-control" name="collection_time_point_reference" id="collection_time_point_reference" placeholder="" required>
         <div class="invalid-feedback">
             Please enter a valid Collection Time Point Reference.
         </div>
@@ -140,9 +118,9 @@ Select a repertoire:
             Biomaterial Provider
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="biomaterial-provider" id="biomaterial-provider" placeholder"">
+        <input type="text" class="form-control" name="biomaterial_provider" id="biomaterial_provider" placeholder="" required>
         <div class="invalid-feedback">
-            Please enter a valid biomaterial provider.
+            Please enter a valid Biomaterial Provider.
         </div>
     </div>
 </form>

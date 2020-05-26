@@ -15,9 +15,13 @@
             Study Group Description
         <!-- Popover -->
         </label>
-        <textarea class="form-control" name="study-group-description" id="study-group-desc" rows="3"></textarea>
+        <textarea class="form-control" name="study_group_description" id="study_group_description" rows="3" required></textarea>
+        <div class="invalid-feedback">
+            Please enter a valid Study Group Description.
+        </div>
     </div>
 
+    <!-- Ontology -->
     <div class="form-group col-md-8">
         <label>
             <span>
@@ -26,9 +30,9 @@
             Disease Diagnosis
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="disease-diagnosis" id="disease-diagnosis" placeholder"">
+        <input type="text" class="form-control" name="disease_diagnosis" id="disease_diagnosis" placeholder="" required>
         <div class="invalid-feedback">
-            Please enter a valid disease diagnosis.
+            Please enter a valid Disease Diagnosis.
         </div>
     </div>
 
@@ -40,9 +44,9 @@
             Disease Length
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="disease-length" id="disease-length" placeholder"">
+        <input type="text" class="form-control" name="disease_length" id="disease_length" placeholder="" required>
         <div class="invalid-feedback">
-            Please enter a valid disease length.
+            Please enter a valid Disease Length.
         </div>
     </div>
 
@@ -54,13 +58,9 @@
             Disease Stage
             <!-- Popover -->
         </label>
-        <select class="custom-select" id="disease-stage">
-          <option value="1"><!-- Disease Stage Option 1 --></option>
-          <option value="2"><!-- Disease Stage Option 2 --></option>
-          <option vale="3"><!-- Disease Stage Option 3 --></option>
-        </select>
+        <input type="text" class="form-control" name="disease_stage" id="disease_stage" placeholder="" required>
         <div class="invalid-feedback">
-            Please enter a valid disease stage.
+            Please enter a valid Disease Stage.
         </div>
     </div>
 
@@ -72,35 +72,12 @@
             Prior Therapies
             <!-- Popover -->
         </label>
-        <div class="form-check" id="disease-stage">
-            <input class="form-check-input" type="checkbox" value="" id="prior-therapy-1">
-            <label class="form-check-label" for="prior-therapy-1">
-              Prior Therapy Option 1
-            </label>
-        </div>
-
-        <div class="form-check" id="disease-stage">
-            <input class="form-check-input" type="checkbox" value="" id="prior-therapy-2">
-            <label class="form-check-label" for="prior-therapy-2">
-              Prior Therapy Option 2
-            </label>
-        </div>
-
-        <div class="form-check" id="disease-stage">
-            <input class="form-check-input" type="checkbox" value="" id="prior-therapy-3">
-            <label class="form-check-label" for="prior-therapy-3">
-              Prior Therapy Option 3
-            </label>
-        </div>
-
-        <div class="form-check" id="disease-stage">
-            <input class="form-check-input" type="checkbox" value="" id="prior-therapy-4">
-            <label class="form-check-label" for="prior-therapy-4">
-              Prior Therapy Option 4
-            </label>
+        <input type="text" class="form-control" name="prior_therapies" id="prior_therapies" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter valid Prior Therapies.
         </div>
         <div class="invalid-feedback">
-            Please enter a valid prior therapy option.
+            Please enter valid Prior Therapies.
         </div>
     </div>
 
@@ -112,9 +89,9 @@
             Immunogen
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="immunogen" id="immunogen" placeholder"">
+        <input type="text" class="form-control" name="immunogen" id="immunogen" placeholder="" required>
         <div class="invalid-feedback">
-            Please enter valid immunogen data.
+            Please enter valid Immunogen data.
         </div>
     </div>
 
@@ -126,9 +103,9 @@
             Intervention
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="intervention" id="intervention" placeholder"">
+        <input type="text" class="form-control" name="intervention" id="intervention" placeholder="" required>
         <div class="invalid-feedback">
-            Please enter valid intervention data.
+            Please enter valid Intervention data.
         </div>
     </div>
 
@@ -140,7 +117,7 @@
             Medical History
         <!-- Popover -->
         </label>
-        <textarea class="form-control" name="medical-history" id="medical-history" rows="3"></textarea>
+        <textarea class="form-control" name="medical_history" id="medical_history" rows="4" required></textarea>
     </div>
 </form>
 
