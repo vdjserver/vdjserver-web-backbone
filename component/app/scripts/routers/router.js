@@ -78,7 +78,10 @@ export default Backbone.Router.extend({
         'project/:id/repertoire/create':           'createRepertoire',
         'project/:id/repertoire/create/subject': 'addSubject',
         'project/:id/repertoire/create/subject/diagnosis': 'addDiagnosis',
-        'project/:id/repetoire/create/sample': 'addSample',
+        'project/:id/repertoire/create/sample': 'addSample',
+        'project/:id/repertoire/create/cell': 'addCell',
+        'project/:id/repertoire/create/nucleic': 'addNucleic',
+        'project/:id/group/create':         'addRepGroup',
 
         // 404
         '*notFound': 'notFound',

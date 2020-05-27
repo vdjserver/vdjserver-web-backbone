@@ -48,6 +48,12 @@ var GroupsView = Marionette.View.extend({
     template: Handlebars.compile(groups_template)
 });
 
+// Add Repertoires Groups to Repertoire View
+import addRepGroup_template from '../../../templates/project/add-rep-groups.html';
+var AddRepGroupView = Marionette.View.extend({
+    template: Handlebars.compile(addRepGroup_template)
+});
+
 // Project Files Page
 import files_template from '../../../templates/project/files.html';
 var FilesView = Marionette.View.extend({
@@ -101,12 +107,6 @@ var AddCellView = Marionette.View.extend({
 import addNucleic_template from '../../../templates/project/add-nucleic.html';
 var AddNucleicView = Marionette.View.extend({
     template: Handlebars.compile(addNucleic_template)
-});
-
-// Add Sample Groups to Repertoire View
-import addSampleGroups_template from '../../../templates/project/add-sample-groups.html';
-var AddSampleGroupsView = Marionette.View.extend({
-    template: Handlebars.compile(addSampleGroups_template)
 });
 
 // Repertoire view
@@ -231,10 +231,10 @@ export default Marionette.View.extend({
             this.showAddNucleic();
         },
 
-        'click #add-sample-groups': function() {
+        'click #create-rep-group': function() {
             App.router.navigate('project/' +
-            this.model.get('uuid') + '/create/sample/sample-groups', {trigger: false});
-            this.showAddSampleGroups();
+            this.model.get('uuid') + '/group/create', {trigger: false});
+            this.showAddRepGroup();
         },
     },
 
@@ -299,8 +299,8 @@ export default Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showAddSampleGroups() {
-        this.detailView = new AddSampleGroupsView({model: this.model});
+    showAddRepGroup() {
+        this.detailView = new AddRepGroupView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     }
 });
