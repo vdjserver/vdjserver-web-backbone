@@ -9,7 +9,11 @@ SASS for Single Project page
     padding: 2rem 2rem;
 }
 
-#summary {
+#project-summary {
+    margin-top: 5%;
+}
+
+#summary-buttons {
     margin-bottom: 2%;
 }
 
@@ -83,4 +87,12 @@ SASS for Single Project page
     -moz-transform:rotate(180deg);
     -webkit-transform:rotate(180deg);
     transform:rotate(180deg);
+}
+
+/********************************************
+Progress Steps
+********************************************/
+.selected-step {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 2%;
 }
