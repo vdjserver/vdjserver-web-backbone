@@ -8,12 +8,12 @@ $(document).ready(function() {
     });
 
 // Click Edit Repertoire button
-     $(document).on("click", "#edit-repertoire", function() {
+     $(document).on("click", ".edit-repertoire", function() {
         $(this).addClass("no-display");
     });
 
 // Click Save Repertoire button
-    $(document).on("click", "#save-repertoire", function() {
+    $(document).on("click", ".save-repertoire", function() {
        $(this).addClass("no-display");
     });
 

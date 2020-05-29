@@ -23,7 +23,7 @@ li.progress-step {
 }
 
 // Create A Subject
-#uploadSubject {
+#uploadSubject, #uploadDiagnosis, #uploadSample, #uploadCell, #uploadNucleic {
     width: 0.1px; // customizing file input
     height: 0.1px;
     opacity: 0;
