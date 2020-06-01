@@ -18,7 +18,7 @@
 <!-- Display Summary of Subject Information so user knows what subject they are adding Diagnosis data to -->
 
 <form method="post" role="form" id="addDiagnosis-form" class="needs-validation" name="diagnosis" novalidate>
-    <div class="form-group col-md-8">
+    <div class="form-group">
         <label>
             <span>
                 <!-- Tooltip -->
@@ -26,14 +26,14 @@
             Study Group Description
         <!-- Popover -->
         </label>
-        <textarea class="form-control" name="study_group_description" id="study_group_description" rows="3" required></textarea>
+        <textarea class="form-control col-md-5" name="study_group_description" id="study_group_description" rows="3" required></textarea>
         <div class="invalid-feedback">
             Please enter a valid Study Group Description.
         </div>
     </div>
 
     <!-- Ontology -->
-    <div class="form-group col-md-8">
+    <div class="form-group">
         <label>
             <span>
                 <!-- Tooltip -->
@@ -41,13 +41,13 @@
             Disease Diagnosis
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="disease_diagnosis" id="disease_diagnosis" placeholder="" required>
+        <input type="text" class="form-control col-md-5" name="disease_diagnosis" id="disease_diagnosis" placeholder="" required>
         <div class="invalid-feedback">
             Please enter a valid Disease Diagnosis.
         </div>
     </div>
 
-    <div class="form-group col-md-8">
+    <div class="form-group">
         <label>
             <span>
                 <!-- Tooltip -->
@@ -55,13 +55,13 @@
             Disease Length
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="disease_length" id="disease_length" placeholder="" required>
+        <input type="text" class="form-control col-md-2" name="disease_length" id="disease_length" placeholder="" required>
         <div class="invalid-feedback">
             Please enter a valid Disease Length.
         </div>
     </div>
 
-    <div class="form-group col-md-8">
+    <div class="form-group">
         <label>
             <span>
                 <!-- Tooltip -->
@@ -69,13 +69,13 @@
             Disease Stage
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="disease_stage" id="disease_stage" placeholder="" required>
+        <input type="text" class="form-control col-md-2" name="disease_stage" id="disease_stage" placeholder="" required>
         <div class="invalid-feedback">
             Please enter a valid Disease Stage.
         </div>
     </div>
 
-    <div class="form-group col-md-8">
+    <div class="form-group">
         <label>
             <span>
                 <!-- Tooltip -->
@@ -83,7 +83,7 @@
             Prior Therapies
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="prior_therapies" id="prior_therapies" placeholder="" required>
+        <textarea class="form-control col-md-6" name="prior_therapies" id="prior_therapies" rows="3" required></textarea>
         <div class="invalid-feedback">
             Please enter valid Prior Therapies.
         </div>
@@ -92,7 +92,7 @@
         </div>
     </div>
 
-    <div class="form-group col-md-8">
+    <div class="form-group">
         <label>
             <span>
                 <!-- Tooltip -->
@@ -100,13 +100,13 @@
             Immunogen
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="immunogen" id="immunogen" placeholder="" required>
+        <input type="text" class="form-control col-md-5" name="immunogen" id="immunogen" placeholder="" required>
         <div class="invalid-feedback">
             Please enter valid Immunogen data.
         </div>
     </div>
 
-    <div class="form-group col-md-8">
+    <div class="form-group">
         <label>
             <span>
                 <!-- Tooltip -->
@@ -114,13 +114,13 @@
             Intervention
             <!-- Popover -->
         </label>
-        <input type="text" class="form-control" name="intervention" id="intervention" placeholder="" required>
+        <textarea class="form-control col-md-6" name="intervention" id="intervention" rows="3" required></textarea>
         <div class="invalid-feedback">
             Please enter valid Intervention data.
         </div>
     </div>
 
-    <div class="form-group col-md-8">
+    <div class="form-group">
         <label>
             <span>
                 <!-- Tooltip -->
@@ -128,7 +128,7 @@
             Medical History
         <!-- Popover -->
         </label>
-        <textarea class="form-control" name="medical_history" id="medical_history" rows="4" required></textarea>
+        <textarea class="form-control col-md-6" name="medical_history" id="medical_history" rows="4" required></textarea>
     </div>
 </form>
 
