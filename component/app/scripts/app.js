@@ -47,7 +47,7 @@ var ModalRegion = Marionette.Region.extend({
 });
 
 // the bootstrap modal view
-import modal_template from '../templates/util/modal-message-confirm.html';
+import modal_template from 'Templates/util/modal-message-confirm.html';
 var ModalMessageConfirm = Marionette.View.extend({
     template: Handlebars.compile(modal_template),
     region: '#modal'

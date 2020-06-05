@@ -51,6 +51,10 @@ module.exports = function(env, argv) {
 
         resolve: {
             alias: {
+                // directory aliases
+                'Scripts': path.resolve(__dirname, 'app/scripts/'),
+                'Templates': path.resolve(__dirname, 'app/templates/'),
+
                 // The main application
                 'app': path.resolve(__dirname, 'app') + '/scripts/app.js',
                 // the global configuration

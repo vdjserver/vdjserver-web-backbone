@@ -3,7 +3,7 @@ Configuring view for Files content area on a page
 ********************************************************/
 
 import Marionette from 'backbone.marionette';
-import template from '../../../templates/project/files.html';
+import template from 'Templates/project/files.html';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'agave-project';

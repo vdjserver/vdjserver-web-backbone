@@ -31,80 +31,80 @@ import Bootstrap from 'bootstrap';
 import Project from 'agave-project';
 
 // Sidebar view
-//import sidebar_template from '../../../templates/project/project-sidebar.html';
+//import sidebar_template from 'Templates/project/project-sidebar.html';
 //var ProjectSidebarView = Marionette.View.extend({
 //    template: Handlebars.compile(sidebar_template)
 //});
 
 // Project summary
-import summary_template from '../../../templates/project/single-summary.html';
+import summary_template from 'Templates/project/single-summary.html';
 var ProjectSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template)
 });
 
 // Repertoire Groups Page
-import groups_template from '../../../templates/project/groups.html';
+import groups_template from 'Templates/project/groups.html';
 var GroupsView = Marionette.View.extend({
     template: Handlebars.compile(groups_template)
 });
 
 // Add Repertoires Groups to Repertoire View
-import addRepGroup_template from '../../../templates/project/add-rep-groups.html';
+import addRepGroup_template from 'Templates/project/add-rep-groups.html';
 var AddRepGroupView = Marionette.View.extend({
     template: Handlebars.compile(addRepGroup_template)
 });
 
 // Project Files Page
-import files_template from '../../../templates/project/files.html';
+import files_template from 'Templates/project/files.html';
 var FilesView = Marionette.View.extend({
     template: Handlebars.compile(files_template)
 });
 
 // Analyses Page
-import analyses_template from '../../../templates/project/analyses.html';
+import analyses_template from 'Templates/project/analyses.html';
 var AnalysesView = Marionette.View.extend({
     template: Handlebars.compile(analyses_template)
 });
 
 // Project overview page
 // TODO: merge create.html with this
-import overview_template from '../../../templates/project/project-overview.html';
+import overview_template from 'Templates/project/project-overview.html';
 var ProjectOverView = Marionette.View.extend({
     template: Handlebars.compile(overview_template)
 });
 
 // Create New Repertoire view
-import create_template from '../../../templates/project/create-repertoire.html';
+import create_template from 'Templates/project/create-repertoire.html';
 var CreateRepertoireView = Marionette.View.extend({
     template: Handlebars.compile(create_template)
 });
 
 // Add Subject to Repertoire View
-import addSubject_template from '../../../templates/project/add-subject.html';
+import addSubject_template from 'Templates/project/add-subject.html';
 var AddSubjectView = Marionette.View.extend({
     template: Handlebars.compile(addSubject_template)
 });
 
 // Add Diagnosis to Repertoire View
-import addDiagnosis_template from '../../../templates/project/add-diagnosis.html';
+import addDiagnosis_template from 'Templates/project/add-diagnosis.html';
 var AddDiagnosisView = Marionette.View.extend({
     template: Handlebars.compile(addDiagnosis_template)
 });
 
 // Add Sample to Repertoire View
-import addSample_template from '../../../templates/project/add-sample.html';
+import addSample_template from 'Templates/project/add-sample.html';
 var AddSampleView = Marionette.View.extend({
     template: Handlebars.compile(addSample_template)
 });
 
 // Add Cell Processing to Repertoire View
-import addCell_template from '../../../templates/project/add-cell.html';
+import addCell_template from 'Templates/project/add-cell.html';
 var AddCellView = Marionette.View.extend({
     template: Handlebars.compile(addCell_template)
 });
 
 // Add Nucleic Acid to Repertoire View
-import addNucleic_template from '../../../templates/project/add-nucleic.html';
+import addNucleic_template from 'Templates/project/add-nucleic.html';
 var AddNucleicView = Marionette.View.extend({
     template: Handlebars.compile(addNucleic_template)
 });
@@ -113,7 +113,7 @@ var AddNucleicView = Marionette.View.extend({
 import RepertoireController from 'repertoire-controller';
 
 // Main project
-import template from '../../../templates/project/single.html';
+import template from 'Templates/project/single.html';
 export default Marionette.View.extend({
     template: Handlebars.compile(template),
 

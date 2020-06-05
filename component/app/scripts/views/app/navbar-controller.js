@@ -1,8 +1,8 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import public_template from '../../../templates/app/navbar-public.html';
-import private_template from '../../../templates/app/navbar-private.html';
+import public_template from 'Templates/app/navbar-public.html';
+import private_template from 'Templates/app/navbar-private.html';
 
 // This is the navigation bar displayed to the public
 var PublicNavBar = Marionette.View.extend({

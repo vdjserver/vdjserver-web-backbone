@@ -48,7 +48,7 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCol
 // and it manages subviews which deal with the different transitions.
 
 // Summary view for a single repertoire
-import rep_summary_template from '../../../templates/project/repertoire-summary.html';
+import rep_summary_template from 'Templates/project/repertoire-summary.html';
 var RepertoireSummaryView = Marionette.View.extend({
     template: Handlebars.compile("<div'>" + rep_summary_template + "</div>"),
     // template: Handlebars.compile("<table class='table table-borderless table-sm'>" + rep_summary_template + "</table>"),
@@ -59,7 +59,7 @@ var RepertoireSummaryView = Marionette.View.extend({
 // TODO: do we use this same expanded view for both read-only and editing?
 // We can do that with variables and Handlebars to generate different HTML
 // or we can have different views that we swap between.
-import single_rep from '../../../templates/project/single-repertoire.html';
+import single_rep from 'Templates/project/single-repertoire.html';
 var RepertoireExpandedView = Marionette.View.extend({
     template: Handlebars.compile(single_rep),
 
@@ -75,7 +75,7 @@ var RepertoireListView = Marionette.CollectionView.extend({
 });
 
 // The header view
-import repertoire_header from '../../../templates/project/repertoires.html';
+import repertoire_header from 'Templates/project/repertoires.html';
 var RepertoireHeaderView = Marionette.View.extend({
     template: Handlebars.compile(repertoire_header),
 

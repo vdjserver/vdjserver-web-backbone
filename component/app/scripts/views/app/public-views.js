@@ -30,27 +30,27 @@ import Handlebars from 'handlebars';
 import MessageModel from 'message';
 
 // login modal view
-import mm_template from '../../../templates/util/modal-message.html';
+import mm_template from 'Templates/util/modal-message.html';
 var ModalMessage = Marionette.View.extend({
     template: Handlebars.compile(mm_template),
     region: '#modal'
 });
 
 // login failure modal view
-import mmc_template from '../../../templates/util/modal-message-confirm.html';
+import mmc_template from 'Templates/util/modal-message-confirm.html';
 var ModalMessageConfirm = Marionette.View.extend({
     template: Handlebars.compile(mmc_template),
     region: '#modal'
 });
 
 // login view
-import login_template from '../../../templates/app/login.html';
+import login_template from 'Templates/app/login.html';
 var LoginView = Marionette.View.extend({
     template: Handlebars.compile(login_template)
 });
 
 // home window
-import template from '../../../templates/app/home.html';
+import template from 'Templates/app/home.html';
 export default Marionette.View.extend({
     template: Handlebars.compile(template),
     regions: {

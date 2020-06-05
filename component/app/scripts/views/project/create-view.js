@@ -93,21 +93,21 @@ Handlebars.registerHelper('FieldStar', function(schema_name, field_name) {
 });
 
 // modal view for when the project is being created
-import mm_template from '../../../templates/util/modal-message.html';
+import mm_template from 'Templates/util/modal-message.html';
 var ModalMessage = Marionette.View.extend({
   template: Handlebars.compile(mm_template),
   region: '#modal'
 });
 
 // modal view for failure message
-import mmc_template from '../../../templates/util/modal-message-confirm.html';
+import mmc_template from 'Templates/util/modal-message-confirm.html';
 var ModalMessageConfirm = Marionette.View.extend({
   template: Handlebars.compile(mmc_template),
   region: '#modal'
 });
 
 // project creation form
-import create_template from '../../../templates/project/create.html';
+import create_template from 'Templates/project/create.html';
 var CreateView = Marionette.View.extend({
   template: Handlebars.compile('<h1>Create New Project</h1>' + create_template)
 });
