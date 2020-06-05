@@ -27,12 +27,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-import { Agave } from 'backbone-agave';
+import { Agave } from 'Scripts/backbone/backbone-agave';
 
-import { Repertoire, Subject, Diagnosis, Sample } from 'agave-metadata';
+import { Repertoire, Subject, Diagnosis, Sample } from 'Scripts/models/agave-metadata';
 
-import { Comparators } from 'comparators-mixin';
-import { FileTransfers } from 'file-transfer-mixins';
+import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
+import { FileTransfers } from 'Scripts/models/mixins/file-transfer-mixins';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';

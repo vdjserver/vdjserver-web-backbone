@@ -1,6 +1,6 @@
-import { Agave } from 'backbone-agave';
-import Project from 'agave-project';
-import { Comparators } from 'comparators-mixin';
+import { Agave } from 'Scripts/backbone/backbone-agave';
+import Project from 'Scripts/models/agave-project';
+import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
 
 export default Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, {

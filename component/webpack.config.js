@@ -56,9 +56,9 @@ module.exports = function(env, argv) {
                 'Templates': path.resolve(__dirname, 'app/templates/'),
 
                 // The main application
-                'app': path.resolve(__dirname, 'app') + '/scripts/app.js',
+                //'app': path.resolve(__dirname, 'app') + '/scripts/app.js',
                 // the global configuration
-                'environment-config': path.resolve(__dirname, 'app') + '/scripts/config/environment-config.js',
+                //'environment-config': path.resolve(__dirname, 'app') + '/scripts/config/environment-config.js',
 
                 // Third party Packages
                 'backbone': 'backbone',
@@ -92,126 +92,126 @@ module.exports = function(env, argv) {
                 //'text':'requirejs-text/text',
 
                 // Backbone Extensions
-                'backbone-agave':  path.resolve(__dirname,'app') + '/scripts/backbone/backbone-agave',
+                //'backbone-agave':  path.resolve(__dirname,'app') + '/scripts/backbone/backbone-agave',
 
                 // Bootstrap
                 'bootstrap': 'bootstrap',
                 'bootstrap-multiselect': path.resolve(__dirname,'node_modules') + '/bootstrap-multiselect/dist/js/bootstrap-multiselect',
 
                 // Models/Collections
-                'agave-project': path.resolve(__dirname,'app') + '/scripts/models/agave-project',
-                'agave-projects': path.resolve(__dirname,'app') + '/scripts/collections/agave-projects',
-                'agave-public-projects': path.resolve(__dirname,'app') + '/scripts/collections/agave-public-projects',
+                //'agave-project': path.resolve(__dirname,'app') + '/scripts/models/agave-project',
+                //'agave-projects': path.resolve(__dirname,'app') + '/scripts/collections/agave-projects',
+                //'agave-public-projects': path.resolve(__dirname,'app') + '/scripts/collections/agave-public-projects',
 
                 // Views and Controllers
-                'navbar-controller': path.resolve(__dirname,'app') + '/scripts/views/app/navbar-controller',
-                'project-controller': path.resolve(__dirname,'app') + '/scripts/views/project/project-controller',
-                'community-controller': path.resolve(__dirname,'app') + '/scripts/views/project/community-controller',
-                'create-controller': path.resolve(__dirname,'app') + '/scripts/views/project/create-controller',
-                'create-view': path.resolve(__dirname,'app') + '/scripts/views/project/create-view',
+                //'navbar-controller': path.resolve(__dirname,'app') + '/scripts/views/app/navbar-controller',
+                //'project-controller': path.resolve(__dirname,'app') + '/scripts/views/project/project-controller',
+                //'community-controller': path.resolve(__dirname,'app') + '/scripts/views/project/community-controller',
+                //'create-controller': path.resolve(__dirname,'app') + '/scripts/views/project/create-controller',
+                //'create-view': path.resolve(__dirname,'app') + '/scripts/views/project/create-view',
 
-                'createrep-controller': path.resolve(__dirname,'app') + '/scripts/views/project/create-repertoire',
-                'create-rep': path.resolve(__dirname,'app') + '/scripts/views/project/create-repertoire',
+                //'createrep-controller': path.resolve(__dirname,'app') + '/scripts/views/project/create-repertoire',
+                //'create-rep': path.resolve(__dirname,'app') + '/scripts/views/project/create-repertoire',
 
-                'repertoire-controller':
-                path.resolve(__dirname,'app') + '/scripts/views/project/repertoire-controller',
-                'rep-view': path.resolve(__dirname,'app') + '/scripts/views/project/rep-view',
+                //'repertoire-controller':
+                //path.resolve(__dirname,'app') + '/scripts/views/project/repertoire-controller',
+                //'rep-view': path.resolve(__dirname,'app') + '/scripts/views/project/rep-view',
 
-                'loading-view': path.resolve(__dirname,'app') + '/scripts/views/utilities/loading-view',
+                //'loading-view': path.resolve(__dirname,'app') + '/scripts/views/utilities/loading-view',
 
-                'error': path.resolve(__dirname,'app') + '/scripts/models/error',
-                'recaptcha': path.resolve(__dirname,'app') + '/scripts/models/recaptcha',
-                'airr-schema': path.resolve(__dirname,'app') + '/scripts/models/airr-schema',
-                'project-home': path.resolve(__dirname,'app') + '/scripts/views/project/project-home',
-                'project-list': path.resolve(__dirname,'app') + '/scripts/views/project/project-list',
-                'project-single': path.resolve(__dirname,'app') + '/scripts/views/project/project-single',
-                'files-view': path.resolve(__dirname,'app') + '/scripts/views/project/files-view',
+                //'error': path.resolve(__dirname,'app') + '/scripts/models/error',
+                //'recaptcha': path.resolve(__dirname,'app') + '/scripts/models/recaptcha',
+                //'airr-schema': path.resolve(__dirname,'app') + '/scripts/models/airr-schema',
+                //'project-home': path.resolve(__dirname,'app') + '/scripts/views/project/project-home',
+                //'project-list': path.resolve(__dirname,'app') + '/scripts/views/project/project-list',
+                //'project-single': path.resolve(__dirname,'app') + '/scripts/views/project/project-single',
+                //'files-view': path.resolve(__dirname,'app') + '/scripts/views/project/files-view',
 
                 // Agave - Models/Collections
-                'message': path.resolve(__dirname,'app') + '/scripts/models/message',
-                'telemetry': path.resolve(__dirname,'app') + '/scripts/models/telemetry',
+                //'message': path.resolve(__dirname,'app') + '/scripts/models/message',
+                //'telemetry': path.resolve(__dirname,'app') + '/scripts/models/telemetry',
 
-                'agave-account': path.resolve(__dirname,'app') + '/scripts/models/agave-account',
-                'agave-feedback': path.resolve(__dirname,'app') + '/scripts/models/agave-feedback',
+                //'agave-account': path.resolve(__dirname,'app') + '/scripts/models/agave-account',
+                //'agave-feedback': path.resolve(__dirname,'app') + '/scripts/models/agave-feedback',
 
-                'agave-community-data': path.resolve(__dirname,'app') + '/scripts/models/agave-community-data',
-                'agave-community-datas': path.resolve(__dirname,'app') + '/scripts/collections/agave-community-datas',
+                //'agave-community-data': path.resolve(__dirname,'app') + '/scripts/models/agave-community-data',
+                //'agave-community-datas': path.resolve(__dirname,'app') + '/scripts/collections/agave-community-datas',
 
-                'agave-notification': path.resolve(__dirname,'app') + '/scripts/models/agave-notification',
-                'agave-password-reset': path.resolve(__dirname,'app') + '/scripts/models/agave-password-reset',
-                'agave-password-change': path.resolve(__dirname,'app') + '/scripts/models/agave-password-change',
-                'agave-system': path.resolve(__dirname,'app') + '/scripts/models/agave-system',
-                'agave-systems': path.resolve(__dirname,'app') + '/scripts/collections/agave-systems',
-                'agave-tenant-user': path.resolve(__dirname,'app') + '/scripts/models/agave-tenant-user',
-                'agave-tenant-users': path.resolve(__dirname,'app') + '/scripts/collections/agave-tenant-users',
+                //'agave-notification': path.resolve(__dirname,'app') + '/scripts/models/agave-notification',
+                //'agave-password-reset': path.resolve(__dirname,'app') + '/scripts/models/agave-password-reset',
+                //'agave-password-change': path.resolve(__dirname,'app') + '/scripts/models/agave-password-change',
+                //'agave-system': path.resolve(__dirname,'app') + '/scripts/models/agave-system',
+                //'agave-systems': path.resolve(__dirname,'app') + '/scripts/collections/agave-systems',
+                //'agave-tenant-user': path.resolve(__dirname,'app') + '/scripts/models/agave-tenant-user',
+                //'agave-tenant-users': path.resolve(__dirname,'app') + '/scripts/collections/agave-tenant-users',
 
-                'agave-file': path.resolve(__dirname,'app') + '/scripts/models/agave-file',
-                'agave-files': path.resolve(__dirname,'app') + '/scripts/collections/agave-files',
+                //'agave-file': path.resolve(__dirname,'app') + '/scripts/models/agave-file',
+                //'agave-files': path.resolve(__dirname,'app') + '/scripts/collections/agave-files',
 
-                'agave-job': path.resolve(__dirname,'app') + '/scripts/models/agave-job',
-                'agave-jobs': path.resolve(__dirname,'app') + '/scripts/collections/agave-jobs',
+                //'agave-job': path.resolve(__dirname,'app') + '/scripts/models/agave-job',
+                //'agave-jobs': path.resolve(__dirname,'app') + '/scripts/collections/agave-jobs',
 
                 // Agave - Metadata Models/Collections
-                'agave-permission':  path.resolve(__dirname,'app') + '/scripts/models/agave-permission',
-                'agave-permissions': path.resolve(__dirname,'app') + '/scripts/collections/agave-permissions',
-                'agave-profile': path.resolve(__dirname,'app') + '/scripts/models/agave-profile',
-                'agave-metadata': path.resolve(__dirname,'app') + '/scripts/models/agave-metadata',
-                'agave-metadata-collections': path.resolve(__dirname,'app') + '/scripts/collections/agave-metadata-collections',
+                //'agave-permission':  path.resolve(__dirname,'app') + '/scripts/models/agave-permission',
+                //'agave-permissions': path.resolve(__dirname,'app') + '/scripts/collections/agave-permissions',
+                //'agave-profile': path.resolve(__dirname,'app') + '/scripts/models/agave-profile',
+                //'agave-metadata': path.resolve(__dirname,'app') + '/scripts/models/agave-metadata',
+                //'agave-metadata-collections': path.resolve(__dirname,'app') + '/scripts/collections/agave-metadata-collections',
 
                 // Misc.
-                'box': path.resolve(__dirname,'app') + '/scripts/vendor/box',
-                'jquery.event.drag': path.resolve(__dirname,'app') + '/scripts/vendor/jquery.event.drag',
-                'jquery.event.drop': path.resolve(__dirname,'app') + '/scripts/vendor/jquery.event.drop',
+                //'box': path.resolve(__dirname,'app') + '/scripts/vendor/box',
+                //'jquery.event.drag': path.resolve(__dirname,'app') + '/scripts/vendor/jquery.event.drag',
+                //'jquery.event.drop': path.resolve(__dirname,'app') + '/scripts/vendor/jquery.event.drop',
 
                 // Handlebars Helpers
-                'handlebars-utilities':   path.resolve(__dirname,'app') + '/scripts/views/utilities/handlebars-utilities',
+                //'handlebars-utilities':   path.resolve(__dirname,'app') + '/scripts/views/utilities/handlebars-utilities',
 
                 // Utilities
-                'websocket-manager': path.resolve(__dirname,'app') + '/scripts/utilities/websocket-manager',
-                'serialization-tools': path.resolve(__dirname,'app') + '/scripts/utilities/serialization-tools',
-                'vdjpipe-workflow-parser': path.resolve(__dirname,'app') + '/scripts/utilities/vdjpipe-workflow-parser',
-                'vdjpipe-view-factory': path.resolve(__dirname,'app') + '/scripts/utilities/vdjpipe-view-factory',
-                'presto-view-factory': path.resolve(__dirname,'app') + '/scripts/utilities/presto-view-factory',
-                'repcalc-view-factory': path.resolve(__dirname,'app') + '/scripts/utilities/repcalc-view-factory',
+                //'websocket-manager': path.resolve(__dirname,'app') + '/scripts/utilities/websocket-manager',
+                //'serialization-tools': path.resolve(__dirname,'app') + '/scripts/utilities/serialization-tools',
+                //'vdjpipe-workflow-parser': path.resolve(__dirname,'app') + '/scripts/utilities/vdjpipe-workflow-parser',
+                //'vdjpipe-view-factory': path.resolve(__dirname,'app') + '/scripts/utilities/vdjpipe-view-factory',
+                //'presto-view-factory': path.resolve(__dirname,'app') + '/scripts/utilities/presto-view-factory',
+                //'repcalc-view-factory': path.resolve(__dirname,'app') + '/scripts/utilities/repcalc-view-factory',
 
                 // Generic Views
-                'generic-vdjpipe-option-views': path.resolve(__dirname,'app') + '/scripts/views/generic/generic-vdjpipe-option-views',
+                //'generic-vdjpipe-option-views': path.resolve(__dirname,'app') + '/scripts/views/generic/generic-vdjpipe-option-views',
 
                 // Mixins
-                'file-transfer-project-ui-mixin': path.resolve(__dirname,'app') + '/scripts/mixins/file-transfer-project-ui-mixin',
-                'comparators-mixin': path.resolve(__dirname,'app') + '/scripts/collections/mixins/comparators-mixin',
-                'file-transfer-mixins': path.resolve(__dirname,'app') + '/scripts/models/mixins/file-transfer-mixins',
+                //'file-transfer-project-ui-mixin': path.resolve(__dirname,'app') + '/scripts/mixins/file-transfer-project-ui-mixin',
+                //'comparators-mixin': path.resolve(__dirname,'app') + '/scripts/collections/mixins/comparators-mixin',
+                //'file-transfer-mixins': path.resolve(__dirname,'app') + '/scripts/models/mixins/file-transfer-mixins',
 
                 // View Helpers
-                'view-layouts': path.resolve(__dirname,'app') + '/scripts/views/layouts/view-layouts',
+                //'view-layouts': path.resolve(__dirname,'app') + '/scripts/views/layouts/view-layouts',
 
                 // Views
-                'util-views': path.resolve(__dirname,'app') + '/scripts/views/app/util-views',
-                'not-found-views': path.resolve(__dirname,'app') + '/scripts/views/not-found-views',
+                //'util-views': path.resolve(__dirname,'app') + '/scripts/views/app/util-views',
+                //'not-found-views': path.resolve(__dirname,'app') + '/scripts/views/not-found-views',
 
-                'account-views': path.resolve(__dirname,'app') + '/scripts/views/account-views.js',
-                'forgot-password-views': path.resolve(__dirname,'app') + '/scripts/views/forgot-password-views',
-                'profile-views': path.resolve(__dirname,'app') + '/scripts/views/profile-views',
-                'job-views': path.resolve(__dirname,'app') + '/scripts/views/job-views',
-                'project-views': path.resolve(__dirname,'app') + '/scripts/views/project-views',
-                'sidemenu-views': path.resolve(__dirname,'app') + '/scripts/views/sidemenu-views',
-                'notification-views': path.resolve(__dirname,'app') + '/scripts/views/notification-views',
-                'navbar-views': path.resolve(__dirname,'app') + '/scripts/views/navbar-views',
-                'public-views': path.resolve(__dirname,'app') + '/scripts/views/app/public-views',
-                'analyses-views': path.resolve(__dirname,'app') + '/scripts/views/analyses-views',
-                'vdjpipe-views': path.resolve(__dirname,'app') + '/scripts/views/vdjpipe-views',
-                'presto-views': path.resolve(__dirname,'app') + '/scripts/views/presto-views',
-                'repcalc-views': path.resolve(__dirname,'app') + '/scripts/views/repcalc-views',
-                'feedback-views': path.resolve(__dirname,'app') + '/scripts/views/feedback-views',
-                'software-views': path.resolve(__dirname,'app') + '/scripts/views/software-views',
-                'community-views': path.resolve(__dirname,'app') + '/scripts/views/community-views',
+                //'account-views': path.resolve(__dirname,'app') + '/scripts/views/account-views.js',
+                //'forgot-password-views': path.resolve(__dirname,'app') + '/scripts/views/forgot-password-views',
+                //'profile-views': path.resolve(__dirname,'app') + '/scripts/views/profile-views',
+                //'job-views': path.resolve(__dirname,'app') + '/scripts/views/job-views',
+                //'project-views': path.resolve(__dirname,'app') + '/scripts/views/project-views',
+                //'sidemenu-views': path.resolve(__dirname,'app') + '/scripts/views/sidemenu-views',
+                //'notification-views': path.resolve(__dirname,'app') + '/scripts/views/notification-views',
+                //'navbar-views': path.resolve(__dirname,'app') + '/scripts/views/navbar-views',
+                //'public-views': path.resolve(__dirname,'app') + '/scripts/views/app/public-views',
+                //'analyses-views': path.resolve(__dirname,'app') + '/scripts/views/analyses-views',
+                //'vdjpipe-views': path.resolve(__dirname,'app') + '/scripts/views/vdjpipe-views',
+                //'presto-views': path.resolve(__dirname,'app') + '/scripts/views/presto-views',
+                //'repcalc-views': path.resolve(__dirname,'app') + '/scripts/views/repcalc-views',
+                //'feedback-views': path.resolve(__dirname,'app') + '/scripts/views/feedback-views',
+                //'software-views': path.resolve(__dirname,'app') + '/scripts/views/software-views',
+                //'community-views': path.resolve(__dirname,'app') + '/scripts/views/community-views',
 
                 // Routers
-                'router': path.resolve(__dirname,'app') + '/scripts/routers/router',
+                //'router': path.resolve(__dirname,'app') + '/scripts/routers/router',
                 //'node_modules': path.join(__dirname,'node_modules')
 
-                'collections/notifications': path.resolve(__dirname,'app') + '/scripts/collections/notifications',
-                'models/notification': path.resolve(__dirname,'app') + '/scripts/models/notification',
+                //'collections/notifications': path.resolve(__dirname,'app') + '/scripts/collections/notifications',
+                //'models/notification': path.resolve(__dirname,'app') + '/scripts/models/notification',
 
                 // AIRR Schema
                 'airr-schema': path.resolve(__dirname,'airr-standards') + '/specs/airr-schema.yaml',

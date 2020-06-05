@@ -27,7 +27,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-import { Agave } from 'backbone-agave';
+import { Agave } from 'Scripts/backbone/backbone-agave';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';

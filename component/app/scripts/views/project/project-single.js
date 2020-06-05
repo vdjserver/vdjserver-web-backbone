@@ -28,7 +28,7 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
-import Project from 'agave-project';
+import Project from 'Scripts/models/agave-project';
 
 // Sidebar view
 //import sidebar_template from 'Templates/project/project-sidebar.html';
@@ -110,7 +110,7 @@ var AddNucleicView = Marionette.View.extend({
 });
 
 // Repertoire view
-import RepertoireController from 'repertoire-controller';
+import RepertoireController from 'Scripts/views/project/repertoire-controller';
 
 // Main project
 import template from 'Templates/project/single.html';

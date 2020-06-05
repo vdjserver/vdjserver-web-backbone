@@ -28,7 +28,7 @@
 import Marionette from 'backbone.marionette';
 import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
-import MessageModel from 'message';
+import MessageModel from 'Scripts/models/message';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';

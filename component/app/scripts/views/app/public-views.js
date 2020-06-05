@@ -27,7 +27,7 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
-import MessageModel from 'message';
+import MessageModel from 'Scripts/models/message';
 
 // login modal view
 import mm_template from 'Templates/util/modal-message.html';

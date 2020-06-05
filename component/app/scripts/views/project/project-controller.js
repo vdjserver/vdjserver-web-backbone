@@ -28,13 +28,13 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import Project from 'agave-project';
-import ProjectList from 'agave-projects';
-import ProjectListView from 'project-list';
-import ProjectPageView from 'project-single';
+import Project from 'Scripts/models/agave-project';
+import ProjectList from 'Scripts/collections/agave-projects';
+import ProjectListView from 'Scripts/views/project/project-list';
+import ProjectPageView from 'Scripts/views/project/project-single';
 import intro_template from 'Templates/project/intro.html';
-import LoadingView from 'loading-view';
-import CreateProjectView from 'create-view';
+import LoadingView from 'Scripts/views/utilities/loading-view';
+import CreateProjectView from 'Scripts/views/project/create-view';
 
 // the main project view
 var ProjectView = Marionette.View.extend({

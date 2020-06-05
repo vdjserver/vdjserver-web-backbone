@@ -28,11 +28,11 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import Project from 'agave-project';
-import ProjectList from 'agave-public-projects';
-import ProjectListView from 'project-list';
-import ProjectPageView from 'project-single';
-import LoadingView from 'loading-view';
+import Project from 'Scripts/models/agave-project';
+import ProjectList from 'Scripts/collections/agave-public-projects';
+import ProjectListView from 'Scripts/views/project/project-list';
+import ProjectPageView from 'Scripts/views/project/project-single';
+import LoadingView from 'Scripts/views/utilities/loading-view';
 
 // Community controller
 //

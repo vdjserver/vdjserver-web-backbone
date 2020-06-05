@@ -6,10 +6,10 @@ import Marionette from 'backbone.marionette';
 import template from 'Templates/app/main.html';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
-import NavigationView from 'navbar-view';
-import IntroView from './intro-view';
-import ProjectListView from './project-list';
-import ProjectList from 'agave-projects';
+import NavigationView from 'Scripts/views/navbar-view';
+import IntroView from 'Scrips/views/project./intro-view';
+import ProjectListView from 'Scripts/views/project/project-list';
+import ProjectList from 'Scripts/collections/agave-projects';
 
 export default Marionette.View.extend({
   template: Handlebars.compile(template),

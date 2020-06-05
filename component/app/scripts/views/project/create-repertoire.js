@@ -6,7 +6,7 @@ import Marionette from 'backbone.marionette';
 import template from 'Templates/project/create-repertoire.html';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
-import Project from 'agave-project';
+import Project from 'Scripts/models/agave-project';
 
 var CreateRepView = Marionette.View.extend({
     template: Handlebars.compile("<h1>Testing Rep View</h1>")

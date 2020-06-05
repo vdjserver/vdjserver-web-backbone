@@ -36,8 +36,8 @@ import '../styles/main.scss'
 import logo from '../images/logo.png';
 
 // main application
-import { Agave } from 'backbone-agave';
-import Application from 'app';
+import { Agave } from 'Scripts/backbone/backbone-agave';
+import Application from 'Scripts/app';
 
 // need this here so that it extends jQuery
 import bootstrap from 'bootstrap';

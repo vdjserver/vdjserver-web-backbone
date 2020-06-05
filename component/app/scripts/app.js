@@ -27,14 +27,14 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
-import { Agave } from 'backbone-agave';
-import Router from 'router';
+import { Agave } from 'Scripts/backbone/backbone-agave';
+import Router from 'Scripts/routers/router';
 
-import PublicView from 'public-views';
+import PublicView from 'Scripts/views/app/public-views';
 // import IntroView from 'intro-view';
-import NavigationController from 'navbar-controller';
-import ProjectController from 'project-controller';
-import CommunityController from 'community-controller';
+import NavigationController from 'Scripts/views/app/navbar-controller';
+import ProjectController from 'Scripts/views/project/project-controller';
+import CommunityController from 'Scripts/views/project/community-controller';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';

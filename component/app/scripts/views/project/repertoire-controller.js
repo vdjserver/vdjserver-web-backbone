@@ -27,10 +27,10 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
-import SingleRepView from 'rep-view';
-import LoadingView from 'loading-view';
-import { Repertoire, Subject, Diagnosis } from 'agave-metadata';
-import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'agave-metadata-collections';
+import SingleRepView from 'Scripts/views/project/rep-view';
+import LoadingView from 'Scripts/views/utilities/loading-view';
+import { Repertoire, Subject, Diagnosis } from 'Scripts/models/agave-metadata';
+import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
 
 // Repertoire Controller: manages any views associated with viewing a repertoire
 // The basic design is a repertoire collection view
