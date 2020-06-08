@@ -10,7 +10,20 @@ SASS for Single Project page
 }
 
 #project-summary {
+    margin-top: 2%;
+
+    h1 {
+        margin-bottom: 2%;
+    }
+}
+
+#project-detail {
     margin-top: 5%;
+}
+
+.project-metadata {
+    margin-bottom: 5%;
+    float: right;
 }
 
 #summary-buttons {
@@ -21,9 +34,14 @@ SASS for Single Project page
     font-weight: bold;
 }
 
-#project-overview {
-    border-left: 1px solid rgba(225, 225, 225, 0.45);
+.overview-summary {
+    border-right: 1px solid rgba(225, 225, 225, 0.45);
+    padding-right: 5%;
+}
+
+.overview-details {
     padding-left: 5%;
+    font-size: 1.05em;
 }
 
 .card {
