@@ -1,5 +1,5 @@
 /*****************************************************
-SASS for Single Project page
+Single Project Page
 *****************************************************/
 #project {
     padding: 0% 5%;
@@ -22,7 +22,7 @@ SASS for Single Project page
 }
 
 .project-metadata {
-    margin-bottom: 5%;
+    margin-bottom: 3%;
     float: right;
 }
 
@@ -32,6 +32,23 @@ SASS for Single Project page
 
 .details {
     font-weight: bold;
+}
+
+.card {
+    margin: 1%;
+}
+
+.card-active {
+    background: $vdj-lightgray;
+}
+
+.card-link:hover {
+        background: $vdj-lightgray;
+        cursor: pointer;
+}
+
+.card-body {
+    text-align: center;
 }
 
 .overview-summary {
@@ -44,30 +61,13 @@ SASS for Single Project page
     font-size: 1.05em;
 }
 
-.card {
-    margin: 1%;
+#edit-project {
+    margin-right: 2%;
 }
 
-.card-active {
-    background: $vdj-lightgray;
-}
-
-
-.card-link:hover {
-        background: $vdj-lightgray;
-        cursor: pointer;
-}
-
-.card-body {
-    text-align: center;
-}
-
-.sidebar-content {
-    margin-top: 2%;
-}
-
-
-// RepertoireSummaryView
+/********************************************
+Repertoire Summary View
+********************************************/
 .hide {
     visibility: hidden;
 }
@@ -113,4 +113,20 @@ Progress Steps
 .selected-step {
     background: rgba(255, 255, 255, 0.4);
     padding: 2%;
+}
+
+/*******************************************
+Delete a Project
+*******************************************/
+.delete-warning {
+    color: $vdj-orange;
+}
+
+/*******************************************
+User Management
+*******************************************/
+.subtitle {
+    font-size: 0.85em;
+    color: $vdj-darkgray;
+    font-weight: 500;
 }

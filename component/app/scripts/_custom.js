@@ -53,4 +53,15 @@ $(document).ready(function() {
         $(".step").removeClass("selected-step");
         $("#nucleic-step").addClass("selected-step");
     });
+
+    // Delete User from a Project
+    $(document).on("click", "#delete-user", function() {
+        $(".select").removeClass("no-display");
+        $(".select").addClass("show");
+    });
+
+    // Adding a New User to a Project
+    $(document).on("click", "#add-users", function() {
+        console.log("clicked add users button");
+    });
 });

@@ -13,8 +13,70 @@
                     <p><span class="details">Contact Name: {{value.contact_name}}</span></p>
                 </div>
             </div>
-            <div class="project-metadata">
-                <button type="button" class="btn btn-info" id="edit-project">
+            <div class="row">
+            <div class="project-metadata col-md-12">
+                <button type="button" class="btn btn-danger float-md-right" id="delete-project" data-toggle="modal" data-target="#delete-modal">
+                    Delete Project
+                </button>
+                <button type="button" class="btn btn-info float-md-right" id="edit-project">
                     Edit Project Metadata
                 </button>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="project-warning" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="project-warning" class="delete-warning">Delete Warning</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this project?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-primary">Yes</button>
+                    </div>
+                </div>
+             </div>
+        </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Users</h2>
+                        <button type="button" class="btn btn-info float-md-right" id="add-users">
+                            <i class="fa fa-plus" aria-hidden="true"></i> Add Users
+                        </button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="no-display select"></th>
+                            <th scope="col">User</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                        <tr>
+                            <td class="no-display select">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="user-select">
+                                </div>
+                            </td>
+                            <td>
+                                Name
+                                <p class="subtitle">Email</p>
+                            </td>
+                            <td>Active</td>
+                            <td>
+                                <button type="button" class="btn btn-info" id="delete-user">
+                                    <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </thead>
+                </table>
             </div>
