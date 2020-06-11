@@ -327,8 +327,25 @@ Select a Sample:
         <div class="invalid-feedback">
             Please enter a valid Sequencing Kit Lot Number.
         </div>
+        <div class="footer-actions">
+            <div class="rep-back-actions">
+                <button type="button" class="btn btn-primary" id="cellMetadata"><i class="fa fa-angle-double-left"></i> Back to Cell Processing</button>
+            </div>
+
+            <div class="rep-next-actions">
+                <button type="button" class="btn btn-warning" id="save-nucleic" data-toggle="modal" data-target="#save-modal"><i class="fa fa-save"></i> Save</button>
+            </div>
+        </div>
     </div>
 </form>
-<div class="rep-next-actions">
-    <button type="button" class="btn btn-warning" id="save-nucleic"><i class="fa fa-save"></i> Save and Finish Later</button>
+
+<!-- Save Modal -->
+<div class="modal fade" id="save-modal" tabindex="-1" role="dialog" aria-labelledby="saving" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body saving">
+                Saving <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </div>
+        </div>
+     </div>
 </div>

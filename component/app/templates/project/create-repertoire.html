@@ -121,9 +121,26 @@
             <!--</tbody>
         </thead>
     </table> -->
-    <div class="rep-next-actions">
-        <button type="button" class="btn btn-warning" id="save-repertoire"><i class="fa fa-save"></i> Save and Finish Later</button>
+    <div class="footer-actions">
+        <div class="rep-back-actions">
+            <button type="button" class="btn btn-primary" id="repertoires"><i class="fa fa-angle-double-left"></i> Back to Repertoires</button>
+        </div>
 
-        <button type="button" class="btn btn-primary" id="add-subject"><i class="fa fa-angle-double-right"></i> Add Subject Information</button>
+        <div class="rep-next-actions">
+            <button type="button" class="btn btn-warning save" id="save-repertoire" data-toggle="modal" data-target="#save-modal"><i class="fa fa-save"></i> Save and Finish Later</button>
+
+            <button type="button" class="btn btn-primary" id="add-subject"><i class="fa fa-angle-double-right"></i> Add Subject Information</button>
+        </div>
     </div>
 </form>
+
+<!-- Save Modal -->
+<div class="modal fade" id="save-modal" tabindex="-1" role="dialog" aria-labelledby="project-warning" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body saving">
+                Saving <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </div>
+        </div>
+     </div>
+</div>

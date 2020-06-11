@@ -125,6 +125,11 @@ Delete a Project
 /*******************************************
 User Management
 *******************************************/
+.user-row:hover {
+    background: $vdj-lightgray;
+    cursor: pointer;
+}
+
 .subtitle {
     font-size: 0.85em;
     color: $vdj-darkgray;

@@ -1,6 +1,14 @@
 /*****************************************************
-SASS for "Create a Repertoire" page
+"Create a Repertoire" page
 *****************************************************/
+form {
+    margin-bottom: 3%;
+}
+
+.custom-select {
+    display: block;
+}
+
 .steps {
     text-align: center;
 }
@@ -36,10 +44,29 @@ li.progress-step {
 	cursor: pointer; // "hand" cursor
 }
 
-#addSubject-form {
-    width: 70%;
-}
-
 #age.form-control {
     width: 8%;
+}
+
+.no-border {
+    border: 0px;
+}
+
+/***************************************
+Footer Actions
+***************************************/
+.footer-actions {
+    margin-top: 3%;
+}
+
+/***************************************
+Modal Styles
+***************************************/
+.modal-content {
+    padding: 2em;
+}
+
+.saving {
+    font-size: 1.5em;
+    text-align: center;
 }

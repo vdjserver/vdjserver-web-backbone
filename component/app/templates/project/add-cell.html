@@ -159,9 +159,28 @@ Select a Sample:
         <div class="invalid-feedback">
             Please enter valid cell processing protocol.
         </div>
+
+        <div class="footer-actions">
+            <div class="rep-back-actions">
+                <button type="button" class="btn btn-primary" id="sampleMetadata"><i class="fa fa-angle-double-left"></i> Back to Sample</button>
+            </div>
+
+            <div class="rep-next-actions">
+                <button type="button" class="btn btn-warning" id="save-cell" data-toggle="modal" data-target="#save-modal"><i class="fa fa-save"></i> Save and Finish Later</button>
+                <button type="button" class="btn btn-primary" id="add-nucleic"><i class="fa fa-angle-double-right"></i> Add Nucleic Acid Processing Information</button>
+            </div>
+        </div>
     </div>
 </form>
-<div class="rep-next-actions">
-    <button type="button" class="btn btn-warning" id="save-cell"><i class="fa fa-save"></i> Save and Finish Later</button>
-    <button type="button" class="btn btn-primary" id="add-nucleic"><i class="fa fa-angle-double-right"></i> Add Nucleic Acid Processing Information</button>
+
+
+<!-- Save Modal -->
+<div class="modal fade" id="save-modal" tabindex="-1" role="dialog" aria-labelledby="saving" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body saving">
+                Saving <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </div>
+        </div>
+     </div>
 </div>

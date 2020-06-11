@@ -55,9 +55,25 @@ $(document).ready(function() {
     });
 
     // Delete User from a Project
+    $(document).on("click", ".user-name", function() {
+        $(".select").toggleClass("no-display");
+        $(".select").toggleClass("show");
+    });
+
+    $(document).on("click", ".user-status", function() {
+        $(".select").toggleClass("no-display");
+        $(".select").toggleClass("show");
+    });
+
+    $(document).on("click", "input#user-select", function() {
+        $("#delete-user").toggleClass("no-display");
+        $("#delete-user").toggleClass("show");
+        $("#edit-user").toggleClass("no-display");
+        $("#edit-user").toggleClass("show");
+    });
+
     $(document).on("click", "#delete-user", function() {
-        $(".select").removeClass("no-display");
-        $(".select").addClass("show");
+        console.log("clicked delete users button");
     });
 
     // Adding a New User to a Project

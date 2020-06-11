@@ -60,20 +60,24 @@
                             <th scope="col">Status</th>
                             <th scope="col">Actions</th>
                         </tr>
-                        <tr>
+                        <tr class="user-row">
                             <td class="no-display select">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="user-select">
                                 </div>
                             </td>
-                            <td>
+                            <td class="user-name">
                                 Name
                                 <p class="subtitle">Email</p>
                             </td>
-                            <td>Active</td>
+                            <td class="user-status">Active</td>
                             <td>
-                                <button type="button" class="btn btn-info" id="delete-user">
+                                <button type="button" class="btn btn-info no-display" id="delete-user">
                                     <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                                </button>
+
+                                <button type="button" class="btn btn-warning no-display" id="edit-user">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i> Edit
                                 </button>
                             </td>
                         </tr>
