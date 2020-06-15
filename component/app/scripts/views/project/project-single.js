@@ -109,6 +109,39 @@ var AddNucleicView = Marionette.View.extend({
     template: Handlebars.compile(addNucleic_template)
 });
 
+// Handlebar playground
+Handlebars.registerHelper('contains', function(needle, haystack, options) {
+   needle = Handlebars.escapeExpression(needle);
+   haystack = Handlebars.escapeExpression(haystack);
+   return (haystack.indexOf(needle) > -1) ? options.fn(this) : options.inverse(this);
+});
+
+import hbp_template from 'Templates/project/playground.html';
+var PlaygroundView = Marionette.View.extend({
+    template: Handlebars.compile(hbp_template),
+    templateContext() {
+        return {
+            // pass as object
+            airr_schema: this.model.airr_schema,
+
+            // pass as string
+            airr_string: JSON.stringify(this.model.airr_schema, null, 2),
+
+            // label array
+            keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
+
+            // label object
+            keywords_object: {
+                'contains_single_cell': 'Single Cell',
+                'contains_ig': 'Ig',
+                'contains_paired_chain': 'Paired Chain',
+                'contains_tcr': 'TCR'
+            }
+        };
+    }
+
+});
+
 // Repertoire view
 import RepertoireController from 'Scripts/views/project/repertoire-controller';
 
@@ -236,6 +269,10 @@ export default Marionette.View.extend({
             this.model.get('uuid') + '/group/create', {trigger: false});
             this.showAddRepGroup();
         },
+
+        'click #playground': function() {
+            this.showPlayground();
+        },
     },
 
     showProjectOverview()
@@ -301,6 +338,11 @@ export default Marionette.View.extend({
 
     showAddRepGroup() {
         this.detailView = new AddRepGroupView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
+    },
+
+    showPlayground() {
+        this.detailView = new PlaygroundView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     }
 });
