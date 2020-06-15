@@ -8,7 +8,7 @@ Select a Sample:
 <form>
     <div class="form-group">
       <input type="file" name="uploadCell" class="form-control-file" id="uploadCell">
-      <label for="uploadCell" class="btn btn-primary">
+      <label for="uploadCell" class="btn btn-upload">
         <i class="fa fa-upload"></i>
         Import Cell Processing Metadata
       </label>
@@ -25,7 +25,7 @@ Select a Sample:
         <!-- Popover -->
         </label>
         <!-- Will this field be automatically generated in the background? -->
-        <input type="text" class="form-control col-md-3" name="cell-id" id="cell-id" placeholder"">
+        <input type="text" class="form-control col-md-3" name="cell-id" id="cell-id" placeholder="">
         <div class="invalid-feedback">
             Please enter a valid cell processing ID.
         </div>
@@ -38,7 +38,7 @@ Select a Sample:
             Tissue Processing
         <!-- Popover -->
         </label>
-        <input type="text" class="form-control col-md-6" name="tissue-processing" id="tissue-processing" placeholder"">
+        <input type="text" class="form-control col-md-6" name="tissue-processing" id="tissue-processing" placeholder="">
         <div class="invalid-feedback">
             Please enter a valid tissue processing.
         </div>
@@ -51,7 +51,7 @@ Select a Sample:
             Cell Subset
         <!-- Popover -->
         </label>
-        <input type="text" class="form-control col-md-5" name="cell-subset" id="cell-subset" placeholder"">
+        <input type="text" class="form-control col-md-5" name="cell-subset" id="cell-subset" placeholder="">
         <div class="invalid-feedback">
             Please enter a valid cell subset.
         </div>
@@ -64,7 +64,7 @@ Select a Sample:
             Cell Phenotype
         <!-- Popover -->
         </label>
-        <input type="text" class="form-control col-md-6" name="cell-phenotype" id="cell-phenotype" placeholder"">
+        <input type="text" class="form-control col-md-6" name="cell-phenotype" id="cell-phenotype" placeholder="">
         <div class="invalid-feedback">
             Please enter a valid cell phenotype.
         </div>
@@ -77,7 +77,7 @@ Select a Sample:
             Single Cell
         <!-- Popover -->
         </label>
-        <input type="text" class="form-control col-md-4" name="single-cell" id="single-cell" placeholder"">
+        <input type="text" class="form-control col-md-4" name="single-cell" id="single-cell" placeholder="">
         <div class="invalid-feedback">
             Please enter a valid single cell.
         </div>
@@ -90,7 +90,7 @@ Select a Sample:
             Cell Number
         <!-- Popover -->
         </label>
-        <input type="text" class="form-control col-md-1" name="cell-number" id="cell-number" placeholder"">
+        <input type="text" class="form-control col-md-1" name="cell-number" id="cell-number" placeholder="">
         <div class="invalid-feedback">
             Please enter a valid cell number.
         </div>
@@ -103,7 +103,7 @@ Select a Sample:
             Cells Per Reaction
         <!-- Popover -->
         </label>
-        <input type="text" class="form-control col-md-1" name="cells-reaction" id="cells-reaction" placeholder"">
+        <input type="text" class="form-control col-md-1" name="cells-reaction" id="cells-reaction" placeholder="">
         <div class="invalid-feedback">
             Please enter valid cells per reaction.
         </div>
@@ -116,7 +116,7 @@ Select a Sample:
             Cell Storage
         <!-- Popover -->
         </label>
-        <input type="text" class="form-control col-md-1" name="cell-storage" id="cell-storage" placeholder"">
+        <input type="text" class="form-control col-md-1" name="cell-storage" id="cell-storage" placeholder="">
         <div class="invalid-feedback">
             Please enter valid cell storage.
         </div>
@@ -129,7 +129,7 @@ Select a Sample:
             Cell Quality
         <!-- Popover -->
         </label>
-        <input type="text" class="form-control col-md-2" name="cell-quality" id="cell-quality" placeholder"">
+        <input type="text" class="form-control col-md-2" name="cell-quality" id="cell-quality" placeholder="">
         <div class="invalid-feedback">
             Please enter valid cell quality
         </div>
@@ -142,7 +142,7 @@ Select a Sample:
             Cell Isolation
         <!-- Popover -->
         </label>
-        <input type="text" class="form-control col-md-5" name="cell-isolation" id="cell-isolation" placeholder"">
+        <input type="text" class="form-control col-md-5" name="cell-isolation" id="cell-isolation" placeholder="">
         <div class="invalid-feedback">
             Please enter valid cell isolation.
         </div>
@@ -166,8 +166,8 @@ Select a Sample:
             </div>
 
             <div class="rep-next-actions">
-                <button type="button" class="btn btn-warning" id="save-cell" data-toggle="modal" data-target="#save-modal"><i class="fa fa-save"></i> Save and Finish Later</button>
-                <button type="button" class="btn btn-primary" id="add-nucleic"><i class="fa fa-angle-double-right"></i> Add Nucleic Acid Processing Information</button>
+                <button type="button" class="btn btn-save" id="save-cell" data-toggle="modal" data-target="#save-modal"><i class="fa fa-save"></i> Save and Finish Later</button>
+                <button type="button" class="btn btn-add" id="add-nucleic"><i class="fa fa-angle-double-right"></i> Add Nucleic Acid Processing Information</button>
             </div>
         </div>
     </div>

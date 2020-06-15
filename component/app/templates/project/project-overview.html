@@ -15,10 +15,10 @@
             </div>
             <div class="row">
             <div class="project-metadata col-md-12">
-                <button type="button" class="btn btn-danger float-md-right" id="delete-project" data-toggle="modal" data-target="#delete-modal">
+                <button type="button" class="btn btn-delete float-md-right" id="delete-project" data-toggle="modal" data-target="#delete-modal">
                     Delete Project
                 </button>
-                <button type="button" class="btn btn-info float-md-right" id="edit-project">
+                <button type="button" class="btn btn-edit float-md-right" id="edit-project">
                     Edit Project Metadata
                 </button>
                 <button type="button" class="btn btn-info float-md-right" id="playground">
@@ -51,39 +51,41 @@
             <div class="row">
                 <div class="col-md-12">
                     <h2>Users</h2>
-                        <button type="button" class="btn btn-info float-md-right" id="add-users">
+                        <button type="button" class="btn btn-create float-md-right" id="add-users">
                             <i class="fa fa-plus" aria-hidden="true"></i> Add Users
                         </button>
                 </div>
-                <table class="table">
+                <table class="table manage-users">
                     <thead>
-                        <tr>
-                            <th scope="col" class="no-display select"></th>
-                            <th scope="col">User</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Actions</th>
+                        <tr class="form-row">
+                            <th scope="col" class="no-display select col-md-1"></th>
+                            <th scope="col" class="col-md-5">User</th>
+                            <th scope="col" class="col-md-3">Status</th>
+                            <th scope="col" class="col-md-3">Actions</th>
                         </tr>
-                        <tr class="user-row">
+                    </thead>
+                    <tbody>
+                        <tr class="user-row form-row">
                             <td class="no-display select">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="user-select">
                                 </div>
                             </td>
-                            <td class="user-name">
+                            <td class="user-name col-md-5">
                                 Name
                                 <p class="subtitle">Email</p>
                             </td>
-                            <td class="user-status">Active</td>
-                            <td>
-                                <button type="button" class="btn btn-info no-display" id="delete-user">
+                            <td class="user-status col-md-3">Active</td>
+                            <td class="user-actions col-md-3">
+                                <button type="button" class="btn btn-delete no-display" id="delete-user">
                                     <i class="fa fa-trash" aria-hidden="true"></i> Delete
                                 </button>
 
-                                <button type="button" class="btn btn-warning no-display" id="edit-user">
+                                <button type="button" class="btn btn-edit no-display" id="edit-user">
                                     <i class="fa fa-pencil" aria-hidden="true"></i> Edit
                                 </button>
                             </td>
                         </tr>
-                    </thead>
+                    </tbody>
                 </table>
             </div>

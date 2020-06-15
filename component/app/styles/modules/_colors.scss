@@ -2,16 +2,6 @@
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 
-// BootStrap Color Overrides
-$theme-colors: (
-    'danger': #D93C39,
-    'info': #4E95B8,
-    'light': #B8C0C7,
-    'success': #71B87D,
-    'primary': #689A87
-);
-
-
 $vdj-green: #689A87;
 $vdj-orange: #CC6B4C;
 $vdj-yellow: #EAE386;
@@ -19,6 +9,23 @@ $vdj-darkgray: #6C757D;
 $vdj-medgray: #B8C0C7;
 $vdj-lightgray: #E1E1E1;
 $vdj-blue: #7FA8BD;
+
+// BootStrap Color Overrides
+$theme-colors: (
+    'delete': #D93C39, // Red
+    'success': #71B87D, // Green
+    'save': #71B87D, // Green
+    'new': $vdj-blue, // VDJServer Blue
+    'add': $vdj-blue, // VDJServer Blue
+    'create': $vdj-blue, // VDJServer Blue
+    'upload': $vdj-medgray, // VDJServer Med Gray
+    'edit': $vdj-yellow, // VDJServer Yellow
+    'copy': #F6835E, // Light Orange
+    'info': #4E95B8, // Blue
+    'primary': #689A87,
+    'light': #B8C0C7,
+    'cancel': #B8C0C7
+);
 
 // Elements
 $vdj-border: #E1E1E1;
