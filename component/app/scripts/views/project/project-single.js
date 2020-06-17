@@ -112,7 +112,13 @@ var AddNucleicView = Marionette.View.extend({
 // Edit Project
 import edit_template from 'Templates/project/create.html';
 var EditProjectView = Marionette.View.extend({
-    template: Handlebars.compile(edit_template)
+    template: Handlebars.compile(edit_template),
+    templateContext() {
+        return {
+            // need to add toggle for edit/read-only
+            edit_mode: true
+        }
+    }
 });
 
 // Handlebar playground
