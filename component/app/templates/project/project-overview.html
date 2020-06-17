@@ -4,7 +4,7 @@
                     <p>{{value.study_description}}</p>
                 </div>
                 <div class="col-md-6 overview-details">
-                    <p><span class="details">Project Type:<span></p>
+                    <p><span class="details">Project Type:<span> {{value.study_type.x-airr}}</p>
                     <p><span class="details">NCBI:</span> {{value.ncbi_bioproject}}</p>
                     <p><span class="details">Funding Agency:</span>{{value.grant_agency}}</p>
                     <p><span class="details">Grants:</span> {{value.grants}}</p>
@@ -59,23 +59,23 @@
                     <thead>
                         <tr class="form-row">
                             <th scope="col" class="no-display select col-md-1"></th>
-                            <th scope="col" class="col-md-5">User</th>
-                            <th scope="col" class="col-md-3">Status</th>
+                            <th scope="col" class="col-md-6">User</th>
+                            <th scope="col" class="col-md-2">Status</th>
                             <th scope="col" class="col-md-3">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="user-row form-row">
-                            <td class="no-display select">
+                            <td class="no-display select col-md-1">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="user-select">
                                 </div>
                             </td>
-                            <td class="user-name col-md-5">
+                            <td class="user-name col-md-6">
                                 Name
                                 <p class="subtitle">Email</p>
                             </td>
-                            <td class="user-status col-md-3">Active</td>
+                            <td class="user-status col-md-2">Active</td>
                             <td class="user-actions col-md-3">
                                 <button type="button" class="btn btn-delete no-display" id="delete-user">
                                     <i class="fa fa-trash" aria-hidden="true"></i> Delete

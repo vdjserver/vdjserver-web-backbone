@@ -109,6 +109,12 @@ var AddNucleicView = Marionette.View.extend({
     template: Handlebars.compile(addNucleic_template)
 });
 
+// Edit Project
+import edit_template from 'Templates/project/create.html';
+var EditProjectView = Marionette.View.extend({
+    template: Handlebars.compile(edit_template)
+});
+
 // Handlebar playground
 Handlebars.registerHelper('contains', function(needle, haystack, options) {
    needle = Handlebars.escapeExpression(needle);
@@ -270,6 +276,11 @@ export default Marionette.View.extend({
             this.showAddRepGroup();
         },
 
+        'click #edit-project': function() {
+            App.router.navigate('project/' + this.model.get('uuid') + '/edit', {trigger: false});
+            this.showEditProject();
+        },
+
         'click #playground': function() {
             this.showPlayground();
         },
@@ -338,6 +349,11 @@ export default Marionette.View.extend({
 
     showAddRepGroup() {
         this.detailView = new AddRepGroupView({model: this.model});
+        this.showChildView('detailRegion', this.detailView);
+    },
+
+    showEditProject() {
+        this.detailView = new EditProjectView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
 
