@@ -37,83 +37,137 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 // Community controller
 //
 // this manages displaying project content
-export default Marionette.View.extend({
-    template: Handlebars.compile('<div id="intro"><h1>Welcome!</h1><p>Welcome to the Community Projects page!</p><div id="project">'),
-  // one region for the project content
-  regions: {
-    introRegion: '#intro',
-    projectRegion: '#project',
-  },
+var CommunityListView = Marionette.View.extend({
+    template: Handlebars.compile('<h1>Community Data Portal</h1><div id="community-statistics"><div id="community-query"><div id="community-project">'),
 
-  initialize(options) {
-    console.log('Initialize');
+    // one region for the project content
+    regions: {
+        statsRegion: '#community-statistics',
+        queryRegion: '#community-query',
+        projectRegion: '#community-project',
+    },
+
+    initialize(options) {
+        console.log('Initialize');
+        this.projectList = null;
+        this.currentProject = null;
+    },
+
+    // show a loading view, used while fetching the data
+    showLoading() {
+        this.showChildView('projectRegion', new LoadingView({}));
+    },
+
+    // displaying intro text before Project List
+    showIntro: function() {
+        // create view for intro text
+
+        var that = this;
+        var introView = new IntroView({});
+        that.showChildView('introRegion', introView);
+    },
+
+    showProjectList(projectList) {
+        console.log(this.controller);
+        var view = new ProjectListView({collection: projectList, controller: this.controller});
+        this.showChildView('projectRegion', view);
+    },
+
+    showProjectPage(project, page) {
+        this.clearIntroView();
+        console.log(this.controller, isNew);
+        var view = new ProjectPageView({model: project, page: page, controller: this.controller});
+        this.showChildView('projectRegion', view);
+    },
+
+});
+
+//
+// Project controller
+// manages all the different project views
+//
+function CommunityController() {
+    // the project view
+    this.projectView = new CommunityListView({controller: this});
+
+    // maintain state across multiple views
     this.projectList = null;
     this.currentProject = null;
-  },
+};
 
-  // displaying intro text before Project List
-  showIntro: function() {
-      // create view for intro text
+CommunityController.prototype = {
+    // return the main view, create it if necessary
+    getView() {
+        if (!this.projectView)
+            this.projectView = new CommunityListView({controller: this});
+        else if (this.projectView.isDestroyed())
+            this.projectView = new CommunityListView({controller: this});
+        return this.projectView;
+    },
 
-      var that = this;
-      var introView = new IntroView({});
-      that.showChildView('introRegion', introView);
-  },
+    // show list of public projects
+    showProjectList() {
+        if (! this.projectList) {
+            this.projectList = new ProjectList();
 
-  showProjectList: function() {
-    if (! this.projectList) {
-        this.projectList = new ProjectList();
+            var that = this;
 
-        var that = this;
+            // show a loading view while fetching the data
+            this.projectView.showLoading();
 
-        // show a loading view while fetching the data
-        that.showChildView('projectRegion', new LoadingView({}));
-
-        // load the projects
-        this.projectList.fetch()
-        .then(function() {
-            console.log(that.projectList);
-            // create view with project data
-            var view = new ProjectListView({collection: that.projectList});
-            that.showChildView('projectRegion', view);
-        })
-        .fail(function(error) {
-          console.log(error);
-        });
-    } else {
-        // projects already loaded
-        // we need to create a new view each time
-        var view = new ProjectListView({collection: this.projectList});
-        this.showChildView('projectRegion', view);
-    }
-  },
-
-  showProjectPage(projectUuid) {
-    // if project list is not loaded yet, just fetch the single project
-    if (! this.projectList) {
-        this.currentProject = new Project({uuid: projectUuid});
-        var that = this;
-        this.currentProject.fetch()
+            // load the projects
+            this.projectList.fetch()
             .then(function() {
-                console.log(that.project);
-
-                var view = new ProjectPageView({model: that.currentProject});
-                this.showChildView('projectRegion', view);
-                //that.showChildView('singleRegion', view);
+                console.log(that.projectList);
+                // have the view display them
+                that.projectView.showProjectList(that.projectList);
             })
             .fail(function(error) {
                 console.log(error);
             });
-    } else {
-        // get project from the list
-        this.currentProject = this.projectList.get(projectUuid);
-        if (! this.currentProject) {
-            // ERROR: could not find project!
+        } else {
+            // projects already loaded
+            // have the view display them
+            this.projectView.showProjectList(this.projectList);
+        }
+    },
+
+    showProjectPage(projectUuid, page) {
+        // clear the current project
+        this.currentProject = null;
+
+        // if project list is loaded, get from list
+        if (this.projectList) {
+            this.currentProject = this.projectList.get(projectUuid);
+            if (! this.currentProject) {
+                // Not in list,
+                // maybe list is out of date, so clear it
+                this.projectList = null;
+            }
         }
 
-        // show the current project view
-        var view = new ProjectPageView({model: this.currentProject});
-        this.showChildView('projectRegion', view);
-    }
-  },
-});
+        // If no project then fetch it
+        if (! this.currentProject) {
+            this.currentProject = new Project({uuid: projectUuid});
+            var that = this;
+            this.currentProject.fetch()
+            .then(function() {
+                console.log(that.currentProject);
+
+                // have the view display it
+                that.projectView.showProjectPage(that.currentProject, page);
+            })
+            .fail(function(error) {
+                // TODO: could not retrieve project
+                // maybe the user does not have access, or the uuid is wrong
+                // need to display some error message
+                console.log(error);
+            });
+        } else {
+            // have the view display it
+            this.projectView.showProjectPage(this.currentProject, page);
+        }
+    },
+
+};
+export default CommunityController;

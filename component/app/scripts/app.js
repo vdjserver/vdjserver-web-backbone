@@ -136,7 +136,7 @@ var ApplicationController = Marionette.View.extend({
     if (! this.communityController) {
       this.communityController = new CommunityController();
     }
-    this.showChildView('mainRegion', this.communityController);
+    this.showChildView('mainRegion', this.communityController.getView());
 
     // tell navigation controller to display its public nav bar
     this.navController.showPublicNavigation();
