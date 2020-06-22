@@ -98,6 +98,6 @@ $(document).ready(function() {
     });
 
     $(document).on("click", "#add-users", function() {
-        $(".manage-users").find('tbody').append("<tr class='user-row form-row'><td class='user-name col-md-3'><input type='text' class='form-control' id='user-name' placeholder='Name'></td><td class='user-email col-md-2'><input type='email' class='form-control' id='user-email' placeholder='Email'></td><td class='user-status col-md-3'><select class='form-control' id='user-status'><option>Active</option><option>Inactive</option></td><td class='user-actions col-md-3'><button type='button' class='btn btn-create' id='add-new-user'><i class='fa fa-plus' aria-hidden='true'></i> Add</button></td></tr>");
+        $(".manage-users").find('tbody').append("<tr class='user-row form-row'><td class='user-name col-md-3'><input type='text' class='form-control' id='user-name' placeholder='Name'></td><td class='user-email col-md-3'><input type='email' class='form-control' id='user-email' placeholder='Email'></td><td class='user-status col-md-2'><select class='form-control' id='user-status'><option>Active</option><option>Inactive</option></td><td class='user-actions col-md-3'><button type='button' class='btn btn-create' id='add-new-user'><i class='fa fa-plus' aria-hidden='true'></i> Add</button></td></tr>");
     });
 });

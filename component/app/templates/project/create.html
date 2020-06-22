@@ -1,6 +1,17 @@
 <div class="alert alert-info">
+    {{#if edit_mode}}
+        <i class="fa fa-info-circle"></i> Modify this project by using the form below.
+    {{/if}}
+
+    {{#unless edit_mode}}
     <i class="fa fa-info-circle"></i> Create a new VDJServer project by filling out the form below.
+    {{/unless}}
 </div>
+
+<p>
+    <!-- Temporary flag to indicate if Edit Mode Activated -->
+    Edit Status: <strong>{{edit_mode}}</strong>
+</p>
 
 <script>
     $('[data-toggle="popover"]').popover({
@@ -25,10 +36,10 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_id"}}}
                 </label>
-                <input type="text" class="form-control" name="study_id" id="NCBI" placeholder="PRJNA001" required>
-                <div class="invalid-feedback">
-                  Please enter a Study ID.
-                </div>
+
+                <input type="text" class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="study_id" id="NCBI" placeholder="{{value.study_id}}" required>
+
+
             </div>
 
             <div class="form-group col-md-8">
@@ -43,7 +54,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_title"}}}
                 </label>
-                <input type="text" class="form-control" name="study_title" id="name" placeholder="Effects of sunlight exposure of the Treg repertoire" required>
+                <input type="text" class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="study_title" id="name" placeholder="Effects of sunlight exposure of the Treg repertoire" value="{{value.study_title}}" required>
                 <div class="invalid-feedback">
                   Please enter a Project/Study Title.
                 </div>
@@ -54,7 +65,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_description"}}}
                 </label>
-                <textarea class="form-control" name="study_description" id="description" rows="3">{{value.study_description}}</textarea>
+                <textarea class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="study_description" id="description" rows="25">{{value.study_description}}</textarea>
             </div>
 
             <div class="form-group col-md-8">
@@ -69,7 +80,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "inclusion_exclusion_criteria"}}}
                 </label>
-                <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" placeholder="Include: Clinical P. falciparum infection; Exclude: Seropositive for HIV" rows="5" required></textarea>
+                <textarea class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="inclusion_exclusion_criteria" id="criteria" placeholder="Include: Clinical P. falciparum infection; Exclude: Seropositive for HIV" rows="5" required> {{ inclusion_exclusion_criteria }}</textarea>
                 <div class="invalid-feedback">
                   Please enter Inclusion/Exclusion Criteria.
                 </div>
@@ -87,7 +98,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "grants"}}}
                 </label>
-                <textarea class="form-control" name="grants" id="grants" rows="4" required>{{value.grants}}</textarea>
+                <textarea class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="grants" id="grants" rows="4" required>{{ value.grants }}</textarea>
                 <div class="invalid-feedback">
                   Please enter Grant information.
                 </div>
@@ -95,7 +106,7 @@
 
             <div class="form-group col-md-3">
                 <label>Study Keywords</label>
-                    <div class="form-check custom-control custom-checkbox">
+                    <div class="form-check custom-control custom-checkbox {{#if edit_mode}} form-control-plaintext {{/if}}">
                       <input class="form-check-input" type="checkbox" name="study_type" id="contains_tcr" value="contains_tcr">
                       <label class="form-check-label" for="1">
                         TCR
@@ -135,7 +146,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_type"}}}
                 </label>
-                <select class="form-control" required>
+                <select class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" required>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -157,7 +168,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "pub_ids"}}}
                 </label>
-                <input type="text" class="form-control" name="pub_ids" id="publications" required>
+                <input type="text" class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="pub_ids" id="publications" required value="{{ value.pub_ids }}">
                 <div class="invalid-feedback">
                   Please enter Publications.
                 </div>
@@ -178,7 +189,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "collected_by"}}}
                 </label>
-                <input type="text" class="form-control" name="collectedby_name" id="collectedby_name" required>
+                <input type="text" class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="collectedby_name" id="collectedby_name" required value="{{ value.collected_by }}">
                 <div class="invalid-feedback">
                   Please enter Data Collector/Principal Investigator Name.
                 </div>
@@ -196,7 +207,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "collected_by"}}}
                 </label>
-                <input type="email" class="form-control" name="collectedby_email" id="collectedby_email">
+                <input type="email" class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="collectedby_email" id="collectedby_email">
                 <div class="invalid-feedback">
                   Please enter a Data Collector Email.
                 </div>
@@ -214,7 +225,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "lab_name"}}}
                 </label>
-                <input type="text" class="form-control" name="lab_name" id="lab_name" required>
+                <input type="text" class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="lab_name" id="lab_name" required value="{{ value.lab_name }}">
                 <div class="invalid-feedback">
                   Please enter Lab Name/Department.
                 </div>
@@ -233,7 +244,7 @@
                     {{{FieldHelpPopover "Study" "lab_address"}}}
                 </label>
 
-                <input type="text" class="form-control" name="lab_address" id="lab_address" required>
+                <input type="text" class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="lab_address" id="lab_address" required value="{{ value.lab_address }}">
                 <div class="invalid-feedback">
                   Please enter a Lab Address.
                 </div>
@@ -254,7 +265,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "submitted_by"}}}
                 </label>
-                <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" required>
+                <input type="text" class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="submittedby_name" id="submittedby_name" required value="{{ submitted_by }}">
                 <div class="invalid-feedback">
                   Please enter Data Submitter Name.
                 </div>
@@ -272,7 +283,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "submitted_by"}}}
                 </label>
-                <input type="email" class="form-control" name="submittedby_email" id="submittedby_email">
+                <input type="email" class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="submittedby_email" id="submittedby_email">
                 <div class="invalid-feedback">
                   Please enter a Data Submitter Email.
                 </div>
@@ -290,7 +301,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "submitted_by"}}}
                 </label>
-                <input type="email" class="form-control" name="submittedby_address" id="submittedby_address">
+                <input type="email" class="form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="submittedby_address" id="submittedby_address">
                 <div class="invalid-feedback">
                   Please enter a Data Submitter Address.
                 </div>
