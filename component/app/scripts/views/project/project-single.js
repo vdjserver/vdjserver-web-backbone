@@ -29,6 +29,8 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
+import LoadingView from 'Scripts/views/utilities/loading-view';
+import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
 
 // Sidebar view
 //import sidebar_template from 'Templates/project/project-sidebar.html';
@@ -159,7 +161,7 @@ import RepertoireController from 'Scripts/views/project/repertoire-controller';
 
 // Main project
 import template from 'Templates/project/single.html';
-export default Marionette.View.extend({
+var SingleProjectView = Marionette.View.extend({
     template: Handlebars.compile(template),
 
     // one region for the project summary
@@ -171,72 +173,41 @@ export default Marionette.View.extend({
 
     initialize: function(parameters) {
 
-        // show sidebar
-        //this.sidebarView = new ProjectSidebarView({model: this.model});
-        //this.showChildView('sidebarRegion', this.sidebarView);
-
-        // show project summary
-        this.summaryView = new ProjectSummaryView({model: this.model});
-        this.showChildView('summaryRegion', this.summaryView);
-
-        // are we routing to a specific page?
-        if (parameters && parameters.page) {
-            switch (parameters.page) {
-                case 'repertoire':
-                    this.showProjectRepertoires();
-                    break;
-                case 'group':
-                    this.showProjectGroups();
-                    break;
-                case 'file':
-                    this.showProjectFiles();
-                    break;
-                case 'analysis':
-                    this.showProjectAnalyses();
-                    break;
-                case 'overview':
-                default:
-                    this.showProjectOverview();
-                    break;
-            }
-        } else {
-            // show project summary
-            this.showProjectOverview();
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.model) this.model = parameters.model;
         }
 
-        // show repertoire as default for project detail
-        // this.detailView = new RepertoireView();
-        // this.showChildView('projectRegion', this.detailView);
+        // show project summary
+        // detail region will be decided by controller
+        this.summaryView = new ProjectSummaryView({model: this.model});
+        this.showChildView('summaryRegion', this.summaryView);
     },
 
     events: {
         'click #overview-tab': function() {
-            App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
-            this.showProjectOverview();
+            this.controller.showProjectOverview();
         },
 
         // setting event for Repertoires page
         'click #repertoires-tab': function() {
-            App.router.navigate('project/' + this.model.get('uuid') + '/repertoire', {trigger: false});
-            this.showProjectRepertoires();
+            this.controller.showProjectRepertoires();
         },
 
         // setting event for Groups page
         'click #groups-tab': function() {
-            App.router.navigate('project/' + this.model.get('uuid') + '/group', {trigger: false});
-            this.showProjectGroups();
+            this.controller.showProjectGroups();
         },
 
         // setting event for Files page
         'click #files-tab': function() {
-            App.router.navigate('project/' + this.model.get('uuid') + '/file', {trigger: false});
-            this.showProjectFiles();
+            this.controller.showProjectFiles();
         },
 
         // setting event for Analyses page
         'click #analyses-tab': function() {
-            App.router.navigate('project/' + this.model.get('uuid') + '/analysis', {trigger: false});
-            this.showProjectAnalyses();
+            this.controller.showProjectAnalyses();
         },
 
         // setting event for Create a Repertoire page
@@ -292,33 +263,40 @@ export default Marionette.View.extend({
         },
     },
 
-    showProjectOverview()
+    // show a loading view, used while fetching the data
+    showLoading() {
+        this.showChildView('detailRegion', new LoadingView({}));
+    },
+
+    showProjectOverview(project)
     {
-        this.detailView = new ProjectOverView({model: this.model});
+        this.detailView = new ProjectOverView({model: project});
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showProjectRepertoires()
+    showProjectRepertoires(repertoireController)
     {
-        this.detailView = new RepertoireController({model: this.model});
+        this.showChildView('detailRegion', repertoireController.getView());
+
+        // tell repertoire controller to display the repertoire list
+        repertoireController.showRepertoireList();
+    },
+
+    showProjectGroups(project)
+    {
+        this.detailView = new GroupsView({model: project});
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showProjectGroups()
+    showProjectFiles(project)
     {
-        this.detailView = new GroupsView({model: this.model});
+        this.detailView = new FilesView({model: project});
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showProjectFiles()
+    showProjectAnalyses(project)
     {
-        this.detailView = new FilesView({model: this.model});
-        this.showChildView('detailRegion', this.detailView);
-    },
-
-    showProjectAnalyses()
-    {
-        this.detailView = new AnalysesView({model: this.model});
+        this.detailView = new AnalysesView({model: project});
         this.showChildView('detailRegion', this.detailView);
     },
 
@@ -368,3 +346,137 @@ export default Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     }
 });
+
+//
+// Project controller for a single project
+// manages all the different project views
+//
+function SingleProjectController(project, page) {
+    // maintain state across multiple views
+    this.model = project;
+    this.page = page;
+    // TODO: we should fetch these in the background
+    this.repertoireController = null;
+    this.repertoireList = null;
+    this.subjectList = null;
+    this.sampleList = null;
+
+    // the project view
+    this.projectView = new SingleProjectView({controller: this, model: this.model});
+
+    // are we routing to a specific page?
+    switch (this.page) {
+        case 'repertoire':
+            this.showProjectRepertoires();
+            break;
+        case 'group':
+            this.showProjectGroups();
+            break;
+        case 'file':
+            this.showProjectFiles();
+            break;
+        case 'analysis':
+            this.showProjectAnalyses();
+            break;
+        case 'overview':
+        default:
+            this.showProjectOverview();
+            break;
+    }
+};
+
+SingleProjectController.prototype = {
+    // return the main view, create it if necessary
+    getView() {
+        if (!this.projectView)
+            this.projectView = new SingleProjectView({controller: this});
+        else if (this.projectView.isDestroyed())
+            this.projectView = new SingleProjectView({controller: this});
+        return this.projectView;
+    },
+
+    showProjectOverview() {
+        this.page = 'overview';
+        App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
+        this.projectView.showProjectOverview(this.model);
+    },
+
+    showProjectRepertoires() {
+        this.page = 'repertoire';
+        App.router.navigate('project/' + this.model.get('uuid') + '/repertoire', {trigger: false});
+        var that = this;
+        if (! that.repertoireList) {
+            that.repertoireList = new RepertoireCollection({projectUuid: that.model.get('uuid')});
+            that.subjectList = new SubjectCollection({projectUuid: that.model.get('uuid')});
+            that.sampleList = new SampleCollection({projectUuid: that.model.get('uuid')});
+
+            // show loading while we fetch
+            that.projectView.showLoading();
+
+            // fetch the repertoires
+            that.repertoireList.fetch()
+                .then(function() {
+                    // fetch the subjects
+                    return that.subjectList.fetch();
+                })
+                .then(function() {
+                    // fetch the samples
+                    return that.sampleList.fetch();
+                })
+                .then(function() {
+                    // attach records to the repertoire
+                    for (var i=0; i < that.repertoireList.length; ++i) {
+                        var m = that.repertoireList.at(i);
+                        var value = m.get('value');
+
+                        // attach the subject record
+                        var obj = that.subjectList.get(value['subject']['vdjserver_uuid']);
+                        m.set('subject', obj.get('value'));
+
+                        // attach the sample records
+                        var samples = [];
+                        for (var j=0; j < value['sample'].length; ++j) {
+                            obj = that.sampleList.get(value['sample'][j]['vdjserver_uuid']);
+                            samples.push(obj.get('value'));
+                        }
+                        m.set('samples', samples);
+                    }
+
+                    console.log(that.repertoireList);
+                    console.log(that.subjectList);
+                    console.log(that.sampleList);
+
+                    // have the view display them
+                    that.repertoireController = new RepertoireController(that);
+                    that.projectView.showProjectRepertoires(that.repertoireController);
+                })
+                .fail(function(error) {
+                    console.log(error);
+                });
+        } else {
+            // tell repertoire controller to display the repertoire list
+            that.repertoireController = new RepertoireController(that);
+            that.projectView.showProjectRepertoires(that.repertoireController);
+        }
+    },
+
+    showProjectGroups() {
+        this.page = 'group';
+        App.router.navigate('project/' + this.model.get('uuid') + '/group', {trigger: false});
+        this.projectView.showProjectGroups(this.model);
+    },
+
+    showProjectFiles() {
+        this.page = 'file';
+        App.router.navigate('project/' + this.model.get('uuid') + '/file', {trigger: false});
+        this.projectView.showProjectFiles(this.model);
+    },
+
+    showProjectAnalyses() {
+        this.page = 'analysis';
+        App.router.navigate('project/' + this.model.get('uuid') + '/analysis', {trigger: false});
+        this.projectView.showProjectAnalyses(this.model);
+    },
+
+};
+export default SingleProjectController;

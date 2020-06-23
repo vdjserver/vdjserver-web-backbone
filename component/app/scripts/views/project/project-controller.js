@@ -31,7 +31,7 @@ import Handlebars from 'handlebars';
 import Project from 'Scripts/models/agave-project';
 import ProjectList from 'Scripts/collections/agave-projects';
 import ProjectListView from 'Scripts/views/project/project-list';
-import ProjectPageView from 'Scripts/views/project/project-single';
+import SingleProjectController from 'Scripts/views/project/project-single';
 import intro_template from 'Templates/project/intro.html';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import CreateProjectView from 'Scripts/views/project/create-view';
@@ -82,11 +82,10 @@ var ProjectView = Marionette.View.extend({
         this.showChildView('projectRegion', view);
     },
 
-    showProjectPage(project, page, isNew) {
+    showProjectPage(projectController) {
         this.clearIntroView();
-        console.log(this.controller, isNew);
-        var view = new ProjectPageView({model: project, page: page, controller: this.controller});
-        this.showChildView('projectRegion', view);
+        console.log(this.controller);
+        this.showChildView('projectRegion', projectController.getView());
     },
 
     showCreatePage(project) {
@@ -107,6 +106,7 @@ function ProjectController() {
     // maintain state across multiple views
     this.projectList = null;
     this.currentProject = null;
+    this.currentProjectController = null;
 };
 
 ProjectController.prototype = {
@@ -146,9 +146,12 @@ ProjectController.prototype = {
         }
     },
 
-    showProjectPage(projectUuid, page, isNew) {
-        // clear the current project
+    showProjectPage(projectUuid, page) {
+        // clear the current project and controller
         this.currentProject = null;
+        this.currentProjectController = null;
+
+        var that = this;
 
         // if project list is loaded, get from list
         if (this.projectList) {
@@ -163,13 +166,14 @@ ProjectController.prototype = {
         // If no project then fetch it
         if (! this.currentProject) {
             this.currentProject = new Project({uuid: projectUuid});
-            var that = this;
+
             this.currentProject.fetch()
             .then(function() {
                 console.log(that.currentProject);
 
                 // have the view display it
-                that.projectView.showProjectPage(that.currentProject, page, isNew);
+                that.currentProjectController = new SingleProjectController(that.currentProject, page);
+                that.projectView.showProjectPage(that.currentProjectController);
             })
             .fail(function(error) {
                 // TODO: could not retrieve project
@@ -179,7 +183,8 @@ ProjectController.prototype = {
             });
         } else {
             // have the view display it
-            this.projectView.showProjectPage(this.currentProject, page, isNew);
+            that.currentProjectController = new SingleProjectController(that.currentProject, page);
+            that.projectView.showProjectPage(that.currentProjectController);
         }
     },
 

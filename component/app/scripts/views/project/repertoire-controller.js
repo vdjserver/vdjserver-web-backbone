@@ -47,11 +47,47 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCol
 // We likely need to create an abstract view that is given to CollectionView
 // and it manages subviews which deal with the different transitions.
 
+import rs_header_template from 'Templates/project/repertoire-summary-header.html';
+var RepertoireSummaryHeaderView = Marionette.View.extend({
+    template: Handlebars.compile(rs_header_template),
+});
+
+import rs_subject_template from 'Templates/project/repertoire-summary-subject.html';
+var RepertoireSummarySubjectView = Marionette.View.extend({
+    template: Handlebars.compile(rs_subject_template),
+});
+
+import rs_sample_template from 'Templates/project/repertoire-summary-sample.html';
+var RepertoireSummarySampleView = Marionette.View.extend({
+    template: Handlebars.compile(rs_sample_template),
+});
+
+import rs_stats_template from 'Templates/project/repertoire-summary-statistics.html';
+var RepertoireSummaryStatisticsView = Marionette.View.extend({
+    template: Handlebars.compile(rs_stats_template),
+});
+
 // Summary view for a single repertoire
+// Short multi-line summary, meant for showing in a list
 import rep_summary_template from 'Templates/project/repertoire-summary.html';
 var RepertoireSummaryView = Marionette.View.extend({
     template: Handlebars.compile("<div'>" + rep_summary_template + "</div>"),
-    // template: Handlebars.compile("<table class='table table-borderless table-sm'>" + rep_summary_template + "</table>"),
+
+    // one region for any header content
+    // one region for subject summary
+    // one region for sample summary
+    // one region for repertoire statistics
+    regions: {
+        headerRegion: '#repertoire-summary-header',
+        subjectRegion: '#repertoire-summary-subject',
+        sampleRegion: '#repertoire-summary-sample',
+        statisticsRegion: '#repertoire-summary-statistics'
+    },
+
+    initialize: function(parameters) {
+        this.showChildView('headerRegion', new RepertoireSummaryHeaderView({model: this.model}));
+        //this.showChildView('subjectRegion', new RepertoireSummarySubjectView({model: this.model}));
+    },
 
 });
 
@@ -84,8 +120,8 @@ var RepertoireHeaderView = Marionette.View.extend({
 });
 
 // this manages displaying repertoire content
-// TODO: right now the controller and view are combined, will likely separate later
-export default Marionette.View.extend({
+// shows all the repertoires in a list
+var RepertoireMainView = Marionette.View.extend({
     template: Handlebars.compile('<div id="repertoire-header"></div><div id="repertoire-list"></div>'),
 
     // one region for any header content
@@ -103,75 +139,23 @@ export default Marionette.View.extend({
         'click #save-repertoire': 'saveRepertoire',
     },
 
-    initialize(options) {
+    initialize(parameters) {
         console.log('Initialize');
 
-        // TODO: cache these lists
-        this.repertoireList = new RepertoireCollection({projectUuid: this.model.get('uuid')});
-        this.subjectList = new SubjectCollection({projectUuid: this.model.get('uuid')});
-        this.sampleList = new SampleCollection({projectUuid: this.model.get('uuid')});
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+    },
 
-        var that = this;
+    // show a loading view, used while fetching the data
+    showLoading() {
+        this.showChildView('headerRegion', new LoadingView({}));
+    },
 
-        // show a loading view while fetching the data
-        this.showChildView('listRegion', new LoadingView({}));
-
-        // fetch the repertoires
-        this.repertoireList.fetch()
-            .then(function() {
-                // fetch the subjects
-                return that.subjectList.fetch();
-            })
-            .then(function() {
-                // fetch the samples
-                return that.sampleList.fetch();
-            })
-            .then(function() {
-                // attach records to the repertoire
-                for (var i=0; i < that.repertoireList.length; ++i) {
-                    var m = that.repertoireList.at(i);
-                    var value = m.get('value');
-
-                    // attach the subject record
-                    var obj = that.subjectList.get(value['subject']['vdjserver_uuid']);
-                    m.set('subject', obj.get('value'));
-
-                    // attach the sample records
-                    var samples = [];
-                    for (var j=0; j < value['sample'].length; ++j) {
-                        obj = that.sampleList.get(value['sample'][j]['vdjserver_uuid']);
-                        samples.push(obj.get('value'));
-                    }
-                    m.set('samples', samples);
-                }
-
-                console.log(that.repertoireList);
-                console.log(that.subjectList);
-                console.log(that.sampleList);
-
-                // have the view display them
-                that.showChildView('headerRegion', new RepertoireHeaderView());
-                that.showChildView('listRegion', new RepertoireListView({collection: that.repertoireList}));
-            })
-            .fail(function(error) {
-                console.log(error);
-            });
-
-/*
-        var m = new Repertoire({projectUuid: this.model.get('uuid')});
-        m.set('uuid',m.cid);
-        this.repertoireList.add(m);
-        m = new Repertoire({projectUuid: this.model.get('uuid')});
-        m.set('uuid',m.cid);
-        this.repertoireList.add(m);
-        m = new Repertoire({projectUuid: this.model.get('uuid')});
-        m.set('uuid',m.cid);
-        this.repertoireList.add(m);
-        this.currentRepertoire = m;
-
+    showRepertoireList(repertoireList) {
+        console.log(this.controller);
         this.showChildView('headerRegion', new RepertoireHeaderView());
-        this.showChildView('listRegion', new RepertoireListView({collection: this.repertoireList}));
-*/
+        this.showChildView('listRegion', new RepertoireListView({collection: repertoireList}));
     },
 
     createRepertoire(e) {
@@ -227,3 +211,41 @@ export default Marionette.View.extend({
         // });
     }
 });
+
+//
+// Repertoire controller
+// manages all the different repertoire views within a project
+//
+function RepertoireController(controller) {
+    // upper level controller, i.e. the single project controller
+    this.controller = controller;
+
+    this.model = this.controller.model;
+    console.log(this.model);
+
+    // repertoire list view
+    this.mainView = new RepertoireMainView({controller: this});
+
+    // maintain state across multiple views
+    this.repertoireList = controller.repertoireList;
+    this.subjectList = controller.subjectList;
+    this.sampleList = controller.sampleList;
+};
+
+RepertoireController.prototype = {
+    // return the main view, create it if necessary
+    getView() {
+        if (!this.mainView)
+            this.mainView = new RepertoireMainView({controller: this});
+        else if (this.mainView.isDestroyed())
+            this.mainView = new RepertoireMainView({controller: this});
+        return this.mainView;
+    },
+
+    // show list of repertoires for the project
+    showRepertoireList() {
+        this.mainView.showRepertoireList(this.repertoireList);
+    },
+
+};
+export default RepertoireController;
