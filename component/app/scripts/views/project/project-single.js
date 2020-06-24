@@ -145,6 +145,28 @@ var ProjectOverView = Marionette.View.extend({
     template: Handlebars.compile(overview_template)
 });
 
+// Steps through the metadata entry process
+import entry_steps_template from 'Templates/project/create-repertoire-steps.html';
+var CreateRepertoireStepsView = Marionette.View.extend({
+    template: Handlebars.compile(entry_steps_template),
+
+    initialize: function(parameters) {
+        // initial active step
+        this.active_step = 'repertoire';
+        if (parameters) {
+            // our controller
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.active_step) this.active_step = parameters.active_step;
+        }
+    },
+
+    templateContext() {
+        return {
+            active_step: this.active_step
+        };
+    },
+});
+
 // Create New Repertoire view
 import create_template from 'Templates/project/create-repertoire.html';
 var CreateRepertoireView = Marionette.View.extend({
@@ -194,11 +216,13 @@ var EditProjectView = Marionette.View.extend({
 });
 
 // Handlebar playground
+// moved the contains helper to handlebars-utilities
+/*
 Handlebars.registerHelper('contains', function(needle, haystack, options) {
    needle = Handlebars.escapeExpression(needle);
    haystack = Handlebars.escapeExpression(haystack);
    return (haystack.indexOf(needle) > -1) ? options.fn(this) : options.inverse(this);
-});
+}); */
 
 import hbp_template from 'Templates/project/playground.html';
 var PlaygroundView = Marionette.View.extend({
@@ -235,9 +259,11 @@ var SingleProjectView = Marionette.View.extend({
     template: Handlebars.compile(template),
 
     // one region for the project summary
+    // one region to show progress through metadata entry, normally this is empy
     // one region for the project detail
     regions: {
         summaryRegion: '#project-summary',
+        stepsRegion: '#create-repertoire-steps',
         detailRegion: '#project-detail'
     },
 
@@ -256,71 +282,13 @@ var SingleProjectView = Marionette.View.extend({
     },
 
     events: {
+        //
+        // Overview page specific events
+        //
+
+        // setting event for Overview page
         'click #overview-tab': function() {
             this.controller.showProjectOverview();
-        },
-
-        // setting event for Repertoires page
-        'click #repertoires-tab': function() {
-            this.controller.showProjectRepertoires();
-        },
-
-        // setting event for Groups page
-        'click #groups-tab': function() {
-            this.controller.showProjectGroups();
-        },
-
-        // setting event for Files page
-        'click #files-tab': function() {
-            this.controller.showProjectFiles();
-        },
-
-        // setting event for Analyses page
-        'click #analyses-tab': function() {
-            this.controller.showProjectAnalyses();
-        },
-
-        // setting event for Create a Repertoire page
-        'click #create-rep': function() {
-            App.router.navigate('project/' +
-            this.model.get('uuid') + '/create', {trigger: false});
-            this.showCreateRepertoire();
-        },
-
-        'click #add-subject': function() {
-            App.router.navigate('project/' +
-            this.model.get('uuid') + '/create/subject', {trigger: false});
-            this.showAddSubject();
-        },
-
-        'click #add-diagnosis': function() {
-            App.router.navigate('project/' +
-            this.model.get('uuid') + '/create/subject/diagnosis', {trigger: false});
-            this.showAddDiagnosis();
-        },
-
-        'click #add-sample': function() {
-            App.router.navigate('project/' +
-            this.model.get('uuid') + '/create/sample', {trigger: false});
-            this.showAddSample();
-        },
-
-        'click #add-cell': function() {
-            App.router.navigate('project/' +
-            this.model.get('uuid') + '/create/sample/cell', {trigger: false});
-            this.showAddCell();
-        },
-
-        'click #add-nucleic': function() {
-            App.router.navigate('project/' +
-            this.model.get('uuid') + '/create/sample/nucleic', {trigger: false});
-            this.showAddNucleic();
-        },
-
-        'click #create-rep-group': function() {
-            App.router.navigate('project/' +
-            this.model.get('uuid') + '/group/create', {trigger: false});
-            this.showAddRepGroup();
         },
 
         'click #edit-project': function() {
@@ -331,9 +299,86 @@ var SingleProjectView = Marionette.View.extend({
         'click #playground': function() {
             this.showPlayground();
         },
+
+        //
+        // Repertoires page specific events
+        //
+
+        // setting event for Repertoires page
+        'click #repertoires-tab': function() {
+            this.controller.showProjectRepertoires();
+        },
+
+        //
+        // Events for step-by-step walkthrough for repertoire metadata entry
+        // The controller manages the step progression
+        //
+        // this starts the walkthrough
+        'click #create-rep': function() {
+            this.controller.startCreateRepertoireSteps();
+        },
+
+        'click #add-subject': function() {
+            this.controller.addSubjectStep();
+        },
+
+        'click #add-diagnosis': function() {
+            this.controller.addDiagnosisStep();
+        },
+
+        'click #add-sample': function() {
+            this.controller.addSampleStep();
+        },
+
+        'click #add-cell': function() {
+            this.controller.addCellProcessingStep();
+        },
+
+        'click #add-nucleic': function() {
+            this.controller.addNucleicProcessingStep();
+        },
+
+        // this finishes the walkthrough
+        'click #finish-create-rep': function() {
+            // transition back to repertoire list
+        },
+
+        //
+        // Groups page specific events
+        //
+
+        // setting event for Groups page
+        'click #groups-tab': function() {
+            this.controller.showProjectGroups();
+        },
+
+        'click #create-rep-group': function() {
+            App.router.navigate('project/' +
+            this.model.get('uuid') + '/group/create', {trigger: false});
+            this.showAddRepGroup();
+        },
+
+        //
+        // Files page specific events
+        //
+
+        // setting event for Files page
+        'click #files-tab': function() {
+            this.controller.showProjectFiles();
+        },
+
+        //
+        // Analyses page specific events
+        //
+
+        // setting event for Analyses page
+        'click #analyses-tab': function() {
+            this.controller.showProjectAnalyses();
+        },
+
     },
 
-    // update summary with new counts and active tab
+    // update summary view with new counts and active tab
     updateSummary() {
         this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
         this.showChildView('summaryRegion', this.summaryView);
@@ -344,14 +389,19 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', new LoadingView({}));
     },
 
+    //
+    // the main project tab views
+    //
     showProjectOverview(project)
     {
+        this.getRegion('stepsRegion').empty();
         this.detailView = new ProjectOverView({model: project});
         this.showChildView('detailRegion', this.detailView);
     },
 
     showProjectRepertoires(repertoireController)
     {
+        this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', repertoireController.getView());
 
         // tell repertoire controller to display the repertoire list
@@ -360,49 +410,75 @@ var SingleProjectView = Marionette.View.extend({
 
     showProjectGroups(project)
     {
+        this.getRegion('stepsRegion').empty();
         this.detailView = new GroupsView({model: project});
         this.showChildView('detailRegion', this.detailView);
     },
 
     showProjectFiles(project)
     {
+        this.getRegion('stepsRegion').empty();
         this.detailView = new FilesView({model: project});
         this.showChildView('detailRegion', this.detailView);
     },
 
     showProjectAnalyses(project)
     {
+        this.getRegion('stepsRegion').empty();
         this.detailView = new AnalysesView({model: project});
         this.showChildView('detailRegion', this.detailView);
     },
 
+    //
+    // Step-by-step walkthrough of repertoire metadata entry
+    // Note the controller
+    //
     showCreateRepertoire()
     {
+        // add the entry steps progression view
+        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'repertoire'});
+        this.showChildView('stepsRegion', this.stepsView);
+
         this.detailView = new CreateRepertoireView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
 
     showAddSubject() {
+        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'subject'});
+        this.showChildView('stepsRegion', this.stepsView);
+
         this.detailView = new AddSubjectView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
 
     showAddDiagnosis() {
+        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'diagnosis'});
+        this.showChildView('stepsRegion', this.stepsView);
+
         this.detailView = new AddDiagnosisView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
 
     showAddSample() {
+        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'sample'});
+        this.showChildView('stepsRegion', this.stepsView);
+
         this.detailView = new AddSampleView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
 
     showAddCell() {
+        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'cell'});
+        this.showChildView('stepsRegion', this.stepsView);
+
         this.detailView = new AddCellView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
 
     showAddNucleic() {
+        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'nucleic'});
+        this.showChildView('stepsRegion', this.stepsView);
+
         this.detailView = new AddNucleicView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
@@ -479,7 +555,9 @@ SingleProjectController.prototype = {
         return this.projectView;
     },
 
+    //
     // lazy loading of project data, these return promises
+    //
     lazyLoadRepertoires() {
         var that = this;
         var repList = new RepertoireCollection({projectUuid: that.model.get('uuid')});
@@ -520,6 +598,9 @@ SingleProjectController.prototype = {
     lazyLoadAnalyses() {
     },
 
+    //
+    // The main project tabs
+    //
     showProjectOverview() {
         this.page = 'overview';
         App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
@@ -577,5 +658,37 @@ SingleProjectController.prototype = {
         this.projectView.showProjectAnalyses(this.model);
     },
 
+    //
+    // Step-by-step walkthrough for repertoire metadata entry
+    //
+    startCreateRepertoireSteps() {
+        App.router.navigate('project/' + this.model.get('uuid') + '/create', {trigger: false});
+        this.projectView.showCreateRepertoire();
+    },
+
+    addSubjectStep() {
+        App.router.navigate('project/' + this.model.get('uuid') + '/create/subject', {trigger: false});
+        this.projectView.showAddSubject();
+    },
+
+    addDiagnosisStep() {
+        App.router.navigate('project/' + this.model.get('uuid') + '/create/subject/diagnosis', {trigger: false});
+        this.projectView.showAddDiagnosis();
+    },
+
+    addSampleStep() {
+        App.router.navigate('project/' + this.model.get('uuid') + '/create/sample', {trigger: false});
+        this.projectView.showAddSample();
+    },
+
+    addCellProcessingStep() {
+        App.router.navigate('project/' + this.model.get('uuid') + '/create/sample/cell', {trigger: false});
+        this.projectView.showAddCell();
+    },
+
+    addNucleicProcessingStep() {
+        App.router.navigate('project/' + this.model.get('uuid') + '/create/sample/nucleic', {trigger: false});
+        this.projectView.showAddNucleic();
+    },
 };
 export default SingleProjectController;
