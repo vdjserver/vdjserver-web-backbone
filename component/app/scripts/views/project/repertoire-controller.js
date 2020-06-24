@@ -69,6 +69,8 @@ var RepertoireSummaryStatisticsView = Marionette.View.extend({
 
 // Summary view for a single repertoire
 // Short multi-line summary, meant for showing in a list
+// the model for the view is a repertoire
+// we access related data (subject, sample, etc) through the controller
 import rep_summary_template from 'Templates/project/repertoire-summary.html';
 var RepertoireSummaryView = Marionette.View.extend({
     template: Handlebars.compile("<div'>" + rep_summary_template + "</div>"),
@@ -85,8 +87,22 @@ var RepertoireSummaryView = Marionette.View.extend({
     },
 
     initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
         this.showChildView('headerRegion', new RepertoireSummaryHeaderView({model: this.model}));
-        //this.showChildView('subjectRegion', new RepertoireSummarySubjectView({model: this.model}));
+
+        // get the subject for this repertoire
+        var value = this.model.get('value');
+        var subjectList = this.controller.getSubjectList();
+        var subject = subjectList.get(value['subject']['vdjserver_uuid']);
+        this.showChildView('subjectRegion', new RepertoireSummarySubjectView({model: subject}));
+
+        // get the samples for this repertoire
+
+        // get the repertoire statistics
+        this.showChildView('statisticsRegion', new RepertoireSummaryStatisticsView({model: this.model}));
     },
 
 });
@@ -106,7 +122,12 @@ var RepertoireListView = Marionette.CollectionView.extend({
     template: Handlebars.compile(""),
 
     initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
         this.childView = RepertoireSummaryView;
+        this.childViewOptions = { controller: this.controller };
     },
 });
 
@@ -119,8 +140,9 @@ var RepertoireHeaderView = Marionette.View.extend({
     },
 });
 
-// this manages displaying repertoire content
+// this manages repertoire layout
 // shows all the repertoires in a list
+// content display is handled by sub views
 var RepertoireMainView = Marionette.View.extend({
     template: Handlebars.compile('<div id="repertoire-header"></div><div id="repertoire-list"></div>'),
 
@@ -140,8 +162,6 @@ var RepertoireMainView = Marionette.View.extend({
     },
 
     initialize(parameters) {
-        console.log('Initialize');
-
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
@@ -153,9 +173,8 @@ var RepertoireMainView = Marionette.View.extend({
     },
 
     showRepertoireList(repertoireList) {
-        console.log(this.controller);
         this.showChildView('headerRegion', new RepertoireHeaderView());
-        this.showChildView('listRegion', new RepertoireListView({collection: repertoireList}));
+        this.showChildView('listRegion', new RepertoireListView({collection: repertoireList, controller: this.controller}));
     },
 
     createRepertoire(e) {
@@ -220,16 +239,13 @@ function RepertoireController(controller) {
     // upper level controller, i.e. the single project controller
     this.controller = controller;
 
+    // the project model
+    // we assume all the repertoire data is held by the controller
     this.model = this.controller.model;
     console.log(this.model);
 
     // repertoire list view
     this.mainView = new RepertoireMainView({controller: this});
-
-    // maintain state across multiple views
-    this.repertoireList = controller.repertoireList;
-    this.subjectList = controller.subjectList;
-    this.sampleList = controller.sampleList;
 };
 
 RepertoireController.prototype = {
@@ -242,9 +258,22 @@ RepertoireController.prototype = {
         return this.mainView;
     },
 
+    // access data held by upper level controller
+    getRepertoireList() {
+        return this.controller.repertoireList;
+    },
+
+    getSampleList() {
+        return this.controller.sampleList;
+    },
+
+    getSubjectList() {
+        return this.controller.subjectList;
+    },
+
     // show list of repertoires for the project
     showRepertoireList() {
-        this.mainView.showRepertoireList(this.repertoireList);
+        this.mainView.showRepertoireList(this.getRepertoireList());
     },
 
 };

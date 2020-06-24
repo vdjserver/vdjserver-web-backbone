@@ -333,8 +333,8 @@ var SingleProjectView = Marionette.View.extend({
         },
     },
 
-    // redisplay cards
-    updateCards() {
+    // update summary with new counts and active tab
+    updateSummary() {
         this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
         this.showChildView('summaryRegion', this.summaryView);
     },
@@ -431,14 +431,22 @@ function SingleProjectController(project, page) {
     // maintain state across multiple views
     this.model = project;
     this.page = page;
-    // TODO: we should fetch these in the background
     this.repertoireController = null;
     this.repertoireList = null;
     this.subjectList = null;
     this.sampleList = null;
+    this.groupList = null;
+    this.fileList = null;
+    this.analysisList = null;
 
     // the project view
     this.projectView = new SingleProjectView({controller: this, model: this.model});
+
+    // kick off lazy loads
+    this.repertoireListPromise = this.lazyLoadRepertoires();
+    this.groupListPromise = this.lazyLoadGroups();
+    this.fileListPromise = this.lazyLoadFiles();
+    this.analysisListPromise = this.lazyLoadAnalyses();
 
     // are we routing to a specific page?
     switch (this.page) {
@@ -471,61 +479,69 @@ SingleProjectController.prototype = {
         return this.projectView;
     },
 
+    // lazy loading of project data, these return promises
+    lazyLoadRepertoires() {
+        var that = this;
+        var repList = new RepertoireCollection({projectUuid: that.model.get('uuid')});
+        var subjectList = new SubjectCollection({projectUuid: that.model.get('uuid')});
+        var sampleList = new SampleCollection({projectUuid: that.model.get('uuid')});
+
+        // fetch the repertoires
+        return repList.fetch()
+            .then(function() {
+                // fetch the subjects
+                return subjectList.fetch();
+            })
+            .then(function() {
+                // fetch the samples
+                return sampleList.fetch();
+            })
+            .then(function() {
+                // now propagate loaded data to project
+                that.subjectList = subjectList;
+                that.sampleList = sampleList;
+                that.repertoireList = repList;
+            })
+            .then(function() {
+                // update the project summary
+                that.projectView.updateSummary();
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
+    },
+
+    lazyLoadGroups() {
+    },
+
+    lazyLoadFiles() {
+    },
+
+    lazyLoadAnalyses() {
+    },
+
     showProjectOverview() {
         this.page = 'overview';
         App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
-        this.projectView.updateCards();
+        this.projectView.updateSummary();
         this.projectView.showProjectOverview(this.model);
     },
 
     showProjectRepertoires() {
         this.page = 'repertoire';
         App.router.navigate('project/' + this.model.get('uuid') + '/repertoire', {trigger: false});
-        this.projectView.updateCards();
+        this.projectView.updateSummary();
         var that = this;
-        if (! that.repertoireList) {
-            that.repertoireList = new RepertoireCollection({projectUuid: that.model.get('uuid')});
-            that.subjectList = new SubjectCollection({projectUuid: that.model.get('uuid')});
-            that.sampleList = new SampleCollection({projectUuid: that.model.get('uuid')});
+        if (! this.repertoireList) {
+            // it should be lazy loading
 
             // show loading while we fetch
             that.projectView.showLoading();
 
-            // fetch the repertoires
-            that.repertoireList.fetch()
-                .then(function() {
-                    // fetch the subjects
-                    return that.subjectList.fetch();
-                })
-                .then(function() {
-                    // fetch the samples
-                    return that.sampleList.fetch();
-                })
-                .then(function() {
-                    // attach records to the repertoire
-                    for (var i=0; i < that.repertoireList.length; ++i) {
-                        var m = that.repertoireList.at(i);
-                        var value = m.get('value');
-
-                        // attach the subject record
-                        var obj = that.subjectList.get(value['subject']['vdjserver_uuid']);
-                        m.set('subject', obj.get('value'));
-
-                        // attach the sample records
-                        var samples = [];
-                        for (var j=0; j < value['sample'].length; ++j) {
-                            obj = that.sampleList.get(value['sample'][j]['vdjserver_uuid']);
-                            samples.push(obj.get('value'));
-                        }
-                        m.set('samples', samples);
-                    }
-
-                    console.log(that.repertoireList);
-                    console.log(that.subjectList);
-                    console.log(that.sampleList);
-
+            // wait on the lazy load
+            this.repertoireListPromise.then(function() {
                     // have the view display them
-                    that.projectView.updateCards();
+                    that.projectView.updateSummary();
                     that.repertoireController = new RepertoireController(that);
                     that.projectView.showProjectRepertoires(that.repertoireController);
                 })
@@ -534,7 +550,7 @@ SingleProjectController.prototype = {
                 });
         } else {
             // tell repertoire controller to display the repertoire list
-            that.projectView.updateCards();
+            that.projectView.updateSummary();
             that.repertoireController = new RepertoireController(that);
             that.projectView.showProjectRepertoires(that.repertoireController);
         }
@@ -543,21 +559,21 @@ SingleProjectController.prototype = {
     showProjectGroups() {
         this.page = 'group';
         App.router.navigate('project/' + this.model.get('uuid') + '/group', {trigger: false});
-        this.projectView.updateCards();
+        this.projectView.updateSummary();
         this.projectView.showProjectGroups(this.model);
     },
 
     showProjectFiles() {
         this.page = 'file';
         App.router.navigate('project/' + this.model.get('uuid') + '/file', {trigger: false});
-        this.projectView.updateCards();
+        this.projectView.updateSummary();
         this.projectView.showProjectFiles(this.model);
     },
 
     showProjectAnalyses() {
         this.page = 'analysis';
         App.router.navigate('project/' + this.model.get('uuid') + '/analysis', {trigger: false});
-        this.projectView.updateCards();
+        this.projectView.updateSummary();
         this.projectView.showProjectAnalyses(this.model);
     },
 
