@@ -27,6 +27,7 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import { HandlebarsUtilities } from 'Scripts/views/utilities/handlebars-utilities';
 import { Agave } from 'Scripts/backbone/backbone-agave';
 import Router from 'Scripts/routers/router';
 
@@ -204,6 +205,9 @@ export default Marionette.Application.extend({
 
     // setup Agave
     this.Agave = new Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
+
+    // Handlebars is global so register all helpers once for the whole app
+    HandlebarsUtilities.registerAllHelpers();
 
     // setup application controller
     this.AppController = new ApplicationController();
