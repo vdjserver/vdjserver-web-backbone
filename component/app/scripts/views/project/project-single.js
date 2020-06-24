@@ -41,7 +41,77 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCol
 // Project summary
 import summary_template from 'Templates/project/single-summary.html';
 var ProjectSummaryView = Marionette.View.extend({
-    template: Handlebars.compile(summary_template)
+    template: Handlebars.compile(summary_template),
+
+    initialize: function(parameters) {
+
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.model) this.model = parameters.model;
+        }
+    },
+
+    templateContext() {
+        // gather the dynamic content for the cards
+        // array of card tabs with fields
+        // card id
+        // is active flag
+        // text to display
+        var card_tabs = [];
+
+        var card = {};
+        card['card_id'] = 'overview-tab';
+        card['text'] = 'Overview';
+        if (this.controller.page == 'overview') card['active'] = true;
+        else card['active'] = false;
+        if (! this.controller.page) card['active'] = true;
+        card_tabs.push(card);
+
+        card = {};
+        card['card_id'] = 'repertoires-tab';
+        card['text'] = 'Repertoires';
+        if (this.controller.repertoireList) {
+            card['text'] = this.controller.repertoireList.length + ' ' + card['text'];
+        }
+        if (this.controller.page == 'repertoire') card['active'] = true;
+        else card['active'] = false;
+        card_tabs.push(card);
+
+        card = {};
+        card['card_id'] = 'groups-tab';
+        card['text'] = 'Repertoire Groups';
+        if (this.controller.groupList) {
+            card['text'] = this.controller.groupList.length + ' ' + card['text'];
+        }
+        if (this.controller.page == 'group') card['active'] = true;
+        else card['active'] = false;
+        card_tabs.push(card);
+
+        card = {};
+        card['card_id'] = 'files-tab';
+        card['text'] = 'Files';
+        if (this.controller.fileList) {
+            card['text'] = this.controller.fileList.length + ' ' + card['text'];
+        }
+        if (this.controller.page == 'file') card['active'] = true;
+        else card['active'] = false;
+        card_tabs.push(card);
+
+        card = {};
+        card['card_id'] = 'analyses-tab';
+        card['text'] = 'Analyses';
+        if (this.controller.analysisList) {
+            card['text'] = this.controller.analysisList.length + ' ' + card['text'];
+        }
+        if (this.controller.page == 'analysis') card['active'] = true;
+        else card['active'] = false;
+        card_tabs.push(card);
+
+        return {
+            card_tabs: card_tabs
+        };
+    }
 });
 
 // Repertoire Groups Page
@@ -181,7 +251,7 @@ var SingleProjectView = Marionette.View.extend({
 
         // show project summary
         // detail region will be decided by controller
-        this.summaryView = new ProjectSummaryView({model: this.model});
+        this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
         this.showChildView('summaryRegion', this.summaryView);
     },
 
@@ -261,6 +331,12 @@ var SingleProjectView = Marionette.View.extend({
         'click #playground': function() {
             this.showPlayground();
         },
+    },
+
+    // redisplay cards
+    updateCards() {
+        this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
+        this.showChildView('summaryRegion', this.summaryView);
     },
 
     // show a loading view, used while fetching the data
@@ -398,12 +474,14 @@ SingleProjectController.prototype = {
     showProjectOverview() {
         this.page = 'overview';
         App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
+        this.projectView.updateCards();
         this.projectView.showProjectOverview(this.model);
     },
 
     showProjectRepertoires() {
         this.page = 'repertoire';
         App.router.navigate('project/' + this.model.get('uuid') + '/repertoire', {trigger: false});
+        this.projectView.updateCards();
         var that = this;
         if (! that.repertoireList) {
             that.repertoireList = new RepertoireCollection({projectUuid: that.model.get('uuid')});
@@ -447,6 +525,7 @@ SingleProjectController.prototype = {
                     console.log(that.sampleList);
 
                     // have the view display them
+                    that.projectView.updateCards();
                     that.repertoireController = new RepertoireController(that);
                     that.projectView.showProjectRepertoires(that.repertoireController);
                 })
@@ -455,6 +534,7 @@ SingleProjectController.prototype = {
                 });
         } else {
             // tell repertoire controller to display the repertoire list
+            that.projectView.updateCards();
             that.repertoireController = new RepertoireController(that);
             that.projectView.showProjectRepertoires(that.repertoireController);
         }
@@ -463,18 +543,21 @@ SingleProjectController.prototype = {
     showProjectGroups() {
         this.page = 'group';
         App.router.navigate('project/' + this.model.get('uuid') + '/group', {trigger: false});
+        this.projectView.updateCards();
         this.projectView.showProjectGroups(this.model);
     },
 
     showProjectFiles() {
         this.page = 'file';
         App.router.navigate('project/' + this.model.get('uuid') + '/file', {trigger: false});
+        this.projectView.updateCards();
         this.projectView.showProjectFiles(this.model);
     },
 
     showProjectAnalyses() {
         this.page = 'analysis';
         App.router.navigate('project/' + this.model.get('uuid') + '/analysis', {trigger: false});
+        this.projectView.updateCards();
         this.projectView.showProjectAnalyses(this.model);
     },
 
