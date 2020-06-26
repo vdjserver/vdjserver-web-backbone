@@ -1,3 +1,38 @@
+'use strict';
+
+import { Agave } from 'Scripts/backbone/backbone-agave';
+
+export default Agave.MetadataModel.extend({
+    defaults: function() {
+        return _.extend(
+            {},
+            Backbone.Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'profile',
+                value: {
+                    firstName: '',
+                    lastName:  '',
+                    email:     '',
+                    city:      '',
+                    state:     '',
+                },
+            }
+        );
+    },
+    url: function() {
+        return '/meta/v2/data?q='
+               + encodeURIComponent(
+                   '{'
+                     + '"name":"profile",'
+                     + '"owner":' + '"' + Backbone.Agave.instance.token().get('username') + '"'
+                 + '}'
+               )
+               + '&limit=5000'
+               ;
+    }
+});
+
+/*
 define(['backbone'], function(Backbone) {
 
     'use strict';
@@ -37,3 +72,4 @@ define(['backbone'], function(Backbone) {
     Backbone.Agave.Model.Profile = Profile;
     return Profile;
 });
+*/

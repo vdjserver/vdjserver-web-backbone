@@ -83,6 +83,9 @@ export default Backbone.Router.extend({
         'project/:id/repertoire/create/nucleic': 'addNucleic',
         'project/:id/group/create':         'addRepGroup',
 
+        // admin pages
+        'admin':                            'adminMain',
+
         // 404
         '*notFound': 'notFound',
     },
@@ -193,6 +196,15 @@ export default Backbone.Router.extend({
     authLogout: function() {
         // Routing *should* be handled automatically once the token is destroyed.
         App.Agave.destroyToken();
+    },
+
+    // Administration pages
+    adminMain: function() {
+        if (! App.Agave.token().isAdmin()) {
+            this.index();
+        } else {
+            App.AppController.showAdminMain();
+        }
     },
 
     // 404

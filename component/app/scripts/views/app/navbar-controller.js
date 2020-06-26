@@ -51,7 +51,8 @@ var NavigationBarView = Marionette.View.extend({
     templateContext() {
         return {
             public_bar: this.public_bar,
-            active_token: this.active_token
+            active_token: this.active_token,
+            admin_account: App.Agave.token().isAdmin()
         };
     },
 });

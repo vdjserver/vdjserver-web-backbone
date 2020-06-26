@@ -878,7 +878,12 @@ Auth.Token = Agave.Model.extend({
         }
     },
     isAdmin: function() {
-        return false;
+        // TODO: We could add support for regular users being designated as admins
+        // but for now just restrict to the service account
+        if (App.Agave.token().get('username') == EnvironmentConfig.agave.serviceAccountUsername)
+            return true;
+        else
+            return false;
     },
 });
 

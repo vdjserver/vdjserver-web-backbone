@@ -36,6 +36,7 @@ import PublicView from 'Scripts/views/app/public-views';
 import NavigationController from 'Scripts/views/app/navbar-controller';
 import ProjectController from 'Scripts/views/project/project-controller';
 import CommunityController from 'Scripts/views/project/community-controller';
+import AdminController from 'Scripts/views/admin/admin-controller';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
@@ -160,6 +161,23 @@ var ApplicationController = Marionette.View.extend({
 
         // tell project controller to display the create project page
         this.projectController.showCreatePage();
+    },
+
+    // Administration pages
+    showAdminMain() {
+        console.log('showAdminMain');
+
+        if (! this.adminController) {
+            this.adminController = new AdminController();
+        }
+
+        this.showChildView('mainRegion', this.adminController.getView());
+
+        // tell navigation controller to display its private nav bar
+        this.navController.showPrivateNavigation();
+
+        // tell project controller to display the create project page
+        this.adminController.showMainPage();
     },
 
     // Using repertoire controller to display information about a specific repertoire
