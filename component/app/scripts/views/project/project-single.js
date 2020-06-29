@@ -210,19 +210,14 @@ var EditProjectView = Marionette.View.extend({
     templateContext() {
         return {
             // need to add toggle for edit/read-only
-            edit_mode: true
+            edit_mode: true,
+            create_mode: false
         }
     }
 });
 
 // Handlebar playground
 // moved the contains helper to handlebars-utilities
-/*
-Handlebars.registerHelper('contains', function(needle, haystack, options) {
-   needle = Handlebars.escapeExpression(needle);
-   haystack = Handlebars.escapeExpression(haystack);
-   return (haystack.indexOf(needle) > -1) ? options.fn(this) : options.inverse(this);
-}); */
 
 import hbp_template from 'Templates/project/playground.html';
 var PlaygroundView = Marionette.View.extend({
