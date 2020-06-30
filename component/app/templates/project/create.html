@@ -297,12 +297,13 @@
     <div class="form-row actions float-md-right">
         <div class="input-group">
             <input type="reset" value ="Cancel" class="col-md-3 btn btn-cancel" id="cancel-project">
-            <input type="submit" value="{{#if edit_mode}} Save Project {{else}} Create Project {{/if}}" class="col-md-4 btn {{#if edit_mode}} btn-save {{else}} btn-create {{/if}}" id="{{#if edit_mode}}save-project {{else}} create-project {{/if}}" onclick="saveProject()">
 
             <!-- Once edits are saved, show edit button to resume editing -->
-            <!-- {{#unless edit_mode}}
+            {{#unless edit_mode}}
                 <input type="submit" value="Edit" class="col-md-4 btn btn-edit" id="edit-project">
-            {{/unless}} -->
+            {{/unless}}
+            
+            <input type="submit" value="{{#if edit_mode}} Save Project {{else}} Create Project {{/if}}" class=" col-md-4 btn {{#if edit_mode}} btn-save {{else}} btn-create {{/if}}" id="create-new-project">
         </div>
     </div>
 </form>
@@ -310,8 +311,4 @@
 <script>
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 
-// Trying to change the edit_mode value once "Save Project" button clicked
-function saveProject() {
-    edit_mode = false;
-}
 </script>
