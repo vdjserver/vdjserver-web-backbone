@@ -210,8 +210,8 @@ var EditProjectView = Marionette.View.extend({
     templateContext() {
         return {
             // need to add toggle for edit/read-only
-            edit_mode: true,
-            create_mode: false
+            edit_mode: true
+            // create_mode: false
         }
     }
 });

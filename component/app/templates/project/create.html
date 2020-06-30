@@ -299,11 +299,17 @@
             <input type="reset" value ="Cancel" class="col-md-3 btn btn-cancel" id="cancel-project">
 
             <!-- Once edits are saved, show edit button to resume editing -->
-            {{#unless edit_mode}}
+            <!-- {{#unless edit_mode}}
                 <input type="submit" value="Edit" class="col-md-4 btn btn-edit" id="edit-project">
+            {{/unless}} -->
+
+            {{#unless edit_mode}}
+            <input type="submit" value="{{#if edit_mode}} Save Project {{else}} Create Project {{/if}}" class=" col-md-4 btn btn-create" id="create-new-project">
             {{/unless}}
-            
-            <input type="submit" value="{{#if edit_mode}} Save Project {{else}} Create Project {{/if}}" class=" col-md-4 btn {{#if edit_mode}} btn-save {{else}} btn-create {{/if}}" id="create-new-project">
+
+            {{#if edit_mode}}
+            <input type="submit" value="Save Project" class=" col-md-4 btn btn-save" id="save-project">
+            {{/if}}
         </div>
     </div>
 </form>

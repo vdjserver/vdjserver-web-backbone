@@ -74,7 +74,8 @@ export default Marionette.View.extend({
     },
 
     events: {
-        'click #create-new-project': 'createNewProject'
+        'click #create-new-project': 'createNewProject',
+        'click #save-project': 'saveProject'
     },
 
     // handle create project event
@@ -132,6 +133,38 @@ export default Marionette.View.extend({
         console.log(message);
     },
 
+    // handle save project event
+    saveProject: function(e) {
+        console.log('create-view: saveProject');
+        e.preventDefault();
+
+        // Currently validates regardless if there is an error or not. NOTE: Still submits the form
+
+        $('.needs-validation').addClass('was-validated');
+
+        // pull data out of form and put into model
+        var data = Syphon.serialize(this);
+
+        // manually hack the study_type until we have ontologies implemented
+        data['study_type'] = null;
+        this.model.setAttributesFromData(data);
+        console.log(this.model);
+
+        // display a modal while the project is being created
+        this.modalState = 'save';
+        var message = new MessageModel({
+          'header': 'Project Saved',
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Project Saved</p>'
+        });
+
+        // the app controller manages the modal region
+        var view = new ModalMessage({model: message});
+        App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
+        $('#modal-message').modal('show');
+
+        console.log(message);
+    },
+
     // project creation request is sent to server after the modal is shown
     onShownModal(context) {
         console.log('create: Show the modal');
@@ -178,7 +211,7 @@ export default Marionette.View.extend({
             });
         } else if (context.modalState == 'fail') {
           // if login failed, then we are showing the fail modal
-        }
+      }
     },
 
     onHiddenModal(context) {

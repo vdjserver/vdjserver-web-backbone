@@ -123,4 +123,9 @@ HandlebarsUtilities.registerAllHelpers = function() {
        return (haystack.indexOf(needle) > -1) ? options.fn(this) : options.inverse(this);
     });
 
+    // Testing a helper that will set the variable value
+    Handlebars.registerHelper("setVar", function(varName, varValue, options) {
+      options.data.root[varName] = varValue;
+    });
+
 };
