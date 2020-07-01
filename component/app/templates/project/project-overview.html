@@ -1,35 +1,147 @@
             <div class="row">
                 <div class="col-md-6 overview-summary">
+                    Edit Mode: {{edit_mode}}
                     <h3>Project Summary</h3>
-                    <p>{{value.study_description}}</p>
+                    {{#unless edit_mode}}
+                        <p>{{value.study_description}}</p>
+                    {{/unless}}
+
+                    {{#if edit_mode}}
+                        <textarea class="form-control" name="study_description" id="description" rows="23">
+                            {{value.study_description}}
+                        </textarea>
+                    {{/if}}
                 </div>
                 <div class="col-md-6 overview-details">
-                    <p><span class="details">Project Type:<span> {{value.study_type.x-airr}}</p>
-                    <p><span class="details">NCBI:</span> {{value.ncbi_bioproject}}</p>
-                    <p><span class="details">Funding Agency:</span>{{value.grant_agency}}</p>
-                    <p><span class="details">Grants:</span> {{value.grants}}</p>
-                    <p><span class="details">Publications:</span> {{value.pub_ids}}</p>
-                    <p><span class="details">PI Name:</span> {{value.collected_by}}</p>
-                    <p><span class="details">Contact Name:</span> {{value.submitted_by}}</p>
+                    <p>
+                        <span class="details">Project Type:<span>
+                        {{#unless edit_mode}}
+                            {{value.study_type.x-airr}}
+                        {{/unless}}
+
+                        <!-- {{#if edit_mode}}
+
+                        {{/if}} -->
+                    </p>
+                    <p>
+                        <span class="details">Inclusion/Exclusion Criteria:</span>
+                        {{#unless edit_mode}}
+                            {{value.inclusion_exclusion_criteria}}
+                        {{/unless}}
+                    </p>
+                    {{#if edit_mode}}
+                        <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="5" required>
+                            {{ inclusion_exclusion_criteria }}
+                        </textarea>
+                    {{/if}}
+
+                    <p>
+                        <span class="details">Study Keywords:</span>
+                        {{#unless edit_mode}}
+                            {{value.keywords_study}}
+                        {{/unless}}
+                    </p>
+
+                    <hr>
+
+                    <p>
+                        <span class="details">PI Name:</span>
+                        {{#unless edit_mode}}
+                            {{value.collected_by}}
+                        {{/unless}}
+                    </p>
+                    {{#if edit_mode}}
+                        <input type="text" class="form-control" name="collectedby_name" id="collectedby_name" required value="{{ value.collected_by }}">
+                    {{/if}}
+
+                    <p>
+                        <span class="details">Contact Name:</span>
+                        {{#unless edit_mode}}
+                            {{value.submitted_by}}
+                        {{/unless}}
+                    </p>
+                    {{#if edit_mode}}
+                        <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" required value="{{ submitted_by }}">
+                    {{/if}}
+
+                    <p>
+                        <span class="details">Lab Name:</span>
+                        {{#unless edit_mode}}
+                            {{value.lab_name}}
+                        {{/unless}}
+                    </p>
+                    {{#if edit_mode}}
+                        <input type="text" class="form-control" name="lab_name" id="lab_name" required value="{{ value.lab_name }}">
+                    {{/if}}
+
+                    <p>
+                        <span class="details">Lab Address:</span>
+                        {{#unless edit_mode}}
+                            {{value.lab_address}}
+                        {{/unless}}
+                    </p>
+                    {{#if edit_mode}}
+                        <input type="text" class="form-control" name="lab_address" id="lab_address" required value="{{ value.lab_address }}">
+                    {{/if}}
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
-                    <p><span class="details">Inclusion/Exclusion Criteria</span>{{value.inclusion_exclusion_criteria}}</p>
-                    <p><span class="details">Lab Name</span>{{value.lab_name}}</p>
-                    <p><span class="details">Lab Address</span> {{value.lab_address}}</p>
-                    <p><span class="details">Publications</span>{{value.pub_ids}}</p>
-                    <p><span class="details">Study Keywords</span>{{value.keywords_study}}</p>
+                <div class="col-md-5 overview-summary-details">
+                    <p>
+                        <span class="details">Publications:</span>
+                        {{#unless edit_mode}}
+                            {{value.pub_ids}}
+                        {{/unless}}
+                    </p>
+                    {{#if edit_mode}}
+                        <input type="text" class="form-control" name="pub_ids" id="publications" required value="{{ value.pub_ids }}">
+                    {{/if}}
+
+                    <p>
+                        <span class="details">NCBI:</span>
+                        {{#unless edit_mode}}
+                            {{value.ncbi_bioproject}}
+                        {{/unless}}
+                    </p>
+                    {{#if edit_mode}}
+                        <input type="text" class="form-control" name="study_id" id="NCBI" value="{{value.ncbi_bioproject}}" required>
+                    {{/if}}
+
+                    <p>
+                        <span class="details">Funding Agency:</span>
+                        {{#unless edit_mode}}
+                            {{value.grant_agency}}
+                        {{/unless}}
+                    </p>
+                    <p>
+                        <span class="details">Grants:</span>
+                        {{#unless edit_mode}}
+                            {{value.grants}}
+                        {{/unless}}
+                    </p>
+                    {{#if edit_mode}}
+                        <textarea class="form-control" name="grants" id="grants" rows="4" required>
+                            {{ value.grants }}
+                        </textarea>
+                    {{/if}}
                 </div>
             </div>
             <div class="row">
             <div class="project-metadata col-md-12">
+                <button type="button" class="btn btn-edit float-md-right" id="{{~#unless edit_mode~}}edit-project{{~/unless~}} {{~#if edit_mode~}}save-edit-project{{~/if~}}">
+                    {{#if edit_mode}} Save Project {{else}}Edit Project Metadata {{/if}}
+                </button>
+
+                {{#if edit_mode}}
+                    <button type="button" class="btn btn-cancel float-md-right" id="revert-edit-changes">
+                        Revert Changes
+                    </button>
+                {{/if}}
+
                 <button type="button" class="btn btn-delete float-md-right" id="delete-project" data-toggle="modal" data-target="#delete-modal">
                     Delete Project
                 </button>
-                <button type="button" class="btn btn-edit float-md-right" id="edit-project">
-                    Edit Project Metadata
-                </button>
+
                 <button type="button" class="btn btn-info float-md-right" id="playground">
                     Handlebar Playground
                 </button>

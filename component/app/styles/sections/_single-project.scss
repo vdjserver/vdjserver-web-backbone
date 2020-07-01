@@ -24,6 +24,10 @@ Single Project Page
 .project-metadata {
     margin-bottom: 3%;
     float: right;
+
+    .btn {
+        margin: 0% 1%;
+    }
 }
 
 #summary-buttons {
@@ -59,10 +63,16 @@ Single Project Page
 .overview-details {
     padding-left: 5%;
     font-size: 1.05em;
+
+    input, textarea {
+        margin-bottom: 5%;
+    }
 }
 
-#edit-project {
-    margin-right: 2%;
+.overview-summary-details {
+    input, textarea {
+        margin-bottom: 5%;
+    }
 }
 
 /********************************************
