@@ -562,6 +562,12 @@ SingleProjectController.prototype = {
         // fetch the repertoires
         return repList.fetch()
             .then(function() {
+                // set some status flags
+                for (var i = 0; i < repList.length; ++i) {
+                    var rep = repList.at(i);
+                    rep.view_mode = 'summary';
+                }
+
                 // fetch the subjects
                 return subjectList.fetch();
             })

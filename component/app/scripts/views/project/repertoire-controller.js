@@ -47,24 +47,31 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCol
 // We likely need to create an abstract view that is given to CollectionView
 // and it manages subviews which deal with the different transitions.
 
-import rs_header_template from 'Templates/project/repertoire-summary-header.html';
+//
+// Repertoire summary views
+// Show list of repertoires, each with a 4-line summary
+//
+
+// Subviews for the repertoire summary
+// four of them, each one is meant to be a single row or line
+import summary_header_template from 'Templates/project/repertoire-summary-header.html';
 var RepertoireSummaryHeaderView = Marionette.View.extend({
-    template: Handlebars.compile(rs_header_template),
+    template: Handlebars.compile(summary_header_template),
 });
 
-import rs_subject_template from 'Templates/project/repertoire-summary-subject.html';
+import summary_subject_template from 'Templates/project/repertoire-summary-subject.html';
 var RepertoireSummarySubjectView = Marionette.View.extend({
-    template: Handlebars.compile(rs_subject_template),
+    template: Handlebars.compile(summary_subject_template),
 });
 
-import rs_sample_template from 'Templates/project/repertoire-summary-sample.html';
+import summary_sample_template from 'Templates/project/repertoire-summary-sample.html';
 var RepertoireSummarySampleView = Marionette.View.extend({
-    template: Handlebars.compile(rs_sample_template),
+    template: Handlebars.compile(summary_sample_template),
 });
 
-import rs_stats_template from 'Templates/project/repertoire-summary-statistics.html';
+import summary_stats_template from 'Templates/project/repertoire-summary-statistics.html';
 var RepertoireSummaryStatisticsView = Marionette.View.extend({
-    template: Handlebars.compile(rs_stats_template),
+    template: Handlebars.compile(summary_stats_template),
 });
 
 // Summary view for a single repertoire
@@ -73,7 +80,7 @@ var RepertoireSummaryStatisticsView = Marionette.View.extend({
 // we access related data (subject, sample, etc) through the controller
 import rep_summary_template from 'Templates/project/repertoire-summary.html';
 var RepertoireSummaryView = Marionette.View.extend({
-    template: Handlebars.compile("<div'>" + rep_summary_template + "</div>"),
+    template: Handlebars.compile(rep_summary_template),
 
     // one region for any header content
     // one region for subject summary
@@ -99,7 +106,9 @@ var RepertoireSummaryView = Marionette.View.extend({
         var subject = subjectList.get(value['subject']['vdjserver_uuid']);
         this.showChildView('subjectRegion', new RepertoireSummarySubjectView({model: subject}));
 
-        // get the samples for this repertoire
+        // TODO: get the samples for this repertoire
+        // samples is a collection of models
+        this.showChildView('sampleRegion', new RepertoireSummarySampleView());
 
         // get the repertoire statistics
         this.showChildView('statisticsRegion', new RepertoireSummaryStatisticsView({model: this.model}));
@@ -107,17 +116,154 @@ var RepertoireSummaryView = Marionette.View.extend({
 
 });
 
+//
+// Repertoire expanded views
+// this makes all data in the repertoire viewable
+//
+// We layout a set of subviews for each of the repertoire data pieces
+// repertoire (name, description, id, action buttons)
+// subject
+// samples
+// sequencing files
+// repertoire statistics
+//
+
+import expand_header_template from 'Templates/project/repertoire-expand-header.html';
+var RepertoireExpandedHeaderView = Marionette.View.extend({
+    template: Handlebars.compile(expand_header_template),
+});
+
+import expand_subject_template from 'Templates/project/repertoire-expand-subject.html';
+var RepertoireExpandedSubjectView = Marionette.View.extend({
+    template: Handlebars.compile(expand_subject_template),
+});
+
+import expand_sample_template from 'Templates/project/repertoire-expand-sample.html';
+var RepertoireExpandedSampleView = Marionette.View.extend({
+    template: Handlebars.compile(expand_sample_template),
+});
+
+import expand_stats_template from 'Templates/project/repertoire-expand-statistics.html';
+var RepertoireExpandedStatisticsView = Marionette.View.extend({
+    template: Handlebars.compile(expand_stats_template),
+});
+
 // Expanded view for a single repertoire
+//
 // TODO: do we use this same expanded view for both read-only and editing?
 // We can do that with variables and Handlebars to generate different HTML
 // or we can have different views that we swap between.
-import single_rep from 'Templates/project/single-repertoire.html';
+import rep_expanded_template from 'Templates/project/repertoire-expand.html';
 var RepertoireExpandedView = Marionette.View.extend({
-    template: Handlebars.compile(single_rep),
+    template: Handlebars.compile(rep_expanded_template),
+
+    // one region for any header content
+    // one region for subject summary
+    // one region for sample summary
+    // one region for repertoire statistics
+    regions: {
+        headerRegion: '#repertoire-expand-header',
+        subjectRegion: '#repertoire-expand-subject',
+        sampleRegion: '#repertoire-expand-sample',
+        fileRegion: '#repertoire-expand-file',
+        statisticsRegion: '#repertoire-expand-statistics'
+    },
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+        this.showChildView('headerRegion', new RepertoireExpandedHeaderView({model: this.model}));
+
+        // get the subject for this repertoire
+        var value = this.model.get('value');
+        var subjectList = this.controller.getSubjectList();
+        var subject = subjectList.get(value['subject']['vdjserver_uuid']);
+        this.showChildView('subjectRegion', new RepertoireExpandedSubjectView({model: subject}));
+
+        // TODO: get the samples for this repertoire
+        // samples is a collection of models
+        this.showChildView('sampleRegion', new RepertoireExpandedSampleView());
+
+        // get the repertoire statistics
+        this.showChildView('statisticsRegion', new RepertoireExpandedStatisticsView({model: this.model}));
+    },
 
 });
 
+//
+// Repertoire edit views
+// this makes all data in the repertoire editable
+//
+
+//
+// Container view for a repertoire
+// We cannot change the class of child view in a collection view
+// and have it re-render. So we create an abstraction layer, the collection
+// view uses this container view for the children, thus the child view class
+// stays the same, and the container view switches between the different
+// repertoire views.
+//
+var RepertoireContainerView = Marionette.View.extend({
+    template: Handlebars.compile('<div id="repertoire-container"></div>'),
+
+    // one region for contents
+    regions: {
+        containerRegion: '#repertoire-container'
+    },
+
+    events: {
+        'click #show-details': 'showDetails',
+        'click #hide-details': 'hideDetails',
+    },
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+        this.showRepertoireView();
+    },
+
+    showRepertoireView() {
+        // Choose which view class to render
+        switch (this.model.view_mode) {
+            case 'expand':
+                this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model}));
+                break;
+            case 'edit':
+            case 'summary':
+            default:
+                this.showChildView('containerRegion', new RepertoireSummaryView({controller: this.controller, model: this.model}));
+                break;
+        }
+    },
+
+    showDetails(e) {
+        console.log('expandRepertoire');
+        e.preventDefault();
+
+        // change the view mode
+        this.model.view_mode = 'expand';
+        this.showRepertoireView();
+    },
+
+    hideDetails(e) {
+        console.log('contractRepertoire');
+        e.preventDefault();
+
+        // change the view mode
+        this.model.view_mode = 'summary';
+        this.showRepertoireView();
+    }
+
+});
+
+
+//
 // The collection view for the list of repertoires
+//
 var RepertoireListView = Marionette.CollectionView.extend({
     template: Handlebars.compile(""),
 
@@ -126,9 +272,10 @@ var RepertoireListView = Marionette.CollectionView.extend({
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
 
-        this.childView = RepertoireSummaryView;
+        this.childView = RepertoireContainerView;
         this.childViewOptions = { controller: this.controller };
     },
+
 });
 
 // The header view
@@ -156,7 +303,7 @@ var RepertoireMainView = Marionette.View.extend({
     events: {
         'click #create-rep': 'createRepertoire',
 
-        'click #show-details': 'showDetails',
+        //'click #show-details': 'showDetails',
         'click #edit-repertoire': 'editRepertoire',
         'click #save-repertoire': 'saveRepertoire',
     },
@@ -219,16 +366,6 @@ var RepertoireMainView = Marionette.View.extend({
             $(".repertoire-desc").addClass("no-display");
         // });
     },
-
-    showDetails(e) {
-        console.log('expandRepertoire');
-        e.preventDefault();
-
-        // $("#show-details").click(function () {
-            $(this).closest("#details").toggleClass("collapse");
-            $("#show-details").toggleClass("down");
-        // });
-    }
 });
 
 //
