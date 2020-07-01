@@ -142,7 +142,25 @@ var AnalysesView = Marionette.View.extend({
 // TODO: merge create.html with this
 import overview_template from 'Templates/project/project-overview.html';
 var ProjectOverView = Marionette.View.extend({
-    template: Handlebars.compile(overview_template)
+    template: Handlebars.compile(overview_template),
+    templateContext() {
+        return {
+            // if edit mode is false, then fields should be read-only
+            edit_mode: false
+        }
+    }
+});
+
+// Edit Project
+import edit_template from 'Templates/project/project-overview.html';
+var EditProjectView = Marionette.View.extend({
+    template: Handlebars.compile(edit_template),
+    templateContext() {
+        return {
+            // if edit mode is true, then fields should be editable
+            edit_mode: true
+        }
+    }
 });
 
 // Steps through the metadata entry process
@@ -201,19 +219,6 @@ var AddCellView = Marionette.View.extend({
 import addNucleic_template from 'Templates/project/add-nucleic.html';
 var AddNucleicView = Marionette.View.extend({
     template: Handlebars.compile(addNucleic_template)
-});
-
-// Edit Project
-import edit_template from 'Templates/project/create.html';
-var EditProjectView = Marionette.View.extend({
-    template: Handlebars.compile(edit_template),
-    templateContext() {
-        return {
-            // need to add toggle for edit/read-only
-            edit_mode: true
-            // create_mode: false
-        }
-    }
 });
 
 // Handlebar playground
@@ -287,8 +292,7 @@ var SingleProjectView = Marionette.View.extend({
         },
 
         'click #edit-project': function() {
-            App.router.navigate('project/' + this.model.get('uuid') + '/edit', {trigger: false});
-            this.showEditProject();
+            this.controller.showEditProject();
         },
 
         'click #playground': function() {
@@ -394,6 +398,13 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
+    showEditProject(project) {
+        console.log("edit page view");
+        this.getRegion('stepsRegion').empty();
+        this.detailView = new EditProjectView({model: project});
+        this.showChildView('detailRegion', this.detailView);
+    },
+
     showProjectRepertoires(repertoireController)
     {
         this.getRegion('stepsRegion').empty();
@@ -483,11 +494,6 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showEditProject() {
-        this.detailView = new EditProjectView({model: this.model});
-        this.showChildView('detailRegion', this.detailView);
-    },
-
     showPlayground() {
         this.detailView = new PlaygroundView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
@@ -533,6 +539,9 @@ function SingleProjectController(project, page) {
         case 'analysis':
             this.showProjectAnalyses();
             break;
+        // case 'edit':
+        //     this.showEditProject();
+        //     break;
         case 'overview':
         default:
             this.showProjectOverview();
@@ -601,6 +610,13 @@ SingleProjectController.prototype = {
         App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
         this.projectView.updateSummary();
         this.projectView.showProjectOverview(this.model);
+    },
+
+    showEditProject() {
+        console.log("showEditProject");
+        this.page = 'edit';
+        App.router.navigate('project/' + this.model.get('uuid') + '/edit', {trigger: false});
+        this.projectView.showEditProject(this.model);
     },
 
     showProjectRepertoires() {
