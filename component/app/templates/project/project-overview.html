@@ -1,5 +1,28 @@
         <form method="POST" role="form" id="editProject-form" class="needs-validation" name="editProject" novalidate>
             <div class="row">
+                <div class="project-metadata col-md-12">
+                    {{#unless edit_mode}}
+                        <button type="button" class="btn btn-edit float-md-right" id="edit-project">
+                            Edit Project Metadata
+                        </button>
+                    {{/unless}}
+
+                    {{#if edit_mode}}
+                        <input type="button" class="btn btn-edit float-md-right" id="save-edit-project" value="Save Project">
+                    {{/if}}
+
+                    {{#if edit_mode}}
+                        <input type="reset" class="btn btn-cancel float-md-right" id="revert-edit-changes" value="Revert Changes">
+                    {{/if}}
+
+                    <button type="button" class="btn btn-delete float-md-right" id="archive-project" data-toggle="modal" data-target="#delete-modal">Archive Project</button>
+
+                    <button type="button" class="btn btn-info float-md-right" id="playground">
+                        Handlebar Playground
+                    </button>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6 overview-summary">
                     Edit Mode: {{edit_mode}}
                     <h3>Project Summary</h3>
@@ -8,9 +31,7 @@
                     {{/unless}}
 
                     {{#if edit_mode}}
-                        <textarea class="form-control" name="study_description" id="description" rows="23">
-                            {{value.study_description}}
-                        </textarea>
+                        <textarea class="form-control" name="study_description" id="description" rows="23">{{value.study_description}}</textarea>
                     {{/if}}
                 </div>
                 <div class="col-md-6 overview-details">
@@ -35,9 +56,7 @@
                         {{/unless}}
                     </p>
                     {{#if edit_mode}}
-                        <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="5" required>
-                            {{ inclusion_exclusion_criteria }}
-                        </textarea>
+                        <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="5" required>{{ inclusion_exclusion_criteria }}</textarea>
                     {{/if}}
 
                     <p>
@@ -126,36 +145,10 @@
                         {{/unless}}
                     </p>
                     {{#if edit_mode}}
-                        <textarea class="form-control" name="grants" id="grants" rows="4" required>
-                            {{ value.grants }}
-                        </textarea>
+                        <textarea class="form-control" name="grants" id="grants" rows="4" required>{{value.grants}}</textarea>
                     {{/if}}
                 </div>
             </div>
-            <div class="row">
-                <div class="project-metadata col-md-12">
-                    {{#unless edit_mode}}
-                        <button type="button" class="btn btn-edit float-md-right" id="edit-project">
-                            Edit Project Metadata
-                        </button>
-                    {{/unless}}
-
-                    {{#if edit_mode}}
-                        <input type="button" class="btn btn-edit float-md-right" id="save-edit-project" value="Save Project">
-                    {{/if}}
-
-                    {{#if edit_mode}}
-                        <input type="reset" class="btn btn-cancel float-md-right" id="revert-edit-changes">
-                            Revert Changes
-                    {{/if}}
-
-                    <input type="submit" class="btn btn-delete float-md-right" id="delete-project" data-toggle="modal" data-target="#delete-modal" value="Delete Project">
-
-                    <button type="button" class="btn btn-info float-md-right" id="playground">
-                        Handlebar Playground
-                    </button>
-                </div>
-        </div>
     </form>
 
         <!-- Modal -->

@@ -306,10 +306,14 @@ var SingleProjectView = Marionette.View.extend({
              this.saveEditProject();
         },
 
+        'click #revert-edit-changes': function() {
+            this.revertEditChanges();
+            this.controller.showProjectOverview();
+        },
 
-        // function() {
-        //     this.controller.showSaveProject();
-        // },
+        'click #archive-project': function() {
+            this.archiveProject();
+        },
 
         //
         // Repertoires page specific events
@@ -600,6 +604,14 @@ var SingleProjectView = Marionette.View.extend({
             // failure modal will automatically hide when user clicks OK
         }
     },
+
+    revertEditChanges() {
+        console.log("changes cleared");
+    },
+
+    archiveProject() {
+        console.log("Archive Project button clicked");
+    }
 
 });
 
