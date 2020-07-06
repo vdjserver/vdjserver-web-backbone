@@ -1,3 +1,4 @@
+        <form method="POST" role="form" id="editProject-form" class="needs-validation" name="editProject" novalidate>
             <div class="row">
                 <div class="col-md-6 overview-summary">
                     Edit Mode: {{edit_mode}}
@@ -20,7 +21,11 @@
                         {{/unless}}
 
                         <!-- {{#if edit_mode}}
-
+                        <select class="form-control" required>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
                         {{/if}} -->
                     </p>
                     <p>
@@ -113,6 +118,7 @@
                             {{value.grant_agency}}
                         {{/unless}}
                     </p>
+
                     <p>
                         <span class="details">Grants:</span>
                         {{#unless edit_mode}}
@@ -127,26 +133,30 @@
                 </div>
             </div>
             <div class="row">
-            <div class="project-metadata col-md-12">
-                <button type="button" class="btn btn-edit float-md-right" id="{{~#unless edit_mode~}}edit-project{{~/unless~}} {{~#if edit_mode~}}save-edit-project{{~/if~}}">
-                    {{#if edit_mode}} Save Project {{else}}Edit Project Metadata {{/if}}
-                </button>
+                <div class="project-metadata col-md-12">
+                    {{#unless edit_mode}}
+                        <button type="button" class="btn btn-edit float-md-right" id="edit-project">
+                            Edit Project Metadata
+                        </button>
+                    {{/unless}}
 
-                {{#if edit_mode}}
-                    <button type="button" class="btn btn-cancel float-md-right" id="revert-edit-changes">
-                        Revert Changes
+                    {{#if edit_mode}}
+                        <input type="button" class="btn btn-edit float-md-right" id="save-edit-project" value="Save Project">
+                    {{/if}}
+
+                    {{#if edit_mode}}
+                        <input type="reset" class="btn btn-cancel float-md-right" id="revert-edit-changes">
+                            Revert Changes
+                    {{/if}}
+
+                    <input type="submit" class="btn btn-delete float-md-right" id="delete-project" data-toggle="modal" data-target="#delete-modal" value="Delete Project">
+
+                    <button type="button" class="btn btn-info float-md-right" id="playground">
+                        Handlebar Playground
                     </button>
-                {{/if}}
-
-                <button type="button" class="btn btn-delete float-md-right" id="delete-project" data-toggle="modal" data-target="#delete-modal">
-                    Delete Project
-                </button>
-
-                <button type="button" class="btn btn-info float-md-right" id="playground">
-                    Handlebar Playground
-                </button>
-            </div>
+                </div>
         </div>
+    </form>
 
         <!-- Modal -->
         <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="project-warning" aria-hidden="true">

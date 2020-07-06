@@ -26,17 +26,20 @@
 //
 
 import Marionette from 'backbone.marionette';
+import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
+import MessageModel from 'Scripts/models/message';
 import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
 
-// Sidebar view
-//import sidebar_template from 'Templates/project/project-sidebar.html';
-//var ProjectSidebarView = Marionette.View.extend({
-//    template: Handlebars.compile(sidebar_template)
-//});
+// modal view for when the project is being created
+import mm_template from 'Templates/util/modal-message.html';
+var ModalMessage = Marionette.View.extend({
+  template: Handlebars.compile(mm_template),
+  region: '#modal'
+});
 
 // Project summary
 import summary_template from 'Templates/project/single-summary.html';
@@ -299,6 +302,15 @@ var SingleProjectView = Marionette.View.extend({
             this.showPlayground();
         },
 
+         'click #save-edit-project': function() {
+             this.saveEditProject();
+        },
+
+
+        // function() {
+        //     this.controller.showSaveProject();
+        // },
+
         //
         // Repertoires page specific events
         //
@@ -497,7 +509,98 @@ var SingleProjectView = Marionette.View.extend({
     showPlayground() {
         this.detailView = new PlaygroundView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
-    }
+    },
+
+    saveEditProject(e) {
+        console.log('saving edits');
+    //    e.preventDefault();
+        // actually save the edits
+
+        // pull data out of form and put into model
+        var data = Syphon.serialize(this);
+
+        // manually hack the study_type until we have ontologies implemented
+        data['study_type'] = null;
+        this.model.setAttributesFromData(data);
+        console.log(this.model);
+        console.log("this is the data that is submitted: " + data);
+
+        // display a modal while the project is being created
+        this.modalState = 'save';
+        var message = new MessageModel({
+          'header': 'Project Saved',
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Project Saved</p>'
+        });
+
+        // the app controller manages the modal region
+        var view = new ModalMessage({model: message});
+        App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
+        $('#modal-message').modal('show');
+
+        console.log(message);
+    },
+
+    // project creation request is sent to server after the modal is shown
+    onShownModal(context) {
+        console.log('create: Show the modal');
+
+        // use modal state variable to decide
+        console.log(context.modalState);
+        if (context.modalState == 'create') {
+
+            // save the model
+            console.log(context.model);
+            context.model.save()
+            .done(function() {
+                context.modalState = 'pass';
+                $('#modal-message').modal('hide');
+                console.log("create pass");
+                console.log(context.model);
+            })
+            .fail(function(error) {
+                // save failed so change state, hide the current modal
+                console.log(error);
+                context.modalState = 'fail';
+                $('#modal-message').modal('hide');
+
+                // prepare a new modal with the failure message
+                var body = '<p>Server returned error code: ' + error.status + ' ' + error.statusText + '<p>';
+                try {
+                    // make the JSON pretty
+                    var t = JSON.parse(error.responseText);
+                    body += '<pre>' + JSON.stringify(t,null,2) + '</pre>';
+                } catch (e) {
+                    // if response is not JSON, stick in the raw text
+                    body += '<pre>' + error.responseText + '</pre>';
+                }
+                var message = new MessageModel({
+                    'header': 'Project Creation',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Project creation failed!</div><p>Please submit the error below to the VDJServer Administrator.' + '<code>' + body + '</code>'
+                });
+
+                var view = new ModalMessageConfirm({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+
+                console.log("create fail");
+            });
+        } else if (context.modalState == 'fail') {
+          // if login failed, then we are showing the fail modal
+      }
+    },
+
+    onHiddenModal(context) {
+        console.log('create: Hide the modal');
+        if (context.modalState == 'pass') {
+            // create passed so route to the project view
+            App.router.navigate('project/' + context.model.get('uuid'), {trigger: false});
+            context.controller.showProjectPage(context.model.get('uuid'), null, true);
+        } else if (context.modalState == 'fail') {
+            console.log("show fail modal");
+            // failure modal will automatically hide when user clicks OK
+        }
+    },
+
 });
 
 //
@@ -539,9 +642,6 @@ function SingleProjectController(project, page) {
         case 'analysis':
             this.showProjectAnalyses();
             break;
-        // case 'edit':
-        //     this.showEditProject();
-        //     break;
         case 'overview':
         default:
             this.showProjectOverview();
@@ -571,12 +671,6 @@ SingleProjectController.prototype = {
         // fetch the repertoires
         return repList.fetch()
             .then(function() {
-                // set some status flags
-                for (var i = 0; i < repList.length; ++i) {
-                    var rep = repList.at(i);
-                    rep.view_mode = 'summary';
-                }
-
                 // fetch the subjects
                 return subjectList.fetch();
             })
@@ -624,6 +718,14 @@ SingleProjectController.prototype = {
         App.router.navigate('project/' + this.model.get('uuid') + '/edit', {trigger: false});
         this.projectView.showEditProject(this.model);
     },
+
+    // showSaveProject() {
+    //     console.log("showSaveProject");
+    //
+    //     // this.page = 'overview';
+    //     // App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
+    //     // this.projectView.showProjectOverview(this.model);
+    // },
 
     showProjectRepertoires() {
         this.page = 'repertoire';
