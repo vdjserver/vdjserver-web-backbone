@@ -34,122 +34,145 @@
                         <textarea class="form-control" name="study_description" id="description" rows="23">{{value.study_description}}</textarea>
                     {{/if}}
                 </div>
+
                 <div class="col-md-6 overview-details">
-                    <p>
-                        <span class="details">Project Type:<span>
+                    <div class="overview-item">
+                        <span class="details">Study Type:<span>
                         {{#unless edit_mode}}
                             {{value.study_type.x-airr}}
                         {{/unless}}
 
-                        <!-- {{#if edit_mode}}
-                        <select class="form-control" required>
+                        {{#if edit_mode}}
+                        <select class="form-control col-md-6" required>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
                         </select>
-                        {{/if}} -->
-                    </p>
-                    <p>
+                        {{/if}}
+                    </div>
+
+                    <div class="overview-item">
                         <span class="details">Inclusion/Exclusion Criteria:</span>
                         {{#unless edit_mode}}
                             {{value.inclusion_exclusion_criteria}}
                         {{/unless}}
-                    </p>
-                    {{#if edit_mode}}
-                        <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="5" required>{{ inclusion_exclusion_criteria }}</textarea>
-                    {{/if}}
 
-                    <p>
+                        {{#if edit_mode}}
+                            <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="5" required>{{ inclusion_exclusion_criteria }}</textarea>
+                        {{/if}}
+                    </div>
+
+                    <div class="overview-item">
                         <span class="details">Study Keywords:</span>
                         {{#unless edit_mode}}
                             {{value.keywords_study}}
                         {{/unless}}
-                    </p>
+
+                        {{#if edit_mode}}
+                            {{#each airr_schema.properties.keywords_study.items.enum}}
+                                    <div class="form-check custom-control custom-checkbox">
+                                      <input class="form-check-input" type="checkbox" name="study_type" id="{{this}}" value="{{this}}" checked>
+                                      <label class="form-check-label" for="{{@index}}">
+                                        {{#with (lookup ../keywords_object this)}} {{this}} {{/with}}
+                                      </label>
+                                  </div>
+                            {{/each}}
+                        {{/if}}
+                    </div>
+
 
                     <hr>
 
-                    <p>
+                    <div class="overview-item">
                         <span class="details">PI Name:</span>
                         {{#unless edit_mode}}
                             {{value.collected_by}}
                         {{/unless}}
-                    </p>
+
                     {{#if edit_mode}}
                         <input type="text" class="form-control" name="collectedby_name" id="collectedby_name" required value="{{ value.collected_by }}">
                     {{/if}}
+                    </div>
 
-                    <p>
+                    <div class="overview-item">
                         <span class="details">Contact Name:</span>
                         {{#unless edit_mode}}
                             {{value.submitted_by}}
                         {{/unless}}
-                    </p>
-                    {{#if edit_mode}}
-                        <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" required value="{{ submitted_by }}">
-                    {{/if}}
 
-                    <p>
+                        {{#if edit_mode}}
+                            <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" required value="{{ submitted_by }}">
+                        {{/if}}
+                    </div>
+
+                    <div class="overview-item">
                         <span class="details">Lab Name:</span>
                         {{#unless edit_mode}}
                             {{value.lab_name}}
                         {{/unless}}
-                    </p>
-                    {{#if edit_mode}}
-                        <input type="text" class="form-control" name="lab_name" id="lab_name" required value="{{ value.lab_name }}">
-                    {{/if}}
 
-                    <p>
+                        {{#if edit_mode}}
+                            <input type="text" class="form-control" name="lab_name" id="lab_name" required value="{{ value.lab_name }}">
+                        {{/if}}
+                    </div>
+
+                    <div class="overview-item">
                         <span class="details">Lab Address:</span>
                         {{#unless edit_mode}}
                             {{value.lab_address}}
                         {{/unless}}
-                    </p>
-                    {{#if edit_mode}}
-                        <input type="text" class="form-control" name="lab_address" id="lab_address" required value="{{ value.lab_address }}">
-                    {{/if}}
+
+                        {{#if edit_mode}}
+                            <input type="text" class="form-control" name="lab_address" id="lab_address" required value="{{ value.lab_address }}">
+                        {{/if}}
+                    </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-md-5 overview-summary-details">
-                    <p>
+                    <div class="overview-item">
                         <span class="details">Publications:</span>
                         {{#unless edit_mode}}
                             {{value.pub_ids}}
                         {{/unless}}
-                    </p>
-                    {{#if edit_mode}}
-                        <input type="text" class="form-control" name="pub_ids" id="publications" required value="{{ value.pub_ids }}">
-                    {{/if}}
 
-                    <p>
+                        {{#if edit_mode}}
+                            <input type="text" class="form-control" name="pub_ids" id="publications" required value="{{ value.pub_ids }}">
+                        {{/if}}
+                    </div>
+
+                    <div class="overview-item">
                         <span class="details">NCBI:</span>
                         {{#unless edit_mode}}
                             {{value.ncbi_bioproject}}
                         {{/unless}}
-                    </p>
-                    {{#if edit_mode}}
-                        <input type="text" class="form-control" name="study_id" id="NCBI" value="{{value.ncbi_bioproject}}" required>
-                    {{/if}}
 
-                    <p>
+                        {{#if edit_mode}}
+                            <input type="text" class="form-control" name="study_id" id="NCBI" value="{{value.ncbi_bioproject}}" required>
+                        {{/if}}
+                    </div>
+
+                    <div class="overview-item">
                         <span class="details">Funding Agency:</span>
                         {{#unless edit_mode}}
                             {{value.grant_agency}}
                         {{/unless}}
-                    </p>
+                    </div>
 
-                    <p>
+                    <div class="overview-item">
                         <span class="details">Grants:</span>
                         {{#unless edit_mode}}
                             {{value.grants}}
                         {{/unless}}
-                    </p>
-                    {{#if edit_mode}}
-                        <textarea class="form-control" name="grants" id="grants" rows="4" required>{{value.grants}}</textarea>
-                    {{/if}}
+
+                        {{#if edit_mode}}
+                            <textarea class="form-control" name="grants" id="grants" rows="4" required>{{value.grants}}</textarea>
+                        {{/if}}
+                    </div>
                 </div>
             </div>
-    </form>
+        </form>
 
         <!-- Modal -->
         <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="project-warning" aria-hidden="true">
