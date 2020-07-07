@@ -517,7 +517,6 @@ var SingleProjectView = Marionette.View.extend({
 
     saveEditProject(e) {
         console.log('saving edits');
-    //    e.preventDefault();
         // actually save the edits
 
         // pull data out of form and put into model

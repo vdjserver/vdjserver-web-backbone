@@ -1,220 +1,79 @@
-//
-// router.js
-// Manage URL routes
-//
-// VDJServer Analysis Portal
-// Web Interface
-// https://vdjserver.org
-//
-// Copyright (C) 2020 The University of Texas Southwestern Medical Center
-//
-// Author: Scott Christley <scott.christley@utsouthwestern.edu>
-// Author: Olivia Dorsey <olivia.dorsey@utsouthwestern.edu>
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published
-// by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
-//
+define(['app'], function(App) {
 
-'use strict';
+    'use strict';
 
-// Private Methods
-var _redirectToLogin = function() {
-    // Routing should be done automatically when this happens.
-    App.Agave.destroyToken();
-};
+    // Private Methods
+    var _redirectToLogin = function() {
+        // Routing should be done automatically when this happens.
+        App.Agave.destroyToken();
+    };
 
-/*
-    routeWithTokenRefreshCheck states
+    /*
+        routeWithTokenRefreshCheck states
 
-    A.) Token is good, continue routing as normal
-    B.) Token is no longer active, but can probably be refreshed and route continued
-    C.) All hope is lost
- */
-var _routeWithTokenRefreshCheck = function(destinationRoute) {
-    if (App.Agave.token().isActive()) {
-        destinationRoute();
-    }
-    else if (!App.Agave.token().isActive() && App.Agave.token().get('refresh_token')) {
-        App.Agave.token().save()
-            .done(function() {
-                destinationRoute();
-            })
-            .fail(function() {
-                _redirectToLogin();
-            })
-            ;
-    }
-    else {
-        _redirectToLogin();
-    }
-};
-
-export default Backbone.Router.extend({
-
-    // order of routes matter as the first one that matches is used
-    routes: {
-        '':                                 'index',
-        'auth/logout':                      'authLogout',
-
-        // project pages
-        'project':                          'projectList',
-        'project/create':                   'createPage',
-        'project/:id':                      'projectPage',
-        'project/:id/repertoire':           'projectRepertoire',
-        'project/:id/group':                'projectGroup',
-        'project/:id/file':                 'projectFile',
-        'project/:id/analysis':             'projectAnalysis',
-        'community':                        'communityList',
-        'project/:id/repertoire/create':           'createRepertoire',
-        'project/:id/repertoire/create/subject': 'addSubject',
-        'project/:id/repertoire/create/subject/diagnosis': 'addDiagnosis',
-        'project/:id/repertoire/create/sample': 'addSample',
-        'project/:id/repertoire/create/cell': 'addCell',
-        'project/:id/repertoire/create/nucleic': 'addNucleic',
-        'project/:id/group/create':         'addRepGroup',
-
-        // admin pages
-        'admin':                            'adminMain',
-
-        // 404
-        '*notFound': 'notFound',
-    },
-
-    // Index
-    index: function() {
-        console.log('index route');
-
-        // make sure to clear out any inactive token
-        if (!App.Agave.token().isActive()) {
-            App.Agave.token().clear();
-            window.localStorage.removeItem('Agave.Token');
-
-            // show home page
-            App.AppController.showHomePage();
+        A.) Token is good, continue routing as normal
+        B.) Token is no longer active, but can probably be refreshed and route continued
+        C.) All hope is lost
+     */
+    var _routeWithTokenRefreshCheck = function(destinationRoute) {
+        if (App.Agave.token().isActive()) {
+            destinationRoute();
+        }
+        else if (!App.Agave.token().isActive() && App.Agave.token().get('refresh_token')) {
+            App.Agave.token().save()
+                .done(function() {
+                    destinationRoute();
+                })
+                .fail(function() {
+                    _redirectToLogin();
+                })
+                ;
         }
         else {
-            // if active token, send automatically to project page
-            App.router.navigate('/project', {
-                trigger: true
-            });
+            _redirectToLogin();
         }
-    },
+    };
 
-    // Project Summary List
-    projectList: function() {
-        console.log('projectList route');
+    var _setPublicSubviews = function() {
+        if (App.Layouts.main.template !== 'layouts/public') {
+            App.Layouts.main.template = 'layouts/public/public-wrapper';
 
-        var destinationRoute = function() {
-            App.AppController.showProjectList();
-        };
-        _routeWithTokenRefreshCheck(destinationRoute);
-    },
-
-    // For Single Project Page
-    projectPage: function(projectUuid, page) {
-        console.log('projectPage route');
-
-        var destinationRoute = function() {
-            App.AppController.showProjectPage(projectUuid, page);
-        };
-        _routeWithTokenRefreshCheck(destinationRoute);
-    },
-
-    // Repertoire page for a project
-    projectRepertoire: function(projectUuid) {
-        this.projectPage(projectUuid, 'repertoire');
-    },
-
-    // Group page for a project
-    projectGroup: function(projectUuid) {
-        this.projectPage(projectUuid, 'group');
-    },
-
-    // File page for a project
-    projectFile: function(projectUuid) {
-        this.projectPage(projectUuid, 'file');
-    },
-
-    // Analysis page for a project
-    projectAnalysis: function(projectUuid) {
-        this.projectPage(projectUuid, 'analysis');
-    },
-
-    // Create page for a repertoire
-    createRepertoire: function(projectUuid) {
-        this.projectPage(projectUuid, 'createRepertoire');
-    },
-
-    // Add Subject page for a Repertoire
-    addSubject: function(projectUuid) {
-        this.projectPage(projectUuid, 'addSubject');
-    },
-
-    // Add Diagnosis page for a Repertoire
-    addDiagnosis: function(projectUuid) {
-        this.projectPage(projectUuid, 'addDiagnosis');
-    },
-
-    // Community Project Summary List
-    communityList: function() {
-        console.log('communityList route');
-
-        App.AppController.showCommunityList();
-    },
-
-    // For Create a Project Page
-    createPage: function() {
-        console.log('createPage route');
-
-        var destinationRoute = function() {
-            App.AppController.showCreatePage();
-        };
-        _routeWithTokenRefreshCheck(destinationRoute);
-    },
-
-    // Files List
-    // filesList: function() {
-    //     console.log('filesList route');
-    //
-    //     var destinationRoute = function() {
-    //         App.AppController.showFilesPage();
-    //     };
-    //     _routeWithTokenRefreshCheck(destinationRoute);
-    // },
-
-    // Auth
-    authLogout: function() {
-        // Routing *should* be handled automatically once the token is destroyed.
-        App.Agave.destroyToken();
-    },
-
-    // Administration pages
-    adminMain: function() {
-        if (! App.Agave.token().isAdmin()) {
-            this.index();
-        } else {
-            App.AppController.showAdminMain();
+            App.Layouts.main.setView('#nav-container', new App.Views.Navbar.Public());
         }
-    },
+    };
 
-    // 404
-    notFound: function() {
-      console.log('not found');
-    },
-});
+    var _setProjectSubviews = function(projectUuid, section) {
 
+        if (App.Layouts.main.template !== 'layouts/project/project-wrapper') {
+            App.Layouts.main.template = 'layouts/project/project-wrapper';
+            App.Layouts.main.setView('#sidebar-wrapper', App.Layouts.sidebar);
+            App.Layouts.main.setView('#main-wrapper', App.Layouts.content);
+            App.Layouts.main.render();
+        }
 
-/*
+        App.Routers.currentProjectUuid = projectUuid;
+
+        if (!App.Layouts.sidebar.getView('.sidebar')) {
+            App.Layouts.sidebar.setView(
+                '.sidebar',
+                new App.Views.Sidemenu.List({
+                    projectUuid: projectUuid,
+                    section: section,
+                })
+            );
+            //App.Layouts.sidebar.render();
+        }
+        else {
+            var listView = App.Layouts.sidebar.getView('.sidebar');
+            listView.setSection(section);
+            listView.uiSelectProject(projectUuid);
+        }
+
+        if (!App.Layouts.content.getView('#project-navbar')) {
+            App.Layouts.content.setView('#project-navbar', new App.Views.Navbar.Navigation());
+        }
+    };
+
     // Public Methods
     var DefaultRouter = Backbone.Router.extend({
 
@@ -691,4 +550,3 @@ export default Backbone.Router.extend({
     App.Routers.DefaultRouter = DefaultRouter;
     return DefaultRouter;
 });
-*/
