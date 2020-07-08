@@ -34,6 +34,7 @@ import Project from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
 import Permissions from 'Scripts/collections/agave-permissions';
+import TenantUsers from 'Scripts/collections/agave-tenant-users';
 
 // modal view for when the project is being created
 import mm_template from 'Templates/util/modal-message.html';
@@ -660,6 +661,7 @@ function SingleProjectController(project, page) {
     this.fileList = null;
     this.analysisList = null;
     this.projectUserList = null;
+    this.allUsersList = null;
 
     // the project view
     this.projectView = new SingleProjectView({controller: this, model: this.model});
@@ -748,7 +750,7 @@ SingleProjectController.prototype = {
     lazyLoadUsers() {
         var that = this;
         var userList = new Permissions({uuid: that.model.get('uuid')});
-        //var allUsers = new Backbone.Agave.Collection.TenantUsers({communityMode: App.Routers.communityMode});
+        var allUsers = new TenantUsers();
 
         return userList.fetch()
             .then(function() {
@@ -756,11 +758,12 @@ SingleProjectController.prototype = {
                 userList.remove(EnvironmentConfig.agave.serviceAccountUsername);
 
                 // TODO: fetch all the users
-                //return sampleList.fetch();
+                return allUsers.fetch();
             })
             .then(function() {
                 // now propagate loaded data to project
                 that.projectUserList = userList;
+                that.allUsersList = allUsers;
             })
             .then(function() {
                 // update the project summary
