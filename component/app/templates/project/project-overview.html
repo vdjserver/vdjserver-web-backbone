@@ -77,7 +77,7 @@
 
                             {{#each airr_schema.properties.keywords_study.items.enum}}
                                     <div class="form-check custom-control custom-checkbox">
-                                      <input class="form-check-input" type="checkbox" name="study_type" id="{{this}}" value="{{this}}" {{#contains this ../value.keywords_study}} checked {{/contains}}>
+                                      <input class="form-check-input" type="checkbox" name="keywords_study" id="{{this}}" value="{{this}}" {{#contains this ../value.keywords_study}} checked {{/contains}}>
                                       <label class="form-check-label" for="{{@index}}">
                                         {{#with (lookup ../keywords_object this)}} {{this}} {{/with}}
                                       </label>

@@ -53,14 +53,11 @@ var CreateView = Marionette.View.extend({
   template: Handlebars.compile('<h1>Create New Project</h1>' + create_template),
   templateContext() {
       return {
-          // pass as object
-          airr_schema: this.model.airr_schema,
-
-          // pass as string
-          airr_string: JSON.stringify(this.model.airr_schema, null, 2),
 
           // label array
           keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
+
+          keywords_values: ['contains_ig, contains_tcr, contains_single_cell', 'contains_paired_chain'],
 
           // label object
           keywords_object: {

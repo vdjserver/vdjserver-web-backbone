@@ -292,7 +292,8 @@ var SingleProjectView = Marionette.View.extend({
     regions: {
         summaryRegion: '#project-summary',
         stepsRegion: '#create-repertoire-steps',
-        detailRegion: '#project-detail'
+        detailRegion: '#project-detail',
+        usersRegion: '#users-region'
     },
 
     initialize: function(parameters) {
@@ -548,6 +549,7 @@ var SingleProjectView = Marionette.View.extend({
 
     saveEditProject(e) {
         console.log('saving edits');
+        e.preventDefault();
         // actually save the edits
 
         // pull data out of form and put into model
