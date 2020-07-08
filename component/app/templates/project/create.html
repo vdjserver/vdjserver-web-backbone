@@ -1,3 +1,5 @@
+{{airr_string}}
+
 {{#if edit_mode}}
     <p><a href="../"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Project Overview</a></p>
 {{/if}}
@@ -11,14 +13,6 @@
         <i class="fa fa-info-circle"></i> Create a new VDJServer project by filling out the form below.
     {{/unless}}
 </div>
-
-<p>
-    <!-- Temporary flag to indicate if Edit Mode Activated -->
-    Edit Status: <strong>{{edit_mode}}</strong></p>
-<p>
-    <!-- Temporary flag to indicate if Create Mode Activated -->
-    Create Status: <strong>{{create_mode}}</strong>
-</p>
 
 <script>
     $('[data-toggle="popover"]').popover({
@@ -109,7 +103,6 @@
                 </div>
             </div>
 
-            {{keywords_object}}
             <div class="form-group col-md-3">
                 <label>Study Keywords</label>
                 {{#each airr_schema.properties.keywords_study.items.enum}}
@@ -304,11 +297,11 @@
             {{/unless}} -->
 
             {{#unless edit_mode}}
-            <input type="submit" value="{{#if edit_mode}} Save Project {{else}} Create Project {{/if}}" class=" col-md-4 btn btn-create" id="create-new-project">
+            <input type="submit" value="{{#if edit_mode}} Save Project {{else}} Create Project {{/if}}" class="col-md-4 btn btn-create" id="create-new-project">
             {{/unless}}
 
             {{#if edit_mode}}
-            <input type="submit" value="Save Project" class=" col-md-4 btn btn-save" id="save-project">
+            <input type="submit" value="Save Project" class="col-md-4 btn btn-save" id="save-project">
             {{/if}}
         </div>
     </div>
