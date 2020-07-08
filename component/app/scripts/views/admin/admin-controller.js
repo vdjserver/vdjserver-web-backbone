@@ -28,8 +28,8 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
-import Project from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
+import { ProjectLoadCollection, RearrangementLoadCollection } from 'Scripts/collections/admins-vdjserver';
 
 // Admin card tabs for navigation
 import tabs_template from 'Templates/admin/admin-tabs.html';
@@ -84,8 +84,8 @@ var AdminTabsView = Marionette.View.extend({
         card = {};
         card['card_id'] = 'repository-tab';
         card['text'] = 'Data Repository';
-        if (this.controller.fileList) {
-            card['text'] = this.controller.fileList.length + ' ' + card['text'];
+        if (this.controller.projectLoadList) {
+            card['text'] = this.controller.projectLoadList.length + ' ' + card['text'];
         }
         if (this.controller.page == 'repository') card['active'] = true;
         else card['active'] = false;
@@ -253,31 +253,16 @@ var AdminView = Marionette.View.extend({
 function AdminController(page) {
     // maintain state across multiple views
     this.page = page;
+    this.projectLoadList = null;
 
     // the admin view
     this.contentView = new AdminView({controller: this});
 
     // kick off lazy loads
+    this.dataRepositoryPromise = this.lazyLoadDataRepository();
 
     // are we routing to a specific page?
-    switch (this.page) {
-        case 'users':
-            this.showUsersAdmin();
-            break;
-        case 'jobs':
-            this.showJobsAdmin();
-            break;
-        case 'repository':
-            this.showRepositoryAdmin();
-            break;
-        case 'statistics':
-            this.showStatisticsAdmin();
-            break;
-        case 'overview':
-        default:
-            this.showAdminOverview();
-            break;
-    }
+    this.showAdminPage(this.page);
 };
 
 AdminController.prototype = {
@@ -291,12 +276,63 @@ AdminController.prototype = {
     },
 
     //
+    // lazy loading of data repository records, these return promises
+    //
+    lazyLoadDataRepository() {
+        var that = this;
+        var plList = new ProjectLoadCollection();
+        //var rlList = new RearrangementLoadCollection();
+
+        // fetch the project loads
+        return plList.fetch()
+            .then(function() {
+                console.log(plList);
+                // now propagate loaded data to project
+                that.projectLoadList = plList;
+            })
+            .then(function() {
+                // update the project summary
+                that.contentView.updateTab();
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
+    },
+
+    showAdminPage(page)
+    {
+        switch (page) {
+            case 'users':
+                this.page = 'users';
+                this.showUsersAdmin();
+                break;
+            case 'jobs':
+                this.page = 'jobs';
+                this.showJobsAdmin();
+                break;
+            case 'repository':
+                this.page = 'repository';
+                this.showRepositoryAdmin();
+                break;
+            case 'statistics':
+                this.page = 'statistics';
+                this.showStatisticsAdmin();
+                break;
+            case 'overview':
+            default:
+                this.page = 'overview';
+                this.showAdminOverview();
+                break;
+        }
+    },
+
+    //
     // The main admin tabs
     //
     showAdminOverview()
     {
         this.page = 'overview';
-        App.router.navigate('admin/overview', {trigger: false});
+        App.router.navigate('admin', {trigger: false});
         this.contentView.updateTab();
         this.contentView.showAdminOverview(this.model);
     },
