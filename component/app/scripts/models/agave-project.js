@@ -77,6 +77,21 @@ export default Agave.MetadataModel.extend({
 
         return Agave.PutOverrideSync(method, this, options);
     },
+
+    setAttributesFromData: function(data) {
+        // call default function
+        Agave.MetadataModel.prototype.setAttributesFromData.apply(this, [data]);
+
+        // then handle special fields
+        var value = this.get('value');
+        var keywords = [];
+        if (data.contains_ig) keywords.push('contains_ig');
+        if (data.contains_tcr) keywords.push('contains_tcr');
+        if (data.contains_single_cell) keywords.push('contains_single_cell');
+        if (data.contains_paired_chain) keywords.push('contains_paired_chain');
+        value.keywords_study = keywords;
+        this.set('value', value);
+    },
 });
 
 /*
