@@ -31,6 +31,7 @@ import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
+import Permissions from 'Scripts/collections/agave-permissions';
 
 // Sidebar view
 //import sidebar_template from 'Templates/project/project-sidebar.html';
@@ -515,6 +516,7 @@ function SingleProjectController(project, page) {
     this.groupList = null;
     this.fileList = null;
     this.analysisList = null;
+    this.projectUserList = null;
 
     // the project view
     this.projectView = new SingleProjectView({controller: this, model: this.model});
@@ -524,6 +526,7 @@ function SingleProjectController(project, page) {
     this.groupListPromise = this.lazyLoadGroups();
     this.fileListPromise = this.lazyLoadFiles();
     this.analysisListPromise = this.lazyLoadAnalyses();
+    this.projectUserListPromise = this.lazyLoadUsers();
 
     // are we routing to a specific page?
     switch (this.page) {
@@ -606,6 +609,25 @@ SingleProjectController.prototype = {
     },
 
     lazyLoadAnalyses() {
+    },
+
+    lazyLoadUsers() {
+        var that = this;
+        var userList = new Permissions({uuid: that.model.get('uuid')});
+        //var allUsers = new Backbone.Agave.Collection.TenantUsers({communityMode: App.Routers.communityMode});
+
+        return userList.fetch()
+            .then(function() {
+                // TODO: fetch all the users
+                //return sampleList.fetch();
+            })
+            .then(function() {
+                // now propagate loaded data to project
+                that.projectUserList = userList;
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
     },
 
     //
