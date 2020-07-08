@@ -328,8 +328,8 @@ var SingleProjectView = Marionette.View.extend({
             this.showPlayground();
         },
 
-         'click #save-edit-project': function() {
-             this.saveEditProject();
+        'click #save-edit-project': function(e) {
+            this.saveEditProject(e);
         },
 
         'click #revert-edit-changes': function() {
@@ -582,7 +582,7 @@ var SingleProjectView = Marionette.View.extend({
 
         // use modal state variable to decide
         console.log(context.modalState);
-        if (context.modalState == 'create') {
+        if (context.modalState == 'save') {
 
             // save the model
             console.log(context.model);
