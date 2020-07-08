@@ -109,11 +109,15 @@ export default Marionette.View.extend({
 
             // send login request to server
             App.Agave.token().save(formData, {password: formData.password})
-                .done(function() {
+                .then(function() {
                     context.loginState = 'pass';
                     // clear password
                     App.Agave.token().set('password','');
 
+                    // load the user profile
+                    return App.AppController.loadUserProfile();
+                })
+                .then(function() {
                     // wait until modal is hidden before routing
                     $('#modal-message').modal('hide');
                     console.log("login pass");

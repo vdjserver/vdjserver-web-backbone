@@ -36,17 +36,25 @@ var _redirectToLogin = function() {
 /*
     routeWithTokenRefreshCheck states
 
+    Make sure the user profile is loaded
+
     A.) Token is good, continue routing as normal
     B.) Token is no longer active, but can probably be refreshed and route continued
     C.) All hope is lost
  */
 var _routeWithTokenRefreshCheck = function(destinationRoute) {
     if (App.Agave.token().isActive()) {
-        destinationRoute();
+        App.AppController.loadUserProfile()
+            .then(function() {
+                destinationRoute();
+            })
     }
     else if (!App.Agave.token().isActive() && App.Agave.token().get('refresh_token')) {
         App.Agave.token().save()
-            .done(function() {
+            .then(function() {
+                return App.AppController.loadUserProfile();
+            })
+            .then(function() {
                 destinationRoute();
             })
             .fail(function() {
@@ -66,6 +74,9 @@ export default Backbone.Router.extend({
         '':                                 'index',
         'auth/logout':                      'authLogout',
 
+        // user account pages
+        'account/profile':                  'accountProfile',
+
         // project pages
         'project':                          'projectList',
         'project/create':                   'createPage',
@@ -84,7 +95,11 @@ export default Backbone.Router.extend({
         'project/:id/group/create':         'addRepGroup',
 
         // admin pages
-        'admin':                            'adminMain',
+        'admin':                            'adminOverview',
+        'admin/users':                      'adminUsers',
+        'admin/jobs':                       'adminJobs',
+        'admin/repository':                 'adminRepository',
+        'admin/statistics':                 'adminStatistics',
 
         // 404
         '*notFound': 'notFound',
@@ -109,6 +124,23 @@ export default Backbone.Router.extend({
             });
         }
     },
+
+    //
+    // Account pages
+    //
+
+    accountProfile: function() {
+        console.log('accountProfile route');
+
+        var destinationRoute = function() {
+            App.AppController.showUserProfilePage();
+        };
+        _routeWithTokenRefreshCheck(destinationRoute);
+    },
+
+    //
+    // Project pages
+    //
 
     // Project Summary List
     projectList: function() {
@@ -198,13 +230,40 @@ export default Backbone.Router.extend({
         App.Agave.destroyToken();
     },
 
+    //
     // Administration pages
-    adminMain: function() {
+    //
+    adminPage: function(page) {
         if (! App.Agave.token().isAdmin()) {
             this.index();
         } else {
-            App.AppController.showAdminMain();
+            App.AppController.showAdminPage(page);
         }
+    },
+
+    // Overview administration page
+    adminOverview: function() {
+        this.adminPage('overview');
+    },
+
+    // Users administration page
+    adminUsers: function() {
+        this.adminPage('users');
+    },
+
+    // Jobs administration page
+    adminJobs: function() {
+        this.adminPage('jobs');
+    },
+
+    // Repository administration page
+    adminRepository: function() {
+        this.adminPage('repository');
+    },
+
+    // Statistics administration page
+    adminStatistics: function() {
+        this.adminPage('statistics');
     },
 
     // 404

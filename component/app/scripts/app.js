@@ -31,7 +31,10 @@ import { HandlebarsUtilities } from 'Scripts/views/utilities/handlebars-utilitie
 import { Agave } from 'Scripts/backbone/backbone-agave';
 import Router from 'Scripts/routers/router';
 
+import { UserProfile } from 'Scripts/models/agave-tenant-user';
+
 import PublicView from 'Scripts/views/app/public-views';
+import UserProfileView from 'Scripts/views/account/account-profile';
 // import IntroView from 'intro-view';
 import NavigationController from 'Scripts/views/app/navbar-controller';
 import ProjectController from 'Scripts/views/project/project-controller';
@@ -57,20 +60,20 @@ var ModalMessageConfirm = Marionette.View.extend({
 
 // Controller and view for the main regions for the application.
 var ApplicationController = Marionette.View.extend({
-  template: Handlebars.compile('<div id="navigation"></div><div id="main"></div><div id="modal"></div>'),
+    template: Handlebars.compile('<div id="navigation"></div><div id="main"></div><div id="modal"></div>'),
 
-  // three regions:
-  // one for the navigation bar
-  // another for the main content
-  // global modal region
-  regions: {
-    navigationRegion: '#navigation',
-    mainRegion: '#main',
-    modalRegion: {
-        el: '#modal',
-        regionClass: ModalRegion
-    }
-  },
+    // three regions:
+    // one for the navigation bar
+    // another for the main content
+    // global modal region
+    regions: {
+        navigationRegion: '#navigation',
+        mainRegion: '#main',
+        modalRegion: {
+            el: '#modal',
+            regionClass: ModalRegion
+        }
+    },
 
     events: {
         // show and hide of modal
@@ -78,74 +81,108 @@ var ApplicationController = Marionette.View.extend({
         'hidden.bs.modal': 'onHiddenModal',
     },
 
-  initialize(options) {
-    console.log('Initialize');
+    initialize(options) {
+        console.log('Initialize');
 
-    // just a test to show schema is available
-    console.log(AIRRSchema['Repertoire']);
+        // user profile available to whole app
+        this.userProfile = null;
 
-    // create navigation bar
-    this.navController = new NavigationController();
-    this.showChildView('navigationRegion', this.navController);
-  },
+        // just a test to show schema is available
+        console.log(AIRRSchema['Repertoire']);
 
-  showHomePage() {
-    console.log('showHomePage');
-    // tell navigation controller to display its public nav bar
-    this.navController.showPublicNavigation();
+        // create navigation bar
+        this.navController = new NavigationController();
+        this.showChildView('navigationRegion', this.navController);
+    },
 
-    // show public view
-    var view = new PublicView();
-    this.showChildView('mainRegion', view);
-  },
+    showHomePage() {
+        console.log('showHomePage');
+        // tell navigation controller to display its public nav bar
+        this.navController.showPublicNavigation();
 
-  showProjectList() {
-    console.log('showProjectList');
+        // show public view
+        var view = new PublicView();
+        this.showChildView('mainRegion', view);
+    },
 
-    // create project controller if needed
-    if (! this.projectController) {
-      this.projectController = new ProjectController();
-    }
-    this.showChildView('mainRegion', this.projectController.getView());
+    // This should be called after user login so that the user
+    // profile and settings are available, returns a promise
+    loadUserProfile() {
+        var that = this;
+        if (this.userProfile)
+            return new Promise(function(resolve, reject) {
+                resolve(that.userProfile);
+            });
 
-    // tell navigation controller to display its private nav bar
-    this.navController.showPrivateNavigation();
+        var profile = new UserProfile();
+        return profile.fetch()
+            .then(function() {
+                // now propagate loaded data to project
+                that.userProfile = profile;
+                return that.userProfile;
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
+    },
 
-    // tell project controller to display the project list page
-    this.projectController.showProjectList();
-  },
+    showUserProfilePage() {
+        console.log('showUserProfilePage');
+        // tell navigation controller to display its private nav bar
+        this.navController.showPrivateNavigation();
 
-  showProjectPage(projectUuid, page) {
-    console.log('showProjectPage');
+        // show user profile view
+        var view = new UserProfileView({ model: this.userProfile });
+        this.showChildView('mainRegion', view);
+    },
 
-    // create "project" controller if needed
-    if (! this.projectController) {
-      this.projectController = new ProjectController();
-    }
-    this.showChildView('mainRegion', this.projectController.getView());
+    showProjectList() {
+        console.log('showProjectList');
 
-    // tell "navigation" controller to display its private nav bar
-    this.navController.showPrivateNavigation();
+        // create project controller if needed
+        if (! this.projectController) {
+          this.projectController = new ProjectController();
+        }
+        this.showChildView('mainRegion', this.projectController.getView());
 
-    // tell "project" controller to display the project page
-    this.projectController.showProjectPage(projectUuid, page);
-  },
+        // tell navigation controller to display its private nav bar
+        this.navController.showPrivateNavigation();
 
-  showCommunityList() {
-    console.log('showCommunityList');
+        // tell project controller to display the project list page
+        this.projectController.showProjectList();
+    },
 
-    // create community controller if needed
-    if (! this.communityController) {
-      this.communityController = new CommunityController();
-    }
-    this.showChildView('mainRegion', this.communityController.getView());
+    showProjectPage(projectUuid, page) {
+        console.log('showProjectPage');
 
-    // tell navigation controller to display its public nav bar
-    this.navController.showPublicNavigation();
+        // create "project" controller if needed
+        if (! this.projectController) {
+          this.projectController = new ProjectController();
+        }
+        this.showChildView('mainRegion', this.projectController.getView());
 
-    // tell controller to display the project list page
-    this.communityController.showProjectList();
-  },
+        // tell "navigation" controller to display its private nav bar
+        this.navController.showPrivateNavigation();
+
+        // tell "project" controller to display the project page
+        this.projectController.showProjectPage(projectUuid, page);
+    },
+
+    showCommunityList() {
+        console.log('showCommunityList');
+
+        // create community controller if needed
+        if (! this.communityController) {
+          this.communityController = new CommunityController();
+        }
+        this.showChildView('mainRegion', this.communityController.getView());
+
+        // tell navigation controller to display its public nav bar
+        this.navController.showPublicNavigation();
+
+        // tell controller to display the project list page
+        this.communityController.showProjectList();
+    },
 
     showCreatePage() {
         console.log('showCreatePage');
@@ -164,7 +201,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     // Administration pages
-    showAdminMain() {
+    showAdminPage(page) {
         console.log('showAdminMain');
 
         if (! this.adminController) {
@@ -177,7 +214,7 @@ var ApplicationController = Marionette.View.extend({
         this.navController.showPrivateNavigation();
 
         // tell project controller to display the create project page
-        this.adminController.showMainPage();
+        this.adminController.showAdminPage(page);
     },
 
     // Using repertoire controller to display information about a specific repertoire

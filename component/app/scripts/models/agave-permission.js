@@ -1,3 +1,6 @@
+
+'use strict';
+
 //
 // agave-permission.js
 // Permission model

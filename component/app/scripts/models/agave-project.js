@@ -1,3 +1,6 @@
+
+'use strict';
+
 //
 // agave-project.js
 // Project model
