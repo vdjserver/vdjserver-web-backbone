@@ -423,6 +423,12 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('summaryRegion', this.summaryView);
     },
 
+    // populate the user list in the project overview
+    updateUserList() {
+        console.log('updateUserList');
+        // TODO:
+    },
+
     // show a loading view, used while fetching the data
     showLoading() {
         this.showChildView('detailRegion', new LoadingView({}));
@@ -746,12 +752,19 @@ SingleProjectController.prototype = {
 
         return userList.fetch()
             .then(function() {
+                // remove service account from list
+                userList.remove(EnvironmentConfig.agave.serviceAccountUsername);
+
                 // TODO: fetch all the users
                 //return sampleList.fetch();
             })
             .then(function() {
                 // now propagate loaded data to project
                 that.projectUserList = userList;
+            })
+            .then(function() {
+                // update the project summary
+                that.projectView.updateUserList();
             })
             .fail(function(error) {
                 console.log(error);
