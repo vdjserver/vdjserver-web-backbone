@@ -1,3 +1,8 @@
+<!-- <pre>
+
+{{airr_string}}
+</pre> -->
+
         <form method="POST" role="form" id="editProject-form" class="needs-validation" name="editProject" novalidate>
             <div class="row">
                 <div class="project-metadata col-md-12">
@@ -69,9 +74,10 @@
                         {{/unless}}
 
                         {{#if edit_mode}}
+
                             {{#each airr_schema.properties.keywords_study.items.enum}}
                                     <div class="form-check custom-control custom-checkbox">
-                                      <input class="form-check-input" type="checkbox" name="study_type" id="{{this}}" value="{{this}}" checked>
+                                      <input class="form-check-input" type="checkbox" name="study_type" id="{{this}}" value="{{this}}" {{#contains this ../value.keywords_study}} checked {{/contains}}>
                                       <label class="form-check-label" for="{{@index}}">
                                         {{#with (lookup ../keywords_object this)}} {{this}} {{/with}}
                                       </label>
@@ -153,12 +159,12 @@
                         {{/if}}
                     </div>
 
-                    <div class="overview-item">
+                    <!-- <div class="overview-item">
                         <span class="details">Funding Agency:</span>
                         {{#unless edit_mode}}
                             {{value.grant_agency}}
                         {{/unless}}
-                    </div>
+                    </div> -->
 
                     <div class="overview-item">
                         <span class="details">Grants:</span>

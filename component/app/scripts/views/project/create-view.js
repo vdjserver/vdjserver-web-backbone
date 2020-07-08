@@ -50,7 +50,27 @@ var ModalMessageConfirm = Marionette.View.extend({
 // project creation form
 import create_template from 'Templates/project/create.html';
 var CreateView = Marionette.View.extend({
-  template: Handlebars.compile('<h1>Create New Project</h1>' + create_template)
+  template: Handlebars.compile('<h1>Create New Project</h1>' + create_template),
+  templateContext() {
+      return {
+          // pass as object
+          airr_schema: this.model.airr_schema,
+
+          // pass as string
+          airr_string: JSON.stringify(this.model.airr_schema, null, 2),
+
+          // label array
+          keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
+
+          // label object
+          keywords_object: {
+              'contains_single_cell': 'Single Cell',
+              'contains_ig': 'Ig',
+              'contains_paired_chain': 'Paired Chain',
+              'contains_tcr': 'TCR'
+          }
+      }
+  }
 });
 
 export default Marionette.View.extend({

@@ -149,7 +149,13 @@ var ProjectOverView = Marionette.View.extend({
     templateContext() {
         return {
             // if edit mode is false, then fields should be read-only
-            edit_mode: false
+            edit_mode: false,
+
+            // pass as object
+            airr_schema: this.model.airr_schema,
+
+            // pass as string
+            airr_string: JSON.stringify(this.model.airr_schema, null, 2),
         }
     }
 });
@@ -161,7 +167,24 @@ var EditProjectView = Marionette.View.extend({
     templateContext() {
         return {
             // if edit mode is true, then fields should be editable
-            edit_mode: true
+            edit_mode: true,
+
+            // pass as object
+            airr_schema: this.model.airr_schema,
+
+            // // pass as string
+            // airr_string: JSON.stringify(this.model.airr_schema, null, 2),
+
+            // label array
+            keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
+
+            // label object
+            keywords_object: {
+                'contains_single_cell': 'Single Cell',
+                'contains_ig': 'Ig',
+                'contains_paired_chain': 'Paired Chain',
+                'contains_tcr': 'TCR'
+            }
         }
     }
 });
