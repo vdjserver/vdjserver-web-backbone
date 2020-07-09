@@ -53,18 +53,12 @@ var CreateView = Marionette.View.extend({
   template: Handlebars.compile('<h1>Create New Project</h1>' + create_template),
   templateContext() {
       return {
-
-          // label array
-          keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
-
-          keywords_values: ['contains_ig, contains_tcr, contains_single_cell', 'contains_paired_chain'],
-
-          // label object
+          // labels for keywords_study
           keywords_object: {
-              'contains_single_cell': 'Single Cell',
               'contains_ig': 'Ig',
-              'contains_paired_chain': 'Paired Chain',
-              'contains_tcr': 'TCR'
+              'contains_tcr': 'TCR',
+              'contains_single_cell': 'Single Cell',
+              'contains_paired_chain': 'Paired Chain'
           }
       }
   }
@@ -132,6 +126,20 @@ export default Marionette.View.extend({
         var data = Syphon.serialize(this);
         // manually hack the study_type until we have ontologies implemented
         data['study_type'] = null;
+        // concatenate collector info
+        var fields = [];
+        if (data['collectedby_name'].length > 0) fields.push(data['collectedby_name']);
+        if (data['collectedby_email'].length > 0) fields.push(data['collectedby_email']);
+        if (data['collectedby_address'].length > 0) fields.push(data['collectedby_address']);
+        data['collected_by'] = fields.join(', ');
+
+        // concatenate submitter info
+        fields = [];
+        if (data['submittedby_name'].length > 0) fields.push(data['submittedby_name']);
+        if (data['submittedby_email'].length > 0) fields.push(data['submittedby_email']);
+        if (data['submittedby_address'].length > 0) fields.push(data['submittedby_address']);
+        data['submitted_by'] = fields.join(', ');
+
         this.model.setAttributesFromData(data);
         console.log(this.model);
 
