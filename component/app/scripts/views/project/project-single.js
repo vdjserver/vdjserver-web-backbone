@@ -43,6 +43,13 @@ var ModalMessage = Marionette.View.extend({
   region: '#modal'
 });
 
+// modal view for failure message
+import mmc_template from 'Templates/util/modal-message-confirm.html';
+var ModalMessageConfirm = Marionette.View.extend({
+  template: Handlebars.compile(mmc_template),
+  region: '#modal'
+});
+
 // Project summary
 import summary_template from 'Templates/project/single-summary.html';
 var ProjectSummaryView = Marionette.View.extend({
@@ -630,7 +637,7 @@ var SingleProjectView = Marionette.View.extend({
         if (context.modalState == 'pass') {
             // create passed so route to the project view
             App.router.navigate('project/' + context.model.get('uuid'), {trigger: false});
-            context.controller.showProjectPage(context.model.get('uuid'), null, true);
+            context.controller.showProjectOverview(context.model.get('uuid'), null, true);
         } else if (context.modalState == 'fail') {
             console.log("show fail modal");
             // failure modal will automatically hide when user clicks OK
