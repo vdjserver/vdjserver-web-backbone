@@ -63,7 +63,7 @@
                         {{/unless}}
 
                         {{#if edit_mode}}
-                            <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="5" required>{{ inclusion_exclusion_criteria }}</textarea>
+                            <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" rows="5" required>{{ value.inclusion_exclusion_criteria }}</textarea>
                         {{/if}}
                     </div>
 
@@ -208,7 +208,7 @@
                             <i class="fa fa-plus" aria-hidden="true"></i> Add Users
                         </button>
                 </div>
-                <table class="table manage-users">
+                <table class="table manage-users" id="users-region">
                     <thead>
                         <tr class="form-row">
                             <th scope="col" class="no-display select col-md-1"></th>
