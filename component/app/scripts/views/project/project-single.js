@@ -150,6 +150,12 @@ var AnalysesView = Marionette.View.extend({
     template: Handlebars.compile(analyses_template)
 });
 
+// Users view
+import users_template from 'Templates/project/users.html';
+    var ProjectUserListView = Marionette.View.extend({
+        template: Handlebars.compile(users_template)
+    });
+
 // Project overview page
 // TODO: merge create.html with this
 import overview_template from 'Templates/project/project-overview.html';
@@ -348,6 +354,10 @@ var SingleProjectView = Marionette.View.extend({
             this.archiveProject();
         },
 
+        'click #archive-project-yes': function() {
+            this.archiveProjectYes();
+        },
+
         //
         // Repertoires page specific events
         //
@@ -434,8 +444,11 @@ var SingleProjectView = Marionette.View.extend({
 
     // populate the user list in the project overview
     updateUserList() {
-        console.log('updateUserList');
+        // console.log('updateUserList');
         // TODO:
+
+        this.usersView = new ProjectUserListView({controller: this.controller, collection: this.controller.projectUserList});
+        this.showChildView('usersRegion', this.usersView);
     },
 
     // show a loading view, used while fetching the data
@@ -650,6 +663,14 @@ var SingleProjectView = Marionette.View.extend({
 
     archiveProject() {
         console.log("Archive Project button clicked");
+    },
+
+    archiveProjectYes() {
+        console.log("Archive Project Confirmed: Yes");
+        // e.preventDefault();
+
+        // this.set('name', 'deletedProject');
+        // return this.save();
     }
 
 });
