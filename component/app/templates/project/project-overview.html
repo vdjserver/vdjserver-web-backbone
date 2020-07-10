@@ -145,7 +145,7 @@
 
                 <div class="col-md-4 overview-summary-details">
                     <div class="overview-item">
-                        <span class="details">Lab Name/Principal Investigator (PI):</span>
+                        <span class="details">Lab Name/Principal Investigator (PI):</span><br />
                         {{#unless edit_mode}}
                             {{value.lab_name}}
                         {{/unless}}
@@ -255,13 +255,17 @@
                         </button>
                 </div>
                 <table class="table manage-users" id="users-region">
-                    <thead>
-                        <tr class="form-row">
-                            <th scope="col" class="no-display select col-md-1"></th>
-                            <th scope="col" class="col-md-6">User</th>
-                            <th scope="col" class="col-md-2">Status</th>
-                            <th scope="col" class="col-md-3">Actions</th>
+                    <tbody>
+                        <thead>
+                            <tr class="form-row">
+                                <th scope="col" class="no-display select col-md-1"></th>
+                                <th scope="col" class="col-md-6">User</th>
+                                <th scope="col" class="col-md-2">Status</th>
+                                <th scope="col" class="col-md-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tr class="user-row form-row">
                         </tr>
-                    </thead>
+                    </tbody>
                 </table>
             </div>

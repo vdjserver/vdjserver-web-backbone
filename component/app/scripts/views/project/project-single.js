@@ -32,6 +32,7 @@ import MessageModel from 'Scripts/models/message';
 import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
+import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
 import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
 import Permissions from 'Scripts/collections/agave-permissions';
 import TenantUsers from 'Scripts/collections/agave-tenant-users';
@@ -153,7 +154,9 @@ var AnalysesView = Marionette.View.extend({
 // Users view
 import users_template from 'Templates/project/users.html';
     var ProjectUserListView = Marionette.View.extend({
-        template: Handlebars.compile(users_template)
+        template: Handlebars.compile(users_template),
+        tagName: 'tr',
+        className: 'user-row form-row'
     });
 
 // Project overview page
@@ -454,6 +457,11 @@ var SingleProjectView = Marionette.View.extend({
     // show a loading view, used while fetching the data
     showLoading() {
         this.showChildView('detailRegion', new LoadingView({}));
+    },
+
+    // show a quick loading view while getting users
+    showLoadingUsers() {
+        this.showChildView('detailRegion', new LoadingUsersView({}));
     },
 
     //
@@ -856,6 +864,19 @@ SingleProjectController.prototype = {
             that.repertoireController = new RepertoireController(that);
             that.projectView.showProjectRepertoires(that.repertoireController);
         }
+    },
+
+    showProjectUsers() {
+        // show loading first
+        that.projectView.showLoadingUsers();
+
+        // receive the lazy load promise
+        this.projectUserListPromise.then(function() {
+            // display the users
+            this.projectView.showProjectUsers();
+        })
+
+
     },
 
     showProjectGroups() {
