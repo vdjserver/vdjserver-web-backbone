@@ -153,17 +153,49 @@ var AnalysesView = Marionette.View.extend({
 
 // Users view
 import users_template from 'Templates/project/users.html';
-    var ProjectUserListView = Marionette.View.extend({
+    var ProjectUserView = Marionette.View.extend({
         template: Handlebars.compile(users_template),
         tagName: 'tr',
         className: 'user-row form-row'
     });
+
+    import userList_template from 'Templates/project/user-list.html';
+
+    var ProjectUserListView = Marionette.CollectionView.extend({
+        template: Handlebars.compile(userList_template),
+        tagName: 'table',
+        className: 'table table-hover table-sm',
+        initialize: function(parameters) {
+        this.childView = ProjectUserView;
+      }
+  });
 
 // Project overview page
 // TODO: merge create.html with this
 import overview_template from 'Templates/project/project-overview.html';
 var ProjectOverView = Marionette.View.extend({
     template: Handlebars.compile(overview_template),
+    regions: {
+        usersRegion: '#user-list-region'
+    },
+
+    initialize: function(parameters) {
+
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.model) this.model = parameters.model;
+        }
+
+        this.showChildView('usersRegion', new LoadingUsersView({}));
+
+    },
+
+    updateUserList() {
+        var view = new ProjectUserListView({controller: this.controller, collection: this.controller.projectUserList});
+        this.showChildView('usersRegion', view);
+    },
+
     templateContext() {
         return {
             // if edit mode is false, then fields should be read-only
@@ -308,8 +340,7 @@ var SingleProjectView = Marionette.View.extend({
     regions: {
         summaryRegion: '#project-summary',
         stepsRegion: '#create-repertoire-steps',
-        detailRegion: '#project-detail',
-        usersRegion: '#users-region'
+        detailRegion: '#project-detail'
     },
 
     initialize: function(parameters) {
@@ -450,8 +481,8 @@ var SingleProjectView = Marionette.View.extend({
         // console.log('updateUserList');
         // TODO:
 
-        this.usersView = new ProjectUserListView({controller: this.controller, collection: this.controller.projectUserList});
-        this.showChildView('usersRegion', this.usersView);
+        // this.usersView = new ProjectUserListView({controller: this.controller, collection: this.controller.projectUserList});
+        // this.showChildView('usersRegion', this.usersView);
     },
 
     // show a loading view, used while fetching the data
@@ -470,7 +501,7 @@ var SingleProjectView = Marionette.View.extend({
     showProjectOverview(project)
     {
         this.getRegion('stepsRegion').empty();
-        this.detailView = new ProjectOverView({model: project});
+        this.detailView = new ProjectOverView({model: project, controller: this.controller});
         this.showChildView('detailRegion', this.detailView);
     },
 
