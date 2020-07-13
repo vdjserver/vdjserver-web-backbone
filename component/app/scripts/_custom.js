@@ -48,6 +48,6 @@ $(document).ready(function() {
 
     // Adding a New User to a Project
     $(document).on("click", "#add-project-user", function() {
-        $(".manage-users").find('tbody').append("<tr class='user-row'><td class='user-name'><input type='text' class='form-control' id='user-name' placeholder='Name'></td><td class='user-email'><input type='email' class='form-control' id='user-email' placeholder='Email'></td><td class='user-status'><select class='form-control' id='user-status'><option>Active</option><option>Inactive</option></td><td class='user-actions'><button type='button' class='btn btn-create' id='add-project-user'><i class='fa fa-plus' aria-hidden='true'></i> Add</button><button type='button' class='btn btn-cancel' id='cancel-project-user'><i class='fa fa-plus' aria-hidden='true'></i> Cancel</button></td></tr>");
+        $(".manage-users").find('tbody').append("<tr class='user-row'><td class='user-name'><input type='text' class='form-control' id='user-name' placeholder='Name'></td><td class='user-email'><input type='email' class='form-control' id='user-email' placeholder='Email'></td><td class='user-status'><select class='form-control' id='user-status'><option>Active</option><option>Inactive</option></td><td class='user-actions'><button type='button' class='btn btn-create' id='add-project-user'><i class='fa fa-plus' aria-hidden='true'></i> Add</button> <button type='button' class='btn btn-cancel' id='cancel-project-user'><i class='fa fa-plus' aria-hidden='true'></i> Cancel</button></td></tr>");
     });
 });
