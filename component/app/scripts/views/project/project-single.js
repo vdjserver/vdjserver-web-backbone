@@ -151,24 +151,25 @@ var AnalysesView = Marionette.View.extend({
     template: Handlebars.compile(analyses_template)
 });
 
-// Users view
+// Get User List Template
+import userList_template from 'Templates/project/user-list.html';
+
+var ProjectUserListView = Marionette.CollectionView.extend({
+    template: Handlebars.compile(userList_template),
+    tagName: 'table',
+    className: 'table manage-users',
+    initialize: function(parameters) {
+    this.childView = ProjectUserView;
+  }
+});
+
+// Users View
 import users_template from 'Templates/project/users.html';
     var ProjectUserView = Marionette.View.extend({
         template: Handlebars.compile(users_template),
         tagName: 'tr',
-        className: 'user-row form-row'
+        className: 'user-row'
     });
-
-    import userList_template from 'Templates/project/user-list.html';
-
-    var ProjectUserListView = Marionette.CollectionView.extend({
-        template: Handlebars.compile(userList_template),
-        tagName: 'table',
-        className: 'table table-hover table-sm',
-        initialize: function(parameters) {
-        this.childView = ProjectUserView;
-      }
-  });
 
 // Project overview page
 // TODO: merge create.html with this
