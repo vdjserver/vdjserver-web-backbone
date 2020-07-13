@@ -32,33 +32,22 @@ $(document).ready(function() {
     //
     //     $("input#user-select").click(manageusers);
 
-    $(document).on("click", ".user-name", function() {
-        $(".select").toggleClass("no-display");
-        $(".select").toggleClass("show");
-    });
+    $(document).on("click", "tr.user-row", function(e) {
+        // when you click on an individual row, show the user action buttons
+        e.preventDefault();
 
-    $(document).on("click", ".user-status", function() {
-        $(".select").toggleClass("no-display");
-        $(".select").toggleClass("show");
-    });
+        $(this).find(".delete-project-user").toggleClass("no-display");
+        $(this).find(".delete-project-user").toggleClass("show");
 
-    $(document).on("click", "input#user-select", function() {
-        $("#delete-user").toggleClass("no-display");
-        $("#delete-user").toggleClass("show");
-        $("#edit-user").toggleClass("no-display");
-        $("#edit-user").toggleClass("show");
-    });
+        $(this).find(".edit-project-user").toggleClass("no-display");
+        $(this).find(".edit-project-user").toggleClass("show");
 
-    $(document).on("click", "#delete-user", function() {
-        console.log("clicked delete users button");
+        // $(".select").toggleClass("no-display");
+        // $(".select").toggleClass("show");
     });
 
     // Adding a New User to a Project
-    $(document).on("click", "#add-users", function() {
-        console.log("clicked add users button");
-    });
-
-    $(document).on("click", "#add-users", function() {
-        $(".manage-users").find('tbody').append("<tr class='user-row form-row'><td class='user-name col-md-3'><input type='text' class='form-control' id='user-name' placeholder='Name'></td><td class='user-email col-md-3'><input type='email' class='form-control' id='user-email' placeholder='Email'></td><td class='user-status col-md-2'><select class='form-control' id='user-status'><option>Active</option><option>Inactive</option></td><td class='user-actions col-md-3'><button type='button' class='btn btn-create' id='add-new-user'><i class='fa fa-plus' aria-hidden='true'></i> Add</button></td></tr>");
+    $(document).on("click", "#add-project-user", function() {
+        $(".manage-users").find('tbody').append("<tr class='user-row'><td class='user-name'><input type='text' class='form-control' id='user-name' placeholder='Name'></td><td class='user-email'><input type='email' class='form-control' id='user-email' placeholder='Email'></td><td class='user-status'><select class='form-control' id='user-status'><option>Active</option><option>Inactive</option></td><td class='user-actions'><button type='button' class='btn btn-create' id='add-project-user'><i class='fa fa-plus' aria-hidden='true'></i> Add</button><button type='button' class='btn btn-cancel' id='cancel-project-user'><i class='fa fa-plus' aria-hidden='true'></i> Cancel</button></td></tr>");
     });
 });
