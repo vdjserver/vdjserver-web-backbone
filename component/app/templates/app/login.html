@@ -33,9 +33,9 @@
 
                     <div class="row login-group">
                         <div>
+                            {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}<br />
+                            {{#if maintenance}}{{else}}<a class="home-create-account" href="/account">Create Account</a>{{/if}}
                             <input type="submit" class="btn btn-warning login-button" id="home-login" value="Login">
-
-                            {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
                         </div>
                             <!-- <input type="submit" value="LOGIN" id="home-login" class="login-button" {{#if maintenance}}disabled{{/if}}> -->
                             <!-- <div class="col-md-6 login-button-column text-center">

@@ -1,15 +1,7 @@
-{{#if edit_mode}}
-    <p><a href="../"><i class="fa fa-chevron-left" aria-hidden="true"></i> Back to Project Overview</a></p>
-{{/if}}
-
-<div class="alert alert-info">
-    {{#if edit_mode}}
-        <i class="fa fa-info-circle"></i> Modify this project by using the form below.
-    {{/if}}
-
-    {{#unless edit_mode}}
-        <i class="fa fa-info-circle"></i> Create a new VDJServer project by filling out the form below.
-    {{/unless}}
+<div class="create-form-text row">
+        <div class="alert alert-info col-md-7">
+            <i class="fa fa-info-circle"></i> Create a new VDJServer project by filling out the form below.
+        </div>
 </div>
 
 <script>
@@ -57,12 +49,12 @@
                 </div>
             </div>
 
-            <div class="form-group col-md-8">
+            <div class="form-group col-md-10">
                 <label>Project/Study Description
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_description"}}}
                 </label>
-                <textarea class="form-control" name="study_description" id="description" rows="25">{{value.study_description}}</textarea>
+                <textarea class="form-control" name="study_description" id="description" rows="15">{{value.study_description}}</textarea>
             </div>
 
             <div class="form-group col-md-8">
@@ -304,22 +296,11 @@
                 </div>
             </div>
         </div>
-    <div class="form-row actions float-md-right">
+    <div class="actions ml-auto">
         <div class="input-group">
             <input type="reset" value ="Cancel" class="col-md-3 btn btn-cancel" id="cancel-project">
 
-            <!-- Once edits are saved, show edit button to resume editing -->
-            <!-- {{#unless edit_mode}}
-                <input type="submit" value="Edit" class="col-md-4 btn btn-edit" id="edit-project">
-            {{/unless}} -->
-
-            {{#unless edit_mode}}
             <input type="submit" value="{{#if edit_mode}} Save Project {{else}} Create Project {{/if}}" class="col-md-4 btn btn-create" id="create-new-project">
-            {{/unless}}
-
-            {{#if edit_mode}}
-            <input type="submit" value="Save Project" class="col-md-4 btn btn-save" id="save-project">
-            {{/if}}
         </div>
     </div>
 </form>
