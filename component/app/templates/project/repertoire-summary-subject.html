@@ -3,17 +3,12 @@
 - One line with subject id, sex, age, ...
 -->
 
-<div class="row">
-    <div class="col-md-4 actions">
-        <form class="form-inline">
-            <label for="subject_id" class="control-label">Subject</label>
-            <input type="text" class="col-md-1 form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="subject_id" id="subject_id" placeholder="Subject ID" value="{{value.subject_id}}" readonly>
+    <td>&nbsp;</td>
+    <td>
+        <label for="subject_id" class="control-label">Subject</label>
 
-            <input type="text" class="col-md-1 form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="age" id="age" value="{{value.age_unit.label}}" readonly>
-            <input type="text" class="col-md-1 form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="sex" id="sex" value="{{value.sex}}" readonly>
+        <input type="text" class="form-control-plaintext" name="subject_id" id="subject_id" placeholder="Subject ID" value="{{value.subject_id}}" readonly>
 
-        </form>
-    </div>
-</div>
-
-
+        <input type="text" class="form-control-plaintext" name="age" id="age" value="{{value.age_unit.label}}" readonly>
+        <input type="text" class="form-control-plaintext" name="sex" id="sex" value="{{value.sex}}" readonly>
+    </td>

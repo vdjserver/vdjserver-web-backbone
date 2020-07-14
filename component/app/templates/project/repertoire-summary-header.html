@@ -4,28 +4,17 @@
 - Expand/contract button, Edit and other buttons
 -->
 
-<div class="row">
-    <!-- Expand/contract button -->
-    <div class="col-md-1" id="rep-name">
+    <td>
+        <!-- Expand/contract button -->
         <a class="fa fa-chevron-up rotate" data-toggle="collapse" aria-expanded="false" aria-controls="details" id="show-details"></a>
-    </div>
+    </td>
+    <td><label for="repertoire_name" class="control-label">Name </label>
+    <input type="text" class="form-control-plaintext" name="repertoire_name" id="repertoire_name" placeholder="Repertoire Name" value="{{value.repertoire_name}}" readonly>
 
-    <div class="col-md-4 actions">
-        <form class="form-inline">
-            <label for="repertoire_name" class="control-label">Name</label>
-            <input type="text" class="col-md-2 form-control {{#if edit_mode}} form-control-plaintext {{/if}}" name="repertoire_name" id="repertoire_name" placeholder="Repertoire Name" value="{{value.repertoire_name}}" readonly>
-
-            <label for="repertoire_uuid" class="control-label">UUID</label>
-            <input type="text" class="col-md-2 form-control " name="repertoire_uuid" id="repertoire_uuid" value="{{uuid}}" readonly>
-        </form>
-    </div>
-
-    <!-- Repertoire Description -->
-    <div class="col-md-4 actions">
-        <button type="button" class="btn btn-warning show" id="edit-repertoire">Edit</button>
-        <button type="button" class="btn btn-success no-display" id="save-repertoire">Save</button>
-        <button type="button" class="btn btn-danger" id="copy-repertoire">Copy</button>
-    </div>
-</div>
-
-
+    <label for="repertoire_uuid" class="control-label">UUID </label>
+    <input type="text" class="form-control-plaintext" name="repertoire_uuid" id="repertoire_uuid" value="{{uuid}}" readonly></td>
+    <td>
+      <button type="button" class="btn btn-warning show" id="edit-repertoire">Edit</button>
+      <button type="button" class="btn btn-success no-display" id="save-repertoire">Save</button>
+      <button type="button" class="btn btn-danger" id="copy-repertoire">Copy</button>
+    </td>

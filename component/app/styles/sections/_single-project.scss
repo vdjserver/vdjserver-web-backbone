@@ -90,6 +90,10 @@ Repertoire Summary View
     display: none;
 }
 
+.collapse-arrow {
+    margin-right: 0.25em;
+}
+
 .collapse {
     -moz-transition: all .5s linear;
     -webkit-transition: all .5s linear;
@@ -119,6 +123,10 @@ Repertoire Summary View
     -moz-transform:rotate(180deg);
     -webkit-transform:rotate(180deg);
     transform:rotate(180deg);
+}
+
+#repertoire-summary-subject, #repertoire-summary-sample, #repertoire-summary-statistics {
+    margin-left: 5%;
 }
 
 /********************************************
