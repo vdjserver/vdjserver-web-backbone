@@ -3,45 +3,25 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
                 <h4 class="modal-title" id="modal-message-label">{{header}}</h4>
             </div>
             <div class="modal-body">
                 {{{body}}}
+                {{#if serverError}}
+                    <p>Send this information to the VDJServer Administrator with the Send Error Feedback button below.</p>
+                    <code>{{{serverErrorBody}}}</code>
+                {{/if}}
             </div>
             <div class="modal-footer">
-
-                {{#if successStyle}}
-                    <button
-                        type="button"
-                        id="confirmation-button"
-                        class="btn btn-success btn-block"
-                        data-dismiss="modal"
-                    >
-                        Ok
-                    </button>
-                {{else}}
-                    {{#if errorStyle}}
-                        <button
-                            type="button"
-                            id="confirmation-button"
-                            class="btn btn-danger btn-block"
-                            data-dismiss="modal"
-                        >
-                            Ok
-                        </button>
-                    {{else}}
-                        <button
-                            type="button"
-                            id="confirmation-button"
-                            class="btn btn-primary btn-block"
-                            data-dismiss="modal"
-                        >
-                            Ok
-                        </button>
-                    {{/if}}
+                {{#if cancelText}}
+                    <button type="button" id="{{cancelID}}" class="{{cancelClass}}" data-dismiss="modal">{{cancelText}}</button>
                 {{/if}}
-
+                {{#if confirmText}}
+                    <button type="button" id="{{confirmID}}" class="{{confirmClass}}">{{confirmText}}</button>
+                {{/if}}
+                {{#if serverError}}
+                    <button type="button" id="server-error" class="btn">Send Error Feedback</button>
+                {{/if}}
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
