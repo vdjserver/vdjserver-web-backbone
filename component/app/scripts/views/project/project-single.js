@@ -37,6 +37,8 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCol
 import Permissions from 'Scripts/collections/agave-permissions';
 import TenantUsers from 'Scripts/collections/agave-tenant-users';
 
+import ProjectOverView from 'Scripts/views/project/project-single-overview';
+
 // modal view for when the project is being created
 import mm_template from 'Templates/util/modal-message.html';
 var ModalMessage = Marionette.View.extend({
@@ -151,99 +153,6 @@ var AnalysesView = Marionette.View.extend({
     template: Handlebars.compile(analyses_template)
 });
 
-// Get User List Template
-import userList_template from 'Templates/project/user-list.html';
-
-var ProjectUserListView = Marionette.CollectionView.extend({
-    template: Handlebars.compile(userList_template),
-    tagName: 'table',
-    className: 'table manage-users',
-    initialize: function(parameters) {
-    this.childView = ProjectUserView;
-  }
-});
-
-// Users View
-import users_template from 'Templates/project/users.html';
-    var ProjectUserView = Marionette.View.extend({
-        template: Handlebars.compile(users_template),
-        tagName: 'tr',
-        className: 'user-row'
-    });
-
-// Project overview page
-// TODO: merge create.html with this
-import overview_template from 'Templates/project/project-overview.html';
-var ProjectOverView = Marionette.View.extend({
-    template: Handlebars.compile(overview_template),
-    regions: {
-        usersRegion: '#user-list-region'
-    },
-
-    initialize: function(parameters) {
-
-        // our controller
-        if (parameters) {
-            if (parameters.controller) this.controller = parameters.controller;
-            if (parameters.model) this.model = parameters.model;
-        }
-
-        this.showChildView('usersRegion', new LoadingUsersView({}));
-
-        var that = this;
-        this.controller.projectUserListPromise.then(function() {
-            that.updateUserList();
-        });
-    },
-
-    updateUserList() {
-        var view = new ProjectUserListView({controller: this.controller, collection: this.controller.projectUserList});
-        this.showChildView('usersRegion', view);
-    },
-
-    templateContext() {
-        return {
-            // if edit mode is false, then fields should be read-only
-            edit_mode: false,
-
-            // pass as object
-            airr_schema: this.model.airr_schema,
-
-            // pass as string
-            airr_string: JSON.stringify(this.model.airr_schema, null, 2),
-        }
-    }
-});
-
-// Edit Project
-import edit_template from 'Templates/project/project-overview.html';
-var EditProjectView = Marionette.View.extend({
-    template: Handlebars.compile(edit_template),
-    templateContext() {
-        return {
-            // if edit mode is true, then fields should be editable
-            edit_mode: true,
-
-            // pass as object
-            airr_schema: this.model.airr_schema,
-
-            // // pass as string
-            // airr_string: JSON.stringify(this.model.airr_schema, null, 2),
-
-            // label array
-            keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
-
-            // label object
-            keywords_object: {
-                'contains_single_cell': 'Single Cell',
-                'contains_ig': 'Ig',
-                'contains_paired_chain': 'Paired Chain',
-                'contains_tcr': 'TCR'
-            }
-        }
-    }
-});
-
 // Steps through the metadata entry process
 import entry_steps_template from 'Templates/project/create-repertoire-steps.html';
 var CreateRepertoireStepsView = Marionette.View.extend({
@@ -302,35 +211,6 @@ var AddNucleicView = Marionette.View.extend({
     template: Handlebars.compile(addNucleic_template)
 });
 
-// Handlebar playground
-// moved the contains helper to handlebars-utilities
-
-import hbp_template from 'Templates/project/playground.html';
-var PlaygroundView = Marionette.View.extend({
-    template: Handlebars.compile(hbp_template),
-    templateContext() {
-        return {
-            // pass as object
-            airr_schema: this.model.airr_schema,
-
-            // pass as string
-            airr_string: JSON.stringify(this.model.airr_schema, null, 2),
-
-            // label array
-            keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
-
-            // label object
-            keywords_object: {
-                'contains_single_cell': 'Single Cell',
-                'contains_ig': 'Ig',
-                'contains_paired_chain': 'Paired Chain',
-                'contains_tcr': 'TCR'
-            }
-        };
-    }
-
-});
-
 // Repertoire view
 import RepertoireController from 'Scripts/views/project/repertoire-controller';
 
@@ -370,31 +250,6 @@ var SingleProjectView = Marionette.View.extend({
         // setting event for Overview page
         'click #overview-tab': function() {
             this.controller.showProjectOverview();
-        },
-
-        'click #edit-project': function() {
-            this.controller.showEditProject();
-        },
-
-        'click #playground': function() {
-            this.showPlayground();
-        },
-
-        'click #save-edit-project': function(e) {
-            this.saveEditProject(e);
-        },
-
-        'click #revert-edit-changes': function() {
-            this.revertEditChanges();
-            this.controller.showProjectOverview();
-        },
-
-        'click #archive-project': function() {
-            this.archiveProject();
-        },
-
-        'click #archive-project-yes': function() {
-            this.archiveProjectYes();
         },
 
         //
@@ -481,23 +336,9 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('summaryRegion', this.summaryView);
     },
 
-    // populate the user list in the project overview
-    updateUserList() {
-        // console.log('updateUserList');
-        // TODO:
-
-        // this.usersView = new ProjectUserListView({controller: this.controller, collection: this.controller.projectUserList});
-        // this.showChildView('usersRegion', this.usersView);
-    },
-
     // show a loading view, used while fetching the data
     showLoading() {
         this.showChildView('detailRegion', new LoadingView({}));
-    },
-
-    // show a quick loading view while getting users
-    showLoadingUsers() {
-        this.showChildView('detailRegion', new LoadingUsersView({}));
     },
 
     //
@@ -507,13 +348,6 @@ var SingleProjectView = Marionette.View.extend({
     {
         this.getRegion('stepsRegion').empty();
         this.detailView = new ProjectOverView({model: project, controller: this.controller});
-        this.showChildView('detailRegion', this.detailView);
-    },
-
-    showEditProject(project) {
-        console.log("edit page view");
-        this.getRegion('stepsRegion').empty();
-        this.detailView = new EditProjectView({model: project});
         this.showChildView('detailRegion', this.detailView);
     },
 
@@ -605,117 +439,6 @@ var SingleProjectView = Marionette.View.extend({
         this.detailView = new AddRepGroupView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
-
-    showPlayground() {
-        this.detailView = new PlaygroundView({model: this.model});
-        this.showChildView('detailRegion', this.detailView);
-    },
-
-    saveEditProject(e) {
-        console.log('saving edits');
-        e.preventDefault();
-        // actually save the edits
-
-        // pull data out of form and put into model
-        var data = Syphon.serialize(this);
-
-        // manually hack the study_type until we have ontologies implemented
-        data['study_type'] = null;
-        this.model.setAttributesFromData(data);
-        console.log(this.model);
-        console.log("this is the data that is submitted: " + data);
-
-        // display a modal while the project is being created
-        this.modalState = 'save';
-        var message = new MessageModel({
-          'header': 'Project Saved',
-          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Project Saved</p>'
-        });
-
-        // the app controller manages the modal region
-        var view = new ModalMessage({model: message});
-        App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
-        $('#modal-message').modal('show');
-
-        console.log(message);
-    },
-
-    // project creation request is sent to server after the modal is shown
-    onShownModal(context) {
-        console.log('create: Show the modal');
-
-        // use modal state variable to decide
-        console.log(context.modalState);
-        if (context.modalState == 'save') {
-
-            // save the model
-            console.log(context.model);
-            context.model.save()
-            .done(function() {
-                context.modalState = 'pass';
-                $('#modal-message').modal('hide');
-                console.log("create pass");
-                console.log(context.model);
-            })
-            .fail(function(error) {
-                // save failed so change state, hide the current modal
-                console.log(error);
-                context.modalState = 'fail';
-                $('#modal-message').modal('hide');
-
-                // prepare a new modal with the failure message
-                var body = '<p>Server returned error code: ' + error.status + ' ' + error.statusText + '<p>';
-                try {
-                    // make the JSON pretty
-                    var t = JSON.parse(error.responseText);
-                    body += '<pre>' + JSON.stringify(t,null,2) + '</pre>';
-                } catch (e) {
-                    // if response is not JSON, stick in the raw text
-                    body += '<pre>' + error.responseText + '</pre>';
-                }
-                var message = new MessageModel({
-                    'header': 'Project Creation',
-                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Project creation failed!</div><p>Please submit the error below to the VDJServer Administrator.' + '<code>' + body + '</code>'
-                });
-
-                var view = new ModalMessageConfirm({model: message});
-                App.AppController.startModal(view, null, null, null);
-                $('#modal-message').modal('show');
-
-                console.log("create fail");
-            });
-        } else if (context.modalState == 'fail') {
-          // if login failed, then we are showing the fail modal
-      }
-    },
-
-    onHiddenModal(context) {
-        console.log('create: Hide the modal');
-        if (context.modalState == 'pass') {
-            // create passed so route to the project view
-            App.router.navigate('project/' + context.model.get('uuid'), {trigger: false});
-            context.controller.showProjectOverview(context.model.get('uuid'), null, true);
-        } else if (context.modalState == 'fail') {
-            console.log("show fail modal");
-            // failure modal will automatically hide when user clicks OK
-        }
-    },
-
-    revertEditChanges() {
-        console.log("changes cleared");
-    },
-
-    archiveProject() {
-        console.log("Archive Project button clicked");
-    },
-
-    archiveProjectYes() {
-        console.log("Archive Project Confirmed: Yes");
-        // e.preventDefault();
-
-        // this.set('name', 'deletedProject');
-        // return this.save();
-    }
 
 });
 
@@ -839,10 +562,6 @@ SingleProjectController.prototype = {
                 that.projectUserList = userList;
                 that.allUsersList = allUsers;
             })
-            .then(function() {
-                // update the project summary
-                that.projectView.updateUserList();
-            })
             .fail(function(error) {
                 console.log(error);
             });
@@ -857,21 +576,6 @@ SingleProjectController.prototype = {
         this.projectView.updateSummary();
         this.projectView.showProjectOverview(this.model);
     },
-
-    showEditProject() {
-        console.log("showEditProject");
-        this.page = 'edit';
-        App.router.navigate('project/' + this.model.get('uuid') + '/edit', {trigger: false});
-        this.projectView.showEditProject(this.model);
-    },
-
-    // showSaveProject() {
-    //     console.log("showSaveProject");
-    //
-    //     // this.page = 'overview';
-    //     // App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
-    //     // this.projectView.showProjectOverview(this.model);
-    // },
 
     showProjectRepertoires() {
         this.page = 'repertoire';
@@ -900,19 +604,6 @@ SingleProjectController.prototype = {
             that.repertoireController = new RepertoireController(that);
             that.projectView.showProjectRepertoires(that.repertoireController);
         }
-    },
-
-    showProjectUsers() {
-        // show loading first
-        that.projectView.showLoadingUsers();
-
-        // receive the lazy load promise
-        this.projectUserListPromise.then(function() {
-            // display the users
-            this.projectView.showProjectUsers();
-        })
-
-
     },
 
     showProjectGroups() {

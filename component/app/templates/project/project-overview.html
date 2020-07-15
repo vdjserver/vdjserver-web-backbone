@@ -108,42 +108,7 @@
             </div>
 
             <div class="row overview-footer">
-                <div class="col-md-4 overview-summary-details">
-                    <div class="overview-item">
-                        <span class="details">Data Collector Name:</span>
-                        {{#unless edit_mode}}
-                            {{value.collected_by}}
-                        {{/unless}}
-
-                    {{#if edit_mode}}
-                        <input type="text" class="form-control" name="collectedby_name" id="collectedby_name" required value="{{ value.collected_by }}">
-                    {{/if}}
-                    </div>
-
-                    <div class="overview-item">
-                        <span class="details">Data Collector Address:</span>
-                        {{#unless edit_mode}}
-                            {{value.collected_by}}
-                        {{/unless}}
-
-                    {{#if edit_mode}}
-                        <input type="email" class="form-control" name="collectedby_address" id="collectedby_address" required value="{{ value.collected_by }}">
-                    {{/if}}
-                    </div>
-
-                    <div class="overview-item">
-                        <span class="details">Contact Name:</span>
-                        {{#unless edit_mode}}
-                            {{value.submitted_by}}
-                        {{/unless}}
-
-                        {{#if edit_mode}}
-                            <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" required value="{{ submitted_by }}">
-                        {{/if}}
-                    </div>
-                </div>
-
-                <div class="col-md-4 overview-summary-details">
+                <div class="col-md-8 overview-summary-details">
                     <div class="overview-item">
                         <span class="details">Lab Name/Principal Investigator (PI):</span><br />
                         {{#unless edit_mode}}
@@ -165,39 +130,27 @@
                             <input type="text" class="form-control" name="lab_address" id="lab_address" required value="{{ value.lab_address }}">
                         {{/if}}
                     </div>
-                </div>
-                <div class="col-md-4 overview-summary-details">
+
                     <div class="overview-item">
-                        <span class="details">Data Submitter Name:</span>
+                        <span class="details">Data Collector Name, Email and Address:</span>
                         {{#unless edit_mode}}
-                            {{value.submittedby_name}}
+                            {{value.collected_by}}
                         {{/unless}}
 
-                        {{#if edit_mode}}
-                            <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" required value="{{ value.submittedby_name }}">
-                        {{/if}}
+                    {{#if edit_mode}}
+                        <input type="text" class="form-control" name="collected_by" id="collected_by" required value="{{ value.collected_by }}">
+                    {{/if}}
                     </div>
 
                     <div class="overview-item">
-                        <span class="details">Data Submitter Email:</span>
+                        <span class="details">Data Submitter Name, Email and Address:</span>
                         {{#unless edit_mode}}
-                            {{value.submittedby_email}}
+                            {{value.submitted_by}}
                         {{/unless}}
 
-                        {{#if edit_mode}}
-                            <input type="text" class="form-control" name="submittedby_email" id="submittedby_email" required value="{{ value.submittedby_email }}">
-                        {{/if}}
-                    </div>
-
-                    <div class="overview-item">
-                        <span class="details">Data Submitter Address:</span>
-                        {{#unless edit_mode}}
-                            {{value.submittedby_address}}
-                        {{/unless}}
-
-                        {{#if edit_mode}}
-                            <input type="text" class="form-control" name="submittedby_address" id="submittedby_address" required value="{{ value.submittedby_address }}">
-                        {{/if}}
+                    {{#if edit_mode}}
+                        <input type="text" class="form-control" name="submitted_by" id="submitted_by" required value="{{ value.submitted_by }}">
+                    {{/if}}
                     </div>
                 </div>
             </div>
@@ -245,17 +198,4 @@
                     </div>
                 </div>
              </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <h2>Users</h2>
-                    <button type="button" class="btn btn-create float-md-right" id="add-project-user">
-                        <i class="fa fa-plus" aria-hidden="true"></i> Add User
-                    </button>
-            </div>
-        </div>
-        <div class="row">
-            <div id="user-list-region" class="col-md-12">
-            </div>
         </div>
