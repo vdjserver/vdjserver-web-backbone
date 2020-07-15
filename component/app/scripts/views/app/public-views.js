@@ -28,20 +28,7 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import MessageModel from 'Scripts/models/message';
-
-// login modal view
-import mm_template from 'Templates/util/modal-message.html';
-var ModalMessage = Marionette.View.extend({
-    template: Handlebars.compile(mm_template),
-    region: '#modal'
-});
-
-// login failure modal view
-import mmc_template from 'Templates/util/modal-message-confirm.html';
-var ModalMessageConfirm = Marionette.View.extend({
-    template: Handlebars.compile(mmc_template),
-    region: '#modal'
-});
+import ModalView from 'Scripts/views/utilities/modal-view';
 
 // login view
 import login_template from 'Templates/app/login.html';
@@ -83,7 +70,7 @@ export default Marionette.View.extend({
           'body':   '<p>Please wait while we authenticate you...</p>'
         });
 
-        var view = new ModalMessage({model: message});
+        var view = new ModalView({model: message});
         App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
         $('#modal-message').modal('show');
 
@@ -151,12 +138,13 @@ export default Marionette.View.extend({
             // prepare a new modal with the failure message
             var message = new MessageModel({
                 'header': 'VDJServer Login',
-                'body':   '<p>Login failed...</p>'
+                'body':   '<p>Login failed...</p>',
+                cancelText: 'Ok'
             });
 
             // no need to handle show/hide for failure message
             // the failure message modal is automatically hidden when user clicks OK
-            var view = new ModalMessageConfirm({model: message});
+            var view = new ModalView({model: message});
             App.AppController.startModal(view, null, null, null);
             $('#modal-message').modal('show');
         }
