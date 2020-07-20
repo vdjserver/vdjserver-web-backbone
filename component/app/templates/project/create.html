@@ -89,7 +89,7 @@
                 </label>
                 <textarea class="form-control" name="grants" id="grants" rows="4" required>{{ value.grants }}</textarea>
                 <div class="invalid-feedback">
-                  Please enter Grant information.
+                  Please list the Grants for this project.
                 </div>
             </div>
 
@@ -201,8 +201,11 @@
                   Please enter a Data Collector Address.
                 </div>
             </div>
+        </div>
 
-            <div class="form-group col-md-5">
+        <div class="labInfo">
+            <h2 class="form-section">Lab / Principal Investigator Contact Information</h2>
+            <div class="form-group col-md-7">
                 <label>
                     <span class="required">
                         <!-- Tooltip -->
@@ -216,11 +219,11 @@
                 </label>
                 <input type="text" class="form-control" name="lab_name" id="lab_name" required value="{{ value.lab_name }}">
                 <div class="invalid-feedback">
-                  Please enter Lab/Principal Investigator Name.
+                  Please enter Lab Name / Principal Investigator (PI).
                 </div>
             </div>
 
-            <div class="form-group col-md-5">
+            <div class="form-group col-md-7">
                 <label>
                     <span class="required">
                         <!-- Tooltip -->

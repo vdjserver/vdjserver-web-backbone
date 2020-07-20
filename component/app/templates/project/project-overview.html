@@ -19,6 +19,16 @@
 
                 <div class="col-md-6 overview-details">
                     <div class="overview-item">
+                        <span class="details">Study ID:</span>
+                        {{#unless edit_mode}}
+                            {{value.study_id}}
+                        {{/unless}}
+
+                        {{#if edit_mode}}
+                            <input type="text" class="form-control col-md-7" name="study_id" id="study_id" value="{{value.study_id}}" required>
+                        {{/if}}
+                    </div>
+                    <div class="overview-item">
                         <span class="details">Study Type:<span>
                         {{#unless edit_mode}}
                             {{value.study_type.x-airr}}
@@ -76,17 +86,6 @@
                         {{/if}}
                     </div>
 
-                    <div class="overview-item">
-                        <span class="details">NCBI:</span>
-                        {{#unless edit_mode}}
-                            {{value.ncbi_bioproject}}
-                        {{/unless}}
-
-                        {{#if edit_mode}}
-                            <input type="text" class="form-control" name="study_id" id="NCBI" value="{{value.ncbi_bioproject}}" required>
-                        {{/if}}
-                    </div>
-
                     <!-- <div class="overview-item">
                         <span class="details">Funding Agency:</span>
                         {{#unless edit_mode}}
@@ -110,13 +109,13 @@
             <div class="row overview-footer">
                 <div class="col-md-8 overview-summary-details">
                     <div class="overview-item">
-                        <span class="details">Lab Name/Principal Investigator (PI):</span><br />
+                        <span class="details">Lab Name/Principal Investigator (PI): </span>
                         {{#unless edit_mode}}
                             {{value.lab_name}}
                         {{/unless}}
 
                         {{#if edit_mode}}
-                            <input type="text" class="form-control" name="lab_name" id="lab_name" required value="{{ value.lab_name }}">
+                            <input type="text" class="form-control col-md-6" name="lab_name" id="lab_name" required value="{{ value.lab_name }}">
                         {{/if}}
                     </div>
 
@@ -127,7 +126,7 @@
                         {{/unless}}
 
                         {{#if edit_mode}}
-                            <input type="text" class="form-control" name="lab_address" id="lab_address" required value="{{ value.lab_address }}">
+                            <input type="text" class="form-control col-md-7" name="lab_address" id="lab_address" required value="{{ value.lab_address }}">
                         {{/if}}
                     </div>
 

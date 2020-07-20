@@ -17,7 +17,7 @@ $(document).ready(function() {
 
     // Delete User from a Project
 
-            // When checkbox is clicked, show delete and edit buttons
+    // When checkbox is clicked, show delete and edit buttons
 
     // function manageusers() {
     //     if ($('input#user-select').is('checked')) {

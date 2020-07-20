@@ -57,21 +57,25 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCol
 import summary_header_template from 'Templates/project/repertoire-summary-header.html';
 var RepertoireSummaryHeaderView = Marionette.View.extend({
     template: Handlebars.compile(summary_header_template),
+    tagName: "tr"
 });
 
 import summary_subject_template from 'Templates/project/repertoire-summary-subject.html';
 var RepertoireSummarySubjectView = Marionette.View.extend({
     template: Handlebars.compile(summary_subject_template),
+    tagName: "tr"
 });
 
 import summary_sample_template from 'Templates/project/repertoire-summary-sample.html';
 var RepertoireSummarySampleView = Marionette.View.extend({
     template: Handlebars.compile(summary_sample_template),
+    tagName: "tr"
 });
 
 import summary_stats_template from 'Templates/project/repertoire-summary-statistics.html';
 var RepertoireSummaryStatisticsView = Marionette.View.extend({
     template: Handlebars.compile(summary_stats_template),
+    tagName: "tr"
 });
 
 // Summary view for a single repertoire
