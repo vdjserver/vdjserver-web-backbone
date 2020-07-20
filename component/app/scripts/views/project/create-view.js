@@ -87,66 +87,59 @@ export default Marionette.View.extend({
         console.log('create-view: createNewProject');
         e.preventDefault();
 
-        // Currently validates regardless if there is an error or not. NOTE: Still submits the form
-
         $('.needs-validation').addClass('was-validated');
 
-        // Validation Function
-        // (function() {
-        //   console.log("form validation should work");
-        //   // 'use strict';
-        //     window.addEventListener('load', function() {
-        //   //
-        //   //   // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        //     var forms = document.getElementsByClassName('needs-validation');
-        //
-        //     // Loop over them and prevent submission
-        //
-        //     var validation = Array.prototype.filter.call(forms, function(form) {
-        //       form.addEventListener('submit', function(e) {
-        //        if (form.checkValidity() === false) {
-        //           e.preventDefault();
-        //           e.stopPropagation();
-        //           $('.needs-validation').addClass('was-validated');
-        //        }
-        //
-        //       }, false);
-        //    });
-        //   }, false);
-        // })();
+        // Fetch the form
+        var form = document.getElementsByClassName('needs-validation');
 
-        // pull data out of form and put into model
-        var data = Syphon.serialize(this);
-        // manually hack the study_type until we have ontologies implemented
-        data['study_type'] = null;
-        // concatenate collector info
-        var fields = [];
-        if (data['collectedby_name'].length > 0) fields.push(data['collectedby_name']);
-        if (data['collectedby_email'].length > 0) fields.push(data['collectedby_email']);
-        if (data['collectedby_address'].length > 0) fields.push(data['collectedby_address']);
-        data['collected_by'] = fields.join(', ');
+        console.log(form);
 
-        // concatenate submitter info
-        fields = [];
-        if (data['submittedby_name'].length > 0) fields.push(data['submittedby_name']);
-        if (data['submittedby_email'].length > 0) fields.push(data['submittedby_email']);
-        if (data['submittedby_address'].length > 0) fields.push(data['submittedby_address']);
-        data['submitted_by'] = fields.join(', ');
+        // Validate the form
+        form[0].addEventListener('submit', function(e) {
+            if (form[0].checkValidity() === false) {
+                console.log("form validation worked");
+                e.preventDefault();
+                e.stopPropagation();
 
-        this.model.setAttributesFromData(data);
-        console.log(this.model);
+                // display a modal letting the user know there are missing form fields?
+            }
 
-        // display a modal while the project is being created
-        this.modalState = 'create';
-        var message = new MessageModel({
-          'header': 'Project Creation',
-          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we create the new project...</p>'
+            form[0].addClass('was-validated');
+
+
+            // pull data out of form and put into model
+            var data = Syphon.serialize(this);
+            // manually hack the study_type until we have ontologies implemented
+            data['study_type'] = null;
+            // concatenate collector info
+            var fields = [];
+            if (data['collectedby_name'].length > 0) fields.push(data['collectedby_name']);
+            if (data['collectedby_email'].length > 0) fields.push(data['collectedby_email']);
+            if (data['collectedby_address'].length > 0) fields.push(data['collectedby_address']);
+            data['collected_by'] = fields.join(', ');
+
+            // concatenate submitter info
+            fields = [];
+            if (data['submittedby_name'].length > 0) fields.push(data['submittedby_name']);
+            if (data['submittedby_email'].length > 0) fields.push(data['submittedby_email']);
+            if (data['submittedby_address'].length > 0) fields.push(data['submittedby_address']);
+            data['submitted_by'] = fields.join(', ');
+
+            this.model.setAttributesFromData(data);
+            console.log(this.model);
+
+            // display a modal while the project is being created
+            this.modalState = 'create';
+            var message = new MessageModel({
+              'header': 'Project Creation',
+              'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we create the new project...</p>'
+            });
+
+            // the app controller manages the modal region
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
+            $('#modal-message').modal('show');
         });
-
-        // the app controller manages the modal region
-        var view = new ModalView({model: message});
-        App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
-        $('#modal-message').modal('show');
     },
 
     // handle save project event
