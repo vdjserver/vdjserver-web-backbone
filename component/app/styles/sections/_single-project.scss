@@ -126,8 +126,31 @@ Repertoire Summary View
     transform:rotate(180deg);
 }
 
-#repertoire-summary-subject, #repertoire-summary-sample, #repertoire-summary-statistics {
-    margin-left: 5%;
+.repertoire-actions {
+    float: right;
+}
+
+#repertoire-summary-header, #repertoire-expand-header {
+    padding-top: 2%;
+}
+
+#repertoire-summary-sample, #repertoire-exapnd-header {
+    padding-bottom: 2%;
+}
+
+ #repertoire-summary-statistics, #repertoire-expand-statistics {
+    padding-bottom: 3%;
+    border-bottom: 5px solid #e1e1e1;
+}
+
+.statistics-number, .statistics-name {
+    display: block;
+}
+
+#repertoire-summary-header, #repertoire-summary-sample, #repertoire-summary-statistics, #repertoire-summary-subject {
+    label {
+        font-weight: 500;
+    }
 }
 
 /********************************************

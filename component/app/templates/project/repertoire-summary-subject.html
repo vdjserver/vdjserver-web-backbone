@@ -3,12 +3,15 @@
 - One line with subject id, sex, age, ...
 -->
 
-    <td>&nbsp;</td>
-    <td>
+<div class="col-md-1">
+    &nbsp;
+</div>
+
+<div class="form-group col-md-11">
         <label for="subject_id" class="control-label">Subject</label>
 
         <input type="text" class="form-control-plaintext" name="subject_id" id="subject_id" placeholder="Subject ID" value="{{value.subject_id}}" readonly>
 
         <input type="text" class="form-control-plaintext" name="age" id="age" value="{{value.age_unit.label}}" readonly>
         <input type="text" class="form-control-plaintext" name="sex" id="sex" value="{{value.sex}}" readonly>
-    </td>
+</div>

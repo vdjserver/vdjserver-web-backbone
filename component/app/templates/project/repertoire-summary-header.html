@@ -4,17 +4,25 @@
 - Expand/contract button, Edit and other buttons
 -->
 
-    <th scope="row">
-        <!-- Expand/contract button -->
-        <a class="fa fa-chevron-up rotate" data-toggle="collapse" aria-expanded="false" aria-controls="details" id="show-details"></a>
-    </th>
-    <td><label for="repertoire_name" class="control-label">Name </label>
-    <input type="text" class="form-control-plaintext" name="repertoire_name" id="repertoire_name" placeholder="Repertoire Name" value="{{value.repertoire_name}}" readonly>
+<!-- Expand/contract button -->
+<div class="col-md-1">
+    <a class="fa fa-chevron-up rotate" data-toggle="collapse" aria-expanded="false" aria-controls="details" id="show-details"></a>
+</div>
 
+<div class="form-group col-md-3">
+    <label for="repertoire_name" class="control-label">Name </label>
+    <input type="text" class="form-control-plaintext" name="repertoire_name" id="repertoire_name" placeholder="Repertoire Name" value="{{value.repertoire_name}}" readonly>
+</div>
+
+<div class="form-group col-md-4">
     <label for="repertoire_uuid" class="control-label">UUID </label>
-    <input type="text" class="form-control-plaintext" name="repertoire_uuid" id="repertoire_uuid" value="{{uuid}}" readonly></td>
-    <td>
-      <button type="button" class="btn btn-warning show" id="edit-repertoire">Edit</button>
-      <button type="button" class="btn btn-success no-display" id="save-repertoire">Save</button>
-      <button type="button" class="btn btn-danger" id="copy-repertoire">Copy</button>
-    </td>
+    <input type="text" class="form-control-plaintext" name="repertoire_uuid" id="repertoire_uuid" value="{{uuid}}" readonly>
+</div>
+
+<div class="col-md-4">
+    <div class="repertoire-actions">
+        <button type="button" class="btn btn-warning show" id="edit-repertoire">Edit</button>
+        <button type="button" class="btn btn-success no-display" id="save-repertoire">Save</button>
+        <button type="button" class="btn btn-danger" id="copy-repertoire">Copy</button>
+    </div>
+</div>
