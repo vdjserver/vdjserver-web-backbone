@@ -419,3 +419,12 @@ RepertoireController.prototype = {
 
 };
 export default RepertoireController;
+
+// export default Marionette.CollectionView.extend({
+//     template: Handlebars.compile("<table class='table'><thead class='thead-light'><tr><th scope='col'></th><th scope='col'></th><th scope='col'>Actions</th>/tr></thead>"),
+//     tagName: 'table',
+//     className: 'table table-sm',
+//     initialize: function(parameters) {
+//     this.childView = RepertoireSummaryHeaderView;
+//   },
+// });
