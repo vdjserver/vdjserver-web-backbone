@@ -98,9 +98,14 @@ var RepertoireSummaryView = Marionette.View.extend({
     },
 
     initialize: function(parameters) {
+        // show in read-only mode by default
+        this.edit_mode = false;
+
         // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
+        }
 
         this.showChildView('headerRegion', new RepertoireSummaryHeaderView({model: this.model}));
 
@@ -118,6 +123,26 @@ var RepertoireSummaryView = Marionette.View.extend({
         this.showChildView('statisticsRegion', new RepertoireSummaryStatisticsView({model: this.model}));
     },
 
+    // setting up templateContext
+    templateContext() {
+        return {
+            // if edit mode is true, then fields should be editable
+            edit_mode: this.edit_mode,
+        }
+    },
+
+    events: {
+        'click #edit-repertoire': function() {
+            this.editRepertoire(true);
+        }
+    },
+
+    editRepertoire(edit_mode) {
+        console.log('editRepertoire function');
+
+        var view = new RepertoireMainView({controller: this.controller, model: this.model, edit_mode: edit_mode});
+        this.showChildView('listRegion', view);
+    }
 });
 
 //
@@ -312,7 +337,7 @@ var RepertoireMainView = Marionette.View.extend({
         'click #create-rep': 'createRepertoire',
 
         //'click #show-details': 'showDetails',
-        'click #edit-repertoire': 'editRepertoire',
+        //'click #edit-repertoire': 'editRepertoire',
         'click #save-repertoire': 'saveRepertoire',
     },
 
@@ -348,30 +373,31 @@ var RepertoireMainView = Marionette.View.extend({
         //this.showChildView('createRegion', view);
     },
 
-    editRepertoire(e) {
-        console.log('editRepertoire');
-        e.preventDefault();
+    // editRepertoire(edit_mode) {
+        // console.log('editRepertoire function');
+
+        // e.preventDefault();
 
         // $("#edit-repertoire").on("click", function() {
-            $(this).addClass("no-display");
-            $("#save-repertoire").removeClass("no-display");
-
-            $(this).closest("#save-repertoire").removeClass("no-display");
-
-            $(".repertoire-name").removeClass("no-display");
-            $(".repertoire-desc").removeClass("no-display");
-        // });
-    },
+        //     $(this).addClass("no-display");
+        //     $("#save-repertoire").removeClass("no-display");
+        //
+        //     $(this).closest("#save-repertoire").removeClass("no-display");
+        //
+        //     $(".repertoire-name").removeClass("no-display");
+        //     $(".repertoire-desc").removeClass("no-display");
+        // // });
+    // },
 
     saveRepertoire(e) {
         console.log('saveRepertoire');
         e.preventDefault();
 
         // $('#save-repertoire').on("click", function() {
-            $(this).addClass("no-display");
-            $("#edit-repertoire").removeClass("no-display");
-            $(".repertoire-name").addClass("no-display");
-            $(".repertoire-desc").addClass("no-display");
+            // $(this).addClass("no-display");
+            // $("#edit-repertoire").removeClass("no-display");
+            // $(".repertoire-name").addClass("no-display");
+            // $(".repertoire-desc").addClass("no-display");
         // });
     },
 });

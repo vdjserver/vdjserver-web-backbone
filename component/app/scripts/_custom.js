@@ -6,14 +6,14 @@ $(document).ready(function() {
 //
 
 // Click Edit Repertoire button
-     $(document).on("click", ".edit-repertoire", function() {
-        $(this).addClass("no-display");
-    });
-
-// Click Save Repertoire button
-    $(document).on("click", ".save-repertoire", function() {
-       $(this).addClass("no-display");
-    });
+//      $(document).on("click", ".edit-repertoire", function() {
+//         $(this).addClass("no-display");
+//     });
+//
+// // Click Save Repertoire button
+//     $(document).on("click", ".save-repertoire", function() {
+//        $(this).addClass("no-display");
+//     });
 
     // Delete User from a Project
 
@@ -41,9 +41,6 @@ $(document).ready(function() {
 
         $(this).find(".edit-project-user").toggleClass("no-display");
         $(this).find(".edit-project-user").toggleClass("show");
-
-        // $(".select").toggleClass("no-display");
-        // $(".select").toggleClass("show");
     });
 
     // Adding a New User to a Project
