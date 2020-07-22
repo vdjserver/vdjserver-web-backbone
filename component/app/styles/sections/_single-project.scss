@@ -14,6 +14,8 @@ Single Project Page
 
     h1 {
         margin-bottom: 2%;
+        font-size: 2.25rem;
+        font-weight: 400;
     }
 }
 
@@ -147,10 +149,38 @@ Repertoire Summary View
     display: block;
 }
 
-#repertoire-summary-header, #repertoire-summary-sample, #repertoire-summary-statistics, #repertoire-summary-subject {
+#repertoire-summary-header,
+#repertoire-summary-sample,
+#repertoire-summary-statistics,
+#repertoire-summary-subject,
+#repertoire-expand-header,
+#repertoire-expand-subject,
+#repertoire-expand-sample,
+#repertoire-expand-file,
+#repertoire-expand-statistics
+ {
     label {
         font-weight: 500;
     }
+}
+
+// input#repertoire_name.form-control, input#repertoire_uuid.form-control,
+// input#subject_id.form-control, input#age.form-control,
+// input#sex.form-control {
+//     margin-left: 3%;
+// }
+//
+// input#age.form-control {
+//     width: 40%;
+// }
+
+
+input#repertoire_name.form-control-plaintext,
+input#repertoire_uuid.form-control-plaintext,
+input#subject_id.form-control-plaintext, input#age.form-control-plaintext,
+input#sex.form-control-plaintext {
+    margin-left: 3%;
+    width: 80%;
 }
 
 /********************************************
@@ -184,4 +214,8 @@ User Management
 
 .btn-create {
     color: #FFFFFF !important;
+}
+
+.btn-copy {
+    color: #FFFFFF;
 }
