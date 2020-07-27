@@ -161,7 +161,7 @@ Repertoire Summary View
  {
 
     margin-bottom: 0 !important;
-     
+
     label {
         font-weight: 500;
     }
@@ -221,4 +221,10 @@ User Management
 
 .btn-copy {
     color: #FFFFFF;
+}
+
+.user-name-email {
+    input {
+        margin-bottom: 0.75em;
+    }
 }
