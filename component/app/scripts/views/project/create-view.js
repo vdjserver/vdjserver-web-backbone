@@ -87,59 +87,60 @@ export default Marionette.View.extend({
         console.log('create-view: createNewProject');
         e.preventDefault();
 
+        // trigger validation
         $('.needs-validation').addClass('was-validated');
 
         // Fetch the form
         var form = document.getElementsByClassName('needs-validation');
-
         console.log(form);
 
-        // Validate the form
-        form[0].addEventListener('submit', function(e) {
-            if (form[0].checkValidity() === false) {
-                console.log("form validation worked");
-                e.preventDefault();
-                e.stopPropagation();
+        // only a single validation form
+        if (form[0].checkValidity() === false) {
+            console.log("form validation worked");
 
-                // display a modal letting the user know there are missing form fields?
-            }
+            // scroll and focus to first invalid element
+            var errorElements = $(form).find(".form-control:invalid");
+            $('html, body').animate({
+                scrollTop: $(errorElements[0]).focus().offset().top - 50
+            }, 1000);
 
-            form[0].addClass('was-validated');
+            return;
+        }
 
+        // form passes validation
 
-            // pull data out of form and put into model
-            var data = Syphon.serialize(this);
-            // manually hack the study_type until we have ontologies implemented
-            data['study_type'] = null;
-            // concatenate collector info
-            var fields = [];
-            if (data['collectedby_name'].length > 0) fields.push(data['collectedby_name']);
-            if (data['collectedby_email'].length > 0) fields.push(data['collectedby_email']);
-            if (data['collectedby_address'].length > 0) fields.push(data['collectedby_address']);
-            data['collected_by'] = fields.join(', ');
+        // pull data out of form and put into model
+        var data = Syphon.serialize(this);
+        // manually hack the study_type until we have ontologies implemented
+        data['study_type'] = null;
+        // concatenate collector info
+        var fields = [];
+        if (data['collectedby_name'].length > 0) fields.push(data['collectedby_name']);
+        if (data['collectedby_email'].length > 0) fields.push(data['collectedby_email']);
+        if (data['collectedby_address'].length > 0) fields.push(data['collectedby_address']);
+        data['collected_by'] = fields.join(', ');
 
-            // concatenate submitter info
-            fields = [];
-            if (data['submittedby_name'].length > 0) fields.push(data['submittedby_name']);
-            if (data['submittedby_email'].length > 0) fields.push(data['submittedby_email']);
-            if (data['submittedby_address'].length > 0) fields.push(data['submittedby_address']);
-            data['submitted_by'] = fields.join(', ');
+        // concatenate submitter info
+        fields = [];
+        if (data['submittedby_name'].length > 0) fields.push(data['submittedby_name']);
+        if (data['submittedby_email'].length > 0) fields.push(data['submittedby_email']);
+        if (data['submittedby_address'].length > 0) fields.push(data['submittedby_address']);
+        data['submitted_by'] = fields.join(', ');
 
-            this.model.setAttributesFromData(data);
-            console.log(this.model);
+        this.model.setAttributesFromData(data);
+        console.log(this.model);
 
-            // display a modal while the project is being created
-            this.modalState = 'create';
-            var message = new MessageModel({
-              'header': 'Project Creation',
-              'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we create the new project...</p>'
-            });
-
-            // the app controller manages the modal region
-            var view = new ModalView({model: message});
-            App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
-            $('#modal-message').modal('show');
+        // display a modal while the project is being created
+        this.modalState = 'create';
+        var message = new MessageModel({
+          'header': 'Project Creation',
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we create the new project...</p>'
         });
+
+        // the app controller manages the modal region
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
+        $('#modal-message').modal('show');
     },
 
     // handle save project event

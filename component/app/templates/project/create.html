@@ -28,7 +28,7 @@
                     {{{FieldHelpPopover "Study" "study_id"}}}
                 </label>
 
-                <input type="text" class="form-control" name="study_id" id="NCBI" value="{{value.study_id}}" required>
+                <input type="text" class="form-control" name="study_id" id="NCBI" value="{{value.study_id}}">
             </div>
 
             <div class="form-group col-md-8">
@@ -69,7 +69,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "inclusion_exclusion_criteria"}}}
                 </label>
-                <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" placeholder="Include: Clinical P. falciparum infection; Exclude: Seropositive for HIV" rows="5" required> {{ inclusion_exclusion_criteria }}</textarea>
+                <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" placeholder="Include: Clinical P. falciparum infection; Exclude: Seropositive for HIV" rows="5"> {{ inclusion_exclusion_criteria }}</textarea>
                 <div class="invalid-feedback">
                   Please enter Inclusion/Exclusion Criteria.
                 </div>
@@ -87,7 +87,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "grants"}}}
                 </label>
-                <textarea class="form-control" name="grants" id="grants" rows="4" required>{{ value.grants }}</textarea>
+                <textarea class="form-control" name="grants" id="grants" rows="4">{{ value.grants }}</textarea>
                 <div class="invalid-feedback">
                   Please list the Grants for this project.
                 </div>
@@ -117,7 +117,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_type"}}}
                 </label>
-                <select class="form-control" required>
+                <select class="form-control">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -139,7 +139,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "pub_ids"}}}
                 </label>
-                <input type="text" class="form-control" name="pub_ids" id="publications" required value="{{ value.pub_ids }}">
+                <input type="text" class="form-control" name="pub_ids" id="publications" value="{{ value.pub_ids }}">
                 <div class="invalid-feedback">
                   Please enter Publications.
                 </div>
@@ -160,7 +160,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "collected_by"}}}
                 </label>
-                <input type="text" class="form-control" name="collectedby_name" id="collectedby_name" required value="{{ value.collected_by }}">
+                <input type="text" class="form-control" name="collectedby_name" id="collectedby_name" value="{{ value.collected_by }}">
                 <div class="invalid-feedback">
                   Please enter Data Collector Name.
                 </div>
@@ -217,7 +217,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "lab_name"}}}
                 </label>
-                <input type="text" class="form-control" name="lab_name" id="lab_name" required value="{{ value.lab_name }}">
+                <input type="text" class="form-control" name="lab_name" id="lab_name" value="{{ value.lab_name }}">
                 <div class="invalid-feedback">
                   Please enter Lab Name / Principal Investigator (PI).
                 </div>
@@ -236,7 +236,7 @@
                     {{{FieldHelpPopover "Study" "lab_address"}}}
                 </label>
 
-                <input type="text" class="form-control" name="lab_address" id="lab_address" required value="{{ value.lab_address }}">
+                <input type="text" class="form-control" name="lab_address" id="lab_address" value="{{ value.lab_address }}">
                 <div class="invalid-feedback">
                   Please enter a Lab Address.
                 </div>
@@ -257,7 +257,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "submitted_by"}}}
                 </label>
-                <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" required value="{{ submitted_by }}">
+                <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" value="{{ submitted_by }}">
                 <div class="invalid-feedback">
                   Please enter Data Submitter Name.
                 </div>
