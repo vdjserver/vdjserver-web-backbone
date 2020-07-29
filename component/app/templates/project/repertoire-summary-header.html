@@ -4,25 +4,32 @@
 - Expand/contract button, Edit and other buttons
 -->
 
+<!-- Edit Mode: {{edit_mode}} -->
 <!-- Expand/contract button -->
 <div class="col-md-1">
     <a class="fa fa-chevron-up rotate" data-toggle="collapse" aria-expanded="false" aria-controls="details" id="show-details"></a>
 </div>
 
-<div class="form-group col-md-4 form-inline">
-    <label for="repertoire_name">Name </label>
+<div class="form-group col-md-4 form-inline rep-form-group">
+    <label for="repertoire_name">Name: </label>
     {{#unless edit_mode}}
-        <span>{{value.repertoire_name}}</span>
+        &nbsp; {{value.repertoire_name}}
     {{/unless}}
 
     {{#if edit_mode}}
-        <input type="text" name="repertoire_name" id="repertoire_name" class="form-control-plaintext" placeholder="Repertoire Name" value="{{value.repertoire_name}}" readonly>
+        <input type="text" name="repertoire_name" id="repertoire_name" class="form-control" placeholder="Repertoire Name" value="{{value.repertoire_name}}" readonly>
     {{/if}}
 </div>
 
-<div class="form-group col-md-5 form-inline">
-    <label for="repertoire_uuid">UUID </label>
-    <input type="text" name="repertoire_uuid" id="repertoire_uuid" class="form-control-plaintext" value="{{uuid}}" readonly>
+<div class="form-group col-md-5 form-inline rep-form-group">
+    <label for="repertoire_uuid">UUID: </label>
+    {{#unless edit_mode}}
+        &nbsp; {{uuid}}
+    {{/unless}}
+
+    {{#if edit_mode}}
+        <input type="text" name="repertoire_uuid" id="repertoire_uuid" class="form-control" value="{{uuid}}" readonly>
+    {{/if}}
 </div>
 
 <div class="col-md-2">

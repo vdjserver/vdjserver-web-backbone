@@ -6,7 +6,7 @@
         <form method="POST" role="form" id="editProject-form" class="needs-validation" name="editProject" novalidate>
             <div class="row">
                 <div class="col-md-6 overview-summary">
-                    <!-- Edit Mode: {{edit_mode}} -->
+                    Edit Mode: {{edit_mode}}
                     <h3>Project Summary</h3>
                     {{#unless edit_mode}}
                         <p>{{value.study_description}}</p>
@@ -199,7 +199,7 @@
             </div>
         </form>
 
-        <!-- Modal -->
+        <!-- Archive Project Modal -->
         <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="project-warning" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">

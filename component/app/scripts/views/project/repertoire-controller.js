@@ -140,8 +140,8 @@ var RepertoireSummaryView = Marionette.View.extend({
     editRepertoire(edit_mode) {
         console.log('editRepertoire function');
 
-        var view = new RepertoireMainView({controller: this.controller, model: this.model, edit_mode: edit_mode});
-        this.showChildView('listRegion', view);
+        var view = new RepertoireSummaryView({controller: this.controller, model: this.model, edit_mode: edit_mode});
+        this.showChildView('headerRegion', view);
     }
 });
 
