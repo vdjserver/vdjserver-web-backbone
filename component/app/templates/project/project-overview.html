@@ -44,6 +44,27 @@
                     </div>
 
                     <div class="overview-item">
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Study Type
+  </button>
+<div class="dropdown-menu">
+  <a class="dropdown-item" id="study-type">Clinical Study</a>
+  <a class="dropdown-item" id="study-type">Animal Study</a>
+  <div class="dropdown-divider"></div>
+  <form class="px-4 py-3">
+    <div class="form-group">
+      <label for="study-type-search">Search:</label>
+      <input type="input" class="form-control" id="study-type-search" placeholder="Search Study Type">
+    </div>
+  </form>
+  <a class="dropdown-item">Search Result 1</a>
+  <a class="dropdown-item">Search Result 2</a>
+</div>
+</div>
+                    </div>
+
+                    <div class="overview-item">
                         <span class="details">Inclusion/Exclusion Criteria:</span>
                         {{#unless edit_mode}}
                             {{value.inclusion_exclusion_criteria}}
