@@ -1,5 +1,5 @@
 /*****************************************************
-Single Project Page
+Single Project Overview Page
 *****************************************************/
 #project {
     padding: 0% 5%;
@@ -60,6 +60,16 @@ Single Project Page
 .overview-summary {
     border-right: 1px solid rgba(225, 225, 225, 0.45);
     padding-right: 5%;
+}
+
+#study-type-dropdown {
+    padding: 1em;
+}
+
+#study-type-dropdown.dropdown-menu.show {
+    will-change: unset !important;
+    -webkit-transform: none !important;
+    transform: none !important;
 }
 
 .overview-details {
