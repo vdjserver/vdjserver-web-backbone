@@ -35,11 +35,30 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
 import Permissions from 'Scripts/collections/agave-permissions';
 import TenantUsers from 'Scripts/collections/agave-tenant-users';
+import OntologySearch from 'Scripts/models/ontology-search';
+
+
+var OntologyResultsView = Marionette.View.extend({
+    template: Handlebars.compile('{{#each terms}}<a class="dropdown-item">{{this.label}}</a>{{/each}}'),
+
+//    templateContext() {
+//        var terms = [];
+//        if (this.model) terms = this.model.get('terms');
+//        return {
+//            //
+//            terms: JSON.stringify(terms),
+//        }
+//    },
+});
 
 // Edit Project
 import overview_template from 'Templates/project/project-overview.html';
 var ProjectSettingsView = Marionette.View.extend({
     template: Handlebars.compile(overview_template),
+
+    regions: {
+        resultsRegion: '#study-type-search-results'
+    },
 
     initialize: function(parameters) {
 
@@ -51,6 +70,17 @@ var ProjectSettingsView = Marionette.View.extend({
             if (parameters.controller) this.controller = parameters.controller;
             if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
         }
+
+        //var search = new OntologySearch({schema: 'Study', field: 'study_type'});
+        var view = new OntologyResultsView();
+        this.showChildView('resultsRegion', view);
+    },
+
+    events: {
+        // ontology search for study tupe
+        'keyup #study-type-search': function(e) {
+            this.searchStudyType(e);
+        },
     },
 
     templateContext() {
@@ -64,6 +94,9 @@ var ProjectSettingsView = Marionette.View.extend({
             // // pass as string
             // airr_string: JSON.stringify(this.model.airr_schema, null, 2),
 
+            //
+            terms: JSON.stringify(this.model.get('terms'), null, 2),
+
             // label array
             keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
 
@@ -75,7 +108,24 @@ var ProjectSettingsView = Marionette.View.extend({
                 'contains_tcr': 'TCR'
             }
         }
-    }
+    },
+
+    searchStudyType(e) {
+        var that = this;
+        console.log("search study type");
+        console.log(e.target.value);
+        if (e.target.value.length >= 3) {
+            var search = new OntologySearch({schema: 'Study', field: 'study_type', query: e.target.value});
+            search.performSearch()
+                .then(function(terms) {
+                    console.log("search results");
+                    console.log(terms);
+                    var view = new OntologyResultsView({model: search});
+                    that.showChildView('resultsRegion', view);
+                });
+        }
+    },
+
 });
 
 // Single user in the project user collection
@@ -158,8 +208,8 @@ var ProjectOverView = Marionette.View.extend({
             this.showProject(true);
         },
 
-        'click #playground': function() {
-            this.showPlayground();
+        'click #study-type': function(e) {
+            this.selectStudyType(e);
         },
 
         'click #save-edit-project': function(e) {
@@ -268,6 +318,12 @@ var ProjectOverView = Marionette.View.extend({
 
     revertEditChanges() {
         console.log("changes cleared");
+    },
+
+    selectStudyType(e) {
+        // TODO: how to know which one was selected
+        // We need to search in the ontology and get the id and label
+        console.log("study type selected");
     },
 
     archiveProject() {
