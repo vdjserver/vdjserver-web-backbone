@@ -57,7 +57,43 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCol
 import summary_header_template from 'Templates/project/repertoire-summary-header.html';
 var RepertoireSummaryHeaderView = Marionette.View.extend({
     template: Handlebars.compile(summary_header_template),
-    className: "row"
+    className: "row",
+    regions: {
+        editHeaderRegion: '#edit-mode-header'
+    },
+
+    initialize: function(parameters) {
+        // show in read-only mode by default
+        this.edit_mode = false;
+
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
+        }
+    },
+
+        // setting up templateContext
+        templateContext() {
+            return {
+                // if edit mode is true, then fields should be editable
+                edit_mode: this.edit_mode,
+            }
+        },
+
+        events: {
+            'click #edit-repertoire': function() {
+                this.editRepertoire(true);
+            }
+        },
+
+        editRepertoire(edit_mode) {
+            console.log('editRepertoire function from header');
+
+            var view = new RepertoireSummaryHeaderView({controller: this.controller, model: this.model, edit_mode: edit_mode});
+
+            this.showChildView('editHeaderRegion', view);
+        }
 });
 
 import summary_subject_template from 'Templates/project/repertoire-summary-subject.html';
@@ -91,6 +127,7 @@ var RepertoireSummaryView = Marionette.View.extend({
     // one region for sample summary
     // one region for repertoire statistics
     regions: {
+        editStatusRegion: '#edit-rep-status',
         headerRegion: '#repertoire-summary-header',
         subjectRegion: '#repertoire-summary-subject',
         sampleRegion: '#repertoire-summary-sample',
@@ -99,12 +136,12 @@ var RepertoireSummaryView = Marionette.View.extend({
 
     initialize: function(parameters) {
         // show in read-only mode by default
-        this.edit_mode = false;
+        // this.edit_mode = false;
 
         // our controller
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
-            if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
+            // if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
         }
 
         this.showChildView('headerRegion', new RepertoireSummaryHeaderView({model: this.model}));
@@ -125,23 +162,23 @@ var RepertoireSummaryView = Marionette.View.extend({
 
     // setting up templateContext
     templateContext() {
-        return {
-            // if edit mode is true, then fields should be editable
-            edit_mode: this.edit_mode,
-        }
+        // return {
+        //     // if edit mode is true, then fields should be editable
+        //     edit_mode: this.edit_mode,
+        // }
     },
 
     events: {
-        'click #edit-repertoire': function() {
-            this.editRepertoire(true);
-        }
+        // 'click #edit-repertoire': function() {
+        //     this.editRepertoire(true);
+        // }
     },
 
     editRepertoire(edit_mode) {
         console.log('editRepertoire function');
 
         var view = new RepertoireSummaryView({controller: this.controller, model: this.model, edit_mode: edit_mode});
-        this.showChildView('headerRegion', view);
+        this.showChildView('editStatusRegion', view);
     }
 });
 
@@ -229,71 +266,6 @@ var RepertoireExpandedView = Marionette.View.extend({
 // Repertoire edit views
 // this makes all data in the repertoire editable
 //
-import edit_header_template from 'Templates/project/repertoire-edit-header.html';
-var RepertoireEditHeaderView = Marionette.View.extend({
-    template: Handlebars.compile(edit_header_template),
-    className: "row"
-});
-
-import edit_subject_template from 'Templates/project/repertoire-edit-subject.html';
-var RepertoireEditSubjectView = Marionette.View.extend({
-    template: Handlebars.compile(edit_subject_template),
-    className: "row"
-});
-
-import edit_sample_template from 'Templates/project/repertoire-edit-sample.html';
-var RepertoireEditSampleView = Marionette.View.extend({
-    template: Handlebars.compile(edit_sample_template),
-    className: "row"
-});
-
-import edit_stats_template from 'Templates/project/repertoire-edit-statistics.html';
-var RepertoireEditStatisticsView = Marionette.View.extend({
-    template: Handlebars.compile(edit_stats_template),
-    className: "row"
-});
-
-import rep_edit_template from 'Templates/project/repertoire-edit.html';
-var RepertoireEditView = Marionette.View.extend({
-    template: Handlebars.compile(rep_edit_template),
-
-    // one region for editing any header content
-    // one region for editing subject summary
-    // one region for editing sample summary
-    // one region for editing repertoire file
-    // one region for editing repertoire statistics
-    regions: {
-        headerRegion: '#repertoire-edit-header',
-        subjectRegion: '#repertoire-edit-subject',
-        sampleRegion: '#repertoire-edit-sample',
-        fileRegion: '#repertoire-edit-file',
-        statisticsRegion: '#repertoire-edit-statistics'
-    },
-
-    initialize: function(parameters) {
-        // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
-
-        this.showChildView('headerRegion', new RepertoireEditHeaderView({model: this.model}));
-
-        // get the subject for this repertoire
-        var value = this.model.get('value');
-        var subjectList = this.controller.getSubjectList();
-        var subject = subjectList.get(value['subject']['vdjserver_uuid']);
-        this.showChildView('subjectRegion', new RepertoireEditSubjectView({model: subject}));
-
-        // TODO: get the samples for this repertoire
-        // samples is a collection of models
-        this.showChildView('sampleRegion', new RepertoireEditSampleView());
-
-        // get file for this repertoire
-
-        // get the repertoire statistics
-        this.showChildView('statisticsRegion', new RepertoireEditStatisticsView({model: this.model}));
-    },
-
-});
 
 //
 // Container view for a repertoire
@@ -514,12 +486,3 @@ RepertoireController.prototype = {
 
 };
 export default RepertoireController;
-
-// export default Marionette.CollectionView.extend({
-//     template: Handlebars.compile("<table class='table'><thead class='thead-light'><tr><th scope='col'></th><th scope='col'></th><th scope='col'>Actions</th>/tr></thead>"),
-//     tagName: 'table',
-//     className: 'table table-sm',
-//     initialize: function(parameters) {
-//     this.childView = RepertoireSummaryHeaderView;
-//   },
-// });
