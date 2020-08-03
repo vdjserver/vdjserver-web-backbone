@@ -10,4 +10,239 @@
 
 <div class="col-md-11">
     <h2>This is the expanded Subject view</h2>
+    <div id="subject_accordion">
+        <div class="card">
+            <div class="card-header" id="subject_heading">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#editSubject_collapse" aria-expanded="true" aria-controls="editSubject_collapse">
+                      Subject Metadata
+                    </button>
+                  </h5>
+            </div>
+            <div id="editSubject_collapse" class="collapse show" aria-labelledby="subject_heading" data-parent="#subject_accordion">
+                <div class="card-body">
+                    <form method="post" role="form" id="editSubject-form" class="needs-validation" name="subject" novalidate>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>
+                                <span>
+                                    <!-- Tooltip -->
+                                </span>
+                                Subject ID
+                                <!-- Popover -->
+                            </label>
+                            <input type="text" class="form-control" name="subject_id" id="subject_id" placeholder="">
+                            <div class="invalid-feedback">
+                                Please enter a valid Subject ID.
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>
+                                <span>
+                                    <!-- Tooltip-->
+                                </span>
+                                Species
+                                <!-- Popover -->
+                            </label>
+                            <select class="custom-select" id="species" required>
+                              <option value="1">Human</option>
+                              <option value="2">Monkey</option>
+                              <option vale="3">Mouse</option>
+                            </select>
+                        </div>
+                        <!-- AIRR Standards have Sex as a "string", so removing radio buttons-->
+                        <div class="col-md-1">
+                            <label>
+                                <span>
+                                    <!-- Tooltip -->
+                                </span>
+                                Sex
+                                <!-- Popover -->
+                            </label>
+                              <input type="text" class="form-control" name="sex" id="sex" placeholder="" required>
+                              <div class="invalid-feedback">
+                                  Please enter a valid Sex.
+                              </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label>
+                                <span>
+                                    <!-- Tooltip -->
+                                </span>
+                                Synthetic
+                                <!-- Popover -->
+                            </label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="synthetic-yes" id="synthetic-yes">
+                                <label class="form-check-label" for="synthetic-yes">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="synthetic-no" id="synthetic-no">
+                                <label class="form-check-label" for="synthetic-no">
+                                    No
+                                </label>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter a valid Synthetic.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                    <div class="col-md-2">
+                        <label>
+                            <span>
+                                <!-- Tooltip -->
+                            </span>
+                            Minimum Age
+                            <!-- Popover -->
+                        </label>
+                        <input type="text" class="form-control col-md-3" name="age_min" id="age_min" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid Minimum Age.
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label>
+                            <span>
+                                <!-- Tooltip -->
+                            </span>
+                            Maximum Age
+                            <!-- Popover -->
+                        </label>
+                        <input type="text" class="form-control col-md-3" name="age_max" id="age_max" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid Maximum Age.
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label>
+                            <span>
+                                <!-- Tooltip -->
+                            </span>
+                            Age Unit
+                            <!-- Popover -->
+                        </label>
+                        <input type="text" class="form-control" name="age_unit" id="age_unit" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid Age Unit.
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label>
+                            <span>
+                                <!-- Tooltip -->
+                            </span>
+                            Age Event
+                            <!-- Popover -->
+                        </label>
+                        <input type="text" class="form-control" name="age_event" id="age_event" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid Age Event.
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="row">
+                    <div class="col-md-4">
+                        <label>
+                            <span>
+                                <!-- Tooltip -->
+                            </span>
+                            Ancestry Population
+                            <!-- Popover -->
+                        </label>
+                        <input type="text" class="form-control" name="ancestry-population" id="ancestry-population" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid Ancestry Population.
+                        </div>
+                    </div>
+
+                    <!-- AIRR Standards require a string for "Ethnicity" -->
+                    <div class="col-md-4">
+                        <label>
+                            <span>
+                                <!-- Tooltip -->
+                            </span>
+                            Ethnicity
+                            <!-- Popover -->
+                        </label>
+                        <input type="text" class="form-control" name="ethnicity" id="ethnicity" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid Ethnicity.
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>
+                            <span>
+                                <!-- Tooltip-->
+                            </span>
+                            Race
+                            <!-- Popover -->
+                        </label>
+                        <input type="text" class="form-control" name="race" id="race" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid Race.
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="row">
+                    <div class="col-md-4">
+                        <label>
+                            <span>
+                                <!-- Tooltip -->
+                            </span>
+                            Strain Name
+                            <!-- Popover -->
+                        </label>
+                        <input type="text" class="form-control" name="strain_name" id="strain_name" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid Strain Name.
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>
+                            <span>
+                                <!-- Tooltip -->
+                            </span>
+                            Linked Subjects
+                            <!-- Popover -->
+                        </label>
+                        <input type="text" class="form-control" name="linked_subjects" id="linked_subjects" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Please enter a valid Linked Subjects.
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>
+                            <span>
+                                <!-- Tooltip -->
+                            </span>
+                            Link Type
+                            <!-- Popover -->
+                        </label>
+                        <input type="text" class="form-control" name="link_type" id="link_type" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Please enter valid a Link Type.
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="footer-actions">
+                        <button type="button" class="btn btn-primary" id="saveEditSubject"><i class="fa fa-save"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
