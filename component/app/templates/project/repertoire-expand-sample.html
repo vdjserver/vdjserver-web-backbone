@@ -19,7 +19,7 @@
             </div>
             <div id="editSample_collapse" class="collapse" aria-labelledby="subject_heading" data-parent="#sample_accordion">
                 <div class="card-body">
-                    <form method="post" role="form" id="addSample-form" class="needs-validation" name="sample" novalidate>
+                    <form method="post" role="form" id="editSample-form" class="needs-validation" name="sample" novalidate>
                         <div class="row">
                             <div class="col-md-4">
                                 <label>
@@ -158,6 +158,539 @@
 
                         <div class="footer-actions">
                             <button type="button" class="btn btn-primary" id="saveEditSample"><i class="fa fa-save"></i> Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-1">
+    &nbsp;
+</div>
+
+<div class="col-md-11">
+    <!-- <h2>This is the expanded Cell Processing view</h2> -->
+    <div id="cell_accordion">
+        <div class="card">
+            <div class="card-header" id="cell_heading">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#editCell_collapse" aria-expanded="true" aria-controls="editCell_collapse">
+                      Cell Processing Metadata
+                    </button>
+                  </h5>
+            </div>
+            <div id="editCell_collapse" class="collapse" aria-labelledby="cell_heading" data-parent="#cell_accordion">
+                <div class="card-body">
+                    <form method="post" role="form" id="editCell-form" class="needs-validation" name="editCell" novalidate>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Cell Processing ID
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="cell_id" id="cell_id" placeholder="" required>
+                                <div class="invalid-feedback">
+                                    Please enter a valid cell processing ID.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Tissue Processing
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="tissue-processing" id="tissue-processing" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid tissue processing.
+                                </div>
+                            </div>
+
+                            <!-- Ontology -->
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Cell Subset
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="cell-subset" id="cell-subset" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid cell subset.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Cell Phenotype
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="cell-phenotype" id="cell-phenotype" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid cell phenotype.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Single Cell
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="single-cell" id="single-cell" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid single cell.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Cell Number
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="cell-number" id="cell-number" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid cell number.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Cells Per Reaction
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="cells-reaction" id="cells-reaction" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter valid cells per reaction.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Cell Storage
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="cell-storage" id="cell-storage" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter valid cell storage.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Cell Quality
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="cell-quality" id="cell-quality" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter valid cell quality
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Cell Isolation
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="cell-isolation" id="cell-isolation" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter valid cell isolation.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Cell Processing Protocol
+                                    <!-- Popover -->
+                                </label>
+                                <textarea class="form-control" name="cell_processing_protocol" id="cell_processing_protocol" placeholder="" rows="4"></textarea>
+                                <div class="invalid-feedback">
+                                    Please enter valid cell processing protocol.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer-actions">
+                            <button type="button" class="btn btn-primary" id="saveEditCell"><i class="fa fa-save"></i> Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-1">
+    &nbsp;
+</div>
+
+<div class="col-md-11">
+    <!-- <h2>This is the expanded Nucleic Acid view</h2> -->
+    <div id="nucleic_accordion">
+        <div class="card">
+            <div class="card-header" id="nucleic_heading">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#editNucleic_collapse" aria-expanded="true" aria-controls="editNucleic_collapse">
+                      Nucleic Acid Metadata
+                    </button>
+                  </h5>
+            </div>
+            <div id="editNucleic_collapse" class="collapse" aria-labelledby="nucleic_heading" data-parent="#nucleic_accordion">
+                <div class="card-body">
+                    <form method="post" role="form" id="editNucleic-form" class="needs-validation" name="editNucleic" novalidate>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Nucleic Acid Processing ID
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="nucleic_id" id="nucleic_id" placeholder="" required>
+                                <div class="invalid-feedback">
+                                    Please enter a valid nucleic acid processing ID.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Cell Processing UUID
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="cell-processing-ID" id="cell-processing-ID" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid cell processing uuid.
+                                </div>
+                            </div>
+
+                            <!-- Ontology -->
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    File Name UUID
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="file-UUID" id="file-UUID" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid File Name UUID.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Template Class
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="template-class" id="template-class" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid template class.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Template Quality
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="template-quality" id="template-quality" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid template quality.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Library Generation Method
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="library_generation_method" id="library_generation_method" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Library Generation Method.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Library Generation Protocol
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="library_generation_protocol" id="library_generation_protocol" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid library protocol.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Library Generation Kit Version
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="library_generation_kit_version" id="library_generation_kit_version" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Library Generation Kit Version.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    PCR Target Locus
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="pcr-locus" id="pcr-locus" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid PCR Target Locus.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Forward PCR Primer Target Location
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="forward_pcr_primer_target_location" id="forward_pcr_primer_target_location" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Forward PCR Primer Target Location.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Reverse PCR Primer Target Location
+                                    <!-- Popover -->
+                                </label>
+                                <textarea class="form-control" name="reverse_pcr_primer_target_location" id="reverse_pcr_primer_target_location" placeholder="" rows="4"></textarea>
+                                <div class="invalid-feedback">
+                                    Please enter a valid Reverse PCR Primer Target Location.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Complete Sequences
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="complete-sequences" id="complete-sequences" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter valid complete sequences.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Physical Linkage
+                                    <!-- Popover -->
+                                </label>
+                                <textarea class="form-control" name="physical_linkage" id="physical_linkage" placeholder="" rows="4"></textarea>
+                                <div class="invalid-feedback">
+                                    Please enter valid physical linkage.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Total Reads Passing QC Filter
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="total_reads_passing_qc_filter" id="total_reads_passing_qc_filter" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter valid Total Reads Passing QC Filter.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Sequencing Platform
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="sequencing_platform" id="sequencing_platform" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Sequencing Platform.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Read Length
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="read_length" id="read_length" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid read length.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Sequencing Facility
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="sequencing_facility" id="sequencing_facility" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Sequencing Facility.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Sequencing Run ID
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="sequencing_run_id" id="sequencing_run_id" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Sequencing Run ID.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Sequencing Run Date
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="sequencing_run_date" id="sequencing_run_date" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Sequencing Run Date.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Sequencing Kit Name
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="sequencing_kit_name" id="sequencing_kit_name" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Sequencing Kit Name.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Sequencing Kit Manufacturer
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="sequencing_kit_manufacturer" id="sequencing_kit_manufacturer" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Sequencing Kit Manufacturer.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Sequencing Kit Order Number
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="sequencing_kit_order_num" id="sequencing_kit_order_num" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Sequencing Kit Order Number.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>
+                                    <span>
+                                        <!-- Tooltip -->
+                                    </span>
+                                    Sequencing Kit Lot Number
+                                    <!-- Popover -->
+                                </label>
+                                <input type="text" class="form-control" name="sequencing_kit_lot_num" id="sequencing_kit_lot_num" placeholder="">
+                                <div class="invalid-feedback">
+                                    Please enter a valid Sequencing Kit Lot Number.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="footer-actions">
+                            <button type="button" class="btn btn-primary" id="saveEditCell"><i class="fa fa-save"></i> Save</button>
                         </div>
                     </form>
                 </div>

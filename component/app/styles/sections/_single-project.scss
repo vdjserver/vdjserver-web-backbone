@@ -203,16 +203,12 @@ input#sex.form-control-plaintext {
 /********************************************
 Edit Repertoire
 ********************************************/
-#editSubject-form {
+#editSubject-form, #editSample-form, #editDiagnosis-form, #editCell-form, #editNucleic-form {
     text-align: left;
 
     > div {
         margin-bottom: 1%;
     }
-}
-
-#addSample-form {
-    text-align: left;
 }
 
 /********************************************
