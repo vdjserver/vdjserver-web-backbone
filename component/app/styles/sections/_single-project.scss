@@ -253,3 +253,34 @@ User Management
         margin-bottom: 0.75em;
     }
 }
+
+/*******************************************
+Repertoires
+*******************************************/
+.rep-details-button {
+    width: 100%;
+    position: relative;
+    text-align: left;
+}
+
+.rep-details-button[aria-expanded="false"]:after {
+    content: "\f077";
+    font-family: "FontAwesome";
+    float: right;
+}
+
+.rep-details-button[aria-expanded="true"]:after {
+    content: "\f078";
+    font-family: "FontAwesome";
+    float: right;
+}
+
+.age-range {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+#saveEditSubject, #saveEditDiagnosis, #saveEditSample, #saveEditCell, #saveEditCell {
+    float: right;
+    margin-bottom: 3%;
+}

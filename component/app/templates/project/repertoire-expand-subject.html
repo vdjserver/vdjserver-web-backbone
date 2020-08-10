@@ -14,16 +14,18 @@
         <div class="card">
             <div class="card-header" id="subject_heading">
                 <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#editSubject_collapse" aria-expanded="true" aria-controls="editSubject_collapse">
-                      Subject Metadata
+                    <button class="btn btn-link rep-details-button" data-toggle="collapse" data-target="#editSubject_collapse" aria-expanded="false" aria-controls="editSubject_collapse">
+                      <span class="details-title">Subject Metadata</span>
                     </button>
                   </h5>
             </div>
             <div id="editSubject_collapse" class="collapse" aria-labelledby="subject_heading" data-parent="#subject_accordion">
                 <div class="card-body">
+
+                {{#if edit_mode}}
                     <form method="post" role="form" id="editSubject-form" class="needs-validation" name="subject" novalidate>
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
@@ -92,31 +94,26 @@
                         </div>
 
                         <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label>
                                 <span>
                                     <!-- Tooltip -->
                                 </span>
-                                Minimum Age
+                                Min Age / Max Age
                                 <!-- Popover -->
                             </label>
-                            <input type="text" class="form-control col-md-3" name="age_min" id="age_min" placeholder="" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid Minimum Age.
-                            </div>
-                        </div>
+                            <div class="row col-md-12">
+                                <input type="text" class="form-control col-md-5" name="age_min" id="age_min" placeholder="" required>
+                                <div class="invalid-feedback">
+                                    Please enter a valid Minimum Age.
+                                </div>
 
-                        <div class="col-md-2">
-                            <label>
-                                <span>
-                                    <!-- Tooltip -->
-                                </span>
-                                Maximum Age
-                                <!-- Popover -->
-                            </label>
-                            <input type="text" class="form-control col-md-3" name="age_max" id="age_max" placeholder="" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid Maximum Age.
+                                <span class="age-range">-</span>
+
+                                <input type="text" class="form-control col-md-5" name="age_max" id="age_max" placeholder="" required>
+                                <div class="invalid-feedback">
+                                    Please enter a valid Maximum Age.
+                                </div>
                             </div>
                         </div>
 
@@ -242,6 +239,7 @@
                             <button type="button" class="btn btn-primary" id="saveEditSubject"><i class="fa fa-save"></i> Save</button>
                         </div>
                     </form>
+                {{/if}} <!-- End edit_mode -->
                 </div>
             </div>
         </div>
@@ -259,8 +257,8 @@
         <div class="card">
             <div class="card-header" id="diagnosis_heading">
                 <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#editDiagnosis_collapse" aria-expanded="true" aria-controls="editDiagnosis_collapse">
-                      Diagnosis Metadata
+                    <button class="btn btn-link rep-details-button" data-toggle="collapse" data-target="#editDiagnosis_collapse" aria-expanded="false" aria-controls="editDiagnosis_collapse">
+                      <span class="details-title">Diagnosis Metadata</span>
                     </button>
                   </h5>
             </div>
