@@ -21,8 +21,6 @@
             </div>
             <div id="editSubject_collapse" class="collapse" aria-labelledby="subject_heading" data-parent="#subject_accordion">
                 <div class="card-body">
-
-                {{#if edit_mode}}
                     <form method="post" role="form" id="editSubject-form" class="needs-validation" name="subject" novalidate>
                         <div class="row">
                             <div class="col-md-4">
@@ -117,7 +115,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-3 age_unit">
                             <label>
                                 <span>
                                     <!-- Tooltip -->
@@ -131,7 +129,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-4 age_event">
                             <label>
                                 <span>
                                     <!-- Tooltip -->
@@ -239,7 +237,6 @@
                             <button type="button" class="btn btn-primary" id="saveEditSubject"><i class="fa fa-save"></i> Save</button>
                         </div>
                     </form>
-                {{/if}} <!-- End edit_mode -->
                 </div>
             </div>
         </div>

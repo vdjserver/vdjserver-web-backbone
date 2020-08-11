@@ -98,14 +98,9 @@ var RepertoireSummaryView = Marionette.View.extend({
     },
 
     initialize: function(parameters) {
-        // show in read-only mode by default
-        this.edit_mode = false;
-
         // our controller
-        if (parameters) {
-            if (parameters.controller) this.controller = parameters.controller;
-            if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
-        }
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
 
         this.showChildView('headerRegion', new RepertoireSummaryHeaderView({model: this.model}));
 
@@ -121,27 +116,6 @@ var RepertoireSummaryView = Marionette.View.extend({
 
         // get the repertoire statistics
         this.showChildView('statisticsRegion', new RepertoireSummaryStatisticsView({model: this.model}));
-    },
-
-    // setting up templateContext
-    templateContext() {
-        return {
-            // if edit mode is true, then fields should be editable
-            edit_mode: this.edit_mode,
-        }
-    },
-
-    events: {
-        'click #edit-repertoire': function() {
-            this.editRepertoire(true);
-        }
-    },
-
-    editRepertoire(edit_mode) {
-        console.log('editRepertoire function');
-
-        var view = new RepertoireSummaryView({controller: this.controller, model: this.model, edit_mode: edit_mode});
-        this.showChildView('headerRegion', view);
     }
 });
 
@@ -271,9 +245,17 @@ var RepertoireEditView = Marionette.View.extend({
     },
 
     initialize: function(parameters) {
+        // show in read-only mode by default
+        this.edit_mode = false;
+
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+
+        // if (parameters) {
+        //     if (parameters.controller) this.controller = parameters.controller;
+        //     if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
+        // }
 
         this.showChildView('headerRegion', new RepertoireEditHeaderView({model: this.model}));
 
@@ -293,7 +275,28 @@ var RepertoireEditView = Marionette.View.extend({
         this.showChildView('statisticsRegion', new RepertoireEditStatisticsView({model: this.model}));
     },
 
-});
+    // templateContext() {
+    //     return {
+    //         // if edit mode is true, then fields should be editable
+    //         edit_mode: this.edit_mode,
+    //     }
+    // },
+    //
+    //     events: {
+    //         'click #edit-repertoire': function() {
+    //             this.editRepertoire(true);
+    //         }
+    //     },
+    //
+    //     editRepertoire(edit_mode) {
+    //         console.log('edit Repertoire page: editRepertoire function');
+    //
+    //         // change the view mode
+    //         this.model.view_mode = 'edit';
+    //         this.showRepertoireView();
+    //     }
+
+    });
 
 //
 // Container view for a repertoire
@@ -314,6 +317,7 @@ var RepertoireContainerView = Marionette.View.extend({
     events: {
         'click #show-details': 'showDetails',
         'click #hide-details': 'hideDetails',
+        'click #edit-repertoire': 'editRepertoire',
     },
 
     initialize: function(parameters) {
@@ -331,6 +335,8 @@ var RepertoireContainerView = Marionette.View.extend({
                 this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model}));
                 break;
             case 'edit':
+                this.showChildView('containerRegion', new RepertoireEditView({controller: this.controller, model: this.model}));
+                break;
             case 'summary':
             default:
                 this.showChildView('containerRegion', new RepertoireSummaryView({controller: this.controller, model: this.model}));
@@ -353,6 +359,15 @@ var RepertoireContainerView = Marionette.View.extend({
 
         // change the view mode
         this.model.view_mode = 'summary';
+        this.showRepertoireView();
+    },
+
+    editRepertoire(e) {
+        console.log('Edit Repertoire page: editRepertoire function');
+        e.preventDefault();
+
+        // change the view mode
+        this.model.view_mode = 'edit';
         this.showRepertoireView();
     }
 
