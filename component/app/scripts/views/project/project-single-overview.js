@@ -38,17 +38,9 @@ import TenantUsers from 'Scripts/collections/agave-tenant-users';
 import OntologySearch from 'Scripts/models/ontology-search';
 
 
+// TODO: generalize this so it can be used for all ontologies
 var OntologyResultsView = Marionette.View.extend({
-    template: Handlebars.compile('{{#each terms}}<a class="dropdown-item">{{this.label}}</a>{{/each}}'),
-
-//    templateContext() {
-//        var terms = [];
-//        if (this.model) terms = this.model.get('terms');
-//        return {
-//            //
-//            terms: JSON.stringify(terms),
-//        }
-//    },
+    template: Handlebars.compile('{{#each terms}}<a class="dropdown-item" id="study-type" name="{{this.id}}" title="{{this.label}}">{{this.label}}</a>{{/each}}'),
 });
 
 // Edit Project
@@ -72,8 +64,8 @@ var ProjectSettingsView = Marionette.View.extend({
         }
 
         //var search = new OntologySearch({schema: 'Study', field: 'study_type'});
-        var view = new OntologyResultsView();
-        this.showChildView('resultsRegion', view);
+        //var view = new OntologyResultsView();
+        //this.showChildView('resultsRegion', view);
     },
 
     events: {
@@ -81,9 +73,28 @@ var ProjectSettingsView = Marionette.View.extend({
         'keyup #study-type-search': function(e) {
             this.searchStudyType(e);
         },
+
+        'click #study-type': function(e) {
+            this.selectStudyType(e);
+        },
     },
 
     templateContext() {
+        var study_type_id = null;
+        var study_type_label = null;
+        if (this.model.selected_study_type) {
+            // user has a selected study type while editing
+            study_type_id = this.model.selected_study_type['id'];
+            study_type_label = this.model.selected_study_type['label'];
+        } else {
+            // otherwise use existing value in model
+            var value = this.model.get('value');
+            if (value['study_type']) {
+                study_type_id = value['study_type']['id'];
+                study_type_label = value['study_type']['label'];
+            }
+        }
+
         return {
             // if edit mode is true, then fields should be editable
             edit_mode: this.edit_mode,
@@ -91,10 +102,11 @@ var ProjectSettingsView = Marionette.View.extend({
             // pass as object
             airr_schema: this.model.airr_schema,
 
-            // // pass as string
-            // airr_string: JSON.stringify(this.model.airr_schema, null, 2),
+            // study type
+            study_type_id: study_type_id,
+            study_type_label: study_type_label,
 
-            //
+            // ontology search result terms
             terms: JSON.stringify(this.model.get('terms'), null, 2),
 
             // label array
@@ -110,6 +122,7 @@ var ProjectSettingsView = Marionette.View.extend({
         }
     },
 
+    // perform ontology search as user types
     searchStudyType(e) {
         var that = this;
         console.log("search study type");
@@ -124,6 +137,16 @@ var ProjectSettingsView = Marionette.View.extend({
                     that.showChildView('resultsRegion', view);
                 });
         }
+    },
+
+    selectStudyType(e) {
+        // Cannot update the model when the user picks a selection
+        // because they may revert, we have to wait until they click save.
+        // But we need to save the selection and update the button text
+        // to acknowledge their selection
+        console.log("study type selected");
+        this.model.selected_study_type = { id: e.target.name, label: e.target.title };
+        $('#dropdownStudyType').html(e.target.title);
     },
 
 });
@@ -208,10 +231,6 @@ var ProjectOverView = Marionette.View.extend({
             this.showProject(true);
         },
 
-        'click #study-type': function(e) {
-            this.selectStudyType(e);
-        },
-
         'click #save-edit-project': function(e) {
             this.saveEditProject(e);
         },
@@ -248,6 +267,9 @@ var ProjectOverView = Marionette.View.extend({
 
         // pull data out of form and put into model
         var data = Syphon.serialize(this);
+        if (this.model.selected_study_type) {
+            data['study_type'] = this.model.selected_study_type;
+        }
         this.model.setAttributesFromData(data);
         console.log(this.model);
         console.log("this is the data that is submitted: " + data);
@@ -318,12 +340,9 @@ var ProjectOverView = Marionette.View.extend({
 
     revertEditChanges() {
         console.log("changes cleared");
-    },
-
-    selectStudyType(e) {
-        // TODO: how to know which one was selected
-        // We need to search in the ontology and get the id and label
-        console.log("study type selected");
+        if (this.model.selected_study_type) {
+            delete this.model.selected_study_type;
+        }
     },
 
     archiveProject() {

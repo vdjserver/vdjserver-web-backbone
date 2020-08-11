@@ -29,40 +29,38 @@
                         {{/if}}
                     </div>
                     <div class="overview-item">
-                        <span class="details">Study Type:<span>
+                        <span class="details">Study Type:</span>
                         {{#unless edit_mode}}
-                            {{value.study_type.x-airr}}
+                            {{#if value.study_type.id}}
+                                {{value.study_type.label}} ({{value.study_type.id}})
+                            {{/if}}
                         {{/unless}}
 
                         {{#if edit_mode}}
-                        <select class="form-control col-md-6" required>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" id="dropdownStudyType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{#if study_type_id}}
+                            {{study_type_label}}
+                            {{else}}
+                            Choose a Study Type
+                            {{/if}}
+                            </button>
+                            <div class="dropdown-menu" id="study-type-dropdown">
+                                <a class="dropdown-item" id="study-type" name="NCIT:C16084" title="Observational Study">Observational Study</a>
+                                <a class="dropdown-item" id="study-type" name="NCIT:C93130" title="Animal Study">Animal Study</a>
+                                <div class="dropdown-divider"></div>
+                                <form class="px-4 py-3">
+                                <div class="form-group">
+                                  <label for="study-type-search">Search:</label>
+                                  <input type="input" class="form-control" id="study-type-search" placeholder="Search Study Type">
+                                </div>
+                              </form>
+                              <label>Results:</label>
+                              <div id="study-type-search-results"></div>
+                            </div>
+                        </div>
                         {{/if}}
                     </div>
-
-<!-- <div class="overview-item"> -->
-<div class="dropdown">
-  <button class="btn dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Choose a Study Type
-  </button>
-<div class="dropdown-menu" id="study-type-dropdown">
-  <a class="dropdown-item" id="study-type">Clinical Study</a>
-  <a class="dropdown-item" id="study-type">Animal Study</a>
-  <div class="dropdown-divider"></div>
-  <form class="px-4 py-3">
-    <div class="form-group">
-      <label for="study-type-search">Search:</label>
-      <input type="input" class="form-control" id="study-type-search" placeholder="Search Study Type">
-    </div>
-  </form>
-  <label>Results:</label>
-  <div id="study-type-search-results"></div>
-</div>
-</div>
-<!-- </div> -->
 
                     <div class="overview-item">
                         <span class="details">Inclusion/Exclusion Criteria:</span>
