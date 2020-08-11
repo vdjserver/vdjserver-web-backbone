@@ -246,16 +246,13 @@ var RepertoireEditView = Marionette.View.extend({
 
     initialize: function(parameters) {
         // show in read-only mode by default
-        this.edit_mode = false;
+        this.edit_mode = "simple";
 
         // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
-
-        // if (parameters) {
-        //     if (parameters.controller) this.controller = parameters.controller;
-        //     if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
-        // }
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
+        }
 
         this.showChildView('headerRegion', new RepertoireEditHeaderView({model: this.model}));
 
@@ -275,28 +272,12 @@ var RepertoireEditView = Marionette.View.extend({
         this.showChildView('statisticsRegion', new RepertoireEditStatisticsView({model: this.model}));
     },
 
-    // templateContext() {
-    //     return {
-    //         // if edit mode is true, then fields should be editable
-    //         edit_mode: this.edit_mode,
-    //     }
-    // },
-    //
-    //     events: {
-    //         'click #edit-repertoire': function() {
-    //             this.editRepertoire(true);
-    //         }
-    //     },
-    //
-    //     editRepertoire(edit_mode) {
-    //         console.log('edit Repertoire page: editRepertoire function');
-    //
-    //         // change the view mode
-    //         this.model.view_mode = 'edit';
-    //         this.showRepertoireView();
-    //     }
-
-    });
+    templateContext() {
+        return {
+            edit_mode: this.edit_mode,
+        }
+    },
+});
 
 //
 // Container view for a repertoire
@@ -317,7 +298,9 @@ var RepertoireContainerView = Marionette.View.extend({
     events: {
         'click #show-details': 'showDetails',
         'click #hide-details': 'hideDetails',
-        'click #edit-repertoire': 'editRepertoire',
+        'click #edit-repertoire': 'simpleEditRepertoire',
+        'click #advanced-edit': 'advancedEditRepertoire',
+        'click #save-repertoire': 'saveRepertoire',
     },
 
     initialize: function(parameters) {
@@ -334,9 +317,11 @@ var RepertoireContainerView = Marionette.View.extend({
             case 'expand':
                 this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model}));
                 break;
-            case 'edit':
+            case 'simple-edit':
                 this.showChildView('containerRegion', new RepertoireEditView({controller: this.controller, model: this.model}));
+
                 break;
+            case 'advanced-edit':
             case 'summary':
             default:
                 this.showChildView('containerRegion', new RepertoireSummaryView({controller: this.controller, model: this.model}));
@@ -362,17 +347,38 @@ var RepertoireContainerView = Marionette.View.extend({
         this.showRepertoireView();
     },
 
-    editRepertoire(e) {
-        console.log('Edit Repertoire page: editRepertoire function');
+    simpleEditRepertoire(e) {
+        console.log('simpleEditRepertoire');
         e.preventDefault();
 
         // change the view mode
-        this.model.view_mode = 'edit';
+        this.model.view_mode = 'simple-edit';
         this.showRepertoireView();
-    }
+    },
+
+    advancedEditRepertoire(e) {
+        console.log('advancedEditRepertoire');
+        e.preventDefault();
+
+        // this.model.view_mode = 'advanced-edit';
+        // this.showRepertoireView();
+    },
+
+    saveRepertoire(e) {
+        console.log('saveRepertoire');
+        e.preventDefault();
+
+        // change the view mode back
+        this.model.view_mode = 'summary';
+        this.showRepertoireView();
+
+        // $('#save-repertoire').on("click", function() {
+            // $(this).addClass("no-display");
+            // $("#edit-repertoire").removeClass("no-display");
+        // });
+    },
 
 });
-
 
 //
 // The collection view for the list of repertoires
@@ -418,7 +424,7 @@ var RepertoireMainView = Marionette.View.extend({
 
         //'click #show-details': 'showDetails',
         //'click #edit-repertoire': 'editRepertoire',
-        'click #save-repertoire': 'saveRepertoire',
+        // 'click #save-repertoire': 'saveRepertoire',
     },
 
     initialize(parameters) {
@@ -461,25 +467,22 @@ var RepertoireMainView = Marionette.View.extend({
         // $("#edit-repertoire").on("click", function() {
         //     $(this).addClass("no-display");
         //     $("#save-repertoire").removeClass("no-display");
-        //
-        //     $(this).closest("#save-repertoire").removeClass("no-display");
-        //
-        //     $(".repertoire-name").removeClass("no-display");
-        //     $(".repertoire-desc").removeClass("no-display");
-        // // });
+        // });
     // },
 
-    saveRepertoire(e) {
-        console.log('saveRepertoire');
-        e.preventDefault();
-
-        // $('#save-repertoire').on("click", function() {
-            // $(this).addClass("no-display");
-            // $("#edit-repertoire").removeClass("no-display");
-            // $(".repertoire-name").addClass("no-display");
-            // $(".repertoire-desc").addClass("no-display");
-        // });
-    },
+    // saveRepertoire(e) {
+    //     console.log('saveRepertoire');
+    //     e.preventDefault();
+    //
+    //     // change the view mode back
+    //     this.model.view_mode = 'summary';
+    //     this.showRepertoireView();
+    //
+    //     // $('#save-repertoire').on("click", function() {
+    //         // $(this).addClass("no-display");
+    //         // $("#edit-repertoire").removeClass("no-display");
+    //     // });
+    // },
 });
 
 //
