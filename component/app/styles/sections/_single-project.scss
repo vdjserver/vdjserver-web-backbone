@@ -188,18 +188,21 @@ Repertoire Summary View
 // }
 
 
-input#repertoire_name.form-control-plaintext,
-input#repertoire_uuid.form-control-plaintext,
-input#subject_id.form-control-plaintext, input#age.form-control-plaintext,
-input#sex.form-control-plaintext {
-    margin-left: 3%;
-    width: 80%;
-}
+// input#repertoire_name.form-control-plaintext,
+// input#repertoire_uuid.form-control-plaintext,
+// input#subject_id.form-control-plaintext, input#age.form-control-plaintext,
+// input#sex.form-control-plaintext {
+//     margin-left: 3%;
+//     width: 80%;
+// }
 
 .rep-form-group {
     margin-bottom: 0 !important;
 }
 
+.form-inline input {
+    margin-left: 2%;
+}
 /********************************************
 Edit Repertoire
 ********************************************/
@@ -291,4 +294,8 @@ Repertoires
 #saveEditSubject, #saveEditDiagnosis, #saveEditSample, #saveEditCell, #saveEditCell {
     float: right;
     margin-bottom: 3%;
+}
+
+#repertoire-container {
+    margin-top: 3%;
 }

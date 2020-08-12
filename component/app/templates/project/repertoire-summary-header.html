@@ -17,7 +17,7 @@
     {{/unless}}
 
     {{#if edit_mode}}
-        <input type="text" name="repertoire_name" id="repertoire_name" class="form-control" placeholder="Repertoire Name" value="{{value.repertoire_name}}" readonly>
+        <input type="text" name="repertoire_name" id="repertoire_name" class="form-control" placeholder="{{value.repertoire_name}}" value="{{value.repertoire_name}}" readonly>
     {{/if}}
 </div>
 
@@ -34,8 +34,8 @@
 
 <div class="col-md-2">
     <div class="repertoire-actions">
-        <button type="button" class="btn btn-warning show" id="edit-repertoire">Edit</button>
-        <button type="button" class="btn btn-success no-display" id="save-repertoire">Save</button>
-        <button type="button" class="btn btn-danger" id="copy-repertoire">Copy</button>
+        <button type="button" class="btn btn-edit show" id="edit-repertoire">Edit</button>
+        <button type="button" class="btn btn-save no-display" id="save-repertoire">Save</button>
+        <button type="button" class="btn btn-copy" id="copy-repertoire">Copy</button>
     </div>
 </div>

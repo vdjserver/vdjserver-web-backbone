@@ -322,6 +322,7 @@ var RepertoireContainerView = Marionette.View.extend({
 
                 break;
             case 'advanced-edit':
+                // do we want to create another set of pages for the advanced edit (expanded repertoire with edit functionality)?
             case 'summary':
             default:
                 this.showChildView('containerRegion', new RepertoireSummaryView({controller: this.controller, model: this.model}));
