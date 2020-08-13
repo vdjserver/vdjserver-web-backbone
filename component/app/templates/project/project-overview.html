@@ -37,28 +37,7 @@
                         {{/unless}}
 
                         {{#if edit_mode}}
-                        <div class="dropdown">
-                            <button class="btn dropdown-toggle" type="button" id="dropdownStudyType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{#if study_type_id}}
-                            {{study_type_label}}
-                            {{else}}
-                            Choose a Study Type
-                            {{/if}}
-                            </button>
-                            <div class="dropdown-menu" id="study-type-dropdown">
-                                <a class="dropdown-item" id="study-type" name="NCIT:C16084" title="Observational Study">Observational Study</a>
-                                <a class="dropdown-item" id="study-type" name="NCIT:C93130" title="Animal Study">Animal Study</a>
-                                <div class="dropdown-divider"></div>
-                                <form class="px-4 py-3">
-                                <div class="form-group">
-                                  <label for="study-type-search">Search:</label>
-                                  <input type="input" class="form-control" id="study-type-search" placeholder="Search Study Type">
-                                </div>
-                              </form>
-                              <label>Results:</label>
-                              <div id="study-type-search-results"></div>
-                            </div>
-                        </div>
+                        <div id="study-type-region"></div>
                         {{/if}}
                     </div>
 

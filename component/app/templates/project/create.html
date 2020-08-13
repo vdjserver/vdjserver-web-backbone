@@ -117,14 +117,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_type"}}}
                 </label>
-                <select class="form-control">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-                <div class="invalid-feedback">
-                  Please choose at least one Study Keyword.
-                </div>
+                <div id="study-type-region"></div>
             </div>
 
             <div class="form-group col-md-6">
@@ -196,7 +189,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "collected_by"}}}
                 </label>
-                <input type="email" class="form-control" name="collectedby_address" id="collectedby_address">
+                <input type="text" class="form-control" name="collectedby_address" id="collectedby_address">
                 <div class="invalid-feedback">
                   Please enter a Data Collector Address.
                 </div>
@@ -293,7 +286,7 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "submitted_by"}}}
                 </label>
-                <input type="email" class="form-control" name="submittedby_address" id="submittedby_address">
+                <input type="text" class="form-control" name="submittedby_address" id="submittedby_address">
                 <div class="invalid-feedback">
                   Please enter a Data Submitter Address.
                 </div>

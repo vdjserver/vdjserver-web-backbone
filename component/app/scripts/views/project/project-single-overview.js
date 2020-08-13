@@ -35,21 +35,17 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
 import Permissions from 'Scripts/collections/agave-permissions';
 import TenantUsers from 'Scripts/collections/agave-tenant-users';
-import OntologySearch from 'Scripts/models/ontology-search';
+import OntologySearchView from 'Scripts/views/utilities/ontology-search-view';
 
-
-// TODO: generalize this so it can be used for all ontologies
-var OntologyResultsView = Marionette.View.extend({
-    template: Handlebars.compile('{{#each terms}}<a class="dropdown-item" id="study-type" name="{{this.id}}" title="{{this.label}}">{{this.label}}</a>{{/each}}'),
-});
 
 // Edit Project
 import overview_template from 'Templates/project/project-overview.html';
 var ProjectSettingsView = Marionette.View.extend({
     template: Handlebars.compile(overview_template),
 
+    // study type ontology dropdown
     regions: {
-        resultsRegion: '#study-type-search-results'
+        studyTypeRegion: '#study-type-region'
     },
 
     initialize: function(parameters) {
@@ -63,20 +59,20 @@ var ProjectSettingsView = Marionette.View.extend({
             if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
         }
 
-        //var search = new OntologySearch({schema: 'Study', field: 'study_type'});
-        //var view = new OntologyResultsView();
-        //this.showChildView('resultsRegion', view);
-    },
+        if (this.edit_mode) {
+            // in edit mode add the study type dropdown
+            var common = [{ id: 'NCIT:C16084', label: 'Observational Study' },
+                { id: 'NCIT:C93130', label: 'Animal Study'}];
 
-    events: {
-        // ontology search for study tupe
-        'keyup #study-type-search': function(e) {
-            this.searchStudyType(e);
-        },
+            var button_label = 'Choose a Study Type';
+            var value = this.model.get('value');
+            if (value['study_type']) button_label = value['study_type']['label'];
 
-        'click #study-type': function(e) {
-            this.selectStudyType(e);
-        },
+            var view = new OntologySearchView({schema: 'Study', field: 'study_type',
+                button_label: button_label, field_label: 'Study Type', common: common,
+                context: this, selectFunction: this.selectStudyType});
+            this.showChildView('studyTypeRegion', view);
+        }
     },
 
     templateContext() {
@@ -106,9 +102,6 @@ var ProjectSettingsView = Marionette.View.extend({
             study_type_id: study_type_id,
             study_type_label: study_type_label,
 
-            // ontology search result terms
-            terms: JSON.stringify(this.model.get('terms'), null, 2),
-
             // label array
             keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
 
@@ -122,33 +115,13 @@ var ProjectSettingsView = Marionette.View.extend({
         }
     },
 
-    // perform ontology search as user types
-    searchStudyType(e) {
-        var that = this;
-        console.log("search study type");
-        console.log(e.target.value);
-        if (e.target.value.length >= 3) {
-            var search = new OntologySearch({schema: 'Study', field: 'study_type', query: e.target.value});
-            search.performSearch()
-                .then(function(terms) {
-                    console.log("search results");
-                    console.log(terms);
-                    var view = new OntologyResultsView({model: search});
-                    that.showChildView('resultsRegion', view);
-                });
-        }
-    },
-
-    selectStudyType(e) {
+    selectStudyType(context, value) {
         // Cannot update the model when the user picks a selection
-        // because they may revert, we have to wait until they click save.
-        // But we need to save the selection and update the button text
-        // to acknowledge their selection
-        console.log("study type selected");
-        this.model.selected_study_type = { id: e.target.name, label: e.target.title };
-        $('#dropdownStudyType').html(e.target.title);
+        // because they may revert, we have to wait until they click save,
+        // But we need to save the selection.
+        console.log("study type selected", value);
+        context.model.selected_study_type = value;
     },
-
 });
 
 // Single user in the project user collection

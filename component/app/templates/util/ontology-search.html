@@ -1,0 +1,20 @@
+<!-- Dropdown for ontology -->
+<div class="dropdown">
+    <button class="btn dropdown-toggle" type="button" id="dropdownOntology" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    {{button_label}}
+    </button>
+    <div class="dropdown-menu" id="study-type-dropdown">
+        {{#each common_list}}
+            <a class="dropdown-item" id="ontology-select" name="{{this.id}}" title="{{this.label}}">{{this.label}}</a>
+        {{/each}}
+        <div class="dropdown-divider"></div>
+        <form class="px-4 py-3">
+        <div class="form-group">
+          <label for="ontology-search-input">Search:</label>
+          <input type="input" class="form-control" id="ontology-search-input" placeholder="Search {{field_label}}">
+        </div>
+      </form>
+      <label>Results:</label>
+      <div id="ontology-search-results"></div>
+    </div>
+</div>

@@ -30,6 +30,7 @@ import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
+import OntologySearchView from 'Scripts/views/utilities/ontology-search-view';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
@@ -37,18 +38,44 @@ import AIRRSchema from 'airr-schema';
 // project creation form
 import create_template from 'Templates/project/create.html';
 var CreateView = Marionette.View.extend({
-  template: Handlebars.compile('<h1>Create New Project</h1>' + create_template),
-  templateContext() {
-      return {
-          // labels for keywords_study
-          keywords_object: {
-              'contains_ig': 'Ig',
-              'contains_tcr': 'TCR',
-              'contains_single_cell': 'Single Cell',
-              'contains_paired_chain': 'Paired Chain'
-          }
-      }
-  }
+    template: Handlebars.compile('<h1>Create New Project</h1>' + create_template),
+
+    // study type ontology dropdown
+    regions: {
+        studyTypeRegion: '#study-type-region'
+    },
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+        var common = [{ id: 'NCIT:C16084', label: 'Observational Study' },
+            { id: 'NCIT:C93130', label: 'Animal Study'}];
+
+        var view = new OntologySearchView({schema: 'Study', field: 'study_type',
+            button_label: 'Choose a Study Type', field_label: 'Study Type', common: common,
+            context: this, selectFunction: this.selectStudyType});
+        this.showChildView('studyTypeRegion', view);
+    },
+
+    templateContext() {
+        return {
+            // labels for keywords_study
+            keywords_object: {
+                'contains_ig': 'Ig',
+                'contains_tcr': 'TCR',
+                'contains_single_cell': 'Single Cell',
+                'contains_paired_chain': 'Paired Chain'
+            }
+        }
+    },
+
+    selectStudyType(context, value) {
+        console.log("study type selected", value);
+        context.model.selected_study_type = value;
+    },
+
 });
 
 export default Marionette.View.extend({
@@ -67,7 +94,7 @@ export default Marionette.View.extend({
         // we use a state variable to know what type of modal to display
         this.modalState = 'create';
 
-        var view = new CreateView();
+        var view = new CreateView({model: this.model});
         this.showChildView('createRegion', view);
     },
 
@@ -111,8 +138,11 @@ export default Marionette.View.extend({
 
         // pull data out of form and put into model
         var data = Syphon.serialize(this);
-        // manually hack the study_type until we have ontologies implemented
+
         data['study_type'] = null;
+        if (this.model.selected_study_type)
+            data['study_type'] = this.model.selected_study_type;
+
         // concatenate collector info
         var fields = [];
         if (data['collectedby_name'].length > 0) fields.push(data['collectedby_name']);
