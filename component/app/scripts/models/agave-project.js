@@ -51,7 +51,7 @@ export default Agave.MetadataModel.extend({
             {},
             Agave.MetadataModel.prototype.defaults,
             {
-                name: 'project',
+                name: 'private_project',
                 owner: '',
                 value: value
             }

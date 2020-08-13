@@ -9,7 +9,7 @@ export default Agave.MetadataCollection.extend(
         requiresAuth: false,
         url: function() {
             return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"publicProject"}')
+                   + encodeURIComponent('{"name":"public_project"}')
                    + '&limit=' + this.limit
                    + '&offset=' + this.offset
                    ;
