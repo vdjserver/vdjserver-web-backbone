@@ -178,8 +178,15 @@ var RepertoireExpandedView = Marionette.View.extend({
 
     initialize: function(parameters) {
         // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
+        this.edit_mode = "";
+
+        // if (parameters && parameters.controller)
+        //     this.controller = parameters.controller;
+
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
+        }
 
         this.showChildView('headerRegion', new RepertoireExpandedHeaderView({model: this.model}));
 
@@ -196,6 +203,12 @@ var RepertoireExpandedView = Marionette.View.extend({
         // get the repertoire statistics
         this.showChildView('statisticsRegion', new RepertoireExpandedStatisticsView({model: this.model}));
     },
+
+    templateContext() {
+        return {
+            edit_mode: "",
+        }
+    }
 
 });
 
@@ -245,7 +258,7 @@ var RepertoireEditView = Marionette.View.extend({
     },
 
     initialize: function(parameters) {
-        // show in read-only mode by default
+        // show "simple" edit mode by default
         this.edit_mode = "simple";
 
         // our controller
@@ -319,10 +332,11 @@ var RepertoireContainerView = Marionette.View.extend({
                 break;
             case 'simple-edit':
                 this.showChildView('containerRegion', new RepertoireEditView({controller: this.controller, model: this.model}));
-
                 break;
             case 'advanced-edit':
                 // do we want to create another set of pages for the advanced edit (expanded repertoire with edit functionality)?
+                this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model}));
+                break;
             case 'summary':
             default:
                 this.showChildView('containerRegion', new RepertoireSummaryView({controller: this.controller, model: this.model}));
@@ -348,21 +362,26 @@ var RepertoireContainerView = Marionette.View.extend({
         this.showRepertoireView();
     },
 
-    simpleEditRepertoire(e) {
+    simpleEditRepertoire(edit_mode) {
         console.log('simpleEditRepertoire');
-        e.preventDefault();
+        // e.preventDefault();
 
         // change the view mode
         this.model.view_mode = 'simple-edit';
+        this.model.edit_mode = 'simple';
         this.showRepertoireView();
     },
 
-    advancedEditRepertoire(e) {
+    advancedEditRepertoire(edit_mode) {
         console.log('advancedEditRepertoire');
-        e.preventDefault();
 
-        // this.model.view_mode = 'advanced-edit';
-        // this.showRepertoireView();
+        this.model.view_mode = 'advanced-edit';
+        this.model.edit_mode = 'advanced';
+        this.showRepertoireView();
+
+        // var view = new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: "advanced"});
+
+        // this.showRepertoireView('containerRegion', view);
     },
 
     saveRepertoire(e) {
