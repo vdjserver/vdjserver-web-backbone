@@ -29,7 +29,7 @@
                                     Sample ID:
                                     <!-- Popover -->
                                 </label>
-                                {{#ifEquals edit_mode advanced}}
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="sample_id" id="sample_id" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid Sample ID.
@@ -46,7 +46,7 @@
                                     Sample Type:
                                     <!-- Popover -->
                                 </label>
-                                {{#ifEquals edit_mode advanced}}
+                                {{#ifEquals edit_mode "advanced"}}
                                 <select class="custom-select" id="sample_type" required>
                                     <option value="1">
                                         <!-- Sample Type Option 1 -->
@@ -75,7 +75,7 @@
                                     Tissue:
                                     <!-- Popover -->
                                 </label>
-                                {{#ifEquals edit_mode advanced}}
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="tissue" id="tissue" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid tissue.
@@ -94,7 +94,7 @@
                                     Anatomic Site:
                                     <!-- Popover -->
                                 </label>
-                                {{#ifEquals edit_mode advanced}}
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="anatomic_site" id="anatomic_site" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid Anatomic Site.
@@ -108,10 +108,10 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Disease State Sample
+                                    Disease State Sample:
                                     <!-- Popover -->
                                 </label>
-                                {{#ifEquals edit_mode advanced}}
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="disease_state_sample" id="disease_state_sample" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid Disease State Sample.
@@ -125,10 +125,10 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Collection Time Point Relative
+                                    Collection Time Point Relative:
                                     <!-- Popover -->
                                 </label>
-                                {{#ifEquals edit_mode advanced}}
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid Collection Time Point Relative.
@@ -144,10 +144,10 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Collection Time Point Reference
+                                    Collection Time Point Reference:
                                     <!-- Popover -->
                                 </label>
-                                {{#ifEquals edit_mode advanced}}
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="collection_time_point_reference" id="collection_time_point_reference" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid Collection Time Point Reference.
@@ -161,10 +161,10 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Biomaterial Provider Name
+                                    Biomaterial Provider Name:
                                     <!-- Popover -->
                                 </label>
-                                {{#ifEquals edit_mode advanced}}
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control col-md-4" name="biomaterial_provider_name" id="biomaterial_provider_name" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid Biomaterial Provider Name.
@@ -178,10 +178,10 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Biomaterial Provider Address
+                                    Biomaterial Provider Address:
                                     <!-- Popover -->
                                 </label>
-                                {{#ifEquals edit_mode advanced}}
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control col-md-6" name="biomaterial_provider_address" id="biomaterial_provider_address" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid Biomaterial Provider Address.
@@ -193,7 +193,9 @@
                         </div>
 
                         <div class="footer-actions">
+                            {{#ifEquals edit_mode "advanced"}}
                             <button type="button" class="btn btn-primary" id="saveEditSample"><i class="fa fa-save"></i> Save</button>
+                            {{/ifEquals}}
                         </div>
                     </form>
                 </div>
@@ -226,26 +228,34 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Cell Processing ID
+                                    Cell Processing ID:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="cell_id" id="cell_id" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid cell processing ID.
                                 </div>
+                                {{else}}
+                                    {{value.cell_processing_id}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Tissue Processing
+                                    Tissue Processing:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="tissue-processing" id="tissue-processing" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid tissue processing.
                                 </div>
+                                {{else}}
+                                    {{value.tissue_processing}}
+                                {{/ifEquals}}
                             </div>
 
                             <!-- Ontology -->
@@ -254,13 +264,17 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Cell Subset
+                                    Cell Subset:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="cell-subset" id="cell-subset" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid cell subset.
                                 </div>
+                                {{else}}
+                                    {{value.cell_subset}}
+                                {{/ifEquals}}
                             </div>
                         </div>
                         <div class="row">
@@ -269,39 +283,51 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Cell Phenotype
+                                    Cell Phenotype:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="cell-phenotype" id="cell-phenotype" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid cell phenotype.
                                 </div>
+                                {{else}}
+                                    {{value.cell_phentotype}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Single Cell
+                                    Single Cell:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="single-cell" id="single-cell" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid single cell.
                                 </div>
+                                {{else}}
+                                    {{value.single_cell}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Cell Number
+                                    Cell Number:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="cell-number" id="cell-number" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid cell number.
                                 </div>
+                                {{else}}
+                                    {{value.cell_number}}
+                                {{/ifEquals}}
                             </div>
                         </div>
                         <div class="row">
@@ -310,39 +336,51 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Cells Per Reaction
+                                    Cells Per Reaction:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="cells-reaction" id="cells-reaction" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter valid cells per reaction.
                                 </div>
+                                {{else}}
+                                    {{value.cells_per_reaction}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Cell Storage
+                                    Cell Storage:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="cell-storage" id="cell-storage" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter valid cell storage.
                                 </div>
+                                {{else}}
+                                    {{value.cell_storage}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Cell Quality
+                                    Cell Quality:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="cell-quality" id="cell-quality" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter valid cell quality
                                 </div>
+                                {{else}}
+                                    {{value.cell_quality}}
+                                {{/ifEquals}}
                             </div>
                         </div>
 
@@ -352,30 +390,40 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Cell Isolation
+                                    Cell Isolation:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="cell-isolation" id="cell-isolation" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter valid cell isolation.
                                 </div>
+                                {{else}}
+                                    {{value.cell_isolation}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Cell Processing Protocol
+                                    Cell Processing Protocol:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <textarea class="form-control" name="cell_processing_protocol" id="cell_processing_protocol" placeholder="" rows="4"></textarea>
                                 <div class="invalid-feedback">
                                     Please enter valid cell processing protocol.
                                 </div>
+                                {{else}}
+                                    {{value.cell_processing_protocol}}
+                                {{/ifEquals}}
                             </div>
                         </div>
                         <div class="footer-actions">
+                            {{#ifEquals edit_mode "advanced"}}
                             <button type="button" class="btn btn-primary" id="saveEditCell"><i class="fa fa-save"></i> Save</button>
+                            {{/ifEquals}}
                         </div>
                     </form>
                 </div>
@@ -408,26 +456,34 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Nucleic Acid Processing ID
+                                    Nucleic Acid Processing ID:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="nucleic_id" id="nucleic_id" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid nucleic acid processing ID.
                                 </div>
+                                {{else}}
+                                    {{value.nucleic_id}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Cell Processing UUID
+                                    Cell Processing UUID:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="cell-processing-ID" id="cell-processing-ID" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid cell processing uuid.
                                 </div>
+                                {{else}}
+                                    {{value.cell_processing_id}}
+                                {{/ifEquals}}
                             </div>
 
                             <!-- Ontology -->
@@ -436,13 +492,17 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    File Name UUID
+                                    File Name UUID:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="file-UUID" id="file-UUID" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid File Name UUID.
                                 </div>
+                                {{else}}
+                                    {{value.file_UUID}}
+                                {{/ifEquals}}
                             </div>
                         </div>
                         <div class="row">
@@ -451,39 +511,51 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Template Class
+                                    Template Class:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="template-class" id="template-class" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid template class.
                                 </div>
+                                {{else}}
+                                    {{value.template_class}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Template Quality
+                                    Template Quality:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="template-quality" id="template-quality" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid template quality.
                                 </div>
+                                {{else}}
+                                    {{value.template_quality}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Library Generation Method
+                                    Library Generation Method:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="library_generation_method" id="library_generation_method" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Library Generation Method.
                                 </div>
+                                {{else}}
+                                    {{value.library_generation_method}}
+                                {{/ifEquals}}
                             </div>
                         </div>
                         <div class="row">
@@ -492,39 +564,51 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Library Generation Protocol
+                                    Library Generation Protocol:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="library_generation_protocol" id="library_generation_protocol" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid library protocol.
                                 </div>
+                                {{else}}
+                                    {{value.library_generation_protocol}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Library Generation Kit Version
+                                    Library Generation Kit Version:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="library_generation_kit_version" id="library_generation_kit_version" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Library Generation Kit Version.
                                 </div>
+                                {{else}}
+                                    {{value.library_generation_kit_version}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    PCR Target Locus
+                                    PCR Target Locus:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="pcr-locus" id="pcr-locus" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid PCR Target Locus.
                                 </div>
+                                {{else}}
+                                    {{value.pcr_locus}}
+                                {{/ifEquals}}
                             </div>
                         </div>
 
@@ -534,26 +618,34 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Forward PCR Primer Target Location
+                                    Forward PCR Primer Target Location:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="forward_pcr_primer_target_location" id="forward_pcr_primer_target_location" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Forward PCR Primer Target Location.
                                 </div>
+                                {{else}}
+                                    {{value.forward_pcr_primer_target_location}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Reverse PCR Primer Target Location
+                                    Reverse PCR Primer Target Location:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <textarea class="form-control" name="reverse_pcr_primer_target_location" id="reverse_pcr_primer_target_location" placeholder="" rows="4"></textarea>
                                 <div class="invalid-feedback">
                                     Please enter a valid Reverse PCR Primer Target Location.
                                 </div>
+                                {{else}}
+                                    {{value.reverse_pcr_primer_target_location}}
+                                {{/ifEquals}}
                             </div>
                         </div>
 
@@ -563,39 +655,51 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Complete Sequences
+                                    Complete Sequences:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="complete-sequences" id="complete-sequences" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter valid complete sequences.
                                 </div>
+                                {{else}}
+                                    {{value.complete_sequences}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Physical Linkage
+                                    Physical Linkage:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <textarea class="form-control" name="physical_linkage" id="physical_linkage" placeholder="" rows="4"></textarea>
                                 <div class="invalid-feedback">
                                     Please enter valid physical linkage.
                                 </div>
+                                {{else}}
+                                    {{value.physical_linkage}}
+                                    {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Total Reads Passing QC Filter
+                                    Total Reads Passing QC Filter:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="total_reads_passing_qc_filter" id="total_reads_passing_qc_filter" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter valid Total Reads Passing QC Filter.
                                 </div>
+                                {{else}}
+                                    {{value.total_reads_passing_qc_filter}}
+                                {{/ifEquals}}
                             </div>
                         </div>
 
@@ -605,39 +709,51 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Sequencing Platform
+                                    Sequencing Platform:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="sequencing_platform" id="sequencing_platform" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Sequencing Platform.
                                 </div>
+                                {{else}}
+                                    {{value.sequencing_platform}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Read Length
+                                    Read Length:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="read_length" id="read_length" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid read length.
                                 </div>
+                                {{else}}
+                                    {{value.read_length}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Sequencing Facility
+                                    Sequencing Facility:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="sequencing_facility" id="sequencing_facility" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Sequencing Facility.
                                 </div>
+                                {{else}}
+                                    {{value.sequencing_facility}}
+                                {{/ifEquals}}
                             </div>
                         </div>
 
@@ -647,39 +763,51 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Sequencing Run ID
+                                    Sequencing Run ID:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="sequencing_run_id" id="sequencing_run_id" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Sequencing Run ID.
                                 </div>
+                                {{else}}
+                                    {{value.sequencing_run_id}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Sequencing Run Date
+                                    Sequencing Run Date:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="sequencing_run_date" id="sequencing_run_date" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Sequencing Run Date.
                                 </div>
+                                {{else}}
+                                    {{value.sequencing_run_date}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Sequencing Kit Name
+                                    Sequencing Kit Name:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="sequencing_kit_name" id="sequencing_kit_name" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Sequencing Kit Name.
                                 </div>
+                                {{else}}
+                                    {{value.sequencing_kit_name}}
+                                {{/ifEquals}}
                             </div>
                         </div>
 
@@ -689,44 +817,58 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Sequencing Kit Manufacturer
+                                    Sequencing Kit Manufacturer:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="sequencing_kit_manufacturer" id="sequencing_kit_manufacturer" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Sequencing Kit Manufacturer.
                                 </div>
+                                {{else}}
+                                    {{value.sequencing_kit_manufacturer}}
+                                {{/ifEquals }}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Sequencing Kit Order Number
+                                    Sequencing Kit Order Number:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="sequencing_kit_order_num" id="sequencing_kit_order_num" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Sequencing Kit Order Number.
                                 </div>
+                                {{else}}
+                                    {{value.sequencing_kit_order_num}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Sequencing Kit Lot Number
+                                    Sequencing Kit Lot Number:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="sequencing_kit_lot_num" id="sequencing_kit_lot_num" placeholder="">
                                 <div class="invalid-feedback">
                                     Please enter a valid Sequencing Kit Lot Number.
                                 </div>
+                                {{else}}
+                                    {{value.sequencing_kit_lot_num}}
+                                {{/ifEquals}}
                             </div>
                         </div>
 
                         <div class="footer-actions">
+                            {{#ifEquals edit_mode "advanced"}}
                             <button type="button" class="btn btn-primary" id="saveEditCell"><i class="fa fa-save"></i> Save</button>
+                            {{/ifEquals}}
                         </div>
                     </form>
                 </div>

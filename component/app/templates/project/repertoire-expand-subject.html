@@ -285,13 +285,15 @@
                                 Please enter valid a Link Type.
                             </div>
                                 {{else}}
-                                {{value.link_type}}
+                                    {{value.link_type}}
                             {{/ifEquals}}
                         </div>
                         </div>
 
                         <div class="footer-actions">
+                            {{#ifEquals edit_mode "advanced"}}
                             <button type="button" class="btn btn-primary" id="saveEditSubject"><i class="fa fa-save"></i> Save</button>
+                            {{/ifEquals}}
                         </div>
                     </form>
                 </div>
@@ -325,13 +327,17 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Study Group Description
+                                    Study Group Description:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <textarea class="form-control" name="study_group_description" id="study_group_description"></textarea>
                                 <div class="invalid-feedback">
                                     Please enter a valid Study Group Description.
                                 </div>
+                                {{else}}
+                                    {{value.study_group_description}}
+                                {{/ifEquals}}
                             </div>
 
                             <div class="col-md-4">
@@ -339,55 +345,71 @@
                                     <span>
                                         <!-- Tooltip-->
                                     </span>
-                                    Disease Diagnosis
+                                    Disease Diagnosis:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="disease_diagnosis" id="disease_diagnosis" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid Disease Diagnosis.
                                 </div>
+                                {{else}}
+                                    {{value.disease_diagnosis}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-2">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Disease Length
+                                    Disease Length:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="disease_length" id="disease_length" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid Disease Length.
                                 </div>
+                                {{else}}
+                                    {{value.disease_length}}
+                                {{/ifEquals}}
                             </div>
                             <div class="col-md-2">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Disease Stage
+                                    Disease Stage:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="disease_stage" id="disease_stage" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid Disease Stage.
                                 </div>
+                                {{else}}
+                                    {{value.disease_stage}}
+                                {{/ifEquals}}
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Prior Therapies
+                                    Prior Therapies:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <textarea class="form-control" name="prior_therapies" id="prior_therapies" rows="4" required></textarea>
                                 <div class="invalid-feedback">
                                     Please enter valid Prior Therapies.
                                 </div>
+                                {{else}}
+                                    {{value.prior_therapies}}
+                                {{/ifEquals}}
                             </div>
 
                             <div class="col-md-4">
@@ -395,27 +417,35 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Immunogen
+                                    Immunogen:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <input type="text" class="form-control" name="immunogen" id="immunogen" placeholder="" required>
                                 <div class="invalid-feedback">
                                     Please enter valid Immunogen data.
                                 </div>
+                                {{else}}
+                                    {{value.immunogen}}
+                                {{/ifEquals}}
                             </div>
 
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label>
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Intervention
+                                    Intervention:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <textarea class="form-control" name="intervention" id="intervention" rows="4" required></textarea>
                                 <div class="invalid-feedback">
                                     Please enter valid Intervention data.
                                 </div>
+                                {{else}}
+                                    {{value.intervention_data}}
+                                {{/ifEquals}}
                             </div>
 
                             <div class="col-md-5">
@@ -423,18 +453,24 @@
                                     <span>
                                         <!-- Tooltip -->
                                     </span>
-                                    Medical History
+                                    Medical History:
                                     <!-- Popover -->
                                 </label>
+                                {{#ifEquals edit_mode "advanced"}}
                                 <textarea class="form-control" name="medical_history" id="medical_history" rows="4" required></textarea>
                                 <div class="invalid-feedback">
                                     Please enter valid Medical History.
                                 </div>
+                                {{else}}
+                                    {{value.medical_history}}
+                                {{/ifEquals}}
                             </div>
                         </div>
 
                         <div class="footer-actions">
+                            {{#ifEquals edit_mode "advanced"}}
                             <button type="button" class="btn btn-primary" id="saveEditDiagnosis"><i class="fa fa-save"></i> Save</button>
+                            {{/ifEquals}}
                         </div>
                     </form>
                 </div>
