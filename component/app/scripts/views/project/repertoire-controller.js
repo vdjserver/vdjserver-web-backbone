@@ -134,25 +134,57 @@ var RepertoireSummaryView = Marionette.View.extend({
 import expand_header_template from 'Templates/project/repertoire-expand-header.html';
 var RepertoireExpandedHeaderView = Marionette.View.extend({
     template: Handlebars.compile(expand_header_template),
-    className: "row"
+    className: "row",
+    initialize: function(parameters) {
+        this.edit_mode = this.model.edit_mode;
+    },
+    templateContext() {
+        return {
+            edit_mode: this.model.edit_mode,
+        }
+    }
 });
 
 import expand_subject_template from 'Templates/project/repertoire-expand-subject.html';
 var RepertoireExpandedSubjectView = Marionette.View.extend({
     template: Handlebars.compile(expand_subject_template),
-    className: "row"
+    className: "row",
+    initialize: function(parameters) {
+        this.edit_mode = this.model.edit_mode;
+    },
+    templateContext() {
+        return {
+            edit_mode: this.model.edit_mode,
+        }
+    }
 });
 
 import expand_sample_template from 'Templates/project/repertoire-expand-sample.html';
 var RepertoireExpandedSampleView = Marionette.View.extend({
     template: Handlebars.compile(expand_sample_template),
-    className: "row"
+    className: "row",
+    initialize: function(parameters) {
+        this.edit_mode = this.model.edit_mode;
+    },
+    templateContext() {
+        return {
+            edit_mode: this.model.edit_mode,
+        }
+    }
 });
 
 import expand_stats_template from 'Templates/project/repertoire-expand-statistics.html';
 var RepertoireExpandedStatisticsView = Marionette.View.extend({
     template: Handlebars.compile(expand_stats_template),
-    className: "row"
+    className: "row",
+    initialize: function(parameters) {
+        this.edit_mode = this.model.edit_mode;
+    },
+    templateContext() {
+        return {
+            edit_mode: this.model.edit_mode,
+        }
+    }
 });
 
 // Expanded view for a single repertoire
@@ -177,8 +209,8 @@ var RepertoireExpandedView = Marionette.View.extend({
     },
 
     initialize: function(parameters) {
-        // our controller
-        this.edit_mode = "";
+        // if "Edit" is clicked, it will be in "advanced" mode
+        this.edit_mode = this.model.edit_mode;
 
         // if (parameters && parameters.controller)
         //     this.controller = parameters.controller;
@@ -188,25 +220,25 @@ var RepertoireExpandedView = Marionette.View.extend({
             if (parameters.edit_mode) this.edit_mode = parameters.edit_mode;
         }
 
-        this.showChildView('headerRegion', new RepertoireExpandedHeaderView({model: this.model}));
+        this.showChildView('headerRegion', new RepertoireExpandedHeaderView({model: this.model, edit_mode: this.model.edit_mode}));
 
         // get the subject for this repertoire
         var value = this.model.get('value');
         var subjectList = this.controller.getSubjectList();
         var subject = subjectList.get(value['subject']['vdjserver_uuid']);
-        this.showChildView('subjectRegion', new RepertoireExpandedSubjectView({model: subject}));
+        this.showChildView('subjectRegion', new RepertoireExpandedSubjectView({model: subject, edit_mode: this.model.edit_mode}));
 
         // TODO: get the samples for this repertoire
         // samples is a collection of models
-        this.showChildView('sampleRegion', new RepertoireExpandedSampleView());
+        this.showChildView('sampleRegion', new RepertoireExpandedSampleView({model: this.model, edit_mode: this.model.edit_mode}));
 
         // get the repertoire statistics
-        this.showChildView('statisticsRegion', new RepertoireExpandedStatisticsView({model: this.model}));
+        this.showChildView('statisticsRegion', new RepertoireExpandedStatisticsView({model: this.model, edit_mode: this.model.edit_mode}));
     },
 
     templateContext() {
         return {
-            edit_mode: "",
+            edit_mode: this.edit_mode,
         }
     }
 
@@ -314,6 +346,7 @@ var RepertoireContainerView = Marionette.View.extend({
         'click #edit-repertoire': 'simpleEditRepertoire',
         'click #advanced-edit': 'advancedEditRepertoire',
         'click #save-repertoire': 'saveRepertoire',
+        'click #save-advanced-repertoire': 'saveAdvancedRepertoire',
     },
 
     initialize: function(parameters) {
@@ -324,18 +357,19 @@ var RepertoireContainerView = Marionette.View.extend({
         this.showRepertoireView();
     },
 
-    showRepertoireView() {
+    showRepertoireView(edit_mode) {
+        //console.log("passing edit_mode...");
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'expand':
-                this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model}));
+                this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: this.model.edit_mode}));
                 break;
             case 'simple-edit':
                 this.showChildView('containerRegion', new RepertoireEditView({controller: this.controller, model: this.model}));
                 break;
             case 'advanced-edit':
                 // do we want to create another set of pages for the advanced edit (expanded repertoire with edit functionality)?
-                this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model}));
+                this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: this.model.edit_mode}));
                 break;
             case 'summary':
             default:
@@ -374,14 +408,9 @@ var RepertoireContainerView = Marionette.View.extend({
 
     advancedEditRepertoire(edit_mode) {
         console.log('advancedEditRepertoire');
-
         this.model.view_mode = 'advanced-edit';
         this.model.edit_mode = 'advanced';
         this.showRepertoireView();
-
-        // var view = new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: "advanced"});
-
-        // this.showRepertoireView('containerRegion', view);
     },
 
     saveRepertoire(e) {
@@ -397,6 +426,16 @@ var RepertoireContainerView = Marionette.View.extend({
             // $("#edit-repertoire").removeClass("no-display");
         // });
     },
+
+    saveAdvancedRepertoire(e) {
+        console.log('saveAdvancedRepertoire');
+        e.preventDefault();
+
+        // change the view mode back
+        this.model.view_mode = 'expand';
+        this.model.edit_mode = '';
+        this.showRepertoireView();
+    }
 
 });
 
