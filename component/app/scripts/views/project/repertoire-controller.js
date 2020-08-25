@@ -57,7 +57,15 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCol
 import summary_header_template from 'Templates/project/repertoire-summary-header.html';
 var RepertoireSummaryHeaderView = Marionette.View.extend({
     template: Handlebars.compile(summary_header_template),
-    className: "row"
+    className: "row",
+    initialize: function(parameters) {
+        this.copy_mode = this.model.copy_mode;
+    },
+    templateContext() {
+        return {
+            copy_mode: this.model.copy_mode,
+        }
+    }
 });
 
 import summary_subject_template from 'Templates/project/repertoire-summary-subject.html';
@@ -98,9 +106,18 @@ var RepertoireSummaryView = Marionette.View.extend({
     },
 
     initialize: function(parameters) {
+        // Copy Mode is false by default
+        this.copy_mode = false;
+
         // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
+        // if (parameters && parameters.controller)
+        //     this.controller = parameters.controller;
+
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.copy_mode) this.copy_mode = parameters.copy_mode;
+        }
 
         this.showChildView('headerRegion', new RepertoireSummaryHeaderView({model: this.model}));
 
@@ -116,6 +133,12 @@ var RepertoireSummaryView = Marionette.View.extend({
 
         // get the repertoire statistics
         this.showChildView('statisticsRegion', new RepertoireSummaryStatisticsView({model: this.model}));
+    },
+
+    templateContext() {
+        return {
+            copy_mode: this.copy_mode,
+        }
     }
 });
 
@@ -347,6 +370,7 @@ var RepertoireContainerView = Marionette.View.extend({
         'click #advanced-edit': 'advancedEditRepertoire',
         'click #save-repertoire': 'saveRepertoire',
         'click #save-advanced-repertoire': 'saveAdvancedRepertoire',
+        'click #copy-repertoire': 'simpleCopyRepertoire'
     },
 
     initialize: function(parameters) {
@@ -357,7 +381,7 @@ var RepertoireContainerView = Marionette.View.extend({
         this.showRepertoireView();
     },
 
-    showRepertoireView(edit_mode) {
+    showRepertoireView(edit_mode, copy_mode) {
         //console.log("passing edit_mode...");
         // Choose which view class to render
         switch (this.model.view_mode) {
@@ -370,6 +394,9 @@ var RepertoireContainerView = Marionette.View.extend({
             case 'advanced-edit':
                 // do we want to create another set of pages for the advanced edit (expanded repertoire with edit functionality)?
                 this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: this.model.edit_mode}));
+                break;
+            case 'simple-copy':
+                this.showChildView('containerRegion', new RepertoireSummaryView({controller: this.controller, model: this.model, copy_mode: this.model.copy_mode}));
                 break;
             case 'summary':
             default:
@@ -434,6 +461,14 @@ var RepertoireContainerView = Marionette.View.extend({
         // change the view mode back
         this.model.view_mode = 'expand';
         this.model.edit_mode = '';
+        this.showRepertoireView();
+    },
+
+    simpleCopyRepertoire(e) {
+        console.log('copyRepertoire - simple copy');
+        e.preventDefault();
+        this.model.view_mode = 'simple-copy';
+        this.model.copy_mode = true;
         this.showRepertoireView();
     }
 

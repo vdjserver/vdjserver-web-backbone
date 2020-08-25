@@ -25,10 +25,6 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-// Custom jQuery
-import './_custom.js';
-
-
 // SASS/CSS
 import '../styles/main.scss'
 
@@ -48,3 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // start the application
   App.start();
 });
+
+// Custom jQuery
+import './_custom.js';

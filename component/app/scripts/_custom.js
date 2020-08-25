@@ -47,4 +47,14 @@ $(document).ready(function() {
     $(document).on("click", "#add-project-user", function() {
         $(".manage-users").find('tbody').append("<tr class='user-row'><td class='user-name-email'><input type='text' class='form-control col-md-6' id='user-name' placeholder='Username'><input type='email' class='form-control col-md-9' id='user-email' placeholder='Email'></td><td class='user-status'><select class='form-control' id='user-status'><option>Active</option><option>Inactive</option></td><td class='user-actions'><button type='button' class='btn btn-create' id='add-project-user'><i class='fa fa-plus' aria-hidden='true'></i> Add</button> <button type='button' class='btn btn-cancel' id='cancel-project-user'><i class='fa fa-plus' aria-hidden='true'></i> Cancel</button></td></tr>");
     });
+
+    // Selecting a project to copy
+    // $(document).on("click", "#copy-repertoire", function() {
+    //     $(this).("#repertoire-container").toggleClass(".selected-repertoire");
+    // });
+    if ($('#check-copy-repertoire').is('checked')) {
+        console.log("I'm checked!");
+    } else {
+        console.log("Nah, not checked");
+    }
 });
