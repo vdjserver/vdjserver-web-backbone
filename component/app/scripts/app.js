@@ -239,12 +239,12 @@ var ApplicationController = Marionette.View.extend({
     },
 
     onShownModal() {
-        console.log('login: Show the modal');
+        console.log('App: Show the modal');
         if (this.onShowFunction) this.onShowFunction(this.modalContext);
     },
 
     onHiddenModal() {
-        console.log('login: Hide the modal');
+        console.log('App: Hide the modal');
         if (this.onHideFunction) this.onHideFunction(this.modalContext);
     },
 

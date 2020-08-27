@@ -61,8 +61,10 @@ var ProjectSettingsView = Marionette.View.extend({
 
         if (this.edit_mode) {
             // in edit mode add the study type dropdown
-            var common = [{ id: 'NCIT:C16084', label: 'Observational Study' },
-                { id: 'NCIT:C93130', label: 'Animal Study'}];
+            var common = [
+                { id: 'NCIT:C16084', label: 'Observational Study' },
+                { id: 'NCIT:C93130', label: 'Animal Study'},
+                { id: 'NCIT:C15273', label: 'Longitudinal Study'}];
 
             var button_label = 'Choose a Study Type';
             var value = this.model.get('value');
@@ -129,7 +131,29 @@ import single_user_template from 'Templates/project/users.html';
 var SingleUserView = Marionette.View.extend({
     template: Handlebars.compile(single_user_template),
     tagName: 'tr',
-    className: 'user-row'
+    className: 'user-row',
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+    },
+
+    templateContext() {
+        var name = '';
+        for (var i = 0; i < this.controller.allUsersList.length; ++i) {
+            var model = this.controller.allUsersList.at(i);
+            if (model.get('username') == this.model.get('username')) {
+                name = model.get('full_name');
+                break;
+            }
+        }
+
+        return {
+            name: name
+        };
+    }
 });
 
 // Get User List Template
@@ -138,9 +162,16 @@ var ProjectUserListView = Marionette.CollectionView.extend({
     template: Handlebars.compile(userList_template),
     tagName: 'table',
     className: 'table manage-users',
+    childView: SingleUserView,
+
     initialize: function(parameters) {
-    this.childView = SingleUserView;
-  }
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+        this.childViewOptions = { controller: this.controller };
+    },
+
 });
 
 // Project Users
@@ -159,10 +190,255 @@ var ProjectUsersView = Marionette.View.extend({
             if (parameters.controller) this.controller = parameters.controller;
         }
 
+        this.new_user = null;
+
         var view = new ProjectUserListView({controller: this.controller, collection: this.controller.projectUserList});
         this.showChildView('usersRegion', view);
     },
 
+    onAttach() {
+        console.log('onAttach');
+
+        // autocomplete for username
+        var that = this;
+        $('.userAutoSelect').autoComplete({
+            minLength: 1,
+            preventEnter: true,
+            resolver: 'custom',
+            events: {
+                search: function(qry, callback) {
+                    var results = [];
+                    for (var i = 0; i < that.controller.allUsersList.length; ++i) {
+                        var model = that.controller.allUsersList.at(i);
+                        var username = model.get('username');
+                        var current = that.controller.projectUserList.findWhere({username: username});
+                        if (current) continue;
+                        if (username.indexOf(qry) >= 0) {
+                            results.push({value: i, text: username});
+                        }
+                    }
+                    callback(results);
+                }
+            }
+        });
+    },
+
+    events: {
+        'click #add-project-user': function(e) {
+            e.preventDefault();
+            this.addProjectUser(this.new_user);
+        },
+        'click #delete-project-user': function(e) {
+            e.preventDefault();
+            this.deleteProjectUser(e.target.name);
+        },
+        'click #dropdownMenuButton': function(e) {
+            console.log('dropdown clicked');
+            e.preventDefault();
+        },
+        'autocomplete.select': function(evt, item) {
+            if (item) this.new_user = item.text;
+            else this.new_user = null;
+            console.log('autocomplete.select', this.new_user);
+            //evt.preventDefault();
+        }
+    },
+
+    // add user flow
+    // 1. Show modal to confirm
+    // 2. If confirm, show success/failure modal for server request
+    // 3. On success, do any cleanup
+    addProjectUser(username) {
+        console.log('addProjectUser', username);
+        if (!username) return;
+
+        this.add_message = new MessageModel({
+          'header': 'Add User to Project',
+          'body':   '<p>Add user ' + username + ' to project? This process may take some time depending upon the size of the project. You will receive an email when it is done.</p>',
+          confirmText: 'Ok',
+          cancelText: 'Cancel'
+        });
+
+        // the app controller manages the modal region
+        this.modalState = 'add';
+        this.new_user = username;
+        var view = new ModalView({model: this.add_message});
+        App.AppController.startModal(view, this, this.onShownAddUserModal, this.onHiddenAddUserModal);
+        $('#modal-message').modal('show');
+
+
+    },
+
+    // add user modal is shown
+    onShownAddUserModal(context) {
+        console.log('add user: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function
+    },
+
+    onHiddenAddUserModal(context) {
+        console.log('add user: Hide the modal');
+        if (context.modalState == 'add') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.add_message.get('status') != 'confirm') return;
+
+            // add user to project
+            context.model.addUserToProject(context.new_user)
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Add User to Project',
+                    'body':   '<p>User ' + context.new_user + ' is being added to project! You will receive an email when it is done.',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenAddUserSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Add User to Project',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while requesting user to be added to project!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenAddUserSuccessModal(context) {
+        console.log('add user success: Hide the modal');
+        context.new_user = null;
+    },
+
+    // delete user flow
+    // 1. Show modal to confirm
+    // 2. If confirm, show success/failure modal for server request
+    // 3. On success, do any cleanup
+    deleteProjectUser(username) {
+        console.log('deleteProjectUser', username);
+        if (!username) return;
+
+        // make sure it's not the last user
+        if (this.controller.projectUserList.length == 1) {
+            // show modal with the failure message
+            var message = new MessageModel({
+                'header': 'Remove User from Project',
+                'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Cannot delete the last user on the project!</div>',
+                cancelText: 'Ok'
+            });
+
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, null, null, null);
+            $('#modal-message').modal('show');
+            return;
+        }
+
+        this.add_message = null;
+        if (username == App.Agave.token().get('username')) {
+            // are we deleting ourselves
+            this.add_message = new MessageModel({
+                header: 'Remove User from Project',
+                body:   '<div class="alert alert-danger"><i class="fa fa-times"></i> Delete yourself from project? You will lose all access!</div>',
+                confirmText: 'Ok',
+                cancelText: 'Cancel'
+            });
+        } else {
+            // another user
+            this.add_message = new MessageModel({
+              'header': 'Remove User from Project',
+              'body':   '<p>Remove user ' + username + ' from project? This process may take some time depending upon the size of the project. You will receive an email when it is done.</p>',
+              confirmText: 'Ok',
+              cancelText: 'Cancel'
+            });
+        }
+
+        // the app controller manages the modal region
+        this.modalState = 'delete';
+        this.delete_user = username;
+        var view = new ModalView({model: this.add_message});
+        App.AppController.startModal(view, this, this.onShownDeleteUserModal, this.onHiddenDeleteUserModal);
+        $('#modal-message').modal('show');
+
+    },
+
+    // delete user modal is shown
+    onShownDeleteUserModal(context) {
+        console.log('delete user: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function
+    },
+
+    onHiddenDeleteUserModal(context) {
+        console.log('delete user: Hide the modal');
+        if (context.modalState == 'delete') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.add_message.get('status') != 'confirm') return;
+
+            // add user to project
+            context.model.deleteUserFromProject(context.delete_user)
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Remove User from Project',
+                    'body':   '<p>User ' + context.delete_user + ' is being removed from project! You will receive an email when it is done.',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenDeleteUserSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Remove User from Project',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while requesting user to be removed from project!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenDeleteUserSuccessModal(context) {
+        console.log('delete user success: Hide the modal');
+
+        // if we deleted ourselves, we can no longer access the project
+        // so route to the project list page
+        if (context.delete_user == App.Agave.token().get('username')) {
+            App.router.navigate('/project', {'trigger': true});
+        } else {
+            // remove from project user list, view should automatically update
+            var current = context.controller.projectUserList.findWhere({username: context.delete_user});
+            context.controller.projectUserList.remove(current);
+            context.delete_user = null;
+        }
+    },
 
 });
 
@@ -275,14 +551,12 @@ var ProjectOverView = Marionette.View.extend({
             context.model.save()
             .then(function() {
                 context.modalState = 'pass';
-                $('#modal-message').modal('hide');
                 console.log("create pass");
                 console.log(context.model);
             })
             .fail(function(error) {
                 // save failed so show error modal
                 context.modalState = 'fail';
-                $('#modal-message').modal('hide');
 
                 // prepare a new modal with the failure message
                 var message = new MessageModel({

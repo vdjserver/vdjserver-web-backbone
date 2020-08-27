@@ -92,6 +92,38 @@ export default Agave.MetadataModel.extend({
         value.keywords_study = keywords;
         this.set('value', value);
     },
+
+    addUserToProject: function(username) {
+
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify({
+                project_uuid: this.get('uuid'),
+                username: username
+            }),
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/permission/user',
+        });
+
+        return jqxhr;
+    },
+
+    deleteUserFromProject: function(username) {
+
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify({
+                project_uuid: this.get('uuid'),
+                username: username
+            }),
+            headers: Agave.oauthHeader(),
+            type: 'DELETE',
+            url: EnvironmentConfig.vdjApi.hostname + '/permission/user',
+        });
+
+        return jqxhr;
+    },
 });
 
 /*
