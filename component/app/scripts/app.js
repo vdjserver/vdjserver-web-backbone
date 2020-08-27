@@ -87,12 +87,21 @@ var ApplicationController = Marionette.View.extend({
         // user profile available to whole app
         this.userProfile = null;
 
+        // controllers
+        this.clearControllers();
+
         // just a test to show schema is available
         console.log(AIRRSchema['Repertoire']);
 
         // create navigation bar
         this.navController = new NavigationController();
         this.showChildView('navigationRegion', this.navController);
+    },
+
+    clearControllers() {
+        this.projectController = null;
+        this.communityController = null;
+        this.adminController = null;
     },
 
     showHomePage() {

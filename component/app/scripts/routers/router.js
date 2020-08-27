@@ -29,7 +29,11 @@
 
 // Private Methods
 var _redirectToLogin = function() {
+    // clear out app state
+    App.AppController.clearControllers();
+
     // Routing should be done automatically when this happens.
+    // App listens for destroy
     App.Agave.destroyToken();
 };
 
@@ -226,8 +230,7 @@ export default Backbone.Router.extend({
 
     // Auth
     authLogout: function() {
-        // Routing *should* be handled automatically once the token is destroyed.
-        App.Agave.destroyToken();
+        _redirectToLogin();
     },
 
     //
