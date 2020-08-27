@@ -37,15 +37,6 @@ var _redirectToLogin = function() {
     App.Agave.destroyToken();
 };
 
-/*
-    routeWithTokenRefreshCheck states
-
-    Make sure the user profile is loaded
-
-    A.) Token is good, continue routing as normal
-    B.) Token is no longer active, but can probably be refreshed and route continued
-    C.) All hope is lost
- */
 var _routeWithTokenRefreshCheck = function(destinationRoute) {
     if (App.Agave.token().isActive()) {
         App.AppController.loadUserProfile()
@@ -109,6 +100,43 @@ export default Backbone.Router.extend({
         '*notFound': 'notFound',
     },
 
+    /*
+        routeWithTokenRefreshCheck states
+
+        Make sure the user profile is loaded
+
+        A.) Token is good, continue routing as normal
+        B.) Token is no longer active, but can probably be refreshed and route continued
+        C.) All hope is lost
+     */
+    routeWithTokenRefreshCheck: function(destinationRoute) {
+        this.redirectRoute = null;
+        if (App.Agave.token().isActive()) {
+            App.AppController.loadUserProfile()
+                .then(function() {
+                    destinationRoute();
+                })
+        }
+        else if (!App.Agave.token().isActive() && App.Agave.token().get('refresh_token')) {
+            App.Agave.token().save()
+                .then(function() {
+                    return App.AppController.loadUserProfile();
+                })
+                .then(function() {
+                    destinationRoute();
+                })
+                .fail(function() {
+                    this.redirectRoute = destinationRoute;
+                    _redirectToLogin();
+                })
+                ;
+        }
+        else {
+            this.redirectRoute = destinationRoute;
+            _redirectToLogin();
+        }
+    },
+
     // Index
     index: function() {
         console.log('index route');
@@ -122,7 +150,7 @@ export default Backbone.Router.extend({
             App.AppController.showHomePage();
         }
         else {
-            // if active token, send automatically to project page
+            // otherwise go to project page
             App.router.navigate('/project', {
                 trigger: true
             });
@@ -139,7 +167,7 @@ export default Backbone.Router.extend({
         var destinationRoute = function() {
             App.AppController.showUserProfilePage();
         };
-        _routeWithTokenRefreshCheck(destinationRoute);
+        this.routeWithTokenRefreshCheck(destinationRoute);
     },
 
     //
@@ -150,10 +178,15 @@ export default Backbone.Router.extend({
     projectList: function() {
         console.log('projectList route');
 
-        var destinationRoute = function() {
-            App.AppController.showProjectList();
-        };
-        _routeWithTokenRefreshCheck(destinationRoute);
+        // check to see if redirect route after login
+        if (this.redirectRoute) {
+            this.routeWithTokenRefreshCheck(this.redirectRoute);
+        } else {
+            var destinationRoute = function() {
+                App.AppController.showProjectList();
+            };
+            this.routeWithTokenRefreshCheck(destinationRoute);
+        }
     },
 
     // For Single Project Page
@@ -163,7 +196,7 @@ export default Backbone.Router.extend({
         var destinationRoute = function() {
             App.AppController.showProjectPage(projectUuid, page);
         };
-        _routeWithTokenRefreshCheck(destinationRoute);
+        this.routeWithTokenRefreshCheck(destinationRoute);
     },
 
     // Repertoire page for a project
@@ -215,7 +248,7 @@ export default Backbone.Router.extend({
         var destinationRoute = function() {
             App.AppController.showCreatePage();
         };
-        _routeWithTokenRefreshCheck(destinationRoute);
+        this.routeWithTokenRefreshCheck(destinationRoute);
     },
 
     // Files List
