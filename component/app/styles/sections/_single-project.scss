@@ -152,7 +152,6 @@ Repertoire Summary View
 
  #repertoire-summary-statistics, #repertoire-expand-statistics {
     padding-bottom: 3%;
-    border-bottom: 5px solid #e1e1e1;
 }
 
 .statistics-number, .statistics-name {
@@ -232,6 +231,10 @@ Delete a Project
 /*******************************************
 User Management
 *******************************************/
+#add-project-user {
+        margin-bottom: 3%;
+}
+
 .user-row:hover {
     background: $vdj-lightgray;
     cursor: pointer;
@@ -298,4 +301,10 @@ Repertoires
 
 #repertoire-container {
     margin-top: 3%;
+    padding: 2%;
+    border: 3px solid #e1e1e1;
+}
+
+.selected-repertoire {
+    background: rgba(127, 168, 189, 0.1);
 }
