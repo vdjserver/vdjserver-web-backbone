@@ -36,8 +36,17 @@ export default Marionette.View.extend({
     region: '#modal',
 
     events: {
-        'click #server-error': function() {
+        'click #server-error': function(e) {
             console.log('route to send feedback page');
         },
+        'click #cancel-message-button': function(e) {
+            e.preventDefault();
+            this.model.set('status','cancel');
+        },
+        'click #confirm-message-button': function(e) {
+            e.preventDefault();
+            this.model.set('status','confirm');
+        }
     }
+
 });
