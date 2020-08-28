@@ -4,14 +4,6 @@
         </div>
 </div>
 
-<script>
-    $('[data-toggle="popover"]').popover({
-        trigger: 'hover'
-    });
-
-    $('[data-toggle="tooltip"]').tooltip();
-</script>
-
 <form method="POST" role="form" id="project-form" class="needs-validation" name="project" novalidate>
     <div class="projectInfo">
         <h2 class="form-section">Project Information</h2>
@@ -31,7 +23,7 @@
                 <input type="text" class="form-control" name="study_id" id="NCBI" value="{{value.study_id}}">
             </div>
 
-            <div class="form-group col-md-8">
+            <div class="form-group col-md-12">
                 <label>
                     <span class="required">
                         <!-- Tooltip -->
@@ -43,21 +35,26 @@
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_title"}}}
                 </label>
-                <textarea class="form-control" name="study_title" id="study_title" rows="3" required>{{value.study_title}}</textarea>
+                <textarea class="form-control" name="study_title" id="study_title" rows="2" required>{{value.study_title}}</textarea>
                 <div class="invalid-feedback">
                   Please enter a Project/Study Title.
                 </div>
             </div>
 
             <div class="form-group col-md-10">
-                <label>Project/Study Description
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "study_description"}}}
+                    </span>
+                    Project/Study Description
                     <!-- Popover -->
                     {{{FieldHelpPopover "Study" "study_description"}}}
                 </label>
                 <textarea class="form-control" name="study_description" id="description" rows="15">{{value.study_description}}</textarea>
             </div>
 
-            <div class="form-group col-md-8">
+            <div class="form-group col-md-10">
                 <label>
                     <span class="required">
                         <!-- Tooltip -->
@@ -94,7 +91,15 @@
             </div>
 
             <div class="form-group col-md-3">
-                <label>Study Keywords</label>
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "keywords_study"}}}
+                    </span>
+                    Study Keywords
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "keywords_study"}}}
+                </label>
                 {{#each keywords_object}}
                         <div class="form-check custom-control custom-checkbox">
                           <input class="form-check-input" type="checkbox" name="{{@key}}" id="{{@key}}" value="{{@key}}">
@@ -139,9 +144,50 @@
             </div>
     </div>
 
+
+    <div class="labInfo">
+        <h2 class="form-section">Lab / Principal Investigator Contact Information</h2>
+        <div class="form-group col-md-5">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "lab_name"}}}
+                </span>
+
+                Lab Name / Principal Investigator (PI)
+
+                <!-- Popover -->
+                {{{FieldHelpPopover "Study" "lab_name"}}}
+            </label>
+            <input type="text" class="form-control" name="lab_name" id="lab_name" value="{{ value.lab_name }}">
+            <div class="invalid-feedback">
+              Please enter Lab Name / Principal Investigator (PI).
+            </div>
+        </div>
+
+        <div class="form-group col-md-7">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "lab_address"}}}
+                </span>
+
+                Lab Address
+
+                <!-- Popover -->
+                {{{FieldHelpPopover "Study" "lab_address"}}}
+            </label>
+
+            <input type="text" class="form-control" name="lab_address" id="lab_address" value="{{ value.lab_address }}">
+            <div class="invalid-feedback">
+              Please enter a Lab Address.
+            </div>
+        </div>
+    </div>
+
     <div class="collectorInfo">
         <h2 class="form-section">Data Collector Contact Information</h2>
-            <div class="form-group col-md-7">
+            <div class="form-group col-md-5">
                 <label>
                     <span class="required">
                         <!-- Tooltip -->
@@ -177,7 +223,7 @@
                 </div>
             </div>
 
-            <div class="form-group col-md-5">
+            <div class="form-group col-md-7">
                 <label>
                     <span class="required">
                         <!-- Tooltip -->
@@ -192,46 +238,6 @@
                 <input type="text" class="form-control" name="collectedby_address" id="collectedby_address">
                 <div class="invalid-feedback">
                   Please enter a Data Collector Address.
-                </div>
-            </div>
-        </div>
-
-        <div class="labInfo">
-            <h2 class="form-section">Lab / Principal Investigator Contact Information</h2>
-            <div class="form-group col-md-7">
-                <label>
-                    <span class="required">
-                        <!-- Tooltip -->
-                        {{{FieldStar "Study" "lab_name"}}}
-                    </span>
-
-                    Lab Name / Principal Investigator (PI)
-
-                    <!-- Popover -->
-                    {{{FieldHelpPopover "Study" "lab_name"}}}
-                </label>
-                <input type="text" class="form-control" name="lab_name" id="lab_name" value="{{ value.lab_name }}">
-                <div class="invalid-feedback">
-                  Please enter Lab Name / Principal Investigator (PI).
-                </div>
-            </div>
-
-            <div class="form-group col-md-7">
-                <label>
-                    <span class="required">
-                        <!-- Tooltip -->
-                        {{{FieldStar "Study" "lab_address"}}}
-                    </span>
-
-                    Lab Address
-
-                    <!-- Popover -->
-                    {{{FieldHelpPopover "Study" "lab_address"}}}
-                </label>
-
-                <input type="text" class="form-control" name="lab_address" id="lab_address" value="{{ value.lab_address }}">
-                <div class="invalid-feedback">
-                  Please enter a Lab Address.
                 </div>
             </div>
     </div>
@@ -274,7 +280,7 @@
                 </div>
             </div>
 
-            <div class="form-group col-md-5">
+            <div class="form-group col-md-7">
                 <label>
                     <span class="required">
                         <!-- Tooltip -->
@@ -291,17 +297,13 @@
                   Please enter a Data Submitter Address.
                 </div>
             </div>
-        </div>
+    </div>
+
     <div class="actions ml-auto">
         <div class="input-group">
             <input type="reset" value ="Cancel" class="col-md-3 btn btn-cancel" id="cancel-project">
 
-            <input type="submit" value="{{#if edit_mode}} Save Project {{else}} Create Project {{/if}}" class="col-md-4 btn btn-create" id="create-new-project">
+            <input type="submit" value="Create Project" class="col-md-4 btn btn-create" id="create-new-project">
         </div>
     </div>
 </form>
-
-<script>
-// Example starter JavaScript for disabling form submissions if there are invalid fields
-
-</script>

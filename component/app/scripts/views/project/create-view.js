@@ -71,8 +71,17 @@ var CreateView = Marionette.View.extend({
         }
     },
 
+    onAttach() {
+        // setup popovers and tooltips
+        $('[data-toggle="popover"]').popover({
+            trigger: 'hover'
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+    },
+
     selectStudyType(context, value) {
-        console.log("study type selected", value);
+        //console.log("study type selected", value);
         context.model.selected_study_type = value;
     },
 
@@ -111,7 +120,7 @@ export default Marionette.View.extend({
 
     // handle create project event
     createNewProject: function(e) {
-        console.log('create-view: createNewProject');
+        //console.log('create-view: createNewProject');
         e.preventDefault();
 
         // trigger validation
@@ -119,11 +128,11 @@ export default Marionette.View.extend({
 
         // Fetch the form
         var form = document.getElementsByClassName('needs-validation');
-        console.log(form);
+        //console.log(form);
 
         // only a single validation form
         if (form[0].checkValidity() === false) {
-            console.log("form validation worked");
+            //console.log("form validation worked");
 
             // scroll and focus to first invalid element
             var errorElements = $(form).find(".form-control:invalid");
@@ -158,7 +167,7 @@ export default Marionette.View.extend({
         data['submitted_by'] = fields.join(', ');
 
         this.model.setAttributesFromData(data);
-        console.log(this.model);
+        //console.log(this.model);
 
         // display a modal while the project is being created
         this.modalState = 'create';
@@ -173,48 +182,16 @@ export default Marionette.View.extend({
         $('#modal-message').modal('show');
     },
 
-    // handle save project event
-    saveProject: function(e) {
-        console.log('create-view: saveProject');
-        e.preventDefault();
-
-        // Currently validates regardless if there is an error or not. NOTE: Still submits the form
-
-        $('.needs-validation').addClass('was-validated');
-
-        // pull data out of form and put into model
-        var data = Syphon.serialize(this);
-
-        // manually hack the study_type until we have ontologies implemented
-        data['study_type'] = null;
-        this.model.setAttributesFromData(data);
-        console.log(this.model);
-
-        // display a modal while the project is being created
-        this.modalState = 'save';
-        var message = new MessageModel({
-          'header': 'Project Saved',
-          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Project Saved</p>'
-        });
-
-        // the app controller manages the modal region
-        var view = new ModalView({model: message});
-        App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
-        $('#modal-message').modal('show');
-
-        console.log(message);
-    },
-
     // project creation request is sent to server after the modal is shown
     onShownModal(context) {
-        console.log('create: Show the modal');
+        //console.log('create: Show the modal');
 
         // use modal state variable to decide
-        console.log(context.modalState);
+        //console.log(context.modalState);
         if (context.modalState == 'create') {
 
             // save the model
-            console.log(context.model);
+            //console.log(context.model);
             context.model.save()
             .done(function() {
                 context.modalState = 'pass';
@@ -236,12 +213,11 @@ export default Marionette.View.extend({
                 App.AppController.startModal(view, null, null, null);
                 $('#modal-message').modal('show');
             });
-        } else if (context.modalState == 'fail') {
         }
     },
 
     onHiddenModal(context) {
-        console.log('create: Hide the modal');
+        //console.log('create: Hide the modal');
         if (context.modalState == 'pass') {
             // display a success modal
             var message = new MessageModel({
@@ -253,9 +229,6 @@ export default Marionette.View.extend({
             var view = new ModalView({model: message});
             App.AppController.startModal(view, context, null, context.onHiddenSuccessModal);
             $('#modal-message').modal('show');
-        } else if (context.modalState == 'fail') {
-            console.log("show fail modal");
-            // failure modal will automatically hide when user clicks OK
         }
     },
 
