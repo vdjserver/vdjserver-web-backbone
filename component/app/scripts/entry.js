@@ -37,7 +37,7 @@ import Application from 'Scripts/app';
 
 // need this here so that it extends jQuery
 import bootstrap from 'bootstrap';
-import bootstrap_autocomplete from 'bootstrap-autocomplete';
+//import bootstrap_autocomplete from 'bootstrap-autocomplete';
 
 document.addEventListener('DOMContentLoaded', () => {
   // the global application object

@@ -27,6 +27,8 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import MessageModel from 'Scripts/models/message';
+import ModalView from 'Scripts/views/utilities/modal-view';
 import SingleRepView from 'Scripts/views/project/rep-view';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import { Repertoire, Subject, Diagnosis } from 'Scripts/models/agave-metadata';
@@ -370,7 +372,8 @@ var RepertoireContainerView = Marionette.View.extend({
         'click #advanced-edit': 'advancedEditRepertoire',
         'click #save-repertoire': 'saveRepertoire',
         'click #save-advanced-repertoire': 'saveAdvancedRepertoire',
-        'click #copy-repertoire': 'simpleCopyRepertoire'
+        'click #check-copy-repertoire': 'simpleCopyRepertoire',
+        'click #copy-repertoire': 'copyRepertoireModal'
     },
 
     initialize: function(parameters) {
@@ -447,11 +450,6 @@ var RepertoireContainerView = Marionette.View.extend({
         // change the view mode back
         this.model.view_mode = 'summary';
         this.showRepertoireView();
-
-        // $('#save-repertoire').on("click", function() {
-            // $(this).addClass("no-display");
-            // $("#edit-repertoire").removeClass("no-display");
-        // });
     },
 
     saveAdvancedRepertoire(e) {
@@ -466,10 +464,33 @@ var RepertoireContainerView = Marionette.View.extend({
 
     simpleCopyRepertoire(e) {
         console.log('copyRepertoire - simple copy');
-        e.preventDefault();
         this.model.view_mode = 'simple-copy';
-        this.model.copy_mode = true;
+        this.model.set('copy_mode', e.target.checked);
+        this.model.copy_mode = this.model.get('copy_mode');
+        console.log(
+			'input:', e.target.checked,
+			'model.copy_mode:', this.model.copy_mode
+			);
         this.showRepertoireView();
+    },
+
+    // Modal displays to:
+    // 1. confirm user wants to copy chosen repertoire
+    // 2. allow user to select specific details that should be copied?
+    copyRepertoireModal(e) {
+        console.log('copy modal will appear');
+        var message = new MessageModel({
+            'header': 'Copy a Repertoire',
+            'body': '<div>Are you sure you would like to copy the repertoire?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        $('#modal-message').modal('show');
+
+        console.log(message);
     }
 
 });
