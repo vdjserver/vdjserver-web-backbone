@@ -48,6 +48,10 @@ Repertoire Summary View
     float: right;
 }
 
+.repertoire-details-card {
+    border-radius: 0px;
+}
+
 #repertoire-summary-header, #repertoire-expand-header {
     padding-top: 2%;
 }
@@ -56,9 +60,9 @@ Repertoire Summary View
     padding-bottom: 2%;
 }
 
- #repertoire-summary-statistics, #repertoire-expand-statistics {
-    padding-bottom: 3%;
-}
+//  #repertoire-summary-statistics, #repertoire-expand-statistics {
+//     padding-bottom: 3%;
+// }
 
 .statistics-number, .statistics-name {
     display: block;

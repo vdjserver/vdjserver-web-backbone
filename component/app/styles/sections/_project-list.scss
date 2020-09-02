@@ -2,8 +2,20 @@
 SASS for Project List page
 *****************************************************/
 
-.navbar-brand img {
-    width: 35%;
+// .jumbotron {
+//     background: none !important;
+// }
+
+.navbar-brand {
+    img {
+        width: 15%;
+        padding-right: 0.25em;
+    }
+
+    .brand-name {
+        font-weight: bold;
+        //text-transform: uppercase;
+    }
 }
 
 .tabs {

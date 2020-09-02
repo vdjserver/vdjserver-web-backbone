@@ -6,7 +6,6 @@
         <form method="POST" role="form" id="editProject-form" class="needs-validation" name="editProject" novalidate>
             <div class="row">
                 <div class="col-md-6 overview-summary">
-                    Edit Mode: {{edit_mode}}
                     <h3>Project Summary</h3>
                     {{#unless edit_mode}}
                         <p>{{value.study_description}}</p>
@@ -84,13 +83,6 @@
                         {{/if}}
                     </div>
 
-                    <!-- <div class="overview-item">
-                        <span class="details">Funding Agency:</span>
-                        {{#unless edit_mode}}
-                            {{value.grant_agency}}
-                        {{/unless}}
-                    </div> -->
-
                     <div class="overview-item">
                         <span class="details">Grants:</span>
                         {{#unless edit_mode}}
@@ -160,7 +152,7 @@
                     {{/unless}}
 
                     {{#if edit_mode}}
-                        <input type="button" class="btn btn-edit float-md-right" id="save-edit-project" value="Save Project">
+                        <input type="button" class="btn btn-save float-md-right" id="save-edit-project" value="Save Project">
                     {{/if}}
 
                     {{#if edit_mode}}
@@ -169,30 +161,12 @@
 
                     <button type="button" class="btn btn-delete float-md-right" id="archive-project" data-toggle="modal" data-target="#delete-modal">Archive Project</button>
 
+                    {{#unless edit_mode}}
+                        <button type="button" class="btn btn-create float-md-right" id="publish-project" data-toggle="modal" data-target="#publish-modal">Publish Project</button>
+                    {{/unless}}
                     <!-- <button type="button" class="btn btn-info float-md-right" id="playground">
                         Handlebar Playground
                     </button> -->
                 </div>
             </div>
         </form>
-
-        <!-- Archive Project Modal -->
-        <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="project-warning" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="project-warning" class="delete-warning">Delete Warning</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete this project?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-cancel" data-dismiss="modal">No</button>
-                        <button type="button" class="btn btn-delete" id="archive-project-yes">Yes</button>
-                    </div>
-                </div>
-             </div>
-        </div>

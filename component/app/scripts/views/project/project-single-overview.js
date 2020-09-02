@@ -495,6 +495,10 @@ var ProjectOverView = Marionette.View.extend({
 
         'click #archive-project-yes': function() {
             this.archiveProjectYes();
+        },
+
+        'click #publish-project': function() {
+            this.publishProject();
         }
     },
 
@@ -594,6 +598,17 @@ var ProjectOverView = Marionette.View.extend({
 
     archiveProject() {
         console.log("Archive Project button clicked");
+
+        var message = new MessageModel({
+            'header': 'Delete a Project',
+            'body': '<div class="alert alert-danger">You are about to delete a project.</div><div>Are you sure you want to delete this project?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        $('#modal-message').modal('show');
     },
 
     archiveProjectYes() {
@@ -602,6 +617,25 @@ var ProjectOverView = Marionette.View.extend({
 
         // this.set('name', 'deletedProject');
         // return this.save();
+    },
+
+    publishProject(e) {
+        console.log("Publish Project button clicked");
+
+        var message = new MessageModel({
+            'header': 'Publish a Project',
+            'body': '<div>Are you sure you want to publish the project?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        $('#modal-message').modal('show');
+    },
+
+    publishProjectYes() {
+        console.log("Publish Project Confirmed: Yes");
     }
 });
 

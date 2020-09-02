@@ -20,9 +20,9 @@ var ProjectSummaryView = Marionette.View.extend({
 });
 
 export default Marionette.CollectionView.extend({
-    template: Handlebars.compile("<thead class='thead-dark'><tr><th scope='col'>Projects</th><th scope='col'>Summary</th><th scope='col'>Date Created</th><th scope='col'>Study Type</th></tr></thead>"),
+    template: Handlebars.compile("<thead class='thead-light'><tr><th scope='col'>Projects</th><th scope='col'>Summary</th><th scope='col'>Date Created</th><th scope='col'>Study Type</th></tr></thead>"),
     tagName: 'table',
-    className: 'table table-hover table-sm',
+    className: 'table table-hover table-sm table-bordered',
     initialize: function(parameters) {
     this.childView = ProjectSummaryView;
   },
