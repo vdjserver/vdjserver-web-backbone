@@ -9,6 +9,7 @@ $vdj-darkgray: #6C757D;
 $vdj-medgray: #B8C0C7;
 $vdj-lightgray: #E1E1E1;
 $vdj-blue: #7FA8BD;
+$vdj-link: #61B8E4;
 
 // BootStrap Color Overrides
 $theme-colors: (
@@ -37,22 +38,3 @@ $text-save: #FFFFFF;
 
 /* finally, import Bootstrap to set the changes! */
 @import "~bootstrap/scss/bootstrap";
-
-//$projectMenuLightColor: #63c3d9;
-//
-// // Dark blue
-// $projectMenuLightColor: #184450;
-//
-// // Green
-// //$projectMenuLightColor: #699886;
-// $projectMenuTextColor: #ffffff;
-//
-// $projectSubmenuColor: #f3f3f3;
-// $projectSubmenuTextColor: #484848;
-// $projectFileListingsAlternateColor: #f2f2f2;
-// $projectNavbarBorderColor: #6e3a34;
-// $projectNavbarButtonColor: #7d362f;
-//
-// $boxShadowColor: #767676;
-//
-// $projectListBorderColor: #575757;

@@ -17,6 +17,15 @@ SASS for Home page
     background: $vdj-green;
 }
 
+a {
+    color: $vdj-link;
+}
+
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
 #main {
     padding: 2%;
 }
@@ -54,6 +63,11 @@ SASS for Home page
     }
 }
 
+.welcome-box {
+    margin-top: 5%;
+    margin-left: 10%;
+}
+
 .large-info-box {
     border-top: 1px #e3e3e3 solid;
     background: #6c757d;
@@ -67,11 +81,20 @@ SASS for Home page
     background: #f7f7f7;
 }
 
-.login-group {
-    margin-bottom: 7%;
-    margin-left: 3em;
+#create-account, #home-login {
+    float: right;
+    margin: 2%;
+}
 
-    a {
-        padding: 1em;
-    }
+
+.forgot-password {
+    float: right;
+    color: $vdj-link;
+}
+
+
+.form-control:focus {
+    border-color: $vdj-yellow;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(234, 227, 134, 0.6);
 }

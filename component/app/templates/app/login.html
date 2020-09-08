@@ -31,17 +31,26 @@
                         <input class="form-control" type="password" placeholder="PASSWORD" name="password" id="password" {{#if maintenance}}disabled{{/if}}>
                     </div>
 
-                    <div class="row login-group">
-                        <div>
-                            {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}<br />
-                            {{#if maintenance}}{{else}}<a class="home-create-account" href="/account">Create Account</a>{{/if}}
-                            <input type="submit" class="btn btn-warning login-button" id="home-login" value="Login">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <input type="submit" class="btn btn-primary login-button" id="home-login" value="Login">
+                            {{#if maintenance}}
+                            {{else}}
+                                <button class="btn btn-create btn-small" href="/account" id="create-account">Create Account</button>
+                                {{/if}}
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7">
+                        {{#if maintenance}}
+                        {{else}}
+                            <a class="forgot-password" href="password-reset">Forgot password?</a>{{/if}}
+                        </div>
+                    </div>
                             <!-- <input type="submit" value="LOGIN" id="home-login" class="login-button" {{#if maintenance}}disabled{{/if}}> -->
                             <!-- <div class="col-md-6 login-button-column text-center">
                                 {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
                             </div> -->
-                        </div>
                     </form>
                 </div>
                 <!-- <div class="row login-subgroup">
