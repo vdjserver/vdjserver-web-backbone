@@ -67,34 +67,34 @@ export default Backbone.Router.extend({
     // order of routes matter as the first one that matches is used
     routes: {
         '':                                 'index',
-        'auth/logout':                      'authLogout',
+        //'auth/logout':                      'authLogout',
 
         // user account pages
-        'account/profile':                  'accountProfile',
+        //'account/profile':                  'accountProfile',
 
         // project pages
-        'project':                          'projectList',
-        'project/create':                   'createPage',
-        'project/:id':                      'projectPage',
-        'project/:id/repertoire':           'projectRepertoire',
-        'project/:id/group':                'projectGroup',
-        'project/:id/file':                 'projectFile',
-        'project/:id/analysis':             'projectAnalysis',
+        //'project':                          'projectList',
+        //'project/create':                   'createPage',
+        //'project/:id':                      'projectPage',
+        //'project/:id/repertoire':           'projectRepertoire',
+        //'project/:id/group':                'projectGroup',
+        //'project/:id/file':                 'projectFile',
+        //'project/:id/analysis':             'projectAnalysis',
         'community':                        'communityList',
-        'project/:id/repertoire/create':           'createRepertoire',
-        'project/:id/repertoire/create/subject': 'addSubject',
-        'project/:id/repertoire/create/subject/diagnosis': 'addDiagnosis',
-        'project/:id/repertoire/create/sample': 'addSample',
-        'project/:id/repertoire/create/cell': 'addCell',
-        'project/:id/repertoire/create/nucleic': 'addNucleic',
-        'project/:id/group/create':         'addRepGroup',
+        //'project/:id/repertoire/create':           'createRepertoire',
+        //'project/:id/repertoire/create/subject': 'addSubject',
+        //'project/:id/repertoire/create/subject/diagnosis': 'addDiagnosis',
+        //'project/:id/repertoire/create/sample': 'addSample',
+        //'project/:id/repertoire/create/cell': 'addCell',
+        //'project/:id/repertoire/create/nucleic': 'addNucleic',
+        //'project/:id/group/create':         'addRepGroup',
 
         // admin pages
-        'admin':                            'adminOverview',
-        'admin/users':                      'adminUsers',
-        'admin/jobs':                       'adminJobs',
-        'admin/repository':                 'adminRepository',
-        'admin/statistics':                 'adminStatistics',
+        //'admin':                            'adminOverview',
+        //'admin/users':                      'adminUsers',
+        //'admin/jobs':                       'adminJobs',
+        //'admin/repository':                 'adminRepository',
+        //'admin/statistics':                 'adminStatistics',
 
         // 404
         '*notFound': 'notFound',
@@ -141,20 +141,10 @@ export default Backbone.Router.extend({
     index: function() {
         console.log('index route');
 
-        // make sure to clear out any inactive token
-        if (!App.Agave.token().isActive()) {
-            App.Agave.token().clear();
-            window.localStorage.removeItem('Agave.Token');
-
-            // show home page
-            App.AppController.showHomePage();
-        }
-        else {
-            // otherwise go to project page
-            App.router.navigate('/project', {
-                trigger: true
-            });
-        }
+        // go to community page
+        App.router.navigate('/community', {
+            trigger: true
+        });
     },
 
     //
