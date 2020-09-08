@@ -1,17 +1,17 @@
 .badge-success {
     @extend .badge;
 
-    background-color: $vdjLogoGreen;
+    background-color: $success;
 }
 
 .badge-warning {
     @extend .badge;
 
-    background-color: $brand-warning;
+    background-color: $warning;
 }
 
 .badge-danger {
     @extend .badge;
 
-    background-color: $brand-danger;
+    background-color: $danger;
 }

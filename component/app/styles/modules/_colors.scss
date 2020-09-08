@@ -1,24 +1,40 @@
-// colors
-$red: #993333;
-$darkGray: #919191;
+/* import only the necessary Bootstrap files */
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
 
-$vdjLogoGreen: #558a74;
+$vdj-green: #689A87;
+$vdj-orange: #CC6B4C;
+$vdj-yellow: #EAE386;
+$vdj-darkgray: #6C757D;
+$vdj-medgray: #B8C0C7;
+$vdj-lightgray: #E1E1E1;
+$vdj-blue: #7FA8BD;
+$vdj-link: #61B8E4;
 
-//$projectMenuLightColor: #63c3d9;
+// BootStrap Color Overrides
+$theme-colors: (
+    'delete': #D93C39, // Red
+    'success': #71B87D, // Green
+    'save': #71B87D, // Green
+    'new': $vdj-blue, // VDJServer Blue
+    'add': $vdj-blue, // VDJServer Blue
+    'create': $vdj-blue, // VDJServer Blue
+    'upload': $vdj-medgray, // VDJServer Med Gray
+    'edit': $vdj-yellow, // VDJServer Yellow
+    'copy': #F6835E, // Light Orange
+    'info': #4E95B8, // Blue
+    'primary': #689A87,
+    'light': #B8C0C7,
+    'cancel': #B8C0C7
+);
 
-// Dark blue
-$projectMenuLightColor: #184450;
+// Elements
+$vdj-border: #E1E1E1;
+$text-danger: #FFFFFF;
+$text-info: #6C757D;
+$text-light: #FFFFFF;
+$text-success: #FFFFFF;
+$text-save: #FFFFFF;
 
-// Green
-//$projectMenuLightColor: #699886;
-$projectMenuTextColor: #ffffff;
-
-$projectSubmenuColor: #f3f3f3;
-$projectSubmenuTextColor: #484848;
-$projectFileListingsAlternateColor: #f2f2f2;
-$projectNavbarBorderColor: #6e3a34;
-$projectNavbarButtonColor: #7d362f;
-
-$boxShadowColor: #767676;
-
-$projectListBorderColor: #575757;
+/* finally, import Bootstrap to set the changes! */
+@import "~bootstrap/scss/bootstrap";

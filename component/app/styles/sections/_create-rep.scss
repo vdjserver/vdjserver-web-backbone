@@ -1,0 +1,74 @@
+/*****************************************************
+"Create a Repertoire" page
+*****************************************************/
+form {
+    margin-bottom: 3%;
+}
+
+.custom-select {
+    display: block;
+}
+
+.steps {
+    text-align: center;
+}
+
+li.progress-step {
+    display: inline;
+    list-style-type: none;
+
+    .step {
+        padding: 1%;
+    }
+}
+
+.rep-back-actions {
+    float: left;
+}
+
+.rep-next-actions {
+    float: right;
+}
+
+// Create A Subject
+#uploadSubject, #uploadDiagnosis, #uploadSample, #uploadCell, #uploadNucleic {
+    width: 0.1px; // customizing file input
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+#uploadSubject + label {
+	cursor: pointer; // "hand" cursor
+}
+
+#age.form-control {
+    width: 8%;
+}
+
+.no-border {
+    border: 0px;
+}
+
+/***************************************
+Footer Actions
+***************************************/
+.footer-actions {
+    margin-top: 3%;
+    width: 100%;
+    margin-bottom: 3%;
+}
+
+/***************************************
+Modal Styles
+***************************************/
+.modal-content {
+    padding: 2em;
+}
+
+.saving {
+    font-size: 1.5em;
+    text-align: center;
+}

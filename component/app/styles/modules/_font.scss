@@ -1,61 +1,46 @@
 // Font Awesome
 $fa-font-path: '/fonts/font-awesome';
 
-// Tex Gyre Adventor
-@include font-face(
-    'TexGyreAdventor-Regular',
-    font-files(
-        'tex-gyre-adventor-regular/texgyreadventor-regular-webfont.eot',
-        'tex-gyre-adventor-regular/texgyreadventor-regular-webfont.svg',
-        'tex-gyre-adventor-regular/texgyreadventor-regular-webfont.ttf',
-        'tex-gyre-adventor-regular/texgyreadventor-regular-webfont.woff'
-    )
-);
+@font-face {
+  font-family: TexGyreAdventor-Regular;
+  src: url('../fonts/tex-gyre-adventor-regular/texgyreadventor-regular-webfont.eot'),
+       url('../fonts/tex-gyre-adventor-regular/texgyreadventor-regular-webfont.svg'),
+       url('../fonts/tex-gyre-adventor-regular/texgyreadventor-regular-webfont.ttf'),
+       url('../fonts/tex-gyre-adventor-regular/texgyreadventor-regular-webfont.woff');
+}
 
-@include font-face(
-    'TexGyreAdventor-Bold',
-    font-files(
-        'tex-gyre-adventor-bold/texgyreadventor-bold-webfont.eot',
-        'tex-gyre-adventor-bold/texgyreadventor-bold-webfont.svg',
-        'tex-gyre-adventor-bold/texgyreadventor-bold-webfont.ttf',
-        'tex-gyre-adventor-bold/texgyreadventor-bold-webfont.woff'
-    )
-);
+@font-face {
+  font-family: TexGyreAdventor-Bold;
+  src: url('../fonts/tex-gyre-adventor-bold/texgyreadventor-bold-webfont.eot'),
+       url('../fonts/tex-gyre-adventor-bold/texgyreadventor-bold-webfont.svg'),
+       url('../fonts/tex-gyre-adventor-bold/texgyreadventor-bold-webfont.ttf'),
+       url('../fonts/tex-gyre-adventor-bold/texgyreadventor-bold-webfont.woff');
+}
 
-// Aleo
-@include font-face(
-    'Aleo-Regular',
-    font-files(
-        'aleo-regular/aleo-regular-webfont.eot',
-        'aleo-regular/aleo-regular-webfont.svg',
-        'aleo-regular/aleo-regular-webfont.ttf',
-        'aleo-regular/aleo-regular-webfont.woff'
-    )
-);
+@font-face {
+  font-family: Aleo-Regular;
+  src: url('../fonts/aleo-regular/aleo-regular-webfont.eot'),
+       url('../fonts/aleo-regular/aleo-regular-webfont.svg'),
+       url('../fonts/aleo-regular/aleo-regular-webfont.ttf'),
+       url('../fonts/aleo-regular/aleo-regular-webfont.woff');
+}
 
-@include font-face(
-    'Aleo-Bold',
-    font-files(
-        'aleo-bold/aleo-bold-webfont.eot',
-        'aleo-bold/aleo-bold-webfont.svg',
-        'aleo-bold/aleo-bold-webfont.ttf',
-        'aleo-bold/aleo-bold-webfont.woff'
-    )
-);
+@font-face {
+  font-family: Aleo-Bold;
+  src: url('../fonts/aleo-bold/aleo-bold-webfont.eot'),
+       url('../fonts/aleo-bold/aleo-bold-webfont.svg'),
+       url('../fonts/aleo-bold/aleo-bold-webfont.ttf'),
+       url('../fonts/aleo-bold/aleo-bold-webfont.woff');
+}
 
-// Rockwell
-@include font-face(
-    'Rockwell-Regular',
-    font-files(
-        'rockwell-regular/rockwell-regular.eot',
-        'rockwell-regular/rockwell-regular.ttf'
-    )
-);
+@font-face {
+  font-family: Rockwell-Regular;
+  src: url('../fonts/rockwell-regular/rockwell-regular.eot'),
+       url('../fonts/rockwell-regular/rockwell-regular.ttf')
+}
 
-@include font-face(
-    'Rockwell-Light',
-    font-files(
-        'rockwell-light/rockwell-light.eot',
-        'rockwell-light/rockwell-light.ttf'
-    )
-);
+@font-face {
+  font-family: Rockwell-Regular;
+  src: url('../fonts/rockwell-light/rockwell-light.eot'),
+       url('../fonts/rockwell-light/rockwell-light.ttf')
+}

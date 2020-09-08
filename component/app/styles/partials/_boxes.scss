@@ -41,17 +41,17 @@
 }
 
 .triangle-overlay {
-    @include background-image(linear-gradient(left top, #fffcfc, #ffffff 48%, #f7f6f6 51%, #f7f6f6));
+    background-image: linear-gradient(left top, #fffcfc, #ffffff 48%, #f7f6f6 51%, #f7f6f6);
 }
 
 .boxes-shadow {
-    @include box-shadow(rgba($boxShadowColor, 0.5) 5px 5px 0px 2px);
+    box-shadow: rgba($boxShadowColor, 0.5) 5px 5px 0px 2px;
 }
 
 .boxes-action {
     @extend .boxes-shadow;
     @extend .triangle-overlay;
-    border: 1px solid $vdjLogoGreen;
+    border: 1px solid $vdj-green;
     background-color: #ffffff;
     height: 300px;
     max-height: 100%;
@@ -186,7 +186,7 @@
 
 .large-info-box.uploads {
     margin: 50px 0 50px 0;
-    border: 1px solid $vdjLogoGreen;
+    border: 1px solid $vdj-green;
     display: block;
     max-height: 100%;
     overflow: auto;
@@ -207,7 +207,7 @@
 
 .community {
     margin-top: 8px;
-    border-bottom: 6px solid $vdjLogoGreen;
+    border-bottom: 6px solid $vdj-green;
 }
 
 .community h2 {

@@ -1,0 +1,421 @@
+<div class="alert alert-info">
+    <i class="fa fa-info-circle"></i> Handlebars Playground.
+</div>
+
+<!-- straight display -->
+
+{{value}}
+
+{{value.study_title}}
+
+<br>
+
+<input type="text" class="form-control" name="study_id" id="NCBI" placeholder="PRJNA001" required value="{{value.study_title}}">
+
+<br>
+
+<textarea class="form-control" name="study_description" id="description" rows="3">{{value.study_description}}</textarea>
+
+<br>
+
+<!-- simple iteration -->
+<!--
+{{#each value.keywords_study}}
+    <input class="form-check-input" type="checkbox" name="study_type" id="{{this}}" value="{{this}}">
+    <label class="form-check-label" for="{{@index}}">
+    {{this}}
+    </label>
+    <br>
+{{/each}}
+-->
+<br>
+
+<!-- non-model data -->
+
+{{airr_schema.discriminator}}
+
+<br>
+
+
+<pre>
+
+{{airr_string}}
+</pre>
+
+<br>
+
+<div class="form-group col-md-3">
+    <label>Study Keywords</label>
+{{#each airr_schema.properties.keywords_study.items.enum}}
+        <div class="form-check custom-control custom-checkbox">
+          <input class="form-check-input" type="checkbox" name="study_type" id="{{this}}" value="{{this}}">
+          <label class="form-check-label" for="{{@index}}">
+            {{this}}
+          </label>
+      </div>
+{{/each}}
+</div>
+
+
+<br>
+
+{{keywords_array}}
+<div class="form-group col-md-3">
+    <label>Study Keywords</label>
+{{#each airr_schema.properties.keywords_study.items.enum}}
+        <div class="form-check custom-control custom-checkbox">
+          <input class="form-check-input" type="checkbox" name="study_type" id="{{this}}" value="{{this}}">
+          <label class="form-check-label" for="{{@index}}">
+            {{lookup ../keywords_array @index}}
+          </label>
+      </div>
+{{/each}}
+</div>
+
+
+<br>
+
+{{keywords_object}}
+<div class="form-group col-md-3">
+    <label>Study Keywords</label>
+{{#each airr_schema.properties.keywords_study.items.enum}}
+        <div class="form-check custom-control custom-checkbox">
+          <input class="form-check-input" type="checkbox" name="study_type" id="{{this}}" value="{{this}}" checked>
+          <label class="form-check-label" for="{{@index}}">
+            {{#with (lookup ../keywords_object this)}} {{this}} {{/with}}
+          </label>
+      </div>
+{{/each}}
+</div>
+
+
+<br>
+
+{{keywords_object}}
+<div class="form-group col-md-3">
+    <label>Study Keywords</label>
+{{#each airr_schema.properties.keywords_study.items.enum}}
+        <div class="form-check custom-control custom-checkbox">
+          <input class="form-check-input" type="checkbox" name="study_type" id="{{this}}" value="{{this}}" {{#contains this ../value.keywords_study}} checked {{/contains}}>
+          <label class="form-check-label" for="{{@index}}">
+            {{#with (lookup ../keywords_object this)}} {{this}} {{/with}}
+          </label>
+      </div>
+{{/each}}
+</div>
+
+<!--
+
+-->
+
+{{#each airr_schema.properties}}
+        <h2 class="form-section">{{this.description}}</h2>
+{{/each}}
+
+
+<form method="post" role="form" id="project-form" class="needs-validation" name="project" novalidate>
+    <div class="projectInfo">
+        <h2 class="form-section">Project Information</h2>
+            <div class="form-group col-md-4">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "study_id"}}}
+                    </span>
+
+                    Study ID
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "study_id"}}}
+                </label>
+                <input type="text" class="form-control" name="study_id" id="NCBI" placeholder="PRJNA001" required>
+                <div class="invalid-feedback">
+                  Please enter a Study ID.
+                </div>
+            </div>
+
+            <div class="form-group col-md-8">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "study_title"}}}
+                    </span>
+
+                    Project/Study Title
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "study_title"}}}
+                </label>
+                <input type="text" class="form-control" name="study_title" id="name" placeholder="Effects of sunlight exposure of the Treg repertoire" required>
+                <div class="invalid-feedback">
+                  Please enter a Project/Study Title.
+                </div>
+            </div>
+
+            <div class="form-group col-md-8">
+                <label>Project/Study Description
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "study_description"}}}
+                </label>
+                <textarea class="form-control" name="study_description" id="description" rows="3">{{value.study_description}}</textarea>
+            </div>
+
+            <div class="form-group col-md-8">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "inclusion_exclusion_criteria"}}}
+                    </span>
+
+                    Inclusion/Exclusion Criteria
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "inclusion_exclusion_criteria"}}}
+                </label>
+                <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" placeholder="Include: Clinical P. falciparum infection; Exclude: Seropositive for HIV" rows="5" required></textarea>
+                <div class="invalid-feedback">
+                  Please enter Inclusion/Exclusion Criteria.
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "grants"}}}
+                    </span>
+
+                    Grants
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "grants"}}}
+                </label>
+                <textarea class="form-control" name="grants" id="grants" rows="4" required>{{value.grants}}</textarea>
+                <div class="invalid-feedback">
+                  Please enter Grant information.
+                </div>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label>Study Keywords</label>
+                    <div class="form-check custom-control custom-checkbox">
+                      <input class="form-check-input" type="checkbox" name="study_type" id="contains_tcr" value="contains_tcr">
+                      <label class="form-check-label" for="1">
+                        TCR
+                      </label>
+                  </div>
+                  <div class="form-check custom-control custom-checkbox">
+                    <input class="form-check-input" type="checkbox" name="study_type" id="contains_ig" value="contains_ig">
+                    <label class="form-check-label" for="2">
+                      Ig
+                    </label>
+                </div>
+
+                <div class="form-check custom-control custom-checkbox">
+                  <input class="form-check-input" type="checkbox" name="study_type" id="contains_single_cell" value="contains_single_cell">
+                  <label class="form-check-label" for="3">
+                    Single Cell
+                  </label>
+                </div>
+
+              <div class="form-check custom-control custom-checkbox">
+                <input class="form-check-input" type="checkbox" name="study_type" id="contains_paired_chain" value="contains_paired_chain">
+                <label class="form-check-label" for="4">
+                  Paired Chain
+                </label>
+              </div>
+
+              <div class="form-check custom-control custom-checkbox">
+                <input class="form-check-input" type="checkbox" name="study_type" id="contains_paired_chain" value="contains_paired_chain">
+                <label class="form-check-label" for="5">
+                  Paired Chain
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "study_type"}}}
+                    </span>
+
+                    Study Type
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "study_type"}}}
+                </label>
+                <select class="form-control" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please choose at least one Study Keyword.
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "pub_ids"}}}
+                    </span>
+
+                    Publications
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "pub_ids"}}}
+                </label>
+                <input type="text" class="form-control" name="pub_ids" id="publications" required>
+                <div class="invalid-feedback">
+                  Please enter Publications.
+                </div>
+            </div>
+    </div>
+
+    <div class="collectorInfo">
+        <h2 class="form-section">Data Collector Contact Information</h2>
+            <div class="form-group col-md-7">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "collected_by"}}}
+                    </span>
+
+                    Data Collector Name / Principal Investigator (PI)
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "collected_by"}}}
+                </label>
+                <input type="text" class="form-control" name="collectedby_name" id="collectedby_name" required>
+                <div class="invalid-feedback">
+                  Please enter Data Collector/Principal Investigator Name.
+                </div>
+            </div>
+
+            <div class="form-group col-md-5">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "collected_by"}}}
+                    </span>
+
+                    Data Collector Email
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "collected_by"}}}
+                </label>
+                <input type="email" class="form-control" name="collectedby_email" id="collectedby_email">
+                <div class="invalid-feedback">
+                  Please enter a Data Collector Email.
+                </div>
+            </div>
+
+            <div class="form-group col-md-5">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "lab_name"}}}
+                    </span>
+
+                    Lab Name / Department
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "lab_name"}}}
+                </label>
+                <input type="text" class="form-control" name="lab_name" id="lab_name" required>
+                <div class="invalid-feedback">
+                  Please enter Lab Name/Department.
+                </div>
+            </div>
+
+            <div class="form-group col-md-5">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "lab_address"}}}
+                    </span>
+
+                    Lab Address
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "lab_address"}}}
+                </label>
+
+                <input type="text" class="form-control" name="lab_address" id="lab_address" required>
+                <div class="invalid-feedback">
+                  Please enter a Lab Address.
+                </div>
+            </div>
+    </div>
+
+    <div class="submitterInfo">
+        <h2 class="form-section">Data Submitter Contact Information</h2>
+            <div class="form-group col-md-5">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "submitted_by"}}}
+                    </span>
+
+                    Data Submitter Name
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "submitted_by"}}}
+                </label>
+                <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" required>
+                <div class="invalid-feedback">
+                  Please enter Data Submitter Name.
+                </div>
+            </div>
+
+            <div class="form-group col-md-5">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "submitted_by"}}}
+                    </span>
+
+                    Data Submitter Email
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "submitted_by"}}}
+                </label>
+                <input type="email" class="form-control" name="submittedby_email" id="submittedby_email">
+                <div class="invalid-feedback">
+                  Please enter a Data Submitter Email.
+                </div>
+            </div>
+
+            <div class="form-group col-md-5">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "submitted_by"}}}
+                    </span>
+
+                    Data Submitter Address
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "submitted_by"}}}
+                </label>
+                <input type="email" class="form-control" name="submittedby_address" id="submittedby_address">
+                <div class="invalid-feedback">
+                  Please enter a Data Submitter Address.
+                </div>
+            </div>
+        </div>
+    <div class="form-row actions float-md-right">
+        <div class="input-group">
+            <input type="reset" value ="Cancel" class="col-md-3 btn btn-light" id="cancel-project">
+            <input type="submit" value="Create Project" class=" col-md-4 btn btn-success" id="create-new-project">
+        </div>
+    </div>
+</form>
+
+<script>
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+
+
+</script>

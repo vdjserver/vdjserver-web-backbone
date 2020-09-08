@@ -1,0 +1,170 @@
+<div class="alert alert-info">
+    <i class="fa fa-info-circle"></i> Add Sample information to the repertoire by filling out the form below.
+</div>
+
+Select a repertoire:
+
+<h2>Add Sample</h2>
+<form>
+    <div class="form-group">
+      <input type="file" name="uploadSample" class="form-control-file" id="uploadSample">
+      <label for="uploadSample" class="btn btn-upload">
+        <i class="fa fa-upload"></i>
+        Import Sample Metadata
+      </label>
+  </div>
+</form>
+
+<form method="post" role="form" id="addSample-form" class="needs-validation" name="sample" novalidate>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Sample ID
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-3" name="sample_id" id="sample_id" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Sample ID.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Sample Type
+            <!-- Popover -->
+        </label>
+        <select class="custom-select col-md-5" id="sample_type" required>
+            <option value="1">
+                <!-- Sample Type Option 1 -->
+            </option>
+            <option value="2">
+                <!-- Sample Type Option 2 -->
+            </option>
+            <option value="3">
+                <!-- Sample Type Option 3 -->
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            Please enter a valid Sample Type.
+        </div>
+    </div>
+
+    <!-- Ontology -->
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Tissue
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-4" name="tissue" id="tissue" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid tissue.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Anatomic Site
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-3" name="anatomic_site" id="anatomic_site" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Anatomic Site.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Disease State Sample
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-7" name="disease_state_sample" id="disease_state_sample" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Disease State Sample.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Collection Time Point Relative
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-4" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Collection Time Point Relative.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Collection Time Point Reference
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-4" name="collection_time_point_reference" id="collection_time_point_reference" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Collection Time Point Reference.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Biomaterial Provider Name
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-4" name="biomaterial_provider_name" id="biomaterial_provider_name" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Biomaterial Provider Name.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Biomaterial Provider Address
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-6" name="biomaterial_provider_address" id="biomaterial_provider_address" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Biomaterial Provider Address.
+        </div>
+
+        <div class="footer-actions">
+            <div class="rep-back-actions">
+                <button type="button" class="btn btn-primary" id="diagnosisMetadata"><i class="fa fa-angle-double-left"></i> Back to Diagnosis</button>
+            </div>
+
+            <div class="rep-next-actions">
+                <button type="button" class="btn btn-save" id="save-sample" data-toggle="modal" data-target="#save-modal"><i class="fa fa-save"></i> Save and Finish Later</button>
+                <button type="button" class="btn btn-add" id="add-cell"><i class="fa fa-angle-double-right"></i> Add Cell Processing Information</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Save Modal -->
+<div class="modal fade" id="save-modal" tabindex="-1" role="dialog" aria-labelledby="saving" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body saving">
+                Saving <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </div>
+        </div>
+     </div>
+</div>
