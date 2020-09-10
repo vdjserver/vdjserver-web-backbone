@@ -2,4 +2,43 @@
 - Community Query View
 -->
 
-<h1>Community Query View</h1>
+<div class="community-filter">
+    <form>
+        <div class="row">
+            <div class="col">
+                <label for="filter-option1">Filter Option 1</label>
+                <input type="text" class="form-control" id="filter-option1" aria-describedby="filter-option1" placeholder="Filter option 1">
+            </div>
+
+            <div class="col">
+                <label for="filter-option2">Filter Option 2</label>
+                <select id="inputState" class="form-control">
+                    <option selected>Choose...</option>
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="filter-option3">Filter Option 3</label>
+                <input type="text" class="form-control" id="filter-option3" aria-describedby="filter-option3" placeholder="Filter option 3">
+            </div>
+
+            <div class="col">
+                <label for="filter-option3">Filter Option 4</label>
+                <input type="text" class="form-control" id="filter-option4" aria-describedby="filter-option4" placeholder="Filter option 4">
+            </div>
+
+            <!-- <div class="col"> -->
+                <button type="submit" class="btn btn-filter btn-edit btn-lg">
+                    Filter <i class="fa fa-filter" aria-hidden="true"></i>
+                </button>
+            <!-- </div> -->
+        </div>
+    </form>
+</div>
+
+<div class="community-download">
+    <button type="button" class="btn btn-primary btn-download">Download <i class="fa fa-download" aria-hidden="true"></i></button>
+</div>

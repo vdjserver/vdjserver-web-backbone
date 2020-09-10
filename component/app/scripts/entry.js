@@ -39,6 +39,9 @@ import Application from 'Scripts/app';
 import bootstrap from 'bootstrap';
 import bootstrap_autocomplete from 'bootstrap-autocomplete';
 
+// D3
+import d3 from 'd3';
+
 document.addEventListener('DOMContentLoaded', () => {
   // the global application object
   global.App = new Application();

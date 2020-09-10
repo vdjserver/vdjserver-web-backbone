@@ -51,6 +51,8 @@ var CommunityQueryView = Marionette.View.extend({
 import community_list_template from 'Templates/project/community-list.html';
 var CommunityListView = Marionette.View.extend({
     template: Handlebars.compile(community_list_template),
+    tagName: 'div',
+    className: 'community-container',
 
     // one region for the project content
     regions: {
