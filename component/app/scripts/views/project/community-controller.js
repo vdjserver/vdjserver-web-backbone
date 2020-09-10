@@ -28,6 +28,9 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
+import ADCInfo from 'Scripts/models/adc-info';
+import ADCRepertoires from 'Scripts/collections/adc-repertoires';
+
 import Project from 'Scripts/models/agave-project';
 import ProjectList from 'Scripts/collections/agave-public-projects';
 import ProjectListView from 'Scripts/views/project/project-list';
@@ -121,6 +124,18 @@ CommunityController.prototype = {
                 console.log(that.projectList);
                 // have the view display them
                 that.projectView.showProjectList(that.projectList);
+            })
+            .then(function() {
+                that.repositoryInfo = new ADCInfo();
+                return that.repositoryInfo.fetch();
+            })
+            .then(function() {
+                console.log(that.repositoryInfo);
+                that.repertoires = new ADCRepertoires();
+                return that.repertoires.fetch();
+            })
+            .then(function() {
+                console.log(that.repertoires);
             })
             .fail(function(error) {
                 console.log(error);

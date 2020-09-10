@@ -2,8 +2,8 @@
 'use strict';
 
 //
-// agave-projects.js
-// Private projects collection
+// adc-repertoires.js
+// AIRR Repertoire collection from ADC query
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -27,19 +27,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-import { Agave } from 'Scripts/backbone/backbone-agave';
-import Project from 'Scripts/models/agave-project';
-import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
+import { ADC } from 'Scripts/backbone/backbone-adc';
+import Repertoire from 'Scripts/models/adc-repertoire';
 
-export default Agave.MetadataCollection.extend(
-    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
-        model: Project,
-        url: function() {
-            return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"private_project"}')
-                   + '&limit=' + this.limit
-                   + '&offset=' + this.offset
-                   ;
-        },
-    })
-);
+export default ADC.Collection.extend({
+    model: Repertoire,
+    url: function() {
+        return this.apiHost + '/repertoire';
+    },
+
+    parse: function(response) {
+
+        if (response && response['Repertoire']) {
+
+            return response['Repertoire'];
+        }
+
+        return;
+    },
+});

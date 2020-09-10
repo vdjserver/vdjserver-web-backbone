@@ -2,8 +2,8 @@
 'use strict';
 
 //
-// agave-projects.js
-// Private projects collection
+// adc-repertoire.js
+// AIRR Repertoire model from AIRR Data Commons
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -27,19 +27,25 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-import { Agave } from 'Scripts/backbone/backbone-agave';
-import Project from 'Scripts/models/agave-project';
-import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
+import { ADC } from 'Scripts/backbone/backbone-adc';
 
-export default Agave.MetadataCollection.extend(
-    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
-        model: Project,
-        url: function() {
-            return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"private_project"}')
-                   + '&limit=' + this.limit
-                   + '&offset=' + this.offset
-                   ;
-        },
-    })
-);
+// AIRR Schema
+import AIRRSchema from 'airr-schema';
+import repertoire_template from 'airr-repertoire-template';
+
+// AIRR Repertoire model
+//
+// This comes back from an ADC query in denormalized form.
+//
+export default ADC.Model.extend({
+    initialize: function(parameters) {
+        ADC.Model.prototype.initialize.apply(this, [parameters]);
+
+        // Use AIRR schema Repertoire object as basis
+        this.airr_schema = AIRRSchema['Repertoire'];
+    },
+    url: function() {
+        return this.apiHost + '/repertoire/' + this.get('repertoire_id');
+    },
+});
+
