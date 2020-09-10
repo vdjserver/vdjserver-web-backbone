@@ -1,3 +1,48 @@
+/*****************************************************
+Community Projects Page
+*****************************************************/
+
 .dataTables_wrapper .dataTables_filter {
     display: none;
+}
+
+.community-container {
+    margin: 2% 3%;
+}
+
+.community-download {
+    margin-bottom: 5%;
+}
+
+.btn-download {
+    float: right;
+}
+
+#community-statistics, #community-query {
+    margin-bottom: 3%;
+}
+
+/* ----------------------------------------------------------
+Community Statistics
+------------------------------------------------------------*/
+#community-statistics {
+    border: 2px solid $vdj-lightgray;
+    border-radius: 3px;
+    padding: 2em;
+}
+
+/* ----------------------------------------------------------
+Community Query
+------------------------------------------------------------*/
+.btn-filter {
+    float: right;
+}
+
+/* ----------------------------------------------------------
+Community Project
+------------------------------------------------------------*/
+#community-project {
+    margin-top: 8%;
+    margin-right: 3%;
+    margin-left: 3%;
 }

@@ -38,10 +38,24 @@ import ProjectPageView from 'Scripts/views/project/project-single';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 
 // Community controller
-//
+// Community Stats View
+import community_stats_template from 'Templates/project/community-stats.html';
+var CommunityStatisticsView = Marionette.View.extend({
+    template: Handlebars.compile(community_stats_template)
+});
+
+// Community Query View
+import community_query_template from 'Templates/project/community-query.html';
+var CommunityQueryView = Marionette.View.extend({
+    template: Handlebars.compile(community_query_template)
+});
+
 // this manages displaying project content
+import community_list_template from 'Templates/project/community-list.html';
 var CommunityListView = Marionette.View.extend({
-    template: Handlebars.compile('<h1>Community Data Portal</h1><div id="community-statistics"><div id="community-query"><div id="community-project">'),
+    template: Handlebars.compile(community_list_template),
+    tagName: 'div',
+    className: 'community-container',
 
     // one region for the project content
     regions: {
@@ -54,6 +68,11 @@ var CommunityListView = Marionette.View.extend({
         console.log('Initialize');
         this.projectList = null;
         this.currentProject = null;
+
+        this.showChildView('statsRegion', new CommunityStatisticsView ({model: this.model}));
+
+        this.showChildView('queryRegion', new CommunityQueryView ({model: this.model}));
+
     },
 
     // show a loading view, used while fetching the data
