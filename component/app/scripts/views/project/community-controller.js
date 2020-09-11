@@ -155,6 +155,8 @@ CommunityController.prototype = {
             })
             .then(function() {
                 console.log(that.repertoires);
+                that.studies = that.repertoires.normalize();
+                console.log(that.studies);
             })
             .fail(function(error) {
                 console.log(error);

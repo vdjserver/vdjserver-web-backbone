@@ -27,8 +27,11 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+import Backbone from 'backbone';
 import { ADC } from 'Scripts/backbone/backbone-adc';
 import Repertoire from 'Scripts/models/adc-repertoire';
+
+import Project from 'Scripts/models/agave-project';
 
 export default ADC.Collection.extend({
     model: Repertoire,
@@ -45,4 +48,27 @@ export default ADC.Collection.extend({
 
         return;
     },
+
+    // The AIRR Repertoire model is in denormalized form with
+    // study, subject, and etc., duplicated in each repertoire.
+    //
+    // This function returns normalized VDJServer objects for
+    // Study, Subject, SampleProcessing, DataProcessing and Repertoire
+    normalize: function() {
+        var studies = new Backbone.Collection();
+
+        // use study_id to separate studies
+        for (var i = 0; i < this.length; ++i) {
+            var model = this.at(i);
+            var study = studies.get(model.get('study')['study_id']);
+            if (! study) {
+                study = new Backbone.Model();
+                study.set('id', model.get('study')['study_id']);
+                study.set('study', new Project({value: model.get('study')}));
+                studies.add(study);
+            }
+        }
+
+        return studies;
+    }
 });
