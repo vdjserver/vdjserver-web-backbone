@@ -38,7 +38,7 @@ import UserProfileView from 'Scripts/views/account/account-profile';
 // import IntroView from 'intro-view';
 import NavigationController from 'Scripts/views/app/navbar-controller';
 import ProjectController from 'Scripts/views/project/project-controller';
-import CommunityController from 'Scripts/views/project/community-controller';
+import CommunityController from 'Scripts/views/community/community-controller';
 import AdminController from 'Scripts/views/admin/admin-controller';
 
 // AIRR Schema
@@ -177,8 +177,8 @@ var ApplicationController = Marionette.View.extend({
         this.projectController.showProjectPage(projectUuid, page);
     },
 
-    showCommunityList() {
-        console.log('showCommunityList');
+    showCommunityPage() {
+        console.log('showCommunityPage');
 
         // create community controller if needed
         if (! this.communityController) {

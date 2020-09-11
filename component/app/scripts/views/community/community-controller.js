@@ -33,26 +33,25 @@ import ADCRepertoires from 'Scripts/collections/adc-repertoires';
 
 import Project from 'Scripts/models/agave-project';
 import ProjectList from 'Scripts/collections/agave-public-projects';
-import ProjectListView from 'Scripts/views/project/project-list';
-import ProjectPageView from 'Scripts/views/project/project-single';
+import CommunityListView from 'Scripts/views/community/community-list';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 
 // Community controller
 // Community Stats View
-import community_stats_template from 'Templates/project/community-stats.html';
+import community_stats_template from 'Templates/community/community-stats.html';
 var CommunityStatisticsView = Marionette.View.extend({
     template: Handlebars.compile(community_stats_template)
 });
 
 // Community Query View
-import community_query_template from 'Templates/project/community-query.html';
+import community_query_template from 'Templates/community/community-query.html';
 var CommunityQueryView = Marionette.View.extend({
     template: Handlebars.compile(community_query_template)
 });
 
 // this manages displaying project content
-import community_list_template from 'Templates/project/community-list.html';
-var CommunityListView = Marionette.View.extend({
+import community_list_template from 'Templates/community/community-list.html';
+var CommunityMainView = Marionette.View.extend({
     template: Handlebars.compile(community_list_template),
     tagName: 'div',
     className: 'community-container',
@@ -91,14 +90,7 @@ var CommunityListView = Marionette.View.extend({
 
     showProjectList(projectList) {
         console.log(this.controller);
-        var view = new ProjectListView({collection: projectList, controller: this.controller});
-        this.showChildView('projectRegion', view);
-    },
-
-    showProjectPage(project, page) {
-        this.clearIntroView();
-        console.log(this.controller, isNew);
-        var view = new ProjectPageView({model: project, page: page, controller: this.controller});
+        var view = new CommunityListView({collection: projectList, controller: this.controller});
         this.showChildView('projectRegion', view);
     },
 
@@ -110,7 +102,7 @@ var CommunityListView = Marionette.View.extend({
 //
 function CommunityController() {
     // the project view
-    this.projectView = new CommunityListView({controller: this});
+    this.projectView = new CommunityMainView({controller: this});
 
     // maintain state across multiple views
     this.projectList = null;
@@ -121,9 +113,9 @@ CommunityController.prototype = {
     // return the main view, create it if necessary
     getView() {
         if (!this.projectView)
-            this.projectView = new CommunityListView({controller: this});
+            this.projectView = new CommunityMainView({controller: this});
         else if (this.projectView.isDestroyed())
-            this.projectView = new CommunityListView({controller: this});
+            this.projectView = new CommunityMainView({controller: this});
         return this.projectView;
     },
 
@@ -165,43 +157,6 @@ CommunityController.prototype = {
             // projects already loaded
             // have the view display them
             this.projectView.showProjectList(this.projectList);
-        }
-    },
-
-    showProjectPage(projectUuid, page) {
-        // clear the current project
-        this.currentProject = null;
-
-        // if project list is loaded, get from list
-        if (this.projectList) {
-            this.currentProject = this.projectList.get(projectUuid);
-            if (! this.currentProject) {
-                // Not in list,
-                // maybe list is out of date, so clear it
-                this.projectList = null;
-            }
-        }
-
-        // If no project then fetch it
-        if (! this.currentProject) {
-            this.currentProject = new Project({uuid: projectUuid});
-            var that = this;
-            this.currentProject.fetch()
-            .then(function() {
-                console.log(that.currentProject);
-
-                // have the view display it
-                that.projectView.showProjectPage(that.currentProject, page);
-            })
-            .fail(function(error) {
-                // TODO: could not retrieve project
-                // maybe the user does not have access, or the uuid is wrong
-                // need to display some error message
-                console.log(error);
-            });
-        } else {
-            // have the view display it
-            this.projectView.showProjectPage(this.currentProject, page);
         }
     },
 

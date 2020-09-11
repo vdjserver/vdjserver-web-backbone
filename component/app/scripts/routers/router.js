@@ -80,7 +80,7 @@ export default Backbone.Router.extend({
         //'project/:id/group':                'projectGroup',
         //'project/:id/file':                 'projectFile',
         //'project/:id/analysis':             'projectAnalysis',
-        'community':                        'communityList',
+        'community':                        'communityPage',
         //'project/:id/repertoire/create':           'createRepertoire',
         //'project/:id/repertoire/create/subject': 'addSubject',
         //'project/:id/repertoire/create/subject/diagnosis': 'addDiagnosis',
@@ -224,11 +224,11 @@ export default Backbone.Router.extend({
         this.projectPage(projectUuid, 'addDiagnosis');
     },
 
-    // Community Project Summary List
-    communityList: function() {
-        console.log('communityList route');
+    // Community Studies
+    communityPage: function() {
+        console.log('communityPage route');
 
-        App.AppController.showCommunityList();
+        App.AppController.showCommunityPage();
     },
 
     // For Create a Project Page
