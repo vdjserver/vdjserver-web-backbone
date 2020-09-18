@@ -32,7 +32,7 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
 import ADCInfo from 'Scripts/models/adc-info';
-import ADCRepertoires from 'Scripts/collections/adc-repertoires';
+import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
 
 import Project from 'Scripts/models/agave-project';
 import ProjectList from 'Scripts/collections/agave-public-projects';
@@ -81,12 +81,14 @@ CommunityController.prototype = {
             })
             .then(function() {
                 console.log(that.repositoryInfo);
-                that.repertoires = new ADCRepertoires();
+                that.repertoires = new ADCRepertoireCollection();
                 return that.repertoires.fetch();
             })
             .then(function() {
                 console.log(that.repertoires);
-                that.studies = that.repertoires.normalize();
+                that.studies = new ADCStudyCollection();
+                that.studies.normalize(that.repertoires);
+                //that.studies = that.repertoires.normalize();
                 console.log(that.studies);
                 // have the view display them
                 that.projectView.showResultsList(that.studies);
@@ -101,5 +103,13 @@ CommunityController.prototype = {
         }
     },
 
+    applyFilter() {
+        // get current filter
+
+        this.filteredList = this.repertoires.filterCollection();
+        this.studies = new ADCStudyCollection();
+        this.studies.normalize(this.filteredList);
+        this.projectView.showResultsList(this.studies);
+    }
 };
 export default CommunityController;

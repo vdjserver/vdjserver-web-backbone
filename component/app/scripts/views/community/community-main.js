@@ -32,15 +32,30 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
 import ADCInfo from 'Scripts/models/adc-info';
-import ADCRepertoires from 'Scripts/collections/adc-repertoires';
+import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
 
 import CommunityListView from 'Scripts/views/community/community-list';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 
+import PieChart from 'Scripts/views/charts/pie';
+
 // Community Stats View
 import community_stats_template from 'Templates/community/community-stats.html';
 var CommunityStatisticsView = Marionette.View.extend({
-    template: Handlebars.compile(community_stats_template)
+    template: Handlebars.compile(community_stats_template),
+
+    regions: {
+        chartRegion: '#chart-1-region',
+    },
+
+    initialize(parameters) {
+        this.view = new PieChart();
+        this.showChildView('chartRegion', this.view);
+    },
+
+    onAttach() {
+        this.view.showChart();
+    }
 });
 
 // Community Query View
@@ -65,15 +80,32 @@ export default Marionette.View.extend({
         resultsRegion: '#community-results',
     },
 
-    initialize(options) {
+    initialize(parameters) {
         console.log('Initialize');
         this.studyList = null;
         this.filteredStudyList = null;
+
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+        }
 
         this.showChildView('statsRegion', new CommunityStatisticsView ({model: this.model}));
 
         this.showChildView('queryRegion', new CommunityQueryView ({model: this.model}));
 
+    },
+
+    events: {
+        //
+        // Overview page specific events
+        //
+
+        // setting event for Overview page
+        'click #apply-filter': function() {
+            console.log('apply filter');
+            this.controller.applyFilter();
+        }
     },
 
     // show a loading view, used while fetching the data

@@ -34,7 +34,7 @@ import ADCRepertoire from 'Scripts/models/adc-repertoire';
 import Project from 'Scripts/models/agave-project';
 import { Subject, Diagnosis, Sample, Repertoire } from 'Scripts/models/agave-metadata';
 
-export default ADC.Collection.extend({
+export var ADCRepertoireCollection = ADC.Collection.extend({
     model: ADCRepertoire,
     url: function() {
         return this.apiHost + '/repertoire';
@@ -50,25 +50,40 @@ export default ADC.Collection.extend({
         return;
     },
 
-    // The AIRR Repertoire model is in denormalized form with
-    // study, subject, and etc., duplicated in each repertoire.
-    //
-    // This function returns normalized VDJServer objects for
-    // Study, Subject, SampleProcessing, DataProcessing and Repertoire
-    normalize: function() {
-        var studies = new Backbone.Collection();
+    filterCollection(filters) {
+        var filtered = new ADCRepertoireCollection();
 
         for (var i = 0; i < this.length; ++i) {
             var model = this.at(i);
+            if (model.get('subject')['sex'] == 'male')
+                filtered.add(model);
+        }
+
+        return filtered;
+    }
+});
+
+export var ADCStudyCollection = ADC.Collection.extend({
+    model: Backbone.Model,
+
+    // The AIRR Repertoire model is in denormalized form with
+    // study, subject, and etc., duplicated in each repertoire.
+    //
+    // This function inserts normalized objects for
+    // Study, Subject, SampleProcessing, and DataProcessing
+    normalize(repertoires) {
+        this.reset();
+        for (var i = 0; i < repertoires.length; ++i) {
+            var model = repertoires.at(i);
 
             // use study_id to separate studies
             // TODO: blank study_id?
-            var study = studies.get(model.get('study')['study_id']);
+            var study = this.get(model.get('study')['study_id']);
             if (! study) {
                 study = new Backbone.Model();
                 study.set('id', model.get('study')['study_id']);
                 study.set('study', new Project({value: model.get('study')}));
-                studies.add(study);
+                this.add(study);
 
                 study.set('subjects', new Backbone.Collection());
                 study.set('samples', new Backbone.Collection());
@@ -78,7 +93,7 @@ export default ADC.Collection.extend({
             var subjects = study.get('subjects');
             var samples = study.get('samples');
             var data_processings = study.get('data_processings');
-            var repertoires = study.get('repertoires');
+            var reps = study.get('repertoires');
 
             // use subject_id to separate subjects
             // TODO: blank subject_id?
@@ -106,9 +121,40 @@ export default ADC.Collection.extend({
             // skip data_processing for now
 
             // TODO: how to handle repertoires?
-            repertoires.add(model);
+            reps.add(model);
         }
 
-        return studies;
-    }
+        return this;
+    },
+
+    getValueForField(field) {
+        var paths = field.split('.');
+        for (var i = 0; i < this.length; ++i) {
+            var model = this.at(i);
+            if (paths.length == 1) return model.get(paths[0]);
+            else {
+                switch(path[0]) {
+                    case 'study':
+                        return model.get('study')[paths[1]];
+                    case 'subject':
+                        return model.get('subject')[paths[1]];
+                    case 'diagnosis':
+                        return null;
+                    case 'sample':
+                    case 'data_processing':
+                        return null;
+                    case 'repertoire':
+                        return null;
+                    default:
+                        return null;
+                }
+            }
+        }
+        return null;
+    },
+
+    countByField(field, by_group) {
+
+    },
+
 });

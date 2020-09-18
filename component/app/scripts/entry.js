@@ -39,6 +39,11 @@ import Application from 'Scripts/app';
 import bootstrap from 'bootstrap';
 import bootstrap_autocomplete from 'bootstrap-autocomplete';
 
+// Highcharts
+import Highcharts from 'highcharts';
+require('highcharts/modules/exporting')(Highcharts);
+require('highcharts/modules/drilldown')(Highcharts);
+
 // D3
 import d3 from 'd3';
 
