@@ -1,36 +1,24 @@
-<div class="row">
-    <div class="col-md-10">
-    <h2>{{study.value.study_title}}</h2>
+<div class="community-project-header">
+    <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>
+    <!-- Badges for study type
+        -- Probably will need Handlebars here to indicate how many badges show up and what type (ie. color) should show up
+    -->
+    <h4>
+        <a href="#" class="badge badge-pill badge-info">Study Type</a>
+        <a href="#" class="badge badge-pill badge-edit">Study Type</a>
+        <a href="#" class="badge badge-pill badge-copy">Study Type</a>
+    </h4>
+    <!-- Need to trim the description and maybe add a "Read More" link -->
+    <p>{{study.value.study_description}}</p>
+</div>
+<div class="row community-summary-stats">
+    <div class="col-md-4">
+        {{num_repertoires}} Repertoires
+    </div>
+    <div class="col-md-4">
+        {{num_subjects}} Subjects
+    </div>
+    <div class="col-md-4">
+        {{num_samples}} Samples
     </div>
 </div>
-
-<div class="row">
-    <div class="col-md-10">
-    {{study.value.study_description}}
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-2">
-    {{num_repertoires}} Repertoires
-    </div>
-    <div class="col-md-2">
-    {{num_subjects}} Subjects
-    </div>
-    <div class="col-md-2">
-    {{num_samples}} Samples
-    </div>
-</div>
-
-<!--
-<tr><td class="title" colspan=4>{{study.value.study_title}}</td></tr>
-<tr><td class="title" colspan=4>{{study.name}}</a></td></tr>
-<tr>
-    <td class="desc" colspan=4>{{study.value.study_description}}</td>
-</tr>
-<tr>
-    <td class="created">{{id}}</td>
-    <td class="created">{{num_subjects}}</td>
-    <td class="type">{{study.value.study_type.label}}</td>
-</tr>
--->

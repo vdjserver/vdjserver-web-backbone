@@ -16,6 +16,7 @@
         "watch": "webpack --watch"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.14.0",
         "animate.css": "^3.2.5",
         "backbone": "^1.4.0",
         "backbone.analytics": "^1.0.1",

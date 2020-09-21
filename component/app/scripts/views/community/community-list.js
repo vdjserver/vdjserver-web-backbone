@@ -35,7 +35,8 @@ import Handlebars from 'handlebars';
 
 var StudySummaryView = Marionette.View.extend({
     template: Handlebars.compile(template),
-    //tagName: 'tr',
+    tagName: 'div',
+    className: 'community-project',
 
   serializeModel() {
     const data = _.clone(this.model.attributes);
