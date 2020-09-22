@@ -49,11 +49,31 @@ var StudySummaryView = Marionette.View.extend({
 
     templateContext() {
 
+        // study badges
+        var study = this.model.get('study');
+        var value = study.get('value');
+        var contains_ig = false;
+        var contains_tcr = false;
+        var contains_single_cell = false;
+        var contains_paired_chain = false;
+        if (value.keywords_study.indexOf("contains_ig") >= 0)
+            contains_ig = true;
+        if (value.keywords_study.indexOf("contains_tcr") >= 0)
+            contains_tcr = true;
+        if (value.keywords_study.indexOf("contains_single_cell") >= 0)
+            contains_single_cell = true;
+        if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
+            contains_paired_chain = true;
+
         return {
             object: JSON.stringify(this.model),
             num_subjects: this.model.get('subjects').length,
             num_samples: this.model.get('samples').length,
             num_repertoires: this.model.get('repertoires').length,
+            contains_ig: contains_ig,
+            contains_tcr: contains_tcr,
+            contains_single_cell: contains_single_cell,
+            contains_paired_chain: contains_paired_chain,
         };
     }
 });
