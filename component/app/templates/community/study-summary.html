@@ -3,22 +3,22 @@
     <!-- Badges for study type
         -- Probably will need Handlebars here to indicate how many badges show up and what type (ie. color) should show up
     -->
-    <h4>
+    <h4 class="community-badges">
         <a href="#" class="badge badge-pill badge-info">Study Type</a>
         <a href="#" class="badge badge-pill badge-edit">Study Type</a>
         <a href="#" class="badge badge-pill badge-copy">Study Type</a>
     </h4>
-    <!-- Need to trim the description and maybe add a "Read More" link -->
-    <p>{{study.value.study_description}}</p>
+
+    <p>{{#truncate}}{{study.value.study_description}}{{/truncate}}</p>
 </div>
 <div class="row community-summary-stats">
     <div class="col-md-4">
-        {{num_repertoires}} Repertoires
+        {{num_repertoires}} Repertoires <i class="far fa-file-alt"></i>
     </div>
     <div class="col-md-4">
-        {{num_subjects}} Subjects
+        {{num_subjects}} Subjects <i class="fas fa-users"></i>
     </div>
     <div class="col-md-4">
-        {{num_samples}} Samples
+        {{num_samples}} Samples <i class="fas fa-vial"></i>
     </div>
 </div>

@@ -2,7 +2,7 @@
 - Community Query View
 -->
 
-<div class="community-filter">
+<div class="community-filter" id="community-filter">
     <form>
         <div class="row">
             <div class="col">
@@ -30,15 +30,15 @@
                 <input type="text" class="form-control" id="filter-option4" aria-describedby="filter-option4" placeholder="Filter option 4">
             </div>
 
-            <!-- <div class="col"> -->
-                <button type="button" class="btn btn-filter btn-edit btn-lg" id="apply-filter">
-                    Filter <i class="fa fa-filter" aria-hidden="true"></i>
-                </button>
-            <!-- </div> -->
+            <button type="button" class="btn btn-filter btn-edit btn-lg" id="apply-filter">
+                Filter <i class="fas fa-filter" aria-hidden="true"></i>
+            </button>
         </div>
     </form>
 </div>
 
-<div class="community-download">
-    <button type="button" class="btn btn-primary btn-download">Download <i class="fa fa-download" aria-hidden="true"></i></button>
+<div class="community-actions">
+    <button type="button" class="btn btn-primary" id="community-filter-button">Filter <i class="fas fa-filter" aria-hidden="true"></i></button>
+    <button type="button" class="btn btn-primary">Sort <i class="fas fa-sort" aria-hidden="true"></i></button>
+    <button type="button" class="btn btn-primary btn-download">Download <i class="fas fa-download" aria-hidden="true"></i></button>
 </div>

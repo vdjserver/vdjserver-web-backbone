@@ -3,15 +3,13 @@
 
 // Setting path for Bootstrap fonts:
 // $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
-$fa-font-path: "~font-awesome/fonts/";
-
-
+// $fa-font-path: "~font-awesome/fonts/";
 
 // Font Awesome (4.3.0)
-@import '~font-awesome/scss/font-awesome';
+// @import '~font-awesome/scss/font-awesome';
 
 // Font Awesome (5.14.0)
-@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '~@fortawesome/fontawesome-free/css/all.css';
 
 // Frameworks
 @import 'vendor/bootstrap-overrides';

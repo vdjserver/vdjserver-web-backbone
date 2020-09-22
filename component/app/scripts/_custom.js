@@ -15,4 +15,10 @@ $(document).ready(function() {
     } else {
         console.log("Nah, not checked");
     }
+
+    // Community Projects Filter
+    $(document).on("click", "#community-filter-button", function() {
+        $("#community-filter").toggle();
+    });
+
 });

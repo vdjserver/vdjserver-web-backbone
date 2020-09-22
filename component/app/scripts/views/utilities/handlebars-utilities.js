@@ -128,4 +128,20 @@ HandlebarsUtilities.registerAllHelpers = function() {
       options.data.root[varName] = varValue;
     });
 
+    // Truncating text
+    Handlebars.registerHelper('truncate', function(options) {
+        if ( options.fn(this).trim().split(" ").length > 30 ) {
+            var message = options.fn(this);
+            var shortText = $('<p>', {text: message})
+            .html()
+            .trim()
+            .substring(0, 350)
+            .split(" ")
+            .slice(0, -1)
+            .join(" ") + "..."
+
+            return shortText;
+        }
+        return options.fn(this);
+    });
 };

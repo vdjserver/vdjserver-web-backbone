@@ -64,6 +64,12 @@ var CommunityQueryView = Marionette.View.extend({
     template: Handlebars.compile(community_query_template)
 });
 
+// Community Pagination View
+import community_pagination_template from 'Templates/community/community-pagination.html';
+var CommunityPaginationView = Marionette.View.extend({
+    template: Handlebars.compile(community_pagination_template)
+});
+
 // the main community data page
 import community_template from 'Templates/community/community-main.html';
 export default Marionette.View.extend({
@@ -74,10 +80,12 @@ export default Marionette.View.extend({
     // one region for overall statistics
     // one region for query filters
     // one region for results
+    // one region for pagination
     regions: {
         statsRegion: '#community-statistics',
         queryRegion: '#community-query',
         resultsRegion: '#community-results',
+        paginationRegion: '#community-pagination'
     },
 
     initialize(parameters) {
@@ -117,6 +125,8 @@ export default Marionette.View.extend({
         console.log(this.controller);
         var view = new CommunityListView({collection: studyList, controller: this.controller});
         this.showChildView('resultsRegion', view);
+
+        this.showChildView('paginationRegion', new CommunityPaginationView ({model: this.model}));
     },
 
 });

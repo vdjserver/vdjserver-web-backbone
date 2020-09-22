@@ -7,7 +7,7 @@ Community Projects Page
 }
 
 .community-container {
-    margin: 2% 3%;
+    margin: 1% 3%;
 }
 
 .community-download {
@@ -29,24 +29,25 @@ Community Statistics
     border: 2px solid $vdj-medgray;
     border-radius: 3px;
     padding: 2em;
+    margin-top: 3%;
 }
 
 /* ----------------------------------------------------------
 Community Query
 ------------------------------------------------------------*/
-.btn-filter {
+.btn-download {
     float: right;
 }
+
+#community-filter {
+    display: none;
+}
+
+
 
 /* ----------------------------------------------------------
 Community Project
 ------------------------------------------------------------*/
-// #community-project {
-//     margin-top: 8%;
-//     margin-right: 3%;
-//     margin-left: 3%;
-// }
-
 .community-project {
     margin: 3% auto;
     border: 2px solid $vdj-medgray;
@@ -56,6 +57,10 @@ Community Project
 
         h2 {
             font-size: 1.25rem;
+        }
+
+        .community-badges {
+            margin-bottom: 1%;
         }
     }
 
@@ -67,4 +72,13 @@ Community Project
         text-align: center;
         font-weight: bold;
     }
+}
+
+/* ----------------------------------------------------------
+Community Pagination
+------------------------------------------------------------*/
+.pagination {
+    float: right;
+    color: $vdj-blue;
+    margin-bottom: 3%;
 }
