@@ -153,8 +153,42 @@ export var ADCStudyCollection = ADC.Collection.extend({
         return null;
     },
 
-    countByField(field, by_group) {
+    countBySubject(field) {
+        var counts = {};
+        var paths = field.split('.');
+        for (var i = 0; i < this.length; ++i) {
+            var model = this.at(i);
+            var subjects = model.get('subjects');
+            for (var j = 0; j < subjects.length; ++j) {
+                var subject = subjects.at(j);
+                var value = subject.get('value');
+                var field = value[paths[1]];
+                if (field == null) field = "none";
+                var entry = counts[field];
+                if (entry == null) counts[field] = 1;
+                else counts[field] += 1;
+            }
+        }
+        return counts;
+    },
 
+    countByField(field, by_group) {
+        var paths = field.split('.');
+        switch(paths[0]) {
+            case 'study':
+                return null;
+            case 'subject':
+                return this.countBySubject(field);
+            case 'diagnosis':
+                return null;
+            case 'sample':
+            case 'data_processing':
+                return null;
+            case 'repertoire':
+                return null;
+            default:
+                return null;
+        }
     },
 
 });

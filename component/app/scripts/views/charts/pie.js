@@ -37,9 +37,15 @@ export default Marionette.View.extend({
     template: Handlebars.compile('<div id="pie_chart"></div>'),
 
     initialize: function(parameters) {
-        // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
+        this.series = null;
+        if (parameters) {
+            // our controller
+            if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.title) this.title = parameters.title;
+            if (parameters.subtitle) this.subtitle = parameters.subtitle;
+            if (parameters.series) this.series = parameters.series;
+            if (parameters.drilldown) this.drilldown = parameters.drilldown;
+        }
     },
 
     showChart: function() {
@@ -49,10 +55,10 @@ export default Marionette.View.extend({
                 type: 'pie'
             },
             title: {
-                text: 'Browser market shares. January, 2018'
+                text: this.title
             },
             subtitle: {
-                text: 'Click the slices to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+                text: this.subtitle
             },
 
             accessibility: {
@@ -75,9 +81,12 @@ export default Marionette.View.extend({
 
             tooltip: {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.count}</b> of <b>{point.total_count}</b> subjects<br/>'
             },
 
+            series: this.series,
+/*
             series: [
                 {
                     name: "Browsers",
@@ -121,6 +130,8 @@ export default Marionette.View.extend({
                     ]
                 }
             ],
+*/
+/*
             drilldown: {
                 series: [
                     {
@@ -341,6 +352,8 @@ export default Marionette.View.extend({
                     }
                 ]
             }
+*/
+
         });
     }
 });

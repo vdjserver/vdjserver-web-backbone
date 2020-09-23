@@ -49,11 +49,32 @@ var CommunityStatisticsView = Marionette.View.extend({
     },
 
     initialize(parameters) {
-        this.view = new PieChart();
-        this.showChildView('chartRegion', this.view);
+        if (parameters) {
+            // our controller
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+
     },
 
     onAttach() {
+        if (this.view) this.view.showChart();
+    },
+
+    updateCharts(studyList) {
+        var counts = studyList.countByField('subject.sex');
+        console.log(counts);
+        var series = [{name: "Sex", data:[]}];
+        var total = 0;
+        for (var i in counts) total += counts[i];
+        for (var i in counts) {
+            var obj = { name: i, y: 100 * counts[i] / total, count: counts[i], total_count: total };
+            series[0]['data'].push(obj);
+        }
+
+        var title = 'Subject Sex';
+        var subtitle = total + ' subjects among ' + studyList.length + ' studies';
+        this.view = new PieChart({series: series, title: title, subtitle: subtitle});
+        this.showChildView('chartRegion', this.view);
         this.view.showChart();
     }
 });
@@ -121,7 +142,9 @@ export default Marionette.View.extend({
         var view = new CommunityListView({collection: studyList, controller: this.controller});
         this.showChildView('resultsRegion', view);
 
-        this.showChildView('statsRegion', new CommunityStatisticsView ({model: this.model}));
+        this.charts = new CommunityStatisticsView ({model: this.model, controller: this.controller});
+        this.showChildView('statsRegion', this.charts);
+        this.charts.updateCharts(studyList);
 
         this.showChildView('queryRegion', new CommunityQueryView ({model: this.model}));
 

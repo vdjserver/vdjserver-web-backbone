@@ -123,6 +123,10 @@ CommunityController.prototype = {
                 that.studies.normalize(that.repertoires);
                 //that.studies = that.repertoires.normalize();
                 console.log(that.studies);
+
+                var tmp = that.studies.countByField('subject.sex');
+                console.log(tmp);
+
                 // have the view display them
                 that.projectView.showResultsList(that.studies);
             })
