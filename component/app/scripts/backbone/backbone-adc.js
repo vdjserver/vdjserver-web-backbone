@@ -30,8 +30,10 @@
 import Backbone from 'backbone';
 import moment from 'moment';
 
-export var ADC = function(options) {
+export var ADC = { };
 
+ADC.Repositories = function() {
+    return EnvironmentConfig.adc;
 };
 
 // Extension of default Backbone.Model for ADC
@@ -73,6 +75,7 @@ ADC.Collection = Backbone.Collection.extend({
 
             case 'read':
                 options.type = 'POST';
+                if (! this.data) options.data = '{}';
                 break;
 
             case 'create':

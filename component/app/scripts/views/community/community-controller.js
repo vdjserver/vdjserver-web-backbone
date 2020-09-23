@@ -31,6 +31,7 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
+import { ADC } from 'Scripts/backbone/backbone-adc';
 import ADCInfo from 'Scripts/models/adc-info';
 import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
 
@@ -46,6 +47,10 @@ function CommunityController() {
     this.projectView = new CommunityMainView({controller: this});
 
     // maintain state across multiple views
+    this.repositoires = null;
+    this.repositoryInfo = null;
+    this.repertoireCollections = null;
+    this.studies = null;
     this.projectList = null;
     this.currentProject = null;
 };
@@ -60,32 +65,60 @@ CommunityController.prototype = {
         return this.projectView;
     },
 
-    // show list of public projects
+    // show community data portal studies
     showProjectList() {
-        if (! this.projectList) {
+        if (! this.studies) {
+            this.repositoires = new Backbone.Collection();
+            var repos = ADC.Repositories();
+            console.log(Object.keys(repos).length);
+
             this.projectList = new ProjectList();
 
             var that = this;
 
             // show a loading view while fetching the data
-            this.projectView.showLoading();
+            this.projectView.showLoading(0, 0, Object.keys(repos).length);
 
-            // load the projects
-            this.projectList.fetch()
-            .then(function() {
-                console.log(that.projectList);
-            })
-            .then(function() {
-                that.repositoryInfo = new ADCInfo();
-                return that.repositoryInfo.fetch();
-            })
+            // fetch the ADC repository info
+            this.repositoryInfo = new Backbone.Collection();
+            var promises = [];
+            for (var r in repos) {
+                var info = new ADCInfo({repository: r});
+                info.set('id', r);
+                this.repositoryInfo.add(info);
+                promises.push(info.fetch());
+            }
+
+            // TODO: handle when a repository is down
+            Promise.allSettled(promises)
             .then(function() {
                 console.log(that.repositoryInfo);
-                that.repertoires = new ADCRepertoireCollection();
-                return that.repertoires.fetch();
+
+                that.repertoireCollection = {};
+                promises = [];
+                for (var r in repos) {
+                    var coll = new ADCRepertoireCollection({repository: r});
+                    that.repertoireCollection[r] = coll;
+                    promises.push(coll.fetch());
+                }
+
+                // load the ADC repertoires
+                return Promise.allSettled(promises);
             })
             .then(function() {
-                console.log(that.repertoires);
+                for (var r in repos) {
+                    console.log(that.repertoireCollection[r]);
+                }
+                that.repertoires = that.repertoireCollection['vdjserver'];
+                that.projectView.showLoading(that.repertoires.length, 1, 1);
+            })
+            .then(function() {
+                // load VDJServer public projects
+                that.projectList.fetch()
+            })
+            .then(function() {
+                console.log(that.projectList);
+
                 that.studies = new ADCStudyCollection();
                 that.studies.normalize(that.repertoires);
                 //that.studies = that.repertoires.normalize();
@@ -93,13 +126,13 @@ CommunityController.prototype = {
                 // have the view display them
                 that.projectView.showResultsList(that.studies);
             })
-            .fail(function(error) {
+            .catch(function(error) {
                 console.log(error);
             });
         } else {
             // projects already loaded
             // have the view display them
-            this.projectView.showResultsList(this.projectList);
+            this.projectView.showResultsList(this.studies);
         }
     },
 

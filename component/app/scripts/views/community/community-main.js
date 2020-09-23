@@ -35,7 +35,7 @@ import ADCInfo from 'Scripts/models/adc-info';
 import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
 
 import CommunityListView from 'Scripts/views/community/community-list';
-import LoadingView from 'Scripts/views/utilities/loading-view';
+import LoadingView from 'Scripts/views/utilities/loading-adc-view';
 
 import PieChart from 'Scripts/views/charts/pie';
 
@@ -97,11 +97,6 @@ export default Marionette.View.extend({
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
         }
-
-        this.showChildView('statsRegion', new CommunityStatisticsView ({model: this.model}));
-
-        this.showChildView('queryRegion', new CommunityQueryView ({model: this.model}));
-
     },
 
     events: {
@@ -117,14 +112,18 @@ export default Marionette.View.extend({
     },
 
     // show a loading view, used while fetching the data
-    showLoading() {
-        this.showChildView('resultsRegion', new LoadingView({}));
+    showLoading(ls, lr, tr) {
+        this.showChildView('resultsRegion', new LoadingView({loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr}));
     },
 
     showResultsList(studyList) {
         console.log(this.controller);
         var view = new CommunityListView({collection: studyList, controller: this.controller});
         this.showChildView('resultsRegion', view);
+
+        this.showChildView('statsRegion', new CommunityStatisticsView ({model: this.model}));
+
+        this.showChildView('queryRegion', new CommunityQueryView ({model: this.model}));
 
         this.showChildView('paginationRegion', new CommunityPaginationView ({model: this.model}));
     },
