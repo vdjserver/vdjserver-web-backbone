@@ -39,6 +39,9 @@ import LoadingView from 'Scripts/views/utilities/loading-adc-view';
 
 import PieChart from 'Scripts/views/charts/pie';
 
+import MessageModel from 'Scripts/models/message';
+import ModalView from 'Scripts/views/utilities/modal-view-large';
+
 // Community Stats View
 import community_stats_template from 'Templates/community/community-stats.html';
 var CommunityStatisticsView = Marionette.View.extend({
@@ -125,11 +128,18 @@ export default Marionette.View.extend({
         // Overview page specific events
         //
 
+        'click #community-filter-button': function() {
+            $("#community-filter").toggle();
+        },
+
         // setting event for Overview page
         'click #apply-filter': function() {
             console.log('apply filter');
             this.controller.applyFilter();
-        }
+        },
+
+        // Setting event for "New Filter" Modal
+        'click #new-community-filter': 'newFilterModal'
     },
 
     // show a loading view, used while fetching the data
@@ -150,5 +160,21 @@ export default Marionette.View.extend({
 
         this.showChildView('paginationRegion', new CommunityPaginationView ({model: this.model}));
     },
+
+    newFilterModal(e) {
+        console.log('new community filter modal will appear');
+        var message = new MessageModel({
+            'header': 'Custom Filter',
+            'body': '<p>Please select from the options below to set a custom filter.</p>',
+            'confirmText': 'Create Filter',
+            'cancelText': 'Cancel'
+        });
+
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        $('#modal-message').modal('show');
+
+        console.log(message);
+    }
 
 });
