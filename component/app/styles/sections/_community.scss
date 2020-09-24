@@ -34,9 +34,9 @@ Loading
 }
 
 /* ----------------------------------------------------------
-Community Statistics
+Community Charts
 ------------------------------------------------------------*/
-#community-statistics {
+#community-charts {
     border: 2px solid $vdj-medgray;
     border-radius: 3px;
     padding: 2em;
@@ -50,6 +50,12 @@ Community Statistics
             rect: $vdj-lightgray;
         }
     }
+}
+
+/* ----------------------------------------------------------
+Community Statistics
+------------------------------------------------------------*/
+#community-statistics {
 }
 
 /* ----------------------------------------------------------
@@ -93,7 +99,7 @@ Community Project
         padding: 2% 2% 0% 2%;
 
         h2 {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
         }
 
         .community-badges {

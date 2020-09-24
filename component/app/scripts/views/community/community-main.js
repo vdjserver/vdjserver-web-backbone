@@ -42,10 +42,10 @@ import PieChart from 'Scripts/views/charts/pie';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
 
-// Community Stats View
-import community_stats_template from 'Templates/community/community-stats.html';
-var CommunityStatisticsView = Marionette.View.extend({
-    template: Handlebars.compile(community_stats_template),
+// Community Charts View
+import community_charts_template from 'Templates/community/community-charts.html';
+var CommunityChartsView = Marionette.View.extend({
+    template: Handlebars.compile(community_charts_template),
 
     regions: {
         chartRegion: '#chart-1-region',
@@ -82,10 +82,23 @@ var CommunityStatisticsView = Marionette.View.extend({
     }
 });
 
-// Community Query View
+// Community Query/Filter View
 import community_query_template from 'Templates/community/community-query.html';
 var CommunityQueryView = Marionette.View.extend({
     template: Handlebars.compile(community_query_template)
+});
+
+// Community Stats View
+import community_stats_template from 'Templates/community/community-stats.html';
+var CommunityStatisticsView = Marionette.View.extend({
+    template: Handlebars.compile(community_stats_template),
+
+    initialize(parameters) {
+        if (parameters) {
+            // our controller
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+    }
 });
 
 // Community Pagination View
@@ -106,8 +119,9 @@ export default Marionette.View.extend({
     // one region for results
     // one region for pagination
     regions: {
-        statsRegion: '#community-statistics',
         queryRegion: '#community-query',
+        statsRegion: '#community-statistics',
+        chartsRegion: '#community-charts',
         resultsRegion: '#community-results',
         paginationRegion: '#community-pagination'
     },
@@ -149,14 +163,19 @@ export default Marionette.View.extend({
 
     showResultsList(studyList) {
         console.log(this.controller);
-        var view = new CommunityListView({collection: studyList, controller: this.controller});
-        this.showChildView('resultsRegion', view);
 
-        this.charts = new CommunityStatisticsView ({model: this.model, controller: this.controller});
-        this.showChildView('statsRegion', this.charts);
-        this.charts.updateCharts(studyList);
+        this.filterView = new CommunityQueryView ({model: this.model});
+        this.showChildView('queryRegion', this.filterView);
 
-        this.showChildView('queryRegion', new CommunityQueryView ({model: this.model}));
+        this.statsView = new CommunityStatisticsView ({model: this.model, controller: this.controller});
+        this.showChildView('statsRegion', this.statsView);
+
+        this.chartsView = new CommunityChartsView ({model: this.model, controller: this.controller});
+        this.showChildView('chartsRegion', this.chartsView);
+        this.chartsView.updateCharts(studyList);
+
+        this.resultsView = new CommunityListView({collection: studyList, controller: this.controller});
+        this.showChildView('resultsRegion', this.resultsView);
 
         this.showChildView('paginationRegion', new CommunityPaginationView ({model: this.model}));
     },
