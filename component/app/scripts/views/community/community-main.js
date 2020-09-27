@@ -98,6 +98,26 @@ var CommunityStatisticsView = Marionette.View.extend({
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
+    },
+
+    templateContext() {
+        if (!this.controller) return {};
+
+        var colls = this.controller.getCollections();
+        var num_repos = colls['repositoryInfo'].length;
+        var num_studies = colls['studyList'].length;
+        var num_reps = 0;
+        for (var i in colls['repertoireCollection'])
+            num_reps += colls['repertoireCollection'][i].length;
+
+        return {
+            num_repos: num_repos,
+            num_studies: num_studies,
+            num_reps: num_reps
+        }
+    },
+
+    updateStats(studyList) {
     }
 });
 
@@ -167,8 +187,9 @@ export default Marionette.View.extend({
         this.filterView = new CommunityQueryView ({model: this.model});
         this.showChildView('queryRegion', this.filterView);
 
-        this.statsView = new CommunityStatisticsView ({model: this.model, controller: this.controller});
+        this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
         this.showChildView('statsRegion', this.statsView);
+        this.statsView.updateStats(studyList);
 
         this.chartsView = new CommunityChartsView ({model: this.model, controller: this.controller});
         this.showChildView('chartsRegion', this.chartsView);

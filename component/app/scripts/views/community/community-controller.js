@@ -140,6 +140,16 @@ CommunityController.prototype = {
         }
     },
 
+    // returns all the main non-filtered collections
+    getCollections() {
+        return {
+            repositoryInfo: this.repositoryInfo,
+            repertoireCollection: this.repertoireCollection,
+            studyList: this.studies,
+            projectList: this.projectList
+        }
+    },
+
     applyFilter() {
         // get current filter
 
