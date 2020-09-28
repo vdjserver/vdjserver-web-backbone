@@ -134,8 +134,9 @@ export default Marionette.View.extend({
     tagName: 'div',
     className: 'community-container',
 
-    // one region for overall statistics
     // one region for query filters
+    // one region for dynamic stats
+    // one region for dynamic charts
     // one region for results
     // one region for pagination
     regions: {
@@ -166,6 +167,21 @@ export default Marionette.View.extend({
             $("#community-filter").toggle();
         },
 
+        // Hiding Studies Filter when removed
+        'click #remove-filter-studies': function() {
+            $("#filter-studies").toggle();
+        },
+
+        // Hiding Repertoires Filter when removed
+        'click #remove-filter-reps': function() {
+            $("#filter-reps").toggle();
+        },
+
+        // Hiding ADC Filter when removed
+        'click #remove-filter-adc': function() {
+            $("#filter-adc").toggle();
+        },
+
         // setting event for Overview page
         'click #apply-filter': function() {
             console.log('apply filter');
@@ -179,10 +195,12 @@ export default Marionette.View.extend({
     // show a loading view, used while fetching the data
     showLoading(ls, lr, tr) {
         this.showChildView('resultsRegion', new LoadingView({loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr}));
+        $("#community-charts").addClass("no-display");
     },
 
     showResultsList(studyList) {
         console.log(this.controller);
+         $("#community-charts").removeClass("no-display");
 
         this.filterView = new CommunityQueryView ({model: this.model});
         this.showChildView('queryRegion', this.filterView);

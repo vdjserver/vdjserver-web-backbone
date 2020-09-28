@@ -22,6 +22,10 @@ Community Projects Page
     margin-bottom: 3%;
 }
 
+.no-display {
+    display: none;
+}
+
 /* ----------------------------------------------------------
 Loading
 ------------------------------------------------------------*/
@@ -31,6 +35,12 @@ Loading
 
 .loading-content {
     font-size: 2em;
+    text-align: center;
+
+    p:nth-child(3) {
+        color: $vdj-medgray;
+        font-size: 0.75em;
+    }
 }
 
 /* ----------------------------------------------------------
@@ -55,7 +65,27 @@ Community Charts
 /* ----------------------------------------------------------
 Community Statistics
 ------------------------------------------------------------*/
-#community-statistics {
+.filters {
+    margin-right: 1%;
+    display: inline;
+}
+
+.filter-badges {
+    display: inline;
+}
+
+.badge-stats {
+    font-weight: normal;
+    font-size: 1.10em;
+    padding: 0.6em;
+}
+
+a.remove-filter {
+    color: $vdj-link;
+}
+
+a.remove-filter:hover {
+    color: #FFFFFF;
 }
 
 /* ----------------------------------------------------------
@@ -68,9 +98,8 @@ Community Query
 #community-filter {
     display: none;
     padding: 2%;
-    border: 3px solid $vdj-blue;
+    border: 0.25px solid $vdj-blue;
     margin-bottom: 3%;
-    border-radius: 20px;
 }
 
 .new-filter {
