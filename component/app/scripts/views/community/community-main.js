@@ -42,46 +42,6 @@ import PieChart from 'Scripts/views/charts/pie';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
 
-// Community Charts View
-import community_charts_template from 'Templates/community/community-charts.html';
-var CommunityChartsView = Marionette.View.extend({
-    template: Handlebars.compile(community_charts_template),
-
-    regions: {
-        chartRegion: '#chart-1-region',
-    },
-
-    initialize(parameters) {
-        if (parameters) {
-            // our controller
-            if (parameters.controller) this.controller = parameters.controller;
-        }
-
-    },
-
-    onAttach() {
-        if (this.view) this.view.showChart();
-    },
-
-    updateCharts(studyList) {
-        var counts = studyList.countByField('subject.sex');
-        console.log(counts);
-        var series = [{name: "Sex", data:[]}];
-        var total = 0;
-        for (var i in counts) total += counts[i];
-        for (var i in counts) {
-            var obj = { name: i, y: 100 * counts[i] / total, count: counts[i], total_count: total };
-            series[0]['data'].push(obj);
-        }
-
-        var title = 'Subject Sex';
-        var subtitle = total + ' subjects among ' + studyList.length + ' studies';
-        this.view = new PieChart({series: series, title: title, subtitle: subtitle});
-        this.showChildView('chartRegion', this.view);
-        this.view.showChart();
-    }
-});
-
 // Community Query/Filter View
 import community_query_template from 'Templates/community/community-query.html';
 var CommunityQueryView = Marionette.View.extend({
@@ -121,10 +81,65 @@ var CommunityStatisticsView = Marionette.View.extend({
     }
 });
 
+// Community Charts View
+import community_charts_template from 'Templates/community/community-charts.html';
+var CommunityChartsView = Marionette.View.extend({
+    template: Handlebars.compile(community_charts_template),
+
+    regions: {
+        chartRegion: '#chart-1-region',
+        chart2Region: '#chart-2-region',
+        chart3Region: '#chart-3-region'
+    },
+
+    initialize(parameters) {
+        if (parameters) {
+            // our controller
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+
+    },
+
+    onAttach() {
+        if (this.view) this.view.showChart();
+    },
+
+    updateCharts(studyList) {
+        var counts = studyList.countByField('subject.sex');
+        console.log(counts);
+        var series = [{name: "Sex", data:[]}];
+        var total = 0;
+        for (var i in counts) total += counts[i];
+        for (var i in counts) {
+            var obj = { name: i, y: 100 * counts[i] / total, count: counts[i], total_count: total };
+            series[0]['data'].push(obj);
+        }
+
+        var title = 'Subject Sex';
+        var subtitle = total + ' subjects among ' + studyList.length + ' studies';
+        this.view = new PieChart({series: series, title: title, subtitle: subtitle});
+        this.showChildView('chartRegion', this.view);
+        this.view.showChart();
+    }
+});
+
 // Community Pagination View
 import community_pagination_template from 'Templates/community/community-pagination.html';
 var CommunityPaginationView = Marionette.View.extend({
-    template: Handlebars.compile(community_pagination_template)
+    template: Handlebars.compile(community_pagination_template),
+
+    // Trying to access data to produce paging
+    initialize(parameters) {
+        if (parameters) {
+            // our controller
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+    },
+
+    templateContext() {
+        //if (!this.controller) return {};
+        console.log('this.controller: ' + this.controller);
+    },
 });
 
 // the main community data page
@@ -200,7 +215,7 @@ export default Marionette.View.extend({
 
     showResultsList(studyList) {
         console.log(this.controller);
-         $("#community-charts").removeClass("no-display");
+        $("#community-charts").removeClass("no-display");
 
         this.filterView = new CommunityQueryView ({model: this.model});
         this.showChildView('queryRegion', this.filterView);

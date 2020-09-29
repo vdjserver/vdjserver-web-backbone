@@ -52,7 +52,9 @@ export default Marionette.View.extend({
         // Create the chart
         Highcharts.chart('pie_chart', {
             chart: {
-                type: 'pie'
+                type: 'pie',
+                height: 225,
+                backgroundColor: "#F1F1F1",
             },
             title: {
                 text: this.title

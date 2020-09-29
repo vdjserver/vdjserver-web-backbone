@@ -11,4 +11,13 @@ $(document).ready(function() {
     } else {
         console.log("Nah, not checked");
     }
+
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 250){
+            $('#community-statistics').addClass("stats-border");
+        }
+        else{
+            $('#community-statistics').removeClass("stats-border");
+        }
+    });
 });

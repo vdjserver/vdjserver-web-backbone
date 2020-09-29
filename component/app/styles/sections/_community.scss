@@ -44,27 +44,58 @@ Loading
 }
 
 /* ----------------------------------------------------------
-Community Charts
+Community Query
 ------------------------------------------------------------*/
-#community-charts {
-    border: 2px solid $vdj-medgray;
-    border-radius: 3px;
-    padding: 2em;
-    margin-top: 3%;
-    background: $vdj-lightgray;
+.btn-download {
+    float: right;
+}
 
-    .highcharts-container {
-        background: $vdj-lightgray;
+#community-filter {
+    display: none;
+    padding: 2%;
+    border: 0.25px solid $vdj-medgray;
+    margin-bottom: 3%;
+}
 
-        svg {
-            rect: $vdj-lightgray;
-        }
+.new-filter {
+    display: flex;
+    align-items: center;
+
+    button {
+        margin-right: 1em;
+    }
+
+    #save-community-filter {
+        display: none;
+    }
+}
+
+.sort-options-buttons {
+    button {
+        margin-right: 1em;
     }
 }
 
 /* ----------------------------------------------------------
 Community Statistics
 ------------------------------------------------------------*/
+#community-statistics {
+    background: #FFFFFF;
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0;
+    z-index: 99999;
+    padding: 2%;
+}
+
+.community-statistics {
+    width: 200%;
+}
+
+.stats-border {
+    border-bottom: 3px solid $vdj-darkgray;
+}
+
 .filters {
     margin-right: 1%;
     display: inline;
@@ -89,37 +120,30 @@ a.remove-filter:hover {
 }
 
 /* ----------------------------------------------------------
-Community Query
+Community Charts
 ------------------------------------------------------------*/
-.btn-download {
-    float: right;
-}
+#community-charts {
+    border: 2px solid $vdj-medgray;
+    border-radius: 3px;
+    padding: 2em;
+    margin-top: 3%;
+    background: $vdj-lightgray;
 
-#community-filter {
-    display: none;
-    padding: 2%;
-    border: 0.25px solid $vdj-blue;
-    margin-bottom: 3%;
-}
-
-.new-filter {
-    display: flex;
-    align-items: center;
-
-    button:first-of-type {
-        margin-right: 1em;
-    }
-
-    #save-community-filter {
-        display: none;
+    .highcharts-container {
+        background: $vdj-lightgray;
+        height: 225px;
     }
 }
-
-
 
 /* ----------------------------------------------------------
-Community Project
+Community Results
 ------------------------------------------------------------*/
+// #community-results::before {
+//     content: "Results";
+//     margin-top: 2%;
+//     font-size: 1.5em;
+// }
+
 .community-project {
     margin: 3% auto;
     border: 2px solid $vdj-medgray;
