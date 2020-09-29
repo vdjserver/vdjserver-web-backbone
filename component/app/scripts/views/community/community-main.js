@@ -134,12 +134,21 @@ var CommunityPaginationView = Marionette.View.extend({
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
+
+        // What's in the data?
+        console.log(this.controller);
+
+        var colls = this.controller.getCollections();
+        var num_studies = colls['studyList'].length;
+        console.log("num studies: " + num_studies);
     },
 
-    templateContext() {
-        //if (!this.controller) return {};
-        console.log('this.controller: ' + this.controller);
-    },
+    updatePagination(studyList) {
+    }
+
+    // showResultsList(studyList) {
+    //     console.log(this.controller);
+    // }
 });
 
 // the main community data page
@@ -231,7 +240,9 @@ export default Marionette.View.extend({
         this.resultsView = new CommunityListView({collection: studyList, controller: this.controller});
         this.showChildView('resultsRegion', this.resultsView);
 
-        this.showChildView('paginationRegion', new CommunityPaginationView ({model: this.model}));
+        this.paginationView = new CommunityPaginationView ({collection: studyList, controller: this.controller});
+        this.showChildView('paginationRegion', this.paginationView);
+        this.paginationView.updatePagination(studyList);
     },
 
     newFilterModal(e) {
