@@ -1,0 +1,62 @@
+/*****************************************************
+SASS for Project List page
+*****************************************************/
+
+// .jumbotron {
+//     background: none !important;
+// }
+
+.navbar-brand {
+    img {
+        width: 8%;
+        padding-right: 0.5em;
+    }
+
+    .brand-name {
+        font-weight: bold;
+        //text-transform: uppercase;
+    }
+}
+
+.tabs {
+    background: #689a87;
+    color: #ffffff;
+
+    a {
+        color: #ffffff;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+}
+
+ul.tabs-list {
+    padding: 1%;
+
+    li {
+        display: inline;
+        padding: 0.5%;
+
+        li:hover {
+            background: #b7cec6;
+        }
+    }
+}
+
+// Project List table
+th.title {
+    width: 20%;
+}
+
+td.desc {
+    width: 40%;
+}
+
+td.created {
+    width: 5%;
+}
+
+.dropdown-menu {
+    z-index: 99999;
+}

@@ -1,0 +1,41 @@
+<!--
+- Subview for the repertoire edit view with subject info
+- Multi-line with subject id, sex, age, ...
+- TODO: How to show the Diagnoses?
+-->
+<!-- <div class="row"> -->
+    <div class="col-md-1">
+        &nbsp;
+    </div>
+
+    <div class="col-md-4 form-inline">
+        <label for="subject_id">Subject ID: </label>
+
+        <!-- {{#unless edit_mode}}
+            &nbsp; {{value.subject_id}}
+        {{/unless}} -->
+
+        <input type="text" class="form-control"  name="subject_id" id="edit_subject_id" placeholder="Subject ID" value="{{value.subject_id}}">
+    </div>
+
+    <div class="col-md-3 form-inline">
+        <label for="age">Age: </label>
+        <!-- {{#unless edit_mode}}
+            &nbsp; {{value.age_unit.label}}
+        {{/unless}} -->
+
+        <input type="text" class="form-control" name="age" id="edit_age"  value="{{value.age_unit.label}}">
+    </div>
+
+    <div class="col-md-3 form-inline">
+        <label for="sex">Sex: </label>
+        <!-- {{#unless edit_mode}}
+            &nbsp; {{value.sex}}
+        {{/unless}} -->
+
+        <input type="text" class="form-control" name="sex" id="edit_sex" placeholder="{{value.sex}}"  value="{{value.sex}}">
+    </div>
+<!-- </div>
+<!-- <div class="col-md-11">
+    <h2>This is the expanded Subject view</h2>
+</div> -->

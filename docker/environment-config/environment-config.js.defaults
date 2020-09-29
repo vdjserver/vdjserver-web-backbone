@@ -104,6 +104,14 @@ var EnvironmentConfig = {
             },
         },
     },
+    'adc': {
+        'vdjserver': {
+            'hostname': 'https://vdjserver.org/airr/v1'
+        },
+        'ipa1': {
+            'hostname': 'https://ipa1.ireceptor.org/airr/v1'
+        },
+    },
     'processMetadata': {
         'version': 3,
     },

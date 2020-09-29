@@ -1,0 +1,34 @@
+<div class="community-project-header">
+    <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>
+    <!-- Badges for study type -->
+    <h4 class="community-badges">
+        {{#if contains_ig}}
+            <a class="badge badge-pill badge-locus">IG</a>
+        {{/if}}
+        {{#if contains_tcr}}
+            <a class="badge badge-pill badge-locus">TCR</a>
+        {{/if}}
+        {{#if contains_single_cell}}
+            <a class="badge badge-pill badge-cell">Single Cell</a>
+        {{/if}}
+        {{#if contains_paired_chain}}
+            <a class="badge badge-pill badge-cell">Paired Chain</a>
+        {{/if}}
+    </h4>
+
+    <p>{{#truncate}}{{study.value.study_description}}{{/truncate}}</p>
+</div>
+<div class="row community-summary-stats">
+    <div class="col-md-3">
+        {{num_repertoires}} Repertoires <i class="fas fa-vial"></i>
+    </div>
+    <div class="col-md-3">
+        {{num_subjects}} Subjects <i class="fas fa-users"></i>
+    </div>
+    <div class="col-md-3">
+        XXX,XXX Clones <i class="fas fa-sitemap"></i>
+    </div>
+    <div class="col-md-3">
+        XXX,XXX,XXX Rearrangements <i class="fas fa-stream"></i>
+    </div>
+</div>

@@ -1,24 +1,52 @@
-// colors
-$red: #993333;
-$darkGray: #919191;
+/* import only the necessary Bootstrap files */
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
 
-$vdjLogoGreen: #558a74;
+$vdj-green: #689A87;
+$vdj-lightgreen: #71B87D;
+$vdj-red: #D93C39;
+$vdj-orange: #CC6B4C;
+$vdj-lightorange: #F6835E;
+$vdj-yellow: #EAE386;
+$vdj-darkgray: #6C757D;
+$vdj-medgray: #B8C0C7;
+$vdj-medlightgray: #E1E1E1;
+$vdj-lightgray: #F1F1F1;
+$vdj-darkblue: #4E95B8;
+$vdj-blue: #7FA8BD;
+$vdj-link: #61B8E4;
 
-//$projectMenuLightColor: #63c3d9;
+// BootStrap Color Overrides
+$theme-colors: (
+    'delete': $vdj-red,
+    'success': $vdj-lightgreen,
+    'save': $vdj-lightgreen,
+    'new': $vdj-blue,
+    'add': $vdj-blue,
+    'create': $vdj-blue,
+    'upload': $vdj-medgray,
+    'edit': $vdj-yellow,
+    'copy': $vdj-lightorange,
+    'info': $vdj-darkblue,
+    'primary': $vdj-green,
+    'light': $vdj-medgray,
+    'cancel': $vdj-medgray,
+    'download': $vdj-lightgreen,
+    'darkgray': $vdj-darkgray,
 
-// Dark blue
-$projectMenuLightColor: #184450;
+    // Study Type Badges
+    'locus': $vdj-green,
+    'cell': $vdj-lightorange,
+    'stats': $vdj-lightgray,
+);
 
-// Green
-//$projectMenuLightColor: #699886;
-$projectMenuTextColor: #ffffff;
+// Elements
+$vdj-border: #E1E1E1;
+$text-white: #FFFFFF;
+// $text-danger: #FFFFFF;
+$text-info: #6C757D;
+// $text-save: #FFFFFF;
+// $text-download: #FFFFFF;
 
-$projectSubmenuColor: #f3f3f3;
-$projectSubmenuTextColor: #484848;
-$projectFileListingsAlternateColor: #f2f2f2;
-$projectNavbarBorderColor: #6e3a34;
-$projectNavbarButtonColor: #7d362f;
-
-$boxShadowColor: #767676;
-
-$projectListBorderColor: #575757;
+/* finally, import Bootstrap to set the changes! */
+@import "~bootstrap/scss/bootstrap";

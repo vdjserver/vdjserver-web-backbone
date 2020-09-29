@@ -1,0 +1,321 @@
+<div class="alert alert-info">
+    <i class="fa fa-info-circle"></i> Add Subject information to the repertoire by filling out the form below.
+</div>
+
+<h2>Subject Information</h2>
+<form>
+    <div class="form-group">
+      <input type="file" name="uploadSubject" class="form-control-file" id="uploadSubject">
+      <label for="uploadSubject" class="btn btn-upload">
+        <i class="fa fa-upload"></i>
+        Import Subject Metadata
+      </label>
+  </div>
+</form>
+
+<form method="post" role="form" id="addSubject-form" class="needs-validation" name="subject" novalidate>
+    <div class="form-group">
+        <h3>Subject Metadata</h3>
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Subject ID
+
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-4" name="subject_id" id="subject_id" placeholder="">
+        <div class="invalid-feedback">
+            Please enter a valid Subject ID.
+        </div>
+    </div>
+
+    <div class="form-group col-md-4">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Synthetic
+            <!-- Popover -->
+        </label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="synthetic-yes" id="synthetic-yes">
+            <label class="form-check-label" for="synthetic-yes">
+                Yes
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="synthetic-no" id="synthetic-no">
+            <label class="form-check-label" for="synthetic-no">
+                No
+            </label>
+        </div>
+        <div class="invalid-feedback">
+            Please enter a valid Synthetic.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip-->
+            </span>
+            Species
+            <!-- Popover -->
+        </label>
+        <select class="custom-select col-md-4" id="species" required>
+          <option value="1">Human</option>
+          <option value="2">Monkey</option>
+          <option vale="3">Mouse</option>
+        </select>
+    </div>
+    <!-- AIRR Standards have Sex as a "string", so removing radio buttons-->
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Sex
+            <!-- Popover -->
+        </label>
+
+        <!-- <div class="form-check">
+          <input class="form-check-input" type="radio" name="sex-female" id="sex-female" value="female" checked>
+          <label class="form-check-label" for="sex-female">
+            Female
+          </label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="sex-male" id="sex-male" value="male">
+          <label class="form-check-label" for="sex-male">
+            Male
+          </label> -->
+          <input type="text" class="form-control col-md-2" name="sex" id="sex" placeholder="" required>
+          <div class="invalid-feedback">
+              Please enter a valid Sex.
+          </div>
+        </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Minimum Age
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-1" name="age_min" id="age_min" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Minimum Age.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Maximum Age
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-1" name="age_max" id="age_max" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Maximum Age.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Age Unit
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-1" name="age_unit" id="age_unit" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Age Unit.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Age Event
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-2" name="age_event" id="age_event" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Age Event.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Ancestry Population
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-4" name="ancestry-population" id="ancestry-population" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Ancestry Population.
+        </div>
+    </div>
+
+    <!-- AIRR Standards require a string for "Ethnicity" -->
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Ethnicity
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-3" name="ethnicity" id="ethnicity" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Ethnicity.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip-->
+            </span>
+            Race
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-3" name="race" id="race" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Race.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Strain Name
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-3" name="strain_name" id="strain_name" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Strain Name.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Linked Subjects
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-3" name="linked_subjects" id="linked_subjects" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Linked Subjects.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Link Type
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-4" name="link_type" id="link_type" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter valid a Link Type.
+        </div>
+
+        <div class="footer-actions">
+            <div class="rep-back-actions">
+                <button type="button" class="btn btn-primary" id="repertoireMetadata"><i class="fa fa-angle-double-left"></i> Back to Repertoire Metadata</button>
+            </div>
+
+            <div class="rep-next-actions">
+                <button type="button" class="btn btn-save" id="save-subject" data-toggle="modal" data-target="#save-modal"><i class="fa fa-save"></i> Save and Finish Later</button>
+                <button type="button" class="btn btn-add" id="add-diagnosis"><i class="fa fa-angle-double-right"></i> Add Diagnosis Information</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Save Modal -->
+<div class="modal fade" id="save-modal" tabindex="-1" role="dialog" aria-labelledby="saving" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body saving">
+                Saving <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </div>
+        </div>
+     </div>
+</div>
+    <!-- Display all of the subjects that have been added -->
+    <!--<table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Subject ID</th>
+                <th scope="col">Synthetic</th>
+                <th scope="col">Organism</th>
+                <th scope="col">Sex</th>
+                <th scope="col">Age</th>
+                <th scope="col">Age Event</th>
+                <th scope="col">Ancestry Population</th>
+                <th scope="col">Ethnicity</th>
+                <th scope="col">Race</th>
+                <th scope="col">Strain Name</th>
+                <th scope="col">Linked Subjects</th>
+                <th scope="col">Link Types</th>
+            </tr>
+            <tbody>
+                <tr scope="row">
+                    <td class="subject_id"
+
+                    </td>
+                    <td class="synthetic">
+
+                    </td>
+                    <td class="organism">
+
+                    </td>
+                    <td class="sex">
+
+                    </td>
+                    <td class="age">
+
+                    </td>
+                    <td class="age-event">
+
+                    </td>
+                    <td class="ancestry-population">
+
+                    </td>
+                    <td class="ethnicity">
+
+                    </td>
+                    <td class="race">
+
+                    </td>
+                    <td class="strain-name">
+
+                    </td>
+                    <td class="linked-subjects">
+
+                    </td>
+                    <td class="link-types">
+
+                    </td>
+                </tr>-->
+                <!-- Insert another row if "Add Another Subject" button is clicked -->
+            <!--</tbody>
+        </thead>
+    </table>-->

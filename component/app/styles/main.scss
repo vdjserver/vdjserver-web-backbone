@@ -1,41 +1,55 @@
 // CSS is organized according to SASS recommendations
 // http://thesassway.com/beginner/how-to-structure-a-sass-project
 
+// Setting path for Bootstrap fonts:
+// $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+// $fa-font-path: "~font-awesome/fonts/";
+
+// Font Awesome (4.3.0)
+// @import '~font-awesome/scss/font-awesome';
+
+// Font Awesome (5.14.0)
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
 // Frameworks
-@import 'compass/css3';
 @import 'vendor/bootstrap-overrides';
-@import '../bower_components/twbs-bootstrap-sass/assets/stylesheets/bootstrap.scss';
-@import '../bower_components/datatables-responsive/css/responsive.dataTables.scss';
-@import '../bower_components/datatables.net-bs/css/dataTables.bootstrap.css';
+// @import '~bootstrap-sass/assets/stylesheets/_bootstrap.scss';
+//@import '~datatables-responsive/css/responsive.dataTables.scss';
+@import '~datatables/media/css/jquery.dataTables.css';
+
+// Bootstrap
+@import './node_modules/bootstrap-multiselect/dist/css/bootstrap-multiselect';
+@import "~bootstrap/scss/bootstrap";
 
 // Modules
 @import 'modules/colors';
 @import 'modules/font';
 @import 'modules/sizes';
-
-// Partials
-@import 'partials/alerts';
-@import 'partials/badges';
-@import 'partials/body';
-@import 'partials/boxes';
-@import 'partials/buttons';
-@import 'partials/charts';
-@import 'partials/forms';
-@import 'partials/grid';
-@import 'partials/icons';
-@import 'partials/layouts';
-@import 'partials/menus';
-@import 'partials/modals';
-@import 'partials/navbar';
-@import 'partials/tables';
-@import 'partials/typeahead';
+@import 'modules/buttons';
 
 // Sections
 @import 'sections/community';
 @import 'sections/create-account';
+@import 'sections/create-project';
+@import 'sections/create-rep';
 @import 'sections/file-upload';
 @import 'sections/home';
+@import 'sections/project-list';
+@import 'sections/single-project';
 
-// Vendor
-@import '../bower_components/font-awesome/scss/font-awesome';
-@import '../bower_components/bootstrap-multiselect/dist/css/bootstrap-multiselect.css';
+// Partials
+// @import 'partials/alerts';
+// @import 'partials/badges';
+// @import 'partials/body';
+// @import 'partials/boxes';
+// @import 'partials/buttons';
+// @import 'partials/charts';
+// @import 'partials/forms';
+// @import 'partials/grid';
+// @import 'partials/icons';
+// @import 'partials/layouts';
+// @import 'partials/menus';
+// @import 'partials/modals';
+// @import 'partials/navbar';
+// @import 'partials/tables';
+// @import 'partials/typeahead';

@@ -1,20 +1,309 @@
-<div class="alert alert-info">
-    <i class="fa fa-info-circle"></i> Create a new VDJServer project.
+<div class="create-form-text row">
+        <div class="alert alert-info col-md-7">
+            <i class="fa fa-info-circle"></i> Create a new VDJServer project by filling out the form below.
+        </div>
 </div>
 
-<form method="post" class="form-horizontal" role="form">
+<form method="POST" role="form" id="project-form" class="needs-validation" name="project" novalidate>
+    <div class="projectInfo">
+        <h2 class="form-section">Project Information</h2>
+            <div class="form-group col-md-4">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "study_id"}}}
+                    </span>
 
-    <div class="form-group">
-        <label for="name" class="col-sm-2 control-label">Project Name</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" placeholder="Project Name" name="name" id="name">
+                    Study ID
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "study_id"}}}
+                </label>
+
+                <input type="text" class="form-control" name="study_id" id="NCBI" value="{{value.study_id}}">
+            </div>
+
+            <div class="form-group col-md-12">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "study_title"}}}
+                    </span>
+
+                    Project/Study Title
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "study_title"}}}
+                </label>
+                <textarea class="form-control" name="study_title" id="study_title" rows="2" required>{{value.study_title}}</textarea>
+                <div class="invalid-feedback">
+                  Please enter a Project/Study Title.
+                </div>
+            </div>
+
+            <div class="form-group col-md-10">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "study_description"}}}
+                    </span>
+                    Project/Study Description
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "study_description"}}}
+                </label>
+                <textarea class="form-control" name="study_description" id="description" rows="15">{{value.study_description}}</textarea>
+            </div>
+
+            <div class="form-group col-md-10">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "inclusion_exclusion_criteria"}}}
+                    </span>
+
+                    Inclusion/Exclusion Criteria
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "inclusion_exclusion_criteria"}}}
+                </label>
+                <textarea class="form-control" name="inclusion_exclusion_criteria" id="criteria" placeholder="Include: Clinical P. falciparum infection; Exclude: Seropositive for HIV" rows="5"> {{ inclusion_exclusion_criteria }}</textarea>
+                <div class="invalid-feedback">
+                  Please enter Inclusion/Exclusion Criteria.
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "grants"}}}
+                    </span>
+
+                    Grants
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "grants"}}}
+                </label>
+                <textarea class="form-control" name="grants" id="grants" rows="4">{{ value.grants }}</textarea>
+                <div class="invalid-feedback">
+                  Please list the Grants for this project.
+                </div>
+            </div>
+
+            <div class="form-group col-md-3">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "keywords_study"}}}
+                    </span>
+                    Study Keywords
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "keywords_study"}}}
+                </label>
+                {{#each keywords_object}}
+                        <div class="form-check custom-control custom-checkbox">
+                          <input class="form-check-input" type="checkbox" name="{{@key}}" id="{{@key}}" value="{{@key}}">
+                          <label class="form-check-label" for="{{@index}}">
+                              {{this}}
+                          </label>
+                      </div>
+                {{/each}}
+            </div>
+
+            <div class="form-group col-md-3">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "study_type"}}}
+                    </span>
+
+                    Study Type
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "study_type"}}}
+                </label>
+                <div id="study-type-region"></div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "pub_ids"}}}
+                    </span>
+
+                    Publications
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "pub_ids"}}}
+                </label>
+                <input type="text" class="form-control" name="pub_ids" id="publications" value="{{ value.pub_ids }}">
+                <div class="invalid-feedback">
+                  Please enter Publications.
+                </div>
+            </div>
+    </div>
+
+
+    <div class="labInfo">
+        <h2 class="form-section">Lab / Principal Investigator Contact Information</h2>
+        <div class="form-group col-md-5">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "lab_name"}}}
+                </span>
+
+                Lab Name / Principal Investigator (PI)
+
+                <!-- Popover -->
+                {{{FieldHelpPopover "Study" "lab_name"}}}
+            </label>
+            <input type="text" class="form-control" name="lab_name" id="lab_name" value="{{ value.lab_name }}">
+            <div class="invalid-feedback">
+              Please enter Lab Name / Principal Investigator (PI).
+            </div>
+        </div>
+
+        <div class="form-group col-md-7">
+            <label>
+                <span class="required">
+                    <!-- Tooltip -->
+                    {{{FieldStar "Study" "lab_address"}}}
+                </span>
+
+                Lab Address
+
+                <!-- Popover -->
+                {{{FieldHelpPopover "Study" "lab_address"}}}
+            </label>
+
+            <input type="text" class="form-control" name="lab_address" id="lab_address" value="{{ value.lab_address }}">
+            <div class="invalid-feedback">
+              Please enter a Lab Address.
+            </div>
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-sm-12">
-            <input type="submit" value="Create a new VDJServer Project" class="btn btn-success btn-block">
-        </div>
+    <div class="collectorInfo">
+        <h2 class="form-section">Data Collector Contact Information</h2>
+            <div class="form-group col-md-5">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "collected_by"}}}
+                    </span>
+
+                    Data Collector Name
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "collected_by"}}}
+                </label>
+                <input type="text" class="form-control" name="collectedby_name" id="collectedby_name" value="{{ value.collected_by }}">
+                <div class="invalid-feedback">
+                  Please enter Data Collector Name.
+                </div>
+            </div>
+
+            <div class="form-group col-md-5">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "collected_by"}}}
+                    </span>
+
+                    Data Collector Email
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "collected_by"}}}
+                </label>
+                <input type="email" class="form-control" name="collectedby_email" id="collectedby_email">
+                <div class="invalid-feedback">
+                  Please enter a Data Collector Email.
+                </div>
+            </div>
+
+            <div class="form-group col-md-7">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "collected_by"}}}
+                    </span>
+
+                    Data Collector Address
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "collected_by"}}}
+                </label>
+                <input type="text" class="form-control" name="collectedby_address" id="collectedby_address">
+                <div class="invalid-feedback">
+                  Please enter a Data Collector Address.
+                </div>
+            </div>
     </div>
 
+    <div class="submitterInfo">
+        <h2 class="form-section">Data Submitter Contact Information</h2>
+            <div class="form-group col-md-5">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "submitted_by"}}}
+                    </span>
+
+                    Data Submitter Name
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "submitted_by"}}}
+                </label>
+                <input type="text" class="form-control" name="submittedby_name" id="submittedby_name" value="{{ submitted_by }}">
+                <div class="invalid-feedback">
+                  Please enter Data Submitter Name.
+                </div>
+            </div>
+
+            <div class="form-group col-md-5">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "submitted_by"}}}
+                    </span>
+
+                    Data Submitter Email
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "submitted_by"}}}
+                </label>
+                <input type="email" class="form-control" name="submittedby_email" id="submittedby_email">
+                <div class="invalid-feedback">
+                  Please enter a Data Submitter Email.
+                </div>
+            </div>
+
+            <div class="form-group col-md-7">
+                <label>
+                    <span class="required">
+                        <!-- Tooltip -->
+                        {{{FieldStar "Study" "submitted_by"}}}
+                    </span>
+
+                    Data Submitter Address
+
+                    <!-- Popover -->
+                    {{{FieldHelpPopover "Study" "submitted_by"}}}
+                </label>
+                <input type="text" class="form-control" name="submittedby_address" id="submittedby_address">
+                <div class="invalid-feedback">
+                  Please enter a Data Submitter Address.
+                </div>
+            </div>
+    </div>
+
+    <div class="actions ml-auto">
+        <div class="input-group">
+            <input type="reset" value ="Cancel" class="col-md-3 btn btn-cancel" id="cancel-project">
+
+            <input type="submit" value="Create Project" class="col-md-4 btn btn-create" id="create-new-project">
+        </div>
+    </div>
 </form>

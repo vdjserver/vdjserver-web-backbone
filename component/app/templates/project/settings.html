@@ -155,7 +155,7 @@
                                 <div class="modal-footer">
                                     <div class="text-center">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                        <input type="submit" class="btn btn-danger" id="delete-project" value="Delete Project">
+                                        <input type="submit" class="btn btn-delete" id="delete-project" value="Delete Project">
                                     </div>
                                 </div>
                             </form>
@@ -176,7 +176,7 @@
                     <label class="sr-only" for="add-username">Username</label>
                         <input type="text" id="add-username" class="form-control" placeholder="Enter username..." {{communityModeReadOnly}}>
                 </div>
-                <button class="btn btn-success" id="add-user" {{communityModeDisable}}>Add user to project</button>
+                <button class="btn btn-add" id="add-user" {{communityModeDisable}}>Add user to project</button>
             </form>
         </div>
     </div>
@@ -204,9 +204,9 @@
                                 {{#if ../communityMode}}
                                 {{else}}
                                 {{#ManageUsersShouldDisableDelete this}}
-                                    <button class="btn btn-danger remove-user-from-project" data-id="{{username}}" disabled="disabled">Delete</button>
+                                    <button class="btn btn-delete remove-user-from-project" data-id="{{username}}" disabled="disabled">Delete</button>
                                 {{else}}
-                                    <button class="btn btn-danger remove-user-from-project" data-id="{{username}}">Delete</button>
+                                    <button class="btn btn-delete remove-user-from-project" data-id="{{username}}">Delete</button>
                                 {{/ManageUsersShouldDisableDelete}}
                                 {{/if}}
                             </td>

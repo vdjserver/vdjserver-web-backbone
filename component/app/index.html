@@ -8,39 +8,19 @@
         <meta name="description" content="">
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="/styles/main.css">
+        <link rel="stylesheet" href="/dist/main.css">
 
         <title>VDJServer</title>
         <base href="/"/>
 
+        <!-- Environment Config -->
+        <script src="scripts/config/environment-config.js"></script>
+
     </head>
     <body>
-        <header id="header" class="top"></header>
-        <main id="main"></main>
+        <div id="app" class="container-fluid p-0"></div>
 
-        <!-- Google Analytics -->
-            <script>
-                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-                ga('create', 'UA-50596955-1', 'auto');
-                ga('send', 'pageview');
-
-            </script>
-        <!-- End Google Analytics -->
-
-        <!-- Google Recaptcha -->
-            <script src='https://www.google.com/recaptcha/api.js' async defer></script>
-        <!-- End Google Recaptcha-->
-
-        <script src="scripts/config/environment-config.js"></script>
-        <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="zoflo1ivbcsk8fp"></script>
-
-        <!-- build:js scripts/requirejs-main.js -->
-            <script data-main="/scripts/requirejs-config" src="/bower_components/requirejs/require.js"></script>
-        <!-- endbuild -->
-
-</body>
+    <!-- Loading Scripts last for performance -->
+    <script src="dist/main.js"></script>
+    </body>
 </html>

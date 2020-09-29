@@ -1,0 +1,74 @@
+<!--
+- Community Query View
+-->
+
+<div class="community-filter" id="community-filter">
+    <h3>Filter Results</h3>
+    <form>
+        <div class="row">
+            <div class="col-md-3">
+                <label for="search">Search</label>
+                <input type="text" class="form-control" id="search" aria-describedby="search" placeholder="Search">
+            </div>
+
+            <div class="col">
+                <label for="filter-option2">Filter Option 2</label>
+                <select id="inputState" class="form-control">
+                    <option selected>Choose...</option>
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="filter-option3">Filter Option 3</label>
+                <select id="inputState" class="form-control">
+                    <option selected>Choose...</option>
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="filter-option3">Filter Option 4</label>
+                <select id="inputState" class="form-control">
+                    <option selected>Choose...</option>
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+            </div>
+
+            <div class="col-md-3 new-filter">
+                <button type="button" class="btn btn-new" id="new-community-filter">
+                    New Filter <i class="fas fa-plus"></i>
+                </button>
+
+                <button type="button" class="btn btn-save" id="save-community-filter">
+                    Save Filter <i class="fas fa-save"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="row community-actions">
+    <div class="sort-options col-md-2">
+        <select id="inputState" class="form-control">sort
+            <option>Sort</option>
+            <option>Option 1</option>
+            <option>Option 2</option>
+            <option>Option 3</option>
+        </select>
+    </div>
+
+    <div class="col">
+        <button type="button" class="btn btn-darkgray" id="community-filter-button">Filter <i class="fas fa-filter" aria-hidden="true"></i></button>
+    </div>
+
+    <div class="col-md-3">
+        <a download class="btn btn-download" href="#">Download <i class="fas fa-download" aria-hidden="true"></i></a>
+    </div>
+</div>

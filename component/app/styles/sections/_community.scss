@@ -1,3 +1,156 @@
+/*****************************************************
+Community Projects Page
+*****************************************************/
+
 .dataTables_wrapper .dataTables_filter {
     display: none;
+}
+
+.community-container {
+    margin: 1% 3%;
+}
+
+.community-download {
+    margin-bottom: 10%;
+}
+
+.btn-download {
+    float: right;
+}
+
+#community-statistics, #community-query {
+    margin-bottom: 3%;
+}
+
+.no-display {
+    display: none;
+}
+
+/* ----------------------------------------------------------
+Loading
+------------------------------------------------------------*/
+.loading-airr-data {
+    text-align: center;
+}
+
+.loading-content {
+    font-size: 2em;
+    text-align: center;
+
+    p:nth-child(3) {
+        color: $vdj-medgray;
+        font-size: 0.75em;
+    }
+}
+
+/* ----------------------------------------------------------
+Community Charts
+------------------------------------------------------------*/
+#community-charts {
+    border: 2px solid $vdj-medgray;
+    border-radius: 3px;
+    padding: 2em;
+    margin-top: 3%;
+    background: $vdj-lightgray;
+
+    .highcharts-container {
+        background: $vdj-lightgray;
+
+        svg {
+            rect: $vdj-lightgray;
+        }
+    }
+}
+
+/* ----------------------------------------------------------
+Community Statistics
+------------------------------------------------------------*/
+.filters {
+    margin-right: 1%;
+    display: inline;
+}
+
+.filter-badges {
+    display: inline;
+}
+
+.badge-stats {
+    font-weight: normal;
+    font-size: 1.10em;
+    padding: 0.6em;
+}
+
+a.remove-filter {
+    color: $vdj-link;
+}
+
+a.remove-filter:hover {
+    color: #FFFFFF;
+}
+
+/* ----------------------------------------------------------
+Community Query
+------------------------------------------------------------*/
+.btn-download {
+    float: right;
+}
+
+#community-filter {
+    display: none;
+    padding: 2%;
+    border: 0.25px solid $vdj-blue;
+    margin-bottom: 3%;
+}
+
+.new-filter {
+    display: flex;
+    align-items: center;
+
+    button:first-of-type {
+        margin-right: 1em;
+    }
+
+    #save-community-filter {
+        display: none;
+    }
+}
+
+
+
+/* ----------------------------------------------------------
+Community Project
+------------------------------------------------------------*/
+.community-project {
+    margin: 3% auto;
+    border: 2px solid $vdj-medgray;
+
+    .community-project-header {
+        padding: 2% 2% 0% 2%;
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .community-badges {
+            margin-bottom: 1%;
+        }
+    }
+
+    .community-summary-stats {
+        background: $vdj-lightgray;
+        padding: 1% 0%;
+        border-top: 1.5px solid $vdj-darkgray;
+        margin: 2% 0% 0% 0%;
+        text-align: center;
+        font-weight: bold;
+    }
+}
+
+/* ----------------------------------------------------------
+Community Pagination
+------------------------------------------------------------*/
+.pagination {
+    float: right;
+    color: $vdj-blue;
+    margin-bottom: 3%;
 }

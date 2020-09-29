@@ -1,7 +1,0 @@
-{
-    "directory": "app/bower_components",
-    "allow_root": true,
-    "proxy": "http://proxy.swmed.edu:3128",
-    "https-proxy":"http://proxy.swmed.edu:3128",
-    "no-proxy":"www.swmed.edu"
-}

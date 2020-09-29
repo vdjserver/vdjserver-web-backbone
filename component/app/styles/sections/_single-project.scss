@@ -1,0 +1,310 @@
+/*****************************************************
+Single Project Overview Page
+*****************************************************/
+#project {
+    padding: 0% 5%;
+}
+
+.jumbotron {
+    padding: 2rem 2rem;
+}
+
+#project-summary {
+    margin-top: 2%;
+
+    h1 {
+        margin-bottom: 2%;
+        font-size: 2.25rem;
+        font-weight: 400;
+    }
+}
+
+#project-detail {
+    margin-top: 3%;
+}
+
+.project-metadata {
+    margin-bottom: 3%;
+    float: right;
+
+    .btn {
+        margin: 0% 1%;
+    }
+}
+
+#summary-buttons {
+    margin-bottom: 2%;
+}
+
+.details {
+    font-weight: bold;
+}
+
+.card {
+    margin: 1%;
+}
+
+.card-active {
+    background: $vdj-lightgray;
+}
+
+.card-link:hover {
+        background: $vdj-lightgray;
+        cursor: pointer;
+}
+
+.card-body {
+    text-align: center;
+}
+
+.overview-summary {
+    border-right: 1px solid rgba(225, 225, 225, 0.45);
+    padding-right: 5%;
+}
+
+#study-type-dropdown {
+    padding: 1em;
+}
+
+#study-type-dropdown.dropdown-menu.show {
+    will-change: unset !important;
+    -webkit-transform: none !important;
+    transform: none !important;
+}
+
+.overview-details {
+    padding-left: 5%;
+    font-size: 1em;
+
+    input, textarea, select {
+        margin-top: 1%;
+        margin-bottom: 5%;
+    }
+}
+
+.overview-summary-details {
+    input, textarea, select {
+        margin-bottom: 5%;
+    }
+}
+
+.overview-footer {
+    margin: 3% 0%;
+}
+
+/********************************************
+Repertoire Summary View
+********************************************/
+.hide {
+    visibility: hidden;
+}
+
+.no-display {
+    display: none;
+}
+
+.collapse-arrow {
+    margin-right: 0.25em;
+}
+
+.collapse {
+    -moz-transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    transition: all .5s linear;
+}
+
+.show {
+    -moz-transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    transition: all .5s linear;
+}
+
+#details {
+    -moz-transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    transition: all .5s linear;
+    // margin-left: 5%;
+}
+
+.rotate {
+    -moz-transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    transition: all .5s linear;
+}
+
+.rotate.down {
+    -moz-transform:rotate(180deg);
+    -webkit-transform:rotate(180deg);
+    transform:rotate(180deg);
+}
+
+.repertoire-actions {
+    float: right;
+}
+
+#repertoire-summary-header, #repertoire-expand-header {
+    padding-top: 2%;
+}
+
+#repertoire-summary-sample, #repertoire-exapnd-header {
+    padding-bottom: 2%;
+}
+
+ #repertoire-summary-statistics, #repertoire-expand-statistics {
+    padding-bottom: 3%;
+}
+
+.statistics-number, .statistics-name {
+    display: block;
+}
+
+#repertoire-summary-header,
+#repertoire-summary-sample,
+#repertoire-summary-statistics,
+#repertoire-summary-subject,
+#repertoire-expand-header,
+#repertoire-expand-subject,
+#repertoire-expand-sample,
+#repertoire-expand-file,
+#repertoire-expand-statistics
+ {
+
+    margin-bottom: 0 !important;
+
+    label {
+        font-weight: 500;
+    }
+}
+
+// input#repertoire_name.form-control, input#repertoire_uuid.form-control,
+// input#subject_id.form-control, input#age.form-control,
+// input#sex.form-control {
+//     margin-left: 3%;
+// }
+//
+// input#age.form-control {
+//     width: 40%;
+// }
+
+
+// input#repertoire_name.form-control-plaintext,
+// input#repertoire_uuid.form-control-plaintext,
+// input#subject_id.form-control-plaintext, input#age.form-control-plaintext,
+// input#sex.form-control-plaintext {
+//     margin-left: 3%;
+//     width: 80%;
+// }
+
+.rep-form-group {
+    margin-bottom: 0 !important;
+}
+
+.form-inline input {
+    margin-left: 2%;
+}
+/********************************************
+Edit Repertoire
+********************************************/
+#editSubject-form, #editSample-form, #editDiagnosis-form, #editCell-form, #editNucleic-form {
+    text-align: left;
+
+    > div {
+        margin-bottom: 1%;
+    }
+}
+
+/********************************************
+Progress Steps
+********************************************/
+.selected-step {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 2%;
+}
+
+/*******************************************
+Delete a Project
+*******************************************/
+.delete-warning {
+    color: $vdj-orange;
+}
+
+/*******************************************
+User Management
+*******************************************/
+#add-project-user {
+        margin-bottom: 3%;
+}
+
+.user-row:hover {
+    background: $vdj-lightgray;
+    cursor: pointer;
+}
+
+.subtitle {
+    font-size: 0.85em;
+    color: $vdj-darkgray;
+    font-weight: 500;
+}
+
+.btn-create {
+    color: #FFFFFF !important;
+}
+
+.btn-copy {
+    color: #FFFFFF;
+}
+
+.user-name-email {
+    input {
+        margin-bottom: 0.75em;
+    }
+}
+
+/*******************************************
+Repertoires
+*******************************************/
+.rep-details-button {
+    width: 100%;
+    position: relative;
+    text-align: left;
+}
+
+.rep-details-button[aria-expanded="false"]:after {
+    content: "\f077";
+    font-family: "FontAwesome";
+    float: right;
+}
+
+.rep-details-button[aria-expanded="true"]:after {
+    content: "\f078";
+    font-family: "FontAwesome";
+    float: right;
+}
+
+.age-range {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.age_unit {
+    margin-left: 8.5%;
+}
+
+.age_event {
+    margin-left: 8%
+}
+
+#saveEditSubject, #saveEditDiagnosis, #saveEditSample, #saveEditCell, #saveEditCell {
+    float: right;
+    margin-bottom: 3%;
+}
+
+#repertoire-container {
+    margin-top: 3%;
+    padding: 2%;
+    border: 3px solid #e1e1e1;
+}
+
+.selected-repertoire {
+    background: rgba(127, 168, 189, 0.1);
+}

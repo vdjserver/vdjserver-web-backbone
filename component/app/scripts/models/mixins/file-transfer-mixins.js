@@ -1,115 +1,130 @@
-define([
-    'app',
-    'chance',
-], function(
-    App,
-    Chance
-) {
 
-    'use strict';
+'use strict';
 
-    var FileTransferMixins = {};
+//
+// file-transfer-mixins.js
+// Backbone model mixins for downloading files
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2020 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
 
-    FileTransferMixins.downloadUrlByPostit = function(url) {
+export var FileTransfers = {};
 
-        url += '?force=true';
+FileTransfers.downloadUrlByPostit = function(url) {
 
-        var jqxhr = Backbone.Agave.ajax({
-            headers: _.extend(
-                {},
-                Backbone.Agave.oauthHeader(),
-                {
-                    'Content-Type': 'application/json',
-                }
-            ),
-            type:    'POST',
-            url:     EnvironmentConfig.agave.hostname
-                        + '/postits'
-                        + '/v2'
-                        ,
-            data: JSON.stringify({
-                'url': url,
-                'method': 'GET',
-                'maxUses': 1,
-                'lifetime': 3600,
-                'noauth': false,
-            }),
-        })
-        .then(function(response) {
+    url += '?force=true';
 
-            var targetUrl = response.result._links.self.href;
+    var jqxhr = Backbone.Agave.ajax({
+        headers: _.extend(
+            {},
+            Backbone.Agave.oauthHeader(),
+            {
+                'Content-Type': 'application/json',
+            }
+        ),
+        type:    'POST',
+        url:     EnvironmentConfig.agave.hostname
+                    + '/postits'
+                    + '/v2'
+                    ,
+        data: JSON.stringify({
+            'url': url,
+            'method': 'GET',
+            'maxUses': 1,
+            'lifetime': 3600,
+            'noauth': false,
+        }),
+    })
+    .then(function(response) {
 
-            return targetUrl;
-        })
-        /*
-            Create an invisible link on the DOM, and programmatically click it
+        var targetUrl = response.result._links.self.href;
 
-            I realize that this seems like something that the view controller should do,
-            but I feel like this is worth handling in the model because:
+        return targetUrl;
+    })
+    /*
+        Create an invisible link on the DOM, and programmatically click it
 
-            * we're only using it for file downloads
-            * it has no visible effect on the DOM
-            * it's temporary
-            * it is only concerned with initiating data transfer, which is what the user is trying to do anyway
-        */
-        .then(function(targetUrl) {
+        I realize that this seems like something that the view controller should do,
+        but I feel like this is worth handling in the model because:
 
-            var link = document.createElement('a');
-            link.setAttribute('download', null);
-            link.setAttribute('href', targetUrl);
-            link.style.display = 'none';
-            document.body.appendChild(link);
+        * we're only using it for file downloads
+        * it has no visible effect on the DOM
+        * it's temporary
+        * it is only concerned with initiating data transfer, which is what the user is trying to do anyway
+    */
+    .then(function(targetUrl) {
 
-            link.click();
+        var link = document.createElement('a');
+        link.setAttribute('download', null);
+        link.setAttribute('href', targetUrl);
+        link.style.display = 'none';
+        document.body.appendChild(link);
 
-            document.body.removeChild(link);
-        })
-        ;
+        link.click();
 
-        return jqxhr;
-    };
+        document.body.removeChild(link);
+    })
+    ;
 
-    FileTransferMixins.downloadPublicFileByPostit = function(projectUuid, fileUuid) {
+    return jqxhr;
+};
 
-        var jqxhr = $.ajax({
-            type: 'GET',
-            url: EnvironmentConfig.vdjApi.hostname
-                + '/projects/' + projectUuid + '/postit/' + fileUuid,
-        })
-        .then(function(response) {
+FileTransfers.downloadPublicFileByPostit = function(projectUuid, fileUuid) {
 
-            var targetUrl = response.result._links.self.href;
+    var jqxhr = $.ajax({
+        type: 'GET',
+        url: EnvironmentConfig.vdjApi.hostname
+            + '/projects/' + projectUuid + '/postit/' + fileUuid,
+    })
+    .then(function(response) {
 
-            return targetUrl;
-        })
-        /*
-            Create an invisible link on the DOM, and programmatically click it
+        var targetUrl = response.result._links.self.href;
 
-            I realize that this seems like something that the view controller should do,
-            but I feel like this is worth handling in the model because:
+        return targetUrl;
+    })
+    /*
+        Create an invisible link on the DOM, and programmatically click it
 
-            * we're only using it for file downloads
-            * it has no visible effect on the DOM
-            * it's temporary
-            * it is only concerned with initiating data transfer, which is what the user is trying to do anyway
-        */
-        .then(function(targetUrl) {
+        I realize that this seems like something that the view controller should do,
+        but I feel like this is worth handling in the model because:
 
-            var link = document.createElement('a');
-            link.setAttribute('download', null);
-            link.setAttribute('href', targetUrl);
-            link.style.display = 'none';
-            document.body.appendChild(link);
+        * we're only using it for file downloads
+        * it has no visible effect on the DOM
+        * it's temporary
+        * it is only concerned with initiating data transfer, which is what the user is trying to do anyway
+    */
+    .then(function(targetUrl) {
 
-            link.click();
+        var link = document.createElement('a');
+        link.setAttribute('download', null);
+        link.setAttribute('href', targetUrl);
+        link.style.display = 'none';
+        document.body.appendChild(link);
 
-            document.body.removeChild(link);
-        })
-        ;
+        link.click();
 
-        return jqxhr;
-    };
+        document.body.removeChild(link);
+    })
+    ;
 
-    App.Mixins.FileTransferMixins = FileTransferMixins;
-    return FileTransferMixins;
-});
+    return jqxhr;
+};

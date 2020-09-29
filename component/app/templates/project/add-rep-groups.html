@@ -1,0 +1,105 @@
+<div class="alert alert-info">
+    <i class="fa fa-info-circle"></i> Add a Repertoire Group by filling out the form below.
+</div>
+
+
+<h2>Add a Repertoire Group</h2>
+
+<!-- Need to modify the below fields based on information needed to create a Repertoire Group -->
+
+<form method="post" role="form" id="createRepGroup-form" class="needs-validation" name="diagnosis" novalidate>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Group Name
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="group-name" id="group-name" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid group name.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Group By
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="group-by" id="group-by" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid group by.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Samples
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="samples" id="samples" placeholder"">
+        <div class="invalid-feedback">
+            Please enter valid samples.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Group Description
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="group-description" id="group-description" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid group description.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Logical
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control" name="logical" id="logical" placeholder"">
+        <div class="invalid-feedback">
+            Please enter a valid logical.
+        </div>
+    </div>
+    <div class="form-group col-md-8">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Acid Processing Fields
+            <!-- Popover -->
+        </label>
+        <select class="custom-select" id="acid-processing">
+            <option value="1">
+                <!-- Acid Processing Fields Option 1 -->
+            </option>
+            <option value="2">
+                <!-- Acid Processing Fields Option 2 -->
+            </option>
+            <option value="3">
+                <!-- Acid Processing Fields Option 3 -->
+            </option>
+            <option value="3">
+                <!-- Acid Processing Fields Option 3 -->
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            Please enter acid processing fields.
+        </div>
+    </div>
+</form>
+<div class="rep-next-actions">
+    <button type="button" class="btn btn-save" id="save-sample-groups"><i class="fa fa-save"></i> Save</button>
+</div>

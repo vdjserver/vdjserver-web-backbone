@@ -1,0 +1,186 @@
+<div class="alert alert-info">
+    <i class="fa fa-info-circle"></i> Add Cell Processing information to a sample by filling out the form below.
+</div>
+
+Select a Sample:
+
+<h2>Add Cell Processing</h2>
+<form>
+    <div class="form-group">
+      <input type="file" name="uploadCell" class="form-control-file" id="uploadCell">
+      <label for="uploadCell" class="btn btn-upload">
+        <i class="fa fa-upload"></i>
+        Import Cell Processing Metadata
+      </label>
+  </div>
+</form>
+
+<form method="post" role="form" id="addCell-form" class="needs-validation" name="cell" novalidate>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Cell Processing ID
+        <!-- Popover -->
+        </label>
+        <!-- Will this field be automatically generated in the background? -->
+        <input type="text" class="form-control col-md-3" name="cell-id" id="cell-id" placeholder="">
+        <div class="invalid-feedback">
+            Please enter a valid cell processing ID.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Tissue Processing
+        <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-6" name="tissue-processing" id="tissue-processing" placeholder="">
+        <div class="invalid-feedback">
+            Please enter a valid tissue processing.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Cell Subset
+        <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-5" name="cell-subset" id="cell-subset" placeholder="">
+        <div class="invalid-feedback">
+            Please enter a valid cell subset.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Cell Phenotype
+        <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-6" name="cell-phenotype" id="cell-phenotype" placeholder="">
+        <div class="invalid-feedback">
+            Please enter a valid cell phenotype.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Single Cell
+        <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-4" name="single-cell" id="single-cell" placeholder="">
+        <div class="invalid-feedback">
+            Please enter a valid single cell.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Cell Number
+        <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-1" name="cell-number" id="cell-number" placeholder="">
+        <div class="invalid-feedback">
+            Please enter a valid cell number.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Cells Per Reaction
+        <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-1" name="cells-reaction" id="cells-reaction" placeholder="">
+        <div class="invalid-feedback">
+            Please enter valid cells per reaction.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Cell Storage
+        <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-1" name="cell-storage" id="cell-storage" placeholder="">
+        <div class="invalid-feedback">
+            Please enter valid cell storage.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Cell Quality
+        <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-2" name="cell-quality" id="cell-quality" placeholder="">
+        <div class="invalid-feedback">
+            Please enter valid cell quality
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Cell Isolation
+        <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-5" name="cell-isolation" id="cell-isolation" placeholder="">
+        <div class="invalid-feedback">
+            Please enter valid cell isolation.
+        </div>
+    </div>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Cell Processing Protocol
+        <!-- Popover -->
+        </label>
+        <textarea class="form-control col-md-5" name="cell_processing_protocol" id="cell_processing_protocol" placeholder="" rows="4"></textarea>
+        <div class="invalid-feedback">
+            Please enter valid cell processing protocol.
+        </div>
+
+        <div class="footer-actions">
+            <div class="rep-back-actions">
+                <button type="button" class="btn btn-primary" id="sampleMetadata"><i class="fa fa-angle-double-left"></i> Back to Sample</button>
+            </div>
+
+            <div class="rep-next-actions">
+                <button type="button" class="btn btn-save" id="save-cell" data-toggle="modal" data-target="#save-modal"><i class="fa fa-save"></i> Save and Finish Later</button>
+                <button type="button" class="btn btn-add" id="add-nucleic"><i class="fa fa-angle-double-right"></i> Add Nucleic Acid Processing Information</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<!-- Save Modal -->
+<div class="modal fade" id="save-modal" tabindex="-1" role="dialog" aria-labelledby="saving" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body saving">
+                Saving <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </div>
+        </div>
+     </div>
+</div>
