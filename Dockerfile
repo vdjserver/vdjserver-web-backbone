@@ -4,10 +4,10 @@ FROM ubuntu:18.04
 MAINTAINER VDJServer <vdjserver@utsouthwestern.edu>
 
 # PROXY: uncomment these if building behind UTSW proxy
-ENV http_proxy 'http://proxy.swmed.edu:3128/'
-ENV https_proxy 'http://proxy.swmed.edu:3128/'
-ENV HTTP_PROXY 'http://proxy.swmed.edu:3128/'
-ENV HTTPS_PROXY 'http://proxy.swmed.edu:3128/'
+#ENV http_proxy 'http://proxy.swmed.edu:3128/'
+#ENV https_proxy 'http://proxy.swmed.edu:3128/'
+#ENV HTTP_PROXY 'http://proxy.swmed.edu:3128/'
+#ENV HTTPS_PROXY 'http://proxy.swmed.edu:3128/'
 
 # Install OS Dependencies
 RUN apt-get update && apt-get install -y \
@@ -33,23 +33,23 @@ RUN cp -rf /node-v8.10.0-linux-x64/include/* /usr/include
 RUN cp -rf /node-v8.10.0-linux-x64/share/* /usr/share
 
 # PROXY: More UTSW proxy settings
-RUN npm config set proxy http://proxy.swmed.edu:3128
-RUN npm config set https-proxy http://proxy.swmed.edu:3128
+#RUN npm config set proxy http://proxy.swmed.edu:3128
+#RUN npm config set https-proxy http://proxy.swmed.edu:3128
 
-RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-backbone
+RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-community
 
 # Install npm dependencies (optimized for cache)
-COPY ./component/package.json /var/www/html/vdjserver-backbone/
-RUN cd /var/www/html/vdjserver-backbone && npm install
+COPY ./component/package.json /var/www/html/vdjserver-community/
+RUN cd /var/www/html/vdjserver-community && npm install
 
 # Copy project source
-COPY ./component/ /var/www/html/vdjserver-backbone
+COPY ./component/ /var/www/html/vdjserver-community
 
 # build dev site
-RUN cd /var/www/html/vdjserver-backbone && npm run dev
+RUN cd /var/www/html/vdjserver-community && npm run dev
 # build the production site
-#RUN cd /var/www/html/vdjserver-backbone && npm run build
+#RUN cd /var/www/html/vdjserver-community && npm run build
 
-WORKDIR /var/www/html/vdjserver-backbone
+WORKDIR /var/www/html/vdjserver-community
 
-VOLUME ["/var/www/html/vdjserver-backbone"]
+VOLUME ["/var/www/html/vdjserver-community"]
