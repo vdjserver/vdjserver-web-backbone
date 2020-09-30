@@ -81,6 +81,7 @@ export default Backbone.Router.extend({
         //'project/:id/file':                 'projectFile',
         //'project/:id/analysis':             'projectAnalysis',
         'community':                        'communityPage',
+        'community/':                        'communityPage',
         //'project/:id/repertoire/create':           'createRepertoire',
         //'project/:id/repertoire/create/subject': 'addSubject',
         //'project/:id/repertoire/create/subject/diagnosis': 'addDiagnosis',

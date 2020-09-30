@@ -52,7 +52,9 @@ var NavigationBarView = Marionette.View.extend({
         return {
             public_bar: this.public_bar,
             active_token: this.active_token,
-            admin_account: App.Agave.token().isAdmin()
+            admin_account: App.Agave.token().isAdmin(),
+            username: App.Agave.token().get('username'),
+            location: window.location
         };
     },
 });
