@@ -134,16 +134,38 @@ var CommunityPaginationView = Marionette.View.extend({
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
+    },
+
+    templateContext(){
+        if (!this.controller) return{};
 
         // What's in the data?
         console.log(this.controller);
 
         var colls = this.controller.getCollections();
         var num_studies = colls['studyList'].length;
-        console.log("num studies: " + num_studies);
+
+        return {
+            num_studies: num_studies,
+        }
     },
 
     updatePagination(studyList) {
+        // set up pagination settings
+        var paging = {
+            total: num_studies,
+            perPage: 10,
+            pages: Math.ceil(this.total / this.perPage),
+        };
+
+        // get number of studies
+        console.log("update pagination: " + num_studies);
+
+        // divide by number of studies we want per page
+
+        // create pagination links for each number of page sets
+
+
     }
 
     // showResultsList(studyList) {

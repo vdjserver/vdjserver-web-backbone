@@ -84,7 +84,7 @@ Community Statistics
     position: sticky;
     position: -webkit-sticky;
     top: 0;
-    z-index: 99999;
+    z-index: 999;
     padding: 2%;
 }
 
@@ -122,17 +122,20 @@ a.remove-filter:hover {
 /* ----------------------------------------------------------
 Community Charts
 ------------------------------------------------------------*/
-#community-charts {
+#community-charts-display {
     border: 2px solid $vdj-medgray;
     border-radius: 3px;
     padding: 2em;
-    margin-top: 3%;
     background: $vdj-lightgray;
 
     .highcharts-container {
         background: $vdj-lightgray;
         height: 225px;
     }
+}
+
+.chart-actions {
+    margin: 1% 0%;
 }
 
 /* ----------------------------------------------------------
