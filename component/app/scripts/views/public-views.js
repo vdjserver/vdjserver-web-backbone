@@ -18,7 +18,8 @@ define([
             return {
                 'username': this.model.get('username'),
                 'maintenance': EnvironmentConfig.agave.maintenance,
-                'maintenanceMessage': EnvironmentConfig.agave.maintenanceMessage
+                'maintenanceMessage': EnvironmentConfig.agave.maintenanceMessage,
+                'location': window.location
             };
         },
         afterRender: function() {
