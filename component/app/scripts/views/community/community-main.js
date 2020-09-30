@@ -45,7 +45,40 @@ import ModalView from 'Scripts/views/utilities/modal-view-large';
 // Community Query/Filter View
 import community_query_template from 'Templates/community/community-query.html';
 var CommunityQueryView = Marionette.View.extend({
-    template: Handlebars.compile(community_query_template)
+    template: Handlebars.compile(community_query_template),
+
+    initialize(parameters) {
+        if (parameters) {
+            // our controller
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+    },
+
+    templateContext() {
+        if (!this.controller) return {};
+
+        var colls = this.controller.getCollections();
+        var current_sort = colls['studyList']['sort_by'];
+        console.log(current_sort);
+
+        return {
+            current_sort: current_sort
+        }
+    },
+
+    events: {
+        //
+        // Overview page specific events
+        //
+
+        'click #community-sort-select': function(e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['studyList']['sort_by'];
+            if (e.target.name != current_sort)
+                this.controller.applySort(e.target.name);
+        },
+    }
 });
 
 // Community Stats View
@@ -248,7 +281,7 @@ export default Marionette.View.extend({
         console.log(this.controller);
         $("#community-charts").removeClass("no-display");
 
-        this.filterView = new CommunityQueryView ({model: this.model});
+        this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller});
         this.showChildView('queryRegion', this.filterView);
 
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});

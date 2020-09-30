@@ -59,18 +59,39 @@
 </div>
 
 <div class="row community-actions">
-    <div class="sort-options col-md-2">
-        <select id="inputState" class="form-control">sort
-            <option>Sort</option>
-            <option>Option 1</option>
-            <option>Option 2</option>
-            <option>Option 3</option>
-        </select>
+    <div class="dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" id="community-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Sort Studies By
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <button class="dropdown-item" type="button" id="community-sort-select" name="study.study_title">
+            {{#ifEquals current_sort "study.study_title"}}<span class="fas fa-check"></span>{{/ifEquals}}
+            Study Title
+        </button>
+        <button class="dropdown-item" type="button">
+            {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+            Newest
+        </button>
+        <button class="dropdown-item" type="button">
+            {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+            Oldest
+        </button>
+        <button class="dropdown-item" type="button" id="community-sort-select" name="num_repertoires">
+            {{#ifEquals current_sort "num_repertoires"}}<span class="fas fa-check"></span>{{/ifEquals}}
+            Number of Repertoires
+        </button>
+        <button class="dropdown-item" type="button">
+            {{#ifEquals current_sort "repository"}}<span class="fas fa-check"></span>{{/ifEquals}}
+            ADC Repository
+        </button>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item disabled" type="button">
+            Add Custom Sort...
+        </button>
+      </div>
     </div>
 
     <div class="sort-options-buttons col">
-        <button type="button" class="btn btn-primary" id="community-sort-button">Sort <i class="fas fa-sort" aria-hidden="true"></i></button>
-
         <button type="button" class="btn btn-darkgray" id="community-filter-button">Filter Options <i class="fas fa-filter" aria-hidden="true"></i></button>
     </div>
 

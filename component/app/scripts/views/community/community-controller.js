@@ -157,6 +157,11 @@ CommunityController.prototype = {
         this.studies = new ADCStudyCollection();
         this.studies.normalize(this.filteredList);
         this.projectView.showResultsList(this.studies);
+    },
+
+    applySort(sort_by) {
+        this.studies.sort_by = sort_by;
+        this.studies.sort();
     }
 };
 export default CommunityController;

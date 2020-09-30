@@ -66,6 +66,11 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
 export var ADCStudyCollection = ADC.Collection.extend({
     model: Backbone.Model,
 
+    initialize(parameters) {
+        this.sort_by = 'study.study_title';
+        this.comparator = this.collectionSortBy;
+    },
+
     // The AIRR Repertoire model is in denormalized form with
     // study, subject, and etc., duplicated in each repertoire.
     //
@@ -125,6 +130,31 @@ export var ADCStudyCollection = ADC.Collection.extend({
         }
 
         return this;
+    },
+
+    // sort comparator for the collection
+    collectionSortBy(modela, modelb) {
+        if (!this.sort_by) this.sort_by = 'study.study_title';
+
+        // we have a pre-defined set of sorts
+        switch (this.sort_by) {
+            case 'study.study_title': {
+                let ma = modela.get('study');
+                let va = ma.get('value');
+                let mb = modelb.get('study');
+                let vb = mb.get('value');
+                if (va['study_title'].toLowerCase() > vb['study_title'].toLowerCase()) return 1;
+                if (va['study_title'].toLowerCase() < vb['study_title'].toLowerCase()) return -1;
+                return 0;
+            }
+            case 'num_repertoires': {
+                let ma = modela.get('repertoires');
+                let mb = modelb.get('repertoires');
+                if (ma.length > mb.length) return -1;
+                if (ma.length < mb.length) return 1;
+                return 0;
+            }
+        }
     },
 
     getValueForField(field) {
