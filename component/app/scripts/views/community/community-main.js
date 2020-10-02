@@ -48,9 +48,12 @@ var CommunityQueryView = Marionette.View.extend({
     template: Handlebars.compile(community_query_template),
 
     initialize(parameters) {
+        this.filters = {};
+
         if (parameters) {
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.filters) this.filters = parameters.filters;
         }
     },
 
@@ -61,8 +64,14 @@ var CommunityQueryView = Marionette.View.extend({
         var current_sort = colls['studyList']['sort_by'];
         console.log(current_sort);
 
+        var f = this.filters['filters'];
+        if (f && f.length == 0) f = null;
+        console.log(this.filters);
+
         return {
-            current_sort: current_sort
+            current_sort: current_sort,
+            full_text_search: this.filters['full_text_search'],
+            filters: f
         }
     },
 
@@ -78,6 +87,43 @@ var CommunityQueryView = Marionette.View.extend({
             if (e.target.name != current_sort)
                 this.controller.applySort(e.target.name);
         },
+
+        // perform search when user hits enter in full text search box
+        'keyup #community-text-search': function(e) {
+            if (e.key == 'Enter') {
+                this.filters['full_text_search'] = e.target.value;
+                this.controller.applyFilter(this.filters);
+            }
+        },
+
+        // when user selects from the dropdown filter
+        'click #community-filter-select': function(e) {
+            console.log(e);
+            if (! this.filters['filters']) this.filters['filters'] = [];
+
+            var v = $("#community-filter-text").val();
+            this.filters['filters'].push({ field: e.target.name, value: v, title: e.target.title });
+
+            //$("#community-filter-text").show();
+            $("#community-filter-apply").show();
+            //$('#community-filter-button').html(e.target.title);
+
+            this.controller.updateFilters(this.filters);
+        },
+
+        // when user clicks X on active filter to remove it
+        'click #community-active-filter': function(e) {
+            console.log('remove active filter');
+            console.log(e);
+
+            for (var f = 0; f < this.filters['filters'].length; ++f) {
+                if (this.filters['filters'][f]['field'] == e.target.name) {
+                    this.filters['filters'].splice(f,1);
+                    break;
+                }
+            }
+            this.controller.updateFilters(this.filters);
+        }
     }
 });
 
@@ -186,13 +232,13 @@ var CommunityPaginationView = Marionette.View.extend({
     updatePagination(studyList) {
         // set up pagination settings
         var paging = {
-            total: num_studies,
+            total: studyList.length,
             perPage: 10,
             pages: Math.ceil(this.total / this.perPage),
         };
 
         // get number of studies
-        console.log("update pagination: " + num_studies);
+        console.log("update pagination: " + studyList.length);
 
         // divide by number of studies we want per page
 
@@ -242,9 +288,16 @@ export default Marionette.View.extend({
         // Overview page specific events
         //
 
-        'click #community-filter-button': function() {
-            $("#community-filter").toggle();
-        },
+        //'click #community-filter-button': function() {
+        //    $("#community-filter").toggle();
+        //},
+
+        //'click #community-filter-select': function(e) {
+        //    console.log(e);
+        //    $("#community-filter-text").show();
+        //    $("#community-filter-apply").show();
+        //    $('#community-filter-button').html(e.target.title);
+        //},
 
         // Hiding Studies Filter when removed
         'click #remove-filter-studies': function() {
@@ -262,7 +315,7 @@ export default Marionette.View.extend({
         },
 
         // setting event for Overview page
-        'click #apply-filter': function() {
+        'click #community-filter-apply': function() {
             console.log('apply filter');
             this.controller.applyFilter();
         },
@@ -277,11 +330,11 @@ export default Marionette.View.extend({
         $("#community-charts").addClass("no-display");
     },
 
-    showResultsList(studyList) {
+    showResultsList(studyList, filters) {
         console.log(this.controller);
         $("#community-charts").removeClass("no-display");
 
-        this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller});
+        this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, filters: filters});
         this.showChildView('queryRegion', this.filterView);
 
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
@@ -298,6 +351,11 @@ export default Marionette.View.extend({
         this.paginationView = new CommunityPaginationView ({collection: studyList, controller: this.controller});
         this.showChildView('paginationRegion', this.paginationView);
         this.paginationView.updatePagination(studyList);
+    },
+
+    updateFilters(filters) {
+        this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, filters: filters});
+        this.showChildView('queryRegion', this.filterView);
     },
 
     newFilterModal(e) {

@@ -3,64 +3,60 @@
 -->
 
 <div class="community-filter" id="community-filter">
-    <h3>Filter Results</h3>
     <form>
         <div class="row">
             <div class="col-md-3">
-                <label for="search">Search</label>
-                <input type="text" class="form-control" id="search" aria-describedby="search" placeholder="Search">
+                <input type="text" class="form-control" id="community-text-search" aria-describedby="search" placeholder="Full Text Search" value="{{full_text_search}}">
             </div>
 
-            <div class="col">
-                <label for="filter-option2">Filter Option 2</label>
-                <select id="inputState" class="form-control">
-                    <option selected>Choose...</option>
-                    <option>Option 1</option>
-                    <option>Option 2</option>
-                    <option>Option 3</option>
-                </select>
+            {{#each filters}}
+            <div class="col-md-2">
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle-times" name="{{this.field}}" type="button" id="community-active-filter" aria-haspopup="true" aria-expanded="false">
+                    {{this.title}}
+                  </button>
+                </div>
             </div>
 
-            <div class="col">
-                <label for="filter-option3">Filter Option 3</label>
-                <select id="inputState" class="form-control">
-                    <option selected>Choose...</option>
-                    <option>Option 1</option>
-                    <option>Option 2</option>
-                    <option>Option 3</option>
-                </select>
+            <div class="col-md-2">
+                <input type="text" class="form-control" id="community-filter-text" placeholder="Value">
+            </div>
+            {{/each}}
+
+            <div class="col-md-2">
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="community-filter-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">
+                    Filter Studies On
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <button class="dropdown-item" type="button" id="community-filter-select" name="study.study_id" title="Study ID">
+                        Study ID
+                    </button>
+                    <button class="dropdown-item" type="button" id="community-filter-select" name="subject.sex" title="Subject Sex">
+                        Subject Sex
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item disabled" type="button">
+                        Add Custom Filter...
+                    </button>
+                  </div>
+                </div>
             </div>
 
-            <div class="col">
-                <label for="filter-option3">Filter Option 4</label>
-                <select id="inputState" class="form-control">
-                    <option selected>Choose...</option>
-                    <option>Option 1</option>
-                    <option>Option 2</option>
-                    <option>Option 3</option>
-                </select>
+            {{#if filters}}
+            <div class="col-md-2">
+                <button type="button" class="btn btn-darkgray" id="community-filter-apply">Apply Filter<i class="fas fa-filter" aria-hidden="true"></i></button>
             </div>
+            {{/if}}
 
-            <div class="col-md-4 new-filter">
-                <button type="button" class="btn btn-primary" id="community-filter-results">
-                    Filter <i class="fas fa-filter" aria-hidden="true"></i>
-                </button>
-
-                <button type="button" class="btn btn-new" id="new-community-filter">
-                    New Filter <i class="fas fa-plus" aria-hidden="true"></i>
-                </button>
-
-                <button type="button" class="btn btn-save" id="save-community-filter">
-                    Save Filter <i class="fas fa-save" aria-hidden="true"></i>
-                </button>
-            </div>
         </div>
     </form>
 </div>
 
 <div class="row community-actions">
     <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" id="community-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<!--      <button class="btn btn-primary dropdown-toggle" type="button" id="community-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+-->      <button class="btn btn-primary dropdown-toggle" type="button" id="community-sort-button" aria-haspopup="true" aria-expanded="false">
         Sort Studies By
       </button>
       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -89,10 +85,6 @@
             Add Custom Sort...
         </button>
       </div>
-    </div>
-
-    <div class="sort-options-buttons col">
-        <button type="button" class="btn btn-darkgray" id="community-filter-button">Filter Options <i class="fas fa-filter" aria-hidden="true"></i></button>
     </div>
 
     <div class="col-md-3">

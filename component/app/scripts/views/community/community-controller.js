@@ -53,6 +53,9 @@ function CommunityController() {
     this.studies = null;
     this.projectList = null;
     this.currentProject = null;
+
+    // active filters
+    this.filters = {};
 };
 
 CommunityController.prototype = {
@@ -150,13 +153,17 @@ CommunityController.prototype = {
         }
     },
 
-    applyFilter() {
+    updateFilters(filters) {
+        this.projectView.updateFilters(filters);
+    },
+
+    applyFilter(filters) {
         // get current filter
 
         this.filteredList = this.repertoires.filterCollection();
         this.studies = new ADCStudyCollection();
         this.studies.normalize(this.filteredList);
-        this.projectView.showResultsList(this.studies);
+        this.projectView.showResultsList(this.studies, filters);
     },
 
     applySort(sort_by) {

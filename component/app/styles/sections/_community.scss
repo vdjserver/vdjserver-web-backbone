@@ -51,7 +51,7 @@ Community Query
 }
 
 #community-filter {
-    display: none;
+    //display: none;
     padding: 2%;
     border: 0.25px solid $vdj-medgray;
     margin-bottom: 3%;
@@ -118,6 +118,17 @@ a.remove-filter {
 a.remove-filter:hover {
     color: #FFFFFF;
 }
+
+.dropdown-toggle-times::after {
+  border: none;
+  font: normal normal normal 12px/1 'Font Awesome 5 Free';
+  content: "\f00d";
+  vertical-align: 0;
+}
+
+//.dropdown-toggle-times::before {
+//  display: none;
+//}
 
 /* ----------------------------------------------------------
 Community Charts
