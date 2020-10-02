@@ -60,34 +60,17 @@ var CommunityQueryView = Marionette.View.extend({
     templateContext() {
         if (!this.controller) return {};
 
-        var colls = this.controller.getCollections();
-        var current_sort = colls['studyList']['sort_by'];
-        console.log(current_sort);
-
         var f = this.filters['filters'];
         if (f && f.length == 0) f = null;
         console.log(this.filters);
 
         return {
-            current_sort: current_sort,
             full_text_search: this.filters['full_text_search'],
             filters: f
         }
     },
 
     events: {
-        //
-        // Overview page specific events
-        //
-
-        'click #community-sort-select': function(e) {
-            // check it is a new sort
-            var colls = this.controller.getCollections();
-            var current_sort = colls['studyList']['sort_by'];
-            if (e.target.name != current_sort)
-                this.controller.applySort(e.target.name);
-        },
-
         // perform search when user hits enter in full text search box
         'keyup #community-text-search': function(e) {
             if (e.key == 'Enter') {
@@ -145,14 +128,27 @@ var CommunityStatisticsView = Marionette.View.extend({
         var colls = this.controller.getCollections();
         var num_repos = colls['repositoryInfo'].length;
         var num_studies = colls['studyList'].length;
+        var current_sort = colls['studyList']['sort_by'];
         var num_reps = 0;
         for (var i in colls['repertoireCollection'])
             num_reps += colls['repertoireCollection'][i].length;
 
         return {
+            current_sort: current_sort,
             num_repos: num_repos,
             num_studies: num_studies,
             num_reps: num_reps
+        }
+    },
+
+    events: {
+        // sort results list
+        'click #community-sort-select': function(e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['studyList']['sort_by'];
+            if (e.target.name != current_sort)
+                this.controller.applySort(e.target.name);
         }
     },
 
