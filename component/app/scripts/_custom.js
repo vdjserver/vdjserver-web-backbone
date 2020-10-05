@@ -14,10 +14,10 @@ $(document).ready(function() {
 
     $(window).scroll(function() {
         if ($(this).scrollTop() > 250){
-            $('#community-statistics').addClass("stats-border");
+            $('#community-query-stats').addClass("query-stats-border");
         }
         else{
-            $('#community-statistics').removeClass("stats-border");
+            $('#community-query-stats').removeClass("query-stats-border");
         }
     });
 });

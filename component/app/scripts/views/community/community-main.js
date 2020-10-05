@@ -295,20 +295,20 @@ export default Marionette.View.extend({
         //    $('#community-filter-button').html(e.target.title);
         //},
 
-        // Hiding Studies Filter when removed
-        'click #remove-filter-studies': function() {
-            $("#filter-studies").toggle();
-        },
-
-        // Hiding Repertoires Filter when removed
-        'click #remove-filter-reps': function() {
-            $("#filter-reps").toggle();
-        },
-
-        // Hiding ADC Filter when removed
-        'click #remove-filter-adc': function() {
-            $("#filter-adc").toggle();
-        },
+        // Hiding Studies Stats when removed
+        // 'click #remove-stats-studies': function() {
+        //     $("#stats-studies").toggle();
+        // },
+        //
+        // // Hiding Repertoires Stats when removed
+        // 'click #remove-stats-reps': function() {
+        //     $("#stats-reps").toggle();
+        // },
+        //
+        // // Hiding ADC Stats when removed
+        // 'click #remove-stats-adc': function() {
+        //     $("#stats-adc").toggle();
+        // },
 
         // setting event for Overview page
         'click #community-filter-apply': function() {
