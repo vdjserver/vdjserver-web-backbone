@@ -5,28 +5,32 @@
 <div class="community-filter" id="community-filter">
     <form>
         <div class="row">
-            <div class="col-md-3">
+            <div class="input-group col-md-3">
                 <input type="text" class="form-control" id="community-text-search" aria-describedby="search" placeholder="Full Text Search" value="{{full_text_search}}">
+                <div class="input-group-append">
+                  <button class="btn btn-search" type="button"><i class="fas fa-search"></i></button>
+                </div>
             </div>
 
             {{#each filters}}
-            <div class="col-md-2">
+            <div class="filter-option">
                 <div class="dropdown">
                   <button class="btn btn-primary dropdown-toggle-times" name="{{this.field}}" type="button" id="community-active-filter" aria-haspopup="true" aria-expanded="false">
                     {{this.title}}
+                    <a class="remove-filter"><i class="fas fa-times-circle"></i></a>
                   </button>
                 </div>
             </div>
 
-            <div class="col-md-2">
-                <input type="text" class="form-control" id="community-filter-text" placeholder="Value">
+            <div class="filter-value">
+                <input type="text" class="form-control" id="community-filter-text" placeholder="{{this.title}}">
             </div>
             {{/each}}
 
-            <div class="col-md-2">
+            <div class="filter-option">
                 <div class="dropdown">
                   <button class="btn btn-primary dropdown-toggle" type="button" id="community-filter-button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">
-                    Filter Studies On
+                    Filter On
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                     <button class="dropdown-item" type="button" id="community-filter-select" name="study.study_id" title="Study ID">
@@ -44,12 +48,15 @@
             </div>
 
             {{#if filters}}
-            <div class="col-md-2">
-                <button type="button" class="btn btn-darkgray" id="community-filter-apply">Apply Filter<i class="fas fa-filter" aria-hidden="true"></i></button>
+            <div class="apply-filter">
+                <button type="button" class="btn btn-darkgray" id="community-filter-apply">Apply <i class="fas fa-filter" aria-hidden="true"></i></button>
             </div>
+
+            <!-- <div class="reset-filter">
+                <button type="button" class="btn btn-cancel" id="community-filter-reset">Reset</button>
+            </div> -->
             {{/if}}
 
         </div>
     </form>
 </div>
-

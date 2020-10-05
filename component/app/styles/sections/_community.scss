@@ -46,8 +46,12 @@ Loading
 /* ----------------------------------------------------------
 Community Query
 ------------------------------------------------------------*/
-.btn-download {
-    float: right;
+.filter-option, .filter-value {
+    margin-right: 1%;
+}
+
+.apply-filter, .reset-filter {
+    margin-right: 1%;
 }
 
 #community-filter {
@@ -55,6 +59,10 @@ Community Query
     padding: 2%;
     border: 0.25px solid $vdj-medgray;
     margin-bottom: 3%;
+
+    form {
+        margin-bottom: 0%;
+    }
 }
 
 .new-filter {
@@ -93,7 +101,21 @@ Community Statistics
 }
 
 .stats-border {
-    border-bottom: 3px solid $vdj-darkgray;
+    -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
+    -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
+    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
+    border-bottom: 1px solid $vdj-lightgray;
+}
+
+.results-filters {
+    width: 500px;
+    margin-right: 3%;
+}
+
+@include media-breakpoint-down(lg) {
+    .results-filters {
+        width: 325px;
+    }
 }
 
 .filters {
@@ -112,18 +134,23 @@ Community Statistics
 }
 
 a.remove-filter {
-    color: $vdj-link;
-}
-
-a.remove-filter:hover {
     color: #FFFFFF;
 }
 
-.dropdown-toggle-times::after {
-  border: none;
-  font: normal normal normal 12px/1 'Font Awesome 5 Free';
-  content: "\f00d";
-  vertical-align: 0;
+// a.remove-filter:hover {
+//     color: #FFFFFF;
+// }
+
+// .dropdown-toggle-times::after {
+//   border: none;
+//   font-family: 'Font Awesome 5 Free';
+//   font-weight: 400;
+//   content: "\f00d";
+//   vertical-align: 0;
+// }
+
+.btn-download {
+    float: right;
 }
 
 //.dropdown-toggle-times::before {
