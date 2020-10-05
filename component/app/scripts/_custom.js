@@ -13,7 +13,7 @@ $(document).ready(function() {
     }
 
     $(window).scroll(function() {
-        if ($(this).scrollTop() > 250){
+        if ($(this).scrollTop() > 100){
             $('#community-query-stats').addClass("query-stats-border");
         }
         else{
