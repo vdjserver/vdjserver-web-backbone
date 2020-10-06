@@ -54,6 +54,14 @@ Community Query
     margin-right: 1%;
 }
 
+a.remove-filter {
+    color: #FFFFFF;
+}
+
+.filter-operator {
+    margin-right: 1%;
+}
+
 #community-filter {
     //display: none;
     padding: 2%;
@@ -121,13 +129,6 @@ Community Statistics
     padding: 0.6em;
 }
 
-a.remove-filter {
-    color: #FFFFFF;
-}
-
-// a.remove-filter:hover {
-//     color: #FFFFFF;
-// }
 .btn-download {
     float: right;
 }
