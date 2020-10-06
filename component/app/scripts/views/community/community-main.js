@@ -72,11 +72,15 @@ var CommunityQueryView = Marionette.View.extend({
 
     events: {
         // perform search when user hits enter in full text search box
-        'keyup #community-text-search': function(e) {
-            if (e.key == 'Enter') {
-                this.filters['full_text_search'] = e.target.value;
-                this.controller.applyFilter(this.filters);
-            }
+        //'keyup #community-text-search': function(e) {
+        //    if (e.key == 'Enter') {
+        //        this.controller.applyFilter(this.extractFilters());
+        //    }
+        //},
+
+        'search #community-text-search': function(e) {
+            console.log('search');
+            this.controller.applyFilter(this.extractFilters());
         },
 
         // when user selects from the dropdown filter
@@ -106,8 +110,36 @@ var CommunityQueryView = Marionette.View.extend({
                 }
             }
             this.controller.updateFilters(this.filters);
+        },
+
+        // when user clicks apply
+        'click #community-filter-apply': function() {
+            console.log('apply filter');
+            this.controller.applyFilter(this.filters);
+        },
+    },
+
+    // construct filters from view state
+    extractFilters() {
+        var filters = { filters: [] };
+
+        // full text search
+        var v = $('#community-text-search').val();
+        if (v && v.length > 0) {
+            filters['full_text_search'] = v;
         }
+
+        // filter dropdowns
+        var af = $('[id=community-active-filter]');
+        var av = $('[id=community-filter-text]');
+        for (var i = 0; i < af.length; ++i) {
+            filters['filters'].push({ field: af[i]['name'], value: av[i]['value'], title: av[i]['placeholder']});
+        }
+
+        this.filters = filters;
+        return this.filters;
     }
+
 });
 
 // Community Stats View
@@ -311,11 +343,6 @@ export default Marionette.View.extend({
         // },
 
         // setting event for Overview page
-        'click #community-filter-apply': function() {
-            console.log('apply filter');
-            this.controller.applyFilter();
-        },
-
         // Setting event for "New Filter" Modal
         'click #new-community-filter': 'newFilterModal'
     },

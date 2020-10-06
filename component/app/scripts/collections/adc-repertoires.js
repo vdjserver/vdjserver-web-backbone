@@ -50,13 +50,33 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
         return;
     },
 
+    // apply filters to generate a new collection
     filterCollection(filters) {
         var filtered = new ADCRepertoireCollection();
 
+        var fts_fields = [];
+        if (filters['full_text_search']) fts_fields = filters['full_text_search'].toLowerCase().split(/\s+/);
+
         for (var i = 0; i < this.length; ++i) {
+            var valid = true;
             var model = this.at(i);
-            if (model.get('subject')['sex'] == 'male')
-                filtered.add(model);
+
+            // apply full text search
+            if (!model.get('full_text')) {
+                var text = model.generateFullText(model['attributes']);
+                model.set('full_text', text.toLowerCase());
+            }
+            for (var j = 0; j < fts_fields.length; ++j) {
+                var result = model.get('full_text').indexOf(fts_fields[j]);
+                if (result < 0) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            // apply individual filters
+
+            if (valid) filtered.add(model);
         }
 
         return filtered;
@@ -77,7 +97,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
     // This function inserts normalized objects for
     // Study, Subject, SampleProcessing, and DataProcessing
     normalize(repertoires) {
-        this.reset();
+        //this.reset();
         for (var i = 0; i < repertoires.length; ++i) {
             var model = repertoires.at(i);
 

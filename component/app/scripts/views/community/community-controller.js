@@ -51,6 +51,8 @@ function CommunityController() {
     this.repositoryInfo = null;
     this.repertoireCollections = null;
     this.studies = null;
+    this.filteredRepertoires = null;
+    this.filteredStudies = null;
     this.projectList = null;
     this.currentProject = null;
 
@@ -123,7 +125,10 @@ CommunityController.prototype = {
                 console.log(that.projectList);
 
                 that.studies = new ADCStudyCollection();
-                that.studies.normalize(that.repertoires);
+                for (var r in repos) {
+                    //console.log(that.repertoireCollection[r]);
+                    that.studies.normalize(that.repertoireCollection[r]);
+                }
                 //that.studies = that.repertoires.normalize();
                 console.log(that.studies);
 
@@ -154,16 +159,25 @@ CommunityController.prototype = {
     },
 
     updateFilters(filters) {
+        this.filters = filters;
         this.projectView.updateFilters(filters);
     },
 
     applyFilter(filters) {
-        // get current filter
+        this.filters = filters;
+        this.filteredStudies = new ADCStudyCollection();
+        this.filteredRepertoires = {};
+        for (var i = 0; i < this.repositoryInfo.length; ++i) {
+            var repo = this.repositoryInfo.at(i);
+            var r = repo.get('id');
+            this.filteredRepertoires[r] = this.repertoireCollection[r].filterCollection(filters);
+            this.filteredStudies.normalize(this.filteredRepertoires[r]);
+        }
 
-        this.filteredList = this.repertoires.filterCollection();
-        this.studies = new ADCStudyCollection();
-        this.studies.normalize(this.filteredList);
-        this.projectView.showResultsList(this.studies, filters);
+        //this.filteredList = this.repertoires.filterCollection();
+        //this.studies = new ADCStudyCollection();
+        //this.studies.normalize(this.filteredList);
+        this.projectView.showResultsList(this.filteredStudies, filters);
     },
 
     applySort(sort_by) {

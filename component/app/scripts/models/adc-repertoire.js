@@ -47,5 +47,25 @@ export default ADC.Model.extend({
     url: function() {
         return this.apiHost + '/repertoire/' + this.get('repertoire_id');
     },
+
+    // flatten all values into a single string for easy search
+    generateFullText(context) {
+        var text = '';
+        if ((typeof context) == 'string') {
+            text += ' ' + context;
+            return text;
+        }
+        if ((typeof context) == 'object') {
+            for (var o in context)
+                text += this.generateFullText(context[o]);
+            return text;
+        }
+        if ((typeof context) == 'array') {
+            for (var i = 0; i < context.length; ++i)
+                text += this.generateFullText(context[i]);
+            return text;
+        }
+    },
+
 });
 
