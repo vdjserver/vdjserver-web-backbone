@@ -285,7 +285,7 @@ import community_template from 'Templates/community/community-main.html';
 export default Marionette.View.extend({
     template: Handlebars.compile(community_template),
     tagName: 'div',
-    className: 'community-container',
+    className: 'community-container m-0 p-0',
 
     // one region for query filters
     // one region for dynamic stats

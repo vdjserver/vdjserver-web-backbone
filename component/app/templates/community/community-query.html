@@ -7,9 +7,6 @@
         <div class="row">
             <div class="input-group col-md-3">
                 <input type="search" class="form-control" id="community-text-search" aria-describedby="search" placeholder="Full Text Search" value="{{full_text_search}}">
-                <div class="input-group-append">
-                  <button class="btn btn-search" type="button"><i class="fas fa-search"></i></button>
-                </div>
             </div>
 
             {{#each filters}}
@@ -30,6 +27,8 @@
                 <select class="form-control" id="exampleFormControlSelect2">
                   <option>AND</option>
                   <option>OR</option>
+                  <option>CONTAINS</option>
+                  <option>NOT EQUAL</option>
                 </select>
             </div>
             {{/each}}
@@ -54,11 +53,12 @@
                 </div>
             </div>
 
-            {{#if filters}}
-            <div class="apply-filter">
-                <button type="button" class="btn btn-darkgray" id="community-filter-apply">Apply <i class="fas fa-filter" aria-hidden="true"></i></button>
-            </div>
 
+            <div class="apply-filter">
+                <button type="button" class="btn btn-search" id="community-filter-apply">Search <i class="fas fa-search"></i></button>
+            </div>
+            
+            {{#if filters}}
             <!-- <div class="reset-filter">
                 <button type="button" class="btn btn-cancel" id="community-filter-reset">Reset</button>
             </div> -->

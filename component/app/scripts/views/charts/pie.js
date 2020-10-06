@@ -54,7 +54,7 @@ export default Marionette.View.extend({
             chart: {
                 type: 'pie',
                 height: 225,
-                backgroundColor: "#F1F1F1",
+                backgroundColor: "#FFFFFF",
             },
             title: {
                 text: this.title
