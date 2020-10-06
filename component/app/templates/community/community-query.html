@@ -23,14 +23,14 @@
                 <input type="text" class="form-control" id="community-filter-text" placeholder="{{this.title}}" value="{{this.value}}">
             </div>
 
-            <div class="filter-operator">
+            <!-- <div class="filter-operator">
                 <select class="form-control" id="exampleFormControlSelect2">
                   <option>AND</option>
                   <option>OR</option>
                   <option>CONTAINS</option>
                   <option>NOT EQUAL</option>
                 </select>
-            </div>
+            </div> -->
             {{/each}}
 
             <div class="filter-option">
@@ -57,7 +57,7 @@
             <div class="apply-filter">
                 <button type="button" class="btn btn-search" id="community-filter-apply">Search <i class="fas fa-search"></i></button>
             </div>
-            
+
             {{#if filters}}
             <!-- <div class="reset-filter">
                 <button type="button" class="btn btn-cancel" id="community-filter-reset">Reset</button>
