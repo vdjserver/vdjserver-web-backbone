@@ -63,12 +63,15 @@ a.remove-filter {
 }
 
 #community-filter {
-    //display: none;
-    padding: 2%;
+    padding: 0.5% 2% 2% 2%;
     border: 0.25px solid $vdj-medgray;
 
     form {
         margin-bottom: 0%;
+    }
+
+    div {
+        margin-top: 1%;
     }
 }
 
@@ -91,6 +94,11 @@ a.remove-filter {
     }
 }
 
+.close-filter {
+    float: right;
+    margin-top: 2%;
+}
+
 /* ----------------------------------------------------------
 Community Statistics
 ------------------------------------------------------------*/
@@ -104,12 +112,10 @@ Community Statistics
 }
 
 .query-stats-border {
-    border-bottom: 5px solid $vdj-blue;
-    // background: $vdj-medlightgray !important;
-    // -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
-    // -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
-    // box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
-    // border-bottom: 1px solid $vdj-medgray;
+    border-bottom: 5px solid $vdj-lightgreen;
+    -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
+    -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
+    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
 }
 
 .results-stats {

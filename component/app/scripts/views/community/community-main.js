@@ -66,8 +66,10 @@ var CommunityQueryView = Marionette.View.extend({
 
         return {
             full_text_search: this.filters['full_text_search'],
-            filters: f
+            filters: f,
         }
+
+        // console.log("title= " + title);
     },
 
     events: {
