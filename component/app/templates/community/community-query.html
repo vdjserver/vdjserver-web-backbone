@@ -20,7 +20,16 @@
             </div>
 
             <div class="filter-value">
-                <input type="text" class="form-control" id="community-filter-text" placeholder="{{this.title}}" value="{{this.value}}">
+                {{#ifEquals title "Study ID"}}
+                    <input type="text" class="form-control" id="community-filter-text" placeholder="{{this.title}}" value="{{this.value}}">
+                {{/ifEquals}}
+
+                {{#ifEquals title "Subject Sex"}}
+                    <select class="form-control" id="community-filter-sex">
+                        <option>Female</option>
+                        <option>Male</option>
+                    </select>
+                {{/ifEquals}}
             </div>
 
             <!-- <div class="filter-operator">
