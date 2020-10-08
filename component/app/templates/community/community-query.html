@@ -9,6 +9,10 @@
                 <input type="search" class="form-control" id="community-text-search" aria-describedby="search" placeholder="Full Text Search" value="{{full_text_search}}">
             </div>
 
+            <div class="apply-filter">
+                <button type="button" class="btn btn-search" id="community-filter-apply">Search <i class="fas fa-search"></i></button>
+            </div>
+
             {{#each filters}}
             <div class="filter-option">
                 <div class="dropdown">
@@ -62,10 +66,6 @@
                 </div>
             </div>
 
-
-            <div class="apply-filter">
-                <button type="button" class="btn btn-search" id="community-filter-apply">Search <i class="fas fa-search"></i></button>
-            </div>
 
             {{#if filters}}
             <!-- <div class="reset-filter">
