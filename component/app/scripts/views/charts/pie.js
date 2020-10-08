@@ -54,8 +54,19 @@ export default Marionette.View.extend({
             chart: {
                 type: 'pie',
                 height: 225,
-                backgroundColor: "#FFFFFF",
+                backgroundColor: "#F1F1F1",
             },
+
+            exporting: {
+               buttons: {
+                   contextButton: {
+                       theme: {
+                           fill:"#F1F1F1"
+                       }
+                   }
+               }
+           },
+
             title: {
                 text: this.title
             },
