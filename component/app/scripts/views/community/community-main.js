@@ -31,6 +31,7 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
+import AIRRSchema from 'airr-schema';
 import ADCInfo from 'Scripts/models/adc-info';
 import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
 
@@ -49,11 +50,13 @@ var CommunityQueryView = Marionette.View.extend({
 
     initialize(parameters) {
         this.filters = {};
+        this.baseFilters = [];
 
         if (parameters) {
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
             if (parameters.filters) this.filters = parameters.filters;
+            if (parameters.base) this.baseFilters = parameters.base;
         }
     },
 
@@ -66,6 +69,7 @@ var CommunityQueryView = Marionette.View.extend({
 
         return {
             full_text_search: this.filters['full_text_search'],
+            base: this.baseFilters,
             filters: f,
             title: this.filters['title']
         }
@@ -73,12 +77,6 @@ var CommunityQueryView = Marionette.View.extend({
 
     events: {
         // perform search when user hits enter in full text search box
-        //'keyup #community-text-search': function(e) {
-        //    if (e.key == 'Enter') {
-        //        this.controller.applyFilter(this.extractFilters());
-        //    }
-        //},
-
         'search #community-text-search': function(e) {
             console.log('search');
             this.controller.applyFilter(this.extractFilters());
@@ -86,17 +84,27 @@ var CommunityQueryView = Marionette.View.extend({
 
         // when user selects from the dropdown filter
         'click #community-filter-select': function(e) {
-            console.log(e);
-            if (! this.filters['filters']) this.filters['filters'] = [];
+            // get updated filters
+            this.extractFilters();
 
-            var v = $("#community-filter-text").val();
+            // if the filter has dropdown values
+            // apply the filter with default value, currently null
+            var v = null;
+            var doApply = false;
+            for (var i = 0; i < this.baseFilters.length; ++i) {
+                if ((this.baseFilters[i]['title'] == e.target.title) && (this.baseFilters[i]['values'])) {
+                    doApply = true;
+                    v = 'null';
+                    break;
+                }
+            }
+
             this.filters['filters'].push({ field: e.target.name, value: v, title: e.target.title });
 
-            //$("#community-filter-text").show();
-            $("#community-filter-apply").show();
-            //$('#community-filter-button').html(e.target.title);
-
-            this.controller.updateFilters(this.filters);
+            if (doApply)
+                this.controller.applyFilter(this.filters);
+            else
+                this.controller.updateFilters(this.filters);
         },
 
         // when user clicks X on active filter to remove it
@@ -105,19 +113,49 @@ var CommunityQueryView = Marionette.View.extend({
             console.log(e);
 
             for (var f = 0; f < this.filters['filters'].length; ++f) {
-                if (this.filters['filters'][f]['field'] == e.target.name) {
+                if (this.filters['filters'][f]['field'] == e.target.getAttribute('name')) {
                     this.filters['filters'].splice(f,1);
                     break;
                 }
             }
             this.controller.updateFilters(this.filters);
+            this.controller.applyFilter(this.extractFilters());
+        },
+
+        // when user hits enter in a filter text box
+        'keyup #community-filter-text': function(e) {
+            if (e.key == 'Enter') {
+                if (e.target.value.length > 0)
+                    this.controller.applyFilter(this.extractFilters());
+            }
+        },
+
+        // when user selects value from list
+        'change #community-filter-text': function(e) {
+            console.log('select filter value');
+            this.controller.applyFilter(this.extractFilters());
         },
 
         // when user clicks apply
         'click #community-filter-apply': function() {
             console.log('apply filter');
-            this.controller.applyFilter(this.filters);
+            this.controller.applyFilter(this.extractFilters());
         },
+    },
+
+    onAttach() {
+        // see if there is a filter text box we should focus on
+        var av = $('[id=community-filter-text]');
+        for (var i = 0; i < av.length; ++i) {
+            if (av[i].getAttribute('type') == 'text') {
+                if (av[i]['value'].length == 0) {
+                    av[i].focus();
+                    break;
+                }
+            }
+        }
+        // otherwise focus on full text search
+        if (av.length == 0) $('#community-text-search').focus();
     },
 
     // construct filters from view state
@@ -134,7 +172,10 @@ var CommunityQueryView = Marionette.View.extend({
         var af = $('[id=community-active-filter]');
         var av = $('[id=community-filter-text]');
         for (var i = 0; i < af.length; ++i) {
-            filters['filters'].push({ field: af[i]['name'], value: av[i]['value'], title: av[i]['placeholder']});
+            var v = av[i]['value'];
+            if (v.length == 0) v = null;
+            //if (v == 'null') v = 'null';
+            filters['filters'].push({ field: af[i]['name'], value: v, title: av[i].getAttribute('title')});
         }
 
         this.filters = filters;
@@ -306,6 +347,17 @@ export default Marionette.View.extend({
         this.studyList = null;
         this.filteredStudyList = null;
 
+        // predefined filters
+        this.baseFilters = [];
+        this.baseFilters.push({ title: "Study ID", field: "study.study_id"});
+        this.baseFilters.push({ title: "Subject ID", field: "subject.subject_id"});
+        this.baseFilters.push({ title: "Subject Organism", field: "subject.organism", data: true});
+        this.baseFilters.push({ title: "Subject Sex", field: "subject.sex",
+            values: AIRRSchema['Subject']['properties']['sex']['enum'] });
+        this.baseFilters.push({ title: "Subject Diagnosis", field: "subject.organism", data: true});
+        this.baseFilters.push({ title: "Sample ID", field: "sample.sample_id"});
+        console.log(this.baseFilters);
+
         // our controller
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
@@ -313,37 +365,6 @@ export default Marionette.View.extend({
     },
 
     events: {
-        //
-        // Overview page specific events
-        //
-
-        //'click #community-filter-button': function() {
-        //    $("#community-filter").toggle();
-        //},
-
-        //'click #community-filter-select': function(e) {
-        //    console.log(e);
-        //    $("#community-filter-text").show();
-        //    $("#community-filter-apply").show();
-        //    $('#community-filter-button').html(e.target.title);
-        //},
-
-        // Hiding Studies Stats when removed
-        // 'click #remove-stats-studies': function() {
-        //     $("#stats-studies").toggle();
-        // },
-        //
-        // // Hiding Repertoires Stats when removed
-        // 'click #remove-stats-reps': function() {
-        //     $("#stats-reps").toggle();
-        // },
-        //
-        // // Hiding ADC Stats when removed
-        // 'click #remove-stats-adc': function() {
-        //     $("#stats-adc").toggle();
-        // },
-
-        // setting event for Overview page
         // Setting event for "New Filter" Modal
         'click #new-community-filter': 'newFilterModal'
     },
@@ -358,7 +379,7 @@ export default Marionette.View.extend({
         console.log(this.controller);
         $("#community-charts").removeClass("no-display");
 
-        this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, filters: filters});
+        this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
         this.showChildView('queryRegion', this.filterView);
 
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
@@ -378,7 +399,7 @@ export default Marionette.View.extend({
     },
 
     updateFilters(filters) {
-        this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, filters: filters});
+        this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
         this.showChildView('queryRegion', this.filterView);
     },
 

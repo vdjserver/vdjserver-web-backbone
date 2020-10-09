@@ -67,5 +67,27 @@ export default ADC.Model.extend({
         }
     },
 
+    getValueForField(field) {
+        var paths = field.split('.');
+        if (paths.length == 1) return this.get(paths[0]);
+        else {
+            switch(paths[0]) {
+                case 'study':
+                    return this.get('study')[paths[1]];
+                case 'subject':
+                    return this.get('subject')[paths[1]];
+                case 'diagnosis':
+                    return null;
+                case 'sample':
+                case 'data_processing':
+                    return null;
+                case 'repertoire':
+                    return null;
+                default:
+                    return null;
+            }
+        }
+        return null;
+    },
 });
 

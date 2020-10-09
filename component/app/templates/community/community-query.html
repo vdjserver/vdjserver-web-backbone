@@ -16,25 +16,28 @@
             {{#each filters}}
             <div class="filter-option">
                 <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle-times" name="{{this.field}}" type="button" id="community-active-filter" aria-haspopup="true" aria-expanded="false">
-                    {{this.title}}
-                    <a class="remove-filter"><i class="fas fa-times-circle"></i></a>
+                  <button class="btn btn-primary dropdown-toggle-times" name="{{field}}" type="button" id="community-active-filter" aria-haspopup="true" aria-expanded="false">
+                    {{title}}
+                    <a class="remove-filter"><i class="fas fa-times-circle" name="{{field}}"></i></a>
                   </button>
                 </div>
             </div>
 
             <div class="filter-value">
-                {{#ifEquals title "Study ID"}}
-                    <input type="text" class="form-control" id="community-filter-text" placeholder="{{this.title}}" value="{{this.value}}">
-                {{/ifEquals}}
-
-                {{#ifEquals title "Subject Sex"}}
-                    <select class="form-control" id="community-filter-sex">
-                        <option>Choose...</option>
-                        <option>Female</option>
-                        <option>Male</option>
+            {{#each ../base}}
+                {{#ifEquals title ../title}}
+                    {{#if values}}
+                    <select class="form-control" id="community-filter-text" title="{{title}}">
+                        <option>null</option>
+                        {{#each values}} {{../../../../value}}
+                        <option {{#ifEquals this ../../../../value}}selected{{/ifEquals}}>{{this}}</option>
+                        {{/each}}
                     </select>
+                    {{else}}
+                    <input type="text" class="form-control" id="community-filter-text" title="{{title}}" value="{{../../../value}}">
+                    {{/if}}
                 {{/ifEquals}}
+            {{/each}}
             </div>
 
             <!-- <div class="filter-operator">
@@ -53,12 +56,11 @@
                     Filter On
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <button class="dropdown-item" type="button" id="community-filter-select" name="study.study_id" title="Study ID">
-                        Study ID
+                    {{#each base}}
+                    <button class="dropdown-item" type="button" id="community-filter-select" name="{{this.field}}" title="{{this.title}}">
+                        {{this.title}}
                     </button>
-                    <button class="dropdown-item" type="button" id="community-filter-select" name="subject.sex" title="Subject Sex">
-                        Subject Sex
-                    </button>
+                    {{/each}}
                     <div class="dropdown-divider"></div>
                     <button class="dropdown-item disabled" type="button">
                         Add Custom Filter...

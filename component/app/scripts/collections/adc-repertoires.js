@@ -75,6 +75,18 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
             }
 
             // apply individual filters
+            for (var j = 0; j < filters['filters'].length; ++j) {
+                var f = filters['filters'][j];
+                // if filter value is null, skip
+                if (f['value'] == null) continue;
+
+                var value = model.getValueForField(f['field']);
+                if (f['value'] == 'null' && value == null) continue;
+                if (value != f['value']) {
+                    valid = false;
+                    break;
+                }
+            }
 
             if (valid) filtered.add(model);
         }
@@ -183,7 +195,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
             var model = this.at(i);
             if (paths.length == 1) return model.get(paths[0]);
             else {
-                switch(path[0]) {
+                switch(paths[0]) {
                     case 'study':
                         return model.get('study')[paths[1]];
                     case 'subject':
@@ -213,7 +225,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
                 var subject = subjects.at(j);
                 var value = subject.get('value');
                 var field = value[paths[1]];
-                if (field == null) field = "none";
+                if (field == null) field = "null";
                 var entry = counts[field];
                 if (entry == null) counts[field] = 1;
                 else counts[field] += 1;
