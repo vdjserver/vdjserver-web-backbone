@@ -3,24 +3,65 @@
 -->
 
 <div class="row community-statistics">
-    <div class="col">
-        <h3 class="filters">Filters: </h3>
-        <div class="filter-badges">
+    <div class="col-md-2">
+        <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="community-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort Studies By
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <button class="dropdown-item" type="button" id="community-sort-select" name="study.study_title">
+                {{#ifEquals current_sort "study.study_title"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                Study Title
+            </button>
+            <button class="dropdown-item" type="button">
+                {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                Newest
+            </button>
+            <button class="dropdown-item" type="button">
+                {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                Oldest
+            </button>
+            <button class="dropdown-item" type="button" id="community-sort-select" name="num_repertoires">
+                {{#ifEquals current_sort "num_repertoires"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                Number of Repertoires
+            </button>
+            <button class="dropdown-item" type="button">
+                {{#ifEquals current_sort "repository"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                ADC Repository
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item disabled" type="button">
+                Add Custom Sort...
+            </button>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-md-8 results-stats">
+        <span class="stats">Results Summary: </span>
+        <div class="stats-badges">
             <!-- Later we will probably have to create dynamic IDs for filters, so JS knows which filter badge to remove upon click -->
-            <span class="badge badge-pill badge-stats" id="filter-studies">
+            <span class="badge badge-pill badge-stats" id="stats-studies">
                 {{num_studies}} Studies
-                <a id="remove-filter-studies" class="remove-filter"><i class="fas fa-times-circle"></i></a>
             </span>
 
-            <span class="badge badge-pill badge-stats" id="filter-reps">
+            <span class="badge badge-pill badge-stats" id="stats-reps">
                 {{num_reps}} Repertoires
-                <a id="remove-filter-reps" class="remove-filter"><i class="fas fa-times-circle"></i></a>
             </span>
 
-            <span class="badge badge-pill badge-stats" id="filter-adc">
+            <span class="badge badge-pill badge-stats" id="stats-adc">
                 {{num_repos}} ADC Repositories
-                <a id="remove-filter-adc" class="remove-filter"><i class="fas fa-times-circle"></i></a>
             </span>
         </div>
     </div>
+
+    <div class="col-md-2">
+        <a download class="btn btn-download" href="#">Download <i class="fas fa-download" aria-hidden="true"></i></a>
+    </div>
 </div>
+
+<!-- <div class="row">
+    <div class="col-md-12">
+        <span class="close-filter"><i class="fas fa-chevron-up"></i> Close Header</span>
+    </div>
+</div> -->

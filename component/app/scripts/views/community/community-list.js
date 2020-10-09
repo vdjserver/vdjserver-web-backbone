@@ -80,8 +80,6 @@ var StudySummaryView = Marionette.View.extend({
 
 export default Marionette.CollectionView.extend({
     template: Handlebars.compile(list_template),
-    //tagName: 'table',
-    //className: 'table table-hover table-sm table-bordered',
     initialize: function(parameters) {
         this.childView = StudySummaryView;
   },

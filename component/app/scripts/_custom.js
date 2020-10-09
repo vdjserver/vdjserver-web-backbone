@@ -11,4 +11,13 @@ $(document).ready(function() {
     } else {
         console.log("Nah, not checked");
     }
+
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 100){
+            $('#community-query-stats').addClass("query-stats-border");
+        }
+        else{
+            $('#community-query-stats').removeClass("query-stats-border");
+        }
+    });
 });

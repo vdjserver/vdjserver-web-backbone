@@ -21,6 +21,7 @@ $theme-colors: (
     'delete': $vdj-red,
     'success': $vdj-lightgreen,
     'save': $vdj-lightgreen,
+    'search': $vdj-blue,
     'new': $vdj-blue,
     'add': $vdj-blue,
     'create': $vdj-blue,
@@ -37,7 +38,7 @@ $theme-colors: (
     // Study Type Badges
     'locus': $vdj-green,
     'cell': $vdj-lightorange,
-    'stats': $vdj-lightgray,
+    'stats': $vdj-darkblue,
 );
 
 // Elements

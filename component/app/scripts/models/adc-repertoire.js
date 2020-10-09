@@ -47,5 +47,47 @@ export default ADC.Model.extend({
     url: function() {
         return this.apiHost + '/repertoire/' + this.get('repertoire_id');
     },
+
+    // flatten all values into a single string for easy search
+    generateFullText(context) {
+        var text = '';
+        if ((typeof context) == 'string') {
+            text += ' ' + context;
+            return text;
+        }
+        if ((typeof context) == 'object') {
+            for (var o in context)
+                text += this.generateFullText(context[o]);
+            return text;
+        }
+        if ((typeof context) == 'array') {
+            for (var i = 0; i < context.length; ++i)
+                text += this.generateFullText(context[i]);
+            return text;
+        }
+    },
+
+    getValueForField(field) {
+        var paths = field.split('.');
+        if (paths.length == 1) return this.get(paths[0]);
+        else {
+            switch(paths[0]) {
+                case 'study':
+                    return this.get('study')[paths[1]];
+                case 'subject':
+                    return this.get('subject')[paths[1]];
+                case 'diagnosis':
+                    return null;
+                case 'sample':
+                case 'data_processing':
+                    return null;
+                case 'repertoire':
+                    return null;
+                default:
+                    return null;
+            }
+        }
+        return null;
+    },
 });
 

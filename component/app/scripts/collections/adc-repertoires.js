@@ -50,13 +50,45 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
         return;
     },
 
+    // apply filters to generate a new collection
     filterCollection(filters) {
         var filtered = new ADCRepertoireCollection();
 
+        var fts_fields = [];
+        if (filters['full_text_search']) fts_fields = filters['full_text_search'].toLowerCase().split(/\s+/);
+
         for (var i = 0; i < this.length; ++i) {
+            var valid = true;
             var model = this.at(i);
-            if (model.get('subject')['sex'] == 'male')
-                filtered.add(model);
+
+            // apply full text search
+            if (!model.get('full_text')) {
+                var text = model.generateFullText(model['attributes']);
+                model.set('full_text', text.toLowerCase());
+            }
+            for (var j = 0; j < fts_fields.length; ++j) {
+                var result = model.get('full_text').indexOf(fts_fields[j]);
+                if (result < 0) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            // apply individual filters
+            for (var j = 0; j < filters['filters'].length; ++j) {
+                var f = filters['filters'][j];
+                // if filter value is null, skip
+                if (f['value'] == null) continue;
+
+                var value = model.getValueForField(f['field']);
+                if (f['value'] == 'null' && value == null) continue;
+                if (value != f['value']) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) filtered.add(model);
         }
 
         return filtered;
@@ -66,13 +98,18 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
 export var ADCStudyCollection = ADC.Collection.extend({
     model: Backbone.Model,
 
+    initialize(parameters) {
+        this.sort_by = 'study.study_title';
+        this.comparator = this.collectionSortBy;
+    },
+
     // The AIRR Repertoire model is in denormalized form with
     // study, subject, and etc., duplicated in each repertoire.
     //
     // This function inserts normalized objects for
     // Study, Subject, SampleProcessing, and DataProcessing
     normalize(repertoires) {
-        this.reset();
+        //this.reset();
         for (var i = 0; i < repertoires.length; ++i) {
             var model = repertoires.at(i);
 
@@ -127,13 +164,38 @@ export var ADCStudyCollection = ADC.Collection.extend({
         return this;
     },
 
+    // sort comparator for the collection
+    collectionSortBy(modela, modelb) {
+        if (!this.sort_by) this.sort_by = 'study.study_title';
+
+        // we have a pre-defined set of sorts
+        switch (this.sort_by) {
+            case 'study.study_title': {
+                let ma = modela.get('study');
+                let va = ma.get('value');
+                let mb = modelb.get('study');
+                let vb = mb.get('value');
+                if (va['study_title'].toLowerCase() > vb['study_title'].toLowerCase()) return 1;
+                if (va['study_title'].toLowerCase() < vb['study_title'].toLowerCase()) return -1;
+                return 0;
+            }
+            case 'num_repertoires': {
+                let ma = modela.get('repertoires');
+                let mb = modelb.get('repertoires');
+                if (ma.length > mb.length) return -1;
+                if (ma.length < mb.length) return 1;
+                return 0;
+            }
+        }
+    },
+
     getValueForField(field) {
         var paths = field.split('.');
         for (var i = 0; i < this.length; ++i) {
             var model = this.at(i);
             if (paths.length == 1) return model.get(paths[0]);
             else {
-                switch(path[0]) {
+                switch(paths[0]) {
                     case 'study':
                         return model.get('study')[paths[1]];
                     case 'subject':
@@ -163,7 +225,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
                 var subject = subjects.at(j);
                 var value = subject.get('value');
                 var field = value[paths[1]];
-                if (field == null) field = "none";
+                if (field == null) field = "null";
                 var entry = counts[field];
                 if (entry == null) counts[field] = 1;
                 else counts[field] += 1;
