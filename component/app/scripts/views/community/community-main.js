@@ -223,7 +223,11 @@ var CommunityStatisticsView = Marionette.View.extend({
             var current_sort = colls['studyList']['sort_by'];
             if (e.target.name != current_sort)
                 this.controller.applySort(e.target.name);
-        }
+        },
+        // 'click .close-filter': function(e) {
+        //     console.log("clicked close-filter");
+        //     $(this).find("#community-query-stats").css("position", "relative");
+        // }
     },
 
     updateStats(studyList) {
@@ -366,7 +370,17 @@ export default Marionette.View.extend({
 
     events: {
         // Setting event for "New Filter" Modal
-        'click #new-community-filter': 'newFilterModal'
+        'click #new-community-filter': 'newFilterModal',
+        'click #close-filter': function(e) {
+            console.log("clicked close-filter");
+            $("#community-query-stats").toggleClass("hideFilter");
+            $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
+        },
+        'click #community-expand': function(e) {
+            console.log("clicked expand for reps");
+            $("#community-repertoires").toggleClass("no-display");
+            $("#community-expand-icon").toggleClass("fa-chevron-up fa-chevron-down");
+        }
     },
 
     // show a loading view, used while fetching the data

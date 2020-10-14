@@ -19,7 +19,7 @@ Community Projects Page
 }
 
 #community-statistics {
-    margin: 2% 0% 1% 0%;
+    margin: 1% 0% 0.5% 0%;
 }
 
 .no-display {
@@ -48,6 +48,7 @@ Community Query
 ------------------------------------------------------------*/
 .filter-option, .filter-value {
     margin-right: 1%;
+    padding-left: 1.25%;
 }
 
 .apply-filter, .reset-filter {
@@ -64,7 +65,10 @@ a.remove-filter {
 
 #community-filter {
     padding: 0.5% 2% 2% 2%;
-    border: 0.25px solid rgba(184, 192, 199, 0.65);
+    border: 2px solid rgba(184, 192, 199, 0.65);
+    -webkit-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
+    -moz-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
+    box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
 
     form {
         margin-bottom: 0%;
@@ -94,9 +98,10 @@ a.remove-filter {
     }
 }
 
-.close-filter {
+#close-filter {
     float: right;
-    margin-top: 2%;
+    display: none;
+    cursor: pointer;
 }
 
 /* ----------------------------------------------------------
@@ -108,7 +113,35 @@ Community Statistics
     position: -webkit-sticky;
     top: 0;
     z-index: 999;
-    padding: 2%;
+    padding: 2% 2% 1% 2%;
+    -webkit-transition: position 2s ease-out;
+  -moz-transition: position 2s ease-out;
+  -o-transition: position 2s ease-out;
+  transition: position 2s ease-out;
+}
+
+@include media-breakpoint-up(md) {
+    .hideFilter {
+        top: -19% !important;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .hideFilter {
+        top: -16% !important;
+    }
+}
+
+@include media-breakpoint-up(xl) {
+    .hideFilter {
+        top: -19% !important;
+    }
+}
+
+@media (min-width: 1367px) {
+    .hideFilter {
+        top: -31% !important;
+    }
 }
 
 .query-stats-border {
@@ -199,6 +232,22 @@ Community Results
         margin: 2% 0% 0% 0%;
         text-align: center;
         font-weight: bold;
+    }
+}
+
+/* ----------------------------------------------------------
+Community Repertoires
+------------------------------------------------------------*/
+.community-repertoires-expand {
+    float: right;
+    cursor: pointer;
+}
+
+#community-repertoires {
+    padding: 0% 2%;
+
+    div {
+        border-bottom: 1px solid $vdj-medgray;
     }
 }
 

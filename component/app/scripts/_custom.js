@@ -6,7 +6,7 @@ $(document).ready(function() {
 //
 
     // Selecting a project to copy
-    if ($('#check-copy-repertoire').is('checked')) {
+    if ($("#check-copy-repertoire").is("checked")) {
         console.log("I'm checked!");
     } else {
         console.log("Nah, not checked");
@@ -14,10 +14,14 @@ $(document).ready(function() {
 
     $(window).scroll(function() {
         if ($(this).scrollTop() > 100){
-            $('#community-query-stats').addClass("query-stats-border");
+            $("#community-query-stats").addClass("query-stats-border");
+            $("#close-filter").css("display", "inline");
         }
-        else{
-            $('#community-query-stats').removeClass("query-stats-border");
+        else if ($(this).scrollTop() == 0) {
+            $("#community-query-stats").removeClass("hideFilter");
+            $("#close-filter").css("display", "none");
+            $("#community-query-stats").removeClass("query-stats-border");
+            $("#close-filter-icon").removeClass("fa-chevron-up");
         }
     });
 });
