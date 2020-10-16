@@ -192,6 +192,25 @@ Community Charts
     }
 }
 
+.add-chart {
+    border: 2px dashed $vdj-medgray;
+    background: $vdj-medlightgray;
+    margin: 0% 2%;
+
+    span {
+        font-size: 2em;
+        text-align: center;
+        color: $vdj-darkblue;
+        margin-top: 25%;
+        display: block;
+    }
+}
+
+.add-chart:hover {
+    background: #FFFFFF;
+    cursor: pointer;
+}
+
 .chart-actions {
     margin: 1em 3em;
 }
@@ -205,12 +224,18 @@ Community Results
 //     font-size: 1.5em;
 // }
 
+.community-project-type {
+    float: right;
+    margin-top: -1.5%;
+    margin-left: 1%;
+}
+
 #community-results {
-    margin: 4em;
+    margin: 1em 4em 4em 4em;
 }
 
 .community-project {
-    margin: 3% auto;
+    margin: 4% auto;
     border: 2px solid $vdj-medgray;
 
     .community-project-header {

@@ -1,3 +1,10 @@
+<h3 class="community-badges">
+    <!-- Need to add conditionals depending on project type -->
+    <!-- We could also put the logos here instead of text -->
+    <a class="badge badge-pill badge-darkgray community-project-type">VDJServer</a>
+
+    <a class="badge badge-pill badge-info community-project-type">10X Genomics</a>
+</h3>
 <div class="community-project-header">
     <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>
     <!-- Badges for study type -->
@@ -26,6 +33,40 @@
 </div>
 
 <div id="community-repertoires" class="no-display">
+    <table class="table table-striped table-condensed table-bordered">
+        <thead>
+            <tr>
+                <th>Repertoire Name</th>
+                <th>Repertoire UUID</th>
+                <th>Subject ID</th>
+                <th>Age</th>
+                <th>Samples</th>
+                <th>Files</th>
+                <th>Statistics</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{value.repertoire_name}}</td>
+                <td>{{uuid}}</td>
+                <td>{{value.subject_id}}</td>
+                <td>{{value.age_unit.label}}</td>
+                <td>Repertoire Samples</td>
+                <td>Repertoire Files</td>
+                <td>Repertoire Statistics</td>
+            </tr>
+            <tr>
+                <td>{{value.repertoire_name}}</td>
+                <td>{{uuid}}</td>
+                <td>{{value.subject_id}}</td>
+                <td>{{value.age_unit.label}}</td>
+                <td>Repertoire Samples</td>
+                <td>Repertoire Files</td>
+                <td>Repertoire Statistics</td>
+            </tr>
+        </tbody>
+    </table>
+<!--
     <div id="community-expand-header">
         Repertoire Header
         <p>Repertoire Name: {{value.repertoire_name}}</p>
@@ -44,20 +85,20 @@
     </div>
     <div id="community-expand-statistics">
         Repertoire Statistics
-    </div>
+    </div> -->
 </div>
 
 <div class="row community-summary-stats">
     <div class="col-md-3">
-        {{num_repertoires}} Repertoires <i class="fas fa-vial"></i>
+        {{num_repertoires}} of # Repertoires <i class="fas fa-vial"></i>
     </div>
     <div class="col-md-3">
-        {{num_subjects}} Subjects <i class="fas fa-users"></i>
+        {{num_subjects}} of # Subjects <i class="fas fa-users"></i>
     </div>
     <div class="col-md-3">
-        XXX,XXX Clones <i class="fas fa-sitemap"></i>
+        XXX,XXX of # Clones <i class="fas fa-sitemap"></i>
     </div>
     <div class="col-md-3">
-        XXX,XXX,XXX Rearrangements <i class="fas fa-stream"></i>
+        XXX,XXX,XXX of # Rearrangements <i class="fas fa-stream"></i>
     </div>
 </div>
