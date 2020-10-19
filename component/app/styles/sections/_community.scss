@@ -263,6 +263,13 @@ Community Results
 /* ----------------------------------------------------------
 Community Repertoires
 ------------------------------------------------------------*/
+.community-metadata {
+    margin-bottom: 1rem;
+
+    p {
+        margin-bottom: 0.15rem;
+    }
+}
 .community-repertoires-expand {
     float: right;
     cursor: pointer;
@@ -270,17 +277,13 @@ Community Repertoires
 
 #community-repertoires {
     padding: 0% 2%;
-
-    div {
-        border-bottom: 1px solid $vdj-medgray;
-    }
 }
 
 /* ----------------------------------------------------------
 Community Pagination
 ------------------------------------------------------------*/
 .pagination {
-    float: right;
+    // float: right;
     color: $vdj-blue;
     margin-bottom: 3%;
 }

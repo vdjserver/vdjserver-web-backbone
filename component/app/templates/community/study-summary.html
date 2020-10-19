@@ -7,6 +7,7 @@
 </h3>
 <div class="community-project-header">
     <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>
+
     <!-- Badges for study type -->
     <h4 class="community-badges">
         {{#if contains_ig}}
@@ -23,7 +24,64 @@
         {{/if}}
     </h4>
 
-    <p>{{#truncate}}{{{study.value.study_description}}}{{/truncate}}</p>
+    <div class="row">
+        <div class="col community-metadata">
+            {{#if study.value.study_type.label}}
+                <p>
+                    <span class="details">Study Type:</span> {{study.value.study_type.label}}
+                </p>
+            {{/if}}
+            {{#if study.value.inclusion_exclusion_criteria}}
+                <p>
+                    <span class="details">Inclusion/Exclusion Criteria:</span> {{study.value.inclusion_exclusion_criteria}}
+                </p>
+            {{/if}}
+            <!-- {{#if study.value.keywords_study}}
+                <p><span class="details">Study Keywords:</span> {{study.value.keywords_study}}</p>
+            {{/if}} -->
+        </div>
+        <div class="col community-metadata">
+            {{#if study.value.pub_ids}}
+                <p>
+                    <span class="details">Publications:</span> {{study.value.pub_ids}}
+                </p>
+            {{/if}}
+            {{#if study.value.grants}}
+                <p>
+                    <span class="details">Grants:</span> {{study.value.grants}}
+                </p>
+            {{/if}}
+            {{#if study.value.lab_name}}
+                <p>
+                    <span class="details">PI:</span> {{study.value.lab_name}}
+                </p>
+            {{/if}}
+        </div>
+        <div class="col community-metadata">
+            {{#if study.value.lab_address}}
+                <p>
+                    <span class="details">Lab Address:</span> {{study.value.lab_address}}
+                </p>
+            {{/if}}
+            {{#if study.value.collected_by}}
+                <p>
+                    <span class="details">Data Collector:</span> {{study.value.collected_by}}
+                </p>
+            {{/if}}
+            {{#if study.value.submitted_by}}
+                <p>
+                    <span class="details">Data Submitter:</span> {{study.value.submitted_by}}
+                </p>
+            {{/if}}
+        </div>
+    </div>
+
+    <!-- If arrow is expanded, show full study description -->
+    <p class="community-study-description">
+        {{#truncate}}{{{study.value.study_description}}}{{/truncate}}
+    </p>
+
+    <!-- If arrow is collapsed, show truncated description -->
 </div>
 
 <div id="community-repertoires-action" class="col-md-12 mb-5">
@@ -48,16 +106,7 @@
         <tbody>
             <tr>
                 <td>{{value.repertoire_name}}</td>
-                <td>{{uuid}}</td>
-                <td>{{value.subject_id}}</td>
-                <td>{{value.age_unit.label}}</td>
-                <td>Repertoire Samples</td>
-                <td>Repertoire Files</td>
-                <td>Repertoire Statistics</td>
-            </tr>
-            <tr>
-                <td>{{value.repertoire_name}}</td>
-                <td>{{uuid}}</td>
+                <td>{{community_repertoire_id}}</td>
                 <td>{{value.subject_id}}</td>
                 <td>{{value.age_unit.label}}</td>
                 <td>Repertoire Samples</td>
@@ -66,31 +115,17 @@
             </tr>
         </tbody>
     </table>
-<!--
-    <div id="community-expand-header">
-        Repertoire Header
-        <p>Repertoire Name: {{value.repertoire_name}}</p>
-        <p>Repertoire UUID: {{uuid}}</p>
+
+    <div class="row">
+        <div class="ml-auto pagination">
+            Pagination
+        </div>
     </div>
-    <div id="community-expand-subject">
-        Repertoire Subjects
-        <p>Subject ID: {{value.subject_id}}</p>
-        <p>Age: {{value.age_unit.label}}</p>
-    </div>
-    <div id="community-expand-sample">
-        Repertoire Samples
-    </div>
-    <div id="community-expand-file">
-        Repertoire Files
-    </div>
-    <div id="community-expand-statistics">
-        Repertoire Statistics
-    </div> -->
 </div>
 
 <div class="row community-summary-stats">
     <div class="col-md-3">
-        {{num_repertoires}} of # Repertoires <i class="fas fa-vial"></i>
+        {{num_repertoires}} of {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
     </div>
     <div class="col-md-3">
         {{num_subjects}} of # Subjects <i class="fas fa-users"></i>

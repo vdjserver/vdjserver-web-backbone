@@ -44,6 +44,10 @@ var StudySummaryView = Marionette.View.extend({
     // serialize nested model data
     data.study = data.study.attributes;
 
+    // attempting to grab repertoires data
+    data.repertoire = data.repertoires.models;
+    // console.log ("this is data.repertoire: " + JSON.stringify(data.repertoires));
+
     return data;
   },
 
@@ -52,6 +56,7 @@ var StudySummaryView = Marionette.View.extend({
         // study badges
         var study = this.model.get('study');
         var value = study.get('value');
+        // console.log(value);
         var contains_ig = false;
         var contains_tcr = false;
         var contains_single_cell = false;
@@ -65,6 +70,24 @@ var StudySummaryView = Marionette.View.extend({
         if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
             contains_paired_chain = true;
 
+        // Repertoires
+        var repertoire = this.model.get('repertoires');
+        var repertoire_model = repertoire.models;
+
+        // iterating through all of the repertoires to get attributes
+        for(let i = 0, l = repertoire_model.length; i < l; i++) {
+            var rep = repertoire.models[i].attributes;
+            // console.log("iterating attributes for rep: " + JSON.stringify(rep));
+        }
+
+        var community_repertoire_id = rep.repertoire_id;
+
+        console.log(rep.repertoire_id);
+
+        // console.log(repertoire);
+        // console.log(repertoire_model);
+        // console.log(first_rep);
+
         return {
             object: JSON.stringify(this.model),
             num_subjects: this.model.get('subjects').length,
@@ -74,6 +97,7 @@ var StudySummaryView = Marionette.View.extend({
             contains_tcr: contains_tcr,
             contains_single_cell: contains_single_cell,
             contains_paired_chain: contains_paired_chain,
+            community_repertoire_id: community_repertoire_id
         };
     }
 });

@@ -21,7 +21,7 @@ $(document).ready(function() {
             $("#community-query-stats").removeClass("hideFilter");
             $("#close-filter").css("display", "none");
             $("#community-query-stats").removeClass("query-stats-border");
-            $("#close-filter-icon").removeClass("fa-chevron-up");
+            $("#close-filter-icon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
         }
     });
 });

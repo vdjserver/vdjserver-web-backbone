@@ -273,7 +273,28 @@ var CommunityChartsView = Marionette.View.extend({
         this.view = new PieChart({series: series, title: title, subtitle: subtitle});
         this.showChildView('chartRegion', this.view);
         this.view.showChart();
-    }
+    },
+
+    newChartModal(e) {
+        console.log('add new chart modal will appear');
+        var message = new MessageModel({
+            'header': 'Add a new chart',
+            'body': '<p>Please select from the options below to create a new chart.</p>',
+            'confirmText': 'Create Chart',
+            'cancelText': 'Cancel'
+        });
+
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        $('#modal-message').modal('show');
+
+        console.log(message);
+    },
+
+    events: {
+        'click .add-chart': 'newChartModal',
+        'click .chart-actions': 'newChartModal',
+        }
 });
 
 // Community Pagination View
@@ -303,23 +324,23 @@ var CommunityPaginationView = Marionette.View.extend({
         }
     },
 
-    updatePagination(studyList) {
-        // set up pagination settings
-        var paging = {
-            total: studyList.length,
-            perPage: 10,
-            pages: Math.ceil(this.total / this.perPage),
-        };
-
-        // get number of studies
-        console.log("update pagination: " + studyList.length);
-
-        // divide by number of studies we want per page
-
-        // create pagination links for each number of page sets
-
-
-    }
+    // updatePagination(studyList) {
+    //     // set up pagination settings
+    //     var paging = {
+    //         total: studyList.length,
+    //         perPage: 10,
+    //         pages: Math.ceil(this.total / this.perPage),
+    //     };
+    //
+    //     // get number of studies
+    //     console.log("update pagination: " + studyList.length);
+    //
+    //     // divide by number of studies we want per page
+    //
+    //     // create pagination links for each number of page sets
+    //
+    //
+    // }
 
     // showResultsList(studyList) {
     //     console.log(this.controller);
@@ -380,6 +401,7 @@ export default Marionette.View.extend({
             console.log("clicked expand for reps");
             $("#community-repertoires").toggleClass("no-display");
             $("#community-expand-icon").toggleClass("fa-chevron-up fa-chevron-down");
+            $(".community-study-description").toggleClass(".")
         }
     },
 
@@ -409,7 +431,7 @@ export default Marionette.View.extend({
 
         this.paginationView = new CommunityPaginationView ({collection: studyList, controller: this.controller});
         this.showChildView('paginationRegion', this.paginationView);
-        this.paginationView.updatePagination(studyList);
+        // this.paginationView.updatePagination(studyList);
     },
 
     updateFilters(filters) {
