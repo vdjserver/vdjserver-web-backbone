@@ -216,6 +216,94 @@ Community Charts
 }
 
 /* ----------------------------------------------------------
+Community Charts - Add a Chart Modal
+------------------------------------------------------------*/
+.add-chart-module {
+    background: $vdj-lightgray;
+}
+
+.add-chart-steps {
+    margin-top: 3%;
+    margin-bottom: 3%;
+
+    .chart-step {
+        background: $vdj-blue;
+        color: #FFFFFF;
+        position: relative;
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+
+    .chart-step:before,
+    .chart-step:after{
+        content:"";
+        position: absolute;
+        top: 4px;
+        width: 28px;
+        height: 28px;
+        background: inherit;
+        border: inherit;
+        border-left-color: transparent;
+        border-bottom-color: transparent;
+        border-radius: 0px 4px 0px 0px;
+        -webkit-border-radius: 0px 4px 0px 0px;
+        -moz-border-radius: 0px 4px 0px 0px;
+    }
+    .chart-step:before,
+    .chart-step:after {
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+    }
+
+    .chart-step:before
+     {
+        left: -16px;
+        background: #FFFFFF;
+    }
+    .chart-step:after {
+        right: -13px;
+        z-index: 1;
+    }
+}
+
+.chart-types {
+    height: 100%;
+
+    div {
+        background: $vdj-darkgray;
+        padding: 13%;
+        border-bottom: 1px solid $vdj-medgray;
+        font-size: 1.5em;
+        opacity: 1;
+        transition: 0.3s;
+    }
+
+    div:hover {
+        // background: $vdj-medlightgray;
+        opacity: 0.3;
+    }
+}
+
+.chart-options {
+    margin: 3%;
+
+    div {
+        border: 1px solid $vdj-medgray;
+        padding: 5%;
+        margin-left: 2%;
+        background: #FFFFFF;
+        transition: 0.3s;
+    }
+
+    div:hover {
+        opacity: 0.5;
+    }
+}
+
+/* ----------------------------------------------------------
 Community Results
 ------------------------------------------------------------*/
 // #community-results::before {

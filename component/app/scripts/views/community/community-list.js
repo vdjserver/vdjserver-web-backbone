@@ -78,15 +78,15 @@ var StudySummaryView = Marionette.View.extend({
         for(let i = 0, l = repertoire_model.length; i < l; i++) {
             var rep = repertoire.models[i].attributes;
             // console.log("iterating attributes for rep: " + JSON.stringify(rep));
+            var community_repertoire_id = rep.repertoire_id;
         }
 
-        var community_repertoire_id = rep.repertoire_id;
 
-        console.log(rep.repertoire_id);
+
+        // console.log(rep.repertoire_id);
 
         // console.log(repertoire);
         // console.log(repertoire_model);
-        // console.log(first_rep);
 
         return {
             object: JSON.stringify(this.model),

@@ -1,0 +1,70 @@
+<!-- Modal -->
+<div class="modal fade" id="modal-message" tabindex="-1" role="dialog" aria-labelledby="modal-message-label" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
+                <h4 class="modal-title" id="modal-message-label">{{header}}</h4>
+            </div>
+            <div class="modal-body">
+                    {{{body}}}
+
+                <div class="add-chart-steps">
+                    <button class="btn chart-step">Choose Chart Type</button>
+                    <button class="btn chart-step">Select Variables</button>
+                    <button class="btn chart-step">Preview Chart</button>
+                    <button class="btn chart-step">Create Chart</button>
+                </div>
+
+                <div class="row add-chart-module no-gutters">
+                    <div class="col-md-3 chart-types">
+                        <a id="chart-type-bar" class="chart-type">
+                            <div class="chart-type">
+                                Bar
+                            </div>
+                        </a>
+                        <a id="chart-type-line" class="chart-type">
+                            <div>
+                                Line
+                            </div>
+                        </a>
+                        <a id="chart-type-pie" class="chart-type">
+                            <div>
+                                Pie
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row chart-options">
+                            <!-- Swap out these options depending on what chart type is chosen -->
+                            <!-- <a href="#"> -->
+                                <div class="col-md">
+                                    Chart Option 1
+                                </div>
+                            <!-- </a> -->
+                            <!-- <a href="#"> -->
+                                <div class="col-md">
+                                    Chart Option 2
+                                </div>
+                            <!-- </a>
+                            <a href="#"> -->
+                                <div class="col-md">
+                                    Chart Option 3
+                                </div>
+                            <!-- </a>
+                            <a href="#"> -->
+                                <div class="col-md">
+                                    Chart Option 4
+                                </div>
+                            <!-- </a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" data-dismiss="modal">{{cancelText}}</button>
+                <button type="button" class="btn btn-save" data-dismiss="modal">{{confirmText}}</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

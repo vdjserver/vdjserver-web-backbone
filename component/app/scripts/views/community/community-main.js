@@ -42,6 +42,7 @@ import PieChart from 'Scripts/views/charts/pie';
 
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
+import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
 
 // Community Query/Filter View
 import community_query_template from 'Templates/community/community-query.html';
@@ -207,6 +208,7 @@ var CommunityStatisticsView = Marionette.View.extend({
         for (var i in colls['repertoireCollection'])
             num_reps += colls['repertoireCollection'][i].length;
 
+
         return {
             current_sort: current_sort,
             num_repos: num_repos,
@@ -284,17 +286,23 @@ var CommunityChartsView = Marionette.View.extend({
             'cancelText': 'Cancel'
         });
 
-        var view = new ModalView({model: message});
+        var view = new ModalChartView({model: message});
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
         $('#modal-message').modal('show');
 
         console.log(message);
     },
 
+    newChartType(e) {
+        console.log('selected a chart type');
+        // $(this).addClass('selected-chart-type');
+    },
+
     events: {
         'click .add-chart': 'newChartModal',
         'click .chart-actions': 'newChartModal',
-        }
+        'click .chart-type': 'newChartType'
+    }
 });
 
 // Community Pagination View
