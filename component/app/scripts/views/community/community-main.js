@@ -282,7 +282,7 @@ var CommunityChartsView = Marionette.View.extend({
         var message = new MessageModel({
             'header': 'Add a new chart',
             'body': '<p>Please select from the options below to create a new chart.</p>',
-            'confirmText': 'Create Chart',
+            'confirmText': 'Next',
             'cancelText': 'Cancel'
         });
 
