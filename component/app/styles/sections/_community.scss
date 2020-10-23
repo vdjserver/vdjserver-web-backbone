@@ -102,6 +102,7 @@ a.remove-filter {
     float: right;
     display: none;
     cursor: pointer;
+    margin-top: 0.5%;
 }
 
 /* ----------------------------------------------------------
@@ -113,7 +114,7 @@ Community Statistics
     position: -webkit-sticky;
     top: 0;
     z-index: 999;
-    padding: 2% 2% 1% 2%;
+    padding: 2% 2% 0.5% 2%;
     -webkit-transition: position 2s ease-out;
   -moz-transition: position 2s ease-out;
   -o-transition: position 2s ease-out;
@@ -122,30 +123,30 @@ Community Statistics
 
 @include media-breakpoint-up(md) {
     .hideFilter {
-        top: -19% !important;
+        top: -10% !important;
     }
 }
 
 @include media-breakpoint-up(lg) {
     .hideFilter {
-        top: -16% !important;
+        top: -12% !important;
     }
 }
 
 @include media-breakpoint-up(xl) {
     .hideFilter {
-        top: -19% !important;
+        top: -18% !important;
     }
 }
 
 @media (min-width: 1367px) {
     .hideFilter {
-        top: -31% !important;
+        top: -17% !important;
     }
 }
 
 .query-stats-border {
-    border-bottom: 5px solid $vdj-lightgreen;
+    border-bottom: 3px solid $vdj-darkblue;
     -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
     -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
     box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
@@ -169,7 +170,7 @@ Community Statistics
 .badge-stats {
     font-weight: normal;
     font-size: 1.10em;
-    padding: 0.6em;
+    padding: 1.5%;
 }
 
 .btn-download {
@@ -318,7 +319,9 @@ Community Charts - Add a Chart Modal
         background: $vdj-darkgray;
         color: #FFFFFF;
         width: 60%;
+        height: 100%;
         padding: 3% !important;
+        margin-bottom: 0%;
     }
 
     .edit-preview-chart {
@@ -327,6 +330,7 @@ Community Charts - Add a Chart Modal
         div {
             background: #FFFFFF;
             padding: 2%;
+            height: 100%;
         }
     }
 }
@@ -338,6 +342,26 @@ Community Charts - Add a Chart Modal
 
 .add-chart-subsection {
     font-size: 1.25em;
+    margin-right: 5%;
+}
+
+.add-vars input[type="text"] {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid $vdj-medlightgray;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-radius: 0;
+  color: #FFFFFF;
+  transition: 0.3s;
+  opacity: 0.5
+}
+
+.add-vars input[type="text"]:focus, {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-bottom: 3px solid #FFFFFF;
+  opacity: 1;
 }
 
 /* ----------------------------------------------------------
@@ -353,6 +377,12 @@ Community Results
     float: right;
     margin-top: -1.5%;
     margin-left: 1%;
+    padding: 0.75%;
+
+    img {
+        width: 10%;
+        margin-right: 5%;
+    }
 }
 
 #community-results {

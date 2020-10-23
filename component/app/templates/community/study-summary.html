@@ -1,8 +1,11 @@
 <h3 class="community-badges">
     <!-- Need to add conditionals depending on project type -->
     <!-- We could also put the logos here instead of text -->
-    <a class="badge badge-pill badge-darkgray community-project-type">VDJServer</a>
+    <a class="badge badge-pill badge-darkgray community-project-type">
+        <img src="./dist/images/logo_nobackground_border.png" alt="VDJServer">VDJServer
+    </a>
 
+    <!-- Need image for 10XGenomics -->
     <a class="badge badge-pill badge-info community-project-type">10X Genomics</a>
 </h3>
 <div class="community-project-header">
@@ -44,10 +47,13 @@
             {{#if study.value.pub_ids}}
                 <p>
                     <span class="details">Publications:</span>
-                    <!-- What is the URL format for the pub IDs? -->
-                    <!-- <a href="{{study.value.pub_ids}}"> -->
+                    <!-- What is the URL format for the pub IDs?
+                    - Research Gate: {{study.value.pub_ids}}
+                    - PubMed: https://pubmed.ncbi.nlm.nih.gov/{{pub_id}}
+                    -->
+                    <a href="{{study.value.pub_ids}}">
                         {{study.value.pub_ids}}
-                    <!-- </a> -->
+                    </a>
                 </p>
             {{/if}}
             {{#if study.value.grants}}

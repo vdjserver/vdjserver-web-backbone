@@ -61,11 +61,11 @@
                     </div>
                 </div>
 
-                <!-- "Select Variables" will need to go in a different view, just starting the code -->
-                Select Variables
+                <!-- "Select Variables" section will need to go in a different view, just starting the code -->
+                <p.Select Variables</p>
                 <div class="row add-vars-module no-gutters">
-                    <form class="col-md">
-                        <div class="form-group">
+                    <form class="col-md-6">
+                        <div class="form-group add-vars">
                             <label for="chart-title" class= col-form-label">Chart title</label>
                             <input type="text" name="chart-title" id="chart-title" class="form-control">
                         </div>
@@ -73,14 +73,14 @@
                         <div class="add-chart-section">Data</div>
                         <div class="form-group row">
                             <label for="chart-x-axis" class="col-md col-form-label">X-Axis</label>
-                            <div class="col-md-9">
+                            <div class="col-md-9 add-vars">
                                 <input type="text" name="chart-x-axis" id="chart-x-axis" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label for="chart-y-axis" class="col-md col-form-label">Y-Axis</label>
-                            <div class="col-md-9">
+                            <div class="col-md-9 add-vars">
                                 <input type="text" name="chart-y-axis" id="chart-y-axis" class="form-control">
                             </div>
                         </div>
@@ -88,37 +88,37 @@
                         <div class="add-chart-section">Design</div>
                         <div class="chart-labels">
                             <span class="add-chart-subsection">Labels</span>
-                            <div class="custom-control custom-radio custom-control-inline">
-                              <div class="form-check">
-                                  <input type="radio" id="chart-labels-yes" name="chart-labels-yes" class="custom-control-input" checked>
-                                  <label class="custom-control-label" for="chart-labels-yes">Yes</label>
-                              </div>
-                             </div>
-                             <div class="custom-control custom-radio custom-control-inline">
-                              <div class="form-check">
-                                  <input type="radio" id="chart-labels-no" name="chart-labels-no" class="custom-control-input">
-                                  <label class="custom-control-label" for="chart-labels-no">No</label>
-                              </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="chart-labels" id="chart-labels-yes" value="chart-labels-yes" checked>
+                              <label class="form-check-label" for="chart-labels-yes">
+                                Yes
+                              </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="chart-labels" id="chart-labels-no" value="chart-labels-no">
+                              <label class="form-check-label" for="chart-labels-no">
+                                No
+                              </label>
                             </div>
                         </div>
                         <div class="gridlines">
                             <span class="add-chart-subsection">Gridlines</span>
-                            <div class="custom-control custom-radio custom-control-inline">
-                              <div class="form-check">
-                                  <input type="radio" id="chart-labels-yes" name="chart-labels-yes" class="custom-control-input" checked>
-                                  <label class="custom-control-label" for="chart-labels-yes">Yes</label>
-                              </div>
-                             </div>
-                             <div class="custom-control custom-radio custom-control-inline">
-                              <div class="form-check">
-                                  <input type="radio" id="chart-labels-no" name="chart-labels-no" class="custom-control-input">
-                                  <label class="custom-control-label" for="chart-labels-no">No</label>
-                              </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="chart-gridlines" id="chart-gridlines-yes" value="chart-gridlines-yes" checked>
+                              <label class="form-check-label" for="chart-labels-yes">
+                                Yes
+                              </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="chart-gridlines" id="chart-gridlines-no" value="chart-gridlines-no">
+                              <label class="form-check-label" for="chart-gridlines-no">
+                                No
+                              </label>
                             </div>
                         </div>
                     </form>
 
-                    <div class="col-md-7 edit-preview-chart">
+                    <div class="col-md-6 edit-preview-chart">
                         <div class="preview-chart-display">
                             Preview chart
                         </div>

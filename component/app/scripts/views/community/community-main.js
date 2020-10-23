@@ -255,6 +255,26 @@ var CommunityChartsView = Marionette.View.extend({
 
     },
 
+    templateContext() {
+        if (!this.controller) return {};
+
+        var colls = this.controller.getCollections();
+        var num_repos = colls['repositoryInfo'].length;
+        var num_studies = colls['studyList'].length;
+        var current_sort = colls['studyList']['sort_by'];
+        var num_reps = 0;
+        for (var i in colls['repertoireCollection'])
+            num_reps += colls['repertoireCollection'][i].length;
+
+
+        return {
+            current_sort: current_sort,
+            num_repos: num_repos,
+            num_studies: num_studies,
+            num_reps: num_reps
+        }
+    },
+
     onAttach() {
         if (this.view) this.view.showChart();
     },
