@@ -2,11 +2,12 @@
     <!-- Need to add conditionals depending on project type -->
     <!-- We could also put the logos here instead of text -->
     <a class="badge badge-pill badge-darkgray community-project-type">
-        <img src="./dist/images/logo_nobackground_border.png" alt="VDJServer">VDJServer
+        <img src="./dist/images/logo_nobackground_border.png" class="vdjserver" alt="VDJServer">VDJServer
     </a>
 
     <!-- Need image for 10XGenomics -->
-    <a class="badge badge-pill badge-info community-project-type">10X Genomics</a>
+    <a class="badge badge-pill badge-info community-project-type">
+        <img src="./dist/images/genomics-logo.png" class="genomics" alt="10X Genomics">10X Genomics</a>
 </h3>
 <div class="community-project-header">
     <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>
@@ -46,7 +47,7 @@
         <div class="col community-metadata">
             {{#if study.value.pub_ids}}
                 <p>
-                    <span class="details">Publications:</span>
+                    <span class="details">Publication(s):</span>
                     <!-- What is the URL format for the pub IDs?
                     - Research Gate: {{study.value.pub_ids}}
                     - PubMed: https://pubmed.ncbi.nlm.nih.gov/{{pub_id}}
@@ -86,25 +87,53 @@
         </div>
     </div>
 
-    <!-- If arrow is expanded, show full study description -->
-    <p class="community-study-description">
+    <!-- Study Description is truncated by default-->
+    <p class="community-study-desc">
         {{#truncate}}{{{study.value.study_description}}}{{/truncate}}
+        <a class="study-desc-more">Read More</a>
     </p>
 
-    <!-- If arrow is collapsed, show truncated description -->
+    <!-- If "Read More" is clicked, show full study description -->
+    <p class="community-study-desc-full no-display">
+        {{study.value.study_description}}
+        <a class="study-desc-collapse">Collapse</a>
+    </p>
 </div>
 
-<div id="community-repertoires-action" class="col-md-12 mb-5">
+<!-- <div id="community-repertoires-action" class="col-md-12 mb-5">
     <span class="community-repertoires-expand" id="community-expand-{{study.value.vdjserver_uuid}}">
         <i class="fas fa-chevron-up" id="community-expand-icon"></i>
     </span>
+</div> -->
+
+<div class="row community-summary-stats">
+    <div class="col-md-3">
+        <a href="#" class="">
+            {{num_repertoires}} of # {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+        </a>
+    </div>
+    <div class="col-md-2">
+        <a href="#" class="">
+            {{num_subjects}} of # Subjects <i class="fas fa-users"></i>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="#" class="">
+            XXX,XXX of # Clones <i class="fas fa-sitemap"></i>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="#" class="">
+            XXX,XXX,XXX of # Rearrangements <i class="fas fa-stream"></i>
+        </a>
+    </div>
 </div>
 
-<div id="community-repertoires" <!--class="no-display"-->>
+<div id="community-repertoires">
     <table class="table table-striped table-condensed table-bordered">
         <thead>
             <tr>
-                <th></th>
+                <th><input type="checkbox" id="all-select-repertoire"></th>
                 <th>Repertoire Name</th>
                 <th>Repertoire UUID</th>
                 <th>Subject ID</th>
@@ -132,20 +161,5 @@
         <div class="ml-auto pagination">
             Pagination
         </div>
-    </div>
-</div>
-
-<div class="row community-summary-stats">
-    <div class="col-md-3">
-        {{num_repertoires}} of {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
-    </div>
-    <div class="col-md-3">
-        {{num_subjects}} of # Subjects <i class="fas fa-users"></i>
-    </div>
-    <div class="col-md-3">
-        XXX,XXX of # Clones <i class="fas fa-sitemap"></i>
-    </div>
-    <div class="col-md-3">
-        XXX,XXX,XXX of # Rearrangements <i class="fas fa-stream"></i>
     </div>
 </div>

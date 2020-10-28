@@ -255,25 +255,25 @@ var CommunityChartsView = Marionette.View.extend({
 
     },
 
-    templateContext() {
-        if (!this.controller) return {};
-
-        var colls = this.controller.getCollections();
-        var num_repos = colls['repositoryInfo'].length;
-        var num_studies = colls['studyList'].length;
-        var current_sort = colls['studyList']['sort_by'];
-        var num_reps = 0;
-        for (var i in colls['repertoireCollection'])
-            num_reps += colls['repertoireCollection'][i].length;
-
-
-        return {
-            current_sort: current_sort,
-            num_repos: num_repos,
-            num_studies: num_studies,
-            num_reps: num_reps
-        }
-    },
+    // templateContext() {
+    //     if (!this.controller) return {};
+    //
+    //     var colls = this.controller.getCollections();
+    //     var num_repos = colls['repositoryInfo'].length;
+    //     var num_studies = colls['studyList'].length;
+    //     var current_sort = colls['studyList']['sort_by'];
+    //     var num_reps = 0;
+    //     for (var i in colls['repertoireCollection'])
+    //         num_reps += colls['repertoireCollection'][i].length;
+    //
+    //
+    //     return {
+    //         current_sort: current_sort,
+    //         num_repos: num_repos,
+    //         num_studies: num_studies,
+    //         num_reps: num_reps
+    //     }
+    // },
 
     onAttach() {
         if (this.view) this.view.showChart();
@@ -425,11 +425,17 @@ export default Marionette.View.extend({
             $("#community-query-stats").toggleClass("hideFilter");
             $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
         },
-        'click #community-expand': function(e) {
-            console.log("clicked expand for reps");
-            $("#community-repertoires").toggleClass("no-display");
-            $("#community-expand-icon").toggleClass("fa-chevron-up fa-chevron-down");
-            $(".community-study-description").toggleClass(".")
+
+        'click .study-desc-more': function(e) {
+            console.log("clicked expand for desc");
+            $(".community-study-desc").addClass("no-display");
+            $(".community-study-desc-full").removeClass("no-display");
+        },
+
+        'click .study-desc-collapse': function(e) {
+            console.log("clicked collapse for desc");
+            $(".community-study-desc-full").addClass("no-display");
+            $(".community-study-desc").removeClass("no-display");
         }
     },
 
