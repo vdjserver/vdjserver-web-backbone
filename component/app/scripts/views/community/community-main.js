@@ -428,14 +428,15 @@ export default Marionette.View.extend({
 
         'click .study-desc-more': function(e) {
             console.log("clicked expand for desc");
-            $(".community-study-desc").addClass("no-display");
-            $(".community-study-desc-full").removeClass("no-display");
+            $(event.target).parent(".community-study-desc").addClass("no-display");
+
+            $(event.target).parent(".community-study-desc").siblings(".community-study-desc-full").removeClass("no-display");
         },
 
         'click .study-desc-collapse': function(e) {
             console.log("clicked collapse for desc");
-            $(".community-study-desc-full").addClass("no-display");
-            $(".community-study-desc").removeClass("no-display");
+            $(event.target).parent(".community-study-desc-full").addClass("no-display");
+            $(event.target).parent(".community-study-desc-full").siblings(".community-study-desc").removeClass("no-display");
         }
     },
 

@@ -89,8 +89,11 @@
 
     <!-- Study Description is truncated by default-->
     <p class="community-study-desc">
-        {{#truncate}}{{{study.value.study_description}}}{{/truncate}}
+        {{#truncate}}
+            {{{study.value.study_description}}}
+        {{/truncate}}
         <a class="study-desc-more">Read More</a>
+        <a class="study-desc-collapse no-display">Collapse</a>
     </p>
 
     <!-- If "Read More" is clicked, show full study description -->
