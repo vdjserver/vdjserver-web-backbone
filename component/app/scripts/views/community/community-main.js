@@ -45,6 +45,7 @@ import ModalView from 'Scripts/views/utilities/modal-view-large';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
 
 // Community Query/Filter View
+// toolbar under the navigation bar
 import community_query_template from 'Templates/community/community-query.html';
 var CommunityQueryView = Marionette.View.extend({
     template: Handlebars.compile(community_query_template),
@@ -330,6 +331,9 @@ import community_pagination_template from 'Templates/community/community-paginat
 var CommunityPaginationView = Marionette.View.extend({
     template: Handlebars.compile(community_pagination_template),
 
+    // good implementation
+    // https://stackoverflow.com/questions/34456577/marionette-collection-pagination
+
     // Trying to access data to produce paging
     initialize(parameters) {
         if (parameters) {
@@ -388,8 +392,6 @@ export default Marionette.View.extend({
     // one region for results
     // one region for pagination
     regions: {
-        queryRegion: '#community-query',
-        statsRegion: '#community-statistics',
         chartsRegion: '#community-charts',
         resultsRegion: '#community-results',
         paginationRegion: '#community-pagination'
@@ -443,11 +445,14 @@ export default Marionette.View.extend({
         console.log(this.controller);
         $("#community-charts").removeClass("no-display");
 
+        // show filters as toolbar under navigation bar
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
-        this.showChildView('queryRegion', this.filterView);
+        App.AppController.navController.showToolbar1Bar(this.filterView);
+        //this.showChildView('queryRegion', this.filterView);
 
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
-        this.showChildView('statsRegion', this.statsView);
+        App.AppController.navController.showToolbar2Bar(this.statsView);
+        //this.showChildView('statsRegion', this.statsView);
         this.statsView.updateStats(studyList);
 
         this.chartsView = new CommunityChartsView ({model: this.model, controller: this.controller});
@@ -464,7 +469,8 @@ export default Marionette.View.extend({
 
     updateFilters(filters) {
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
-        this.showChildView('queryRegion', this.filterView);
+        App.AppController.navController.showToolbar1Bar(this.filterView);
+        //this.showChildView('queryRegion', this.filterView);
     },
 
     newFilterModal(e) {
