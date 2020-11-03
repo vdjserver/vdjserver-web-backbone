@@ -47,6 +47,11 @@ require('highcharts/modules/drilldown')(Highcharts);
 // D3
 import d3 from 'd3';
 
+// images
+import logo_image from 'Images/logo_nobackground_border.png';
+import genomics_image from 'Images/genomics-logo.png';
+
+
 document.addEventListener('DOMContentLoaded', () => {
   // the global application object
   global.App = new Application();
