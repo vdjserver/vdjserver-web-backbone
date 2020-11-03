@@ -227,10 +227,12 @@ var CommunityStatisticsView = Marionette.View.extend({
             if (e.target.name != current_sort)
                 this.controller.applySort(e.target.name);
         },
-        // 'click .close-filter': function(e) {
-        //     console.log("clicked close-filter");
-        //     $(this).find("#community-query-stats").css("position", "relative");
-        // }
+        
+        'click #close-filter': function(e) {
+            console.log("clicked close-filter");
+            $("#navigation").toggleClass("hideFilter");
+            $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
+        },
     },
 
     updateStats(studyList) {
@@ -422,23 +424,30 @@ export default Marionette.View.extend({
     events: {
         // Setting event for "New Filter" Modal
         'click #new-community-filter': 'newFilterModal',
-        'click #close-filter': function(e) {
-            console.log("clicked close-filter");
-            $("#community-query-stats").toggleClass("hideFilter");
-            $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
-        },
 
         'click .study-desc-more': function(e) {
-            console.log("clicked expand for desc");
+            // console.log("clicked expand for desc");
             $(event.target).parent(".community-study-desc").addClass("no-display");
 
             $(event.target).parent(".community-study-desc").siblings(".community-study-desc-full").removeClass("no-display");
         },
 
         'click .study-desc-collapse': function(e) {
-            console.log("clicked collapse for desc");
+            // console.log("clicked collapse for desc");
             $(event.target).parent(".community-study-desc-full").addClass("no-display");
             $(event.target).parent(".community-study-desc-full").siblings(".community-study-desc").removeClass("no-display");
+        },
+
+        'click .community-repertoires': function(e) {
+            // console.log("clicked community repertoires");
+            $(event.target).parent(".col-md-3").parent(".community-summary-stats").siblings(".community-repertoires").removeClass("no-display");
+            $(event.target).addClass("active-tab");
+        },
+
+        'click .community-repertoires.active-tab': function(e) {
+            console.log("clicked community repertoires again");
+            $(event.target).parent(".col-md-3").parent(".community-summary-stats").siblings(".community-repertoires").addClass("no-display");
+            $(event.target).removeClass("active-tab");
         }
     },
 

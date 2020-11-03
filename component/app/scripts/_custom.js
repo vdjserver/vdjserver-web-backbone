@@ -14,13 +14,13 @@ $(document).ready(function() {
 
     $(window).scroll(function() {
         if ($(this).scrollTop() > 100){
-            $("#community-query-stats").addClass("query-stats-border");
+            $("#navigation").addClass("query-stats-border");
             $("#close-filter").css("display", "inline");
         }
         else if ($(this).scrollTop() == 0) {
-            $("#community-query-stats").removeClass("hideFilter");
+            $("#navigation").removeClass("hideFilter");
             $("#close-filter").css("display", "none");
-            $("#community-query-stats").removeClass("query-stats-border");
+            $("#navigation").removeClass("query-stats-border");
             $("#close-filter-icon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
         }
     });

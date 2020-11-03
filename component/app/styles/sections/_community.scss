@@ -46,6 +46,38 @@ Loading
 /* ----------------------------------------------------------
 Community Query
 ------------------------------------------------------------*/
+#navigation {
+    top: 0;
+    position: sticky;
+    position: -webkit-sticky;
+    z-index: 999;
+    background: #FFFFFF;
+}
+
+#toolbar1-region {
+    margin: 2% 2% 1% 2%;
+
+    form {
+        margin-bottom: 0%;
+    }
+
+    div {
+        margin-top: 1%;
+    }
+
+    .community-filter {
+        padding: 0.5% 2% 2% 2%;
+        border: 2px solid rgba(184, 192, 199, 0.65);
+        -webkit-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
+        -moz-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
+        box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
+    }
+}
+
+#toolbar2-region {
+    padding: 0.5% 2% 2% 2%;
+}
+
 .filter-option, .filter-value {
     margin-right: 1%;
     padding-left: 1.25%;
@@ -61,22 +93,6 @@ a.remove-filter {
 
 .filter-operator {
     margin-right: 1%;
-}
-
-#community-filter {
-    padding: 0.5% 2% 2% 2%;
-    border: 2px solid rgba(184, 192, 199, 0.65);
-    -webkit-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
-    -moz-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
-    box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
-
-    form {
-        margin-bottom: 0%;
-    }
-
-    div {
-        margin-top: 1%;
-    }
 }
 
 .new-filter {
@@ -98,50 +114,55 @@ a.remove-filter {
     }
 }
 
-#close-filter {
-    float: right;
-    display: none;
-    cursor: pointer;
-    margin-top: 0.5%;
-}
+.toolbar2-footer {
+    padding-bottom: 1%;
 
+    #close-filter {
+        float: right;
+        display: none;
+        cursor: pointer;
+        margin-top: 0.5%;
+    }
+
+    #close-filter:hover {
+        color: $vdj-link;
+    }
+}
 /* ----------------------------------------------------------
 Community Statistics
 ------------------------------------------------------------*/
 #community-query-stats {
-    background: #FFFFFF;
-    position: sticky;
-    position: -webkit-sticky;
-    top: 0;
-    z-index: 999;
-    padding: 2% 2% 0.5% 2%;
-    -webkit-transition: position 2s ease-out;
-  -moz-transition: position 2s ease-out;
-  -o-transition: position 2s ease-out;
-  transition: position 2s ease-out;
+  //   background: #FFFFFF;
+  //   top: 0;
+  //   z-index: 999;
+  //   padding: 2% 2% 0.5% 2%;
+  //   -webkit-transition: position 2s ease-out;
+  // -moz-transition: position 2s ease-out;
+  // -o-transition: position 2s ease-out;
+  // transition: position 2s ease-out;
 }
 
 @include media-breakpoint-up(md) {
     .hideFilter {
-        top: -18% !important;
+        top: -20% !important;
     }
 }
 
 @include media-breakpoint-up(lg) {
     .hideFilter {
-        top: -15% !important;
+        top: -17% !important;
     }
 }
 
 @include media-breakpoint-up(xl) {
     .hideFilter {
-        top: -19% !important;
+        top: -26% !important;
     }
 }
 
 @media (min-width: 1367px) {
     .hideFilter {
-        top: -21% !important;
+        top: -20% !important;
     }
 
     .add-chart span {
@@ -150,10 +171,10 @@ Community Statistics
 }
 
 .query-stats-border {
-    border-bottom: 3px solid $vdj-darkblue;
-    -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
-    -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
-    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.08);
+    border-bottom: 10px solid $vdj-darkblue;
+    -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
 }
 
 .results-stats {
@@ -219,7 +240,7 @@ Community Charts
 }
 
 .chart-actions {
-    margin: 2em 3em 1em 3em;
+    margin: 1em 3em 1em 3em;
 }
 
 /* ----------------------------------------------------------
@@ -459,14 +480,18 @@ Community Repertoires
         margin-bottom: 0.15rem;
     }
 }
-.community-repertoires-expand {
-    float: right;
-    cursor: pointer;
-}
+// .community-repertoires-expand {
+//     float: right;
+//     cursor: pointer;
+// }
 
-#community-repertoires {
+.community-repertoires {
     padding: 0% 2%;
     margin-top: 3%;
+}
+
+.active-tab {
+    color: $vdj-link !important;
 }
 
 /* ----------------------------------------------------------
