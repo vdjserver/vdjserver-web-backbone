@@ -75,7 +75,7 @@ Community Query
 }
 
 #toolbar2-region {
-    padding: 0.5% 2% 2% 2%;
+    padding: 0.5% 2% 1.5% 2%;
 }
 
 .filter-option, .filter-value {
@@ -171,7 +171,7 @@ Community Statistics
 }
 
 .query-stats-border {
-    border-bottom: 10px solid $vdj-darkblue;
+    border-bottom: 10px solid $vdj-darkgray;
     -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
     -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
     box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
@@ -410,6 +410,7 @@ Community Results
 }
 
 .community-project-type {
+    border-radius: 0;
     float: right;
     margin-top: -1.5%;
     margin-left: 1%;

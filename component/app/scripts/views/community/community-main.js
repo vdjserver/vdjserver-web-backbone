@@ -227,7 +227,7 @@ var CommunityStatisticsView = Marionette.View.extend({
             if (e.target.name != current_sort)
                 this.controller.applySort(e.target.name);
         },
-        
+
         'click #close-filter': function(e) {
             console.log("clicked close-filter");
             $("#navigation").toggleClass("hideFilter");
@@ -430,12 +430,21 @@ export default Marionette.View.extend({
             $(event.target).parent(".community-study-desc").addClass("no-display");
 
             $(event.target).parent(".community-study-desc").siblings(".community-study-desc-full").removeClass("no-display");
+
+            $(event.target).parent(".community-study-desc").siblings(".row").find(".community-metadata").find(".grants").addClass("no-display");
+
+            $(event.target).parent(".community-study-desc").siblings(".row").find(".community-metadata").find(".grants-full").removeClass("no-display");
         },
 
         'click .study-desc-collapse': function(e) {
             // console.log("clicked collapse for desc");
             $(event.target).parent(".community-study-desc-full").addClass("no-display");
+
             $(event.target).parent(".community-study-desc-full").siblings(".community-study-desc").removeClass("no-display");
+
+            $(event.target).parent(".community-study-desc-full").siblings(".row").find(".community-metadata").find(".grants").removeClass("no-display");
+
+            $(event.target).parent(".community-study-desc-full").siblings(".row").find(".community-metadata").find(".grants-full").addClass("no-display");
         },
 
         'click .community-repertoires': function(e) {

@@ -30,6 +30,12 @@
 
     <div class="row">
         <div class="col community-metadata">
+            {{#if study.value.study_id}}
+                <p>
+                    <span class="details">Study ID:</span> {{study.value.study_id}}
+                </p>
+            {{/if}}
+
             {{#if study.value.study_type.label}}
                 <p>
                     <span class="details">Study Type:</span> {{study.value.study_type.label}}
@@ -58,13 +64,15 @@
                 </p>
             {{/if}}
             {{#if study.value.grants}}
-                <p>
-                    <span class="details">Grants:</span> {{study.value.grants}}
+                <p class="grants">
+                    <span class="details">Grants:</span>
+                    {{#truncate_75}}
+                        {{study.value.grants}}
+                    {{/truncate_75}}
                 </p>
-            {{/if}}
-            {{#if study.value.lab_name}}
-                <p>
-                    <span class="details">PI:</span> {{study.value.lab_name}}
+                <p class="grants-full no-display">
+                    <span class="details">Grants:</span>
+                    {{study.value.grants}}
                 </p>
             {{/if}}
         </div>
@@ -82,6 +90,12 @@
             {{#if study.value.submitted_by}}
                 <p>
                     <span class="details">Data Submitter:</span> {{study.value.submitted_by}}
+                </p>
+            {{/if}}
+
+            {{#if study.value.lab_name}}
+                <p>
+                    <span class="details">PI:</span> {{study.value.lab_name}}
                 </p>
             {{/if}}
         </div>
