@@ -42,8 +42,14 @@
                 </p>
             {{/if}}
             {{#if study.value.inclusion_exclusion_criteria}}
-                <p>
+                <p class="inclusion">
                     <span class="details">Inclusion/Exclusion Criteria:</span> {{study.value.inclusion_exclusion_criteria}}
+                </p>
+                <p class="inclusion-full no-display">
+                    <span class="details">Inclusion/Exclusion Criteria:</span>
+                    {{#truncate_75}}
+                        {{study.value.inclusion_exclusion_criteria}}
+                    {{/truncate_75}}
                 </p>
             {{/if}}
             <!-- {{#if study.value.keywords_study}}
@@ -117,36 +123,33 @@
     </p>
 </div>
 
-<!-- <div id="community-repertoires-action" class="col-md-12 mb-5">
-    <span class="community-repertoires-expand" id="community-expand-{{study.value.vdjserver_uuid}}">
-        <i class="fas fa-chevron-up" id="community-expand-icon"></i>
-    </span>
-</div> -->
-
 <div class="row community-summary-stats">
-    <div class="col-md-3">
-        <a class="community-repertoires">
-            {{num_repertoires}} of # {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
-        </a>
-    </div>
-    <div class="col-md-2">
-        <a href="#" class="">
-            {{num_subjects}} of # Subjects <i class="fas fa-users"></i>
-        </a>
-    </div>
-    <div class="col-md-3">
-        <a href="#" class="">
-            XXX,XXX of # Clones <i class="fas fa-sitemap"></i>
-        </a>
-    </div>
-    <div class="col-md-4">
-        <a href="#" class="">
-            XXX,XXX,XXX of # Rearrangements <i class="fas fa-stream"></i>
-        </a>
-    </div>
+    <a class="community-repertoires col">
+        {{num_repertoires}} of # {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+    </a>
+    <a class="community-subjects col">
+        {{num_subjects}} of # Subjects <i class="fas fa-users"></i>
+    </a>
+    <a class="community-clones col">
+        XXX,XXX of # Clones <i class="fas fa-sitemap"></i>
+    </a>
+    <a class="community-rearrangements col">
+        XXX,XXX,XXX of # Rearrangements <i class="fas fa-stream"></i>
+    </a>
 </div>
 
-<div class="community-repertoires no-display">
+<!-- Eventually, these should each become their own views -->
+<div class="community-repertoires-metadata community-table no-display">
+    <div class="table-actions">
+        <form class="form-inline">
+            <label for="repertoire-rows">Rows per page:</label>
+            <select class="form-control repertoire-rows">
+              <option>5</option>
+              <option>10</option>
+              <option>20</option>
+            </select>
+        </form>
+    </div>
     <table class="table table-striped table-condensed table-bordered">
         <thead>
             <tr>
@@ -174,9 +177,21 @@
         </tbody>
     </table>
 
-    <div class="row">
+    <div class="row table-footer">
+        <div class="table-caption">
+            Showing #-# of {{num_repertoires}} repertoires
+        </div>
         <div class="ml-auto pagination">
             Pagination
         </div>
     </div>
+</div>
+<div class="community-subjects-metadata community-table no-display">
+    Community Subjects Data
+</div>
+<div class="community-clones-metadata community-table no-display">
+    Community Clones Data
+</div>
+<div class="community-rearrangements-metadata community-table no-display">
+    Community Rearrangements Data
 </div>

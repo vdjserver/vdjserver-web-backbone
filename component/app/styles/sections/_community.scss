@@ -194,7 +194,7 @@ Community Statistics
 }
 
 .badge-stats {
-    font-weight: normal;
+    font-weight: 500;
     font-size: 1.10em;
     padding: 1.5%;
 }
@@ -241,6 +241,10 @@ Community Charts
 
 .chart-actions {
     margin: 1em 3em 1em 3em;
+}
+
+button.chart-action {
+    margin-left: 2em;
 }
 
 /* ----------------------------------------------------------
@@ -486,7 +490,7 @@ Community Repertoires
 //     cursor: pointer;
 // }
 
-.community-repertoires {
+.community-repertoires-metadata {
     padding: 0% 2%;
     margin-top: 3%;
 }
@@ -495,11 +499,28 @@ Community Repertoires
     color: $vdj-link !important;
 }
 
+.table-actions {
+    float: right;
+    margin-bottom: 1%;
+}
+
+.repertoire-rows {
+    margin-left: 1em;
+}
+
 /* ----------------------------------------------------------
-Community Pagination
+Community Repertoires Table Caption & Pagination
 ------------------------------------------------------------*/
-.pagination {
-    // float: right;
-    color: $vdj-blue;
-    margin-bottom: 3%;
+.table-footer {
+    padding: 1%;
+
+    .table-caption {
+        font-style: italic;
+        color: $vdj-blue;
+    }
+
+    .pagination {
+        color: $vdj-blue;
+        margin-bottom: 3%;
+    }
 }
