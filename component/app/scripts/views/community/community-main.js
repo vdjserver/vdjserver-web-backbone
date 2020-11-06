@@ -496,6 +496,12 @@ export default Marionette.View.extend({
         // Show Community Rearrangements Data
         'click .community-rearrangements': function(e) {
             $(event.target).parent(".community-summary-stats").siblings(".community-rearrangements-metadata").removeClass("no-display");
+        },
+
+        // Select All Checkboxes Functionality
+        'click #select-all-repertoire': function(e) {
+            console.log("checked all");
+            $(event.target).closest("table").children("td input:checkbox").prop("checked", this.checked);
         }
     },
 

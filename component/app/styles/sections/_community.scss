@@ -54,6 +54,10 @@ Community Query
     background: #FFFFFF;
 }
 
+#navmessage-region {
+    border-top: 1px solid #6C757D;
+}
+
 #toolbar1-region {
     margin: 2% 2% 1% 2%;
 
@@ -485,10 +489,6 @@ Community Repertoires
         margin-bottom: 0.15rem;
     }
 }
-// .community-repertoires-expand {
-//     float: right;
-//     cursor: pointer;
-// }
 
 .community-repertoires-metadata {
     padding: 0% 2%;
@@ -502,6 +502,11 @@ Community Repertoires
 .table-actions {
     float: right;
     margin-bottom: 1%;
+}
+
+.sort:after {
+    font-family: 'Font Awesome 5 Free';
+    content: "\f0de";
 }
 
 .repertoire-rows {
