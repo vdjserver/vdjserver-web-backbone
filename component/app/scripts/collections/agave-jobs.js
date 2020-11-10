@@ -16,11 +16,11 @@ define([
         comparator: function(modelA, modelB) {
             // pending/queued/running etc on top
             if (modelA.get('status') !== 'FINISHED' && modelA.get('status') !== 'FAILED') return -1;
-            if (!modelA.get('submitTime')) return -1;
-            if (modelA.get('submitTime').length == 0) return -1;
+            if (!modelA.get('created')) return -1;
+            if (modelA.get('created').length == 0) return -1;
 
-            var modelAEndDate = moment(modelA.get('submitTime'));
-            var modelBEndDate = moment(modelB.get('submitTime'));
+            var modelAEndDate = moment(modelA.get('created'));
+            var modelBEndDate = moment(modelB.get('created'));
 
             if (modelAEndDate > modelBEndDate) {
                 return -1;
@@ -63,10 +63,11 @@ define([
         model: Backbone.Agave.Model.Job.Detail,
         comparator: function(modelA, modelB) {
             // pending/queued/running etc on top
-            if (modelA.get('submitTime').length == 0) return -1;
+            if (!modelA.get('created')) return -1;
+            if (modelA.get('created').length == 0) return -1;
 
-            var modelAEndDate = moment(modelA.get('submitTime'));
-            var modelBEndDate = moment(modelB.get('submitTime'));
+            var modelAEndDate = moment(modelA.get('created'));
+            var modelBEndDate = moment(modelB.get('created'));
 
             if (modelAEndDate > modelBEndDate) {
                 return -1;
