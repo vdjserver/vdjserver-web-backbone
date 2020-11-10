@@ -80,8 +80,8 @@
                                     </div>
                                 </td>
                                 <td>
-                                    {{#if submitTime}}
-                                        {{FormatAgaveDate submitTime}}
+                                    {{#if created}}
+                                        {{FormatAgaveDate created}}
                                     {{/if}}
                                 </td>
                                 <td>
@@ -89,8 +89,8 @@
                                         Job Failed
 
                                     {{else}}
-                                        {{#if endTime}}
-                                            {{FormatAgaveDate endTime}}
+                                        {{#if ended}}
+                                            {{FormatAgaveDate ended}}
                                         {{/if}}
                                     {{/IsJobFrozen}}
 
@@ -235,7 +235,7 @@
                                                 <button type="button" class="btn btn-primary">View Output</button>
                                             </a>
                                         {{else}}
-                                            {{#if submitTime}}
+                                            {{#if created}}
                                                 <button type="button" class="btn btn-warning" disabled="disabled">In Progress</button>
                                             {{else}}
                                                 <button type="button" class="btn btn-warning" disabled="disabled">Job Information Unavailable</button>
