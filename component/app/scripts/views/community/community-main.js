@@ -426,6 +426,7 @@ export default Marionette.View.extend({
         }
     },
 
+/*
     events: {
         // Setting event for "New Filter" Modal
         'click #new-community-filter': 'newFilterModal',
@@ -504,6 +505,7 @@ export default Marionette.View.extend({
             $(event.target).closest("table").children("td input:checkbox").prop("checked", this.checked);
         }
     },
+*/
 
     // show a loading view, used while fetching the data
     showLoading(ls, lr, tr) {

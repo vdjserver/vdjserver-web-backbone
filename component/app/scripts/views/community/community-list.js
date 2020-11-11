@@ -33,10 +33,24 @@ import list_template from 'Templates/community/community-list.html';
 import template from 'Templates/community/study-summary.html';
 import Handlebars from 'handlebars';
 
+var RowView = Marionette.View.extend({
+  tagName: 'tr',
+  template: Handlebars.compile('<td>{{repertoire_id}}</td>')
+});
+
+var TableBody = Marionette.CollectionView.extend({
+  tagName: 'tbody',
+  childView: RowView
+});
+
 var StudySummaryView = Marionette.View.extend({
     template: Handlebars.compile(template),
     tagName: 'div',
     className: 'community-project',
+
+    regions: {
+        tableRegion: '#community-results-table'
+    },
 
   serializeModel() {
     const data = _.clone(this.model.attributes);
@@ -51,6 +65,97 @@ var StudySummaryView = Marionette.View.extend({
     return data;
   },
 
+    events: {
+        // Setting event for "New Filter" Modal
+        'click #new-community-filter': 'newFilterModal',
+
+        'click .study-desc-more': function(e) {
+            // console.log("clicked expand for desc");
+            $(event.target).parent(".community-study-desc").addClass("no-display");
+
+            $(event.target).parent(".community-study-desc").siblings(".community-study-desc-full").removeClass("no-display");
+
+            // Expanding Grants
+            $(event.target).parent(".community-study-desc").siblings(".row").find(".community-metadata").find(".grants").addClass("no-display");
+
+            $(event.target).parent(".community-study-desc").siblings(".row").find(".community-metadata").find(".grants-full").removeClass("no-display");
+
+            // Expanding Inclusion/Exclusion Criteria
+            $(event.target).parent(".community-study-desc").siblings(".row").find(".community-metadata").find(".inclusion").addClass("no-display");
+
+            $(event.target).parent(".community-study-desc").siblings(".row").find(".community-metadata").find(".inclusion-full").removeClass("no-display");
+        },
+
+        'click .study-desc-collapse': function(e) {
+            // console.log("clicked collapse for desc");
+            $(event.target).parent(".community-study-desc-full").addClass("no-display");
+
+            $(event.target).parent(".community-study-desc-full").siblings(".community-study-desc").removeClass("no-display");
+
+            // Collapsing Grants
+            $(event.target).parent(".community-study-desc-full").siblings(".row").find(".community-metadata").find(".grants").removeClass("no-display");
+
+            $(event.target).parent(".community-study-desc-full").siblings(".row").find(".community-metadata").find(".grants-full").addClass("no-display");
+
+            // Collapsing Inclusion/Exclusion Criteria
+            $(event.target).parent(".community-study-desc-full").siblings(".row").find(".community-metadata").find(".inclusion").removeClass("no-display");
+
+            $(event.target).parent(".community-study-desc-full").siblings(".row").find(".community-metadata").find(".inclusion-full").addClass("no-display");
+        },
+
+        // Clicking Community Metadata Tabs
+        'click .community-summary-stats a': function(e) {
+            $(event.target).addClass("active-tab");
+            $(event.target).siblings().removeClass("active-tab");
+            $(event.target).parent(".community-summary-stats").siblings(".community-table").addClass("no-display");
+        },
+
+        'click .community-summary-stats a.active-tab': function(e) {
+            // troubleshooting an issue here
+            console.log("active-tab clicked")
+            $(event.target).parent(".community-summary-stats").siblings(".community-table").addClass("no-display");
+            $(event.target).removeClass("active-tab");
+        },
+
+        // Show Community Repertoires Data
+        'click .community-repertoires': function(e) {
+            $(event.target).parent(".community-summary-stats").siblings(".community-repertoires-metadata").removeClass("no-display");
+        },
+
+        // Show Community Subjects Data
+        'click .community-subjects': function(e) {
+            $(event.target).parent(".community-summary-stats").siblings(".community-subjects-metadata").removeClass("no-display");
+        },
+
+        // Show Community Clones Data
+        'click .community-clones': function(e) {
+            $(event.target).parent(".community-summary-stats").siblings(".community-clones-metadata").removeClass("no-display");
+        },
+
+        // Show Community Rearrangements Data
+        'click .community-rearrangements': function(e) {
+            $(event.target).parent(".community-summary-stats").siblings(".community-rearrangements-metadata").removeClass("no-display");
+        },
+
+        // Select All Checkboxes Functionality
+        'click #select-all-repertoire': function(e) {
+            console.log("checked all");
+            $(event.target).closest("table").children("td input:checkbox").prop("checked", this.checked);
+        }
+    },
+
+/*
+    events: {
+        // Show Community Repertoires Data
+        'click .community-repertoires': function(e) {
+            console.log('click .community-repertoires');
+            this.showChildView('tableRegion', new TableBody({
+                collection: this.model.get('repertoires')
+            }));
+            //$(event.target).parent(".community-summary-stats").siblings(".community-repertoires-metadata").removeClass("no-display");
+        }
+    },
+*/
     templateContext() {
 
         // study badges
