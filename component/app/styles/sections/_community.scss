@@ -443,6 +443,7 @@ Community Results
 .community-project {
     margin: 4% auto;
     border: 2px solid $vdj-medgray;
+    font-size: 0.9em;
 
     .community-project-header {
         padding: 2% 2% 0% 2%;
@@ -507,6 +508,24 @@ Community Repertoires
 .sort:after {
     font-family: 'Font Awesome 5 Free';
     content: "\f0de";
+    cursor: pointer;
+}
+
+.asc:after {
+    font-family: 'Font Awesome 5 Free';
+    content: "\f0de"; // caret-up
+    cursor: pointer;
+}
+
+.desc:after {
+    font-family: 'Font Awesome 5 Free';
+    content: "\f0d7"; // caret-down
+    cursor: pointer;
+}
+
+
+.sort:hover:after {
+    color: $vdj-link;
 }
 
 .repertoire-rows {

@@ -468,42 +468,70 @@ export default Marionette.View.extend({
         'click .community-summary-stats a': function(e) {
             $(event.target).addClass("active-tab");
             $(event.target).siblings().removeClass("active-tab");
-            $(event.target).parent(".community-summary-stats").siblings(".community-table").addClass("no-display");
+            // $(event.target).parent(".community-summary-stats").siblings(".community-table").addClass("no-display");
         },
 
+        // Hide Detailed Data
         'click .community-summary-stats a.active-tab': function(e) {
-            // troubleshooting an issue here
             console.log("active-tab clicked")
-            $(event.target).parent(".community-summary-stats").siblings(".community-table").addClass("no-display");
             $(event.target).removeClass("active-tab");
         },
 
-        // Show Community Repertoires Data
+        // Show/Hide Community Repertoires Data
         'click .community-repertoires': function(e) {
-            $(event.target).parent(".community-summary-stats").siblings(".community-repertoires-metadata").removeClass("no-display");
+            $(event.target).parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
         },
 
-        // Show Community Subjects Data
+        // Show/Hide Community Subjects Data
         'click .community-subjects': function(e) {
-            $(event.target).parent(".community-summary-stats").siblings(".community-subjects-metadata").removeClass("no-display");
+            $(event.target).parent(".community-summary-stats").siblings(".community-subjects-metadata").toggleClass("no-display");
         },
 
-        // Show Community Clones Data
+        // Show/Hide Community Clones Data
         'click .community-clones': function(e) {
-            $(event.target).parent(".community-summary-stats").siblings(".community-clones-metadata").removeClass("no-display");
+            $(event.target).parent(".community-summary-stats").siblings(".community-clones-metadata").toggleClass("no-display");
         },
 
-        // Show Community Rearrangements Data
+        // Show/Hide Community Rearrangements Data
         'click .community-rearrangements': function(e) {
-            $(event.target).parent(".community-summary-stats").siblings(".community-rearrangements-metadata").removeClass("no-display");
+            $(event.target).parent(".community-summary-stats").siblings(".community-rearrangements-metadata").toggleClass("no-display");
         },
 
         // Select All Checkboxes Functionality
-        'click #select-all-repertoire': function(e) {
+        'click .select-all-repertoire': function(e) {
             console.log("checked all");
-            $(event.target).closest("table").children("td input:checkbox").prop("checked", this.checked);
+            $(event.target).closest("table").children().find("td input:checkbox").prop("checked", true);
+        },
+
+        // Sorting
+        'click .sort.asc': function(e) {
+            console.log ("sorting");
+            $(event.target).toggleClass("asc desc");
+            $(event.target).siblings(".sort").removeClass("asc").addClass("no-sort");
+            $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");
+
+            // Insert function for actual sorting here
+        },
+
+        'click .sort.desc': function(e) {
+            console.log ("sorting");
+            $(event.target).toggleClass("desc asc");
+            $(event.target).siblings(".sort").removeClass("asc").addClass("no-sort");
+            $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");
+
+            // Insert function for actual sorting here
+        },
+
+        'click .sort.no-sort': function(e) {
+            console.log ("sorting");
+            $(event.target).toggleClass("no-sort asc");
+            $(event.target).siblings(".sort").removeClass("asc").addClass("no-sort");
+            $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");
+            // Insert function for actual sorting here
         }
     },
+
+
 
     // show a loading view, used while fetching the data
     showLoading(ls, lr, tr) {
