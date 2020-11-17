@@ -33,14 +33,19 @@ import list_template from 'Templates/community/community-list.html';
 import template from 'Templates/community/study-summary.html';
 import Handlebars from 'handlebars';
 
-var RowView = Marionette.View.extend({
+import repertoire_template from 'Templates/community/repertoire-row.html';
+var RepertoireRowView = Marionette.View.extend({
   tagName: 'tr',
-  template: Handlebars.compile('<td>{{repertoire_id}}</td>')
+  template: Handlebars.compile(repertoire_template)
 });
 
-var TableBody = Marionette.CollectionView.extend({
-  tagName: 'tbody',
-  childView: RowView
+import repertoire_table_template from 'Templates/community/repertoire-table.html';
+var RepertoireTable = Marionette.CollectionView.extend({
+  tagName: 'table',
+  className: 'table table-striped table-condensed table-bordered',
+  template: Handlebars.compile(repertoire_table_template),
+  childView: RepertoireRowView,
+  childViewContainer: 'tbody'
 });
 
 var StudySummaryView = Marionette.View.extend({
@@ -49,7 +54,7 @@ var StudySummaryView = Marionette.View.extend({
     className: 'community-project',
 
     regions: {
-        tableRegion: '#community-results-table'
+        tableRegion: '#community-study-data-table'
     },
 
   serializeModel() {
@@ -119,6 +124,9 @@ var StudySummaryView = Marionette.View.extend({
 
         // Show Community Repertoires Data
         'click .community-repertoires': function(e) {
+            this.showChildView('tableRegion', new RepertoireTable({
+                collection: this.model.get('repertoires')
+            }));
             $(event.target).parent(".community-summary-stats").siblings(".community-repertoires-metadata").removeClass("no-display");
         },
 

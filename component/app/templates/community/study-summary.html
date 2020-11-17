@@ -139,47 +139,29 @@
 </div>
 
 <!-- Eventually, these should each become their own views -->
+<!-- We'll assume the data are shown as tables or table-like,
+     thus the pagination controls can be shared by all -->
 <div class="community-repertoires-metadata community-table no-display">
     <div class="table-actions">
         <form class="form-inline">
             <label for="repertoire-rows">Rows per page:</label>
             <select class="form-control repertoire-rows">
+              <option>1</option>
               <option>5</option>
               <option>10</option>
               <option>20</option>
+              <option>50</option>
+              <option>100</option>
+              <option>All</option>
             </select>
         </form>
     </div>
-    <div id="community-results-table"></div>
-    <table class="table table-striped table-condensed table-bordered">
-        <!-- <thead> -->
-            <tr>
-                <th><input type="checkbox" id="select-all-repertoire"></th>
-                <th class="sort">Name </th>
-                <th class="sort">UUID </th>
-                <th class="sort">Subject </th>
-                <th class="sort">Sample(s) </th>
-                <th class="sort">Cell Subset </th>
-                <th class="sort">Tissue </th>
-                <th class="sort">Diagnosis </th>
-            </tr>
-        <!-- </thead>
-        <tbody> -->
-            <tr>
-                <td><input type="checkbox" id="check-select-repertoire"></td>
-                <td>{{repertoire.value.repertoire_name}}</td>
-                <td>{{community_repertoire_id}}</td>
-                <td>Subject ID, Specicies, Age, Sex</td>
-                <td>{{repertoire.value.age_unit.label}}</td>
-                <td>Sample Data</td>
-                <td>Tissue Data</td>
-                <td>Diagnosis Data</td>
-            </tr>
-        <!-- </tbody> -->
-    </table>
+
+    <div id="community-study-data-table"></div>
 
     <div class="row table-footer">
         <div class="table-caption">
+            <!-- needs customization -->
             Showing #-# of {{num_repertoires}} repertoires
         </div>
         <div class="ml-auto pagination">
