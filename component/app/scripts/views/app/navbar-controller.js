@@ -78,6 +78,8 @@ export default Marionette.View.extend({
 
     events: {
         'click #logout': 'logout',
+        'click .open-filter': 'emptyToolbarBar',
+        'click .closed-filter': 'showToolbarBar',
     },
 
     initialize(options) {
@@ -114,6 +116,19 @@ export default Marionette.View.extend({
 
     emptyToolbar2Bar() {
         this.getRegion('toolbar2Region').empty();
+    },
+
+    emptyToolbarBar() {
+        this.getRegion('toolbar1Region').empty();
+        this.getRegion('toolbar2Region').empty();
+
+        $(".open-filter").toggleClass("open-filter closed-filter");
+        $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
+    },
+
+    showToolbarBar(view) {
+        this.showChildView('toolbar1Region', view);
+        this.showChildView('toolbar2Region', view);
     },
 
     logout(e) {

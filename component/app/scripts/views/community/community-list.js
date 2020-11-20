@@ -33,10 +33,19 @@ import list_template from 'Templates/community/community-list.html';
 import template from 'Templates/community/study-summary.html';
 import Handlebars from 'handlebars';
 
+import repertoire_details_template from 'Templates/community/repertoire-details-row.html';
+
+// Olivia: Trying to figure out how to display as a sibling view that appears right after each instance of RepertoireRowView
+var RepertoireDetailView = Marionette.View.extend({
+    tagName: 'tr',
+    className: 'repertoire-details',
+    template: Handlebars.compile(repertoire_details_template),
+});
+
 import repertoire_template from 'Templates/community/repertoire-row.html';
 var RepertoireRowView = Marionette.View.extend({
   tagName: 'tr',
-  template: Handlebars.compile(repertoire_template)
+  template: Handlebars.compile(repertoire_template),
 });
 
 import repertoire_table_template from 'Templates/community/repertoire-table.html';
@@ -45,7 +54,35 @@ var RepertoireTable = Marionette.CollectionView.extend({
   className: 'table table-striped table-condensed table-bordered',
   template: Handlebars.compile(repertoire_table_template),
   childView: RepertoireRowView,
-  childViewContainer: 'tbody'
+  childViewContainer: 'tbody',
+
+  updateRepertoirePagination() {
+      console.log("update rep pagination function");
+      var tableView;
+      var pageQty = 10;
+      var options = {
+        collection: new RepertoireTable(),
+        paginatedCollection: []
+      };
+
+      options.collection.fetch().then(_.bind(function () {
+        // The collection is guaranteed to be filled
+        // Set up your paginated collection
+        for (var i = 0; i < options.collection.length; i += pageQty) {
+          options.paginatedCollection[i/pageQty] =
+            options.collection.models.slice(i, i + pageQty);
+        }
+
+        console.log(JSON.stringify(paginatedCollection));
+        // Load your first page
+        options.collection.reset(options.paginatedCollection[0]);
+        // Submit both the first page collection and your paginatedCollection
+        // to the view
+        tableView = new StudySummaryView(options);
+        console.log(tableView);
+        tableView.render() // Append the tableView.el wherever you want
+      }, this));
+  },
 });
 
 var StudySummaryView = Marionette.View.extend({
@@ -147,7 +184,7 @@ var StudySummaryView = Marionette.View.extend({
         // Select All Checkboxes Functionality
         'click .select-all-repertoire': function(e) {
             console.log("checked all");
-            $(event.target).closest("table").children().find("td input:checkbox").prop("checked", true);
+            $(event.target).closest("table").children("tbody").find("td input:checkbox").prop("checked", true);
         },
 
         // Sorting
@@ -174,6 +211,7 @@ var StudySummaryView = Marionette.View.extend({
             $(event.target).toggleClass("no-sort asc");
             $(event.target).siblings(".sort").removeClass("asc").addClass("no-sort");
             $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");
+
             // Insert function for actual sorting here
         }
     },
@@ -197,24 +235,6 @@ var StudySummaryView = Marionette.View.extend({
         if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
             contains_paired_chain = true;
 
-        // Repertoires
-        var repertoire = this.model.get('repertoires');
-        var repertoire_model = repertoire.models;
-
-        // iterating through all of the repertoires to get attributes
-        for(let i = 0, l = repertoire_model.length; i < l; i++) {
-            var rep = repertoire.models[i].attributes;
-            // console.log("iterating attributes for rep: " + JSON.stringify(rep));
-            var community_repertoire_id = rep.repertoire_id;
-        }
-
-
-
-        // console.log(rep.repertoire_id);
-
-        // console.log(repertoire);
-        // console.log(repertoire_model);
-
         return {
             object: JSON.stringify(this.model),
             num_subjects: this.model.get('subjects').length,
@@ -223,10 +243,9 @@ var StudySummaryView = Marionette.View.extend({
             contains_ig: contains_ig,
             contains_tcr: contains_tcr,
             contains_single_cell: contains_single_cell,
-            contains_paired_chain: contains_paired_chain,
-            community_repertoire_id: community_repertoire_id
+            contains_paired_chain: contains_paired_chain
         };
-    }
+    },
 });
 
 export default Marionette.CollectionView.extend({

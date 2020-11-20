@@ -79,7 +79,7 @@ Community Query
 }
 
 #toolbar2-region {
-    padding: 0.5% 2% 1.5% 2%;
+    padding: 0.5% 2% 0% 2%;
 }
 
 .filter-option, .filter-value {
@@ -118,14 +118,13 @@ a.remove-filter {
     }
 }
 
-.toolbar2-footer {
-    padding-bottom: 1%;
+.navbar-footer {
+    padding: 0.5% 2% 2% 0%;
 
     #close-filter {
         float: right;
         display: none;
         cursor: pointer;
-        margin-top: 0.5%;
     }
 
     #close-filter:hover {
@@ -509,18 +508,21 @@ Community Repertoires
     font-family: 'Font Awesome 5 Free';
     content: "\f0de";
     cursor: pointer;
+    color: $vdj-darkgray;
 }
 
 .asc:after {
     font-family: 'Font Awesome 5 Free';
     content: "\f0de"; // caret-up
     cursor: pointer;
+    color: $vdj-link;
 }
 
 .desc:after {
     font-family: 'Font Awesome 5 Free';
     content: "\f0d7"; // caret-down
     cursor: pointer;
+    color: $vdj-link;
 }
 
 

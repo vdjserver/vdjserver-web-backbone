@@ -226,13 +226,7 @@ var CommunityStatisticsView = Marionette.View.extend({
             var current_sort = colls['studyList']['sort_by'];
             if (e.target.name != current_sort)
                 this.controller.applySort(e.target.name);
-        },
-
-        'click #close-filter': function(e) {
-            console.log("clicked close-filter");
-            $("#navigation").toggleClass("hideFilter");
-            $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
-        },
+        }
     },
 
     updateStats(studyList) {
@@ -349,19 +343,10 @@ var CommunityPaginationView = Marionette.View.extend({
         }
     },
 
-    templateContext(){
+    templateContext(studyList){
         if (!this.controller) return{};
 
-        // What's in the data?
-        console.log(this.controller);
-
-        var colls = this.controller.getCollections();
-        var num_studies = colls['studyList'].length;
-
-        return {
-            num_studies: num_studies,
-        }
-    },
+}
 
     // updatePagination(studyList) {
     //     // set up pagination settings
@@ -433,8 +418,39 @@ export default Marionette.View.extend({
     },
 
     showResultsList(studyList, filters) {
-        console.log(this.controller);
         $("#community-charts").removeClass("no-display");
+
+        // What's in the data?
+        // console.log("what is here: " + this.controller);
+        // console.log("studyList " + JSON.stringify(studyList));
+
+            console.log("update pagination function");
+            var tableView;
+            var pageQty = 1;
+            var options = {
+              collection: studyList,
+              paginatedCollection: [],
+              // url: '/'
+            };
+
+            // console.log("options: " + JSON.stringify(options));
+
+            options.collection.fetch({url:'/'}).then(_.bind(function () {
+             // The collection is guaranteed to be filled
+             // Set up your paginated collection
+              for (var i = 0; i < options.collection.length; i += pageQty) {
+                options.paginatedCollection[i/pageQty] =
+                  options.collection.models.slice(i, i + pageQty);
+              }
+
+              // Load your first page
+              options.collection.reset(options.paginatedCollection[0]);
+
+              // Submit both the first page collection and your paginatedCollection to the view
+              tableView = new CommunityListView(options);
+              // console.log("tableView: " + tableView);
+              tableView.render(resultsView) // Append the tableView.el wherever you want
+            }, this));
 
         // show filters as toolbar under navigation bar
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
