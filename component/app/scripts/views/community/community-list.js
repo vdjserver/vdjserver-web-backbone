@@ -33,6 +33,8 @@ import list_template from 'Templates/community/community-list.html';
 import template from 'Templates/community/study-summary.html';
 import Handlebars from 'handlebars';
 
+import { ADC } from 'Scripts/backbone/backbone-adc';
+
 import repertoire_details_template from 'Templates/community/repertoire-details-row.html';
 
 // Olivia: Trying to figure out how to display as a sibling view that appears right after each instance of RepertoireRowView
@@ -235,6 +237,22 @@ var StudySummaryView = Marionette.View.extend({
         if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
             contains_paired_chain = true;
 
+        // custom 10x flag
+        var is_10x_genomics = false;
+        if (value.vdjserver_keywords)
+            if (value.vdjserver_keywords.indexOf("10x_genomics") >= 0)
+                is_10x_genomics = true;
+
+        // repository tags
+        var is_vdjserver = false;
+        var repos = this.model.get('repository');
+        var repo_titles = [];
+        var adc_repos = ADC.Repositories();
+        for (var i = 0; i < repos.length; ++i) {
+            if (repos[i] == 'vdjserver') is_vdjserver = true;
+            else repo_titles.push(adc_repos[repos[i]]['title']);
+        }
+
         return {
             object: JSON.stringify(this.model),
             num_subjects: this.model.get('subjects').length,
@@ -243,7 +261,10 @@ var StudySummaryView = Marionette.View.extend({
             contains_ig: contains_ig,
             contains_tcr: contains_tcr,
             contains_single_cell: contains_single_cell,
-            contains_paired_chain: contains_paired_chain
+            contains_paired_chain: contains_paired_chain,
+            is_10x_genomics: is_10x_genomics,
+            is_vdjserver: is_vdjserver,
+            repo_titles: repo_titles
         };
     },
 });

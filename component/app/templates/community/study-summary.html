@@ -1,13 +1,23 @@
 <h3 class="community-badges">
     <!-- Need to add conditionals depending on project type -->
     <!-- We could also put the logos here instead of text -->
-    <a class="badge badge-pill badge-darkgray community-project-type">
+    {{#if is_vdjserver}}
+    <a class="badge badge-pill badge-vdjserver community-project-type">
         <img src="./dist/images/logo_nobackground_border.png" class="vdjserver" alt="VDJServer">VDJServer
     </a>
+    {{/if}}
+
+    {{#each repo_titles}}
+    <a class="badge badge-pill badge-adc community-project-type">
+        {{this}}
+    </a>
+    {{/each}}
 
     <!-- Need image for 10XGenomics -->
-    <a class="badge badge-pill badge-info community-project-type">
+    {{#if is_10x_genomics}}
+    <a class="badge badge-pill badge-10x community-project-type">
         <img src="./dist/images/genomics-logo.png" class="genomics" alt="10X Genomics">10X Genomics</a>
+    {{/if}}
 </h3>
 <div class="community-project-header">
     <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>

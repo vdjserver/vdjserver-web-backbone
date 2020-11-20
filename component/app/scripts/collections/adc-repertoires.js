@@ -36,6 +36,9 @@ import { Subject, Diagnosis, Sample, Repertoire } from 'Scripts/models/agave-met
 
 export var ADCRepertoireCollection = ADC.Collection.extend({
     model: ADCRepertoire,
+    initialize: function(parameters) {
+        ADC.Collection.prototype.initialize.apply(this, [parameters]);
+    },
     url: function() {
         return this.apiHost + '/repertoire';
     },
@@ -126,7 +129,13 @@ export var ADCStudyCollection = ADC.Collection.extend({
                 study.set('samples', new Backbone.Collection());
                 study.set('data_processings', new Backbone.Collection());
                 study.set('repertoires', new Backbone.Collection());
+                study.set('repository', []);
             }
+
+            var repo = study.get('repository');
+            if (repo.indexOf(repertoires['repository']) < 0)
+                repo.push(repertoires['repository']);
+
             var subjects = study.get('subjects');
             var samples = study.get('samples');
             var data_processings = study.get('data_processings');
