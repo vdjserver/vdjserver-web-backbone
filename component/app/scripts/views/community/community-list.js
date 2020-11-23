@@ -148,15 +148,15 @@ var StudySummaryView = Marionette.View.extend({
         },
 
         // Clicking Community Metadata Tabs
-        'click .community-summary-stats a': function(e) {
-            $(event.target).addClass("active-tab");
+        'click .community-button': function(e) {
+            console.log(event.target);
+            $(event.target).find("a").addClass("active-tab");
             $(event.target).siblings().removeClass("active-tab");
             // $(event.target).parent(".community-summary-stats").siblings(".community-table").addClass("no-display");
         },
 
         // Hide Detailed Data
-        'click .community-summary-stats a.active-tab': function(e) {
-            console.log("active-tab clicked")
+        'click .community-button a.active-tab': function(e) {
             $(event.target).removeClass("active-tab");
         },
 
@@ -165,22 +165,22 @@ var StudySummaryView = Marionette.View.extend({
             this.showChildView('tableRegion', new RepertoireTable({
                 collection: this.model.get('repertoires')
             }));
-            $(event.target).parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
         },
 
         // Show/Hide Community Subjects Data
         'click .community-subjects': function(e) {
-            $(event.target).parent(".community-summary-stats").siblings(".community-subjects-metadata").toggleClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-subjects-metadata").toggleClass("no-display");
         },
 
         // Show/Hide Community Clones Data
         'click .community-clones': function(e) {
-            $(event.target).parent(".community-summary-stats").siblings(".community-clones-metadata").toggleClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-clones-metadata").toggleClass("no-display");
         },
 
         // Show/Hide Community Rearrangements Data
         'click .community-rearrangements': function(e) {
-            $(event.target).parent(".community-summary-stats").siblings(".community-rearrangements-metadata").toggleClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-rearrangements-metadata").toggleClass("no-display");
         },
 
         // Select All Checkboxes Functionality
