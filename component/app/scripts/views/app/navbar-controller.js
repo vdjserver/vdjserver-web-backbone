@@ -103,6 +103,7 @@ export default Marionette.View.extend({
     },
 
     showToolbar1Bar(view) {
+        // console.log(view);
         this.showChildView('toolbar1Region', view);
     },
 
@@ -119,16 +120,22 @@ export default Marionette.View.extend({
     },
 
     emptyToolbarBar() {
-        this.getRegion('toolbar1Region').empty();
-        this.getRegion('toolbar2Region').empty();
+        this.detachChildView('toolbar1Region');
+        this.detachChildView('toolbar2Region');
+        // this.getRegion('toolbar1Region').empty();
+        // this.getRegion('toolbar2Region').empty();
 
         $(".open-filter").toggleClass("open-filter closed-filter");
         $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
     },
 
     showToolbarBar(view) {
+        console.log(this.getRegion('toolbar1Region').hasView());
         this.showChildView('toolbar1Region', view);
         this.showChildView('toolbar2Region', view);
+
+        $(".closed-filter").toggleClass("closed-filter open-filter");
+        $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
     },
 
     logout(e) {

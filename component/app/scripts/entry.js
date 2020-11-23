@@ -48,8 +48,9 @@ require('highcharts/modules/drilldown')(Highcharts);
 import d3 from 'd3';
 
 // images
-import logo_image from 'Images/logo_nobackground_border.png';
+import logo_image from 'Images/vdjserver-logo.png';
 import genomics_image from 'Images/genomics-logo.png';
+import ireceptor_image from 'Images/ireceptor-logo.png';
 
 
 document.addEventListener('DOMContentLoaded', () => {
