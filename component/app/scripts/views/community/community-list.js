@@ -46,19 +46,19 @@ var RepertoireDetailView = Marionette.View.extend({
 
 import repertoire_template from 'Templates/community/repertoire-row.html';
 var RepertoireRowView = Marionette.View.extend({
-  tagName: 'tr',
-  template: Handlebars.compile(repertoire_template),
+    tagName: 'tr',
+    template: Handlebars.compile(repertoire_template),
 });
 
 import repertoire_table_template from 'Templates/community/repertoire-table.html';
 var RepertoireTable = Marionette.CollectionView.extend({
-  tagName: 'table',
-  className: 'table table-striped table-condensed table-bordered',
-  template: Handlebars.compile(repertoire_table_template),
-  childView: RepertoireRowView,
-  childViewContainer: 'tbody',
+    tagName: 'table',
+    className: 'table table-striped table-condensed table-bordered',
+    template: Handlebars.compile(repertoire_table_template),
+    childView: RepertoireRowView,
+    childViewContainer: 'tbody',
 
-  updateRepertoirePagination() {
+    updateRepertoirePagination() {
       console.log("update rep pagination function");
       var tableView;
       var pageQty = 10;
@@ -94,6 +94,22 @@ var StudySummaryView = Marionette.View.extend({
 
     regions: {
         tableRegion: '#community-study-data-table'
+    },
+
+    initialize: function(parameters) {
+        // pagination of data table
+        // just repertoires for now but need to handle the others too
+        this.pageQty = 10;
+        this.currentPage = 0;
+        this.pages = [];
+        var reps = this.model.get('repertoires');
+        this.paginatedRepertoires = reps.clone();
+
+        for (var i = 0; i < reps.length; i += this.pageQty) {
+          this.pages[i/this.pageQty] =
+            reps.models.slice(i, i + this.pageQty);
+        }
+        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
     },
 
   serializeModel() {
@@ -163,7 +179,7 @@ var StudySummaryView = Marionette.View.extend({
         // Show/Hide Community Repertoires Data
         'click .community-repertoires': function(e) {
             this.showChildView('tableRegion', new RepertoireTable({
-                collection: this.model.get('repertoires')
+                collection: this.paginatedRepertoires
             }));
             $(event.target).parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
         },
