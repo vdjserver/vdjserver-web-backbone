@@ -129,21 +129,21 @@ var StudySummaryView = Marionette.View.extend({
         },
 
         // Clicking Community Metadata Tabs
-        'click .community-button': function(e) {
-            console.log(event.target);
-            $(event.target).find("a").addClass("active-tab");
-            $(event.target).siblings().removeClass("active-tab");
-            // $(event.target).parent(".community-summary-stats").siblings(".community-table").addClass("no-display");
+        'click .community-button > a': function(e) {
+            $(event.target).toggleClass("active-tab");
+            $(event.target).parent().siblings().children("a").removeClass("active-tab");
+            // $(event.target).parent().parent("community-summary-stats").siblings(".community-table").addClass("no-display");
         },
 
         // Hide Detailed Data
-        'click .community-button a.active-tab': function(e) {
+        'click a.active-tab': function(e) {
             $(event.target).removeClass("active-tab");
         },
 
         // Show/Hide Community Repertoires Data
         'click .community-repertoires': function(e) {
             this.showChildView('tableRegion', this.dataView);
+
             $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
         },
 
@@ -155,6 +155,8 @@ var StudySummaryView = Marionette.View.extend({
         // Show/Hide Community Subjects Data
         'click .community-subjects': function(e) {
             $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-subjects-metadata").toggleClass("no-display");
+
+            // $(event.target).parent(".community-button").parent(".community-summary-stats").siblings().not(".community-repertoires-metadata").addClass("no-display");
         },
 
         // Show/Hide Community Clones Data
@@ -175,7 +177,7 @@ var StudySummaryView = Marionette.View.extend({
 
         // Sorting
         'click .sort.asc': function(e) {
-            console.log ("sorting");
+            // console.log ("sorting");
             $(event.target).toggleClass("asc desc");
             $(event.target).siblings(".sort").removeClass("asc").addClass("no-sort");
             $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");
@@ -184,7 +186,7 @@ var StudySummaryView = Marionette.View.extend({
         },
 
         'click .sort.desc': function(e) {
-            console.log ("sorting");
+            // console.log ("sorting");
             $(event.target).toggleClass("desc asc");
             $(event.target).siblings(".sort").removeClass("asc").addClass("no-sort");
             $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");
@@ -193,7 +195,7 @@ var StudySummaryView = Marionette.View.extend({
         },
 
         'click .sort.no-sort': function(e) {
-            console.log ("sorting");
+            // console.log ("sorting");
             $(event.target).toggleClass("no-sort asc");
             $(event.target).siblings(".sort").removeClass("asc").addClass("no-sort");
             $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");

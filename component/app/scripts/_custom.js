@@ -6,22 +6,10 @@ $(document).ready(function() {
 //
 
     // Selecting a project to copy
-    if ($("#check-copy-repertoire").is("checked")) {
-        console.log("I'm checked!");
-    } else {
-        console.log("Nah, not checked");
-    }
+    // if ($("#check-copy-repertoire").is("checked")) {
+    //     console.log("I'm checked!");
+    // } else {
+    //     console.log("Nah, not checked");
+    // }
 
-    $(window).scroll(function() {
-        if ($(this).scrollTop() > 100){
-            $("#navigation").addClass("query-stats-border");
-            $("#close-filter").css("display", "inline");
-        }
-        else if ($(this).scrollTop() == 0) {
-            $("#navigation").removeClass("hideFilter");
-            $("#close-filter").css("display", "none");
-            $("#navigation").removeClass("query-stats-border");
-            $("#close-filter-icon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
-        }
-    });
 });

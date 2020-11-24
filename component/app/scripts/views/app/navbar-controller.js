@@ -84,6 +84,22 @@ export default Marionette.View.extend({
 
     initialize(options) {
         console.log('Initialize');
+        _.bindAll(this, 'detect_scroll');
+         $(window).scroll(this.detect_scroll);
+    },
+
+    detect_scroll: function(view) {
+        if ($(window).scrollTop() == 0) {
+            this.getRegion('toolbar1Region').$el.show();
+            this.getRegion('toolbar2Region').$el.show();
+            // $("#navigation").removeClass("hideFilter");
+            $("#close-filter").css("display", "none").toggleClass("closed-filter open-filter");
+            $("#navigation").removeClass("query-stats-border");
+            $("#close-filter-icon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
+        } else if ($(window).scrollTop() > 0) {
+            $("#navigation").addClass("query-stats-border");
+            $("#close-filter").css("display", "inline");
+        }
     },
 
     showPublicNavigation() {
@@ -119,20 +135,17 @@ export default Marionette.View.extend({
         this.getRegion('toolbar2Region').empty();
     },
 
-    emptyToolbarBar() {
-        this.detachChildView('toolbar1Region');
-        this.detachChildView('toolbar2Region');
-        // this.getRegion('toolbar1Region').empty();
-        // this.getRegion('toolbar2Region').empty();
+    emptyToolbarBar(view) {
+        this.getRegion('toolbar1Region').$el.hide();
+        this.getRegion('toolbar2Region').$el.hide();
 
         $(".open-filter").toggleClass("open-filter closed-filter");
         $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
     },
 
     showToolbarBar(view) {
-        console.log(this.getRegion('toolbar1Region').hasView());
-        this.showChildView('toolbar1Region', view);
-        this.showChildView('toolbar2Region', view);
+        this.getRegion('toolbar1Region').$el.show();
+        this.getRegion('toolbar2Region').$el.show();
 
         $(".closed-filter").toggleClass("closed-filter open-filter");
         $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");

@@ -1,6 +1,9 @@
 /*****************************************************
 Community Projects Page
 *****************************************************/
+body {
+//    overflow: scroll;
+}
 
 .dataTables_wrapper .dataTables_filter {
     display: none;
@@ -442,12 +445,13 @@ Community Results
 }
 
 #community-results {
-    margin: 1em 4em 4em 4em;
+    margin: auto;
+    width: 90%;
 }
 
 .community-project {
     margin: 4% auto;
-    border: 2px solid $vdj-medgray;
+    border: 1px solid $vdj-medgray;
     font-size: 0.9em;
 
     .community-project-header {
@@ -486,7 +490,7 @@ Community Results
 .community-button {
     padding: 1% 0%;
     background: $vdj-lightgray;
-    border-right: 2px solid $vdj-darkgray;
+    border-right: 0.5px solid $vdj-darkgray;
 }
 
 .community-button:hover {
