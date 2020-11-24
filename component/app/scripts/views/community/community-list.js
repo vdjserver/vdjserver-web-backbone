@@ -57,34 +57,6 @@ var RepertoireTable = Marionette.CollectionView.extend({
     template: Handlebars.compile(repertoire_table_template),
     childView: RepertoireRowView,
     childViewContainer: 'tbody',
-
-    updateRepertoirePagination() {
-      console.log("update rep pagination function");
-      var tableView;
-      var pageQty = 10;
-      var options = {
-        collection: new RepertoireTable(),
-        paginatedCollection: []
-      };
-
-      options.collection.fetch().then(_.bind(function () {
-        // The collection is guaranteed to be filled
-        // Set up your paginated collection
-        for (var i = 0; i < options.collection.length; i += pageQty) {
-          options.paginatedCollection[i/pageQty] =
-            options.collection.models.slice(i, i + pageQty);
-        }
-
-        console.log(JSON.stringify(paginatedCollection));
-        // Load your first page
-        options.collection.reset(options.paginatedCollection[0]);
-        // Submit both the first page collection and your paginatedCollection
-        // to the view
-        tableView = new StudySummaryView(options);
-        console.log(tableView);
-        tableView.render() // Append the tableView.el wherever you want
-      }, this));
-  },
 });
 
 var StudySummaryView = Marionette.View.extend({
@@ -101,29 +73,22 @@ var StudySummaryView = Marionette.View.extend({
         // just repertoires for now but need to handle the others too
         this.pageQty = 10;
         this.currentPage = 0;
-        this.pages = [];
-        var reps = this.model.get('repertoires');
-        this.paginatedRepertoires = reps.clone();
-
-        for (var i = 0; i < reps.length; i += this.pageQty) {
-          this.pages[i/this.pageQty] =
-            reps.models.slice(i, i + this.pageQty);
-        }
-        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
+        this.constructPages();
+        this.dataView = new RepertoireTable({ collection: this.paginatedRepertoires });
     },
 
-  serializeModel() {
-    const data = _.clone(this.model.attributes);
+    serializeModel() {
+        const data = _.clone(this.model.attributes);
 
-    // serialize nested model data
-    data.study = data.study.attributes;
+        // serialize nested model data
+        data.study = data.study.attributes;
 
-    // attempting to grab repertoires data
-    data.repertoire = data.repertoires.models;
-    // console.log ("this is data.repertoire: " + JSON.stringify(data.repertoires));
+        // attempting to grab repertoires data
+        data.repertoire = data.repertoires.models;
+        // console.log ("this is data.repertoire: " + JSON.stringify(data.repertoires));
 
-    return data;
-  },
+        return data;
+    },
 
     events: {
         // Setting event for "New Filter" Modal
@@ -178,11 +143,14 @@ var StudySummaryView = Marionette.View.extend({
 
         // Show/Hide Community Repertoires Data
         'click .community-repertoires': function(e) {
-            this.showChildView('tableRegion', new RepertoireTable({
-                collection: this.paginatedRepertoires
-            }));
+            this.showChildView('tableRegion', this.dataView);
             $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
         },
+
+        // Pagination for the Data Table
+        'click #pagination-previous-page': 'previousPage',
+        'click #pagination-next-page': 'nextPage',
+        'change #pagination-page-size': 'pageSize',
 
         // Show/Hide Community Subjects Data
         'click .community-subjects': function(e) {
@@ -282,6 +250,41 @@ var StudySummaryView = Marionette.View.extend({
             is_vdjserver: is_vdjserver,
             repo_titles: repo_titles
         };
+    },
+
+    constructPages() {
+        this.pages = [];
+        var reps = this.model.get('repertoires');
+        this.paginatedRepertoires = reps.clone();
+
+        for (var i = 0; i < reps.length; i += this.pageQty) {
+          this.pages[i/this.pageQty] =
+            reps.models.slice(i, i + this.pageQty);
+        }
+        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
+    },
+
+    previousPage() {
+        --this.currentPage;
+        if (this.currentPage < 0) this.currentPage = 0;
+        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
+    },
+
+    nextPage() {
+        ++this.currentPage;
+        if (this.currentPage >= this.pages.length) this.currentPage = this.pages.length - 1;
+        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
+    },
+
+    pageSize(e) {
+        console.log('page size');
+        var x = this.pageQty * this.currentPage;
+        this.pageQty = Number(e.target.value);
+        this.currentPage = Math.floor(x / this.pageQty);
+        this.constructPages();
+        //this.paginatedRepertoires.reset(this.pages[this.currentPage]);
+        this.dataView = new RepertoireTable({ collection: this.paginatedRepertoires });
+        this.showChildView('tableRegion', this.dataView);
     },
 });
 
