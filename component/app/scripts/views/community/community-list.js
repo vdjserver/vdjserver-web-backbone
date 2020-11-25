@@ -133,7 +133,6 @@ var StudySummaryView = Marionette.View.extend({
             $(event.target).parent().toggleClass("selected");
             $(event.target).parent().siblings().removeClass("selected");
             $(event.target).parent().siblings().children("a").removeClass("active-tab");
-            // $(event.target).parent().parent("community-summary-stats").siblings(".community-table").addClass("no-display");
         },
 
         // Hide Detailed Data
