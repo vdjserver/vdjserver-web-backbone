@@ -1,9 +1,6 @@
 /*****************************************************
 Community Projects Page
 *****************************************************/
-body {
-//    overflow: scroll;
-}
 
 .dataTables_wrapper .dataTables_filter {
     display: none;
@@ -497,6 +494,10 @@ Community Results
     background: rgba(241, 241, 241, 0.45);
     transition: 0.3s;
     color: $vdj-link;
+}
+
+.selected {
+    background: rgba(241, 241, 241, 0.45);
 }
 
 .community-button:nth-child(4) {

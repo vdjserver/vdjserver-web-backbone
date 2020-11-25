@@ -35,9 +35,8 @@ import Handlebars from 'handlebars';
 
 import { ADC } from 'Scripts/backbone/backbone-adc';
 
-import repertoire_details_template from 'Templates/community/repertoire-details-row.html';
-
 // Olivia: Trying to figure out how to display as a sibling view that appears right after each instance of RepertoireRowView
+import repertoire_details_template from 'Templates/community/repertoire-details-row.html';
 var RepertoireDetailView = Marionette.View.extend({
     tagName: 'tr',
     className: 'repertoire-details',
@@ -131,6 +130,8 @@ var StudySummaryView = Marionette.View.extend({
         // Clicking Community Metadata Tabs
         'click .community-button > a': function(e) {
             $(event.target).toggleClass("active-tab");
+            $(event.target).parent().toggleClass("selected");
+            $(event.target).parent().siblings().removeClass("selected");
             $(event.target).parent().siblings().children("a").removeClass("active-tab");
             // $(event.target).parent().parent("community-summary-stats").siblings(".community-table").addClass("no-display");
         },
@@ -141,10 +142,13 @@ var StudySummaryView = Marionette.View.extend({
         },
 
         // Show/Hide Community Repertoires Data
+        // Olivia: need to clean up for efficiency
         'click .community-repertoires': function(e) {
             this.showChildView('tableRegion', this.dataView);
 
             $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
+
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-table").not(".community-repertoires-metadata").addClass("no-display");
         },
 
         // Pagination for the Data Table
@@ -153,20 +157,27 @@ var StudySummaryView = Marionette.View.extend({
         'change #pagination-page-size': 'pageSize',
 
         // Show/Hide Community Subjects Data
+        // Olivia: need to clean up for efficiency
         'click .community-subjects': function(e) {
             $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-subjects-metadata").toggleClass("no-display");
 
-            // $(event.target).parent(".community-button").parent(".community-summary-stats").siblings().not(".community-repertoires-metadata").addClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-table").not(".community-subjects-metadata").addClass("no-display");
         },
 
         // Show/Hide Community Clones Data
+        // Olivia: need to clean up for efficiency
         'click .community-clones': function(e) {
             $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-clones-metadata").toggleClass("no-display");
+
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-table").not(".community-clones-metadata").addClass("no-display");
         },
 
         // Show/Hide Community Rearrangements Data
+        // Olivia: need to clean up for efficiency
         'click .community-rearrangements': function(e) {
             $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-rearrangements-metadata").toggleClass("no-display");
+
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-table").not(".community-rearrangements-metadata").addClass("no-display");
         },
 
         // Select All Checkboxes Functionality

@@ -92,7 +92,7 @@ export default Marionette.View.extend({
         if ($(window).scrollTop() == 0) {
             this.getRegion('toolbar1Region').$el.show();
             this.getRegion('toolbar2Region').$el.show();
-            // $("#navigation").removeClass("hideFilter");
+
             $("#close-filter").css("display", "none").toggleClass("closed-filter open-filter");
             $("#navigation").removeClass("query-stats-border");
             $("#close-filter-icon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
