@@ -38,24 +38,31 @@ import { ADC } from 'Scripts/backbone/backbone-adc';
 // Olivia: Trying to figure out how to display as a sibling view that appears right after each instance of RepertoireRowView
 import repertoire_details_template from 'Templates/community/repertoire-details-row.html';
 var RepertoireDetailView = Marionette.View.extend({
-    tagName: 'tr',
-    className: 'repertoire-details',
     template: Handlebars.compile(repertoire_details_template),
 });
 
 import repertoire_template from 'Templates/community/repertoire-row.html';
 var RepertoireRowView = Marionette.View.extend({
-    tagName: 'tr',
+    tagName: 'tbody',
     template: Handlebars.compile(repertoire_template),
+
+    regions: {
+        detailRegion: '#repertoire-details'
+    },
+
+    initialize: function(parameters) {
+      var detail_view = new RepertoireDetailView();
+      this.showChildView('detailRegion', detail_view);
+    }
 });
 
 import repertoire_table_template from 'Templates/community/repertoire-table.html';
 var RepertoireTable = Marionette.CollectionView.extend({
     tagName: 'table',
-    className: 'table table-striped table-condensed table-bordered',
+    className: 'table table-condensed table-bordered',
     template: Handlebars.compile(repertoire_table_template),
     childView: RepertoireRowView,
-    childViewContainer: 'tbody',
+    // childViewContainer: 'tbody'
 });
 
 var StudySummaryView = Marionette.View.extend({
@@ -211,6 +218,12 @@ var StudySummaryView = Marionette.View.extend({
             $(event.target).siblings(".sort").removeClass("desc").addClass("no-sort");
 
             // Insert function for actual sorting here
+        },
+
+        'click .subject': function(e) {
+            console.log("you clicked a subject");
+            // $(event.target).parent().siblings("tr").css("display", "block");
+            // would show more subject details on click
         }
     },
 
