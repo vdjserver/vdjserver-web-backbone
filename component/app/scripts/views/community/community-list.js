@@ -38,6 +38,11 @@ import { ADC } from 'Scripts/backbone/backbone-adc';
 // Olivia: Trying to figure out how to display as a sibling view that appears right after each instance of RepertoireRowView
 import repertoire_details_template from 'Templates/community/repertoire-details-row.html';
 var RepertoireDetailView = Marionette.View.extend({
+    tagName: 'td',
+    className: 'rep-details',
+    attributes: {
+        "colspan": "7"
+    },
     template: Handlebars.compile(repertoire_details_template),
 });
 
@@ -45,7 +50,6 @@ import repertoire_template from 'Templates/community/repertoire-row.html';
 var RepertoireRowView = Marionette.View.extend({
     tagName: 'tbody',
     template: Handlebars.compile(repertoire_template),
-
     regions: {
         detailRegion: '#repertoire-details'
     },
@@ -53,7 +57,17 @@ var RepertoireRowView = Marionette.View.extend({
     initialize: function(parameters) {
       var detail_view = new RepertoireDetailView();
       this.showChildView('detailRegion', detail_view);
-    }
+  },
+
+  events:  {
+    'click .subject': 'showRepDetails',
+  },
+
+  showRepDetails(detail_view) {
+      this.getRegion('detailRegion').$el.show();
+      // this.showChildView('detailRegion', detail_view);
+  },
+
 });
 
 import repertoire_table_template from 'Templates/community/repertoire-table.html';
@@ -219,12 +233,6 @@ var StudySummaryView = Marionette.View.extend({
 
             // Insert function for actual sorting here
         },
-
-        'click .subject': function(e) {
-            console.log("you clicked a subject");
-            // $(event.target).parent().siblings("tr").css("display", "block");
-            // would show more subject details on click
-        }
     },
 
     templateContext() {
