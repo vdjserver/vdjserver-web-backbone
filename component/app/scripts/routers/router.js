@@ -81,6 +81,7 @@ export default Backbone.Router.extend({
         //'project/:id/file':                 'projectFile',
         //'project/:id/analysis':             'projectAnalysis',
         'community':                        'communityPage',
+        'community/addchart':               'addCommChart',
         //'project/:id/repertoire/create':           'createRepertoire',
         //'project/:id/repertoire/create/subject': 'addSubject',
         //'project/:id/repertoire/create/subject/diagnosis': 'addDiagnosis',
@@ -229,6 +230,13 @@ export default Backbone.Router.extend({
         console.log('communityPage route');
 
         App.AppController.showCommunityPage();
+    },
+
+    // Create Community Chart
+    addCommChart: function() {
+        console.log('addCommChart route');
+
+        App.AppController.showAddChart();
     },
 
     // For Create a Project Page

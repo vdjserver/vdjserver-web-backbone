@@ -295,19 +295,20 @@ var CommunityChartsView = Marionette.View.extend({
     },
 
     newChartModal(e) {
-        console.log('add new chart modal will appear');
-        var message = new MessageModel({
-            'header': 'Add a new chart',
-            'body': '<p>Please select from the options below to create a new chart.</p>',
-            'confirmText': 'Next',
-            'cancelText': 'Cancel'
-        });
+        console.log('add new chart page will appear');
 
-        var view = new ModalChartView({model: message});
-        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
-        $('#modal-message').modal('show');
-
-        console.log(message);
+        // var message = new MessageModel({
+        //     'header': 'Add a new chart',
+        //     'body': '<p>Please select from the options below to create a new chart.</p>',
+        //     'confirmText': 'Next',
+        //     'cancelText': 'Cancel'
+        // });
+        //
+        // var view = new ModalChartView({model: message});
+        // App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        // $('#modal-message').modal('show');
+        //
+        // console.log(message);
     },
 
     newChartType(e) {
@@ -345,30 +346,7 @@ var CommunityPaginationView = Marionette.View.extend({
 
     templateContext(studyList){
         if (!this.controller) return{};
-
-}
-
-    // updatePagination(studyList) {
-    //     // set up pagination settings
-    //     var paging = {
-    //         total: studyList.length,
-    //         perPage: 10,
-    //         pages: Math.ceil(this.total / this.perPage),
-    //     };
-    //
-    //     // get number of studies
-    //     console.log("update pagination: " + studyList.length);
-    //
-    //     // divide by number of studies we want per page
-    //
-    //     // create pagination links for each number of page sets
-    //
-    //
-    // }
-
-    // showResultsList(studyList) {
-    //     console.log(this.controller);
-    // }
+    }
 });
 
 // the main community data page
@@ -494,6 +472,5 @@ export default Marionette.View.extend({
         $('#modal-message').modal('show');
 
         console.log(message);
-    }
-
+    },
 });

@@ -63,9 +63,20 @@ var RepertoireRowView = Marionette.View.extend({
     'click .subject': 'showRepDetails',
   },
 
+// Olivia: not working yet
   showRepDetails(detail_view) {
       this.getRegion('detailRegion').$el.show();
-      // this.showChildView('detailRegion', detail_view);
+      // var detail_view = new RepertoireDetailView();
+      //
+      // var detailRegion = detail_view.getRegion('detailRegion');
+      //
+      // if (this.getRegion(detailRegion).hasView()) {
+      //     console.log("has a view");
+      //    this.getRegion(detailRegion).$el.hide();
+      // } else {
+      //     console.log("doesn't have a view");
+      //     this.getRegion(detailRegion).$el.show();
+      // }
   },
 
 });
@@ -73,7 +84,7 @@ var RepertoireRowView = Marionette.View.extend({
 import repertoire_table_template from 'Templates/community/repertoire-table.html';
 var RepertoireTable = Marionette.CollectionView.extend({
     tagName: 'table',
-    className: 'table table-condensed table-bordered',
+    className: 'table table-hover table-condensed table-bordered',
     template: Handlebars.compile(repertoire_table_template),
     childView: RepertoireRowView,
     // childViewContainer: 'tbody'

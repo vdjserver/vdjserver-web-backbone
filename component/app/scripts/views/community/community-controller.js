@@ -39,6 +39,7 @@ import Project from 'Scripts/models/agave-project';
 import ProjectList from 'Scripts/collections/agave-public-projects';
 import CommunityMainView from 'Scripts/views/community/community-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
+import AddChartView from 'Scripts/views/community/add-chart';
 
 // Community controller
 //
@@ -183,6 +184,11 @@ CommunityController.prototype = {
     applySort(sort_by) {
         this.studies.sort_by = sort_by;
         this.studies.sort();
+    },
+
+    showAddChart() {
+        console.log('showAddChart from community-controller.js');
+        // this.showChildView('mainRegion', new AddChartView());
     }
 };
 export default CommunityController;

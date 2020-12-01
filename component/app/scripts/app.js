@@ -193,6 +193,21 @@ var ApplicationController = Marionette.View.extend({
         this.communityController.showProjectList();
     },
 
+    showAddChart() {
+        console.log('showAddCommChart from app.js');
+        // create community controller if needed
+        if (! this.communityController) {
+          this.communityController = new CommunityController();
+        }
+        this.showChildView('mainRegion', this.communityController.getView());
+
+        // tell navigation controller to display its public nav bar
+        this.navController.showPublicNavigation();
+
+        // tell controller to display the add a chart page
+        this.communityController.showAddChart();
+    },
+
     showCreatePage() {
         console.log('showCreatePage');
 
