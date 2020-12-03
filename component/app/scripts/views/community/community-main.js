@@ -402,34 +402,6 @@ export default Marionette.View.extend({
         // console.log("what is here: " + this.controller);
         // console.log("studyList " + JSON.stringify(studyList));
 
-            console.log("update pagination function");
-            var tableView;
-            var pageQty = 1;
-            var options = {
-              collection: studyList,
-              paginatedCollection: [],
-              // url: '/'
-            };
-
-            // console.log("options: " + JSON.stringify(options));
-
-            options.collection.fetch({url:'/'}).then(_.bind(function () {
-             // The collection is guaranteed to be filled
-             // Set up your paginated collection
-              for (var i = 0; i < options.collection.length; i += pageQty) {
-                options.paginatedCollection[i/pageQty] =
-                  options.collection.models.slice(i, i + pageQty);
-              }
-
-              // Load your first page
-              options.collection.reset(options.paginatedCollection[0]);
-
-              // Submit both the first page collection and your paginatedCollection to the view
-              tableView = new CommunityListView(options);
-              // console.log("tableView: " + tableView);
-              tableView.render(resultsView) // Append the tableView.el wherever you want
-            }, this));
-
         // show filters as toolbar under navigation bar
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
         App.AppController.navController.showToolbar1Bar(this.filterView);
