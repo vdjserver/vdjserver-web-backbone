@@ -47,6 +47,8 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
 
         if (response && response['Repertoire']) {
 
+            for (var i = 0; i < response['Repertoire'].length; ++i)
+                response['Repertoire'][i]['repository'] = this.repository;
             return response['Repertoire'];
         }
 
