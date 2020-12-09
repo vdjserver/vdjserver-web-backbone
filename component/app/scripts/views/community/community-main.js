@@ -43,6 +43,7 @@ import PieChart from 'Scripts/views/charts/pie';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
+// import AddChartView from 'Scripts/views/community/add-chart';
 
 // Community Query/Filter View
 // toolbar under the navigation bar
@@ -296,6 +297,12 @@ var CommunityChartsView = Marionette.View.extend({
 
     newChartModal(e) {
         console.log('add new chart page will appear');
+
+        App.router.navigate('/community/addchart', {trigger:false});
+
+        this.showChildView('mainRegion', new AddChartView());
+
+        this.chartView = new AddChartView();
 
         // var message = new MessageModel({
         //     'header': 'Add a new chart',

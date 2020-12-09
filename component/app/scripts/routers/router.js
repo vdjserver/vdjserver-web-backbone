@@ -232,7 +232,7 @@ export default Backbone.Router.extend({
         App.AppController.showCommunityPage();
     },
 
-    // Create Community Chart
+    // Create Community Chart Page
     addCommChart: function() {
         console.log('addCommChart route');
 

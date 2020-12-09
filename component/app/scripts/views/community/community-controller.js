@@ -186,9 +186,14 @@ CommunityController.prototype = {
         this.studies.sort();
     },
 
-    showAddChart() {
-        console.log('showAddChart from community-controller.js');
-        // this.showChildView('mainRegion', new AddChartView());
-    }
+    // showAddChart() {
+    //     console.log('showAddChart from community-controller.js');
+    //
+    //     this.chartView = new AddChartView();
+    //
+    //     this.projectView.showAddChart(this.chartView);
+    //
+    //     // this.showChildView('mainRegion', new AddChartView());
+    // }
 };
 export default CommunityController;
