@@ -63,16 +63,13 @@ var RepertoireRowView = Marionette.View.extend({
     'click .subject': 'showRepDetails',
   },
 
-// Olivia: not working yet
   showRepDetails(detail_view) {
-      $(event.target).toggleClass("selected");
+      $(event.target).toggleClass("selected-details");
 
-      if ($(event.target).hasClass("selected")) {
-         console.log("show a thing");
+      if ($(event.target).hasClass("selected-details")) {
          this.getRegion('detailRegion').$el.show();
       } else {
           this.getRegion('detailRegion').$el.hide();
-          console.log("not showing nothing");
       }
 
       // var detail_view = new RepertoireDetailView();
