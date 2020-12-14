@@ -35,16 +35,21 @@ import Handlebars from 'handlebars';
 
 import { ADC } from 'Scripts/backbone/backbone-adc';
 
-// Olivia: Trying to figure out how to display as a sibling view that appears right after each instance of RepertoireRowView
-import repertoire_details_template from 'Templates/community/repertoire-details-row.html';
+import repertoire_subject_template from 'Templates/community/repertoire-subject-row.html';
 var RepertoireDetailView = Marionette.View.extend({
     tagName: 'td',
     className: 'rep-details',
     attributes: {
         "colspan": "7"
     },
-    template: Handlebars.compile(repertoire_details_template),
+    template: Handlebars.compile(repertoire_subject_template),
 });
+
+import repertoire_sample_template from 'Templates/community/repertoire-sample-row.html';
+
+import repertoire_cell_template from 'Templates/community/repertoire-cell-row.html';
+
+import repertoire_tissue_template from 'Templates/community/repertoire-tissue-row.html';
 
 import repertoire_template from 'Templates/community/repertoire-row.html';
 var RepertoireRowView = Marionette.View.extend({
@@ -61,6 +66,9 @@ var RepertoireRowView = Marionette.View.extend({
 
   events:  {
     'click .subject': 'showRepDetails',
+    'click .sample': 'showRepDetails',
+    'click .cell': 'showRepDetails',
+    'click .tissue': 'showRepDetails',
   },
 
   showRepDetails(detail_view) {
@@ -71,18 +79,6 @@ var RepertoireRowView = Marionette.View.extend({
       } else {
           this.getRegion('detailRegion').$el.hide();
       }
-
-      // var detail_view = new RepertoireDetailView();
-      //
-      // var detailRegion = detail_view.getRegion('detailRegion');
-      //
-      // if (this.getRegion(detailRegion).hasView()) {
-      //     console.log("has a view");
-      //    this.getRegion(detailRegion).$el.hide();
-      // } else {
-      //     console.log("doesn't have a view");
-      //     this.getRegion(detailRegion).$el.show();
-      // }
   },
 
 });
@@ -90,7 +86,7 @@ var RepertoireRowView = Marionette.View.extend({
 import repertoire_table_template from 'Templates/community/repertoire-table.html';
 var RepertoireTable = Marionette.CollectionView.extend({
     tagName: 'table',
-    className: 'table table-hover table-condensed table-bordered',
+    className: 'table table-condensed table-bordered',
     template: Handlebars.compile(repertoire_table_template),
     childView: RepertoireRowView,
     // childViewContainer: 'tbody'

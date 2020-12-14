@@ -558,6 +558,20 @@ Community Repertoires
     margin-left: 1em;
 }
 
+tr.repertoire-row:hover {
+    background: $vdj-lightgray;
+}
+
+tr.repertoire-row > td:hover {
+    color: $vdj-link;
+    font-weight: 500;
+}
+
+td.selected-details {
+    color: $vdj-link;
+    font-weight: 500;
+}
+
 /* ----------------------------------------------------------
 Community Repertoires Table Caption & Pagination
 ------------------------------------------------------------*/

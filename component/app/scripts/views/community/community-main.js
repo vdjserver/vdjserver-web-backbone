@@ -43,7 +43,7 @@ import PieChart from 'Scripts/views/charts/pie';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
-// import AddChartView from 'Scripts/views/community/add-chart';
+import AddChartView from 'Scripts/views/community/add-chart';
 
 // Community Query/Filter View
 // toolbar under the navigation bar

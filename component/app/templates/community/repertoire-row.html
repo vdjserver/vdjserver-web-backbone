@@ -1,25 +1,24 @@
-        <tr>
-                <td><input type="checkbox" id="check-select-repertoire"></td>
-                <td>{{repertoire.value.repertoire_name}}</td>
-                <td>{{repertoire_id}}</td>
-                <td class="subject"><p>Subject ID: {{subject.subject_id}}</p>
-                    <!-- <p>Species: {{subject.species.label}}</p>
-                    <p>Age Min: {{subject.age_min}}</p>
-                    <p>Age Max: {{subject.age_max}}</p>
-                    <p>Age Unit: {{subject.age_unit.label}}</p>
-                    <p>Sex: {{subject.sex}}</p> -->
-                </td>
-                <td><p>Sample ID: {{sample.0.sample_id}}</p>
-                    <!-- <p>Sample Type: {{sample.0.sample_type}}</p> -->
-                </td>
+            <tr class="repertoire-row">
                 <td>
-                    <p>Cell Phenotype: {{sample.0.cell_phenotype}}</p>
-                    <!-- <p>Cell Storage: {{sample.0.cell_storage}}</p>
-                    <p>Cell Subset: {{sample.0.cell_subset}}</p> -->
+                    <input type="checkbox" id="check-select-repertoire">
                 </td>
-                <td><p>Tissue ID: {{sample.0.tissue.id}}</p>
-                    <!-- <p>Tissue Label: {{sample.0.tissue.label}}
-                    <p>Tissue Processing: {{sample.0.tissue_processing}}</p> -->
+                <td class="repertoire-name">
+                    {{repertoire.value.repertoire_name}}
+                </td>
+                <td class="repertoire-id">
+                    {{repertoire_id}}
+                </td>
+                <td class="subject">
+                    Subject ID: {{subject.subject_id}}
+                </td>
+                <td class="sample">
+                    Sample ID: {{sample.0.sample_id}}
+                </td>
+                <td class="cell">
+                    Cell Phenotype: {{sample.0.cell_phenotype}}
+                </td>
+                <td class="tissue">
+                    Tissue ID: {{sample.0.tissue.id}}
                 </td>
                 <!-- <td>Diagnosis Data</td> -->
             </tr>
