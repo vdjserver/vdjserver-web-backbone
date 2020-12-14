@@ -36,7 +36,7 @@ import Handlebars from 'handlebars';
 import { ADC } from 'Scripts/backbone/backbone-adc';
 
 import repertoire_subject_template from 'Templates/community/repertoire-subject-row.html';
-var RepertoireDetailView = Marionette.View.extend({
+var RepertoireSubjectView = Marionette.View.extend({
     tagName: 'td',
     className: 'rep-details',
     attributes: {
@@ -46,10 +46,34 @@ var RepertoireDetailView = Marionette.View.extend({
 });
 
 import repertoire_sample_template from 'Templates/community/repertoire-sample-row.html';
+var RepertoireSampleView = Marionette.View.extend({
+    tagName: 'td',
+    className: 'rep-details',
+    attributes: {
+        "colspan": "7"
+    },
+    template: Handlebars.compile(repertoire_sample_template),
+});
 
 import repertoire_cell_template from 'Templates/community/repertoire-cell-row.html';
+var RepertoireCellView = Marionette.View.extend({
+    tagName: 'td',
+    className: 'rep-details',
+    attributes: {
+        "colspan": "7"
+    },
+    template: Handlebars.compile(repertoire_cell_template),
+});
 
 import repertoire_tissue_template from 'Templates/community/repertoire-tissue-row.html';
+var RepertoireTissueView = Marionette.View.extend({
+    tagName: 'td',
+    className: 'rep-details',
+    attributes: {
+        "colspan": "7"
+    },
+    template: Handlebars.compile(repertoire_tissue_template),
+});
 
 import repertoire_template from 'Templates/community/repertoire-row.html';
 var RepertoireRowView = Marionette.View.extend({
@@ -59,10 +83,10 @@ var RepertoireRowView = Marionette.View.extend({
         detailRegion: '#repertoire-details'
     },
 
-    initialize: function(parameters) {
-      var detail_view = new RepertoireDetailView();
-      this.showChildView('detailRegion', detail_view);
-  },
+  //   initialize: function(parameters) {
+  //     var detail_view = new RepertoireDetailView();
+  //     this.showChildView('detailRegion', detail_view);
+  // },
 
   events:  {
     'click .subject': 'showRepDetails',
@@ -74,10 +98,21 @@ var RepertoireRowView = Marionette.View.extend({
   showRepDetails(detail_view) {
       $(event.target).toggleClass("selected-details");
 
-      if ($(event.target).hasClass("selected-details")) {
-         this.getRegion('detailRegion').$el.show();
-      } else {
-          this.getRegion('detailRegion').$el.hide();
+      if ($(event.target).hasClass("subject selected-details")) {
+         var detail_view = new RepertoireSubjectView();
+         this.showChildView('detailRegion', detail_view);
+     } else if ($(event.target).hasClass("sample selected-details")) {
+         var detail_view = new RepertoireSampleView();
+         this.showChildView('detailRegion', detail_view);
+     } else if ($(event.target).hasClass("cell selected-details")) {
+         var detail_view = new RepertoireCellView();
+         this.showChildView('detailRegion', detail_view);
+     } else if ($(event.target).hasClass("tissue selected-details")) {
+         var detail_view = new RepertoireTissueView();
+         this.showChildView('detailRegion', detail_view);
+     }
+      else { // nothing is selected, empty the view
+          this.getRegion('detailRegion').empty();
       }
   },
 
