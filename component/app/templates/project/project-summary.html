@@ -1,4 +1,38 @@
-<th scope="row" class="title"><a href="/project/{{uuid}}">{{value.study_title}}</a></th>
-    <td class="desc">{{value.study_description}}</td>
-    <td class="created">{{created}}</td>
-    <td class="type">{{value.study_type}}</td>
+<!-- <a href="/project/{{uuid}}">{{value.study_title}}</a>
+{{value.study_description}}
+{{created}}
+{{value.study_type}} -->
+
+<div class="project-header">
+    <h2 class="project-title"><a href="/project/{{uuid}}">{{value.study_title}}</a></h2>
+
+    <!-- Badges for study type -->
+    <!-- <h4 class="community-badges">
+        {{#if contains_ig}}
+            <a class="badge badge-pill badge-locus">IG</a>
+        {{/if}}
+        {{#if contains_tcr}}
+            <a class="badge badge-pill badge-locus">TCR</a>
+        {{/if}}
+        {{#if contains_single_cell}}
+            <a class="badge badge-pill badge-cell">Single Cell</a>
+        {{/if}}
+        {{#if contains_paired_chain}}
+            <a class="badge badge-pill badge-cell">Paired Chain</a>
+        {{/if}}
+    </h4> -->
+
+    <div class="row">
+        <div class="col project-metadata">
+            <p>
+                <span class="details">Date Created:</span>  {{created}}
+            </p>
+            <p>
+                <span class="details">Study Type</span>
+                {{value.study_type}}
+            </p>
+            <p>
+                {{value.study_description}}
+            </p>
+        </div>
+</div>

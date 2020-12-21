@@ -3,38 +3,56 @@
 @import "~bootstrap/scss/variables";
 
 $vdj-green: #689A87;
+$vdj-lightgreen: #71B87D;
+$vdj-red: #D93C39;
 $vdj-orange: #CC6B4C;
+$vdj-lightorange: #F6835E;
 $vdj-yellow: #EAE386;
 $vdj-darkgray: #6C757D;
 $vdj-medgray: #B8C0C7;
-$vdj-lightgray: #E1E1E1;
+$vdj-medlightgray: #E1E1E1;
+$vdj-lightgray: #F1F1F1;
+$vdj-darkblue: #4E95B8;
 $vdj-blue: #7FA8BD;
 $vdj-link: #61B8E4;
 
 // BootStrap Color Overrides
 $theme-colors: (
-    'delete': #D93C39, // Red
-    'success': #71B87D, // Green
-    'save': #71B87D, // Green
-    'new': $vdj-blue, // VDJServer Blue
-    'add': $vdj-blue, // VDJServer Blue
-    'create': $vdj-blue, // VDJServer Blue
-    'upload': $vdj-medgray, // VDJServer Med Gray
-    'edit': $vdj-yellow, // VDJServer Yellow
-    'copy': #F6835E, // Light Orange
-    'info': #4E95B8, // Blue
-    'primary': #689A87,
-    'light': #B8C0C7,
-    'cancel': #B8C0C7
+    'delete': $vdj-red,
+    'success': $vdj-lightgreen,
+    'save': $vdj-lightgreen,
+    'search': $vdj-blue,
+    'new': $vdj-blue,
+    'add': $vdj-blue,
+    'create': $vdj-blue,
+    'upload': $vdj-medgray,
+    'edit': $vdj-yellow,
+    'copy': $vdj-lightorange,
+    'info': $vdj-darkblue,
+    'primary': $vdj-green,
+    'light': $vdj-medgray,
+    'cancel': $vdj-medgray,
+    'download': $vdj-lightgreen,
+    'darkgray': $vdj-darkgray,
+
+    // Study Badges
+    'locus': $vdj-green,
+    'cell': $vdj-lightorange,
+    'stats': $vdj-darkblue,
+    'vdjserver': $vdj-orange,
+    '10x': $vdj-darkblue,
+    'adc': $vdj-darkgray,
 );
 
 // Elements
 $vdj-border: #E1E1E1;
-$text-danger: #FFFFFF;
+$text-white: #FFFFFF;
+// $text-danger: #FFFFFF;
 $text-info: #6C757D;
 $text-light: #FFFFFF;
 $text-success: #FFFFFF;
 $text-save: #FFFFFF;
+// $text-download: #FFFFFF;
 
 /* finally, import Bootstrap to set the changes! */
 @import "~bootstrap/scss/bootstrap";
