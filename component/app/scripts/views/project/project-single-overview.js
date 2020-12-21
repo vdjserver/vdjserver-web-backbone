@@ -555,12 +555,14 @@ var ProjectOverView = Marionette.View.extend({
             context.model.save()
             .then(function() {
                 context.modalState = 'pass';
+                $('#modal-message').modal('hide');
                 console.log("create pass");
                 console.log(context.model);
             })
             .fail(function(error) {
                 // save failed so show error modal
                 context.modalState = 'fail';
+                $('#modal-message').modal('hide');
 
                 // prepare a new modal with the failure message
                 var message = new MessageModel({

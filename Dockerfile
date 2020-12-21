@@ -45,7 +45,10 @@ RUN cd /var/www/html/vdjserver-backbone && npm install
 # Copy project source
 COPY ./component/ /var/www/html/vdjserver-backbone
 
+# build dev site
 RUN cd /var/www/html/vdjserver-backbone && npm run dev
+# build the production site
+#RUN cd /var/www/html/vdjserver-backbone && npm run build
 
 WORKDIR /var/www/html/vdjserver-backbone
 
