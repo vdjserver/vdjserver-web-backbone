@@ -30,7 +30,70 @@ li.progress-step {
     float: right;
 }
 
-// Create A Subject
+/*----------------------------------------------------------
+Create A Repertoire Steps
+----------------------------------------------------------*/
+.add-rep-steps {
+    margin-top: 3%;
+    margin-bottom: 3%;
+
+    .rep-step, .rep-step-active {
+        background: $vdj-green;
+        color: #FFFFFF;
+        position: relative;
+        padding-left: 40px;
+        padding-right: 40px;
+        margin-left: 1%;
+        transition: 0.3s;
+    }
+
+    .rep-step-inactive {
+        background: #B3CCC3; // $vdj-green at 50% opacity
+        transition: 0.3s;
+    }
+
+    .rep-step-inactive:hover {
+        background: $vdj-green;
+    }
+
+    .rep-step:before,
+    .rep-step:after{
+        content:"";
+        position: absolute;
+        top: 4px;
+        width: 27px;
+        height: 27px;
+        background: inherit;
+        border: inherit;
+        border-left-color: transparent;
+        border-bottom-color: transparent;
+        border-radius: 0px 4px 0px 0px;
+        -webkit-border-radius: 0px 4px 0px 0px;
+        -moz-border-radius: 0px 4px 0px 0px;
+    }
+    .rep-step:before,
+    .rep-step:after {
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+    }
+
+    .rep-step:before
+     {
+        left: -16px;
+        background: #FFFFFF;
+    }
+    .rep-step:after {
+        right: -13px;
+        z-index: 1;
+    }
+}
+
+/*----------------------------------------------------------
+Create A Subject
+----------------------------------------------------------*/
 #uploadSubject, #uploadDiagnosis, #uploadSample, #uploadCell, #uploadNucleic {
     width: 0.1px; // customizing file input
     height: 0.1px;
@@ -52,18 +115,18 @@ li.progress-step {
     border: 0px;
 }
 
-/***************************************
+/*----------------------------------------------------------
 Footer Actions
-***************************************/
+----------------------------------------------------------*/
 .footer-actions {
     margin-top: 3%;
     width: 100%;
-    margin-bottom: 3%;
+    margin-bottom: 8%;
 }
 
-/***************************************
+/*----------------------------------------------------------
 Modal Styles
-***************************************/
+----------------------------------------------------------*/
 .modal-content {
     padding: 2em;
 }

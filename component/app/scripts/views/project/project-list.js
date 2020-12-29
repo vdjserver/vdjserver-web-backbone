@@ -8,7 +8,19 @@ var ProjectSummaryView = Marionette.View.extend({
     className: 'community-project',
 
   events: {
-      'click #edit-project': 'editProject'
+      'click #edit-project': 'editProject',
+      'click .study-desc-more': function(e) {
+          // console.log("clicked expand for desc");
+          $(event.target).parent(".community-study-desc").addClass("no-display");
+
+          $(event.target).parent(".community-study-desc").siblings(".community-study-desc-full").removeClass("no-display");
+      },
+      'click .study-desc-collapse': function(e) {
+          // console.log("clicked collapse for desc");
+          $(event.target).parent(".community-study-desc-full").addClass("no-display");
+
+          $(event.target).parent(".community-study-desc-full").siblings(".community-study-desc").removeClass("no-display");
+      }
   },
 
   editProject: function(e) {

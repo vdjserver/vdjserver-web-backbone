@@ -6,7 +6,10 @@
 $fa-font-path: "~font-awesome/fonts/";
 
 // Font Awesome
-@import '~font-awesome/scss/font-awesome';
+// @import '~font-awesome/scss/font-awesome';
+
+// Font Awesome (5.14.0)
+@import '~@fortawesome/fontawesome-free/css/all.css';
 
 // Frameworks
 @import 'vendor/bootstrap-overrides';

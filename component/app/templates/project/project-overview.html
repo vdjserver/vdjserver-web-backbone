@@ -1,14 +1,13 @@
-<!-- <pre>
-
-{{airr_string}}
-</pre> -->
-
         <form method="POST" role="form" id="editProject-form" class="needs-validation" name="editProject" novalidate>
             <div class="row">
                 <div class="col-md-6 overview-summary">
                     <h3>Project Summary</h3>
                     {{#unless edit_mode}}
-                        <p>{{value.study_description}}</p>
+                        {{#if value.study_description}}
+                            <p>
+                                {{value.study_description}}
+                            </p>
+                        {{/if}}
                     {{/unless}}
 
                     {{#if edit_mode}}
