@@ -1,3 +1,7 @@
+/*****************************************************
+_colors.scss - Custom Colors
+*****************************************************/
+
 /* import only the necessary Bootstrap files */
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
@@ -16,7 +20,9 @@ $vdj-darkblue: #4E95B8;
 $vdj-blue: #7FA8BD;
 $vdj-link: #61B8E4;
 
-// BootStrap Color Overrides
+/* ----------------------------------------------------------
+Bootstrap Color Overrides
+------------------------------------------------------------*/
 $theme-colors: (
     'delete': $vdj-red,
     'success': $vdj-lightgreen,
@@ -25,17 +31,20 @@ $theme-colors: (
     'new': $vdj-darkblue,
     'add': $vdj-darkblue,
     'create': $vdj-darkblue,
-    'upload': $vdj-medgray,
+    'upload': $vdj-medlightgray,
     'edit': $vdj-yellow,
     'copy': $vdj-lightorange,
-    'info': $vdj-lightgray,
+    'info': $vdj-darkblue,
     'primary': $vdj-green,
     'light': $vdj-medgray,
     'cancel': $vdj-medgray,
+    'back': $vdj-medlightgray,
     'download': $vdj-lightgreen,
     'darkgray': $vdj-darkgray,
 
-    // Study Badges
+    /* ----------------------------------------------------------
+    Study Badges
+    ------------------------------------------------------------*/
     'locus': $vdj-green,
     'cell': $vdj-lightorange,
     'stats': $vdj-darkblue,
@@ -44,7 +53,9 @@ $theme-colors: (
     'adc': $vdj-darkgray,
 );
 
-// Elements
+/* ----------------------------------------------------------
+Elements
+------------------------------------------------------------*/
 $vdj-border: #E1E1E1;
 $text-white: #FFFFFF;
 // $text-danger: #FFFFFF;

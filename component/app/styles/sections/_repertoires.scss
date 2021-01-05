@@ -1,6 +1,9 @@
-/********************************************
-Repertoire Summary View
-********************************************/
+/*****************************************************
+_repertoires.scss - Repertoires
+
+* This is the SCSS for the Repertoire Summary View.
+*****************************************************/
+
 .hide {
     visibility: hidden;
 }
@@ -60,10 +63,6 @@ Repertoire Summary View
     padding-bottom: 2%;
 }
 
-//  #repertoire-summary-statistics, #repertoire-expand-statistics {
-//     padding-bottom: 3%;
-// }
-
 .statistics-number, .statistics-name {
     display: block;
 }
@@ -94,9 +93,9 @@ Repertoire Summary View
     margin-left: 2%;
 }
 
-/*******************************************
+/* ----------------------------------------------------------
 Expanded Repertoire (Details)
-*******************************************/
+------------------------------------------------------------*/
 .rep-details-button {
     width: 100%;
     position: relative;
@@ -143,10 +142,9 @@ Expanded Repertoire (Details)
     background: rgba(127, 168, 189, 0.1);
 }
 
-/********************************************
+/* ----------------------------------------------------------
 Edit Repertoire
-********************************************/
-#editSubject-form, #editSample-form, #editDiagnosis-form, #editCell-form, #editNucleic-form {
+------------------------------------------------------------*/#editSubject-form, #editSample-form, #editDiagnosis-form, #editCell-form, #editNucleic-form {
     text-align: left;
 
     > div {
