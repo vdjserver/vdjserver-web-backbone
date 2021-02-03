@@ -7,9 +7,6 @@ $(document).ready(function() {
 
 
     // Selecting a project to copy
-    // $(document).on("click", "#copy-repertoire", function() {
-    //     $(this).("#repertoire-container").toggleClass(".selected-repertoire");
-    // });
     if ($('#check-copy-repertoire').is('checked')) {
         console.log("I'm checked!");
     } else {
