@@ -103,7 +103,7 @@ CommunityController.prototype = {
                 that.repertoireCollection = {};
                 promises = [];
                 for (var r in repos) {
-                    var coll = new ADCRepertoireCollection({repository: r});
+                    var coll = new ADCRepertoireCollection(null, {repository: r});
                     that.repertoireCollection[r] = coll;
                     promises.push(coll.fetch());
                 }

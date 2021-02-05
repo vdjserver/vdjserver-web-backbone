@@ -36,8 +36,8 @@ import { Subject, Diagnosis, Sample, Repertoire } from 'Scripts/models/agave-met
 
 export var ADCRepertoireCollection = ADC.Collection.extend({
     model: ADCRepertoire,
-    initialize: function(parameters) {
-        ADC.Collection.prototype.initialize.apply(this, [parameters]);
+    initialize: function(models, parameters) {
+        ADC.Collection.prototype.initialize.apply(this, [models, parameters]);
     },
     url: function() {
         return this.apiHost + '/repertoire';
@@ -57,7 +57,7 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
 
     // apply filters to generate a new collection
     filterCollection(filters) {
-        var filtered = new ADCRepertoireCollection();
+        var filtered = new ADCRepertoireCollection(null, {repository: this['repository']});
 
         var fts_fields = [];
         if (filters['full_text_search']) fts_fields = filters['full_text_search'].toLowerCase().split(/\s+/);

@@ -57,7 +57,7 @@ ADC.Model = Backbone.Model.extend({
 
 // Extension of default Backbone.Collection for ADC
 ADC.Collection = Backbone.Collection.extend({
-    initialize: function(parameters) {
+    initialize: function(models, parameters) {
         this.repository = 'vdjserver';
         if (parameters && parameters.repository) {
             this.repository = parameters.repository;
