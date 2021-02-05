@@ -232,6 +232,13 @@ export default Backbone.Router.extend({
         App.AppController.showCommunityPage();
     },
 
+    // Create Community Chart
+    addCommChart: function() {
+        console.log('addCommChart route');
+
+        App.AppController.showAddChart();
+    },
+
     // For Create a Project Page
     createPage: function() {
         console.log('createPage route');

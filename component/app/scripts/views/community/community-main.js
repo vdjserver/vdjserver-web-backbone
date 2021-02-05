@@ -42,8 +42,10 @@ import PieChart from 'Scripts/views/charts/pie';
 
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
+import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
 
 // Community Query/Filter View
+// toolbar under the navigation bar
 import community_query_template from 'Templates/community/community-query.html';
 var CommunityQueryView = Marionette.View.extend({
     template: Handlebars.compile(community_query_template),
@@ -207,6 +209,7 @@ var CommunityStatisticsView = Marionette.View.extend({
         for (var i in colls['repertoireCollection'])
             num_reps += colls['repertoireCollection'][i].length;
 
+
         return {
             current_sort: current_sort,
             num_repos: num_repos,
@@ -249,6 +252,26 @@ var CommunityChartsView = Marionette.View.extend({
 
     },
 
+    // templateContext() {
+    //     if (!this.controller) return {};
+    //
+    //     var colls = this.controller.getCollections();
+    //     var num_repos = colls['repositoryInfo'].length;
+    //     var num_studies = colls['studyList'].length;
+    //     var current_sort = colls['studyList']['sort_by'];
+    //     var num_reps = 0;
+    //     for (var i in colls['repertoireCollection'])
+    //         num_reps += colls['repertoireCollection'][i].length;
+    //
+    //
+    //     return {
+    //         current_sort: current_sort,
+    //         num_repos: num_repos,
+    //         num_studies: num_studies,
+    //         num_reps: num_reps
+    //     }
+    // },
+
     onAttach() {
         if (this.view) this.view.showChart();
     },
@@ -269,6 +292,39 @@ var CommunityChartsView = Marionette.View.extend({
         this.view = new PieChart({series: series, title: title, subtitle: subtitle});
         this.showChildView('chartRegion', this.view);
         this.view.showChart();
+    },
+
+    newChartModal(e) {
+        console.log('add new chart page will appear');
+
+        // var message = new MessageModel({
+        //     'header': 'Add a new chart',
+        //     'body': '<p>Please select from the options below to create a new chart.</p>',
+        //     'confirmText': 'Next',
+        //     'cancelText': 'Cancel'
+        // });
+        //
+        // var view = new ModalChartView({model: message});
+        // App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        // $('#modal-message').modal('show');
+        //
+        // console.log(message);
+    },
+
+    newChartType(e) {
+        console.log('selected a chart type');
+        // $(this).addClass('selected-chart-type');
+    },
+
+    newGroup(e) {
+        console.log('clicked Create a Group');
+    },
+
+    events: {
+        'click .add-chart': 'newChartModal',
+        'click #add-chart': 'newChartModal',
+        'click .chart-type': 'newChartType',
+        'click #create-group': 'newGroup'
     }
 });
 
@@ -276,6 +332,9 @@ var CommunityChartsView = Marionette.View.extend({
 import community_pagination_template from 'Templates/community/community-pagination.html';
 var CommunityPaginationView = Marionette.View.extend({
     template: Handlebars.compile(community_pagination_template),
+
+    // good implementation
+    // https://stackoverflow.com/questions/34456577/marionette-collection-pagination
 
     // Trying to access data to produce paging
     initialize(parameters) {
@@ -285,41 +344,9 @@ var CommunityPaginationView = Marionette.View.extend({
         }
     },
 
-    templateContext(){
+    templateContext(studyList){
         if (!this.controller) return{};
-
-        // What's in the data?
-        console.log(this.controller);
-
-        var colls = this.controller.getCollections();
-        var num_studies = colls['studyList'].length;
-
-        return {
-            num_studies: num_studies,
-        }
-    },
-
-    updatePagination(studyList) {
-        // set up pagination settings
-        var paging = {
-            total: studyList.length,
-            perPage: 10,
-            pages: Math.ceil(this.total / this.perPage),
-        };
-
-        // get number of studies
-        console.log("update pagination: " + studyList.length);
-
-        // divide by number of studies we want per page
-
-        // create pagination links for each number of page sets
-
-
     }
-
-    // showResultsList(studyList) {
-    //     console.log(this.controller);
-    // }
 });
 
 // the main community data page
@@ -335,8 +362,6 @@ export default Marionette.View.extend({
     // one region for results
     // one region for pagination
     regions: {
-        queryRegion: '#community-query',
-        statsRegion: '#community-statistics',
         chartsRegion: '#community-charts',
         resultsRegion: '#community-results',
         paginationRegion: '#community-pagination'
@@ -364,11 +389,6 @@ export default Marionette.View.extend({
         }
     },
 
-    events: {
-        // Setting event for "New Filter" Modal
-        'click #new-community-filter': 'newFilterModal'
-    },
-
     // show a loading view, used while fetching the data
     showLoading(ls, lr, tr) {
         this.showChildView('resultsRegion', new LoadingView({loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr}));
@@ -376,14 +396,20 @@ export default Marionette.View.extend({
     },
 
     showResultsList(studyList, filters) {
-        console.log(this.controller);
         $("#community-charts").removeClass("no-display");
 
+        // What's in the data?
+        // console.log("what is here: " + this.controller);
+        // console.log("studyList " + JSON.stringify(studyList));
+
+        // show filters as toolbar under navigation bar
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
-        this.showChildView('queryRegion', this.filterView);
+        App.AppController.navController.showToolbar1Bar(this.filterView);
+        //this.showChildView('queryRegion', this.filterView);
 
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
-        this.showChildView('statsRegion', this.statsView);
+        App.AppController.navController.showToolbar2Bar(this.statsView);
+        //this.showChildView('statsRegion', this.statsView);
         this.statsView.updateStats(studyList);
 
         this.chartsView = new CommunityChartsView ({model: this.model, controller: this.controller});
@@ -395,12 +421,13 @@ export default Marionette.View.extend({
 
         this.paginationView = new CommunityPaginationView ({collection: studyList, controller: this.controller});
         this.showChildView('paginationRegion', this.paginationView);
-        this.paginationView.updatePagination(studyList);
+        // this.paginationView.updatePagination(studyList);
     },
 
     updateFilters(filters) {
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
-        this.showChildView('queryRegion', this.filterView);
+        App.AppController.navController.showToolbar1Bar(this.filterView);
+        //this.showChildView('queryRegion', this.filterView);
     },
 
     newFilterModal(e) {
@@ -417,6 +444,5 @@ export default Marionette.View.extend({
         $('#modal-message').modal('show');
 
         console.log(message);
-    }
-
+    },
 });

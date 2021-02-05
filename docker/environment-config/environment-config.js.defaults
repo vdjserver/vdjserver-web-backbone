@@ -106,10 +106,44 @@ var EnvironmentConfig = {
     },
     'adc': {
         'vdjserver': {
-            'hostname': 'https://vdjserver.org/airr/v1'
+            'hostname': 'https://vdjserver.org/airr/v1',
+            'title': 'VDJServer'
         },
         'ipa1': {
-            'hostname': 'https://ipa1.ireceptor.org/airr/v1'
+            'hostname': 'https://ipa1.ireceptor.org/airr/v1',
+            'title': 'IPA'
+        },
+        'ipa2': {
+            'hostname': 'https://ipa2.ireceptor.org/airr/v1',
+            'title': 'IPA'
+        },
+        'ipa3': {
+            'hostname': 'https://ipa3.ireceptor.org/airr/v1',
+            'title': 'IPA'
+        },
+        'ipa4': {
+            'hostname': 'https://ipa4.ireceptor.org/airr/v1',
+            'title': 'IPA'
+        },
+        'ipa5': {
+            'hostname': 'http://ipa5.ireceptor.org/airr/v1',
+            'title': 'IPA'
+        },
+        'covid19-1': {
+            'hostname': 'http://covid19-1.ireceptor.org/airr/v1',
+            'title': 'IPA'
+        },
+        'covid19-2': {
+            'hostname': 'http://covid19-2.ireceptor.org/airr/v1',
+            'title': 'IPA'
+        },
+        'covid19-3': {
+            'hostname': 'http://covid19-3.ireceptor.org/airr/v1',
+            'title': 'IPA'
+        },
+        'covid19-4': {
+            'hostname': 'http://covid19-4.ireceptor.org/airr/v1',
+            'title': 'IPA'
         },
     },
     'processMetadata': {

@@ -63,20 +63,45 @@ var NavigationBarView = Marionette.View.extend({
 //
 // This manages the navigation bar with public options
 // and after the user logs in
+import navregion_template from 'Templates/app/navigation-region.html';
 export default Marionette.View.extend({
-    template: Handlebars.compile('<div id="navbar">'),
+    template: Handlebars.compile(navregion_template),
 
     // one region for the navigation bar
+    // one region for the announcement/message bar
+    // one region for the first tool bar
+    // one region for the second tool bar
     regions: {
-        navigationRegion: '#navbar'
+        navigationRegion: '#navbar-region',
+        messageRegion: '#navmessage-region',
+        toolbar1Region: '#toolbar1-region',
+        toolbar2Region: '#toolbar2-region'
     },
 
     events: {
         'click #logout': 'logout',
+        'click .open-filter': 'emptyToolbarBar',
+        'click .closed-filter': 'showToolbarBar',
     },
 
     initialize(options) {
         console.log('Initialize');
+        _.bindAll(this, 'detect_scroll');
+         $(window).scroll(this.detect_scroll);
+    },
+
+    detect_scroll: function(view) {
+        if ($(window).scrollTop() == 0) {
+            this.getRegion('toolbar1Region').$el.show();
+            this.getRegion('toolbar2Region').$el.show();
+
+            $("#close-filter").css("display", "none").toggleClass("closed-filter open-filter");
+            $("#navigation").removeClass("query-stats-border");
+            $("#close-filter-icon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
+        } else if ($(window).scrollTop() > 0) {
+            $("#navigation").addClass("query-stats-border");
+            $("#close-filter").css("display", "inline");
+        }
     },
 
     showPublicNavigation() {
@@ -85,6 +110,47 @@ export default Marionette.View.extend({
 
     showPrivateNavigation() {
         this.showChildView('navigationRegion', new NavigationBarView({public_bar: false}));
+    },
+
+    showMessageBar(view) {
+        this.showChildView('messageRegion', view);
+    },
+
+    emptyMessageBar() {
+        this.getRegion('messageRegion').empty();
+    },
+
+    showToolbar1Bar(view) {
+        // console.log(view);
+        this.showChildView('toolbar1Region', view);
+    },
+
+    emptyToolbar1Bar() {
+        this.getRegion('toolbar1Region').empty();
+    },
+
+    showToolbar2Bar(view) {
+        this.showChildView('toolbar2Region', view);
+    },
+
+    emptyToolbar2Bar() {
+        this.getRegion('toolbar2Region').empty();
+    },
+
+    emptyToolbarBar(view) {
+        this.getRegion('toolbar1Region').$el.hide();
+        this.getRegion('toolbar2Region').$el.hide();
+
+        $(".open-filter").toggleClass("open-filter closed-filter");
+        $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
+    },
+
+    showToolbarBar(view) {
+        this.getRegion('toolbar1Region').$el.show();
+        this.getRegion('toolbar2Region').$el.show();
+
+        $(".closed-filter").toggleClass("closed-filter open-filter");
+        $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
     },
 
     logout(e) {
