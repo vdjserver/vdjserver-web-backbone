@@ -1,6 +1,36 @@
+//
+// project-list.js
+// List of user private projects
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2021 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+// Author: Olivia Dorsey <olivia.dorsey@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+
 import Marionette from 'backbone.marionette';
-import template from 'Templates/project/project-summary.html';
 import Handlebars from 'handlebars';
+
+import template from 'Templates/project/project-summary.html';
+import intro_template from 'Templates/project/intro.html';
+import LoadingView from 'Scripts/views/utilities/loading-view';
 
 var ProjectSummaryView = Marionette.View.extend({
     template: Handlebars.compile(template),
@@ -32,11 +62,41 @@ var ProjectSummaryView = Marionette.View.extend({
   },
 });
 
-export default Marionette.CollectionView.extend({
+var ProjectListView = Marionette.CollectionView.extend({
     template: Handlebars.compile("<div></div>"),
 //     tagName: 'table',
 //     className: 'table table-hover table-sm table-bordered',
     initialize: function(parameters) {
     this.childView = ProjectSummaryView;
   },
+});
+
+//
+// List of private projects for the user
+// welcome message at top with button to create a new project
+//
+export default Marionette.View.extend({
+    template: Handlebars.compile(intro_template + '<div id="project-list"></div>'),
+
+    // one region for the project content
+    regions: {
+        projectRegion: '#project-list'
+    },
+
+    initialize(parameters) {
+        console.log('Initialize');
+        console.log(parameters);
+
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+        var view = new ProjectListView({collection: parameters.collection, controller: this.controller});
+        this.showChildView('projectRegion', view);
+    },
+
+    events: {
+        'click #create-project': function() { this.controller.createProject(); }
+    }
+
 });
