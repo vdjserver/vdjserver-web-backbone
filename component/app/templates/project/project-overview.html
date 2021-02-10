@@ -1,14 +1,13 @@
-<!-- <pre>
-
-{{airr_string}}
-</pre> -->
-
         <form method="POST" role="form" id="editProject-form" class="needs-validation" name="editProject" novalidate>
             <div class="row">
                 <div class="col-md-6 overview-summary">
                     <h3>Project Summary</h3>
                     {{#unless edit_mode}}
-                        <p>{{value.study_description}}</p>
+                        {{#if value.study_description}}
+                            <p>
+                                {{value.study_description}}
+                            </p>
+                        {{/if}}
                     {{/unless}}
 
                     {{#if edit_mode}}
@@ -54,19 +53,39 @@
                     <div class="overview-item">
                         <span class="details">Study Keywords:</span>
                         {{#unless edit_mode}}
-                            {{value.keywords_study}}
+                            {{#if contains_ig}}
+                                <a class="badge badge-pill badge-locus">IG</a>
+                            {{/if}}
+                            {{#if contains_tcr}}
+                                <a class="badge badge-pill badge-locus">TCR</a>
+                            {{/if}}
+                            {{#if contains_single_cell}}
+                                <a class="badge badge-pill badge-cell">Single Cell</a>
+                            {{/if}}
+                            {{#if contains_paired_chain}}
+                                <a class="badge badge-pill badge-cell">Paired Chain</a>
+                            {{/if}}
+                            {{#if is_10x_genomics}}
+                                <a class="badge badge-pill badge-10x">10x Genomics</a>
+                            {{/if}}
                         {{/unless}}
 
                         {{#if edit_mode}}
-
                             {{#each airr_schema.properties.keywords_study.items.enum}}
-                                    <div class="form-check custom-control custom-checkbox">
-                                      <input class="form-check-input" type="checkbox" name="{{this}}" id="{{this}}" value="{{this}}" {{#contains this ../value.keywords_study}} checked {{/contains}}>
-                                      <label class="form-check-label" for="{{@index}}">
+                                <div class="form-check custom-control custom-checkbox">
+                                    <input class="form-check-input" type="checkbox" name="{{this}}" id="{{this}}" value="{{this}}" {{#contains this ../value.keywords_study}} checked {{/contains}}>
+                                    <label class="form-check-label" for="{{@index}}">
                                         {{#with (lookup ../keywords_object this)}} {{this}} {{/with}}
-                                      </label>
-                                  </div>
+                                    </label>
+                                </div>
                             {{/each}}
+                                <div class="form-check custom-control custom-checkbox">
+                                    <input class="form-check-input" type="checkbox" name="is_10x_genomics" id="is_10x_genomics" value="is_10x_genomics" {{#if is_10x_genomics}} checked {{/if}}>
+                                    <label class="form-check-label">
+                                        10x Genomics
+                                    </label>
+                                </div>
+
                         {{/if}}
                     </div>
 

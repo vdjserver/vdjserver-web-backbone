@@ -90,6 +90,9 @@ export default Agave.MetadataModel.extend({
         if (data.contains_single_cell) keywords.push('contains_single_cell');
         if (data.contains_paired_chain) keywords.push('contains_paired_chain');
         value.keywords_study = keywords;
+        keywords = [];
+        if (data.is_10x_genomics) keywords.push('is_10x_genomics');
+        if (keywords.length > 0) value.vdjserver_keywords = keywords;
         this.set('value', value);
     },
 

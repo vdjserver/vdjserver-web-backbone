@@ -30,36 +30,54 @@ import Handlebars from 'handlebars';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
 
-// login view
-import login_template from 'Templates/app/login.html';
-var LoginView = Marionette.View.extend({
-    template: Handlebars.compile(login_template)
-});
-
 // home window
-import template from 'Templates/app/home.html';
+import template from 'Templates/app/login.html';
 export default Marionette.View.extend({
     template: Handlebars.compile(template),
-    regions: {
-        homeRegion: '#home'
-    },
 
     initialize: function(parameters) {
         // we use a state variable to know what type of modal to display
         this.loginState = 'login';
+    },
 
-        var view = new LoginView();
-        this.showChildView('homeRegion', view);
+    templateContext() {
+        var maintenanceMessage = EnvironmentConfig.agave.maintenanceMessage;
+        if ((EnvironmentConfig.agave.maintenance)
+            && (maintenanceMessage.length == 0)) {
+            maintenanceMessage = "VDJServer is currently undergoing maintenance."
+        }
+
+        return {
+            maintenance: EnvironmentConfig.agave.maintenance,
+            maintenanceMessage: maintenanceMessage
+        }
     },
 
     events: {
         'click #home-login': 'login',
+        'click #create-account': 'createAccount',
+    },
+
+    // handle create account button click
+    createAccount: function(e) {
+        e.preventDefault();
+
+        App.router.navigate('account', {'trigger': true});
     },
 
     // handle login event
     login: function(e) {
-
         e.preventDefault();
+
+        if ($('#username').val().length == 0) {
+            $('#username').focus();
+            return;
+        }
+
+        if ($('#password').val().length == 0) {
+            $('#password').focus();
+            return;
+        }
 
         // when login button is pressed, display an authenticating modal message
         // we cannot perform the actual login here because the modal has not

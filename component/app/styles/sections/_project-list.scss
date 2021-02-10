@@ -1,10 +1,6 @@
 /*****************************************************
-SASS for Project List page
+_project-list.scss - Project List Page
 *****************************************************/
-
-// .jumbotron {
-//     background: none !important;
-// }
 
 .navbar-brand {
     img {
@@ -42,19 +38,6 @@ ul.tabs-list {
             background: #b7cec6;
         }
     }
-}
-
-// Project List table
-th.title {
-    width: 20%;
-}
-
-td.desc {
-    width: 40%;
-}
-
-td.created {
-    width: 5%;
 }
 
 .dropdown-menu {

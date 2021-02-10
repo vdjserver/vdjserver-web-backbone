@@ -93,6 +93,26 @@ var ProjectSettingsView = Marionette.View.extend({
             }
         }
 
+        // keyword badges
+        var contains_ig = false;
+        var contains_tcr = false;
+        var contains_single_cell = false;
+        var contains_paired_chain = false;
+        if (value.keywords_study.indexOf("contains_ig") >= 0)
+            contains_ig = true;
+        if (value.keywords_study.indexOf("contains_tcr") >= 0)
+            contains_tcr = true;
+        if (value.keywords_study.indexOf("contains_single_cell") >= 0)
+            contains_single_cell = true;
+        if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
+            contains_paired_chain = true;
+
+        // custom 10x flag
+        var is_10x_genomics = false;
+        if (value.vdjserver_keywords)
+            if (value.vdjserver_keywords.indexOf("is_10x_genomics") >= 0)
+                is_10x_genomics = true;
+
         return {
             // if edit mode is true, then fields should be editable
             edit_mode: this.edit_mode,
@@ -104,6 +124,12 @@ var ProjectSettingsView = Marionette.View.extend({
             study_type_id: study_type_id,
             study_type_label: study_type_label,
 
+            contains_ig: contains_ig,
+            contains_tcr: contains_tcr,
+            contains_single_cell: contains_single_cell,
+            contains_paired_chain: contains_paired_chain,
+            is_10x_genomics: is_10x_genomics,
+
             // label array
             keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
 
@@ -112,7 +138,8 @@ var ProjectSettingsView = Marionette.View.extend({
                 'contains_single_cell': 'Single Cell',
                 'contains_ig': 'Ig',
                 'contains_paired_chain': 'Paired Chain',
-                'contains_tcr': 'TCR'
+                'contains_tcr': 'TCR',
+                'is_10x_genomics': '10x Genomics'
             }
         }
     },

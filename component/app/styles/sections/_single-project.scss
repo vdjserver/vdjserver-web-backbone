@@ -1,6 +1,9 @@
 /*****************************************************
-Single Project Overview Page
+_single-project.scss - Single Projects
+
+* This is the SCSS for the Single Project Overview Page
 *****************************************************/
+
 #project {
     padding: 0% 5%;
 }
@@ -92,9 +95,9 @@ Single Project Overview Page
     margin: 3% 0%;
 }
 
-/********************************************
+/* ----------------------------------------------------------
 Repertoire Summary View
-********************************************/
+----------------------------------------------------------*/
 .hide {
     visibility: hidden;
 }
@@ -176,25 +179,6 @@ Repertoire Summary View
     }
 }
 
-// input#repertoire_name.form-control, input#repertoire_uuid.form-control,
-// input#subject_id.form-control, input#age.form-control,
-// input#sex.form-control {
-//     margin-left: 3%;
-// }
-//
-// input#age.form-control {
-//     width: 40%;
-// }
-
-
-// input#repertoire_name.form-control-plaintext,
-// input#repertoire_uuid.form-control-plaintext,
-// input#subject_id.form-control-plaintext, input#age.form-control-plaintext,
-// input#sex.form-control-plaintext {
-//     margin-left: 3%;
-//     width: 80%;
-// }
-
 .rep-form-group {
     margin-bottom: 0 !important;
 }
@@ -202,9 +186,10 @@ Repertoire Summary View
 .form-inline input {
     margin-left: 2%;
 }
-/********************************************
+
+/* ----------------------------------------------------------
 Edit Repertoire
-********************************************/
+----------------------------------------------------------*/
 #editSubject-form, #editSample-form, #editDiagnosis-form, #editCell-form, #editNucleic-form {
     text-align: left;
 
@@ -213,24 +198,24 @@ Edit Repertoire
     }
 }
 
-/********************************************
+/* ----------------------------------------------------------
 Progress Steps
-********************************************/
+----------------------------------------------------------*/
 .selected-step {
     background: rgba(255, 255, 255, 0.4);
     padding: 2%;
 }
 
-/*******************************************
+/* ----------------------------------------------------------
 Delete a Project
-*******************************************/
+----------------------------------------------------------*/
 .delete-warning {
     color: $vdj-orange;
 }
 
-/*******************************************
+/* ----------------------------------------------------------
 User Management
-*******************************************/
+----------------------------------------------------------*/
 #add-project-user {
         margin-bottom: 3%;
 }
@@ -260,9 +245,9 @@ User Management
     }
 }
 
-/*******************************************
+/* ----------------------------------------------------------
 Repertoires
-*******************************************/
+------------------------------------------------------------*/
 .rep-details-button {
     width: 100%;
     position: relative;
@@ -270,14 +255,14 @@ Repertoires
 }
 
 .rep-details-button[aria-expanded="false"]:after {
-    content: "\f077";
-    font-family: "FontAwesome";
+    font-family: "Font Awesome 5 Free";
+    content: "\f057";
     float: right;
 }
 
 .rep-details-button[aria-expanded="true"]:after {
+    font-family: "Font Awesome 5 Free";
     content: "\f078";
-    font-family: "FontAwesome";
     float: right;
 }
 

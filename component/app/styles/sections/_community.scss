@@ -404,7 +404,7 @@ Community Charts - Add a Chart Modal
 }
 
 /* ----------------------------------------------------------
-Community Results
+Community Results & Projects
 ------------------------------------------------------------*/
 // #community-results::before {
 //     content: "Results";
@@ -451,7 +451,7 @@ Community Results
     border: 1px solid $vdj-medgray;
     font-size: 0.9em;
 
-    .community-project-header {
+    .community-project-header, .project-header {
         padding: 2% 2% 0% 2%;
 
         h2 {
@@ -504,9 +504,9 @@ Community Results
     border: 0;
 }
 /* ----------------------------------------------------------
-Community Repertoires
+Community Repertoires & Project Metadata
 ------------------------------------------------------------*/
-.community-metadata {
+.community-metadata, .project-metadata {
     margin-bottom: 1rem;
 
     p {

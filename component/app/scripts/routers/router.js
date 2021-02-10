@@ -69,8 +69,16 @@ export default Backbone.Router.extend({
         '':                                 'index',
         //'auth/logout':                      'authLogout',
 
-        // user account pages
-        //'account/profile':                  'accountProfile',
+        // public user account pages
+        'account':                          'createAccount',
+        'password-reset':                   'forgotPassword',
+        'account/pending':                  'verificationPending',
+        //'account/verify/:id':               'verifyAccount',
+
+        // private user account pages
+        'account/profile':                  'accountProfile',
+        //'account/user-feedback':            'userFeedback',
+        //'account/change-password':          'changePassword',
 
         // project pages
         //'project':                          'projectList',
@@ -149,7 +157,29 @@ export default Backbone.Router.extend({
     },
 
     //
-    // Account pages
+    // Public account pages
+    //
+
+    createAccount: function() {
+        console.log('createAccount route');
+
+        App.AppController.showCreateAccountPage();
+    },
+
+    forgotPassword: function() {
+        console.log('forgotPassword route');
+
+        App.AppController.showForgotPasswordPage();
+    },
+
+    verificationPending: function() {
+        console.log('verificationPending route');
+
+        App.AppController.showVerificationPage();
+    },
+
+    //
+    // Private account pages
     //
 
     accountProfile: function() {

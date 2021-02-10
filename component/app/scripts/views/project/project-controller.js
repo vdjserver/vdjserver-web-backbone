@@ -38,13 +38,12 @@ import CreateProjectView from 'Scripts/views/project/create-view';
 
 // the main project view
 var ProjectView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="intro">' + intro_template + '</div><div id="project">'),
+    template: Handlebars.compile('<div id="project"></div>'),
 
     // one region to show messages
     // one region for the project content
     regions: {
-        introRegion: '#intro',
-        projectRegion: '#project',
+        projectRegion: '#project'
     },
 
     initialize(parameters) {
@@ -67,15 +66,6 @@ var ProjectView = Marionette.View.extend({
         this.showChildView('projectRegion', new LoadingView({}));
     },
 
-    // displaying intro text before Project List
-    showIntroView() {
-        this.showChildView('introRegion', new IntroView());
-    },
-
-    clearIntroView() {
-        this.getRegion('introRegion').empty();
-    },
-
     showProjectList(projectList) {
         console.log(this.controller);
         var view = new ProjectListView({collection: projectList, controller: this.controller});
@@ -83,13 +73,11 @@ var ProjectView = Marionette.View.extend({
     },
 
     showProjectPage(projectController) {
-        this.clearIntroView();
         console.log(this.controller);
         this.showChildView('projectRegion', projectController.getView());
     },
 
     showCreatePage(project) {
-        this.clearIntroView();
         var view = new CreateProjectView({model: project, controller: this.controller});
         this.showChildView('projectRegion', view);
     },

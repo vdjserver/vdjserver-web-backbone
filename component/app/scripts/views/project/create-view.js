@@ -66,7 +66,8 @@ var CreateView = Marionette.View.extend({
                 'contains_ig': 'Ig',
                 'contains_tcr': 'TCR',
                 'contains_single_cell': 'Single Cell',
-                'contains_paired_chain': 'Paired Chain'
+                'contains_paired_chain': 'Paired Chain',
+                'is_10x_genomics': '10x Genomics'
             }
         }
     },

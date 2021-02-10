@@ -29,7 +29,9 @@
 import '../styles/main.scss'
 
 // Images
-import logo from '../images/logo.png';
+import logo_image from 'Images/vdjserver-logo.png';
+import genomics_image from 'Images/10xgenomics-logo.png';
+import ireceptor_image from 'Images/ireceptor-logo.png';
 
 // main application
 import { Agave } from 'Scripts/backbone/backbone-agave';

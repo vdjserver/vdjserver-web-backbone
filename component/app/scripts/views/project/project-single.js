@@ -270,23 +270,27 @@ var SingleProjectView = Marionette.View.extend({
             this.controller.startCreateRepertoireSteps();
         },
 
-        'click #add-subject': function() {
+        'click .add-repertoire': function() {
+            this.controller.startCreateRepertoireSteps();
+        },
+
+        'click .add-subject': function() {
             this.controller.addSubjectStep();
         },
 
-        'click #add-diagnosis': function() {
+        'click .add-diagnosis': function() {
             this.controller.addDiagnosisStep();
         },
 
-        'click #add-sample': function() {
+        'click .add-sample': function() {
             this.controller.addSampleStep();
         },
 
-        'click #add-cell': function() {
+        'click .add-cell': function() {
             this.controller.addCellProcessingStep();
         },
 
-        'click #add-nucleic': function() {
+        'click .add-nucleic': function() {
             this.controller.addNucleicProcessingStep();
         },
 
