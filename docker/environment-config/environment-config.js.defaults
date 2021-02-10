@@ -158,7 +158,7 @@ var EnvironmentConfig = {
         'publicKey': '6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc',
     },
     'vdjApi': {
-        'hostname': 'https://vdjserver.org/api/v1',
+        'hostname': 'https://vdjserver.org/api/v2',
     },
     'vdjGuest': {
         'hostname': 'https://vdjserver.org/guest',
