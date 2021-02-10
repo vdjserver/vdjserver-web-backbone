@@ -54,6 +54,7 @@ module.exports = function(env, argv) {
                 // directory aliases
                 'Scripts': path.resolve(__dirname, 'app/scripts/'),
                 'Templates': path.resolve(__dirname, 'app/templates/'),
+                'Images': path.resolve(__dirname, 'app/images/'),
 
                 // The main application
                 //'app': path.resolve(__dirname, 'app') + '/scripts/app.js',
@@ -71,12 +72,6 @@ module.exports = function(env, argv) {
                 'filesize':         'filesize',
                 'file-saver':       path.resolve(__dirname,'node_modules') + '/file-saver/FileSaver',
                 'handlebars': path.resolve(__dirname,'node_modules') + '/handlebars/dist/handlebars',
-                'highcharts':       'highstock-release/highstock',
-                'highcharts-data':  'highstock-release/modules/data',
-                'highcharts-drilldown': 'highstock-release/modules/drilldown',
-                'highcharts-more':  'highstock-release/highcharts-more',
-                'highcharts-exporting': 'highstock-release/modules/exporting',
-                'highcharts-offline-exporting': 'highstock-release/modules/offline-exporting',
                 'jquery':           'jquery',
                 'jquery-ui':        'jquery-ui',
                 'layoutmanager':    'layoutmanager',

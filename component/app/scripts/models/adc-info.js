@@ -2,8 +2,8 @@
 'use strict';
 
 //
-// agave-projects.js
-// Private projects collection
+// adc-info.js
+// Info from AIRR Data Commons repository
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -27,19 +27,15 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-import { Agave } from 'Scripts/backbone/backbone-agave';
-import Project from 'Scripts/models/agave-project';
-import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
+import { ADC } from 'Scripts/backbone/backbone-adc';
 
-export default Agave.MetadataCollection.extend(
-    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
-        model: Project,
-        url: function() {
-            return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"private_project"}')
-                   + '&limit=' + this.limit
-                   + '&offset=' + this.offset
-                   ;
-        },
-    })
-);
+// ADC Info
+export default ADC.Model.extend({
+    initialize: function(parameters) {
+        ADC.Model.prototype.initialize.apply(this, [parameters]);
+    },
+    url: function() {
+        return this.apiHost + '/info';
+    },
+});
+

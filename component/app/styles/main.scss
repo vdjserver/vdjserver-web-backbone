@@ -3,10 +3,13 @@
 
 // Setting path for Bootstrap fonts:
 // $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
-$fa-font-path: "~font-awesome/fonts/";
+// $fa-font-path: "~font-awesome/fonts/";
 
-// Font Awesome
-@import '~font-awesome/scss/font-awesome';
+// Font Awesome (4.3.0)
+// @import '~font-awesome/scss/font-awesome';
+
+// Font Awesome (5.14.0)
+@import '~@fortawesome/fontawesome-free/css/all.css';
 
 // Frameworks
 @import 'vendor/bootstrap-overrides';
@@ -27,12 +30,12 @@ $fa-font-path: "~font-awesome/fonts/";
 // Sections
 @import 'sections/community';
 @import 'sections/create-account';
+@import 'sections/create-project';
+@import 'sections/create-rep';
 @import 'sections/file-upload';
 @import 'sections/home';
 @import 'sections/project-list';
 @import 'sections/single-project';
-@import 'sections/create-project';
-@import 'sections/create-rep';
 
 // Partials
 // @import 'partials/alerts';

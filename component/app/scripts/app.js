@@ -38,7 +38,7 @@ import UserProfileView from 'Scripts/views/account/account-profile';
 // import IntroView from 'intro-view';
 import NavigationController from 'Scripts/views/app/navbar-controller';
 import ProjectController from 'Scripts/views/project/project-controller';
-import CommunityController from 'Scripts/views/project/community-controller';
+import CommunityController from 'Scripts/views/community/community-controller';
 import AdminController from 'Scripts/views/admin/admin-controller';
 
 // AIRR Schema
@@ -60,7 +60,7 @@ var ModalMessageConfirm = Marionette.View.extend({
 
 // Controller and view for the main regions for the application.
 var ApplicationController = Marionette.View.extend({
-    template: Handlebars.compile('<div id="navigation"></div><div id="main"></div><div id="modal"></div>'),
+    template: Handlebars.compile('<div id="navigation"></div><div id="main" class="p-0"></div><div id="modal"></div>'),
 
     // three regions:
     // one for the navigation bar
@@ -177,8 +177,8 @@ var ApplicationController = Marionette.View.extend({
         this.projectController.showProjectPage(projectUuid, page);
     },
 
-    showCommunityList() {
-        console.log('showCommunityList');
+    showCommunityPage() {
+        console.log('showCommunityPage');
 
         // create community controller if needed
         if (! this.communityController) {
@@ -191,6 +191,21 @@ var ApplicationController = Marionette.View.extend({
 
         // tell controller to display the project list page
         this.communityController.showProjectList();
+    },
+
+    showAddChart() {
+        console.log('showAddCommChart from app.js');
+        // create community controller if needed
+        if (! this.communityController) {
+          this.communityController = new CommunityController();
+        }
+        this.showChildView('mainRegion', this.communityController.getView());
+
+        // tell navigation controller to display its public nav bar
+        this.navController.showPublicNavigation();
+
+        // tell controller to display the add a chart page
+        this.communityController.showAddChart();
     },
 
     showCreatePage() {

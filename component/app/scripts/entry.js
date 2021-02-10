@@ -39,6 +39,20 @@ import Application from 'Scripts/app';
 import bootstrap from 'bootstrap';
 import bootstrap_autocomplete from 'bootstrap-autocomplete';
 
+// Highcharts
+import Highcharts from 'highcharts';
+require('highcharts/modules/exporting')(Highcharts);
+require('highcharts/modules/drilldown')(Highcharts);
+
+// D3
+import d3 from 'd3';
+
+// images
+import logo_image from 'Images/vdjserver-logo.png';
+import genomics_image from 'Images/genomics-logo.png';
+import ireceptor_image from 'Images/ireceptor-logo.png';
+
+
 document.addEventListener('DOMContentLoaded', () => {
   // the global application object
   global.App = new Application();

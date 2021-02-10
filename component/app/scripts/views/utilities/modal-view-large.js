@@ -1,9 +1,6 @@
-
-'use strict';
-
 //
-// agave-projects.js
-// Private projects collection
+// modal-view.js
+// Generic modal view
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -12,6 +9,7 @@
 // Copyright (C) 2020 The University of Texas Southwestern Medical Center
 //
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
+// Author: Olivia Dorsey <olivia.dorsey@utsouthwestern.edu>
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
@@ -27,19 +25,28 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
-import { Agave } from 'Scripts/backbone/backbone-agave';
-import Project from 'Scripts/models/agave-project';
-import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
+import Marionette from 'backbone.marionette';
+import template from 'Templates/util/modal-message-large.html';
+import Handlebars from 'handlebars';
 
-export default Agave.MetadataCollection.extend(
-    _.extend({}, Comparators.reverseChronologicalCreatedTime, {
-        model: Project,
-        url: function() {
-            return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"private_project"}')
-                   + '&limit=' + this.limit
-                   + '&offset=' + this.offset
-                   ;
+// use Message as the model
+
+export default Marionette.View.extend({
+    template: Handlebars.compile(template),
+    region: '#modal',
+
+    events: {
+        'click #server-error': function(e) {
+            console.log('route to send feedback page');
         },
-    })
-);
+        'click #cancel-message-button': function(e) {
+            e.preventDefault();
+            this.model.set('status','cancel');
+        },
+        'click #confirm-message-button': function(e) {
+            e.preventDefault();
+            this.model.set('status','confirm');
+        }
+    }
+
+});

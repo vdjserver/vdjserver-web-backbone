@@ -1,0 +1,63 @@
+<!--
+- Community Stats View
+-->
+
+<div class="row community-statistics">
+    <div class="col-md-2">
+        <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="community-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort Studies By
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <button class="dropdown-item" type="button" id="community-sort-select" name="study.study_title">
+                {{#ifEquals current_sort "study.study_title"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                Study Title
+            </button>
+            <button class="dropdown-item" type="button">
+                {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                Newest
+            </button>
+            <button class="dropdown-item" type="button">
+                {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                Oldest
+            </button>
+            <button class="dropdown-item" type="button" id="community-sort-select" name="num_repertoires">
+                {{#ifEquals current_sort "num_repertoires"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                Number of Repertoires
+            </button>
+            <button class="dropdown-item" type="button">
+                {{#ifEquals current_sort "repository"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                ADC Repository
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item disabled" type="button">
+                Add Custom Sort...
+            </button>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-md-8 results-stats">
+        <span class="stats">Results Summary</span>
+        <div class="stats-badges">
+            <span class="badge badge-pill badge-stats" id="stats-studies">
+                {{num_studies}} Studies
+            </span>
+
+            <span class="badge badge-pill badge-stats" id="stats-reps">
+                {{num_reps}} Repertoires
+            </span>
+
+            <span class="badge badge-pill badge-stats" id="stats-adc">
+                {{num_repos}} ADC Repositories
+            </span>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <a download class="btn btn-download" href="#">Download <i class="fas fa-download" aria-hidden="true"></i></a>
+    </div>
+</div>
+
+<!-- <div class="toolbar2-footer">
+</div> -->
