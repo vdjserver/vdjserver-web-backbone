@@ -3,7 +3,7 @@ VDJServer Backbone
 
 VDJServer Backbone is a next generation immune repertoire analysis portal.
 
-The `v2-community` branch is customized as a standalone website for the VDJServer Community Data Portal. It should not be merged with `v2-develop` or `master` until integration is performed.
+The `v2-develop` branch is VDJServer V2 GUI development.
 
 ## Deployments
 
@@ -20,9 +20,9 @@ time the docker image is run, the install will take a few minutes.
 
 ```
 - Clone project and init submodules
-git clone http://bitbucket.org/vdjserver/vdjserver-web-backbone.git web-backbone-community
-cd web-backbone-community
-git checkout v2-community
+git clone http://bitbucket.org/vdjserver/vdjserver-web-backbone.git web-backbone-v2-develop
+cd web-backbone-v2-develop
+git checkout v2-develop
 git submodule update --init --recursive
 
 - Setup local environment config file
@@ -30,13 +30,13 @@ cp docker/environment-config/environment-config.js.defaults component/app/script
 vim component/app/scripts/config/environment-config.js
 
 - Build the docker image
-docker build -t vdjserver/backbone:community .
+docker build -t vdjserver/backbone:v2-develop .
 
 - For Mac/Linux, run docker image (with name vdjserver-backbone) with source code directory mounted
-docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-backbone vdjserver/backbone:community bash -c "npm install && npm run dev && npm start"
+docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-backbone vdjserver/backbone:v2-develop bash -c "npm install && npm run dev && npm start"
 
 - For Windows, run docker image (with name vdjserver-backbone) with source code directory mounted
-docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v ${PWD}/component:/var/www/html/vdjserver-backbone vdjserver/backbone:community bash -c "npm install && npm run dev && npm start"
+docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v ${PWD}/component:/var/www/html/vdjserver-backbone vdjserver/backbone:v2-develop bash -c "npm install && npm run dev && npm start"
 ```
 
 *Note for Windows users: If you run the Mac/Linux command with a Mac-created container, (ie. `vdjserver/backbone:develop`), then `npm` will get stuck while trying to install `fsevents` (which is native to MacOS FSEvents; [read more](https://www.npmjs.com/package/fsevents)). Workaround: use a Windows-created container or the following with the Mac/Linux code:* `npm install --no-optional`
