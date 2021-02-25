@@ -67,7 +67,7 @@ export default Backbone.Router.extend({
     // order of routes matter as the first one that matches is used
     routes: {
         '':                                 'index',
-        //'auth/logout':                      'authLogout',
+        'auth/logout':                      'authLogout',
 
         // public user account pages
         'account':                          'createAccount',
@@ -81,13 +81,13 @@ export default Backbone.Router.extend({
         //'account/change-password':          'changePassword',
 
         // project pages
-        //'project':                          'projectList',
-        //'project/create':                   'createPage',
-        //'project/:id':                      'projectPage',
-        //'project/:id/repertoire':           'projectRepertoire',
-        //'project/:id/group':                'projectGroup',
-        //'project/:id/file':                 'projectFile',
-        //'project/:id/analysis':             'projectAnalysis',
+        'project':                          'projectList',
+        'project/create':                   'createPage',
+        'project/:id':                      'projectPage',
+        'project/:id/repertoire':           'projectRepertoire',
+        'project/:id/group':                'projectGroup',
+        'project/:id/file':                 'projectFile',
+        'project/:id/analysis':             'projectAnalysis',
         'community':                        'communityPage',
         'community/addchart':               'addCommChart',
         //'project/:id/repertoire/create':           'createRepertoire',
@@ -99,11 +99,11 @@ export default Backbone.Router.extend({
         //'project/:id/group/create':         'addRepGroup',
 
         // admin pages
-        //'admin':                            'adminOverview',
-        //'admin/users':                      'adminUsers',
-        //'admin/jobs':                       'adminJobs',
-        //'admin/repository':                 'adminRepository',
-        //'admin/statistics':                 'adminStatistics',
+        'admin':                            'adminOverview',
+        'admin/users':                      'adminUsers',
+        'admin/jobs':                       'adminJobs',
+        'admin/repository':                 'adminRepository',
+        'admin/statistics':                 'adminStatistics',
 
         // 404
         '*notFound': 'notFound',
@@ -150,11 +150,30 @@ export default Backbone.Router.extend({
     index: function() {
         console.log('index route');
 
+        // make sure to clear out any inactive token
+        if (!App.Agave.token().isActive()) {
+            App.Agave.token().clear();
+            window.localStorage.removeItem('Agave.Token');
+
+            // show home page
+            App.AppController.showHomePage();
+        }
+        else {
+            // otherwise go to project page
+            App.router.navigate('/project', {
+                trigger: true
+            });
+        }
+    },
+/*
+    index: function() {
+        console.log('index route');
+
         // go to community page
         App.router.navigate('/community', {
             trigger: true
         });
-    },
+    }, */
 
     //
     // Public account pages
