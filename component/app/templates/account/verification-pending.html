@@ -15,34 +15,56 @@
                     </div>
                 </div>
 
-                <div class="row-with-spacer">
-                    <form id="resend-verification-form" method="post" class="form-horizontal" role="form">
-                        <div id="resend-email-form-group" class="form-group">
-                            <label for="username" class="col-sm-2 control-label">Username</label>
-                            <div class="col-sm-4">
-                                <input type="text" placeholder="Username" name="verification-username" id="verification-username" class="form-control">
-                            </div>
-                            <div class="col-sm-6">
-                                <input type="submit" value="Resend Verification Email" class="btn btn-primary">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <hr>
-
-                <div class="row-with-spacer">
-                    <form id="verify-account-form" method="post" class="form-horizontal" role="form">
-                        <div id="verification-form-group" class="form-group">
-                            <label for="verification-code" class="col-sm-2 control-label">Verification Code</label>
-                            <div class="col-sm-4">
+                <form id="verify-account-form" method="post" role="form">
+                    <div id="verification-form-group" class="form-group">
+                        <label for="verification-code" class="col-sm-2 control-label">Verification Code</label>
+                        <div class="row justify-content-between">
+                            <div class="col-sm-5">
                                 <input type="text" placeholder="Verification Code" name="verification-code" id="verification-code" class="form-control">
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-7">
                                 <input type="submit" value="Verify Account" class="btn btn-success">
                             </div>
                         </div>
-                    </form>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            Did not receive the verification email from VDJServer? Enter username to send another.
+                        </div>
+                    </div>
+                </div>
+
+                <form id="resend-verification-form" method="post" class="form-horizontal" role="form">
+                    <div id="resend-email-form-group" class="form-group">
+                        <label for="username" class="col-sm-2 control-label">Username</label>
+                        <div class="row justify-content-between">
+                            <div class="col-sm-5">
+                                <input type="text" placeholder="Username" name="verification-username" id="verification-username" class="form-control">
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="submit" value="Resend Verification Email" class="btn btn-primary">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            Still having account troubles. Send us an <a href="mailto:vdjserver@utsouthwestern.edu">email</a> or feedback.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row top-spacer">
+                    <div class="col-sm-12">
+                        <input type="button" value="Send Feedback" class="btn btn-primary btn-block" id="send-feedback">
+                    </div>
                 </div>
 
             </div>

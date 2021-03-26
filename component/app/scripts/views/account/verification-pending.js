@@ -2,8 +2,8 @@
 'use strict';
 
 //
-// password-reset.js
-// Reset password for account
+// verify-account.js
+// Manage verification and troubleshooting for accounts
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -29,69 +29,44 @@
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
 import Marionette from 'backbone.marionette';
-import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
-import { ResetPasswordEmail, ResetPassword } from 'Scripts/models/agave-password-reset';
+import { VerifyAccount, ResendVerificationEmail } from 'Scripts/models/agave-account.js'
 
 // user profile
-import template from 'Templates/account/password-reset.html';
+import template from 'Templates/account/verification-pending.html';
 export default Marionette.View.extend({
     template: Handlebars.compile(template),
 
     initialize: function(parameters) {
-        console.log('reset password view');
-        //this.model = new Backbone.Agave.Model.PasswordReset({uuid: opts.uuid});
+        console.log('verify account view');
     },
 
     events: {
-        'submit #send-reset-form': 'sendResetPasswordEmail',
-        'submit #reset-password-form': 'resetPassword'
+        'submit #resend-verification-form': 'resendVerificationEmail',
+        'submit #verify-account-form': 'verifyAccount',
     },
 
-    displayFormErrors: function(formErrors) {
-
-        // Clear out old errors
-        //this.$el.find('.alert-danger').fadeOut(function() {
-        $('.alert-danger').fadeOut(function() {
-            this.remove();
-        });
-
-        $('.form-group').removeClass('has-error');
-
-        // Display any new errors
-        if (_.isArray(formErrors)) {
-
-            for (var i = 0; i < formErrors.length; i++) {
-                var message = formErrors[i].message;
-                var type = formErrors[i].type;
-
-                this.$el.find('.public-view').prepend($('<div class="alert alert-danger">').text(message).fadeIn());
-                $('#' + type + '-container').addClass('has-error');
-            }
-        }
-    },
-
-    sendResetPasswordEmail: function(e) {
-        console.log('sendResetPasswordEmail');
+    resendVerificationEmail: function(e) {
         e.preventDefault();
 
-        var username = $('#reset-username').val();
+        var username = $('#verification-username').val();
         if (username.length <= 0) {
-            $('#reset-username').focus();
+            $('#resend-email-form-group').addClass('has-error');
+            $('#verification-username').focus();
             return;
         }
 
-        this.model = new ResetPasswordEmail({
+        this.model = new ResendVerificationEmail({
             username: username,
         });
 
         // display a modal while sending the email
         this.modalState = 'resend';
         var message = new MessageModel({
-          'header': 'Send Reset Password Email',
-          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Sending the email...</p>'
+          'header': 'Resend Verification Email',
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Resending the verification email...</p>'
         });
 
         // the app controller manages the modal region
@@ -100,42 +75,26 @@ export default Marionette.View.extend({
         $('#modal-message').modal('show');
     },
 
-    resetPassword: function(e) {
-        console.log('resetPassword');
+    verifyAccount: function(e) {
+
         e.preventDefault();
 
-        var resetCode = $('#reset-code').val();
-        if (resetCode.length <= 0) {
-            $('#reset-code').focus();
+        var verificationId = $('#verification-code').val();
+        if (verificationId.length <= 0) {
+            $('#verification-form-group').addClass('has-error');
+            $('#verification-code').focus();
             return;
         }
 
-        var username = $('#verify-username').val();
-        var newPassword = $('#newPassword').val();
-        var passwordCheck = $('#passwordCheck').val();
+        this.model = new VerifyAccount({
+            verificationId: verificationId,
+        });
 
-        this.model = new ResetPassword({username: username, reset_code: resetCode, new_password: newPassword, passwordCheck: passwordCheck});
-        console.log(this.model);
-        this.model.isValid();
-        var errors = this.model.validationError;
-        this.displayFormErrors(errors);
-
-        if (_.isArray(errors)) {
-            return false;
-        }
-
-        if (this.model.get('newPassword')) {
-            this.model.set('newPassword', encodeURIComponent(this.model.get('newPassword')));
-        }
-        if (this.model.get('passwordCheck')) {
-            this.model.set('passwordCheck', encodeURIComponent(this.model.get('passwordCheck')));
-        }
-
-        // display a modal while sending the request
+        // display a modal while verifying account
         this.modalState = 'verify';
         var message = new MessageModel({
-          'header': 'Reset Password',
-          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Changing password...</p>'
+          'header': 'Verify Account',
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Verifying your VDJServer account...</p>'
         });
 
         // the app controller manages the modal region
@@ -143,7 +102,6 @@ export default Marionette.View.extend({
         App.AppController.startModal(view, this, this.onShownModal, this.onHiddenModal);
         $('#modal-message').modal('show');
     },
-
 
     // request is sent to server after the modal is shown
     onShownModal(context) {
@@ -161,22 +119,12 @@ export default Marionette.View.extend({
                 context.modalState = 'fail';
                 $('#modal-message').modal('hide');
 
-                console.log(error);
-                var message;
-                if (error.responseJSON.messageCode && error.responseJSON.messageCode == 'invalid username') {
-                    message = new MessageModel({
-                        'header': 'Send Reset Password Email',
-                        'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Invalid username.</div>',
-                        cancelText: 'Ok'
-                    });
-                } else {
-                    message = new MessageModel({
-                        'header': 'Send Reset Password Email',
-                        'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error occurred.</div>',
-                        cancelText: 'Ok',
-                        serverError: error
-                    });
-                }
+                var message = new MessageModel({
+                    'header': 'Resend Verification Email',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error occurred while attempting to resend verification email.</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
 
                 var view = new ModalView({model: message});
                 App.AppController.startModal(view, null, null, null);
@@ -198,8 +146,8 @@ export default Marionette.View.extend({
                 $('#modal-message').modal('hide');
 
                 var message = new MessageModel({
-                    'header': 'Reset Password',
-                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error occurred while resetting password.</div>',
+                    'header': 'Verify Account',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error occurred while verifying account.</div>',
                     cancelText: 'Ok',
                     serverError: error
                 });
@@ -216,8 +164,8 @@ export default Marionette.View.extend({
         if (context.modalState == 'pass_resend') {
             // display a success modal
             var message = new MessageModel({
-                'header': 'Send Reset Password Email',
-                'body': '<p>Reset Password email sent successfully. Please check your email.</p>',
+                'header': 'Resend Verification Email',
+                'body': '<p>Verification email sent successfully. Please check your email.</p>',
                 cancelText: 'Ok'
             });
 
@@ -229,8 +177,8 @@ export default Marionette.View.extend({
         if (context.modalState == 'pass_verify') {
             // display a success modal
             var message = new MessageModel({
-                'header': 'Reset Password',
-                'body': '<p>Password reset successful!</p>',
+                'header': 'Verify Account',
+                'body': '<p>Account verification successful!</p>',
                 cancelText: 'Ok'
             });
 

@@ -73,7 +73,7 @@ export default Backbone.Router.extend({
         'account':                          'createAccount',
         'password-reset':                   'forgotPassword',
         'account/pending':                  'verificationPending',
-        //'account/verify/:id':               'verifyAccount',
+        'account/verify/:id':               'verifyAccount',
 
         // private user account pages
         'account/profile':                  'accountProfile',
@@ -193,6 +193,12 @@ export default Backbone.Router.extend({
 
     verificationPending: function() {
         console.log('verificationPending route');
+
+        App.AppController.showVerificationPendingPage();
+    },
+
+    verifyAccount: function() {
+        console.log('verifyAccount route');
 
         App.AppController.showVerificationPage();
     },

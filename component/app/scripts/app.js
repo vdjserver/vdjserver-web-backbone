@@ -37,6 +37,7 @@ import PublicView from 'Scripts/views/app/public-views';
 import CreateAccountView from 'Scripts/views/account/create-account';
 import ForgotPasswordView from 'Scripts/views/account/password-reset';
 import VerifyAccountView from 'Scripts/views/account/verify-account';
+import VerificationPendingView from 'Scripts/views/account/verification-pending';
 import UserProfileView from 'Scripts/views/account/account-profile';
 // import IntroView from 'intro-view';
 import NavigationController from 'Scripts/views/app/navbar-controller';
@@ -134,6 +135,16 @@ var ApplicationController = Marionette.View.extend({
 
         // show create account view
         var view = new ForgotPasswordView();
+        this.showChildView('mainRegion', view);
+    },
+
+    showVerificationPendingPage() {
+        console.log('showVerificationPendingPage');
+        // tell navigation controller to display its public nav bar
+        this.navController.showPublicNavigation();
+
+        // show create account view
+        var view = new VerificationPendingView();
         this.showChildView('mainRegion', view);
     },
 
