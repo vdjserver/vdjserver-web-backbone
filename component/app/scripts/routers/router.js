@@ -71,9 +71,9 @@ export default Backbone.Router.extend({
 
         // public user account pages
         'account':                          'createAccount',
-        'password-reset':                   'forgotPassword',
-        'account/pending':                  'verificationPending',
-        'account/verify/:id':               'verifyAccount',
+        'password-reset(/:uuid)':           'forgotPassword',
+        'account/pending(/:uuid)':          'verificationPending',
+        //'account/verify/:id':               'verifyAccount',
 
         // private user account pages
         'account/profile':                  'accountProfile',
@@ -185,16 +185,16 @@ export default Backbone.Router.extend({
         App.AppController.showCreateAccountPage();
     },
 
-    forgotPassword: function() {
+    forgotPassword: function(reset_code) {
         console.log('forgotPassword route');
 
-        App.AppController.showForgotPasswordPage();
+        App.AppController.showForgotPasswordPage(reset_code);
     },
 
-    verificationPending: function() {
+    verificationPending: function(verify_code) {
         console.log('verificationPending route');
 
-        App.AppController.showVerificationPendingPage();
+        App.AppController.showVerificationPendingPage(verify_code);
     },
 
     verifyAccount: function() {

@@ -41,11 +41,25 @@ export default Marionette.View.extend({
 
     initialize: function(parameters) {
         console.log('verify account view');
+        this.verify_code = null;
+        if (parameters && parameters.verify_code)
+            this.verify_code = parameters.verify_code;
     },
 
     events: {
         'submit #resend-verification-form': 'resendVerificationEmail',
         'submit #verify-account-form': 'verifyAccount',
+    },
+
+    templateContext: function() {
+        return {
+            verify_code: this.verify_code
+        }
+    },
+
+    onAttach() {
+        // if verification code, then trigger verify
+        if (this.verify_code) this.performVerifyAccount(this.verify_code);
     },
 
     resendVerificationEmail: function(e) {
@@ -85,6 +99,11 @@ export default Marionette.View.extend({
             $('#verification-code').focus();
             return;
         }
+
+        this.performVerifyAccount(verificationId);
+    },
+
+    performVerifyAccount: function(verificationId) {
 
         this.model = new VerifyAccount({
             verificationId: verificationId,

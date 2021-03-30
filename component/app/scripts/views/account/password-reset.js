@@ -42,12 +42,26 @@ export default Marionette.View.extend({
 
     initialize: function(parameters) {
         console.log('reset password view');
+        this.reset_code = null;
+        if (parameters && parameters.reset_code) {
+            this.reset_code = parameters.reset_code;
+        }
         //this.model = new Backbone.Agave.Model.PasswordReset({uuid: opts.uuid});
     },
 
     events: {
         'submit #send-reset-form': 'sendResetPasswordEmail',
         'submit #reset-password-form': 'resetPassword'
+    },
+
+    templateContext: function() {
+        return {
+            reset_code: this.reset_code
+        }
+    },
+
+    onAttach: function() {
+        if (this.reset_code) $('#verify-username').focus();
     },
 
     displayFormErrors: function(formErrors) {

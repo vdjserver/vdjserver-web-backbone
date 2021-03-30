@@ -128,23 +128,23 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('mainRegion', view);
     },
 
-    showForgotPasswordPage() {
+    showForgotPasswordPage(reset_code) {
         console.log('showForgotPasswordPage');
         // tell navigation controller to display its public nav bar
         this.navController.showPublicNavigation();
 
         // show create account view
-        var view = new ForgotPasswordView();
+        var view = new ForgotPasswordView({reset_code: reset_code});
         this.showChildView('mainRegion', view);
     },
 
-    showVerificationPendingPage() {
+    showVerificationPendingPage(verify_code) {
         console.log('showVerificationPendingPage');
         // tell navigation controller to display its public nav bar
         this.navController.showPublicNavigation();
 
         // show create account view
-        var view = new VerificationPendingView();
+        var view = new VerificationPendingView({verify_code: verify_code});
         this.showChildView('mainRegion', view);
     },
 
