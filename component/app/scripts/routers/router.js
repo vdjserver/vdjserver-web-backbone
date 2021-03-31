@@ -73,7 +73,7 @@ export default Backbone.Router.extend({
         'account':                          'createAccount',
         'password-reset(/:uuid)':           'forgotPassword',
         'account/pending(/:uuid)':          'verificationPending',
-        //'account/verify/:id':               'verifyAccount',
+        'feedback':                         'feedback',
 
         // private user account pages
         'account/profile':                  'accountProfile',
@@ -197,10 +197,14 @@ export default Backbone.Router.extend({
         App.AppController.showVerificationPendingPage(verify_code);
     },
 
-    verifyAccount: function() {
-        console.log('verifyAccount route');
+    feedback: function() {
+        console.log('feedback route');
 
-        App.AppController.showVerificationPage();
+        if (!App.Agave.token().isActive()) {
+            App.AppController.showPublicFeedbackPage();
+        } else {
+            App.AppController.showUserFeedbackPage();
+        }
     },
 
     //

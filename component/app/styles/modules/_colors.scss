@@ -25,6 +25,7 @@ Bootstrap Color Overrides
 https://getbootstrap.com/docs/4.0/getting-started/theming/
 ------------------------------------------------------------*/
 $theme-colors: (
+    'report': $vdj-red,
     'delete': $vdj-red,
     'success': $vdj-lightgreen,
     'save': $vdj-lightgreen,

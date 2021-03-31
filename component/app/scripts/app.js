@@ -36,10 +36,11 @@ import { UserProfile } from 'Scripts/models/agave-tenant-user';
 import PublicView from 'Scripts/views/app/public-views';
 import CreateAccountView from 'Scripts/views/account/create-account';
 import ForgotPasswordView from 'Scripts/views/account/password-reset';
-import VerifyAccountView from 'Scripts/views/account/verify-account';
 import VerificationPendingView from 'Scripts/views/account/verification-pending';
 import UserProfileView from 'Scripts/views/account/account-profile';
-// import IntroView from 'intro-view';
+import PublicFeedbackView from 'Scripts/views/feedback/feedback-public';
+import UserFeedbackView from 'Scripts/views/feedback/feedback-user';
+
 import NavigationController from 'Scripts/views/app/navbar-controller';
 import ProjectController from 'Scripts/views/project/project-controller';
 import CommunityController from 'Scripts/views/community/community-controller';
@@ -143,18 +144,28 @@ var ApplicationController = Marionette.View.extend({
         // tell navigation controller to display its public nav bar
         this.navController.showPublicNavigation();
 
-        // show create account view
+        // show verify account view
         var view = new VerificationPendingView({verify_code: verify_code});
         this.showChildView('mainRegion', view);
     },
 
-    showVerificationPage() {
-        console.log('showVerificationPage');
+    showPublicFeedbackPage() {
+        console.log('showPublicFeedbackPage');
         // tell navigation controller to display its public nav bar
         this.navController.showPublicNavigation();
 
-        // show create account view
-        var view = new VerifyAccountView();
+        // show public feedback view
+        var view = new PublicFeedbackView();
+        this.showChildView('mainRegion', view);
+    },
+
+    showUserFeedbackPage() {
+        console.log('showUserFeedbackPage');
+        // tell navigation controller to display its public nav bar
+        this.navController.showPrivateNavigation();
+
+        // show public feedback view
+        var view = new UserFeedbackView();
         this.showChildView('mainRegion', view);
     },
 
