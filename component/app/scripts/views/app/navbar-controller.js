@@ -78,7 +78,7 @@ export default Marionette.View.extend({
 
     events: {
         'click #logout': 'logout',
-        'click .open-filter': 'emptyToolbarBar',
+        'click .open-filter': 'hideToolbarBar',
         'click .closed-filter': 'showToolbarBar',
     },
 
@@ -103,10 +103,14 @@ export default Marionette.View.extend({
     },
 
     showPublicNavigation() {
+        this.emptyToolbar1Bar();
+        this.emptyToolbar2Bar();
         this.showChildView('navigationRegion', new NavigationBarView({public_bar: true}));
     },
 
     showPrivateNavigation() {
+        this.emptyToolbar1Bar();
+        this.emptyToolbar2Bar();
         this.showChildView('navigationRegion', new NavigationBarView({public_bar: false}));
     },
 
@@ -135,7 +139,7 @@ export default Marionette.View.extend({
         this.getRegion('toolbar2Region').empty();
     },
 
-    emptyToolbarBar(view) {
+    hideToolbarBar(view) {
         this.getRegion('toolbar1Region').$el.hide();
         this.getRegion('toolbar2Region').$el.hide();
 
