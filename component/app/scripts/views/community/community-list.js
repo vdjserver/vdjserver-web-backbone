@@ -29,8 +29,6 @@
 //
 
 import Marionette from 'backbone.marionette';
-import list_template from 'Templates/community/community-list.html';
-import template from 'Templates/community/study-summary.html';
 import Handlebars from 'handlebars';
 
 import { ADC } from 'Scripts/backbone/backbone-adc';
@@ -127,6 +125,7 @@ var RepertoireTable = Marionette.CollectionView.extend({
     // childViewContainer: 'tbody'
 });
 
+import template from 'Templates/community/study-summary.html';
 var StudySummaryView = Marionette.View.extend({
     template: Handlebars.compile(template),
     tagName: 'div',
@@ -283,6 +282,39 @@ var StudySummaryView = Marionette.View.extend({
         },
     },
 
+    getFileSizeDisplay(size) {
+        var text = '???';
+        if (!size) return text;
+
+        if (size < 1024) {
+            text = Math.round(size) + ' B';
+            return text;
+        } else size = size / 1024;
+
+        if (size < 1024) {
+            text = Math.round(size) + ' KB';
+            return text;
+        } else size = size / 1024;
+
+        if (size < 1024) {
+            text = Math.round(size) + ' MB';
+            return text;
+        } else size = size / 1024;
+
+        if (size < 1024) {
+            text = Math.round(size) + ' GB';
+            return text;
+        } else size = size / 1024;
+
+        if (size < 1024) {
+            text = Math.round(size) + ' TB';
+            return text;
+        } else size = size / 1024;
+
+        // too big
+        return text;
+    },
+
     templateContext() {
 
         // study badges
@@ -318,6 +350,17 @@ var StudySummaryView = Marionette.View.extend({
             else repo_titles.push(adc_repos[repos[i]]['title']);
         }
 
+        // study download cache
+        var has_download_cache = false;
+        var download_url = null;
+        var download_file_size = null;
+        var study_cache = this.model.get('study_cache');
+        if (study_cache) {
+            has_download_cache = true;
+            download_url = study_cache.get('download_url');
+            download_file_size = this.getFileSizeDisplay(study_cache.get('file_size'));
+        }
+
         return {
             object: JSON.stringify(this.model),
             num_subjects: this.model.get('subjects').length,
@@ -329,7 +372,10 @@ var StudySummaryView = Marionette.View.extend({
             contains_paired_chain: contains_paired_chain,
             is_10x_genomics: is_10x_genomics,
             is_vdjserver: is_vdjserver,
-            repo_titles: repo_titles
+            repo_titles: repo_titles,
+            has_download_cache: has_download_cache,
+            download_url: download_url,
+            download_file_size: download_file_size
         };
     },
 
@@ -369,6 +415,7 @@ var StudySummaryView = Marionette.View.extend({
     },
 });
 
+import list_template from 'Templates/community/community-list.html';
 export default Marionette.CollectionView.extend({
     template: Handlebars.compile(list_template),
     initialize: function(parameters) {

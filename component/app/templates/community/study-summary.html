@@ -20,23 +20,40 @@
     {{/if}}
 </h3>
 <div class="community-project-header">
-    <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>
+    <div class="row">
+        <div class="col-md-9">
+            <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>
+        </div>
 
-    <!-- Badges for study type -->
-    <h4 class="community-badges">
-        {{#if contains_ig}}
-            <a class="badge badge-pill badge-locus">IG</a>
+        {{#if has_download_cache}}
+            <div class="col-md-3 text-right">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <a download class="btn btn-download" href="{{download_url}}"><i class="fas fa-download" aria-hidden="true"></i> Download Study ({{download_file_size}})</a>
+                    <button type="button" class="btn btn-download"><i class="fas fa-clipboard" data-toggle="tooltip" data-placement="top" title="Copy download URL to clipboard" aria-hidden="true"></i></button>
+                </div>
+            </div>
         {{/if}}
-        {{#if contains_tcr}}
-            <a class="badge badge-pill badge-locus">TCR</a>
-        {{/if}}
-        {{#if contains_single_cell}}
-            <a class="badge badge-pill badge-cell">Single Cell</a>
-        {{/if}}
-        {{#if contains_paired_chain}}
-            <a class="badge badge-pill badge-cell">Paired Chain</a>
-        {{/if}}
-    </h4>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10">
+            <!-- Badges for study type -->
+            <h4 class="community-badges">
+                {{#if contains_ig}}
+                    <a class="badge badge-pill badge-locus">IG</a>
+                {{/if}}
+                {{#if contains_tcr}}
+                    <a class="badge badge-pill badge-locus">TCR</a>
+                {{/if}}
+                {{#if contains_single_cell}}
+                    <a class="badge badge-pill badge-cell">Single Cell</a>
+                {{/if}}
+                {{#if contains_paired_chain}}
+                    <a class="badge badge-pill badge-cell">Paired Chain</a>
+                {{/if}}
+            </h4>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col community-metadata">

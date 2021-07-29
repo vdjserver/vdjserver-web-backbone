@@ -175,6 +175,18 @@ export var ADCStudyCollection = ADC.Collection.extend({
         return this;
     },
 
+    // attach download cache for studies
+    attachCacheEntries(cache_entries) {
+        for (var i = 0; i < this.length; ++i) {
+            var model = this.at(i);
+            var study = model.get('study');
+            var value = study.get('value');
+            var entry = cache_entries.get(value['study_id']);
+            if (entry) model.set('study_cache', entry);
+        }
+        return null;
+    },
+
     // sort comparator for the collection
     collectionSortBy(modela, modelb) {
         if (!this.sort_by) this.sort_by = 'study.study_title';

@@ -34,6 +34,7 @@ import Handlebars from 'handlebars';
 import { ADC } from 'Scripts/backbone/backbone-adc';
 import ADCInfo from 'Scripts/models/adc-info';
 import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
+import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
 
 import Project from 'Scripts/models/agave-project';
 import ProjectList from 'Scripts/collections/agave-public-projects';
@@ -56,6 +57,8 @@ function CommunityController() {
     this.filteredStudies = null;
     this.projectList = null;
     this.currentProject = null;
+    this.studyCache = null;
+    this.repertoireCache = null;
 
     // active filters
     this.filters = {};
@@ -79,6 +82,7 @@ CommunityController.prototype = {
             console.log(Object.keys(repos).length);
 
             this.projectList = new ProjectList();
+            this.studyCache = new StudyCacheCollection();
 
             var that = this;
 
@@ -120,16 +124,22 @@ CommunityController.prototype = {
             })
             .then(function() {
                 // load VDJServer public projects
-                that.projectList.fetch()
+                return that.projectList.fetch();
+            })
+            .then(function() {
+                // load ADC download study cache entries
+                return that.studyCache.fetch();
             })
             .then(function() {
                 console.log(that.projectList);
+                console.log(that.studyCache);
 
                 that.studies = new ADCStudyCollection();
                 for (var r in repos) {
                     //console.log(that.repertoireCollection[r]);
                     that.studies.normalize(that.repertoireCollection[r]);
                 }
+                that.studies.attachCacheEntries(that.studyCache);
                 //that.studies = that.repertoires.normalize();
                 console.log(that.studies);
 
