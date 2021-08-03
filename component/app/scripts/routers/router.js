@@ -88,8 +88,9 @@ export default Backbone.Router.extend({
         'project/:id/group':                'projectGroup',
         'project/:id/file':                 'projectFile',
         'project/:id/analysis':             'projectAnalysis',
-        'community':                        'communityPage',
-        'community/addchart':               'addCommChart',
+        //'community':                        'communityPage',
+        'community(/:uuid)':                'communityPage',
+        //'community/addchart':               'addCommChart',
         //'project/:id/repertoire/create':           'createRepertoire',
         //'project/:id/repertoire/create/subject': 'addSubject',
         //'project/:id/repertoire/create/subject/diagnosis': 'addDiagnosis',
@@ -285,10 +286,10 @@ export default Backbone.Router.extend({
     },
 
     // Community Studies
-    communityPage: function() {
+    communityPage: function(projectUuid) {
         console.log('communityPage route');
 
-        App.AppController.showCommunityPage();
+        App.AppController.showCommunityPage(projectUuid);
     },
 
     // Create Community Chart Page

@@ -136,6 +136,11 @@ var StudySummaryView = Marionette.View.extend({
     },
 
     initialize: function(parameters) {
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+
         // pagination of data table
         // just repertoires for now but need to handle the others too
         this.pageQty = 10;
@@ -206,6 +211,12 @@ var StudySummaryView = Marionette.View.extend({
         // Hide Detailed Data
         'click a.active-tab': function(e) {
             $(event.target).removeClass("active-tab");
+        },
+
+        'click #clipboard-copy-url': function(e) {
+            var text = e.target.getAttribute('download_url');
+            console.log('copy to clipboard:', text);
+            if (text) navigator.clipboard.writeText(text);
         },
 
         // Show/Hide Community Repertoires Data
@@ -317,6 +328,11 @@ var StudySummaryView = Marionette.View.extend({
 
     templateContext() {
 
+        // get unfiltered collections
+        var collections = this.controller.getCollections();
+        var study_id = this.model.get('id');
+        var full_study = collections.studyList.get(study_id);
+
         // study badges
         var study = this.model.get('study');
         var value = study.get('value');
@@ -354,7 +370,7 @@ var StudySummaryView = Marionette.View.extend({
         var has_download_cache = false;
         var download_url = null;
         var download_file_size = null;
-        var study_cache = this.model.get('study_cache');
+        var study_cache = full_study.get('study_cache');
         if (study_cache) {
             has_download_cache = true;
             download_url = study_cache.get('download_url');
@@ -364,8 +380,10 @@ var StudySummaryView = Marionette.View.extend({
         return {
             object: JSON.stringify(this.model),
             num_subjects: this.model.get('subjects').length,
+            num_total_subjects: full_study.get('subjects').length,
             num_samples: this.model.get('samples').length,
             num_repertoires: this.model.get('repertoires').length,
+            num_total_repertoires: full_study.get('repertoires').length,
             contains_ig: contains_ig,
             contains_tcr: contains_tcr,
             contains_single_cell: contains_single_cell,
@@ -377,6 +395,15 @@ var StudySummaryView = Marionette.View.extend({
             download_url: download_url,
             download_file_size: download_file_size
         };
+    },
+
+    onAttach() {
+        // setup popovers and tooltips
+        $('[data-toggle="popover"]').popover({
+            trigger: 'hover'
+        });
+
+        //$('[data-toggle="tooltip"]').tooltip();
     },
 
     constructPages() {
@@ -419,6 +446,12 @@ import list_template from 'Templates/community/community-list.html';
 export default Marionette.CollectionView.extend({
     template: Handlebars.compile(list_template),
     initialize: function(parameters) {
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+
         this.childView = StudySummaryView;
+        this.childViewOptions = { controller: this.controller };
   },
 });

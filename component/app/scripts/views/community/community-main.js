@@ -43,7 +43,7 @@ import PieChart from 'Scripts/views/charts/pie';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
-import AddChartView from 'Scripts/views/community/add-chart';
+//import AddChartView from 'Scripts/views/community/add-chart';
 
 // Community Query/Filter View
 // toolbar under the navigation bar
@@ -295,6 +295,7 @@ var CommunityChartsView = Marionette.View.extend({
         this.view.showChart();
     },
 
+/*
     newChartModal(e) {
         console.log('add new chart page will appear');
 
@@ -316,7 +317,7 @@ var CommunityChartsView = Marionette.View.extend({
         // $('#modal-message').modal('show');
         //
         // console.log(message);
-    },
+    }, */
 
     newChartType(e) {
         console.log('selected a chart type');
@@ -435,6 +436,11 @@ export default Marionette.View.extend({
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
         App.AppController.navController.showToolbar1Bar(this.filterView);
         //this.showChildView('queryRegion', this.filterView);
+    },
+
+    updateSummary(studyList) {
+        this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
+        App.AppController.navController.showToolbar2Bar(this.statsView);
     },
 
     newFilterModal(e) {

@@ -75,7 +75,7 @@ CommunityController.prototype = {
     },
 
     // show community data portal studies
-    showProjectList() {
+    showProjectList(projectUuid) {
         if (! this.studies) {
             this.repositoires = new Backbone.Collection();
             var repos = ADC.Repositories();
@@ -96,7 +96,12 @@ CommunityController.prototype = {
                 var info = new ADCInfo({repository: r});
                 info.set('id', r);
                 this.repositoryInfo.add(info);
-                promises.push(info.fetch());
+                const p = info.fetch().then(res => {
+                    promises.splice(promises.indexOf(p), 1);
+                    console.log('resolved');
+                    return res;
+                });
+                promises.push(p);
             }
 
             // TODO: handle when a repository is down
@@ -106,21 +111,24 @@ CommunityController.prototype = {
 
                 that.repertoireCollection = {};
                 promises = [];
+                var total_reps = 0;
+                var thecnt = 0;
                 for (var r in repos) {
                     var coll = new ADCRepertoireCollection(null, {repository: r});
                     that.repertoireCollection[r] = coll;
-                    promises.push(coll.fetch());
+                    const p = coll.fetch().then(res => {
+                        promises.splice(promises.indexOf(p), 1);
+                        thecnt += 1;
+                        total_reps += res['Repertoire'].length;
+                        // update loading screen with running total
+                        that.projectView.showLoading(total_reps, thecnt, Object.keys(repos).length);
+                        return res;
+                    });
+                    promises.push(p);
                 }
 
                 // load the ADC repertoires
                 return Promise.allSettled(promises);
-            })
-            .then(function() {
-                for (var r in repos) {
-                    console.log(that.repertoireCollection[r]);
-                }
-                that.repertoires = that.repertoireCollection['vdjserver'];
-                that.projectView.showLoading(that.repertoires.length, 1, 1);
             })
             .then(function() {
                 // load VDJServer public projects
@@ -136,18 +144,22 @@ CommunityController.prototype = {
 
                 that.studies = new ADCStudyCollection();
                 for (var r in repos) {
-                    //console.log(that.repertoireCollection[r]);
+                    console.log(that.repertoireCollection[r]);
                     that.studies.normalize(that.repertoireCollection[r]);
                 }
                 that.studies.attachCacheEntries(that.studyCache);
-                //that.studies = that.repertoires.normalize();
                 console.log(that.studies);
 
-                var tmp = that.studies.countByField('subject.sex');
-                console.log(tmp);
-
                 // have the view display them
-                that.projectView.showResultsList(that.studies);
+                if (projectUuid) {
+                    // filter on specific VDJServer uuid if provided
+                    console.log(projectUuid);
+                    var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
+                    App.router.navigate('/community', {trigger: false});
+                    that.applyFilter(filters);
+                } else {
+                    that.projectView.showResultsList(that.studies);
+                }
             })
             .catch(function(error) {
                 console.log(error);
@@ -155,7 +167,15 @@ CommunityController.prototype = {
         } else {
             // projects already loaded
             // have the view display them
-            this.projectView.showResultsList(this.studies);
+            if (projectUuid) {
+                // filter on specific VDJServer uuid if provided
+                console.log(projectUuid);
+                var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
+                App.router.navigate('/community', {trigger: false});
+                that.applyFilter(filters);
+            } else {
+                this.projectView.showResultsList(this.studies);
+            }
         }
     },
 
@@ -185,15 +205,22 @@ CommunityController.prototype = {
             this.filteredStudies.normalize(this.filteredRepertoires[r]);
         }
 
-        //this.filteredList = this.repertoires.filterCollection();
-        //this.studies = new ADCStudyCollection();
-        //this.studies.normalize(this.filteredList);
+        this.filteredStudies.sort_by = this.studies.sort_by;
+        this.filteredStudies.sort();
+
         this.projectView.showResultsList(this.filteredStudies, filters);
     },
 
     applySort(sort_by) {
         this.studies.sort_by = sort_by;
         this.studies.sort();
+        if (this.filteredStudies) {
+            this.filteredStudies.sort_by = sort_by;
+            this.filteredStudies.sort();
+            this.projectView.updateSummary(this.filteredStudies);
+        } else {
+            this.projectView.updateSummary(this.studies);
+        }
     },
 
     // showAddChart() {

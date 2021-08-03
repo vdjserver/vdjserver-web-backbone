@@ -132,11 +132,20 @@ export var ADCStudyCollection = ADC.Collection.extend({
                 study.set('data_processings', new Backbone.Collection());
                 study.set('repertoires', new Backbone.Collection());
                 study.set('repository', []);
+                study.set('repos', new Backbone.Model());
             }
 
+            var repository_id = repertoires['repository'];
+            var repos = study.get('repos');
+            var repository = repos.get(repository_id);
             var repo = study.get('repository');
-            if (repo.indexOf(repertoires['repository']) < 0)
-                repo.push(repertoires['repository']);
+            if (repo.indexOf(repository_id) < 0) {
+                repo.push(repository_id);
+                repository = new Backbone.Model();
+                repos.set(repository_id, repository);
+                repository.set('repertoires', new Backbone.Collection());
+            }
+            var repository_reps = repository.get('repertoires');
 
             var subjects = study.get('subjects');
             var samples = study.get('samples');
@@ -170,6 +179,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
 
             // TODO: how to handle repertoires?
             reps.add(model);
+            repository_reps.add(model);
         }
 
         return this;

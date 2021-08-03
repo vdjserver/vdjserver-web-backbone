@@ -27,9 +27,9 @@
 
         {{#if has_download_cache}}
             <div class="col-md-3 text-right">
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <div class="btn-group" role="group" aria-label="Button group">
                     <a download class="btn btn-download" href="{{download_url}}"><i class="fas fa-download" aria-hidden="true"></i> Download Study ({{download_file_size}})</a>
-                    <button type="button" class="btn btn-download"><i class="fas fa-clipboard" data-toggle="tooltip" data-placement="top" title="Copy download URL to clipboard" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-download" id="clipboard-copy-url" data-toggle="tooltip" data-placement="top" title="Copy download URL to clipboard" ><i class="fas fa-clipboard" download_url="{{download_url}}"></i></button>
                 </div>
             </div>
         {{/if}}
@@ -152,23 +152,34 @@
 
 <div class="community-summary-stats row">
     <div class="community-button col">
+        VDJServer
+    </div>
+    <div class="community-button col">
         <a class="community-repertoires col">
-            {{num_repertoires}} of ### {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{#ifEquals num_repertoires num_total_repertoires}}
+                {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{else}}
+                {{num_repertoires}} of {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{/ifEquals}}
         </a>
     </div>
     <div class="community-button col">
         <a class="community-subjects col">
-            {{num_subjects}} of # Subjects <i class="fas fa-users"></i>
+            {{#ifEquals num_subjects num_total_subjects}}
+                {{num_total_subjects}} Subjects <i class="fas fa-users"></i>
+            {{else}}
+                {{num_subjects}} of {{num_total_subjects}} Subjects <i class="fas fa-users"></i>
+            {{/ifEquals}}
         </a>
     </div>
     <div class="community-button col">
         <a class="community-clones col">
-            XXX,XXX of ###,### Clones <i class="fas fa-sitemap"></i>
+            XXX,XXX Clones <i class="fas fa-sitemap"></i>
         </a>
     </div>
     <div class="community-button col-4">
         <a class="community-rearrangements">
-            XXX,XXX,XXX of ###,###,### Rearrangements <i class="fas fa-stream"></i>
+            XXX,XXX,XXX Rearrangements <i class="fas fa-stream"></i>
         </a>
     </div>
 </div>

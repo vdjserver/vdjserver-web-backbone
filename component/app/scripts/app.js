@@ -232,7 +232,7 @@ var ApplicationController = Marionette.View.extend({
         this.projectController.showProjectPage(projectUuid, page);
     },
 
-    showCommunityPage() {
+    showCommunityPage(projectUuid) {
         console.log('showCommunityPage');
 
         // create community controller if needed
@@ -245,7 +245,7 @@ var ApplicationController = Marionette.View.extend({
         this.navController.showPublicNavigation();
 
         // tell controller to display the project list page
-        this.communityController.showProjectList();
+        this.communityController.showProjectList(projectUuid);
     },
 
     showAddChart() {
