@@ -117,7 +117,7 @@ CommunityController.prototype = {
                     var coll = new ADCRepertoireCollection(null, {repository: r});
                     that.repertoireCollection[r] = coll;
                     const p = coll.fetch().then(res => {
-                        promises.splice(promises.indexOf(p), 1);
+                        //promises.splice(promises.indexOf(p), 1);
                         thecnt += 1;
                         total_reps += res['Repertoire'].length;
                         // update loading screen with running total

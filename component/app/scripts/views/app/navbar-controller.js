@@ -57,6 +57,12 @@ var NavigationBarView = Marionette.View.extend({
     },
 });
 
+// This is the toolbar footer
+import navbar_footer from 'Templates/app/navigation-footer.html';
+var NavigationFooterView = Marionette.View.extend({
+    template: Handlebars.compile(navbar_footer)
+});
+
 // Navigation bar controller
 //
 // This manages the navigation bar with public options
@@ -73,7 +79,8 @@ export default Marionette.View.extend({
         navigationRegion: '#navbar-region',
         messageRegion: '#navmessage-region',
         toolbar1Region: '#toolbar1-region',
-        toolbar2Region: '#toolbar2-region'
+        toolbar2Region: '#toolbar2-region',
+        footerRegion: '#footer-region'
     },
 
     events: {
@@ -89,6 +96,9 @@ export default Marionette.View.extend({
     },
 
     detect_scroll: function(view) {
+        if ((!this.getRegion('toolbar1Region').hasView()) && (!this.getRegion('toolbar2Region').hasView()))
+            return;
+
         if ($(window).scrollTop() == 0) {
             this.getRegion('toolbar1Region').$el.show();
             this.getRegion('toolbar2Region').$el.show();
@@ -105,12 +115,14 @@ export default Marionette.View.extend({
     showPublicNavigation() {
         this.emptyToolbar1Bar();
         this.emptyToolbar2Bar();
+        this.getRegion('footerRegion').empty();
         this.showChildView('navigationRegion', new NavigationBarView({public_bar: true}));
     },
 
     showPrivateNavigation() {
         this.emptyToolbar1Bar();
         this.emptyToolbar2Bar();
+        this.getRegion('footerRegion').empty();
         this.showChildView('navigationRegion', new NavigationBarView({public_bar: false}));
     },
 
@@ -125,6 +137,7 @@ export default Marionette.View.extend({
     showToolbar1Bar(view) {
         // console.log(view);
         this.showChildView('toolbar1Region', view);
+        this.showChildView('footerRegion', new NavigationFooterView());
     },
 
     emptyToolbar1Bar() {
@@ -133,6 +146,7 @@ export default Marionette.View.extend({
 
     showToolbar2Bar(view) {
         this.showChildView('toolbar2Region', view);
+        this.showChildView('footerRegion', new NavigationFooterView());
     },
 
     emptyToolbar2Bar() {

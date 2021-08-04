@@ -16,7 +16,7 @@
 
     {{#if is_10x_genomics}}
     <a class="badge badge-pill badge-10x community-project-type">
-        <img src="./dist/images/genomics-logo.png" class="genomics" alt="10X Genomics">10X Genomics</a>
+        <img src="./dist/images/10xgenomics-logo.png" class="genomics10x" alt="10X Genomics">Genomics</a>
     {{/if}}
 </h3>
 <div class="community-project-header">
@@ -57,6 +57,12 @@
 
     <div class="row">
         <div class="col community-metadata">
+            {{#if study.value.vdjserver_uuid}}
+                <p>
+                    <span class="details">VDJServer UUID:</span> {{study.value.vdjserver_uuid}}
+                </p>
+            {{/if}}
+
             {{#if study.value.study_id}}
                 <p>
                     <span class="details">Study ID:</span> {{study.value.study_id}}
@@ -87,13 +93,9 @@
             {{#if study.value.pub_ids}}
                 <p>
                     <span class="details">Publication(s):</span>
-                    <!-- What is the URL format for the pub IDs?
-                    - Research Gate: {{study.value.pub_ids}}
-                    - PubMed: https://pubmed.ncbi.nlm.nih.gov/{{pub_id}}
-                    -->
-                    <a href="{{study.value.pub_ids}}">
-                        {{study.value.pub_ids}}
-                    </a>
+                    {{#each pub_list}}
+                        <a href="{{this.url}}" target="_blank">{{{this.name}}}</a>
+                    {{/each}}
                 </p>
             {{/if}}
             {{#if study.value.grants}}
@@ -150,6 +152,7 @@
     </p>
 </div>
 
+{{#if is_vdjserver}}
 <div class="community-summary-stats row">
     <div class="community-button col">
         VDJServer
@@ -183,6 +186,44 @@
         </a>
     </div>
 </div>
+{{/if}}
+
+{{#each repo_titles}}
+<div class="community-summary-stats row">
+    <div class="community-button col">
+        {{this}}
+    </div>
+    <div class="community-button col">
+        <a class="community-repertoires col">
+            {{#ifEquals ../num_repertoires ../num_total_repertoires}}
+                {{../../num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{else}}
+                {{../../num_repertoires}} of {{../num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{/ifEquals}}
+        </a>
+    </div>
+    <div class="community-button col">
+        <a class="community-subjects col">
+            {{#ifEquals num_subjects num_total_subjects}}
+                {{num_total_subjects}} Subjects <i class="fas fa-users"></i>
+            {{else}}
+                {{num_subjects}} of {{num_total_subjects}} Subjects <i class="fas fa-users"></i>
+            {{/ifEquals}}
+        </a>
+    </div>
+    <div class="community-button col">
+        <a class="community-clones col">
+            XXX,XXX Clones <i class="fas fa-sitemap"></i>
+        </a>
+    </div>
+    <div class="community-button col-4">
+        <a class="community-rearrangements">
+            XXX,XXX,XXX Rearrangements <i class="fas fa-stream"></i>
+        </a>
+    </div>
+</div>
+{{/each}}
+
 
 <!-- Eventually, these should each become their own views -->
 <!-- We'll assume the data are shown as tables or table-like,

@@ -150,6 +150,9 @@ var StudySummaryView = Marionette.View.extend({
     },
 
     serializeModel() {
+        // Marionette will only serialize the main model attributes and
+        // none of the sub-models, we add in the sub-models that we want
+        // to directly access values in the html template.
         const data = _.clone(this.model.attributes);
 
         // serialize nested model data
@@ -157,7 +160,6 @@ var StudySummaryView = Marionette.View.extend({
 
         // attempting to grab repertoires data
         data.repertoire = data.repertoires.models;
-        // console.log ("this is data.repertoire: " + JSON.stringify(data.repertoires));
 
         return data;
     },
@@ -353,7 +355,7 @@ var StudySummaryView = Marionette.View.extend({
         // custom 10x flag
         var is_10x_genomics = false;
         if (value.vdjserver_keywords)
-            if (value.vdjserver_keywords.indexOf("10x_genomics") >= 0)
+            if (value.vdjserver_keywords.indexOf("is_10x_genomics") >= 0)
                 is_10x_genomics = true;
 
         // repository tags
@@ -364,6 +366,41 @@ var StudySummaryView = Marionette.View.extend({
         for (var i = 0; i < repos.length; ++i) {
             if (repos[i] == 'vdjserver') is_vdjserver = true;
             else repo_titles.push(adc_repos[repos[i]]['title']);
+        }
+
+        // publications
+        var pub_list = [];
+        if (value.pub_ids) {
+            let fields = value.pub_ids.split(',');
+            let ps = '';
+            let pe = '';
+            for (let i in fields) {
+                if (i > 0) {
+                    ps = '<p>';
+                    pe = '</p>';
+                }
+                let entry = fields[i];
+                let p = entry.split(':');
+                if (p.length >= 2) {
+                    if (p[0].trim() == 'PMID') {
+                        pub_list.push({ name: ps + p[0].trim().toUpperCase() + ': ' + p[1].trim() + pe, url: 'https://pubmed.ncbi.nlm.nih.gov/' + p[1].trim() + '/' });
+                    } else if (p[0].trim().toLowerCase() == 'doi') {
+                        pub_list.push({ name: ps + p[0].trim().toUpperCase() + ': ' + p[1].trim() + pe, url: 'https://doi.org/' + p[1].trim()});
+                    } else if (p[0].trim().toLowerCase() == 'http') {
+                        pub_list.push({ name: ps + entry + pe, url: p.join(':') });
+                    } else if (p[0].trim().toLowerCase() == 'https') {
+                        pub_list.push({ name: ps + entry + pe, url: p.join(':') });
+                    } else if (p[0].trim().toLowerCase() == 'PMC') {
+                        pub_list.push({ name: ps + p[0].trim().toUpperCase() + ': ' + p[1].trim() + pe, url: 'https://www.ncbi.nlm.nih.gov/pmc/articles/' + p[1].trim() + '/' });
+                    } else {
+                        // unknown
+                        pub_list.push({ name: ps + entry + pe, url: null });
+                    }
+                } else {
+                    // unknown
+                    pub_list.push({ name: ps + entry + pe, url: null });
+                }
+            }
         }
 
         // study download cache
@@ -391,6 +428,7 @@ var StudySummaryView = Marionette.View.extend({
             is_10x_genomics: is_10x_genomics,
             is_vdjserver: is_vdjserver,
             repo_titles: repo_titles,
+            pub_list: pub_list,
             has_download_cache: has_download_cache,
             download_url: download_url,
             download_file_size: download_file_size
