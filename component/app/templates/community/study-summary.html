@@ -76,13 +76,14 @@
             {{/if}}
             {{#if study.value.inclusion_exclusion_criteria}}
                 <p class="inclusion">
-                    <span class="details">Inclusion/Exclusion Criteria:</span> {{study.value.inclusion_exclusion_criteria}}
-                </p>
-                <p class="inclusion-full no-display">
                     <span class="details">Inclusion/Exclusion Criteria:</span>
                     {{#truncate_75}}
                         {{study.value.inclusion_exclusion_criteria}}
                     {{/truncate_75}}
+                </p>
+                <p class="inclusion-full no-display">
+                    <span class="details">Inclusion/Exclusion Criteria:</span>
+                    {{study.value.inclusion_exclusion_criteria}}
                 </p>
             {{/if}}
             <!-- {{#if study.value.keywords_study}}
@@ -112,6 +113,11 @@
             {{/if}}
         </div>
         <div class="col community-metadata">
+            {{#if study.value.lab_name}}
+                <p>
+                    <span class="details">PI:</span> {{study.value.lab_name}}
+                </p>
+            {{/if}}
             {{#if study.value.lab_address}}
                 <p>
                     <span class="details">Lab Address:</span> {{study.value.lab_address}}
@@ -127,17 +133,12 @@
                     <span class="details">Data Submitter:</span> {{study.value.submitted_by}}
                 </p>
             {{/if}}
-
-            {{#if study.value.lab_name}}
-                <p>
-                    <span class="details">PI:</span> {{study.value.lab_name}}
-                </p>
-            {{/if}}
         </div>
     </div>
 
     <!-- Study Description is truncated by default-->
     <p class="community-study-desc">
+        <span class="details">Description:</span>
         {{#truncate}}
             {{{study.value.study_description}}}
         {{/truncate}}
@@ -147,6 +148,7 @@
 
     <!-- If "Read More" is clicked, show full study description -->
     <p class="community-study-desc-full no-display">
+        <span class="details">Description:</span>
         {{study.value.study_description}}
         <a class="study-desc-collapse">Collapse</a>
     </p>
