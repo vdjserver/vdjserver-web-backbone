@@ -404,14 +404,24 @@ var StudySummaryView = Marionette.View.extend({
         }
 
         // study download cache
-        var has_download_cache = false;
+        var has_one_download_cache = false;
+        var has_multiple_download_cache = false;
         var download_url = null;
         var download_file_size = null;
+        var download_files = [];
         var study_cache = full_study.get('study_cache');
         if (study_cache) {
-            has_download_cache = true;
             download_url = study_cache.get('download_url');
-            download_file_size = this.getFileSizeDisplay(study_cache.get('file_size'));
+            if (download_url instanceof Array) {
+                has_multiple_download_cache = true;
+                var sizes = study_cache.get('file_size');
+                for (let i = 0; i < sizes.length; ++i) {
+                    download_files.push({url: download_url[i], file_size: this.getFileSizeDisplay(sizes[i])});
+                }
+            } else {
+                has_one_download_cache = true;
+                download_file_size = this.getFileSizeDisplay(study_cache.get('file_size'));
+            }
         }
 
         return {
@@ -429,9 +439,11 @@ var StudySummaryView = Marionette.View.extend({
             is_vdjserver: is_vdjserver,
             repo_titles: repo_titles,
             pub_list: pub_list,
-            has_download_cache: has_download_cache,
+            has_one_download_cache: has_one_download_cache,
+            has_multiple_download_cache: has_multiple_download_cache,
             download_url: download_url,
-            download_file_size: download_file_size
+            download_file_size: download_file_size,
+            download_files: download_files
         };
     },
 

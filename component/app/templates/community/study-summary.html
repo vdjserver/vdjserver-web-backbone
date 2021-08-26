@@ -25,11 +25,28 @@
             <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>
         </div>
 
-        {{#if has_download_cache}}
+        {{#if has_one_download_cache}}
             <div class="col-md-3 text-right">
                 <div class="btn-group" role="group" aria-label="Button group">
                     <a download class="btn btn-download" href="{{download_url}}"><i class="fas fa-download" aria-hidden="true"></i> Download Study ({{download_file_size}})</a>
                     <button type="button" class="btn btn-download" id="clipboard-copy-url" data-toggle="tooltip" data-placement="top" title="Copy download URL to clipboard" ><i class="fas fa-clipboard" download_url="{{download_url}}"></i></button>
+                </div>
+            </div>
+        {{/if}}
+        {{#if has_multiple_download_cache}}
+            <div class="col-md-3 text-right">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button class="btn btn-download dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Download Study
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {{#each download_files}}
+                        <a class="dropdown-item" href="{{this.url}}">Study File {{@index}} ({{this.file_size}})</a>
+                        {{/each}}
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-download" id="clipboard-copy-url" data-toggle="tooltip" data-placement="top" title="Copy download URLs to clipboard" ><i class="fas fa-clipboard" download_url="{{download_url}}"></i></button>
                 </div>
             </div>
         {{/if}}
