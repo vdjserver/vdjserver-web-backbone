@@ -424,6 +424,12 @@ var StudySummaryView = Marionette.View.extend({
             }
         }
 
+        // dates
+        var publish_date = null;
+        if (value.adc_publish_date) publish_date = new Date(value.adc_publish_date).toLocaleString();
+        var update_date = null;
+        if (value.adc_update_date) update_date = new Date(value.adc_update_date).toLocaleString();
+
         return {
             object: JSON.stringify(this.model),
             num_subjects: this.model.get('subjects').length,
@@ -443,7 +449,9 @@ var StudySummaryView = Marionette.View.extend({
             has_multiple_download_cache: has_multiple_download_cache,
             download_url: download_url,
             download_file_size: download_file_size,
-            download_files: download_files
+            download_files: download_files,
+            publish_date: publish_date,
+            update_date: update_date
         };
     },
 

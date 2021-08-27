@@ -104,7 +104,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
     model: Backbone.Model,
 
     initialize(parameters) {
-        this.sort_by = 'study.study_title';
+        this.sort_by = 'newest';
         this.comparator = this.collectionSortBy;
     },
 
@@ -199,7 +199,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
 
     // sort comparator for the collection
     collectionSortBy(modela, modelb) {
-        if (!this.sort_by) this.sort_by = 'study.study_title';
+        if (!this.sort_by) this.sort_by = 'newest';
 
         // we have a pre-defined set of sorts
         switch (this.sort_by) {
@@ -218,6 +218,42 @@ export var ADCStudyCollection = ADC.Collection.extend({
                 if (ma.length > mb.length) return -1;
                 if (ma.length < mb.length) return 1;
                 return 0;
+            }
+            case 'newest': {
+                let ma = modela.get('study');
+                let va = ma.get('value');
+                let mb = modelb.get('study');
+                let vb = mb.get('value');
+                let da = va['adc_publish_date'];
+                if (va['adc_update_date']) da = va['adc_update_date'];
+                let db = vb['adc_publish_date'];
+                if (vb['adc_update_date']) db = vb['adc_update_date'];
+
+                // nulls always at the back of the line
+                if (!da && !db) return 0;
+                if (!da) return 1;
+                if (!db) return -1;
+                let nda = new Date(da);
+                let ndb = new Date(db);
+                return (ndb > nda) - (ndb < nda);
+            }
+            case 'oldest': {
+                let ma = modela.get('study');
+                let va = ma.get('value');
+                let mb = modelb.get('study');
+                let vb = mb.get('value');
+                let da = va['adc_publish_date'];
+                if (va['adc_update_date']) da = va['adc_update_date'];
+                let db = vb['adc_publish_date'];
+                if (vb['adc_update_date']) db = vb['adc_update_date'];
+
+                // nulls always at the back of the line
+                if (!da && !db) return 0;
+                if (!da) return 1;
+                if (!db) return -1;
+                let nda = new Date(da);
+                let ndb = new Date(db);
+                return (nda > ndb) - (nda < ndb);
             }
         }
     },

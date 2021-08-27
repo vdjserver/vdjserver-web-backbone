@@ -108,6 +108,16 @@
             {{/if}} -->
         </div>
         <div class="col community-metadata">
+            {{#if publish_date}}
+                <p>
+                    <span class="details">Publish Date:</span> {{publish_date}}
+                </p>
+            {{/if}}
+            {{#if update_date}}
+                <p>
+                    <span class="details">Update Date:</span> {{update_date}}
+                </p>
+            {{/if}}
             {{#if study.value.pub_ids}}
                 <p>
                     <span class="details">Publication(s):</span>
