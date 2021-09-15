@@ -252,6 +252,11 @@ var SingleProjectView = Marionette.View.extend({
             this.controller.showProjectOverview();
         },
 
+        'click #save-edit-project': function(e) {
+            // update summary in case project title changed
+            this.updateSummary();
+        },
+
         //
         // Repertoires page specific events
         //

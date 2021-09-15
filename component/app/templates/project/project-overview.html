@@ -1,6 +1,10 @@
         <form method="POST" role="form" id="editProject-form" class="needs-validation" name="editProject" novalidate>
             <div class="row">
                 <div class="col-md-6 overview-summary">
+                    {{#if edit_mode}}
+                        <h3>Project Title</h3>
+                        <input type="text" class="form-control" name="study_title" id="study_title" value="{{value.study_title}}" required>
+                    {{/if}}
                     <h3>Project Summary</h3>
                     {{#unless edit_mode}}
                         {{#if value.study_description}}
