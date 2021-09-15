@@ -47,8 +47,14 @@ RUN cp -rf /node-$NODE_VER-linux-x64/share/* /usr/share
 
 RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-backbone
 
+# build airrvisualizationlibrary from source
+COPY ./component/airrvisualizationlibrary/ /var/www/html/vdjserver-backbone/airrvisualizationlibrary
+RUN cd /var/www/html/vdjserver-backbone/airrvisualizationlibrary && npm install
+RUN cd /var/www/html/vdjserver-backbone/airrvisualizationlibrary && npm run build:dev
+
 # Install npm dependencies (optimized for cache)
 COPY ./component/package.json /var/www/html/vdjserver-backbone/
+
 RUN cd /var/www/html/vdjserver-backbone && npm install
 
 # Copy project source
