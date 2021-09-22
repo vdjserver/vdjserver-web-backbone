@@ -127,37 +127,51 @@ export var ADCStudyCollection = ADC.Collection.extend({
                 study.set('study', new Project({value: model.get('study')}));
                 this.add(study);
 
+                study.set('repository', []);
+                study.set('repos', new Backbone.Model());
+                study.set('repertoires', new Backbone.Collection());
                 study.set('subjects', new Backbone.Collection());
                 study.set('samples', new Backbone.Collection());
                 study.set('data_processings', new Backbone.Collection());
-                study.set('repertoires', new Backbone.Collection());
-                study.set('repository', []);
-                study.set('repos', new Backbone.Model());
             }
 
+            // same study in multiple repositories?
+            // we keep a full list, and lists separated by their repository
             var repository_id = repertoires['repository'];
             var repos = study.get('repos');
             var repository = repos.get(repository_id);
             var repo = study.get('repository');
             if (repo.indexOf(repository_id) < 0) {
+                // new repository, so add
                 repo.push(repository_id);
                 repository = new Backbone.Model();
                 repos.set(repository_id, repository);
                 repository.set('repertoires', new Backbone.Collection());
+                repository.set('subjects', new Backbone.Collection());
+                repository.set('samples', new Backbone.Collection());
+                repository.set('data_processings', new Backbone.Collection());
             }
+            var study_reps = study.get('repertoires');
             var repository_reps = repository.get('repertoires');
 
-            var subjects = study.get('subjects');
-            var samples = study.get('samples');
-            var data_processings = study.get('data_processings');
-            var reps = study.get('repertoires');
+            var study_subjects = study.get('subjects');
+            var subjects = repository.get('subjects');
+            var study_samples = study.get('samples');
+            var samples = repository.get('samples');
+            var study_data_processings = study.get('data_processings');
+            var data_processings = repository.get('data_processings');
 
-            // use subject_id to separate subjects
+            // Use subject_id to separate subjects.
+            // The subject IDs should be the same across repositories, if not then
+            // cannot really collapse and they get double counted
             // TODO: blank subject_id?
-            var subject = subjects.get(model.get('subject')['subject_id']);
+            var subject = study_subjects.get(model.get('subject')['subject_id']);
             if (! subject) {
                 subject = new Subject({value: model.get('subject')});
                 subject.set('id', model.get('subject')['subject_id']);
+                study_subjects.add(subject);
+            }
+            if (! subjects.get(model.get('subject')['subject_id'])) {
                 subjects.add(subject);
             }
 
@@ -172,13 +186,14 @@ export var ADCStudyCollection = ADC.Collection.extend({
                     sample = new Sample({value: s});
                     if (sp_id) sample.set('id', sp_id);
                     samples.add(sample);
+                    study_samples.add(sample);
                 }
             }
 
             // skip data_processing for now
 
             // TODO: how to handle repertoires?
-            reps.add(model);
+            study_reps.add(model);
             repository_reps.add(model);
         }
 

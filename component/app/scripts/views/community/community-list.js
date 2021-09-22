@@ -158,8 +158,47 @@ var StudySummaryView = Marionette.View.extend({
         // serialize nested model data
         data.study = data.study.attributes;
 
+        // get unfiltered collections
+        var collections = this.controller.getCollections();
+        var study_id = this.model.get('id');
+        var full_study = collections.studyList.get(study_id);
+
+        // repository tags
+        data.is_vdjserver = false;
+        data.vdjserver_counts = {};
+        var repos = this.model.get('repository');
+        data.repo_titles = [];
+        var adc_repos = ADC.Repositories();
+        for (var i = 0; i < repos.length; ++i) {
+            if (repos[i] == 'vdjserver') {
+                data.is_vdjserver = true;
+                let vdjserver_study = this.model.get('repos').get('vdjserver');
+                let full_vdjserver_study = full_study.get('repos').get('vdjserver');
+                data.vdjserver_counts['num_repertoires'] = vdjserver_study.get('repertoires').length;
+                data.vdjserver_counts['full_num_repertoires'] = full_vdjserver_study.get('repertoires').length;
+                data.vdjserver_counts['num_subjects'] = vdjserver_study.get('subjects').length;
+                data.vdjserver_counts['full_num_subjects'] = full_vdjserver_study.get('subjects').length;
+                data.vdjserver_counts['num_samples'] = vdjserver_study.get('samples').length;
+                data.vdjserver_counts['full_num_samples'] = full_vdjserver_study.get('samples').length;
+                //data.vdjserver_counts['num_data_processings'] = vdjserver_study.get('data_processings').length;
+                //data.vdjserver_counts['full_num_data_processings'] = full_vdjserver_study.get('data_processings').length;
+            } else {
+                var obj = {name: adc_repos[repos[i]]['title']};
+                let repo_study = this.model.get('repos').get(repos[i]);
+                let full_repo_study = full_study.get('repos').get(repos[i]);
+                obj['num_repertoires'] = repo_study.get('repertoires').length;
+                obj['full_num_repertoires'] = full_repo_study.get('repertoires').length;
+                obj['num_subjects'] = repo_study.get('subjects').length;
+                obj['full_num_subjects'] = full_repo_study.get('subjects').length;
+                obj['num_samples'] = repo_study.get('samples').length;
+                obj['full_num_samples'] = full_repo_study.get('samples').length;
+                data.repo_titles.push(obj);
+            }
+        }
+        //console.log(vdjserver_counts);
+
         // attempting to grab repertoires data
-        data.repertoire = data.repertoires.models;
+        //data.repertoire = data.repertoires.models;
 
         return data;
     },
@@ -358,15 +397,43 @@ var StudySummaryView = Marionette.View.extend({
             if (value.vdjserver_keywords.indexOf("is_10x_genomics") >= 0)
                 is_10x_genomics = true;
 
+/*
         // repository tags
         var is_vdjserver = false;
+        var vdjserver_study = null;
+        var full_vdjserver_study = null;
+        var vdjserver_counts = {};
+        var vdjserver_num_repertoires = 0;
+        var full_vdjserver_num_repertoires = 0;
+        var vdjserver_num_subjects = 0;
+        var full_vdjserver_num_subjects = 0;
+        var vdjserver_num_samples = 0;
+        var full_vdjserver_num_samples = 0;
+        var vdjserver_num_data_processings = 0;
         var repos = this.model.get('repository');
         var repo_titles = [];
         var adc_repos = ADC.Repositories();
         for (var i = 0; i < repos.length; ++i) {
-            if (repos[i] == 'vdjserver') is_vdjserver = true;
-            else repo_titles.push(adc_repos[repos[i]]['title']);
+            if (repos[i] == 'vdjserver') {
+                is_vdjserver = true;
+                vdjserver_study = this.model.get('repos').get('vdjserver');
+                vdjserver_num_subjects = vdjserver_study.get('subjects').length;
+                vdjserver_num_repertoires = vdjserver_study.get('repertoires').length;
+                vdjserver_num_samples = vdjserver_study.get('samples').length;
+                vdjserver_num_data_processings = vdjserver_study.get('data_processings').length;
+                full_vdjserver_study = full_study.get('repos').get('vdjserver');
+                full_vdjserver_num_subjects = full_vdjserver_study.get('subjects').length;
+                full_vdjserver_num_repertoires = full_vdjserver_study.get('repertoires').length;
+                full_vdjserver_num_samples = full_vdjserver_study.get('samples').length;
+                //vdjserver_num_data_processings = vdjserver_study.get('data_processings').length;
+                vdjserver_counts['num_repertoires'] = vdjserver_num_repertoires;
+                vdjserver_counts['full_num_repertoires'] = full_vdjserver_num_repertoires;
+            } else {
+                repo_titles.push(adc_repos[repos[i]]['title']);
+            }
         }
+        console.log(vdjserver_counts);
+*/
 
         // publications
         var pub_list = [];
@@ -432,18 +499,20 @@ var StudySummaryView = Marionette.View.extend({
 
         return {
             object: JSON.stringify(this.model),
-            num_subjects: this.model.get('subjects').length,
-            num_total_subjects: full_study.get('subjects').length,
-            num_samples: this.model.get('samples').length,
-            num_repertoires: this.model.get('repertoires').length,
-            num_total_repertoires: full_study.get('repertoires').length,
+            //vdjserver_counts: JSON.stringify(vdjserver_counts),
+            //vdjserver_num_repertoires: vdjserver_num_repertoires,
+            //full_vdjserver_num_repertoires: full_vdjserver_num_repertoires,
+            //vdjserver_num_subjects: vdjserver_num_subjects,
+            //full_vdjserver_num_subjects: full_vdjserver_num_subjects,
+            //vdjserver_num_samples: vdjserver_num_samples,
+            //full_vdjserver_num_samples: full_vdjserver_num_samples,
             contains_ig: contains_ig,
             contains_tcr: contains_tcr,
             contains_single_cell: contains_single_cell,
             contains_paired_chain: contains_paired_chain,
             is_10x_genomics: is_10x_genomics,
-            is_vdjserver: is_vdjserver,
-            repo_titles: repo_titles,
+            //is_vdjserver: is_vdjserver,
+            //repo_titles: repo_titles,
             pub_list: pub_list,
             has_one_download_cache: has_one_download_cache,
             has_multiple_download_cache: has_multiple_download_cache,
@@ -465,8 +534,13 @@ var StudySummaryView = Marionette.View.extend({
     },
 
     constructPages() {
+        // TODO: handle multiple repositories
+        var repository_id = this.model.get('repository')[0];
+        var repos = this.model.get('repos');
+        var repository = repos.get(repository_id);
+
         this.pages = [];
-        var reps = this.model.get('repertoires');
+        var reps = repository.get('repertoires');
         this.paginatedRepertoires = reps.clone();
 
         for (var i = 0; i < reps.length; i += this.pageQty) {

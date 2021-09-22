@@ -10,7 +10,7 @@
     {{#each repo_titles}}
     <a class="badge badge-pill badge-adc community-project-type">
         <img src="./dist/images/ireceptor-logo.png" class="ireceptor" alt="i-Receptor Plus">
-        {{this}}
+        {{this.name}}
     </a>
     {{/each}}
 
@@ -188,19 +188,19 @@
     </div>
     <div class="community-button col">
         <a class="community-repertoires col">
-            {{#ifEquals num_repertoires num_total_repertoires}}
-                {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{#ifEquals vdjserver_counts.num_repertoires vdjserver_counts.full_num_repertoires}}
+                {{vdjserver_counts.full_num_repertoires}} Repertoires <i class="fas fa-vial"></i>
             {{else}}
-                {{num_repertoires}} of {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+                {{vdjserver_counts.num_repertoires}} of {{vdjserver_counts.full_num_repertoires}} Repertoires <i class="fas fa-vial"></i>
             {{/ifEquals}}
         </a>
     </div>
     <div class="community-button col">
         <a class="community-subjects col">
-            {{#ifEquals num_subjects num_total_subjects}}
-                {{num_total_subjects}} Subjects <i class="fas fa-users"></i>
+            {{#ifEquals vdjserver_counts.num_subjects vdjserver_counts.full_num_subjects}}
+                {{vdjserver_counts.full_num_subjects}} Subjects <i class="fas fa-users"></i>
             {{else}}
-                {{num_subjects}} of {{num_total_subjects}} Subjects <i class="fas fa-users"></i>
+                {{vdjserver_counts.num_subjects}} of {{vdjserver_counts.full_num_subjects}} Subjects <i class="fas fa-users"></i>
             {{/ifEquals}}
         </a>
     </div>
@@ -220,23 +220,23 @@
 {{#each repo_titles}}
 <div class="community-summary-stats row">
     <div class="community-button col">
-        {{this}}
+        {{this.name}}
     </div>
     <div class="community-button col">
         <a class="community-repertoires col">
-            {{#ifEquals ../num_repertoires ../num_total_repertoires}}
-                {{../../num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{#ifEquals this.num_repertoires this.full_num_repertoires}}
+                {{this.full_num_repertoires}} Repertoires <i class="fas fa-vial"></i>
             {{else}}
-                {{../../num_repertoires}} of {{../num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+                {{this.num_repertoires}} of {{this.full_num_repertoires}} Repertoires <i class="fas fa-vial"></i>
             {{/ifEquals}}
         </a>
     </div>
     <div class="community-button col">
         <a class="community-subjects col">
-            {{#ifEquals num_subjects num_total_subjects}}
-                {{num_total_subjects}} Subjects <i class="fas fa-users"></i>
+            {{#ifEquals this.num_subjects this.full_num_subjects}}
+                {{this.full_num_subjects}} Subjects <i class="fas fa-users"></i>
             {{else}}
-                {{num_subjects}} of {{num_total_subjects}} Subjects <i class="fas fa-users"></i>
+                {{this.num_subjects}} of {{this.full_num_subjects}} Subjects <i class="fas fa-users"></i>
             {{/ifEquals}}
         </a>
     </div>
