@@ -35,6 +35,7 @@ import { ADC } from 'Scripts/backbone/backbone-adc';
 import ADCInfo from 'Scripts/models/adc-info';
 import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
 import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
+import { RearrangementCounts } from 'Scripts/collections/adc-statistics';
 
 import Project from 'Scripts/models/agave-project';
 import ProjectList from 'Scripts/collections/agave-public-projects';
@@ -59,6 +60,7 @@ function CommunityController() {
     this.currentProject = null;
     this.studyCache = null;
     this.repertoireCache = null;
+    this.rearrangementCounts = null;
 
     // active filters
     this.filters = {};
@@ -85,9 +87,10 @@ CommunityController.prototype = {
             this.studyCache = new StudyCacheCollection();
 
             var that = this;
+            var total_reps = 0;
 
             // show a loading view while fetching the data
-            this.projectView.showLoading(0, 0, Object.keys(repos).length);
+            this.projectView.showLoading(0, 0, Object.keys(repos).length, 0);
 
             // fetch the ADC repository info
             this.repositoryInfo = new Backbone.Collection();
@@ -111,7 +114,6 @@ CommunityController.prototype = {
 
                 that.repertoireCollection = {};
                 promises = [];
-                var total_reps = 0;
                 var thecnt = 0;
                 for (var r in repos) {
                     var coll = new ADCRepertoireCollection(null, {repository: r});
@@ -121,7 +123,7 @@ CommunityController.prototype = {
                         thecnt += 1;
                         total_reps += res['Repertoire'].length;
                         // update loading screen with running total
-                        that.projectView.showLoading(total_reps, thecnt, Object.keys(repos).length);
+                        that.projectView.showLoading(total_reps, thecnt, Object.keys(repos).length, 0);
                         return res;
                     });
                     promises.push(p);
@@ -139,8 +141,35 @@ CommunityController.prototype = {
                 return that.studyCache.fetch();
             })
             .then(function() {
+                // load statistics
+                that.rearrangementCounts = {};
+                promises = [];
+                var thecnt = 0;
+                for (var r in repos) {
+                    // which repositories support stats?
+                    if (! repos[r]['stats_path']) {
+                        thecnt += 1;
+                        continue;
+                    }
+                    let reps = that.repertoireCollection[r];
+                    var coll = new RearrangementCounts(null, { repertoires: reps });
+                    that.rearrangementCounts[r] = coll;
+                    const p = coll.fetch().then(res => {
+                        //promises.splice(promises.indexOf(p), 1);
+                        thecnt += 1;
+                        // update loading screen with running total
+                        that.projectView.showLoading(total_reps, Object.keys(repos).length, Object.keys(repos).length, thecnt);
+                        return res;
+                    });
+                    promises.push(p);
+                }
+
+                return Promise.allSettled(promises);
+            })
+            .then(function() {
                 console.log(that.projectList);
                 console.log(that.studyCache);
+                console.log(that.rearrangementCounts);
 
                 that.studies = new ADCStudyCollection();
                 for (var r in repos) {
@@ -148,6 +177,7 @@ CommunityController.prototype = {
                     that.studies.normalize(that.repertoireCollection[r]);
                 }
                 that.studies.attachCacheEntries(that.studyCache);
+                that.studies.attachCountStatistics(that.rearrangementCounts);
                 console.log(that.studies);
 
                 // have the view display them
@@ -185,7 +215,8 @@ CommunityController.prototype = {
             repositoryInfo: this.repositoryInfo,
             repertoireCollection: this.repertoireCollection,
             studyList: this.studies,
-            projectList: this.projectList
+            projectList: this.projectList,
+            rearrangementCounts: this.rearrangementCounts
         }
     },
 
@@ -204,6 +235,7 @@ CommunityController.prototype = {
             this.filteredRepertoires[r] = this.repertoireCollection[r].filterCollection(filters);
             this.filteredStudies.normalize(this.filteredRepertoires[r]);
         }
+        this.filteredStudies.attachCountStatistics(this.rearrangementCounts);
 
         this.filteredStudies.sort_by = this.studies.sort_by;
         this.filteredStudies.sort();

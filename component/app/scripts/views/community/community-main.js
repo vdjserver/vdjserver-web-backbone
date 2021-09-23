@@ -209,13 +209,25 @@ var CommunityStatisticsView = Marionette.View.extend({
         var num_reps = 0;
         for (var i in colls['repertoireCollection'])
             num_reps += colls['repertoireCollection'][i].length;
+        var num_rearrangements = 0;
+        for (let i = 0; i < colls['studyList'].length; ++i) {
+            var study = colls['studyList'].at(i);
+            var repos = study.get('repository');
+            for (let j = 0; j < repos.length; ++j) {
+                let repo_study = study.get('repos').get(repos[j]);
+                let statistics = repo_study.get('statistics');
+                if (statistics['num_rearrangements']) num_rearrangements += statistics['num_rearrangements'];
+            }
+        }
+        num_rearrangements = new Intl.NumberFormat().format(num_rearrangements);
 
 
         return {
             current_sort: current_sort,
             num_repos: num_repos,
             num_studies: num_studies,
-            num_reps: num_reps
+            num_reps: num_reps,
+            num_rearrangements: num_rearrangements
         }
     },
 
@@ -398,8 +410,8 @@ export default Marionette.View.extend({
     },
 
     // show a loading view, used while fetching the data
-    showLoading(ls, lr, tr) {
-        this.showChildView('resultsRegion', new LoadingView({loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr}));
+    showLoading(ls, lr, tr, lst) {
+        this.showChildView('resultsRegion', new LoadingView({loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr, loaded_statistics: lst}));
         $("#community-charts").addClass("no-display");
     },
 

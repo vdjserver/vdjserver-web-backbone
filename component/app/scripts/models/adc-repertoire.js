@@ -45,7 +45,7 @@ export default ADC.Model.extend({
         this.airr_schema = AIRRSchema['Repertoire'];
     },
     url: function() {
-        return this.apiHost + '/repertoire/' + this.get('repertoire_id');
+        return this.apiHost + ADC.Repositories()[this.repository]['adc_path'] + '/repertoire/' + this.get('repertoire_id');
     },
 
     // flatten all values into a single string for easy search

@@ -169,7 +169,7 @@ var StudySummaryView = Marionette.View.extend({
         var repos = this.model.get('repository');
         data.repo_titles = [];
         var adc_repos = ADC.Repositories();
-        for (var i = 0; i < repos.length; ++i) {
+        for (let i = 0; i < repos.length; ++i) {
             if (repos[i] == 'vdjserver') {
                 data.is_vdjserver = true;
                 let vdjserver_study = this.model.get('repos').get('vdjserver');
@@ -182,6 +182,10 @@ var StudySummaryView = Marionette.View.extend({
                 data.vdjserver_counts['full_num_samples'] = full_vdjserver_study.get('samples').length;
                 //data.vdjserver_counts['num_data_processings'] = vdjserver_study.get('data_processings').length;
                 //data.vdjserver_counts['full_num_data_processings'] = full_vdjserver_study.get('data_processings').length;
+                // iR+ stats
+                let statistics = vdjserver_study.get('statistics');
+                if (! statistics['num_rearrangements']) data.vdjserver_counts['num_rearrangements'] = '???';
+                else data.vdjserver_counts['num_rearrangements'] = new Intl.NumberFormat().format(statistics['num_rearrangements']);
             } else {
                 var obj = {name: adc_repos[repos[i]]['title']};
                 let repo_study = this.model.get('repos').get(repos[i]);
@@ -192,11 +196,15 @@ var StudySummaryView = Marionette.View.extend({
                 obj['full_num_subjects'] = full_repo_study.get('subjects').length;
                 obj['num_samples'] = repo_study.get('samples').length;
                 obj['full_num_samples'] = full_repo_study.get('samples').length;
+                // iR+ stats
+                let statistics = repo_study.get('statistics');
+                if (! statistics['num_rearrangements']) obj['num_rearrangements'] = '???';
+                else obj['num_rearrangements'] = new Intl.NumberFormat().format(statistics['num_rearrangements']);
                 data.repo_titles.push(obj);
             }
         }
         //console.log(vdjserver_counts);
-
+        //console.log(new Intl.NumberFormat().format(num_rearrangements));
         // attempting to grab repertoires data
         //data.repertoire = data.repertoires.models;
 

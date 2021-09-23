@@ -76,6 +76,7 @@ ADC.Collection = Backbone.Collection.extend({
             case 'read':
                 options.type = 'POST';
                 if (! this.data) options.data = '{}';
+                else options.data = JSON.stringify(this.data);
                 break;
 
             case 'create':

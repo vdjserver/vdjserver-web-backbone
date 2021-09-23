@@ -37,10 +37,15 @@ Loading
     font-size: 2em;
     text-align: center;
 
-    p:nth-child(3) {
-        color: $vdj-medgray;
-        font-size: 0.75em;
-    }
+//    p:nth-child(3) {
+//        color: $vdj-medgray;
+//        font-size: 0.75em;
+//    }
+}
+
+.loading-display {
+    color: $vdj-medgray;
+    font-size: 0.75em;
 }
 
 /* ----------------------------------------------------------

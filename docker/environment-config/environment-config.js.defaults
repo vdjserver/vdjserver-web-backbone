@@ -105,44 +105,64 @@ var EnvironmentConfig = {
     },
     'adc': {
         'vdjserver': {
-            'hostname': 'https://vdjserver.org/airr/v1',
-            'title': 'VDJServer'
+            'title': 'VDJServer',
+            'hostname': 'https://vdj-staging.tacc.utexas.edu',
+            'adc_path': '/airr/v1',
+            //'stats_path': '/irplus/v1/stats'
         },
         'ipa1': {
-            'hostname': 'https://ipa1.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'https://ipa1.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'ipa2': {
-            'hostname': 'https://ipa2.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'https://ipa2.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'ipa3': {
-            'hostname': 'https://ipa3.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'https://ipa3.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'ipa4': {
-            'hostname': 'https://ipa4.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'https://ipa4.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'ipa5': {
-            'hostname': 'http://ipa5.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'http://ipa5.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'covid19-1': {
-            'hostname': 'http://covid19-1.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'http://covid19-1.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'covid19-2': {
-            'hostname': 'http://covid19-2.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'http://covid19-2.ireceptor.org',
+            'adc_path': '/airr/v1',
+            //'stats_path': '/irplus/v1/stats'
         },
         'covid19-3': {
-            'hostname': 'http://covid19-3.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'http://covid19-3.ireceptor.org',
+            'adc_path': '/airr/v1',
+            //'stats_path': '/irplus/v1/stats'
         },
         'covid19-4': {
-            'hostname': 'http://covid19-4.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'http://covid19-4.ireceptor.org',
+            'adc_path': '/airr/v1',
+            //'stats_path': '/irplus/v1/stats'
         },
     },
     'processMetadata': {
