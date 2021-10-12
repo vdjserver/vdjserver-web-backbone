@@ -43,17 +43,21 @@ import bootstrap_autocomplete from 'bootstrap-autocomplete';
 
 // Highcharts
 import Highcharts from 'highcharts';
+require('highcharts/highcharts-3d')(Highcharts);
 require('highcharts/modules/exporting')(Highcharts);
 require('highcharts/modules/drilldown')(Highcharts);
+require('highcharts/modules/data')(Highcharts);
 
 // D3
 import d3 from 'd3';
 
-
+import avl from 'airrvisualizationlibrary';
 
 document.addEventListener('DOMContentLoaded', () => {
   // the global application object
   global.App = new Application();
+  global.Highcharts = Highcharts;
+
   // start the application
   App.start();
 });

@@ -45,6 +45,7 @@ import ModalView from 'Scripts/views/utilities/modal-view-large';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
 //import AddChartView from 'Scripts/views/community/add-chart';
 
+
 // Community Query/Filter View
 // toolbar under the navigation bar
 import community_query_template from 'Templates/community/community-query.html';
@@ -287,6 +288,17 @@ var CommunityChartsView = Marionette.View.extend({
 
     onAttach() {
         if (this.view) this.view.showChart();
+
+/*
+        let properties = window.airrvisualization.createProperties();
+        properties.setDataType('VGeneUsage');
+        properties.setDataDrilldown(true);
+        properties.setSubtitle(["Subgroup/Family", "Gene", "Allele"]);
+        properties.setSeriesColors(["rgb(124,181,226)"]);
+
+        properties.setId('chart-2-region').setSort(true).setData(example_stats).setTitle(' ');
+        let chart = window.airrvisualization.createChart(properties);
+        chart.plot(); */
     },
 
     updateCharts(studyList) {
