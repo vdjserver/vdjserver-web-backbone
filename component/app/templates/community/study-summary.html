@@ -8,15 +8,29 @@
     {{/if}}
 
     {{#each repo_titles}}
-    <a class="badge badge-pill badge-adc community-project-type">
-        <img src="./dist/images/ireceptor-logo.png" class="ireceptor" alt="i-Receptor Plus">
-        {{this.name}}
-    </a>
+        {{#ifEquals this.name "sciReptor"}}
+            <a class="badge badge-pill badge-adc community-project-type">
+                <img src="./dist/images/scireptor_logo.png" class="scireptor" alt="sciReptor">
+            </a>
+        {{else}}
+            {{#ifEquals this.name "IPA"}}
+                <a class="badge badge-pill badge-adc community-project-type">
+                    <img src="./dist/images/ireceptor-logo.png" class="ireceptor" alt="i-Receptor Plus">
+                    {{this.name}}
+                </a>
+            {{else}}
+                <!-- generic AIRR logo -->
+                <a class="badge badge-pill badge-adc community-project-type">
+                    <img src="./dist/images/AIRR_logo-only.png" class="airr" alt="AIRR Repository">
+                    {{this.name}}
+                </a>
+            {{/ifEquals}}
+        {{/ifEquals}}
     {{/each}}
 
     {{#if is_10x_genomics}}
     <a class="badge badge-pill badge-10x community-project-type">
-        <img src="./dist/images/10xgenomics-logo.png" class="genomics10x" alt="10X Genomics">Genomics</a>
+        <img src="./dist/images/10x_Logo_Vertical_Full-Color_Digital.png" class="genomics10x" alt="10X Genomics"></a>
     {{/if}}
 </h3>
 <div class="community-project-header">

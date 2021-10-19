@@ -30,8 +30,11 @@ import '../styles/main.scss'
 
 // Images
 import logo_image from 'Images/vdjserver-logo.png';
-import genomics_image from 'Images/10xgenomics-logo.png';
+//import genomics_image from 'Images/10xgenomics-logo.png';
+import genomics_image from 'Images/10x_Logo_Vertical_Full-Color_Digital.png';
 import ireceptor_image from 'Images/ireceptor-logo.png';
+import scireptor_image from 'Images/scireptor_logo.png';
+import airr_image from 'Images/AIRR_logo-only.png';
 
 // main application
 import { Agave } from 'Scripts/backbone/backbone-agave';

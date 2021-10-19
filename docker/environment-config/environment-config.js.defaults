@@ -110,6 +110,18 @@ var EnvironmentConfig = {
             'adc_path': '/airr/v1',
             //'stats_path': '/irplus/v1/stats'
         },
+        'scireptor': {
+            'title': 'sciReptor',
+            'hostname': 'https://scireptor.dkfz.de',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
+        },
+        'vdjbase': {
+            'title': 'VDJbase',
+            'hostname': 'http://airr-seq.vdjbase.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
+        },
         'ipa1': {
             'title': 'IPA',
             'hostname': 'https://ipa1.ireceptor.org',
