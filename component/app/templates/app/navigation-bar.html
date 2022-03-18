@@ -1,6 +1,6 @@
 <!-- {{#if public_bar}} -->
     <nav class="navbar navbar-expand-lg navbar-dark" id="nav">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" data-bypass=true href="{{location.origin}}/">
             <img src="./dist/images/vdjserver-logo.png" alt="VDJServer" />
             <span class="brand-name">VDJServer</span>
         </a>
@@ -24,7 +24,7 @@
                 </li>
                 {{/if}}
                 <li class="nav-item">
-                    <a class="nav-link" href="/community">Community Data</a>
+                    <a class="nav-link" href="/community/">Community Data</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Documentation</a>
