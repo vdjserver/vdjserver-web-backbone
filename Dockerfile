@@ -36,20 +36,20 @@ RUN cp -rf /node-v8.10.0-linux-x64/share/* /usr/share
 #RUN npm config set proxy http://proxy.swmed.edu:3128
 #RUN npm config set https-proxy http://proxy.swmed.edu:3128
 
-RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-community
+RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-v2-web-backbone
 
 # Install npm dependencies (optimized for cache)
-COPY ./component/package.json /var/www/html/vdjserver-community/
-RUN cd /var/www/html/vdjserver-community && npm install
+COPY ./component/package.json /var/www/html/vdjserver-v2-web-backbone/
+RUN cd /var/www/html/vdjserver-v2-web-backbone && npm install
 
 # Copy project source
-COPY ./component/ /var/www/html/vdjserver-community
+COPY ./component/ /var/www/html/vdjserver-v2-web-backbone
 
 # build dev site
-RUN cd /var/www/html/vdjserver-community && npm run dev
+RUN cd /var/www/html/vdjserver-v2-web-backbone && npm run dev
 # build the production site
-#RUN cd /var/www/html/vdjserver-community && npm run build
+#RUN cd /var/www/html/vdjserver-v2-web-backbone && npm run build
 
-WORKDIR /var/www/html/vdjserver-community
+WORKDIR /var/www/html/vdjserver-v2-web-backbone
 
-VOLUME ["/var/www/html/vdjserver-community"]
+VOLUME ["/var/www/html/vdjserver-v2-web-backbone"]
