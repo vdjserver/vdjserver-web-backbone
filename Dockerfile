@@ -48,9 +48,9 @@ RUN cp -rf /node-$NODE_VER-linux-x64/share/* /usr/share
 RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-v2-web-backbone
 
 # build airrvisualizationlibrary from source
-COPY ./component/airrvisualizationlibrary/ /var/www/html/vdjserver-backbone/airrvisualizationlibrary
-RUN cd /var/www/html/vdjserver-backbone/airrvisualizationlibrary && npm install
-RUN cd /var/www/html/vdjserver-backbone/airrvisualizationlibrary && npm run build:dev
+COPY ./component/airrvisualizationlibrary/ /var/www/html/vdjserver-v2-web-backbone/airrvisualizationlibrary
+RUN cd /var/www/html/vdjserver-v2-web-backbone/airrvisualizationlibrary && npm install
+RUN cd /var/www/html/vdjserver-v2-web-backbone/airrvisualizationlibrary && npm run build:dev
 
 # Install npm dependencies (optimized for cache)
 COPY ./component/package.json /var/www/html/vdjserver-v2-web-backbone/
@@ -60,8 +60,8 @@ RUN cd /var/www/html/vdjserver-v2-web-backbone && npm install
 COPY ./component/ /var/www/html/vdjserver-v2-web-backbone
 
 # ESLint
-COPY ./.eslintrc.json /var/www/html/vdjserver-backbone
-#RUN cd /var/www/html/vdjserver-backbone && npm run eslint app/scripts
+COPY ./.eslintrc.json /var/www/html/vdjserver-v2-web-backbone
+#RUN cd /var/www/html/vdjserver-v2-web-backbone && npm run eslint app/scripts
 
 # build dev site
 RUN cd /var/www/html/vdjserver-v2-web-backbone && npm run dev
