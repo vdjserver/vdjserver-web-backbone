@@ -45,7 +45,7 @@ RUN cp -rf /node-$NODE_VER-linux-x64/share/* /usr/share
 #RUN npm config set proxy http://proxy.swmed.edu:3128
 #RUN npm config set https-proxy http://proxy.swmed.edu:3128
 
-RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-backbone
+RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-v2-web-backbone
 
 # build airrvisualizationlibrary from source
 COPY ./component/airrvisualizationlibrary/ /var/www/html/vdjserver-backbone/airrvisualizationlibrary
@@ -53,22 +53,21 @@ RUN cd /var/www/html/vdjserver-backbone/airrvisualizationlibrary && npm install
 RUN cd /var/www/html/vdjserver-backbone/airrvisualizationlibrary && npm run build:dev
 
 # Install npm dependencies (optimized for cache)
-COPY ./component/package.json /var/www/html/vdjserver-backbone/
-
-RUN cd /var/www/html/vdjserver-backbone && npm install
+COPY ./component/package.json /var/www/html/vdjserver-v2-web-backbone/
+RUN cd /var/www/html/vdjserver-v2-web-backbone && npm install
 
 # Copy project source
-COPY ./component/ /var/www/html/vdjserver-backbone
+COPY ./component/ /var/www/html/vdjserver-v2-web-backbone
 
 # ESLint
 COPY ./.eslintrc.json /var/www/html/vdjserver-backbone
 #RUN cd /var/www/html/vdjserver-backbone && npm run eslint app/scripts
 
 # build dev site
-RUN cd /var/www/html/vdjserver-backbone && npm run dev
+RUN cd /var/www/html/vdjserver-v2-web-backbone && npm run dev
 # build the production site
-#RUN cd /var/www/html/vdjserver-backbone && npm run build
+#RUN cd /var/www/html/vdjserver-v2-web-backbone && npm run build
 
-WORKDIR /var/www/html/vdjserver-backbone
+WORKDIR /var/www/html/vdjserver-v2-web-backbone
 
-VOLUME ["/var/www/html/vdjserver-backbone"]
+VOLUME ["/var/www/html/vdjserver-v2-web-backbone"]
