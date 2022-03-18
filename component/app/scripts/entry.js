@@ -54,7 +54,7 @@ require('highcharts/modules/data')(Highcharts);
 // D3
 import d3 from 'd3';
 
-import avl from 'airrvisualizationlibrary';
+//import avl from 'airrvisualizationlibrary';
 
 document.addEventListener('DOMContentLoaded', () => {
   // the global application object
