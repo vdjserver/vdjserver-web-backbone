@@ -1,6 +1,6 @@
 //
 // navbar-controller.js
-// Manages the navigation bar for public/private
+// Manages the navigation bar
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -29,9 +29,6 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
 // We use a single navigation bar template that is customized by handlebars
-// 1. public page, not logged in
-// 2. public page, logged in
-// 3. private page, logged in
 import navbar_template from 'Templates/app/navigation-bar.html';
 
 // This is the navigation bar
@@ -39,18 +36,14 @@ var NavigationBarView = Marionette.View.extend({
     template: Handlebars.compile(navbar_template),
 
     initialize: function(parameters) {
-        this.public_bar = true;
         this.active_token = App.Agave.token().isActive();
 
         if (parameters) {
-            if (parameters.public_bar != undefined)
-                this.public_bar = parameters.public_bar;
         }
     },
 
     templateContext() {
         return {
-            public_bar: this.public_bar,
             active_token: this.active_token,
             admin_account: App.Agave.token().isAdmin(),
             username: App.Agave.token().get('username'),
@@ -67,7 +60,7 @@ var NavigationFooterView = Marionette.View.extend({
 
 // Navigation bar controller
 //
-// This manages the navigation bar with public options
+// This manages the navigation bar
 // and after the user logs in
 import navregion_template from 'Templates/app/navigation-region.html';
 export default Marionette.View.extend({
@@ -114,18 +107,11 @@ export default Marionette.View.extend({
         }
     },
 
-    showPublicNavigation() {
+    showNavigation() {
         this.emptyToolbar1Bar();
         this.emptyToolbar2Bar();
         this.getRegion('footerRegion').empty();
-        this.showChildView('navigationRegion', new NavigationBarView({public_bar: true}));
-    },
-
-    showPrivateNavigation() {
-        this.emptyToolbar1Bar();
-        this.emptyToolbar2Bar();
-        this.getRegion('footerRegion').empty();
-        this.showChildView('navigationRegion', new NavigationBarView({public_bar: false}));
+        this.showChildView('navigationRegion', new NavigationBarView());
     },
 
     showMessageBar(view) {
