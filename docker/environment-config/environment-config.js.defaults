@@ -177,6 +177,20 @@ var EnvironmentConfig = {
             //'stats_path': '/irplus/v1/stats'
         },
     },
+    'filters': {
+        'airr_repertoire': [
+            { 'title': "Study ID", 'field': "study.study_id"},
+            { 'title': "Study Type", 'field': "study.study_type", 'data': true},
+            { 'title': "Study Keywords", 'field': "study.keywords_study", 'schema': { 'object': 'Study', 'property': 'keywords_study' }},
+            { 'title': "Subject ID", 'field': "subject.subject_id"},
+            { 'title': "Subject Species", 'field': "subject.species", 'data': true},
+            { 'title': "Subject Sex", 'field': "subject.sex", 'schema': { 'object': 'Subject', 'property': 'sex' }},
+            { 'title': "Disease Diagnosis", 'field': "diagnosis.disease_diagnosis", 'data': true},
+            { 'title': "Sample ID", 'field': "sample.sample_id"}
+        ],
+        'airr_rearrangement': {
+        }
+    },
     'processMetadata': {
         'version': 3,
     },

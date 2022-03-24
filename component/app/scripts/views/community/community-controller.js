@@ -43,6 +43,8 @@ import CommunityMainView from 'Scripts/views/community/community-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 // import AddChartView from 'Scripts/views/community/add-chart';
 
+import FilterManager from 'Scripts/models/filter-manager';
+
 // Community controller
 //
 function CommunityController() {
@@ -54,6 +56,7 @@ function CommunityController() {
     this.repositoryInfo = null;
     this.repertoireCollections = null;
     this.studies = null;
+    this.repertoireFilters = null;
     this.filteredRepertoires = null;
     this.filteredStudies = null;
     this.projectList = null;
@@ -180,6 +183,12 @@ CommunityController.prototype = {
                 that.studies.attachCountStatistics(that.rearrangementCounts);
                 console.log(that.studies);
 
+                // construct base filters
+                that.repertoireFilters = new FilterManager({filter_type: "airr_repertoire"});
+                // TODO: load custom user filters
+                that.repertoireFilters.constructValues(that.studies);
+                console.log(that.repertoireFilters);
+
                 // have the view display them
                 if (projectUuid) {
                     // filter on specific VDJServer uuid if provided
@@ -188,7 +197,7 @@ CommunityController.prototype = {
                     App.router.navigate('/community', {trigger: false});
                     that.applyFilter(filters);
                 } else {
-                    that.projectView.showResultsList(that.studies);
+                    that.projectView.showResultsList(that.studies, that.repertoireFilters);
                 }
             })
             .catch(function(error) {
@@ -204,7 +213,7 @@ CommunityController.prototype = {
                 App.router.navigate('/community', {trigger: false});
                 that.applyFilter(filters);
             } else {
-                this.projectView.showResultsList(this.studies);
+                this.projectView.showResultsList(this.studies, this.repertoireFilters);
             }
         }
     },
@@ -240,7 +249,7 @@ CommunityController.prototype = {
         this.filteredStudies.sort_by = this.studies.sort_by;
         this.filteredStudies.sort();
 
-        this.projectView.showResultsList(this.filteredStudies, filters);
+        this.projectView.showResultsList(this.filteredStudies, this.repertoireFilters, filters);
     },
 
     applySort(sort_by) {
