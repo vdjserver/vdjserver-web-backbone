@@ -55,7 +55,11 @@ var NavigationBarView = Marionette.View.extend({
 // This is the toolbar footer
 import navbar_footer from 'Templates/app/navigation-footer.html';
 var NavigationFooterView = Marionette.View.extend({
-    template: Handlebars.compile(navbar_footer)
+    template: Handlebars.compile(navbar_footer),
+    initialize(options) {
+        $("#navigation").addClass("query-stats-border"); //TODO: move later to app level?
+    }
+
 });
 
 // Navigation bar controller
@@ -80,17 +84,19 @@ export default Marionette.View.extend({
 
     events: {
         'click #logout': 'logout',
-        'click .open-filter': 'hideToolbarBar',
-        'click .closed-filter': 'showToolbarBar',
+        'click #navbar-filter-icon': 'toggleToolbarBar',
     },
 
     initialize(options) {
         console.log('Initialize');
-        _.bindAll(this, 'detect_scroll');
-         $(window).scroll(this.detect_scroll);
+        this.navbar_filter = true; //navbar filter is open by default
+        $("#navigation").addClass("opened-filter");
+
+	// _.bindAll(this, 'detect_scroll');
+        //$(window).scroll(this.detect_scroll);
     },
 
-    detect_scroll: function(view) {
+    /*detect_scroll: function(view) {
         if ((!this.getRegion('toolbar1Region').hasView()) && (!this.getRegion('toolbar2Region').hasView()))
             return;
 
@@ -105,7 +111,7 @@ export default Marionette.View.extend({
             $("#navigation").addClass("query-stats-border");
             $("#close-filter").css("display", "inline");
         }
-    },
+    },*/
 
     showNavigation() {
         this.emptyToolbar1Bar();
@@ -141,7 +147,29 @@ export default Marionette.View.extend({
         this.getRegion('toolbar2Region').empty();
     },
 
-    hideToolbarBar(view) {
+    toggleToolbarBar(e) {
+        console.log(this.navbar_filter);
+	e.preventDefault();  //don't do default browser action of following link
+        if (!this.navbar_filter) {
+            this.getRegion('toolbar1Region').$el.show();
+            this.getRegion('toolbar2Region').$el.show();
+            this.getRegion('footerRegion').$el.show();
+
+            //$("#navbar-filter").toggleClass("closed-filter opened-filter");
+            //$("#navbar-filter-icon").toggleClass("fa-chevron-up fa-filter");
+            this.navbar_filter = true;
+        } else {
+            this.getRegion('toolbar1Region').$el.hide();
+            this.getRegion('toolbar2Region').$el.hide();
+            this.getRegion('footerRegion').$el.hide();
+
+            //$("#navbar-filter").toggleClass("opened-filter closed-filter");
+            //$("#navbar-filter-icon").toggleClass("fa-filter fa-chevron-up");
+            this.navbar_filter = false;
+        }
+    },
+
+    /*hideToolbarBar(view) {
         this.getRegion('toolbar1Region').$el.hide();
         this.getRegion('toolbar2Region').$el.hide();
 
@@ -155,7 +183,7 @@ export default Marionette.View.extend({
 
         $(".closed-filter").toggleClass("closed-filter open-filter");
         $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
-    },
+    },*/
 
     logout(e) {
         e.preventDefault();
