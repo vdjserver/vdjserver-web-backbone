@@ -45,14 +45,14 @@ export var RearrangementCounts = ADC.Collection.extend({
         ADC.Collection.prototype.initialize.apply(this, [models, parameters]);
 
         if (this.repertoires) {
-            this.data = { repertoires: [], statistics: ["rearrangement_count", "duplicate_count", "rearrangement_count_productive", "duplicate_count_productive"]};
+            this.data = { statistics: ["rearrangement_count", "duplicate_count", "rearrangement_count_productive", "duplicate_count_productive"]};
+//            this.data = { repertoires: [], statistics: ["rearrangement_count", "duplicate_count", "rearrangement_count_productive", "duplicate_count_productive"]};
 
-            for (let i = 0; i < this.repertoires.length; ++i) {
-            //for (let i = 0; i < 3; ++i) {
-                let model = this.repertoires.at(i);
-                let obj = { repertoire: { repertoire_id: model.get('repertoire_id') }};
-                this.data['repertoires'].push(obj);
-            }
+//            for (let i = 0; i < this.repertoires.length; ++i) {
+//                let model = this.repertoires.at(i);
+//                let obj = { repertoire: { repertoire_id: model.get('repertoire_id') }};
+//                this.data['repertoires'].push(obj);
+//            }
         }
     },
     url: function() {
@@ -69,10 +69,15 @@ export var RearrangementCounts = ADC.Collection.extend({
                 let stat = response['Result'][i];
                 // TODO: should be repertoire singular, https://github.com/ireceptor-plus/issues/issues/89
                 let obj = {
-                    id: stat['repertoires']['repertoire_id'],
-                    repertoire_id: stat['repertoires']['repertoire_id'],
-                    data_processing_id: stat['repertoires']['data_processing_id'],
-                    sample_processing_id: stat['repertoires']['sample_processing_id']
+                    id: stat['repertoire']['repertoire_id'],
+                    repertoire_id: stat['repertoire']['repertoire_id'],
+                    data_processing_id: stat['repertoire']['data_processing_id'],
+                    sample_processing_id: stat['repertoire']['sample_processing_id']
+                    // IPA invalid format
+                    //id: stat['repertoires']['repertoire_id'],
+                    //repertoire_id: stat['repertoires']['repertoire_id'],
+                    //data_processing_id: stat['repertoires']['data_processing_id'],
+                    //sample_processing_id: stat['repertoires']['sample_processing_id']
                 };
                 for (let j = 0; j < stat['statistics'].length; ++j) {
                     obj[stat['statistics'][j]['statistic_name']] = stat['statistics'][j]['total'];

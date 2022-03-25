@@ -15,7 +15,7 @@ The `v2-develop` branch is VDJServer V2 GUI development.
 
 The development setup is configured to mount the local directory with the source code files
 inside the docker container so that they can be modified and be available without regenerating the docker image.
-In order to support this, an `npm install` will install of the node modules into that local directory. The first
+In order to support this, an `npm install` will install all of the node modules into that local directory. The first
 time the docker image is run, the install will take a few minutes.
 
 ```

@@ -82,14 +82,55 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
             // apply individual filters
             for (var j = 0; j < filters['filters'].length; ++j) {
                 var f = filters['filters'][j];
-                // if filter value is null, skip
-                if (f['value'] == null) continue;
-
                 var value = model.getValueForField(f['field']);
-                if (f['value'] == 'null' && value == null) continue;
-                if (value != f['value']) {
-                    valid = false;
-                    break;
+                // handle ontologies versus regular values
+                if (f['object']) {
+                    if (f['object'] == 'null' && value == null) continue;
+                    if (value == null) { valid = false; break; }
+                    if (Array.isArray(value)) {
+                        // if array then value only needs to be found once
+                        let found = false;
+                        for (let k = 0; k < value.length; ++k) {
+                            if (value[k]['id'] == f['object']) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            valid = false;
+                            break;
+                        }
+                    } else {
+                        if (value['id'] != f['object']) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                } else {
+                    // if filter value is null, skip
+                    if (f['value'] == null) continue;
+
+                    if (f['value'] == 'null' && value == null) continue;
+                    if (value == null) { valid = false; break; }
+                    if (Array.isArray(value)) {
+                        // if array then value only needs to be found once
+                        let found = false;
+                        for (let k = 0; k < value.length; ++k) {
+                            if (value[k] == f['value']) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            valid = false;
+                            break;
+                        }
+                    } else {
+                        if (value != f['value']) {
+                            valid = false;
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -299,30 +340,100 @@ export var ADCStudyCollection = ADC.Collection.extend({
         }
     },
 
-    getValueForField(field) {
+    // this is not generic but customized for our objects
+    getAllUniqueValues(field) {
+        var values = [];
         var paths = field.split('.');
+        if (paths.length != 2) return values; // what are you asking for?
+
+        // loop through the studies
         for (var i = 0; i < this.length; ++i) {
             var model = this.at(i);
-            if (paths.length == 1) return model.get(paths[0]);
-            else {
-                switch(paths[0]) {
-                    case 'study':
-                        return model.get('study')[paths[1]];
-                    case 'subject':
-                        return model.get('subject')[paths[1]];
-                    case 'diagnosis':
-                        return null;
-                    case 'sample':
-                    case 'data_processing':
-                        return null;
-                    case 'repertoire':
-                        return null;
-                    default:
-                        return null;
-                }
+
+            switch(paths[0]) {
+                case 'study':
+                    var study = model.get('study');
+                    var value = study.get('value');
+                    var obj = value[paths[1]];
+                    if (obj == null) continue;
+                    if (typeof obj === 'object') {
+                        // assume it is an ontology field
+                        if (obj['id'] == null) continue;
+                        let found = false;
+                        for (var k = 0; k < values.length; ++k) {
+                            if (values[k]['id'] == obj['id']) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (! found) values.push(obj);
+                    } else {
+                        // plain value
+                        if (values.indexOf(obj) < 0) values.push(obj);
+                    }
+                    break;
+                case 'subject':
+                    var subjects = model.get('subjects');
+                    for (var j = 0; j < subjects.length; ++j) {
+                        var subject_model = subjects.at(j);
+                        var value = subject_model.get('value');
+                        var obj = value[paths[1]];
+                        if (obj == null) continue;
+                        if (typeof obj === 'object') {
+                            // assume it is an ontology field
+                            if (obj['id'] == null) continue;
+                            let found = false;
+                            for (var k = 0; k < values.length; ++k) {
+                                if (values[k]['id'] == obj['id']) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (! found) values.push(obj);
+                        } else {
+                            // plain value
+                            if (values.indexOf(obj) < 0) values.push(obj);
+                        }
+                    }
+                    break;
+                case 'diagnosis':
+                    var subjects = model.get('subjects');
+                    for (var j = 0; j < subjects.length; ++j) {
+                        var subject_model = subjects.at(j);
+                        var value = subject_model.get('value');
+                        var diagnosis = value['diagnosis'];
+                        if (diagnosis == null) continue;
+                        for (var d = 0; d < diagnosis.length; ++d) {
+                            var obj = diagnosis[d][paths[1]];
+                            if (obj == null) continue;
+                            if (typeof obj === 'object') {
+                                // assume it is an ontology field
+                                if (obj['id'] == null) continue;
+                                let found = false;
+                                for (var k = 0; k < values.length; ++k) {
+                                    if (values[k]['id'] == obj['id']) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (! found) values.push(obj);
+                            } else {
+                                // plain value
+                                if (values.indexOf(obj) < 0) values.push(obj);
+                            }
+                        }
+                    }
+                    break;
+                case 'sample':
+                case 'data_processing':
+                    return values;
+                case 'repertoire':
+                    return values;
+                default:
+                    return values;
             }
         }
-        return null;
+        return values;
     },
 
     countBySubject(field) {
