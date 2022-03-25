@@ -23,7 +23,7 @@ _single-project.scss - Single Projects
 }
 
 #project-detail {
-    margin-top: 3%;
+    margin-top: 2%;
 }
 
 .project-metadata {
@@ -292,4 +292,12 @@ Repertoires
 
 .selected-repertoire {
     background: rgba(127, 168, 189, 0.1);
+}
+
+/* ----------------------------------------------------------
+Files
+------------------------------------------------------------*/
+
+button.file-action {
+    margin-right: 2em;
 }

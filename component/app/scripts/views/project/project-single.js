@@ -34,9 +34,11 @@ import Project from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
 import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
+import { FilesCollection, ProjectFilesCollection } from 'Scripts/collections/agave-files';
 import Permissions from 'Scripts/collections/agave-permissions';
 import TenantUsers from 'Scripts/collections/agave-tenant-users';
 
+// main subviews
 import ProjectOverView from 'Scripts/views/project/project-single-overview';
 
 // modal view for when the project is being created
@@ -141,12 +143,6 @@ var AddRepGroupView = Marionette.View.extend({
     template: Handlebars.compile(addRepGroup_template)
 });
 
-// Project Files Page
-import files_template from 'Templates/project/files.html';
-var FilesView = Marionette.View.extend({
-    template: Handlebars.compile(files_template)
-});
-
 // Analyses Page
 import analyses_template from 'Templates/project/analyses.html';
 var AnalysesView = Marionette.View.extend({
@@ -213,6 +209,9 @@ var AddNucleicView = Marionette.View.extend({
 
 // Repertoire view
 import RepertoireController from 'Scripts/views/project/repertoire-controller';
+
+// Files view
+import ProjectFilesController from 'Scripts/views/project/files/project-files-controller';
 
 // Main project
 import template from 'Templates/project/single.html';
@@ -376,11 +375,13 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showProjectFiles(project)
+    showProjectFiles(projectFilesController)
     {
         this.getRegion('stepsRegion').empty();
-        this.detailView = new FilesView({model: project});
-        this.showChildView('detailRegion', this.detailView);
+        this.showChildView('detailRegion', projectFilesController.getView());
+
+        // tell controller to display its data
+        projectFilesController.showProjectFilesList();
     },
 
     showProjectAnalyses(project)
@@ -464,6 +465,7 @@ function SingleProjectController(project, page) {
     this.subjectList = null;
     this.sampleList = null;
     this.groupList = null;
+    this.projectFilesController = null;
     this.fileList = null;
     this.analysisList = null;
     this.projectUserList = null;
@@ -548,6 +550,23 @@ SingleProjectController.prototype = {
     },
 
     lazyLoadFiles() {
+        var that = this;
+        var fileList = new ProjectFilesCollection({projectUuid: that.model.get('uuid')});
+
+        // fetch the files
+        return fileList.fetch()
+            .then(function() {
+                // now propagate loaded data to project
+                that.fileList = fileList;
+                console.log(fileList);
+            })
+            .then(function() {
+                // update the project summary
+                that.projectView.updateSummary();
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
     },
 
     lazyLoadAnalyses() {
@@ -626,7 +645,29 @@ SingleProjectController.prototype = {
         this.page = 'file';
         App.router.navigate('project/' + this.model.get('uuid') + '/file', {trigger: false});
         this.projectView.updateSummary();
-        this.projectView.showProjectFiles(this.model);
+        var that = this;
+        if (! this.fileList) {
+            // it should be lazy loading
+
+            // show loading while we fetch
+            that.projectView.showLoading();
+
+            // wait on the lazy load
+            this.fileListPromise.then(function() {
+                    // have the view display them
+                    that.projectView.updateSummary();
+                    that.projectFilesController = new ProjectFilesController(that);
+                    that.projectView.showProjectFiles(that.projectFilesController);
+                })
+                .fail(function(error) {
+                    console.log(error);
+                });
+        } else {
+            // tell repertoire controller to display the repertoire list
+            that.projectView.updateSummary();
+            that.projectFilesController = new ProjectFilesController(that);
+            that.projectView.showProjectFiles(that.projectFilesController);
+        }
     },
 
     showProjectAnalyses() {
