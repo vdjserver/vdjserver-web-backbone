@@ -23,7 +23,7 @@ _single-project.scss - Single Projects
 }
 
 #project-detail {
-    margin-top: 2%;
+    //margin-top: 2%;
 }
 
 .project-metadata {
@@ -33,6 +33,10 @@ _single-project.scss - Single Projects
     .btn {
         margin: 0% 1%;
     }
+}
+
+button.project-changes-action {
+    margin-left: 2em;
 }
 
 #summary-buttons {
@@ -59,6 +63,18 @@ _single-project.scss - Single Projects
 .card-body {
     text-align: center;
 }
+
+.card-image {
+    margin-bottom: 0.5rem;
+}
+
+.card-title {
+    margin-bottom: 0rem;
+}
+
+/* ----------------------------------------------------------
+Project Overview
+----------------------------------------------------------*/
 
 .overview-summary {
     border-right: 1px solid rgba(225, 225, 225, 0.45);
@@ -93,6 +109,44 @@ _single-project.scss - Single Projects
 
 .overview-footer {
     margin: 3% 0%;
+}
+
+/* ----------------------------------------------------------
+Project Subjects/Samples
+----------------------------------------------------------*/
+
+.project-subjects-list {
+    margin-bottom: 2%;
+    border: 2px solid $vdj-medgray;
+    font-size: 0.9em;
+
+    .project-subject-header {
+        border-bottom: 1.5px solid $vdj-darkgray;
+        margin: 0% 0% 0% 0%;
+    }
+
+    .project-subject-buttons {
+        padding: 1% 1% 1% 1%;
+        border-bottom: 1.5px solid $vdj-darkgray;
+        margin: 0% 0% 0% 0%;
+    }
+}
+
+.project-samples-list {
+    margin-bottom: 2%;
+    border: 2px solid $vdj-medgray;
+    font-size: 0.9em;
+
+    .project-samples-header {
+        border-bottom: 1.5px solid $vdj-darkgray;
+        margin: 0% 0% 0% 0%;
+    }
+
+    .project-samples-buttons {
+        padding: 1% 1% 1% 1%;
+        border-bottom: 1.5px solid $vdj-darkgray;
+        margin: 0% 0% 0% 0%;
+    }
 }
 
 /* ----------------------------------------------------------

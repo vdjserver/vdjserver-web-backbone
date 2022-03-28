@@ -76,6 +76,7 @@ var ProjectSummaryView = Marionette.View.extend({
         // is active flag
         // text to display
         var card_tabs = [];
+        var collections = this.controller.getCollections();
 
         var card = {};
         card['card_id'] = 'overview-tab';
@@ -83,6 +84,19 @@ var ProjectSummaryView = Marionette.View.extend({
         if (this.controller.page == 'overview') card['active'] = true;
         else card['active'] = false;
         if (! this.controller.page) card['active'] = true;
+        card_tabs.push(card);
+
+        card = {};
+        card['card_id'] = 'subjects-samples-tab';
+        card['text'] = 'Subjects<br>Samples';
+        if (collections.subjectList) {
+            card['text'] = collections.subjectList.length + ' Subjects';
+        } else card['text'] = 'Subjects';
+        if (collections.sampleList) {
+            card['text'] = card['text'] + '<br>' + collections.sampleList.length + ' Samples';
+        } else card['text'] = card['text'] + '<br>Samples';
+        if (this.controller.page == 'subject-sample') card['active'] = true;
+        else card['active'] = false;
         card_tabs.push(card);
 
         card = {};
@@ -207,6 +221,9 @@ var AddNucleicView = Marionette.View.extend({
     template: Handlebars.compile(addNucleic_template)
 });
 
+// Subjects/Samples view
+import SubjectsSamplesController from 'Scripts/views/project/project-subjects-samples-controller';
+
 // Repertoire view
 import RepertoireController from 'Scripts/views/project/repertoire-controller';
 
@@ -254,6 +271,15 @@ var SingleProjectView = Marionette.View.extend({
         'click #save-edit-project': function(e) {
             // update summary in case project title changed
             this.updateSummary();
+        },
+
+        //
+        // Subjects/Samples page specific events
+        //
+
+        // setting event for Subjects/Samples page
+        'click #subjects-samples-tab': function() {
+            this.controller.showProjectSubjectsSamples();
         },
 
         //
@@ -359,6 +385,15 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
+    showProjectSubjectsSamples(theController)
+    {
+        this.getRegion('stepsRegion').empty();
+        this.showChildView('detailRegion', theController.getView());
+
+        // tell repertoire controller to display the repertoire list
+        theController.showSubjectsSamples();
+    },
+
     showProjectRepertoires(repertoireController)
     {
         this.getRegion('stepsRegion').empty();
@@ -462,6 +497,7 @@ function SingleProjectController(project, page) {
     this.page = page;
     this.repertoireController = null;
     this.repertoireList = null;
+    this.subjectsSamplesController = null;
     this.subjectList = null;
     this.sampleList = null;
     this.groupList = null;
@@ -483,6 +519,9 @@ function SingleProjectController(project, page) {
 
     // are we routing to a specific page?
     switch (this.page) {
+        case 'subject-sample':
+            this.showProjectSubjectsSamples();
+            break;
         case 'repertoire':
             this.showProjectRepertoires();
             break;
@@ -510,6 +549,20 @@ SingleProjectController.prototype = {
         else if (this.projectView.isDestroyed())
             this.projectView = new SingleProjectView({controller: this});
         return this.projectView;
+    },
+
+    // returns all the main non-filtered collections
+    getCollections() {
+        return {
+            repertoireList: this.repertoireList,
+            subjectList: this.subjectList,
+            sampleList: this.sampleList,
+            repertoireGroupList: this.groupList,
+            fileList: this.fileList,
+            analysisList: this.analysisList,
+            projectUserList: this.projectUserList,
+            allUsersList: this.allUsersList
+        }
     },
 
     //
@@ -603,6 +656,36 @@ SingleProjectController.prototype = {
         App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
         this.projectView.updateSummary();
         this.projectView.showProjectOverview(this.model);
+    },
+
+    showProjectSubjectsSamples() {
+        this.page = 'subject-sample';
+        App.router.navigate('project/' + this.model.get('uuid') + '/subject-sample', {trigger: false});
+        this.projectView.updateSummary();
+        var that = this;
+        if (! this.repertoireList) {
+            // it should be lazy loading
+            // subjects/samples loaded with the repertoires
+
+            // show loading while we fetch
+            that.projectView.showLoading();
+
+            // wait on the lazy load
+            this.repertoireListPromise.then(function() {
+                    // have the view display them
+                    that.projectView.updateSummary();
+                    that.subjectsSamplesController = new SubjectsSamplesController(that);
+                    that.projectView.showProjectSubjectsSamples(that.subjectsSamplesController);
+                })
+                .fail(function(error) {
+                    console.log(error);
+                });
+        } else {
+            // tell controller to display the lists
+            that.projectView.updateSummary();
+            that.subjectsSamplesController = new SubjectsSamplesController(that);
+            that.projectView.showProjectSubjectsSamples(that.subjectsSamplesController);
+        }
     },
 
     showProjectRepertoires() {
