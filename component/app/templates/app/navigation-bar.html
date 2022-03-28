@@ -33,6 +33,23 @@
                     <a class="nav-link" href="/">Login</a>
                 </li>
                 {{/unless}}
+		<li class="nav-item">
+		    <a class="nav-link" href="">
+			<i id=nav-stats" class="fas fa-calculator"></i>
+                    </a>
+		</li>
+		<li class="nav-item">
+		    <a class="nav-link" href="">
+			<i id=nav-charts" class="fas fa-chart-area"></i>
+                    </a>
+		</li>
+		<li class="nav-item">
+                    <a class="nav-link" href="" data-bypass=true>
+                        <span id="navbar-filter" class="navbar-toggle">
+                            <i id="navbar-filter-icon" class="fas fa-filter"></i>
+                        </span>
+                    </a>
+                </li>
             </ul>
             {{#if active_token}}
             <ul class="navbar-nav">
