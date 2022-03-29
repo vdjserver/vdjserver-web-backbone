@@ -26,6 +26,7 @@
 //
 
 'use strict';
+import Backbone from 'backbone';
 
 // Private Methods
 var _redirectToLogin = function() {

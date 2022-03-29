@@ -271,7 +271,7 @@ function AdminController(page) {
 
     // are we routing to a specific page?
     this.showAdminPage(this.page);
-};
+}
 
 AdminController.prototype = {
     // return the main view, create it if necessary

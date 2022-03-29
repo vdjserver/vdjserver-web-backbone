@@ -1,0 +1,6 @@
+# ignore old directories
+app/scripts/views/old
+
+# backbone retry needs to be refactored
+app/scripts/backbone-retry-sync/backbone-retry-sync.js
+

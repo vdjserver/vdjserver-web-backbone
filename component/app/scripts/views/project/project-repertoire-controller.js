@@ -614,7 +614,7 @@ function RepertoireController(controller) {
 
     // repertoire list view
     this.mainView = new RepertoireMainView({controller: this});
-};
+}
 
 RepertoireController.prototype = {
     // return the main view, create it if necessary

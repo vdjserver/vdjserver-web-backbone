@@ -832,7 +832,6 @@ Auth.Token = Agave.Model.extend({
 
             case 'delete':
                 return false;
-                break;
         }
 
         options.url = EnvironmentConfig.vdjApi.hostname + '/token',

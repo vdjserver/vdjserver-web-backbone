@@ -1,3 +1,4 @@
+/*
 define(['app'], function(App) {
 
     'use strict';
@@ -19,3 +20,4 @@ define(['app'], function(App) {
     App.Models.Notification = Notification;
     return Notification;
 });
+*/

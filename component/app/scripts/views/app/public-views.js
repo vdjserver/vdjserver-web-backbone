@@ -139,7 +139,7 @@ export default Marionette.View.extend({
 
                     console.log("login fail");
                 });
-        } else if (that.loginState == 'fail') {
+        } else if (this.loginState == 'fail') {
           // if login failed, then we are showing the fail modal
         }
     },

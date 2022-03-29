@@ -1,3 +1,4 @@
+/*
 define([
     'app',
     'socket-io',
@@ -126,3 +127,4 @@ define([
     App.Utilities.WebsocketManager = WebsocketManager;
     return WebsocketManager;
 });
+*/

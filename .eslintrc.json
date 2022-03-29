@@ -1,7 +1,15 @@
 {
     "env": {
+        "browser": true,
         "es2021": true,
         "node": true
+    },
+    "globals": {
+        "$": "readonly",
+        "App": "readonly",
+        "EnvironmentConfig": "readonly",
+        "_": "readonly",
+        "define": "readonly"
     },
     "extends": "eslint:recommended",
     "parserOptions": {

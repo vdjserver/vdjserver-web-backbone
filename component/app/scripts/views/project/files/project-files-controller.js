@@ -48,7 +48,7 @@ function ProjectFilesController(controller) {
 
     // repertoire list view
     this.mainView = new ProjectFilesView({controller: this});
-};
+}
 
 ProjectFilesController.prototype = {
     // return the main view, create it if necessary

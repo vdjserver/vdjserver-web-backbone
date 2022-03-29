@@ -1,7 +1,8 @@
 //
-// object-table.js
-// Basic collection view for metadata objects
-// with controller to provide base functionality.
+// header-detail.js
+// Basic view for metadata objects with header detail design
+// header is a single view
+// detail is a collection view
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -32,32 +33,27 @@ import ModalView from 'Scripts/views/utilities/modal-view';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 
 
-// TODO: metadata object parameter
-// TODO: individual object view
-
 // Controller functionality
-// TODO: these all should be parameterized to enable/disable
-// refresh data
-// pagination (known/unknown size)
-// sorting
-// filtering
-// selection
-// create/view/edit/save/revert/delete/archive
-// custom functionality buttons (how many?)
+//
+// If we design this right the object-table handles all of the
+// functionality for the detail region. The controller just handles
+// interaction between the header and detail views.
+
+// TODO: metadata object parameter
+// Pass in schema? meta/v2 name?
+// Pass in object table
+
 
 //
-// Container view for an object
-// We cannot change the class of child view in a collection view
-// and have it re-render. So we create an abstraction layer, the collection
-// view uses this container view for the children, thus the child view class
-// stays the same, and the container can switch between the different views.
+// top level view to manage the header and detail regions
 //
-var ObjectContainerView = Marionette.View.extend({
+var HeaderDetailTableView = Marionette.View.extend({
     template: Handlebars.compile('<div id="object-container">test</div>'),
 
     // one region for contents
     regions: {
-        containerRegion: '#object-container'
+        headerRegion: '#header-container',
+        detailRegion: '#detail-container'
     },
 
     events: {
@@ -75,10 +71,10 @@ var ObjectContainerView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-        if (parameters && parameters.objectView)
-            this.objectView = parameters.objectView;
+        if (parameters && parameters.objectTable)
+            this.objectTable = parameters.objectTable;
 
-        this.showObjectView();
+        //this.showObjectView();
     },
 
     showObjectView() {
@@ -188,7 +184,7 @@ export default Marionette.CollectionView.extend({
         if (parameters && parameters.objectView)
             this.objectView = parameters.objectView;
 
-        this.childView = ObjectContainerView;
+        //this.childView = ObjectContainerView;
         this.childViewOptions = { controller: this.controller, objectView: this.objectView };
     },
 

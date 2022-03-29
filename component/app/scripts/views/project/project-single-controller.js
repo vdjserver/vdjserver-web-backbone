@@ -539,7 +539,7 @@ function SingleProjectController(project, page) {
             this.showProjectOverview();
             break;
     }
-};
+}
 
 SingleProjectController.prototype = {
     // return the main view, create it if necessary

@@ -77,7 +77,7 @@ function ProjectSubjectsSamplesController(controller) {
 
     // repertoire list view
     this.mainView = new ProjectSubjectsSamplesView({controller: this});
-};
+}
 
 ProjectSubjectsSamplesController.prototype = {
     // return the main view, create it if necessary

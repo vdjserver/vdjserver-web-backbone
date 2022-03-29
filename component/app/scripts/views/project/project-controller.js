@@ -94,7 +94,7 @@ function ProjectController() {
     this.projectList = null;
     this.currentProject = null;
     this.currentProjectController = null;
-};
+}
 
 ProjectController.prototype = {
     // return the main view, create it if necessary

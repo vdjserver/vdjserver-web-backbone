@@ -1,3 +1,4 @@
+/*
 define(
     [
         'backbone',
@@ -144,9 +145,10 @@ function(
                 return errors;
             }
         },
-        */
+        */ /*
     });
 
     Backbone.Agave.Model.Telemetry = Telemetry;
     return Telemetry;
 });
+*/

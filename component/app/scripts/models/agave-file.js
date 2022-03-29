@@ -28,6 +28,8 @@
 //
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
+import _string from 'underscore.string';
+import Chance from 'chance';
 
 var FilePlaceholderMixin = {};
 
@@ -116,7 +118,7 @@ export var File = Agave.Model.extend(
                 switch (method) {
                     case 'read':
                     case 'delete':
-                        return Backbone.Agave.sync(method, model, options);
+                        return Agave.sync(method, model, options);
                         //break;
 
                     case 'create':
@@ -132,9 +134,9 @@ export var File = Agave.Model.extend(
 
                         var that = this;
 
-                        var request = Backbone.Agave.ajax({
+                        var request = Agave.ajax({
                             beforeSend: function(xhr) {
-                                xhr.setRequestHeader('Authorization', 'Bearer ' + Backbone.Agave.instance.token().get('access_token'));
+                                xhr.setRequestHeader('Authorization', 'Bearer ' + Agave.instance.token().get('access_token'));
                             },
                             xhr: function() {
 
@@ -189,7 +191,7 @@ export var File = Agave.Model.extend(
                 }
 
                 return $.ajax({
-                    headers: Backbone.Agave.basicAuthHeader(),
+                    headers: Agave.basicAuthHeader(),
                     url: EnvironmentConfig.vdjApi.hostname
                             + '/notifications'
                             + '/files'

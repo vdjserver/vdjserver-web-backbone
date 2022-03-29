@@ -60,7 +60,7 @@ export default ADC.Model.extend({
                 text += this.generateFullText(context[o]);
             return text;
         }
-        if ((typeof context) == 'array') {
+        if (Array.isArray(context)) {
             for (var i = 0; i < context.length; ++i)
                 text += this.generateFullText(context[i]);
             return text;
@@ -112,7 +112,6 @@ export default ADC.Model.extend({
                     return null;
             }
         }
-        return null;
     },
 });
 

@@ -38,8 +38,8 @@ var NavigationBarView = Marionette.View.extend({
     initialize: function(parameters) {
         this.active_token = App.Agave.token().isActive();
 
-        if (parameters) {
-        }
+        //if (parameters) {
+        //}
     },
 
     templateContext() {

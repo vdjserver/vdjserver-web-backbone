@@ -604,6 +604,8 @@ var ProjectOverView = Marionette.View.extend({
                 $('#modal-message').modal('show');
             });
         } else if (context.modalState == 'fail') {
+            // TODO: we should do something here?
+            console.log('fail');
         }
     },
 
