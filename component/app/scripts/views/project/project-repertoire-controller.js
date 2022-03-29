@@ -29,7 +29,6 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
-import SingleRepView from 'Scripts/views/project/rep-view';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import { Repertoire, Subject, Diagnosis } from 'Scripts/models/agave-metadata';
 import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
@@ -56,7 +55,7 @@ import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCol
 
 // Subviews for the repertoire summary
 // four of them, each one is meant to be a single row or line
-import summary_header_template from 'Templates/project/repertoire-summary-header.html';
+import summary_header_template from 'Templates/project/repertoires/repertoire-summary-header.html';
 var RepertoireSummaryHeaderView = Marionette.View.extend({
     template: Handlebars.compile(summary_header_template),
     className: "row",
@@ -70,19 +69,19 @@ var RepertoireSummaryHeaderView = Marionette.View.extend({
     }
 });
 
-import summary_subject_template from 'Templates/project/repertoire-summary-subject.html';
+import summary_subject_template from 'Templates/project/repertoires/repertoire-summary-subject.html';
 var RepertoireSummarySubjectView = Marionette.View.extend({
     template: Handlebars.compile(summary_subject_template),
     className: "row"
 });
 
-import summary_sample_template from 'Templates/project/repertoire-summary-sample.html';
+import summary_sample_template from 'Templates/project/repertoires/repertoire-summary-sample.html';
 var RepertoireSummarySampleView = Marionette.View.extend({
     template: Handlebars.compile(summary_sample_template),
     className: "row"
 });
 
-import summary_stats_template from 'Templates/project/repertoire-summary-statistics.html';
+import summary_stats_template from 'Templates/project/repertoires/repertoire-summary-statistics.html';
 var RepertoireSummaryStatisticsView = Marionette.View.extend({
     template: Handlebars.compile(summary_stats_template),
     className: "row"
@@ -92,7 +91,7 @@ var RepertoireSummaryStatisticsView = Marionette.View.extend({
 // Short multi-line summary, meant for showing in a list
 // the model for the view is a repertoire
 // we access related data (subject, sample, etc) through the controller
-import rep_summary_template from 'Templates/project/repertoire-summary-new.html';
+import rep_summary_template from 'Templates/project/repertoires/repertoire-summary-new.html';
 var RepertoireSummaryView = Marionette.View.extend({
     template: Handlebars.compile(rep_summary_template),
 
@@ -156,7 +155,7 @@ var RepertoireSummaryView = Marionette.View.extend({
 // repertoire statistics
 //
 
-import expand_header_template from 'Templates/project/repertoire-expand-header.html';
+import expand_header_template from 'Templates/project/repertoires/repertoire-expand-header.html';
 var RepertoireExpandedHeaderView = Marionette.View.extend({
     template: Handlebars.compile(expand_header_template),
     className: "row",
@@ -170,7 +169,7 @@ var RepertoireExpandedHeaderView = Marionette.View.extend({
     }
 });
 
-import expand_subject_template from 'Templates/project/repertoire-expand-subject.html';
+import expand_subject_template from 'Templates/project/repertoires/repertoire-expand-subject.html';
 var RepertoireExpandedSubjectView = Marionette.View.extend({
     template: Handlebars.compile(expand_subject_template),
     className: "row",
@@ -184,7 +183,7 @@ var RepertoireExpandedSubjectView = Marionette.View.extend({
     }
 });
 
-import expand_sample_template from 'Templates/project/repertoire-expand-sample.html';
+import expand_sample_template from 'Templates/project/repertoires/repertoire-expand-sample.html';
 var RepertoireExpandedSampleView = Marionette.View.extend({
     template: Handlebars.compile(expand_sample_template),
     className: "row",
@@ -198,7 +197,7 @@ var RepertoireExpandedSampleView = Marionette.View.extend({
     }
 });
 
-import expand_stats_template from 'Templates/project/repertoire-expand-statistics.html';
+import expand_stats_template from 'Templates/project/repertoires/repertoire-expand-statistics.html';
 var RepertoireExpandedStatisticsView = Marionette.View.extend({
     template: Handlebars.compile(expand_stats_template),
     className: "row",
@@ -217,7 +216,7 @@ var RepertoireExpandedStatisticsView = Marionette.View.extend({
 // TODO: do we use this same expanded view for both read-only and editing?
 // We can do that with variables and Handlebars to generate different HTML
 // or we can have different views that we swap between.
-import rep_expanded_template from 'Templates/project/repertoire-expand.html';
+import rep_expanded_template from 'Templates/project/repertoires/repertoire-expand.html';
 var RepertoireExpandedView = Marionette.View.extend({
     template: Handlebars.compile(rep_expanded_template),
 
@@ -273,31 +272,31 @@ var RepertoireExpandedView = Marionette.View.extend({
 // Repertoire edit views
 // this makes all data in the repertoire editable
 //
-import edit_header_template from 'Templates/project/repertoire-edit-header.html';
+import edit_header_template from 'Templates/project/repertoires/repertoire-edit-header.html';
 var RepertoireEditHeaderView = Marionette.View.extend({
     template: Handlebars.compile(edit_header_template),
     className: "row"
 });
 
-import edit_subject_template from 'Templates/project/repertoire-edit-subject.html';
+import edit_subject_template from 'Templates/project/repertoires/repertoire-edit-subject.html';
 var RepertoireEditSubjectView = Marionette.View.extend({
     template: Handlebars.compile(edit_subject_template),
     className: "row"
 });
 
-import edit_sample_template from 'Templates/project/repertoire-edit-sample.html';
+import edit_sample_template from 'Templates/project/repertoires/repertoire-edit-sample.html';
 var RepertoireEditSampleView = Marionette.View.extend({
     template: Handlebars.compile(edit_sample_template),
     className: "row"
 });
 
-import edit_stats_template from 'Templates/project/repertoire-edit-statistics.html';
+import edit_stats_template from 'Templates/project/repertoires/repertoire-edit-statistics.html';
 var RepertoireEditStatisticsView = Marionette.View.extend({
     template: Handlebars.compile(edit_stats_template),
     className: "row"
 });
 
-import rep_edit_template from 'Templates/project/repertoire-edit.html';
+import rep_edit_template from 'Templates/project/repertoires/repertoire-edit.html';
 var RepertoireEditView = Marionette.View.extend({
     template: Handlebars.compile(rep_edit_template),
 
@@ -513,7 +512,7 @@ var RepertoireListView = Marionette.CollectionView.extend({
 });
 
 // The header view
-import repertoire_header from 'Templates/project/repertoires.html';
+import repertoire_header from 'Templates/project/repertoires/repertoire-header.html';
 var RepertoireHeaderView = Marionette.View.extend({
     template: Handlebars.compile(repertoire_header),
 

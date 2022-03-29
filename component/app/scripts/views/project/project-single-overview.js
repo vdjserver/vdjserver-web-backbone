@@ -39,7 +39,7 @@ import OntologySearchView from 'Scripts/views/utilities/ontology-search-view';
 
 
 // Edit Project
-import overview_template from 'Templates/project/project-overview.html';
+import overview_template from 'Templates/project/project-single-overview.html';
 var ProjectSettingsView = Marionette.View.extend({
     template: Handlebars.compile(overview_template),
 
@@ -154,7 +154,7 @@ var ProjectSettingsView = Marionette.View.extend({
 });
 
 // Single user in the project user collection
-import single_user_template from 'Templates/project/users.html';
+import single_user_template from 'Templates/project/users/project-user-detail.html';
 var SingleUserView = Marionette.View.extend({
     template: Handlebars.compile(single_user_template),
     tagName: 'tr',
@@ -184,7 +184,7 @@ var SingleUserView = Marionette.View.extend({
 });
 
 // Get User List Template
-import userList_template from 'Templates/project/user-list.html';
+import userList_template from 'Templates/project/users/project-user-list.html';
 var ProjectUserListView = Marionette.CollectionView.extend({
     template: Handlebars.compile(userList_template),
     tagName: 'table',
@@ -202,7 +202,7 @@ var ProjectUserListView = Marionette.CollectionView.extend({
 });
 
 // Project Users
-import users_template from 'Templates/project/project-users.html';
+import users_template from 'Templates/project/users/project-users.html';
 var ProjectUsersView = Marionette.View.extend({
     template: Handlebars.compile(users_template),
 

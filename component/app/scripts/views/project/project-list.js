@@ -28,7 +28,7 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import template from 'Templates/project/project-summary.html';
+import template from 'Templates/project/project-list-summary.html';
 import intro_template from 'Templates/project/intro.html';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 

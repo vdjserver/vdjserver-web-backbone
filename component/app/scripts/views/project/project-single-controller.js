@@ -56,7 +56,7 @@ var ModalMessageConfirm = Marionette.View.extend({
 });
 
 // Project summary
-import summary_template from 'Templates/project/single-summary.html';
+import summary_template from 'Templates/project/project-single-header.html';
 var ProjectSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
 
@@ -146,25 +146,25 @@ var ProjectSummaryView = Marionette.View.extend({
 });
 
 // Repertoire Groups Page
-import groups_template from 'Templates/project/groups.html';
+import groups_template from 'Templates/project/groups/groups.html';
 var GroupsView = Marionette.View.extend({
     template: Handlebars.compile(groups_template)
 });
 
 // Add Repertoires Groups to Repertoire View
-import addRepGroup_template from 'Templates/project/add-rep-groups.html';
+import addRepGroup_template from 'Templates/project/groups/add-rep-groups.html';
 var AddRepGroupView = Marionette.View.extend({
     template: Handlebars.compile(addRepGroup_template)
 });
 
 // Analyses Page
-import analyses_template from 'Templates/project/analyses.html';
+import analyses_template from 'Templates/project/analyses/analyses.html';
 var AnalysesView = Marionette.View.extend({
     template: Handlebars.compile(analyses_template)
 });
 
 // Steps through the metadata entry process
-import entry_steps_template from 'Templates/project/create-repertoire-steps.html';
+import entry_steps_template from 'Templates/project/repertoires/create-repertoire-steps.html';
 var CreateRepertoireStepsView = Marionette.View.extend({
     template: Handlebars.compile(entry_steps_template),
 
@@ -186,37 +186,37 @@ var CreateRepertoireStepsView = Marionette.View.extend({
 });
 
 // Create New Repertoire view
-import create_template from 'Templates/project/create-repertoire.html';
+import create_template from 'Templates/project/repertoires/create-repertoire.html';
 var CreateRepertoireView = Marionette.View.extend({
     template: Handlebars.compile(create_template)
 });
 
 // Add Subject to Repertoire View
-import addSubject_template from 'Templates/project/add-subject.html';
+import addSubject_template from 'Templates/project/repertoires/add-subject.html';
 var AddSubjectView = Marionette.View.extend({
     template: Handlebars.compile(addSubject_template)
 });
 
 // Add Diagnosis to Repertoire View
-import addDiagnosis_template from 'Templates/project/add-diagnosis.html';
+import addDiagnosis_template from 'Templates/project/repertoires/add-diagnosis.html';
 var AddDiagnosisView = Marionette.View.extend({
     template: Handlebars.compile(addDiagnosis_template)
 });
 
 // Add Sample to Repertoire View
-import addSample_template from 'Templates/project/add-sample.html';
+import addSample_template from 'Templates/project/repertoires/add-sample.html';
 var AddSampleView = Marionette.View.extend({
     template: Handlebars.compile(addSample_template)
 });
 
 // Add Cell Processing to Repertoire View
-import addCell_template from 'Templates/project/add-cell.html';
+import addCell_template from 'Templates/project/repertoires/add-cell.html';
 var AddCellView = Marionette.View.extend({
     template: Handlebars.compile(addCell_template)
 });
 
 // Add Nucleic Acid to Repertoire View
-import addNucleic_template from 'Templates/project/add-nucleic.html';
+import addNucleic_template from 'Templates/project/repertoires/add-nucleic.html';
 var AddNucleicView = Marionette.View.extend({
     template: Handlebars.compile(addNucleic_template)
 });
@@ -225,13 +225,13 @@ var AddNucleicView = Marionette.View.extend({
 import SubjectsSamplesController from 'Scripts/views/project/project-subjects-samples-controller';
 
 // Repertoire view
-import RepertoireController from 'Scripts/views/project/repertoire-controller';
+import RepertoireController from 'Scripts/views/project/project-repertoire-controller';
 
 // Files view
 import ProjectFilesController from 'Scripts/views/project/files/project-files-controller';
 
 // Main project
-import template from 'Templates/project/single.html';
+import template from 'Templates/project/project-single.html';
 var SingleProjectView = Marionette.View.extend({
     template: Handlebars.compile(template),
 

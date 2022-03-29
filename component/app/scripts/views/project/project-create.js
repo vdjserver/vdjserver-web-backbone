@@ -36,7 +36,7 @@ import OntologySearchView from 'Scripts/views/utilities/ontology-search-view';
 import AIRRSchema from 'airr-schema';
 
 // project creation form
-import create_template from 'Templates/project/create.html';
+import create_template from 'Templates/project/project-create.html';
 var CreateView = Marionette.View.extend({
     template: Handlebars.compile('<h1>Create New Project</h1>' + create_template),
 

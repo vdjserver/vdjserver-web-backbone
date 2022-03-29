@@ -31,10 +31,9 @@ import Handlebars from 'handlebars';
 import Project from 'Scripts/models/agave-project';
 import ProjectList from 'Scripts/collections/agave-projects';
 import ProjectListView from 'Scripts/views/project/project-list';
-import SingleProjectController from 'Scripts/views/project/project-single';
-import intro_template from 'Templates/project/intro.html';
+import SingleProjectController from 'Scripts/views/project/project-single-controller';
 import LoadingView from 'Scripts/views/utilities/loading-view';
-import CreateProjectView from 'Scripts/views/project/create-view';
+import CreateProjectView from 'Scripts/views/project/project-create';
 
 // the main project view
 var ProjectView = Marionette.View.extend({
