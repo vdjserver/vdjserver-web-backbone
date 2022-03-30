@@ -31,7 +31,7 @@ import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import SubjectsListView from 'Scripts/views/project/subjects/subjects-list';
 
-// Project Files Page
+// Project subjects header view
 import template from 'Templates/project/subjects/subjects-header.html';
 var SubjectsHeaderView = Marionette.View.extend({
     template: Handlebars.compile(template),
