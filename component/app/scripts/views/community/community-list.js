@@ -125,7 +125,7 @@ var RepertoireTable = Marionette.CollectionView.extend({
     // childViewContainer: 'tbody'
 });
 
-import template from 'Templates/community/study-summary.html';
+import template from 'Templates/community/community-study-summary.html';
 var StudySummaryView = Marionette.View.extend({
     template: Handlebars.compile(template),
     tagName: 'div',
