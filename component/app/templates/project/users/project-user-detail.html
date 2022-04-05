@@ -6,7 +6,7 @@
             {{name}}
         </td>
         <td class="user-actions">
-            <button type="button" class="btn btn-delete delete-project-user" name="{{username}}" id="delete-project-user">
+            <button type="button" class="btn btn-delete delete-project-user" name="{{username}}" id="delete-project-user" {{#if archive_mode}}disabled{{/if}}>
                 <i class="fa fa-trash" aria-hidden="true"></i> Delete
             </button>
         </td>

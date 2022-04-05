@@ -201,6 +201,12 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('mainRegion', view);
     },
 
+    reloadProjectList() {
+        // remove the project controller so all the project data is reloaded
+        this.projectController = null;
+        App.router.navigate('/project', {'trigger': true});
+    },
+
     showProjectList() {
         console.log('showProjectList');
 

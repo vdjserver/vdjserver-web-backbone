@@ -127,6 +127,41 @@ export default Agave.MetadataModel.extend({
 
         return jqxhr;
     },
+
+    // archiving is a soft delete
+    archiveProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/archive',
+        });
+
+        return jqxhr;
+    },
+
+    unarchiveProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unarchive',
+        });
+
+        return jqxhr;
+    },
+
+    // archiving is a hard delete
+    purgeProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'DELETE',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/purge',
+        });
+
+        return jqxhr;
+    },
 });
 
 /*
