@@ -462,6 +462,7 @@ export default Marionette.View.extend({
         // show filters as toolbar under navigation bar
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
         App.AppController.navController.showToolbar1Bar(this.filterView);
+        $("#navbar-filter-icon").toggleClass("nav-button-active nav-button-inactive"); //TODO check correct place
         //this.showChildView('queryRegion', this.filterView);
 
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
