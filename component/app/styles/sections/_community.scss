@@ -139,6 +139,29 @@ a.remove-filter {
         color: $vdj-link;
     }
 }
+
+.nav-button {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.nav-button-active {
+    background-color: $vdj-darkblue;
+}
+.nav-button-inactive {
+    background-color: transparent;
+}
+.nav-button-old {
+    padding-left: 0px;
+    padding-right: 0px;
+    
+    .inactive {
+    background-color: transparent;
+    }
+
+    .active {
+    background-color: $vdj-darkblue;
+    }
+}
 /* ----------------------------------------------------------
 Community Statistics
 ------------------------------------------------------------*/

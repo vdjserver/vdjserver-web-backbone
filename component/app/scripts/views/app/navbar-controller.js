@@ -90,7 +90,7 @@ export default Marionette.View.extend({
     initialize(options) {
         console.log('Initialize');
         this.navbar_filter = true; //navbar filter is open by default
-        $("#navigation").addClass("opened-filter");
+        //$("#navigation").addClass("opened-filter");
 
 	// _.bindAll(this, 'detect_scroll');
         //$(window).scroll(this.detect_scroll);
@@ -157,6 +157,8 @@ export default Marionette.View.extend({
 
             //$("#navbar-filter").toggleClass("closed-filter opened-filter");
             //$("#navbar-filter-icon").toggleClass("fa-chevron-up fa-filter");
+            //$("#navbar-filter-icon").toggleClass("active inactive");
+            $("#navbar-filter-icon").toggleClass("nav-button-inactive nav-button-active");
             this.navbar_filter = true;
         } else {
             this.getRegion('toolbar1Region').$el.hide();
@@ -165,6 +167,8 @@ export default Marionette.View.extend({
 
             //$("#navbar-filter").toggleClass("opened-filter closed-filter");
             //$("#navbar-filter-icon").toggleClass("fa-filter fa-chevron-up");
+            //$("#navbar-filter-icon").toggleClass("inactive active");
+            $("#navbar-filter-icon").toggleClass("nav-button-active nav-button-inactive");
             this.navbar_filter = false;
         }
     },
