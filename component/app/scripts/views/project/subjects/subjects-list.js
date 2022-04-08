@@ -28,24 +28,75 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import detail_template from 'Templates/project/subjects/subjects-detail.html';
-var SubjectDetailView = Marionette.View.extend({
-    template: Handlebars.compile(detail_template),
-    //tagName: 'tr',
-    //className: 'community-project',
+// subject summary view
+import summary_template from 'Templates/project/subjects/subjects-summary.html';
+var SubjectSummaryView = Marionette.View.extend({
+    template: Handlebars.compile(summary_template),
 
-  events: {
-  },
+    templateContext() {
+        return {
+            age_display: this.model.getAgeDisplay(),
+            species_display: this.model.getSpeciesDisplay(),
+        }
+    },
 
 });
 
-var SubjectsListView = Marionette.CollectionView.extend({
-    template: Handlebars.compile("<div></div>"),
-//     tagName: 'table',
-//     className: 'table table-hover table-sm table-bordered',
+// subject detail/edit view
+import detail_template from 'Templates/project/subjects/subjects-detail.html';
+var SubjectDetailView = Marionette.View.extend({
+    template: Handlebars.compile(detail_template),
+});
+
+// Container view for subject detail
+// There are three subject views: summary, detail and edit
+// detail and edit are the same layout, but either in read or edit mode
+var SubjectContainerView = Marionette.View.extend({
+    template: Handlebars.compile('<div id="project-subject-container"></div>'),
+
+    // one region for contents
+    regions: {
+        containerRegion: '#project-subject-container'
+    },
 
     initialize: function(parameters) {
-        this.childView = SubjectDetailView;
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+        this.showSubjectView();
+    },
+
+    showSubjectView() {
+        //console.log("passing edit_mode...");
+        // Choose which view class to render
+        switch (this.model.view_mode) {
+            case 'detail':
+                //this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: this.model.edit_mode}));
+                break;
+            case 'edit':
+                //this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: this.model.edit_mode}));
+                break;
+            case 'summary':
+            default:
+                this.showChildView('containerRegion', new SubjectSummaryView({controller: this.controller, model: this.model}));
+                break;
+        }
+    },
+
+});
+
+// list of subjects
+var SubjectsListView = Marionette.CollectionView.extend({
+    template: Handlebars.compile("<div></div>"),
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+        this.childView = SubjectContainerView;
+        this.childViewOptions = { controller: this.controller };
     }
 });
 

@@ -78,6 +78,16 @@ var ProjectSettingsView = Marionette.View.extend({
     },
 
     templateContext() {
+        var archive_mode = false;
+        if (this.model.get('name') == 'archive_project') {
+            archive_mode = true;
+            this.edit_mode = false;
+        }
+        var publish_mode = false;
+        if (this.model.get('name') == 'public_project') {
+            publish_mode = false;
+        }
+
         var study_type_id = null;
         var study_type_label = null;
         if (this.model.selected_study_type) {
@@ -98,14 +108,16 @@ var ProjectSettingsView = Marionette.View.extend({
         var contains_tcr = false;
         var contains_single_cell = false;
         var contains_paired_chain = false;
-        if (value.keywords_study.indexOf("contains_ig") >= 0)
-            contains_ig = true;
-        if (value.keywords_study.indexOf("contains_tcr") >= 0)
-            contains_tcr = true;
-        if (value.keywords_study.indexOf("contains_single_cell") >= 0)
-            contains_single_cell = true;
-        if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
-            contains_paired_chain = true;
+        if (value.keywords_study) {
+            if (value.keywords_study.indexOf("contains_ig") >= 0)
+                contains_ig = true;
+            if (value.keywords_study.indexOf("contains_tcr") >= 0)
+                contains_tcr = true;
+            if (value.keywords_study.indexOf("contains_single_cell") >= 0)
+                contains_single_cell = true;
+            if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
+                contains_paired_chain = true;
+        }
 
         // custom 10x flag
         var is_10x_genomics = false;
@@ -114,6 +126,9 @@ var ProjectSettingsView = Marionette.View.extend({
                 is_10x_genomics = true;
 
         return {
+            // archive mode disables editing
+            archive_mode: archive_mode,
+            publish_mode: publish_mode,
             // if edit mode is true, then fields should be editable
             edit_mode: this.edit_mode,
 
@@ -162,8 +177,10 @@ var SingleUserView = Marionette.View.extend({
 
     initialize: function(parameters) {
         // our controller
+        this.archive_mode = false;
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.archive_mode) this.archive_mode = parameters.archive_mode;
         }
     },
 
@@ -178,6 +195,7 @@ var SingleUserView = Marionette.View.extend({
         }
 
         return {
+            archive_mode: this.archive_mode,
             name: name
         };
     }
@@ -193,11 +211,19 @@ var ProjectUserListView = Marionette.CollectionView.extend({
 
     initialize: function(parameters) {
         // our controller
+        this.archive_mode = false;
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
+            if (parameters.archive_mode) this.archive_mode = parameters.archive_mode;
         }
-        this.childViewOptions = { controller: this.controller };
+        this.childViewOptions = { controller: this.controller, archive_mode: this.archive_mode };
     },
+
+    templateContext() {
+        return {
+            archive_mode: this.archive_mode
+        };
+    }
 
 });
 
@@ -218,8 +244,12 @@ var ProjectUsersView = Marionette.View.extend({
         }
 
         this.new_user = null;
+        var archive_mode = false;
+        if (this.model.get('name') == 'archive_project') {
+            archive_mode = true;
+        }
 
-        var view = new ProjectUserListView({controller: this.controller, collection: this.controller.projectUserList});
+        var view = new ProjectUserListView({controller: this.controller, collection: this.controller.projectUserList, archive_mode: archive_mode});
         this.showChildView('usersRegion', view);
     },
 
@@ -520,8 +550,8 @@ var ProjectOverView = Marionette.View.extend({
             this.archiveProject();
         },
 
-        'click #archive-project-yes': function() {
-            this.archiveProjectYes();
+        'click #unarchive-project': function() {
+            this.unarchiveProject();
         },
 
         'click #publish-project': function() {
@@ -540,6 +570,13 @@ var ProjectOverView = Marionette.View.extend({
         this.showChildView('overviewRegion', view);
     },
 
+    //
+    // Edit project workflow:
+    // 1. User clicks Edit Project Metadata button
+    // 2. Form is displayed in edit mode
+    // 3. If user clicks Revert button, then throw away changes and revert to read-only mode
+    // 4. If user clicks Save button, then pull data out of form and start modal sequence with server.
+    //
     saveEditProject(e) {
         console.log('saving edits');
         e.preventDefault();
@@ -571,7 +608,7 @@ var ProjectOverView = Marionette.View.extend({
 
     // project save is sent to server after the modal is shown
     onShownSaveModal(context) {
-        console.log('create: Show the modal');
+        console.log('save: Show the modal');
 
         // use modal state variable to decide
         console.log(context.modalState);
@@ -593,8 +630,8 @@ var ProjectOverView = Marionette.View.extend({
 
                 // prepare a new modal with the failure message
                 var message = new MessageModel({
-                    'header': 'Project Creation',
-                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Project creation failed!</div>',
+                    'header': 'Project Metadata',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Saving Project Metadata failed!</div>',
                     cancelText: 'Ok',
                     serverError: error
                 });
@@ -610,7 +647,7 @@ var ProjectOverView = Marionette.View.extend({
     },
 
     onHiddenSaveModal(context) {
-        console.log('create: Hide the modal');
+        console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // create passed so flip back to read-only mode
             context.showProject(false);
@@ -627,29 +664,170 @@ var ProjectOverView = Marionette.View.extend({
         }
     },
 
+    //
+    // Archive project workflow:
+    // 1. User click Archive Project button
+    // 2. Modal is show with message and confirmation
+    // 3. If cancel, then modal is closed
+    // 4. If confirm, then start modal sequence with server.
+    //
     archiveProject() {
         console.log("Archive Project button clicked");
 
-        var message = new MessageModel({
-            'header': 'Delete a Project',
-            'body': '<div class="alert alert-danger">You are about to delete a project.</div><div>Are you sure you want to delete this project?</div>',
+        this.archive_message = new MessageModel({
+            'header': 'Archive a Project',
+            'body': '<div class="alert alert-danger">You are about to archive this project. Archiving a project will remove it from your list of projects but does not completely delete the project. Occasionally, VDJServer will purge archived projects which completely deletes them. You can enable archived projects to be displayed from your profile settings, and archived projects can be unarchived before they are purged.</div><div>Are you sure you want to archive this project?</div>',
             'confirmText': 'Yes',
             'cancelText': 'No'
         });
 
-        var view = new ModalView({model: message});
-        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        this.modalState = 'archive';
+        var view = new ModalView({model: this.archive_message});
+        App.AppController.startModal(view, this, this.onShownArchiveModal, this.onHiddenArchiveModal);
+        //App.AppController.startModal(view, this, this.onShownArchiveModal, this.onHiddenArchiveModal);
         $('#modal-message').modal('show');
     },
 
-    archiveProjectYes() {
-        console.log("Archive Project Confirmed: Yes");
-        // e.preventDefault();
+    // project save is sent to server after the modal is shown
+    onShownArchiveModal(context) {
+        console.log('archive: Show the modal');
 
-        // this.set('name', 'deletedProject');
-        // return this.save();
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
     },
 
+    onHiddenArchiveModal(context) {
+        console.log('archive: Hide the modal');
+        if (context.modalState == 'archive') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.archive_message.get('status') != 'confirm') return;
+
+            // archive project
+            context.model.archiveProject()
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Archive Project',
+                    'body':   'Project has been successfully archived!',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenArchiveSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Archive Project',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while archiving project!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenArchiveSuccessModal(context) {
+        console.log('archive success: Hide the modal');
+
+        // this project is archived, reload project list
+        App.AppController.reloadProjectList();
+    },
+
+    //
+    // Unarchive project workflow:
+    // 1. User click Unarchive Project button
+    // 2. Modal is show with message and confirmation
+    // 3. If cancel, then modal is closed
+    // 4. If confirm, then start modal sequence with server.
+    //
+    unarchiveProject() {
+        console.log("Unarchive Project button clicked");
+
+        this.archive_message = new MessageModel({
+            'header': 'Unarchive a Project',
+            'body': '<div class="alert alert-danger">You are about to unarchive this project. It will restore the project in your list of projects and allow you to edit the project.</div><div>Are you sure you want to unarchive this project?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        this.modalState = 'unarchive';
+        var view = new ModalView({model: this.archive_message});
+        App.AppController.startModal(view, this, this.onShownUnarchiveModal, this.onHiddenUnarchiveModal);
+        $('#modal-message').modal('show');
+    },
+
+    // project save is sent to server after the modal is shown
+    onShownUnarchiveModal(context) {
+        console.log('unarchive: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
+    },
+
+    onHiddenUnarchiveModal(context) {
+        console.log('unarchive: Hide the modal');
+        if (context.modalState == 'unarchive') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.archive_message.get('status') != 'confirm') return;
+
+            // unarchive project
+            context.model.unarchiveProject()
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Unarchive Project',
+                    'body':   'Project has been successfully unarchived!',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenUnarchiveSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Unarchive Project',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while unarchiving project!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenUnarchiveSuccessModal(context) {
+        console.log('unarchive success: Hide the modal');
+
+        // this project is unarchived, reload project list
+        App.AppController.reloadProjectList();
+    },
+
+    //
+    // Publish project workflow:
+    //
     publishProject(e) {
         console.log("Publish Project button clicked");
 

@@ -70,6 +70,37 @@ export var Subject = Agave.MetadataModel.extend({
     sync: function(method, model, options) {
         return Agave.PutOverrideSync(method, this, options);
     },
+
+    getAgeDisplay: function() {
+        var text = '';
+        // TODO: check schema version
+        var value = this.get('value');
+        // age point or range
+        if (value['age_min'] == value['age_max']) text += value['age_min'];
+        else text += value['age_min'] + '-' + value['age_max'];
+        // TODO: some old metadata is using value instead of label
+        if (value['age_unit']['label'])
+            text += ' ' + value['age_unit']['label'] + '(s)'
+        else
+            if (value['age_unit']['value'])
+                text += ' ' + value['age_unit']['value'] + '(s)'
+
+        return text;
+    },
+
+    getSpeciesDisplay: function() {
+        var text = '';
+        // TODO: check schema version
+        var value = this.get('value');
+        // TODO: some old metadata is using value instead of label
+        if (value['species']['label'])
+            text += value['species']['label']
+        else
+            if (value['species']['value'])
+                text += value['species']['value']
+
+        return text;
+    }
 });
 
 // Diagnosis model based upon AIRR Diagnosis

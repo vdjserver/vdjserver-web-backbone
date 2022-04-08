@@ -55,7 +55,7 @@ var ModalMessageConfirm = Marionette.View.extend({
   region: '#modal'
 });
 
-// Project summary
+// Project header
 import summary_template from 'Templates/project/project-single-header.html';
 var ProjectSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
