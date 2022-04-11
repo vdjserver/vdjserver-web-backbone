@@ -79,10 +79,10 @@ export var Subject = Agave.MetadataModel.extend({
         if (value['age_min'] == value['age_max']) text += value['age_min'];
         else text += value['age_min'] + '-' + value['age_max'];
         // TODO: some old metadata is using value instead of label
-        if (value['age_unit']['label'])
+        if (value['age_unit'] && value['age_unit']['label'])
             text += ' ' + value['age_unit']['label'] + '(s)'
         else
-            if (value['age_unit']['value'])
+            if (value['age_unit'] && value['age_unit']['value'])
                 text += ' ' + value['age_unit']['value'] + '(s)'
 
         return text;
