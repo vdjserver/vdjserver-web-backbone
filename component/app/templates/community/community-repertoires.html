@@ -1,0 +1,31 @@
+    <h1>Community Repertoire Data</h1>
+
+    <div class="table-actions">
+        <form class="form-inline">
+            <label for="repertoire-rows">Rows per page:</label>
+            <select class="form-control repertoire-rows" id="pagination-page-size">
+              <option>1</option>
+              <option>5</option>
+              <option selected>10</option>
+              <option>20</option>
+              <option>50</option>
+              <option>100</option>
+              <option>All</option>
+            </select>
+        </form>
+    </div>
+
+    <div id="community-repertoires-table"></div>
+
+    <!-- Generalize page row so we can use elsewhere, or specific to the study data table?? -->
+    <!-- May be easier to update if it is own view -->
+    <div class="row table-footer">
+        <div class="table-caption">
+            <!-- needs customization -->
+            Showing #-# of {{num_repertoires}} repertoires
+        </div>
+        <div class="ml-auto pagination">
+            <button type="button" class="btn btn-new chart-action" id="pagination-previous-page">Previous Page</button>
+            <button type="button" class="btn btn-new chart-action" id="pagination-next-page">Next Page</button>
+        </div>
+    </div>
