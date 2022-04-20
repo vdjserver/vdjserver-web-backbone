@@ -86,6 +86,12 @@ var RepertoireTable = Marionette.View.extend({
     regions: {
         tableRegion: '#community-repertoires-table'
     },
+    events:  {
+        'click #pagination-previous-page': 'previousPage',
+        'click #pagination-next-page': 'nextPage',
+        'change #pagination-page-size': 'pageSize',
+    },
+
     initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
@@ -96,20 +102,22 @@ var RepertoireTable = Marionette.View.extend({
         // pagination of data table
         this.pageQty = 10;
         this.currentPage = 0;
+	
+        var repos = this.model.get('repos');
+        var repository = repos.get(this.repository_id);
+        var objects = repository.get('repertoires');
+        this.paginatedObjects = objects.clone();
         this.constructPages();
         this.dataView = new RepertoireListView({ collection: this.paginatedObjects });
         this.showChildView('tableRegion', this.dataView);
     },
 
     constructPages() {
-        // TODO: handle multiple repositories
-        //var repository_id = this.model.get('repository')[0];
         var repos = this.model.get('repos');
         var repository = repos.get(this.repository_id);
 
         this.pages = [];
         var objects = repository.get('repertoires');
-        this.paginatedObjects = objects.clone();
 
         for (var i = 0; i < objects.length; i += this.pageQty) {
           this.pages[i/this.pageQty] =
@@ -117,6 +125,28 @@ var RepertoireTable = Marionette.View.extend({
         }
         this.paginatedObjects.reset(this.pages[this.currentPage]);
     },
+    previousPage() {
+        --this.currentPage;
+        if (this.currentPage < 0) this.currentPage = 0;
+        this.paginatedObjects.reset(this.pages[this.currentPage]);
+    },
+
+    nextPage() {
+        ++this.currentPage;
+        if (this.currentPage >= this.pages.length) this.currentPage = this.pages.length - 1;
+        this.paginatedObjects.reset(this.pages[this.currentPage]);
+    },
+
+    pageSize(e) {
+        var x = this.pageQty * this.currentPage;
+        this.pageQty = Number(e.target.value);
+        this.currentPage = Math.floor(x / this.pageQty);
+        this.constructPages();
+	this.dataView = new RepertoireListView({ collection: this.paginatedObjects });
+        this.showChildView('tableRegion', this.dataView);
+    },
+
+
 });
 
 export default RepertoireTable;

@@ -213,9 +213,9 @@ var StudySummaryView = Marionette.View.extend({
         },
 
         // Pagination for the Data Table
-        'click #pagination-previous-page': 'previousPage',
-        'click #pagination-next-page': 'nextPage',
-        'change #pagination-page-size': 'pageSize',
+        //'click #pagination-previous-page': 'previousPage',
+        //'click #pagination-next-page': 'nextPage',
+        //'change #pagination-page-size': 'pageSize',
 
         // Show/Hide Community Subjects Data
         // Olivia: need to clean up for efficiency
@@ -479,45 +479,6 @@ var StudySummaryView = Marionette.View.extend({
         //$('[data-toggle="tooltip"]').tooltip();
     },
 
-    constructPages() {
-        // TODO: handle multiple repositories
-        var repository_id = this.model.get('repository')[0];
-        var repos = this.model.get('repos');
-        var repository = repos.get(repository_id);
-
-        this.pages = [];
-        var reps = repository.get('repertoires');
-        this.paginatedRepertoires = reps.clone();
-
-        for (var i = 0; i < reps.length; i += this.pageQty) {
-          this.pages[i/this.pageQty] =
-            reps.models.slice(i, i + this.pageQty);
-        }
-        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-    },
-
-    previousPage() {
-        --this.currentPage;
-        if (this.currentPage < 0) this.currentPage = 0;
-        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-    },
-
-    nextPage() {
-        ++this.currentPage;
-        if (this.currentPage >= this.pages.length) this.currentPage = this.pages.length - 1;
-        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-    },
-
-    pageSize(e) {
-        console.log('page size');
-        var x = this.pageQty * this.currentPage;
-        this.pageQty = Number(e.target.value);
-        this.currentPage = Math.floor(x / this.pageQty);
-        this.constructPages();
-        //this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-        this.dataView = new RepertoireTable({ collection: this.paginatedRepertoires });
-        this.showChildView('tableRegion', this.dataView);
-    },
 });
 
 import list_template from 'Templates/community/community-list.html';
