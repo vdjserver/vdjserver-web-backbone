@@ -251,6 +251,12 @@ var StudySummaryView = Marionette.View.extend({
             $(event.target).closest("table").children("tbody").find("td input:checkbox").prop("checked", true);
         },
 
+        // Select All Checkboxes Functionality
+        'click .select-all-subject': function(e) {
+            console.log("checked all");
+            $(event.target).closest("table").children("tbody").find("td input:checkbox").prop("checked", true);
+        },
+
         // Sorting
         'click .sort.asc': function(e) {
             // console.log ("sorting");

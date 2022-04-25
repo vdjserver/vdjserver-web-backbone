@@ -605,6 +605,19 @@ Community Repertoires & Project Metadata
     color: $vdj-link;
 }
 
+.subject-rows {
+    margin-left: 1em;
+}
+
+tr.subject-row:hover {
+    background: $vdj-lightgray;
+}
+
+tr.subject-row > td:hover {
+    color: $vdj-link;
+    font-weight: 500;
+}
+
 .repertoire-rows {
     margin-left: 1em;
 }

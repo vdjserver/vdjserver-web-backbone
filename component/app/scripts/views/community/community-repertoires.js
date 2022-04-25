@@ -1,5 +1,5 @@
 //
-// community-subjects.js
+// community-repertoires.js
 // Subject table for community data project
 //
 // VDJServer Analysis Portal
@@ -102,7 +102,7 @@ var RepertoireTable = Marionette.View.extend({
         // pagination of data table
         this.pageQty = 10;
         this.currentPage = 0;
-	
+
         var repos = this.model.get('repos');
         var repository = repos.get(this.repository_id);
         var objects = repository.get('repertoires');
@@ -125,6 +125,7 @@ var RepertoireTable = Marionette.View.extend({
         }
         this.paginatedObjects.reset(this.pages[this.currentPage]);
     },
+
     previousPage() {
         --this.currentPage;
         if (this.currentPage < 0) this.currentPage = 0;
@@ -142,7 +143,7 @@ var RepertoireTable = Marionette.View.extend({
         this.pageQty = Number(e.target.value);
         this.currentPage = Math.floor(x / this.pageQty);
         this.constructPages();
-	this.dataView = new RepertoireListView({ collection: this.paginatedObjects });
+        this.dataView = new RepertoireListView({ collection: this.paginatedObjects });
         this.showChildView('tableRegion', this.dataView);
     },
 

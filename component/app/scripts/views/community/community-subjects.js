@@ -85,7 +85,7 @@ var SubjectContainerView = Marionette.View.extend({
 });
 
 // list of subjects
-var SubjectsListView = Marionette.CollectionView.extend({
+/*var SubjectsListView = Marionette.CollectionView.extend({
     template: Handlebars.compile("<div></div>"),
 
     initialize: function(parameters) {
@@ -97,6 +97,24 @@ var SubjectsListView = Marionette.CollectionView.extend({
         this.childViewOptions = { controller: this.controller };
     },
 
+});*/
+
+import subject_template from 'Templates/community/subject-row.html';
+var SubjectRowView = Marionette.View.extend({
+    tagName: 'tbody',
+    template: Handlebars.compile(subject_template),
+    regions: {
+        detailRegion: '#subject-details'
+    },
+});
+
+import subject_table_template from 'Templates/community/subject-table.html';
+var SubjectsListView = Marionette.CollectionView.extend({
+    tagName: 'table',
+    className: 'table table-condensed table-bordered',
+    template: Handlebars.compile(subject_table_template),
+    childView: SubjectRowView,
+    // childViewContainer: 'tbody'
 });
 
 import subjects_template from 'Templates/community/community-subjects.html';
@@ -105,6 +123,11 @@ var SubjectsView = Marionette.View.extend({
     // one region for contents
     regions: {
         tableRegion: '#community-subjects-table'
+    },
+    events:  {
+        'click #pagination-previous-page': 'previousPage',
+        'click #pagination-next-page': 'nextPage',
+        'change #pagination-page-size': 'pageSize',
     },
     initialize: function(parameters) {
         // our controller
@@ -116,26 +139,50 @@ var SubjectsView = Marionette.View.extend({
         // pagination of data table
         this.pageQty = 10;
         this.currentPage = 0;
+
+        var repos = this.model.get('repos');
+        var repository = repos.get(this.repository_id);
+        var objects = repository.get('repertoires');
+        this.paginatedObjects = objects.clone();
+
         this.constructPages();
         this.dataView = new SubjectsListView({ collection: this.paginatedObjects });
         this.showChildView('tableRegion', this.dataView);
     },
 
     constructPages() {
-        // TODO: handle multiple repositories
-        //var repository_id = this.model.get('repository')[0];
         var repos = this.model.get('repos');
         var repository = repos.get(this.repository_id);
 
         this.pages = [];
         var objects = repository.get('subjects');
-        this.paginatedObjects = objects.clone();
 
         for (var i = 0; i < objects.length; i += this.pageQty) {
           this.pages[i/this.pageQty] =
             objects.models.slice(i, i + this.pageQty);
         }
         this.paginatedObjects.reset(this.pages[this.currentPage]);
+    },
+
+    previousPage() {
+        --this.currentPage;
+        if (this.currentPage < 0) this.currentPage = 0;
+        this.paginatedObjects.reset(this.pages[this.currentPage]);
+    },
+
+    nextPage() {
+        ++this.currentPage;
+        if (this.currentPage >= this.pages.length) this.currentPage = this.pages.length - 1;
+        this.paginatedObjects.reset(this.pages[this.currentPage]);
+    },
+
+    pageSize(e) {
+        var x = this.pageQty * this.currentPage;
+        this.pageQty = Number(e.target.value);
+        this.currentPage = Math.floor(x / this.pageQty);
+        this.constructPages();
+        this.dataView = new SubjectsListView({ collection: this.paginatedObjects });
+        this.showChildView('tableRegion', this.dataView);
     },
 });
 
