@@ -1,0 +1,50 @@
+{{#if isUploading}}
+<div class="row files-upload-list-row">
+    <div class="col-md-3 text-break">
+        {{name}}
+    </div>
+    <div class="col-md-1">
+        {{GetHumanReadableFileSize length}}
+    </div>
+    <div class="col-md-3">
+        {{#with (lookup fileTypeNames type)}} {{this}} {{/with}}
+    </div>
+    <div class="col-md-4">
+        <div class="progress file-upload-progress-wrapper">
+            <div class="progress-bar progress-striped active {{#if hasError}}bg-danger{{/if}}" style="width: {{pctComplete}}%" aria-valuenow="{{pctComplete}}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+    <div class="col-md-1">
+        {{uploadStatusText}}
+    </div>
+</div>
+{{else}}
+<div class="row files-upload-list-row">
+    <div class="col-md-3 text-break">
+        {{name}}
+    </div>
+    <div class="col-md-1">
+        {{GetHumanReadableFileSize length}}
+    </div>
+    <div class="col-md-3">
+        <select class="form-control" id="file-type">
+            {{#each fileTypes}}
+                <option {{#ifEquals this ../this.type}}selected{{/ifEquals}} value="{{this}}">
+                    {{#with (lookup ../fileTypeNames @index)}} {{this}} {{/with}}
+                </option>
+            {{/each}}
+        </select>
+    </div>
+    <div class="col-md-4">
+        <div class="progress file-upload-progress-wrapper">
+            <div class="progress-bar progress-striped active">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 project-buttons-right">
+        <div class="btn-group">
+            <button type="button" class="btn btn-delete" id="delete-upload-file" name="{{cid}}">Delete</button>
+        </div>
+    </div>
+</div>
+{{/if}}

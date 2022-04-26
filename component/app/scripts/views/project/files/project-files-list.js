@@ -47,7 +47,8 @@ export default Marionette.CollectionView.extend({
     //tagName: 'table',
     //className: 'table table-hover table-sm table-bordered',
     initialize: function(parameters) {
-    this.childView = ProjectFileDetailView;
+        this.childView = ProjectFileDetailView;
+        this.childViewOptions = { controller: this.controller };
   },
 });
 

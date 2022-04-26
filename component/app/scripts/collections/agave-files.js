@@ -70,6 +70,7 @@ export var FilesCollection = Agave.Collection.extend({
 // collection of project files
 export var ProjectFilesCollection = Agave.MetadataCollection.extend({
     model: ProjectFileMetadata,
+
     initialize: function(parameters) {
         Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
 
@@ -79,6 +80,7 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
         this.includeJobFiles = false;
         //if (parameters && parameters.includeJobFiles) this.includeJobFiles = true;
     },
+
     url: function() {
         if (this.includeJobFiles) {
             return '/meta/v2/data?q='
@@ -102,6 +104,52 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
                    ;
         }
     },
+
+    checkForDuplicateFilename: function(filename) {
+
+        var isDuplicate = false;
+
+        for (var j = 0; j < this.models.length; j++) {
+            var model = this.at([j]);
+
+            var modelName = model.get('value').name;
+
+            if (modelName === filename) {
+                isDuplicate = true;
+                break;
+            }
+        }
+
+        return isDuplicate;
+    },
+});
+
+// query for a specific file
+export var ProjectFileQuery = Agave.MetadataCollection.extend({
+    model: ProjectFileMetadata,
+
+    initialize: function(parameters) {
+        Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+
+        if (parameters) {
+            if (parameters.projectUuid) this.projectUuid = parameters.projectUuid;
+            if (parameters.name) this.name = parameters.name;
+        }
+    },
+
+    url: function() {
+        return '/meta/v2/data?q='
+               + encodeURIComponent('{'
+                   + '"name": "projectFile",'
+                   + '"value.projectUuid":"' + this.projectUuid + '",'
+                   + '"value.name":"' + this.name + '",'
+                   + '"value.isDeleted":false'
+               + '}')
+               + '&limit=' + this.limit
+               + '&offset=' + this.offset
+               ;
+    },
+
 });
 
 /*
