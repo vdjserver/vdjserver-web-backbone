@@ -739,7 +739,7 @@ SingleProjectController.prototype = {
             this.fileListPromise.then(function() {
                     // have the view display them
                     that.projectView.updateSummary();
-                    that.projectFilesController = new ProjectFilesController(that);
+                    if (! that.projectFilesController) that.projectFilesController = new ProjectFilesController(that);
                     that.projectView.showProjectFiles(that.projectFilesController);
                 })
                 .fail(function(error) {
@@ -748,7 +748,7 @@ SingleProjectController.prototype = {
         } else {
             // tell repertoire controller to display the repertoire list
             that.projectView.updateSummary();
-            that.projectFilesController = new ProjectFilesController(that);
+            if (! that.projectFilesController) that.projectFilesController = new ProjectFilesController(that);
             that.projectView.showProjectFiles(that.projectFilesController);
         }
     },
