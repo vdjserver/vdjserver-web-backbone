@@ -1,8 +1,8 @@
-
-    <div class="table-actions">
+<div class="community-data-table">
+    <div class="community-data-table-actions">
         <form class="form-inline">
-            <label for="subject-rows">Rows per page:</label>
-            <select class="form-control subject-rows" id="pagination-page-size">
+            <label for="pagination-page-size">Rows per page:</label>
+            <select class="form-control project-buttons-margin-left" id="pagination-page-size">
               <option>1</option>
               <option>5</option>
               <option selected>10</option>
@@ -18,13 +18,14 @@
 
     <!-- Generalize page row so we can use elsewhere, or specific to the study data table?? -->
     <!-- May be easier to update if it is own view -->
-    <div class="row table-footer">
-        <div class="table-caption">
+    <div class="row community-data-table-footer">
+        <div class="col community-data-table-caption">
             <!-- needs customization -->
             Showing #-# of {{num_repertoires}} subjects
         </div>
-        <div class="ml-auto pagination">
-            <button type="button" class="btn btn-new chart-action" id="pagination-previous-page">Previous Page</button>
-            <button type="button" class="btn btn-new chart-action" id="pagination-next-page">Next Page</button>
+        <div class="col-md-4 project-buttons-right">
+            <button type="button" class="btn btn-pagination" id="pagination-previous-page">Previous Page</button>
+            <button type="button" class="btn btn-pagination project-buttons-margin-left" id="pagination-next-page">Next Page</button>
         </div>
     </div>
+</div>

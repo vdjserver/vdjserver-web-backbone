@@ -155,7 +155,7 @@ a.remove-filter {
 .nav-button-old {
     padding-left: 0px;
     padding-right: 0px;
-    
+
     .inactive {
     background-color: transparent;
     }
@@ -555,7 +555,7 @@ Community Results & Projects
 }
 
 /* ----------------------------------------------------------
-Community Repertoires & Project Metadata
+Community Project Metadata
 ------------------------------------------------------------*/
 .community-metadata, .project-metadata {
     margin-bottom: 1rem;
@@ -565,42 +565,45 @@ Community Repertoires & Project Metadata
     }
 }
 
-.community-repertoires-metadata {
-    padding: 0% 2%;
-    margin-top: 3%;
+/* ----------------------------------------------------------
+Community Project Data Tables
+------------------------------------------------------------*/
+
+.community-data-table {
+    padding: 2%;
 }
 
-.community-subjects-metadata {
-    padding: 0% 2%;
-    margin-top: 3%;
+.community-data-table-actions {
+    float: right;
+    margin-bottom: 1%;
 }
 
-.community-subjects-table {
-    width: 100%;
-    margin-bottom: 1rem;
-    color: $gray-900;
-    background-color: null;
-    border: 1px solid $gray-300;
-    padding: .3rem;
+.community-data-table-header {
+    border-bottom: 1px solid $vdj-medgray;
 }
 
-.community-subjects-table-data {
-    padding: .3rem; 
-    vertical-align: top;
-    border-top: 1px solid $gray-300;
-    border: 1px solid $gray-300;
+.community-data-table-row {
+    border-bottom: 1px solid $vdj-medgray;
 }
 
-.community-subjects-table-head {
-    vertical-align: bottom;
-    border-bottom: 2px solid $gray-300;
-    border-bottom-width: 2px;
+.community-data-table-row:hover {
+    background: $vdj-lightgray;
+}
+
+.community-data-table-footer {
+    padding-top: 1%
+}
+
+.community-data-table-caption {
+        font-style: italic;
+        color: $vdj-blue;
 }
 
 .active-tab {
     color: $vdj-link !important;
 }
 
+/*
 .table-actions {
     float: right;
     margin-bottom: 1%;
@@ -666,13 +669,13 @@ td.selected-details {
 td.rep-details {
     padding: 3em;
 }
+*/
 
 /* ----------------------------------------------------------
 Community Repertoires Table Caption & Pagination
 ------------------------------------------------------------*/
+/*
 .table-footer {
-    padding: 1%;
-
     .table-caption {
         font-style: italic;
         color: $vdj-blue;
@@ -680,10 +683,10 @@ Community Repertoires Table Caption & Pagination
 
     .pagination {
         color: $vdj-blue;
-        margin-bottom: 3%;
+        //margin-bottom: 3%;
     }
 }
-
+*/
 /* ----------------------------------------------------------
 Community Repertoires Detail Tables
 ------------------------------------------------------------*/
