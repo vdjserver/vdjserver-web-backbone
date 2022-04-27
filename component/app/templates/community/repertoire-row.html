@@ -1,25 +1,25 @@
-            <tr class="repertoire-row">
-                <td class="repertoire-name">
+            <div class="row repertoire-row">
+                <div class="col-md-1 repertoire-name">
                     {{repertoire.value.repertoire_name}}
-                </td>
-                <td class="repertoire-id">
+                </div>
+                <div class="col-md-3 repertoire-id">
                     {{repertoire_id}}
-                </td>
-                <td class="subject">
-                    Subject ID: {{subject.subject_id}}
-                </td>
-                <td class="sample">
-                    Sample ID: {{sample.0.sample_id}}
-                </td>
-                <td class="cell">
-                    Cell Phenotype: {{sample.0.cell_phenotype}}
-                </td>
-                <td class="tissue">
-                    Tissue ID: {{sample.0.tissue.id}}
-                </td>
-                <!-- <td>Diagnosis Data</td> -->
-            </tr>
+                </div>
+                <div class="col-md-2 subject">
+                    {{subject.subject_id}}
+                </div>
+                <div class="col-md-2 sample">
+                    {{sample.0.sample_id}}
+                </div>
+                <div class="col-md-2 cell">
+                    {{sample.0.cell_phenotype}}
+                </div>
+                <div class="col-md-2 tissue">
+                    {{sample.0.tissue.id}}
+                </div>
+                <!-- <div>Diagnosis Data</div> -->
+            </div>
 
             <!-- Details attach after each repertoire row -->
-            <tr id="repertoire-details">
-            </tr>
+            <div id="repertoire-details">
+            </div>
