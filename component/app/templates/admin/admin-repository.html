@@ -1,28 +1,27 @@
-<div class="sidebar-content">
-    <h2>Files</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <div class="row">
+        <div class="col">
+        Project Title
+        </div>
+        <div class="col">
+        <button type="button" class="btn btn-new" id="load-study">Load</button>
+        </div>
+    </div>
 
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Last Modified</th>
-          <th scope="col">Size</th>
-          <th scope="col">File Origin</th>
-          <th scope="col">Type</th>
-          <th scope="col">Tags</th>
-          <th scope="col">Read Direction</th>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">..</th>
-          <td>..</td>
-          <td>..</td>
-          <td>..</td>
-          <td>..</td>
-          <td>..</td>
-          <td>..</td>
-        </tr>
-      </tbody>
-    </table>
-</div>
+    <div class="row">
+        <div class="col">
+        collection: {{value.collection}}
+        </div>
+        <div class="col">
+        should load: {{value.shouldLoad}}
+        </div>
+        <div class="col">
+        status: {{value.isLoaded}}
+        </div>
+        <div class="col">
+        repertoire: {{value.repertoireMetadataLoaded}}
+        </div>
+        <div class="col">
+        rearrangement: {{value.rearrangementDataLoaded}}
+        </div>
+
+    </div>

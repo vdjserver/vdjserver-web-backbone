@@ -29,7 +29,9 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import LoadingView from 'Scripts/views/utilities/loading-view';
+import ObjectTableView from 'Scripts/views/tables/object-table';
 import { ProjectLoadCollection, RearrangementLoadCollection } from 'Scripts/collections/admins-vdjserver';
+import PublicProjectCollection from 'Scripts/collections/agave-public-projects';
 
 // Admin card tabs for navigation
 import tabs_template from 'Templates/admin/admin-tabs.html';
@@ -85,7 +87,10 @@ var AdminTabsView = Marionette.View.extend({
         card['card_id'] = 'repository-tab';
         card['text'] = 'Data Repository';
         if (this.controller.projectLoadList) {
-            card['text'] = this.controller.projectLoadList.length + ' ' + card['text'];
+            card['text'] += '<br>' + this.controller.projectLoadList.length + ' Project Loads';
+        }
+        if (this.controller.publicProjectList) {
+            card['text'] += '<br>' + this.controller.publicProjectList.length + ' Public Projects';
         }
         if (this.controller.page == 'repository') card['active'] = true;
         else card['active'] = false;
@@ -233,9 +238,10 @@ var AdminView = Marionette.View.extend({
         this.showChildView('contentRegion', this.contentView);
     },
 
-    showRepositoryAdmin()
+    showRepositoryAdmin(projectLoadList)
     {
-        this.contentView = new AdminRepositoryView();
+        //this.contentView = new AdminRepositoryView();
+        this.contentView = new ObjectTableView({controller: this.controller, collection: projectLoadList, objectView: AdminRepositoryView});
         this.showChildView('contentRegion', this.contentView);
     },
 
@@ -253,17 +259,19 @@ var AdminView = Marionette.View.extend({
 function AdminController(page) {
     // maintain state across multiple views
     this.page = page;
-    this.projectLoadList = null;
 
     // the admin view
     this.contentView = new AdminView({controller: this});
 
     // kick off lazy loads
+    // data repository
+    this.projectLoadList = null;
+    this.publicProjectList = null;
     this.dataRepositoryPromise = this.lazyLoadDataRepository();
 
     // are we routing to a specific page?
     this.showAdminPage(this.page);
-};
+}
 
 AdminController.prototype = {
     // return the main view, create it if necessary
@@ -281,14 +289,21 @@ AdminController.prototype = {
     lazyLoadDataRepository() {
         var that = this;
         var plList = new ProjectLoadCollection();
+        var pubList = new PublicProjectCollection();
         //var rlList = new RearrangementLoadCollection();
 
         // fetch the project loads
         return plList.fetch()
             .then(function() {
                 console.log(plList);
+                // fetch the public projects
+                return pubList.fetch();
+            })
+            .then(function() {
+                console.log(pubList);
                 // now propagate loaded data to project
                 that.projectLoadList = plList;
+                that.publicProjectList = pubList;
             })
             .then(function() {
                 // update the project summary
@@ -358,7 +373,27 @@ AdminController.prototype = {
         this.page = 'repository';
         App.router.navigate('admin/repository', {trigger: false});
         this.contentView.updateTab();
-        this.contentView.showRepositoryAdmin(this.model);
+        var that = this;
+        if (! this.projectLoadList) {
+            // it should be lazy loading
+
+            // show loading while we fetch
+            that.contentView.showLoading();
+
+            // wait on the lazy load
+            this.dataRepositoryPromise.then(function() {
+                    // have the view display them
+                    that.contentView.updateTab();
+                    that.contentView.showRepositoryAdmin(that.projectLoadList);
+                })
+                .fail(function(error) {
+                    console.log(error);
+                });
+        } else {
+            // have the view display them
+            that.contentView.updateTab();
+            that.contentView.showRepositoryAdmin(that.projectLoadList);
+        }
     },
 
     showStatisticsAdmin()

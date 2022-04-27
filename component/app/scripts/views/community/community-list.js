@@ -29,94 +29,110 @@
 //
 
 import Marionette from 'backbone.marionette';
-import list_template from 'Templates/community/community-list.html';
-import template from 'Templates/community/study-summary.html';
 import Handlebars from 'handlebars';
 
 import { ADC } from 'Scripts/backbone/backbone-adc';
 
-// Olivia: Trying to figure out how to display as a sibling view that appears right after each instance of RepertoireRowView
-import repertoire_details_template from 'Templates/community/repertoire-details-row.html';
-var RepertoireDetailView = Marionette.View.extend({
-    tagName: 'td',
-    className: 'rep-details',
-    attributes: {
-        "colspan": "7"
-    },
-    template: Handlebars.compile(repertoire_details_template),
-});
+import CommunitySubjects from 'Scripts/views/community/community-subjects';
+import CommunityRepertoires from 'Scripts/views/community/community-repertoires';
 
-import repertoire_template from 'Templates/community/repertoire-row.html';
-var RepertoireRowView = Marionette.View.extend({
-    tagName: 'tbody',
-    template: Handlebars.compile(repertoire_template),
-    regions: {
-        detailRegion: '#repertoire-details'
-    },
-
-    initialize: function(parameters) {
-      var detail_view = new RepertoireDetailView();
-      this.showChildView('detailRegion', detail_view);
-  },
-
-  events:  {
-    'click .subject': 'showRepDetails',
-  },
-
-// Olivia: not working yet
-  showRepDetails(detail_view) {
-      this.getRegion('detailRegion').$el.show();
-      // var detail_view = new RepertoireDetailView();
-      //
-      // var detailRegion = detail_view.getRegion('detailRegion');
-      //
-      // if (this.getRegion(detailRegion).hasView()) {
-      //     console.log("has a view");
-      //    this.getRegion(detailRegion).$el.hide();
-      // } else {
-      //     console.log("doesn't have a view");
-      //     this.getRegion(detailRegion).$el.show();
-      // }
-  },
-
-});
-
-import repertoire_table_template from 'Templates/community/repertoire-table.html';
-var RepertoireTable = Marionette.CollectionView.extend({
-    tagName: 'table',
-    className: 'table table-hover table-condensed table-bordered',
-    template: Handlebars.compile(repertoire_table_template),
-    childView: RepertoireRowView,
-    // childViewContainer: 'tbody'
-});
-
+import template from 'Templates/community/community-study-summary.html';
 var StudySummaryView = Marionette.View.extend({
     template: Handlebars.compile(template),
     tagName: 'div',
     className: 'community-project',
 
     regions: {
-        tableRegion: '#community-study-data-table'
+        // regions are dynamically defined
     },
 
     initialize: function(parameters) {
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+
+        // data table views
+        // do not create the views until actually needed
+        // define the regions
+        this.dataViews = {};
+        var repos = this.model.get('repository');
+        for (let i = 0; i < repos.length; ++i) {
+            this.dataViews[repos[i]] = {repertoireView: null, subjectView: null, cloneView: null, cellView: null, rearrangementView: null};
+            this.addRegion(repos[i] + '_repertoiresRegion', '#' + repos[i] + '-community-repertoires-table');
+            this.addRegion(repos[i] + '_subjectsRegion', '#' + repos[i] + '-community-subjects-table');
+            this.addRegion(repos[i] + '_clonesRegion', '#' + repos[i] + '-community-clones-table');
+            this.addRegion(repos[i] + '_rearrangementsRegion', '#' + repos[i] + '-community-rearrangements-table');
+        }
+
         // pagination of data table
         // just repertoires for now but need to handle the others too
-        this.pageQty = 10;
-        this.currentPage = 0;
-        this.constructPages();
-        this.dataView = new RepertoireTable({ collection: this.paginatedRepertoires });
+        //this.pageQty = 10;
+        //this.currentPage = 0;
+        //this.constructPages();
+        //this.dataView = new RepertoireTable({ collection: this.paginatedRepertoires });
+
+        //this.subjectsView = new CommunitySubjects({ model: this.model });
     },
 
     serializeModel() {
+        // Marionette will only serialize the main model attributes and
+        // none of the sub-models, we add in the sub-models that we want
+        // to directly access values in the html template.
         const data = _.clone(this.model.attributes);
 
         // serialize nested model data
         data.study = data.study.attributes;
 
+        // get unfiltered collections
+        var collections = this.controller.getCollections();
+        var study_id = this.model.get('id');
+        var full_study = collections.studyList.get(study_id);
+
+        // repository tags
+        data.is_vdjserver = false;
+        data.vdjserver_counts = {};
+        var repos = this.model.get('repository');
+        data.repo_titles = [];
+        var adc_repos = ADC.Repositories();
+        for (let i = 0; i < repos.length; ++i) {
+            if (repos[i] == 'vdjserver') {
+                data.is_vdjserver = true;
+                let vdjserver_study = this.model.get('repos').get('vdjserver');
+                let full_vdjserver_study = full_study.get('repos').get('vdjserver');
+                data.vdjserver_counts['num_repertoires'] = vdjserver_study.get('repertoires').length;
+                data.vdjserver_counts['full_num_repertoires'] = full_vdjserver_study.get('repertoires').length;
+                data.vdjserver_counts['num_subjects'] = vdjserver_study.get('subjects').length;
+                data.vdjserver_counts['full_num_subjects'] = full_vdjserver_study.get('subjects').length;
+                data.vdjserver_counts['num_samples'] = vdjserver_study.get('samples').length;
+                data.vdjserver_counts['full_num_samples'] = full_vdjserver_study.get('samples').length;
+                //data.vdjserver_counts['num_data_processings'] = vdjserver_study.get('data_processings').length;
+                //data.vdjserver_counts['full_num_data_processings'] = full_vdjserver_study.get('data_processings').length;
+                // iR+ stats
+                let statistics = vdjserver_study.get('statistics');
+                if (! statistics['num_rearrangements']) data.vdjserver_counts['num_rearrangements'] = '???';
+                else data.vdjserver_counts['num_rearrangements'] = new Intl.NumberFormat().format(statistics['num_rearrangements']);
+            } else {
+                var obj = {id: repos[i], name: adc_repos[repos[i]]['title']};
+                let repo_study = this.model.get('repos').get(repos[i]);
+                let full_repo_study = full_study.get('repos').get(repos[i]);
+                obj['num_repertoires'] = repo_study.get('repertoires').length;
+                obj['full_num_repertoires'] = full_repo_study.get('repertoires').length;
+                obj['num_subjects'] = repo_study.get('subjects').length;
+                obj['full_num_subjects'] = full_repo_study.get('subjects').length;
+                obj['num_samples'] = repo_study.get('samples').length;
+                obj['full_num_samples'] = full_repo_study.get('samples').length;
+                // iR+ stats
+                let statistics = repo_study.get('statistics');
+                if (! statistics['num_rearrangements']) obj['num_rearrangements'] = '???';
+                else obj['num_rearrangements'] = new Intl.NumberFormat().format(statistics['num_rearrangements']);
+                data.repo_titles.push(obj);
+            }
+        }
+        //console.log(vdjserver_counts);
+        //console.log(new Intl.NumberFormat().format(num_rearrangements));
         // attempting to grab repertoires data
-        data.repertoire = data.repertoires.models;
-        // console.log ("this is data.repertoire: " + JSON.stringify(data.repertoires));
+        //data.repertoire = data.repertoires.models;
 
         return data;
     },
@@ -172,27 +188,45 @@ var StudySummaryView = Marionette.View.extend({
             $(event.target).removeClass("active-tab");
         },
 
+        'click #clipboard-copy-url': function(e) {
+            var text = e.target.getAttribute('download_url');
+            console.log('copy to clipboard:', text);
+            if (text) navigator.clipboard.writeText(text);
+        },
+
         // Show/Hide Community Repertoires Data
         // Olivia: need to clean up for efficiency
         'click .community-repertoires': function(e) {
-            this.showChildView('tableRegion', this.dataView);
+            let repository = e.target.id;
+            var dataViews = this.dataViews[repository];
+            if (! dataViews['repertoireView']) dataViews['repertoireView'] = new CommunityRepertoires({ model: this.model, repository_id: repository });
+            this.showChildView(repository + '_repertoiresRegion', dataViews['repertoireView']);
 
-            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
+            //this.showChildView('tableRegion', this.dataView);
 
-            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-table").not(".community-repertoires-metadata").addClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings('#' + repository + '-community-repertoires-table').toggleClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings('.' + repository + '-community-table').not('#' + repository + '-community-repertoires-table').addClass("no-display");
+
+            //$(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
+
+            //$(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-table").not(".community-repertoires-metadata").addClass("no-display");
         },
 
         // Pagination for the Data Table
-        'click #pagination-previous-page': 'previousPage',
-        'click #pagination-next-page': 'nextPage',
-        'change #pagination-page-size': 'pageSize',
+        //'click #pagination-previous-page': 'previousPage',
+        //'click #pagination-next-page': 'nextPage',
+        //'change #pagination-page-size': 'pageSize',
 
         // Show/Hide Community Subjects Data
         // Olivia: need to clean up for efficiency
         'click .community-subjects': function(e) {
-            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-subjects-metadata").toggleClass("no-display");
+            let repository = e.target.id;
+            var dataViews = this.dataViews[repository];
+            if (! dataViews['subjectView']) dataViews['subjectView'] = new CommunitySubjects({ model: this.model, repository_id: repository });
+            this.showChildView(repository + '_subjectsRegion', dataViews['subjectView']);
 
-            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-table").not(".community-subjects-metadata").addClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings('#' + repository + '-community-subjects-table').toggleClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings('.' + repository + '-community-table').not('#' + repository + '-community-subjects-table').addClass("no-display");
         },
 
         // Show/Hide Community Clones Data
@@ -213,6 +247,12 @@ var StudySummaryView = Marionette.View.extend({
 
         // Select All Checkboxes Functionality
         'click .select-all-repertoire': function(e) {
+            console.log("checked all");
+            $(event.target).closest("table").children("tbody").find("td input:checkbox").prop("checked", true);
+        },
+
+        // Select All Checkboxes Functionality
+        'click .select-all-subject': function(e) {
             console.log("checked all");
             $(event.target).closest("table").children("tbody").find("td input:checkbox").prop("checked", true);
         },
@@ -246,7 +286,45 @@ var StudySummaryView = Marionette.View.extend({
         },
     },
 
+    getFileSizeDisplay(size) {
+        var text = '???';
+        if (!size) return text;
+
+        if (size < 1024) {
+            text = Math.round(size) + ' B';
+            return text;
+        } else size = size / 1024;
+
+        if (size < 1024) {
+            text = Math.round(size) + ' KB';
+            return text;
+        } else size = size / 1024;
+
+        if (size < 1024) {
+            text = Math.round(size) + ' MB';
+            return text;
+        } else size = size / 1024;
+
+        if (size < 1024) {
+            text = Math.round(size) + ' GB';
+            return text;
+        } else size = size / 1024;
+
+        if (size < 1024) {
+            text = Math.round(size) + ' TB';
+            return text;
+        } else size = size / 1024;
+
+        // too big
+        return text;
+    },
+
     templateContext() {
+
+        // get unfiltered collections
+        var collections = this.controller.getCollections();
+        var study_id = this.model.get('id');
+        var full_study = collections.studyList.get(study_id);
 
         // study badges
         var study = this.model.get('study');
@@ -268,73 +346,157 @@ var StudySummaryView = Marionette.View.extend({
         // custom 10x flag
         var is_10x_genomics = false;
         if (value.vdjserver_keywords)
-            if (value.vdjserver_keywords.indexOf("10x_genomics") >= 0)
+            if (value.vdjserver_keywords.indexOf("is_10x_genomics") >= 0)
                 is_10x_genomics = true;
 
+/*
         // repository tags
         var is_vdjserver = false;
+        var vdjserver_study = null;
+        var full_vdjserver_study = null;
+        var vdjserver_counts = {};
+        var vdjserver_num_repertoires = 0;
+        var full_vdjserver_num_repertoires = 0;
+        var vdjserver_num_subjects = 0;
+        var full_vdjserver_num_subjects = 0;
+        var vdjserver_num_samples = 0;
+        var full_vdjserver_num_samples = 0;
+        var vdjserver_num_data_processings = 0;
         var repos = this.model.get('repository');
         var repo_titles = [];
         var adc_repos = ADC.Repositories();
         for (var i = 0; i < repos.length; ++i) {
-            if (repos[i] == 'vdjserver') is_vdjserver = true;
-            else repo_titles.push(adc_repos[repos[i]]['title']);
+            if (repos[i] == 'vdjserver') {
+                is_vdjserver = true;
+                vdjserver_study = this.model.get('repos').get('vdjserver');
+                vdjserver_num_subjects = vdjserver_study.get('subjects').length;
+                vdjserver_num_repertoires = vdjserver_study.get('repertoires').length;
+                vdjserver_num_samples = vdjserver_study.get('samples').length;
+                vdjserver_num_data_processings = vdjserver_study.get('data_processings').length;
+                full_vdjserver_study = full_study.get('repos').get('vdjserver');
+                full_vdjserver_num_subjects = full_vdjserver_study.get('subjects').length;
+                full_vdjserver_num_repertoires = full_vdjserver_study.get('repertoires').length;
+                full_vdjserver_num_samples = full_vdjserver_study.get('samples').length;
+                //vdjserver_num_data_processings = vdjserver_study.get('data_processings').length;
+                vdjserver_counts['num_repertoires'] = vdjserver_num_repertoires;
+                vdjserver_counts['full_num_repertoires'] = full_vdjserver_num_repertoires;
+            } else {
+                repo_titles.push(adc_repos[repos[i]]['title']);
+            }
         }
+        console.log(vdjserver_counts);
+*/
+
+        // publications
+        var pub_list = [];
+        if (value.pub_ids) {
+            let fields = value.pub_ids.split(',');
+            let ps = '';
+            let pe = '';
+            for (let i in fields) {
+                if (i > 0) {
+                    ps = '<p>';
+                    pe = '</p>';
+                }
+                let entry = fields[i];
+                let p = entry.split(':');
+                if (p.length >= 2) {
+                    if (p[0].trim() == 'PMID') {
+                        pub_list.push({ name: ps + p[0].trim().toUpperCase() + ': ' + p[1].trim() + pe, url: 'https://pubmed.ncbi.nlm.nih.gov/' + p[1].trim() + '/' });
+                    } else if (p[0].trim().toLowerCase() == 'doi') {
+                        pub_list.push({ name: ps + p[0].trim().toUpperCase() + ': ' + p[1].trim() + pe, url: 'https://doi.org/' + p[1].trim()});
+                    } else if (p[0].trim().toLowerCase() == 'http') {
+                        pub_list.push({ name: ps + entry + pe, url: p.join(':') });
+                    } else if (p[0].trim().toLowerCase() == 'https') {
+                        pub_list.push({ name: ps + entry + pe, url: p.join(':') });
+                    } else if (p[0].trim().toLowerCase() == 'PMC') {
+                        pub_list.push({ name: ps + p[0].trim().toUpperCase() + ': ' + p[1].trim() + pe, url: 'https://www.ncbi.nlm.nih.gov/pmc/articles/' + p[1].trim() + '/' });
+                    } else {
+                        // unknown
+                        pub_list.push({ name: ps + entry + pe, url: null });
+                    }
+                } else {
+                    // unknown
+                    pub_list.push({ name: ps + entry + pe, url: null });
+                }
+            }
+        }
+
+        // study download cache
+        var has_one_download_cache = false;
+        var has_multiple_download_cache = false;
+        var download_url = null;
+        var download_file_size = null;
+        var download_files = [];
+        var study_cache = full_study.get('study_cache');
+        if (study_cache) {
+            download_url = study_cache.get('download_url');
+            if (download_url instanceof Array) {
+                has_multiple_download_cache = true;
+                var sizes = study_cache.get('file_size');
+                for (let i = 0; i < sizes.length; ++i) {
+                    download_files.push({url: download_url[i], file_size: this.getFileSizeDisplay(sizes[i])});
+                }
+            } else {
+                has_one_download_cache = true;
+                download_file_size = this.getFileSizeDisplay(study_cache.get('file_size'));
+            }
+        }
+
+        // dates
+        var publish_date = null;
+        if (value.adc_publish_date) publish_date = new Date(value.adc_publish_date).toLocaleString();
+        var update_date = null;
+        if (value.adc_update_date) update_date = new Date(value.adc_update_date).toLocaleString();
 
         return {
             object: JSON.stringify(this.model),
-            num_subjects: this.model.get('subjects').length,
-            num_samples: this.model.get('samples').length,
-            num_repertoires: this.model.get('repertoires').length,
+            //vdjserver_counts: JSON.stringify(vdjserver_counts),
+            //vdjserver_num_repertoires: vdjserver_num_repertoires,
+            //full_vdjserver_num_repertoires: full_vdjserver_num_repertoires,
+            //vdjserver_num_subjects: vdjserver_num_subjects,
+            //full_vdjserver_num_subjects: full_vdjserver_num_subjects,
+            //vdjserver_num_samples: vdjserver_num_samples,
+            //full_vdjserver_num_samples: full_vdjserver_num_samples,
             contains_ig: contains_ig,
             contains_tcr: contains_tcr,
             contains_single_cell: contains_single_cell,
             contains_paired_chain: contains_paired_chain,
             is_10x_genomics: is_10x_genomics,
-            is_vdjserver: is_vdjserver,
-            repo_titles: repo_titles
+            //is_vdjserver: is_vdjserver,
+            //repo_titles: repo_titles,
+            pub_list: pub_list,
+            has_one_download_cache: has_one_download_cache,
+            has_multiple_download_cache: has_multiple_download_cache,
+            download_url: download_url,
+            download_file_size: download_file_size,
+            download_files: download_files,
+            publish_date: publish_date,
+            update_date: update_date
         };
     },
 
-    constructPages() {
-        this.pages = [];
-        var reps = this.model.get('repertoires');
-        this.paginatedRepertoires = reps.clone();
+    onAttach() {
+        // setup popovers and tooltips
+        $('[data-toggle="popover"]').popover({
+            trigger: 'hover'
+        });
 
-        for (var i = 0; i < reps.length; i += this.pageQty) {
-          this.pages[i/this.pageQty] =
-            reps.models.slice(i, i + this.pageQty);
-        }
-        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
+        //$('[data-toggle="tooltip"]').tooltip();
     },
 
-    previousPage() {
-        --this.currentPage;
-        if (this.currentPage < 0) this.currentPage = 0;
-        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-    },
-
-    nextPage() {
-        ++this.currentPage;
-        if (this.currentPage >= this.pages.length) this.currentPage = this.pages.length - 1;
-        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-    },
-
-    pageSize(e) {
-        console.log('page size');
-        var x = this.pageQty * this.currentPage;
-        this.pageQty = Number(e.target.value);
-        this.currentPage = Math.floor(x / this.pageQty);
-        this.constructPages();
-        //this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-        this.dataView = new RepertoireTable({ collection: this.paginatedRepertoires });
-        this.showChildView('tableRegion', this.dataView);
-    },
 });
 
+import list_template from 'Templates/community/community-list.html';
 export default Marionette.CollectionView.extend({
     template: Handlebars.compile(list_template),
     initialize: function(parameters) {
+        // our controller
+        if (parameters) {
+            if (parameters.controller) this.controller = parameters.controller;
+        }
+
         this.childView = StudySummaryView;
+        this.childViewOptions = { controller: this.controller };
   },
 });

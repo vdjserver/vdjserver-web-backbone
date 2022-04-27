@@ -26,6 +26,7 @@
 //
 
 'use strict';
+import Backbone from 'backbone';
 
 // Private Methods
 var _redirectToLogin = function() {
@@ -67,21 +68,32 @@ export default Backbone.Router.extend({
     // order of routes matter as the first one that matches is used
     routes: {
         '':                                 'index',
-        //'auth/logout':                      'authLogout',
+        'auth/logout':                      'authLogout',
 
-        // user account pages
-        //'account/profile':                  'accountProfile',
+        // public user account pages
+        'account':                          'createAccount',
+        'password-reset(/:uuid)':           'forgotPassword',
+        'account/pending(/:uuid)':          'verificationPending',
+        'feedback':                         'feedback',
+
+        // private user account pages
+        'account/profile':                  'accountProfile',
+        //'account/user-feedback':            'userFeedback',
+        //'account/change-password':          'changePassword',
 
         // project pages
-        //'project':                          'projectList',
-        //'project/create':                   'createPage',
-        //'project/:id':                      'projectPage',
-        //'project/:id/repertoire':           'projectRepertoire',
-        //'project/:id/group':                'projectGroup',
-        //'project/:id/file':                 'projectFile',
-        //'project/:id/analysis':             'projectAnalysis',
+        'project':                          'projectList',
+        'project/create':                   'createPage',
+        'project/:id':                      'projectPage',
+        'project/:id/subject-sample':       'projectSubjectSample',
+        'project/:id/repertoire':           'projectRepertoire',
+        'project/:id/group':                'projectGroup',
+        'project/:id/file':                 'projectFile',
+        'project/:id/analysis':             'projectAnalysis',
         'community':                        'communityPage',
-        'community/':                        'communityPage',
+        'community/':                       'communityPage',
+        'community(/:uuid)':                'communityPage',
+        //'community/addchart':               'addCommChart',
         //'project/:id/repertoire/create':           'createRepertoire',
         //'project/:id/repertoire/create/subject': 'addSubject',
         //'project/:id/repertoire/create/subject/diagnosis': 'addDiagnosis',
@@ -91,11 +103,11 @@ export default Backbone.Router.extend({
         //'project/:id/group/create':         'addRepGroup',
 
         // admin pages
-        //'admin':                            'adminOverview',
-        //'admin/users':                      'adminUsers',
-        //'admin/jobs':                       'adminJobs',
-        //'admin/repository':                 'adminRepository',
-        //'admin/statistics':                 'adminStatistics',
+        'admin':                            'adminOverview',
+        'admin/users':                      'adminUsers',
+        'admin/jobs':                       'adminJobs',
+        'admin/repository':                 'adminRepository',
+        'admin/statistics':                 'adminStatistics',
 
         // 404
         '*notFound': 'notFound',
@@ -142,14 +154,65 @@ export default Backbone.Router.extend({
     index: function() {
         console.log('index route');
 
+        // make sure to clear out any inactive token
+        if (!App.Agave.token().isActive()) {
+            App.Agave.token().clear();
+            window.localStorage.removeItem('Agave.Token');
+
+            // show home page
+            App.AppController.showHomePage();
+        }
+        else {
+            // otherwise go to project page
+            App.router.navigate('/project', {
+                trigger: true
+            });
+        }
+    },
+/*
+    index: function() {
+        console.log('index route');
+
         // go to community page
         App.router.navigate('/community', {
             trigger: true
         });
+    }, */
+
+    //
+    // Public account pages
+    //
+
+    createAccount: function() {
+        console.log('createAccount route');
+
+        App.AppController.showCreateAccountPage();
+    },
+
+    forgotPassword: function(reset_code) {
+        console.log('forgotPassword route');
+
+        App.AppController.showForgotPasswordPage(reset_code);
+    },
+
+    verificationPending: function(verify_code) {
+        console.log('verificationPending route');
+
+        App.AppController.showVerificationPendingPage(verify_code);
+    },
+
+    feedback: function() {
+        console.log('feedback route');
+
+        if (!App.Agave.token().isActive()) {
+            App.AppController.showPublicFeedbackPage();
+        } else {
+            App.AppController.showUserFeedbackPage();
+        }
     },
 
     //
-    // Account pages
+    // Private account pages
     //
 
     accountProfile: function() {
@@ -190,6 +253,11 @@ export default Backbone.Router.extend({
         this.routeWithTokenRefreshCheck(destinationRoute);
     },
 
+    // Subject/Sample page for a project
+    projectSubjectSample: function(projectUuid) {
+        this.projectPage(projectUuid, 'subject-sample');
+    },
+
     // Repertoire page for a project
     projectRepertoire: function(projectUuid) {
         this.projectPage(projectUuid, 'repertoire');
@@ -226,13 +294,13 @@ export default Backbone.Router.extend({
     },
 
     // Community Studies
-    communityPage: function() {
+    communityPage: function(projectUuid) {
         console.log('communityPage route');
 
-        App.AppController.showCommunityPage();
+        App.AppController.showCommunityPage(projectUuid);
     },
 
-    // Create Community Chart
+    // Create Community Chart Page
     addCommChart: function() {
         console.log('addCommChart route');
 

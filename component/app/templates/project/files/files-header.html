@@ -1,0 +1,66 @@
+<div class="row project-files-header">
+    <div class="col">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle project-buttons-margin-right" type="button" id="project-files-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort By
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-files-sort-select" name="name">
+                    {{#ifEquals current_sort "name"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    File Name
+                </button>
+                <button class="dropdown-item" type="button" id="project-files-sort-select" name="newest">
+                    {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Newest
+                </button>
+                <button class="dropdown-item" type="button" id="project-files-sort-select" name="oldest">
+                    {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Oldest
+                </button>
+                <button class="dropdown-item" type="button" id="project-files-sort-select" name="size">
+                    {{#ifEquals current_sort "size"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    File Size
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item disabled" type="button">
+                    Add Custom Sort...
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle project-buttons-margin-right" type="button" id="project-files-upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Upload Files
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-files-upload-computer" name="name">
+                    Upload from your computer
+                </button>
+                <button class="dropdown-item" type="button" id="project-files-upload-dropbox" name="newest" disabled>
+                    Upload from dropbox
+                </button>
+                <button class="dropdown-item" type="button" id="project-files-sort-select" name="oldest" disabled>
+                    Upload from a URL (http/ftp)
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-edit" id="project-files-pair-files">Pair Read Files</button>
+        </div>
+    </div>
+
+    <div class="col-md-6 project-buttons-right">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-cancel" id="project-files-revert-changes" disabled>Revert Project Changes</button>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-save project-buttons-margin-left" id="project-files-save-changes" disabled>Save Project Changes</button>
+        </div>
+    </div>
+</div>

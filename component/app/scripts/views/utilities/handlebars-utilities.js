@@ -25,6 +25,7 @@
 //
 
 import Handlebars from 'handlebars';
+import filesize from 'filesize';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
@@ -56,6 +57,12 @@ HandlebarsUtilities.registerAllHelpers = function() {
         }
 
         return options.inverse(this);
+    });
+
+    Handlebars.registerHelper('GetHumanReadableFileSize', function(data) {
+        if (data) {
+            return filesize(data, {base: 10});
+        }
     });
 
     // dynamically construct the popover text with AIRR schema info

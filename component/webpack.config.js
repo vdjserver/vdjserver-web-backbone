@@ -74,7 +74,7 @@ module.exports = function(env, argv) {
                 'handlebars': path.resolve(__dirname,'node_modules') + '/handlebars/dist/handlebars',
                 'jquery':           'jquery',
                 'jquery-ui':        'jquery-ui',
-                'layoutmanager':    'layoutmanager',
+                //'layoutmanager':    'layoutmanager',
                 'moment':           'moment',
                 'typeahead':        'typeahead.js',
                 'underscore':       'underscore',

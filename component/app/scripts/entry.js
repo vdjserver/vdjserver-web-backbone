@@ -29,7 +29,12 @@
 import '../styles/main.scss'
 
 // Images
-import logo from '../images/logo.png';
+import logo_image from 'Images/vdjserver-logo.png';
+//import genomics_image from 'Images/10xgenomics-logo.png';
+import genomics_image from 'Images/10x_Logo_Vertical_Full-Color_Digital.png';
+import ireceptor_image from 'Images/ireceptor-logo.png';
+import scireptor_image from 'Images/scireptor_logo.png';
+import airr_image from 'Images/AIRR_logo-only.png';
 
 // main application
 import { Agave } from 'Scripts/backbone/backbone-agave';
@@ -41,21 +46,21 @@ import bootstrap_autocomplete from 'bootstrap-autocomplete';
 
 // Highcharts
 import Highcharts from 'highcharts';
+require('highcharts/highcharts-3d')(Highcharts);
 require('highcharts/modules/exporting')(Highcharts);
 require('highcharts/modules/drilldown')(Highcharts);
+require('highcharts/modules/data')(Highcharts);
 
 // D3
 import d3 from 'd3';
 
-// images
-import logo_image from 'Images/vdjserver-logo.png';
-import genomics_image from 'Images/genomics-logo.png';
-import ireceptor_image from 'Images/ireceptor-logo.png';
-
+//import avl from 'airrvisualizationlibrary';
 
 document.addEventListener('DOMContentLoaded', () => {
   // the global application object
   global.App = new Application();
+  global.Highcharts = Highcharts;
+
   // start the application
   App.start();
 });

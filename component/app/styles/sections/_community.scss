@@ -37,10 +37,15 @@ Loading
     font-size: 2em;
     text-align: center;
 
-    p:nth-child(3) {
-        color: $vdj-medgray;
-        font-size: 0.75em;
-    }
+//    p:nth-child(3) {
+//        color: $vdj-medgray;
+//        font-size: 0.75em;
+//    }
+}
+
+.loading-display {
+    color: $vdj-medgray;
+    font-size: 0.75em;
 }
 
 /* ----------------------------------------------------------
@@ -68,11 +73,12 @@ Community Query
     }
 
     div {
-        margin-top: 1%;
+        margin-top: 0.5%;
     }
 
     .community-filter {
-        padding: 0.5% 2% 2% 2%;
+        margin-top: 1%;
+        padding: 0.5% 2% 1% 2%;
         border: 2px solid rgba(184, 192, 199, 0.65);
         -webkit-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
         -moz-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
@@ -121,16 +127,41 @@ a.remove-filter {
 }
 
 .navbar-footer {
-    padding: 0.5% 2% 2% 0%;
+    padding: 0.5% 2% 0.5% 2%;
 
-    #close-filter {
+    .navbar-toggle {
         float: right;
-        display: none;
         cursor: pointer;
+     //   display: inline;
     }
 
-    #close-filter:hover {
+    .navbar-toggle:hover {
         color: $vdj-link;
+    }
+}
+
+.nav-button {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.nav-button-active {
+    background-color: $vdj-darkblue;
+    //background-color: $gray-200;
+
+}
+.nav-button-inactive {
+    background-color: transparent;
+}
+.nav-button-old {
+    padding-left: 0px;
+    padding-right: 0px;
+    
+    .inactive {
+    background-color: transparent;
+    }
+
+    .active {
+    background-color: $vdj-darkblue;
     }
 }
 /* ----------------------------------------------------------
@@ -176,14 +207,18 @@ Community Statistics
 }
 
 .query-stats-border {
-    border-bottom: 10px solid $vdj-darkgray;
+    border-bottom: 1px solid $vdj-darkgray;
     -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
     -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
     box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
 }
 
 .results-stats {
-    text-align: center;
+    text-align: right;
+}
+
+.results-sort {
+    margin-top: 5px;
 }
 
 .stats {
@@ -404,7 +439,7 @@ Community Charts - Add a Chart Modal
 }
 
 /* ----------------------------------------------------------
-Community Results
+Community Results & Projects
 ------------------------------------------------------------*/
 // #community-results::before {
 //     content: "Results";
@@ -424,20 +459,29 @@ Community Results
     margin-top: -1.5%;
     margin-left: 1%;
     padding: 0.75%;
+    padding-right: 20px;
+
+    .airr {
+        height: 30px;
+    }
 
     .vdjserver {
-        width: 10%;
+        height: 30px;
         margin-right: 5%;
+    }
+
+    .scireptor {
+        height: 30px;
     }
 
     .ireceptor {
-        width: 30%;
+        height: 30px;
     }
 
-    .genomics {
-        width: 25%;
+    .genomics10x {
+        height: 30px;
         margin-right: 5%;
-        padding: 1%;
+        padding-left: 10px;
     }
 }
 
@@ -451,7 +495,7 @@ Community Results
     border: 1px solid $vdj-medgray;
     font-size: 0.9em;
 
-    .community-project-header {
+    .community-project-header, .project-header {
         padding: 2% 2% 0% 2%;
 
         h2 {
@@ -466,7 +510,7 @@ Community Results
     .community-summary-stats {
         border-top: 1.5px solid $vdj-darkgray;
         border-bottom: 1.5px solid $vdj-darkgray;
-        margin: 2% 0% 0% 0%;
+        margin: 0.5% 0% 0% 0%;
         text-align: center;
         font-weight: bold;
 
@@ -500,13 +544,20 @@ Community Results
     background: rgba(241, 241, 241, 0.45);
 }
 
-.community-button:nth-child(4) {
+.community-button:nth-child(5) {
     border: 0;
 }
+
+.community-repository {
+    padding: 0.5% 0%;
+    background: $vdj-lightgray;
+    border-right: 0.5px solid $vdj-darkgray;
+}
+
 /* ----------------------------------------------------------
-Community Repertoires
+Community Repertoires & Project Metadata
 ------------------------------------------------------------*/
-.community-metadata {
+.community-metadata, .project-metadata {
     margin-bottom: 1rem;
 
     p {
@@ -554,8 +605,39 @@ Community Repertoires
     color: $vdj-link;
 }
 
+.subject-rows {
+    margin-left: 1em;
+}
+
+tr.subject-row:hover {
+    background: $vdj-lightgray;
+}
+
+tr.subject-row > td:hover {
+    color: $vdj-link;
+    font-weight: 500;
+}
+
 .repertoire-rows {
     margin-left: 1em;
+}
+
+tr.repertoire-row:hover {
+    background: $vdj-lightgray;
+}
+
+tr.repertoire-row > td:hover {
+    color: $vdj-link;
+    font-weight: 500;
+}
+
+td.selected-details {
+    color: $vdj-link;
+    font-weight: 500;
+}
+
+td.rep-details {
+    padding: 3em;
 }
 
 /* ----------------------------------------------------------
@@ -578,9 +660,9 @@ Community Repertoires Table Caption & Pagination
 /* ----------------------------------------------------------
 Community Repertoires Detail Tables
 ------------------------------------------------------------*/
-#repertoire-details {
-    display: none;
-}
+// #repertoire-details {
+//     display: none;
+// }
 
 #community-study-data-table td {
     cursor: pointer;

@@ -36,11 +36,11 @@ import { Subject, Diagnosis, Sample, Repertoire } from 'Scripts/models/agave-met
 
 export var ADCRepertoireCollection = ADC.Collection.extend({
     model: ADCRepertoire,
-    initialize: function(parameters) {
-        ADC.Collection.prototype.initialize.apply(this, [parameters]);
+    initialize: function(models, parameters) {
+        ADC.Collection.prototype.initialize.apply(this, [models, parameters]);
     },
     url: function() {
-        return this.apiHost + '/repertoire';
+        return this.apiHost + ADC.Repositories()[this.repository]['adc_path'] + '/repertoire';
     },
 
     parse: function(response) {
@@ -57,7 +57,7 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
 
     // apply filters to generate a new collection
     filterCollection(filters) {
-        var filtered = new ADCRepertoireCollection();
+        var filtered = new ADCRepertoireCollection(null, {repository: this['repository']});
 
         var fts_fields = [];
         if (filters['full_text_search']) fts_fields = filters['full_text_search'].toLowerCase().split(/\s+/);
@@ -82,14 +82,55 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
             // apply individual filters
             for (var j = 0; j < filters['filters'].length; ++j) {
                 var f = filters['filters'][j];
-                // if filter value is null, skip
-                if (f['value'] == null) continue;
-
                 var value = model.getValueForField(f['field']);
-                if (f['value'] == 'null' && value == null) continue;
-                if (value != f['value']) {
-                    valid = false;
-                    break;
+                // handle ontologies versus regular values
+                if (f['object']) {
+                    if (f['object'] == 'null' && value == null) continue;
+                    if (value == null) { valid = false; break; }
+                    if (Array.isArray(value)) {
+                        // if array then value only needs to be found once
+                        let found = false;
+                        for (let k = 0; k < value.length; ++k) {
+                            if (value[k]['id'] == f['object']) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            valid = false;
+                            break;
+                        }
+                    } else {
+                        if (value['id'] != f['object']) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                } else {
+                    // if filter value is null, skip
+                    if (f['value'] == null) continue;
+
+                    if (f['value'] == 'null' && value == null) continue;
+                    if (value == null) { valid = false; break; }
+                    if (Array.isArray(value)) {
+                        // if array then value only needs to be found once
+                        let found = false;
+                        for (let k = 0; k < value.length; ++k) {
+                            if (value[k] == f['value']) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            valid = false;
+                            break;
+                        }
+                    } else {
+                        if (value != f['value']) {
+                            valid = false;
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -104,7 +145,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
     model: Backbone.Model,
 
     initialize(parameters) {
-        this.sort_by = 'study.study_title';
+        this.sort_by = 'newest';
         this.comparator = this.collectionSortBy;
     },
 
@@ -127,28 +168,51 @@ export var ADCStudyCollection = ADC.Collection.extend({
                 study.set('study', new Project({value: model.get('study')}));
                 this.add(study);
 
+                study.set('repository', []);
+                study.set('repos', new Backbone.Model());
+                study.set('repertoires', new Backbone.Collection());
                 study.set('subjects', new Backbone.Collection());
                 study.set('samples', new Backbone.Collection());
                 study.set('data_processings', new Backbone.Collection());
-                study.set('repertoires', new Backbone.Collection());
-                study.set('repository', []);
             }
 
+            // same study in multiple repositories?
+            // we keep a full list, and lists separated by their repository
+            var repository_id = repertoires['repository'];
+            var repos = study.get('repos');
+            var repository = repos.get(repository_id);
             var repo = study.get('repository');
-            if (repo.indexOf(repertoires['repository']) < 0)
-                repo.push(repertoires['repository']);
+            if (repo.indexOf(repository_id) < 0) {
+                // new repository, so add
+                repo.push(repository_id);
+                repository = new Backbone.Model();
+                repos.set(repository_id, repository);
+                repository.set('repertoires', new Backbone.Collection());
+                repository.set('subjects', new Backbone.Collection());
+                repository.set('samples', new Backbone.Collection());
+                repository.set('data_processings', new Backbone.Collection());
+            }
+            var study_reps = study.get('repertoires');
+            var repository_reps = repository.get('repertoires');
 
-            var subjects = study.get('subjects');
-            var samples = study.get('samples');
-            var data_processings = study.get('data_processings');
-            var reps = study.get('repertoires');
+            var study_subjects = study.get('subjects');
+            var subjects = repository.get('subjects');
+            var study_samples = study.get('samples');
+            var samples = repository.get('samples');
+            var study_data_processings = study.get('data_processings');
+            var data_processings = repository.get('data_processings');
 
-            // use subject_id to separate subjects
+            // Use subject_id to separate subjects.
+            // The subject IDs should be the same across repositories, if not then
+            // cannot really collapse and they get double counted
             // TODO: blank subject_id?
-            var subject = subjects.get(model.get('subject')['subject_id']);
+            var subject = study_subjects.get(model.get('subject')['subject_id']);
             if (! subject) {
                 subject = new Subject({value: model.get('subject')});
                 subject.set('id', model.get('subject')['subject_id']);
+                study_subjects.add(subject);
+            }
+            if (! subjects.get(model.get('subject')['subject_id'])) {
                 subjects.add(subject);
             }
 
@@ -163,21 +227,61 @@ export var ADCStudyCollection = ADC.Collection.extend({
                     sample = new Sample({value: s});
                     if (sp_id) sample.set('id', sp_id);
                     samples.add(sample);
+                    study_samples.add(sample);
                 }
             }
 
             // skip data_processing for now
 
             // TODO: how to handle repertoires?
-            reps.add(model);
+            study_reps.add(model);
+            repository_reps.add(model);
         }
 
         return this;
     },
 
+    // attach download cache for studies
+    attachCacheEntries(cache_entries) {
+        for (var i = 0; i < this.length; ++i) {
+            var model = this.at(i);
+            var study = model.get('study');
+            var value = study.get('value');
+            var entry = cache_entries.get(value['study_id']);
+            if (entry) model.set('study_cache', entry);
+        }
+        return null;
+    },
+
+    // attach count statistics to studies
+    attachCountStatistics(rearrangementCounts) {
+        for (var i = 0; i < this.length; ++i) {
+            var model = this.at(i);
+            var repos = model.get('repository');
+            for (let j = 0; j < repos.length; ++j) {
+                let repo_study = model.get('repos').get(repos[j]);
+                let counts = rearrangementCounts[repos[j]];
+                let stats = repo_study.get('statistics');
+                if (! stats) stats = {};
+                let reps = repo_study.get('repertoires');
+                var num_rearrangements = 0;
+                if (counts) {
+                    for (let k = 0; k < reps.length; ++k) {
+                        let m = reps.at(k);
+                        let s = counts.get(m.get('repertoire_id'))
+                        if (s) num_rearrangements += s.get('duplicate_count');
+                    }
+                }
+                stats['num_rearrangements'] = num_rearrangements;
+                repo_study.set('statistics', stats);
+            }
+        }
+        return null;
+    },
+
     // sort comparator for the collection
     collectionSortBy(modela, modelb) {
-        if (!this.sort_by) this.sort_by = 'study.study_title';
+        if (!this.sort_by) this.sort_by = 'newest';
 
         // we have a pre-defined set of sorts
         switch (this.sort_by) {
@@ -197,33 +301,139 @@ export var ADCStudyCollection = ADC.Collection.extend({
                 if (ma.length < mb.length) return 1;
                 return 0;
             }
+            case 'newest': {
+                let ma = modela.get('study');
+                let va = ma.get('value');
+                let mb = modelb.get('study');
+                let vb = mb.get('value');
+                let da = va['adc_publish_date'];
+                if (va['adc_update_date']) da = va['adc_update_date'];
+                let db = vb['adc_publish_date'];
+                if (vb['adc_update_date']) db = vb['adc_update_date'];
+
+                // nulls always at the back of the line
+                if (!da && !db) return 0;
+                if (!da) return 1;
+                if (!db) return -1;
+                let nda = new Date(da);
+                let ndb = new Date(db);
+                return (ndb > nda) - (ndb < nda);
+            }
+            case 'oldest': {
+                let ma = modela.get('study');
+                let va = ma.get('value');
+                let mb = modelb.get('study');
+                let vb = mb.get('value');
+                let da = va['adc_publish_date'];
+                if (va['adc_update_date']) da = va['adc_update_date'];
+                let db = vb['adc_publish_date'];
+                if (vb['adc_update_date']) db = vb['adc_update_date'];
+
+                // nulls always at the back of the line
+                if (!da && !db) return 0;
+                if (!da) return 1;
+                if (!db) return -1;
+                let nda = new Date(da);
+                let ndb = new Date(db);
+                return (nda > ndb) - (nda < ndb);
+            }
         }
     },
 
-    getValueForField(field) {
+    // this is not generic but customized for our objects
+    getAllUniqueValues(field) {
+        var values = [];
         var paths = field.split('.');
+        if (paths.length != 2) return values; // what are you asking for?
+
+        // loop through the studies
         for (var i = 0; i < this.length; ++i) {
             var model = this.at(i);
-            if (paths.length == 1) return model.get(paths[0]);
-            else {
-                switch(paths[0]) {
-                    case 'study':
-                        return model.get('study')[paths[1]];
-                    case 'subject':
-                        return model.get('subject')[paths[1]];
-                    case 'diagnosis':
-                        return null;
-                    case 'sample':
-                    case 'data_processing':
-                        return null;
-                    case 'repertoire':
-                        return null;
-                    default:
-                        return null;
-                }
+
+            switch(paths[0]) {
+                case 'study':
+                    var study = model.get('study');
+                    var value = study.get('value');
+                    var obj = value[paths[1]];
+                    if (obj == null) continue;
+                    if (typeof obj === 'object') {
+                        // assume it is an ontology field
+                        if (obj['id'] == null) continue;
+                        let found = false;
+                        for (var k = 0; k < values.length; ++k) {
+                            if (values[k]['id'] == obj['id']) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (! found) values.push(obj);
+                    } else {
+                        // plain value
+                        if (values.indexOf(obj) < 0) values.push(obj);
+                    }
+                    break;
+                case 'subject':
+                    var subjects = model.get('subjects');
+                    for (var j = 0; j < subjects.length; ++j) {
+                        var subject_model = subjects.at(j);
+                        var value = subject_model.get('value');
+                        var obj = value[paths[1]];
+                        if (obj == null) continue;
+                        if (typeof obj === 'object') {
+                            // assume it is an ontology field
+                            if (obj['id'] == null) continue;
+                            let found = false;
+                            for (var k = 0; k < values.length; ++k) {
+                                if (values[k]['id'] == obj['id']) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (! found) values.push(obj);
+                        } else {
+                            // plain value
+                            if (values.indexOf(obj) < 0) values.push(obj);
+                        }
+                    }
+                    break;
+                case 'diagnosis':
+                    var subjects = model.get('subjects');
+                    for (var j = 0; j < subjects.length; ++j) {
+                        var subject_model = subjects.at(j);
+                        var value = subject_model.get('value');
+                        var diagnosis = value['diagnosis'];
+                        if (diagnosis == null) continue;
+                        for (var d = 0; d < diagnosis.length; ++d) {
+                            var obj = diagnosis[d][paths[1]];
+                            if (obj == null) continue;
+                            if (typeof obj === 'object') {
+                                // assume it is an ontology field
+                                if (obj['id'] == null) continue;
+                                let found = false;
+                                for (var k = 0; k < values.length; ++k) {
+                                    if (values[k]['id'] == obj['id']) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (! found) values.push(obj);
+                            } else {
+                                // plain value
+                                if (values.indexOf(obj) < 0) values.push(obj);
+                            }
+                        }
+                    }
+                    break;
+                case 'sample':
+                case 'data_processing':
+                    return values;
+                case 'repertoire':
+                    return values;
+                default:
+                    return values;
             }
         }
-        return null;
+        return values;
     },
 
     countBySubject(field) {

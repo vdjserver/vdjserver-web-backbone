@@ -82,4 +82,3 @@ export var UserProfile = Agave.MetadataModel.extend({
                ;
     }
 });
-

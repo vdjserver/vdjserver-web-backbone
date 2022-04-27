@@ -43,6 +43,8 @@ import PieChart from 'Scripts/views/charts/pie';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
+//import AddChartView from 'Scripts/views/community/add-chart';
+
 
 // Community Query/Filter View
 // toolbar under the navigation bar
@@ -53,12 +55,16 @@ var CommunityQueryView = Marionette.View.extend({
     initialize(parameters) {
         this.filters = {};
         this.baseFilters = [];
+        this.customFilters = [];
 
         if (parameters) {
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
             if (parameters.filters) this.filters = parameters.filters;
-            if (parameters.base) this.baseFilters = parameters.base;
+            if (parameters.base) {
+                this.baseFilters = parameters.base.baseFilters();
+                this.customFilters = parameters.base.customFilters();
+            }
         }
     },
 
@@ -92,6 +98,7 @@ var CommunityQueryView = Marionette.View.extend({
             // if the filter has dropdown values
             // apply the filter with default value, currently null
             var v = null;
+            var vid = null;
             var doApply = false;
             for (var i = 0; i < this.baseFilters.length; ++i) {
                 if ((this.baseFilters[i]['title'] == e.target.title) && (this.baseFilters[i]['values'])) {
@@ -99,9 +106,17 @@ var CommunityQueryView = Marionette.View.extend({
                     v = 'null';
                     break;
                 }
+                if ((this.baseFilters[i]['title'] == e.target.title) && (this.baseFilters[i]['objects'])) {
+                    doApply = true;
+                    vid = 'null';
+                    break;
+                }
             }
 
-            this.filters['filters'].push({ field: e.target.name, value: v, title: e.target.title });
+            if (vid)
+                this.filters['filters'].push({ field: e.target.name, object: vid, title: e.target.title });
+            else
+                this.filters['filters'].push({ field: e.target.name, value: v, title: e.target.title });
 
             if (doApply)
                 this.controller.applyFilter(this.filters);
@@ -175,9 +190,19 @@ var CommunityQueryView = Marionette.View.extend({
         var av = $('[id=community-filter-text]');
         for (var i = 0; i < af.length; ++i) {
             var v = av[i]['value'];
-            if (v.length == 0) v = null;
-            //if (v == 'null') v = 'null';
-            filters['filters'].push({ field: af[i]['name'], value: v, title: av[i].getAttribute('title')});
+            var vid = null;
+            if (av[i].selectedOptions) vid = av[i].selectedOptions[0]['id'];
+            if (v.length == 0) {
+                v = null;
+                vid = null;
+            }
+            if (vid) {
+                // if id set on option then it is an ontology
+                filters['filters'].push({ field: af[i]['name'], object: vid, title: av[i].getAttribute('title')});
+            } else {
+                // otherwise just plain value
+                filters['filters'].push({ field: af[i]['name'], value: v, title: av[i].getAttribute('title')});
+            }
         }
 
         this.filters = filters;
@@ -208,13 +233,25 @@ var CommunityStatisticsView = Marionette.View.extend({
         var num_reps = 0;
         for (var i in colls['repertoireCollection'])
             num_reps += colls['repertoireCollection'][i].length;
+        var num_rearrangements = 0;
+        for (let i = 0; i < colls['studyList'].length; ++i) {
+            var study = colls['studyList'].at(i);
+            var repos = study.get('repository');
+            for (let j = 0; j < repos.length; ++j) {
+                let repo_study = study.get('repos').get(repos[j]);
+                let statistics = repo_study.get('statistics');
+                if (statistics['num_rearrangements']) num_rearrangements += statistics['num_rearrangements'];
+            }
+        }
+        num_rearrangements = new Intl.NumberFormat().format(num_rearrangements);
 
 
         return {
             current_sort: current_sort,
             num_repos: num_repos,
             num_studies: num_studies,
-            num_reps: num_reps
+            num_reps: num_reps,
+            num_rearrangements: num_rearrangements
         }
     },
 
@@ -274,6 +311,17 @@ var CommunityChartsView = Marionette.View.extend({
 
     onAttach() {
         if (this.view) this.view.showChart();
+
+/*
+        let properties = window.airrvisualization.createProperties();
+        properties.setDataType('VGeneUsage');
+        properties.setDataDrilldown(true);
+        properties.setSubtitle(["Subgroup/Family", "Gene", "Allele"]);
+        properties.setSeriesColors(["rgb(124,181,226)"]);
+
+        properties.setId('chart-2-region').setSort(true).setData(example_stats).setTitle(' ');
+        let chart = window.airrvisualization.createChart(properties);
+        chart.plot(); */
     },
 
     updateCharts(studyList) {
@@ -294,8 +342,15 @@ var CommunityChartsView = Marionette.View.extend({
         this.view.showChart();
     },
 
+/*
     newChartModal(e) {
         console.log('add new chart page will appear');
+
+        App.router.navigate('/community/addchart', {trigger:false});
+
+        this.showChildView('mainRegion', new AddChartView());
+
+        this.chartView = new AddChartView();
 
         // var message = new MessageModel({
         //     'header': 'Add a new chart',
@@ -309,7 +364,7 @@ var CommunityChartsView = Marionette.View.extend({
         // $('#modal-message').modal('show');
         //
         // console.log(message);
-    },
+    }, */
 
     newChartType(e) {
         console.log('selected a chart type');
@@ -373,6 +428,7 @@ export default Marionette.View.extend({
         this.filteredStudyList = null;
 
         // predefined filters
+        /*
         this.baseFilters = [];
         this.baseFilters.push({ title: "Study ID", field: "study.study_id"});
         this.baseFilters.push({ title: "Subject ID", field: "subject.subject_id"});
@@ -382,7 +438,7 @@ export default Marionette.View.extend({
         this.baseFilters.push({ title: "Subject Diagnosis", field: "subject.organism", data: true});
         this.baseFilters.push({ title: "Sample ID", field: "sample.sample_id"});
         console.log(this.baseFilters);
-
+*/
         // our controller
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
@@ -390,21 +446,23 @@ export default Marionette.View.extend({
     },
 
     // show a loading view, used while fetching the data
-    showLoading(ls, lr, tr) {
-        this.showChildView('resultsRegion', new LoadingView({loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr}));
+    showLoading(ls, lr, tr, lst) {
+        this.showChildView('resultsRegion', new LoadingView({loaded_repertoires: ls, loaded_repositories: lr, total_repositories: tr, loaded_statistics: lst}));
         $("#community-charts").addClass("no-display");
     },
 
-    showResultsList(studyList, filters) {
+    showResultsList(studyList, repertoireFilters, filters) {
         $("#community-charts").removeClass("no-display");
 
         // What's in the data?
         // console.log("what is here: " + this.controller);
         // console.log("studyList " + JSON.stringify(studyList));
+        this.baseFilters = repertoireFilters;
 
         // show filters as toolbar under navigation bar
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
         App.AppController.navController.showToolbar1Bar(this.filterView);
+        $("#navbar-filter-icon").toggleClass("nav-button-active nav-button-inactive"); //TODO check correct place
         //this.showChildView('queryRegion', this.filterView);
 
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
@@ -428,6 +486,11 @@ export default Marionette.View.extend({
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
         App.AppController.navController.showToolbar1Bar(this.filterView);
         //this.showChildView('queryRegion', this.filterView);
+    },
+
+    updateSummary(studyList) {
+        this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
+        App.AppController.navController.showToolbar2Bar(this.statsView);
     },
 
     newFilterModal(e) {

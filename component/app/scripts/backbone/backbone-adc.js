@@ -57,7 +57,7 @@ ADC.Model = Backbone.Model.extend({
 
 // Extension of default Backbone.Collection for ADC
 ADC.Collection = Backbone.Collection.extend({
-    initialize: function(parameters) {
+    initialize: function(models, parameters) {
         this.repository = 'vdjserver';
         if (parameters && parameters.repository) {
             this.repository = parameters.repository;
@@ -76,6 +76,7 @@ ADC.Collection = Backbone.Collection.extend({
             case 'read':
                 options.type = 'POST';
                 if (! this.data) options.data = '{}';
+                else options.data = JSON.stringify(this.data);
                 break;
 
             case 'create':
@@ -86,7 +87,6 @@ ADC.Collection = Backbone.Collection.extend({
 
             case 'delete':
                 return false;
-                break;
         }
 
         options.headers = {

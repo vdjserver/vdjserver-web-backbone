@@ -1,5 +1,16 @@
 <div class="home-view">
 <div class="container">
+
+    {{#if maintenance}}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                ALERT: {{maintenanceMessage}}
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
     <div class="row header">
         <div class="col-md-6">
             <div class="home-science-image">
@@ -12,13 +23,16 @@
                 <form class="signup form-horizontal">
                     <h2>Welcome!</h2>
                     <p>
-                        VDJServer is a free, scalable resource for performing immune repertoire analysis and sharing data. Manage, analyze, and archive your data through our web resource.  You can also download our open source analysis software for local use.
+                        VDJServer is a free, scalable resource for performing immune repertoire analysis and sharing data.
+                        VDJServer <a href="community">Community Data Portal</a> is part of the <a target="_blank" href="https://docs.airr-community.org/en/stable/api/adc.html">AIRR Data Commons</a>.
+                        Manage, analyze, and archive your data through our web resource.
+                        <a href="mailto:vdjserver@utsouthwestern.edu?subject=Share my data in VDJServer">Email</a> or <a href="feedback">Send Feedback</a> for more details.
                     </p>
 
                     {{#if maintenance}}
                     <div class="form-group">
                         <div class="alert alert-danger">
-                        {{maintenanceMessage}}
+                        Login is disabled.
                         </div>
                     </div>
                     {{/if}}
@@ -33,18 +47,28 @@
 
                     <div class="row">
                         <div class="col-md-7">
-                            <input type="submit" class="btn btn-primary login-button" id="home-login" value="Login">
-                            {{#if maintenance}}
-                            {{else}}
-                                <button class="btn btn-create btn-small" href="/account" id="create-account">Create Account</button>
-                                {{/if}}
+                            <input type="submit" class="btn btn-primary login-button" id="home-login" value="Login" {{#if maintenance}}disabled{{/if}}>
+                        </div>
+                    </div>
+		    <div class="row">
+                        <div class="col-md-7">
+                            <button class="btn btn-create btn-small" href="/account" id="create-account" {{#if maintenance}}disabled{{/if}}>Create Account</button>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-7">
                         {{#if maintenance}}
                         {{else}}
-                            <a class="forgot-password" href="password-reset">Forgot password?</a>{{/if}}
+                            <a class="forgot-password" href="password-reset">Forgot password?</a>
+                        {{/if}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7">
+                        {{#if maintenance}}
+                        {{else}}
+                            <a class="forgot-password" href="account/pending">Verify account?</a>
+                        {{/if}}
                         </div>
                     </div>
                             <!-- <input type="submit" value="LOGIN" id="home-login" class="login-button" {{#if maintenance}}disabled{{/if}}> -->
@@ -53,22 +77,6 @@
                             </div> -->
                     </form>
                 </div>
-                <!-- <div class="row login-subgroup">
-                    <div class="col-md-6">
-                        <p>{{#if maintenance}}{{else}}<a class="home-create-account" href="/account">Create Account</a>{{/if}}</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><a class="home-create-account" href="feedback">Send Us Feedback</a></p>
-                    </div>
-                </div>
-                <div class="row login-subgroup">
-                    <div class="col-md-6">
-                        <p><a class="home-create-account" target="_blank" href="http://vdjserver.org/docs/index.html">Documentation</a></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><a class="home-create-account" href="/community">Community Data</a></p>
-                    </div>
-                </div> -->
             </div>
         </div>
     </div>
@@ -144,7 +152,9 @@
                 <div class="about-vdjserver">
                      <h4>About VDJServer:</h4>
                     <p>
-                        Funded by a National Institute of Allergy and Infectious Diseases research grant (#1R01A1097403), the “VDJ Server” project is led by The University of Texas Southwestern (UTSW) Medical Center in collaboration with the J. Craig Venter Institute and Yale University. The Texas Advanced Computing Center (TACC) at The University of Texas at Austin leads the cyberinfrastructure implementation, including the high performance computing (HPC) systems, storage, and software solutions.
+                    VDJServer was established with funding from the National Institute of Allergy and Infectious Diseases (#1R01A1097403).
+                    VDJServer is a partner in the iReceptor+ Consortium (<a target="_blank" href="https://www.ireceptor-plus.com">https://www.ireceptor-plus.com</a>) with current support from the European Union’s Horizon 2020 Research and Innovation Program (#825821).
+                    High-Performance compute and data resources are provided by The Texas Advanced Computing Center (<a target="_blank" href="https://tacc.utexas.edu">TACC</a>) at The University of Texas at Austin.
                    </p>
                 </div>
             </div>

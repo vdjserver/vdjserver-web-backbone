@@ -1,0 +1,152 @@
+<div class="alert alert-info">
+    <i class="fa fa-info-circle"></i> Add Diagnosis information to the repertoire's subject by filling out the form below.
+</div>
+<h2>Add Diagnosis</h2>
+
+<form>
+    <div class="form-group">
+      <input type="file" name="uploadDiagnosis" class="form-control-file" id="uploadDiagnosis">
+      <label for="uploadDiagnosis" class="btn btn-upload">
+        <i class="fa fa-upload"></i>
+        Import Diagnosis Metadata
+      </label>
+  </div>
+</form>
+
+<p>Subject Information:</p>
+
+<!-- Display Summary of Subject Information so user knows what subject they are adding Diagnosis data to -->
+
+<form method="post" role="form" id="addDiagnosis-form" class="needs-validation" name="diagnosis" novalidate>
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Study Group Description
+        <!-- Popover -->
+        </label>
+        <textarea class="form-control col-md-5" name="study_group_description" id="study_group_description" rows="3" required></textarea>
+        <div class="invalid-feedback">
+            Please enter a valid Study Group Description.
+        </div>
+    </div>
+
+    <!-- Ontology -->
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Disease Diagnosis
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-5" name="disease_diagnosis" id="disease_diagnosis" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Disease Diagnosis.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Disease Length
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-2" name="disease_length" id="disease_length" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Disease Length.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Disease Stage
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-2" name="disease_stage" id="disease_stage" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter a valid Disease Stage.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Prior Therapies
+            <!-- Popover -->
+        </label>
+        <textarea class="form-control col-md-6" name="prior_therapies" id="prior_therapies" rows="3" required></textarea>
+        <div class="invalid-feedback">
+            Please enter valid Prior Therapies.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Immunogen
+            <!-- Popover -->
+        </label>
+        <input type="text" class="form-control col-md-5" name="immunogen" id="immunogen" placeholder="" required>
+        <div class="invalid-feedback">
+            Please enter valid Immunogen data.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Intervention
+            <!-- Popover -->
+        </label>
+        <textarea class="form-control col-md-6" name="intervention" id="intervention" rows="3" required></textarea>
+        <div class="invalid-feedback">
+            Please enter valid Intervention data.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <span>
+                <!-- Tooltip -->
+            </span>
+            Medical History
+        <!-- Popover -->
+        </label>
+        <textarea class="form-control col-md-6" name="medical_history" id="medical_history" rows="4" required></textarea>
+
+        <div class="footer-actions">
+            <div class="rep-back-actions">
+                <button type="button" class="btn btn-back" id="subjectMetadata"><i class="fa fa-angle-double-left"></i> Back to Subject</button>
+            </div>
+
+            <div class="rep-next-actions">
+                <button type="button" class="btn btn-save" id="save-diagnosis" data-toggle="modal" data-target="#save-modal"><i class="fa fa-save"></i> Save and Finish Later</button>
+                <button type="button" class="btn btn-add add-sample"><i class="fa fa-angle-double-right"></i> Add Sample Information</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Save Modal -->
+<div class="modal fade" id="save-modal" tabindex="-1" role="dialog" aria-labelledby="saving" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body saving">
+                Saving <i class="fa fa-spinner fa-spin fa-2x"></i>
+            </div>
+        </div>
+     </div>
+</div>

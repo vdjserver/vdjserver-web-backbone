@@ -1,5 +1,5 @@
 /*****************************************************
-SASS for Home page
+_home.scss - Home
 *****************************************************/
 
 .navbar {
@@ -97,4 +97,8 @@ a:hover {
     // border-color: $vdj-lightorange;
     // outline: 0;
     // box-shadow: inset 0 1px 1px rgba(246,131,94,.075),0 0 8px rgba(246, 131, 94, 0.6);
+}
+
+.top-spacer {
+    margin-top: 20px;
 }

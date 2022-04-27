@@ -35,7 +35,7 @@ export default ADC.Model.extend({
         ADC.Model.prototype.initialize.apply(this, [parameters]);
     },
     url: function() {
-        return this.apiHost + '/info';
+        return this.apiHost + ADC.Repositories()[this.repository]['adc_path'] + '/info';
     },
 });
 

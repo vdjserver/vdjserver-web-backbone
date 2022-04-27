@@ -90,6 +90,9 @@ export default Agave.MetadataModel.extend({
         if (data.contains_single_cell) keywords.push('contains_single_cell');
         if (data.contains_paired_chain) keywords.push('contains_paired_chain');
         value.keywords_study = keywords;
+        keywords = [];
+        if (data.is_10x_genomics) keywords.push('is_10x_genomics');
+        if (keywords.length > 0) value.vdjserver_keywords = keywords;
         this.set('value', value);
     },
 
@@ -120,6 +123,41 @@ export default Agave.MetadataModel.extend({
             headers: Agave.oauthHeader(),
             type: 'DELETE',
             url: EnvironmentConfig.vdjApi.hostname + '/permission/user',
+        });
+
+        return jqxhr;
+    },
+
+    // archiving is a soft delete
+    archiveProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/archive',
+        });
+
+        return jqxhr;
+    },
+
+    unarchiveProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unarchive',
+        });
+
+        return jqxhr;
+    },
+
+    // archiving is a hard delete
+    purgeProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'DELETE',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/purge',
         });
 
         return jqxhr;

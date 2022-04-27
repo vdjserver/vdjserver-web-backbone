@@ -19,8 +19,7 @@ var EnvironmentConfig = {
                     'batchQueue': 'normal',
                     'apps': {
                         'vdjPipe': 'vdj_pipe-ls5-0.1.7u8',
-                        'igBlast': 'igblast-ls5-1.14u2
-                        ',
+                        'igBlast': 'igblast-ls5-1.14u2',
                         'presto': 'presto-ls5-0.5u5',
                         'RepCalc': 'repcalc-ls5-1.0u10'
                     },
@@ -106,45 +105,91 @@ var EnvironmentConfig = {
     },
     'adc': {
         'vdjserver': {
-            'hostname': 'https://vdjserver.org/airr/v1',
-            'title': 'VDJServer'
+            'title': 'VDJServer',
+            'hostname': 'https://vdj-staging.tacc.utexas.edu',
+            'adc_path': '/airr/v1',
+            //'stats_path': '/irplus/v1/stats'
+        },
+        'scireptor': {
+            'title': 'sciReptor',
+            'hostname': 'https://scireptor.dkfz.de',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
+        },
+        'vdjbase': {
+            'title': 'VDJbase',
+            'hostname': 'http://airr-seq.vdjbase.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'ipa1': {
-            'hostname': 'https://ipa1.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'https://ipa1.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'ipa2': {
-            'hostname': 'https://ipa2.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'https://ipa2.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'ipa3': {
-            'hostname': 'https://ipa3.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'https://ipa3.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'ipa4': {
-            'hostname': 'https://ipa4.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'https://ipa4.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'ipa5': {
-            'hostname': 'http://ipa5.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'http://ipa5.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'covid19-1': {
-            'hostname': 'http://covid19-1.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'http://covid19-1.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
         },
         'covid19-2': {
-            'hostname': 'http://covid19-2.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'http://covid19-2.ireceptor.org',
+            'adc_path': '/airr/v1',
+            //'stats_path': '/irplus/v1/stats'
         },
         'covid19-3': {
-            'hostname': 'http://covid19-3.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'http://covid19-3.ireceptor.org',
+            'adc_path': '/airr/v1',
+            //'stats_path': '/irplus/v1/stats'
         },
         'covid19-4': {
-            'hostname': 'http://covid19-4.ireceptor.org/airr/v1',
-            'title': 'IPA'
+            'title': 'IPA',
+            'hostname': 'http://covid19-4.ireceptor.org',
+            'adc_path': '/airr/v1',
+            //'stats_path': '/irplus/v1/stats'
         },
+    },
+    'filters': {
+        'airr_repertoire': [
+            { 'title': "Study ID", 'field': "study.study_id"},
+            { 'title': "Study Type", 'field': "study.study_type", 'data': true},
+            { 'title': "Study Keywords", 'field': "study.keywords_study", 'schema': { 'object': 'Study', 'property': 'keywords_study' }},
+            { 'title': "Subject ID", 'field': "subject.subject_id"},
+            { 'title': "Subject Species", 'field': "subject.species", 'data': true},
+            { 'title': "Subject Sex", 'field': "subject.sex", 'schema': { 'object': 'Subject', 'property': 'sex' }},
+            { 'title': "Disease Diagnosis", 'field': "diagnosis.disease_diagnosis", 'data': true},
+            { 'title': "Sample ID", 'field': "sample.sample_id"}
+        ],
+        'airr_rearrangement': {
+        }
     },
     'processMetadata': {
         'version': 3,
@@ -158,7 +203,7 @@ var EnvironmentConfig = {
         'publicKey': '6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc',
     },
     'vdjApi': {
-        'hostname': 'https://vdjserver.org/api/v1',
+        'hostname': 'https://vdjserver.org/api/v2',
     },
     'vdjGuest': {
         'hostname': 'https://vdjserver.org/guest',

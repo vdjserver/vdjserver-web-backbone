@@ -1,3 +1,158 @@
+
+'use strict';
+
+//
+// agave-files.js
+// File collections
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2021 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+
+import { Agave } from 'Scripts/backbone/backbone-agave';
+import { File, ProjectFileMetadata } from 'Scripts/models/agave-file';
+
+// collection of raw files within the Tapis Files API
+export var FilesCollection = Agave.Collection.extend({
+    model: File,
+    comparator: 'name',
+    initialize: function(parameters) {
+        Agave.Collection.prototype.initialize.apply(this, [parameters]);
+
+        this.relativeUrl = '';
+
+        if (_.isObject(parameters) && parameters.hasOwnProperty('relativeUrl')) {
+            this.relativeUrl = parameters.relativeUrl;
+        }
+    },
+    url: function() {
+        return '/files/v2/listings/system'
+            + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
+            + this.relativeUrl
+            ;
+    },
+    parse: function(response) {
+        if (response.result) {
+            response = response.result;
+        }
+
+        // Remove those pesky folders from our file listing
+        var finalData = [];
+
+        for (var i = 0; i < response.length; i++) {
+            if (response[i].format !== 'folder') {
+                finalData.push(response[i]);
+            }
+        }
+
+        return finalData;
+    },
+});
+
+// collection of project files
+export var ProjectFilesCollection = Agave.MetadataCollection.extend({
+    model: ProjectFileMetadata,
+
+    initialize: function(parameters) {
+        Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+
+        if (parameters && parameters.projectUuid) {
+            this.projectUuid = parameters.projectUuid;
+        }
+        this.includeJobFiles = false;
+        //if (parameters && parameters.includeJobFiles) this.includeJobFiles = true;
+    },
+
+    url: function() {
+        if (this.includeJobFiles) {
+            return '/meta/v2/data?q='
+                   + encodeURIComponent('{'
+                       + '"name": { $in: ["projectFile", "projectJobFile"] },'
+                       + '"value.projectUuid":"' + this.projectUuid + '",'
+                       + '"value.isDeleted":false'
+                   + '}')
+                   + '&limit=' + this.limit
+                   + '&offset=' + this.offset
+                   ;
+        } else {
+            return '/meta/v2/data?q='
+                   + encodeURIComponent('{'
+                       + '"name": "projectFile",'
+                       + '"value.projectUuid":"' + this.projectUuid + '",'
+                       + '"value.isDeleted":false'
+                   + '}')
+                   + '&limit=' + this.limit
+                   + '&offset=' + this.offset
+                   ;
+        }
+    },
+
+    checkForDuplicateFilename: function(filename) {
+
+        var isDuplicate = false;
+
+        for (var j = 0; j < this.models.length; j++) {
+            var model = this.at([j]);
+
+            var modelName = model.get('value').name;
+
+            if (modelName === filename) {
+                isDuplicate = true;
+                break;
+            }
+        }
+
+        return isDuplicate;
+    },
+});
+
+// query for a specific file
+export var ProjectFileQuery = Agave.MetadataCollection.extend({
+    model: ProjectFileMetadata,
+
+    initialize: function(parameters) {
+        Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+
+        if (parameters) {
+            if (parameters.projectUuid) this.projectUuid = parameters.projectUuid;
+            if (parameters.name) this.name = parameters.name;
+        }
+    },
+
+    url: function() {
+        return '/meta/v2/data?q='
+               + encodeURIComponent('{'
+                   + '"name": "projectFile",'
+                   + '"value.projectUuid":"' + this.projectUuid + '",'
+                   + '"value.name":"' + this.name + '",'
+                   + '"value.isDeleted":false'
+               + '}')
+               + '&limit=' + this.limit
+               + '&offset=' + this.offset
+               ;
+    },
+
+});
+
+/*
 define(
     [
         'backbone',
@@ -395,11 +550,9 @@ function(
                 return pairedReads;
             },
 
-            /**
-                Returns arrays of deep copied paired reads.
+                //Returns arrays of deep copied paired reads.
 
-                Qual files are not included.
-            */
+                //Qual files are not included.
             getOrganizedPairedReads: function() {
 
                 var pairedReads = [];
@@ -427,11 +580,9 @@ function(
                 return pairedReads;
             },
 
-            /**
-                Returns arrays of shallow copied paired reads.
+                //Returns arrays of shallow copied paired reads.
 
-                Qual files are not included.
-            */
+                //Qual files are not included.
             getSerializableOrganizedPairedReads: function() {
 
                 var pairedReads = [];
@@ -462,12 +613,10 @@ function(
                 return pairedReads;
             },
 
-            /**
                 Adds a shallow copy of qual models from |allFiles| to project files in |this|.
 
                 It is important for the copy to be shallow in order for JSON
                 serialization to work properly when model.toJSON() is called.
-            */
             embedQualModels: function(allFiles) {
 
                 var models = [];
@@ -489,13 +638,11 @@ function(
                 return this;
             },
 
-            /**
                 Returns an array of all embedded qual models and read-level models
                 in deep copy format.
 
                 Embedded qual models are read from |this|, and deep copies are
                 taken from |allFiles|.
-            */
             getAllEmbeddedQualModels: function(allFiles) {
 
                 var models = [];
@@ -516,12 +663,10 @@ function(
                 return models;
             },
 
-            /**
                 Returns an array of all embedded qual models in deep copy format.
 
                 Embedded qual models are read from |this|, and deep copies are
                 taken from |allFiles|.
-            */
             getEmbeddedQualModels: function(allFiles) {
 
                 var models = [];
@@ -873,3 +1018,4 @@ function(
     Backbone.Agave.Collection.Files = Files;
     return Files;
 });
+*/

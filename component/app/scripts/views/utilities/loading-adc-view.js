@@ -36,6 +36,7 @@ export default Marionette.View.extend({
         this.loaded_repertoires = 0;
         this.loaded_repositories = 0;
         this.total_repositories = 0;
+        this.loaded_statistics = 0;
         if (parameters) {
             if (parameters.loaded_repertoires)
                 this.loaded_repertoires = parameters.loaded_repertoires;
@@ -43,6 +44,8 @@ export default Marionette.View.extend({
                 this.loaded_repositories = parameters.loaded_repositories;
             if (parameters.total_repositories)
                 this.total_repositories = parameters.total_repositories;
+            if (parameters.loaded_statistics)
+                this.loaded_statistics = parameters.loaded_statistics;
         }
     },
 
@@ -50,7 +53,8 @@ export default Marionette.View.extend({
         return {
             loaded_repertoires: this.loaded_repertoires,
             loaded_repositories: this.loaded_repositories,
-            total_repositories: this.total_repositories
+            total_repositories: this.total_repositories,
+            loaded_statistics: this.loaded_statistics
         };
     }
 });

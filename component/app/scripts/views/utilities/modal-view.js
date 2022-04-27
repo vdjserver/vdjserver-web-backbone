@@ -28,8 +28,12 @@
 import Marionette from 'backbone.marionette';
 import template from 'Templates/util/modal-message-confirm.html';
 import Handlebars from 'handlebars';
+import Radio from 'backbone.radio';
 
 // use Message as the model
+
+// for sending server error info
+const channel = Radio.channel('server-error');
 
 export default Marionette.View.extend({
     template: Handlebars.compile(template),
@@ -38,6 +42,8 @@ export default Marionette.View.extend({
     events: {
         'click #server-error': function(e) {
             console.log('route to send feedback page');
+            channel.reply('server:error', this.model);
+            App.router.navigate('/feedback', {trigger: true});
         },
         'click #cancel-message-button': function(e) {
             e.preventDefault();

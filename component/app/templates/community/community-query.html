@@ -4,7 +4,7 @@
 
 <div class="community-filter" id="community-filter">
     <form>
-        <div class="row">
+        <div class="row" margin-top="0%">
             <div class="input-group col-md-4">
                 <input type="search" class="form-control" id="community-text-search" aria-describedby="search" placeholder="Full Text Search" value="{{full_text_search}}">
             </div>
@@ -29,12 +29,21 @@
                     {{#if values}}
                     <select class="form-control" id="community-filter-text" title="{{title}}">
                         <option>null</option>
-                        {{#each values}} {{../../../../value}}
+                        {{#each values}} test1{{../../../../value}}
                         <option {{#ifEquals this ../../../../value}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
                     </select>
                     {{else}}
-                    <input type="text" class="form-control" id="community-filter-text" title="{{title}}" value="{{../../../value}}">
+                        {{#if objects}}
+                        <select class="form-control" id="community-filter-text" title="{{title}}">
+                            <option id="null">null</option>
+                            {{#each objects}} test2{{../../../../../object}}
+                            <option {{#ifEquals this.id ../../../../../object}}selected{{/ifEquals}} id="{{this.id}}">{{this.label}} ({{this.id}})</option>
+                            {{/each}}
+                        </select>
+                        {{else}}
+                        <input type="text" class="form-control" id="community-filter-text" title="{{title}}" value="{{../../../../value}}">
+                        {{/if}}
                     {{/if}}
                 {{/ifEquals}}
             {{/each}}

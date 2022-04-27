@@ -1,6 +1,6 @@
 //
 // navbar-controller.js
-// Manages the navigation bar for public/private
+// Manages the navigation bar
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -29,9 +29,6 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
 // We use a single navigation bar template that is customized by handlebars
-// 1. public page, not logged in
-// 2. public page, logged in
-// 3. private page, logged in
 import navbar_template from 'Templates/app/navigation-bar.html';
 
 // This is the navigation bar
@@ -39,18 +36,14 @@ var NavigationBarView = Marionette.View.extend({
     template: Handlebars.compile(navbar_template),
 
     initialize: function(parameters) {
-        this.public_bar = true;
         this.active_token = App.Agave.token().isActive();
 
-        if (parameters) {
-            if (parameters.public_bar != undefined)
-                this.public_bar = parameters.public_bar;
-        }
+        //if (parameters) {
+        //}
     },
 
     templateContext() {
         return {
-            public_bar: this.public_bar,
             active_token: this.active_token,
             admin_account: App.Agave.token().isAdmin(),
             username: App.Agave.token().get('username'),
@@ -59,9 +52,19 @@ var NavigationBarView = Marionette.View.extend({
     },
 });
 
+// This is the toolbar footer
+import navbar_footer from 'Templates/app/navigation-footer.html';
+var NavigationFooterView = Marionette.View.extend({
+    template: Handlebars.compile(navbar_footer),
+    initialize(options) {
+        $("#navigation").addClass("query-stats-border"); //TODO: move later to app level?
+    }
+
+});
+
 // Navigation bar controller
 //
-// This manages the navigation bar with public options
+// This manages the navigation bar
 // and after the user logs in
 import navregion_template from 'Templates/app/navigation-region.html';
 export default Marionette.View.extend({
@@ -75,22 +78,28 @@ export default Marionette.View.extend({
         navigationRegion: '#navbar-region',
         messageRegion: '#navmessage-region',
         toolbar1Region: '#toolbar1-region',
-        toolbar2Region: '#toolbar2-region'
+        toolbar2Region: '#toolbar2-region',
+        footerRegion: '#footer-region'
     },
 
     events: {
         'click #logout': 'logout',
-        'click .open-filter': 'emptyToolbarBar',
-        'click .closed-filter': 'showToolbarBar',
+        'click #navbar-filter-icon': 'toggleToolbarBar',
     },
 
     initialize(options) {
         console.log('Initialize');
-        _.bindAll(this, 'detect_scroll');
-         $(window).scroll(this.detect_scroll);
+        this.navbar_filter = true; //navbar filter is open by default
+        //$("#navigation").addClass("opened-filter");
+
+	// _.bindAll(this, 'detect_scroll');
+        //$(window).scroll(this.detect_scroll);
     },
 
-    detect_scroll: function(view) {
+    /*detect_scroll: function(view) {
+        if ((!this.getRegion('toolbar1Region').hasView()) && (!this.getRegion('toolbar2Region').hasView()))
+            return;
+
         if ($(window).scrollTop() == 0) {
             this.getRegion('toolbar1Region').$el.show();
             this.getRegion('toolbar2Region').$el.show();
@@ -102,14 +111,13 @@ export default Marionette.View.extend({
             $("#navigation").addClass("query-stats-border");
             $("#close-filter").css("display", "inline");
         }
-    },
+    },*/
 
-    showPublicNavigation() {
-        this.showChildView('navigationRegion', new NavigationBarView({public_bar: true}));
-    },
-
-    showPrivateNavigation() {
-        this.showChildView('navigationRegion', new NavigationBarView({public_bar: false}));
+    showNavigation() {
+        this.emptyToolbar1Bar();
+        this.emptyToolbar2Bar();
+        this.getRegion('footerRegion').empty();
+        this.showChildView('navigationRegion', new NavigationBarView());
     },
 
     showMessageBar(view) {
@@ -123,6 +131,7 @@ export default Marionette.View.extend({
     showToolbar1Bar(view) {
         // console.log(view);
         this.showChildView('toolbar1Region', view);
+        this.showChildView('footerRegion', new NavigationFooterView());
     },
 
     emptyToolbar1Bar() {
@@ -131,13 +140,40 @@ export default Marionette.View.extend({
 
     showToolbar2Bar(view) {
         this.showChildView('toolbar2Region', view);
+        this.showChildView('footerRegion', new NavigationFooterView());
     },
 
     emptyToolbar2Bar() {
         this.getRegion('toolbar2Region').empty();
     },
 
-    emptyToolbarBar(view) {
+    toggleToolbarBar(e) {
+        console.log(this.navbar_filter);
+	e.preventDefault();  //don't do default browser action of following link
+        if (!this.navbar_filter) {
+            this.getRegion('toolbar1Region').$el.show();
+            this.getRegion('toolbar2Region').$el.show();
+            this.getRegion('footerRegion').$el.show();
+
+            //$("#navbar-filter").toggleClass("closed-filter opened-filter");
+            //$("#navbar-filter-icon").toggleClass("fa-chevron-up fa-filter");
+            //$("#navbar-filter-icon").toggleClass("active inactive");
+            $("#navbar-filter-icon").toggleClass("nav-button-inactive nav-button-active");
+            this.navbar_filter = true;
+        } else {
+            this.getRegion('toolbar1Region').$el.hide();
+            this.getRegion('toolbar2Region').$el.hide();
+            this.getRegion('footerRegion').$el.hide();
+
+            //$("#navbar-filter").toggleClass("opened-filter closed-filter");
+            //$("#navbar-filter-icon").toggleClass("fa-filter fa-chevron-up");
+            //$("#navbar-filter-icon").toggleClass("inactive active");
+            $("#navbar-filter-icon").toggleClass("nav-button-active nav-button-inactive");
+            this.navbar_filter = false;
+        }
+    },
+
+    /*hideToolbarBar(view) {
         this.getRegion('toolbar1Region').$el.hide();
         this.getRegion('toolbar2Region').$el.hide();
 
@@ -151,7 +187,7 @@ export default Marionette.View.extend({
 
         $(".closed-filter").toggleClass("closed-filter open-filter");
         $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
-    },
+    },*/
 
     logout(e) {
         e.preventDefault();

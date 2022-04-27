@@ -1,6 +1,6 @@
 // Backbone.RetrySync v0.0.1, MIT Licensed
 // Copyright (c) 2015, Walter Scarborough <walter.scarborough@gmail.com>
-
+/*
 (function(factory) {
 
     // AMD
@@ -72,3 +72,4 @@
 
     return Backbone.RetrySync;
 }));
+*/

@@ -1,0 +1,36 @@
+<div class="container">
+    <div class="col-md-12">
+        <div class="public-view">
+
+            <div class="alert alert-info">
+                <i class="fa fa-info-circle"></i> Send us your feedback.
+            </div>
+
+            <form method="post" class="form-horizontal" role="form">
+                <div class="form-group">
+                  <div class="col-sm-12">
+                        <textarea autofocus placeholder="Enter feedback here" name="feedback" id="feedback" class="form-control" rows="10">{{this.feedback}}</textarea>
+                  </div>
+                </div>
+
+                <div class="form-group" id="username-container">
+                    <label for="username" class="col-sm-6 control-label">Username: {{username}}</label>
+                </div>
+
+                <div class="form-group">
+                    {{#if serverError}}
+                        <p>Server error information.</p>
+                        <code>{{{serverErrorBody}}}</code>
+                    {{/if}}
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <input type="submit" value="Send Feedback" class="btn btn-success btn-block" id="send-feedback">
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
