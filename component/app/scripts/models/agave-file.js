@@ -27,10 +27,12 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+import Backbone from 'backbone';
 import { Agave } from 'Scripts/backbone/backbone-agave';
 import _string from 'underscore.string';
 import Chance from 'chance';
 import { FileTransfers } from 'Scripts/models/mixins/file-transfer-mixins';
+import moment from 'moment';
 
 var FilePlaceholderMixin = {};
 
