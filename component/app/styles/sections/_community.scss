@@ -570,6 +570,33 @@ Community Repertoires & Project Metadata
     margin-top: 3%;
 }
 
+.community-subjects-metadata {
+    padding: 0% 2%;
+    margin-top: 3%;
+}
+
+.community-subjects-table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: $gray-900;
+    background-color: null;
+    border: 1px solid $gray-300;
+    padding: .3rem;
+}
+
+.community-subjects-table-data {
+    padding: .3rem; 
+    vertical-align: top;
+    border-top: 1px solid $gray-300;
+    border: 1px solid $gray-300;
+}
+
+.community-subjects-table-head {
+    vertical-align: bottom;
+    border-bottom: 2px solid $gray-300;
+    border-bottom-width: 2px;
+}
+
 .active-tab {
     color: $vdj-link !important;
 }
@@ -582,7 +609,7 @@ Community Repertoires & Project Metadata
 .sort:after {
     font-family: 'Font Awesome 5 Free';
     content: "\f0de";
-    cursor: pointer;
+    cursor:pointer;
     color: $vdj-darkgray;
 }
 

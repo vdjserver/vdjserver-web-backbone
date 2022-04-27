@@ -101,7 +101,7 @@ var SubjectContainerView = Marionette.View.extend({
 
 import subject_template from 'Templates/community/subject-row.html';
 var SubjectRowView = Marionette.View.extend({
-    tagName: 'tbody',
+    //tagName: 'tbody',
     template: Handlebars.compile(subject_template),
     regions: {
         detailRegion: '#subject-details'
@@ -110,8 +110,8 @@ var SubjectRowView = Marionette.View.extend({
 
 import subject_table_template from 'Templates/community/subject-table.html';
 var SubjectsListView = Marionette.CollectionView.extend({
-    tagName: 'table',
-    className: 'table table-condensed table-bordered',
+    //tagName: 'table',
+    //className: 'table table-condensed table-bordered',
     template: Handlebars.compile(subject_table_template),
     childView: SubjectRowView,
     // childViewContainer: 'tbody'
