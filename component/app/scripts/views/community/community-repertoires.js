@@ -1,6 +1,6 @@
 //
 // community-repertoires.js
-// Subject table for community data project
+// Repertoire table for community data project
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -50,6 +50,7 @@ var RepertoireRowView = Marionette.View.extend({
   showRepDetails(detail_view) {
       $(event.target).toggleClass("selected-details");
 
+/* TODO: this needs to be reworked
       if ($(event.target).hasClass("subject selected-details")) {
          var detail_view = new RepertoireSubjectView();
          this.showChildView('detailRegion', detail_view);
@@ -65,7 +66,7 @@ var RepertoireRowView = Marionette.View.extend({
      }
       else { // nothing is selected, empty the view
           this.getRegion('detailRegion').empty();
-      }
+      } */
   },
 
 });
