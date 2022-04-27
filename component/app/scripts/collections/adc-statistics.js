@@ -68,16 +68,19 @@ export var RearrangementCounts = ADC.Collection.extend({
             for (let i = 0; i < response['Result'].length; ++i) {
                 let stat = response['Result'][i];
                 // TODO: should be repertoire singular, https://github.com/ireceptor-plus/issues/issues/89
+                // IPA invalid format
+                //id: stat['repertoires']['repertoire_id'],
+                let name = 'repertoire';
+                if (! stat[name]) {
+                    name = 'repertoires';
+                    if (! stat[name]) return objs;
+                }
+
                 let obj = {
-                    id: stat['repertoire']['repertoire_id'],
-                    repertoire_id: stat['repertoire']['repertoire_id'],
-                    data_processing_id: stat['repertoire']['data_processing_id'],
-                    sample_processing_id: stat['repertoire']['sample_processing_id']
-                    // IPA invalid format
-                    //id: stat['repertoires']['repertoire_id'],
-                    //repertoire_id: stat['repertoires']['repertoire_id'],
-                    //data_processing_id: stat['repertoires']['data_processing_id'],
-                    //sample_processing_id: stat['repertoires']['sample_processing_id']
+                    id: stat[name]['repertoire_id'],
+                    repertoire_id: stat[name]['repertoire_id'],
+                    data_processing_id: stat[name]['data_processing_id'],
+                    sample_processing_id: stat[name]['sample_processing_id']
                 };
                 for (let j = 0; j < stat['statistics'].length; ++j) {
                     obj[stat['statistics'][j]['statistic_name']] = stat['statistics'][j]['total'];
