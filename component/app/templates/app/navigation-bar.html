@@ -29,34 +29,31 @@
                 </li>
                 -->
                 {{#unless active_token}}
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Login</a>
-                </li>
                 {{/unless}}
-		<button type="button" class="btn btn-sm nav-button">
-		<li class="nav-item">
-		    <a class="nav-link" href="">
-			<i id=nav-stats" class="fas fa-calculator"></i>
+                <button type="button" class="btn btn-sm nav-button">
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        <i id=nav-stats" class="fas fa-calculator"></i>
                     </a>
-		</li>
-		</button>
-		<button type="button" class="btn btn-sm nav-button">
-		<li class="nav-item">
-		    <a class="nav-link" href="">
-			<i id=nav-charts" class="fas fa-chart-area"></i>
+                </li>
+                </button>
+                <button type="button" class="btn btn-sm nav-button">
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        <i id=nav-charts" class="fas fa-chart-area"></i>
                     </a>
-		</li>
-		</button>
-		<button type="button" class="btn btn-sm nav-button nav-button-inactive" data-bypass=true id="navbar-filter-icon">
-		<li class="nav-item">
+                </li>
+                </button>
+                <button type="button" class="btn btn-sm nav-button nav-button-inactive" data-bypass=true id="navbar-filter-icon">
+                <li class="nav-item">
                     <a class="nav-link" href="" data-bypass=true>
                             <i class="fas fa-filter"></i>
                     </a>
                 </li>
-		</button>
+                </button>
             </ul>
-            {{#if active_token}}
             <ul class="navbar-nav">
+                {{#if active_token}}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-user-circle fa-lg" aria-hidden="true"></i>
@@ -71,7 +68,11 @@
                         <a class="dropdown-item" href="/auth/logout">Logout</a>
                     </div>
                 </li>
+                {{else}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Login</a>
+                </li>
+                {{/if}}
             </ul>
-            {{/if}}
         </div>
     </nav>
