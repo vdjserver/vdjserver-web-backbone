@@ -27,16 +27,18 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+import { Agave } from 'Scripts/backbone/backbone-agave';
+
 export var FileTransfers = {};
 
 FileTransfers.downloadUrlByPostit = function(url) {
 
     url += '?force=true';
 
-    var jqxhr = Backbone.Agave.ajax({
+    var jqxhr = Agave.ajax({
         headers: _.extend(
             {},
-            Backbone.Agave.oauthHeader(),
+            Agave.oauthHeader(),
             {
                 'Content-Type': 'application/json',
             }

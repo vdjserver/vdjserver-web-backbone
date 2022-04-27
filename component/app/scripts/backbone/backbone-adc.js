@@ -87,7 +87,6 @@ ADC.Collection = Backbone.Collection.extend({
 
             case 'delete':
                 return false;
-                break;
         }
 
         options.headers = {

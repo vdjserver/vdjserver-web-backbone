@@ -1,3 +1,4 @@
+/*
 define(
     [
         'app',
@@ -158,11 +159,11 @@ function(
 
                 // 27/May/2015 - Temporarily disabled due to
                 // problems rendering BAT for large files.
-                /*
-                if (filename.substr(-11) === '.rc_out.tsv') {
-                    chartType = this.CHART_TYPE_6;
-                }
-                */
+                //
+                //if (filename.substr(-11) === '.rc_out.tsv') {
+                //    chartType = this.CHART_TYPE_6;
+                //}
+                //
 
                 if (filename.substr(-16) === '.composition.csv') {
                     chartType = this.CHART_TYPE_0;
@@ -1125,7 +1126,7 @@ function(
         },
     });
 
-/*
+
     Job.VdjpipeWorkflow = Backbone.Agave.MetadataModel.extend({
         defaults: function() {
             return _.extend(
@@ -1207,8 +1208,9 @@ function(
                 return errors;
             }
         },
-    }); */
+    });
 
     Backbone.Agave.Model.Job = Job;
     return Job;
 });
+*/

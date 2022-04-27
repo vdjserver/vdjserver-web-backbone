@@ -25,6 +25,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import { HandlebarsUtilities } from 'Scripts/views/utilities/handlebars-utilities';
@@ -111,8 +112,8 @@ var ApplicationController = Marionette.View.extend({
 
     showHomePage() {
         console.log('showHomePage');
-        // tell navigation controller to display its public nav bar
-        this.navController.showPublicNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // show public view
         var view = new PublicView();
@@ -121,8 +122,8 @@ var ApplicationController = Marionette.View.extend({
 
     showCreateAccountPage() {
         console.log('showCreateAccountPage');
-        // tell navigation controller to display its public nav bar
-        this.navController.showPublicNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // show create account view
         var view = new CreateAccountView();
@@ -131,8 +132,8 @@ var ApplicationController = Marionette.View.extend({
 
     showForgotPasswordPage(reset_code) {
         console.log('showForgotPasswordPage');
-        // tell navigation controller to display its public nav bar
-        this.navController.showPublicNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // show create account view
         var view = new ForgotPasswordView({reset_code: reset_code});
@@ -141,8 +142,8 @@ var ApplicationController = Marionette.View.extend({
 
     showVerificationPendingPage(verify_code) {
         console.log('showVerificationPendingPage');
-        // tell navigation controller to display its public nav bar
-        this.navController.showPublicNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // show verify account view
         var view = new VerificationPendingView({verify_code: verify_code});
@@ -151,8 +152,8 @@ var ApplicationController = Marionette.View.extend({
 
     showPublicFeedbackPage() {
         console.log('showPublicFeedbackPage');
-        // tell navigation controller to display its public nav bar
-        this.navController.showPublicNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // show public feedback view
         var view = new PublicFeedbackView();
@@ -161,8 +162,8 @@ var ApplicationController = Marionette.View.extend({
 
     showUserFeedbackPage() {
         console.log('showUserFeedbackPage');
-        // tell navigation controller to display its public nav bar
-        this.navController.showPrivateNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // show public feedback view
         var view = new UserFeedbackView();
@@ -192,12 +193,18 @@ var ApplicationController = Marionette.View.extend({
 
     showUserProfilePage() {
         console.log('showUserProfilePage');
-        // tell navigation controller to display its private nav bar
-        this.navController.showPrivateNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // show user profile view
         var view = new UserProfileView({ model: this.userProfile });
         this.showChildView('mainRegion', view);
+    },
+
+    reloadProjectList() {
+        // remove the project controller so all the project data is reloaded
+        this.projectController = null;
+        App.router.navigate('/project', {'trigger': true});
     },
 
     showProjectList() {
@@ -209,8 +216,8 @@ var ApplicationController = Marionette.View.extend({
         }
         this.showChildView('mainRegion', this.projectController.getView());
 
-        // tell navigation controller to display its private nav bar
-        this.navController.showPrivateNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // tell project controller to display the project list page
         this.projectController.showProjectList();
@@ -225,8 +232,8 @@ var ApplicationController = Marionette.View.extend({
         }
         this.showChildView('mainRegion', this.projectController.getView());
 
-        // tell "navigation" controller to display its private nav bar
-        this.navController.showPrivateNavigation();
+        // tell "navigation" controller to display the nav bar
+        this.navController.showNavigation();
 
         // tell "project" controller to display the project page
         this.projectController.showProjectPage(projectUuid, page);
@@ -241,8 +248,8 @@ var ApplicationController = Marionette.View.extend({
         }
         this.showChildView('mainRegion', this.communityController.getView());
 
-        // tell navigation controller to display its public nav bar
-        this.navController.showPublicNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // tell controller to display the project list page
         this.communityController.showProjectList(projectUuid);
@@ -256,8 +263,8 @@ var ApplicationController = Marionette.View.extend({
         }
         this.showChildView('mainRegion', this.communityController.getView());
 
-        // tell navigation controller to display its public nav bar
-        this.navController.showPublicNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // tell controller to display the add a chart page
         this.communityController.showAddChart();
@@ -272,8 +279,8 @@ var ApplicationController = Marionette.View.extend({
         }
         this.showChildView('mainRegion', this.projectController.getView());
 
-        // tell navigation controller to display its private nav bar
-        this.navController.showPrivateNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // tell project controller to display the create project page
         this.projectController.showCreatePage();
@@ -289,8 +296,8 @@ var ApplicationController = Marionette.View.extend({
 
         this.showChildView('mainRegion', this.adminController.getView());
 
-        // tell navigation controller to display its private nav bar
-        this.navController.showPrivateNavigation();
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
 
         // tell project controller to display the create project page
         this.adminController.showAdminPage(page);

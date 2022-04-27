@@ -1,3 +1,4 @@
+/*
 (function() {
 
 // Inspired by http://informationandvisualization.de/blog/box-plot
@@ -18,7 +19,7 @@ box = function() {
   function box(g) {
 
     g.each(function(data, i) {
-	  
+
       var g = d3.select(this),
           min = data["10%"],
           max = data["90%"];
@@ -34,11 +35,11 @@ box = function() {
 
       // Compute outliers. If no whiskers are specified, all data are "outliers".
       // We compute the outliers as indices, so that we can join across transitions!
-      /*
-      var outlierIndices = whiskerIndices
-          ? d3.range(0, whiskerIndices[0]).concat(d3.range(whiskerIndices[1] + 1, n))
-          : d3.range(n);
-      */
+      //
+      //var outlierIndices = whiskerIndices
+      //    ? d3.range(0, whiskerIndices[0]).concat(d3.range(whiskerIndices[1] + 1, n))
+      //    : d3.range(n);
+      //
       var outlierIndices = []; //none for now
 
       // Compute the new x-scale.
@@ -129,7 +130,7 @@ box = function() {
       var format = tickFormat || x1.tickFormat(8);
 
       // Update box ticks.
-/****      
+/****
       var boxTick = g.selectAll("text.box")
           .data(quartileData);
 	 if(showLabels == true) {
@@ -145,7 +146,7 @@ box = function() {
           .duration(duration)
           .attr("y", x1);
 	}
-		 
+
       boxTick.transition()
           .duration(duration)
           .text(format)
@@ -154,7 +155,7 @@ box = function() {
       // Update whisker ticks. These are handled separately from the box
       // ticks because they may or may not exist, and we want don't want
       // to join box ticks pre-transition with whisker ticks post-.
-/*      
+/*
       var whiskerTick = g.selectAll("text.whisker")
           .data(whiskerData || []);
 	if(showLabels == true) {
@@ -182,7 +183,7 @@ box = function() {
           .attr("y", x1)
           .style("opacity", 1e-6)
           .remove();
-*/
+*/ /*
     });
 
     d3.timer.flush();
@@ -229,7 +230,7 @@ box = function() {
     whiskers = x;
     return box;
   };
-  
+
   box.showLabels = function(x) {
     if (!arguments.length) return showLabels;
     showLabels = x;
@@ -258,3 +259,4 @@ function boxQuartiles(d) {
 }
 
 })(this);
+*/

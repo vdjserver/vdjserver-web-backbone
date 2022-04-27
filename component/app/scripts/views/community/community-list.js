@@ -33,106 +33,17 @@ import Handlebars from 'handlebars';
 
 import { ADC } from 'Scripts/backbone/backbone-adc';
 
-import repertoire_subject_template from 'Templates/community/repertoire-subject-row.html';
-var RepertoireSubjectView = Marionette.View.extend({
-    tagName: 'td',
-    className: 'rep-details',
-    attributes: {
-        "colspan": "7"
-    },
-    template: Handlebars.compile(repertoire_subject_template),
-});
+import CommunitySubjects from 'Scripts/views/community/community-subjects';
+import CommunityRepertoires from 'Scripts/views/community/community-repertoires';
 
-import repertoire_sample_template from 'Templates/community/repertoire-sample-row.html';
-var RepertoireSampleView = Marionette.View.extend({
-    tagName: 'td',
-    className: 'rep-details',
-    attributes: {
-        "colspan": "7"
-    },
-    template: Handlebars.compile(repertoire_sample_template),
-});
-
-import repertoire_cell_template from 'Templates/community/repertoire-cell-row.html';
-var RepertoireCellView = Marionette.View.extend({
-    tagName: 'td',
-    className: 'rep-details',
-    attributes: {
-        "colspan": "7"
-    },
-    template: Handlebars.compile(repertoire_cell_template),
-});
-
-import repertoire_tissue_template from 'Templates/community/repertoire-tissue-row.html';
-var RepertoireTissueView = Marionette.View.extend({
-    tagName: 'td',
-    className: 'rep-details',
-    attributes: {
-        "colspan": "7"
-    },
-    template: Handlebars.compile(repertoire_tissue_template),
-});
-
-import repertoire_template from 'Templates/community/repertoire-row.html';
-var RepertoireRowView = Marionette.View.extend({
-    tagName: 'tbody',
-    template: Handlebars.compile(repertoire_template),
-    regions: {
-        detailRegion: '#repertoire-details'
-    },
-
-  //   initialize: function(parameters) {
-  //     var detail_view = new RepertoireDetailView();
-  //     this.showChildView('detailRegion', detail_view);
-  // },
-
-  events:  {
-    'click .subject': 'showRepDetails',
-    'click .sample': 'showRepDetails',
-    'click .cell': 'showRepDetails',
-    'click .tissue': 'showRepDetails',
-  },
-
-  showRepDetails(detail_view) {
-      $(event.target).toggleClass("selected-details");
-
-      if ($(event.target).hasClass("subject selected-details")) {
-         var detail_view = new RepertoireSubjectView();
-         this.showChildView('detailRegion', detail_view);
-     } else if ($(event.target).hasClass("sample selected-details")) {
-         var detail_view = new RepertoireSampleView();
-         this.showChildView('detailRegion', detail_view);
-     } else if ($(event.target).hasClass("cell selected-details")) {
-         var detail_view = new RepertoireCellView();
-         this.showChildView('detailRegion', detail_view);
-     } else if ($(event.target).hasClass("tissue selected-details")) {
-         var detail_view = new RepertoireTissueView();
-         this.showChildView('detailRegion', detail_view);
-     }
-      else { // nothing is selected, empty the view
-          this.getRegion('detailRegion').empty();
-      }
-  },
-
-});
-
-import repertoire_table_template from 'Templates/community/repertoire-table.html';
-var RepertoireTable = Marionette.CollectionView.extend({
-    tagName: 'table',
-    className: 'table table-condensed table-bordered',
-    template: Handlebars.compile(repertoire_table_template),
-    childView: RepertoireRowView,
-    // childViewContainer: 'tbody'
-});
-
-import template from 'Templates/community/study-summary.html';
+import template from 'Templates/community/community-study-summary.html';
 var StudySummaryView = Marionette.View.extend({
     template: Handlebars.compile(template),
     tagName: 'div',
     className: 'community-project',
 
     regions: {
-        tableRegion: '#community-study-data-table'
+        // regions are dynamically defined
     },
 
     initialize: function(parameters) {
@@ -141,12 +52,27 @@ var StudySummaryView = Marionette.View.extend({
             if (parameters.controller) this.controller = parameters.controller;
         }
 
+        // data table views
+        // do not create the views until actually needed
+        // define the regions
+        this.dataViews = {};
+        var repos = this.model.get('repository');
+        for (let i = 0; i < repos.length; ++i) {
+            this.dataViews[repos[i]] = {repertoireView: null, subjectView: null, cloneView: null, cellView: null, rearrangementView: null};
+            this.addRegion(repos[i] + '_repertoiresRegion', '#' + repos[i] + '-community-repertoires-table');
+            this.addRegion(repos[i] + '_subjectsRegion', '#' + repos[i] + '-community-subjects-table');
+            this.addRegion(repos[i] + '_clonesRegion', '#' + repos[i] + '-community-clones-table');
+            this.addRegion(repos[i] + '_rearrangementsRegion', '#' + repos[i] + '-community-rearrangements-table');
+        }
+
         // pagination of data table
         // just repertoires for now but need to handle the others too
-        this.pageQty = 10;
-        this.currentPage = 0;
-        this.constructPages();
-        this.dataView = new RepertoireTable({ collection: this.paginatedRepertoires });
+        //this.pageQty = 10;
+        //this.currentPage = 0;
+        //this.constructPages();
+        //this.dataView = new RepertoireTable({ collection: this.paginatedRepertoires });
+
+        //this.subjectsView = new CommunitySubjects({ model: this.model });
     },
 
     serializeModel() {
@@ -187,7 +113,7 @@ var StudySummaryView = Marionette.View.extend({
                 if (! statistics['num_rearrangements']) data.vdjserver_counts['num_rearrangements'] = '???';
                 else data.vdjserver_counts['num_rearrangements'] = new Intl.NumberFormat().format(statistics['num_rearrangements']);
             } else {
-                var obj = {name: adc_repos[repos[i]]['title']};
+                var obj = {id: repos[i], name: adc_repos[repos[i]]['title']};
                 let repo_study = this.model.get('repos').get(repos[i]);
                 let full_repo_study = full_study.get('repos').get(repos[i]);
                 obj['num_repertoires'] = repo_study.get('repertoires').length;
@@ -271,24 +197,36 @@ var StudySummaryView = Marionette.View.extend({
         // Show/Hide Community Repertoires Data
         // Olivia: need to clean up for efficiency
         'click .community-repertoires': function(e) {
-            this.showChildView('tableRegion', this.dataView);
+            let repository = e.target.id;
+            var dataViews = this.dataViews[repository];
+            if (! dataViews['repertoireView']) dataViews['repertoireView'] = new CommunityRepertoires({ model: this.model, repository_id: repository });
+            this.showChildView(repository + '_repertoiresRegion', dataViews['repertoireView']);
 
-            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
+            //this.showChildView('tableRegion', this.dataView);
 
-            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-table").not(".community-repertoires-metadata").addClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings('#' + repository + '-community-repertoires-table').toggleClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings('.' + repository + '-community-table').not('#' + repository + '-community-repertoires-table').addClass("no-display");
+
+            //$(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-repertoires-metadata").toggleClass("no-display");
+
+            //$(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-table").not(".community-repertoires-metadata").addClass("no-display");
         },
 
         // Pagination for the Data Table
-        'click #pagination-previous-page': 'previousPage',
-        'click #pagination-next-page': 'nextPage',
-        'change #pagination-page-size': 'pageSize',
+        //'click #pagination-previous-page': 'previousPage',
+        //'click #pagination-next-page': 'nextPage',
+        //'change #pagination-page-size': 'pageSize',
 
         // Show/Hide Community Subjects Data
         // Olivia: need to clean up for efficiency
         'click .community-subjects': function(e) {
-            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-subjects-metadata").toggleClass("no-display");
+            let repository = e.target.id;
+            var dataViews = this.dataViews[repository];
+            if (! dataViews['subjectView']) dataViews['subjectView'] = new CommunitySubjects({ model: this.model, repository_id: repository });
+            this.showChildView(repository + '_subjectsRegion', dataViews['subjectView']);
 
-            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings(".community-table").not(".community-subjects-metadata").addClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings('#' + repository + '-community-subjects-table').toggleClass("no-display");
+            $(event.target).parent(".community-button").parent(".community-summary-stats").siblings('.' + repository + '-community-table').not('#' + repository + '-community-subjects-table').addClass("no-display");
         },
 
         // Show/Hide Community Clones Data
@@ -309,6 +247,12 @@ var StudySummaryView = Marionette.View.extend({
 
         // Select All Checkboxes Functionality
         'click .select-all-repertoire': function(e) {
+            console.log("checked all");
+            $(event.target).closest("table").children("tbody").find("td input:checkbox").prop("checked", true);
+        },
+
+        // Select All Checkboxes Functionality
+        'click .select-all-subject': function(e) {
             console.log("checked all");
             $(event.target).closest("table").children("tbody").find("td input:checkbox").prop("checked", true);
         },
@@ -541,45 +485,6 @@ var StudySummaryView = Marionette.View.extend({
         //$('[data-toggle="tooltip"]').tooltip();
     },
 
-    constructPages() {
-        // TODO: handle multiple repositories
-        var repository_id = this.model.get('repository')[0];
-        var repos = this.model.get('repos');
-        var repository = repos.get(repository_id);
-
-        this.pages = [];
-        var reps = repository.get('repertoires');
-        this.paginatedRepertoires = reps.clone();
-
-        for (var i = 0; i < reps.length; i += this.pageQty) {
-          this.pages[i/this.pageQty] =
-            reps.models.slice(i, i + this.pageQty);
-        }
-        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-    },
-
-    previousPage() {
-        --this.currentPage;
-        if (this.currentPage < 0) this.currentPage = 0;
-        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-    },
-
-    nextPage() {
-        ++this.currentPage;
-        if (this.currentPage >= this.pages.length) this.currentPage = this.pages.length - 1;
-        this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-    },
-
-    pageSize(e) {
-        console.log('page size');
-        var x = this.pageQty * this.currentPage;
-        this.pageQty = Number(e.target.value);
-        this.currentPage = Math.floor(x / this.pageQty);
-        this.constructPages();
-        //this.paginatedRepertoires.reset(this.pages[this.currentPage]);
-        this.dataView = new RepertoireTable({ collection: this.paginatedRepertoires });
-        this.showChildView('tableRegion', this.dataView);
-    },
 });
 
 import list_template from 'Templates/community/community-list.html';

@@ -15,7 +15,7 @@ The `v2-develop` branch is VDJServer V2 GUI development.
 
 The development setup is configured to mount the local directory with the source code files
 inside the docker container so that they can be modified and be available without regenerating the docker image.
-In order to support this, an `npm install` will install of the node modules into that local directory. The first
+In order to support this, an `npm install` will install all of the node modules into that local directory. The first
 time the docker image is run, the install will take a few minutes.
 
 ```
@@ -33,10 +33,10 @@ vim component/app/scripts/config/environment-config.js
 docker build -t vdjserver/backbone:v2-develop .
 
 - For Mac/Linux, run docker image (with name vdjserver-backbone) with source code directory mounted
-docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-backbone vdjserver/backbone:v2-develop bash -c "npm install && npm run dev && npm start"
+docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-v2-web-backbone vdjserver/backbone:v2-develop bash -c "npm install && npm run dev && npm start"
 
 - For Windows, run docker image (with name vdjserver-backbone) with source code directory mounted
-docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v ${PWD}/component:/var/www/html/vdjserver-backbone vdjserver/backbone:v2-develop bash -c "npm install && npm run dev && npm start"
+docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v ${PWD}/component:/var/www/html/vdjserver-v2-web-backbone vdjserver/backbone:v2-develop bash -c "npm install && npm run dev && npm start"
 ```
 
 *Note for Windows users: If you run the Mac/Linux command with a Mac-created container, (ie. `vdjserver/backbone:develop`), then `npm` will get stuck while trying to install `fsevents` (which is native to MacOS FSEvents; [read more](https://www.npmjs.com/package/fsevents)). Workaround: use a Windows-created container or the following with the Mac/Linux code:* `npm install --no-optional`

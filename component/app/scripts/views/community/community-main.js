@@ -55,12 +55,16 @@ var CommunityQueryView = Marionette.View.extend({
     initialize(parameters) {
         this.filters = {};
         this.baseFilters = [];
+        this.customFilters = [];
 
         if (parameters) {
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
             if (parameters.filters) this.filters = parameters.filters;
-            if (parameters.base) this.baseFilters = parameters.base;
+            if (parameters.base) {
+                this.baseFilters = parameters.base.baseFilters();
+                this.customFilters = parameters.base.customFilters();
+            }
         }
     },
 
@@ -94,6 +98,7 @@ var CommunityQueryView = Marionette.View.extend({
             // if the filter has dropdown values
             // apply the filter with default value, currently null
             var v = null;
+            var vid = null;
             var doApply = false;
             for (var i = 0; i < this.baseFilters.length; ++i) {
                 if ((this.baseFilters[i]['title'] == e.target.title) && (this.baseFilters[i]['values'])) {
@@ -101,9 +106,17 @@ var CommunityQueryView = Marionette.View.extend({
                     v = 'null';
                     break;
                 }
+                if ((this.baseFilters[i]['title'] == e.target.title) && (this.baseFilters[i]['objects'])) {
+                    doApply = true;
+                    vid = 'null';
+                    break;
+                }
             }
 
-            this.filters['filters'].push({ field: e.target.name, value: v, title: e.target.title });
+            if (vid)
+                this.filters['filters'].push({ field: e.target.name, object: vid, title: e.target.title });
+            else
+                this.filters['filters'].push({ field: e.target.name, value: v, title: e.target.title });
 
             if (doApply)
                 this.controller.applyFilter(this.filters);
@@ -177,9 +190,19 @@ var CommunityQueryView = Marionette.View.extend({
         var av = $('[id=community-filter-text]');
         for (var i = 0; i < af.length; ++i) {
             var v = av[i]['value'];
-            if (v.length == 0) v = null;
-            //if (v == 'null') v = 'null';
-            filters['filters'].push({ field: af[i]['name'], value: v, title: av[i].getAttribute('title')});
+            var vid = null;
+            if (av[i].selectedOptions) vid = av[i].selectedOptions[0]['id'];
+            if (v.length == 0) {
+                v = null;
+                vid = null;
+            }
+            if (vid) {
+                // if id set on option then it is an ontology
+                filters['filters'].push({ field: af[i]['name'], object: vid, title: av[i].getAttribute('title')});
+            } else {
+                // otherwise just plain value
+                filters['filters'].push({ field: af[i]['name'], value: v, title: av[i].getAttribute('title')});
+            }
         }
 
         this.filters = filters;
@@ -405,6 +428,7 @@ export default Marionette.View.extend({
         this.filteredStudyList = null;
 
         // predefined filters
+        /*
         this.baseFilters = [];
         this.baseFilters.push({ title: "Study ID", field: "study.study_id"});
         this.baseFilters.push({ title: "Subject ID", field: "subject.subject_id"});
@@ -414,7 +438,7 @@ export default Marionette.View.extend({
         this.baseFilters.push({ title: "Subject Diagnosis", field: "subject.organism", data: true});
         this.baseFilters.push({ title: "Sample ID", field: "sample.sample_id"});
         console.log(this.baseFilters);
-
+*/
         // our controller
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
@@ -427,16 +451,18 @@ export default Marionette.View.extend({
         $("#community-charts").addClass("no-display");
     },
 
-    showResultsList(studyList, filters) {
+    showResultsList(studyList, repertoireFilters, filters) {
         $("#community-charts").removeClass("no-display");
 
         // What's in the data?
         // console.log("what is here: " + this.controller);
         // console.log("studyList " + JSON.stringify(studyList));
+        this.baseFilters = repertoireFilters;
 
         // show filters as toolbar under navigation bar
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
         App.AppController.navController.showToolbar1Bar(this.filterView);
+        $("#navbar-filter-icon").toggleClass("nav-button-active nav-button-inactive"); //TODO check correct place
         //this.showChildView('queryRegion', this.filterView);
 
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});

@@ -60,7 +60,7 @@ export default ADC.Model.extend({
                 text += this.generateFullText(context[o]);
             return text;
         }
-        if ((typeof context) == 'array') {
+        if (Array.isArray(context)) {
             for (var i = 0; i < context.length; ++i)
                 text += this.generateFullText(context[i]);
             return text;
@@ -77,7 +77,32 @@ export default ADC.Model.extend({
                 case 'subject':
                     return this.get('subject')[paths[1]];
                 case 'diagnosis':
-                    return null;
+                    var subject = this.get('subject');
+                    var diagnosis = subject['diagnosis'];
+                    if (! diagnosis) return null;
+                    if (diagnosis.length == 0) return null;
+                    var values = [];
+                    for (var d = 0; d < diagnosis.length; ++d) {
+                        var obj = diagnosis[d][paths[1]];
+                        if (obj == null) continue;
+                        if (typeof obj === 'object') {
+                            // assume it is an ontology field
+                            if (obj['id'] == null) continue;
+                            let found = false;
+                            for (var k = 0; k < values.length; ++k) {
+                                if (values[k]['id'] == obj['id']) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (! found) values.push(obj);
+                        } else {
+                            // plain value
+                            if (values.indexOf(obj) < 0) values.push(obj);
+                        }
+                    }
+                    if (values.length == 0) return null;
+                    return values;
                 case 'sample':
                 case 'data_processing':
                     return null;
@@ -87,7 +112,6 @@ export default ADC.Model.extend({
                     return null;
             }
         }
-        return null;
     },
 });
 

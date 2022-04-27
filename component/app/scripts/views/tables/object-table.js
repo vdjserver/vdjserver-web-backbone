@@ -147,9 +147,9 @@ var ObjectContainerView = Marionette.View.extend({
         this.model.set('copy_mode', e.target.checked);
         this.model.copy_mode = this.model.get('copy_mode');
         console.log(
-			'input:', e.target.checked,
-			'model.copy_mode:', this.model.copy_mode
-			);
+                        'input:', e.target.checked,
+                        'model.copy_mode:', this.model.copy_mode
+                        );
         this.showRepertoireView();
     },
 

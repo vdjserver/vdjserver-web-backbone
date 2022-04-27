@@ -23,7 +23,7 @@ _single-project.scss - Single Projects
 }
 
 #project-detail {
-    margin-top: 3%;
+    //margin-top: 2%;
 }
 
 .project-metadata {
@@ -35,8 +35,24 @@ _single-project.scss - Single Projects
     }
 }
 
+button.project-changes-action {
+    margin-left: 2em;
+}
+
 #summary-buttons {
     margin-bottom: 2%;
+}
+
+.project-buttons-right {
+    text-align: right;
+}
+
+.project-buttons-margin-left {
+    margin-left: 2em;
+}
+
+.project-buttons-margin-right {
+    margin-right: 2em;
 }
 
 .details {
@@ -59,6 +75,18 @@ _single-project.scss - Single Projects
 .card-body {
     text-align: center;
 }
+
+.card-image {
+    margin-bottom: 0.5rem;
+}
+
+.card-title {
+    margin-bottom: 0rem;
+}
+
+/* ----------------------------------------------------------
+Project Overview
+----------------------------------------------------------*/
 
 .overview-summary {
     border-right: 1px solid rgba(225, 225, 225, 0.45);
@@ -93,6 +121,58 @@ _single-project.scss - Single Projects
 
 .overview-footer {
     margin: 3% 0%;
+}
+
+/* ----------------------------------------------------------
+Project Subjects/Samples
+----------------------------------------------------------*/
+
+.project-subjects-list {
+    margin-bottom: 2%;
+    border: 2px solid $vdj-medgray;
+    font-size: 0.9em;
+
+    .project-subject-header {
+        margin: 0% 0% 0% 0%;
+        border-bottom: 1.5px solid $vdj-darkgray;
+    }
+
+    .project-subject-buttons {
+        margin: 0% 0% 0% 0%;
+        padding: 1% 1% 1% 1%;
+    }
+
+    .project-subject-changes-buttons {
+        text-align: right;
+    }
+
+    .project-subject-summary {
+        margin: 0% 0% 0% 0%;
+        padding: 1% 1% 1% 1%;
+        border-top: 1.5px solid $vdj-darkgray;
+    }
+
+    .project-subject-summary:hover {
+        background: $vdj-lightgray;
+        cursor: pointer;
+    }
+}
+
+.project-samples-list {
+    margin-bottom: 2%;
+    border: 2px solid $vdj-medgray;
+    font-size: 0.9em;
+
+    .project-samples-header {
+        border-bottom: 1.5px solid $vdj-darkgray;
+        margin: 0% 0% 0% 0%;
+    }
+
+    .project-samples-buttons {
+        padding: 1% 1% 1% 1%;
+        border-bottom: 1.5px solid $vdj-darkgray;
+        margin: 0% 0% 0% 0%;
+    }
 }
 
 /* ----------------------------------------------------------
@@ -293,3 +373,33 @@ Repertoires
 .selected-repertoire {
     background: rgba(127, 168, 189, 0.1);
 }
+
+/* ----------------------------------------------------------
+Files
+------------------------------------------------------------*/
+
+.project-files-header {
+    margin-bottom: 2%;
+}
+
+.files-upload-form {
+    margin-bottom: 2%;
+    border: 2px solid $vdj-medgray;
+    padding: 2%;
+}
+
+.files-upload-header {
+    margin-top: 1%;
+}
+
+.files-upload-list-header {
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+.files-upload-list-row {
+    border-top: 1.5px solid $vdj-darkgray;
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
