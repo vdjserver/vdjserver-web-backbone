@@ -210,6 +210,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
             if (! subject) {
                 subject = new Subject({value: model.get('subject')});
                 subject.set('id', model.get('subject')['subject_id']);
+                subject.set('uuid', model.get('subject')['subject_id']);
                 study_subjects.add(subject);
             }
             if (! subjects.get(model.get('subject')['subject_id'])) {
