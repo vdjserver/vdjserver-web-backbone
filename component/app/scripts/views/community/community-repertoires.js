@@ -29,7 +29,7 @@ import Handlebars from 'handlebars';
 
 import repertoire_template from 'Templates/community/repertoire-row.html';
 var RepertoireRowView = Marionette.View.extend({
-    tagName: 'tbody',
+    //tagName: 'tbody',
     template: Handlebars.compile(repertoire_template),
     regions: {
         detailRegion: '#repertoire-details'
@@ -73,8 +73,8 @@ var RepertoireRowView = Marionette.View.extend({
 
 import repertoire_table_template from 'Templates/community/repertoire-table.html';
 var RepertoireListView = Marionette.CollectionView.extend({
-    tagName: 'table',
-    className: 'table table-condensed table-bordered',
+    //tagName: 'table',
+    //className: 'table table-condensed table-bordered',
     template: Handlebars.compile(repertoire_table_template),
     childView: RepertoireRowView,
     // childViewContainer: 'tbody'
