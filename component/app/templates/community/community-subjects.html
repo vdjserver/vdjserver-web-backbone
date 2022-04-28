@@ -1,8 +1,10 @@
 <div class="community-data-table">
-    <div class="community-data-table-actions">
-        <form class="form-inline">
-            <label for="pagination-page-size">Rows per page:</label>
-            <select class="form-control project-buttons-margin-left" id="pagination-page-size">
+    <div class="row community-data-table-actions">
+        <div class="input-group offset-md-10 col-md-2">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="pagination-page-size">Rows per Page</label>
+          </div>
+          <select class="custom-select" id="pagination-page-size">
               <option>1</option>
               <option>5</option>
               <option selected>10</option>
@@ -10,8 +12,8 @@
               <option>50</option>
               <option>100</option>
               <option>All</option>
-            </select>
-        </form>
+          </select>
+        </div>
     </div>
 
     <div id="community-subjects-table"></div>
