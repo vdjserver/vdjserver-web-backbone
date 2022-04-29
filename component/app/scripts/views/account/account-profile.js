@@ -37,6 +37,7 @@ import { UserProfile } from 'Scripts/models/agave-tenant-user';
 // user profile
 import template from 'Templates/account/profile-form.html';
 export default Marionette.View.extend({
+    //template: Handlebars.compile('<h1>Edit Profile</h1>' + template),
     template: Handlebars.compile(template),
 
     initialize: function(parameters) {
