@@ -18,12 +18,17 @@ Community Projects Page
     float: right;
 }
 
-#community-statistics {
-    margin: 1% 0% 0.5% 0%;
+.community-statistics {
+    padding: 0.5% 2% 0% 2%;
+    //margin: 1% 0% 0.5% 0%;
 }
 
 .no-display {
     display: none;
+}
+
+.custom-select-webkit-fix {
+    -webkit-appearance: none;
 }
 
 /* ----------------------------------------------------------
@@ -48,122 +53,6 @@ Loading
     font-size: 0.75em;
 }
 
-/* ----------------------------------------------------------
-Community Query
-------------------------------------------------------------*/
-#navigation {
-    top: 0;
-    position: sticky;
-    position: -webkit-sticky;
-    z-index: 999;
-    background: #FFFFFF;
-}
-
-#navmessage-region {
-    border-top: 1px solid #6C757D;
-}
-
-#toolbar1-region {
-    > div {
-        margin: 2% 2% 1% 2%;
-    }
-
-    form {
-        margin-bottom: 0%;
-    }
-
-    div {
-        margin-top: 0.5%;
-    }
-
-    .community-filter {
-        margin-top: 1%;
-        padding: 0.5% 2% 1% 2%;
-        border: 2px solid rgba(184, 192, 199, 0.65);
-        -webkit-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
-        -moz-box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
-        box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.03);
-    }
-}
-
-#toolbar2-region {
-    padding: 0.5% 2% 0% 2%;
-}
-
-.filter-option, .filter-value {
-    margin-right: 1%;
-    padding-left: 1.25%;
-}
-
-.apply-filter, .reset-filter {
-    margin-right: 1%;
-}
-
-a.remove-filter {
-    color: #FFFFFF;
-}
-
-.filter-operator {
-    margin-right: 1%;
-}
-
-.new-filter {
-    display: flex;
-    align-items: center;
-
-    button {
-        margin-right: 1em;
-    }
-
-    #save-community-filter {
-        display: none;
-    }
-}
-
-.sort-options-buttons {
-    button {
-        margin-right: 1em;
-    }
-}
-
-.navbar-footer {
-    padding: 0.5% 2% 0.5% 2%;
-
-    .navbar-toggle {
-        float: right;
-        cursor: pointer;
-     //   display: inline;
-    }
-
-    .navbar-toggle:hover {
-        color: $vdj-link;
-    }
-}
-
-.nav-button {
-    padding-left: 0px;
-    padding-right: 0px;
-}
-.nav-button-active {
-    background-color: $vdj-darkblue;
-    //background-color: $gray-200;
-
-}
-.nav-button-inactive {
-    background-color: transparent;
-}
-.nav-button-old {
-    padding-left: 0px;
-    padding-right: 0px;
-    
-    .inactive {
-    background-color: transparent;
-    }
-
-    .active {
-    background-color: $vdj-darkblue;
-    }
-}
 /* ----------------------------------------------------------
 Community Statistics
 ------------------------------------------------------------*/
@@ -206,12 +95,12 @@ Community Statistics
     }
 }
 
-.query-stats-border {
-    border-bottom: 1px solid $vdj-darkgray;
-    -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
-    -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
-    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
-}
+//.query-stats-border {
+//    border-bottom: 1px solid $vdj-darkgray;
+//    -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
+//    -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
+//    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
+//}
 
 .results-stats {
     text-align: right;
@@ -555,7 +444,7 @@ Community Results & Projects
 }
 
 /* ----------------------------------------------------------
-Community Repertoires & Project Metadata
+Community Project Metadata
 ------------------------------------------------------------*/
 .community-metadata, .project-metadata {
     margin-bottom: 1rem;
@@ -565,15 +454,44 @@ Community Repertoires & Project Metadata
     }
 }
 
-.community-repertoires-metadata {
-    padding: 0% 2%;
-    margin-top: 3%;
+/* ----------------------------------------------------------
+Community Project Data Tables
+------------------------------------------------------------*/
+
+.community-data-table {
+    padding: 2%;
+}
+
+.community-data-table-actions {
+    padding-bottom: 1%;
+}
+
+.community-data-table-header {
+    border-bottom: 1px solid $vdj-medgray;
+}
+
+.community-data-table-row {
+    border-bottom: 1px solid $vdj-medgray;
+}
+
+.community-data-table-row:hover {
+    background: $vdj-lightgray;
+}
+
+.community-data-table-footer {
+    padding-top: 1%
+}
+
+.community-data-table-caption {
+        font-style: italic;
+        color: $vdj-blue;
 }
 
 .active-tab {
     color: $vdj-link !important;
 }
 
+/*
 .table-actions {
     float: right;
     margin-bottom: 1%;
@@ -582,7 +500,7 @@ Community Repertoires & Project Metadata
 .sort:after {
     font-family: 'Font Awesome 5 Free';
     content: "\f0de";
-    cursor: pointer;
+    cursor:pointer;
     color: $vdj-darkgray;
 }
 
@@ -639,13 +557,13 @@ td.selected-details {
 td.rep-details {
     padding: 3em;
 }
+*/
 
 /* ----------------------------------------------------------
 Community Repertoires Table Caption & Pagination
 ------------------------------------------------------------*/
+/*
 .table-footer {
-    padding: 1%;
-
     .table-caption {
         font-style: italic;
         color: $vdj-blue;
@@ -653,10 +571,10 @@ Community Repertoires Table Caption & Pagination
 
     .pagination {
         color: $vdj-blue;
-        margin-bottom: 3%;
+        //margin-bottom: 3%;
     }
 }
-
+*/
 /* ----------------------------------------------------------
 Community Repertoires Detail Tables
 ------------------------------------------------------------*/

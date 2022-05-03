@@ -3,12 +3,9 @@
             <img src="./dist/images/vdjserver-logo.png" alt="VDJServer" />
             <span class="brand-name">VDJServer</span>
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav">
                {{#if active_token}}
                 <li class="nav-item active">
                     <a class="nav-link" data-bypass=true href="{{location.origin}}/project">My Projects<span class="sr-only">(current)</span></a>
@@ -23,43 +20,20 @@
                 <li class="nav-item">
                     <a class="nav-link" data-bypass=true href="{{location.origin}}/feedback">Feedback</a>
                 </li>
-                <!--
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-                -->
-                {{#unless active_token}}
-                {{/unless}}
-<!--                <button type="button" class="btn btn-sm nav-button">
-                <li class="nav-item">
-                    <a class="nav-link" href="">
-                        <i id=nav-stats" class="fas fa-calculator"></i>
-                    </a>
-                </li>
-                </button>
-                <button type="button" class="btn btn-sm nav-button">
-                <li class="nav-item">
-                    <a class="nav-link" href="">
-                        <i id=nav-charts" class="fas fa-chart-area"></i>
-                    </a>
-                </li>
-                </button> -->
-                <button type="button" class="btn btn-sm nav-button nav-button-inactive" data-bypass=true id="navbar-filter-icon">
-                <li class="nav-item">
-                    <a class="nav-link" href="" data-bypass=true>
-                            <i class="fas fa-filter"></i>
-                    </a>
-                </li>
-                </button>
             </ul>
-            <ul class="navbar-nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <button type="button" class="btn btn-sm nav-button nav-button-inactive" data-bypass=true id="navbar-filter-icon">
+                        <a class="nav-link" href="" data-bypass=true><i class="fas fa-filter"></i></a>
+                    </button>
+                </li>
                 {{#if active_token}}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-user-circle fa-lg" aria-hidden="true"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <p>{{username}}</p>
+                        <h2 class="dropdown-header">{{username}}</h2>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" data-bypass=true href="{{location.origin}}/account/profile">Edit Profile</a>
                         {{#if admin_account}}

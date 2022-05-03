@@ -87,7 +87,16 @@ var CommunityQueryView = Marionette.View.extend({
         // perform search when user hits enter in full text search box
         'search #community-text-search': function(e) {
             console.log('search');
+            e.preventDefault();
             this.controller.applyFilter(this.extractFilters());
+        },
+        // handle keypress too because some browsers want to submit form with Enter
+        'keypress #community-text-search': function(e) {
+            // prevent default with the enter key
+            if (e.key == 'Enter') {
+                e.preventDefault();
+                this.controller.applyFilter(this.extractFilters());
+            }
         },
 
         // when user selects from the dropdown filter
@@ -427,18 +436,6 @@ export default Marionette.View.extend({
         this.studyList = null;
         this.filteredStudyList = null;
 
-        // predefined filters
-        /*
-        this.baseFilters = [];
-        this.baseFilters.push({ title: "Study ID", field: "study.study_id"});
-        this.baseFilters.push({ title: "Subject ID", field: "subject.subject_id"});
-        this.baseFilters.push({ title: "Subject Organism", field: "subject.organism", data: true});
-        this.baseFilters.push({ title: "Subject Sex", field: "subject.sex",
-            values: AIRRSchema['Subject']['properties']['sex']['enum'] });
-        this.baseFilters.push({ title: "Subject Diagnosis", field: "subject.organism", data: true});
-        this.baseFilters.push({ title: "Sample ID", field: "sample.sample_id"});
-        console.log(this.baseFilters);
-*/
         // our controller
         if (parameters) {
             if (parameters.controller) this.controller = parameters.controller;
@@ -461,13 +458,10 @@ export default Marionette.View.extend({
 
         // show filters as toolbar under navigation bar
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
-        App.AppController.navController.showToolbar1Bar(this.filterView);
-        $("#navbar-filter-icon").toggleClass("nav-button-active nav-button-inactive"); //TODO check correct place
-        //this.showChildView('queryRegion', this.filterView);
+        App.AppController.navController.showFilterBar(this.filterView);
 
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
-        App.AppController.navController.showToolbar2Bar(this.statsView);
-        //this.showChildView('statsRegion', this.statsView);
+        App.AppController.navController.showToolBar(this.statsView);
         this.statsView.updateStats(studyList);
 
         this.chartsView = new CommunityChartsView ({model: this.model, controller: this.controller});
@@ -484,13 +478,13 @@ export default Marionette.View.extend({
 
     updateFilters(filters) {
         this.filterView = new CommunityQueryView ({model: this.model, controller: this.controller, base: this.baseFilters, filters: filters});
-        App.AppController.navController.showToolbar1Bar(this.filterView);
+        App.AppController.navController.showFilterBar(this.filterView);
         //this.showChildView('queryRegion', this.filterView);
     },
 
     updateSummary(studyList) {
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
-        App.AppController.navController.showToolbar2Bar(this.statsView);
+        App.AppController.navController.showToolBar(this.statsView);
     },
 
     newFilterModal(e) {

@@ -66,7 +66,7 @@ var ModalMessageConfirm = Marionette.View.extend({
 
 // Controller and view for the main regions for the application.
 var ApplicationController = Marionette.View.extend({
-    template: Handlebars.compile('<div id="navigation"></div><div id="main" class="p-0"></div><div id="modal"></div>'),
+    template: Handlebars.compile('<div id="navigation" class="navigation"></div><div id="main" class="p-0"></div><div id="modal"></div>'),
 
     // three regions:
     // one for the navigation bar

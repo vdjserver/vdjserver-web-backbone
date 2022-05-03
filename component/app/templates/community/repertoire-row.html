@@ -1,25 +1,23 @@
-            <div class="row repertoire-row">
-                <div class="col-md-1 repertoire-name">
+            <div class="row community-data-table-row">
+                <div class="col-md-1">
                     {{repertoire.value.repertoire_name}}
                 </div>
-                <div class="col-md-3 repertoire-id">
+                <div class="col-md-3">
                     {{repertoire_id}}
                 </div>
-                <div class="col-md-2 subject">
+                <div class="col-md-2">
                     {{subject.subject_id}}
                 </div>
-                <div class="col-md-2 sample">
+                <div class="col-md-2">
                     {{sample.0.sample_id}}
                 </div>
-                <div class="col-md-2 cell">
+                <div class="col-md-2">
                     {{sample.0.cell_phenotype}}
                 </div>
-                <div class="col-md-2 tissue">
+                <div class="col-md-2">
                     {{sample.0.tissue.id}}
                 </div>
                 <!-- <div>Diagnosis Data</div> -->
             </div>
 
             <!-- Details attach after each repertoire row -->
-            <div id="repertoire-details">
-            </div>

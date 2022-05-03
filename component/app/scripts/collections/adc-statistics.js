@@ -46,13 +46,15 @@ export var RearrangementCounts = ADC.Collection.extend({
 
         if (this.repertoires) {
             this.data = { statistics: ["rearrangement_count", "duplicate_count", "rearrangement_count_productive", "duplicate_count_productive"]};
-//            this.data = { repertoires: [], statistics: ["rearrangement_count", "duplicate_count", "rearrangement_count_productive", "duplicate_count_productive"]};
 
-//            for (let i = 0; i < this.repertoires.length; ++i) {
-//                let model = this.repertoires.at(i);
-//                let obj = { repertoire: { repertoire_id: model.get('repertoire_id') }};
-//                this.data['repertoires'].push(obj);
-//            }
+            if (this.repository != 'vdjserver') {
+                this.data['repertoires'] = [];
+                for (let i = 0; i < this.repertoires.length; ++i) {
+                    let model = this.repertoires.at(i);
+                    let obj = { repertoire: { repertoire_id: model.get('repertoire_id') }};
+                    this.data['repertoires'].push(obj);
+                }
+            }
         }
     },
     url: function() {

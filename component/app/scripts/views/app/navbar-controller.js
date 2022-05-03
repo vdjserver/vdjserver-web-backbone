@@ -57,7 +57,6 @@ import navbar_footer from 'Templates/app/navigation-footer.html';
 var NavigationFooterView = Marionette.View.extend({
     template: Handlebars.compile(navbar_footer),
     initialize(options) {
-        $("#navigation").addClass("query-stats-border"); //TODO: move later to app level?
     }
 
 });
@@ -72,122 +71,109 @@ export default Marionette.View.extend({
 
     // one region for the navigation bar
     // one region for the announcement/message bar
-    // one region for the first tool bar
-    // one region for the second tool bar
+    // one region for the filter bar
+    // one region for the tool bar
     regions: {
         navigationRegion: '#navbar-region',
-        messageRegion: '#navmessage-region',
-        toolbar1Region: '#toolbar1-region',
-        toolbar2Region: '#toolbar2-region',
-        footerRegion: '#footer-region'
+        messageRegion: '#navbar-message-region',
+        filterRegion: '#navbar-filter-region',
+        toolRegion: '#navbar-tool-region',
+        footerRegion: '#navbar-footer-region'
     },
 
     events: {
         'click #logout': 'logout',
-        'click #navbar-filter-icon': 'toggleToolbarBar',
+        'click #navbar-filter-icon': 'toggleFilterBar',
     },
 
     initialize(options) {
         console.log('Initialize');
         this.navbar_filter = true; //navbar filter is open by default
-        //$("#navigation").addClass("opened-filter");
-
-	// _.bindAll(this, 'detect_scroll');
-        //$(window).scroll(this.detect_scroll);
     },
 
-    /*detect_scroll: function(view) {
-        if ((!this.getRegion('toolbar1Region').hasView()) && (!this.getRegion('toolbar2Region').hasView()))
-            return;
-
-        if ($(window).scrollTop() == 0) {
-            this.getRegion('toolbar1Region').$el.show();
-            this.getRegion('toolbar2Region').$el.show();
-
-            $("#close-filter").css("display", "none").toggleClass("closed-filter open-filter");
-            $("#navigation").removeClass("query-stats-border");
-            $("#close-filter-icon").removeClass("fa-chevron-up").addClass("fa-chevron-down");
-        } else if ($(window).scrollTop() > 0) {
-            $("#navigation").addClass("query-stats-border");
-            $("#close-filter").css("display", "inline");
-        }
-    },*/
-
     showNavigation() {
-        this.emptyToolbar1Bar();
-        this.emptyToolbar2Bar();
-        this.getRegion('footerRegion').empty();
+        this.emptyFilterBar();
+        this.emptyToolBar();
         this.showChildView('navigationRegion', new NavigationBarView());
+        this.showFooter();
     },
 
     showMessageBar(view) {
         this.showChildView('messageRegion', view);
+        this.showFooter();
     },
 
     emptyMessageBar() {
         this.getRegion('messageRegion').empty();
+        this.showFooter();
     },
 
-    showToolbar1Bar(view) {
+    showFilterBar(view) {
         // console.log(view);
-        this.showChildView('toolbar1Region', view);
-        this.showChildView('footerRegion', new NavigationFooterView());
+        this.showChildView('filterRegion', view);
+        $("#navbar-filter-icon").removeClass("nav-button-inactive");
+        $("#navbar-filter-icon").addClass("nav-button-active");
+        this.showFooter();
     },
 
-    emptyToolbar1Bar() {
-        this.getRegion('toolbar1Region').empty();
+    emptyFilterBar() {
+        this.getRegion('filterRegion').empty();
+        this.showFooter();
     },
 
-    showToolbar2Bar(view) {
-        this.showChildView('toolbar2Region', view);
-        this.showChildView('footerRegion', new NavigationFooterView());
+    showToolBar(view) {
+        this.showChildView('toolRegion', view);
+        this.showFooter();
     },
 
-    emptyToolbar2Bar() {
-        this.getRegion('toolbar2Region').empty();
+    emptyToolBar() {
+        this.getRegion('toolRegion').empty();
+        this.showFooter();
     },
 
-    toggleToolbarBar(e) {
+    showFooter() {
+        // If any toolbar being shown, show footer
+        if (this.getChildView('messageRegion')) {
+            this.showChildView('footerRegion', new NavigationFooterView());
+            return;
+        }
+        if (this.getChildView('filterRegion')) {
+            this.showChildView('footerRegion', new NavigationFooterView());
+            return;
+        }
+        if (this.getChildView('toolRegion')) {
+            this.showChildView('footerRegion', new NavigationFooterView());
+            return;
+        }
+        // otherwise empty
+        this.emptyFooter();
+    },
+
+    emptyFooter() {
+        this.getRegion('footerRegion').empty();
+    },
+
+    toggleFilterBar(e) {
         console.log(this.navbar_filter);
-	e.preventDefault();  //don't do default browser action of following link
+        e.preventDefault();  //don't do default browser action of following link
         if (!this.navbar_filter) {
-            this.getRegion('toolbar1Region').$el.show();
-            this.getRegion('toolbar2Region').$el.show();
-            this.getRegion('footerRegion').$el.show();
+            this.getRegion('filterRegion').$el.show();
+            this.getRegion('toolRegion').$el.show();
+            this.showFooter();
 
-            //$("#navbar-filter").toggleClass("closed-filter opened-filter");
-            //$("#navbar-filter-icon").toggleClass("fa-chevron-up fa-filter");
-            //$("#navbar-filter-icon").toggleClass("active inactive");
-            $("#navbar-filter-icon").toggleClass("nav-button-inactive nav-button-active");
+            $("#navbar-filter-icon").removeClass("nav-button-inactive");
+            $("#navbar-filter-icon").addClass("nav-button-active");
             this.navbar_filter = true;
         } else {
-            this.getRegion('toolbar1Region').$el.hide();
-            this.getRegion('toolbar2Region').$el.hide();
-            this.getRegion('footerRegion').$el.hide();
+            this.getRegion('filterRegion').$el.hide();
+            this.getRegion('toolRegion').$el.hide();
+            this.emptyFooter();
 
-            //$("#navbar-filter").toggleClass("opened-filter closed-filter");
-            //$("#navbar-filter-icon").toggleClass("fa-filter fa-chevron-up");
-            //$("#navbar-filter-icon").toggleClass("inactive active");
-            $("#navbar-filter-icon").toggleClass("nav-button-active nav-button-inactive");
+            $("#navbar-filter-icon").removeClass("nav-button-active");
+            $("#navbar-filter-icon").addClass("nav-button-inactive");
             this.navbar_filter = false;
         }
     },
-
-    /*hideToolbarBar(view) {
-        this.getRegion('toolbar1Region').$el.hide();
-        this.getRegion('toolbar2Region').$el.hide();
-
-        $(".open-filter").toggleClass("open-filter closed-filter");
-        $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
-    },
-
-    showToolbarBar(view) {
-        this.getRegion('toolbar1Region').$el.show();
-        this.getRegion('toolbar2Region').$el.show();
-
-        $(".closed-filter").toggleClass("closed-filter open-filter");
-        $("#close-filter-icon").toggleClass("fa-chevron-down fa-chevron-up");
-    },*/
 
     logout(e) {
         e.preventDefault();
