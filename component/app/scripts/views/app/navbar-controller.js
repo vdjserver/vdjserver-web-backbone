@@ -44,15 +44,15 @@ var NavigationBarView = Marionette.View.extend({
 
     templateContext() {
         let display_name = App.Agave.token().get('username');
-        let value = App.AppController.userProfile.get('value');
         //Display priority: first and last; first only; last only; username only
         if (App.AppController.userProfile) { //make sure the profile is not null
+            let value = App.AppController.userProfile.get('value');
             if (value['firstName'] && value['firstName'].length != 0) {
                 display_name = value['firstName'];
-                if (value['lastName'] && value['lastName'].length != 0) { 
+                if (value['lastName'] && value['lastName'].length != 0) {
                     display_name = display_name + ' ' + value['lastName'];
                 }
-            } else if (value['lastName'] && value['lastName'].length != 0) { 
+            } else if (value['lastName'] && value['lastName'].length != 0) {
                     display_name = value['lastName'];
             }
         }
