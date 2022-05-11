@@ -253,6 +253,7 @@ export var File = Agave.Model.extend(
             FILE_TYPE_CSV: 7,
             FILE_TYPE_VDJML: 8,
             FILE_TYPE_AIRR_TSV: 9,
+            FILE_TYPE_AIRR_JSON: 10,
         },
 
         // index should map to codes
@@ -260,14 +261,49 @@ export var File = Agave.Model.extend(
             'Unspecified',
             'Primer Sequences',
             'Read-Level Data',
-            //'Barcode Combinations', // deprecated
+            'Barcode Combinations', // deprecated
             'Barcode Sequences',
             'Quality Scores',
             'TAB-separated Values',
             'Comma-separated Values',
             'VDJML',
             'AIRR Rearrangement TSV',
+            'AIRR Data File JSON',
         ],
+
+        getFileTypeById: function(fileTypeId) {
+            return File.fileTypeNames[fileTypeId];
+        },
+
+        getFileTypes: function() {
+            // put them in a specific order for display
+            return [
+                File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
+                File.fileTypeCodes.FILE_TYPE_READ,
+                File.fileTypeCodes.FILE_TYPE_BARCODE,
+                File.fileTypeCodes.FILE_TYPE_PRIMER,
+                File.fileTypeCodes.FILE_TYPE_QUALITY,
+                File.fileTypeCodes.FILE_TYPE_AIRR_TSV,
+                File.fileTypeCodes.FILE_TYPE_AIRR_JSON,
+                File.fileTypeCodes.FILE_TYPE_TSV,
+                File.fileTypeCodes.FILE_TYPE_CSV,
+                File.fileTypeCodes.FILE_TYPE_VDJML
+            ];
+        },
+
+        getNamesForFileTypes: function(fileTypeIds) {
+            var fileTypeNames = [];
+
+            for (var i = 0; i < fileTypeIds.length; ++i) {
+                fileTypeNames.push(this.getFileTypeById(fileTypeIds[i]));
+            }
+
+            return fileTypeNames;
+        },
+
+        getFileTypeNames: function() {
+            return this.getNamesForFileTypes(this.getFileTypes());
+        },
 
         cleanName: function(name) {
             // Replace symbols that could cause problems on file systems
@@ -312,6 +348,27 @@ export var File = Agave.Model.extend(
             }
 
             return guessType;
+        },
+
+        getReadDirections: function() {
+            return [
+                'F',
+                'R',
+                'FR',
+            ];
+        },
+
+        doesFileTypeIdHaveReadDirection: function(fileTypeId) {
+            var hasReadDirection = false;
+            switch (fileTypeId) {
+                case File.fileTypeCodes.FILE_TYPE_READ:
+                    hasReadDirection = true;
+                    break;
+                default:
+                    // code
+                    break;
+            }
+            return hasReadDirection;
         },
     }
 );
@@ -708,32 +765,6 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
     }),
     {
 
-        getFileTypeById: function(fileTypeId) {
-            return File.fileTypeNames[fileTypeId];
-        },
-
-        getFileTypes: function() {
-            return [
-                File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
-                File.fileTypeCodes.FILE_TYPE_READ,
-                File.fileTypeCodes.FILE_TYPE_BARCODE,
-                File.fileTypeCodes.FILE_TYPE_PRIMER,
-                File.fileTypeCodes.FILE_TYPE_QUALITY,
-                File.fileTypeCodes.FILE_TYPE_TSV,
-                File.fileTypeCodes.FILE_TYPE_VDJML,
-                File.fileTypeCodes.FILE_TYPE_AIRR_TSV,
-            ];
-        },
-
-        getNamesForFileTypes: function(fileTypeIds) {
-            var fileTypeNames = [];
-
-            for (var i = 0; i < fileTypeIds.length; ++i) {
-                fileTypeNames.push(this.getFileTypeById(fileTypeIds[i]));
-            }
-
-            return fileTypeNames;
-        },
 
         isFileTypeIdQualAssociable: function(fileTypeId) {
             var isQualAssociable = false;
@@ -752,30 +783,7 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
             return isQualAssociable;
         },
 
-        doesFileTypeIdHaveReadDirection: function(fileTypeId) {
 
-            var hasReadDirection = false;
-
-            switch (fileTypeId) {
-                case File.fileTypeCodes.FILE_TYPE_READ:
-                    hasReadDirection = true;
-                    break;
-
-                default:
-                    // code
-                    break;
-            }
-
-            return hasReadDirection;
-        },
-
-        getReadDirections: function() {
-            return [
-                'F',
-                'R',
-                'FR',
-            ];
-        },
     }
 );
 

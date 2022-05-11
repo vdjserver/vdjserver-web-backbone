@@ -26,6 +26,7 @@
 
 import Handlebars from 'handlebars';
 import filesize from 'filesize';
+import moment from 'moment';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
@@ -62,6 +63,26 @@ HandlebarsUtilities.registerAllHelpers = function() {
     Handlebars.registerHelper('GetHumanReadableFileSize', function(data) {
         if (data) {
             return filesize(data, {base: 10});
+        }
+    });
+
+    Handlebars.registerHelper('FormatDate', function(agaveDate) {
+        var formattedDate = moment(new Date(agaveDate)).format('D-MMM-YYYY');
+        return formattedDate;
+    });
+
+    Handlebars.registerHelper('FormatDateTime', function(agaveDate) {
+        var formattedDate = moment(new Date(agaveDate)).format('D-MMM-YYYY h:mm a');
+        return formattedDate;
+    });
+
+    Handlebars.registerHelper('GetTagDisplay', function(publicAttributes) {
+        if (publicAttributes && publicAttributes['tags']) {
+            var tags = publicAttributes['tags'];
+            if (_.isArray(tags)) {
+                tags = tags.join(', ');
+            }
+            return tags;
         }
     });
 

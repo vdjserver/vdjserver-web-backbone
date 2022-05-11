@@ -28,27 +28,33 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
+import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-file';
+
 import detail_template from 'Templates/project/files/files-detail.html';
 var ProjectFileDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
-    tagName: 'tr',
-    //className: 'community-project',
 
-  events: {
-  },
+    events: {
+    },
+
+    templateContext() {
+        return {
+            fileTypes: File.getFileTypes(),
+            fileTypeNames: File.getFileTypeNames(),
+            readDirections: File.getReadDirections(),
+        };
+    },
 
 });
 
 import table_template from 'Templates/project/files/files-detail-table.html';
 export default Marionette.CollectionView.extend({
     template: Handlebars.compile(table_template),
-    childViewContainer: '.project-files-detail-tbody',
-    //template: Handlebars.compile("<div></div>"),
-    //tagName: 'table',
-    //className: 'table table-hover table-sm table-bordered',
+    childViewContainer: '.project-files-detail-table',
+
     initialize: function(parameters) {
         this.childView = ProjectFileDetailView;
         this.childViewOptions = { controller: this.controller };
-  },
+    },
 });
 

@@ -77,6 +77,9 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
         if (parameters && parameters.projectUuid) {
             this.projectUuid = parameters.projectUuid;
         }
+        this.sort_by = 'name';
+        this.comparator = this.collectionSortBy;
+
         this.includeJobFiles = false;
         //if (parameters && parameters.includeJobFiles) this.includeJobFiles = true;
     },
@@ -106,21 +109,63 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
     },
 
     checkForDuplicateFilename: function(filename) {
-
         var isDuplicate = false;
-
         for (var j = 0; j < this.models.length; j++) {
             var model = this.at([j]);
-
             var modelName = model.get('value').name;
-
             if (modelName === filename) {
                 isDuplicate = true;
                 break;
             }
         }
-
         return isDuplicate;
+    },
+
+    // sort comparator for the collection
+    collectionSortBy(modela, modelb) {
+        if (!this.sort_by) this.sort_by = 'name';
+
+        // we have a pre-defined set of sorts
+        switch (this.sort_by) {
+            case 'name': {
+                let va = modela.get('value').name;
+                let vb = modelb.get('value').name;
+                if (va.toLowerCase() > vb.toLowerCase()) return 1;
+                if (va.toLowerCase() < vb.toLowerCase()) return -1;
+                return 0;
+            }
+            case 'size': {
+                let ma = modela.get('value');
+                let mb = modelb.get('value');
+                if (ma.length > mb.length) return -1;
+                if (ma.length < mb.length) return 1;
+                return 0;
+            }
+            case 'newest': {
+                let da = modela.get('lastUpdated');
+                let db = modelb.get('lastUpdated');
+
+                // nulls always at the back of the line
+                if (!da && !db) return 0;
+                if (!da) return 1;
+                if (!db) return -1;
+                let nda = new Date(da);
+                let ndb = new Date(db);
+                return (ndb > nda) - (ndb < nda);
+            }
+            case 'oldest': {
+                let da = modela.get('lastUpdated');
+                let db = modelb.get('lastUpdated');
+
+                // nulls always at the back of the line
+                if (!da && !db) return 0;
+                if (!da) return 1;
+                if (!db) return -1;
+                let nda = new Date(da);
+                let ndb = new Date(db);
+                return (nda > ndb) - (nda < ndb);
+            }
+        }
     },
 });
 

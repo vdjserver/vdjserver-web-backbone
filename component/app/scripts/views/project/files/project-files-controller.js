@@ -80,6 +80,20 @@ ProjectFilesController.prototype = {
         }
     },
 
+    applySort(sort_by) {
+        var files = this.getProjectFilesList();
+        files.sort_by = sort_by;
+        files.sort();
+        /*
+        if (this.filteredStudies) {
+            this.filteredStudies.sort_by = sort_by;
+            this.filteredStudies.sort();
+            this.projectView.updateSummary(this.filteredStudies);
+        } else {
+            this.projectView.updateSummary(this.studies);
+        } */
+    },
+
     // set all upload variables to initial state
     cleanUpload: function() {
         this.uploadFiles = null;

@@ -1,4 +1,41 @@
-<td draggable="true">{{value.name}}</td>
+
+<div class="row project-files-table-row" draggable="true">
+    <div class="col-md-3 text-data">{{value.name}}</div>
+    <div class="col-md-2 text-data">{{FormatDateTime lastUpdated}}</div>
+    <div class="col-md-1 text-data">{{GetHumanReadableFileSize value.length}}</div>
+    <div class="col-md-2">
+        <select class="form-control" id="file-type">
+            {{#each fileTypes}}
+                <option {{#ifEquals this ../value.fileType}}selected{{/ifEquals}} value="{{this}}">
+                    {{#with (lookup ../fileTypeNames @index)}} {{this}} {{/with}}
+                </option>
+            {{/each}}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input
+            class="form-control"
+            data-fileuuid="{{uuid}}"
+            type="text"
+            value="{{GetTagDisplay value.publicAttributes}}">
+    </div>
+    <div class="col-md-1">
+        <select
+            class="form-control"
+            data-fileuuid="{{uuid}}">
+            <option></option>
+            {{#each readDirections}}
+                <option {{#ifEquals this ../value.readDirection}}selected{{/ifEquals}}>{{this}}</option>
+            {{/each}}
+        </select>
+    </div>
+</div>
+
+<!--
+    <td><button class="download-file btn btn-default" data-filename="{{value.name}}" data-metadatauuid="{{uuid}}">{{value.name}}</button></td>
+    <td>{{value.name}}</td>
+    <td>{{GetHumanReadableFileSize value.length}}</td>
+-->
 
 {{!-- Start Single Reads --}}
 {{#each singleReadFileListings}}

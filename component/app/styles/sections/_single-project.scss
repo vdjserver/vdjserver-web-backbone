@@ -382,6 +382,27 @@ Files
     margin-bottom: 2%;
 }
 
+.project-files-table-header {
+    border-bottom: 1px solid $vdj-medgray;
+    border-top: 1px solid $vdj-medgray;
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+.project-files-table-row {
+    border-bottom: 1px solid $vdj-medgray;
+    padding-top: 1%;
+    padding-bottom: 1%;
+
+    .text-data {
+        padding-top: 0.5em;
+    }
+}
+
+.project-files-table-row:hover {
+    background: $vdj-lightgray;
+}
+
 .files-upload-form {
     margin-bottom: 2%;
     border: 2px solid $vdj-medgray;

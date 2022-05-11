@@ -43,6 +43,15 @@ var ProjectFilesHeaderView = Marionette.View.extend({
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
     },
+
+    templateContext() {
+        if (!this.controller) return {};
+        var files = this.controller.getProjectFilesList();
+        var current_sort = files['sort_by'];
+        return {
+            current_sort: current_sort
+        }
+    },
 });
 
 
@@ -61,26 +70,41 @@ var ProjectFilesView = Marionette.View.extend({
         listRegion: '#project-files-list'
     },
 
-    events: {
-        'click #project-files-upload-computer': 'uploadFileFromComputer',
-        'click #cancel-upload-button': 'cancelUpload',
-        'click #start-upload-button':  'startUpload',
-        'click #done-upload-button':  'doneUpload'
-    },
-
     initialize(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
     },
 
+    events: {
+        // sort files list
+        'click #project-files-sort-select': function(e) {
+            // check it is a new sort
+            var files = this.controller.getProjectFilesList();
+            var current_sort = files['sort_by'];
+            if (e.target.name != current_sort) {
+                this.controller.applySort(e.target.name);
+                this.updateHeader();
+            }
+        },
+
+        'click #project-files-upload-computer': 'uploadFileFromComputer',
+        'click #cancel-upload-button': 'cancelUpload',
+        'click #start-upload-button':  'startUpload',
+        'click #done-upload-button':  'doneUpload'
+    },
+
     showProjectFilesList(filesList) {
-        this.showChildView('headerRegion', new ProjectFilesHeaderView());
+        this.showChildView('headerRegion', new ProjectFilesHeaderView({controller: this.controller}));
         this.showChildView('listRegion', new ProjectFilesListView({collection: filesList, controller: this.controller}));
     },
 
     showUploadFiles() {
         this.showChildView('stagingRegion', new ProjectFilesUploadView({model: this.model, controller: this.controller}));
+    },
+
+    updateHeader() {
+        this.showChildView('headerRegion', new ProjectFilesHeaderView({controller: this.controller}));
     },
 
     uploadFileFromComputer: function(e, stagedFiles) {
