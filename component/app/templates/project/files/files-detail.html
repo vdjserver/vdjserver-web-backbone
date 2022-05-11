@@ -1,10 +1,12 @@
 
 <div class="row project-files-table-row" draggable="true">
-    <div class="col-md-3 text-data">{{value.name}}</div>
+    <div class="col-md-3 text-data">
+        <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{value.name}}</a>
+    </div>
     <div class="col-md-2 text-data">{{FormatDateTime lastUpdated}}</div>
     <div class="col-md-1 text-data">{{GetHumanReadableFileSize value.length}}</div>
     <div class="col-md-2">
-        <select class="form-control" id="file-type">
+        <select class="form-control" id="project-file-type">
             {{#each fileTypes}}
                 <option {{#ifEquals this ../value.fileType}}selected{{/ifEquals}} value="{{this}}">
                     {{#with (lookup ../fileTypeNames @index)}} {{this}} {{/with}}
@@ -15,19 +17,24 @@
     <div class="col-md-2">
         <input
             class="form-control"
-            data-fileuuid="{{uuid}}"
             type="text"
+            id="project-file-tags"
             value="{{GetTagDisplay value.publicAttributes}}">
     </div>
     <div class="col-md-1">
-        <select
-            class="form-control"
-            data-fileuuid="{{uuid}}">
+        <select class="form-control" id="project-file-read-direction">
             <option></option>
             {{#each readDirections}}
                 <option {{#ifEquals this ../value.readDirection}}selected{{/ifEquals}}>{{this}}</option>
             {{/each}}
         </select>
+    </div>
+    <div class="col-md-1 project-buttons-right">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-delete" title="Delete file" id="project-file-delete">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
     </div>
 </div>
 

@@ -35,6 +35,10 @@ var ProjectFileDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 
     events: {
+        'change #file-type': 'updateFileType',
+        'change #file-read-direction': 'updateReadDirection',
+        'change #file-tags': 'updateFileTags',
+        'click #project-file-download': 'downloadFile',
     },
 
     templateContext() {
@@ -45,6 +49,26 @@ var ProjectFileDetailView = Marionette.View.extend({
         };
     },
 
+    updateFileType: function(e) {
+    },
+
+    updateReadDirection: function(e) {
+    },
+
+    updateFileTags: function(e) {
+    },
+
+    downloadFile: function(e) {
+        e.preventDefault();
+
+        var fileModel = this.model.getFileModel();
+
+        fileModel.downloadFileToDisk()
+            .fail(function(error) {
+                // TODO: handle error
+                console.log(error);
+            });
+    },
 });
 
 import table_template from 'Templates/project/files/files-detail-table.html';
