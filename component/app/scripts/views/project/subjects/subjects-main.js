@@ -32,7 +32,7 @@ import Project from 'Scripts/models/agave-project';
 import SubjectsListView from 'Scripts/views/project/subjects/subjects-list';
 
 // Project subjects header view
-import template from 'Templates/project/subjects/subjects-header.html';
+import template from 'Templates/project/subjects/subjects-list-header.html';
 var SubjectsHeaderView = Marionette.View.extend({
     template: Handlebars.compile(template),
 
@@ -42,14 +42,6 @@ var SubjectsHeaderView = Marionette.View.extend({
         }
     },
 
-    templateContext() {
-        var num_subjects = 0;
-        var collections = this.controller.getCollections();
-        if (collections.subjectList) num_subjects = collections.subjectList.length;
-        return {
-            num_subjects: num_subjects
-        }
-    }
 });
 
 
@@ -78,7 +70,7 @@ var SubjectsView = Marionette.View.extend({
 
         var collections = this.controller.getCollections();
         this.showChildView('headerRegion', new SubjectsHeaderView({controller: this.controller}));
-        this.showChildView('listRegion', new SubjectsListView({collection: collections.subjectList, controller: this.controller}));
+this.showChildView('listRegion', new SubjectsListView({collection: collections.subjectList, controller: this.controller, view_mode: 'detail'}));
     },
 
     showSubjectsList(subjectsList) {
