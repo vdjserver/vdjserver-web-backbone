@@ -34,33 +34,80 @@ import Project from 'Scripts/models/agave-project';
 import SubjectsView from 'Scripts/views/project/subjects/subjects-main';
 import SamplesView from 'Scripts/views/project/samples/samples-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
+import SubjectsListView from 'Scripts/views/project/subjects/subjects-list';
 
+import headerTemplate from 'Templates/project/subjects/subjects-header.html';
 // Project subjects/samples layout
 // two regions, one for subjects, one for samples
 // content display is handled by sub views
 var ProjectSubjectsSamplesView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project-subjects"></div><div id="project-samples"></div>'),
+    template: Handlebars.compile(headerTemplate),
+    //template: Handlebars.compile('<div id="project-subjects"></div><div id="project-samples"></div>'),
 
     // one region for any header content
     // one region for the files collection
     regions: {
         subjectsRegion: '#project-subjects',
-        samplesRegion: '#project-samples'
+        samplesRegion: '#project-samples',
+        listRegion: '#project-subject-details',
     },
 
     events: {
+        'click #project-subjects-header-button' : 'toggleSubjectsCompressedView',
+        'click #project-samples' : 'togglesSamplesCompressedView',
+	//'click #project-subjects-list' : 'toggleSubjectsDetailedView',
+    },
+
+    /*toggleSubjectsDetailedView(e) {
+        console.log("details toggle");
+        let collections = this.controller.getCollections();
+        let subjectList = collections.subjectList;
+        if (this.detailed_view) { //if detailed view is shown 
+            this.showChildView('listRegion', new SubjectsListView({collection: subjectList, controller: this.controller}));
+            this.detailed_view = false;
+        } else {
+            //this.getRegion('subjectsRegion').$el.hide();
+            this.getRegion('listRegion').empty();
+            this.detailed_view = true;
+        }
+    },*/
+
+    toggleSamplesCompressedView(e) {
+        console.log("samples");
+    },
+
+    toggleSubjectsCompressedView(e) {
+	let collections = this.controller.getCollections();
+        let subjectList = collections.subjectList;
+        if (this.compressed_view) { //if compressed view is shown then show Summary
+            this.showChildView('subjectsRegion', new SubjectsView({collection: subjectList, controller: this.controller}));
+            this.compressed_view = false;
+        } else {
+            this.getRegion('subjectsRegion').empty();
+            this.compressed_view = true;
+        }
     },
 
     initialize(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+	    this.compressed_view = false;
     },
 
     showSubjectsSamplesList(subjectList, sampleList) {
         this.showChildView('subjectsRegion', new SubjectsView({collection: subjectList, controller: this.controller}));
         this.showChildView('samplesRegion', new SamplesView({collection: sampleList, controller: this.controller}));
     },
+
+    templateContext() {
+        var num_subjects = 0;
+        var collections = this.controller.getCollections();
+        if (collections.subjectList) num_subjects = collections.subjectList.length;
+        return {
+            num_subjects: num_subjects
+        }
+    }
 
 });
 
@@ -70,12 +117,6 @@ function ProjectSubjectsSamplesController(controller) {
     // upper level controller, i.e. the single project controller
     this.controller = controller;
 
-    // the project model
-    // we assume all the repertoire data is held by the controller
-    this.model = this.controller.model;
-    console.log(this.model);
-
-    // repertoire list view
     this.mainView = new ProjectSubjectsSamplesView({controller: this});
 }
 

@@ -63,7 +63,10 @@ var SubjectContainerView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+        if (parameters && parameters.view_mode)
+            this.view_mode = parameters.view_mode;
 
+	this.model.view_mode = parameters.view_mode;
         this.showSubjectView();
     },
 
@@ -72,7 +75,8 @@ var SubjectContainerView = Marionette.View.extend({
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':
-                //this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: this.model.edit_mode}));
+		this.getRegion('containerRegion').empty();
+                this.showChildView('containerRegion',new SubjectDetailView({controller: this.controller, model: this.model}));
                 break;
             case 'edit':
                 //this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: this.model.edit_mode}));
@@ -94,9 +98,11 @@ var SubjectsListView = Marionette.CollectionView.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+        if (parameters && parameters.view_mode)
+            this.view_mode = parameters.view_mode;
 
         this.childView = SubjectContainerView;
-        this.childViewOptions = { controller: this.controller };
+        this.childViewOptions = { controller: this.controller, view_mode: this.view_mode };
     }
 });
 
