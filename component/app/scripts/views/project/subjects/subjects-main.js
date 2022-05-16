@@ -50,7 +50,7 @@ var SubjectsHeaderView = Marionette.View.extend({
 // content display is handled by sub views
 var SubjectsView = Marionette.View.extend({
     template: Handlebars.compile('<div id="project-subjects-header"></div><div id="project-subjects-list"></div>'),
-    className: 'project-subjects-list',
+    //className: 'project-subjects-list',
 
     // one region for any header content
     // one region for the files collection
@@ -64,13 +64,14 @@ var SubjectsView = Marionette.View.extend({
 
     initialize(parameters) {
         // our controller
-        if (parameters && parameters.controller) {
+        if (parameters && parameters.controller)
             this.controller = parameters.controller;
-        }
+        if (parameters && parameters.view_mode)
+            this.view_mode = parameters.view_mode;
 
         var collections = this.controller.getCollections();
         this.showChildView('headerRegion', new SubjectsHeaderView({controller: this.controller}));
-this.showChildView('listRegion', new SubjectsListView({collection: collections.subjectList, controller: this.controller, view_mode: 'detail'}));
+        this.showChildView('listRegion', new SubjectsListView({collection: collections.subjectList, controller: this.controller, view_mode: this.view_mode}));
     },
 
     showSubjectsList(subjectsList) {

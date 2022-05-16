@@ -42,62 +42,63 @@ import headerTemplate from 'Templates/project/subjects/subjects-header.html';
 // content display is handled by sub views
 var ProjectSubjectsSamplesView = Marionette.View.extend({
     template: Handlebars.compile(headerTemplate),
-    //template: Handlebars.compile('<div id="project-subjects"></div><div id="project-samples"></div>'),
 
     // one region for any header content
     // one region for the files collection
     regions: {
         subjectsRegion: '#project-subjects',
-        samplesRegion: '#project-samples',
-        listRegion: '#project-subject-details',
-    },
-
-    events: {
-        'click #project-subjects-header-button' : 'toggleSubjectsCompressedView',
-        'click #project-samples' : 'togglesSamplesCompressedView',
-	//'click #project-subjects-list' : 'toggleSubjectsDetailedView',
-    },
-
-    /*toggleSubjectsDetailedView(e) {
-        console.log("details toggle");
-        let collections = this.controller.getCollections();
-        let subjectList = collections.subjectList;
-        if (this.detailed_view) { //if detailed view is shown 
-            this.showChildView('listRegion', new SubjectsListView({collection: subjectList, controller: this.controller}));
-            this.detailed_view = false;
-        } else {
-            //this.getRegion('subjectsRegion').$el.hide();
-            this.getRegion('listRegion').empty();
-            this.detailed_view = true;
-        }
-    },*/
-
-    toggleSamplesCompressedView(e) {
-        console.log("samples");
-    },
-
-    toggleSubjectsCompressedView(e) {
-	let collections = this.controller.getCollections();
-        let subjectList = collections.subjectList;
-        if (this.compressed_view) { //if compressed view is shown then show Summary
-            this.showChildView('subjectsRegion', new SubjectsView({collection: subjectList, controller: this.controller}));
-            this.compressed_view = false;
-        } else {
-            this.getRegion('subjectsRegion').empty();
-            this.compressed_view = true;
-        }
+        samplesRegion: '#project-samples'
     },
 
     initialize(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-	    this.compressed_view = false;
+        // start in summary mode
+        this.subjects_view_mode = 'summary';
+        this.samples_view_mode = 'summary';
+    },
+
+
+    events: {
+        'click #project-subjects-header-button' : 'toggleSubjectsView',
+        'click #project-samples-header-button' : 'togglesSamplesView',
+    },
+
+    toggleSubjectsView(e) {
+        console.log("toggle subjects");
+        let collections = this.controller.getCollections();
+        let subjectList = collections.subjectList;
+
+        // summary -> detail -> compressed -> summary
+        switch(this.subjects_view_mode) {
+            case 'summary': this.subjects_view_mode = 'detail'; break;
+            case 'detail': this.subjects_view_mode = 'compressed'; break;
+            case 'compressed': this.subjects_view_mode = 'summary'; break;
+        }
+        this.showSubjectsList(subjectList);
+    },
+
+    toggleSamplesView(e) {
+        console.log("samples");
+    },
+
+    showSubjectsList(subjectList) {
+        if (this.subjects_view_mode == 'compressed') {
+            //TODO: detach instead so we don't lose edits??
+            this.getRegion('subjectsRegion').empty();
+        } else {
+            this.showChildView('subjectsRegion', new SubjectsView({collection: subjectList, controller: this.controller, view_mode: this.subjects_view_mode}));
+        }
+    },
+
+    showSamplesList(sampleList) {
+        this.showChildView('samplesRegion', new SamplesView({collection: sampleList, controller: this.controller, view_mode: this.samples_view_mode}));
     },
 
     showSubjectsSamplesList(subjectList, sampleList) {
-        this.showChildView('subjectsRegion', new SubjectsView({collection: subjectList, controller: this.controller}));
-        this.showChildView('samplesRegion', new SamplesView({collection: sampleList, controller: this.controller}));
+        this.showSubjectsList(subjectList);
+        this.showSamplesList(sampleList);
     },
 
     templateContext() {

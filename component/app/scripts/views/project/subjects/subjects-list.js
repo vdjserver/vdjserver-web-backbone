@@ -63,10 +63,13 @@ var SubjectContainerView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-        if (parameters && parameters.view_mode)
-            this.view_mode = parameters.view_mode;
+        if (parameters && parameters.view_mode) {
+            // save state in model instead of view
+            // if editing, leave in edit
+            if (this.model.view_mode != 'edit')
+                this.model.view_mode = parameters.view_mode;
+        }
 
-	this.model.view_mode = parameters.view_mode;
         this.showSubjectView();
     },
 
@@ -75,7 +78,7 @@ var SubjectContainerView = Marionette.View.extend({
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':
-		this.getRegion('containerRegion').empty();
+                //this.getRegion('containerRegion').empty();
                 this.showChildView('containerRegion',new SubjectDetailView({controller: this.controller, model: this.model}));
                 break;
             case 'edit':
