@@ -46,13 +46,12 @@ function ProjectFilesController(controller) {
     this.controller = controller;
 
     // the project model
-    // we assume all the repertoire data is held by the controller
     this.model = this.controller.model;
 
     // file uploading
     this.cleanUpload();
 
-    // repertoire list view
+    // file list view
     this.mainView = new ProjectFilesView({controller: this, model: this.model});
 }
 
@@ -78,6 +77,17 @@ ProjectFilesController.prototype = {
         if (this.uploadFiles) {
             this.mainView.showUploadFiles(this.uploadFiles);
         }
+    },
+
+    flagProjectEdit: function(flag) {
+        // pass up the controller chain
+        this.controller.flagProjectEdit(flag);
+        // update header
+        this.mainView.updateHeader();
+    },
+
+    hasProjectEdits: function() {
+        return this.controller.hasProjectEdits();
     },
 
     applySort(sort_by) {

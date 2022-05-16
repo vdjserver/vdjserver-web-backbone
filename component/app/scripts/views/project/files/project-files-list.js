@@ -34,10 +34,16 @@ import detail_template from 'Templates/project/files/files-detail.html';
 var ProjectFileDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+    },
+
     events: {
-        'change #file-type': 'updateFileType',
-        'change #file-read-direction': 'updateReadDirection',
-        'change #file-tags': 'updateFileTags',
+        'change #project-file-type': 'updateFileType',
+        'change #project-file-read-direction': 'updateReadDirection',
+        'change #project-file-tags': 'updateFileTags',
         'click #project-file-download': 'downloadFile',
     },
 
@@ -50,12 +56,28 @@ var ProjectFileDetailView = Marionette.View.extend({
     },
 
     updateFileType: function(e) {
+        // let controller know something is being changed
+        this.controller.flagProjectEdit(true);
+        // update the model
+        let value = this.model.get('value');
+        value['fileType'] = parseInt(e.currentTarget.value);
+        this.model.set('value', value);
     },
 
     updateReadDirection: function(e) {
+        // let controller know something is being changed
+        this.controller.flagProjectEdit(true);
+        // update the model
+        let value = this.model.get('value');
+        value['readDirection'] = e.target.value;
+        this.model.set('value', value);
     },
 
     updateFileTags: function(e) {
+        // let controller know something is being changed
+        this.controller.flagProjectEdit(true);
+        // update the model
+        this.model.updateTags(e.target.value);
     },
 
     downloadFile: function(e) {
@@ -77,6 +99,10 @@ export default Marionette.CollectionView.extend({
     childViewContainer: '.project-files-detail-table',
 
     initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
         this.childView = ProjectFileDetailView;
         this.childViewOptions = { controller: this.controller };
     },

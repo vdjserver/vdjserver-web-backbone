@@ -509,6 +509,7 @@ function SingleProjectController(project, page) {
 
     // the project view
     this.projectView = new SingleProjectView({controller: this, model: this.model});
+    this.hasEdits = false;
 
     // kick off lazy loads
     this.repertoireListPromise = this.lazyLoadRepertoires();
@@ -563,6 +564,17 @@ SingleProjectController.prototype = {
             projectUserList: this.projectUserList,
             allUsersList: this.allUsersList
         }
+    },
+
+    //
+    // project edits
+    //
+    flagProjectEdit: function(flag) {
+        this.hasEdits = flag;
+    },
+
+    hasProjectEdits: function() {
+        return this.hasEdits;
     },
 
     //

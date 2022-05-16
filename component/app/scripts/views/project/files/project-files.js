@@ -49,7 +49,8 @@ var ProjectFilesHeaderView = Marionette.View.extend({
         var files = this.controller.getProjectFilesList();
         var current_sort = files['sort_by'];
         return {
-            current_sort: current_sort
+            current_sort: current_sort,
+            hasEdits: this.controller.hasProjectEdits()
         }
     },
 });

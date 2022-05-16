@@ -581,9 +581,6 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
         url: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },
-        addPlaceholderMarker: function() {
-            this.set('isPlaceholder', true);
-        },
         syncMetadataPermissionsWithProjectPermissions: function() {
 
             var value = this.get('value');
@@ -609,18 +606,14 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
 
             return this.save();
         },
+
         updateTags: function(tags) {
-
             var value = this.get('value');
-
             var tagArray = this._formatTagsForSave(tags);
-
             value['publicAttributes']['tags'] = tagArray;
-
             this.set('value', value);
-
-            return this.save();
         },
+
         getFilePath: function() {
 
             var value = this.get('value');
@@ -658,22 +651,6 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
             });
 
             return fileModel;
-        },
-        getReadDirection: function() {
-            var value = this.get('value');
-
-            var readDirection = value['readDirection'];
-
-            return readDirection;
-        },
-        setReadDirection: function(newReadDirection) {
-            var value = this.get('value');
-
-            value['readDirection'] = newReadDirection;
-
-            this.set('value', value);
-
-            return this.save();
         },
         getQualityScoreMetadataUuid: function() {
             var value = this.get('value');
@@ -720,20 +697,6 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
             var value = this.get('value');
 
             delete value['pairedReadMetadataUuid'];
-
-            this.set('value', value);
-
-            return this.save();
-        },
-        getFileType: function() {
-            var value = this.get('value');
-
-            return value['fileType'];
-        },
-        updateFileType: function(fileType) {
-            var value = this.get('value');
-
-            value['fileType'] = fileType;
 
             this.set('value', value);
 
