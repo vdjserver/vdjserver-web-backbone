@@ -31,17 +31,15 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
 import Project from 'Scripts/models/agave-project';
-import SubjectsView from 'Scripts/views/project/subjects/subjects-main';
+import SubjectsView from 'Scripts/views/project/subjects/project-subjects-main';
 import SamplesView from 'Scripts/views/project/samples/samples-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
-import SubjectsListView from 'Scripts/views/project/subjects/subjects-list';
 
-import headerTemplate from 'Templates/project/subjects/subjects-header.html';
 // Project subjects/samples layout
 // two regions, one for subjects, one for samples
 // content display is handled by sub views
 var ProjectSubjectsSamplesView = Marionette.View.extend({
-    template: Handlebars.compile(headerTemplate),
+    template: Handlebars.compile('<div id="project-subjects" class="project-subjects-list"></div><div id="project-samples" class="project-samples-list"></div>'),
 
     // one region for any header content
     // one region for the files collection
@@ -54,62 +52,23 @@ var ProjectSubjectsSamplesView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-        // start in summary mode
-        this.subjects_view_mode = 'summary';
-        this.samples_view_mode = 'summary';
     },
-
 
     events: {
-        'click #project-subjects-header-button' : 'toggleSubjectsView',
-        'click #project-samples-header-button' : 'togglesSamplesView',
     },
 
-    toggleSubjectsView(e) {
-        console.log("toggle subjects");
-        let collections = this.controller.getCollections();
-        let subjectList = collections.subjectList;
-
-        // summary -> detail -> compressed -> summary
-        switch(this.subjects_view_mode) {
-            case 'summary': this.subjects_view_mode = 'detail'; break;
-            case 'detail': this.subjects_view_mode = 'compressed'; break;
-            case 'compressed': this.subjects_view_mode = 'summary'; break;
-        }
-        this.showSubjectsList(subjectList);
+    showSubjectsView(subjectList) {
+        this.showChildView('subjectsRegion', new SubjectsView({collection: subjectList, controller: this.controller}));
     },
 
-    toggleSamplesView(e) {
-        console.log("samples");
+    showSamplesView(sampleList) {
+        this.showChildView('samplesRegion', new SamplesView({collection: sampleList, controller: this.controller}));
     },
 
-    showSubjectsList(subjectList) {
-        if (this.subjects_view_mode == 'compressed') {
-            //TODO: detach instead so we don't lose edits??
-            this.getRegion('subjectsRegion').empty();
-        } else {
-            this.showChildView('subjectsRegion', new SubjectsView({collection: subjectList, controller: this.controller, view_mode: this.subjects_view_mode}));
-        }
+    showSubjectsSamplesView(subjectList, sampleList) {
+        this.showSubjectsView(subjectList);
+        this.showSamplesView(sampleList);
     },
-
-    showSamplesList(sampleList) {
-        this.showChildView('samplesRegion', new SamplesView({collection: sampleList, controller: this.controller, view_mode: this.samples_view_mode}));
-    },
-
-    showSubjectsSamplesList(subjectList, sampleList) {
-        this.showSubjectsList(subjectList);
-        this.showSamplesList(sampleList);
-    },
-
-    templateContext() {
-        var num_subjects = 0;
-        var collections = this.controller.getCollections();
-        if (collections.subjectList) num_subjects = collections.subjectList.length;
-        return {
-            num_subjects: num_subjects
-        }
-    }
-
 });
 
 // Project files controller
@@ -117,6 +76,12 @@ var ProjectSubjectsSamplesView = Marionette.View.extend({
 function ProjectSubjectsSamplesController(controller) {
     // upper level controller, i.e. the single project controller
     this.controller = controller;
+    // default to summary views
+    this.subjects_view_mode = 'summary';
+    this.samples_view_mode = 'summary';
+    // edits
+    this.subjects_has_edits = false;
+    this.samples_has_edits = false;
 
     this.mainView = new ProjectSubjectsSamplesView({controller: this});
 }
@@ -131,13 +96,30 @@ ProjectSubjectsSamplesController.prototype = {
         return this.mainView;
     },
 
+    // access data held by upper level controller
     getCollections() {
         return this.controller.getCollections();
     },
-    // access data held by upper level controller
-    //getProjectFilesList() {
-    //    return this.controller.fileList;
-    //},
+
+    getSubjectsViewMode() {
+        return this.subjects_view_mode;
+    },
+
+    toggleSubjectsViewMode() {
+        // summary -> detail -> compressed -> summary
+        switch(this.subjects_view_mode) {
+            case 'summary': this.subjects_view_mode = 'detail'; break;
+            case 'detail': this.subjects_view_mode = 'compressed'; break;
+            case 'compressed': this.subjects_view_mode = 'summary'; break;
+        }
+    },
+
+    getSamplesViewMode() {
+        return this.samples_view_mode;
+    },
+
+    toggleSamplesViewMode() {
+    },
 
     // show project subjects and samples
     showSubjectsSamples() {
@@ -145,7 +127,7 @@ ProjectSubjectsSamplesController.prototype = {
 
         // TODO: any filtering?
 
-        this.mainView.showSubjectsSamplesList(collections.subjectList, collections.sampleList);
+        this.mainView.showSubjectsSamplesView(collections.subjectList, collections.sampleList);
     },
 
 };

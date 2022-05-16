@@ -1,5 +1,5 @@
 //
-// subjects-list.js
+// project-subjects-list.js
 // List of subjects for projects
 //
 // VDJServer Analysis Portal
@@ -29,7 +29,7 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
 // subject summary view
-import summary_template from 'Templates/project/subjects/subjects-summary.html';
+import summary_template from 'Templates/project/subjects/project-subjects-summary.html';
 var SubjectSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
 
@@ -43,7 +43,7 @@ var SubjectSummaryView = Marionette.View.extend({
 });
 
 // subject detail/edit view
-import detail_template from 'Templates/project/subjects/subjects-detail.html';
+import detail_template from 'Templates/project/subjects/project-subjects-detail.html';
 var SubjectDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 });
@@ -63,12 +63,12 @@ var SubjectContainerView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-        if (parameters && parameters.view_mode) {
-            // save state in model instead of view
-            // if editing, leave in edit
-            if (this.model.view_mode != 'edit')
-                this.model.view_mode = parameters.view_mode;
-        }
+
+        // save state in model
+        // if editing, leave in edit
+        // get default view mode from controller
+        if (this.model.view_mode != 'edit')
+            this.model.view_mode = this.controller.getSubjectsViewMode();
 
         this.showSubjectView();
     },
@@ -101,11 +101,9 @@ var SubjectsListView = Marionette.CollectionView.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-        if (parameters && parameters.view_mode)
-            this.view_mode = parameters.view_mode;
 
         this.childView = SubjectContainerView;
-        this.childViewOptions = { controller: this.controller, view_mode: this.view_mode };
+        this.childViewOptions = { controller: this.controller };
     }
 });
 

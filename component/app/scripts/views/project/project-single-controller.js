@@ -673,7 +673,7 @@ SingleProjectController.prototype = {
     showProjectSubjectsSamples() {
         this.page = 'subject-sample';
         App.router.navigate('project/' + this.model.get('uuid') + '/subject-sample', {trigger: false});
-        this.projectView.updateSummary();
+
         var that = this;
         if (! this.repertoireList) {
             // it should be lazy loading
@@ -686,7 +686,7 @@ SingleProjectController.prototype = {
             this.repertoireListPromise.then(function() {
                     // have the view display them
                     that.projectView.updateSummary();
-                    that.subjectsSamplesController = new SubjectsSamplesController(that);
+                    if (! that.subjectsSamplesController) that.subjectsSamplesController = new SubjectsSamplesController(that);
                     that.projectView.showProjectSubjectsSamples(that.subjectsSamplesController);
                 })
                 .fail(function(error) {
@@ -695,7 +695,7 @@ SingleProjectController.prototype = {
         } else {
             // tell controller to display the lists
             that.projectView.updateSummary();
-            that.subjectsSamplesController = new SubjectsSamplesController(that);
+            if (! that.subjectsSamplesController) that.subjectsSamplesController = new SubjectsSamplesController(that);
             that.projectView.showProjectSubjectsSamples(that.subjectsSamplesController);
         }
     },
