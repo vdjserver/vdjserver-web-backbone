@@ -464,34 +464,30 @@ export var ProjectFile = File.extend(
         downloadFileToDisk: function() {
             var jqxhr;
 
-            if (App.Routers.communityMode) {
-              jqxhr = this.downloadPublicFileByPostit(this.get('projectUuid'), this.get('fileUuid'));
-            } else {
-              var url = EnvironmentConfig.agave.hostname
-                      + '/files'
-                      + '/v2'
-                      + '/media'
-                      + '/system'
-                      + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
+            var url = EnvironmentConfig.agave.hostname
+                  + '/files'
+                  + '/v2'
+                  + '/media'
+                  + '/system'
+                  + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
 
-                      // NOTE: this uses agave // paths
-                      + '/' + this.get('path')
-                      ;
+                  // NOTE: this uses agave // paths
+                  + '/' + this.get('path')
+                  ;
 
-              if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
+            if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
 
-                  url = EnvironmentConfig.agave.hostname
-                      + '/jobs'
-                      + '/v2'
-                      + '/' + this.get('jobUuid')
-                      + '/outputs'
-                      + '/media'
-                      + '/' + this.get('name')
-                      ;
-              }
-
-              jqxhr = this.downloadUrlByPostit(url);
+              url = EnvironmentConfig.agave.hostname
+                  + '/jobs'
+                  + '/v2'
+                  + '/' + this.get('jobUuid')
+                  + '/outputs'
+                  + '/media'
+                  + '/' + this.get('name')
+                  ;
             }
+
+            jqxhr = this.downloadUrlByPostit(url);
 
             return jqxhr;
         },

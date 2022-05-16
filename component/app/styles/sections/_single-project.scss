@@ -55,12 +55,18 @@ button.project-changes-action {
     margin-right: 2em;
 }
 
+.underline-on-hover:hover {
+    text-decoration: underline;
+}
+
 .details {
     font-weight: bold;
 }
 
 .card {
     margin: 1%;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 .card-active {
@@ -74,6 +80,8 @@ button.project-changes-action {
 
 .card-body {
     text-align: center;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
 }
 
 .card-image {
