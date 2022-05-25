@@ -77,8 +77,9 @@ var FilesUploadDetailView = Marionette.View.extend({
             pctComplete: pctComplete,
             uploadStatusText: uploadStatusText,
             hasError: hasError,
-            fileTypes: File.fileTypeCodes,
-            fileTypeNames: File.fileTypeNames,
+            fileTypeName: File.getFileTypeById(this.model.get('type')),
+            fileTypes: File.getFileTypes(),
+            fileTypeNames: File.getFileTypeNames(),
             cid: this.model.cid
         };
     },

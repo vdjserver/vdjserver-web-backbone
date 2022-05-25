@@ -32,6 +32,9 @@ import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import ProjectFilesListView from 'Scripts/views/project/files/project-files-list';
 import ProjectFilesUploadView from 'Scripts/views/project/files/project-files-upload';
+import ProjectPairFileView from 'Scripts/views/project/files/project-files-pairing';
+import MessageModel from 'Scripts/models/message';
+import ModalView from 'Scripts/views/utilities/modal-view';
 
 // Project Files Page
 import template from 'Templates/project/files/files-header.html';
@@ -46,11 +49,11 @@ var ProjectFilesHeaderView = Marionette.View.extend({
 
     templateContext() {
         if (!this.controller) return {};
-        var files = this.controller.getProjectFilesList();
+        var files = this.controller.getPairedList();
         var current_sort = files['sort_by'];
         return {
             current_sort: current_sort,
-            hasEdits: this.controller.hasProjectEdits()
+            hasEdits: this.controller.hasFileEdits()
         }
     },
 });
@@ -71,7 +74,7 @@ var ProjectFilesView = Marionette.View.extend({
         listRegion: '#project-files-list'
     },
 
-    initialize(parameters) {
+    initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
@@ -81,7 +84,7 @@ var ProjectFilesView = Marionette.View.extend({
         // sort files list
         'click #project-files-sort-select': function(e) {
             // check it is a new sort
-            var files = this.controller.getProjectFilesList();
+            var files = this.controller.getPairedList();
             var current_sort = files['sort_by'];
             if (e.target.name != current_sort) {
                 this.controller.applySort(e.target.name);
@@ -89,26 +92,37 @@ var ProjectFilesView = Marionette.View.extend({
             }
         },
 
+        // file uploading
         'click #project-files-upload-computer': 'uploadFileFromComputer',
         'click #cancel-upload-button': 'cancelUpload',
         'click #start-upload-button':  'startUpload',
-        'click #done-upload-button':  'doneUpload'
+        'click #done-upload-button':  'doneUpload',
+
+        // file pairing
+        'click #project-files-pair-files': 'showPairFiles',
+
+        // save/revert changes
+        'click #project-files-revert-changes': 'revertFileChanges',
+        'click #project-files-save-changes': 'saveFileChanges',
     },
 
-    showProjectFilesList(filesList) {
+    showProjectFilesList: function(filesList) {
         this.showChildView('headerRegion', new ProjectFilesHeaderView({controller: this.controller}));
         this.showChildView('listRegion', new ProjectFilesListView({collection: filesList, controller: this.controller}));
     },
 
-    showUploadFiles() {
+    showUploadFiles: function() {
         this.showChildView('stagingRegion', new ProjectFilesUploadView({model: this.model, controller: this.controller}));
     },
 
-    updateHeader() {
+    updateHeader: function() {
         this.showChildView('headerRegion', new ProjectFilesHeaderView({controller: this.controller}));
     },
 
-    uploadFileFromComputer: function(e, stagedFiles) {
+    //
+    // File uploading
+    //
+    uploadFileFromComputer: function(e) {
         e.preventDefault();
 
         if (! this.controller.uploadFiles) {
@@ -146,6 +160,56 @@ var ProjectFilesView = Marionette.View.extend({
         this.getChildView('stagingRegion').destroy();
     },
 
+    //
+    // Read file pairing
+    //
+    showPairFiles: function(e) {
+        e.preventDefault();
+
+        // display pair files modal
+        // the app controller manages the modal region
+        var files = this.controller.getProjectFilesList().getUnpairedCollection();
+        this.pairFileView = new ProjectPairFileView({ controller: this.controller, files: files });
+        App.AppController.startModal(this.pairFileView, this, null, this.onHiddenFilePairingModal);
+        $('#modal-message').modal('show');
+    },
+
+    onHiddenFilePairingModal: function(context) {
+        // were files paired?
+        if (context.pairFileView.pair_results) {
+            let body = '<p>' + context.pairFileView.pair_results.matched + ' files were matched.</p>';
+            body += '<p>' + context.pairFileView.pair_results.paired + ' files were paired together.</p>';
+            // prepare a new modal with the results
+            var message = new MessageModel({
+                'header': 'Pair Read Files Results',
+                'body':   body,
+                cancelText: 'Cancel',
+                confirmText: 'Ok'
+            });
+
+            context.pairFileResultsView = new ModalView({model: message});
+            App.AppController.startModal(context.pairFileResultsView, context, null, context.onHiddenFilePairingResultsModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onHiddenFilePairingResultsModal: function(context) {
+        let m = context.pairFileResultsView.model;
+        if (m.get('status') == 'confirm') {
+            // apply the pairing, controller will update the display
+            context.controller.applyPairing(context.pairFileView.pair_results);
+        }
+    },
+
+    saveFileChanges: function(e) {
+        e.preventDefault();
+        this.controller.saveFileChanges();
+    },
+
+    revertFileChanges: function(e) {
+        e.preventDefault();
+        this.controller.revertFileChanges();
+    }
 });
 
 export default ProjectFilesView;

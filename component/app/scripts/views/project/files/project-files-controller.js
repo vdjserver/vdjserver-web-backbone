@@ -35,6 +35,8 @@ import Handlebars from 'handlebars';
 import Project from 'Scripts/models/agave-project';
 import ProjectFilesView from 'Scripts/views/project/files/project-files';
 import LoadingView from 'Scripts/views/utilities/loading-view';
+import MessageModel from 'Scripts/models/message';
+import ModalView from 'Scripts/views/utilities/modal-view';
 
 import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-file';
 import { ProjectFileQuery } from 'Scripts/collections/agave-files';
@@ -47,6 +49,9 @@ function ProjectFilesController(controller) {
 
     // the project model
     this.model = this.controller.model;
+    // clone collection for holding edits
+    this.hasEdits = false;
+    this.resetCollections();
 
     // file uploading
     this.cleanUpload();
@@ -65,43 +70,209 @@ ProjectFilesController.prototype = {
         return this.mainView;
     },
 
-    // access data held by upper level controller
-    getProjectFilesList() {
+    // collections
+    resetCollections() {
+        // these collections should always point to the same models
+        this.fileList = this.controller.fileList.getClonedCollection();
+        this.pairedList = this.fileList.getPairedCollection();
+    },
+    getPairedList: function() {
+        return this.pairedList;
+    },
+    getProjectFilesList: function() {
+        return this.fileList;
+    },
+    getOriginalProjectFilesList: function() {
         return this.controller.fileList;
+    },
+    addFile: function(model) {
+        // add to the upper-level controller
+        this.controller.fileList.add(model);
+        // add clone to our lists
+        let m = model.deepClone();
+        this.fileList.add(m);
+        this.pairedList.add(m);
     },
 
     // show project files
     showProjectFilesList() {
-        this.mainView.showProjectFilesList(this.getProjectFilesList());
+        this.mainView.showProjectFilesList(this.getPairedList());
 
         if (this.uploadFiles) {
             this.mainView.showUploadFiles(this.uploadFiles);
         }
     },
 
-    flagProjectEdit: function(flag) {
-        // pass up the controller chain
-        this.controller.flagProjectEdit(flag);
+    //
+    // save/revert file changes
+    //
+    flagFileEdits: function() {
+        // we keep flag just for file changes
+        this.hasEdits = true;
         // update header
         this.mainView.updateHeader();
     },
 
-    hasProjectEdits: function() {
-        return this.controller.hasProjectEdits();
+    hasFileEdits: function() {
+        return this.hasEdits;
+    },
+
+    saveFileChanges: function() {
+        // display a modal while the data is being saved
+        this.modalState = 'save';
+        var message = new MessageModel({
+          'header': 'Project Files',
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Saving Project File Changes</p>'
+        });
+
+        // the app controller manages the modal region
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        $('#modal-message').modal('show');
+    },
+
+    // file changes are sent to server after the modal is shown
+    onShownSaveModal(context) {
+        console.log('save: Show the modal');
+
+        // use modal state variable to decide
+        console.log(context.modalState);
+        if (context.modalState == 'save') {
+            // the changed collection/models
+            let fileList = context.getProjectFilesList();
+            let originalFileList = context.getOriginalProjectFilesList();
+
+            // see if any are deleted
+            var deletedModels = originalFileList.getMissingModels(fileList);
+
+            // Set up promises
+            var promises = [];
+
+            // deletions
+            /* file deletes are special
+            deletedModels.map(function(uuid) {
+                var m = context.originalFileList.get(uuid);
+                promises[promises.length] = function() {
+                    return m.destroy();
+                }
+            }); */
+
+            // updates and new
+            fileList.map(function(uuid) {
+                var m = fileList.get(uuid);
+                promises[promises.length] = new Promise(async function(resolve, reject) {
+                    // clear uuid for new entries so they get created
+                    if (m.get('uuid') == m.cid) m.set('uuid', '');
+                    else { // if existing entry, check if attributes changed
+                        var origModel = originalFileList.get(uuid);
+                        if (!origModel) return resolve();
+                        var changed = m.changedAttributes(origModel.attributes);
+                        if (!changed) return resolve();
+                    }
+
+                    var msg = null;
+                    await m.save().fail(function(error) { msg = error; });
+                    if (msg) return reject(msg);
+
+                    await m.syncMetadataPermissionsWithProjectPermissions(context.model.get('uuid')).catch(function(error) { msg = error; });
+                    if (msg) return reject(msg);
+
+                    return resolve();
+                });
+            });
+
+            // Execute promises
+            Promise.all(promises)
+                .then(function() {
+                    context.modalState = 'pass';
+                    $('#modal-message').modal('hide');
+                })
+                .catch(function(error) {
+                    console.log(error);
+
+                    // save failed so show error modal
+                    context.modalState = 'fail';
+                    $('#modal-message').modal('hide');
+
+                    // prepare a new modal with the failure message
+                    var message = new MessageModel({
+                        'header': 'Project Files',
+                        'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Saving Project File Changes failed!</div>',
+                        cancelText: 'Ok',
+                        serverError: error
+                    });
+
+                    var view = new ModalView({model: message});
+                    App.AppController.startModal(view, null, null, null);
+                    $('#modal-message').modal('show');
+                });
+        } else if (context.modalState == 'fail') {
+            // TODO: we should do something here?
+            console.log('fail');
+        }
+    },
+
+    onHiddenSaveModal(context) {
+        console.log('save: Hide the modal');
+        if (context.modalState == 'pass') {
+            // changes all saved
+            context.hasEdits = false;
+            context.controller.replaceFilesList(context.fileList);
+            context.resetCollections();
+            context.showProjectFilesList();
+        } else if (context.modalState == 'fail') {
+            // failure modal will automatically hide when user clicks OK
+        }
+    },
+
+    revertFileChanges: function() {
+        // throw away changes by re-cloning
+        this.hasEdits = false;
+        this.resetCollections();
+        this.showProjectFilesList();
     },
 
     applySort(sort_by) {
-        var files = this.getProjectFilesList();
+        var files = this.getPairedList();
         files.sort_by = sort_by;
         files.sort();
-        /*
-        if (this.filteredStudies) {
-            this.filteredStudies.sort_by = sort_by;
-            this.filteredStudies.sort();
-            this.projectView.updateSummary(this.filteredStudies);
-        } else {
-            this.projectView.updateSummary(this.studies);
-        } */
+    },
+
+    applyPairing(pair_results) {
+        if (!pair_results) return;
+        if (pair_results['pairs'].length == 0) return;
+        for (let i = 0; i < pair_results['pairs'].length; ++i) {
+            let m = pair_results['pairs'][i];
+            if (m['forward']) {
+                let fm = m['forward'];
+                let rm = m['reverse'];
+                let fv = fm.get('value');
+                let rv = rm.get('value');
+                fv['pairedReadMetadataUuid'] = rm.get('uuid');
+                fv['readDirection'] = 'F';
+                fm.set('value', fv);
+                rv['pairedReadMetadataUuid'] = fm.get('uuid');
+                rv['readDirection'] = 'R';
+                rm.set('value', rv);
+                // only the forward in the pair list
+                this.pairedList.remove(rm);
+            }
+            if (m['quality']) {
+                let qm = m['quality'];
+                let rm = m['read'];
+                let qv = qm.get('value');
+                let rv = rm.get('value');
+                qv['readMetadataUuid'] = rm.get('uuid');
+                qm.set('value', qv);
+                rv['qualityScoreMetadataUuid'] = qm.get('uuid');
+                rm.set('value', rv);
+                // only the read in the pair list
+                this.pairedList.remove(qm);
+            }
+        }
+        // update display
+        this.flagFileEdits();
+        this.showProjectFilesList();
     },
 
     // set all upload variables to initial state
@@ -309,9 +480,8 @@ ProjectFilesController.prototype = {
                     uploadFile.set('uploadStatus', 'complete');
                     completedFiles.push(file);
                     controller.completeFiles += 1;
-                    // add file to project file list
-                    let collections = controller.controller.getCollections();
-                    collections['fileList'].add(query.at(0));
+                    // add file to project file lists
+                    controller.addFile(query.at(0));
                 } else {
                     // TODO: how? what to do?
                     console.log('error: returned more than one object');

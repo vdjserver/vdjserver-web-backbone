@@ -324,6 +324,10 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('modalRegion', modalView);
     },
 
+    emptyModal() {
+        if (this.getChildView('modalRegion')) this.getChildView('modalRegion').empty();
+    },
+
     onShownModal() {
         console.log('App: Show the modal');
         if (this.onShowFunction) this.onShowFunction(this.modalContext);

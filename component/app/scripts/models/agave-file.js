@@ -242,6 +242,9 @@ export var File = Agave.Model.extend(
         UPLOAD_PROGRESS: 'uploadProgress',
         STAGE_PROGRESS: 'stageProgress',
 
+        // These should not be used directly for display, instead use the
+        // getFileTypes() and getFileTypeNames() functions which provide
+        // the types in a specific order for display
         fileTypeCodes: {
             FILE_TYPE_UNSPECIFIED: 0,
             FILE_TYPE_PRIMER: 1,
@@ -272,6 +275,8 @@ export var File = Agave.Model.extend(
         ],
 
         getFileTypeById: function(fileTypeId) {
+            if (fileTypeId === undefined) return File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_UNSPECIFIED];
+            if (File.fileTypeNames[fileTypeId] === undefined) return File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_UNSPECIFIED];
             return File.fileTypeNames[fileTypeId];
         },
 
@@ -581,23 +586,7 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
         url: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },
-        syncMetadataPermissionsWithProjectPermissions: function() {
 
-            var value = this.get('value');
-
-            var jqxhr = $.ajax({
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    projectUuid: value.projectUuid,
-                    uuid: this.get('uuid')
-                }),
-                headers: Agave.basicAuthHeader(),
-                type: 'POST',
-                url: EnvironmentConfig.vdjApi.hostname + '/permissions/metadata'
-            });
-
-            return jqxhr;
-        },
         softDelete: function() {
             var value = this.get('value');
             value.isDeleted = true;
@@ -639,6 +628,7 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
 
             return filePath;
         },
+
         getFileModel: function() {
             var value = this.get('value');
 
@@ -652,62 +642,21 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
 
             return fileModel;
         },
-        getQualityScoreMetadataUuid: function() {
-            var value = this.get('value');
 
-            var qualUuid = value['qualityScoreMetadataUuid'];
-
-            return qualUuid;
-        },
-        setQualityScoreMetadataUuid: function(qualityScoreMetadataUuid) {
-            var value = this.get('value');
-
-            value['qualityScoreMetadataUuid'] = qualityScoreMetadataUuid;
-
-            this.set('value', value);
-
-            return this.save();
-        },
-        removeQualityScoreMetadataUuid: function() {
-            var value = this.get('value');
-
-            delete value['qualityScoreMetadataUuid'];
-
-            this.set('value', value);
-
-            return this.save();
-        },
-        getPairedReadMetadataUuid: function() {
-            var value = this.get('value');
-
-            var pairedReadUuid = value['pairedReadMetadataUuid'];
-
-            return pairedReadUuid;
-        },
-        setPairedReadMetadataUuid: function(pairedReadMetadataUuid) {
-            var value = this.get('value');
-
-            value['pairedReadMetadataUuid'] = pairedReadMetadataUuid;
-
-            this.set('value', value);
-
-            return this.save();
-        },
-        removePairedReadMetadataUuid: function() {
-            var value = this.get('value');
-
-            delete value['pairedReadMetadataUuid'];
-
-            this.set('value', value);
-
-            return this.save();
-        },
         getFileExtension: function() {
             var value = this.get('value');
 
             var fileExtension = value['name'].split('.').pop();
 
             return fileExtension;
+        },
+
+        isPaired: function() {
+            let value = this.get('value');
+            if (value['pairedReadMetadataUuid']) return true;
+            if (value['qualityScoreMetadataUuid']) return true;
+            if (value['readMetadataUuid']) return true;
+            return false;
         },
 
         // Private Methods

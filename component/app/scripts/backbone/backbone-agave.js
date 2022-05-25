@@ -348,21 +348,44 @@ Agave.MetadataModel = Agave.Model.extend({
 
         return response;
     },
-    syncMetadataPermissionsWithProjectPermissions: function(projectUuid) {
 
-        var jqxhr = $.ajax({
-            contentType: 'application/json',
-            data: JSON.stringify({
-                projectUuid: projectUuid,
-                uuid: this.get('uuid')
-            }),
-            headers: Backbone.Agave.basicAuthHeader(),
-            type: 'POST',
-            url: EnvironmentConfig.vdjApi.hostname + '/permissions/metadata'
-        });
-
-        return jqxhr;
+    deepClone: function() {
+        let m = this.clone();
+        // deep copy of value
+        let value = this.get('value');
+        m.set('value', JSON.parse(JSON.stringify(value)));
+        // local attributes that do not get saved to server
+        let vdj = this.get('x-vdjserver');
+        if (vdj) m.set('x-vdjserver', JSON.parse(JSON.stringify(vdj)));
+        return m;
     },
+
+    syncMetadataPermissionsWithProjectPermissions: function(projectUuid) {
+        let value = this.get('value');
+
+        let obj = {
+            project_uuid: projectUuid,
+            metadata_uuid: this.get('uuid')
+        };
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/permission/metadata',
+                type: 'POST',
+                data: JSON.stringify(obj),
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            })
+        });
+    },
+
     setAttributesFromData: function(data) {
         // we only pull values out of data for existing keys
         var value = this.get('value');
@@ -414,8 +437,7 @@ Agave.MetadataCollection = Agave.PaginatedCollection.extend({
 
         for (var i = 0; i < this.length; i++) {
             var model = this.at(i);
-            var m = model.clone();
-            m.set('value', _.clone(model.get('value')));
+            var m = model.deepClone();
             newCollection.add(m);
         }
 

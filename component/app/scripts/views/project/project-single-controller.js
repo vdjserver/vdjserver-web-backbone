@@ -634,6 +634,15 @@ SingleProjectController.prototype = {
             });
     },
 
+    // this is used when edits are made then thrown away
+    replaceFilesList: function(newList) {
+        this.fileList = newList;
+    },
+
+    reloadFilesList: function(newList) {
+        this.fileListPromise = this.lazyLoadFiles();
+    },
+
     lazyLoadAnalyses() {
     },
 

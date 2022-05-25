@@ -48,16 +48,45 @@ var ProjectFileDetailView = Marionette.View.extend({
     },
 
     templateContext() {
+        let value = this.model.get('value');
+        let forward = null;
+        let reverse = null;
+        if (value['pairedReadMetadataUuid']) {
+            forward = this.model.get('value');
+            forward['lastUpdated'] = this.model.get('lastUpdated');
+            forward['fileTypeName'] = File.getFileTypeById(forward['fileType']);
+            let fileList = this.controller.getProjectFilesList();
+            let m = fileList.get(value['pairedReadMetadataUuid']);
+            reverse = m.get('value');
+            reverse['lastUpdated'] = m.get('lastUpdated');
+            reverse['fileTypeName'] = File.getFileTypeById(reverse['fileType']);
+        }
+        let quality = null;
+        let read = null;
+        if (value['qualityScoreMetadataUuid']) {
+            read = this.model.get('value');
+            read['lastUpdated'] = this.model.get('lastUpdated');
+            read['fileTypeName'] = File.getFileTypeById(read['fileType']);
+            let fileList = this.controller.getProjectFilesList();
+            let m = fileList.get(value['qualityScoreMetadataUuid']);
+            quality = m.get('value');
+            quality['lastUpdated'] = m.get('lastUpdated');
+            quality['fileTypeName'] = File.getFileTypeById(quality['fileType']);
+        }
         return {
             fileTypes: File.getFileTypes(),
             fileTypeNames: File.getFileTypeNames(),
             readDirections: File.getReadDirections(),
+            forward: forward,
+            reverse: reverse,
+            quality: quality,
+            read: read
         };
     },
 
     updateFileType: function(e) {
         // let controller know something is being changed
-        this.controller.flagProjectEdit(true);
+        this.controller.flagFileEdits(true);
         // update the model
         let value = this.model.get('value');
         value['fileType'] = parseInt(e.currentTarget.value);
@@ -66,7 +95,7 @@ var ProjectFileDetailView = Marionette.View.extend({
 
     updateReadDirection: function(e) {
         // let controller know something is being changed
-        this.controller.flagProjectEdit(true);
+        this.controller.flagFileEdits(true);
         // update the model
         let value = this.model.get('value');
         value['readDirection'] = e.target.value;
@@ -75,7 +104,7 @@ var ProjectFileDetailView = Marionette.View.extend({
 
     updateFileTags: function(e) {
         // let controller know something is being changed
-        this.controller.flagProjectEdit(true);
+        this.controller.flagFileEdits(true);
         // update the model
         this.model.updateTags(e.target.value);
     },
