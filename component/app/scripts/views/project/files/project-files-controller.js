@@ -160,25 +160,27 @@ ProjectFilesController.prototype = {
             // updates and new
             fileList.map(function(uuid) {
                 var m = fileList.get(uuid);
-                promises[promises.length] = new Promise(async function(resolve, reject) {
+                var saveChanges = async function(uuid, m) {
                     // clear uuid for new entries so they get created
                     if (m.get('uuid') == m.cid) m.set('uuid', '');
                     else { // if existing entry, check if attributes changed
                         var origModel = originalFileList.get(uuid);
-                        if (!origModel) return resolve();
+                        if (!origModel) return Promise.resolve();
                         var changed = m.changedAttributes(origModel.attributes);
-                        if (!changed) return resolve();
+                        if (!changed) return Promise.resolve();
                     }
 
                     var msg = null;
                     await m.save().fail(function(error) { msg = error; });
-                    if (msg) return reject(msg);
+                    if (msg) return Promise.reject(msg);
 
                     await m.syncMetadataPermissionsWithProjectPermissions(context.model.get('uuid')).catch(function(error) { msg = error; });
-                    if (msg) return reject(msg);
+                    if (msg) return Promise.reject(msg);
 
-                    return resolve();
-                });
+                    return Promise.resolve();
+                };
+
+                promises[promises.length] = saveChanges(uuid, m);
             });
 
             // Execute promises
