@@ -611,6 +611,11 @@ SingleProjectController.prototype = {
             });
     },
 
+    // refreshes with the latest data from the server
+    reloadRepertoireList: function(newList) {
+        this.repertoireListPromise = this.lazyLoadRepertoires();
+    },
+
     lazyLoadGroups() {
     },
 
@@ -639,6 +644,7 @@ SingleProjectController.prototype = {
         this.fileList = newList;
     },
 
+    // refreshes with the latest data from the server
     reloadFilesList: function(newList) {
         this.fileListPromise = this.lazyLoadFiles();
     },
@@ -651,6 +657,7 @@ SingleProjectController.prototype = {
         var userList = new Permissions({uuid: that.model.get('uuid')});
         var allUsers = new TenantUsers();
 
+        // TODO: this design will need to be changed to support multiple identity providers
         return userList.fetch()
             .then(function() {
                 // remove service account from list

@@ -271,7 +271,7 @@ export var File = Agave.Model.extend(
             'Comma-separated Values',
             'VDJML',
             'AIRR Rearrangement TSV',
-            'AIRR Data File JSON',
+            'AIRR JSON',
         ],
 
         getFileTypeById: function(fileTypeId) {
@@ -649,6 +649,12 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
             var fileExtension = value['name'].split('.').pop();
 
             return fileExtension;
+        },
+
+        getFileType: function() {
+            var value = this.get('value');
+
+            return value['fileType'];
         },
 
         isPaired: function() {

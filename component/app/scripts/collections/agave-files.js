@@ -342,7 +342,31 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
             if (! model.isPaired()) unpairedCollection.add(model);
         }
         return unpairedCollection;
-    }
+    },
+
+    getTSVCollection: function() {
+        var tsvModels = _.filter(this.models, function(model) {
+            return model.getFileType() === File.fileTypeCodes.FILE_TYPE_TSV;
+        });
+
+        var newCollection = this.clone();
+        newCollection.reset();
+        newCollection.add(tsvModels);
+
+        return newCollection;
+    },
+
+    getJSONCollection: function() {
+        var tsvModels = _.filter(this.models, function(model) {
+            return model.getFileType() === File.fileTypeCodes.FILE_TYPE_AIRR_JSON;
+        });
+
+        var newCollection = this.clone();
+        newCollection.reset();
+        newCollection.add(tsvModels);
+
+        return newCollection;
+    },
 
 });
 

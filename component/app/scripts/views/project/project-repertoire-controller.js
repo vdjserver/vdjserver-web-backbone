@@ -32,6 +32,7 @@ import ModalView from 'Scripts/views/utilities/modal-view';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import { Repertoire, Subject, Diagnosis } from 'Scripts/models/agave-metadata';
 import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
+import MetadataImportModal from 'Scripts/views/project/project-import-metadata';
 
 // Repertoire Controller: manages any views associated with viewing a repertoire
 // The basic design is a repertoire collection view
@@ -511,10 +512,10 @@ var RepertoireListView = Marionette.CollectionView.extend({
 
 });
 
-// The header view
-import repertoire_header from 'Templates/project/repertoires/repertoire-header.html';
-var RepertoireHeaderView = Marionette.View.extend({
-    template: Handlebars.compile(repertoire_header),
+// The button view
+import repertoire_buttons from 'Templates/project/repertoires/project-repertoire-buttons.html';
+var RepertoireButtonView = Marionette.View.extend({
+    template: Handlebars.compile(repertoire_buttons),
 
     initialize: function(parameters) {
     },
@@ -524,19 +525,20 @@ var RepertoireHeaderView = Marionette.View.extend({
 // shows all the repertoires in a list
 // content display is handled by sub views
 var RepertoireMainView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="repertoire-header"></div><div id="repertoire-list"></div>'),
+    template: Handlebars.compile('<div id="repertoire-buttons"></div><div id="repertoire-list"></div>'),
 
-    // one region for any header content
+    // one region for any repertoire buttons
     // one region for the repertoire collection
     regions: {
-        headerRegion: '#repertoire-header',
+        buttonRegion: '#repertoire-buttons',
         listRegion: '#repertoire-list'
     },
 
     events: {
         'click #create-rep': 'createRepertoire',
 
-        //'click #show-details': 'showDetails',
+        'click #project-repertoires-import': 'importMetadata',
+        'click #project-repertoires-export': 'exportMetadata',
         //'click #edit-repertoire': 'editRepertoire',
         // 'click #save-repertoire': 'saveRepertoire',
     },
@@ -549,12 +551,23 @@ var RepertoireMainView = Marionette.View.extend({
 
     // show a loading view, used while fetching the data
     showLoading() {
-        this.showChildView('headerRegion', new LoadingView({}));
+        this.showChildView('buttonRegion', new LoadingView({}));
     },
 
     showRepertoireList(repertoireList) {
-        this.showChildView('headerRegion', new RepertoireHeaderView());
+        this.showChildView('buttonRegion', new RepertoireButtonView());
         this.showChildView('listRegion', new RepertoireListView({collection: repertoireList, controller: this.controller}));
+    },
+
+    importMetadata: function(e) {
+        e.preventDefault();
+        this.controller.showMetadataImport();
+    },
+
+    exportMetadata: function(e) {
+        console.log('exportMetadata');
+        e.preventDefault();
+        this.model.exportMetadataToDisk();
     },
 
     createRepertoire(e) {
@@ -613,20 +626,25 @@ function RepertoireController(controller) {
     console.log(this.model);
 
     // repertoire list view
-    this.mainView = new RepertoireMainView({controller: this});
+    this.mainView = new RepertoireMainView({controller: this, model: this.model});
+    this.importView = null;
 }
 
 RepertoireController.prototype = {
     // return the main view, create it if necessary
     getView() {
         if (!this.mainView)
-            this.mainView = new RepertoireMainView({controller: this});
+            this.mainView = new RepertoireMainView({controller: this, model: this.model});
         else if (this.mainView.isDestroyed())
-            this.mainView = new RepertoireMainView({controller: this});
+            this.mainView = new RepertoireMainView({controller: this, model: this.model});
         return this.mainView;
     },
 
     // access data held by upper level controller
+    getCollections() {
+        return this.controller.getCollections();
+    },
+
     getRepertoireList() {
         return this.controller.repertoireList;
     },
@@ -644,14 +662,87 @@ RepertoireController.prototype = {
         this.mainView.showRepertoireList(this.getRepertoireList());
     },
 
+    //
+    // Series of modals for metadata import
+    //
+
+    // kick off the first screen
+    showMetadataImport: function() {
+        // TODO: check if any repertoire/subject/samples/etc changes, do not allow user to import
+
+        this.importView = new MetadataImportModal({model: this.model, controller: this});
+        App.AppController.startModal(this.importView, this, this.onShownImportModal, this.onHiddenImportModal);
+        $('#modal-message').modal('show');
+    },
+
+    onShownImportModal: function(context) {
+        console.log('import: Show the modal');
+    },
+
+    onHiddenImportModal: function(context) {
+        console.log('import: Hide the modal');
+        console.log(context.importView.file);
+        console.log(context.importView.operation);
+
+        if (context.importView.file) {
+            var message = new MessageModel({
+              'header': 'Import AIRR Repertoire Metadata',
+              'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we import...</p>'
+            });
+
+            // the app controller manages the modal region
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, context.onShownModal, context.onHiddenModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onShownModal(context) {
+        // do the import
+        context.model.importMetadataFromFile(context.importView.file, context.importView.operation)
+            .done(function() {
+                context.modalState = 'pass';
+                $('#modal-message').modal('hide');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+                $('#modal-message').modal('hide');
+
+                var message = new MessageModel({
+                    'header': 'Import AIRR Repertoire Metadata',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Metadata import failed!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+    },
+
+    onHiddenModal(context) {
+        //console.log('create: Hide the modal');
+        if (context.modalState == 'pass') {
+            // display a success modal
+            var message = new MessageModel({
+                'header': 'Import AIRR Repertoire Metadata',
+                'body': '<p>Metadata successfully imported!</p>',
+                cancelText: 'Ok'
+            });
+
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, null, context.onHiddenSuccessModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onHiddenSuccessModal(context) {
+        // refresh
+        App.router.navigate('project/' + context.model.get('uuid') + '/repertoire', {trigger: true});
+    },
+
 };
 export default RepertoireController;
 
-// export default Marionette.CollectionView.extend({
-//     template: Handlebars.compile("<table class='table'><thead class='thead-light'><tr><th scope='col'></th><th scope='col'></th><th scope='col'>Actions</th>/tr></thead>"),
-//     tagName: 'table',
-//     className: 'table table-sm',
-//     initialize: function(parameters) {
-//     this.childView = RepertoireSummaryHeaderView;
-//   },
-// });

@@ -84,7 +84,12 @@ var SubjectsView = Marionette.View.extend({
     },
 
     events: {
-        'click #project-subjects-header-button' : 'toggleSubjectsView'
+        'click #project-subjects-header-button' : 'toggleSubjectsView',
+
+        'click #project-subjects-import': 'importSubjectTable',
+        'click #project-subjects-export': 'exportSubjectTable',
+        'click #project-diagnosis-import': 'importDiagnosisTable',
+        'click #project-diagnosis-export': 'exportDiagnosisTable',
     },
 
     initialize(parameters) {
@@ -125,6 +130,26 @@ var SubjectsView = Marionette.View.extend({
             this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
             this.showChildView('listRegion', new SubjectsListView({collection: subjectList, controller: this.controller}));
         }
+    },
+
+    importSubjectTable: function(e) {
+        e.preventDefault();
+    },
+
+    exportSubjectTable: function(e) {
+        console.log('exportSubjectTable');
+        e.preventDefault();
+        this.model.exportTableToDisk('subject');
+    },
+
+    importDiagnosisTable: function(e) {
+        e.preventDefault();
+    },
+
+    exportDiagnosisTable: function(e) {
+        console.log('exportDiagnosisTable');
+        e.preventDefault();
+        this.model.exportMetadataToDisk();
     },
 });
 

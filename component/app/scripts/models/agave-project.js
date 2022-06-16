@@ -28,6 +28,7 @@
 //
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
+import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-file';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
@@ -161,6 +162,58 @@ export default Agave.MetadataModel.extend({
         });
 
         return jqxhr;
+    },
+
+    importMetadataFromFile: function(project_file, operation) {
+        var value = project_file.get('value');
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify({
+                filename: value['name'],
+                operation: operation
+            }),
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/import',
+        });
+
+        return jqxhr;
+    },
+
+    exportMetadataToDisk: function() {
+        var that = this;
+
+        // export to temporary file
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'GET',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/export',
+        });
+
+        return jqxhr.then(function(res) {
+            console.log(res);
+            var pf = new ProjectFile({path: '/projects/' + that.get('uuid') + '/deleted/' + res['result']['file']});
+            return pf.downloadFileToDisk();
+        });
+    },
+
+    exportTableToDisk: function(table) {
+        var that = this;
+
+        // export to temporary file
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'GET',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/' + table + '/export',
+        });
+
+        return jqxhr.then(function(res) {
+            console.log(res);
+            var pf = new ProjectFile({path: '/projects/' + that.get('uuid') + '/deleted/' + res['result']['file']});
+            return pf.downloadFileToDisk();
+        });
     },
 });
 

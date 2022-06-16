@@ -58,11 +58,11 @@ var ProjectSubjectsSamplesView = Marionette.View.extend({
     },
 
     showSubjectsView(subjectList) {
-        this.showChildView('subjectsRegion', new SubjectsView({collection: subjectList, controller: this.controller}));
+        this.showChildView('subjectsRegion', new SubjectsView({model: this.model, controller: this.controller}));
     },
 
     showSamplesView(sampleList) {
-        this.showChildView('samplesRegion', new SamplesView({collection: sampleList, controller: this.controller}));
+        this.showChildView('samplesRegion', new SamplesView({model: this.model, controller: this.controller}));
     },
 
     showSubjectsSamplesView(subjectList, sampleList) {
@@ -76,6 +76,10 @@ var ProjectSubjectsSamplesView = Marionette.View.extend({
 function ProjectSubjectsSamplesController(controller) {
     // upper level controller, i.e. the single project controller
     this.controller = controller;
+
+    // the project model
+    this.model = this.controller.model;
+
     // default to summary views
     this.subjects_view_mode = 'summary';
     this.samples_view_mode = 'summary';
@@ -83,16 +87,16 @@ function ProjectSubjectsSamplesController(controller) {
     this.subjects_has_edits = false;
     this.samples_has_edits = false;
 
-    this.mainView = new ProjectSubjectsSamplesView({controller: this});
+    this.mainView = new ProjectSubjectsSamplesView({model: this.model, controller: this});
 }
 
 ProjectSubjectsSamplesController.prototype = {
     // return the main view, create it if necessary
     getView() {
         if (!this.mainView)
-            this.mainView = new ProjectSubjectsSamplesView({controller: this});
+            this.mainView = new ProjectSubjectsSamplesView({model: this.model, controller: this});
         else if (this.mainView.isDestroyed())
-            this.mainView = new ProjectSubjectsSamplesView({controller: this});
+            this.mainView = new ProjectSubjectsSamplesView({model: this.model, controller: this});
         return this.mainView;
     },
 
