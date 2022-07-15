@@ -191,13 +191,13 @@ var ApplicationController = Marionette.View.extend({
             });
     },
 
-    showUserProfilePage() {
+    showUserProfilePage(edit_mode) {
         console.log('showUserProfilePage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
         // show user profile view
-        var view = new UserProfileView({ model: this.userProfile });
+        var view = new UserProfileView({ model: this.userProfile, controller: this, edit_mode: edit_mode });
         this.showChildView('mainRegion', view);
     },
 

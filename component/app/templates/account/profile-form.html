@@ -5,56 +5,69 @@
 </div>
 
 <div class="container justify-content-center">
-    <form method="post"  role="form">
- <div class="projectInfo">
- <h2 class="form-section">Edit Profile</h2>
+    <form method="post"  role="form" id="profile-overview">
+	    <div class="projectInfo" id="project-details">
+	        <div class="project-metadata col-md-12">
+                    {{#unless edit_mode}}
+                        <button type="button" class="btn btn-edit float-md-right" id="edit-profile" {{#if edit_mode}}disabled{{/if}}>
+                            Edit Profile
+                        </button>
+                    {{/unless}}
+
+                    {{#if edit_mode}}
+                        <input type="button" class="btn btn-save float-md-right" id="save-profile" value="Save Profile">
+                        <input type="reset" class="btn btn-cancel float-md-right" id="revert-profile" value="Revert Changes">
+                    {{/if}}
+
+                </div>
+ <h2 class="form-section">User Profile</h2>
 
         <div class="form-group">
-            <label for="firstName" class="col-sm-4 control-label">First Name</label>
+            <label for="firstName" class="col-sm-4 control-label">First Name:</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="First Name" name="firstName" id="firstName" value="{{value.firstName}}">
+                <input class="form-control" type="text" placeholder="First Name" name="firstName" id="firstName" value="{{value.firstName}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="lastName" class="col-sm-4 control-label">Last Name</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="Last Name" name="lastName" id="lastName" value="{{value.lastName}}">
+                <input class="form-control" type="text" placeholder="Last Name" name="lastName" id="lastName" value="{{value.lastName}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="email" class="col-sm-4 control-label">Email</label>
             <div class="col-sm-4">
-                <input class="form-control" type="email" placeholder="Email" name="email" id="email" value="{{value.email}}">
+                <input class="form-control" type="email" placeholder="Email" name="email" id="email" value="{{value.email}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="city" class="col-sm-4 control-label">City</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="City" name="city" id="city" value="{{value.city}}">
+                <input class="form-control" type="text" placeholder="City" name="city" id="city" value="{{value.city}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="state" class="col-sm-4 control-label">State</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="State" name="state" id="state" value="{{value.state}}">
+                <input class="form-control" type="text" placeholder="State" name="state" id="state" value="{{value.state}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="country" class="col-sm-4 control-label">Country</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="Country" name="country" id="country" value="{{value.country}}">
+                <input class="form-control" type="text" placeholder="Country" name="country" id="country" value="{{value.country}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
         <div class="form-group">
             <label for="affiliation" class="col-sm-4 control-label">Affiliation</label>
             <div class="col-sm-4">
-                <input class="form-control" type="text" placeholder="Affiliation" name="affiliation" id="affiliation" value="{{value.affiliation}}">
+                <input class="form-control" type="text" placeholder="Affiliation" name="affiliation" id="affiliation" value="{{value.affiliation}}" {{#if edit_mode}}{{else}}readonly{{/if}}>
             </div>
         </div>
 
@@ -62,26 +75,21 @@
             <label for="preferences" class="col-sm-4 control-label">Preferences</label>
             <div class="checkbox col-sm-8">
                 <label>
-                    <input type="checkbox" name="disableJobEmail" id="disableJobEmail" {{#if value.disableJobEmail}}checked{{/if}}> Disable Email when job finishes.
+                    <input type="checkbox" name="disableJobEmail" id="disableJobEmail" {{#if edit_mode}}{{else}}disabled{{/if}} {{#if value.disableJobEmail}}checked{{/if}}> Disable Email when job finishes.
                 </label>
             </div>
             <div class="checkbox col-sm-offset-2 col-sm-8">
                 <label>
-                    <input type="checkbox" name="disableUserEmail" id="disableUserEmail" {{#if value.disableUserEmail}}checked{{/if}}> Disable Email when user is added or removed from project.
+                    <input type="checkbox" name="disableUserEmail" id="disableUserEmail" {{#if edit_mode}}{{else}}disabled{{/if}} {{#if value.disableUserEmail}}checked{{/if}}> Disable Email when user is added or removed from project.
                 </label>
             </div>
             <div class="checkbox col-sm-offset-2 col-sm-8">
                 <label>
-                    <input type="checkbox" name="disablePublishEmail" id="disablePublishEmail" {{#if value.disablePublishEmail}}checked{{/if}}> Disable Email when project is published or unpublished.
+                    <input type="checkbox" name="disablePublishEmail" id="disablePublishEmail" {{#if edit_mode}}{{else}}disabled{{/if}} {{#if value.disablePublishEmail}}checked{{/if}}> Disable Email when project is published or unpublished.
                 </label>
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-sm-4">
-                <input type="submit" value="Update Profile" class="btn btn-success btn-block">
-            </div>
-        </div>
 </div>
     </form>
 </div>
