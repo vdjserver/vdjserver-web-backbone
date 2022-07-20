@@ -80,15 +80,14 @@ var ProfileView = Marionette.View.extend({
     },
 
     saveEditProfile(e) {
-        console.log('saving edits');
-        e.preventDefault();
-        // actually save the edits
+        //console.log('Clicked Save');
 
         // pull data out of form and put into model
         var data = Syphon.serialize(this);
-        this.model.setAttributesFromData(data);
-        console.log(this.model);
-        console.log("this is the data that is submitted: " + data);
+        this.cloned_model = this.model.deepClone();
+        this.cloned_model.setAttributesFromData(data);
+        //console.log(this.model);
+        //console.log("this is the data that is submitted: " + data);
 
         // display a modal while the project is being saved
         this.modalState = 'save';
@@ -102,11 +101,16 @@ var ProfileView = Marionette.View.extend({
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
         $('#modal-message').modal('show');
 
-        console.log(message);
+        //console.log(message);
+    },
+
+    updateData() {
+        var data = Syphon.serialize(this);
+        this.model.setAttributesFromData(data);
     },
 
     onShownSaveModal(context) {
-        console.log('save: Show the modal');
+        //console.log('save: Show the modal');
 
         // use modal state variable to decide
         console.log(context.modalState);
@@ -114,12 +118,13 @@ var ProfileView = Marionette.View.extend({
 
             // save the model
             console.log(context.model);
-            context.model.save()
+            //context.cloned_model.url = '/bogus'; //to test 'fail'
+            context.cloned_model.save()
             .then(function() {
                 context.modalState = 'pass';
                 $('#modal-message').modal('hide');
-                console.log("create pass");
-                console.log(context.model);
+                //console.log("create pass");
+                //console.log(context.model);
             })
             .fail(function(error) {
                 // save failed so show error modal
@@ -140,23 +145,24 @@ var ProfileView = Marionette.View.extend({
             });
         } else if (context.modalState == 'fail') {
             // TODO: we should do something here?
-            console.log('fail');
+            //console.log('fail');
         }
     },
 
     onHiddenSaveModal(context) {
-        console.log('save: Hide the modal');
+        //console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // create passed so flip back to read-only mode
+           context.updateData();
            App.AppController.showUserProfilePage(false);
         } else if (context.modalState == 'fail') {
-            console.log("show fail modal");
+            //console.log("show fail modal");
             // failure modal will automatically hide when user clicks OK
         }
     },
 
     onShownArchiveModal(context) {
-        console.log('archive: Show the modal');
+        //console.log('archive: Show the modal');
     },
 });
 
