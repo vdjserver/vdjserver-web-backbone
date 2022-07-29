@@ -44,10 +44,10 @@ export var PasswordChange = Agave.Model.extend({
         var jqxhr = $.ajax({
             contentType: 'application/json',
             data: JSON.stringify({
-                newPassword: encodeURIComponent(this.get('newPassword')),
+                new_password: encodeURIComponent(this.get('newPassword')),
                 password: encodeURIComponent(this.get('password')),
             }),
-            headers: Backbone.Agave.basicAuthHeader(),
+            headers: Agave.oauthHeader(),
             type: 'POST',
             url: EnvironmentConfig.vdjApi.hostname + this.url(),
         });
