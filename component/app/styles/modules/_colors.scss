@@ -10,6 +10,7 @@ $vdj-green: #689A87;
 $vdj-lightgreen: #71B87D;
 $vdj-red: #D93C39;
 $vdj-orange: #CC6B4C;
+// rgba(204, 107, 76)
 $vdj-lightorange: #F6835E;
 $vdj-yellow: #EAE386;
 $vdj-darkgray: #6C757D;
@@ -33,6 +34,7 @@ $theme-colors: (
     'new': $vdj-darkblue,
     'add': $vdj-darkblue,
     'create': $vdj-darkblue,
+    'apply': $vdj-darkblue,
     'upload': $vdj-lightgreen,
     'edit': $vdj-yellow,
     'copy': $vdj-lightorange,

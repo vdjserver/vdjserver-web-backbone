@@ -59,6 +59,10 @@ button.project-changes-action {
     margin-right: 2em;
 }
 
+.project-buttons-margin-bottom {
+    margin-bottom: 1em;
+}
+
 .underline-on-hover:hover {
     text-decoration: underline;
 }
@@ -167,6 +171,20 @@ Project Subjects/Samples
     .project-subject-summary:hover {
         background: $vdj-lightgray;
         cursor: pointer;
+    }
+
+    .project-subject-detail {
+        margin: 0% 0% 0% 0%;
+        padding: 1% 1% 1% 1%;
+        border-top: 1.5px solid $vdj-darkgray;
+    }
+
+    .project-subject-form {
+        margin-bottom: 0%;
+    }
+
+    .project-subject-row {
+        margin: 0% 0% 0% 0%;
     }
 }
 

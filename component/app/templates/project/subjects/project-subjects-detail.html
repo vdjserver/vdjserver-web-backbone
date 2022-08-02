@@ -3,478 +3,465 @@
 - Multi-line with subject id, sex, age, ...
 - TODO: How to show the Diagnoses?
 -->
+
 <!-- <p>Subject/Diagnosis Edit Mode: {{edit_mode}}</p> -->
-<div class="col-md-1">
-    &nbsp;
-</div>
+<div id="project-subjects-detail" class="project-subject-detail">
+    <div class="row">
+        <div class="col-md-10">
+        <form method="post" role="form" id="project-subject-form" class="project-subject-form needs-validation" name="subject" novalidate>
+            <div class="form-row project-subject-row">
+                <div class="form-group col-md-3">
+                    <label for="subject_id">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Subject" "subject_id"}}}
+                        </span>
+                        {{{FieldHelpPopover "Subject" "subject_id"}}}
+                        Subject ID:
+                        <!-- Popover -->
+                    </label>
+                    <input type="text" class="form-control" name="subject_id" id="subject_id" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
-<div class="col-md-11">
-    <!-- <h2>This is the expanded Subject view</h2> -->
-    <div id="subject_accordion">
-        <div class="card repertoire-details-card">
-            <div class="card-header" id="subject_heading">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" id="project-subject-details" data-toggle="collapse" data-target="#editSubject_collapse" aria-expanded="false" aria-controls="editSubject_collapse">
-                      <span class="details-title">Subject Metadata</span>
-                    </button>
-                  </h5>
-            </div>
-            <div id="editSubject_collapse" class="collapse" aria-labelledby="subject_heading" data-parent="#subject_accordion">
-                <div class="card-body">
-                    <form method="post" role="form" id="editSubject-form" class="needs-validation" name="subject" novalidate>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip -->
-                                    </span>
-                                    Subject ID:
-                                    <!-- Popover -->
-                                </label>
-                                {{#ifEquals edit_mode "advanced"}}
-                                <input type="text" class="form-control" name="subject_id" id="subject_id" placeholder="{{value.subject_id}}">
-
-                                <div class="invalid-feedback">
-                                    Please enter a valid Subject ID.
-                                </div>
-                                {{else}}
-                                    {{value.subject_id}}
-                                {{/ifEquals}}
-                            </div>
-
-                            <div class="col-md-4">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip-->
-                                    </span>
-                                    Species:
-                                    <!-- Popover -->
-                                </label>
-
-                                {{#ifEquals edit_mode "advanced"}}
-                                <select class="custom-select" id="species" required>
-                                  <option value="1">Human</option>
-                                  <option value="2">Monkey</option>
-                                  <option value="3">Mouse</option>
-                                </select>
-                                {{else}}
-                                    {{value.species}}
-                                {{/ifEquals}}
-                            </div>
-                            <!-- AIRR Standards have Sex as a "string", so removing radio buttons-->
-                            <div class="col-md-2">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip -->
-                                    </span>
-                                    Sex:
-                                    <!-- Popover -->
-                                </label>
-
-                                {{#ifEquals edit_mode "advanced"}}
-                                  <input type="text" class="form-control" name="sex" id="sex" placeholder="" required>
-                                  <div class="invalid-feedback">
-                                      Please enter a valid Sex.
-                                  </div>
-                                  {{else}}
-                                    {{value.sex}}
-                                 {{/ifEquals}}
-                            </div>
-                            <div class="col-md-2">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip -->
-                                    </span>
-                                    Synthetic:
-                                    <!-- Popover -->
-                                </label>
-                                {{#ifEquals edit_mode "advanced"}}
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="synthetic-yes" id="synthetic-yes">
-                                    <label class="form-check-label" for="synthetic-yes">
-                                        Yes
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="synthetic-no" id="synthetic-no">
-                                    <label class="form-check-label" for="synthetic-no">
-                                        No
-                                    </label>
-                                </div>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Synthetic.
-                                </div>
-                                {{else}}
-                                    {{value.synthetic}}
-                                {{/ifEquals}}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                        <div class="col-md-3">
-                            <label>
-                                <span>
-                                    <!-- Tooltip -->
-                                </span>
-                                Min Age / Max Age:
-                                <!-- Popover -->
-                            </label>
-                            {{#ifEquals edit_mode "advanced"}}
-                            <div class="row col-md-12">
-                                <input type="text" class="form-control col-md-5" name="age_min" id="age_min" placeholder="" required>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Minimum Age.
-                                </div>
-
-                                <span class="age-range">-</span>
-
-                                <input type="text" class="form-control col-md-5" name="age_max" id="age_max" placeholder="" required>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Maximum Age.
-                                </div>
-                            </div>
-                                {{else}}
-                                    {{value.minimum_age}}
-                                    <span class="age-range">-</span>
-                                    {{value.maximum_age}}
-                            {{/ifEquals}}
-                        </div>
-
-                        <div class="col-md-3 age_unit">
-                            <label>
-                                <span>
-                                    <!-- Tooltip -->
-                                </span>
-                                Age Unit:
-                                <!-- Popover -->
-                            </label>
-                            {{#ifEquals edit_mode "advanced"}}
-                            <input type="text" class="form-control" name="age_unit" id="age_unit" placeholder="" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid Age Unit.
-                            </div>
-                                {{else}}
-                                    {{value.age_unit}}
-                            {{/ifEquals}}
-                        </div>
-
-                        <div class="col-md-4 age_event">
-                            <label>
-                                <span>
-                                    <!-- Tooltip -->
-                                </span>
-                                Age Event:
-                                <!-- Popover -->
-                            </label>
-                            {{#ifEquals edit_mode "advanced"}}
-                            <input type="text" class="form-control" name="age_event" id="age_event" placeholder="" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid Age Event.
-                            </div>
-                                {{else}}
-                                    {{value.age_event}}
-                            {{/ifEquals}}
-                        </div>
+                    <div class="invalid-feedback">
+                        Please enter a valid Subject ID.
                     </div>
+                </div>
 
-                        <div class="row">
-                        <div class="col-md-4">
-                            <label>
-                                <span>
-                                    <!-- Tooltip -->
-                                </span>
-                                Ancestry Population:
-                                <!-- Popover -->
-                            </label>
-                            {{#ifEquals edit_mode "advanced"}}
-                            <input type="text" class="form-control" name="ancestry-population" id="ancestry-population" placeholder="" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid Ancestry Population.
-                            </div>
-                                {{else}}
-                                    {{value.ancestry_population}}
-                            {{/ifEquals}}
-                        </div>
+                <div class="form-group col-md-2">
+                    <label for="synthetic">
+                        <span>
+                            <!-- Tooltip-->
+                        {{{FieldStar "Subject" "synthetic"}}}
+                        </span>
+                        Synthetic:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "synthetic"}}}
+                    </label>
 
-                        <!-- AIRR Standards require a string for "Ethnicity" -->
-                        <div class="col-md-4">
-                            <label>
-                                <span>
-                                    <!-- Tooltip -->
-                                </span>
-                                Ethnicity:
-                                <!-- Popover -->
-                            </label>
-                            {{#ifEquals edit_mode "advanced"}}
-                            <input type="text" class="form-control" name="ethnicity" id="ethnicity" placeholder="" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid Ethnicity.
-                            </div>
-                                {{else}}
-                                    {{value.ethnicity}}
-                            {{/ifEquals}}
-                        </div>
+                    <select class="custom-select" id="synthetic" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option value="true">True</option>
+                      <option value="false">False</option>
+                    </select>
+                </div>
 
-                        <div class="col-md-4">
-                            <label>
-                                <span>
-                                    <!-- Tooltip-->
-                                </span>
-                                Race:
-                                <!-- Popover -->
-                            </label>
-                            {{#ifEquals edit_mode "advanced"}}
-                            <input type="text" class="form-control" name="race" id="race" placeholder="" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid Race.
-                            </div>
-                                {{else}}
-                                    {{value.race}}
-                            {{/ifEquals}}
-                        </div>
-                        </div>
+                <div class="form-group col-md-2">
+                    <label for="species">
+                        <span>
+                            <!-- Tooltip-->
+                        {{{FieldStar "Subject" "species"}}}
+                        </span>
+                        Species:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "species"}}}
+                    </label>
 
-                        <div class="row">
-                        <div class="col-md-4">
-                            <label>
-                                <span>
-                                    <!-- Tooltip -->
-                                </span>
-                                Strain Name:
-                                <!-- Popover -->
-                            </label>
-                            {{#ifEquals edit_mode "advanced"}}
-                            <input type="text" class="form-control" name="strain_name" id="strain_name" placeholder="" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid Strain Name.
-                            </div>
-                                {{else}}
-                                    {{value.strain_name}}
-                            {{/ifEquals}}
-                        </div>
+                    <select class="custom-select" id="species" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option value="1">Human</option>
+                      <option value="2">Monkey</option>
+                      <option value="3">Mouse</option>
+                    </select>
+                </div>
 
-                        <div class="col-md-4">
-                            <label>
-                                <span>
-                                    <!-- Tooltip -->
-                                </span>
-                                Linked Subjects:
-                                <!-- Popover -->
-                            </label>
-                            {{#ifEquals edit_mode "advanced"}}
-                            <input type="text" class="form-control" name="linked_subjects" id="linked_subjects" placeholder="" required>
-                            <div class="invalid-feedback">
-                                Please enter a valid Linked Subjects.
-                            </div>
-                                {{else}}
-                                    {{value.linked_subjects}}
-                            {{/ifEquals}}
-                        </div>
+                <div class="form-group col-md-2">
+                    <label for="strain_name">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Subject" "strain_name"}}}
+                        </span>
+                        Strain:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "strain_name"}}}
+                    </label>
+                    <select class="custom-select" id="strain_name" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option value="3">Not provided</option>
+                      <option value="1">BALB/c</option>
+                      <option value="2">C57BL/6</option>
+                    </select>
+                </div>
 
-                        <div class="col-md-4">
-                            <label>
-                                <span>
-                                    <!-- Tooltip -->
-                                </span>
-                                Link Type:
-                                <!-- Popover -->
-                            </label>
-                            {{#ifEquals edit_mode "advanced"}}
-                            <input type="text" class="form-control" name="link_type" id="link_type" placeholder="" required>
-                            <div class="invalid-feedback">
-                                Please enter valid a Link Type.
-                            </div>
-                                {{else}}
-                                    {{value.link_type}}
-                            {{/ifEquals}}
-                        </div>
-                        </div>
+                <div class="form-group col-md-2">
+                    <label for="sex">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Subject" "sex"}}}
+                        </span>
+                        Sex:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "sex"}}}
+                    </label>
 
-                        <div class="footer-actions">
-                            {{#ifEquals edit_mode "advanced"}}
-                            <button type="button" class="btn btn-primary" id="saveEditSubject"><i class="fa fa-save"></i> Save</button>
-                            {{/ifEquals}}
-                        </div>
-                    </form>
+                    <select class="custom-select" id="sex" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option value="1">Female</option>
+                      <option value="2">Male</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-row project-subject-row">
+                <div class="form-group col-md-2">
+                    <label for="age">
+                        <span>
+                            <!-- Tooltip-->
+                        {{{FieldStar "Subject" "age"}}}
+                        </span>
+                        Age Type:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "age"}}}
+                    </label>
+
+                    <select class="custom-select" id="age" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option value="point">Point</option>
+                      <option value="range">Range</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-1">
+                    <label for="age_min">
+                        <span>
+                            <!-- Tooltip-->
+                        {{{FieldStar "Subject" "age_min"}}}
+                        </span>
+                        Min:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "age_min"}}}
+                    </label>
+
+                    <input type="text" class="form-control" name="age_min" id="age_min" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+
+                    <div class="invalid-feedback">
+                        Please enter a valid minimum age.
+                    </div>
+                </div>
+
+                <div class="form-group col-md-1">
+                    <label for="age_max">
+                        <span>
+                            <!-- Tooltip-->
+                        {{{FieldStar "Subject" "age_max"}}}
+                        </span>
+                        Max:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "age_max"}}}
+                    </label>
+
+                    <input type="text" class="form-control" name="age_max" id="age_max" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+
+                    <div class="invalid-feedback">
+                        Please enter a valid maximum age.
+                    </div>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="age_unit">
+                        <span>
+                            <!-- Tooltip-->
+                        {{{FieldStar "Subject" "age_unit"}}}
+                        </span>
+                        Unit:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "age_unit"}}}
+                    </label>
+
+                    <select class="custom-select" id="age_unit" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option value="point">day(s)</option>
+                      <option value="range">week(s)</option>
+                      <option value="range">month(s)</option>
+                      <option value="range">year(s)</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="age_event">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Subject" "age_event"}}}
+                        </span>
+                        Age Event:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "age_event"}}}
+                    </label>
+                    <input type="text" class="form-control" name="age_event" id="age_event" placeholder="" value="{{value.age_event}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid age event.
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="race">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Subject" "race"}}}
+                        </span>
+                        Race:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "race"}}}
+                    </label>
+
+                    <select class="custom-select" id="race" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option value="1">Not provided</option>
+                      <option value="2">White</option>
+                      <option value="2">Black</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-row project-subject-row">
+                <div class="form-group col-md-3">
+                    <label for="ancestry_population">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Subject" "ancestry_population"}}}
+                        </span>
+                        Ancestry Population:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "ancestry_population"}}}
+                    </label>
+                    <input type="text" class="form-control" name="ancestry_population" id="ancestry_population" placeholder="" value="{{value.ancestry_population}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Ancestry Population.
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="ethnicity">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Subject" "ethnicity"}}}
+                        </span>
+                        Ethnicity:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "ethnicity"}}}
+                    </label>
+                    <input type="text" class="form-control" name="ethnicity" id="ethnicity" placeholder="" value="{{value.ethnicity}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Ethnicity.
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="linked_subjects">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Subject" "linked_subjects"}}}
+                        </span>
+                        Linked Subject:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "linked_subjects"}}}
+                    </label>
+                    <input type="text" class="form-control" name="linked_subjects" id="linked_subjects" placeholder="" value="{{value.linked_subjects}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Linked Subjects.
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="link_type">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Subject" "link_type"}}}
+                        </span>
+                        Link Type:
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "link_type"}}}
+                    </label>
+                    <input type="text" class="form-control" name="link_type" id="link_type" placeholder="" value="{{value.link_type}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter valid a Link Type.
+                    </div>
+                </div>
+            </div>
+        </form>
+        </div>
+
+        <div class="col-md-2">
+            <div class="row">
+                <div class="col project-buttons-right project-buttons-margin-bottom">
+                    <div class="btn-group" role="group" aria-label="Button group">
+                        <button type="button" class="btn btn-edit" name="{{uuid}}" id="project-subject-edit">Edit</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col project-buttons-right project-buttons-margin-bottom">
+                    <div class="btn-group" role="group" aria-label="Button group">
+                        <button type="button" class="btn btn-apply" name="{{uuid}}" id="project-subject-apply">
+                            Apply Template
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col project-buttons-right project-buttons-margin-bottom">
+                    <div class="btn-group" role="group" aria-label="Button group">
+                        <button type="button" class="btn btn-delete" name="{{uuid}}" id="project-subject-delete">
+                            <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="col-md-1">
-    &nbsp;
-</div>
+    <div class="row">
+        <div class="col-md-10">
+        <form method="post" role="form" id="project-subject-form" class="project-subject-form needs-validation" name="subject" novalidate>
+            <div class="form-row project-subject-row">
+                <div class="form-group col-md-2">
+                    <label>
+                        <i class="far fa-diagnoses"></i> Diagnosis Entry 1:
+                    </label>
+                </div>
 
-<!-- Expanded Edit Diagnosis -->
-<div class="col-md-11">
-    <!-- <h2>This is the expanded Diagnosis view</h2> -->
-    <div id="diagnosis_accordion">
-        <div class="card repertoire-details-card">
-            <div class="card-header" id="diagnosis_heading">
-                <h5 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#editDiagnosis_collapse" aria-expanded="false" aria-controls="editDiagnosis_collapse">
-                      <span class="details-title">Diagnosis Metadata</span>
-                    </button>
-                  </h5>
+                <div class="form-group col-md-4">
+                    <label for="disease_diagnosis">
+                        <span>
+                            <!-- Tooltip -->
+                        </span>
+                        Disease Diagnosis:
+                        <!-- Popover -->
+                    </label>
+                    <input type="text" class="form-control" name="disease_diagnosis" id="disease_diagnosis" value="{{value.diagnosis.0.disease_diagnosis.label}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+
+                    <div class="invalid-feedback">
+                        Please enter a valid disease diagnosis.
+                    </div>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label for="disease_length">
+                        <span>
+                            <!-- Tooltip -->
+                        </span>
+                        Disease Length:
+                        <!-- Popover -->
+                    </label>
+                    <input type="text" class="form-control" name="disease_length" id="disease_length" value="{{value.diagnosis.0.disease_length}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+
+                    <div class="invalid-feedback">
+                        Please enter a valid disease length.
+                    </div>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="disease_stage">
+                        <span>
+                            <!-- Tooltip -->
+                        </span>
+                        Disease Stage:
+                        <!-- Popover -->
+                    </label>
+                    <input type="text" class="form-control" name="disease_stage" id="disease_stage" value="{{value.diagnosis.0.disease_stage}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+
+                    <div class="invalid-feedback">
+                        Please enter a valid disease stage.
+                    </div>
+                </div>
             </div>
-            <div id="editDiagnosis_collapse" class="collapse" aria-labelledby="diagnosis_heading" data-parent="#diagnosis_accordion">
-                <div class="card-body">
-                    <form method="post" role="form" id="editDiagnosis-form" class="needs-validation" name="editDiagnosis" novalidate>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip -->
-                                    </span>
-                                    Study Group Description:
-                                    <!-- Popover -->
-                                </label>
-                                {{#ifEquals edit_mode "advanced"}}
-                                <textarea class="form-control" name="study_group_description" id="study_group_description"></textarea>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Study Group Description.
-                                </div>
-                                {{else}}
-                                    {{value.study_group_description}}
-                                {{/ifEquals}}
-                            </div>
 
-                            <div class="col-md-4">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip-->
-                                    </span>
-                                    Disease Diagnosis:
-                                    <!-- Popover -->
-                                </label>
-                                {{#ifEquals edit_mode "advanced"}}
-                                <input type="text" class="form-control" name="disease_diagnosis" id="disease_diagnosis" placeholder="" required>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Disease Diagnosis.
-                                </div>
-                                {{else}}
-                                    {{value.disease_diagnosis}}
-                                {{/ifEquals}}
-                            </div>
-                            <div class="col-md-2">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip -->
-                                    </span>
-                                    Disease Length:
-                                    <!-- Popover -->
-                                </label>
-                                {{#ifEquals edit_mode "advanced"}}
-                                <input type="text" class="form-control" name="disease_length" id="disease_length" placeholder="" required>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Disease Length.
-                                </div>
-                                {{else}}
-                                    {{value.disease_length}}
-                                {{/ifEquals}}
-                            </div>
-                            <div class="col-md-2">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip -->
-                                    </span>
-                                    Disease Stage:
-                                    <!-- Popover -->
-                                </label>
-                                {{#ifEquals edit_mode "advanced"}}
-                                <input type="text" class="form-control" name="disease_stage" id="disease_stage" placeholder="" required>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Disease Stage.
-                                </div>
-                                {{else}}
-                                    {{value.disease_stage}}
-                                {{/ifEquals}}
-                            </div>
-                        </div>
+            <div class="form-row project-subject-row">
+                <div class="form-group col-md-3">
+                    <label for="study_group_description">
+                        <span>
+                            <!-- Tooltip -->
+                        </span>
+                        Study Group Description:
+                        <!-- Popover -->
+                    </label>
+                    <input type="text" class="form-control" name="study_group_description" id="study_group_description" value="{{value.diagnosis.0.study_group_description}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip -->
-                                    </span>
-                                    Prior Therapies:
-                                    <!-- Popover -->
-                                </label>
-                                {{#ifEquals edit_mode "advanced"}}
-                                <textarea class="form-control" name="prior_therapies" id="prior_therapies" rows="4" required></textarea>
-                                <div class="invalid-feedback">
-                                    Please enter valid Prior Therapies.
-                                </div>
-                                {{else}}
-                                    {{value.prior_therapies}}
-                                {{/ifEquals}}
-                            </div>
+                    <div class="invalid-feedback">
+                        Please enter a valid study group description.
+                    </div>
+                </div>
 
-                            <div class="col-md-4">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip -->
-                                    </span>
-                                    Immunogen:
-                                    <!-- Popover -->
-                                </label>
-                                {{#ifEquals edit_mode "advanced"}}
-                                <input type="text" class="form-control" name="immunogen" id="immunogen" placeholder="" required>
-                                <div class="invalid-feedback">
-                                    Please enter valid Immunogen data.
-                                </div>
-                                {{else}}
-                                    {{value.immunogen}}
-                                {{/ifEquals}}
-                            </div>
+                <div class="form-group col-md-3">
+                    <label for="prior_therapies">
+                        <span>
+                            <!-- Tooltip -->
+                        </span>
+                        Prior Therapies:
+                        <!-- Popover -->
+                    </label>
+                    <input type="text" class="form-control" name="prior_therapies" id="prior_therapies" value="{{value.diagnosis.0.prior_therapies}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
-                            <div class="col-md-4">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip -->
-                                    </span>
-                                    Intervention:
-                                    <!-- Popover -->
-                                </label>
-                                {{#ifEquals edit_mode "advanced"}}
-                                <textarea class="form-control" name="intervention" id="intervention" rows="4" required></textarea>
-                                <div class="invalid-feedback">
-                                    Please enter valid Intervention data.
-                                </div>
-                                {{else}}
-                                    {{value.intervention_data}}
-                                {{/ifEquals}}
-                            </div>
+                    <div class="invalid-feedback">
+                        Please enter a valid prior therapies.
+                    </div>
+                </div>
 
-                            <div class="col-md-5">
-                                <label>
-                                    <span>
-                                        <!-- Tooltip -->
-                                    </span>
-                                    Medical History:
-                                    <!-- Popover -->
-                                </label>
-                                {{#ifEquals edit_mode "advanced"}}
-                                <textarea class="form-control" name="medical_history" id="medical_history" rows="4" required></textarea>
-                                <div class="invalid-feedback">
-                                    Please enter valid Medical History.
-                                </div>
-                                {{else}}
-                                    {{value.medical_history}}
-                                {{/ifEquals}}
-                            </div>
-                        </div>
+                <div class="form-group col-md-3">
+                    <label for="immunogen">
+                        <span>
+                            <!-- Tooltip -->
+                        </span>
+                        Immunogen:
+                        <!-- Popover -->
+                    </label>
+                    <input type="text" class="form-control" name="immunogen" id="immunogen" value="{{value.diagnosis.0.immunogen}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
-                        <div class="footer-actions">
-                            {{#ifEquals edit_mode "advanced"}}
-                            <button type="button" class="btn btn-primary" id="saveEditDiagnosis"><i class="fa fa-save"></i> Save</button>
-                            {{/ifEquals}}
-                        </div>
-                    </form>
+                    <div class="invalid-feedback">
+                        Please enter a valid immunogen.
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="intervention">
+                        <span>
+                            <!-- Tooltip -->
+                        </span>
+                        Intervention:
+                        <!-- Popover -->
+                    </label>
+                    <input type="text" class="form-control" name="intervention" id="intervention" value="{{value.diagnosis.0.intervention}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+
+                    <div class="invalid-feedback">
+                        Please enter a valid intervention.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row project-subject-row">
+                <div class="form-group col-md-12">
+                    <label for="medical_history">
+                        <span>
+                            <!-- Tooltip -->
+                        </span>
+                        Medical History:
+                        <!-- Popover -->
+                    </label>
+                    <input type="text" class="form-control" name="medical_history" id="medical_history" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+
+                    <div class="invalid-feedback">
+                        Please enter a valid medical history.
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+        </div>
+
+        <div class="col-md-2">
+            <div class="row">
+                <div class="col project-buttons-right project-buttons-margin-bottom">
+                    <div class="btn-group" role="group" aria-label="Button group">
+                        <button type="button" class="btn btn-create" name="{{uuid}}" id="project-add-diagnosis"><i class="fa fa-plus"></i> Add Diagnosis</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col project-buttons-right project-buttons-margin-bottom">
+                    <div class="btn-group" role="group" aria-label="Button group">
+                        <button type="button" class="btn btn-delete" name="{{uuid}}" id="project-subject-delete">
+                            <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
+
