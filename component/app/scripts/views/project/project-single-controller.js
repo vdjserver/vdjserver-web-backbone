@@ -81,14 +81,27 @@ var ProjectSummaryView = Marionette.View.extend({
         var card = {};
         card['card_id'] = 'overview-tab';
         card['text'] = 'Overview';
+        card['icon'] = 'fas fa-project-diagram';
         if (this.controller.page == 'overview') card['active'] = true;
         else card['active'] = false;
         if (! this.controller.page) card['active'] = true;
         card_tabs.push(card);
 
         card = {};
+        card['card_id'] = 'files-tab';
+        card['text'] = 'Files';
+        card['icon'] = 'fas fa-file-alt';
+        if (this.controller.fileList) {
+            card['text'] = this.controller.fileList.length + ' ' + card['text'];
+        }
+        if (this.controller.page == 'file') card['active'] = true;
+        else card['active'] = false;
+        card_tabs.push(card);
+
+        card = {};
         card['card_id'] = 'subjects-samples-tab';
         card['text'] = 'Subjects<br>Samples';
+        card['icon'] = 'fas fa-user-alt';
         if (collections.subjectList) {
             card['text'] = collections.subjectList.length + ' Subjects';
         } else card['text'] = 'Subjects';
@@ -102,6 +115,7 @@ var ProjectSummaryView = Marionette.View.extend({
         card = {};
         card['card_id'] = 'repertoires-tab';
         card['text'] = 'Repertoires';
+        card['icon'] = 'fas fa-vial';
         if (this.controller.repertoireList) {
             card['text'] = this.controller.repertoireList.length + ' ' + card['text'];
         }
@@ -112,6 +126,7 @@ var ProjectSummaryView = Marionette.View.extend({
         card = {};
         card['card_id'] = 'groups-tab';
         card['text'] = 'Repertoire Groups';
+        card['icon'] = 'fas fa-vials';
         if (this.controller.groupList) {
             card['text'] = this.controller.groupList.length + ' ' + card['text'];
         }
@@ -120,18 +135,9 @@ var ProjectSummaryView = Marionette.View.extend({
         card_tabs.push(card);
 
         card = {};
-        card['card_id'] = 'files-tab';
-        card['text'] = 'Files';
-        if (this.controller.fileList) {
-            card['text'] = this.controller.fileList.length + ' ' + card['text'];
-        }
-        if (this.controller.page == 'file') card['active'] = true;
-        else card['active'] = false;
-        card_tabs.push(card);
-
-        card = {};
         card['card_id'] = 'analyses-tab';
         card['text'] = 'Analyses';
+        card['icon'] = 'fas fa-chart-bar';
         if (this.controller.analysisList) {
             card['text'] = this.controller.analysisList.length + ' ' + card['text'];
         }
