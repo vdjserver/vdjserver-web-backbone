@@ -901,13 +901,31 @@ Auth.Token = Agave.Model.extend({
             return false;
         }
     },
-    isAdmin: function() {
-        // TODO: We could add support for regular users being designated as admins
-        // but for now just restrict to the service account
-        if (App.Agave.token().get('username') == EnvironmentConfig.agave.serviceAccountUsername)
-            return true;
-        else
-            return false;
+    isAdmin: function(user_profile) {
+        if (!user_profile) return false;
+        if (user_profile.has_admin_role != null) return user_profile.has_admin_role;
+        return false;
+    },
+    checkAdmin: async function(user_profile) {
+        if (!user_profile) return Promise.reject(new Error('Missing user profile.'));
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/user/has-admin-role',
+                type: 'GET',
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) {
+                    user_profile.has_admin_role = true;
+                    resolve(data);
+                },
+                error: function (error) {
+                    user_profile.has_admin_role = false;
+                    resolve(error);
+                },
+            })
+        });
     },
 });
 

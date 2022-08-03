@@ -56,9 +56,10 @@ var NavigationBarView = Marionette.View.extend({
                     display_name = value['lastName'];
             }
         }
+
         return {
             active_token: this.active_token,
-            admin_account: App.Agave.token().isAdmin(),
+            admin_account: App.Agave.token().isAdmin(App.AppController.userProfile),
             display_name: display_name,
             location: window.location
         };

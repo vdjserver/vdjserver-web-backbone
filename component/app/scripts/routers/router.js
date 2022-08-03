@@ -336,7 +336,7 @@ export default Backbone.Router.extend({
     // Administration pages
     //
     adminPage: function(page) {
-        if (! App.Agave.token().isAdmin()) {
+        if (! App.Agave.token().isAdmin(App.AppController.userProfile)) {
             this.index();
         } else {
             App.AppController.showAdminPage(page);
