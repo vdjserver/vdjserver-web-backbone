@@ -9,6 +9,9 @@
 	    <div class="projectInfo" id="project-details">
 	        <div class="project-metadata col-md-12">
                     {{#unless edit_mode}}
+                        <button type="button" class="btn btn-edit float-md-right" id="change-password" {{#if edit_mode}}hidden{{/if}}>
+                            Change Password
+                        </button>
                         <button type="button" class="btn btn-edit float-md-right" id="edit-profile" {{#if edit_mode}}disabled{{/if}}>
                             Edit Profile
                         </button>

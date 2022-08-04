@@ -39,6 +39,7 @@ import CreateAccountView from 'Scripts/views/account/create-account';
 import ForgotPasswordView from 'Scripts/views/account/password-reset';
 import VerificationPendingView from 'Scripts/views/account/verification-pending';
 import UserProfileView from 'Scripts/views/account/account-profile';
+import ChangePasswordView from 'Scripts/views/account/change-password';
 import PublicFeedbackView from 'Scripts/views/feedback/feedback-public';
 import UserFeedbackView from 'Scripts/views/feedback/feedback-user';
 
@@ -198,6 +199,16 @@ var ApplicationController = Marionette.View.extend({
 
         // show user profile view
         var view = new UserProfileView({ model: this.userProfile, controller: this, edit_mode: edit_mode });
+        this.showChildView('mainRegion', view);
+    },
+
+    showChangePasswordPage(edit_mode) {
+        console.log('showChangePasswordPage');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show change password view
+        var view = new ChangePasswordView({ model: this.userProfile, controller: this, edit_mode: edit_mode });
         this.showChildView('mainRegion', view);
     },
 

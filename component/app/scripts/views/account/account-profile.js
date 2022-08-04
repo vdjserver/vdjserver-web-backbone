@@ -77,6 +77,11 @@ var ProfileView = Marionette.View.extend({
             e.preventDefault();
             this.saveEditProfile(e);
         },
+        'click #change-password': function(e) {
+            e.preventDefault();
+            this.controller.showChangePasswordPage(true);
+        },
+
     },
 
     saveEditProfile(e) {
