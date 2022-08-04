@@ -46,6 +46,30 @@ var SubjectSummaryView = Marionette.View.extend({
 import detail_template from 'Templates/project/subjects/project-subjects-detail.html';
 var SubjectDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+    },
+
+    templateContext() {
+        console.log(this.model);
+        return {
+            view_mode: this.model.view_mode
+        }
+    },
+
+    onAttach() {
+        // setup popovers and tooltips
+        $('[data-toggle="popover"]').popover({
+            trigger: 'hover'
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+    },
+
 });
 
 // Container view for subject detail
@@ -78,11 +102,8 @@ var SubjectContainerView = Marionette.View.extend({
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':
-                //this.getRegion('containerRegion').empty();
-                this.showChildView('containerRegion',new SubjectDetailView({controller: this.controller, model: this.model}));
-                break;
             case 'edit':
-                //this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: this.model.edit_mode}));
+                this.showChildView('containerRegion',new SubjectDetailView({controller: this.controller, model: this.model}));
                 break;
             case 'summary':
             default:

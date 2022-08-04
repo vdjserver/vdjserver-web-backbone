@@ -53,11 +53,48 @@
         </div>
 
         <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-create" id="add-new-subject"><i class="fa fa-plus" aria-hidden="true"></i>Add Subject</button>
+            <div class="dropdown">
+              <button class="btn btn-create dropdown-toggle project-buttons-margin-right" type="button" id="project-subjects-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Templates
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-subjects-show-templates" name="name">
+                    Show Templates
+                </button>
+                <button class="dropdown-item" type="button" id="project-subjects-hide-templates" name="name" hidden>
+                    Hide Templates
+                </button>
+                <button class="dropdown-item" type="button" id="project-subjects-new-template" name="name">
+                    New Blank Template
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" type="button" id="project-subjects-template-name" name="newest">
+                    Apply NAME Template to Subjects
+                </button>
+              </div>
+            </div>
         </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-create dropdown-toggle project-buttons-margin-right" type="button" id="project-subjects-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-plus" aria-hidden="true"></i>Add Subject
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-subjects-new-subject" name="name">
+                    New Blank Subject
+                </button>
+                <div class="dropdown-divider" width="10%">templates</div>
+                <button class="dropdown-item" type="button" id="project-subjects-" name="newest">
+                    New Subject from Template NAME
+                </button>
+              </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="col-md-6 project-buttons-right">
+    <div class="col-md-5 project-buttons-right">
         <div class="btn-group" role="group" aria-label="Button group">
             <button type="button" class="btn btn-cancel project-changes-action" id="project-subjects-revert-changes" disabled>Revert Subject Changes</button>
         </div>

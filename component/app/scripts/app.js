@@ -91,9 +91,6 @@ var ApplicationController = Marionette.View.extend({
     initialize(options) {
         console.log('Initialize');
 
-        // user profile available to whole app
-        this.userProfile = null;
-
         // controllers
         this.clearControllers();
 
@@ -109,6 +106,9 @@ var ApplicationController = Marionette.View.extend({
         this.projectController = null;
         this.communityController = null;
         this.adminController = null;
+
+        // user profile available to whole app
+        this.userProfile = null;
     },
 
     showHomePage() {
@@ -173,7 +173,7 @@ var ApplicationController = Marionette.View.extend({
 
     // This should be called after user login so that the user
     // profile and settings are available, returns a promise
-    loadUserProfile() {
+    loadUserProfile: async function() {
         var that = this;
         if (this.userProfile)
             return new Promise(function(resolve, reject) {
@@ -181,13 +181,18 @@ var ApplicationController = Marionette.View.extend({
             });
 
         var profile = new UserProfile();
-        return profile.fetch()
+        await profile.fetch()
             .then(function() {
                 // now propagate loaded data to project
                 that.userProfile = profile;
                 return that.userProfile;
             })
             .fail(function(error) {
+                console.log(error);
+            });
+
+        await App.Agave.token().checkAdmin(this.userProfile)
+            .catch(function(error) {
                 console.log(error);
             });
     },
