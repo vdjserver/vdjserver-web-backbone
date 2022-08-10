@@ -2,17 +2,17 @@
 'use strict';
 
 //
-// change-profile-profile.js
-// User profile view
+// change-password.js
+// Change password view
 //
 // VDJServer Analysis Portal
 // Web Interface
 // https://vdjserver.org
 //
-// Copyright (C) 2020 The University of Texas Southwestern Medical Center
+// Copyright (C) 2020-2022 The University of Texas Southwestern Medical Center
 //
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
-// Author: Olivia Dorsey <olivia.dorsey@utsouthwestern.edu>
+// Author: Ryan Kennedy
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
@@ -75,12 +75,54 @@ var ChangePasswordView = Marionette.View.extend({
         },
         'click #change-password-submit': function(e) {
             e.preventDefault();
-            if(this.checkPasswords(e)) this.changePassword(e);
+
+            // form data into model
+            var data = Syphon.serialize(this);
+            this.model.set('password',data['password']);
+            this.model.set('newPassword',data['newPassword']);
+            this.model.set('passwordCheck',data['passwordCheck']);
+
+            // save if valid other display errors
+            if (this.model.isValid()) this.changePassword();
+            else this.handleValidationErrors();
         },
     },
 
+    handleValidationErrors: function() {
+        var errors = this.model.validationError;
+        console.log(errors);
+
+        // reset valid/invalid display
+        var password = document.getElementById("password");
+        password.classList.remove('is-valid');
+        password.classList.remove('is-invalid');
+        var newPassword = document.getElementById("newPassword");
+        newPassword.classList.remove('is-valid');
+        newPassword.classList.remove('is-invalid');
+        var passwordCheck = document.getElementById("passwordCheck");
+        passwordCheck.classList.remove('is-valid');
+        passwordCheck.classList.remove('is-invalid');
+
+        if (!errors) return;
+        for (let i = 0; i < errors.length; ++i) {
+            // TODO: set valid/invalid class on UI element
+            switch (errors[i]['type']) {
+                case 'password': password.classList.add('is-invalid'); break;
+                case 'newPassword': newPassword.classList.add('is-invalid'); break;
+                case 'passwordCheck': passwordCheck.classList.add('is-invalid'); break;
+                default:
+                    console.log('unhandled error type:', errors[i]['type']);
+            }
+        }
+        // if not invalid then set valid style
+        if (!password.classList.contains('is-invalid')) password.classList.add('is-valid');
+        if (!newPassword.classList.contains('is-invalid')) newPassword.classList.add('is-valid');
+        if (!passwordCheck.classList.contains('is-invalid')) passwordCheck.classList.add('is-valid');
+    },
+
+
+/*
   checkPasswords(event) {
-    var form = document.getElementById("change-password-form");
     var password = document.getElementById("password");
     var newPassword = document.getElementById("newPassword");
     var passwordCheck = document.getElementById("passwordCheck");
@@ -119,7 +161,7 @@ var ChangePasswordView = Marionette.View.extend({
     }
 
     //form is ok if both pass
-    if(!newPassword.classList.contains("is-invalid") && !passwordCheck.classList.contains("is-invalid")) { 
+    if(!newPassword.classList.contains("is-invalid") && !passwordCheck.classList.contains("is-invalid")) {
       form.classList.add("was-validated");
       console.log("Validation passed.");
       return true;
@@ -127,14 +169,10 @@ var ChangePasswordView = Marionette.View.extend({
       console.log("Validation failed.");
       return false;
     }
-  },
+  }, */
 //setFocus on errors?
 
-    changePassword(e) {
-        var data = Syphon.serialize(this);
-        this.model.set('password',data['password']);
-        this.model.set('newPassword',data['newPassword']);
-
+    changePassword: function() {
         // display a modal while the project is being saved
         this.modalState = 'save';
         var message = new MessageModel({

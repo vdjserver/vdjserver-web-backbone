@@ -54,8 +54,9 @@ export var PasswordChange = Agave.Model.extend({
 
         return jqxhr;
     },
-    validate: function(attributes) {
+    validate: function(attributes, options) {
 
+        console.log('model validate called.');
         var errors = [];
 
         // Missing attributes
@@ -115,5 +116,6 @@ export var PasswordChange = Agave.Model.extend({
         if (errors.length) {
             return errors;
         }
+        // else valid so return undefined
     }
 });
