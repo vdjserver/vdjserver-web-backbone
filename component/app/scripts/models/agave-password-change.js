@@ -60,13 +60,6 @@ export var PasswordChange = Agave.Model.extend({
         var errors = [];
 
         // Missing attributes
-        if (!attributes.username) {
-            errors.push({
-                'message': 'Missing username.',
-                'type': 'username'
-            });
-        }
-
         if (!attributes.password) {
             errors.push({
                 'message': 'Missing current password.',
@@ -96,12 +89,9 @@ export var PasswordChange = Agave.Model.extend({
             });
         }
 
-        if (attributes.username.length > 0 &&
-            attributes.newPassword.length > 0 &&
-            attributes.username.indexOf(attributes.newPassword) >= 0
-        ) {
+        if (attributes.password == attributes.newPassword) {
             errors.push({
-                'message': 'Password can\'t be part of username.',
+                'message': 'New password cannot match existing password.',
                 'type': 'newPassword'
             });
         }
