@@ -120,58 +120,6 @@ var ChangePasswordView = Marionette.View.extend({
         if (!passwordCheck.classList.contains('is-invalid')) passwordCheck.classList.add('is-valid');
     },
 
-
-/*
-  checkPasswords(event) {
-    var password = document.getElementById("password");
-    var newPassword = document.getElementById("newPassword");
-    var passwordCheck = document.getElementById("passwordCheck");
-    var sub = document.getElementById("change-password-submit");
-
-    if(newPassword.validity.tooShort) {
-      console.log("New password is too short.");
-      newPassword.classList.add('is-invalid');
-    } else if(newPassword.validity.valueMissing) {
-      console.log("New password is missing.");
-      newPassword.classList.add('is-invalid');
-    } else {
-      newPassword.classList.remove('is-invalid');
-    }
-
-    if(newPassword.value!=passwordCheck.value) {
-      console.log("Passwords do not match.");
-      passwordCheck.classList.add('is-invalid');
-    } else if(passwordCheck.validity.tooShort) {
-      console.log("New password check is too short.");
-      passwordCheck.classList.add('is-invalid');
-    } else if(passwordCheck.validity.valueMissing) {
-      console.log("New password check is missing.");
-      passwordCheck.classList.add('is-invalid');
-    } else {
-      passwordCheck.classList.remove('is-invalid');
-    }
-
-    if(newPassword.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    if(passwordCheck.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
-    //form is ok if both pass
-    if(!newPassword.classList.contains("is-invalid") && !passwordCheck.classList.contains("is-invalid")) {
-      form.classList.add("was-validated");
-      console.log("Validation passed.");
-      return true;
-    } else {
-      console.log("Validation failed.");
-      return false;
-    }
-  }, */
-//setFocus on errors?
-
     changePassword: function() {
         // display a modal while the project is being saved
         this.modalState = 'save';
