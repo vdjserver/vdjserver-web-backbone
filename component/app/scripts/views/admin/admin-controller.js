@@ -29,9 +29,9 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import LoadingView from 'Scripts/views/utilities/loading-view';
-import ObjectTableView from 'Scripts/views/tables/object-table';
 import { ProjectLoadCollection, RearrangementLoadCollection } from 'Scripts/collections/admins-vdjserver';
 import PublicProjectCollection from 'Scripts/collections/agave-public-projects';
+import AdminRepositoryView from 'Scripts/views/admin/admin-repository';
 
 // Admin card tabs for navigation
 import tabs_template from 'Templates/admin/admin-tabs.html';
@@ -128,12 +128,6 @@ var AdminUsersView = Marionette.View.extend({
 import jobs_template from 'Templates/admin/admin-jobs.html';
 var AdminJobsView = Marionette.View.extend({
     template: Handlebars.compile(jobs_template)
-});
-
-// Admin data repository page
-import repository_template from 'Templates/admin/admin-repository.html';
-var AdminRepositoryView = Marionette.View.extend({
-    template: Handlebars.compile(repository_template)
 });
 
 // Admin statistics cache page
@@ -240,8 +234,8 @@ var AdminView = Marionette.View.extend({
 
     showRepositoryAdmin(projectLoadList)
     {
-        //this.contentView = new AdminRepositoryView();
-        this.contentView = new ObjectTableView({controller: this.controller, collection: projectLoadList, objectView: AdminRepositoryView});
+        this.contentView = new AdminRepositoryView({controller: this.controller, collection: projectLoadList});
+        //this.contentView = new ObjectTableView({controller: this.controller, collection: projectLoadList, objectView: AdminRepositoryView});
         this.showChildView('contentRegion', this.contentView);
     },
 
@@ -384,7 +378,7 @@ AdminController.prototype = {
             this.dataRepositoryPromise.then(function() {
                     // have the view display them
                     that.contentView.updateTab();
-                    that.contentView.showRepositoryAdmin(that.projectLoadList);
+                    that.contentView.showRepositoryAdmin(that.publicProjectList);
                 })
                 .fail(function(error) {
                     console.log(error);
@@ -392,7 +386,7 @@ AdminController.prototype = {
         } else {
             // have the view display them
             that.contentView.updateTab();
-            that.contentView.showRepositoryAdmin(that.projectLoadList);
+            that.contentView.showRepositoryAdmin(that.publicProjectList);
         }
     },
 
