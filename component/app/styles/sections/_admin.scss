@@ -1,0 +1,42 @@
+.admin-header {
+    margin-bottom: 2%;
+}
+
+.admin-table-header {
+    //border-bottom: 1px solid $vdj-medgray;
+    border-top: 1px solid $vdj-medgray;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    //align: center;
+}
+
+.admin-table-row {
+    //border-bottom: 1px solid $vdj-medgray;
+    padding-top: 1%;
+    padding-bottom: 1%;
+
+    .text-data {
+        padding-top: 0.5em;
+    }
+
+    .pair-first-row {
+        padding-bottom: 0.5%;
+    }
+
+    .split-button {
+        padding-top: 1.5%;
+    }
+}
+
+.admin-table-row:hover {
+    background: $vdj-lightgray;
+}
+
+.admin-buttons {
+    margin-bottom: 2%;
+}
+
+.admin-buttons-right {
+    text-align: right;
+}
+

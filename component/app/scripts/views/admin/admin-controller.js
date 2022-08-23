@@ -234,7 +234,7 @@ var AdminView = Marionette.View.extend({
 
     showRepositoryAdmin(projectLoadList)
     {
-        this.contentView = new AdminRepositoryView({controller: this.controller, collection: projectLoadList});
+        this.contentView = new AdminRepositoryView({controller: this.controller, collection: projectLoadList, loaded_mode: false});
         //this.contentView = new ObjectTableView({controller: this.controller, collection: projectLoadList, objectView: AdminRepositoryView});
         this.showChildView('contentRegion', this.contentView);
     },
@@ -282,6 +282,7 @@ AdminController.prototype = {
     //
     lazyLoadDataRepository() {
         var that = this;
+        //var plList = new ProjectLoadCollection({collection: '_0'});
         var plList = new ProjectLoadCollection();
         var pubList = new PublicProjectCollection();
         //var rlList = new RearrangementLoadCollection();
@@ -298,6 +299,24 @@ AdminController.prototype = {
                 // now propagate loaded data to project
                 that.projectLoadList = plList;
                 that.publicProjectList = pubList;
+                for (let i = 0; i < that.publicProjectList.length; ++i) {
+                  let pubEntry = that.publicProjectList.at(i);
+                  for(let j = 0; j < that.projectLoadList.length; ++j) {
+                    let loadEntry = that.projectLoadList.at(j);
+                    let loadAssociationIdsArray = loadEntry.get('associationIds');
+                    let k = loadAssociationIdsArray.indexOf(pubEntry.get('uuid'));
+                    if(k!=-1) { //match
+                      if(loadEntry.get('value').collection == '_0') {
+if(i==0)console.log("test1: " + JSON.stringify(loadEntry,null,4));
+                        pubEntry.load_0 = loadEntry;
+if(i==0)console.log("test2: " + JSON.stringify(pubEntry,null,4));
+                      }
+                      if(loadEntry.get('value').collection == '_1') {
+                        pubEntry.load_1 = loadEntry;
+                      }
+                    }
+                  }
+                }
             })
             .then(function() {
                 // update the project summary

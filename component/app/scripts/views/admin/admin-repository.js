@@ -33,8 +33,18 @@ var RepositoryLoadView = Marionette.View.extend({
 
     initialize: function(parameters) {
         // our controller
-        if (parameters && parameters.controller)
+        if (parameters && parameters.controller) {
             this.controller = parameters.controller;
+            this.loaded_mode = parameters.loaded_mode;
+            this.collection = parameters.collection;
+        }
+    },
+
+    templateContext() {
+        return {
+            loaded_mode: this.loaded_mode,
+            collection: this.collection,
+        }
     },
 
     events: {
@@ -47,11 +57,21 @@ var RepositoryLoadListView = Marionette.CollectionView.extend({
 
     initialize: function(parameters) {
         // our controller
-        if (parameters && parameters.controller)
+        if (parameters && parameters.controller) {
             this.controller = parameters.controller;
+            this.loaded_mode = parameters.loaded_mode;
+            this.collection = parameters.collection;
+        }
 
         this.childView = RepositoryLoadView;
-        this.childViewOptions = { controller: this.controller };
+        this.childViewOptions = { controller: this.controller, loaded_mode: this.loaded_mode, collection: this.collection };
+    },
+
+    templateContext() {
+        return {
+            loaded_mode: this.loaded_mode,
+            collection: this.collection,
+        }
     },
 });
 
@@ -69,11 +89,21 @@ export default Marionette.View.extend({
 
     initialize(parameters) {
         // our controller
-        if (parameters && parameters.controller)
+        if (parameters && parameters.controller) {
             this.controller = parameters.controller;
+            this.loaded_mode = parameters.loaded_mode;
+            this.collection = parameters.collection;
+        }
 
-        var view = new RepositoryLoadListView({collection: parameters.collection, controller: this.controller});
+        var view = new RepositoryLoadListView({collection: parameters.collection, controller: this.controller, loaded_mode: this.loaded_mode});
         this.showChildView('listRegion', view);
+    },
+
+    templateContext() {
+        return {
+            loaded_mode: this.loaded_mode,
+            collection: this.collection,
+        }
     },
 
 });
