@@ -1,29 +1,48 @@
-<div class="create-form-text row">
-    <div class="alert alert-info">
+<div class="project-single-form-buttons row">
+    <div class="col-md-3">
+        <div class="alert alert-info">
         <i class="fa fa-info-circle"></i> Update your profile.
+        </div>
+    </div>
+
+    <div class="col-md-8 project-buttons-right">
+            {{#if edit_mode}}
+            <div class="btn-group" role="group" aria-label="Button group">
+                <button type="button" class="btn btn-cancel project-buttons-margin-right" id="revert-profile">
+                    Revert Changes
+                </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="Button group">
+                <button type="button" class="btn btn-save" id="save-profile">
+                    Save Profile
+                </button>
+            </div>
+            {{else}}
+            <div class="btn-group" role="group" aria-label="Button group">
+                <button type="button" class="btn btn-edit project-buttons-margin-right" id="edit-profile">
+                    Edit Profile
+                </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="Button group">
+                <button type="button" class="btn btn-edit" id="change-password">
+                    Change Password
+                </button>
+            </div>
+            {{/if}}
     </div>
 </div>
 
 <div class="container justify-content-center">
-    <form method="post"  role="form" id="profile-overview">
-	    <div class="projectInfo" id="project-details">
-	        <div class="project-metadata col-md-12">
-                    {{#unless edit_mode}}
-                        <button type="button" class="btn btn-edit float-md-right" id="change-password" {{#if edit_mode}}hidden{{/if}}>
-                            Change Password
-                        </button>
-                        <button type="button" class="btn btn-edit float-md-right" id="edit-profile" {{#if edit_mode}}disabled{{/if}}>
-                            Edit Profile
-                        </button>
-                    {{/unless}}
+    <form method="post" role="form" id="profile-overview">
+        <div class="account-profile-form" id="project-details">
+        <h2 class="form-section">User Profile</h2>
 
-                    {{#if edit_mode}}
-                        <input type="button" class="btn btn-save float-md-right" id="save-profile" value="Save Profile">
-                        <input type="reset" class="btn btn-cancel float-md-right" id="revert-profile" value="Revert Changes">
-                    {{/if}}
-
-                </div>
- <h2 class="form-section">User Profile</h2>
+        <div class="form-group">
+            <label for="username" class="col-sm-4 control-label">Username:</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="text" name="username" id="username" value="{{owner}}" readonly>
+            </div>
+        </div>
 
         <div class="form-group">
             <label for="firstName" class="col-sm-4 control-label">First Name:</label>
