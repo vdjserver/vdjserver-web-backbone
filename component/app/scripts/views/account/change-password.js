@@ -58,7 +58,7 @@ var ChangePasswordView = Marionette.View.extend({
         changePasswordRegion: '#change-password-overview'
     },
 
-    templateContext() {
+    templateContext: function() {
         return {
             edit_mode: this.edit_mode,
         }
@@ -134,12 +134,12 @@ var ChangePasswordView = Marionette.View.extend({
         $('#modal-message').modal('show');
     },
 
-    updateData() {
+    updateData: function() {
         var data = Syphon.serialize(this);
         //this.model.setAttributesFromData(data);
     },
 
-    onShownSaveModal(context) {
+    onShownSaveModal: function(context) {
         //console.log('save: Show the modal');
 
         // use modal state variable to decide
@@ -174,14 +174,15 @@ var ChangePasswordView = Marionette.View.extend({
         }
     },
 
-    onHiddenSaveModal(context) {
+    onHiddenSaveModal: function(context) {
         if (context.modalState == 'pass') {
            App.AppController.showUserProfilePage(false);
         } else if (context.modalState == 'fail') {
+            // do anything?
         }
     },
 
-    onShownArchiveModal(context) {
+    onShownArchiveModal: function(context) {
         //console.log('archive: Show the modal');
     },
 });

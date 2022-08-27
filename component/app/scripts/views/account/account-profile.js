@@ -37,7 +37,7 @@ import { UserProfile } from 'Scripts/models/agave-tenant-user';
 import Syphon from 'backbone.syphon';
 
 // user profile
-import template from 'Templates/account/profile-form.html';
+import template from 'Templates/account/account-profile-form.html';
 //export default Marionette.View.extend({
 var ProfileView = Marionette.View.extend({
     template: Handlebars.compile(template),

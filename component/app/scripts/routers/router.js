@@ -338,10 +338,11 @@ export default Backbone.Router.extend({
     adminPage: function(page) {
         console.log('adminPage route:', page);
 
+        var that = this;
         var destinationRoute = function() {
             // only admin users can route to admin pages
             if (! App.Agave.token().isAdmin(App.AppController.userProfile)) {
-                this.index();
+                that.index();
             } else {
                 App.AppController.showAdminPage(page);
             }
