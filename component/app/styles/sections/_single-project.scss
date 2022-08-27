@@ -8,6 +8,10 @@ _single-project.scss - Single Projects
     padding: 0% 5%;
 }
 
+.project-padding {
+    padding: 0% 5%;
+}
+
 .jumbotron {
     padding: 2rem 2rem;
 }
@@ -40,6 +44,10 @@ button.project-changes-action {
 }
 
 #summary-buttons {
+    margin-bottom: 2%;
+}
+
+.summary-buttons {
     margin-bottom: 2%;
 }
 

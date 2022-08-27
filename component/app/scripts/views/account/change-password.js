@@ -12,7 +12,7 @@
 // Copyright (C) 2020-2022 The University of Texas Southwestern Medical Center
 //
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
-// Author: Ryan Kennedy
+// Author: Ryan C. Kennedy
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published

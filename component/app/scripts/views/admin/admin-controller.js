@@ -139,7 +139,7 @@ var AdminStatisticsView = Marionette.View.extend({
 
 // Main admin
 var AdminView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="admin-tabs"></div><div id="admin-content"></div>'),
+    template: Handlebars.compile('<div class="admin-padding" id="admin-tabs"></div><div id="admin-content"></div>'),
 
     // one region for the navigation tabs
     // one region for the admin page content
@@ -307,9 +307,7 @@ AdminController.prototype = {
                     let k = loadAssociationIdsArray.indexOf(pubEntry.get('uuid'));
                     if(k!=-1) { //match
                       if(loadEntry.get('value').collection == '_0') {
-if(i==0)console.log("test1: " + JSON.stringify(loadEntry,null,4));
                         pubEntry.load_0 = loadEntry;
-if(i==0)console.log("test2: " + JSON.stringify(pubEntry,null,4));
                       }
                       if(loadEntry.get('value').collection == '_1') {
                         pubEntry.load_1 = loadEntry;

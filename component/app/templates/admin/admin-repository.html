@@ -1,39 +1,81 @@
     <div class="row admin-table-header align-items-center">
-        <div class="col-md-8"><b>
-            {{value.study_title}}
+        <div class="col-md-9"><b>
+            {{value.study_title}}{{#unless inACollection}}<i> (Recently Published)</i>{{/unless}}
         </b></div>
-        <div class="col-md-4 admin-buttons-right">
+        <div class="col-md-3 admin-buttons-right">
           {{#unless loaded_mode}}
             <div class="btn-group" role="group" aria-label="Button group">
-                <button type="button" class="btn btn-save" id="load-repo" {{#if loaded_mode}}hidden{{/if}}>Load</button>
+                <button type="button" class="btn btn-save" id="admin-load-repo" {{#if loaded_mode}}hidden{{/if}}>Load</button>
             </div>
           {{/unless}}
           {{#if loaded_mode}}
             <div class="btn-group" role="group" aria-label="Button group">
-                <button type="button" class="btn btn-save" id="unload-repo">Unload</button>
+                <button type="button" class="btn btn-delete" id="admin-unload-repo">Unload</button>
             </div>
             <div class="btn-group" role="group" aria-label="Button group">
-                <button type="button" class="btn btn-save" id="reload-repo">Reload</button>
+                <button type="button" class="btn btn-add" id="admin-reload-repo">Reload</button>
             </div>
           {{/if}}
         </div>
     </div>
-
-    <div class="row admin-table-row">
-        <div class="col-md-4"><b>
-        Collection: {{value.collection}}
+  {{#if show_0}}
+    <div class="row admin-table-row align-items-center">
+        <div class="col-md-2"><b>
+        Collection: </b>{{collection_0}}
+        </b></div>
+        <div class="col-md-3"><b>
+    {{#if enable_0}}
+        <div class="btn-group align-items-center" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-save" id="admin-enableLoad_0_mode">Enable</button>
+            </b>&nbsp&nbspLoad is Disabled<b>
+        </div>
+    {{/if}}
+    {{#unless enable_0}}
+        <div class="btn-group align-items-center" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-delete" id="admin-disableLoad_0_mode">Disable</button>
+            </b>&nbsp&nbspLoad is Enabled
+        </div>
+    {{/unless}}
         </b></div>
         <div class="col-md-2"><b>
-        Should Load: {{value.shouldLoad}}
+        Status: </b>{{isLoaded_0}}
         </b></div>
         <div class="col-md-2"><b>
-        Status: {{value.isLoaded}}
+        Repertoire: </b>{{repertoireMetadataLoaded_0}}
         </b></div>
         <div class="col-md-2"><b>
-        Repertoire: {{value.repertoireMetadataLoaded}}
-        </b></div>
-        <div class="col-md-2"><b>
-        Rearrangement: {{value.rearrangementDataLoaded}}
+        Rearrangement: </b>{{rearrangementDataLoaded_0}}
         </b></div>
     </div>
+  {{/if}}
+  {{#if show_1}}
+    <div class="row admin-table-row align-items-center">
+        <div class="col-md-2"><b>
+        Collection: </b>{{collection_1}}
+        </b></div>
+        <div class="col-md-3"><b>
+    {{#if enable_1}}
+        <div class="btn-group align-items-center" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-save" id="admin-enableLoad_1_mode">Enable</button>
+            </b>&nbsp&nbspLoad is Disabled<b>
+        </div>
+    {{/if}}
+    {{#unless enable_1}}
+        <div class="btn-group align-items-center" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-delete" id="admin-disableLoad_1_mode">Disable</button>
+            </b>&nbsp&nbspLoad is Enabled<b>
+        </div>
+    {{/unless}}
+        </b></div>
+        <div class="col-md-2"><b>
+        Status: </b>{{isLoaded_1}}
+        </b></div>
+        <div class="col-md-2"><b>
+        Repertoire: </b>{{repertoireMetadataLoaded_1}}
+        </b></div>
+        <div class="col-md-2"><b>
+        Rearrangement: </b>{{rearrangementDataLoaded_1}}
+        </b></div>
+    </div>
+  {{/if}}
 
