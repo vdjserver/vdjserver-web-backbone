@@ -97,6 +97,14 @@ var AdminTabsView = Marionette.View.extend({
         card_tabs.push(card);
 
         card = {};
+        card['card_id'] = 'adc-tab';
+        card['text'] = 'ADC Download Cache';
+        if (this.controller.page == 'adc') card['active'] = true;
+        else card['active'] = false;
+        if (! this.controller.page) card['active'] = true;
+        card_tabs.push(card);
+
+        card = {};
         card['card_id'] = 'statistics-tab';
         card['text'] = 'Statistics Cache';
         if (this.controller.analysisList) {
@@ -128,6 +136,12 @@ var AdminUsersView = Marionette.View.extend({
 import jobs_template from 'Templates/admin/admin-jobs.html';
 var AdminJobsView = Marionette.View.extend({
     template: Handlebars.compile(jobs_template)
+});
+
+// Admin ADC Download Cache page
+import adc_template from 'Templates/admin/admin-adc.html';
+var AdminADCView = Marionette.View.extend({
+    template: Handlebars.compile(adc_template)
 });
 
 // Admin statistics cache page
@@ -192,6 +206,13 @@ var AdminView = Marionette.View.extend({
         },
 
         //
+        // ADC Download Cache specific events
+        //
+        'click #adc-tab': function() {
+            this.controller.showADCAdmin();
+        },
+
+        //
         // Statistics page specific events
         //
         'click #statistics-tab': function() {
@@ -238,6 +259,13 @@ var AdminView = Marionette.View.extend({
         //this.contentView = new ObjectTableView({controller: this.controller, collection: projectLoadList, objectView: AdminRepositoryView});
         this.showChildView('contentRegion', this.contentView);
     },
+
+    showADCAdmin()
+    {
+        this.contentView = new AdminADCView();
+        this.showChildView('contentRegion', this.contentView);
+    },
+
 
     showStatisticsAdmin()
     {
@@ -340,6 +368,10 @@ AdminController.prototype = {
                 this.page = 'repository';
                 this.showRepositoryAdmin();
                 break;
+            case 'adc':
+                this.page = 'adc';
+                this.showADCAdmin();
+                break;
             case 'statistics':
                 this.page = 'statistics';
                 this.showStatisticsAdmin();
@@ -405,6 +437,14 @@ AdminController.prototype = {
             that.contentView.updateTab();
             that.contentView.showRepositoryAdmin(that.publicProjectList);
         }
+    },
+
+    showADCAdmin()
+    {
+        this.page = 'adc';
+        App.router.navigate('admin/adc', {trigger: false});
+        this.contentView.updateTab();
+        this.contentView.showADCAdmin(this.model);
     },
 
     showStatisticsAdmin()
