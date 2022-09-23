@@ -11,7 +11,10 @@
                 <form class="signup form-horizontal">
                     <h2>Welcome!</h2>
                     <p>
-                        VDJServer is a free, scalable resource for performing immune repertoire analysis and sharing data. Manage, analyze, and archive your data through our web resource.  You can also download our open source analysis software for local use.
+                        VDJServer is a free, scalable resource for performing immune repertoire analysis and sharing data.
+                        VDJServer <a data-bypass=true href="https://vdj-staging.tacc.utexas.edu/community">Community Data Portal</a> is part of the <a target="_blank" href="https://docs.airr-community.org/en/stable/api/adc.html">AIRR Data Commons</a>.
+                        Manage, analyze, and archive your data through our web resource.
+                        <a href="mailto:vdjserver@utsouthwestern.edu?subject=Share my data in VDJServer">Email</a> or <a href="feedback">Send Feedback</a> for more details.
                     </p>
 
                     {{#if maintenance}}
@@ -52,6 +55,11 @@
                         </div>
                         <div class="col-md-6 login-button-column text-center">
                             <p><a class="home-create-account" href="/community">Community Data</a></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 login-button-column text-center">
+                            <p><a class="home-create-account" data-bypass=true href="https://vdj-staging.tacc.utexas.edu/community"><b>(Beta)</b> New Community Data Portal!</a></p>
                         </div>
                     </div>
                 </form>
