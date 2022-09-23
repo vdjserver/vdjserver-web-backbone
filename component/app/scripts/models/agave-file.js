@@ -380,7 +380,7 @@ function(
                 if (App.Routers.communityMode) {
                   jqxhr = this.downloadPublicFileByPostit(this.get('projectUuid'), this.get('fileUuid'));
                 } else {
-                  var url = EnvironmentConfig.agave.hostname
+                  var url = EnvironmentConfig.agave.internal
                           + '/files'
                           + '/v2'
                           + '/media'
@@ -393,7 +393,7 @@ function(
 
                   if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
 
-                      url = EnvironmentConfig.agave.hostname
+                      url = EnvironmentConfig.agave.internal
                           + '/jobs'
                           + '/v2'
                           + '/' + this.get('jobUuid')

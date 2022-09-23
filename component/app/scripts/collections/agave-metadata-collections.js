@@ -39,7 +39,7 @@ define([
             },
 
             downloadExportFileToDisk: function() {
-                var url = EnvironmentConfig.agave.hostname
+                var url = EnvironmentConfig.agave.internal
                         + '/files'
                         + '/v2'
                         + '/media'
@@ -106,7 +106,7 @@ define([
             },
 
             downloadExportFileToDisk: function() {
-                var url = EnvironmentConfig.agave.hostname
+                var url = EnvironmentConfig.agave.internal
                         + '/files'
                         + '/v2'
                         + '/media'
@@ -173,7 +173,7 @@ define([
             },
 
             downloadExportFileToDisk: function() {
-                var url = EnvironmentConfig.agave.hostname
+                var url = EnvironmentConfig.agave.internal
                         + '/files'
                         + '/v2'
                         + '/media'
@@ -240,7 +240,7 @@ define([
             },
 
             downloadExportFileToDisk: function() {
-                var url = EnvironmentConfig.agave.hostname
+                var url = EnvironmentConfig.agave.internal
                         + '/files'
                         + '/v2'
                         + '/media'
@@ -307,7 +307,7 @@ define([
             },
 
             downloadExportFileToDisk: function() {
-                var url = EnvironmentConfig.agave.hostname
+                var url = EnvironmentConfig.agave.internal
                         + '/files'
                         + '/v2'
                         + '/media'

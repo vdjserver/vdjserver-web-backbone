@@ -252,7 +252,7 @@ function(
                   jqxhr = this.downloadPublicFileByPostit(value.projectUuid, this.get('uuid'));
                 } else {
                   var value = this.get('value');
-                  var url = EnvironmentConfig.agave.hostname
+                  var url = EnvironmentConfig.agave.internal
                            + '/jobs'
                            + '/v2'
                            + '/' + value.jobUuid
