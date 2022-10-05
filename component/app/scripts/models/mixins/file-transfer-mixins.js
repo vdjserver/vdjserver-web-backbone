@@ -58,6 +58,7 @@ define([
 
             var link = document.createElement('a');
             link.setAttribute('download', null);
+            link.setAttribute('data-bypass', 'true');
             link.setAttribute('href', targetUrl);
             link.style.display = 'none';
             document.body.appendChild(link);
@@ -101,6 +102,7 @@ define([
 
             var link = document.createElement('a');
             link.setAttribute('download', null);
+            link.setAttribute('data-bypass', 'true');
             link.setAttribute('href', targetUrl);
             link.style.display = 'none';
             document.body.appendChild(link);
