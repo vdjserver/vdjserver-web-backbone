@@ -38,6 +38,8 @@ define([
         .then(function(response) {
 
             var targetUrl = response.result._links.self.href;
+            // rewrite URL to go through proxy
+            targetUrl = targetUrl.replace(EnvironmentConfig.agave.internal, EnvironmentConfig.agave.hostname);
 
             return targetUrl;
         })
@@ -79,6 +81,8 @@ define([
         .then(function(response) {
 
             var targetUrl = response.result._links.self.href;
+            // rewrite URL to go through proxy
+            targetUrl = targetUrl.replace(EnvironmentConfig.agave.internal, EnvironmentConfig.agave.hostname);
 
             return targetUrl;
         })
