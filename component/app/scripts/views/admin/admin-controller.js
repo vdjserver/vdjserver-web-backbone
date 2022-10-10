@@ -30,8 +30,10 @@ import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import { ProjectLoadCollection, RearrangementLoadCollection } from 'Scripts/collections/admins-vdjserver';
+import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
 import PublicProjectCollection from 'Scripts/collections/agave-public-projects';
 import AdminRepositoryView from 'Scripts/views/admin/admin-repository';
+import AdminADCView from 'Scripts/views/admin/admin-adc';
 
 // Admin card tabs for navigation
 import tabs_template from 'Templates/admin/admin-tabs.html';
@@ -99,6 +101,20 @@ var AdminTabsView = Marionette.View.extend({
         card = {};
         card['card_id'] = 'adc-tab';
         card['text'] = 'ADC Download Cache';
+        if (this.controller.studyCacheList) {
+            if(this.controller.studyCacheList.length > 1) {
+                card['text'] += '<br>' + this.controller.studyCacheList.length + ' Study Caches';
+            } else {
+                card['text'] += '<br>' + this.controller.studyCacheList.length + ' Study Cache';
+            }
+        }
+        /*if (this.controller.repertoireCacheList) {
+            if(this.controller.repertoireCacheList.length > 1) {
+                card['text'] += '<br>' + this.controller.repertoireCacheList.length + ' Repertoire Caches';
+            } else {
+                card['text'] += '<br>' + this.controller.repertoireCacheList.length + ' Repertoire Cache';
+            }
+        }*/
         if (this.controller.page == 'adc') card['active'] = true;
         else card['active'] = false;
         if (! this.controller.page) card['active'] = true;
@@ -138,11 +154,11 @@ var AdminJobsView = Marionette.View.extend({
     template: Handlebars.compile(jobs_template)
 });
 
-// Admin ADC Download Cache page
+/*// Admin ADC Download Cache page
 import adc_template from 'Templates/admin/admin-adc.html';
 var AdminADCView = Marionette.View.extend({
     template: Handlebars.compile(adc_template)
-});
+});*/
 
 // Admin statistics cache page
 import statistics_template from 'Templates/admin/admin-statistics.html';
@@ -260,9 +276,9 @@ var AdminView = Marionette.View.extend({
         this.showChildView('contentRegion', this.contentView);
     },
 
-    showADCAdmin()
+    showADCAdmin(studyCacheList)
     {
-        this.contentView = new AdminADCView();
+        this.contentView = new AdminADCView({controller: this.controller, collection: studyCacheList});
         this.showChildView('contentRegion', this.contentView);
     },
 
@@ -290,6 +306,10 @@ function AdminController(page) {
     this.projectLoadList = null;
     this.publicProjectList = null;
     this.dataRepositoryPromise = this.lazyLoadDataRepository();
+    this.studyCacheList = null;
+    this.studyCachePromise = this.lazyLoadADCStudyCache();
+    //this.repertoireCacheList = null;
+    //this.repertoireCachePromise = this.lazyLoadADCRepertoireCache();
 
     // are we routing to a specific page?
     this.showAdminPage(this.page);
@@ -323,7 +343,7 @@ AdminController.prototype = {
                 return pubList.fetch();
             })
             .then(function() {
-                console.log(pubList);
+                //console.log(pubList);
                 // now propagate loaded data to project
                 that.projectLoadList = plList;
                 that.publicProjectList = pubList;
@@ -346,6 +366,37 @@ AdminController.prototype = {
             })
             .then(function() {
                 // update the project summary
+                that.contentView.updateTab();
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
+    },
+
+    lazyLoadADCStudyCache() {
+        var that = this;
+        var scList = new StudyCacheCollection();
+
+        // fetch the list
+        return scList.fetch()
+            .then(function() {
+                that.studyCacheList = scList;
+                that.contentView.updateTab();
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
+    },
+
+    //merge into lazyLoadADCStudyCache when backend is implemented
+    lazyLoadADCRepertoireCache() {
+        var that = this;
+        var rcList = new RepertoireCacheCollection();
+
+        // fetch the list
+        return rcList.fetch()
+            .then(function() {
+                that.repertoireCacheList = rcList;
                 that.contentView.updateTab();
             })
             .fail(function(error) {
@@ -444,7 +495,54 @@ AdminController.prototype = {
         this.page = 'adc';
         App.router.navigate('admin/adc', {trigger: false});
         this.contentView.updateTab();
-        this.contentView.showADCAdmin(this.model);
+
+        var that = this;
+        if (! this.studyCacheList) {
+            // it should be lazy loading show loading while we fetch
+            that.contentView.showLoading();
+
+            // wait on the lazy load
+            this.studyCachePromise.then(function() {
+                    // have the view display them
+                    that.contentView.updateTab();
+                    that.contentView.showADCAdmin(that.studyCacheList);
+                })
+                .fail(function(error) {
+                    console.log(error);
+                });
+        } else {
+            // have the view display them
+            that.contentView.updateTab();
+            that.contentView.showADCAdmin(that.studyCacheList);
+        }
+    },
+
+    //merge into showADCAdmin when backend is implemented
+    showADCRepertoireAdmin()
+    {
+        this.page = 'adc';
+        App.router.navigate('admin/adc', {trigger: false});
+        this.contentView.updateTab();
+
+        var that = this;
+        if (! this.repertoireCacheList) {
+            // it should be lazy loading show loading while we fetch
+            that.contentView.showLoading();
+
+            // wait on the lazy load
+            this.repertoireCachePromise.then(function() {
+                    // have the view display them
+                    that.contentView.updateTab();
+                    that.contentView.showADCRepertoireAdmin(that.repertoireCacheList);
+                })
+                .fail(function(error) {
+                    console.log(error);
+                });
+        } else {
+            // have the view display them
+            that.contentView.updateTab();
+            that.contentView.showADCRepertoireAdmin(that.repertoireCacheList);
+        }
     },
 
     showStatisticsAdmin()
