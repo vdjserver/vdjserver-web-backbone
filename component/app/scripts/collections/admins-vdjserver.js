@@ -64,37 +64,37 @@ export var ProjectLoadCollection = Agave.Collection.extend(
                 else url += '?';
                 mark = true;
                 url += 'project_uuid=' + this.projectUuid;
-            };
+            }
             if (this.collection != null) {
                 if (mark) url += '&';
                 else url += '?';
                 mark = true;
                 url += 'collection=' + this.collection;
-            };
+            }
             if (this.shouldLoad != null) {
                 if (mark) url += '&';
                 else url += '?';
                 mark = true;
                 url += 'should_load=' + this.shouldLoad;
-            };
+            }
             if (this.isLoaded != null) {
                 if (mark) url += '&';
                 else url += '?';
                 mark = true;
                 url += 'is_loaded=' + this.isLoaded;
-            };
+            }
             if (this.repertoireMetadataLoaded != null) {
                 if (mark) url += '&';
                 else url += '?';
                 mark = true;
                 url += 'repertoire_loaded=' + this.repertoireMetadataLoaded;
-            };
+            }
             if (this.rearrangementDataLoaded != null) {
                 if (mark) url += '&';
                 else url += '?';
                 mark = true;
                 url += 'rearrangement_loaded=' + this.rearrangementDataLoaded;
-            };
+            }
             return url;
         },
     })
