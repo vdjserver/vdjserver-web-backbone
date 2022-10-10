@@ -100,11 +100,13 @@ export var ProjectLoadCollection = Agave.Collection.extend(
     })
 );
 
-export var RearrangementLoadCollection = Agave.MetadataCollection.extend(
+//export var RearrangementLoadCollection = Agave.MetadataCollection.extend(
+export var RearrangementLoadCollection = Agave.Collection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, {
         model: ProjectLoad,
         initialize: function(parameters) {
-            Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+            //Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+            Agave.Collection.prototype.initialize.apply(this, [parameters]);
 
             if (parameters && parameters.projectUuid) {
                 this.projectUuid = parameters.projectUuid;

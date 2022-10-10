@@ -97,6 +97,14 @@ var AdminTabsView = Marionette.View.extend({
         card_tabs.push(card);
 
         card = {};
+        card['card_id'] = 'adc-tab';
+        card['text'] = 'ADC Download Cache';
+        if (this.controller.page == 'adc') card['active'] = true;
+        else card['active'] = false;
+        if (! this.controller.page) card['active'] = true;
+        card_tabs.push(card);
+
+        card = {};
         card['card_id'] = 'statistics-tab';
         card['text'] = 'Statistics Cache';
         if (this.controller.analysisList) {
@@ -130,6 +138,12 @@ var AdminJobsView = Marionette.View.extend({
     template: Handlebars.compile(jobs_template)
 });
 
+// Admin ADC Download Cache page
+import adc_template from 'Templates/admin/admin-adc.html';
+var AdminADCView = Marionette.View.extend({
+    template: Handlebars.compile(adc_template)
+});
+
 // Admin statistics cache page
 import statistics_template from 'Templates/admin/admin-statistics.html';
 var AdminStatisticsView = Marionette.View.extend({
@@ -139,7 +153,7 @@ var AdminStatisticsView = Marionette.View.extend({
 
 // Main admin
 var AdminView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="admin-tabs"></div><div id="admin-content"></div>'),
+    template: Handlebars.compile('<div class="admin-padding" id="admin-tabs"></div><div id="admin-content"></div>'),
 
     // one region for the navigation tabs
     // one region for the admin page content
@@ -192,6 +206,13 @@ var AdminView = Marionette.View.extend({
         },
 
         //
+        // ADC Download Cache specific events
+        //
+        'click #adc-tab': function() {
+            this.controller.showADCAdmin();
+        },
+
+        //
         // Statistics page specific events
         //
         'click #statistics-tab': function() {
@@ -238,6 +259,13 @@ var AdminView = Marionette.View.extend({
         //this.contentView = new ObjectTableView({controller: this.controller, collection: projectLoadList, objectView: AdminRepositoryView});
         this.showChildView('contentRegion', this.contentView);
     },
+
+    showADCAdmin()
+    {
+        this.contentView = new AdminADCView();
+        this.showChildView('contentRegion', this.contentView);
+    },
+
 
     showStatisticsAdmin()
     {
@@ -307,9 +335,7 @@ AdminController.prototype = {
                     let k = loadAssociationIdsArray.indexOf(pubEntry.get('uuid'));
                     if(k!=-1) { //match
                       if(loadEntry.get('value').collection == '_0') {
-if(i==0)console.log("test1: " + JSON.stringify(loadEntry,null,4));
                         pubEntry.load_0 = loadEntry;
-if(i==0)console.log("test2: " + JSON.stringify(pubEntry,null,4));
                       }
                       if(loadEntry.get('value').collection == '_1') {
                         pubEntry.load_1 = loadEntry;
@@ -341,6 +367,10 @@ if(i==0)console.log("test2: " + JSON.stringify(pubEntry,null,4));
             case 'repository':
                 this.page = 'repository';
                 this.showRepositoryAdmin();
+                break;
+            case 'adc':
+                this.page = 'adc';
+                this.showADCAdmin();
                 break;
             case 'statistics':
                 this.page = 'statistics';
@@ -407,6 +437,14 @@ if(i==0)console.log("test2: " + JSON.stringify(pubEntry,null,4));
             that.contentView.updateTab();
             that.contentView.showRepositoryAdmin(that.publicProjectList);
         }
+    },
+
+    showADCAdmin()
+    {
+        this.page = 'adc';
+        App.router.navigate('admin/adc', {trigger: false});
+        this.contentView.updateTab();
+        this.contentView.showADCAdmin(this.model);
     },
 
     showStatisticsAdmin()
