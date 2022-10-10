@@ -73,7 +73,6 @@ var RepositoryLoadView = Marionette.View.extend({
       collection_0 = collection_1 = isLoaded_0 = isLoaded_1 = false;
       repertoireMetadataLoaded_0 = repertoireMetadataLoaded_1 = false;
       rearrangementDataLoaded_0 = rearrangementDataLoaded_1 = false;
-
       if(this.model.load_0 != null) {
         this.collection_0 = this.model.load_0.get('value').collection;
         if(this.collection_0.length > 0) {
@@ -264,7 +263,6 @@ export default Marionette.View.extend({
         'click #admin-disableADC': 'disableADC',
         'click #admin-enableVDJ': 'enableVDJ',
         'click #admin-disableVDJ': 'disableVDJ',
-
     },
     sort: function(e) {
         e.preventDefault();

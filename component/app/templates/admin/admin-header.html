@@ -36,16 +36,6 @@
     </div>
 
     <div class="col-md-8 admin-buttons-right">
-    {{#if enableADC_mode}}
-        <div class="btn-group align-items-center" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-save" id="admin-enableADC">Enable ADC Download Cache</button>
-        </div>
-    {{/if}}
-    {{#unless enableADC_mode}}
-        <div class="btn-group align-items-center" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-delete" id="admin-disableADC">Disable ADC Download Cache</button>
-        </div>
-    {{/unless}}
     {{#if enableVDJ_mode}}
         <div class="btn-group align-items-center" role="group" aria-label="Button group">
             <button type="button" class="btn btn-save admin-buttons-margin-left" id="admin-enableVDJ">Enable VDJServer Repository</button>
