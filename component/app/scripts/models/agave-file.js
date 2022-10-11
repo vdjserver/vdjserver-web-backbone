@@ -469,7 +469,7 @@ export var ProjectFile = File.extend(
         downloadFileToDisk: function() {
             var jqxhr;
 
-            var url = EnvironmentConfig.agave.hostname
+            var url = EnvironmentConfig.agave.internal
                   + '/files'
                   + '/v2'
                   + '/media'
@@ -482,7 +482,7 @@ export var ProjectFile = File.extend(
 
             if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
 
-              url = EnvironmentConfig.agave.hostname
+              url = EnvironmentConfig.agave.internal
                   + '/jobs'
                   + '/v2'
                   + '/' + this.get('jobUuid')

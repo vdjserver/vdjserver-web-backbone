@@ -5,7 +5,8 @@ var EnvironmentConfig = {
     'agave': {
         'maintenance': false,
         'maintenanceMessage': '',
-        'hostname': 'https://vdj-agave-api.tacc.utexas.edu',
+        'hostname': 'https://vdjserver.org',
+        'internal': 'https://vdj-agave-api.tacc.utexas.edu',
         'serviceAccountUsername': 'vdj',
         'systems': {
             'storage': {
