@@ -1,0 +1,100 @@
+<div class="row project-sample-buttons">
+    <div class="col">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle project-buttons-margin-right" type="button" id="project-samples-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort By
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-samples-sort-select" name="name">
+                    {{#ifEquals current_sort "name"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    File Name
+                </button>
+                <button class="dropdown-item" type="button" id="project-samples-sort-select" name="newest">
+                    {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Newest
+                </button>
+                <button class="dropdown-item" type="button" id="project-samples-sort-select" name="oldest">
+                    {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Oldest
+                </button>
+                <button class="dropdown-item" type="button" id="project-samples-sort-select" name="size">
+                    {{#ifEquals current_sort "size"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    File Size
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item disabled" type="button">
+                    Add Custom Sort...
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle project-buttons-margin-right" type="button" id="project-samples-upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Import/Export
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-samples-import" name="name">
+                    Import Sample Table
+                </button>
+                <button class="dropdown-item" type="button" id="project-samples-export" name="newest">
+                    Export Sample Table
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-create dropdown-toggle project-buttons-margin-right" type="button" id="project-samples-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Templates
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-samples-show-templates" name="name">
+                    Show Templates
+                </button>
+                <button class="dropdown-item" type="button" id="project-samples-hide-templates" name="name" hidden>
+                    Hide Templates
+                </button>
+                <button class="dropdown-item" type="button" id="project-samples-new-template" name="name">
+                    New Blank Template
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" type="button" id="project-samples-template-name" name="newest">
+                    Apply NAME Template to samples
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-create dropdown-toggle project-buttons-margin-right" type="button" id="project-samples-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-plus" aria-hidden="true"></i>Add Sample
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-samples-new-sample" name="name">
+                    New Blank Sample
+                </button>
+                <div class="dropdown-divider" width="10%">templates</div>
+                <button class="dropdown-item" type="button" id="project-samples-" name="newest">
+                    New Sample from Template NAME
+                </button>
+              </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-5 project-buttons-right">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-cancel project-changes-action" id="project-samples-revert-changes" disabled>Revert Sample Changes</button>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-save project-changes-action" id="project-samples-save-changes" disabled>Save Sample Changes</button>
+        </div>
+    </div>
+</div>

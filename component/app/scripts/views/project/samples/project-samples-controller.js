@@ -2,8 +2,8 @@
 'use strict';
 
 //
-// project-subjects-samples-controller.js
-// Controller for the project subjects/samples page
+// project-samples-controller.js
+// Controller for the project samples page
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -31,49 +31,12 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
 import Project from 'Scripts/models/agave-project';
-import SubjectsView from 'Scripts/views/project/subjects/project-subjects-main';
-import SamplesView from 'Scripts/views/project/samples/samples-main';
+import ProjectSamplesView from 'Scripts/views/project/samples/project-samples-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 
-// Project subjects/samples layout
-// two regions, one for subjects, one for samples
-// content display is handled by sub views
-var ProjectSubjectsSamplesView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project-subjects" class="project-subjects-list"></div><div id="project-samples" class="project-samples-list"></div>'),
-
-    // one region for any header content
-    // one region for the files collection
-    regions: {
-        subjectsRegion: '#project-subjects',
-        samplesRegion: '#project-samples'
-    },
-
-    initialize(parameters) {
-        // our controller
-        if (parameters && parameters.controller)
-            this.controller = parameters.controller;
-    },
-
-    events: {
-    },
-
-    showSubjectsView(subjectList) {
-        this.showChildView('subjectsRegion', new SubjectsView({model: this.model, controller: this.controller}));
-    },
-
-    showSamplesView(sampleList) {
-        this.showChildView('samplesRegion', new SamplesView({model: this.model, controller: this.controller}));
-    },
-
-    showSubjectsSamplesView(subjectList, sampleList) {
-        this.showSubjectsView(subjectList);
-        this.showSamplesView(sampleList);
-    },
-});
-
-// Project files controller
+// Project samples controller
 //
-function ProjectSubjectsSamplesController(controller) {
+function ProjectSamplesController(controller) {
     // upper level controller, i.e. the single project controller
     this.controller = controller;
 
@@ -81,22 +44,20 @@ function ProjectSubjectsSamplesController(controller) {
     this.model = this.controller.model;
 
     // default to summary views
-    this.subjects_view_mode = 'summary';
-    this.samples_view_mode = 'summary';
+    this.view_mode = 'summary';
     // edits
-    this.subjects_has_edits = false;
-    this.samples_has_edits = false;
+    this.has_edits = false;
 
-    this.mainView = new ProjectSubjectsSamplesView({model: this.model, controller: this});
+    this.mainView = new ProjectSamplesView({model: this.model, controller: this});
 }
 
-ProjectSubjectsSamplesController.prototype = {
+ProjectSamplesController.prototype = {
     // return the main view, create it if necessary
     getView() {
         if (!this.mainView)
-            this.mainView = new ProjectSubjectsSamplesView({model: this.model, controller: this});
+            this.mainView = new ProjectSamplesView({model: this.model, controller: this});
         else if (this.mainView.isDestroyed())
-            this.mainView = new ProjectSubjectsSamplesView({model: this.model, controller: this});
+            this.mainView = new ProjectSamplesView({model: this.model, controller: this});
         return this.mainView;
     },
 
@@ -105,35 +66,15 @@ ProjectSubjectsSamplesController.prototype = {
         return this.controller.getCollections();
     },
 
-    getSubjectsViewMode() {
-        return this.subjects_view_mode;
-    },
-
-    toggleSubjectsViewMode() {
-        // summary -> detail -> compressed -> summary
-        switch(this.subjects_view_mode) {
-            case 'summary': this.subjects_view_mode = 'detail'; break;
-            case 'detail': this.subjects_view_mode = 'compressed'; break;
-            case 'compressed': this.subjects_view_mode = 'summary'; break;
-        }
-    },
-
-    getSamplesViewMode() {
-        return this.samples_view_mode;
-    },
-
-    toggleSamplesViewMode() {
-    },
-
-    // show project subjects and samples
-    showSubjectsSamples() {
+    // show project  samples
+    showProjectSamplesList() {
         var collections = this.controller.getCollections();
 
         // TODO: any filtering?
 
-        this.mainView.showSubjectsSamplesView(collections.subjectList, collections.sampleList);
+        this.mainView.showProjectSamplesList(collections.sampleList);
     },
 
 };
-export default ProjectSubjectsSamplesController;
+export default ProjectSamplesController;
 
