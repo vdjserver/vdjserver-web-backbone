@@ -99,16 +99,24 @@ var ProjectSummaryView = Marionette.View.extend({
         card_tabs.push(card);
 
         card = {};
-        card['card_id'] = 'subjects-samples-tab';
-        card['text'] = 'Subjects<br>Samples';
+        card['card_id'] = 'subjects-tab';
+        card['text'] = 'Subjects';
         card['icon'] = 'fas fa-user-alt';
         if (collections.subjectList) {
             card['text'] = collections.subjectList.length + ' Subjects';
         } else card['text'] = 'Subjects';
+        if (this.controller.page == 'subject') card['active'] = true;
+        else card['active'] = false;
+        card_tabs.push(card);
+
+        card = {};
+        card['card_id'] = 'samples-tab';
+        card['text'] = 'Samples';
+        card['icon'] = 'fas fa-user-alt';
         if (collections.sampleList) {
-            card['text'] = card['text'] + '<br>' + collections.sampleList.length + ' Samples';
+            card['text'] =  collections.sampleList.length + ' Samples';
         } else card['text'] = card['text'] + '<br>Samples';
-        if (this.controller.page == 'subject-sample') card['active'] = true;
+        if (this.controller.page == 'sample') card['active'] = true;
         else card['active'] = false;
         card_tabs.push(card);
 
