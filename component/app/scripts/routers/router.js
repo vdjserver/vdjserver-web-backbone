@@ -85,7 +85,8 @@ export default Backbone.Router.extend({
         'project':                          'projectList',
         'project/create':                   'createPage',
         'project/:id':                      'projectPage',
-        'project/:id/subject-sample':       'projectSubjectSample',
+        'project/:id/subject':              'projectSubject',
+        'project/:id/sample':               'projectSample',
         'project/:id/repertoire':           'projectRepertoire',
         'project/:id/group':                'projectGroup',
         'project/:id/file':                 'projectFile',
@@ -253,9 +254,14 @@ export default Backbone.Router.extend({
         this.routeWithTokenRefreshCheck(destinationRoute);
     },
 
-    // Subject/Sample page for a project
-    projectSubjectSample: function(projectUuid) {
-        this.projectPage(projectUuid, 'subject-sample');
+    // Subject page for a project
+    projectSubject: function(projectUuid) {
+        this.projectPage(projectUuid, 'subject');
+    },
+
+    // Sample page for a project
+    projectSample: function(projectUuid) {
+        this.projectPage(projectUuid, 'sample');
     },
 
     // Repertoire page for a project

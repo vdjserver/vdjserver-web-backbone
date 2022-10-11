@@ -92,7 +92,7 @@ var SubjectContainerView = Marionette.View.extend({
         // if editing, leave in edit
         // get default view mode from controller
         if (this.model.view_mode != 'edit')
-            this.model.view_mode = this.controller.getSubjectsViewMode();
+            this.model.view_mode = 'summary';
 
         this.showSubjectView();
     },

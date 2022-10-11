@@ -31,28 +31,6 @@ import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import SubjectsListView from 'Scripts/views/project/subjects/project-subjects-list';
 
-// Project subjects header bar
-import header_template from 'Templates/project/subjects/project-subjects-header.html';
-var SubjectsHeaderView = Marionette.View.extend({
-    template: Handlebars.compile(header_template),
-
-    initialize: function(parameters) {
-        if (parameters && parameters.controller) {
-            this.controller = parameters.controller;
-        }
-    },
-
-    templateContext() {
-        var num_subjects = 0;
-        var collections = this.controller.getCollections();
-        if (collections.subjectList) num_subjects = collections.subjectList.length;
-        return {
-            num_subjects: num_subjects
-        }
-    }
-
-});
-
 // Project subjects buttons
 import button_template from 'Templates/project/subjects/project-subjects-buttons.html';
 var SubjectsButtonView = Marionette.View.extend({
@@ -72,13 +50,11 @@ var SubjectsButtonView = Marionette.View.extend({
 // header bar for toggling view mode and button bar with actions
 // content display is handled by sub views
 var SubjectsView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project-subjects-header"></div><div id="project-subjects-buttons"></div><div id="project-subjects-list"></div>'),
-    //className: 'project-subjects-list',
+    template: Handlebars.compile('<div id="project-subjects-buttons"></div><div id="project-subjects-list"></div>'),
 
     // one region for any header content
     // one region for the files collection
     regions: {
-        headerRegion: '#project-subjects-header',
         buttonRegion: '#project-subjects-buttons',
         listRegion: '#project-subjects-list'
     },
@@ -96,40 +72,11 @@ var SubjectsView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-
-        // TODO: what about a filtered list?
-        var collections = this.controller.getCollections();
-        this.showSubjectsView(collections.subjectList);
     },
 
-    toggleSubjectsView(e) {
-        // controller holds the view state
-        this.controller.toggleSubjectsViewMode();
-        // redisplay just the list
-        // TODO: what about a filtered list?
-        var collections = this.controller.getCollections();
-        this.showSubjectsList(collections.subjectList);
-    },
-
-    showSubjectsView(subjectList) {
-        this.showSubjectsHeader();
-        this.showSubjectsList(subjectList);
-    },
-
-    showSubjectsHeader(subjectList) {
-        this.showChildView('headerRegion', new SubjectsHeaderView({controller: this.controller}));
-    },
-
-    showSubjectsList(subjectList) {
-        let view_mode = this.controller.getSubjectsViewMode();
-        if (view_mode == 'compressed') {
-            //TODO: detach/hide instead so we don't lose edits??
-            this.getRegion('buttonRegion').empty();
-            this.getRegion('listRegion').empty();
-        } else {
-            this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
-            this.showChildView('listRegion', new SubjectsListView({collection: subjectList, controller: this.controller}));
-        }
+    showProjectSubjectsList(subjectList) {
+        this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
+        this.showChildView('listRegion', new SubjectsListView({collection: subjectList, controller: this.controller}));
     },
 
     importSubjectTable: function(e) {

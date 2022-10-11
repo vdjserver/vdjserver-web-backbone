@@ -230,8 +230,11 @@ var AddNucleicView = Marionette.View.extend({
     template: Handlebars.compile(addNucleic_template)
 });
 
-// Subjects/Samples view
-import SubjectsSamplesController from 'Scripts/views/project/project-subjects-samples-controller';
+// Subjects view
+import SubjectsController from 'Scripts/views/project/subjects/project-subjects-controller';
+
+// Samples view
+import SamplesController from 'Scripts/views/project/samples/project-samples-controller';
 
 // Repertoire view
 import RepertoireController from 'Scripts/views/project/project-repertoire-controller';
@@ -286,12 +289,21 @@ var SingleProjectView = Marionette.View.extend({
         },
 
         //
-        // Subjects/Samples page specific events
+        // Subjects page specific events
         //
 
-        // setting event for Subjects/Samples page
-        'click #subjects-samples-tab': function() {
-            this.controller.showProjectSubjectsSamples();
+        // setting event for Subjects page
+        'click #subjects-tab': function() {
+            this.controller.showProjectSubjects();
+        },
+
+        //
+        // Samples page specific events
+        //
+
+        // setting event for Samples page
+        'click #samples-tab': function() {
+            this.controller.showProjectSamples();
         },
 
         //
@@ -397,13 +409,22 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showProjectSubjectsSamples(theController)
+    showProjectSubjects(theController)
     {
         this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', theController.getView());
 
-        // tell repertoire controller to display the repertoire list
-        theController.showSubjectsSamples();
+        // tell repertoire controller to display the subjects list
+        theController.showProjectSubjectsList();
+    },
+
+    showProjectSamples(theController)
+    {
+        this.getRegion('stepsRegion').empty();
+        this.showChildView('detailRegion', theController.getView());
+
+        // tell repertoire controller to display the samples list
+        theController.showProjectSamplesList();
     },
 
     showProjectRepertoires(repertoireController)
@@ -511,8 +532,9 @@ function SingleProjectController(project, page) {
     this.page = page;
     this.repertoireController = null;
     this.repertoireList = null;
-    this.subjectsSamplesController = null;
+    this.subjectsController = null;
     this.subjectList = null;
+    this.samplesController = null;
     this.sampleList = null;
     this.groupList = null;
     this.projectFilesController = null;
@@ -534,8 +556,11 @@ function SingleProjectController(project, page) {
 
     // are we routing to a specific page?
     switch (this.page) {
-        case 'subject-sample':
-            this.showProjectSubjectsSamples();
+        case 'subject':
+            this.showProjectSubjects();
+            break;
+        case 'sample':
+            this.showProjectSamples();
             break;
         case 'repertoire':
             this.showProjectRepertoires();
@@ -720,9 +745,9 @@ SingleProjectController.prototype = {
         this.projectView.showProjectOverview(this.model);
     },
 
-    showProjectSubjectsSamples: function() {
-        this.page = 'subject-sample';
-        App.router.navigate('project/' + this.model.get('uuid') + '/subject-sample', {trigger: false});
+    showProjectSubjects: function() {
+        this.page = 'subject';
+        App.router.navigate('project/' + this.model.get('uuid') + '/subject', {trigger: false});
 
         var that = this;
         if (! this.repertoireList) {
@@ -736,8 +761,8 @@ SingleProjectController.prototype = {
             this.repertoireListPromise.then(function() {
                     // have the view display them
                     that.projectView.updateSummary();
-                    if (! that.subjectsSamplesController) that.subjectsSamplesController = new SubjectsSamplesController(that);
-                    that.projectView.showProjectSubjectsSamples(that.subjectsSamplesController);
+                    if (! that.subjectsController) that.subjectsController = new SubjectsController(that);
+                    that.projectView.showProjectSubjects(that.subjectsController);
                 })
                 .fail(function(error) {
                     console.log(error);
@@ -745,8 +770,38 @@ SingleProjectController.prototype = {
         } else {
             // tell controller to display the lists
             that.projectView.updateSummary();
-            if (! that.subjectsSamplesController) that.subjectsSamplesController = new SubjectsSamplesController(that);
-            that.projectView.showProjectSubjectsSamples(that.subjectsSamplesController);
+            if (! that.subjectsController) that.subjectsController = new SubjectsController(that);
+            that.projectView.showProjectSubjects(that.subjectsController);
+        }
+    },
+
+    showProjectSamples: function() {
+        this.page = 'sample';
+        App.router.navigate('project/' + this.model.get('uuid') + '/sample', {trigger: false});
+
+        var that = this;
+        if (! this.repertoireList) {
+            // it should be lazy loading
+            // subjects/samples loaded with the repertoires
+
+            // show loading while we fetch
+            that.projectView.showLoading();
+
+            // wait on the lazy load
+            this.repertoireListPromise.then(function() {
+                    // have the view display them
+                    that.projectView.updateSummary();
+                    if (! that.samplesController) that.samplesController = new SamplesController(that);
+                    that.projectView.showProjectSamples(that.samplesController);
+                })
+                .fail(function(error) {
+                    console.log(error);
+                });
+        } else {
+            // tell controller to display the lists
+            that.projectView.updateSummary();
+            if (! that.samplesController) that.samplesController = new SamplesController(that);
+            that.projectView.showProjectSamples(that.samplesController);
         }
     },
 
