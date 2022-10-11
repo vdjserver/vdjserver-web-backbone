@@ -29,7 +29,7 @@
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
 
-import { Repertoire, Subject, Diagnosis, Sample } from 'Scripts/models/agave-metadata';
+import { Repertoire, Subject, Diagnosis, Sample, DataProcessing } from 'Scripts/models/agave-metadata';
 
 import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
 import { FileTransfers } from 'Scripts/models/mixins/file-transfer-mixins';
@@ -166,6 +166,24 @@ export var SampleCollection = Agave.MetadataCollection.extend(
         },
     })
 );
+
+export var DataProcessingCollection = Agave.MetadataCollection.extend({
+    model: DataProcessing,
+    initialize: function(parameters) {
+        Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+
+        if (parameters && parameters.projectUuid) {
+            this.projectUuid = parameters.projectUuid;
+        }
+    },
+    url: function() {
+        return '/meta/v2/data?q='
+               + encodeURIComponent('{"name":"data_processing","associationIds":"' + this.projectUuid + '"}')
+               + '&limit=' + this.limit
+               + '&offset=' + this.offset
+               ;
+    },
+});
 
 /*
 define([

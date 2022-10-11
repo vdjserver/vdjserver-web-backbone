@@ -33,8 +33,9 @@ import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import LoadingUsersView from 'Scripts/views/utilities/loading-users-view'
-import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
+import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection, DataProcessingCollection } from 'Scripts/collections/agave-metadata-collections';
 import { FilesCollection, ProjectFilesCollection } from 'Scripts/collections/agave-files';
+import { ProjectJobs } from 'Scripts/collections/agave-jobs';
 import Permissions from 'Scripts/collections/agave-permissions';
 import TenantUsers from 'Scripts/collections/agave-tenant-users';
 
@@ -163,12 +164,6 @@ var AddRepGroupView = Marionette.View.extend({
     template: Handlebars.compile(addRepGroup_template)
 });
 
-// Analyses Page
-import analyses_template from 'Templates/project/analyses/analyses.html';
-var AnalysesView = Marionette.View.extend({
-    template: Handlebars.compile(analyses_template)
-});
-
 // Steps through the metadata entry process
 import entry_steps_template from 'Templates/project/repertoires/create-repertoire-steps.html';
 var CreateRepertoireStepsView = Marionette.View.extend({
@@ -235,6 +230,9 @@ import RepertoireController from 'Scripts/views/project/project-repertoire-contr
 
 // Files view
 import ProjectFilesController from 'Scripts/views/project/files/project-files-controller';
+
+// Analyses view
+import ProjectAnalysesController from 'Scripts/views/project/analyses/project-analyses-controller';
 
 // Main project
 import template from 'Templates/project/project-single.html';
@@ -425,11 +423,13 @@ var SingleProjectView = Marionette.View.extend({
         projectFilesController.showProjectFilesList();
     },
 
-    showProjectAnalyses(project)
+    showProjectAnalyses(projectAnalysesController)
     {
         this.getRegion('stepsRegion').empty();
-        this.detailView = new AnalysesView({model: project});
-        this.showChildView('detailRegion', this.detailView);
+        this.showChildView('detailRegion', projectAnalysesController.getView());
+
+        // tell controller to display its data
+        projectAnalysesController.showProjectAnalysesList();
     },
 
     //
@@ -550,7 +550,7 @@ function SingleProjectController(project, page) {
 
 SingleProjectController.prototype = {
     // return the main view, create it if necessary
-    getView() {
+    getView: function() {
         if (!this.projectView)
             this.projectView = new SingleProjectView({controller: this});
         else if (this.projectView.isDestroyed())
@@ -559,7 +559,7 @@ SingleProjectController.prototype = {
     },
 
     // returns all the main non-filtered collections
-    getCollections() {
+    getCollections: function() {
         return {
             repertoireList: this.repertoireList,
             subjectList: this.subjectList,
@@ -567,6 +567,7 @@ SingleProjectController.prototype = {
             repertoireGroupList: this.groupList,
             fileList: this.fileList,
             analysisList: this.analysisList,
+            projectJobs: this.projectJobs,
             projectUserList: this.projectUserList,
             allUsersList: this.allUsersList
         }
@@ -586,7 +587,7 @@ SingleProjectController.prototype = {
     //
     // lazy loading of project data, these return promises
     //
-    lazyLoadRepertoires() {
+    lazyLoadRepertoires: function() {
         var that = this;
         var repList = new RepertoireCollection({projectUuid: that.model.get('uuid')});
         var subjectList = new SubjectCollection({projectUuid: that.model.get('uuid')});
@@ -622,10 +623,10 @@ SingleProjectController.prototype = {
         this.repertoireListPromise = this.lazyLoadRepertoires();
     },
 
-    lazyLoadGroups() {
+    lazyLoadGroups: function() {
     },
 
-    lazyLoadFiles() {
+    lazyLoadFiles: function() {
         var that = this;
         var fileList = new ProjectFilesCollection({projectUuid: that.model.get('uuid')});
 
@@ -655,10 +656,29 @@ SingleProjectController.prototype = {
         this.fileListPromise = this.lazyLoadFiles();
     },
 
-    lazyLoadAnalyses() {
+    lazyLoadAnalyses: function() {
+        var that = this;
+        //var dataProcessings = new
+        var projectJobs = new ProjectJobs({projectUuid: this.model.get('uuid')});
+
+        // fetch the jobs
+        return projectJobs.fetch()
+            .then(function() {
+                // now propagate loaded data to project
+                that.projectJobs = projectJobs;
+                that.analysisList = projectJobs;
+                console.log(projectJobs);
+            })
+            .then(function() {
+                // update the project summary
+                that.projectView.updateSummary();
+            })
+            .fail(function(error) {
+                console.log(error);
+            });
     },
 
-    lazyLoadUsers() {
+    lazyLoadUsers: function() {
         var that = this;
         var userList = new Permissions({uuid: that.model.get('uuid')});
         var allUsers = new TenantUsers();
@@ -685,14 +705,14 @@ SingleProjectController.prototype = {
     //
     // The main project tabs
     //
-    showProjectOverview() {
+    showProjectOverview: function() {
         this.page = 'overview';
         App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
         this.projectView.updateSummary();
         this.projectView.showProjectOverview(this.model);
     },
 
-    showProjectSubjectsSamples() {
+    showProjectSubjectsSamples: function() {
         this.page = 'subject-sample';
         App.router.navigate('project/' + this.model.get('uuid') + '/subject-sample', {trigger: false});
 
@@ -722,7 +742,7 @@ SingleProjectController.prototype = {
         }
     },
 
-    showProjectRepertoires() {
+    showProjectRepertoires: function() {
         this.page = 'repertoire';
         App.router.navigate('project/' + this.model.get('uuid') + '/repertoire', {trigger: false});
         this.projectView.updateSummary();
@@ -751,14 +771,14 @@ SingleProjectController.prototype = {
         }
     },
 
-    showProjectGroups() {
+    showProjectGroups: function() {
         this.page = 'group';
         App.router.navigate('project/' + this.model.get('uuid') + '/group', {trigger: false});
         this.projectView.updateSummary();
         this.projectView.showProjectGroups(this.model);
     },
 
-    showProjectFiles() {
+    showProjectFiles: function() {
         this.page = 'file';
         App.router.navigate('project/' + this.model.get('uuid') + '/file', {trigger: false});
         this.projectView.updateSummary();
@@ -787,42 +807,64 @@ SingleProjectController.prototype = {
         }
     },
 
-    showProjectAnalyses() {
+    showProjectAnalyses: function() {
         this.page = 'analysis';
         App.router.navigate('project/' + this.model.get('uuid') + '/analysis', {trigger: false});
         this.projectView.updateSummary();
-        this.projectView.showProjectAnalyses(this.model);
+        var that = this;
+        if (! this.analysisList) {
+            // it should be lazy loading
+
+            // show loading while we fetch
+            that.projectView.showLoading();
+
+            // wait on the lazy load
+            this.analysisListPromise.then(function() {
+                    // have the view display them
+                    that.projectView.updateSummary();
+                    if (! that.projectAnalysesController) that.projectAnalysesController = new ProjectAnalysesController(that);
+                    that.projectView.showProjectAnalyses(that.projectAnalysesController);
+                })
+                .fail(function(error) {
+                    console.log(error);
+                });
+        } else {
+            // tell repertoire controller to display the repertoire list
+            that.projectView.updateSummary();
+            if (! that.projectAnalysesController) that.projectAnalysesController = new ProjectAnalysesController(that);
+            that.projectView.showProjectAnalyses(that.projectAnalysesController);
+        }
     },
 
     //
     // Step-by-step walkthrough for repertoire metadata entry
     //
-    startCreateRepertoireSteps() {
+    startCreateRepertoireSteps: function() {
         App.router.navigate('project/' + this.model.get('uuid') + '/create', {trigger: false});
         this.projectView.showCreateRepertoire();
     },
 
-    addSubjectStep() {
+    addSubjectStep: function() {
         App.router.navigate('project/' + this.model.get('uuid') + '/create/subject', {trigger: false});
         this.projectView.showAddSubject();
     },
 
-    addDiagnosisStep() {
+    addDiagnosisStep: function() {
         App.router.navigate('project/' + this.model.get('uuid') + '/create/subject/diagnosis', {trigger: false});
         this.projectView.showAddDiagnosis();
     },
 
-    addSampleStep() {
+    addSampleStep: function() {
         App.router.navigate('project/' + this.model.get('uuid') + '/create/sample', {trigger: false});
         this.projectView.showAddSample();
     },
 
-    addCellProcessingStep() {
+    addCellProcessingStep: function() {
         App.router.navigate('project/' + this.model.get('uuid') + '/create/sample/cell', {trigger: false});
         this.projectView.showAddCell();
     },
 
-    addNucleicProcessingStep() {
+    addNucleicProcessingStep: function() {
         App.router.navigate('project/' + this.model.get('uuid') + '/create/sample/nucleic', {trigger: false});
         this.projectView.showAddNucleic();
     },
