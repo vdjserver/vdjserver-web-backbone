@@ -105,7 +105,7 @@ var ProjectSummaryView = Marionette.View.extend({
         card['icon'] = 'fas fa-user-alt';
         if (collections.subjectList) {
             card['text'] = collections.subjectList.length + ' Subjects';
-        } else card['text'] = 'Subjects';
+        }
         if (this.controller.page == 'subject') card['active'] = true;
         else card['active'] = false;
         card_tabs.push(card);
@@ -116,7 +116,7 @@ var ProjectSummaryView = Marionette.View.extend({
         card['icon'] = 'fas fa-user-alt';
         if (collections.sampleList) {
             card['text'] =  collections.sampleList.length + ' Samples';
-        } else card['text'] = card['text'] + '<br>Samples';
+        }
         if (this.controller.page == 'sample') card['active'] = true;
         else card['active'] = false;
         card_tabs.push(card);
