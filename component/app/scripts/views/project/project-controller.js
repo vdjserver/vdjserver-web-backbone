@@ -37,7 +37,7 @@ import CreateProjectView from 'Scripts/views/project/project-create';
 
 // the main project view
 var ProjectView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project"></div>'),
+    template: Handlebars.compile('<div id="project" class="general-padding"></div>'),
 
     // one region to show messages
     // one region for the project content

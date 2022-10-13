@@ -1,5 +1,5 @@
 {{#if isUploading}}
-<div class="row files-upload-list-row">
+<div class="row general-table-row general-border-top align-items-center">
     <div class="col-md-3 text-break">
         {{name}}
     </div>
@@ -10,7 +10,7 @@
         {{fileTypeName}}
     </div>
     <div class="col-md-4">
-        <div class="progress file-upload-progress-wrapper">
+        <div class="progress">
             <div class="progress-bar progress-striped active {{#if hasError}}bg-danger{{/if}}" style="width: {{pctComplete}}%" aria-valuenow="{{pctComplete}}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
     </div>
@@ -19,7 +19,7 @@
     </div>
 </div>
 {{else}}
-<div class="row files-upload-list-row">
+<div class="row general-table-row general-border-top align-items-center">
     <div class="col-md-3 text-break">
         {{name}}
     </div>
@@ -36,12 +36,12 @@
         </select>
     </div>
     <div class="col-md-4">
-        <div class="progress file-upload-progress-wrapper">
+        <div class="progress">
             <div class="progress-bar progress-striped active">
             </div>
         </div>
     </div>
-    <div class="col-md-1 project-buttons-right">
+    <div class="col-md-1 general-buttons-right">
         <div class="btn-group">
             <button type="button" class="btn btn-delete" id="delete-upload-file" name="{{cid}}">Delete</button>
         </div>

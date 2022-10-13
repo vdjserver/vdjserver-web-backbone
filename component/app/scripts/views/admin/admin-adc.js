@@ -28,26 +28,20 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import templateHeader from 'Templates/admin/admin-header.html';
-var AdminHeaderView = Marionette.View.extend({
-    template: Handlebars.compile(templateHeader),
+import template_buttons from 'Templates/admin/admin-adc-buttons.html';
+var AdminButtonView = Marionette.View.extend({
+    template: Handlebars.compile(template_buttons),
 
     initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-//test Enable Button
-this.enableADC_mode = true;
     },
 
     templateContext() {
-        if (!this.controller) return {};
-        //var current_sort = files['sort_by'];
         return {
-//test Enable Button
-enableADC_mode: this.enableADC_mode,
-        //    current_sort: current_sort,
-        //    hasEdits: this.controller.hasFileEdits()
+            //current_sort: current_sort,
+            //hasEdits: this.controller.hasFileEdits()
         }
     },
 });
@@ -131,7 +125,7 @@ export default Marionette.View.extend({
 
         var view = new ADCListView({collection: parameters.collection, controller: this.controller });
         this.showChildView('listRegion', view);
-        var buttonsView = new AdminHeaderView({controller: this.controller});
+        var buttonsView = new AdminButtonView({controller: this.controller});
         this.showChildView('buttonRegion', buttonsView);
     },
 

@@ -108,6 +108,7 @@ export default Backbone.Router.extend({
         'admin/users':                      'adminUsers',
         'admin/jobs':                       'adminJobs',
         'admin/repository':                 'adminRepository',
+        'admin/adc':                        'adminDownloadCache',
         'admin/statistics':                 'adminStatistics',
 
         // 404
@@ -374,6 +375,11 @@ export default Backbone.Router.extend({
     // Repository administration page
     adminRepository: function() {
         this.adminPage('repository');
+    },
+
+    // ADC Download Cache administration page
+    adminDownloadCache: function() {
+        this.adminPage('adc');
     },
 
     // Statistics administration page

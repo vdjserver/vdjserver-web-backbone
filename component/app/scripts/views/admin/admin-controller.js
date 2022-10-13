@@ -169,7 +169,7 @@ var AdminStatisticsView = Marionette.View.extend({
 
 // Main admin
 var AdminView = Marionette.View.extend({
-    template: Handlebars.compile('<div class="admin-padding" id="admin-tabs"></div><div id="admin-content"></div>'),
+    template: Handlebars.compile('<div class="general-padding"><div id="admin-tabs"></div><div id="admin-content"></div></div>'),
 
     // one region for the navigation tabs
     // one region for the admin page content

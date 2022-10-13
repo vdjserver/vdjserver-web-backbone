@@ -1,8 +1,8 @@
 
 {{#if quality}}
-<div class="row project-files-table-row">
+<div class="row general-table-row general-border-top">
     <div class="col-md-11">
-        <div class="row pair-first-row">
+        <div class="row align-items-center">
             <div class="col-md-3 text-data">
                 <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{read.name}}</a>
             </div>
@@ -18,7 +18,7 @@
             </div>
             <div class="col-md-1 text-data"></div>
         </div>
-        <div class="row">
+        <div class="row general-table-internal-row align-items-center">
             <div class="col-md-3 text-data">
                 <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{quality.name}}</a>
             </div>
@@ -35,7 +35,7 @@
             <div class="col-md-1 text-data"></div>
         </div>
     </div>
-    <div class="col-md-1 project-buttons-right split-button">
+    <div class="col-md-1 general-buttons-right project-files-split-button">
         <div class="btn-group" role="group" aria-label="Button group">
             <button type="button" class="btn btn-delete" title="Delete file" id="project-file-delete">
                 <i class="fa fa-times"></i>
@@ -45,9 +45,9 @@
 </div>
 {{else}}
     {{#if forward}}
-    <div class="row project-files-table-row">
+    <div class="row general-table-row general-border-top">
         <div class="col-md-11">
-            <div class="row pair-first-row">
+            <div class="row align-items-center">
                 <div class="col-md-3 text-data">
                     <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{forward.name}}</a>
                 </div>
@@ -63,7 +63,7 @@
                 </div>
                 <div class="col-md-1 text-data">Forward</div>
             </div>
-            <div class="row">
+            <div class="row general-table-internal-row align-items-center">
                 <div class="col-md-3 text-data">
                     <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{reverse.name}}</a>
                 </div>
@@ -80,7 +80,7 @@
                 <div class="col-md-1 text-data">Reverse</div>
             </div>
         </div>
-        <div class="col-md-1 project-buttons-right split-button">
+        <div class="col-md-1 general-buttons-right project-files-split-button">
             <div class="btn-group" role="group" aria-label="Button group">
                 <button type="button" class="btn btn-delete" title="Delete file" id="project-file-delete">
                     <i class="fa fa-times"></i>
@@ -89,9 +89,9 @@
         </div>
     </div>
     {{else}}
-    <div class="row project-files-table-row" draggable="true">
+    <div class="row general-table-row general-border-top" draggable="true">
         <div class="col-md-11">
-            <div class="row">
+            <div class="row align-items-center">
                 <div class="col-md-3 text-data">
                     <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{value.name}}</a>
                 </div>
@@ -123,7 +123,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-1 project-buttons-right">
+        <div class="col-md-1 general-buttons-right">
             <div class="btn-group" role="group" aria-label="Button group">
                 <button type="button" class="btn btn-delete" title="Delete file" id="project-file-delete">
                     <i class="fa fa-trash"></i>

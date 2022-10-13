@@ -1,26 +1,31 @@
-/*****************************************************
-_single-project.scss - Single Projects
+//
+// _single-project.scss
+// Custom styles for project pages
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2022 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
 
-* This is the SCSS for the Single Project Overview Page
-*****************************************************/
 
-#project {
-    padding: 0% 5%;
-}
-
-.project-padding {
-    padding: 0% 5%;
-}
-
-.jumbotron {
-    padding: 2rem 2rem;
-}
-
-.project-single-form-buttons {
-    margin: 3% 0% 0% 0%;
-}
-
-#project-summary {
+.project-summary {
     margin-top: 2%;
 
     h1 {
@@ -28,10 +33,6 @@ _single-project.scss - Single Projects
         font-size: 2.25rem;
         font-weight: 400;
     }
-}
-
-#project-detail {
-    //margin-top: 2%;
 }
 
 .project-metadata {
@@ -45,14 +46,6 @@ _single-project.scss - Single Projects
 
 button.project-changes-action {
     margin-left: 2em;
-}
-
-#summary-buttons {
-    margin-bottom: 2%;
-}
-
-.summary-buttons {
-    margin-bottom: 2%;
 }
 
 .project-buttons {
@@ -426,37 +419,8 @@ Repertoires
 Files
 ------------------------------------------------------------*/
 
-.project-files-header {
-    margin-bottom: 2%;
-}
-
-.project-files-table-header {
-    border-bottom: 1px solid $vdj-medgray;
-    border-top: 1px solid $vdj-medgray;
-    padding-top: 1%;
-    padding-bottom: 1%;
-}
-
-.project-files-table-row {
-    border-bottom: 1px solid $vdj-medgray;
-    padding-top: 1%;
-    padding-bottom: 1%;
-
-    .text-data {
-        padding-top: 0.5em;
-    }
-
-    .pair-first-row {
-        padding-bottom: 0.5%;
-    }
-
-    .split-button {
-        padding-top: 1.5%;
-    }
-}
-
-.project-files-table-row:hover {
-    background: $vdj-lightgray;
+.project-files-split-button {
+    padding-top: 1.5%;
 }
 
 .files-upload-form {
@@ -467,16 +431,5 @@ Files
 
 .files-upload-header {
     margin-top: 1%;
-}
-
-.files-upload-list-header {
-    padding-top: 1%;
-    padding-bottom: 1%;
-}
-
-.files-upload-list-row {
-    border-top: 1.5px solid $vdj-darkgray;
-    padding-top: 1%;
-    padding-bottom: 1%;
 }
 

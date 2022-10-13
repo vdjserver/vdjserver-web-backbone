@@ -1,8 +1,8 @@
-<div class="row admin-header">
+<div class="row general-button-bar">
     <div class="col-md-4">
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle admin-buttons-margin-right" type="button" id="admin-projects-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" id="admin-projects-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Sort By
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -35,15 +35,15 @@
         </div>
     </div>
 
-    <div class="col-md-8 admin-buttons-right">
+    <div class="col-md-8 general-buttons-right">
     {{#if enableVDJ_mode}}
         <div class="btn-group align-items-center" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-save admin-buttons-margin-left" id="admin-enableVDJ">Enable VDJServer Repository</button>
+            <button type="button" class="btn btn-save general-buttons-margin-left" id="admin-enableVDJ">Enable VDJServer Repository</button>
         </div>
     {{/if}}
     {{#unless enableVDJ_mode}}
         <div class="btn-group align-items-center" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-delete admin-buttons-margin-left" id="admin-disableVDJ">Disable VDJServer Repository</button>
+            <button type="button" class="btn btn-delete general-buttons-margin-left" id="admin-disableVDJ">Disable VDJServer Repository</button>
         </div>
     {{/unless}}
     </div>
