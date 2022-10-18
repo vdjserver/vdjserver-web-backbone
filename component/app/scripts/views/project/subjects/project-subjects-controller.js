@@ -45,7 +45,7 @@ function ProjectSubjectsController(controller) {
     this.model = this.controller.model;
 
     // default to summary views
-    this.view_mode = 'summary';
+    this.subjects_view_mode = 'summary';
     // edits
     this.has_edits = false;
 
@@ -65,6 +65,19 @@ ProjectSubjectsController.prototype = {
     // access data held by upper level controller
     getCollections() {
         return this.controller.getCollections();
+    },
+
+    getSubjectsViewMode() {
+        return this.subjects_view_mode;
+    },
+
+    toggleSubjectsViewMode() {
+        // summary -> detail -> compressed -> summary
+        switch(this.subjects_view_mode) {
+            case 'summary': this.subjects_view_mode = 'detail'; break;
+            case 'detail': this.subjects_view_mode = 'summary'; break;
+            //case 'compressed': this.subjects_view_mode = 'summary'; break;
+        }
     },
 
     // show project subjects

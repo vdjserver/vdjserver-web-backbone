@@ -1,8 +1,16 @@
-<div class="row project-subject-buttons">
-    <div class="col">
+<div class="row general-button-bar">
+    <div class="col-md-7">
+
+        <div class="btn-group " role="group" aria-label="Button group">
+            <button type="button" class="btn btn-primary general-buttons-margin-right" id="project-subjects-details-summary">
+                {{#if detailsMode}}Summary{{/if}}
+                {{#unless detailsMode}}Details{{/unless}}
+            </button>
+        </div>
+
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle project-buttons-margin-right" type="button" id="project-subjects-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" id="project-subjects-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Sort By
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -32,7 +40,7 @@
 
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle project-buttons-margin-right" type="button" id="project-subjects-upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" id="project-subjects-upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Import/Export
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -54,7 +62,7 @@
 
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-create dropdown-toggle project-buttons-margin-right" type="button" id="project-subjects-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-subjects-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Templates
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -77,8 +85,8 @@
 
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-create dropdown-toggle project-buttons-margin-right" type="button" id="project-subjects-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-plus" aria-hidden="true"></i>Add Subject
+              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-subjects-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-plus" aria-hidden="true"></i>&nbspAdd Subject
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 <button class="dropdown-item" type="button" id="project-subjects-new-subject" name="name">
@@ -94,13 +102,13 @@
 
     </div>
 
-    <div class="col-md-5 project-buttons-right">
+    <div class="col-md-5 general-buttons-right">
         <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-cancel project-changes-action" id="project-subjects-revert-changes" disabled>Revert Subject Changes</button>
+            <button type="button" class="btn btn-cancel" id="project-subjects-revert-changes" disabled>Revert Subject Changes</button>
         </div>
 
         <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-save project-changes-action" id="project-subjects-save-changes" disabled>Save Subject Changes</button>
+            <button type="button" class="btn btn-save general-buttons-margin-left" id="project-subjects-save-changes" disabled>Save Subject Changes</button>
         </div>
     </div>
 </div>

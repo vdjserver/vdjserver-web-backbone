@@ -42,6 +42,17 @@ var SubjectsButtonView = Marionette.View.extend({
         }
     },
 
+    templateContext() {
+        var detailsMode = false;
+        if(this.controller.getSubjectsViewMode() == 'detail') {
+            this.detailsMode = true;
+        } else { this.detailsMode = false; }
+
+        return {
+            detailsMode: this.detailsMode,
+        }
+    },
+
 });
 
 
@@ -60,7 +71,7 @@ var SubjectsView = Marionette.View.extend({
     },
 
     events: {
-        'click #project-subjects-header-button' : 'toggleSubjectsView',
+        'click #project-subjects-details-summary' : 'toggleSubjectsView',
 
         'click #project-subjects-import': 'importSubjectTable',
         'click #project-subjects-export': 'exportSubjectTable',
@@ -77,6 +88,15 @@ var SubjectsView = Marionette.View.extend({
     showProjectSubjectsList(subjectList) {
         this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
         this.showChildView('listRegion', new SubjectsListView({collection: subjectList, controller: this.controller}));
+    },
+
+    toggleSubjectsView(e) {
+        // controller holds the view state
+        this.controller.toggleSubjectsViewMode();
+        // redisplay just the list
+        // TODO: what about a filtered list?
+        var collections = this.controller.getCollections();
+        this.showProjectSubjectsList(collections.subjectList);
     },
 
     importSubjectTable: function(e) {
