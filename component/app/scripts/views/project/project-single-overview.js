@@ -78,6 +78,8 @@ var ProjectSettingsView = Marionette.View.extend({
     },
 
     templateContext() {
+        var value = this.model.get('value');
+
         var archive_mode = false;
         if (this.model.get('name') == 'archive_project') {
             archive_mode = true;
@@ -96,7 +98,6 @@ var ProjectSettingsView = Marionette.View.extend({
             study_type_label = this.model.selected_study_type['label'];
         } else {
             // otherwise use existing value in model
-            var value = this.model.get('value');
             if (value['study_type']) {
                 study_type_id = value['study_type']['id'];
                 study_type_label = value['study_type']['label'];
