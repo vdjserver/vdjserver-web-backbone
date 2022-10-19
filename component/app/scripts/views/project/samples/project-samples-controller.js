@@ -66,6 +66,20 @@ ProjectSamplesController.prototype = {
         return this.controller.getCollections();
     },
 
+    getViewMode() {
+        return this.view_mode;
+    },
+
+    toggleViewMode() {
+        // summary -> detail -> summary
+        switch(this.view_mode) {
+            case 'summary': this.view_mode = 'detail'; break;
+            case 'detail': this.view_mode = 'summary'; break;
+        }
+        // redisplay list
+        this.showProjectSamplesList();
+    },
+
     // show project  samples
     showProjectSamplesList() {
         var collections = this.controller.getCollections();

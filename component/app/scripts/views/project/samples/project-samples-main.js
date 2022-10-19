@@ -42,6 +42,15 @@ var SamplesButtonView = Marionette.View.extend({
         }
     },
 
+    templateContext() {
+        return {
+            view_mode: this.controller.getViewMode()
+        }
+    },
+
+    events: {
+        'click #project-samples-view-mode' : function(e) { this.controller.toggleViewMode() },
+    }
 });
 
 // this manages project samples layout
