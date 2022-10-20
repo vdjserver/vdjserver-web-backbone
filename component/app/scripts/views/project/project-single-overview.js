@@ -557,7 +557,11 @@ var ProjectOverView = Marionette.View.extend({
 
         'click #publish-project': function() {
             this.publishProject();
-        }
+        },
+
+        'click #unpublish-project': function() {
+            this.unpublishProject();
+        },
     },
 
     updateUserList() {
@@ -832,21 +836,77 @@ var ProjectOverView = Marionette.View.extend({
     publishProject(e) {
         console.log("Publish Project button clicked");
 
-        var message = new MessageModel({
+        this.publish_message = new MessageModel({
             'header': 'Publish a Project',
             'body': '<div>Are you sure you want to publish the project?</div>',
             'confirmText': 'Yes',
             'cancelText': 'No'
         });
 
-        var view = new ModalView({model: message});
-        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        this.modalState = 'publish';
+        var view = new ModalView({model: this.publish_message});
+        App.AppController.startModal(view, this, this.onShownPublishModal, this.onHiddenPublishModal);
         $('#modal-message').modal('show');
     },
 
-    publishProjectYes() {
-        console.log("Publish Project Confirmed: Yes");
-    }
+    // project publish is sent to server after the modal is shown
+    onShownPublishModal(context) {
+        console.log('publish: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
+    },
+
+    onHiddenPublishModal(context) {
+        console.log('publish: Hide the modal');
+        if (context.modalState == 'publish') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.publish_message.get('status') != 'confirm') return;
+
+            // publish project
+            context.model.publishProject()
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Publish Project',
+                    'body':   'Project has been successfully published!',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenPublishSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Publish Project',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while publishing project!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenPublishSuccessModal(context) {
+        console.log('publish success: Hide the modal');
+        this.publish_message = null;
+
+        // this project is archived, reload project list
+        App.AppController.reloadProjectList();
+    },
+
 });
 
 export default ProjectOverView;
