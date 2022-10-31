@@ -44,12 +44,19 @@ var SubjectsButtonView = Marionette.View.extend({
 
     templateContext() {
         var detailsMode = false;
-        if(this.controller.getSubjectsViewMode() == 'detail') {
+        if(this.controller.getSubjectsViewMode() == 'detail' || this.controller.getSubjectsViewMode() == 'edit') {
             this.detailsMode = true;
         } else { this.detailsMode = false; }
 
+        var editMode = false;
+        if(this.controller.getSubjectsViewMode() == 'edit') {
+        //if(this.model.view_mode == 'edit') {
+            this.editMode = true;
+        } else { this.editMode = false; }
+
         return {
             detailsMode: this.detailsMode,
+            editMode: this.editMode,
         }
     },
 
@@ -83,6 +90,17 @@ var SubjectsView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+    },
+
+    templateContext() {
+        var editMode = false;
+        if(this.controller.getSubjectsViewMode() == 'edit') {
+            this.editMode = true;
+        } else { this.editMode = false; }
+
+        return {
+            editMode: this.editMode,
+        }
     },
 
     showProjectSubjectsList(subjectList) {

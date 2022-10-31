@@ -71,12 +71,14 @@ ProjectSubjectsController.prototype = {
         return this.subjects_view_mode;
     },
 
+    setSubjectsViewModeEdit() { 
+        this.subjects_view_mode = 'edit';
+    },
+
     toggleSubjectsViewMode() {
-        // summary -> detail -> compressed -> summary
         switch(this.subjects_view_mode) {
             case 'summary': this.subjects_view_mode = 'detail'; break;
             case 'detail': this.subjects_view_mode = 'summary'; break;
-            //case 'compressed': this.subjects_view_mode = 'summary'; break;
         }
     },
 
