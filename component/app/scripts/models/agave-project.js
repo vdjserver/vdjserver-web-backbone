@@ -215,6 +215,83 @@ export default Agave.MetadataModel.extend({
             return pf.downloadFileToDisk();
         });
     },
+
+    //
+    // Publishing and ADC Repository
+    //
+    validateProject: function() {
+        // TODO: not implemented yet
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/validate',
+        });
+
+        return jqxhr;
+    },
+
+    publishProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/publish',
+        });
+
+        return jqxhr;
+    },
+
+    unpublishProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unpublish',
+        });
+
+        return jqxhr;
+    },
+
+    loadProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/load',
+        });
+
+        return jqxhr;
+    },
+
+    unloadProject: function(load_meta) {
+        if (! load_meta) return;
+        var postData = { 'load_id': load_meta['uuid'] };
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            data: JSON.stringify(postData),
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unload',
+        });
+
+        return jqxhr;
+    },
+
+    reloadProject: function(load_meta) {
+        if (! load_meta) return;
+        var postData = { 'load_id': load_meta['uuid'] };
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            data: JSON.stringify(postData),
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/reload',
+        });
+
+        return jqxhr;
+    },
+
 });
 
 /*

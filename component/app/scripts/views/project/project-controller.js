@@ -56,8 +56,6 @@ var ProjectView = Marionette.View.extend({
 
     events: {
         'click #create-project': function() { this.controller.createProject(); },
-        // 'click #edit-project': function() {this.controller.createProject(); },
-        'click #create-rep': 'createRep'
     },
 
     // show a loading view, used while fetching the data
