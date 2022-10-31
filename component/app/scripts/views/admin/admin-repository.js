@@ -27,6 +27,9 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import MessageModel from 'Scripts/models/message';
+import ModalView from 'Scripts/views/utilities/modal-view';
+import { ADCStatus } from 'Scripts/models/admin-vdjserver';
 
 import template_buttons from 'Templates/admin/admin-repository-buttons.html';
 var AdminButtonView = Marionette.View.extend({
@@ -154,7 +157,7 @@ var RepositoryLoadView = Marionette.View.extend({
     events: {
         'click #admin-load-repo': 'loadRepo',
         'click #admin-unload-repo': 'unloadRepo',
-        'click #admin-reload-repo': 'reloadRepo',
+        'click #admin-reload-project': 'reloadProject',
         'click #admin-enableLoad_0_mode': 'enableLoad_0',
         'click #admin-disableLoad_0_mode': 'disableLoad_0',
         'click #admin-enableLoad_1_mode': 'enableLoad_1',
@@ -168,10 +171,83 @@ var RepositoryLoadView = Marionette.View.extend({
     unloadRepo: function(e) {
         console.log("Clicked Unload");
     },
-    reloadRepo: function(e) {
+
+    //
+    // Reload sequence
+    //
+    reloadProject: function(e) {
         e.preventDefault();
+        console.log(this.model);
         console.log("Clicked Reload");
+
+        this.reload_message = new MessageModel({
+            'header': 'Reload Study Metadata',
+            'body': '<div>Are you sure you want to reload the project?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        this.modalState = 'reload';
+        var view = new ModalView({model: this.reload_message});
+        App.AppController.startModal(view, this, this.onShownReloadModal, this.onHiddenReloadModal);
+        $('#modal-message').modal('show');
     },
+
+    // project publish is sent to server after the modal is shown
+    onShownReloadModal(context) {
+        console.log('reload: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
+    },
+
+    onHiddenReloadModal(context) {
+        console.log('reload: Hide the modal');
+        if (context.modalState == 'reload') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.reload_message.get('status') != 'confirm') return;
+
+            // publish project
+            context.model.reloadProject(context.model.load_0)
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Reload Study Metadata',
+                    'body':   'Project has been successfully queued for reload!',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenReloadSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Reload Study Metadata',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while reloading project!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenReloadSuccessModal(context) {
+        console.log('reload success: Hide the modal');
+        this.reload_message = null;
+    },
+
     enableLoad_0: function(e) {
         e.preventDefault();
         console.log("Clicked Enable Load_0");

@@ -34,6 +34,23 @@ import AIRRSchema from 'airr-schema';
 import repertoire_template from 'airr-repertoire-template';
 
 //
+// VDJServer ADC Repository
+//
+export var ADCStatus = Agave.Model.extend({
+    // TODO: should come from vdjserver-schema
+    defaults: {
+        query_collection: null,
+        load_collection: null,
+        db_connection: false,
+    },
+    apiHost: EnvironmentConfig.vdjApi.hostname,
+    url: function() {
+        return '/adc/status';
+    },
+    requiresAuth: false,
+});
+
+//
 // Study loading into the data repository
 //
 

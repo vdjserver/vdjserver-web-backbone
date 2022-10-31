@@ -280,7 +280,7 @@ export default Agave.MetadataModel.extend({
 
     reloadProject: function(load_meta) {
         if (! load_meta) return;
-        var postData = { 'load_id': load_meta['uuid'] };
+        var postData = { 'load_id': load_meta.get('uuid') };
         var jqxhr = $.ajax({
             contentType: 'application/json',
             headers: Agave.oauthHeader(),

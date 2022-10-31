@@ -31,6 +31,7 @@ import Handlebars from 'handlebars';
 import Project from 'Scripts/models/agave-project';
 import ProjectList from 'Scripts/collections/agave-projects';
 import ProjectListView from 'Scripts/views/project/project-list';
+import PublicProjectCollection from 'Scripts/collections/agave-public-projects';
 import SingleProjectController from 'Scripts/views/project/project-single-controller';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import CreateProjectView from 'Scripts/views/project/project-create';

@@ -29,6 +29,7 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import LoadingView from 'Scripts/views/utilities/loading-view';
+import { ADCStatus } from 'Scripts/models/admin-vdjserver';
 import { ProjectLoadCollection, RearrangementLoadCollection } from 'Scripts/collections/admins-vdjserver';
 import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
 import PublicProjectCollection from 'Scripts/collections/agave-public-projects';
@@ -303,6 +304,7 @@ function AdminController(page) {
 
     // kick off lazy loads
     // data repository
+    this.adcStatus = null;
     this.projectLoadList = null;
     this.publicProjectList = null;
     this.dataRepositoryPromise = this.lazyLoadDataRepository();
@@ -333,6 +335,7 @@ AdminController.prototype = {
         //var plList = new ProjectLoadCollection({collection: '_0'});
         var plList = new ProjectLoadCollection();
         var pubList = new PublicProjectCollection();
+        var adcStatus = new ADCStatus();
         //var rlList = new RearrangementLoadCollection();
 
         // fetch the project loads
@@ -343,10 +346,16 @@ AdminController.prototype = {
                 return pubList.fetch();
             })
             .then(function() {
+                // repository status
+                return adcStatus.fetch();
+            })
+            .then(function() {
+                console.log(adcStatus);
                 //console.log(pubList);
                 // now propagate loaded data to project
                 that.projectLoadList = plList;
                 that.publicProjectList = pubList;
+                that.adcStatus = adcStatus;
                 for (let i = 0; i < that.publicProjectList.length; ++i) {
                   let pubEntry = that.publicProjectList.at(i);
                   for(let j = 0; j < that.projectLoadList.length; ++j) {
