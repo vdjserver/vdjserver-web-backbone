@@ -33,11 +33,31 @@ import summary_template from 'Templates/project/subjects/project-subjects-summar
 var SubjectSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
 
+    initialize(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+    },
+
     templateContext() {
+        var editMode = false;
+        //if(this.model.view_mode == 'edit') {
+        if(this.controller.subjects_view_mode == 'edit') {
+            this.editMode = true;
+        } else { this.editMode = false; }
         return {
             age_display: this.model.getAgeDisplay(),
             species_display: this.model.getSpeciesDisplay(),
+            editMode: this.editMode,
         }
+    },
+
+    events: {
+        'click #project-subject-edit': function(e) {
+            e.preventDefault();
+            this.controller.setSubjectsViewModeEdit();
+            this.controller.showProjectSubjectsList();
+        },
     },
 
 });
@@ -55,19 +75,51 @@ var SubjectDetailView = Marionette.View.extend({
     },
 
     templateContext() {
-        console.log(this.model);
+        //console.log(this.model);
+        var editMode = false;
+        //if(this.model.view_mode == 'edit') {
+        if(this.controller.subjects_view_mode == 'edit') {
+            this.editMode = true;
+        } else { this.editMode = false; }
         return {
-            view_mode: this.model.view_mode
+            view_mode: this.model.view_mode,
+            editMode: this.editMode,
         }
+    },
+
+    events: {
+        'click #project-subject-edit': function(e) {
+            e.preventDefault();
+            this.controller.setSubjectsViewModeEdit();
+            this.controller.showProjectSubjectsList();
+        },
     },
 
     onAttach() {
         // setup popovers and tooltips
         $('[data-toggle="popover"]').popover({
-            trigger: 'hover'
+//            trigger: 'hover',
+adaptive: false,
+animation: false,
+//animation-reset: true,
+/*placement: 'top',
+html: true,
+positionFixed: true,
+//offset: '100, 100',
+//fallbackPlacement : ['left', 'right', 'top', 'bottom'],
+container: 'body',
+animate: false,
+transform: false,
+//animation: false,*/
+transform: 'none',
         });
 
-        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip({
+placement: 'top',
+animation: false,
+transform: 'none',
+willChange: 'unset',
+});
     },
 
 });
@@ -98,8 +150,6 @@ var SubjectContainerView = Marionette.View.extend({
     },
 
     showSubjectView() {
-        //console.log("passing edit_mode...");
-        // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':
             case 'edit':

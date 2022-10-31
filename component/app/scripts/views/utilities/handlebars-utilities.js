@@ -118,9 +118,9 @@ HandlebarsUtilities.registerAllHelpers = function() {
             else
                 description += '<br><em>Example:</em> ' + field['example'];
         }
-        console.log(field);
+        //console.log(field);
 
-        return '<i class="fa fa-question-circle" id="' + field_name + '_help" data-toggle="popover" title="' + title + '" data-html="true" data-content="' + description + '"></i>';
+        return '<i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" id="' + field_name + '_help" title="' + title + '" data-content="' + description + '"></i>';
     });
 
     // dynamically construct the MiAIRR Star with AIRR schema info
@@ -140,7 +140,7 @@ HandlebarsUtilities.registerAllHelpers = function() {
         }
 
         if (field['x-airr']['miairr'])
-            return '<i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR ' + field['x-airr']['miairr'] + ' field"></i>';
+            return '<i class="fa fa-star" data-toggle="tooltip" title="MiAIRR ' + field['x-airr']['miairr'] + ' field"></i>';
 
         return;
     });

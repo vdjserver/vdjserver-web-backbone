@@ -16,9 +16,9 @@
                             <!-- Tooltip -->
                         {{{FieldStar "Subject" "subject_id"}}}
                         </span>
+                        <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "subject_id"}}}
                         Subject ID:
-                        <!-- Popover -->
                     </label>
                     <input type="text" class="form-control" name="subject_id" id="subject_id" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
@@ -26,6 +26,7 @@
                         Please enter a valid Subject ID.
                     </div>
                 </div>
+<button type="button" data-toggle="popover" data-trigger="click" data-html='true' data-container="body" title="Popover <b>title</b>" data-content="Hello. <b>bold</b>.">Click</button>
 
                 <div class="form-group col-md-2">
                     <label for="synthetic">
@@ -33,9 +34,9 @@
                             <!-- Tooltip-->
                         {{{FieldStar "Subject" "synthetic"}}}
                         </span>
-                        Synthetic:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "synthetic"}}}
+                        Synthetic:
                     </label>
 
                     <select class="custom-select" id="synthetic" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
@@ -50,9 +51,9 @@
                             <!-- Tooltip-->
                         {{{FieldStar "Subject" "species"}}}
                         </span>
-                        Species:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "species"}}}
+                        Species:
                     </label>
 
                     <select class="custom-select" id="species" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
@@ -67,10 +68,10 @@
                         <span>
                             <!-- Tooltip -->
                         {{{FieldStar "Subject" "strain_name"}}}
-                        </span>
-                        Strain:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "strain_name"}}}
+                        </span>
+                        Strain:
                     </label>
                     <select class="custom-select" id="strain_name" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="3">Not provided</option>
@@ -85,9 +86,9 @@
                             <!-- Tooltip -->
                         {{{FieldStar "Subject" "sex"}}}
                         </span>
-                        Sex:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "sex"}}}
+                        Sex:
                     </label>
 
                     <select class="custom-select" id="sex" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
@@ -105,9 +106,9 @@
                             <!-- Tooltip-->
                         {{{FieldStar "Subject" "age"}}}
                         </span>
-                        Age Type:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "age"}}}
+                        Age Type:
                     </label>
 
                     <select class="custom-select" id="age" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
@@ -122,9 +123,9 @@
                             <!-- Tooltip-->
                         {{{FieldStar "Subject" "age_min"}}}
                         </span>
-                        Min:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "age_min"}}}
+                        Min:
                     </label>
 
                     <input type="text" class="form-control" name="age_min" id="age_min" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
@@ -140,9 +141,9 @@
                             <!-- Tooltip-->
                         {{{FieldStar "Subject" "age_max"}}}
                         </span>
-                        Max:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "age_max"}}}
+                        Max:
                     </label>
 
                     <input type="text" class="form-control" name="age_max" id="age_max" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
@@ -158,9 +159,9 @@
                             <!-- Tooltip-->
                         {{{FieldStar "Subject" "age_unit"}}}
                         </span>
-                        Unit:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "age_unit"}}}
+                        Unit:
                     </label>
 
                     <select class="custom-select" id="age_unit" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
@@ -177,9 +178,9 @@
                             <!-- Tooltip -->
                         {{{FieldStar "Subject" "age_event"}}}
                         </span>
-                        Age Event:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "age_event"}}}
+                        Age Event:
                     </label>
                     <input type="text" class="form-control" name="age_event" id="age_event" placeholder="" value="{{value.age_event}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
@@ -193,9 +194,9 @@
                             <!-- Tooltip -->
                         {{{FieldStar "Subject" "race"}}}
                         </span>
-                        Race:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "race"}}}
+                        Race:
                     </label>
 
                     <select class="custom-select" id="race" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
@@ -214,9 +215,9 @@
                             <!-- Tooltip -->
                         {{{FieldStar "Subject" "ancestry_population"}}}
                         </span>
-                        Ancestry Population:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "ancestry_population"}}}
+                        Ancestry Population:
                     </label>
                     <input type="text" class="form-control" name="ancestry_population" id="ancestry_population" placeholder="" value="{{value.ancestry_population}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
@@ -230,9 +231,9 @@
                             <!-- Tooltip -->
                         {{{FieldStar "Subject" "ethnicity"}}}
                         </span>
-                        Ethnicity:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "ethnicity"}}}
+                        Ethnicity:
                     </label>
                     <input type="text" class="form-control" name="ethnicity" id="ethnicity" placeholder="" value="{{value.ethnicity}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
@@ -246,9 +247,9 @@
                             <!-- Tooltip -->
                         {{{FieldStar "Subject" "linked_subjects"}}}
                         </span>
-                        Linked Subject:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "linked_subjects"}}}
+                        Linked Subject:
                     </label>
                     <input type="text" class="form-control" name="linked_subjects" id="linked_subjects" placeholder="" value="{{value.linked_subjects}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
@@ -262,9 +263,9 @@
                             <!-- Tooltip -->
                         {{{FieldStar "Subject" "link_type"}}}
                         </span>
-                        Link Type:
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "link_type"}}}
+                        Link Type:
                     </label>
                     <input type="text" class="form-control" name="link_type" id="link_type" placeholder="" value="{{value.link_type}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
@@ -279,7 +280,7 @@
             <div class="row">
                 <div class="col project-buttons-right project-buttons-margin-bottom">
                     <div class="btn-group" role="group" aria-label="Button group">
-                        <button type="button" class="btn btn-edit" name="{{uuid}}" id="project-subject-edit">Edit</button>
+                        <button type="button" class="btn btn-edit" name="{{uuid}}" id="project-subject-edit" {{#if editMode}}disabled{{/if}}>Edit</button>
                     </div>
                 </div>
             </div>
@@ -304,7 +305,7 @@
         </div>
     </div>
 
-    <div class="row general-table-row general-border-top align-items-center">
+    <div class="row general-table-row align-items-center">
         <div class="col-md-10">
         <form method="post" role="form" id="project-subject-form" class="project-subject-form needs-validation" name="subject" novalidate>
             <div class="form-row project-subject-row">
