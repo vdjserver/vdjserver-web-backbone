@@ -31,6 +31,7 @@ import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import SubjectsListView from 'Scripts/views/project/subjects/project-subjects-list';
 
+
 // Project subjects buttons
 import button_template from 'Templates/project/subjects/project-subjects-buttons.html';
 var SubjectsButtonView = Marionette.View.extend({
@@ -50,13 +51,13 @@ var SubjectsButtonView = Marionette.View.extend({
 
         var editMode = false;
         if(this.controller.getSubjectsViewMode() == 'edit') {
-        //if(this.model.view_mode == 'edit') {
             this.editMode = true;
         } else { this.editMode = false; }
 
         return {
             detailsMode: this.detailsMode,
             editMode: this.editMode,
+            has_edits: this.controller.has_edits,
         }
     },
 
@@ -78,12 +79,21 @@ var SubjectsView = Marionette.View.extend({
     },
 
     events: {
-        'click #project-subjects-details-summary' : 'toggleSubjectsView',
+        'click #project-subjects-details-summary' : function(e) { this.controller.toggleSubjectsViewMode() },
 
         'click #project-subjects-import': 'importSubjectTable',
         'click #project-subjects-export': 'exportSubjectTable',
         'click #project-diagnosis-import': 'importDiagnosisTable',
         'click #project-diagnosis-export': 'exportDiagnosisTable',
+
+        'click #project-subjects-save-changes': function(e) {
+            e.preventDefault();
+        },
+        'click #project-subjects-revert-changes': function(e) {
+            e.preventDefault();
+            this.controller.revertSubjectsChanges();
+        },
+
     },
 
     initialize(parameters) {
@@ -103,18 +113,13 @@ var SubjectsView = Marionette.View.extend({
         }
     },
 
+    updateHeader: function() {
+        this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
+    },
+
     showProjectSubjectsList(subjectList) {
         this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
         this.showChildView('listRegion', new SubjectsListView({collection: subjectList, controller: this.controller}));
-    },
-
-    toggleSubjectsView(e) {
-        // controller holds the view state
-        this.controller.toggleSubjectsViewMode();
-        // redisplay just the list
-        // TODO: what about a filtered list?
-        var collections = this.controller.getCollections();
-        this.showProjectSubjectsList(collections.subjectList);
     },
 
     importSubjectTable: function(e) {
@@ -136,6 +141,7 @@ var SubjectsView = Marionette.View.extend({
         e.preventDefault();
         this.model.exportMetadataToDisk();
     },
+
 });
 
 export default SubjectsView;
