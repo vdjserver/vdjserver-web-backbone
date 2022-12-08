@@ -40,7 +40,7 @@ export var Subject = Agave.MetadataModel.extend({
         this.airr_schema = AIRRSchema['Subject'];
 
         // make a deep copy from the template
-        var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]['subject']));
+        var value = JSON.parse(JSON.stringify(repertoire_template['subject']));
         //console.log(value);
 
         // add VDJServer specific fields
@@ -110,7 +110,7 @@ export var Diagnosis = Agave.MetadataModel.extend({
         this.airr_schema = AIRRSchema['Diagnosis'];
 
         // make a deep copy from the template
-        var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]['subject']['diagnosis'][0]));
+        var value = JSON.parse(JSON.stringify(repertoire_template['subject']['diagnosis'][0]));
         //console.log(value);
 
         // add VDJServer specific fields
@@ -144,13 +144,13 @@ export var Diagnosis = Agave.MetadataModel.extend({
 
 // Sample model based upon AIRR Sample Processing
 // which is a composite object
-export var Sample = Agave.MetadataModel.extend({
+export var SampleProcessing = Agave.MetadataModel.extend({
     defaults: function() {
         // Use AIRR schema Subject object as basis
         this.airr_schema = AIRRSchema['SampleProcessing'];
 
         // make a deep copy from the template
-        var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]['sample'][0]));
+        var value = JSON.parse(JSON.stringify(repertoire_template['sample'][0]));
         //console.log(value);
 
         // add VDJServer specific fields
@@ -160,7 +160,7 @@ export var Sample = Agave.MetadataModel.extend({
             {},
             Agave.MetadataModel.prototype.defaults,
             {
-                name: 'sample',
+                name: 'sample_processing',
                 owner: '',
                 value: value
             }
@@ -190,7 +190,7 @@ export var DataProcessing = Agave.MetadataModel.extend({
         this.airr_schema = AIRRSchema['DataProcessing'];
 
         // make a deep copy from the template
-        var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]['data_processing'][0]));
+        var value = JSON.parse(JSON.stringify(repertoire_template['data_processing'][0]));
         //console.log(value);
 
         // add VDJServer specific fields
@@ -237,7 +237,7 @@ export var Repertoire = Agave.MetadataModel.extend({
         this.airr_schema = AIRRSchema['Repertoire'];
 
         // make a deep copy from the template
-        var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]));
+        var value = JSON.parse(JSON.stringify(repertoire_template));
         //console.log(value);
 
         // add VDJServer specific fields

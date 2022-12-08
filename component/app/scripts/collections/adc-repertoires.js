@@ -32,7 +32,7 @@ import { ADC } from 'Scripts/backbone/backbone-adc';
 import ADCRepertoire from 'Scripts/models/adc-repertoire';
 
 import Project from 'Scripts/models/agave-project';
-import { Subject, Diagnosis, Sample, Repertoire } from 'Scripts/models/agave-metadata';
+import { Subject, Diagnosis, SampleProcessing, Repertoire } from 'Scripts/models/agave-metadata';
 
 export var ADCRepertoireCollection = ADC.Collection.extend({
     model: ADCRepertoire,
@@ -225,7 +225,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
                 var sample = null;
                 if (sp_id) sample = samples.get(sp_id);
                 if (! sample) {
-                    sample = new Sample({value: s});
+                    sample = new SampleProcessing({value: s});
                     if (sp_id) sample.set('id', sp_id);
                     samples.add(sample);
                     study_samples.add(sample);

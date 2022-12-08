@@ -106,14 +106,14 @@ var ProjectSettingsView = Marionette.View.extend({
 
         // keyword badges
         var contains_ig = false;
-        var contains_tcr = false;
+        var contains_tr = false;
         var contains_single_cell = false;
         var contains_paired_chain = false;
         if (value.keywords_study) {
             if (value.keywords_study.indexOf("contains_ig") >= 0)
                 contains_ig = true;
-            if (value.keywords_study.indexOf("contains_tcr") >= 0)
-                contains_tcr = true;
+            if (value.keywords_study.indexOf("contains_tr") >= 0)
+                contains_tr = true;
             if (value.keywords_study.indexOf("contains_single_cell") >= 0)
                 contains_single_cell = true;
             if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
@@ -141,12 +141,13 @@ var ProjectSettingsView = Marionette.View.extend({
             study_type_label: study_type_label,
 
             contains_ig: contains_ig,
-            contains_tcr: contains_tcr,
+            contains_tr: contains_tr,
             contains_single_cell: contains_single_cell,
             contains_paired_chain: contains_paired_chain,
             is_10x_genomics: is_10x_genomics,
 
             // label array
+            keywords_enum: [ 'contains_ig', 'contains_tr', 'contains_single_cell', 'contains_paired_chain' ],
             keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
 
             // label object
@@ -154,7 +155,7 @@ var ProjectSettingsView = Marionette.View.extend({
                 'contains_single_cell': 'Single Cell',
                 'contains_ig': 'Ig',
                 'contains_paired_chain': 'Paired Chain',
-                'contains_tcr': 'TCR',
+                'contains_tr': 'TCR',
                 'is_10x_genomics': '10x Genomics'
             }
         }

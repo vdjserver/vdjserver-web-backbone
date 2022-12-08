@@ -29,7 +29,7 @@
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
 
-import { Repertoire, Subject, Diagnosis, Sample, DataProcessing } from 'Scripts/models/agave-metadata';
+import { Repertoire, Subject, Diagnosis, SampleProcessing, DataProcessing } from 'Scripts/models/agave-metadata';
 
 import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
 import { FileTransfers } from 'Scripts/models/mixins/file-transfer-mixins';
@@ -149,7 +149,7 @@ export var DiagnosisCollection = Agave.MetadataCollection.extend(
 
 export var SampleCollection = Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, FileTransfers, {
-        model: Sample,
+        model: SampleProcessing,
         initialize: function(parameters) {
             Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
 
@@ -159,7 +159,7 @@ export var SampleCollection = Agave.MetadataCollection.extend(
         },
         url: function() {
             return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"sample","associationIds":"' + this.projectUuid + '"}')
+                   + encodeURIComponent('{"name":"sample_processing","associationIds":"' + this.projectUuid + '"}')
                    + '&limit=' + this.limit
                    + '&offset=' + this.offset
                    ;

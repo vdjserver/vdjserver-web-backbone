@@ -41,7 +41,7 @@ export default Agave.MetadataModel.extend({
         this.airr_schema = AIRRSchema['Study'];
 
         // make a deep copy of study object from the template
-        var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]['study']));
+        var value = JSON.parse(JSON.stringify(repertoire_template['study']));
         value['study_type'] = null;
         //console.log(value);
 
@@ -87,7 +87,7 @@ export default Agave.MetadataModel.extend({
         var value = this.get('value');
         var keywords = [];
         if (data.contains_ig) keywords.push('contains_ig');
-        if (data.contains_tcr) keywords.push('contains_tcr');
+        if (data.contains_tr) keywords.push('contains_tr');
         if (data.contains_single_cell) keywords.push('contains_single_cell');
         if (data.contains_paired_chain) keywords.push('contains_paired_chain');
         value.keywords_study = keywords;
