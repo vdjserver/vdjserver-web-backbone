@@ -41,21 +41,18 @@ var SubjectSummaryView = Marionette.View.extend({
 
     templateContext() {
         var editMode = false;
-        //if(this.model.view_mode == 'edit') {
-        if(this.controller.subjects_view_mode == 'edit') {
-            this.editMode = true;
-        } else { this.editMode = false; }
         return {
             age_display: this.model.getAgeDisplay(),
             species_display: this.model.getSpeciesDisplay(),
-            editMode: this.editMode,
+            view_mode: this.model.view_mode,
         }
     },
 
     events: {
         'click #project-subject-edit': function(e) {
             e.preventDefault();
-            this.controller.setSubjectsViewModeEdit();
+            this.model.view_mode = 'edit';
+            this.controller.flagSubjectsEdits();
             this.controller.showProjectSubjectsList();
         },
     },
@@ -75,22 +72,17 @@ var SubjectDetailView = Marionette.View.extend({
     },
 
     templateContext() {
-        //console.log(this.model);
         var editMode = false;
-        //if(this.model.view_mode == 'edit') {
-        if(this.controller.subjects_view_mode == 'edit') {
-            this.editMode = true;
-        } else { this.editMode = false; }
         return {
             view_mode: this.model.view_mode,
-            editMode: this.editMode,
         }
     },
 
     events: {
         'click #project-subject-edit': function(e) {
             e.preventDefault();
-            this.controller.setSubjectsViewModeEdit();
+            this.model.view_mode = 'edit';
+            this.controller.flagSubjectsEdits();
             this.controller.showProjectSubjectsList();
         },
     },

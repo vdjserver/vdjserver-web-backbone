@@ -48,6 +48,7 @@ function ProjectSubjectsController(controller) {
     this.subjects_view_mode = 'summary';
     // edits
     this.has_edits = false;
+    this.resetCollections();
 
     this.mainView = new ProjectSubjectsView({model: this.model, controller: this});
 }
@@ -67,12 +68,13 @@ ProjectSubjectsController.prototype = {
         return this.controller.getCollections();
     },
 
-    getSubjectsViewMode() {
-        return this.subjects_view_mode;
+    resetCollections() {
+        // these collections should always point to the same models
+        this.subjectList = this.controller.subjectList.getClonedCollection();
     },
 
-    setSubjectsViewModeEdit() { 
-        this.subjects_view_mode = 'edit';
+    getSubjectsViewMode() {
+        return this.subjects_view_mode;
     },
 
     toggleSubjectsViewMode() {
@@ -80,12 +82,26 @@ ProjectSubjectsController.prototype = {
             case 'summary': this.subjects_view_mode = 'detail'; break;
             case 'detail': this.subjects_view_mode = 'summary'; break;
         }
+        this.showProjectSubjectsList();
     },
 
     // show project subjects
     showProjectSubjectsList() {
-        var collections = this.controller.getCollections();
-        this.mainView.showProjectSubjectsList(collections.subjectList);
+        this.mainView.showProjectSubjectsList(this.subjectList);
+    },
+
+    flagSubjectsEdits: function() {
+        // we keep flag just for file changes
+        this.has_edits = true;
+        // update header
+        this.mainView.updateHeader();
+    },
+
+    revertSubjectsChanges: function() {
+        // throw away changes by re-cloning
+        this.has_edits = false;
+        this.resetCollections();
+        this.showProjectSubjectsList();
     },
 
 };
