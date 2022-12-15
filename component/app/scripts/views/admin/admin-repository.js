@@ -42,11 +42,45 @@ var AdminButtonView = Marionette.View.extend({
     },
 
     templateContext() {
+        var query_collection = '???';
+        var load_collection = '???';
+        if (this.controller.adcStatus) {
+            query_collection = this.controller.adcStatus.get('query_collection');
+            load_collection = this.controller.adcStatus.get('load_collection');
+        }
+
         return {
+            query_collection: query_collection,
+            load_collection: load_collection,
             //current_sort: current_sort,
-            //hasEdits: this.controller.hasFileEdits()
         }
     },
+});
+
+import template_stats from 'Templates/admin/admin-repository-stats.html';
+var AdminButtonView = Marionette.View.extend({
+    template: Handlebars.compile(template_buttons),
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+    },
+/*
+    templateContext() {
+        var query_collection = '???';
+        var load_collection = '???';
+        if (this.controller.adcStatus) {
+            query_collection = this.controller.adcStatus.get('query_collection');
+            load_collection = this.controller.adcStatus.get('load_collection');
+        }
+
+        return {
+            query_collection: query_collection,
+            load_collection: load_collection,
+            //current_sort: current_sort,
+        }
+    },*/
 });
 
 import template from 'Templates/admin/admin-repository.html';
@@ -157,6 +191,7 @@ var RepositoryLoadView = Marionette.View.extend({
     events: {
         'click #admin-load-repo': 'loadRepo',
         'click #admin-unload-repo': 'unloadRepo',
+        'click #admin-unpublish-project': 'unpublishProject',
         'click #admin-reload-project': 'reloadProject',
         'click #admin-enableLoad_0_mode': 'enableLoad_0',
         'click #admin-disableLoad_0_mode': 'disableLoad_0',
@@ -170,6 +205,82 @@ var RepositoryLoadView = Marionette.View.extend({
     },
     unloadRepo: function(e) {
         console.log("Clicked Unload");
+    },
+
+    //
+    // Unpublish sequence
+    //
+    unpublishProject(e) {
+        console.log("Unpublish Project button clicked");
+
+        this.publish_message = new MessageModel({
+            'header': 'Unpublish a Project',
+            'body': '<div>Are you sure you want to unpublish the project?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        this.modalState = 'publish';
+        var view = new ModalView({model: this.publish_message});
+        App.AppController.startModal(view, this, this.onShownUnpublishModal, this.onHiddenUnpublishModal);
+        $('#modal-message').modal('show');
+    },
+
+    // sent to server after the modal is shown
+    onShownUnpublishModal(context) {
+        console.log('unpublish: Show the modal');
+
+        // nothing to be done here, server request
+        // is done in hidden function when user confirms
+    },
+
+    onHiddenUnpublishModal(context) {
+        console.log('unpublish: Hide the modal');
+        if (context.modalState == 'publish') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.publish_message.get('status') != 'confirm') return;
+
+            // publish project
+            context.model.unpublishProject()
+            .then(function() {
+                context.modalState = 'pass';
+
+                // prepare a new modal with the success message
+                var message = new MessageModel({
+                    'header': 'Unpublish Project',
+                    'body':   'Project has been successfully unpublished!',
+                    cancelText: 'Ok'
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, context, null, context.onHiddenUnpublishSuccessModal);
+                $('#modal-message').modal('show');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Unpublish Project',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while unpublishing project!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+        }
+    },
+
+    onHiddenUnpublishSuccessModal(context) {
+        console.log('unpublish success: Hide the modal');
+        this.publish_message = null;
+
+        // TODO: should refresh
     },
 
     //
@@ -306,10 +417,18 @@ export default Marionette.View.extend({
             this.loaded_mode = parameters.loaded_mode;
         }
 
+        // our child views
         var view = new RepositoryLoadListView({collection: parameters.collection, controller: this.controller, loaded_mode: this.loaded_mode});
         this.showChildView('listRegion', view);
         var buttonsView = new AdminButtonView({controller: this.controller});
         this.showChildView('buttonRegion', buttonsView);
+
+        // toolbars
+        // we want filter by default
+        //showFilterToolbar('admin-respository-filter', true, null);
+        // we want stats by default
+        //showStatsToolbar('admin-repository-stats', true, null);
+        //
     },
 
     templateContext() {
@@ -329,10 +448,9 @@ export default Marionette.View.extend({
             }
         }*/,
         'click #admin-refresh': 'refresh',
-        'click #admin-enableADC': 'enableADC',
-        'click #admin-disableADC': 'disableADC',
-        'click #admin-enableVDJ': 'enableVDJ',
-        'click #admin-disableVDJ': 'disableVDJ',
+        'click #admin-reload-all': 'reloadAll',
+        'click #admin-enable-adc': 'enableADC',
+        'click #admin-disable-adc': 'disableADC',
     },
     sort: function(e) {
         e.preventDefault();
@@ -342,21 +460,25 @@ export default Marionette.View.extend({
         e.preventDefault();
         console.log("Clicked Refresh");
     },
-    enableADC: function(e) {
+    reloadAll: function(e) {
+        e.preventDefault();
+        console.log("Clicked reloadAll");
+    },
+    enableDownloadCache: function(e) {
         e.preventDefault();
         console.log("Clicked Enable ADC Download Cache");
     },
-    disableADC: function(e) {
+    disableDownloadCache: function(e) {
         e.preventDefault();
         console.log("Clicked Disable ADC Download Cache");
     },
-    enableVDJ: function(e) {
+    enableADC: function(e) {
         e.preventDefault();
-        console.log("Clicked Enable VDJServer Repository");
+        console.log("Clicked Enable ADC Repository");
     },
-    disableVDJ: function(e) {
+    disableADC: function(e) {
         e.preventDefault();
-        console.log("Clicked Disable VDJServer Repository");
+        console.log("Clicked Disable ADC Repository");
     },
 });
 

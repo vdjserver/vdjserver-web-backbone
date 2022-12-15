@@ -15,10 +15,21 @@
                 <button type="button" class="btn btn-delete" id="admin-unload-repo">Unload</button>
             </div>
             <div class="btn-group" role="group" aria-label="Button group">
+                <button type="button" class="btn btn-delete general-buttons-margin-left" id="admin-unpublish-project">Unpublish</button>
+            </div>
+            <div class="btn-group" role="group" aria-label="Button group">
                 <button type="button" class="btn btn-add general-buttons-margin-left" id="admin-reload-project">Reload</button>
             </div>
           {{/if}}
         </div>
+    </div>
+    <div class="row general-table-internal-row align-items-center">
+        <div class="col-md-5"><b>
+        VDJServer UUID: </b>{{uuid}}
+        </b></div>
+        <div class="col-md-7"><b>
+        Study ID: </b>{{value.study_id}}
+        </b></div>
     </div>
   {{#if show_0}}
     <div class="row general-table-internal-row align-items-center">
