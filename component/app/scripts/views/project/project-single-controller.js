@@ -1,5 +1,6 @@
 //
 // project-single.js
+// Single project controller
 // Manages all the views for a single project
 //
 // VDJServer Analysis Portal
@@ -70,7 +71,7 @@ var ProjectSummaryView = Marionette.View.extend({
         }
     },
 
-    templateContext() {
+    templateContext: function() {
         // gather the dynamic content for the cards
         // array of card tabs with fields
         // card id
@@ -187,7 +188,7 @@ var CreateRepertoireStepsView = Marionette.View.extend({
         }
     },
 
-    templateContext() {
+    templateContext: function() {
         return {
             active_step: this.active_step
         };
@@ -389,27 +390,27 @@ var SingleProjectView = Marionette.View.extend({
     },
 
     // update summary view with new counts and active tab
-    updateSummary() {
+    updateSummary: function() {
         this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
         this.showChildView('summaryRegion', this.summaryView);
     },
 
     // show a loading view, used while fetching the data
-    showLoading() {
+    showLoading: function() {
         this.showChildView('detailRegion', new LoadingView({}));
     },
 
     //
     // the main project tab views
     //
-    showProjectOverview(project)
+    showProjectOverview: function(project)
     {
         this.getRegion('stepsRegion').empty();
         this.detailView = new ProjectOverView({model: project, controller: this.controller});
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showProjectSubjects(theController)
+    showProjectSubjects: function(theController)
     {
         this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', theController.getView());
@@ -418,7 +419,7 @@ var SingleProjectView = Marionette.View.extend({
         theController.showProjectSubjectsList();
     },
 
-    showProjectSamples(theController)
+    showProjectSamples: function(theController)
     {
         this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', theController.getView());
@@ -427,7 +428,7 @@ var SingleProjectView = Marionette.View.extend({
         theController.showProjectSamplesList();
     },
 
-    showProjectRepertoires(repertoireController)
+    showProjectRepertoires: function(repertoireController)
     {
         this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', repertoireController.getView());
@@ -436,14 +437,14 @@ var SingleProjectView = Marionette.View.extend({
         repertoireController.showRepertoireList();
     },
 
-    showProjectGroups(project)
+    showProjectGroups: function(project)
     {
         this.getRegion('stepsRegion').empty();
         this.detailView = new GroupsView({model: project});
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showProjectFiles(projectFilesController)
+    showProjectFiles: function(projectFilesController)
     {
         this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', projectFilesController.getView());
@@ -452,7 +453,7 @@ var SingleProjectView = Marionette.View.extend({
         projectFilesController.showProjectFilesList();
     },
 
-    showProjectAnalyses(projectAnalysesController)
+    showProjectAnalyses: function(projectAnalysesController)
     {
         this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', projectAnalysesController.getView());
@@ -465,7 +466,7 @@ var SingleProjectView = Marionette.View.extend({
     // Step-by-step walkthrough of repertoire metadata entry
     // Note the controller
     //
-    showCreateRepertoire()
+    showCreateRepertoire: function()
     {
         // add the entry steps progression view
         this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'repertoire'});
@@ -475,7 +476,7 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showAddSubject() {
+    showAddSubject: function() {
         this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'subject'});
         this.showChildView('stepsRegion', this.stepsView);
 
@@ -483,7 +484,7 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showAddDiagnosis() {
+    showAddDiagnosis: function() {
         this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'diagnosis'});
         this.showChildView('stepsRegion', this.stepsView);
 
@@ -491,7 +492,7 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showAddSample() {
+    showAddSample: function() {
         this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'sample'});
         this.showChildView('stepsRegion', this.stepsView);
 
@@ -499,7 +500,7 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showAddCell() {
+    showAddCell: function() {
         this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'cell'});
         this.showChildView('stepsRegion', this.stepsView);
 
@@ -507,7 +508,7 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showAddNucleic() {
+    showAddNucleic: function() {
         this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'nucleic'});
         this.showChildView('stepsRegion', this.stepsView);
 
@@ -515,7 +516,7 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showAddRepGroup() {
+    showAddRepGroup: function() {
         this.detailView = new AddRepGroupView({model: this.model});
         this.showChildView('detailRegion', this.detailView);
     },
