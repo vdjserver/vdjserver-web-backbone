@@ -60,8 +60,6 @@ RUN cd /var/www/html/vdjserver-v2-web-backbone && npm install
 COPY ./component/ /var/www/html/vdjserver-v2-web-backbone
 
 # ESLint
-COPY ./.eslintrc.json /var/www/html/vdjserver-v2-web-backbone
-COPY ./.eslintignore /var/www/html/vdjserver-v2-web-backbone
 RUN cd /var/www/html/vdjserver-v2-web-backbone && npm run eslint app/scripts
 
 # build dev site
