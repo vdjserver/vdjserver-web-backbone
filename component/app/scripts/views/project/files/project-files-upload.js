@@ -248,6 +248,7 @@ var FilesUploadView = Marionette.View.extend(
                     }
                 } else {
                     var stagedFile = new ProjectFile({
+                        path: file.name,
                         name: file.name,
                         length: file.size,
                         lastModified: file.lastModifiedDate,
