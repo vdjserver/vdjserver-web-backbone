@@ -372,7 +372,8 @@ ProjectFilesController.prototype = {
             console.log('file is uploaded');
 
             // create stage entry for second step
-            var stagedFile = new File({ relativeUrl: '//projects/' + file.get('projectUuid') + '/files/' + file.get('name') });
+            var path = '//projects/' + file.get('projectUuid') + '/files/' + file.get('name');
+            var stagedFile = new File({ path: path, relativeUrl: path});
             stagedFile['uploadFile'] = file;
             this.stageFiles.add(stagedFile);
         }
@@ -499,12 +500,14 @@ ProjectFilesController.prototype = {
 
         // TODO: check if all files are complete
         let done = true;
-        for (let i = 0; i < controller.uploadFiles.length; ++i) {
-            let file = controller.uploadFiles.at(i);
-            let status = file.get('uploadStatus');
-            if ((status != 'complete') && (status != 'error')) {
-                done = false;
-                break;
+        if (controller.uploadFiles) {
+            for (let i = 0; i < controller.uploadFiles.length; ++i) {
+                let file = controller.uploadFiles.at(i);
+                let status = file.get('uploadStatus');
+                if ((status != 'complete') && (status != 'error')) {
+                    done = false;
+                    break;
+                }
             }
         }
 
