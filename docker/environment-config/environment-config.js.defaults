@@ -107,9 +107,9 @@ var EnvironmentConfig = {
     'adc': {
         'vdjserver': {
             'title': 'VDJServer',
-            'hostname': 'https://vdj-staging.tacc.utexas.edu',
+            'hostname': 'https://vdjserver.org',
             'adc_path': '/airr/v1',
-            //'stats_path': '/irplus/v1/stats'
+            'stats_path': '/irplus/v1/stats'
         },
         'scireptor': {
             'title': 'sciReptor',
@@ -117,17 +117,35 @@ var EnvironmentConfig = {
             'adc_path': '/airr/v1',
             'stats_path': '/irplus/v1/stats'
         },
-        'vdjbase': {
-            'title': 'VDJbase',
-            'hostname': 'https://airr-seq.vdjbase.org',
+//        'vdjbase': {
+//            'title': 'VDJbase',
+//            'hostname': 'https://airr-seq.vdjbase.org',
+//            'adc_path': '/airr/v1',
+//            'stats_path': '/irplus/v1/stats'
+//        },
+        'meunster': {
+            'title': 'University of Meunster',
+            'hostname': 'https://agschwab.uni-muenster.de',
             'adc_path': '/airr/v1',
             'stats_path': '/irplus/v1/stats'
+        },
+        'roche': {
+            'title': 'Roche/KCL',
+            'hostname': 'https://roche-airr.ireceptor.org',
+            'adc_path': '/airr/v1',
+            //'stats_path': '/irplus/v1/stats'
+        },
+        't1d': {
+            'title': 'T1D',
+            'hostname': 'https://t1d-1.ireceptor.org',
+            'adc_path': '/airr/v1',
+            //'stats_path': '/irplus/v1/stats'
         },
         'ipa1': {
             'title': 'IPA',
             'hostname': 'https://ipa1.ireceptor.org',
             'adc_path': '/airr/v1',
-            'stats_path': '/irplus/v1/stats'
+            //'stats_path': '/irplus/v1/stats'
         },
         'ipa2': {
             'title': 'IPA',
@@ -153,11 +171,17 @@ var EnvironmentConfig = {
             'adc_path': '/airr/v1',
             'stats_path': '/irplus/v1/stats'
         },
+        'ipa6': {
+            'title': 'IPA',
+            'hostname': 'https://ipa6.ireceptor.org',
+            'adc_path': '/airr/v1',
+            'stats_path': '/irplus/v1/stats'
+        },
         'covid19-1': {
             'title': 'IPA',
             'hostname': 'https://covid19-1.ireceptor.org',
             'adc_path': '/airr/v1',
-            'stats_path': '/irplus/v1/stats'
+            //'stats_path': '/irplus/v1/stats'
         },
         'covid19-2': {
             'title': 'IPA',
@@ -204,7 +228,7 @@ var EnvironmentConfig = {
         'publicKey': '6Le7f_0SAAAAAK5H0oniNyszvoib4y_b0JX423Yc',
     },
     'vdjApi': {
-        'hostname': 'https://vdjserver.org/api/v2',
+        'hostname': 'https://vdj-staging.tacc.utexas.edu/api/v2',
     },
     'vdjGuest': {
         'hostname': 'https://vdjserver.org/guest',
