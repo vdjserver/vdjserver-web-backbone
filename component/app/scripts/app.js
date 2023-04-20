@@ -107,6 +107,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     clearControllers: function() {
+        // we do not clear the navController because we need it to show login link
         this.projectController = null;
         this.communityController = null;
         this.adminController = null;
@@ -199,6 +200,11 @@ var ApplicationController = Marionette.View.extend({
             .catch(function(error) {
                 console.log(error);
             });
+
+        // new navigation bar
+        this.navController = new NavigationController();
+        this.showChildView('navigationRegion', this.navController);
+        this.navController.showNavigation();
     },
 
     showUserProfilePage: function(edit_mode) {
