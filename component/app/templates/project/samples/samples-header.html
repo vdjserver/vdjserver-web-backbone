@@ -1,7 +1,7 @@
 <div class="row project-samples-header">
     <div class="col" id="sample_accordion">
                 <h5 class="mb-0">
-                    <button class="btn btn-link rep-details-button" data-toggle="collapse" data-target="#editSample_collapse" aria-expanded="false" aria-controls="editSample_collapse">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#editSample_collapse" aria-expanded="false" aria-controls="editSample_collapse">
                       <span class="details-title"><h1>{{num_samples}} Samples</h1></span>
                     </button>
                   </h5>
@@ -12,7 +12,7 @@
     <div class="col">
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle file-action" type="button" id="project-samples-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-primary dropdown-toggle project-buttons-margin-right" type="button" id="project-samples-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Sort By
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -42,7 +42,7 @@
 
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle file-action" type="button" id="project-samples-upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-primary dropdown-toggle project-buttons-margin-right" type="button" id="project-samples-upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Import/Export
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -51,6 +51,9 @@
                 </button>
                 <button class="dropdown-item" type="button" id="project-samples-upload-dropbox" name="newest">
                     Export Sample Table
+                </button>
+                <button class="dropdown-item" type="button" id="project-samples-upload-dropbox" name="newest">
+                    Export 10X Genomics Template
                 </button>
               </div>
             </div>
@@ -61,13 +64,13 @@
         </div>
     </div>
 
-    <div class="col-md-6 ml-auto results-stats">
+    <div class="col-md-6 project-buttons-right">
         <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-cancel file-action" id="project-samples-revert-changes" disabled>Revert Sample Changes</button>
+            <button type="button" class="btn btn-cancel project-changes-action" id="project-samples-revert-changes" disabled>Revert Sample Changes</button>
         </div>
 
         <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-save file-action" id="project-samples-save-changes" disabled>Save Sample Changes</button>
+            <button type="button" class="btn btn-save project-changes-action" id="project-samples-save-changes" disabled>Save Sample Changes</button>
         </div>
     </div>
 </div>

@@ -28,12 +28,14 @@
 @import 'modules/buttons';
 
 // Sections
+@import 'sections/general';
 @import 'sections/navbar';
-@import 'sections/community';
-@import 'sections/create-account';
-@import 'sections/create-project';
-@import 'sections/create-rep';
-@import 'sections/file-upload';
+@import 'sections/community'; // TODO: merge with single-project
+//@import 'sections/create-account';
+@import 'sections/create-project'; // TODO: eliminate
+@import 'sections/create-rep'; // TODO: eliminate
+//@import 'sections/file-upload';
 @import 'sections/home';
-@import 'sections/project-list';
+//@import 'sections/project-list';
 @import 'sections/single-project';
+//@import 'sections/admin';

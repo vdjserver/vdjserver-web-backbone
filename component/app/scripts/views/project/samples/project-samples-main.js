@@ -29,12 +29,12 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
-import SamplesListView from 'Scripts/views/project/samples/samples-list';
+import SamplesListView from 'Scripts/views/project/samples/project-samples-list';
 
-// Project Files Page
-import template from 'Templates/project/samples/samples-header.html';
-var SamplesHeaderView = Marionette.View.extend({
-    template: Handlebars.compile(template),
+// Project samples buttons
+import button_template from 'Templates/project/samples/project-samples-buttons.html';
+var SamplesButtonView = Marionette.View.extend({
+    template: Handlebars.compile(button_template),
 
     initialize: function(parameters) {
         if (parameters && parameters.controller) {
@@ -43,27 +43,26 @@ var SamplesHeaderView = Marionette.View.extend({
     },
 
     templateContext() {
-        var num_samples = 0;
-        var collections = this.controller.getCollections();
-        if (collections.sampleList) num_samples = collections.sampleList.length;
         return {
-            num_samples: num_samples
+            view_mode: this.controller.getViewMode()
         }
+    },
+
+    events: {
+        'click #project-samples-view-mode' : function(e) { this.controller.toggleViewMode() },
     }
 });
-
 
 // this manages project samples layout
 // shows all the samples in a list
 // content display is handled by sub views
 var SamplesView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project-samples-header"></div><div id="project-samples-list"></div>'),
-    className: 'project-samples-list',
+    template: Handlebars.compile('<div id="project-samples-buttons"></div><div id="project-samples-list"></div>'),
 
     // one region for any header content
     // one region for the files collection
     regions: {
-        headerRegion: '#project-samples-header',
+        buttonRegion: '#project-samples-buttons',
         listRegion: '#project-samples-list'
     },
 
@@ -75,15 +74,11 @@ var SamplesView = Marionette.View.extend({
         if (parameters && parameters.controller) {
             this.controller = parameters.controller;
         }
-
-        var collections = this.controller.getCollections();
-        this.showChildView('headerRegion', new SamplesHeaderView({controller: this.controller}));
-        this.showChildView('listRegion', new SamplesListView({collection: collections.sampleList, controller: this.controller}));
     },
 
-    showSamplesList(subjectsList) {
-        //this.showChildView('headerRegion', new SubjectsHeaderView());
-        //this.showChildView('listRegion', new SubjectsListView({collection: subjectsList, controller: this.controller}));
+    showProjectSamplesList(sampleList) {
+        this.showChildView('buttonRegion', new SamplesButtonView({controller: this.controller}));
+        this.showChildView('listRegion', new SamplesListView({collection: sampleList, controller: this.controller}));
     },
 
 });

@@ -210,7 +210,7 @@ module.exports = function(env, argv) {
 
                 // AIRR Schema
                 'airr-schema': path.resolve(__dirname,'airr-standards') + '/specs/airr-schema.yaml',
-                'airr-repertoire-template': path.resolve(__dirname,'airr-standards') + '/lang/python/airr/specs/blank.airr.yaml'
+                'airr-repertoire-template': path.resolve(__dirname,'app') + '/scripts/vendor/blank.airr.json'
             },
             extensions: ['.js'],
         },

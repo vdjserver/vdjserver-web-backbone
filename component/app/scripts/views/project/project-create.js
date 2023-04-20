@@ -64,7 +64,7 @@ var CreateView = Marionette.View.extend({
             // labels for keywords_study
             keywords_object: {
                 'contains_ig': 'Ig',
-                'contains_tcr': 'TCR',
+                'contains_tr': 'TCR',
                 'contains_single_cell': 'Single Cell',
                 'contains_paired_chain': 'Paired Chain',
                 'is_10x_genomics': '10x Genomics'

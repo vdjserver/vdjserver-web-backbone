@@ -1,0 +1,92 @@
+//
+// _general.scss
+// General purpose styles
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2022 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+
+// top-level padding used for the whole site
+.general-padding {
+    padding: 0% 5%;
+}
+
+// specifically for single form pages like user profile
+.general-single-form-buttons {
+    margin: 3% 0% 0% 0%;
+}
+
+// button bar styles
+.general-button-bar {
+    margin-bottom: 2%;
+}
+
+.general-buttons-right {
+    text-align: right;
+}
+
+.general-buttons-margin-left {
+    margin-left: 2em;
+}
+
+.general-buttons-margin-right {
+    margin-right: 2em;
+}
+
+.general-buttons-margin-bottom {
+    margin-bottom: 1em;
+}
+
+// general styles for collection/list views
+.general-border-top {
+    border-top: 1px solid $vdj-medgray;
+}
+
+.general-table-row {
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
+.general-table-row:hover {
+    background: $vdj-lightgray;
+}
+
+.general-table-internal-row {
+    padding-top: 0.5%;
+}
+
+
+.jumbotron {
+    padding: 2rem 2rem;
+}
+
+.summary-buttons {
+    margin-bottom: 2%;
+}
+
+.required-field {
+    color: $red;
+}
+
+// TODO: is this needed?
+.dropdown-menu {
+    z-index: 99999;
+}

@@ -1,10 +1,10 @@
             <h1>{{value.study_title}}</h1>
-            <div class="row" id="summary-buttons">
+            <div class="row summary-buttons">
                 {{#each card_tabs}}
                 <div class="card col-md card-link {{#if this.active}}card-active{{/if}}" id="{{this.card_id}}">
                   <div class="card-body nav-link">
                     <h5 class="card-title">
-                        <i class="fa fa-flask fa-2x card-image"></i><br>
+                        <i class="{{this.icon}} fa-2x card-image"></i><br>
                         {{{this.text}}}
                     </h5>
                   </div>

@@ -26,6 +26,7 @@
 
 import Handlebars from 'handlebars';
 import filesize from 'filesize';
+import moment from 'moment';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
@@ -65,6 +66,26 @@ HandlebarsUtilities.registerAllHelpers = function() {
         }
     });
 
+    Handlebars.registerHelper('FormatDate', function(agaveDate) {
+        var formattedDate = moment(new Date(agaveDate)).format('D-MMM-YYYY');
+        return formattedDate;
+    });
+
+    Handlebars.registerHelper('FormatDateTime', function(agaveDate) {
+        var formattedDate = moment(new Date(agaveDate)).format('D-MMM-YYYY h:mm a');
+        return formattedDate;
+    });
+
+    Handlebars.registerHelper('GetTagDisplay', function(publicAttributes) {
+        if (publicAttributes && publicAttributes['tags']) {
+            var tags = publicAttributes['tags'];
+            if (_.isArray(tags)) {
+                tags = tags.join(', ');
+            }
+            return tags;
+        }
+    });
+
     // dynamically construct the popover text with AIRR schema info
     Handlebars.registerHelper('FieldHelpPopover', function(schema_name, field_name) {
 
@@ -97,9 +118,9 @@ HandlebarsUtilities.registerAllHelpers = function() {
             else
                 description += '<br><em>Example:</em> ' + field['example'];
         }
-        console.log(field);
+        //console.log(field);
 
-        return '<i class="fa fa-question-circle" id="' + field_name + '_help" data-toggle="popover" title="' + title + '" data-html="true" data-content="' + description + '"></i>';
+        return '<i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-html="true" data-container="body" id="' + field_name + '_help" title="' + title + '" data-content="' + description + '"></i>';
     });
 
     // dynamically construct the MiAIRR Star with AIRR schema info
@@ -119,7 +140,7 @@ HandlebarsUtilities.registerAllHelpers = function() {
         }
 
         if (field['x-airr']['miairr'])
-            return '<i class="fa fa-star" data-toggle="tooltip" data-placement="top" title="MiAIRR ' + field['x-airr']['miairr'] + ' field"></i>';
+            return '<i class="fa fa-star" data-toggle="tooltip" title="MiAIRR ' + field['x-airr']['miairr'] + ' field"></i>';
 
         return;
     });

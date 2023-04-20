@@ -28,6 +28,7 @@
 //
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
+import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-file';
 
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
@@ -40,7 +41,7 @@ export default Agave.MetadataModel.extend({
         this.airr_schema = AIRRSchema['Study'];
 
         // make a deep copy of study object from the template
-        var value = JSON.parse(JSON.stringify(repertoire_template['Repertoire'][0]['study']));
+        var value = JSON.parse(JSON.stringify(repertoire_template['study']));
         value['study_type'] = null;
         //console.log(value);
 
@@ -86,7 +87,7 @@ export default Agave.MetadataModel.extend({
         var value = this.get('value');
         var keywords = [];
         if (data.contains_ig) keywords.push('contains_ig');
-        if (data.contains_tcr) keywords.push('contains_tcr');
+        if (data.contains_tr) keywords.push('contains_tr');
         if (data.contains_single_cell) keywords.push('contains_single_cell');
         if (data.contains_paired_chain) keywords.push('contains_paired_chain');
         value.keywords_study = keywords;
@@ -162,6 +163,143 @@ export default Agave.MetadataModel.extend({
 
         return jqxhr;
     },
+
+    importMetadataFromFile: function(project_file, operation) {
+        var value = project_file.get('value');
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify({
+                filename: value['name'],
+                operation: operation
+            }),
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/import',
+        });
+
+        return jqxhr;
+    },
+
+    exportMetadataToDisk: function() {
+        var that = this;
+
+        // export to temporary file
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'GET',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/export',
+        });
+
+        return jqxhr.then(function(res) {
+            console.log(res);
+            var pf = new ProjectFile({path: '/projects/' + that.get('uuid') + '/deleted/' + res['result']['file']});
+            return pf.downloadFileToDisk();
+        });
+    },
+
+    exportTableToDisk: function(table) {
+        var that = this;
+
+        // export to temporary file
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'GET',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/' + table + '/export',
+        });
+
+        return jqxhr.then(function(res) {
+            console.log(res);
+            var pf = new ProjectFile({path: '/projects/' + that.get('uuid') + '/deleted/' + res['result']['file']});
+            return pf.downloadFileToDisk();
+        });
+    },
+
+    //
+    // Publishing and ADC Repository
+    //
+    validateProject: function() {
+        // TODO: not implemented yet
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/validate',
+        });
+
+        return jqxhr;
+    },
+
+    publishProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/publish',
+        });
+
+        return jqxhr;
+    },
+
+    unpublishProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unpublish',
+        });
+
+        return jqxhr;
+    },
+
+    loadProject: function() {
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/load',
+        });
+
+        return jqxhr;
+    },
+
+    unloadProject: function(load_meta) {
+        if (! load_meta) return;
+        var postData = { 'load_id': load_meta['uuid'] };
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            data: JSON.stringify(postData),
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/unload',
+        });
+
+        return jqxhr;
+    },
+
+    reloadProject: function(load_meta) {
+        if (!load_meta) return Promise.reject(new Error('Missing load metadata.'));
+
+        var postData = { 'load_id': load_meta.get('uuid') };
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/reload',
+                type: 'POST',
+                data: JSON.stringify(postData),
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            })
+        });
+    },
+
 });
 
 /*

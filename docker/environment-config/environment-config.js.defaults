@@ -5,7 +5,8 @@ var EnvironmentConfig = {
     'agave': {
         'maintenance': false,
         'maintenanceMessage': '',
-        'hostname': 'https://vdj-agave-api.tacc.utexas.edu',
+        'hostname': 'https://vdjserver.org',
+        'internal': 'https://vdj-agave-api.tacc.utexas.edu',
         'serviceAccountUsername': 'vdj',
         'systems': {
             'storage': {
@@ -118,7 +119,7 @@ var EnvironmentConfig = {
         },
         'vdjbase': {
             'title': 'VDJbase',
-            'hostname': 'http://airr-seq.vdjbase.org',
+            'hostname': 'https://airr-seq.vdjbase.org',
             'adc_path': '/airr/v1',
             'stats_path': '/irplus/v1/stats'
         },
@@ -148,31 +149,31 @@ var EnvironmentConfig = {
         },
         'ipa5': {
             'title': 'IPA',
-            'hostname': 'http://ipa5.ireceptor.org',
+            'hostname': 'https://ipa5.ireceptor.org',
             'adc_path': '/airr/v1',
             'stats_path': '/irplus/v1/stats'
         },
         'covid19-1': {
             'title': 'IPA',
-            'hostname': 'http://covid19-1.ireceptor.org',
+            'hostname': 'https://covid19-1.ireceptor.org',
             'adc_path': '/airr/v1',
             'stats_path': '/irplus/v1/stats'
         },
         'covid19-2': {
             'title': 'IPA',
-            'hostname': 'http://covid19-2.ireceptor.org',
+            'hostname': 'https://covid19-2.ireceptor.org',
             'adc_path': '/airr/v1',
             //'stats_path': '/irplus/v1/stats'
         },
         'covid19-3': {
             'title': 'IPA',
-            'hostname': 'http://covid19-3.ireceptor.org',
+            'hostname': 'https://covid19-3.ireceptor.org',
             'adc_path': '/airr/v1',
             //'stats_path': '/irplus/v1/stats'
         },
         'covid19-4': {
             'title': 'IPA',
-            'hostname': 'http://covid19-4.ireceptor.org',
+            'hostname': 'https://covid19-4.ireceptor.org',
             'adc_path': '/airr/v1',
             //'stats_path': '/irplus/v1/stats'
         },

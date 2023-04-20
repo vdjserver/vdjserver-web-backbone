@@ -31,13 +31,14 @@ import Handlebars from 'handlebars';
 import Project from 'Scripts/models/agave-project';
 import ProjectList from 'Scripts/collections/agave-projects';
 import ProjectListView from 'Scripts/views/project/project-list';
+import PublicProjectCollection from 'Scripts/collections/agave-public-projects';
 import SingleProjectController from 'Scripts/views/project/project-single-controller';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import CreateProjectView from 'Scripts/views/project/project-create';
 
 // the main project view
 var ProjectView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project"></div>'),
+    template: Handlebars.compile('<div id="project" class="general-padding"></div>'),
 
     // one region to show messages
     // one region for the project content
@@ -56,8 +57,6 @@ var ProjectView = Marionette.View.extend({
 
     events: {
         'click #create-project': function() { this.controller.createProject(); },
-        // 'click #edit-project': function() {this.controller.createProject(); },
-        'click #create-rep': 'createRep'
     },
 
     // show a loading view, used while fetching the data

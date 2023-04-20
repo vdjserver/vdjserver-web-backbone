@@ -59,6 +59,8 @@ FileTransfers.downloadUrlByPostit = function(url) {
     .then(function(response) {
 
         var targetUrl = response.result._links.self.href;
+        // rewrite URL to go through proxy
+        targetUrl = targetUrl.replace(EnvironmentConfig.agave.internal, EnvironmentConfig.agave.hostname);
 
         return targetUrl;
     })
@@ -77,6 +79,7 @@ FileTransfers.downloadUrlByPostit = function(url) {
 
         var link = document.createElement('a');
         link.setAttribute('download', null);
+        link.setAttribute('data-bypass', 'true');
         link.setAttribute('href', targetUrl);
         link.style.display = 'none';
         document.body.appendChild(link);
@@ -100,6 +103,8 @@ FileTransfers.downloadPublicFileByPostit = function(projectUuid, fileUuid) {
     .then(function(response) {
 
         var targetUrl = response.result._links.self.href;
+        // rewrite URL to go through proxy
+        targetUrl = targetUrl.replace(EnvironmentConfig.agave.internal, EnvironmentConfig.agave.hostname);
 
         return targetUrl;
     })
@@ -118,6 +123,7 @@ FileTransfers.downloadPublicFileByPostit = function(projectUuid, fileUuid) {
 
         var link = document.createElement('a');
         link.setAttribute('download', null);
+        link.setAttribute('data-bypass', 'true');
         link.setAttribute('href', targetUrl);
         link.style.display = 'none';
         document.body.appendChild(link);

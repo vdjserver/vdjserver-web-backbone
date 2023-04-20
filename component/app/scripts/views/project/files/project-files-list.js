@@ -28,27 +28,112 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
+import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-file';
+
 import detail_template from 'Templates/project/files/files-detail.html';
 var ProjectFileDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
-    tagName: 'tr',
-    //className: 'community-project',
 
-  events: {
-  },
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+    },
 
+    events: {
+        'change #project-file-type': 'updateFileType',
+        'change #project-file-read-direction': 'updateReadDirection',
+        'change #project-file-tags': 'updateFileTags',
+        'click #project-file-download': 'downloadFile',
+    },
+
+    templateContext() {
+        let value = this.model.get('value');
+        let forward = null;
+        let reverse = null;
+        if (value['pairedReadMetadataUuid']) {
+            forward = this.model.get('value');
+            forward['lastUpdated'] = this.model.get('lastUpdated');
+            forward['fileTypeName'] = File.getFileTypeById(forward['fileType']);
+            let fileList = this.controller.getProjectFilesList();
+            let m = fileList.get(value['pairedReadMetadataUuid']);
+            reverse = m.get('value');
+            reverse['lastUpdated'] = m.get('lastUpdated');
+            reverse['fileTypeName'] = File.getFileTypeById(reverse['fileType']);
+        }
+        let quality = null;
+        let read = null;
+        if (value['qualityScoreMetadataUuid']) {
+            read = this.model.get('value');
+            read['lastUpdated'] = this.model.get('lastUpdated');
+            read['fileTypeName'] = File.getFileTypeById(read['fileType']);
+            let fileList = this.controller.getProjectFilesList();
+            let m = fileList.get(value['qualityScoreMetadataUuid']);
+            quality = m.get('value');
+            quality['lastUpdated'] = m.get('lastUpdated');
+            quality['fileTypeName'] = File.getFileTypeById(quality['fileType']);
+        }
+        return {
+            fileTypes: File.getFileTypes(),
+            fileTypeNames: File.getFileTypeNames(),
+            readDirections: File.getReadDirections(),
+            forward: forward,
+            reverse: reverse,
+            quality: quality,
+            read: read
+        };
+    },
+
+    updateFileType: function(e) {
+        // let controller know something is being changed
+        this.controller.flagFileEdits(true);
+        // update the model
+        let value = this.model.get('value');
+        value['fileType'] = parseInt(e.currentTarget.value);
+        this.model.set('value', value);
+    },
+
+    updateReadDirection: function(e) {
+        // let controller know something is being changed
+        this.controller.flagFileEdits(true);
+        // update the model
+        let value = this.model.get('value');
+        value['readDirection'] = e.target.value;
+        this.model.set('value', value);
+    },
+
+    updateFileTags: function(e) {
+        // let controller know something is being changed
+        this.controller.flagFileEdits(true);
+        // update the model
+        this.model.updateTags(e.target.value);
+    },
+
+    downloadFile: function(e) {
+        e.preventDefault();
+
+        var fileModel = this.model.getFileModel();
+
+        fileModel.downloadFileToDisk()
+            .fail(function(error) {
+                // TODO: handle error
+                console.log(error);
+            });
+    },
 });
 
 import table_template from 'Templates/project/files/files-detail-table.html';
 export default Marionette.CollectionView.extend({
     template: Handlebars.compile(table_template),
-    childViewContainer: '.project-files-detail-tbody',
-    //template: Handlebars.compile("<div></div>"),
-    //tagName: 'table',
-    //className: 'table table-hover table-sm table-bordered',
+    childViewContainer: '.project-files-detail-table',
+
     initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
         this.childView = ProjectFileDetailView;
         this.childViewOptions = { controller: this.controller };
-  },
+    },
 });
 

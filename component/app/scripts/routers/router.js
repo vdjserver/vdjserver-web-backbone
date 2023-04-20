@@ -85,7 +85,8 @@ export default Backbone.Router.extend({
         'project':                          'projectList',
         'project/create':                   'createPage',
         'project/:id':                      'projectPage',
-        'project/:id/subject-sample':       'projectSubjectSample',
+        'project/:id/subject':              'projectSubject',
+        'project/:id/sample':               'projectSample',
         'project/:id/repertoire':           'projectRepertoire',
         'project/:id/group':                'projectGroup',
         'project/:id/file':                 'projectFile',
@@ -107,6 +108,7 @@ export default Backbone.Router.extend({
         'admin/users':                      'adminUsers',
         'admin/jobs':                       'adminJobs',
         'admin/repository':                 'adminRepository',
+        'admin/adc':                        'adminDownloadCache',
         'admin/statistics':                 'adminStatistics',
 
         // 404
@@ -253,9 +255,14 @@ export default Backbone.Router.extend({
         this.routeWithTokenRefreshCheck(destinationRoute);
     },
 
-    // Subject/Sample page for a project
-    projectSubjectSample: function(projectUuid) {
-        this.projectPage(projectUuid, 'subject-sample');
+    // Subject page for a project
+    projectSubject: function(projectUuid) {
+        this.projectPage(projectUuid, 'subject');
+    },
+
+    // Sample page for a project
+    projectSample: function(projectUuid) {
+        this.projectPage(projectUuid, 'sample');
     },
 
     // Repertoire page for a project
@@ -336,11 +343,18 @@ export default Backbone.Router.extend({
     // Administration pages
     //
     adminPage: function(page) {
-        if (! App.Agave.token().isAdmin()) {
-            this.index();
-        } else {
-            App.AppController.showAdminPage(page);
-        }
+        console.log('adminPage route:', page);
+
+        var that = this;
+        var destinationRoute = function() {
+            // only admin users can route to admin pages
+            if (! App.Agave.token().isAdmin(App.AppController.userProfile)) {
+                that.index();
+            } else {
+                App.AppController.showAdminPage(page);
+            }
+        };
+        this.routeWithTokenRefreshCheck(destinationRoute);
     },
 
     // Overview administration page
@@ -361,6 +375,11 @@ export default Backbone.Router.extend({
     // Repository administration page
     adminRepository: function() {
         this.adminPage('repository');
+    },
+
+    // ADC Download Cache administration page
+    adminDownloadCache: function() {
+        this.adminPage('adc');
     },
 
     // Statistics administration page

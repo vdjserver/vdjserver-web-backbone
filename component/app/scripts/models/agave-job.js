@@ -1,29 +1,169 @@
+
+'use strict';
+
+//
+// agave-job.js
+// Job models
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2022 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+
+import { Agave } from 'Scripts/backbone/backbone-agave';
+import _string from 'underscore.string';
+import Chance from 'chance';
+import moment from 'moment';
+
+export var Job = Agave.Model.extend({
+    defaults: {
+        id: '',
+    },
+    url: function() {
+        return '/jobs/v2/' + this.get('id');
+    },
+});
+
+export var ProjectJob = Agave.MetadataModel.extend({
+    defaults: function() {
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'projectJob',
+                owner: '',
+                value: {
+                    'projectUuid': '',
+                    'jobUuid': '',
+                },
+            }
+        );
+    },
+    url: function() {
+        return '/meta/v2/data?q='
+            + encodeURIComponent('{'
+                + '"name":"projectJob",'
+                + '"associationIds":"' + this.get('jobId') + '"'
+            + '}')
+            + '&limit=1';
+    },
+});
+
+export var ProcessMetadata = Agave.MetadataModel.extend({
+    defaults: function() {
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'processMetadata',
+                owner: '',
+                value: {
+                },
+            }
+        );
+    },
+    url: function() {
+        return '/meta/v2/data?q='
+            + encodeURIComponent('{'
+                + '"name":"processMetadata",'
+                + '"associationIds":"' + this.get('jobId') + '"'
+            + '}')
+            + '&limit=1';
+    },
+    getDescriptionForFilename: function(filename) {
+        var value = this.get('value');
+        if (!value) return null;
+        if (!value['files']) return null;
+
+        var files = value['files'];
+        for (var f in files) {
+            for (var t in files[f]) {
+                if (files[f][t]['value'] == filename) return files[f][t]['description'];
+            }
+        }
+        return null;
+    },
+
+    getProjectFileOutputList: function() {
+        var pmFiles = [];
+
+        var processMetadata = this.get('value');
+        if (!processMetadata) return pmFiles;
+        if (!processMetadata.process) return pmFiles;
+
+        for (var group in processMetadata.groups) {
+            if (processMetadata.groups[group]['type'] == 'file') {
+                if (processMetadata.groups[group][processMetadata.process.appName]) {
+                    var fileKey = processMetadata.groups[group][processMetadata.process.appName]['files'];
+                    for (var fileEntry in processMetadata.files[fileKey]) {
+                        pmFiles.push(processMetadata.files[fileKey][fileEntry]['value']);
+                    }
+                }
+            }
+        }
+
+        return pmFiles;
+    },
+
+    getLogAndMetadataFileList: function() {
+        var pmFiles = [];
+
+        var processMetadata = this.get('value');
+        if (!processMetadata) return pmFiles;
+        if (!processMetadata.process) return pmFiles;
+
+        for (var groupEntry in processMetadata.groups) {
+            if (processMetadata.groups[groupEntry]['log']) {
+                var fileKey = processMetadata.groups[groupEntry]['log']['files'];
+                for (var fileEntry in processMetadata.files[fileKey]) {
+                    pmFiles.push(processMetadata.files[fileKey][fileEntry]);
+                }
+            }
+        }
+
+        if (processMetadata.files['metadata']) {
+            for (var fileEntry in processMetadata.files['metadata']) {
+                pmFiles.push(processMetadata.files['metadata'][fileEntry]);
+            }
+        }
+
+        return pmFiles;
+    },
+
+    getSampleKeyNameFromUuid: function(sampleUuid) {
+        var processMetadata = this.get('value');
+        if (!processMetadata) return null;
+        if (!processMetadata.process) return null;
+
+        for (var group in processMetadata.groups) {
+            if (processMetadata.groups[group]['type'] == 'sample') {
+                for (var sample in processMetadata.groups[group]['samples'])
+                    if (sample == sampleUuid) return group;
+            }
+        }
+        return null;
+    },
+});
+
+
 /*
-define(
-    [
-        'app',
-        'backbone',
-        'file-transfer-mixins',
-    ],
-function(
-    App,
-    Backbone,
-    FileTransferMixins
-) {
-
-    'use strict';
-
-    var Job = {};
-
-    Job.Detail = Backbone.Agave.Model.extend(
-        {
-            defaults: {
-                id: '',
-            },
-            url: function() {
-                return '/jobs/v2/' + this.get('id');
-            },
-
             initDisplayName: function() {
                 var dName = this.get('displayName');
                 if (!dName) this.set('displayName', this.get('name'));

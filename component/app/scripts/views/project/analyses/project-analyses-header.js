@@ -1,6 +1,6 @@
 //
-// project-files-list.js
-// List of files for projects
+// project-files.js
+// Project files management
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -27,25 +27,13 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import Bootstrap from 'bootstrap';
+import Project from 'Scripts/models/agave-project';
 
-import detail_template from 'Templates/project/samples/samples-detail.html';
-var SampleDetailView = Marionette.View.extend({
-    template: Handlebars.compile(detail_template),
-    //tagName: 'tr',
-    //className: 'community-project',
-
-  events: {
-  },
-
+// Project Files Page
+import files_template from 'Templates/project/files.html';
+var FilesView = Marionette.View.extend({
+    template: Handlebars.compile(files_template)
 });
 
-var SamplesListView = Marionette.CollectionView.extend({
-    template: Handlebars.compile("<div></div>"),
-//     tagName: 'table',
-//     className: 'table table-hover table-sm table-bordered',
-    initialize: function(parameters) {
-    this.childView = SampleDetailView;
-  },
-});
-
-export default SamplesListView;
+export default FilesView;

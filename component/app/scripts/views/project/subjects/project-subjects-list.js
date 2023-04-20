@@ -1,5 +1,5 @@
 //
-// subjects-list.js
+// project-subjects-list.js
 // List of subjects for projects
 //
 // VDJServer Analysis Portal
@@ -29,23 +29,91 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
 // subject summary view
-import summary_template from 'Templates/project/subjects/subjects-summary.html';
+import summary_template from 'Templates/project/subjects/project-subjects-summary.html';
 var SubjectSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
 
+    initialize(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+    },
+
     templateContext() {
+        var editMode = false;
         return {
             age_display: this.model.getAgeDisplay(),
             species_display: this.model.getSpeciesDisplay(),
+            view_mode: this.model.view_mode,
         }
+    },
+
+    events: {
+        'click #project-subject-edit': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'edit';
+            this.controller.flagSubjectsEdits();
+            this.controller.showProjectSubjectsList();
+        },
     },
 
 });
 
 // subject detail/edit view
-import detail_template from 'Templates/project/subjects/subjects-detail.html';
+import detail_template from 'Templates/project/subjects/project-subjects-detail.html';
 var SubjectDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+    },
+
+    templateContext() {
+        var editMode = false;
+        return {
+            view_mode: this.model.view_mode,
+        }
+    },
+
+    events: {
+        'click #project-subject-edit': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'edit';
+            this.controller.flagSubjectsEdits();
+            this.controller.showProjectSubjectsList();
+        },
+    },
+
+    onAttach() {
+        // setup popovers and tooltips
+        $('[data-toggle="popover"]').popover({
+//            trigger: 'hover',
+adaptive: false,
+animation: false,
+//animation-reset: true,
+/*placement: 'top',
+html: true,
+positionFixed: true,
+//offset: '100, 100',
+//fallbackPlacement : ['left', 'right', 'top', 'bottom'],
+container: 'body',
+animate: false,
+transform: false,
+//animation: false,*/
+transform: 'none',
+        });
+
+        $('[data-toggle="tooltip"]').tooltip({
+placement: 'top',
+animation: false,
+transform: 'none',
+willChange: 'unset',
+});
+    },
+
 });
 
 // Container view for subject detail
@@ -64,18 +132,20 @@ var SubjectContainerView = Marionette.View.extend({
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
 
+        // save state in model
+        // if editing, leave in edit
+        // get default view mode from controller
+        if (this.model.view_mode != 'edit')
+            this.model.view_mode = this.controller.getSubjectsViewMode();
+
         this.showSubjectView();
     },
 
     showSubjectView() {
-        //console.log("passing edit_mode...");
-        // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':
-                //this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: this.model.edit_mode}));
-                break;
             case 'edit':
-                //this.showChildView('containerRegion', new RepertoireExpandedView({controller: this.controller, model: this.model, edit_mode: this.model.edit_mode}));
+                this.showChildView('containerRegion',new SubjectDetailView({controller: this.controller, model: this.model}));
                 break;
             case 'summary':
             default:

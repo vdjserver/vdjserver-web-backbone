@@ -1,0 +1,53 @@
+<div id="project-samples-summary" class="row general-table-row general-border-top">
+    <div class="col">
+        <div class="row align-items-center">
+            <div class="col-md-2">
+                <b>Sample ID:</b> {{value.sample_id}}
+            </div>
+            <div class="col-md-2">
+                <b>Subject ID:</b> {{value.subject_id}}
+            </div>
+            <div class="col-md-3">
+                <b>Tissue:</b>
+                {{#if value.tissue.id}}
+                    {{value.tissue.label}} ({{value.tissue.id}})
+                {{/if}}
+            </div>
+            <div class="col-md-3">
+                <b>Disease State:</b> {{value.disease_state_sample}}
+            </div>
+            <div class="col-md-2 general-buttons-right">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <button type="button" class="btn btn-edit" name="{{uuid}}" id="project-subject-edit">Edit</button>
+                </div>
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <button type="button" class="btn btn-delete general-buttons-margin-left" name="{{uuid}}" id="project-subject-delete">
+                        <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row general-table-internal-row align-items-center">
+            <div class="col-md-2">
+                <b>Single Cell:</b> {{value.single_cell}}
+            </div>
+            <div class="col-md-3">
+                <b>Cell Subset:</b>
+                {{#if value.cell_subset.id}}
+                    {{value.cell_subset.label}} ({{value.cell_subset.id}})
+                {{/if}}
+            </div>
+            <div class="col-md-2">
+                <b>Template:</b> {{value.template_class}}
+            </div>
+            <div class="col-md-2">
+                <b>Target Loci: </b>
+                {{#each target_loci}}
+                    <a class="badge badge-pill badge-locus align-text-top">{{this}}</a>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</div>
+

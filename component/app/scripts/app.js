@@ -39,6 +39,7 @@ import CreateAccountView from 'Scripts/views/account/create-account';
 import ForgotPasswordView from 'Scripts/views/account/password-reset';
 import VerificationPendingView from 'Scripts/views/account/verification-pending';
 import UserProfileView from 'Scripts/views/account/account-profile';
+import ChangePasswordView from 'Scripts/views/account/change-password';
 import PublicFeedbackView from 'Scripts/views/feedback/feedback-public';
 import UserFeedbackView from 'Scripts/views/feedback/feedback-user';
 
@@ -85,13 +86,14 @@ var ApplicationController = Marionette.View.extend({
         // show and hide of modal
         'shown.bs.modal': 'onShownModal',
         'hidden.bs.modal': 'onHiddenModal',
+
+        // show and hide of filter and stats toolbars
+        'show-filter-toolbar': 'showFilterToolbar',
+        'show-stats-toolbar': 'showStatsToolbar',
     },
 
-    initialize(options) {
+    initialize: function(options) {
         console.log('Initialize');
-
-        // user profile available to whole app
-        this.userProfile = null;
 
         // controllers
         this.clearControllers();
@@ -104,13 +106,17 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('navigationRegion', this.navController);
     },
 
-    clearControllers() {
+    clearControllers: function() {
+        // we do not clear the navController because we need it to show login link
         this.projectController = null;
         this.communityController = null;
         this.adminController = null;
+
+        // user profile available to whole app
+        this.userProfile = null;
     },
 
-    showHomePage() {
+    showHomePage: function() {
         console.log('showHomePage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
@@ -120,7 +126,7 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('mainRegion', view);
     },
 
-    showCreateAccountPage() {
+    showCreateAccountPage: function() {
         console.log('showCreateAccountPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
@@ -130,7 +136,7 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('mainRegion', view);
     },
 
-    showForgotPasswordPage(reset_code) {
+    showForgotPasswordPage: function(reset_code) {
         console.log('showForgotPasswordPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
@@ -140,7 +146,7 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('mainRegion', view);
     },
 
-    showVerificationPendingPage(verify_code) {
+    showVerificationPendingPage: function(verify_code) {
         console.log('showVerificationPendingPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
@@ -150,7 +156,7 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('mainRegion', view);
     },
 
-    showPublicFeedbackPage() {
+    showPublicFeedbackPage: function() {
         console.log('showPublicFeedbackPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
@@ -160,7 +166,7 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('mainRegion', view);
     },
 
-    showUserFeedbackPage() {
+    showUserFeedbackPage: function() {
         console.log('showUserFeedbackPage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
@@ -172,7 +178,7 @@ var ApplicationController = Marionette.View.extend({
 
     // This should be called after user login so that the user
     // profile and settings are available, returns a promise
-    loadUserProfile() {
+    loadUserProfile: async function() {
         var that = this;
         if (this.userProfile)
             return new Promise(function(resolve, reject) {
@@ -180,7 +186,7 @@ var ApplicationController = Marionette.View.extend({
             });
 
         var profile = new UserProfile();
-        return profile.fetch()
+        await profile.fetch()
             .then(function() {
                 // now propagate loaded data to project
                 that.userProfile = profile;
@@ -189,25 +195,45 @@ var ApplicationController = Marionette.View.extend({
             .fail(function(error) {
                 console.log(error);
             });
+
+        await App.Agave.token().checkAdmin(this.userProfile)
+            .catch(function(error) {
+                console.log(error);
+            });
+
+        // new navigation bar
+        this.navController = new NavigationController();
+        this.showChildView('navigationRegion', this.navController);
+        this.navController.showNavigation();
     },
 
-    showUserProfilePage() {
+    showUserProfilePage: function(edit_mode) {
         console.log('showUserProfilePage');
         // tell navigation controller to display the nav bar
         this.navController.showNavigation();
 
         // show user profile view
-        var view = new UserProfileView({ model: this.userProfile });
+        var view = new UserProfileView({ model: this.userProfile, controller: this, edit_mode: edit_mode });
         this.showChildView('mainRegion', view);
     },
 
-    reloadProjectList() {
+    showChangePasswordPage: function(edit_mode) {
+        console.log('showChangePasswordPage');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show change password view
+        var view = new ChangePasswordView({ model: this.userProfile, controller: this, edit_mode: edit_mode });
+        this.showChildView('mainRegion', view);
+    },
+
+    reloadProjectList: function() {
         // remove the project controller so all the project data is reloaded
         this.projectController = null;
         App.router.navigate('/project', {'trigger': true});
     },
 
-    showProjectList() {
+    showProjectList: function() {
         console.log('showProjectList');
 
         // create project controller if needed
@@ -223,7 +249,7 @@ var ApplicationController = Marionette.View.extend({
         this.projectController.showProjectList();
     },
 
-    showProjectPage(projectUuid, page) {
+    showProjectPage: function(projectUuid, page) {
         console.log('showProjectPage');
 
         // create "project" controller if needed
@@ -239,7 +265,7 @@ var ApplicationController = Marionette.View.extend({
         this.projectController.showProjectPage(projectUuid, page);
     },
 
-    showCommunityPage(projectUuid) {
+    showCommunityPage: function(projectUuid) {
         console.log('showCommunityPage');
 
         // create community controller if needed
@@ -255,7 +281,7 @@ var ApplicationController = Marionette.View.extend({
         this.communityController.showProjectList(projectUuid);
     },
 
-    showAddChart() {
+    showAddChart: function() {
         console.log('showAddCommChart from app.js');
         // create community controller if needed
         if (! this.communityController) {
@@ -270,7 +296,7 @@ var ApplicationController = Marionette.View.extend({
         this.communityController.showAddChart();
     },
 
-    showCreatePage() {
+    showCreatePage: function() {
         console.log('showCreatePage');
 
         // create project controller if needed
@@ -287,7 +313,7 @@ var ApplicationController = Marionette.View.extend({
     },
 
     // Administration pages
-    showAdminPage(page) {
+    showAdminPage: function(page) {
         console.log('showAdminMain');
 
         if (! this.adminController) {
@@ -314,7 +340,7 @@ var ApplicationController = Marionette.View.extend({
     // View creation and logic resides in the particular subview
     // The subview performs the show and hide of the modal
     // The show and hide events are captured and routed to given functions
-    startModal(modalView, modalContext, onShowFunction, onHideFunction) {
+    startModal: function(modalView, modalContext, onShowFunction, onHideFunction) {
         console.log('showModal');
 
         this.modalContext = modalContext;
@@ -324,12 +350,16 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('modalRegion', modalView);
     },
 
-    onShownModal() {
+    emptyModal: function() {
+        if (this.getChildView('modalRegion')) this.getChildView('modalRegion').empty();
+    },
+
+    onShownModal: function() {
         console.log('App: Show the modal');
         if (this.onShowFunction) this.onShowFunction(this.modalContext);
     },
 
-    onHiddenModal() {
+    onHiddenModal: function() {
         console.log('App: Hide the modal');
         if (this.onHideFunction) this.onHideFunction(this.modalContext);
     },
@@ -341,7 +371,7 @@ var ApplicationController = Marionette.View.extend({
 export default Marionette.Application.extend({
   region: '#app',
 
-  initialize(options) {
+  initialize: function(options) {
     console.log('Initialize');
 
     // setup Agave
@@ -380,7 +410,7 @@ export default Marionette.Application.extend({
     );
   },
 
-  onStart() {
+  onStart: function() {
     console.log('onStart');
 
     // start up backbone router

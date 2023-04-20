@@ -1,0 +1,26 @@
+    <div class="row general-table-row general-border-top align-items-center">
+        <div class="col-md-3"><b>
+        Repository ID: </b>{{repository_id}}
+        </b></div>
+        <div class="col-md-4"><b>
+        Study ID: </b>{{study_id}}
+        </b></div>
+        <div class="col-md-2"><b>
+        Cached: </b>{{is_cached}}
+        </b></div>
+        <div class="col-md-3 general-buttons-right"><b>
+    {{#unless should_cache}}
+          <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-save" id="admin-enable-cache">Enable Cache</button>
+          </div>
+    {{/unless}}
+    {{#if should_cache}}
+          <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-delete" id="admin-disable-cache">Disable Cache</button>
+          </div>
+    {{/if}}
+          <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-edit general-buttons-margin-left" id="admin-clear-cache">Clear</button>
+          </div>
+    </div>
+

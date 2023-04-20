@@ -1,0 +1,25 @@
+<div id="project-subjects-summary" class="row general-table-row general-border-top align-items-center">
+    <div class="col-md-2">
+        <b>Subject ID:</b> {{value.subject_id}}
+    </div>
+    <div class="col-md-3">
+        <b>Sex/Species:</b> {{value.sex}}/{{species_display}}
+    </div>
+    <div class="col-md-3">
+        <b>Race/Ethnicity:</b> {{value.race}} {{value.ethnicity}}
+    </div>
+    <div class="col-md-2">
+        <b>Age:</b> {{age_display}}
+    </div>
+    <div class="col-md-2 general-buttons-right">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-edit" name="{{uuid}}" id="project-subject-edit">Edit</button>
+        </div>
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-delete general-buttons-margin-left" name="{{uuid}}" id="project-subject-delete">
+                <i class="fa fa-trash" aria-hidden="true"></i> Delete
+            </button>
+        </div>
+    </div>
+</div>
+

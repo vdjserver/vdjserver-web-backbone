@@ -100,13 +100,25 @@ CommunityController.prototype = {
             this.repositoryInfo = new Backbone.Collection();
             var promises = [];
             for (var r in repos) {
-                var info = new ADCInfo({repository: r});
+                let info = new ADCInfo({repository: r});
                 info.set('id', r);
                 this.repositoryInfo.add(info);
-                const p = info.fetch().then(res => {
+                const p = info.fetch({timeout: 10000}).then(function(res) {
+                    //console.log(info);
                     promises.splice(promises.indexOf(p), 1);
                     console.log('resolved');
                     return res;
+                })
+                .fail(function(error) {
+                    // remove from list of repos
+                    delete repos[info.get('id')];
+                    that.repositoryInfo.remove(info);
+                    //console.log(info);
+                    console.log('error: ' + JSON.stringify(error));
+                    if (error['statusText'] == 'timeout') {
+                        info.set('error', 'timeout');
+                        console.log("timeout");
+                    } else info.set('error', error)
                 });
                 promises.push(p);
             }
@@ -117,7 +129,7 @@ CommunityController.prototype = {
                 console.log(that.repositoryInfo);
 
                 that.repertoireCollection = {};
-                promises = [];
+                var promises = [];
                 var thecnt = 0;
                 for (var r in repos) {
                     var coll = new ADCRepertoireCollection(null, {repository: r});
@@ -129,6 +141,9 @@ CommunityController.prototype = {
                         // update loading screen with running total
                         that.projectView.showLoading(total_reps, thecnt, Object.keys(repos).length, 0);
                         return res;
+                    })
+                    .fail(function(error) {
+                        console.log('error: ' + JSON.stringify(error));
                     });
                     promises.push(p);
                 }
@@ -202,7 +217,7 @@ CommunityController.prototype = {
                 }
             })
             .catch(function(error) {
-                console.log(error);
+                console.log('error from Promise.allSettled: ' + JSON.stringify(error));
             });
         } else {
             // projects already loaded

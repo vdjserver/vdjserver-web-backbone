@@ -1,0 +1,114 @@
+<div class="row general-button-bar">
+    <div class="col-md-7">
+
+        <div class="btn-group " role="group" aria-label="Button group">
+            <button type="button" class="btn btn-primary general-buttons-margin-right" id="project-subjects-details-summary">
+                {{#if detailsMode}}Summary{{/if}}
+                {{#unless detailsMode}}Details{{/unless}}
+            </button>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" id="project-subjects-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort By
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="name">
+                    {{#ifEquals current_sort "name"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    File Name
+                </button>
+                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="newest">
+                    {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Newest
+                </button>
+                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="oldest">
+                    {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Oldest
+                </button>
+                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="size">
+                    {{#ifEquals current_sort "size"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    File Size
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item disabled" type="button">
+                    Add Custom Sort...
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" id="project-subjects-upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Import/Export
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-subjects-import" name="name">
+                    Import Subject Table
+                </button>
+                <button class="dropdown-item" type="button" id="project-subjects-export" name="newest">
+                    Export Subject Table
+                </button>
+                <button class="dropdown-item" type="button" id="project-diagnosis-import" name="name">
+                    Import Diagnosis Table
+                </button>
+                <button class="dropdown-item" type="button" id="project-diagnosis-export" name="newest">
+                    Export Diagnosis Table
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-subjects-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Templates
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-subjects-show-templates" name="name">
+                    Show Templates
+                </button>
+                <button class="dropdown-item" type="button" id="project-subjects-hide-templates" name="name" hidden>
+                    Hide Templates
+                </button>
+                <button class="dropdown-item" type="button" id="project-subjects-new-template" name="name">
+                    New Blank Template
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" type="button" id="project-subjects-template-name" name="newest">
+                    Apply NAME Template to Subjects
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-subjects-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-plus" aria-hidden="true"></i>&nbspAdd Subject
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-subjects-new-subject" name="name">
+                    New Blank Subject
+                </button>
+                <div class="dropdown-divider" width="10%">templates</div>
+                <button class="dropdown-item" type="button" id="project-subjects-" name="newest">
+                    New Subject from Template NAME
+                </button>
+              </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-5 general-buttons-right">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-cancel" id="project-subjects-revert-changes" {{#unless has_edits}}disabled{{/unless}}>Revert Subject Changes</button>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-save general-buttons-margin-left" id="project-subjects-save-changes" {{#unless has_edits}}disabled{{/unless}}>Save Subject Changes</button>
+        </div>
+    </div>
+</div>

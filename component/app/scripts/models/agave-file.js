@@ -242,6 +242,9 @@ export var File = Agave.Model.extend(
         UPLOAD_PROGRESS: 'uploadProgress',
         STAGE_PROGRESS: 'stageProgress',
 
+        // These should not be used directly for display, instead use the
+        // getFileTypes() and getFileTypeNames() functions which provide
+        // the types in a specific order for display
         fileTypeCodes: {
             FILE_TYPE_UNSPECIFIED: 0,
             FILE_TYPE_PRIMER: 1,
@@ -253,6 +256,7 @@ export var File = Agave.Model.extend(
             FILE_TYPE_CSV: 7,
             FILE_TYPE_VDJML: 8,
             FILE_TYPE_AIRR_TSV: 9,
+            FILE_TYPE_AIRR_JSON: 10,
         },
 
         // index should map to codes
@@ -260,14 +264,51 @@ export var File = Agave.Model.extend(
             'Unspecified',
             'Primer Sequences',
             'Read-Level Data',
-            //'Barcode Combinations', // deprecated
+            'Barcode Combinations', // deprecated
             'Barcode Sequences',
             'Quality Scores',
             'TAB-separated Values',
             'Comma-separated Values',
             'VDJML',
             'AIRR Rearrangement TSV',
+            'AIRR JSON',
         ],
+
+        getFileTypeById: function(fileTypeId) {
+            if (fileTypeId === undefined) return File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_UNSPECIFIED];
+            if (File.fileTypeNames[fileTypeId] === undefined) return File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_UNSPECIFIED];
+            return File.fileTypeNames[fileTypeId];
+        },
+
+        getFileTypes: function() {
+            // put them in a specific order for display
+            return [
+                File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
+                File.fileTypeCodes.FILE_TYPE_READ,
+                File.fileTypeCodes.FILE_TYPE_BARCODE,
+                File.fileTypeCodes.FILE_TYPE_PRIMER,
+                File.fileTypeCodes.FILE_TYPE_QUALITY,
+                File.fileTypeCodes.FILE_TYPE_AIRR_TSV,
+                File.fileTypeCodes.FILE_TYPE_AIRR_JSON,
+                File.fileTypeCodes.FILE_TYPE_TSV,
+                File.fileTypeCodes.FILE_TYPE_CSV,
+                File.fileTypeCodes.FILE_TYPE_VDJML
+            ];
+        },
+
+        getNamesForFileTypes: function(fileTypeIds) {
+            var fileTypeNames = [];
+
+            for (var i = 0; i < fileTypeIds.length; ++i) {
+                fileTypeNames.push(this.getFileTypeById(fileTypeIds[i]));
+            }
+
+            return fileTypeNames;
+        },
+
+        getFileTypeNames: function() {
+            return this.getNamesForFileTypes(this.getFileTypes());
+        },
 
         cleanName: function(name) {
             // Replace symbols that could cause problems on file systems
@@ -312,6 +353,27 @@ export var File = Agave.Model.extend(
             }
 
             return guessType;
+        },
+
+        getReadDirections: function() {
+            return [
+                'F',
+                'R',
+                'FR',
+            ];
+        },
+
+        doesFileTypeIdHaveReadDirection: function(fileTypeId) {
+            var hasReadDirection = false;
+            switch (fileTypeId) {
+                case File.fileTypeCodes.FILE_TYPE_READ:
+                    hasReadDirection = true;
+                    break;
+                default:
+                    // code
+                    break;
+            }
+            return hasReadDirection;
         },
     }
 );
@@ -407,34 +469,30 @@ export var ProjectFile = File.extend(
         downloadFileToDisk: function() {
             var jqxhr;
 
-            if (App.Routers.communityMode) {
-              jqxhr = this.downloadPublicFileByPostit(this.get('projectUuid'), this.get('fileUuid'));
-            } else {
-              var url = EnvironmentConfig.agave.hostname
-                      + '/files'
-                      + '/v2'
-                      + '/media'
-                      + '/system'
-                      + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
+            var url = EnvironmentConfig.agave.internal
+                  + '/files'
+                  + '/v2'
+                  + '/media'
+                  + '/system'
+                  + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
 
-                      // NOTE: this uses agave // paths
-                      + '/' + this.get('path')
-                      ;
+                  // NOTE: this uses agave // paths
+                  + '/' + this.get('path')
+                  ;
 
-              if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
+            if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
 
-                  url = EnvironmentConfig.agave.hostname
-                      + '/jobs'
-                      + '/v2'
-                      + '/' + this.get('jobUuid')
-                      + '/outputs'
-                      + '/media'
-                      + '/' + this.get('name')
-                      ;
-              }
-
-              jqxhr = this.downloadUrlByPostit(url);
+              url = EnvironmentConfig.agave.internal
+                  + '/jobs'
+                  + '/v2'
+                  + '/' + this.get('jobUuid')
+                  + '/outputs'
+                  + '/media'
+                  + '/' + this.get('name')
+                  ;
             }
+
+            jqxhr = this.downloadUrlByPostit(url);
 
             return jqxhr;
         },
@@ -528,26 +586,7 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
         url: function() {
             return '/meta/v2/data/' + this.get('uuid');
         },
-        addPlaceholderMarker: function() {
-            this.set('isPlaceholder', true);
-        },
-        syncMetadataPermissionsWithProjectPermissions: function() {
 
-            var value = this.get('value');
-
-            var jqxhr = $.ajax({
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    projectUuid: value.projectUuid,
-                    uuid: this.get('uuid')
-                }),
-                headers: Agave.basicAuthHeader(),
-                type: 'POST',
-                url: EnvironmentConfig.vdjApi.hostname + '/permissions/metadata'
-            });
-
-            return jqxhr;
-        },
         softDelete: function() {
             var value = this.get('value');
             value.isDeleted = true;
@@ -556,18 +595,14 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
 
             return this.save();
         },
+
         updateTags: function(tags) {
-
             var value = this.get('value');
-
             var tagArray = this._formatTagsForSave(tags);
-
             value['publicAttributes']['tags'] = tagArray;
-
             this.set('value', value);
-
-            return this.save();
         },
+
         getFilePath: function() {
 
             var value = this.get('value');
@@ -593,6 +628,7 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
 
             return filePath;
         },
+
         getFileModel: function() {
             var value = this.get('value');
 
@@ -606,92 +642,27 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
 
             return fileModel;
         },
-        getReadDirection: function() {
-            var value = this.get('value');
 
-            var readDirection = value['readDirection'];
-
-            return readDirection;
-        },
-        setReadDirection: function(newReadDirection) {
-            var value = this.get('value');
-
-            value['readDirection'] = newReadDirection;
-
-            this.set('value', value);
-
-            return this.save();
-        },
-        getQualityScoreMetadataUuid: function() {
-            var value = this.get('value');
-
-            var qualUuid = value['qualityScoreMetadataUuid'];
-
-            return qualUuid;
-        },
-        setQualityScoreMetadataUuid: function(qualityScoreMetadataUuid) {
-            var value = this.get('value');
-
-            value['qualityScoreMetadataUuid'] = qualityScoreMetadataUuid;
-
-            this.set('value', value);
-
-            return this.save();
-        },
-        removeQualityScoreMetadataUuid: function() {
-            var value = this.get('value');
-
-            delete value['qualityScoreMetadataUuid'];
-
-            this.set('value', value);
-
-            return this.save();
-        },
-        getPairedReadMetadataUuid: function() {
-            var value = this.get('value');
-
-            var pairedReadUuid = value['pairedReadMetadataUuid'];
-
-            return pairedReadUuid;
-        },
-        setPairedReadMetadataUuid: function(pairedReadMetadataUuid) {
-            var value = this.get('value');
-
-            value['pairedReadMetadataUuid'] = pairedReadMetadataUuid;
-
-            this.set('value', value);
-
-            return this.save();
-        },
-        removePairedReadMetadataUuid: function() {
-            var value = this.get('value');
-
-            delete value['pairedReadMetadataUuid'];
-
-            this.set('value', value);
-
-            return this.save();
-        },
-        getFileType: function() {
-            var value = this.get('value');
-
-            return value['fileType'];
-        },
-        updateFileType: function(fileType) {
-            var value = this.get('value');
-
-            value['fileType'] = fileType;
-
-            this.set('value', value);
-
-            return this.save();
-        },
         getFileExtension: function() {
             var value = this.get('value');
 
             var fileExtension = value['name'].split('.').pop();
 
             return fileExtension;
+        },
+
+        getFileType: function() {
+            var value = this.get('value');
+
+            return value['fileType'];
+        },
+
+        isPaired: function() {
+            let value = this.get('value');
+            if (value['pairedReadMetadataUuid']) return true;
+            if (value['qualityScoreMetadataUuid']) return true;
+            if (value['readMetadataUuid']) return true;
+            return false;
         },
 
         // Private Methods
@@ -708,32 +679,6 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
     }),
     {
 
-        getFileTypeById: function(fileTypeId) {
-            return File.fileTypeNames[fileTypeId];
-        },
-
-        getFileTypes: function() {
-            return [
-                File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
-                File.fileTypeCodes.FILE_TYPE_READ,
-                File.fileTypeCodes.FILE_TYPE_BARCODE,
-                File.fileTypeCodes.FILE_TYPE_PRIMER,
-                File.fileTypeCodes.FILE_TYPE_QUALITY,
-                File.fileTypeCodes.FILE_TYPE_TSV,
-                File.fileTypeCodes.FILE_TYPE_VDJML,
-                File.fileTypeCodes.FILE_TYPE_AIRR_TSV,
-            ];
-        },
-
-        getNamesForFileTypes: function(fileTypeIds) {
-            var fileTypeNames = [];
-
-            for (var i = 0; i < fileTypeIds.length; ++i) {
-                fileTypeNames.push(this.getFileTypeById(fileTypeIds[i]));
-            }
-
-            return fileTypeNames;
-        },
 
         isFileTypeIdQualAssociable: function(fileTypeId) {
             var isQualAssociable = false;
@@ -752,30 +697,7 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
             return isQualAssociable;
         },
 
-        doesFileTypeIdHaveReadDirection: function(fileTypeId) {
 
-            var hasReadDirection = false;
-
-            switch (fileTypeId) {
-                case File.fileTypeCodes.FILE_TYPE_READ:
-                    hasReadDirection = true;
-                    break;
-
-                default:
-                    // code
-                    break;
-            }
-
-            return hasReadDirection;
-        },
-
-        getReadDirections: function() {
-            return [
-                'F',
-                'R',
-                'FR',
-            ];
-        },
     }
 );
 

@@ -1,18 +1,31 @@
-/*****************************************************
-_single-project.scss - Single Projects
+//
+// _single-project.scss
+// Custom styles for project pages
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2022 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
 
-* This is the SCSS for the Single Project Overview Page
-*****************************************************/
 
-#project {
-    padding: 0% 5%;
-}
-
-.jumbotron {
-    padding: 2rem 2rem;
-}
-
-#project-summary {
+.project-summary {
     margin-top: 2%;
 
     h1 {
@@ -20,10 +33,6 @@ _single-project.scss - Single Projects
         font-size: 2.25rem;
         font-weight: 400;
     }
-}
-
-#project-detail {
-    //margin-top: 2%;
 }
 
 .project-metadata {
@@ -39,7 +48,7 @@ button.project-changes-action {
     margin-left: 2em;
 }
 
-#summary-buttons {
+.project-buttons {
     margin-bottom: 2%;
 }
 
@@ -55,12 +64,22 @@ button.project-changes-action {
     margin-right: 2em;
 }
 
+.project-buttons-margin-bottom {
+    margin-bottom: 1em;
+}
+
+.underline-on-hover:hover {
+    text-decoration: underline;
+}
+
 .details {
     font-weight: bold;
 }
 
 .card {
     margin: 1%;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 .card-active {
@@ -74,6 +93,8 @@ button.project-changes-action {
 
 .card-body {
     text-align: center;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
 }
 
 .card-image {
@@ -156,6 +177,20 @@ Project Subjects/Samples
         background: $vdj-lightgray;
         cursor: pointer;
     }
+
+    .project-subject-detail {
+        margin: 0% 0% 0% 0%;
+        padding: 1% 1% 1% 1%;
+        border-top: 1.5px solid $vdj-darkgray;
+    }
+
+    .project-subject-form {
+        margin-bottom: 0%;
+    }
+
+    .project-subject-row {
+        margin: 0% 0% 0% 0%;
+    }
 }
 
 .project-samples-list {
@@ -176,8 +211,14 @@ Project Subjects/Samples
 }
 
 /* ----------------------------------------------------------
-Repertoire Summary View
+Project Repertoires
 ----------------------------------------------------------*/
+
+.project-repertoire-buttons {
+    margin: 0% 0% 0% 0%;
+    padding: 1% 1% 1% 1%;
+}
+
 .hide {
     visibility: hidden;
 }
@@ -378,8 +419,8 @@ Repertoires
 Files
 ------------------------------------------------------------*/
 
-.project-files-header {
-    margin-bottom: 2%;
+.project-files-split-button {
+    padding-top: 1.5%;
 }
 
 .files-upload-form {
@@ -390,16 +431,5 @@ Files
 
 .files-upload-header {
     margin-top: 1%;
-}
-
-.files-upload-list-header {
-    padding-top: 1%;
-    padding-bottom: 1%;
-}
-
-.files-upload-list-row {
-    border-top: 1.5px solid $vdj-darkgray;
-    padding-top: 1%;
-    padding-bottom: 1%;
 }
 
