@@ -44,10 +44,13 @@ var AdminButtonView = Marionette.View.extend({
     templateContext() {
         var query_collection = '???';
         var load_collection = '???';
-        if (this.controller.adcStatus) {
-            query_collection = this.controller.adcStatus.get('query_collection');
-            load_collection = this.controller.adcStatus.get('load_collection');
-        }
+        var collections = this.controller.getCollections()
+        //if (collections.adcStatus) {
+            //query_collection = collections.adcStatus.get('query_collection');
+            //load_collection = collections.adcStatus.get('load_collection');
+            query_collection = collections.queryCollection();
+            load_collection = collections.loadCollection();
+        //}
 
         return {
             query_collection: query_collection,
@@ -58,8 +61,8 @@ var AdminButtonView = Marionette.View.extend({
 });
 
 import template_stats from 'Templates/admin/admin-repository-stats.html';
-var AdminButtonView = Marionette.View.extend({
-    template: Handlebars.compile(template_buttons),
+var AdminStatsView = Marionette.View.extend({
+    template: Handlebars.compile(template_stats),
 
     initialize: function(parameters) {
         // our controller
@@ -95,7 +98,7 @@ var RepositoryLoadView = Marionette.View.extend({
       }
     },
 
-    templateContext() {
+    templateContext: function() {
       var loaded_mode, inACollection, show_0, show_1, enable_0, enable_1;
       var collection_0, collection_1, isLoaded_0, isLoaded_1;
       var repertoireMetadataLoaded_0, repertoireMetadataLoaded_1;
@@ -210,7 +213,7 @@ var RepositoryLoadView = Marionette.View.extend({
     //
     // Unpublish sequence
     //
-    unpublishProject(e) {
+    unpublishProject: function(e) {
         console.log("Unpublish Project button clicked");
 
         this.publish_message = new MessageModel({
@@ -227,14 +230,14 @@ var RepositoryLoadView = Marionette.View.extend({
     },
 
     // sent to server after the modal is shown
-    onShownUnpublishModal(context) {
+    onShownUnpublishModal: function(context) {
         console.log('unpublish: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function when user confirms
     },
 
-    onHiddenUnpublishModal(context) {
+    onHiddenUnpublishModal: function(context) {
         console.log('unpublish: Hide the modal');
         if (context.modalState == 'publish') {
 
@@ -276,7 +279,7 @@ var RepositoryLoadView = Marionette.View.extend({
         }
     },
 
-    onHiddenUnpublishSuccessModal(context) {
+    onHiddenUnpublishSuccessModal: function(context) {
         console.log('unpublish success: Hide the modal');
         this.publish_message = null;
 
@@ -290,9 +293,10 @@ var RepositoryLoadView = Marionette.View.extend({
         e.preventDefault();
         console.log(this.model);
         console.log("Clicked Reload");
+        var collections = this.controller.getCollections();
 
         this.reload_message = new MessageModel({
-            'header': 'Reload Study Metadata',
+            'header': 'Reload Study Metadata into collection: ' + collections.loadCollection(),
             'body': '<div>Are you sure you want to reload the project?</div>',
             'confirmText': 'Yes',
             'cancelText': 'No'
@@ -305,56 +309,62 @@ var RepositoryLoadView = Marionette.View.extend({
     },
 
     // project publish is sent to server after the modal is shown
-    onShownReloadModal(context) {
+    onShownReloadModal: function(context) {
         console.log('reload: Show the modal');
 
         // nothing to be done here, server request
         // is done in hidden function when user confirms
     },
 
-    onHiddenReloadModal(context) {
+    onHiddenReloadModal: async function(context) {
         console.log('reload: Hide the modal');
         if (context.modalState == 'reload') {
 
             // if user did not confirm, just return, modal is already dismissed
             if (context.reload_message.get('status') != 'confirm') return;
 
+            // need load meta record for validation
+            var load_meta = null;
+            var collections = context.controller.getCollections();
+            if (collections.loadCollection() == '_0') load_meta = context.model.load_0;
+            if (collections.loadCollection() == '_1') load_meta = context.model.load_1;
+
             // publish project
-            context.model.reloadProject(context.model.load_0)
-            .then(function() {
-                context.modalState = 'pass';
+            await context.model.reloadProject(load_meta)
+                .catch(function(error) {
+                    // save failed so show error modal
+                    context.modalState = 'fail';
 
-                // prepare a new modal with the success message
-                var message = new MessageModel({
-                    'header': 'Reload Study Metadata',
-                    'body':   'Project has been successfully queued for reload!',
-                    cancelText: 'Ok'
+                    // prepare a new modal with the failure message
+                    var message = new MessageModel({
+                        'header': 'Reload Study Metadata',
+                        'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while reloading project!</div>',
+                        cancelText: 'Ok',
+                        serverError: error
+                    });
+
+                    var view = new ModalView({model: message});
+                    App.AppController.startModal(view, null, null, null);
+                    $('#modal-message').modal('show');
                 });
+            if (context.modalState == 'fail') return;
 
-                var view = new ModalView({model: message});
-                App.AppController.startModal(view, context, null, context.onHiddenReloadSuccessModal);
-                $('#modal-message').modal('show');
-            })
-            .fail(function(error) {
-                // save failed so show error modal
-                context.modalState = 'fail';
+            context.modalState = 'pass';
 
-                // prepare a new modal with the failure message
-                var message = new MessageModel({
-                    'header': 'Reload Study Metadata',
-                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while reloading project!</div>',
-                    cancelText: 'Ok',
-                    serverError: error
-                });
-
-                var view = new ModalView({model: message});
-                App.AppController.startModal(view, null, null, null);
-                $('#modal-message').modal('show');
+            // prepare a new modal with the success message
+            var message = new MessageModel({
+                'header': 'Reload Study Metadata into collection: ' + collections.loadCollection(),
+                'body':   'Project has been successfully queued for reload!',
+                cancelText: 'Ok'
             });
+
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, null, context.onHiddenReloadSuccessModal);
+            $('#modal-message').modal('show');
         }
     },
 
-    onHiddenReloadSuccessModal(context) {
+    onHiddenReloadSuccessModal: function(context) {
         console.log('reload success: Hide the modal');
         this.reload_message = null;
     },
@@ -391,7 +401,7 @@ var RepositoryLoadListView = Marionette.CollectionView.extend({
         this.childViewOptions = { controller: this.controller, loaded_mode: this.loaded_mode };
     },
 
-    templateContext() {
+    templateContext: function() {
         return {
             loaded_mode: this.loaded_mode,
         }
@@ -410,7 +420,7 @@ export default Marionette.View.extend({
         listRegion: '#admin-repository-list'
     },
 
-    initialize(parameters) {
+    initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller) {
             this.controller = parameters.controller;
@@ -431,7 +441,7 @@ export default Marionette.View.extend({
         //
     },
 
-    templateContext() {
+    templateContext: function() {
         return {
             loaded_mode: this.loaded_mode,
         }
@@ -460,10 +470,6 @@ export default Marionette.View.extend({
         e.preventDefault();
         console.log("Clicked Refresh");
     },
-    reloadAll: function(e) {
-        e.preventDefault();
-        console.log("Clicked reloadAll");
-    },
     enableDownloadCache: function(e) {
         e.preventDefault();
         console.log("Clicked Enable ADC Download Cache");
@@ -479,6 +485,115 @@ export default Marionette.View.extend({
     disableADC: function(e) {
         e.preventDefault();
         console.log("Clicked Disable ADC Repository");
+    },
+
+    //
+    // Reload all sequence
+    //
+    reloadAll: function(e) {
+        e.preventDefault();
+        console.log("Clicked reloadAll");
+
+        var collections = this.controller.getCollections();
+        var reload_cnt = 0;
+        for (let i = 0; i < collections['publicProjectList'].length; ++i) {
+            let project = collections['publicProjectList'].at(i);
+            let load_meta = null;
+            if (collections.loadCollection() == '_0') load_meta = project.load_0;
+            if (collections.loadCollection() == '_1') load_meta = project.load_1;
+            if (!load_meta) continue;
+            else reload_cnt += 1;
+        }
+
+        this.reload_message = new MessageModel({
+            'header': 'Reload All Study Metadata into Collection: ' + collections.loadCollection(),
+            'body': '<div>Are you sure you want to reload all (' + reload_cnt + ') projects?</div>',
+            'confirmText': 'Yes',
+            'cancelText': 'No'
+        });
+
+        this.modalState = 'reload';
+        var view = new ModalView({model: this.reload_message});
+        App.AppController.startModal(view, this, null, this.onHiddenReloadAllModal);
+        $('#modal-message').modal('show');
+    },
+
+    onHiddenReloadAllModal: async function(context) {
+        console.log('reloadAll: Hide the modal');
+        if (context.modalState == 'reload') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.reload_message.get('status') != 'confirm') return;
+
+            // display wait modal while we process
+            var message = new MessageModel({
+              'header': 'Reload All Study Metadata',
+              'body':   '<p>Please wait while we send the reload requests...</p>'
+            });
+
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, context.onShownReloadAllModal, null);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onShownReloadAllModal: async function(context) {
+        console.log('reloadAll: Show the modal');
+        if (context.modalState == 'reload') {
+
+            // if user did not confirm, just return, modal is already dismissed
+            if (context.reload_message.get('status') != 'confirm') return;
+
+            // perform reload for each project
+            var collections = context.controller.getCollections();
+            console.log(collections['publicProjectList']);
+            for (let i = 0; i < collections['publicProjectList'].length; ++i) {
+                let project = collections['publicProjectList'].at(i);
+                let load_meta = null;
+                if (collections.loadCollection() == '_0') load_meta = project.load_0;
+                if (collections.loadCollection() == '_1') load_meta = project.load_1;
+                if (!load_meta) continue;
+
+                await project.reloadProject(load_meta)
+                    .catch(function(error) {
+                        // save failed so show error modal
+                        context.modalState = 'fail';
+                        $('#modal-message').modal('hide');
+
+                        // prepare a new modal with the failure message
+                        var message = new MessageModel({
+                            'header': 'Reload All Study Metadata',
+                            'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Error while reloading projects!</div>',
+                            cancelText: 'Ok',
+                            serverError: error
+                        });
+
+                        var view = new ModalView({model: message});
+                        App.AppController.startModal(view, null, null, null);
+                        $('#modal-message').modal('show');
+                    });
+                if (context.modalState == 'fail') return;
+            }
+
+            context.modalState = 'pass';
+            $('#modal-message').modal('hide');
+
+            // prepare a new modal with the success message
+            var message = new MessageModel({
+                'header': 'Reload All Study Metadata into Collection: ' + collections.loadCollection(),
+                'body':   'Projects have been successfully queued for reload!',
+                cancelText: 'Ok'
+            });
+
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, null, context.onHiddenReloadAllSuccessModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onHiddenReloadAllSuccessModal: function(context) {
+        console.log('reloadAll success: Hide the modal');
+        this.reload_message = null;
     },
 });
 

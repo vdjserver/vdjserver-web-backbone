@@ -279,17 +279,25 @@ export default Agave.MetadataModel.extend({
     },
 
     reloadProject: function(load_meta) {
-        if (! load_meta) return;
-        var postData = { 'load_id': load_meta.get('uuid') };
-        var jqxhr = $.ajax({
-            contentType: 'application/json',
-            headers: Agave.oauthHeader(),
-            type: 'POST',
-            data: JSON.stringify(postData),
-            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/reload',
-        });
+        if (!load_meta) return Promise.reject(new Error('Missing load metadata.'));
 
-        return jqxhr;
+        var postData = { 'load_id': load_meta.get('uuid') };
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/reload',
+                type: 'POST',
+                data: JSON.stringify(postData),
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            })
+        });
     },
 
 });

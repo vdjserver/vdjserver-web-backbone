@@ -50,7 +50,7 @@ var AdminTabsView = Marionette.View.extend({
         }
     },
 
-    templateContext() {
+    templateContext: function() {
         // gather the dynamic content for the cards
         // array of card tabs with fields
         // card id
@@ -89,11 +89,11 @@ var AdminTabsView = Marionette.View.extend({
         card = {};
         card['card_id'] = 'repository-tab';
         card['text'] = 'Data Repository';
-        if (this.controller.projectLoadList) {
-            card['text'] += '<br>' + this.controller.projectLoadList.length + ' Project Loads';
-        }
         if (this.controller.publicProjectList) {
             card['text'] += '<br>' + this.controller.publicProjectList.length + ' Public Projects';
+        }
+        if (this.controller.projectLoadList) {
+            card['text'] += '<br>' + this.controller.projectLoadList.length + ' Project Loads';
         }
         if (this.controller.page == 'repository') card['active'] = true;
         else card['active'] = false;
@@ -239,7 +239,7 @@ var AdminView = Marionette.View.extend({
     },
 
     // update summary view with new counts and active tab
-    updateTab() {
+    updateTab: function() {
         this.tabView = new AdminTabsView({controller: this.controller, model: this.model});
         this.showChildView('tabRegion', this.tabView);
     },
@@ -252,39 +252,39 @@ var AdminView = Marionette.View.extend({
     //
     // the main admin tab views
     //
-    showAdminOverview()
+    showAdminOverview: function()
     {
         this.contentView = new AdminOverView();
         this.showChildView('contentRegion', this.contentView);
     },
 
-    showUsersAdmin()
+    showUsersAdmin: function()
     {
         this.contentView = new AdminUsersView();
         this.showChildView('contentRegion', this.contentView);
     },
 
-    showJobsAdmin()
+    showJobsAdmin: function()
     {
         this.contentView = new AdminJobsView();
         this.showChildView('contentRegion', this.contentView);
     },
 
-    showRepositoryAdmin(projectLoadList)
+    showRepositoryAdmin: function(projectLoadList)
     {
         this.contentView = new AdminRepositoryView({controller: this.controller, collection: projectLoadList, loaded_mode: false});
         //this.contentView = new ObjectTableView({controller: this.controller, collection: projectLoadList, objectView: AdminRepositoryView});
         this.showChildView('contentRegion', this.contentView);
     },
 
-    showADCAdmin(studyCacheList)
+    showADCAdmin: function(studyCacheList)
     {
         this.contentView = new AdminADCView({controller: this.controller, collection: studyCacheList});
         this.showChildView('contentRegion', this.contentView);
     },
 
 
-    showStatisticsAdmin()
+    showStatisticsAdmin: function()
     {
         this.contentView = new AdminStatisticsView();
         this.showChildView('contentRegion', this.contentView);
@@ -294,6 +294,7 @@ var AdminView = Marionette.View.extend({
 
 //
 // Admin controller manages all the administration views
+// constructor
 //
 function AdminController(page) {
     // maintain state across multiple views
@@ -319,7 +320,7 @@ function AdminController(page) {
 
 AdminController.prototype = {
     // return the main view, create it if necessary
-    getView() {
+    getView: function() {
         if (!this.contentView)
             this.contentView = new AdminView({controller: this});
         else if (this.contentView.isDestroyed())
@@ -327,10 +328,28 @@ AdminController.prototype = {
         return this.contentView;
     },
 
+    // returns all the main non-filtered collections
+    getCollections: function() {
+        return {
+            adcStatus: this.adcStatus,
+            loadCollection: function() {
+                if (this.adcStatus) return this.adcStatus.get('load_collection');
+                else return null;
+            },
+            queryCollection: function() {
+                if (this.adcStatus) return this.adcStatus.get('query_collection');
+                else return null;
+            },
+            projectLoadList: this.projectLoadList,
+            publicProjectList: this.publicProjectList,
+            studyCacheList: this.studyCacheList
+        }
+    },
+
     //
     // lazy loading of data repository records, these return promises
     //
-    lazyLoadDataRepository() {
+    lazyLoadDataRepository: function() {
         var that = this;
         //var plList = new ProjectLoadCollection({collection: '_0'});
         var plList = new ProjectLoadCollection();
@@ -382,7 +401,7 @@ AdminController.prototype = {
             });
     },
 
-    lazyLoadADCStudyCache() {
+    lazyLoadADCStudyCache: function() {
         var that = this;
         var scList = new StudyCacheCollection();
 
@@ -398,7 +417,7 @@ AdminController.prototype = {
     },
 
     //merge into lazyLoadADCStudyCache when backend is implemented
-    lazyLoadADCRepertoireCache() {
+    lazyLoadADCRepertoireCache: function() {
         var that = this;
         var rcList = new RepertoireCacheCollection();
 
@@ -413,7 +432,7 @@ AdminController.prototype = {
             });
     },
 
-    showAdminPage(page)
+    showAdminPage: function(page)
     {
         switch (page) {
             case 'users':
@@ -447,7 +466,7 @@ AdminController.prototype = {
     //
     // The main admin tabs
     //
-    showAdminOverview()
+    showAdminOverview: function()
     {
         this.page = 'overview';
         App.router.navigate('admin', {trigger: false});
@@ -455,7 +474,7 @@ AdminController.prototype = {
         this.contentView.showAdminOverview(this.model);
     },
 
-    showUsersAdmin()
+    showUsersAdmin: function()
     {
         this.page = 'users';
         App.router.navigate('admin/users', {trigger: false});
@@ -463,7 +482,7 @@ AdminController.prototype = {
         this.contentView.showUsersAdmin(this.model);
     },
 
-    showJobsAdmin()
+    showJobsAdmin: function()
     {
         this.page = 'jobs';
         App.router.navigate('admin/jobs', {trigger: false});
@@ -471,7 +490,7 @@ AdminController.prototype = {
         this.contentView.showJobsAdmin(this.model);
     },
 
-    showRepositoryAdmin()
+    showRepositoryAdmin: function()
     {
         this.page = 'repository';
         App.router.navigate('admin/repository', {trigger: false});
@@ -499,7 +518,7 @@ AdminController.prototype = {
         }
     },
 
-    showADCAdmin()
+    showADCAdmin: function()
     {
         this.page = 'adc';
         App.router.navigate('admin/adc', {trigger: false});
@@ -527,7 +546,7 @@ AdminController.prototype = {
     },
 
     //merge into showADCAdmin when backend is implemented
-    showADCRepertoireAdmin()
+    showADCRepertoireAdmin: function()
     {
         this.page = 'adc';
         App.router.navigate('admin/adc', {trigger: false});
@@ -554,7 +573,7 @@ AdminController.prototype = {
         }
     },
 
-    showStatisticsAdmin()
+    showStatisticsAdmin: function()
     {
         this.page = 'statistics';
         App.router.navigate('admin/statistics', {trigger: false});
