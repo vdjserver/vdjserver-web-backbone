@@ -26,6 +26,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
 
+import Backbone from 'backbone';
 import Marionette from 'backbone.marionette';
 import Syphon from 'backbone.syphon';
 import Handlebars from 'handlebars';
@@ -111,7 +112,7 @@ var ProjectSummaryView = Marionette.View.extend({
         else card['active'] = false;
         card_tabs.push(card);
 
-        card = {};
+/*        card = {};
         card['card_id'] = 'samples-tab';
         card['text'] = 'Samples';
         card['icon'] = 'fas fa-user-alt';
@@ -120,7 +121,7 @@ var ProjectSummaryView = Marionette.View.extend({
         }
         if (this.controller.page == 'sample') card['active'] = true;
         else card['active'] = false;
-        card_tabs.push(card);
+        card_tabs.push(card); */
 
         card = {};
         card['card_id'] = 'repertoires-tab';
@@ -238,7 +239,7 @@ import SubjectsController from 'Scripts/views/project/subjects/project-subjects-
 import SamplesController from 'Scripts/views/project/samples/project-samples-controller';
 
 // Repertoire view
-import RepertoireController from 'Scripts/views/project/project-repertoire-controller';
+import RepertoireController from 'Scripts/views/project/repertoires/project-repertoires-controller';
 
 // Files view
 import ProjectFilesController from 'Scripts/views/project/files/project-files-controller';
@@ -434,7 +435,7 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', repertoireController.getView());
 
         // tell repertoire controller to display the repertoire list
-        repertoireController.showRepertoireList();
+        repertoireController.showProjectRepertoiresList();
     },
 
     showProjectGroups: function(project)
@@ -644,6 +645,20 @@ SingleProjectController.prototype = {
                 that.repertoireList = repList;
             })
             .then(function() {
+                // drop subject and samples into the repertoire
+                for (var j = 0; j < that.repertoireList.length; j++) {
+                    var model = that.repertoireList.at(j);
+                    var value = model.get('value');
+                    var subject = that.subjectList.get(value['subject']['vdjserver_uuid']);
+                    value['subject'] = subject;
+                    var samples = new Backbone.Collection();
+                    for (let s in value['sample']) {
+                        samples.add(that.sampleList.get(value['sample'][s]['vdjserver_uuid']));
+                    }
+                    value['sample'] = samples;
+                    model.set('value', value);
+                }
+
                 // update the project summary
                 that.projectView.updateSummary();
             })

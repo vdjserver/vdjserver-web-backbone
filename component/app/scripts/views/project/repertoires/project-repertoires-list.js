@@ -1,6 +1,6 @@
 //
-// project-files-list.js
-// List of files for projects
+// project-repertoires-list.js
+// List of repertoires for projects
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -27,44 +27,64 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import SamplesListView from 'Scripts/views/project/samples/project-samples-list';
 
-// subject summary view
-import summary_template from 'Templates/project/samples/project-samples-summary.html';
-var SampleSummaryView = Marionette.View.extend({
+// repertoire summary view
+import summary_template from 'Templates/project/repertoires/project-repertoires-summary.html';
+var RepertoireSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
+
+    // one region for sample list
+    regions: {
+        sampleRegion: '#project-sample-list'
+    },
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+        if (this.model) {
+            var collections = this.controller.getCollections();
+            var value = this.model.get('value');
+            this.showChildView('sampleRegion', new SamplesListView({collection: value['sample'], controller: this.controller}));
+        }
+    },
 
     templateContext() {
         //console.log(this.model);
+        var collections = this.controller.getCollections();
         var value = this.model.get('value');
-        let target_loci = [];
-        for (let i = 0; i < value['pcr_target'].length; ++i)
-            target_loci.push(value['pcr_target'][i]['pcr_target_locus']);
+        var subject = value['subject'];
+        var subject_value = subject.get('value');
 
         return {
-            target_loci: target_loci
+            subject: subject_value,
+            species_display: subject.getSpeciesDisplay(),
+            age_display: subject.getAgeDisplay()
         }
     },
 
 });
 
-import detail_template from 'Templates/project/samples/project-samples-detail.html';
-var SampleDetailView = Marionette.View.extend({
+import detail_template from 'Templates/project/repertoires/project-repertoires-detail.html';
+var RepertoireDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 
-  events: {
-  },
+    events: {
+    },
 
 });
 
-// Container view for sample detail
-// There are three sample views: summary, detail and edit
+// Container view for repertoire detail
+// There are three repertoire views: summary, detail and edit
 // detail and edit are the same layout, but either in read or edit mode
-var SampleContainerView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project-sample-container"></div>'),
+var RepertoireContainerView = Marionette.View.extend({
+    template: Handlebars.compile('<div id="project-repertoire-container"></div>'),
 
     // one region for contents
     regions: {
-        containerRegion: '#project-sample-container'
+        containerRegion: '#project-repertoire-container'
     },
 
     initialize: function(parameters) {
@@ -87,28 +107,28 @@ var SampleContainerView = Marionette.View.extend({
         switch (this.model.view_mode) {
             case 'detail':
             case 'edit':
-                this.showChildView('containerRegion', new SampleDetailView({controller: this.controller, model: this.model}));
+                this.showChildView('containerRegion', new RepertoireDetailView({controller: this.controller, model: this.model}));
                 break;
             case 'summary':
             default:
-                this.showChildView('containerRegion', new SampleSummaryView({controller: this.controller, model: this.model}));
+                this.showChildView('containerRegion', new RepertoireSummaryView({controller: this.controller, model: this.model}));
                 break;
         }
     },
 
 });
 
-var SamplesListView = Marionette.CollectionView.extend({
-    template: Handlebars.compile(""),
+var RepertoiresListView = Marionette.CollectionView.extend({
+    template: Handlebars.compile("<div></div>"),
 
     initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
 
-        this.childView = SampleContainerView;
+        this.childView = RepertoireContainerView;
         this.childViewOptions = { controller: this.controller };
     },
 });
 
-export default SamplesListView;
+export default RepertoiresListView;
