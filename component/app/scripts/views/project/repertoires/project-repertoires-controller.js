@@ -80,7 +80,13 @@ ProjectRepertoiresController.prototype = {
         this.showProjectRepertoiresList();
     },
 
-    // show project  samples
+    applySort(sort_by) {
+        var colls = this.controller.getCollections();
+        colls['repertoireList']['sort_by'] = sort_by;
+        colls['repertoireList'].sort();
+    },
+
+    // show project repertoires
     showProjectRepertoiresList() {
         var collections = this.controller.getCollections();
 

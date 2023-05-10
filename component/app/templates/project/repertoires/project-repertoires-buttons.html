@@ -6,21 +6,29 @@
                 Sort By
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="name">
-                    {{#ifEquals current_sort "name"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    File Name
+                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="repertoire_name">
+                    {{#ifEquals current_sort "repertoire_name"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Repertoire Name
                 </button>
-                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="newest">
-                    {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Newest
+                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="subject_id">
+                    {{#ifEquals current_sort "subject_id"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Subject ID
                 </button>
-                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="oldest">
-                    {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Oldest
+                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="sample_id">
+                    {{#ifEquals current_sort "sample_id"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Sample ID
                 </button>
-                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="size">
-                    {{#ifEquals current_sort "size"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    File Size
+                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="tissue">
+                    {{#ifEquals current_sort "tissue"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Tissue
+                </button>
+                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="disease_state_sample">
+                    {{#ifEquals current_sort "disease_state_sample"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Disease State
+                </button>
+                <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="cell_subset">
+                    {{#ifEquals current_sort "cell_subset"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Cell Subset
                 </button>
                 <div class="dropdown-divider"></div>
                 <button class="dropdown-item disabled" type="button">
