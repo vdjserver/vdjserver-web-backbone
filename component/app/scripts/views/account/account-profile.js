@@ -92,7 +92,6 @@ var ProfileView = Marionette.View.extend({
         this.cloned_model = this.model.deepClone();
         this.cloned_model.setAttributesFromData(data);
         //console.log(this.model);
-        //console.log("this is the data that is submitted: " + data);
 
         // display a modal while the project is being saved
         this.modalState = 'save';

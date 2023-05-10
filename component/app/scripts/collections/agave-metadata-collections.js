@@ -112,10 +112,75 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
         initialize: function(parameters) {
             Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
 
+            this.sort_by = 'subjectid';
+            this.comparator = this.collectionSortBy;
+
             if (parameters && parameters.projectUuid) {
                 this.projectUuid = parameters.projectUuid;
             }
         },
+
+        collectionSortBy(modela, modelb) {
+            if (!this.sort_by) this.sort_by = 'subjectid';
+            switch (this.sort_by) {
+                case 'subjectid': {
+                    let sub_a = modela.get('value').subject_id;
+                    let sub_b = modelb.get('value').subject_id;
+                    if(sub_a>sub_b) return 1;
+                    if(sub_a<sub_b) return -1;
+                    return 0;
+                }
+                case 'sex': {
+                    let sub_a = modela.get('value').sex;
+                    let sub_b = modelb.get('value').sex;
+                    if(sub_a>sub_b) return 1;
+                    if(sub_a<sub_b) return -1;
+                    return 0;
+                }
+                case 'age': {
+                    let sub_a_max = modela.get('value').age_max;
+                    let sub_a_min = modela.get('value').age_min;
+                    let sub_b_max = modelb.get('value').age_max;
+                    let sub_b_min = modelb.get('value').age_min;
+                    let sub_a = (sub_a_max + sub_a_min)/2;
+                    let sub_b = (sub_b_max + sub_b_min)/2;
+                    //hour, day, week, month, year
+                    let sub_a_hours = this.toHours(modela.get('value').age_unit.id,sub_a);
+                    let sub_b_hours = this.toHours(modelb.get('value').age_unit.id,sub_b);
+                    if(sub_a_hours>sub_b_hours) return 1;
+                    if(sub_a_hours<sub_b_hours) return -1;
+                    return 0;
+                }
+            }
+        },
+
+        toHours(time_unit, age) {
+            var hours = 0;
+            switch(time_unit) {
+                case 'UO:0000032': { //hour
+                    hours = age;
+                    break;
+                }
+                case 'UO:0000033': { //day
+                    hours = age * 24;
+                    break;
+                }
+                case 'UO:0000034': { //week
+                    hours = age * 7 * 24;
+                    break;
+                }
+                case 'UO:0000035': { //month
+                    hours = age * (365.25/12) * 24;
+                    break;
+                }
+                case 'UO:0000036': { //year
+                    hours = age * 365.25 * 24;
+                    break;
+                }
+            }
+            return hours;
+        },
+
         url: function() {
             return '/meta/v2/data?q='
                    + encodeURIComponent('{"name":"subject","associationIds":"' + this.projectUuid + '"}')

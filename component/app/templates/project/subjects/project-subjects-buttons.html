@@ -14,25 +14,17 @@
                 Sort By
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="name">
-                    {{#ifEquals current_sort "name"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    File Name
+                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="subjectid">
+                    {{#ifEquals current_sort "subjectid"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Subject ID
                 </button>
-                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="newest">
-                    {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Newest
+                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="sex">
+                    {{#ifEquals current_sort "sex"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Sex
                 </button>
-                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="oldest">
-                    {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    Oldest
-                </button>
-                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="size">
-                    {{#ifEquals current_sort "size"}}<span class="fas fa-check"></span>{{/ifEquals}}
-                    File Size
-                </button>
-                <div class="dropdown-divider"></div>
-                <button class="dropdown-item disabled" type="button">
-                    Add Custom Sort...
+                <button class="dropdown-item" type="button" id="project-subjects-sort-select" name="age">
+                    {{#ifEquals current_sort "age"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Age
                 </button>
               </div>
             </div>

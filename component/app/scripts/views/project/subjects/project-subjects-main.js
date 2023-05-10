@@ -54,12 +54,34 @@ var SubjectsButtonView = Marionette.View.extend({
             this.editMode = true;
         } else { this.editMode = false; }
 
+        var colls = this.controller.getCollections();
+        var current_sort = colls['subjectList']['sort_by'];
+
         return {
             detailsMode: this.detailsMode,
             editMode: this.editMode,
             has_edits: this.controller.has_edits,
+            current_sort: current_sort,
         }
     },
+
+//    events: {
+//        'click #project-subjects-sort-select': function(e) {
+//            // check it is a new sort
+//            var colls = this.controller.getCollections();
+//console.log('colls');
+//console.log(colls);
+//var current_sort = colls['subjectList']['sort_by'];
+//console.log(current_sort);
+//            if (e.target.name != current_sort) {
+//                this.controller.applySort(e.target.name);
+//this.updateHeader(); }
+//        }
+//    },
+//    updateHeader: function() {
+//        this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
+//    },
+
 
 });
 
@@ -88,11 +110,22 @@ var SubjectsView = Marionette.View.extend({
 
         'click #project-subjects-save-changes': function(e) {
             e.preventDefault();
+            this.controller.saveSubjectsChanges(e);
         },
         'click #project-subjects-revert-changes': function(e) {
             e.preventDefault();
             this.controller.revertSubjectsChanges();
         },
+        'click #project-subjects-sort-select': function(e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['subjectList']['sort_by'];
+            colls['subjectList']['sort_by'] = e.target.name;
+            if (e.target.name != current_sort) {
+                this.controller.applySort(e.target.name);
+                this.updateHeader(); 
+            }
+        }
 
     },
 
@@ -106,10 +139,16 @@ var SubjectsView = Marionette.View.extend({
         var editMode = false;
         if(this.controller.getSubjectsViewMode() == 'edit') {
             this.editMode = true;
-        } else { this.editMode = false; }
+        } else { 
+            this.editMode = false; 
+        }
+
+        var colls = this.controller.getCollections();
+        var current_sort = colls['subjectList']['sort_by'];
 
         return {
             editMode: this.editMode,
+            current_sort: current_sort,
         }
     },
 
