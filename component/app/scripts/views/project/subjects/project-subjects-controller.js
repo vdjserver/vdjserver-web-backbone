@@ -36,6 +36,7 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import Syphon from 'backbone.syphon';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
+import FilterController from 'Scripts/views/utilities/filter-controller';
 
 
 
@@ -55,6 +56,8 @@ function ProjectSubjectsController(controller) {
     this.resetCollections();
 
     this.mainView = new ProjectSubjectsView({model: this.model, controller: this});
+    this.filterController = new FilterController(this, "airr_subject");
+    this.filterController.showFilter();
 }
 
 ProjectSubjectsController.prototype = {
@@ -92,6 +95,7 @@ ProjectSubjectsController.prototype = {
     // show project subjects
     showProjectSubjectsList() {
         this.mainView.showProjectSubjectsList(this.subjectList);
+        this.filterController.showFilter();
     },
 
     getSubjectsList() {

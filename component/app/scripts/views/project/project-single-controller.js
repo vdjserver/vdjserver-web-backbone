@@ -757,8 +757,21 @@ SingleProjectController.prototype = {
     showProjectOverview: function() {
         this.page = 'overview';
         App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
+        // no filters
+        App.AppController.navController.setController(this);
+        App.AppController.navController.setFilterBarStatus(null, false);
         this.projectView.updateSummary();
         this.projectView.showProjectOverview(this.model);
+    },
+
+    shouldToggleFilterBar: function() {
+        // TODO: might this be called for other pages?
+        // no filter bar for project overview
+        return false;
+    },
+
+    didToggleFilterBar: function(status) {
+        return;
     },
 
     showProjectSubjects: function() {
@@ -836,7 +849,7 @@ SingleProjectController.prototype = {
             this.repertoireListPromise.then(function() {
                     // have the view display them
                     that.projectView.updateSummary();
-                    that.repertoireController = new RepertoireController(that);
+                    if (! that.repertoireController) that.repertoireController = new RepertoireController(that);
                     that.projectView.showProjectRepertoires(that.repertoireController);
                 })
                 .fail(function(error) {
@@ -845,7 +858,7 @@ SingleProjectController.prototype = {
         } else {
             // tell repertoire controller to display the repertoire list
             that.projectView.updateSummary();
-            that.repertoireController = new RepertoireController(that);
+            if (! that.repertoireController) that.repertoireController = new RepertoireController(that);
             that.projectView.showProjectRepertoires(that.repertoireController);
         }
     },

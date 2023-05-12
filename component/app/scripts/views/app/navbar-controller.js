@@ -102,7 +102,12 @@ export default Marionette.View.extend({
 
     initialize(options) {
         console.log('Initialize');
+        this.controller = null;
         this.navbar_filter = true; //navbar filter is open by default
+    },
+
+    setController: function(controller) {
+        this.controller = controller;
     },
 
     showNavigation() {
@@ -167,17 +172,16 @@ export default Marionette.View.extend({
         this.getRegion('footerRegion').empty();
     },
 
-    toggleFilterBar(e) {
-        console.log(this.navbar_filter);
-        e.preventDefault();  //don't do default browser action of following link
-        if (!this.navbar_filter) {
+    setFilterBarStatus(view, status) {
+        this.navbar_filter = status;
+        if (view) this.showChildView('filterRegion', view);
+        if (this.navbar_filter) {
             this.getRegion('filterRegion').$el.show();
             this.getRegion('toolRegion').$el.show();
             this.showFooter();
 
             $("#navbar-filter-icon").removeClass("nav-button-inactive");
             $("#navbar-filter-icon").addClass("nav-button-active");
-            this.navbar_filter = true;
         } else {
             this.getRegion('filterRegion').$el.hide();
             this.getRegion('toolRegion').$el.hide();
@@ -185,7 +189,18 @@ export default Marionette.View.extend({
 
             $("#navbar-filter-icon").removeClass("nav-button-active");
             $("#navbar-filter-icon").addClass("nav-button-inactive");
-            this.navbar_filter = false;
+        }
+    },
+
+    toggleFilterBar(e) {
+        // toggle only if controller says yes
+        e.preventDefault();
+        if (this.controller) {
+            let status = this.controller.shouldToggleFilterBar();
+            if (status) {
+                this.setFilterBarStatus(null, !this.navbar_filter);
+                this.controller.didToggleFilterBar(this.navbar_filter);
+            }
         }
     },
 

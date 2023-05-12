@@ -37,6 +37,7 @@ import ProjectFilesView from 'Scripts/views/project/files/project-files';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
+import FilterController from 'Scripts/views/utilities/filter-controller';
 
 import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-file';
 import { ProjectFileQuery } from 'Scripts/collections/agave-files';
@@ -58,6 +59,8 @@ function ProjectFilesController(controller) {
 
     // file list view
     this.mainView = new ProjectFilesView({controller: this, model: this.model});
+    this.filterController = new FilterController(this, "vdjserver_file");
+    this.filterController.showFilter();
 }
 
 ProjectFilesController.prototype = {
@@ -97,6 +100,7 @@ ProjectFilesController.prototype = {
     // show project files
     showProjectFilesList() {
         this.mainView.showProjectFilesList(this.getPairedList());
+        this.filterController.showFilter();
 
         if (this.uploadFiles) {
             this.mainView.showUploadFiles(this.uploadFiles);

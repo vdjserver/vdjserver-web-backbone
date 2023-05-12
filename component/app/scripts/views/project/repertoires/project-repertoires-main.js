@@ -30,6 +30,7 @@ import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import RepertoiresListView from 'Scripts/views/project/repertoires/project-repertoires-list';
+import FilterQueryView from 'Scripts/views/utilities/filter-query-view';
 
 // Project repertoires buttons
 import button_template from 'Templates/project/repertoires/project-repertoires-buttons.html';

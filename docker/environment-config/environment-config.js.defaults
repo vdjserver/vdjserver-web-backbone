@@ -203,7 +203,7 @@ var EnvironmentConfig = {
         },
     },
     'filters': {
-        'airr_repertoire': [
+        'adc_study': [
             { 'title': "Study ID", 'field': "study.study_id"},
             { 'title': "Study Type", 'field': "study.study_type", 'data': true},
             { 'title': "Study Keywords", 'field': "study.keywords_study", 'schema': { 'object': 'Study', 'property': 'keywords_study' }},
@@ -213,8 +213,40 @@ var EnvironmentConfig = {
             { 'title': "Disease Diagnosis", 'field': "diagnosis.disease_diagnosis", 'data': true},
             { 'title': "Sample ID", 'field': "sample.sample_id"}
         ],
-        'airr_rearrangement': {
-        }
+        'adc_rearrangement': {
+        },
+        'vdjserver_file': [
+            { 'title': "File Name", 'field': "subject.subject_id"},
+            { 'title': "File Type", 'field': "subject.subject_id"},
+            { 'title': "File Direction", 'field': "subject.subject_id"},
+        ],
+        'airr_subject': [
+            { 'title': "Subject ID", 'field': "subject.subject_id"},
+            { 'title': "Subject Species", 'field': "subject.species", 'data': true},
+            { 'title': "Subject Sex", 'field': "subject.sex", 'schema': { 'object': 'Subject', 'property': 'sex' }},
+            { 'title': "Disease Diagnosis", 'field': "diagnosis.disease_diagnosis", 'data': true},
+        ],
+        'airr_repertoire': [
+            { 'title': "Repertoire Name", 'field': "repertoire_name"},
+            { 'title': "Subject ID", 'field': "subject.subject_id"},
+            { 'title': "Subject Species", 'field': "subject.species", 'data': true},
+            { 'title': "Subject Sex", 'field': "subject.sex", 'schema': { 'object': 'Subject', 'property': 'sex' }},
+            { 'title': "Disease Diagnosis", 'field': "diagnosis.disease_diagnosis", 'data': true},
+            { 'title': "Sample ID", 'field': "sample.sample_id"}
+        ],
+        'airr_repertoire_group': [
+            { 'title': "Repertoire Name", 'field': "repertoire_name"},
+            { 'title': "Subject ID", 'field': "subject.subject_id"},
+            { 'title': "Subject Species", 'field': "subject.species", 'data': true},
+            { 'title': "Subject Sex", 'field': "subject.sex", 'schema': { 'object': 'Subject', 'property': 'sex' }},
+            { 'title': "Disease Diagnosis", 'field': "diagnosis.disease_diagnosis", 'data': true},
+            { 'title': "Sample ID", 'field': "sample.sample_id"}
+        ],
+        'vdjserver_analysis': [
+            { 'title': "File Name", 'field': "subject.subject_id"},
+            { 'title': "File Type", 'field': "subject.subject_id"},
+            { 'title': "File Direction", 'field': "subject.subject_id"},
+        ],
     },
     'processMetadata': {
         'version': 3,

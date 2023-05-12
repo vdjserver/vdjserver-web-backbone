@@ -54,20 +54,6 @@ export default Agave.MetadataModel.extend({
         if (parameters && parameters.filter_type) {
             this.filter_type = parameters.filter_type;
         }
-        if (! this.filter_type) {
-            console.error('No filter name provided for filter manager.');
-            return;
-        }
-
-        // find filter in environment config
-        if (! EnvironmentConfig['filters']) {
-            console.error('Cannot find filters in EnvironmentConfig.');
-            return;
-        }
-        if (! EnvironmentConfig['filters'][this.filter_type]) {
-            console.error('Cannot find filter name (' + this.filter_type + ') in EnvironmentConfig filters.');
-            return;
-        }
 
         let value = this.get('value');
         value['filter_type'] = this.filter_type;
@@ -76,7 +62,6 @@ export default Agave.MetadataModel.extend({
         // make a deep copy from the config
         this.base_filters = JSON.parse(JSON.stringify(EnvironmentConfig['filters'][this.filter_type]));
         console.log(this.base_filters);
-
     },
 
     // custom user filters
