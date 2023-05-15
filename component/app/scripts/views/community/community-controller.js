@@ -44,7 +44,7 @@ import CommunityMainView from 'Scripts/views/community/community-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 // import AddChartView from 'Scripts/views/community/add-chart';
 
-import FilterManager from 'Scripts/models/filter-manager';
+import FilterController from 'Scripts/views/utilities/filter-controller';
 
 // Community controller
 //
@@ -58,7 +58,6 @@ function CommunityController() {
     this.repertoireCollections = null;
     this.studies = null;
     this.repertoireFilters = null;
-    this.filteredRepertoires = null;
     this.filteredStudies = null;
     this.projectList = null;
     this.currentProject = null;
@@ -67,7 +66,8 @@ function CommunityController() {
     this.rearrangementCounts = null;
 
     // active filters
-    this.filters = {};
+    this.filterController = new FilterController(this, "adc_study", true);
+    this.filterController.showFilter();
 }
 
 CommunityController.prototype = {
@@ -199,11 +199,8 @@ CommunityController.prototype = {
                 that.studies.attachCountStatistics(that.rearrangementCounts);
                 console.log(that.studies);
 
-                // construct base filters
-                that.repertoireFilters = new FilterManager({filter_type: "airr_repertoire"});
-                // TODO: load custom user filters
-                that.repertoireFilters.constructValues(that.studies);
-                console.log(that.repertoireFilters);
+                // construct filter values
+                that.filterController.constructValues(that.studies);
 
                 // have the view display them
                 if (projectUuid) {
@@ -211,9 +208,10 @@ CommunityController.prototype = {
                     console.log(projectUuid);
                     var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
                     App.router.navigate('/community', {trigger: false});
-                    that.applyFilter(filters);
+                    that.filterController.applyFilter(filters);
                 } else {
-                    that.projectView.showResultsList(that.studies, that.repertoireFilters);
+                    that.projectView.showResultsList(that.studies);
+                    that.filterController.showFilter();
                 }
             })
             .catch(function(error) {
@@ -227,9 +225,10 @@ CommunityController.prototype = {
                 console.log(projectUuid);
                 var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
                 App.router.navigate('/community', {trigger: false});
-                that.applyFilter(filters);
+                this.filterController.applyFilter(filters);
             } else {
-                this.projectView.showResultsList(this.studies, this.repertoireFilters);
+                this.projectView.showResultsList(this.studies);
+                this.filterController.showFilter();
             }
         }
     },
@@ -245,13 +244,7 @@ CommunityController.prototype = {
         }
     },
 
-    updateFilters(filters) {
-        this.filters = filters;
-        this.projectView.updateFilters(filters);
-    },
-
     applyFilter(filters) {
-        this.filters = filters;
         this.filteredStudies = new ADCStudyCollection();
         this.filteredRepertoires = {};
         for (var i = 0; i < this.repositoryInfo.length; ++i) {
@@ -265,7 +258,7 @@ CommunityController.prototype = {
         this.filteredStudies.sort_by = this.studies.sort_by;
         this.filteredStudies.sort();
 
-        this.projectView.showResultsList(this.filteredStudies, this.repertoireFilters, filters);
+        this.projectView.showResultsList(this.filteredStudies);
     },
 
     applySort(sort_by) {

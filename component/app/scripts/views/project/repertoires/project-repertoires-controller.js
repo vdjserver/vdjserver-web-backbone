@@ -33,6 +33,7 @@ import Handlebars from 'handlebars';
 import Project from 'Scripts/models/agave-project';
 import ProjectRepertoiresView from 'Scripts/views/project/repertoires/project-repertoires-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
+import FilterController from 'Scripts/views/utilities/filter-controller';
 
 // Project repertoires controller
 //
@@ -49,6 +50,8 @@ function ProjectRepertoiresController(controller) {
     this.has_edits = false;
 
     this.mainView = new ProjectRepertoiresView({model: this.model, controller: this});
+    this.filterController = new FilterController(this, "airr_repertoire");
+    this.filterController.showFilter();
 }
 
 ProjectRepertoiresController.prototype = {
@@ -80,13 +83,42 @@ ProjectRepertoiresController.prototype = {
         this.showProjectRepertoiresList();
     },
 
-    // show project  samples
+    updateFilters(filters) {
+        this.filters = filters;
+        this.mainView.updateFilters(filters);
+    },
+
+/*
+    applyFilter(filters) {
+        this.filters = filters;
+        this.filteredStudies = new ADCStudyCollection();
+        this.filteredRepertoires = {};
+        for (var i = 0; i < this.repositoryInfo.length; ++i) {
+            var repo = this.repositoryInfo.at(i);
+            var r = repo.get('id');
+            this.filteredRepertoires[r] = this.repertoireCollection[r].filterCollection(filters);
+            this.filteredStudies.normalize(this.filteredRepertoires[r]);
+        }
+        this.filteredStudies.attachCountStatistics(this.rearrangementCounts);
+
+        this.filteredStudies.sort_by = this.studies.sort_by;
+        this.filteredStudies.sort();
+
+        this.mainView.showResultsList(this.filteredStudies, this.repertoireFilters, filters);
+    }, */
+
+    applySort(sort_by) {
+        var colls = this.controller.getCollections();
+        colls['repertoireList']['sort_by'] = sort_by;
+        colls['repertoireList'].sort();
+    },
+
+    // show project repertoires
     showProjectRepertoiresList() {
         var collections = this.controller.getCollections();
 
-        // TODO: any filtering?
-
         this.mainView.showProjectRepertoiresList(collections.repertoireList);
+        this.filterController.showFilter();
     },
 
 };

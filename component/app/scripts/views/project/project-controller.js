@@ -35,6 +35,7 @@ import PublicProjectCollection from 'Scripts/collections/agave-public-projects';
 import SingleProjectController from 'Scripts/views/project/project-single-controller';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import CreateProjectView from 'Scripts/views/project/project-create';
+import FilterController from 'Scripts/views/utilities/filter-controller';
 
 // the main project view
 var ProjectView = Marionette.View.extend({
@@ -93,6 +94,9 @@ function ProjectController() {
     this.projectList = null;
     this.currentProject = null;
     this.currentProjectController = null;
+
+    this.filterController = new FilterController(this, "adc_study");
+    this.filterController.showFilter();
 }
 
 ProjectController.prototype = {
@@ -121,6 +125,7 @@ ProjectController.prototype = {
                 console.log(that.projectList);
                 // have the view display them
                 that.projectView.showProjectList(that.projectList);
+                that.filterController.showFilter();
             })
             .fail(function(error) {
             console.log(error);
@@ -129,6 +134,7 @@ ProjectController.prototype = {
             // projects already loaded
             // have the view display them
             this.projectView.showProjectList(this.projectList);
+            this.filterController.showFilter();
         }
     },
 

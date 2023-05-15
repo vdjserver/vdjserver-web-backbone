@@ -30,6 +30,7 @@ import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import RepertoiresListView from 'Scripts/views/project/repertoires/project-repertoires-list';
+import FilterQueryView from 'Scripts/views/utilities/filter-query-view';
 
 // Project repertoires buttons
 import button_template from 'Templates/project/repertoires/project-repertoires-buttons.html';
@@ -43,7 +44,11 @@ var RepertoiresButtonView = Marionette.View.extend({
     },
 
     templateContext() {
+        var colls = this.controller.getCollections();
+        var current_sort = colls['repertoireList']['sort_by'];
+
         return {
+            current_sort: current_sort,
             view_mode: this.controller.getViewMode()
         }
     },
@@ -67,6 +72,15 @@ var RepertoiresView = Marionette.View.extend({
     },
 
     events: {
+        'click #project-repertoires-sort-select': function(e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['repertoireList']['sort_by'];
+            if (e.target.name != current_sort) {
+                this.controller.applySort(e.target.name);
+                this.updateHeader(); 
+            }
+        }
     },
 
     initialize(parameters) {
@@ -74,6 +88,10 @@ var RepertoiresView = Marionette.View.extend({
         if (parameters && parameters.controller) {
             this.controller = parameters.controller;
         }
+    },
+
+    updateHeader: function() {
+        this.showChildView('buttonRegion', new RepertoiresButtonView({controller: this.controller}));
     },
 
     showProjectRepertoiresList(repertoireList) {

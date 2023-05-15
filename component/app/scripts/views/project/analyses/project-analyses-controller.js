@@ -36,6 +36,7 @@ import ProjectAnalysesView from 'Scripts/views/project/analyses/project-analyses
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
+import FilterController from 'Scripts/views/utilities/filter-controller';
 
 import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-file';
 import { ProjectFileQuery } from 'Scripts/collections/agave-files';
@@ -51,6 +52,8 @@ function ProjectAnalysesController(controller) {
 
     // analyses view
     this.mainView = new ProjectAnalysesView({controller: this, model: this.model});
+    this.filterController = new FilterController(this, "vdjserver_analysis");
+    this.filterController.showFilter();
 }
 
 ProjectAnalysesController.prototype = {
@@ -67,6 +70,7 @@ ProjectAnalysesController.prototype = {
     showProjectAnalysesList() {
         var collections = this.controller.getCollections();
         this.mainView.showProjectAnalysesList(collections.analysisList);
+        this.filterController.showFilter();
     },
 
     applySort(sort_by) {

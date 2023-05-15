@@ -44,6 +44,9 @@ export var RepertoireCollection = Agave.MetadataCollection.extend(
         initialize: function(parameters) {
             Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
 
+            this.sort_by = 'repertoire_name';
+            this.comparator = this.collectionSortBy;
+
             if (parameters && parameters.projectUuid) {
                 this.projectUuid = parameters.projectUuid;
             }
@@ -54,6 +57,92 @@ export var RepertoireCollection = Agave.MetadataCollection.extend(
                    + '&limit=' + this.limit
                    + '&offset=' + this.offset
                    ;
+        },
+
+        collectionSortBy(modela, modelb) {
+            if (!this.sort_by) this.sort_by = 'repertoire_name';
+            switch (this.sort_by) {
+                case 'repertoire_name': {
+                    let sub_a = modela.get('value').repertoire_name;
+                    let sub_b = modelb.get('value').repertoire_name;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+                case 'subject_id': {
+                    let sub_a = modela.get('value').subject;
+                    sub_a = sub_a.get('value').subject_id;
+                    let sub_b = modelb.get('value').subject;
+                    sub_b = sub_b.get('value').subject_id;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+                case 'sample_id': {
+                    let sub_a = modela.get('value').sample;
+                    if (sub_a.length > 0) {
+                        sub_a = sub_a.at(0);
+                        sub_a = sub_a.get('value').sample_id;
+                    } else sub_a = null;
+                    let sub_b = modelb.get('value').sample;
+                    if (sub_b.length > 0) {
+                        sub_b = sub_b.at(0);
+                        sub_b = sub_b.get('value').sample_id;
+                    } else sub_b = null;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+                case 'tissue': {
+                    let sub_a = modela.get('value').sample;
+                    if (sub_a.length > 0) {
+                        sub_a = sub_a.at(0);
+                        sub_a = sub_a.get('value').tissue;
+                        if (sub_a) sub_a = sub_a['label'];
+                    } else sub_a = null;
+                    let sub_b = modelb.get('value').sample;
+                    if (sub_b.length > 0) {
+                        sub_b = sub_b.at(0);
+                        sub_b = sub_b.get('value').tissue;
+                        if (sub_b) sub_b = sub_b['label'];
+                    } else sub_b = null;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+                case 'disease_state_sample': {
+                    let sub_a = modela.get('value').sample;
+                    if (sub_a.length > 0) {
+                        sub_a = sub_a.at(0);
+                        sub_a = sub_a.get('value').disease_state_sample;
+                    } else sub_a = null;
+                    let sub_b = modelb.get('value').sample;
+                    if (sub_b.length > 0) {
+                        sub_b = sub_b.at(0);
+                        sub_b = sub_b.get('value').disease_state_sample;
+                    } else sub_b = null;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+                case 'cell_subset': {
+                    let sub_a = modela.get('value').sample;
+                    if (sub_a.length > 0) {
+                        sub_a = sub_a.at(0);
+                        sub_a = sub_a.get('value').cell_subset;
+                        if (sub_a) sub_a = sub_a['label'];
+                    } else sub_a = null;
+                    let sub_b = modelb.get('value').sample;
+                    if (sub_b.length > 0) {
+                        sub_b = sub_b.at(0);
+                        sub_b = sub_b.get('value').cell_subset;
+                        if (sub_b) sub_b = sub_b['label'];
+                    } else sub_b = null;
+                    if (sub_a > sub_b) return 1;
+                    if (sub_a < sub_b) return -1;
+                    return 0;
+                }
+            }
         },
 
 /*
