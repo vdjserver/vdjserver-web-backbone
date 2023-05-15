@@ -120,17 +120,11 @@ ProjectSubjectsController.prototype = {
         console.log('Clicked Save');
 
         // pull data out of form and put into model
-//not yet working
-//console.log(this);
-//var d = Syphon.serialize(this);
-var data = Syphon.serialize(this);
-//var data = Syphon.serialize(this.getFormById("project-subject-form"));
-        //var data = Syphon.serialize(this);
-console.log("data1");
-        this.cloned_model = this.model.deepClone();
-console.log("data2");
-        this.cloned_model.setAttributesFromData(data);
-console.log("data3");
+//console.log("data1");
+//console.log(this.model);
+//console.log(this.getSubjectsList());
+//console.log(this.getOriginalSubjectsList());
+        //this.cloned_model = this.model.deepClone();
 
         // display a modal while the data is being saved
         this.modalState = 'save';
@@ -143,11 +137,6 @@ console.log("data3");
         var view = new ModalView({model: message});
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
         $('#modal-message').modal('show');
-    },
-
-    updateData() {
-        var data = Syphon.serialize(this);
-        this.model.setAttributesFromData(data);
     },
 
     applySort(sort_by) {
@@ -165,9 +154,9 @@ console.log("data3");
         if (context.modalState == 'save') {
             // the changed collection/models
             let SubjectsList = context.getSubjectsList();
-console.log("subj: " + JSON.stringify(SubjectsList));
+//console.log("subj: " + JSON.stringify(SubjectsList));
             let originalSubjectsList = context.getOriginalSubjectsList();
-console.log("orig: " + JSON.stringify(originalSubjectsList));
+//console.log("orig: " + JSON.stringify(originalSubjectsList));
 
             // see if any are deleted
             var deletedModels = originalSubjectsList.getMissingModels(SubjectsList);
@@ -244,10 +233,9 @@ console.log("orig: " + JSON.stringify(originalSubjectsList));
         console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // changes all saved
-            context.updateData();
             context.hasEdits = false;
             context.controller.replaceFilesList(context.SubjectsList);
-console.log(context.SubjectsList);
+//console.log(context.SubjectsList);
             context.resetCollections();
             context.showProjectSubjectsList();
         } else if (context.modalState == 'fail') {

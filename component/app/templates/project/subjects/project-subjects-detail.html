@@ -39,7 +39,7 @@
                         Synthetic:
                     </label>
 
-                    <select class="custom-select" id="synthetic" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select" name="synthetic" id="synthetic" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="true">True</option>
                       <option value="false">False</option>
                     </select>
@@ -56,7 +56,7 @@
                         Species:
                     </label>
 
-                    <select class="custom-select" id="species" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select" name="species" id="species" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="1">Human</option>
                       <option value="2">Monkey</option>
                       <option value="3">Mouse</option>
@@ -73,7 +73,7 @@
                         </span>
                         Strain:
                     </label>
-                    <select class="custom-select" id="strain_name" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select" name="strain_name" id="strain_name" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="3">Not provided</option>
                       <option value="1">BALB/c</option>
                       <option value="2">C57BL/6</option>
@@ -91,7 +91,7 @@
                         Sex:
                     </label>
 
-                    <select class="custom-select" id="sex" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select" name="sex" id="sex" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="1">Female</option>
                       <option value="2">Male</option>
                     </select>
@@ -111,7 +111,7 @@
                         Age Type:
                     </label>
 
-                    <select class="custom-select" id="age" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select" name="age" id="age" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="point">Point</option>
                       <option value="range">Range</option>
                     </select>
@@ -164,7 +164,7 @@
                         Unit:
                     </label>
 
-                    <select class="custom-select" id="age_unit" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select" name="age_unit" id="age_unit" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="point">day(s)</option>
                       <option value="range">week(s)</option>
                       <option value="range">month(s)</option>
@@ -199,7 +199,7 @@
                         Race:
                     </label>
 
-                    <select class="custom-select" id="race" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select" name="race" id="race" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="1">Not provided</option>
                       <option value="2">White</option>
                       <option value="2">Black</option>

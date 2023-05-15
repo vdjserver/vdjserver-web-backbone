@@ -30,6 +30,7 @@ import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import SubjectsListView from 'Scripts/views/project/subjects/project-subjects-list';
+import Syphon from 'backbone.syphon';
 
 
 // Project subjects buttons
@@ -64,24 +65,6 @@ var SubjectsButtonView = Marionette.View.extend({
             current_sort: current_sort,
         }
     },
-
-//    events: {
-//        'click #project-subjects-sort-select': function(e) {
-//            // check it is a new sort
-//            var colls = this.controller.getCollections();
-//console.log('colls');
-//console.log(colls);
-//var current_sort = colls['subjectList']['sort_by'];
-//console.log(current_sort);
-//            if (e.target.name != current_sort) {
-//                this.controller.applySort(e.target.name);
-//this.updateHeader(); }
-//        }
-//    },
-//    updateHeader: function() {
-//        this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
-//    },
-
 
 });
 
@@ -125,7 +108,8 @@ var SubjectsView = Marionette.View.extend({
                 this.controller.applySort(e.target.name);
                 this.updateHeader(); 
             }
-        }
+        },
+        'change .form-control': 'updateField',
 
     },
 
@@ -135,6 +119,12 @@ var SubjectsView = Marionette.View.extend({
             this.controller = parameters.controller;
     },
 
+updateField: function(e) {
+    let value = this.model.get('value');
+    value[e.target.name] = e.target.value;
+    this.model.set('value', value);
+},
+    
     templateContext() {
         var editMode = false;
         if(this.controller.getSubjectsViewMode() == 'edit') {
