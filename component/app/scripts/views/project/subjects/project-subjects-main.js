@@ -109,8 +109,6 @@ var SubjectsView = Marionette.View.extend({
                 this.updateHeader(); 
             }
         },
-        'change .form-control': 'updateField',
-
     },
 
     initialize(parameters) {
@@ -119,12 +117,6 @@ var SubjectsView = Marionette.View.extend({
             this.controller = parameters.controller;
     },
 
-updateField: function(e) {
-    let value = this.model.get('value');
-    value[e.target.name] = e.target.value;
-    this.model.set('value', value);
-},
-    
     templateContext() {
         var editMode = false;
         if(this.controller.getSubjectsViewMode() == 'edit') {

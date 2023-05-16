@@ -85,6 +85,8 @@ var SubjectDetailView = Marionette.View.extend({
             this.controller.flagSubjectsEdits();
             this.controller.showProjectSubjectsList();
         },
+        'change .form-control': 'updateField',
+
     },
 
     onAttach() {
@@ -114,6 +116,11 @@ willChange: 'unset',
 });
     },
 
+    updateField: function(e) {
+        let value = this.model.get('value');
+        value[e.target.name] = e.target.value;
+        this.model.set('value', value);
+    },
 });
 
 // Container view for subject detail

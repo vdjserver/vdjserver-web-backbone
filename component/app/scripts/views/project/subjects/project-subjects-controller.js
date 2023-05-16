@@ -123,13 +123,6 @@ ProjectSubjectsController.prototype = {
     saveSubjectsChanges: function(e) {
         console.log('Clicked Save');
 
-        // pull data out of form and put into model
-//console.log("data1");
-//console.log(this.model);
-//console.log(this.getSubjectsList());
-//console.log(this.getOriginalSubjectsList());
-        //this.cloned_model = this.model.deepClone();
-
         // display a modal while the data is being saved
         this.modalState = 'save';
         var message = new MessageModel({
@@ -158,9 +151,7 @@ ProjectSubjectsController.prototype = {
         if (context.modalState == 'save') {
             // the changed collection/models
             let SubjectsList = context.getSubjectsList();
-//console.log("subj: " + JSON.stringify(SubjectsList));
             let originalSubjectsList = context.getOriginalSubjectsList();
-//console.log("orig: " + JSON.stringify(originalSubjectsList));
 
             // see if any are deleted
             var deletedModels = originalSubjectsList.getMissingModels(SubjectsList);
@@ -238,8 +229,7 @@ ProjectSubjectsController.prototype = {
         if (context.modalState == 'pass') {
             // changes all saved
             context.hasEdits = false;
-            context.controller.replaceFilesList(context.SubjectsList);
-//console.log(context.SubjectsList);
+            context.controller.replaceSubjectsList(context.subjectList);
             context.resetCollections();
             context.showProjectSubjectsList();
         } else if (context.modalState == 'fail') {

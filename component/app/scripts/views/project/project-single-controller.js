@@ -695,6 +695,10 @@ SingleProjectController.prototype = {
             });
     },
 
+    replaceSubjectsList: function(newList) {
+        this.subjectList = newList;
+    },
+
     // this is used when edits are made then thrown away
     replaceFilesList: function(newList) {
         this.fileList = newList;
