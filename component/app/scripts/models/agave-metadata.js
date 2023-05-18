@@ -71,6 +71,45 @@ export var Subject = Agave.MetadataModel.extend({
         return Agave.PutOverrideSync(method, this, options);
     },
 
+    // this assumes the sub-objects have already been denormalized from their uuid
+    getValuesForField(field) {
+        var value = this.get('value');
+        var paths = field.split('.');
+        if (paths.length == 1) return value[paths[0]];
+        else {
+            switch(paths[0]) {
+                case 'diagnosis':
+                    var diagnosis = value['diagnosis'];
+                    if (! diagnosis) return null;
+                    if (diagnosis.length == 0) return null;
+                    var values = [];
+                    for (var d = 0; d < diagnosis.length; ++d) {
+                        var obj = diagnosis[d][paths[1]];
+                        if (obj == null) continue;
+                        if (typeof obj === 'object') {
+                            // assume it is an ontology field
+                            if (obj['id'] == null) continue;
+                            let found = false;
+                            for (var k = 0; k < values.length; ++k) {
+                                if (values[k]['id'] == obj['id']) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (! found) values.push(obj);
+                        } else {
+                            // plain value
+                            if (values.indexOf(obj) < 0) values.push(obj);
+                        }
+                    }
+                    if (values.length == 0) return null;
+                    return values;
+                default:
+                    return null;
+            }
+        }
+    },
+
     getAgeDisplay: function() {
         var text = '';
         // TODO: check schema version
@@ -266,6 +305,63 @@ export var Repertoire = Agave.MetadataModel.extend({
     },
     sync: function(method, model, options) {
         return Agave.PutOverrideSync(method, this, options);
+    },
+
+    // this is not generic but customized for our objects
+    // this assumes the sub-objects have already been denormalized from their uuid
+    getValuesForField(field) {
+        var value = this.get('value');
+        var paths = field.split('.');
+        if (paths.length == 1) return value[paths[0]];
+        else {
+            switch(paths[0]) {
+                case 'study':
+                    return value['study'].get('value')[paths[1]];
+                case 'subject':
+                    return value['subject'].get('value')[paths[1]];
+                case 'diagnosis':
+                    var subject = value['subject'].get('value');
+                    var diagnosis = subject['diagnosis'];
+                    if (! diagnosis) return null;
+                    if (diagnosis.length == 0) return null;
+                    var values = [];
+                    for (var d = 0; d < diagnosis.length; ++d) {
+                        var obj = diagnosis[d][paths[1]];
+                        if (obj == null) continue;
+                        if (typeof obj === 'object') {
+                            // assume it is an ontology field
+                            if (obj['id'] == null) continue;
+                            let found = false;
+                            for (var k = 0; k < values.length; ++k) {
+                                if (values[k]['id'] == obj['id']) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (! found) values.push(obj);
+                        } else {
+                            // plain value
+                            if (values.indexOf(obj) < 0) values.push(obj);
+                        }
+                    }
+                    if (values.length == 0) return null;
+                    return values;
+                case 'sample': {
+                    let sample = value['sample'];
+                    if (!sample) return null
+                    if (sample.length == 0) return null;
+                    var values = [];
+                    if (values.length == 0) return null;
+                    return values;
+                }
+                case 'data_processing':
+                    return null;
+                case 'repertoire':
+                    return null;
+                default:
+                    return null;
+            }
+        }
     },
 });
 

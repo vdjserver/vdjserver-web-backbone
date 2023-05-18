@@ -56,7 +56,11 @@ function ProjectSubjectsController(controller) {
     this.resetCollections();
 
     this.mainView = new ProjectSubjectsView({model: this.model, controller: this});
+
+    // filters
+    this.filteredSubjects = null;
     this.filterController = new FilterController(this, "airr_subject");
+    this.filterController.constructValues(this.subjectList);
     this.filterController.showFilter();
 }
 
@@ -92,9 +96,29 @@ ProjectSubjectsController.prototype = {
         this.showProjectSubjectsList();
     },
 
+    applyFilter(filters) {
+        if (filters) {
+            this.filteredSubjects = this.subjectList.filterCollection(filters);
+
+            this.filteredSubjects.sort_by = this.subjectList.sort_by;
+            this.filteredSubjects.sort();
+        } else this.filteredSubjects = null;
+
+        this.showProjectSubjectsList();
+    },
+
+    applySort(sort_by) {
+        var subjs = this.getSubjectsList();
+        subjs.sort_by = sort_by;
+        subjs.sort();
+    },
+
     // show project subjects
     showProjectSubjectsList() {
-        this.mainView.showProjectSubjectsList(this.subjectList);
+        if (this.filteredSubjects)
+            this.mainView.showProjectSubjectsList(this.filteredSubjects);
+        else
+            this.mainView.showProjectSubjectsList(this.subjectList);
         this.filterController.showFilter();
     },
 
@@ -134,12 +158,6 @@ ProjectSubjectsController.prototype = {
         var view = new ModalView({model: message});
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
         $('#modal-message').modal('show');
-    },
-
-    applySort(sort_by) {
-        var subjs = this.getSubjectsList();
-        subjs.sort_by = sort_by;
-        subjs.sort();
     },
 
     // file changes are sent to server after the modal is shown

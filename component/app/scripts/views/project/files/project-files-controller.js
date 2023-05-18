@@ -58,8 +58,10 @@ function ProjectFilesController(controller) {
     this.cleanUpload();
 
     // file list view
+    this.filteredFiles = null;
     this.mainView = new ProjectFilesView({controller: this, model: this.model});
     this.filterController = new FilterController(this, "vdjserver_file");
+    this.filterController.constructValues(this.pairedList);
     this.filterController.showFilter();
 }
 
@@ -97,9 +99,23 @@ ProjectFilesController.prototype = {
         this.pairedList.add(m);
     },
 
+    applyFilter(filters) {
+        if (filters) {
+            this.filteredFiles = this.pairedList.filterCollection(filters);
+
+            this.filteredFiles.sort_by = this.pairedList.sort_by;
+            this.filteredFiles.sort();
+        } else this.filteredFiles = null;
+
+        this.showProjectFilesList();
+    },
+
     // show project files
     showProjectFilesList() {
-        this.mainView.showProjectFilesList(this.getPairedList());
+        if (this.filteredFiles)
+            this.mainView.showProjectFilesList(this.filteredFiles);
+        else
+            this.mainView.showProjectFilesList(this.pairedList);
         this.filterController.showFilter();
 
         if (this.uploadFiles) {

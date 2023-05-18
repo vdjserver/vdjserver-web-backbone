@@ -29,7 +29,7 @@
 
 import Backbone from 'backbone';
 import { ADC } from 'Scripts/backbone/backbone-adc';
-import ADCRepertoire from 'Scripts/models/adc-repertoire';
+import { ADCRepertoire, ADCStudy } from 'Scripts/models/adc-repertoire';
 
 import Project from 'Scripts/models/agave-project';
 import { Subject, Diagnosis, SampleProcessing, Repertoire } from 'Scripts/models/agave-metadata';
@@ -55,6 +55,7 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
         return;
     },
 
+/*
     // apply filters to generate a new collection
     filterCollection(filters) {
         var filtered = new ADCRepertoireCollection(null, {repository: this['repository']});
@@ -138,11 +139,11 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
         }
 
         return filtered;
-    }
+    } */
 });
 
 export var ADCStudyCollection = ADC.Collection.extend({
-    model: Backbone.Model,
+    model: ADCStudy,
 
     initialize(parameters) {
         this.sort_by = 'newest';
@@ -163,7 +164,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
             // TODO: blank study_id?
             var study = this.get(model.get('study')['study_id']);
             if (! study) {
-                study = new Backbone.Model();
+                study = new ADCStudy();
                 study.set('id', model.get('study')['study_id']);
                 study.set('study', new Project({value: model.get('study')}));
                 this.add(study);
@@ -341,6 +342,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
         }
     },
 
+/*
     // this is not generic but customized for our objects
     getAllUniqueValues(field) {
         var values = [];
@@ -435,7 +437,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
             }
         }
         return values;
-    },
+    }, */
 
     countBySubject(field) {
         var counts = {};

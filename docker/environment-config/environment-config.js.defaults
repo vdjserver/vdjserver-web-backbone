@@ -216,14 +216,14 @@ var EnvironmentConfig = {
         'adc_rearrangement': {
         },
         'vdjserver_file': [
-            { 'title': "File Name", 'field': "subject.subject_id"},
-            { 'title': "File Type", 'field': "subject.subject_id"},
-            { 'title': "File Direction", 'field': "subject.subject_id"},
+            { 'title': "File Name", 'field': "name"},
+            { 'title': "File Type", 'field': "fileType", 'data': true},
+            { 'title': "File Direction", 'field': "readDirection", 'data': true},
         ],
         'airr_subject': [
-            { 'title': "Subject ID", 'field': "subject.subject_id"},
-            { 'title': "Subject Species", 'field': "subject.species", 'data': true},
-            { 'title': "Subject Sex", 'field': "subject.sex", 'schema': { 'object': 'Subject', 'property': 'sex' }},
+            { 'title': "Subject ID", 'field': "subject_id"},
+            { 'title': "Subject Species", 'field': "species", 'data': true},
+            { 'title': "Subject Sex", 'field': "sex", 'schema': { 'object': 'Subject', 'property': 'sex' }},
             { 'title': "Disease Diagnosis", 'field': "diagnosis.disease_diagnosis", 'data': true},
         ],
         'airr_repertoire': [

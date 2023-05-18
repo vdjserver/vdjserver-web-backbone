@@ -74,9 +74,10 @@ FilterController.prototype = {
 
     applyFilter: function(filters) {
         this.filters = filters;
-        console.log('applyFilter:', this.filters);
-        this.controller.applyFilter(this.filters);
-        console.log(this.filters);
+        if ((!filters['full_text_search']) && (filters['filters'].length == 0))
+            this.controller.applyFilter(null);
+        else
+            this.controller.applyFilter(this.filters);
         this.showFilter();
     },
 
@@ -84,6 +85,7 @@ FilterController.prototype = {
         this.mainView = new FilterQueryView({controller: this, model: this.filter_model, filters: this.filters});
         App.AppController.navController.setController(this);
         App.AppController.navController.setFilterBarStatus(this.mainView, this.show_filter);
+        if (this.show_filter) this.mainView.setFocus();
     },
 
     shouldToggleFilterBar: function() {

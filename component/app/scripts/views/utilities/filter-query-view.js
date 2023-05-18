@@ -151,7 +151,7 @@ export default Marionette.View.extend({
         },
     },
 
-    onAttach() {
+    setFocus() {
         // see if there is a filter text box we should focus on
         var av = $('[id=filter-query-text]');
         for (var i = 0; i < av.length; ++i) {
@@ -164,6 +164,10 @@ export default Marionette.View.extend({
         }
         // otherwise focus on full text search
         if (av.length == 0) $('#filter-query-search').focus();
+    },
+
+    onAttach() {
+        this.setFocus();
     },
 
     // construct filters from view state

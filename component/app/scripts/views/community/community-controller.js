@@ -245,20 +245,26 @@ CommunityController.prototype = {
     },
 
     applyFilter(filters) {
-        this.filteredStudies = new ADCStudyCollection();
-        this.filteredRepertoires = {};
-        for (var i = 0; i < this.repositoryInfo.length; ++i) {
-            var repo = this.repositoryInfo.at(i);
-            var r = repo.get('id');
-            this.filteredRepertoires[r] = this.repertoireCollection[r].filterCollection(filters);
-            this.filteredStudies.normalize(this.filteredRepertoires[r]);
+        if (filters) {
+            this.filteredStudies = new ADCStudyCollection();
+            this.filteredRepertoires = {};
+            for (var i = 0; i < this.repositoryInfo.length; ++i) {
+                var repo = this.repositoryInfo.at(i);
+                var r = repo.get('id');
+                this.filteredRepertoires[r] = this.repertoireCollection[r].filterCollection(filters);
+                this.filteredStudies.normalize(this.filteredRepertoires[r]);
+            }
+            this.filteredStudies.attachCountStatistics(this.rearrangementCounts);
+
+            this.filteredStudies.sort_by = this.studies.sort_by;
+            this.filteredStudies.sort();
+
+            this.projectView.showResultsList(this.filteredStudies);
+        } else {
+            this.filteredStudies = null;
+            this.filteredRepertoires = null;
+            this.projectView.showResultsList(this.studies);
         }
-        this.filteredStudies.attachCountStatistics(this.rearrangementCounts);
-
-        this.filteredStudies.sort_by = this.studies.sort_by;
-        this.filteredStudies.sort();
-
-        this.projectView.showResultsList(this.filteredStudies);
     },
 
     applySort(sort_by) {

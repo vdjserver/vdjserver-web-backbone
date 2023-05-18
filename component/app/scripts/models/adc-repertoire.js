@@ -37,7 +37,7 @@ import repertoire_template from 'airr-repertoire-template';
 //
 // This comes back from an ADC query in denormalized form.
 //
-export default ADC.Model.extend({
+export var ADCRepertoire = ADC.Model.extend({
     initialize: function(parameters) {
         ADC.Model.prototype.initialize.apply(this, [parameters]);
 
@@ -48,26 +48,8 @@ export default ADC.Model.extend({
         return this.apiHost + ADC.Repositories()[this.repository]['adc_path'] + '/repertoire/' + this.get('repertoire_id');
     },
 
-    // flatten all values into a single string for easy search
-    generateFullText(context) {
-        var text = '';
-        if ((typeof context) == 'string') {
-            text += ' ' + context;
-            return text;
-        }
-        if ((typeof context) == 'object') {
-            for (var o in context)
-                text += this.generateFullText(context[o]);
-            return text;
-        }
-        if (Array.isArray(context)) {
-            for (var i = 0; i < context.length; ++i)
-                text += this.generateFullText(context[i]);
-            return text;
-        }
-    },
-
-    getValueForField(field) {
+    // this is not generic but customized for our objects
+    getValuesForField(field) {
         var paths = field.split('.');
         if (paths.length == 1) return this.get(paths[0]);
         else {
@@ -113,5 +95,100 @@ export default ADC.Model.extend({
             }
         }
     },
+});
+
+export var ADCStudy = ADC.Model.extend({
+
+    // this is not generic but customized for our objects
+    getValuesForField(field) {
+        var values = [];
+        var paths = field.split('.');
+        if (paths.length != 2) return values; // what are you asking for?
+
+        switch(paths[0]) {
+            case 'study':
+                var study = this.get('study');
+                var value = study.get('value');
+                var obj = value[paths[1]];
+                if (obj == null) return values;
+                if (typeof obj === 'object') {
+                    // assume it is an ontology field
+                    if (obj['id'] == null) return values;
+                    let found = false;
+                    for (var k = 0; k < values.length; ++k) {
+                        if (values[k]['id'] == obj['id']) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (! found) values.push(obj);
+                } else {
+                    // plain value
+                    if (values.indexOf(obj) < 0) values.push(obj);
+                }
+                break;
+            case 'subject':
+                var subjects = this.get('subjects');
+                for (var j = 0; j < subjects.length; ++j) {
+                    var subject_model = subjects.at(j);
+                    var value = subject_model.get('value');
+                    var obj = value[paths[1]];
+                    if (obj == null) return values;
+                    if (typeof obj === 'object') {
+                        // assume it is an ontology field
+                        if (obj['id'] == null) return values;
+                        let found = false;
+                        for (var k = 0; k < values.length; ++k) {
+                            if (values[k]['id'] == obj['id']) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (! found) values.push(obj);
+                    } else {
+                        // plain value
+                        if (values.indexOf(obj) < 0) values.push(obj);
+                    }
+                }
+                break;
+            case 'diagnosis':
+                var subjects = this.get('subjects');
+                for (var j = 0; j < subjects.length; ++j) {
+                    var subject_model = subjects.at(j);
+                    var value = subject_model.get('value');
+                    var diagnosis = value['diagnosis'];
+                    if (diagnosis == null) continue;
+                    for (var d = 0; d < diagnosis.length; ++d) {
+                        var obj = diagnosis[d][paths[1]];
+                        if (obj == null) continue;
+                        if (typeof obj === 'object') {
+                            // assume it is an ontology field
+                            if (obj['id'] == null) continue;
+                            let found = false;
+                            for (var k = 0; k < values.length; ++k) {
+                                if (values[k]['id'] == obj['id']) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (! found) values.push(obj);
+                        } else {
+                            // plain value
+                            if (values.indexOf(obj) < 0) values.push(obj);
+                        }
+                    }
+                }
+                break;
+            case 'sample':
+            case 'data_processing':
+                return values;
+            case 'repertoire':
+                return values;
+            default:
+                return values;
+        }
+        return values;
+    },
+
 });
 

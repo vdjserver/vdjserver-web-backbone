@@ -665,6 +665,18 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
             return false;
         },
 
+        // this assumes the sub-objects have already been denormalized from their uuid
+        getValuesForField(field) {
+            var value = this.get('value');
+            var paths = field.split('.');
+            switch (paths[0]) {
+                case 'fileType':
+                    return File.getFileTypeById(value[paths[0]]);
+                default:
+                    return value[paths[0]];
+            }
+        },
+
         // Private Methods
         _formatTagsForSave: function(tagString) {
 
