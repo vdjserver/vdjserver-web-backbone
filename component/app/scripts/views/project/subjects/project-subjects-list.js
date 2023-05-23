@@ -73,8 +73,10 @@ var SubjectDetailView = Marionette.View.extend({
 
     templateContext() {
         var editMode = false;
+        var values = this.model.airr_schema.properties.sex.enum;
         return {
             view_mode: this.model.view_mode,
+            values: values,
         }
     },
 

@@ -91,8 +91,9 @@
                     </label>
 
                     <select class="custom-select" name="sex" id="sex" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="female"{{#ifEquals value.sex "female"}}selected{{/ifEquals}}>female</option>
-                      <option value="male" {{#ifEquals value.sex "male"}}selected{{/ifEquals}}>male</option>
+                        {{#each values}}
+                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sex}}selected{{/ifEquals}}>{{this}}</option>
+                        {{/each}}
                     </select>
                 </div>
 
@@ -198,11 +199,7 @@
                         Race:
                     </label>
 
-                    <select class="custom-select" name="race" id="race" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="1">Not provided</option>
-                      <option value="2">White</option>
-                      <option value="2">Black</option>
-                    </select>
+                    <input type="text" class="form-control" name="race" id="race" value="{{value.race}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                 </div>
 
             </div>
