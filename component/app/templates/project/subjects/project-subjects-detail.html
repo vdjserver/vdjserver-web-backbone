@@ -57,9 +57,9 @@
                     </label>
 
                     <select class="custom-select" name="species" id="species" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="1">Human</option>
-                      <option value="2">Monkey</option>
-                      <option value="3">Mouse</option>
+                      <option id="NCBITAXON:9606" value="Homo sapiens" {{#ifEquals value.species.id "NCBITAXON:9606"}}selected{{/ifEquals}}>Homo sapiens</option>
+                      <option id="NCBITAXON:9544" value="Macaca mulatta" {{#ifEquals value.species.id "NCBITAXON:9544"}}selected{{/ifEquals}}>Macaca mulatta</option>
+                      <option id="NCBITAXON:10088" value="Mus musculus" {{#ifEquals value.species.id "NCBITAXON:10088"}}selected{{/ifEquals}}>Mus musculus</option>
                     </select>
                 </div>
 
@@ -73,11 +73,10 @@
                         </span>
                         Strain:
                     </label>
-                    <select class="custom-select" name="strain_name" id="strain_name" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="3">Not provided</option>
-                      <option value="1">BALB/c</option>
-                      <option value="2">C57BL/6</option>
-                    </select>
+                    <input type="text" class="form-control" name="strain_name" id="strain_name" value="{{value.strain_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a strain.
+                    </div>
                 </div>
 
                 <div class="form-group col-md-2">
@@ -92,8 +91,8 @@
                     </label>
 
                     <select class="custom-select" name="sex" id="sex" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="1">Female</option>
-                      <option value="2">Male</option>
+                      <option value="female"{{#ifEquals value.sex "female"}}selected{{/ifEquals}}>female</option>
+                      <option value="male" {{#ifEquals value.sex "male"}}selected{{/ifEquals}}>male</option>
                     </select>
                 </div>
 

@@ -86,6 +86,8 @@ var SubjectDetailView = Marionette.View.extend({
             this.controller.showProjectSubjectsList();
         },
         'change .form-control': 'updateField',
+        'change .custom-select': 'updateDropDown',
+        'change #species': 'updateSpecies',
 
     },
 
@@ -120,6 +122,25 @@ willChange: 'unset',
         let value = this.model.get('value');
         value[e.target.name] = e.target.value;
         this.model.set('value', value);
+    },
+
+    updateDropDown: function(e) {
+        let value = this.model.get('value');
+        value[e.target.name] = e.target.value;
+        this.model.set('value', value);
+    },
+
+    updateSpecies: function(e) {
+        let value = this.model.get('value');
+        value[e.target.name] = { id: e.target.id, label: e.target.value };
+        var parentSpecies = document.getElementById("species"); var childSpecies;
+        for(var i = 0; i < parentSpecies.childNodes.length; i++) {
+            childSpecies = parentSpecies.childNodes[i];
+            if(childSpecies.nodeName == "OPTION" && childSpecies.value == e.target.value) {
+                value[e.target.name] = { id: childSpecies.id, label: childSpecies.value };
+                this.model.set('value', value);
+            }
+        }
     },
 });
 
