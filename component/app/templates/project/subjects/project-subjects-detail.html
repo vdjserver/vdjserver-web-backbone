@@ -39,7 +39,7 @@
                         Synthetic:
                     </label>
 
-                    <select class="custom-select" name="synthetic" id="synthetic" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select" name="synthetic" id="synthetic" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="true">True</option>
                       <option value="false">False</option>
                     </select>
@@ -56,7 +56,7 @@
                         Species:
                     </label>
 
-                    <select class="custom-select" name="species" id="species" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select ontology-select" name="species" id="species" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option id="NCBITAXON:9606" value="Homo sapiens" {{#ifEquals value.species.id "NCBITAXON:9606"}}selected{{/ifEquals}}>Homo sapiens</option>
                       <option id="NCBITAXON:9544" value="Macaca mulatta" {{#ifEquals value.species.id "NCBITAXON:9544"}}selected{{/ifEquals}}>Macaca mulatta</option>
                       <option id="NCBITAXON:10088" value="Mus musculus" {{#ifEquals value.species.id "NCBITAXON:10088"}}selected{{/ifEquals}}>Mus musculus</option>
@@ -90,7 +90,7 @@
                         Sex:
                     </label>
 
-                    <select class="custom-select" name="sex" id="sex" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select" name="sex" id="sex" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each values}}
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sex}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
@@ -111,7 +111,7 @@
                         Age Type:
                     </label>
 
-                    <select class="custom-select" name="age" id="age" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select" name="age" id="age" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="point">Point</option>
                       <option value="range">Range</option>
                     </select>
@@ -164,7 +164,7 @@
                         Unit:
                     </label>
 
-                    <select class="custom-select" name="age_unit" id="age_unit" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select ontology-select" name="age_unit" id="age_unit" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="point">day(s)</option>
                       <option value="range">week(s)</option>
                       <option value="range">month(s)</option>
