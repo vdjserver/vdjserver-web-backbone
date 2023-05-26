@@ -112,12 +112,12 @@
                     </label>
 
                     <select class="custom-select value-select" name="age" id="age" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="point">Point</option>
-                      <option value="range">Range</option>
+                      <option value="point" {{#if pointMode}}selected{{/if}}>point</option>
+                      <option value="range" {{#unless pointMode}}selected{{/unless}}>range</option>
                     </select>
                 </div>
 
-                <div class="form-group col-md-1">
+                <div class="form-group col-md-1" id="age_min_div" {{#if pointMode}}hidden{{/if}}>
                     <label for="age_min">
                         <span>
                             <!-- Tooltip-->
@@ -135,7 +135,7 @@
                     </div>
                 </div>
 
-                <div class="form-group col-md-1">
+                <div class="form-group col-md-1" id="age_max_div" {{#if pointMode}}hidden{{/if}}>
                     <label for="age_max">
                         <span>
                             <!-- Tooltip-->
@@ -153,6 +153,24 @@
                     </div>
                 </div>
 
+                <div class="form-group col-md-1" id="age_point_div" {{#unless pointMode}}hidden{{/unless}}>
+                    <label for="age_max">
+                        <span>
+                            <!-- Tooltip-->
+                        {{{FieldStar "Subject" "age_min"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Subject" "age_min"}}}
+                        Age:
+                    </label>
+
+                    <input type="text" class="form-control" name="age_point" id="age_point" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+
+                    <div class="invalid-feedback">
+                        Please enter a valid age.
+                    </div>
+                </div>
+
                 <div class="form-group col-md-2">
                     <label for="age_unit">
                         <span>
@@ -165,10 +183,11 @@
                     </label>
 
                     <select class="custom-select ontology-select" name="age_unit" id="age_unit" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="point">day(s)</option>
-                      <option value="range">week(s)</option>
-                      <option value="range">month(s)</option>
-                      <option value="range">year(s)</option>
+                      <option id="UO_0000032" value="hour" {{#ifEquals value.age_unit.id "UO_0000032"}}selected{{/ifEquals}}>hour(s)</option>
+                      <option id="UO_0000033" value="day" {{#ifEquals value.age_unit.id "UO_0000033"}}selected{{/ifEquals}}>day(s)</option>
+                      <option id="UO_0000034" value="week" {{#ifEquals value.age_unit.id "UO_0000034"}}selected{{/ifEquals}}>week(s)</option>
+                      <option id="UO_0000035" value="month" {{#ifEquals value.age_unit.id "UO_0000035"}}selected{{/ifEquals}}>month(s)</option>
+                      <option id="UO_0000036" value="year" {{#ifEquals value.age_unit.id "UO_0000036"}}selected{{/ifEquals}}>year(s)</option>
                     </select>
                 </div>
 

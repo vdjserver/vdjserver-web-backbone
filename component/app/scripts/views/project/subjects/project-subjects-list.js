@@ -73,9 +73,20 @@ var SubjectDetailView = Marionette.View.extend({
 
     templateContext() {
         var editMode = false;
+var pointMode = false;
+console.log("ages  " + this.model.attributes.value.age_min + " " + this.model.attributes.value.age_max);
+let value = this.model.get('value');
+console.log("ages2 " + value["age_min"] + " " + value["age_max"]);
+
+if(parseInt(this.model.attributes.value.age_max) == parseInt(this.model.attributes.value.age_min)) { 
+//document.getElementById("age_min_div").hidden = true;
+  pointMode = true; 
+console.log("hiding min max from templateContext");
+}
         var values = this.model.airr_schema.properties.sex.enum;
         return {
             view_mode: this.model.view_mode,
+pointMode: pointMode,
             values: values,
         }
     },
@@ -123,13 +134,34 @@ willChange: 'unset',
     updateField: function(e) {
         let value = this.model.get('value');
         value[e.target.name] = e.target.value;
+if(e.target.name == "age_min" || e.target.name == "age_max" || e.target.name == "age_point") {
+  value[e.target.name] = parseInt(e.target.value); 
+}
         this.model.set('value', value);
+console.log(this.model);
     },
 
     updateDropDown: function(e) {
         let value = this.model.get('value');
         value[e.target.name] = e.target.value;
+if(e.target.value == "point") {
+  console.log("changed to point; hiding min/max");
+  document.getElementById("age_min_div").hidden = true;
+  document.getElementById("age_max_div").hidden = true;
+  document.getElementById("age_point_div").hidden = false;
+  value["age_min"] = parseInt(value["age_point"]);
+  value["age_max"] = value["age_min"];
+}
+if(e.target.value == "range") { 
+  console.log("changed to range; showing min/max");
+  document.getElementById("age_min_div").hidden = false;
+  document.getElementById("age_max_div").hidden = false;
+  document.getElementById("age_point_div").hidden = true;
+  value["age_min"] = parseInt(value["age_min"]);
+  value["age_max"] = parseInt(value["age_max"]);
+}
         this.model.set('value', value);
+console.log(this.model);
     },
 
     updateOntology: function(e) {
