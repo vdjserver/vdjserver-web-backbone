@@ -146,17 +146,17 @@ console.log(this.model);
         value[e.target.name] = e.target.value;
 if(e.target.value == "point") {
   console.log("changed to point; hiding min/max");
-  document.getElementById("age_min_div").hidden = true;
-  document.getElementById("age_max_div").hidden = true;
-  document.getElementById("age_point_div").hidden = false;
+  document.getElementById("age_min_div_" + value["subject_id"]).hidden = true;
+  document.getElementById("age_max_div_" + value["subject_id"]).hidden = true;
+  document.getElementById("age_point_div_" + value["subject_id"]).hidden = false;
   value["age_min"] = parseInt(value["age_point"]);
   value["age_max"] = value["age_min"];
 }
 if(e.target.value == "range") { 
   console.log("changed to range; showing min/max");
-  document.getElementById("age_min_div").hidden = false;
-  document.getElementById("age_max_div").hidden = false;
-  document.getElementById("age_point_div").hidden = true;
+  document.getElementById("age_min_div_" + value["subject_id"]).hidden = false;
+  document.getElementById("age_max_div_" + value["subject_id"]).hidden = false;
+  document.getElementById("age_point_div_" + value["subject_id"]).hidden = true;
   value["age_min"] = parseInt(value["age_min"]);
   value["age_max"] = parseInt(value["age_max"]);
 }

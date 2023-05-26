@@ -117,7 +117,7 @@
                     </select>
                 </div>
 
-                <div class="form-group col-md-1" id="age_min_div" {{#if pointMode}}hidden{{/if}}>
+                <div class="form-group col-md-1" id="age_min_div_{{value.subject_id}}" {{#if pointMode}}hidden{{/if}}>
                     <label for="age_min">
                         <span>
                             <!-- Tooltip-->
@@ -135,7 +135,7 @@
                     </div>
                 </div>
 
-                <div class="form-group col-md-1" id="age_max_div" {{#if pointMode}}hidden{{/if}}>
+                <div class="form-group col-md-1" id="age_max_div_{{value.subject_id}}" {{#if pointMode}}hidden{{/if}}>
                     <label for="age_max">
                         <span>
                             <!-- Tooltip-->
@@ -153,7 +153,7 @@
                     </div>
                 </div>
 
-                <div class="form-group col-md-1" id="age_point_div" {{#unless pointMode}}hidden{{/unless}}>
+                <div class="form-group col-md-1" id="age_point_div_{{value.subject_id}}" {{#unless pointMode}}hidden{{/unless}}>
                     <label for="age_max">
                         <span>
                             <!-- Tooltip-->
