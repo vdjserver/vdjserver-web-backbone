@@ -209,7 +209,7 @@ module.exports = function(env, argv) {
                 //'models/notification': path.resolve(__dirname,'app') + '/scripts/models/notification',
 
                 // AIRR Schema
-                'airr-schema': path.resolve(__dirname,'airr-standards') + '/specs/airr-schema.yaml',
+                'airr-schema': path.resolve(__dirname,'node_modules') + '/airr-js/airr-schema-openapi3-deref.yaml',
                 'airr-repertoire-template': path.resolve(__dirname,'app') + '/scripts/vendor/blank.airr.json'
             },
             extensions: ['.js'],
