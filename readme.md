@@ -7,12 +7,12 @@ The `v2-develop` branch is VDJServer V2 GUI development.
 
 ## Deployments
 
- * Local machine: <http://localhost:9001>
- * Development: <https://vdj-dev.tacc.utexas.edu>
- * Staging: <https://vdj-staging.tacc.utexas.edu>
- * Production: <https://vdjserver.org>
+ * Local Machine: <http://localhost:9001>
+ * Development Server: <https://vdj-dev.tacc.utexas.edu>
+ * Staging Server: <https://vdj-staging.tacc.utexas.edu>
+ * Production Server: <https://vdjserver.org>
 
-## Development Setup
+## Local Machine Development Setup
 
 The development setup is configured to mount the local directory with the source code files
 inside the docker container so that they can be modified and be available without regenerating the docker image.
@@ -68,9 +68,9 @@ docker exec vdjserver-backbone npm run dev
 
 No testing framework yet...
 
-## Production Setup
+## Production/Staging/Development Server Setup
 
-In the production environment, `docker-compose` is used at the higher-level (vdjserver-web) to compose the web application,
+In the server environment, `docker compose` is used at the higher-level (vdjserver-web) to compose the web application,
 the web api and the web server together.
 
 ## Development Guidelines
