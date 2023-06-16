@@ -7,11 +7,12 @@ The `v2-develop` branch is VDJServer V2 GUI development.
 
 ## Deployments
 
- * Development: <https://vdj-dev.tacc.utexas.edu>
- * Staging: <https://vdj-staging.tacc.utexas.edu>
- * Production: <https://vdjserver.org>
+ * Local Machine: <http://localhost:9001>
+ * Development Server: <https://vdj-dev.tacc.utexas.edu>
+ * Staging Server: <https://vdj-staging.tacc.utexas.edu>
+ * Production Server: <https://vdjserver.org>
 
-## Development Setup
+## Local Machine Development Setup
 
 The development setup is configured to mount the local directory with the source code files
 inside the docker container so that they can be modified and be available without regenerating the docker image.
@@ -32,6 +33,9 @@ vim component/app/scripts/config/environment-config.js
 - Build the docker image
 docker build -t vdjserver/backbone:v2-develop .
 
+- Build the airr-js package in airr-standards
+docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-v2-web-backbone vdjserver/backbone:v2-develop bash -c "cd airr-standards/lang/js && npm install --unsafe-perm"
+
 - For Mac/Linux, run docker image (with name vdjserver-backbone) with source code directory mounted
 docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component:/var/www/html/vdjserver-v2-web-backbone vdjserver/backbone:v2-develop bash -c "npm install && npm run eslint app/scripts && npm run dev && npm start"
 
@@ -40,6 +44,8 @@ docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v ${PWD}/component:/v
 ```
 
 *Note for Windows users: If you run the Mac/Linux command with a Mac-created container, (ie. `vdjserver/backbone:develop`), then `npm` will get stuck while trying to install `fsevents` (which is native to MacOS FSEvents; [read more](https://www.npmjs.com/package/fsevents)). Workaround: use a Windows-created container or the following with the Mac/Linux code:* `npm install --no-optional`
+
+Now you can access the website from your browser by going to `http://localhost:9001`.
 
 Doing a CTRL-C will not completely stop the docker container. As the next time you perform `docker run`, you will get an error that
 the container name is already in use. You need to perform `docker stop` to completely stop the container.
@@ -60,31 +66,12 @@ docker exec vdjserver-backbone npm run dev
 
 ## Testing Setup
 
-## Production Setup
+No testing framework yet...
 
-In the production environment, `docker-compose` is used at the higher-level (vdjserver-web) to compose the web application,
-the web api and the web server together. These instructions are mainly to test that production setup
-for the web application outside of the production website.
+## Production/Staging/Development Server Setup
 
-The production setup is configured such that everything resides within the docker image except for
-the `environment-config.js` file with the global configuration. This file is mapped into the container.
-
-```
-- Clone project and init submodules
-git clone http://bitbucket.org/vdjserver/vdjserver-web-backbone.git
-cd vdjserver-web-backbone
-git submodule update --init --recursive
-
-- Setup local environment config file
-cp docker/environment-config/environment-config.js.defaults component/app/scripts/config/environment-config.js
-vim component/app/scripts/config/environment-config.js
-
-- Build the docker image
-docker build -t vdjserver/backbone .
-
-- Run docker image (with name vdjserver-backbone) with source code directory mounted
-docker run -t -p 9001:9001 --rm --name vdjserver-backbone -v $(pwd)/component/app/scripts/config/environment-config.js:/var/www/html/vdjserver-backbone/app/scripts/config/environment-config.js vdjserver/backbone bash -c "npm install && npm run dev && npm start"
-```
+In the server environment, `docker compose` is used at the higher-level (vdjserver-web) to compose the web application,
+the web api and the web server together.
 
 ## Development Guidelines
 
