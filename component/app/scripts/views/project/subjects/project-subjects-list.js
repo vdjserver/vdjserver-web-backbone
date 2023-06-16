@@ -113,7 +113,7 @@ html: true,
 positionFixed: true,
 //offset: '100, 100',
 //fallbackPlacement : ['left', 'right', 'top', 'bottom'],*/
-container: 'body',
+container: 'body', 
 /*animate: false,
 transform: false,
 //animation: false,*/
