@@ -20,13 +20,13 @@
                         {{{FieldHelpPopover "Subject" "subject_id"}}}
                         Subject ID:
                     </label>
-                    <input type="text" class="form-control" name="subject_id" id="subject_id" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="subject_id" id="subject_id" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid Subject ID.
                     </div>
                 </div>
-<button type="button" data-toggle="popover" data-trigger="click" data-html='true' data-container="body" title="Popover <b>title</b>" data-content="Hello. <b>bold</b>.">Click</button>
+<button type="button" data-toggle="popover"  data-html='true' title="Popover <b>title</b>" data-content="Hello. <b>bold</b>.">Click</button>
 
                 <div class="form-group col-md-2">
                     <label for="synthetic">
@@ -73,7 +73,7 @@
                         </span>
                         Strain:
                     </label>
-                    <input type="text" class="form-control" name="strain_name" id="strain_name" value="{{value.strain_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="strain_name" id="strain_name" value="{{value.strain_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a strain.
                     </div>
@@ -128,7 +128,7 @@
                         Min:
                     </label>
 
-                    <input type="text" class="form-control" name="age_min" id="age_min" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_min" id="age_min" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid minimum age.
@@ -146,7 +146,7 @@
                         Max:
                     </label>
 
-                    <input type="text" class="form-control" name="age_max" id="age_max" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_max" id="age_max" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid maximum age.
@@ -164,7 +164,7 @@
                         Age:
                     </label>
 
-                    <input type="text" class="form-control" name="age_min" id="age_min" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_min" id="age_min" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid age.
@@ -201,7 +201,7 @@
                         {{{FieldHelpPopover "Subject" "age_event"}}}
                         Age Event:
                     </label>
-                    <input type="text" class="form-control" name="age_event" id="age_event" placeholder="" value="{{value.age_event}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_event" id="age_event" placeholder="" value="{{value.age_event}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid age event.
                     </div>
@@ -218,7 +218,7 @@
                         Race:
                     </label>
 
-                    <input type="text" class="form-control" name="race" id="race" value="{{value.race}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="race" id="race" value="{{value.race}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                 </div>
 
             </div>
@@ -234,7 +234,7 @@
                         {{{FieldHelpPopover "Subject" "ancestry_population"}}}
                         Ancestry Population:
                     </label>
-                    <input type="text" class="form-control" name="ancestry_population" id="ancestry_population" placeholder="" value="{{value.ancestry_population}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="ancestry_population" id="ancestry_population" placeholder="" value="{{value.ancestry_population}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Ancestry Population.
                     </div>
@@ -250,7 +250,7 @@
                         {{{FieldHelpPopover "Subject" "ethnicity"}}}
                         Ethnicity:
                     </label>
-                    <input type="text" class="form-control" name="ethnicity" id="ethnicity" placeholder="" value="{{value.ethnicity}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="ethnicity" id="ethnicity" placeholder="" value="{{value.ethnicity}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Ethnicity.
                     </div>
@@ -266,7 +266,7 @@
                         {{{FieldHelpPopover "Subject" "linked_subjects"}}}
                         Linked Subject:
                     </label>
-                    <input type="text" class="form-control" name="linked_subjects" id="linked_subjects" placeholder="" value="{{value.linked_subjects}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="linked_subjects" id="linked_subjects" placeholder="" value="{{value.linked_subjects}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Linked Subjects.
                     </div>
@@ -282,7 +282,7 @@
                         {{{FieldHelpPopover "Subject" "link_type"}}}
                         Link Type:
                     </label>
-                    <input type="text" class="form-control" name="link_type" id="link_type" placeholder="" value="{{value.link_type}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="link_type" id="link_type" placeholder="" value="{{value.link_type}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter valid a Link Type.
                     </div>
@@ -320,13 +320,14 @@
         </div>
     </div>
 
+{{#each value.diagnosis}}
     <div class="row general-table-row align-items-center">
         <div class="col-md-10">
         <form method="post" role="form" id="project-subject-form" class="project-subject-form needs-validation" name="subject" novalidate>
             <div class="form-row project-subject-row">
                 <div class="form-group col-md-2">
                     <label>
-                        <i class="far fa-diagnoses"></i> Diagnosis Entry 1:
+                        <i class="far fa-diagnoses"></i> Diagnosis Entry {{@index}}:
                     </label>
                 </div>
 
@@ -338,7 +339,7 @@
                         Disease Diagnosis:
                         <!-- Popover -->
                     </label>
-                    <input type="text" class="form-control" name="disease_diagnosis" id="disease_diagnosis" value="{{value.diagnosis.0.disease_diagnosis.label}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-diagnosis" name="disease_diagnosis" id="disease_diagnosis_{{@index}}" value="{{this.disease_diagnosis.label}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid disease diagnosis.
@@ -353,7 +354,7 @@
                         Disease Length:
                         <!-- Popover -->
                     </label>
-                    <input type="text" class="form-control" name="disease_length" id="disease_length" value="{{value.diagnosis.0.disease_length}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-diagnosis" name="disease_length" id="disease_length_{{@index}}" value="{{this.disease_length}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid disease length.
@@ -368,7 +369,7 @@
                         Disease Stage:
                         <!-- Popover -->
                     </label>
-                    <input type="text" class="form-control" name="disease_stage" id="disease_stage" value="{{value.diagnosis.0.disease_stage}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-diagnosis" name="disease_stage" id="disease_stage_{{@index}}" value="{{this.disease_stage}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid disease stage.
@@ -385,7 +386,7 @@
                         Study Group Description:
                         <!-- Popover -->
                     </label>
-                    <input type="text" class="form-control" name="study_group_description" id="study_group_description" value="{{value.diagnosis.0.study_group_description}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-diagnosis" name="study_group_description" id="study_group_description_{{@index}}" value="{{this.study_group_description}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid study group description.
@@ -400,7 +401,7 @@
                         Prior Therapies:
                         <!-- Popover -->
                     </label>
-                    <input type="text" class="form-control" name="prior_therapies" id="prior_therapies" value="{{value.diagnosis.0.prior_therapies}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-diagnosis" name="prior_therapies" id="prior_therapies_{{@index}}" value="{{this.prior_therapies}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid prior therapies.
@@ -415,7 +416,7 @@
                         Immunogen:
                         <!-- Popover -->
                     </label>
-                    <input type="text" class="form-control" name="immunogen" id="immunogen" value="{{value.diagnosis.0.immunogen}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-diagnosis" name="immunogen" id="immunogen_{{@index}}" value="{{this.immunogen}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid immunogen.
@@ -430,7 +431,7 @@
                         Intervention:
                         <!-- Popover -->
                     </label>
-                    <input type="text" class="form-control" name="intervention" id="intervention" value="{{value.diagnosis.0.intervention}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-diagnosis" name="intervention" id="intervention_{{@index}}" value="{{this.intervention}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid intervention.
@@ -447,7 +448,7 @@
                         Medical History:
                         <!-- Popover -->
                     </label>
-                    <input type="text" class="form-control" name="medical_history" id="medical_history" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-diagnosis" name="medical_history" id="medical_history_{{@index}}" value="{{this.medical_history}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid medical history.
@@ -478,6 +479,7 @@
             </div>
         </div>
     </div>
+{{/each}}
 
 </div>
 

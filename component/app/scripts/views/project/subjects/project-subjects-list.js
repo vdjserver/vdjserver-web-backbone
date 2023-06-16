@@ -94,10 +94,11 @@ var SubjectDetailView = Marionette.View.extend({
             this.controller.flagSubjectsEdits();
             this.controller.showProjectSubjectsList();
         },
-        'change .form-control': 'updateField',
+        'change .form-control-subject': 'updateField',
         'change .value-select': 'updateDropDown',
         'change .ontology-select': 'updateOntology',
 
+        'change .form-control-diagnosis': 'updateFieldDiagnosis',
     },
 
     onAttach() {
@@ -111,16 +112,18 @@ animation: false,
 html: true,
 positionFixed: true,
 //offset: '100, 100',
-//fallbackPlacement : ['left', 'right', 'top', 'bottom'],
+//fallbackPlacement : ['left', 'right', 'top', 'bottom'],*/
 container: 'body',
-animate: false,
+/*animate: false,
 transform: false,
 //animation: false,*/
 transform: 'none',
         });
 
         $('[data-toggle="tooltip"]').tooltip({
-placement: 'top',
+placement: 'left',
+//delay: {show: 5000, hide: 100},
+boundary: 'viewport',
 animation: false,
 transform: 'none',
 willChange: 'unset',
@@ -157,6 +160,15 @@ willChange: 'unset',
     updateOntology: function(e) {
         let value = this.model.get('value');
         value[e.target.name] = { id: e.target.selectedOptions[0]['id'], label: e.target.value };
+        this.model.set('value', value);
+    },
+
+    updateFieldDiagnosis: function(e) {
+        let value = this.model.get('value');
+        value['diagnosis'][0][e.target.name] = e.target.value;
+        if(e.target.name == "age_min" || e.target.name == "age_max") {
+            value['diagnosis'][0][e.target.name] = parseInt(e.target.value); 
+        }
         this.model.set('value', value);
     },
 

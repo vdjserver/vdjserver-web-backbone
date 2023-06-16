@@ -23,3 +23,14 @@
     </div>
 </div>
 
+{{#each value.diagnosis}}
+<div id="project-subjects-summary" class="row general-table-row align-items-center">
+    <div class="col-md-6">
+        <b>Study Group Description:</b> {{this.study_group_description}}
+    </div>
+    <div class="col-md-6">
+        <b>Disease Diagnosis:</b> {{this.disease_diagnosis.label}} ({{this.disease_diagnosis.id}})
+    </div>
+</div>
+{{/each}}
+
