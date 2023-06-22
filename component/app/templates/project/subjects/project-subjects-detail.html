@@ -327,7 +327,7 @@
             <div class="form-row project-subject-row">
                 <div class="form-group col-md-2">
                     <label>
-                        <i class="far fa-diagnoses"></i> Diagnosis Entry {{@index}}:
+                        <i class="fa fa-diagnoses"></i> Diagnosis Entry {{@index}}:
                     </label>
                 </div>
 
@@ -460,24 +460,37 @@
         </form>
         </div>
 
-        <div class="col-md-2">
-            <div class="row">
-                <div class="col project-buttons-right project-buttons-margin-bottom">
-                    <div class="btn-group" role="group" aria-label="Button group">
-                        <button type="button" class="btn btn-create" name="{{uuid}}" id="project-add-diagnosis"><i class="fa fa-plus"></i> Add Diagnosis</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col project-buttons-right project-buttons-margin-bottom">
-                    <div class="btn-group" role="group" aria-label="Button group">
-                        <button type="button" class="btn btn-delete" name="{{uuid}}" id="project-subject-delete">
-                            <i class="fa fa-trash" aria-hidden="true"></i> Delete
-                        </button>
-                    </div>
-                </div>
+<div class="col-md-2">
+<div class="row">
+
+<div class="col-md-2 general-buttons-right">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-create btn-sm dropdown-toggle" type="button" id="project-subjects-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-vial" aria-hidden="true"></i>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item project-subjects-detail-add-diagnosis" type="button" id="project-subjects-add-diagnosis" name="add">
+                    <i class="fa fa-plus"></i>
+                    Add Diagnosis
+                </button>
+                <button class="dropdown-item project-subjects-detail-duplicate-diagnosis" type="button" id="project-subjects-duplicate-diagnosis_{{@index}}" name="duplicate">
+                    <i class="fa fa-copy"></i>
+                    Duplicate Diagnosis
+                </button>
+                <div class="dropdown-divider" width="10%"></div>
+                <button class="dropdown-item project-subjects-detail-delete-diagnosis" type="button" id="project-subjects-delete-diagnosis_{{@index}}" name="delete">
+                    <i class="fa fa-trash"></i>
+                    Delete Diagnosis
+                </button>
+              </div>
             </div>
         </div>
+    </div>
+
+</div>
+</div>
+
     </div>
 {{/each}}
 

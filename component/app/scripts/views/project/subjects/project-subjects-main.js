@@ -31,6 +31,8 @@ import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
 import SubjectsListView from 'Scripts/views/project/subjects/project-subjects-list';
 import Syphon from 'backbone.syphon';
+import { Subject } from 'Scripts/models/agave-metadata';
+import { airr } from 'airr-js';
 
 
 // Project subjects buttons
@@ -91,6 +93,8 @@ var SubjectsView = Marionette.View.extend({
         'click #project-diagnosis-import': 'importDiagnosisTable',
         'click #project-diagnosis-export': 'exportDiagnosisTable',
 
+'click #project-subjects-new-subject': 'addSubject',
+
         'click #project-subjects-save-changes': function(e) {
             e.preventDefault();
             this.controller.saveSubjectsChanges(e);
@@ -132,6 +136,17 @@ var SubjectsView = Marionette.View.extend({
             editMode: this.editMode,
             current_sort: current_sort,
         }
+    },
+
+    addSubject: function() {
+console.log("Adding Subject");
+      let value = this.controller.getCollections();
+      var newSubject = new Subject();
+      newSubject.set('uuid', newSubject.cid);
+
+      value['subjectList'].add(newSubject);
+      //this.controller.saveSubjectsChanges();
+
     },
 
     updateHeader: function() {

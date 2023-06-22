@@ -27,6 +27,7 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import { airr } from 'airr-js';
 
 // subject summary view
 import summary_template from 'Templates/project/subjects/project-subjects-summary.html';
@@ -55,7 +56,41 @@ var SubjectSummaryView = Marionette.View.extend({
             this.controller.flagSubjectsEdits();
             this.controller.showProjectSubjectsList();
         },
+        'click .project-subjects-add-diagnosis': 'addDiagnosis',
+        'click .project-subjects-duplicate-diagnosis': 'duplicateDiagnosis',
+        'click .project-subjects-delete-diagnosis': 'deleteDiagnosis',
     },
+
+    addDiagnosis: function(e) {
+        let value = this.model.get('value');
+        var diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
+        var blankEntry = diagnosisSchema.template();
+
+//console.log(diagnosisSchema.validate_object(blankEntry));
+        value['diagnosis'].push(blankEntry);
+        this.model.set('value', value);
+        this.controller.saveSubjectsChanges(e);
+    },
+
+    duplicateDiagnosis: function(e) {
+        let value = this.model.get('value');
+        let index = e.target.id.split("_").slice(-1);
+
+        let dupl = value['diagnosis'][index];
+        value['diagnosis'].push(dupl);
+        this.model.set('value', value);
+        this.controller.saveSubjectsChanges(e);
+    },
+
+    deleteDiagnosis: function(e) {
+        let value = this.model.get('value');
+        let index = e.target.id.split("_").slice(-1);
+        value['diagnosis'].splice(index, 1);
+
+        this.model.set('value', value);
+        this.controller.saveSubjectsChanges(e);
+    },
+
 
 });
 
@@ -99,6 +134,9 @@ var SubjectDetailView = Marionette.View.extend({
         'change .ontology-select': 'updateOntology',
 
         'change .form-control-diagnosis': 'updateFieldDiagnosis',
+        'click .project-subjects-detail-add-diagnosis': 'addDiagnosis',
+        'click .project-subjects-detail-duplicate-diagnosis': 'duplicateDiagnosis',
+        'click .project-subjects-detail-delete-diagnosis': 'deleteDiagnosis',
     },
 
     onAttach() {
@@ -159,17 +197,50 @@ willChange: 'unset',
 
     updateOntology: function(e) {
         let value = this.model.get('value');
+
         value[e.target.name] = { id: e.target.selectedOptions[0]['id'], label: e.target.value };
         this.model.set('value', value);
     },
 
     updateFieldDiagnosis: function(e) {
         let value = this.model.get('value');
-        value['diagnosis'][0][e.target.name] = e.target.value;
+//console.log(this.model);
+        let index = e.target.id.split("_").slice(-1);
+
+        value['diagnosis'][index][e.target.name] = e.target.value;
         if(e.target.name == "age_min" || e.target.name == "age_max") {
-            value['diagnosis'][0][e.target.name] = parseInt(e.target.value); 
+            value['diagnosis'][index][e.target.name] = parseInt(e.target.value); 
         }
         this.model.set('value', value);
+    },
+
+    addDiagnosis: function(e) {
+        let value = this.model.get('value');
+        var diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
+        var blankEntry = diagnosisSchema.template();
+
+        value['diagnosis'].push(blankEntry);
+        this.model.set('value', value);
+        this.controller.showProjectSubjectsList();
+    },
+
+    duplicateDiagnosis: function(e) {
+        let value = this.model.get('value');
+        let index = e.target.id.split("_").slice(-1);
+        let dupl = value['diagnosis'][index];
+
+        value['diagnosis'].push(dupl);
+        this.model.set('value', value);
+        this.controller.showProjectSubjectsList();
+    },
+
+    deleteDiagnosis: function(e) {
+        let value = this.model.get('value');
+        let index = e.target.id.split("_").slice(-1);
+
+        value['diagnosis'].splice(index, 1);
+        this.model.set('value', value);
+        this.controller.showProjectSubjectsList();
     },
 
 });

@@ -25,11 +25,35 @@
 
 {{#each value.diagnosis}}
 <div id="project-subjects-summary" class="row general-table-row align-items-center">
-    <div class="col-md-6">
+    <div class="col-md-5">
         <b>Study Group Description:</b> {{this.study_group_description}}
     </div>
-    <div class="col-md-6">
+    <div class="col-md-5">
         <b>Disease Diagnosis:</b> {{this.disease_diagnosis.label}} ({{this.disease_diagnosis.id}})
+    </div>
+    <div class="col-md-2 general-buttons-right">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-create btn-sm dropdown-toggle" type="button" id="project-subjects-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-vial" aria-hidden="true"></i>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item project-subjects-add-diagnosis" type="button" id="project-subjects-add-diagnosis" name="add">
+                    <i class="fa fa-plus"></i>
+                    Add Diagnosis
+                </button>
+                <button class="dropdown-item project-subjects-duplicate-diagnosis" type="button" id="project-subjects-duplicate-diagnosis_{{@index}}" name="duplicate">
+                    <i class="fa fa-copy"></i>
+                    Duplicate Diagnosis
+                </button>
+                <div class="dropdown-divider" width="10%"></div>
+                <button class="dropdown-item project-subjects-delete-diagnosis" type="button" id="project-subjects-delete-diagnosis_{{@index}}" name="delete">
+                    <i class="fa fa-trash"></i>
+                    Delete Diagnosis
+                </button>
+              </div>
+            </div>
+        </div>
     </div>
 </div>
 {{/each}}

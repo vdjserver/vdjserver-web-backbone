@@ -32,6 +32,7 @@ import { Agave } from 'Scripts/backbone/backbone-agave';
 // AIRR Schema
 import AIRRSchema from 'airr-schema';
 import repertoire_template from 'airr-repertoire-template';
+import { airr } from 'airr-js';
 
 // Subject model based upon AIRR Subject
 export var Subject = Agave.MetadataModel.extend({
@@ -40,7 +41,9 @@ export var Subject = Agave.MetadataModel.extend({
         this.airr_schema = AIRRSchema['Subject'];
 
         // make a deep copy from the template
-        var value = JSON.parse(JSON.stringify(repertoire_template['subject']));
+        var subjectSchema = new airr.SchemaDefinition('Subject');
+        var blankEntry = subjectSchema.template();
+        //var value = JSON.parse(JSON.stringify(repertoire_template['subject']));
         //console.log(value);
 
         // add VDJServer specific fields
@@ -52,7 +55,7 @@ export var Subject = Agave.MetadataModel.extend({
             {
                 name: 'subject',
                 owner: '',
-                value: value
+                value: blankEntry
             }
         );
     },
