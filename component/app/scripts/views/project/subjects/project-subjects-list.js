@@ -62,6 +62,7 @@ var SubjectSummaryView = Marionette.View.extend({
     },
 
     addDiagnosis: function(e) {
+e.preventDefault();
         let value = this.model.get('value');
         var diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
         var blankEntry = diagnosisSchema.template();
@@ -69,26 +70,36 @@ var SubjectSummaryView = Marionette.View.extend({
 //console.log(diagnosisSchema.validate_object(blankEntry));
         value['diagnosis'].push(blankEntry);
         this.model.set('value', value);
-        this.controller.saveSubjectsChanges(e);
+        //this.controller.saveSubjectsChanges(e);
+this.controller.flagSubjectsEdits();
+this.controller.showProjectSubjectsList();
     },
 
     duplicateDiagnosis: function(e) {
+e.preventDefault();
+    //this.model.view_mode = 'edit';
+
         let value = this.model.get('value');
         let index = e.target.id.split("_").slice(-1);
 
         let dupl = value['diagnosis'][index];
         value['diagnosis'].push(dupl);
         this.model.set('value', value);
-        this.controller.saveSubjectsChanges(e);
+        //this.controller.saveSubjectsChanges(e);
+this.controller.flagSubjectsEdits();
+this.controller.showProjectSubjectsList();
     },
 
     deleteDiagnosis: function(e) {
+e.preventDefault();
         let value = this.model.get('value');
         let index = e.target.id.split("_").slice(-1);
         value['diagnosis'].splice(index, 1);
 
         this.model.set('value', value);
-        this.controller.saveSubjectsChanges(e);
+        //this.controller.saveSubjectsChanges(e);
+this.controller.flagSubjectsEdits();
+this.controller.showProjectSubjectsList();
     },
 
 
