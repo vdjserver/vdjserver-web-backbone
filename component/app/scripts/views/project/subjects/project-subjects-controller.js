@@ -81,7 +81,7 @@ ProjectSubjectsController.prototype = {
 
     resetCollections() {
         // these collections should always point to the same models
-        this.subjectList = this.controller.subjectList.getClonedCollection();
+        this.subjectList = this.controller.subjectList.getClonedCollection(); //create the cloned collection
     },
 
     getSubjectsViewMode() {
