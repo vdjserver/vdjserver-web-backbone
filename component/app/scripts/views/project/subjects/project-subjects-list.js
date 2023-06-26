@@ -57,6 +57,7 @@ var SubjectSummaryView = Marionette.View.extend({
             this.controller.showProjectSubjectsList();
         },
         'click .project-subjects-add-diagnosis': 'addDiagnosis',
+        'click .project-subjects-delete-subject': 'deleteSubject',
         'click .project-subjects-duplicate-diagnosis': 'duplicateDiagnosis',
         'click .project-subjects-delete-diagnosis': 'deleteDiagnosis',
     },
@@ -101,6 +102,17 @@ e.preventDefault();
 this.controller.flagSubjectsEdits();
 this.controller.showProjectSubjectsList();
     },
+
+    deleteSubject: function(e) {
+e.preventDefault();
+console.log("Delete Subject");
+      var clonedList = this.controller.getSubjectsList();
+      let value = this.controller.model.get('value');
+      clonedList.remove(this.model.id);
+      this.controller.flagSubjectsEdits();
+
+        
+    }
 
 
 });

@@ -11,10 +11,10 @@
             <div class="col-md-2">
                 <b>Race/Ethnicity:</b> {{value.race}} {{value.ethnicity}}
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <b>Age:</b> {{age_display}}
             </div>
-            <div class="col-md-4 general-buttons-right">
+            <div class="col-md-5 general-buttons-right">
                 <div class="btn-group" role="group" aria-label="Button group">
                     <button type="button" class="btn btn-edit" name="{{uuid}}" id="project-subject-edit">Edit</button>
                 </div>
@@ -24,7 +24,7 @@
                     </button>
                 </div>
                 <div class="btn-group" role="group" aria-label="Button group">
-                    <button type="button" class="btn btn-delete general-buttons-margin-left" name="{{uuid}}" id="project-subject-delete">
+                    <button type="button" class="btn btn-delete general-buttons-margin-left project-subjects-delete-subject" name="{{uuid}}" id="project-subject-delete">
                         <i class="fa fa-trash" aria-hidden="true"></i> Delete
                     </button>
                 </div>
@@ -37,15 +37,15 @@
                 <div class="btn-group" role="group" aria-label="Button group">
                     <div class="dropdown">
                         <button class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" type="button" id="project-subjects-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-vial" aria-hidden="true"></i>
+                            <i class="fa fa-diagnoses" aria-hidden="true"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <button class="dropdown-item project-subjects-duplicate-diagnosis" type="button" id="project-subjects-duplicate-diagnosis_{{@index}}" name="duplicate">
-                                <i class="fa fa-copy"></i> Duplicate Diagnosis
+                                <i class="fa fa-copy" style="color:#4E95B8"></i> Duplicate Diagnosis
                             </button>
                         <div class="dropdown-divider" width="10%"></div>
                             <button class="dropdown-item project-subjects-delete-diagnosis" type="button" id="project-subjects-delete-diagnosis_{{@index}}" name="delete">
-                                <i class="fa fa-trash"></i> Delete Diagnosis
+                                <i class="fa fa-trash" style="color:#D93C39"></i> Delete Diagnosis
                             </button>
                         </div>
                     </div>

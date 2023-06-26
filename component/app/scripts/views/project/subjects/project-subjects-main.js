@@ -140,11 +140,10 @@ var SubjectsView = Marionette.View.extend({
 
     addSubject: function() {
       var clonedList = this.controller.getSubjectsList();
-      var newSubject = new Subject();
+      var newSubject = new Subject({projectUuid: this.controller.model.get('uuid')});
       newSubject.set('uuid', newSubject.cid);
       newSubject.view_mode = 'edit';
       clonedList.add(newSubject, {at:0});
-//this.controller.showProjectSubjectsList();
       $('#subject_id').focus();
       this.controller.flagSubjectsEdits();
     },

@@ -178,12 +178,12 @@ ProjectSubjectsController.prototype = {
             var promises = [];
 
             // deletions
-            /*deletedModels.map(function(uuid) {
-                var m = context.originalSubjectsList.get(uuid);
+            deletedModels.map(function(uuid) {
+                var m = originalSubjectsList.get(uuid);
                 promises[promises.length] = function() {
                     return m.destroy();
                 }
-            }); */
+            }); 
 
             // updates and new
             SubjectsList.map(function(uuid) {
@@ -246,7 +246,7 @@ ProjectSubjectsController.prototype = {
         console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // changes all saved
-            context.hasEdits = false;
+            context.has_edits = false;
             context.controller.replaceSubjectsList(context.subjectList);
             context.resetCollections();
             context.showProjectSubjectsList();
