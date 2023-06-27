@@ -499,13 +499,12 @@ Agave.MetadataCollection = Agave.PaginatedCollection.extend({
     // models in this collection that do not exist in given collection
     getMissingModels: function(checkCollection) {
 
-        var newCollection = this.clone();
-        newCollection.reset();
+        var newCollection = [];
 
         for (var i = 0; i < this.length; i++) {
             var model = this.at(i);
             var m = checkCollection.get(model.get('uuid'));
-            if (!m) newCollection.add(model);
+            if (!m) newCollection.push(model);
         }
 
         return newCollection;

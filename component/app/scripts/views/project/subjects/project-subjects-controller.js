@@ -180,9 +180,15 @@ ProjectSubjectsController.prototype = {
             // deletions
             deletedModels.map(function(uuid) {
                 var m = originalSubjectsList.get(uuid);
-                promises[promises.length] = function() {
-                    return m.destroy();
-                }
+                var deleteChanges = async function(uuid, m) {
+                    var msg = null;
+                    await m.destroy().fail(function(error) { msg = error; });
+                    if (msg) return Promise.reject(msg);
+
+                    return Promise.resolve();
+                };
+promises.push(deleteChanges(uuid, m));
+                //promises[promises.length] = deleteChanges(uuid, m);
             }); 
 
             // updates and new
