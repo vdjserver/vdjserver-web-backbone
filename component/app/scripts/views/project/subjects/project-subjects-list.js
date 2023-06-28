@@ -63,22 +63,19 @@ var SubjectSummaryView = Marionette.View.extend({
     },
 
     addDiagnosis: function(e) {
-e.preventDefault();
+        e.preventDefault();
         let value = this.model.get('value');
         var diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
         var blankEntry = diagnosisSchema.template();
 
-//console.log(diagnosisSchema.validate_object(blankEntry));
         value['diagnosis'].push(blankEntry);
         this.model.set('value', value);
-        //this.controller.saveSubjectsChanges(e);
-this.controller.flagSubjectsEdits();
-this.controller.showProjectSubjectsList();
+        this.controller.flagSubjectsEdits();
+        this.controller.showProjectSubjectsList();
     },
 
     duplicateDiagnosis: function(e) {
-e.preventDefault();
-    //this.model.view_mode = 'edit';
+        e.preventDefault();
 
         let value = this.model.get('value');
         let index = e.target.id.split("_").slice(-1);
@@ -86,32 +83,27 @@ e.preventDefault();
         let dupl = value['diagnosis'][index];
         value['diagnosis'].push(dupl);
         this.model.set('value', value);
-        //this.controller.saveSubjectsChanges(e);
-this.controller.flagSubjectsEdits();
-this.controller.showProjectSubjectsList();
+        this.controller.flagSubjectsEdits();
+        this.controller.showProjectSubjectsList();
     },
 
     deleteDiagnosis: function(e) {
-e.preventDefault();
+        e.preventDefault();
         let value = this.model.get('value');
         let index = e.target.id.split("_").slice(-1);
         value['diagnosis'].splice(index, 1);
 
         this.model.set('value', value);
-        //this.controller.saveSubjectsChanges(e);
-this.controller.flagSubjectsEdits();
-this.controller.showProjectSubjectsList();
+        this.controller.flagSubjectsEdits();
+        this.controller.showProjectSubjectsList();
     },
 
     deleteSubject: function(e) {
-e.preventDefault();
-console.log("Delete Subject");
+      e.preventDefault();
       var clonedList = this.controller.getSubjectsList();
       let value = this.controller.model.get('value');
       clonedList.remove(this.model.id);
       this.controller.flagSubjectsEdits();
-
-        
     }
 
 
@@ -165,30 +157,11 @@ var SubjectDetailView = Marionette.View.extend({
     onAttach() {
         // setup popovers and tooltips
         $('[data-toggle="popover"]').popover({
-//            trigger: 'hover',
-adaptive: false,
-animation: false,
-//animation-reset: true,
-/*placement: 'top',
-html: true,
-positionFixed: true,
-//offset: '100, 100',
-//fallbackPlacement : ['left', 'right', 'top', 'bottom'],*/
-container: 'body', 
-/*animate: false,
-transform: false,
-//animation: false,*/
-transform: 'none',
+            animation: true, //fade, boolean
+            placement: 'top',
         });
 
-        $('[data-toggle="tooltip"]').tooltip({
-placement: 'left',
-//delay: {show: 5000, hide: 100},
-boundary: 'viewport',
-animation: false,
-transform: 'none',
-willChange: 'unset',
-});
+        $('[data-toggle="tooltip"]').tooltip();
     },
 
     updateField: function(e) {

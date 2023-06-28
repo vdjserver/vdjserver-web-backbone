@@ -187,8 +187,7 @@ ProjectSubjectsController.prototype = {
 
                     return Promise.resolve();
                 };
-promises.push(deleteChanges(uuid, m));
-                //promises[promises.length] = deleteChanges(uuid, m);
+                promises.push(deleteChanges(uuid, m));
             }); 
 
             // updates and new

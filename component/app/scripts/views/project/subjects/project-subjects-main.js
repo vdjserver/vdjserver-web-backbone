@@ -93,7 +93,7 @@ var SubjectsView = Marionette.View.extend({
         'click #project-diagnosis-import': 'importDiagnosisTable',
         'click #project-diagnosis-export': 'exportDiagnosisTable',
 
-'click #project-subjects-new-subject': 'addSubject',
+        'click #project-subjects-new-subject': 'addSubject',
 
         'click #project-subjects-save-changes': function(e) {
             e.preventDefault();

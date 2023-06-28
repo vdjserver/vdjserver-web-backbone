@@ -26,7 +26,6 @@
                         Please enter a valid Subject ID.
                     </div>
                 </div>
-<button type="button" data-toggle="popover"  data-html='true' title="Popover <b>title</b>" data-content="Hello. <b>bold</b>.">Click</button>
 
                 <div class="form-group col-md-2">
                     <label for="synthetic">
@@ -335,9 +334,11 @@
                     <label for="disease_diagnosis">
                         <span>
                             <!-- Tooltip -->
+                        {{{FieldStar "Diagnosis" "disease_diagnosis"}}}
                         </span>
-                        Disease Diagnosis:
                         <!-- Popover -->
+                        {{{FieldHelpPopover "Diagnosis" "disease_diagnosis"}}}
+                        Disease Diagnosis:
                     </label>
                     <input type="text" class="form-control form-control-diagnosis" name="disease_diagnosis" id="disease_diagnosis_{{@index}}" value="{{this.disease_diagnosis.label}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
@@ -350,9 +351,11 @@
                     <label for="disease_length">
                         <span>
                             <!-- Tooltip -->
+                        {{{FieldStar "Diagnosis" "disease_length"}}}
                         </span>
-                        Disease Length:
                         <!-- Popover -->
+                        {{{FieldHelpPopover "Diagnosis" "disease_length"}}}
+                        Disease Length:
                     </label>
                     <input type="text" class="form-control form-control-diagnosis" name="disease_length" id="disease_length_{{@index}}" value="{{this.disease_length}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
@@ -365,9 +368,11 @@
                     <label for="disease_stage">
                         <span>
                             <!-- Tooltip -->
+                        {{{FieldStar "Diagnosis" "disease_stage"}}}
                         </span>
-                        Disease Stage:
                         <!-- Popover -->
+                        {{{FieldHelpPopover "Diagnosis" "disease_stage"}}}
+                        Disease Stage:
                     </label>
                     <input type="text" class="form-control form-control-diagnosis" name="disease_stage" id="disease_stage_{{@index}}" value="{{this.disease_stage}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
@@ -382,9 +387,11 @@
                     <label for="study_group_description">
                         <span>
                             <!-- Tooltip -->
+                        {{{FieldStar "Diagnosis" "study_group_description"}}}
                         </span>
-                        Study Group Description:
                         <!-- Popover -->
+                        {{{FieldHelpPopover "Diagnosis" "study_group_description"}}}
+                        Study Group Description:
                     </label>
                     <input type="text" class="form-control form-control-diagnosis" name="study_group_description" id="study_group_description_{{@index}}" value="{{this.study_group_description}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
@@ -397,9 +404,11 @@
                     <label for="prior_therapies">
                         <span>
                             <!-- Tooltip -->
+                        {{{FieldStar "Diagnosis" "prior_therapies"}}}
                         </span>
-                        Prior Therapies:
                         <!-- Popover -->
+                        {{{FieldHelpPopover "Diagnosis" "prior_therapies"}}}
+                        Prior Therapies:
                     </label>
                     <input type="text" class="form-control form-control-diagnosis" name="prior_therapies" id="prior_therapies_{{@index}}" value="{{this.prior_therapies}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
@@ -412,9 +421,11 @@
                     <label for="immunogen">
                         <span>
                             <!-- Tooltip -->
+                        {{{FieldStar "Diagnosis" "immunogen"}}}
                         </span>
-                        Immunogen:
                         <!-- Popover -->
+                        {{{FieldHelpPopover "Diagnosis" "immunogen"}}}
+                        Immunogen:
                     </label>
                     <input type="text" class="form-control form-control-diagnosis" name="immunogen" id="immunogen_{{@index}}" value="{{this.immunogen}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
@@ -427,9 +438,11 @@
                     <label for="intervention">
                         <span>
                             <!-- Tooltip -->
+                        {{{FieldStar "Diagnosis" "intervention"}}}
                         </span>
-                        Intervention:
                         <!-- Popover -->
+                        {{{FieldHelpPopover "Diagnosis" "intervention"}}}
+                        Intervention:
                     </label>
                     <input type="text" class="form-control form-control-diagnosis" name="intervention" id="intervention_{{@index}}" value="{{this.intervention}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
@@ -444,9 +457,11 @@
                     <label for="medical_history">
                         <span>
                             <!-- Tooltip -->
+                        {{{FieldStar "Diagnosis" "medical_history"}}}
                         </span>
-                        Medical History:
                         <!-- Popover -->
+                        {{{FieldHelpPopover "Diagnosis" "medical_history"}}}
+                        Medical History:
                     </label>
                     <input type="text" class="form-control form-control-diagnosis" name="medical_history" id="medical_history_{{@index}}" value="{{this.medical_history}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
 
