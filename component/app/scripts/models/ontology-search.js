@@ -64,12 +64,12 @@ export default Backbone.Model.extend({
         // get CURIE resolution info
         if (this.top_node) {
             var f = this.top_node['id'].split(':');
-            for (var c in AIRRSchema['CURIEResolution']) {
-                var obj = AIRRSchema['CURIEResolution'][c];
-                if (obj['curie_prefix'] == f[0]) {
-                    this.top_node_iri = obj['iri_prefix'][0] + f[1];
-                    this.ontology = f[0].toLowerCase();
-                    break;
+            if (AIRRSchema['CURIEMap'][f[0]]) {
+                var p = AIRRSchema['CURIEMap'][f[0]]['default']['provider'];
+                var m = AIRRSchema['CURIEMap'][f[0]]['default']['map'];
+                if (p && m) {
+                    this.ontology = AIRRSchema['InformationProvider']['parameter'][f[0]][p]['ontology_id'];
+                    this.top_node_iri = AIRRSchema['CURIEMap'][f[0]]['map'][m]['iri_prefix'] + f[1]
                 }
             }
         }
