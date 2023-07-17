@@ -53,6 +53,8 @@ export default Marionette.View.extend({
         this.field = null;
         this.context = null;
         this.selectFunction = null;
+        this.dropdown_id = "dropdownOntology";
+        this.diagnosis_label = null;
 
         // search results
         this.search = null;
@@ -65,6 +67,8 @@ export default Marionette.View.extend({
             if (parameters.field) this.field = parameters.field;
             if (parameters.context) this.context = parameters.context;
             if (parameters.selectFunction) this.selectFunction = parameters.selectFunction;
+            if (parameters.dropdown_id) this.dropdown_id = parameters.dropdown_id;
+            if (parameters.diagnosis_label) this.diagnosis_label = parameters.diagnosis_label;
         }
     },
 
@@ -86,7 +90,10 @@ export default Marionette.View.extend({
 
             // selected ontology label
             button_label: this.button_label,
-            field_label: this.field_label
+            field_label: this.field_label,
+
+            dropdown_id: this.dropdown_id,
+            diagnosis_label: this.diagnosis_label
         }
     },
 
@@ -94,7 +101,7 @@ export default Marionette.View.extend({
     // and pass info to callback function
     selectOntology(e) {
         this.selected_ontology = { id: e.target.name, label: e.target.title };
-        $('#dropdownOntology').html(e.target.title);
+        $('#' + this.dropdown_id).html(e.target.title);
         if (this.selectFunction) this.selectFunction(this.context, this.selected_ontology);
     },
 

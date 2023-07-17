@@ -27,6 +27,7 @@
 
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
+import OntologySearchView from 'Scripts/views/utilities/ontology-search-view';
 import { airr } from 'airr-js';
 
 // subject summary view
@@ -68,7 +69,7 @@ var SubjectSummaryView = Marionette.View.extend({
         var diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
         var blankEntry = diagnosisSchema.template();
 
-        value['diagnosis'].push(blankEntry);
+        value['diagnosis'].unshift(blankEntry);
         this.model.set('value', value);
         this.controller.flagSubjectsEdits();
         this.controller.showProjectSubjectsList();
@@ -81,7 +82,7 @@ var SubjectSummaryView = Marionette.View.extend({
         let index = e.target.id.split("_").slice(-1);
 
         let dupl = value['diagnosis'][index];
-        value['diagnosis'].push(dupl);
+        value['diagnosis'].splice(index,0,dupl);
         this.model.set('value', value);
         this.controller.flagSubjectsEdits();
         this.controller.showProjectSubjectsList();
@@ -99,11 +100,11 @@ var SubjectSummaryView = Marionette.View.extend({
     },
 
     deleteSubject: function(e) {
-      e.preventDefault();
-      var clonedList = this.controller.getSubjectsList();
-      let value = this.controller.model.get('value');
-      clonedList.remove(this.model.id);
-      this.controller.flagSubjectsEdits();
+        e.preventDefault();
+        var clonedList = this.controller.getSubjectsList();
+        let value = this.controller.model.get('value');
+        clonedList.remove(this.model.id);
+        this.controller.flagSubjectsEdits();
     }
 
 
@@ -114,10 +115,26 @@ import detail_template from 'Templates/project/subjects/project-subjects-detail.
 var SubjectDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 
+    regions: {
+        diseaseDiagnosisRegion: '#disease-diagnosis-region'
+    },
+
     initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
+        for(let i=0; i<this.model.attributes.value.diagnosis.length; i++) {
+            let diagnosis_label = this.model.attributes.value.diagnosis[i].disease_diagnosis.label;
+            let button_label = 'Choose a Diagnosis';
+            if(diagnosis_label===null) diagnosis_label = button_label;
+            var view = new OntologySearchView({schema: 'Diagnosis', field: 'disease_diagnosis',
+                button_label: 'Choose a Diagnosis', field_label: 'Disease Diagnosis',
+                context: this, selectFunction: this.selectDisease, dropdown_id: 'dropdownOntology'+i, diagnosis_label: diagnosis_label});
+            let regionName = "diseaseDiagnosisRegion" + i;
+            let regionID = "#disease-diagnosis-region-" + i;
+            this.addRegion(regionName, regionID);
+            this.showChildView(regionName, view);
+        }
 
     },
 
@@ -152,6 +169,7 @@ var SubjectDetailView = Marionette.View.extend({
         'click .project-subjects-detail-add-diagnosis': 'addDiagnosis',
         'click .project-subjects-detail-duplicate-diagnosis': 'duplicateDiagnosis',
         'click .project-subjects-detail-delete-diagnosis': 'deleteDiagnosis',
+        'click .project-subjects-delete-subject': 'deleteSubject',
     },
 
     onAttach() {
@@ -164,6 +182,13 @@ var SubjectDetailView = Marionette.View.extend({
         $('[data-toggle="tooltip"]').tooltip();
     },
 
+    selectDisease(context, value) {
+        let i = this.dropdown_id.replace(/\D/g, '');
+        let val = context.model.get('value');
+        val['diagnosis'][i]['disease_diagnosis'] = value;
+        context.model.set('value', val);
+    },
+
     updateField: function(e) {
         let value = this.model.get('value');
         value[e.target.name] = e.target.value;
@@ -171,6 +196,14 @@ var SubjectDetailView = Marionette.View.extend({
             value[e.target.name] = parseInt(e.target.value); 
         }
         this.model.set('value', value);
+    },
+
+    deleteSubject: function(e) {
+        e.preventDefault();
+        var clonedList = this.controller.getSubjectsList();
+        let value = this.controller.model.get('value');
+        clonedList.remove(this.model.id);
+        this.controller.flagSubjectsEdits();
     },
 
     updateDropDown: function(e) {
@@ -200,7 +233,6 @@ var SubjectDetailView = Marionette.View.extend({
 
     updateFieldDiagnosis: function(e) {
         let value = this.model.get('value');
-//console.log(this.model);
         let index = e.target.id.split("_").slice(-1);
 
         value['diagnosis'][index][e.target.name] = e.target.value;
@@ -215,7 +247,7 @@ var SubjectDetailView = Marionette.View.extend({
         var diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
         var blankEntry = diagnosisSchema.template();
 
-        value['diagnosis'].push(blankEntry);
+        value['diagnosis'].unshift(blankEntry);
         this.model.set('value', value);
         this.controller.showProjectSubjectsList();
     },
@@ -224,9 +256,9 @@ var SubjectDetailView = Marionette.View.extend({
         let value = this.model.get('value');
         let index = e.target.id.split("_").slice(-1);
         let dupl = value['diagnosis'][index];
-
-        value['diagnosis'].push(dupl);
+        value['diagnosis'].splice(index,0,dupl);
         this.model.set('value', value);
+        this.controller.flagSubjectsEdits();
         this.controller.showProjectSubjectsList();
     },
 
@@ -249,7 +281,7 @@ var SubjectContainerView = Marionette.View.extend({
 
     // one region for contents
     regions: {
-        containerRegion: '#project-subject-container'
+        containerRegion: '#project-subject-container',
     },
 
     initialize: function(parameters) {

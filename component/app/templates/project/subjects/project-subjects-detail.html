@@ -7,9 +7,32 @@
 <!-- <p>Subject/Diagnosis Edit Mode: {{edit_mode}}</p> -->
 <div id="project-subjects-detail" class="project-subject-detail">
     <div class="row general-table-row general-border-top">
-        <div class="col-md-10">
+        <div class="col">
         <form method="post" role="form" id="project-subject-form" class="project-subject-form needs-validation" name="subject" novalidate>
-            <div class="form-row project-subject-row">
+            <div class="form-row project-subject-row align-items-center">
+                <div class="form-group col-md-1">
+                  <label><b>Actions:</b></label>
+                  <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-create btn-primary btn-block input-block-level dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-diagnoses" aria-hidden="true"></i> 
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#4E95B8"></i> Edit
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-apply">
+                                <i class="fa fa-plus" aria-hidden="true" style="color:#4E95B8"></i> Apply Template
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item project-subjects-delete-subject" name="{{uuid}}" id="project-subject-delete">
+                                <i class="fa fa-trash" aria-hidden="true" style="color:#D93C39"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="form-group col-md-3">
                     <label for="subject_id">
                         <span>
@@ -67,9 +90,9 @@
                         <span>
                             <!-- Tooltip -->
                         {{{FieldStar "Subject" "strain_name"}}}
+                        </span>
                         <!-- Popover -->
                         {{{FieldHelpPopover "Subject" "strain_name"}}}
-                        </span>
                         Strain:
                     </label>
                     <input type="text" class="form-control form-control-subject" name="strain_name" id="strain_name" value="{{value.strain_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
@@ -99,6 +122,7 @@
             </div>
 
             <div class="form-row project-subject-row">
+                <!--<div class="form-group col-md-1"></div>-->
                 <div class="form-group col-md-2">
                     <label for="age">
                         <span>
@@ -223,6 +247,7 @@
             </div>
 
             <div class="form-row project-subject-row">
+                <!--<div class="form-group col-md-1"></div>-->
                 <div class="form-group col-md-3">
                     <label for="ancestry_population">
                         <span>
@@ -290,46 +315,35 @@
         </form>
         </div>
 
-        <div class="col-md-2">
-            <div class="row">
-                <div class="col project-buttons-right project-buttons-margin-bottom">
-                    <div class="btn-group" role="group" aria-label="Button group">
-                        <button type="button" class="btn btn-edit" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>Edit</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col project-buttons-right project-buttons-margin-bottom">
-                    <div class="btn-group" role="group" aria-label="Button group">
-                        <button type="button" class="btn btn-apply" name="{{uuid}}" id="project-subject-apply">
-                            Apply Template
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col project-buttons-right project-buttons-margin-bottom">
-                    <div class="btn-group" role="group" aria-label="Button group">
-                        <button type="button" class="btn btn-delete" name="{{uuid}}" id="project-subject-delete">
-                            <i class="fa fa-trash" aria-hidden="true"></i> Delete
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
 {{#each value.diagnosis}}
     <div class="row general-table-row align-items-center">
-        <div class="col-md-10">
+        <div class="col">
         <form method="post" role="form" id="project-subject-form" class="project-subject-form needs-validation" name="subject" novalidate>
-            <div class="form-row project-subject-row">
-                <div class="form-group col-md-2">
-                    <label>
-                        <i class="fa fa-diagnoses"></i> Diagnosis Entry {{@index}}:
-                    </label>
+            <div class="form-row project-subject-row align-items-center">
+                <div class="form-group col-md-1">
+                    <label><b>Diagnosis {{@index}}:</b></label>
+                    <div class="btn-group" role="group" aria-label="Button group">
+                      <div class="dropdown">
+                          <button type="button" class="btn btn-create btn-primary btn-block input-block-level dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fa fa-diagnoses" aria-hidden="true"></i>
+                          </button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                              <button type="button" class="dropdown-item project-subjects-detail-add-diagnosis" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
+                                  <i class="fa fa-plus" aria-hidden="true" style="color:#4E95B8"></i> Add Diagnosis
+                              </button>
+                              <button type="button" class="dropdown-item project-subjects-detail-duplicate-diagnosis" name="{{uuid}}" id="project-subject-apply">
+                                  <i class="fa fa-plus" aria-hidden="true" style="color:#4E95B8"></i> Duplicate Diagnosis
+                              </button>
+                              <div class="dropdown-divider" width="10%"></div>
+                              <button type="button" class="dropdown-item project-subjects-detail-delete-diagnosis" name="{{uuid}}" id="project-subject-delete">
+                                  <i class="fa fa-trash" aria-hidden="true" style="color:#D93C39"></i> Delete Diagnosis
+                              </button>
+                          </div>
+                      </div>
+                    </div>
                 </div>
-
                 <div class="form-group col-md-4">
                     <label for="disease_diagnosis">
                         <span>
@@ -340,14 +354,14 @@
                         {{{FieldHelpPopover "Diagnosis" "disease_diagnosis"}}}
                         Disease Diagnosis:
                     </label>
-                    <input type="text" class="form-control form-control-diagnosis" name="disease_diagnosis" id="disease_diagnosis_{{@index}}" value="{{this.disease_diagnosis.label}}" {{#ifEquals ../view_mode "detail"}}readonly{{/ifEquals}}>
+ <div id="disease-diagnosis-region-{{@index}}"></div>
 
                     <div class="invalid-feedback">
                         Please enter a valid disease diagnosis.
                     </div>
                 </div>
 
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-3">
                     <label for="disease_length">
                         <span>
                             <!-- Tooltip -->
@@ -475,36 +489,6 @@
         </form>
         </div>
 
-<div class="col-md-2">
-<div class="row">
-
-<div class="col-md-2 general-buttons-right">
-        <div class="btn-group" role="group" aria-label="Button group">
-            <div class="dropdown">
-              <button class="btn btn-create btn-sm dropdown-toggle" type="button" id="project-subjects-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-vial" aria-hidden="true"></i>
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                <button class="dropdown-item project-subjects-detail-add-diagnosis" type="button" id="project-subjects-add-diagnosis" name="add">
-                    <i class="fa fa-plus"></i>
-                    Add Diagnosis
-                </button>
-                <button class="dropdown-item project-subjects-detail-duplicate-diagnosis" type="button" id="project-subjects-duplicate-diagnosis_{{@index}}" name="duplicate">
-                    <i class="fa fa-copy"></i>
-                    Duplicate Diagnosis
-                </button>
-                <div class="dropdown-divider" width="10%"></div>
-                <button class="dropdown-item project-subjects-detail-delete-diagnosis" type="button" id="project-subjects-delete-diagnosis_{{@index}}" name="delete">
-                    <i class="fa fa-trash"></i>
-                    Delete Diagnosis
-                </button>
-              </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-</div>
 
     </div>
 {{/each}}
