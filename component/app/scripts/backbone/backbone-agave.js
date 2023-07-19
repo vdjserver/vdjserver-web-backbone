@@ -408,7 +408,7 @@ define([
             archivePath: '',
             archiveSystem: EnvironmentConfig.agave.systems.storage.corral.hostname,
             batchQueue: 'normal',
-            executionSystem: EnvironmentConfig.agave.systems.execution.ls5.hostname,
+            executionSystem: EnvironmentConfig.agave.systems.execution.ls6.hostname,
             //id: 0,
             inputs: {},
             totalFileSize: 0,
