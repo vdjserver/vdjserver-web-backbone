@@ -1,4 +1,6 @@
 {
     "directory": "app/bower_components",
-    "allow_root": true
+    "registry": "https://registry.bower.io",
+    "allow_root": true,
+    "strict-ssl": false
 }
