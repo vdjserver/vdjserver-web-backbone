@@ -19,14 +19,14 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#4E95B8"></i> Edit
+                                <i class="fa fa-plus image-vdj-darkblue" aria-hidden="true"></i> Edit
                             </button>
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-apply">
-                                <i class="fa fa-plus" aria-hidden="true" style="color:#4E95B8"></i> Apply Template
+                                <i class="fa fa-plus image-vdj-darkblue" aria-hidden="true"></i> Apply Template
                             </button>
                             <div class="dropdown-divider" width="10%"></div>
                             <button type="button" class="dropdown-item project-subjects-delete-subject" name="{{uuid}}" id="project-subject-delete">
-                                <i class="fa fa-trash" aria-hidden="true" style="color:#D93C39"></i> Delete
+                                <i class="fa fa-trash image-vdj-red" aria-hidden="true"></i> Delete
                             </button>
                         </div>
                     </div>
@@ -331,14 +331,14 @@
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                               <button type="button" class="dropdown-item project-subjects-detail-add-diagnosis" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                  <i class="fa fa-plus" aria-hidden="true" style="color:#4E95B8"></i> Add Diagnosis
+                                  <i class="fa fa-plus image-vdj-darkblue" aria-hidden="true"></i> Add Diagnosis
                               </button>
-                              <button type="button" class="dropdown-item project-subjects-detail-duplicate-diagnosis" name="{{uuid}}" id="project-subject-apply">
-                                  <i class="fa fa-plus" aria-hidden="true" style="color:#4E95B8"></i> Duplicate Diagnosis
+                              <button type="button" class="dropdown-item project-subjects-detail-duplicate-diagnosis" name="{{uuid}}" id="project-subjects-detail-duplicate-diagnosis_{{@index}}">
+                                  <i class="fa fa-plus image-vdj-darkblue" aria-hidden="true"></i> Duplicate Diagnosis
                               </button>
                               <div class="dropdown-divider" width="10%"></div>
                               <button type="button" class="dropdown-item project-subjects-detail-delete-diagnosis" name="{{uuid}}" id="project-subject-delete">
-                                  <i class="fa fa-trash" aria-hidden="true" style="color:#D93C39"></i> Delete Diagnosis
+                                  <i class="fa fa-trash image-vdj-red" aria-hidden="true"></i> Delete Diagnosis
                               </button>
                           </div>
                       </div>
@@ -354,7 +354,7 @@
                         {{{FieldHelpPopover "Diagnosis" "disease_diagnosis"}}}
                         Disease Diagnosis:
                     </label>
- <div id="disease-diagnosis-region-{{@index}}"></div>
+                    <div id="disease-diagnosis-region-{{@index}}"></div>
 
                     <div class="invalid-feedback">
                         Please enter a valid disease diagnosis.

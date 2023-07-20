@@ -71,8 +71,10 @@ var SubjectSummaryView = Marionette.View.extend({
 
         value['diagnosis'].unshift(blankEntry);
         this.model.set('value', value);
+        this.model.view_mode = 'edit';
         this.controller.flagSubjectsEdits();
         this.controller.showProjectSubjectsList();
+        $('#dropdownOntology0').focus();
     },
 
     duplicateDiagnosis: function(e) {
@@ -81,7 +83,7 @@ var SubjectSummaryView = Marionette.View.extend({
         let value = this.model.get('value');
         let index = e.target.id.split("_").slice(-1);
 
-        let dupl = value['diagnosis'][index];
+        let dupl = JSON.parse(JSON.stringify(value['diagnosis'][index]));
         value['diagnosis'].splice(index,0,dupl);
         this.model.set('value', value);
         this.controller.flagSubjectsEdits();
@@ -124,12 +126,18 @@ var SubjectDetailView = Marionette.View.extend({
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
         for(let i=0; i<this.model.attributes.value.diagnosis.length; i++) {
-            let diagnosis_label = this.model.attributes.value.diagnosis[i].disease_diagnosis.label;
             let button_label = 'Choose a Diagnosis';
-            if(diagnosis_label===null) diagnosis_label = button_label;
+            let diagnosis_label;
+            let value = this.model.get('value');
+            if(value['diagnosis'][i] === undefined) {
+                diagnosis_label = button_label;
+            } else {
+                diagnosis_label = this.model.attributes.value.diagnosis[i].disease_diagnosis.label;
+            }
             var view = new OntologySearchView({schema: 'Diagnosis', field: 'disease_diagnosis',
                 button_label: 'Choose a Diagnosis', field_label: 'Disease Diagnosis',
-                context: this, selectFunction: this.selectDisease, dropdown_id: 'dropdownOntology'+i, diagnosis_label: diagnosis_label});
+                context: this, selectFunction: this.selectDisease, dropdown_id: 'dropdownOntology'+i,
+                diagnosis_label: diagnosis_label, view_mode: this.model.view_mode});
             let regionName = "diseaseDiagnosisRegion" + i;
             let regionID = "#disease-diagnosis-region-" + i;
             this.addRegion(regionName, regionID);
@@ -250,12 +258,16 @@ var SubjectDetailView = Marionette.View.extend({
         value['diagnosis'].unshift(blankEntry);
         this.model.set('value', value);
         this.controller.showProjectSubjectsList();
+        $('#dropdownOntology0').focus();
     },
 
     duplicateDiagnosis: function(e) {
+        e.preventDefault();
+
         let value = this.model.get('value');
         let index = e.target.id.split("_").slice(-1);
-        let dupl = value['diagnosis'][index];
+
+        let dupl = JSON.parse(JSON.stringify(value['diagnosis'][index]));
         value['diagnosis'].splice(index,0,dupl);
         this.model.set('value', value);
         this.controller.flagSubjectsEdits();

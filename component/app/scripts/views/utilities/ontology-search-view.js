@@ -55,6 +55,7 @@ export default Marionette.View.extend({
         this.selectFunction = null;
         this.dropdown_id = "dropdownOntology";
         this.diagnosis_label = null;
+        this.view_mode = null;
 
         // search results
         this.search = null;
@@ -69,6 +70,7 @@ export default Marionette.View.extend({
             if (parameters.selectFunction) this.selectFunction = parameters.selectFunction;
             if (parameters.dropdown_id) this.dropdown_id = parameters.dropdown_id;
             if (parameters.diagnosis_label) this.diagnosis_label = parameters.diagnosis_label;
+            if (parameters.view_mode) this.view_mode = parameters.view_mode;
         }
     },
 
@@ -93,7 +95,8 @@ export default Marionette.View.extend({
             field_label: this.field_label,
 
             dropdown_id: this.dropdown_id,
-            diagnosis_label: this.diagnosis_label
+            diagnosis_label: this.diagnosis_label,
+            view_mode: this.view_mode
         }
     },
 
