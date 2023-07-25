@@ -35,13 +35,14 @@ import repertoire_template from 'airr-repertoire-template';
 import { airr } from 'airr-js';
 
 // Subject model based upon AIRR Subject
+var subjectSchema = null;
 export var Subject = Agave.MetadataModel.extend({
     defaults: function() {
         // Use AIRR schema Subject object as basis
         this.airr_schema = AIRRSchema['Subject'];
 
         // make a deep copy from the template
-        var subjectSchema = new airr.SchemaDefinition('Subject');
+        if (! subjectSchema) subjectSchema = new airr.SchemaDefinition('Subject');
         var blankEntry = subjectSchema.template();
         //var value = JSON.parse(JSON.stringify(repertoire_template['subject']));
         //console.log(value);
@@ -66,12 +67,25 @@ export var Subject = Agave.MetadataModel.extend({
             this.projectUuid = parameters.projectUuid;
             this.set('associationIds', [ parameters.projectUuid ]);
         }
+
+        if (! subjectSchema) subjectSchema = new airr.SchemaDefinition('Subject');
     },
     url: function() {
         return '/meta/v2/data/' + this.get('uuid');
     },
     sync: function(method, model, options) {
         return Agave.PutOverrideSync(method, this, options);
+    },
+
+    validate: function(attrs, options) {
+        // AIRR schema validation
+        //console.log(subjectSchema['definition']);
+        let value = this.get('value');
+        let valid = subjectSchema.validate_object(value);
+
+        // TODO: VDJServer additional validation
+
+        return valid;
     },
 
     // this assumes the sub-objects have already been denormalized from their uuid

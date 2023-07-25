@@ -147,6 +147,14 @@ ProjectSubjectsController.prototype = {
     saveSubjectsChanges: function(e) {
         console.log('Clicked Save');
 
+        // Validation
+        for (let i = 0; i < this.subjectList.length; ++i) {
+            let model = this.subjectList.at(i);
+            if (!model.isValid()) {
+                console.log('not valid');
+            }
+        }
+
         // display a modal while the data is being saved
         this.modalState = 'save';
         var message = new MessageModel({
