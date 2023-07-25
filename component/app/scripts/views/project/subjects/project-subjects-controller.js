@@ -38,6 +38,8 @@ import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
 import FilterController from 'Scripts/views/utilities/filter-controller';
 
+import { Subject } from 'Scripts/models/agave-metadata';
+import { airr } from 'airr-js';
 
 
 // Project subjects controller
@@ -128,6 +130,64 @@ ProjectSubjectsController.prototype = {
 
     getOriginalSubjectsList() {
         return this.controller.subjectList;
+    },
+
+    addSubject: function(e) {
+      var clonedList = this.getSubjectsList();
+      var newSubject = new Subject({projectUuid: this.controller.model.get('uuid')});
+      newSubject.set('uuid', newSubject.cid);
+      newSubject.view_mode = 'edit';
+      clonedList.add(newSubject, {at:0});
+      $('#subject_id').focus();
+      this.flagSubjectsEdits();
+    },
+
+    deleteSubject: function(e, model) {
+        e.preventDefault();
+        var clonedList = this.getSubjectsList();
+        let value = model.get('value');
+        clonedList.remove(model.id);
+        this.flagSubjectsEdits();
+    },
+
+    duplicateDiagnosis: function(e, model) {
+        e.preventDefault();
+
+        let value = model.get('value');
+        let index = e.target.id.split("_").slice(-1);
+
+        let dupl = JSON.parse(JSON.stringify(value['diagnosis'][index]));
+        value['diagnosis'].splice(index,0,dupl);
+        model.set('value', value);
+        this.flagSubjectsEdits();
+        this.showProjectSubjectsList();
+    },
+
+    addDiagnosis: function(e, model) {
+        e.preventDefault();
+
+        let value = model.get('value');
+        var diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
+        var blankEntry = diagnosisSchema.template();
+
+        value['diagnosis'].unshift(blankEntry);
+        model.set('value', value);
+        model.view_mode = 'edit';
+        this.flagSubjectsEdits();
+        this.showProjectSubjectsList();
+        $('#dropdownOntology0').focus();
+    },
+
+    deleteDiagnosis: function(e, model) {
+        e.preventDefault();
+
+        let value = model.get('value');
+        let index = e.target.id.split("_").slice(-1);
+
+        value['diagnosis'].splice(index, 1);
+        model.set('value', value);
+        this.flagSubjectsEdits();
+        this.showProjectSubjectsList();
     },
 
     flagSubjectsEdits: function() {

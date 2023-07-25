@@ -57,58 +57,11 @@ var SubjectSummaryView = Marionette.View.extend({
             this.controller.flagSubjectsEdits();
             this.controller.showProjectSubjectsList();
         },
-        'click .project-subjects-add-diagnosis': 'addDiagnosis',
-        'click .project-subjects-delete-subject': 'deleteSubject',
-        'click .project-subjects-duplicate-diagnosis': 'duplicateDiagnosis',
-        'click .project-subjects-delete-diagnosis': 'deleteDiagnosis',
+        'click .project-subjects-add-diagnosis': function(e) { this.controller.addDiagnosis(e, this.model); },
+        'click .project-subjects-delete-subject': function(e) { this.controller.deleteSubject(e, this.model); },
+        'click .project-subjects-duplicate-diagnosis': function(e) { this.controller.duplicateDiagnosis(e, this.model); },
+        'click .project-subjects-delete-diagnosis': function(e) { this.controller.deleteDiagnosis(e, this.model); },
     },
-
-    addDiagnosis: function(e) {
-        e.preventDefault();
-        let value = this.model.get('value');
-        var diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
-        var blankEntry = diagnosisSchema.template();
-
-        value['diagnosis'].unshift(blankEntry);
-        this.model.set('value', value);
-        this.model.view_mode = 'edit';
-        this.controller.flagSubjectsEdits();
-        this.controller.showProjectSubjectsList();
-        $('#dropdownOntology0').focus();
-    },
-
-    duplicateDiagnosis: function(e) {
-        e.preventDefault();
-
-        let value = this.model.get('value');
-        let index = e.target.id.split("_").slice(-1);
-
-        let dupl = JSON.parse(JSON.stringify(value['diagnosis'][index]));
-        value['diagnosis'].splice(index,0,dupl);
-        this.model.set('value', value);
-        this.controller.flagSubjectsEdits();
-        this.controller.showProjectSubjectsList();
-    },
-
-    deleteDiagnosis: function(e) {
-        e.preventDefault();
-        let value = this.model.get('value');
-        let index = e.target.id.split("_").slice(-1);
-        value['diagnosis'].splice(index, 1);
-
-        this.model.set('value', value);
-        this.controller.flagSubjectsEdits();
-        this.controller.showProjectSubjectsList();
-    },
-
-    deleteSubject: function(e) {
-        e.preventDefault();
-        var clonedList = this.controller.getSubjectsList();
-        let value = this.controller.model.get('value');
-        clonedList.remove(this.model.id);
-        this.controller.flagSubjectsEdits();
-    }
-
 
 });
 
@@ -174,10 +127,10 @@ var SubjectDetailView = Marionette.View.extend({
         'change .ontology-select': 'updateOntology',
 
         'change .form-control-diagnosis': 'updateFieldDiagnosis',
-        'click .project-subjects-detail-add-diagnosis': 'addDiagnosis',
-        'click .project-subjects-detail-duplicate-diagnosis': 'duplicateDiagnosis',
-        'click .project-subjects-detail-delete-diagnosis': 'deleteDiagnosis',
-        'click .project-subjects-delete-subject': 'deleteSubject',
+        'click .project-subjects-detail-add-diagnosis': function(e) { this.controller.addDiagnosis(e, this.model); },
+        'click .project-subjects-detail-duplicate-diagnosis': function(e) { this.controller.duplicateDiagnosis(e, this.model); },
+        'click .project-subjects-detail-delete-diagnosis': function(e) { this.controller.deleteDiagnosis(e, this.model); },
+        'click .project-subjects-delete-subject': function(e) { this.controller.deleteSubject(e, this.model); },
     },
 
     onAttach() {
@@ -204,14 +157,6 @@ var SubjectDetailView = Marionette.View.extend({
             value[e.target.name] = parseInt(e.target.value); 
         }
         this.model.set('value', value);
-    },
-
-    deleteSubject: function(e) {
-        e.preventDefault();
-        var clonedList = this.controller.getSubjectsList();
-        let value = this.controller.model.get('value');
-        clonedList.remove(this.model.id);
-        this.controller.flagSubjectsEdits();
     },
 
     updateDropDown: function(e) {
@@ -259,19 +204,6 @@ var SubjectDetailView = Marionette.View.extend({
         this.model.set('value', value);
         this.controller.showProjectSubjectsList();
         $('#dropdownOntology0').focus();
-    },
-
-    duplicateDiagnosis: function(e) {
-        e.preventDefault();
-
-        let value = this.model.get('value');
-        let index = e.target.id.split("_").slice(-1);
-
-        let dupl = JSON.parse(JSON.stringify(value['diagnosis'][index]));
-        value['diagnosis'].splice(index,0,dupl);
-        this.model.set('value', value);
-        this.controller.flagSubjectsEdits();
-        this.controller.showProjectSubjectsList();
     },
 
     deleteDiagnosis: function(e) {

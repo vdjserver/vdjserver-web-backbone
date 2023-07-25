@@ -93,7 +93,7 @@ var SubjectsView = Marionette.View.extend({
         'click #project-diagnosis-import': 'importDiagnosisTable',
         'click #project-diagnosis-export': 'exportDiagnosisTable',
 
-        'click #project-subjects-new-subject': 'addSubject',
+        'click #project-subjects-new-subject': function(e) { this.controller.addSubject(e); },
 
         'click #project-subjects-save-changes': function(e) {
             e.preventDefault();
@@ -136,16 +136,6 @@ var SubjectsView = Marionette.View.extend({
             editMode: this.editMode,
             current_sort: current_sort,
         }
-    },
-
-    addSubject: function() {
-      var clonedList = this.controller.getSubjectsList();
-      var newSubject = new Subject({projectUuid: this.controller.model.get('uuid')});
-      newSubject.set('uuid', newSubject.cid);
-      newSubject.view_mode = 'edit';
-      clonedList.add(newSubject, {at:0});
-      $('#subject_id').focus();
-      this.controller.flagSubjectsEdits();
     },
 
     updateHeader: function() {
