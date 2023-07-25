@@ -6,7 +6,7 @@
                 <div class="btn-group" role="group" aria-label="Button group">
                     <div class="dropdown">
                         <button type="button" class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-diagnoses" aria-hidden="true"></i>
+                            <i class="fas fa-user-alt" aria-hidden="true"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-edit">
@@ -57,7 +57,10 @@
                 <b>Study Group Description:</b> {{this.study_group_description}}
             </div>
             <div class="col-md-5">
-                <b>Disease Diagnosis:</b> {{this.disease_diagnosis.label}} ({{this.disease_diagnosis.id}})
+                <b>Disease Diagnosis:</b>
+                {{#if this.disease_diagnosis.id}}
+                    {{this.disease_diagnosis.label}} ({{this.disease_diagnosis.id}})
+                {{/if}}
             </div>
         </div>
         {{/each}}
