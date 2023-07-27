@@ -134,6 +134,26 @@ define([
             }
             return undefined;
         },
+        getAIRRDataFile: function() {
+            for (var j = 0; j < this.models.length; j++) {
+                var model = this.at([j]);
+
+                var modelName = model.get('value').name;
+
+                if (modelName === 'study_metadata.airr.json') return model;
+            }
+            return undefined;
+        },
+        getGermlineDatabaseFile: function() {
+            for (var j = 0; j < this.models.length; j++) {
+                var model = this.at([j]);
+
+                var modelName = model.get('value').name;
+
+                if (modelName === 'vdjserver_germline.airr.json') return model;
+            }
+            return undefined;
+        },
         getFileByName: function(name) {
             for (var j = 0; j < this.models.length; j++) {
                 var model = this.at([j]);
