@@ -24,7 +24,7 @@ var EnvironmentConfig = {
                         'vdjPipe': 'vdj_pipe-ls6-0.1.7u2',
                         'igBlast': 'igblast-ls6-1.20u6',
                         'presto': 'presto-ls6-0.6u2',
-                        'RepCalc': 'repcalc-ls6-2.0u4'
+                        'RepCalc': 'repcalc-ls6-2.0u6'
                     },
                     'type': 'large',
                     'maxProcessorsPerNode': 128,
@@ -85,7 +85,7 @@ var EnvironmentConfig = {
         },
     },
     'processMetadata': {
-        'version': 3,
+        'version': 4,
     },
     'debug': {
         'console': false,
