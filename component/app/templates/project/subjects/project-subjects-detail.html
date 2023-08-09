@@ -43,11 +43,12 @@
                         {{{FieldHelpPopover "Subject" "subject_id"}}}
                         Subject ID:
                     </label>
-                    <input type="text" class="form-control form-control-subject" name="subject_id" id="subject_id" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="subject_id" id="subject_id" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationDuplicateID" required>
 
-                    <div class="invalid-feedback">
-                        Please enter a valid Subject ID.
+                    <div id="validationBlankID" class="invalid-feedback">
+                        Please enter a Subject ID.
                     </div>
+<div id="validationDuplicateID" class="invalid-feedback">Please enter a unique Subject ID</div>
                 </div>
 
                 <div class="form-group col-md-2">
@@ -292,7 +293,7 @@
                     </label>
                     <input type="text" class="form-control form-control-subject" name="linked_subjects" id="linked_subjects" placeholder="" value="{{value.linked_subjects}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
-                        Please enter a valid Linked Subjects.
+                        Please enter a valid Linked Subject.
                     </div>
                 </div>
 

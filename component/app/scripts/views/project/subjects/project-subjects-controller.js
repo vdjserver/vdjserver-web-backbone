@@ -208,12 +208,47 @@ ProjectSubjectsController.prototype = {
         console.log('Clicked Save');
 
         // Validation
+var subject_ids = [];
         for (let i = 0; i < this.subjectList.length; ++i) {
             let model = this.subjectList.at(i);
-            if (!model.isValid()) {
-                console.log('not valid');
-            }
+            let value = model.get('value');
+            subject_ids[i]=value['subject_id'];
         }
+var dMap2 = new Map();
+dMap2 = this.subjectList.returnDuplicates(subject_ids);
+
+        for(let entry of dMap2) { console.log(entry); }
+//this.subjectList.validate(subject_ids,{validate: true});
+
+document.getElementById("subject_id").setCustomValidity('');
+
+$('.needs-validation').addClass('was-validated');
+var form = document.getElementsByClassName('needs-validation');
+if(dMap2.size > 0) { //new subject id is a duplicate
+    document.getElementById("subject_id").classList.add('is-invalid');    
+    document.getElementById("subject_id").setCustomValidity("ERROR");
+    document.getElementById("validationDuplicateID").classList.add('d-block');
+    document.getElementById("validationDuplicateID").classList.remove('d-none');
+    document.getElementById("validationBlankID").classList.add('d-none');
+    document.getElementById("validationBlankID").classList.remove('d-block');
+    return;
+}
+
+if(form[0].checkValidity() === false) {
+  var errorElements = $(form).find(".form-control:invalid");
+  for(let i=0; i<errorElements.length; i++) {
+    console.log("error field: " + errorElements[i].id);
+    if(errorElements[i].id=="subject_id") { //blank subject id
+        document.getElementById("validationDuplicateID").classList.add('d-none');
+        document.getElementById("validationDuplicateID").classList.remove('d-block');
+        document.getElementById("validationBlankID").classList.add('d-block');
+        document.getElementById("validationBlankID").classList.remove('d-none');
+    }
+  }
+
+  console.log("sizeE: " + errorElements.length);
+  return; 
+}
 
         // display a modal while the data is being saved
         this.modalState = 'save';
