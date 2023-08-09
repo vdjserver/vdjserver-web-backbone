@@ -220,7 +220,8 @@ dMap2 = this.subjectList.returnDuplicates(subject_ids);
         for(let entry of dMap2) { console.log(entry); }
 //this.subjectList.validate(subject_ids,{validate: true});
 
-document.getElementById("subject_id").setCustomValidity('');
+//document.getElementById("subject_id").setCustomValidity('');
+if(document.getElementById("subject_id") != null) document.getElementById("subject_id").setCustomValidity('');
 
 $('.needs-validation').addClass('was-validated');
 var form = document.getElementsByClassName('needs-validation');
@@ -234,7 +235,8 @@ if(dMap2.size > 0) { //new subject id is a duplicate
     return;
 }
 
-if(form[0].checkValidity() === false) {
+if(form.length>0) {
+ if(form[0].checkValidity() === false) {
   var errorElements = $(form).find(".form-control:invalid");
   for(let i=0; i<errorElements.length; i++) {
     console.log("error field: " + errorElements[i].id);
@@ -248,6 +250,7 @@ if(form[0].checkValidity() === false) {
 
   console.log("sizeE: " + errorElements.length);
   return; 
+ }
 }
 
         // display a modal while the data is being saved
