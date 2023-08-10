@@ -1170,6 +1170,11 @@ define([
                           //var job = new Backbone.Agave.Model.Job.RepCalc();
 
                           var fileSize = 0;
+                          var zipfile = that.collection.getFileByName(repcalcForm['job-selected'] + '.zip');
+                          if (zipfile) {
+                            var value = zipfile.get('value');
+                            fileSize += value['length'];
+                          }
                           //fileSize += that.AIRRFiles.getTotalFileSize();
                           //fileSize += that.ChangeOFiles.getTotalFileSize();
                           that.job.set('totalFileSize', fileSize);
