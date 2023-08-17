@@ -210,7 +210,7 @@ ProjectSubjectsController.prototype = {
         console.log('Clicked Save');
 
         // Validation
-        var subject_ids = [];
+/*        var subject_ids = [];
         var subject_cids = [];
         for (let i = 0; i < this.subjectList.length; ++i) {
             let model = this.subjectList.at(i);
@@ -221,14 +221,52 @@ ProjectSubjectsController.prototype = {
         
         var dMap2 = new Map();
         dMap2 = this.subjectList.returnDuplicates(subject_ids, subject_cids);
-
         for(let cid of this.newSubjectList) {
           if(document.getElementById("subject_id_"+cid) != null) 
             document.getElementById("subject_id_" +cid).setCustomValidity('');
         }
+*/
 
+        // clear errors
+        var hasErrors = false;
+        for (let i = 0; i < this.subjectList.length; ++i) {
+            let model = this.subjectList.at(i);
+            var field = document.getElementById("subject_id_" + model.get('uuid'));
+            if (field) field.setCustomValidity("");
+        }
+
+        // form validation
         $('.needs-validation').addClass('was-validated');
         var form = document.getElementsByClassName('needs-validation');
+        for (let i = 0; i < form.length; ++i)
+            if (form[i].checkValidity() === false) {
+                hasErrors = true;
+                break;
+            }
+
+        // invalidate any duplicate subject IDs
+        var duplicates = this.subjectList.checkDuplicates();
+        for (let i = 0; i < duplicates.length; ++i) {
+            var model = duplicates.at(i);
+            var field = document.getElementById("subject_id_" + model.get('uuid'));
+            if (field) {
+                field.setCustomValidity("ERROR");
+            }
+        }
+
+        // find first subject with error and scroll to it
+        if (duplicates.length > 0) {
+            hasErrors = true;
+            for (let i = 0; i < this.subjectList.length; ++i) {
+                let model = this.subjectList.at(i);
+                if (duplicates.get(model.get('uuid'))) {
+                    $('html, body').animate({ scrollTop: $('#subject_id_' + model.get('uuid')).focus().offset().top - 100 }, 1000);
+                    break;
+                }
+            }
+        }
+
+/*
         var flag = false;
         if(dMap2.size > 0) { //new subject id is a duplicate
             for(let v of dMap2.values()) {
@@ -254,8 +292,8 @@ ProjectSubjectsController.prototype = {
                     flag=true;
                 }
             } 
-        }
-        if(flag) return;
+        } */
+        if(hasErrors) return;
 
         // display a modal while the data is being saved
         this.modalState = 'save';

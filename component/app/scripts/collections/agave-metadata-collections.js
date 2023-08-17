@@ -232,6 +232,24 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
              return dMap;
         },
 
+        checkDuplicates() {
+            var duplicates = this.clone();
+            duplicates.reset();
+            for (let i = 0; i < this.length; ++i) {
+                var modeli = this.at(i);
+                var valuei = modeli.get('value');
+                for (let j = i+1; j < this.length; ++j) {
+                    var modelj = this.at(j);
+                    var valuej = modelj.get('value');
+                    if (valuei['subject_id'] == valuej['subject_id']) {
+                        duplicates.add(modeli);
+                        duplicates.add(modelj);
+                    }
+                }
+            }
+            return duplicates;
+        },
+
         collectionSortBy(modela, modelb) {
             if (!this.sort_by) this.sort_by = 'subjectid';
             switch (this.sort_by) {
