@@ -84,6 +84,7 @@ ProjectSubjectsController.prototype = {
     resetCollections() {
         // these collections should always point to the same models
         this.subjectList = this.controller.subjectList.getClonedCollection(); //create the cloned collection
+        this.newSubjectList = [];
     },
 
     getSubjectsViewMode() {
@@ -136,9 +137,10 @@ ProjectSubjectsController.prototype = {
       var clonedList = this.getSubjectsList();
       var newSubject = new Subject({projectUuid: this.controller.model.get('uuid')});
       newSubject.set('uuid', newSubject.cid);
+      this.newSubjectList.push(newSubject.cid);
       newSubject.view_mode = 'edit';
       clonedList.add(newSubject, {at:0});
-      $('#subject_id').focus();
+      $('#subject_id_'+newSubject.cid).focus();
       this.flagSubjectsEdits();
     },
 
@@ -208,50 +210,52 @@ ProjectSubjectsController.prototype = {
         console.log('Clicked Save');
 
         // Validation
-var subject_ids = [];
+        var subject_ids = [];
+        var subject_cids = [];
         for (let i = 0; i < this.subjectList.length; ++i) {
             let model = this.subjectList.at(i);
             let value = model.get('value');
             subject_ids[i]=value['subject_id'];
+            subject_cids[i]=model.cid;
         }
-var dMap2 = new Map();
-dMap2 = this.subjectList.returnDuplicates(subject_ids);
+        
+        var dMap2 = new Map();
+        dMap2 = this.subjectList.returnDuplicates(subject_ids, subject_cids);
 
-        for(let entry of dMap2) { console.log(entry); }
-//this.subjectList.validate(subject_ids,{validate: true});
+        for(let cid of this.newSubjectList) {
+          if(document.getElementById("subject_id_"+cid) != null) 
+            document.getElementById("subject_id_" +cid).setCustomValidity('');
+        }
 
-//document.getElementById("subject_id").setCustomValidity('');
-if(document.getElementById("subject_id") != null) document.getElementById("subject_id").setCustomValidity('');
+        $('.needs-validation').addClass('was-validated');
+        var form = document.getElementsByClassName('needs-validation');
+        var flag = false;
+        if(dMap2.size > 0) { //new subject id is a duplicate
+            for(let v of dMap2.values()) {
+                if(document.getElementById("subject_id_"+v[1]) != null) {
+                    document.getElementById("subject_id_"+v[1]).setCustomValidity("ERROR");
+                    $('#subject_id_'+v[1]).focus();
+                    flag=true;
+                }
+            }
+            if(flag) {
+                return;
+            }
+        }
 
-$('.needs-validation').addClass('was-validated');
-var form = document.getElementsByClassName('needs-validation');
-if(dMap2.size > 0) { //new subject id is a duplicate
-    document.getElementById("subject_id").classList.add('is-invalid');    
-    document.getElementById("subject_id").setCustomValidity("ERROR");
-    document.getElementById("validationDuplicateID").classList.add('d-block');
-    document.getElementById("validationDuplicateID").classList.remove('d-none');
-    document.getElementById("validationBlankID").classList.add('d-none');
-    document.getElementById("validationBlankID").classList.remove('d-block');
-    return;
-}
-
-if(form.length>0) {
- if(form[0].checkValidity() === false) {
-  var errorElements = $(form).find(".form-control:invalid");
-  for(let i=0; i<errorElements.length; i++) {
-    console.log("error field: " + errorElements[i].id);
-    if(errorElements[i].id=="subject_id") { //blank subject id
-        document.getElementById("validationDuplicateID").classList.add('d-none');
-        document.getElementById("validationDuplicateID").classList.remove('d-block');
-        document.getElementById("validationBlankID").classList.add('d-block');
-        document.getElementById("validationBlankID").classList.remove('d-none');
-    }
-  }
-
-  console.log("sizeE: " + errorElements.length);
-  return; 
- }
-}
+        flag=false;
+        for (let i = 0; i < this.subjectList.length; ++i) {
+            let model = this.subjectList.at(i);
+            let value = model.get('value');
+            if(value['subject_id'] == null) {
+                if(document.getElementById("subject_id_"+model.cid) != null) {
+                    document.getElementById("subject_id_"+model.cid).setCustomValidity("ERROR"); 
+                    $('html, body').animate({ scrollTop: $('#subject_id_'+model.cid).focus().offset().top - 100 }, 1000);
+                    flag=true;
+                }
+            } 
+        }
+        if(flag) return;
 
         // display a modal while the data is being saved
         this.modalState = 'save';

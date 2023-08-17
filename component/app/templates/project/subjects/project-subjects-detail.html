@@ -15,18 +15,18 @@
                   <div class="btn-group" role="group" aria-label="Button group">
                     <div class="dropdown">
                         <button type="button" class="btn btn-create btn-primary btn-block input-block-level dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-user-alt" aria-hidden="true"></i> 
+                            <i class="fas fa-fw fa-user-alt" aria-hidden="true"></i> 
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                <i class="fa fa-plus image-vdj-darkblue" aria-hidden="true"></i> Edit
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit
                             </button>
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-apply">
-                                <i class="fa fa-plus image-vdj-darkblue" aria-hidden="true"></i> Apply Template
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Apply Template
                             </button>
                             <div class="dropdown-divider" width="10%"></div>
                             <button type="button" class="dropdown-item project-subjects-delete-subject" name="{{uuid}}" id="project-subject-delete">
-                                <i class="fa fa-trash image-vdj-red" aria-hidden="true"></i> Delete
+                                <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete
                             </button>
                         </div>
                     </div>
@@ -43,12 +43,11 @@
                         {{{FieldHelpPopover "Subject" "subject_id"}}}
                         Subject ID:
                     </label>
-                    <input type="text" class="form-control form-control-subject" name="subject_id" id="subject_id" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationDuplicateID" required>
+                    <input type="text" class="form-control form-control-subject" name="subject_id" id="subject_id_{{uuid}}" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationBlankID" required>
 
                     <div id="validationBlankID" class="invalid-feedback">
-                        Please enter a Subject ID.
+                        Please enter a non-blank, unique Subject ID.
                     </div>
-<div id="validationDuplicateID" class="invalid-feedback">Please enter a unique Subject ID</div>
                 </div>
 
                 <div class="form-group col-md-2">
@@ -62,7 +61,7 @@
                         Synthetic:
                     </label>
 
-                    <select class="custom-select value-select" name="synthetic" id="synthetic" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select" name="synthetic" id="synthetic" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="true">True</option>
                       <option value="false">False</option>
                     </select>
@@ -79,7 +78,7 @@
                         Species:
                     </label>
 
-                    <select class="custom-select ontology-select" name="species" id="species" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select ontology-select" name="species" id="species" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option id="NCBITAXON:9606" value="Homo sapiens" {{#ifEquals value.species.id "NCBITAXON:9606"}}selected{{/ifEquals}}>Homo sapiens</option>
                       <option id="NCBITAXON:9544" value="Macaca mulatta" {{#ifEquals value.species.id "NCBITAXON:9544"}}selected{{/ifEquals}}>Macaca mulatta</option>
                       <option id="NCBITAXON:10088" value="Mus musculus" {{#ifEquals value.species.id "NCBITAXON:10088"}}selected{{/ifEquals}}>Mus musculus</option>
@@ -113,7 +112,7 @@
                         Sex:
                     </label>
 
-                    <select class="custom-select value-select" name="sex" id="sex" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select" name="sex" id="sex" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each values}}
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sex}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
@@ -135,7 +134,7 @@
                         Age Type:
                     </label>
 
-                    <select class="custom-select value-select" name="age" id="age" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select" name="age" id="age" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="point" {{#if pointMode}}selected{{/if}}>point</option>
                       <option value="range" {{#unless pointMode}}selected{{/unless}}>range</option>
                     </select>
@@ -206,7 +205,7 @@
                         Unit:
                     </label>
 
-                    <select class="custom-select ontology-select" name="age_unit" id="age_unit" required {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select ontology-select" name="age_unit" id="age_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option id="UO_0000032" value="hour" {{#ifEquals value.age_unit.id "UO_0000032"}}selected{{/ifEquals}}>hour(s)</option>
                       <option id="UO_0000033" value="day" {{#ifEquals value.age_unit.id "UO_0000033"}}selected{{/ifEquals}}>day(s)</option>
                       <option id="UO_0000034" value="week" {{#ifEquals value.age_unit.id "UO_0000034"}}selected{{/ifEquals}}>week(s)</option>
@@ -225,7 +224,7 @@
                         {{{FieldHelpPopover "Subject" "age_event"}}}
                         Age Event:
                     </label>
-                    <input type="text" class="form-control form-control-subject" name="age_event" id="age_event" placeholder="" value="{{value.age_event}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_event" id="age_event" placeholder="" value="{{value.age_event}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid age event.
                     </div>
@@ -259,7 +258,7 @@
                         {{{FieldHelpPopover "Subject" "ancestry_population"}}}
                         Ancestry Population:
                     </label>
-                    <input type="text" class="form-control form-control-subject" name="ancestry_population" id="ancestry_population" placeholder="" value="{{value.ancestry_population}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="ancestry_population" id="ancestry_population" placeholder="" value="{{value.ancestry_population}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Ancestry Population.
                     </div>
@@ -275,7 +274,7 @@
                         {{{FieldHelpPopover "Subject" "ethnicity"}}}
                         Ethnicity:
                     </label>
-                    <input type="text" class="form-control form-control-subject" name="ethnicity" id="ethnicity" placeholder="" value="{{value.ethnicity}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="ethnicity" id="ethnicity" placeholder="" value="{{value.ethnicity}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Ethnicity.
                     </div>
@@ -291,7 +290,7 @@
                         {{{FieldHelpPopover "Subject" "linked_subjects"}}}
                         Linked Subject:
                     </label>
-                    <input type="text" class="form-control form-control-subject" name="linked_subjects" id="linked_subjects" placeholder="" value="{{value.linked_subjects}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="linked_subjects" id="linked_subjects" placeholder="" value="{{value.linked_subjects}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Linked Subject.
                     </div>
@@ -307,7 +306,7 @@
                         {{{FieldHelpPopover "Subject" "link_type"}}}
                         Link Type:
                     </label>
-                    <input type="text" class="form-control form-control-subject" name="link_type" id="link_type" placeholder="" value="{{value.link_type}}" required {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="link_type" id="link_type" placeholder="" value="{{value.link_type}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter valid a Link Type.
                     </div>
@@ -328,18 +327,18 @@
                     <div class="btn-group" role="group" aria-label="Button group">
                       <div class="dropdown">
                           <button type="button" class="btn btn-create btn-primary btn-block input-block-level dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <i class="fa fa-diagnoses" aria-hidden="true"></i>
+                              <i class="fa fa-fw fa-diagnoses" aria-hidden="true"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                               <button type="button" class="dropdown-item project-subjects-detail-add-diagnosis" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                  <i class="fa fa-plus image-vdj-darkblue" aria-hidden="true"></i> Add Diagnosis
+                                  <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Diagnosis
                               </button>
                               <button type="button" class="dropdown-item project-subjects-detail-duplicate-diagnosis" name="{{uuid}}" id="project-subjects-detail-duplicate-diagnosis_{{@index}}">
-                                  <i class="fa fa-plus image-vdj-darkblue" aria-hidden="true"></i> Duplicate Diagnosis
+                                  <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Diagnosis
                               </button>
                               <div class="dropdown-divider" width="10%"></div>
                               <button type="button" class="dropdown-item project-subjects-detail-delete-diagnosis" name="{{uuid}}" id="project-subject-delete">
-                                  <i class="fa fa-trash image-vdj-red" aria-hidden="true"></i> Delete Diagnosis
+                                  <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Diagnosis
                               </button>
                           </div>
                       </div>
