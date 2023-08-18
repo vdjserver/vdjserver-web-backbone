@@ -236,12 +236,15 @@ ProjectSubjectsController.prototype = {
         }
 
         // form validation
+        var minY = Number.MAX_VALUE;
         $('.needs-validation').addClass('was-validated');
         var form = document.getElementsByClassName('needs-validation');
         for (let i = 0; i < form.length; ++i)
             if (form[i].checkValidity() === false) {
                 hasErrors = true;
-                break;
+                var rect = form[i].getBoundingClientRect();
+                if (rect['y'] < minY)
+                    minY = rect['y'];
             }
 
         // invalidate any duplicate subject IDs
@@ -251,20 +254,23 @@ ProjectSubjectsController.prototype = {
             var field = document.getElementById("subject_id_" + model.get('uuid'));
             if (field) {
                 field.setCustomValidity("ERROR");
+                hasErrors = true;
+                var rect = field.getBoundingClientRect();
+                if (rect['y'] < minY)
+                    minY = rect['y'];
             }
         }
 
         // find first subject with error and scroll to it
-        if (duplicates.length > 0) {
-            hasErrors = true;
-            for (let i = 0; i < this.subjectList.length; ++i) {
+        if (hasErrors) $('html, body').animate({ scrollTop: minY - 100 }, 1000);
+/*             for (let i = 0; i < this.subjectList.length; ++i) {
                 let model = this.subjectList.at(i);
                 if (duplicates.get(model.get('uuid'))) {
                     $('html, body').animate({ scrollTop: $('#subject_id_' + model.get('uuid')).focus().offset().top - 100 }, 1000);
                     break;
                 }
             }
-        }
+        } */
 
 /*
         var flag = false;
