@@ -244,7 +244,7 @@ ProjectSubjectsController.prototype = {
                 hasErrors = true;
                 var rect = form[i].getBoundingClientRect();
                 if (rect['y'] < minY)
-                    minY = rect['y'];
+                    minY = rect['y']+window.scrollY;
             }
 
         // invalidate any duplicate subject IDs
@@ -255,9 +255,9 @@ ProjectSubjectsController.prototype = {
             if (field) {
                 field.setCustomValidity("ERROR");
                 hasErrors = true;
-                var rect = field.getBoundingClientRect();
+                var rect = field.form.getBoundingClientRect();
                 if (rect['y'] < minY)
-                    minY = rect['y'];
+                    minY = rect['y']+window.scrollY;
             }
         }
 
