@@ -210,23 +210,6 @@ ProjectSubjectsController.prototype = {
         console.log('Clicked Save');
 
         // Validation
-/*        var subject_ids = [];
-        var subject_cids = [];
-        for (let i = 0; i < this.subjectList.length; ++i) {
-            let model = this.subjectList.at(i);
-            let value = model.get('value');
-            subject_ids[i]=value['subject_id'];
-            subject_cids[i]=model.cid;
-        }
-        
-        var dMap2 = new Map();
-        dMap2 = this.subjectList.returnDuplicates(subject_ids, subject_cids);
-        for(let cid of this.newSubjectList) {
-          if(document.getElementById("subject_id_"+cid) != null) 
-            document.getElementById("subject_id_" +cid).setCustomValidity('');
-        }
-*/
-
         // clear errors
         var hasErrors = false;
         for (let i = 0; i < this.subjectList.length; ++i) {
@@ -262,44 +245,10 @@ ProjectSubjectsController.prototype = {
         }
 
         // find first subject with error and scroll to it
-        if (hasErrors) $('html, body').animate({ scrollTop: minY - 100 }, 1000);
-/*             for (let i = 0; i < this.subjectList.length; ++i) {
-                let model = this.subjectList.at(i);
-                if (duplicates.get(model.get('uuid'))) {
-                    $('html, body').animate({ scrollTop: $('#subject_id_' + model.get('uuid')).focus().offset().top - 100 }, 1000);
-                    break;
-                }
-            }
-        } */
-
-/*
-        var flag = false;
-        if(dMap2.size > 0) { //new subject id is a duplicate
-            for(let v of dMap2.values()) {
-                if(document.getElementById("subject_id_"+v[1]) != null) {
-                    document.getElementById("subject_id_"+v[1]).setCustomValidity("ERROR");
-                    $('#subject_id_'+v[1]).focus();
-                    flag=true;
-                }
-            }
-            if(flag) {
-                return;
-            }
+        if (hasErrors) {
+            $('html, body').animate({ scrollTop: minY - 100 }, 1000);
+            return;
         }
-
-        flag=false;
-        for (let i = 0; i < this.subjectList.length; ++i) {
-            let model = this.subjectList.at(i);
-            let value = model.get('value');
-            if(value['subject_id'] == null) {
-                if(document.getElementById("subject_id_"+model.cid) != null) {
-                    document.getElementById("subject_id_"+model.cid).setCustomValidity("ERROR"); 
-                    $('html, body').animate({ scrollTop: $('#subject_id_'+model.cid).focus().offset().top - 100 }, 1000);
-                    flag=true;
-                }
-            } 
-        } */
-        if(hasErrors) return;
 
         // display a modal while the data is being saved
         this.modalState = 'save';

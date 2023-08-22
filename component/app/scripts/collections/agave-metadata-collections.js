@@ -216,22 +216,6 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
                    ;
         },
 
-        returnDuplicates(subject_ids,subject_cids) {
-            var dMap = new Map();
-            var info = [];
-            for (let i = 0; i < subject_ids.length - 1; i++) {
-                for (let j = 0; j < subject_ids.length - 1; j++) {
-                    if (subject_ids[i] === subject_ids[j] && i != j) { 
-                        info.push(subject_ids[i]);
-                        info.push(subject_cids[i]);
-                        dMap.set(i,info);
-                        info = [];
-                    }
-                }
-             }
-             return dMap;
-        },
-
         checkDuplicates() {
             var duplicates = this.clone();
             duplicates.reset();

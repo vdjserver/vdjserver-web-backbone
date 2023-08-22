@@ -81,9 +81,6 @@ export var Subject = Agave.MetadataModel.extend({
         // AIRR schema validation
         //console.log(subjectSchema['definition']);
         let value = this.get('value');
-console.log("IN VALIDATE");
-console.log(attrs[0]);
-console.log("attrs: " + JSON.stringify(attrs));
         let valid = subjectSchema.validate_object(value);
 
         // TODO: VDJServer additional validation
