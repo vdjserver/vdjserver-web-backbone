@@ -151,10 +151,10 @@
                         Min:
                     </label>
 
-                    <input type="text" class="form-control form-control-subject" name="age_min" id="age_min" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_min" id="age_min_{{uuid}}" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
-                        Please enter a valid minimum age.
+                        Please enter a valid minimum age number.
                     </div>
                 </div>
 
@@ -169,10 +169,10 @@
                         Max:
                     </label>
 
-                    <input type="text" class="form-control form-control-subject" name="age_max" id="age_max" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_max" id="age_max_{{uuid}}" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
-                        Please enter a valid maximum age.
+                        Please enter a valid maximum age number that is less than the minimum age number.
                     </div>
                 </div>
 
@@ -187,10 +187,10 @@
                         Age:
                     </label>
 
-                    <input type="text" class="form-control form-control-subject" name="age_min" id="age_min" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_min" id="age_min_{{uuid}}" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
-                        Please enter a valid age.
+                        Please enter a valid age number.
                     </div>
                 </div>
 
@@ -206,11 +206,11 @@
                     </label>
 
                     <select class="custom-select ontology-select" name="age_unit" id="age_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option id="UO_0000032" value="hour" {{#ifEquals value.age_unit.id "UO_0000032"}}selected{{/ifEquals}}>hour(s)</option>
-                      <option id="UO_0000033" value="day" {{#ifEquals value.age_unit.id "UO_0000033"}}selected{{/ifEquals}}>day(s)</option>
-                      <option id="UO_0000034" value="week" {{#ifEquals value.age_unit.id "UO_0000034"}}selected{{/ifEquals}}>week(s)</option>
-                      <option id="UO_0000035" value="month" {{#ifEquals value.age_unit.id "UO_0000035"}}selected{{/ifEquals}}>month(s)</option>
-                      <option id="UO_0000036" value="year" {{#ifEquals value.age_unit.id "UO_0000036"}}selected{{/ifEquals}}>year(s)</option>
+                      <option id="UO:0000032" value="hour" {{#ifEquals value.age_unit.id "UO:0000032"}}selected{{/ifEquals}}>hour(s)</option>
+                      <option id="UO:0000033" value="day" {{#ifEquals value.age_unit.id "UO:0000033"}}selected{{/ifEquals}}>day(s)</option>
+                      <option id="UO:0000034" value="week" {{#ifEquals value.age_unit.id "UO:0000034"}}selected{{/ifEquals}}>week(s)</option>
+                      <option id="UO:0000035" value="month" {{#ifEquals value.age_unit.id "UO:0000035"}}selected{{/ifEquals}}>month(s)</option>
+                      <option id="UO:0000036" value="year" {{#ifEquals value.age_unit.id "UO:0000036"}}selected{{/ifEquals}}>year(s)</option>
                     </select>
                 </div>
 

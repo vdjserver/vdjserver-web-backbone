@@ -214,8 +214,20 @@ ProjectSubjectsController.prototype = {
         var hasErrors = false;
         for (let i = 0; i < this.subjectList.length; ++i) {
             let model = this.subjectList.at(i);
+
+            // ensure age_max is not null when age is of type point
+            let value = model.get('value');
+            if(value['age_min'] != null && value['age_max'] == null) {
+                value['age_max'] = value['age_min'];
+                model.set('value', value);
+            }
+
             var field = document.getElementById("subject_id_" + model.get('uuid'));
             if (field) field.setCustomValidity("");
+            var age_min_field = document.getElementById("age_min_" + model.get('uuid'));
+            if (age_min_field) age_min_field.setCustomValidity("");
+            var age_max_field = document.getElementById("age_max_" + model.get('uuid'));
+            if (age_max_field) age_max_field.setCustomValidity("");
         }
 
         // form validation
@@ -241,6 +253,50 @@ ProjectSubjectsController.prototype = {
                 var rect = field.form.getBoundingClientRect();
                 if (rect['y'] < minY)
                     minY = rect['y']+window.scrollY;
+            }
+        }
+
+        // ensure age_min < age_max and that they are numbers
+        for (let i = 0; i < this.subjectList.length; ++i) {
+            let model = this.subjectList.at(i);
+            console.log("uuid: " + model.get('uuid'));
+            var age_min_field = document.getElementById("age_min_" + model.get('uuid'));
+            var age_max_field = document.getElementById("age_max_" + model.get('uuid'));
+            if(age_min_field != null && age_max_field != null) {
+                console.log("field: " + age_min_field + " , " + age_max_field);
+                console.log("value: " + age_min_field.value + " , " + age_max_field.value);
+                //check if values are numbers
+                if(!isNaN(age_min_field.value)) {
+                    if(!isNaN(age_max_field.value)) {
+                        if(age_max_field.value < age_min_field.value) {
+                            age_max_field.setCustomValidity("ERROR");
+                            hasErrors = true;
+                            var rect = age_max_field.form.getBoundingClientRect();
+                            if (rect['y'] < minY)
+                                minY = rect['y']+window.scrollY;
+                        }
+                    } else {
+                        age_max_field.setCustomValidity("ERROR");
+                        hasErrors = true;
+                        var rect = age_max_field.form.getBoundingClientRect();
+                        if (rect['y'] < minY)
+                            minY = rect['y']+window.scrollY;
+                    }
+                } else {
+                    age_min_field.setCustomValidity("ERROR");
+                    hasErrors = true;
+                    var rect = age_min_field.form.getBoundingClientRect();
+                    if (rect['y'] < minY)
+                        minY = rect['y']+window.scrollY;
+                }
+            } else if(age_min_field != null) { //age point case
+                if(isNaN(age_min_field.value)) {
+                    age_min_field.setCustomValidity("ERROR");
+                    hasErrors = true;
+                    var rect = age_min_field.form.getBoundingClientRect();
+                    if (rect['y'] < minY)
+                        minY = rect['y']+window.scrollY;
+                }
             }
         }
 

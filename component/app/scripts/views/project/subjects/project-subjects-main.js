@@ -90,8 +90,6 @@ var SubjectsView = Marionette.View.extend({
 
         'click #project-subjects-import': 'importSubjectTable',
         'click #project-subjects-export': 'exportSubjectTable',
-        'click #project-diagnosis-import': 'importDiagnosisTable',
-        'click #project-diagnosis-export': 'exportDiagnosisTable',
 
         'click #project-subjects-new-subject': function(e) { this.controller.addSubject(e); },
 
@@ -155,16 +153,6 @@ var SubjectsView = Marionette.View.extend({
         console.log('exportSubjectTable');
         e.preventDefault();
         this.model.exportTableToDisk('subject');
-    },
-
-    importDiagnosisTable: function(e) {
-        e.preventDefault();
-    },
-
-    exportDiagnosisTable: function(e) {
-        console.log('exportDiagnosisTable');
-        e.preventDefault();
-        this.model.exportMetadataToDisk();
     },
 
 });
