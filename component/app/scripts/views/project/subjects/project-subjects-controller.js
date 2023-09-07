@@ -226,6 +226,8 @@ ProjectSubjectsController.prototype = {
             if (field) field.setCustomValidity("");
             var age_min_field = document.getElementById("age_min_" + model.get('uuid'));
             if (age_min_field) age_min_field.setCustomValidity("");
+            var age_point_field = document.getElementById("age_point_" + model.get('uuid'));
+            if (age_point_field) age_point_field.setCustomValidity("");
             var age_max_field = document.getElementById("age_max_" + model.get('uuid'));
             if (age_max_field) age_max_field.setCustomValidity("");
         }
@@ -255,20 +257,29 @@ ProjectSubjectsController.prototype = {
                     minY = rect['y']+window.scrollY;
             }
         }
-
         // ensure age_min < age_max and that they are numbers
         for (let i = 0; i < this.subjectList.length; ++i) {
             let model = this.subjectList.at(i);
-            console.log("uuid: " + model.get('uuid'));
+            let value = model.get('value');
+            var pointMode = false;
+            if(value['age_min'] == value['age_max']) pointMode = true;
+            if(document.getElementById('age') != null) if(document.getElementById('age').value == 'point') pointMode = true;
             var age_min_field = document.getElementById("age_min_" + model.get('uuid'));
+            var age_point_field = document.getElementById("age_point_" + model.get('uuid'));
             var age_max_field = document.getElementById("age_max_" + model.get('uuid'));
-            if(age_min_field != null && age_max_field != null) {
-                console.log("field: " + age_min_field + " , " + age_max_field);
-                console.log("value: " + age_min_field.value + " , " + age_max_field.value);
-                //check if values are numbers
-                if(!isNaN(age_min_field.value)) {
-                    if(!isNaN(age_max_field.value)) {
-                        if(age_max_field.value < age_min_field.value) {
+            if(!pointMode) {
+                if(age_min_field != null && age_max_field != null) {
+                    //check if values are numbers
+                    if(!isNaN(age_min_field.value)) {
+                        if(!isNaN(age_max_field.value)) {
+                            if(age_max_field.value < age_min_field.value) {
+                                age_max_field.setCustomValidity("ERROR");
+                                hasErrors = true;
+                                var rect = age_max_field.form.getBoundingClientRect();
+                                if (rect['y'] < minY)
+                                    minY = rect['y']+window.scrollY;
+                            }
+                        } else {
                             age_max_field.setCustomValidity("ERROR");
                             hasErrors = true;
                             var rect = age_max_field.form.getBoundingClientRect();
@@ -276,26 +287,25 @@ ProjectSubjectsController.prototype = {
                                 minY = rect['y']+window.scrollY;
                         }
                     } else {
-                        age_max_field.setCustomValidity("ERROR");
+                        age_min_field.setCustomValidity("ERROR");
                         hasErrors = true;
-                        var rect = age_max_field.form.getBoundingClientRect();
+                        var rect = age_min_field.form.getBoundingClientRect();
                         if (rect['y'] < minY)
                             minY = rect['y']+window.scrollY;
                     }
-                } else {
-                    age_min_field.setCustomValidity("ERROR");
-                    hasErrors = true;
-                    var rect = age_min_field.form.getBoundingClientRect();
-                    if (rect['y'] < minY)
-                        minY = rect['y']+window.scrollY;
                 }
-            } else if(age_min_field != null) { //age point case
-                if(isNaN(age_min_field.value)) {
-                    age_min_field.setCustomValidity("ERROR");
-                    hasErrors = true;
-                    var rect = age_min_field.form.getBoundingClientRect();
-                    if (rect['y'] < minY)
-                        minY = rect['y']+window.scrollY;
+            } else if(pointMode) {
+                if(age_point_field != null) { // age point case
+                    console.log("valuep: " + age_point_field.value);
+                    //check if value is a number
+                    if(isNaN(age_point_field.value)) {
+                        age_point_field.setCustomValidity("ERROR");
+                        hasErrors = true;
+                        var rect = age_point_field.form.getBoundingClientRect();
+                        if (rect['y'] < minY)
+                            minY = rect['y']+window.scrollY;
+                    }
+                    value['age_max'] = value['age_min'];
                 }
             }
         }
