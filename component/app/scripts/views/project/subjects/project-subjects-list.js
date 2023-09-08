@@ -104,7 +104,7 @@ var SubjectDetailView = Marionette.View.extend({
         var pointMode = false;
         //let value = this.model.get('value');
 
-        if(parseInt(this.model.attributes.value.age_max) == parseInt(this.model.attributes.value.age_min)) { 
+        if(parseFloat(this.model.attributes.value.age_max) == parseFloat(this.model.attributes.value.age_min)) {
             pointMode = true; 
         }
         var values = this.model.airr_schema.properties.sex.enum;
@@ -154,7 +154,7 @@ var SubjectDetailView = Marionette.View.extend({
         let value = this.model.get('value');
         value[e.target.name] = e.target.value;
         if(e.target.name == "age_min" || e.target.name == "age_max") {
-            value[e.target.name] = parseInt(e.target.value); 
+            value[e.target.name] = parseFloat(e.target.value);
         }
         this.model.set('value', value);
     },
@@ -190,7 +190,7 @@ var SubjectDetailView = Marionette.View.extend({
 
         value['diagnosis'][index][e.target.name] = e.target.value;
         if(e.target.name == "age_min" || e.target.name == "age_max") {
-            value['diagnosis'][index][e.target.name] = parseInt(e.target.value); 
+            value['diagnosis'][index][e.target.name] = parseFloat(e.target.value);
         }
         this.model.set('value', value);
     },
