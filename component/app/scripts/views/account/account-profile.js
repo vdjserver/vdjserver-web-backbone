@@ -123,7 +123,7 @@ var ProfileView = Marionette.View.extend({
             // save the model
             console.log(context.model);
             //context.cloned_model.url = '/bogus'; //to test 'fail'
-            context.cloned_model.save()
+            context.cloned_model.save(context.cloned_model.attributes, { url: context.cloned_model.getSaveUrl() })
             .then(function() {
                 context.modalState = 'pass';
                 $('#modal-message').modal('hide');
