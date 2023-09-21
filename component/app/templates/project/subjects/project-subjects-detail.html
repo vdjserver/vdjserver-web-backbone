@@ -62,8 +62,8 @@
                     </label>
 
                     <select class="custom-select value-select" name="synthetic" id="synthetic" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="true">True</option>
-                      <option value="false">False</option>
+                      <option value="true" {{#if value.synthetic}}selected{{/if}}>True</option>
+                      <option value="false"{{#if value.synthetic}}selected{{/if}}>False</option>
                     </select>
                 </div>
 
