@@ -78,23 +78,23 @@ var SubjectDetailView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller)
             this.controller = parameters.controller;
-        for(let i=0; i<this.model.attributes.value.diagnosis.length; i++) {
-            let button_label = 'Choose a Diagnosis';
-            let diagnosis_label;
-            let value = this.model.get('value');
-            if(value['diagnosis'][i] === undefined) {
-                diagnosis_label = button_label;
-            } else {
-                diagnosis_label = this.model.attributes.value.diagnosis[i].disease_diagnosis.label;
+
+        // setup ontology search views for disease diagnosis
+        if (this.model.view_mode == 'edit') {
+            var value = this.model.get('value');
+            for (let i = 0; i < value['diagnosis'].length; i++) {
+                let null_label = 'Choose a Diagnosis';
+                let button_label = null;
+                if (value['diagnosis'][i].disease_diagnosis)
+                    button_label = value['diagnosis'][i].disease_diagnosis.label;
+                var view = new OntologySearchView({schema: 'Diagnosis', field: 'disease_diagnosis',
+                    null_label: null_label, button_label: button_label, field_label: 'Disease Diagnosis',
+                    context: this, selectFunction: this.selectDisease, dropdown_id: 'dropdownOntology'+i});
+                let regionName = "diseaseDiagnosisRegion" + i;
+                let regionID = "#disease-diagnosis-region-" + i;
+                this.addRegion(regionName, regionID);
+                this.showChildView(regionName, view);
             }
-            var view = new OntologySearchView({schema: 'Diagnosis', field: 'disease_diagnosis',
-                button_label: 'Choose a Diagnosis', field_label: 'Disease Diagnosis',
-                context: this, selectFunction: this.selectDisease, dropdown_id: 'dropdownOntology'+i,
-                diagnosis_label: diagnosis_label, view_mode: this.model.view_mode});
-            let regionName = "diseaseDiagnosisRegion" + i;
-            let regionID = "#disease-diagnosis-region-" + i;
-            this.addRegion(regionName, regionID);
-            this.showChildView(regionName, view);
         }
 
     },
@@ -191,26 +191,6 @@ var SubjectDetailView = Marionette.View.extend({
             value['diagnosis'][index][e.target.name] = parseFloat(e.target.value);
         }
         this.model.set('value', value);
-    },
-
-    addDiagnosis: function(e) {
-        let value = this.model.get('value');
-        var diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
-        var blankEntry = diagnosisSchema.template();
-
-        value['diagnosis'].unshift(blankEntry);
-        this.model.set('value', value);
-        this.controller.showProjectSubjectsList();
-        $('#dropdownOntology0').focus();
-    },
-
-    deleteDiagnosis: function(e) {
-        let value = this.model.get('value');
-        let index = e.target.id.split("_").slice(-1);
-
-        value['diagnosis'].splice(index, 1);
-        this.model.set('value', value);
-        this.controller.showProjectSubjectsList();
     },
 
 });

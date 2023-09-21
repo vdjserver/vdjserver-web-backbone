@@ -46,22 +46,22 @@ export default Marionette.View.extend({
     initialize: function(parameters) {
 
         // customize the view
-        this.common = null;
-        this.button_label = 'Choose a value';
+        this.common = [];
+        this.null_label = 'Choose a value';
+        this.button_label = null;
         this.field_label = 'Ontology';
         this.schema = null;
         this.field = null;
         this.context = null;
         this.selectFunction = null;
         this.dropdown_id = "dropdownOntology";
-        this.diagnosis_label = null;
-        this.view_mode = null;
 
         // search results
         this.search = null;
 
         if (parameters) {
             if (parameters.common) this.common = parameters.common;
+            if (parameters.null_label) this.null_label = parameters.null_label;
             if (parameters.button_label) this.button_label = parameters.button_label;
             if (parameters.field_label) this.field_label = parameters.field_label;
             if (parameters.schema) this.schema = parameters.schema;
@@ -69,9 +69,9 @@ export default Marionette.View.extend({
             if (parameters.context) this.context = parameters.context;
             if (parameters.selectFunction) this.selectFunction = parameters.selectFunction;
             if (parameters.dropdown_id) this.dropdown_id = parameters.dropdown_id;
-            if (parameters.diagnosis_label) this.diagnosis_label = parameters.diagnosis_label;
-            if (parameters.view_mode) this.view_mode = parameters.view_mode;
         }
+        // provide a null option
+        this.common.unshift({id: null, label: "null"});
     },
 
     events: {
@@ -94,17 +94,20 @@ export default Marionette.View.extend({
             button_label: this.button_label,
             field_label: this.field_label,
 
-            dropdown_id: this.dropdown_id,
-            diagnosis_label: this.diagnosis_label,
-            view_mode: this.view_mode
+            dropdown_id: this.dropdown_id
         }
     },
 
     // when ontology is selected from dropdown, change the title
     // and pass info to callback function
     selectOntology(e) {
-        this.selected_ontology = { id: e.target.name, label: e.target.title };
-        $('#' + this.dropdown_id).html(e.target.title);
+        if (e.target.title == "null") {
+            this.selected_ontology = null;
+            $('#' + this.dropdown_id).html(this.null_label);
+        } else {
+            this.selected_ontology = { id: e.target.name, label: e.target.title };
+            $('#' + this.dropdown_id).html(e.target.title);
+        }
         if (this.selectFunction) this.selectFunction(this.context, this.selected_ontology);
     },
 
