@@ -34,21 +34,15 @@ import AIRRSchema from 'airr-schema';
 import repertoire_template from 'airr-repertoire-template';
 import { airr } from 'airr-js';
 
-// Subject model based upon AIRR Subject
+// Subject model based upon AIRR Subject, held as singleton object
 var subjectSchema = null;
 export var Subject = Agave.MetadataModel.extend({
     defaults: function() {
         // Use AIRR schema Subject object as basis
-        this.airr_schema = AIRRSchema['Subject'];
-
-        // make a deep copy from the template
         if (! subjectSchema) subjectSchema = new airr.SchemaDefinition('Subject');
+        this.airr_schema = subjectSchema;
+        // make a deep copy from the template
         var blankEntry = subjectSchema.template();
-        //var value = JSON.parse(JSON.stringify(repertoire_template['subject']));
-        //console.log(value);
-
-        // add VDJServer specific fields
-        //value['showArchivedJobs'] = false;
 
         return _.extend(
             {},
@@ -69,6 +63,7 @@ export var Subject = Agave.MetadataModel.extend({
         }
 
         if (! subjectSchema) subjectSchema = new airr.SchemaDefinition('Subject');
+        this.airr_schema = subjectSchema;
     },
     url: function() {
         return '/meta/v2/data/' + this.get('uuid');

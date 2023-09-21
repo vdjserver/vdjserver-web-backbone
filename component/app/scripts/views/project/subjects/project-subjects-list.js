@@ -102,16 +102,14 @@ var SubjectDetailView = Marionette.View.extend({
     templateContext() {
         var editMode = false;
         var pointMode = false;
-        //let value = this.model.get('value');
+        let value = this.model.get('value');
+        if (value['age_max'] == value['age_min']) pointMode = true;
+        var sex = this.model.airr_schema.spec('sex');
 
-        if(parseFloat(this.model.attributes.value.age_max) == parseFloat(this.model.attributes.value.age_min)) {
-            pointMode = true; 
-        }
-        var values = this.model.airr_schema.properties.sex.enum;
         return {
             view_mode: this.model.view_mode,
             pointMode: pointMode,
-            values: values,
+            sex_enum: sex.enum,
         }
     },
 

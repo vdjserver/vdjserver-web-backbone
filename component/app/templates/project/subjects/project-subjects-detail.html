@@ -113,7 +113,7 @@
                     </label>
 
                     <select class="custom-select value-select" name="sex" id="sex" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                        {{#each values}}
+                        {{#each sex_enum}}
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sex}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
                     </select>
