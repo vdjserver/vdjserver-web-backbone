@@ -86,12 +86,14 @@ export default Marionette.View.extend({
     },
 
     templateContext() {
+        var label = this.button_label;
+        if (!label) label = this.null_label;
         return {
             // common ontologies
             common_list: this.common,
 
             // selected ontology label
-            button_label: this.button_label,
+            button_label: label,
             field_label: this.field_label,
 
             dropdown_id: this.dropdown_id

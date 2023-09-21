@@ -356,7 +356,11 @@
                     {{#ifEquals ../view_mode "edit"}}
                     <div id="disease-diagnosis-region-{{@index}}"></div>
                     {{else}}
-                    <input type="text" class="form-control form-control-diagnosis" name="disease_diagnosis" id="disease_diagnosis_{{@index}}" value="{{this.disease_diagnosis.label}} ({{this.disease_diagnosis.id}})" readonly>
+                        {{#if this.disease_diagnosis.id}}
+                        <input type="text" class="form-control form-control-diagnosis" name="disease_diagnosis" id="disease_diagnosis_{{@index}}" value="{{this.disease_diagnosis.label}} ({{this.disease_diagnosis.id}})" readonly>
+                        {{else}}
+                        <input type="text" class="form-control form-control-diagnosis" name="disease_diagnosis" id="disease_diagnosis_{{@index}}" value="" readonly>
+                        {{/if}}
                     {{/ifEquals}}
 
                     <div class="invalid-feedback">
