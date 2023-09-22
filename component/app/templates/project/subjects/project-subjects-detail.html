@@ -63,7 +63,7 @@
 
                     <select class="custom-select value-select" name="synthetic" id="synthetic" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="true" {{#if value.synthetic}}selected{{/if}}>True</option>
-                      <option value="false"{{#if value.synthetic}}selected{{/if}}>False</option>
+                      <option value="false"{{#unless value.synthetic}}selected{{/unless}}>False</option>
                     </select>
                 </div>
 
@@ -124,22 +124,16 @@
             <div class="form-row project-subject-row">
                 <!--<div class="form-group col-md-1"></div>-->
                 <div class="form-group col-md-2">
-                    <label for="age">
-                        <span>
-                            <!-- Tooltip-->
-                        {{{FieldStar "Subject" "age"}}}
-                        </span>
-                        <!-- Popover -->
-                        {{{FieldHelpPopover "Subject" "age"}}}
+                    <label for="age_type">
                         Age Type:
                     </label>
 
-                    <select class="custom-select value-select" name="age" id="age" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select" name="age_type" id="age_type" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="point" {{#if pointMode}}selected{{/if}}>point</option>
                       <option value="range" {{#unless pointMode}}selected{{/unless}}>range</option>
                     </select>
                 </div>
-                <div class="form-group col-md-1" id="age_min_div_{{uuid}}" {{#if pointMode}}hidden{{/if}}>
+                <div class="form-group col-md-1" id="age_min_div" {{#if pointMode}}hidden{{/if}}>
                     <label for="age_min">
                         <span>
                             <!-- Tooltip-->
@@ -150,14 +144,14 @@
                         Min:
                     </label>
 
-                    <input type="text" class="form-control form-control-subject" name="age_min" id="age_min_{{uuid}}" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_min" id="age_min" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid minimum age number.
                     </div>
                 </div>
 
-                <div class="form-group col-md-1" id="age_max_div_{{uuid}}" {{#if pointMode}}hidden{{/if}}>
+                <div class="form-group col-md-1" id="age_max_div" {{#if pointMode}}hidden{{/if}}>
                     <label for="age_max">
                         <span>
                             <!-- Tooltip-->
@@ -168,25 +162,25 @@
                         Max:
                     </label>
 
-                    <input type="text" class="form-control form-control-subject" name="age_max" id="age_max_{{uuid}}" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_max" id="age_max" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid maximum age number that is less than the minimum age number.
                     </div>
                 </div>
 
-                <div class="form-group col-md-1" id="age_point_div_{{uuid}}" {{#unless pointMode}}hidden{{/unless}}>
-                    <label for="age_max">
+                <div class="form-group col-md-1" id="age_point_div" {{#unless pointMode}}hidden{{/unless}}>
+                    <label for="age_point">
                         <span>
                             <!-- Tooltip-->
-                        {{{FieldStar "Subject" "age_min"}}}
+                        {{{FieldStar "Subject" "age_max"}}}
                         </span>
                         <!-- Popover -->
-                        {{{FieldHelpPopover "Subject" "age_min"}}}
+                        {{{FieldHelpPopover "Subject" "age_max"}}}
                         Age:
                     </label>
 
-                    <input type="text" class="form-control form-control-subject" name="age_min" id="age_point_{{uuid}}" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-subject" name="age_point" id="age_point" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
                         Please enter a valid age number.

@@ -104,7 +104,7 @@ var SubjectDetailView = Marionette.View.extend({
         var pointMode = false;
         let value = this.model.get('value');
         if (value['age_max'] == value['age_min']) pointMode = true;
-        var sex = this.model.airr_schema.spec('sex');
+        var sex = this.model.schema.spec('sex');
 
         return {
             view_mode: this.model.view_mode,
@@ -141,38 +141,36 @@ var SubjectDetailView = Marionette.View.extend({
         $('[data-toggle="tooltip"]').tooltip();
     },
 
-    selectDisease(context, value) {
-        let i = this.dropdown_id.replace(/\D/g, '');
-        let val = context.model.get('value');
-        val['diagnosis'][i]['disease_diagnosis'] = value;
-        context.model.set('value', val);
-    },
-
     updateField: function(e) {
-        let value = this.model.get('value');
-        value[e.target.name] = e.target.value;
-        if(e.target.name == "age_min" || e.target.name == "age_max") {
-            value[e.target.name] = parseFloat(e.target.value);
-        }
-        this.model.set('value', value);
+        this.model.updateField(e.target.name, e.target.value);
+        console.log(this.model);
     },
 
     updateDropDown: function(e) {
-        let value = this.model.get('value');
-        value[e.target.name] = e.target.value;
-        let uuid = this.model.get('uuid');
-        if(e.target.value == "point") {
-            document.getElementById("age_min_div_" + uuid).hidden = true;
-            document.getElementById("age_max_div_" + uuid).hidden = true;
-            document.getElementById("age_point_div_" + uuid).hidden = false;
-            value["age_max"] = value["age_min"];
-          }
-        if(e.target.value == "range") { 
-            document.getElementById("age_min_div_" + uuid).hidden = false;
-            document.getElementById("age_max_div_" + uuid).hidden = false;
-            document.getElementById("age_point_div_" + uuid).hidden = true;
+        // age type dropdown, hide/unhide appropriate fields
+        if (e.target.name == 'age_type') {
+            if (e.target.value == "point") {
+                let doc = $(this.el);
+                doc.find('#age_min_div').attr('hidden', true);
+                doc.find('#age_max_div').attr('hidden', true);
+                doc.find('#age_point_div').attr('hidden', false);
+                // update age from html
+                this.model.updateField('age_point', doc.find('#age_point').val());
+            }
+            if (e.target.value == "range") {
+                let doc = $(this.el);
+                doc.find('#age_min_div').attr('hidden', false);
+                doc.find('#age_max_div').attr('hidden', false);
+                doc.find('#age_point_div').attr('hidden', true);
+                // update age from html
+                this.model.updateField('age_min', doc.find('#age_min').val());
+                this.model.updateField('age_max', doc.find('#age_max').val());
+            }
+            return;
         }
-        this.model.set('value', value);
+
+        // update field
+        this.model.updateField(e.target.name, e.target.value);
     },
 
     updateOntology: function(e) {
@@ -182,15 +180,19 @@ var SubjectDetailView = Marionette.View.extend({
         this.model.set('value', value);
     },
 
-    updateFieldDiagnosis: function(e) {
-        let value = this.model.get('value');
-        let index = e.target.id.split("_").slice(-1);
+    // special handling to update disease diagnosis
+    selectDisease(context, value) {
+        let i = this.dropdown_id.replace(/\D/g, '');
+        let val = context.model.get('value');
+        val['diagnosis'][i]['disease_diagnosis'] = value;
+        context.model.set('value', val);
+    },
 
-        value['diagnosis'][index][e.target.name] = e.target.value;
-        if(e.target.name == "age_min" || e.target.name == "age_max") {
-            value['diagnosis'][index][e.target.name] = parseFloat(e.target.value);
-        }
-        this.model.set('value', value);
+    // special handling to update diagnosis fields
+    updateFieldDiagnosis: function(e) {
+        let index = e.target.id.split("_").slice(-1);
+        this.model.updateDiagnosisField(index, e.target.name, e.target.value);
+        console.log(this.model);
     },
 
 });

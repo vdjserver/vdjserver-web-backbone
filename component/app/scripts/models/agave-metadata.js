@@ -36,11 +36,14 @@ import { airr } from 'airr-js';
 
 // Subject model based upon AIRR Subject, held as singleton object
 var subjectSchema = null;
+var diagnosisSchema = null;
 export var Subject = Agave.MetadataModel.extend({
     defaults: function() {
         // Use AIRR schema Subject object as basis
         if (! subjectSchema) subjectSchema = new airr.SchemaDefinition('Subject');
-        this.airr_schema = subjectSchema;
+        if (! diagnosisSchema) diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
+        this.schema = subjectSchema;
+        this.diagnosis_schema = diagnosisSchema;
         // make a deep copy from the template
         var blankEntry = subjectSchema.template();
 
@@ -63,13 +66,49 @@ export var Subject = Agave.MetadataModel.extend({
         }
 
         if (! subjectSchema) subjectSchema = new airr.SchemaDefinition('Subject');
-        this.airr_schema = subjectSchema;
+        if (! diagnosisSchema) diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
+        this.schema = subjectSchema;
+        this.diagnosis_schema = diagnosisSchema;
     },
     url: function() {
         return '/meta/v2/data/' + this.get('uuid');
     },
     sync: function(method, model, options) {
         return Agave.PutOverrideSync(method, this, options);
+    },
+
+    // handle diagnosis fields specially as internal array in subject
+    updateDiagnosisField: function(index, name, new_value) {
+        let value = this.get('value');
+        // treat blank as null
+        let newval = new_value.trim();
+        if (newval.length == 0) newval = null;
+
+        // check bounds for index
+        if (!value['diagnosis']) return;
+        if (index < 0) return;
+        if (index >= value['diagnosis'].length) return;
+
+        // cast to appropriate type before setting
+        let type = this.diagnosis_schema.type(name);
+        if (type == 'boolean') {
+            if (newval == null) value['diagnosis'][index][name] = null;
+            if (newval == "true") value['diagnosis'][index][name] = true;
+            if (newval == "false") value['diagnosis'][index][name] = false;
+            this.set('value', value);
+            return;
+        }
+        if (type == 'number') {
+            if (newval) newval = parseFloat(newval);
+            value['diagnosis'][index][name] = newval;
+            this.set('value', value);
+            return;
+        }
+        if (type == 'string') {
+            value['diagnosis'][index][name] = newval;
+            this.set('value', value);
+            return;
+        }
     },
 
     validate: function(attrs, options) {

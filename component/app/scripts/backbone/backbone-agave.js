@@ -386,6 +386,53 @@ Agave.MetadataModel = Agave.Model.extend({
         });
     },
 
+    updateField: function(name, new_value) {
+        let value = this.get('value');
+        // treat blank as null
+        let newval = new_value.trim();
+        if (newval.length == 0) newval = null;
+
+        // handle point age specially
+        if (name == 'age_point') {
+            if (newval) newval = parseFloat(newval);
+            if (isNaN(newval)) newval = null;
+            value['age_min'] = newval;
+            value['age_max'] = newval;
+            this.set('value', value);
+            return;
+        }
+
+        // if no schema then cannot do type casting so just set
+        if (!this.schema) {
+            value[name] = newval;
+            this.set('value', value);
+            return;
+        }
+
+        // cast to appropriate type from schema before setting
+        let type = this.schema.type(name);
+        if (type == 'boolean') {
+            if (newval == null) value[name] = null;
+            if (newval == "true") value[name] = true;
+            if (newval == "false") value[name] = false;
+            this.set('value', value);
+            return;
+        }
+        if (type == 'number') {
+            if (newval) newval = parseFloat(newval);
+            value[name] = newval;
+            this.set('value', value);
+            return;
+        }
+        if (type == 'string') {
+            value[name] = newval;
+            this.set('value', value);
+            return;
+        }
+    },
+
+
+    // TODO: this should flow through updateField so type is used
     setAttributesFromData: function(data) {
         // we only pull values out of data for existing keys
         var value = this.get('value');
