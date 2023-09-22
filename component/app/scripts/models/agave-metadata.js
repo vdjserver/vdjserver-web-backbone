@@ -77,6 +77,16 @@ export var Subject = Agave.MetadataModel.extend({
         return Agave.PutOverrideSync(method, this, options);
     },
 
+    updateField: function(name, new_value) {
+        // handle point age specially
+        if (name == 'age_point') {
+            Agave.MetadataModel.prototype.updateField.call(this, 'age_min', new_value);
+            Agave.MetadataModel.prototype.updateField.call(this, 'age_max', new_value);
+        } else {
+            Agave.MetadataModel.prototype.updateField.call(this, name, new_value);
+        }
+    },
+
     // handle diagnosis fields specially as internal array in subject
     updateDiagnosisField: function(index, name, new_value) {
         let value = this.get('value');

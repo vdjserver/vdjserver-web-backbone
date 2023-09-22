@@ -143,7 +143,6 @@ var SubjectDetailView = Marionette.View.extend({
 
     updateField: function(e) {
         this.model.updateField(e.target.name, e.target.value);
-        console.log(this.model);
     },
 
     updateDropDown: function(e) {
@@ -174,10 +173,7 @@ var SubjectDetailView = Marionette.View.extend({
     },
 
     updateOntology: function(e) {
-        let value = this.model.get('value');
-
-        value[e.target.name] = { id: e.target.selectedOptions[0]['id'], label: e.target.value };
-        this.model.set('value', value);
+        this.model.updateField(e.target.name, { id: e.target.selectedOptions[0]['id'], label: e.target.value });
     },
 
     // special handling to update disease diagnosis
@@ -192,7 +188,6 @@ var SubjectDetailView = Marionette.View.extend({
     updateFieldDiagnosis: function(e) {
         let index = e.target.id.split("_").slice(-1);
         this.model.updateDiagnosisField(index, e.target.name, e.target.value);
-        console.log(this.model);
     },
 
 });

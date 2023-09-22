@@ -79,6 +79,7 @@
                     </label>
 
                     <select class="custom-select ontology-select" name="species" id="species" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option id="" value="" {{#unless value.species}}selected{{/unless}}>null</option>
                       <option id="NCBITAXON:9606" value="Homo sapiens" {{#ifEquals value.species.id "NCBITAXON:9606"}}selected{{/ifEquals}}>Homo sapiens</option>
                       <option id="NCBITAXON:9544" value="Macaca mulatta" {{#ifEquals value.species.id "NCBITAXON:9544"}}selected{{/ifEquals}}>Macaca mulatta</option>
                       <option id="NCBITAXON:10088" value="Mus musculus" {{#ifEquals value.species.id "NCBITAXON:10088"}}selected{{/ifEquals}}>Mus musculus</option>
@@ -199,6 +200,7 @@
                     </label>
 
                     <select class="custom-select ontology-select" name="age_unit" id="age_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option id="" value="" {{#unless value.age_unit}}selected{{/unless}}>null</option>
                       <option id="UO:0000032" value="hour" {{#ifEquals value.age_unit.id "UO:0000032"}}selected{{/ifEquals}}>hour(s)</option>
                       <option id="UO:0000033" value="day" {{#ifEquals value.age_unit.id "UO:0000033"}}selected{{/ifEquals}}>day(s)</option>
                       <option id="UO:0000034" value="week" {{#ifEquals value.age_unit.id "UO:0000034"}}selected{{/ifEquals}}>week(s)</option>
