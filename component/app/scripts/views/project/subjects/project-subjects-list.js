@@ -57,10 +57,10 @@ var SubjectSummaryView = Marionette.View.extend({
             this.controller.flagSubjectsEdits();
             this.controller.showProjectSubjectsList();
         },
-        'click .project-subjects-add-diagnosis': function(e) { this.controller.addDiagnosis(e, this.model); },
-        'click .project-subjects-delete-subject': function(e) { this.controller.deleteSubject(e, this.model); },
-        'click .project-subjects-duplicate-diagnosis': function(e) { this.controller.duplicateDiagnosis(e, this.model); },
-        'click .project-subjects-delete-diagnosis': function(e) { this.controller.deleteDiagnosis(e, this.model); },
+        'click #project-subject-add-diagnosis': function(e) { this.controller.addDiagnosis(e, this.model); },
+        'click #project-subject-duplicate-diagnosis': function(e) { this.controller.duplicateDiagnosis(e, this.model); },
+        'click #project-subject-delete-diagnosis': function(e) { this.controller.deleteDiagnosis(e, this.model); },
+        'click #project-subject-delete': function(e) { this.controller.deleteSubject(e, this.model); },
     },
 
 });
@@ -89,7 +89,7 @@ var SubjectDetailView = Marionette.View.extend({
                     button_label = value['diagnosis'][i].disease_diagnosis.label;
                 var view = new OntologySearchView({schema: 'Diagnosis', field: 'disease_diagnosis',
                     null_label: null_label, button_label: button_label, field_label: 'Disease Diagnosis',
-                    context: this, selectFunction: this.selectDisease, dropdown_id: 'dropdownOntology'+i});
+                    context: this, selectFunction: this.selectDisease, dropdown_id: 'diagnosisOntology_'+i});
                 let regionName = "diseaseDiagnosisRegion" + i;
                 let regionID = "#disease-diagnosis-region-" + i;
                 this.addRegion(regionName, regionID);
@@ -123,12 +123,12 @@ var SubjectDetailView = Marionette.View.extend({
         'change .form-control-subject': 'updateField',
         'change .value-select': 'updateDropDown',
         'change .ontology-select': 'updateOntology',
-
         'change .form-control-diagnosis': 'updateFieldDiagnosis',
-        'click .project-subjects-detail-add-diagnosis': function(e) { this.controller.addDiagnosis(e, this.model); },
-        'click .project-subjects-detail-duplicate-diagnosis': function(e) { this.controller.duplicateDiagnosis(e, this.model); },
-        'click .project-subjects-detail-delete-diagnosis': function(e) { this.controller.deleteDiagnosis(e, this.model); },
-        'click .project-subjects-delete-subject': function(e) { this.controller.deleteSubject(e, this.model); },
+
+        'click #project-subject-add-diagnosis': function(e) { this.controller.addDiagnosis(e, this.model); },
+        'click #project-subject-detail-duplicate-diagnosis': function(e) { this.controller.duplicateDiagnosis(e, this.model); },
+        'click #project-subject-detail-delete-diagnosis': function(e) { this.controller.deleteDiagnosis(e, this.model); },
+        'click #project-subject-delete': function(e) { this.controller.deleteSubject(e, this.model); },
     },
 
     onAttach() {
@@ -177,11 +177,10 @@ var SubjectDetailView = Marionette.View.extend({
     },
 
     // special handling to update disease diagnosis
+    // called by ontology search view, "this" points to search view
     selectDisease(context, value) {
-        let i = this.dropdown_id.replace(/\D/g, '');
-        let val = context.model.get('value');
-        val['diagnosis'][i]['disease_diagnosis'] = value;
-        context.model.set('value', val);
+        let index = this.dropdown_id.split("_").slice(-1);
+        context.model.updateDiagnosisField(index, 'disease_diagnosis', value);
     },
 
     // special handling to update diagnosis fields

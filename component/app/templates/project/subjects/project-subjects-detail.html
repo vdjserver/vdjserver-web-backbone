@@ -21,11 +21,14 @@
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
                                 <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit
                             </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-add-diagnosis">
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Diagnosis
+                            </button>
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-apply">
                                 <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Apply Template
                             </button>
                             <div class="dropdown-divider" width="10%"></div>
-                            <button type="button" class="dropdown-item project-subjects-delete-subject" name="{{uuid}}" id="project-subject-delete">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-delete">
                                 <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete
                             </button>
                         </div>
@@ -313,7 +316,7 @@
     </div>
 
 {{#each value.diagnosis}}
-    <div class="row general-table-row align-items-center">
+    <div class="row general-table-internal-row align-items-center">
         <div class="col">
         <form method="post" role="form" id="project-subject-form" class="project-subject-form needs-validation" name="subject" novalidate>
             <div class="form-row project-subject-row align-items-center">
@@ -325,14 +328,11 @@
                               <i class="fa fa-fw fa-diagnoses" aria-hidden="true"></i>
                           </button>
                           <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                              <button type="button" class="dropdown-item project-subjects-detail-add-diagnosis" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                  <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Diagnosis
-                              </button>
-                              <button type="button" class="dropdown-item project-subjects-detail-duplicate-diagnosis" name="{{uuid}}" id="project-subjects-detail-duplicate-diagnosis_{{@index}}">
+                              <button type="button" class="dropdown-item" name="duplicate_{{@index}}" id="project-subject-detail-duplicate-diagnosis">
                                   <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Diagnosis
                               </button>
                               <div class="dropdown-divider" width="10%"></div>
-                              <button type="button" class="dropdown-item project-subjects-detail-delete-diagnosis" name="{{uuid}}" id="project-subject-delete">
+                              <button type="button" class="dropdown-item" name="delete_{{@index}}" id="project-subject-detail-delete-diagnosis">
                                   <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Diagnosis
                               </button>
                           </div>

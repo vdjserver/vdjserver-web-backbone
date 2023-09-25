@@ -90,14 +90,27 @@ export var Subject = Agave.MetadataModel.extend({
     // handle diagnosis fields specially as internal array in subject
     updateDiagnosisField: function(index, name, new_value) {
         let value = this.get('value');
-        // treat blank as null
-        let newval = new_value.trim();
-        if (newval.length == 0) newval = null;
+        let newval = new_value;
+
+        // treat blank string as null otherwise leave untouched
+        if (typeof new_value === 'string' || new_value instanceof String) {
+            newval = new_value.trim();
+            if (newval.length == 0) newval = null;
+        }
 
         // check bounds for index
         if (!value['diagnosis']) return;
         if (index < 0) return;
         if (index >= value['diagnosis'].length) return;
+
+        // is it ontology
+        if (this.diagnosis_schema.is_ontology(name)) {
+            if (newval && (newval.id.trim().length == 0)) newval = null;
+            if (!newval) value['diagnosis'][index][name] = null;
+            else value['diagnosis'][index][name] = { id: newval.id, label: newval.label };
+            this.set('value', value);
+            return;
+        }
 
         // cast to appropriate type before setting
         let type = this.diagnosis_schema.type(name);

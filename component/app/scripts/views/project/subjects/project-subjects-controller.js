@@ -156,7 +156,7 @@ ProjectSubjectsController.prototype = {
         e.preventDefault();
 
         let value = model.get('value');
-        let index = e.target.id.split("_").slice(-1);
+        let index = e.target.name.split("_").slice(-1);
 
         let dupl = JSON.parse(JSON.stringify(value['diagnosis'][index]));
         value['diagnosis'].splice(index,0,dupl);
@@ -184,7 +184,7 @@ ProjectSubjectsController.prototype = {
         e.preventDefault();
 
         let value = model.get('value');
-        let index = e.target.id.split("_").slice(-1);
+        let index = e.target.name.split("_").slice(-1);
 
         value['diagnosis'].splice(index, 1);
         model.set('value', value);
