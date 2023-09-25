@@ -150,10 +150,10 @@ export var Subject = Agave.MetadataModel.extend({
 
         // age validation
         if ((value['age_min'] == null) && (value['age_max'] != null)) {
-            errors.push({ age_min: 'age_min is null'});
+            errors.push({ field: 'age_min', message: 'age_min is null'});
         }
         if ((value['age_max'] == null) && (value['age_min'] != null)) {
-            errors.push({ age_max: 'age_max is null'});
+            errors.push({ field: 'age_max', message: 'age_max is null'});
         }
         if ((value['age_max'] != null) && (value['age_min'] != null)) {
             if (value['age_min'] > value['age_max']) {
