@@ -209,31 +209,61 @@ ProjectSubjectsController.prototype = {
     saveSubjectsChanges: function(e) {
         console.log('Clicked Save');
 
-        // Validation
         // clear errors
-        var hasErrors = false;
+        let hasErrors = false;
+        $('.needs-validation').removeClass('was-validated');
+        let fields = $('.is-invalid');
+        for (let i = 0; i < fields.length; ++i) fields[i].setCustomValidity('');
+        fields.removeClass('is-invalid');
+
+        // model validation
+        var minY = Number.MAX_VALUE;
         for (let i = 0; i < this.subjectList.length; ++i) {
+            // only validate models that have been changed or are new
             let model = this.subjectList.at(i);
+            let origModel = this.getOriginalSubjectsList().get(model.get('uuid'));
+            var changed = null;
+            if (origModel) {
+                changed = model.changedAttributes(origModel.attributes);
+            } else changed = true;
 
-            // ensure age_max is not null when age is of type point
-            let value = model.get('value');
-            if(value['age_min'] != null && value['age_max'] == null) {
-                value['age_max'] = value['age_min'];
-                model.set('value', value);
+            if (changed) {
+                let valid = model.isValid();
+                if (!valid) {
+                    hasErrors = true;
+                    let form = document.getElementById("project-subject-form_" + model.get('uuid'));
+                    var rect = form[i].getBoundingClientRect();
+                    if (rect['y'] < minY) minY = rect['y'] + window.scrollY;
+                    form = $(form);
+                    for (let j = 0; j < model.validationError.length; ++j) {
+                        let e = model.validationError[j];
+                        let f = form.find('#' + e['field']);
+                        if (f) {
+                            f[0].setCustomValidity(e['message']);
+                            f.addClass('is-invalid');
+                        }
+                    }
+                }
             }
+        }
 
+        // Validation across multiple models
+        // invalidate any duplicate subject IDs
+        var duplicates = this.subjectList.checkDuplicates();
+        for (let i = 0; i < duplicates.length; ++i) {
+            var model = duplicates.at(i);
             var field = document.getElementById("subject_id_" + model.get('uuid'));
-            if (field) field.setCustomValidity("");
-            var age_min_field = document.getElementById("age_min_" + model.get('uuid'));
-            if (age_min_field) age_min_field.setCustomValidity("");
-            var age_point_field = document.getElementById("age_point_" + model.get('uuid'));
-            if (age_point_field) age_point_field.setCustomValidity("");
-            var age_max_field = document.getElementById("age_max_" + model.get('uuid'));
-            if (age_max_field) age_max_field.setCustomValidity("");
+            if (field) {
+                field.setCustomValidity("ERROR");
+                $(field).addClass('is-invalid');
+                hasErrors = true;
+                var rect = field.form.getBoundingClientRect();
+                if (rect['y'] < minY)
+                    minY = rect['y']+window.scrollY;
+            }
         }
 
         // form validation
-        var minY = Number.MAX_VALUE;
         $('.needs-validation').addClass('was-validated');
         var form = document.getElementsByClassName('needs-validation');
         for (let i = 0; i < form.length; ++i)
@@ -244,73 +274,7 @@ ProjectSubjectsController.prototype = {
                     minY = rect['y']+window.scrollY;
             }
 
-        // invalidate any duplicate subject IDs
-        var duplicates = this.subjectList.checkDuplicates();
-        for (let i = 0; i < duplicates.length; ++i) {
-            var model = duplicates.at(i);
-            var field = document.getElementById("subject_id_" + model.get('uuid'));
-            if (field) {
-                field.setCustomValidity("ERROR");
-                hasErrors = true;
-                var rect = field.form.getBoundingClientRect();
-                if (rect['y'] < minY)
-                    minY = rect['y']+window.scrollY;
-            }
-        }
-        // ensure age_min < age_max and that they are numbers
-        for (let i = 0; i < this.subjectList.length; ++i) {
-            let model = this.subjectList.at(i);
-            let value = model.get('value');
-            var pointMode = false;
-            if(value['age_min'] == value['age_max']) pointMode = true;
-            if(document.getElementById('age') != null) if(document.getElementById('age').value == 'point') pointMode = true;
-            var age_min_field = document.getElementById("age_min_" + model.get('uuid'));
-            var age_point_field = document.getElementById("age_point_" + model.get('uuid'));
-            var age_max_field = document.getElementById("age_max_" + model.get('uuid'));
-            if(!pointMode) {
-                if(age_min_field != null && age_max_field != null) {
-                    //check if values are numbers
-                    if(!isNaN(age_min_field.value)) {
-                        if(!isNaN(age_max_field.value)) {
-                            if(age_max_field.value < age_min_field.value) {
-                                age_max_field.setCustomValidity("ERROR");
-                                hasErrors = true;
-                                var rect = age_max_field.form.getBoundingClientRect();
-                                if (rect['y'] < minY)
-                                    minY = rect['y']+window.scrollY;
-                            }
-                        } else {
-                            age_max_field.setCustomValidity("ERROR");
-                            hasErrors = true;
-                            var rect = age_max_field.form.getBoundingClientRect();
-                            if (rect['y'] < minY)
-                                minY = rect['y']+window.scrollY;
-                        }
-                    } else {
-                        age_min_field.setCustomValidity("ERROR");
-                        hasErrors = true;
-                        var rect = age_min_field.form.getBoundingClientRect();
-                        if (rect['y'] < minY)
-                            minY = rect['y']+window.scrollY;
-                    }
-                }
-            } else if(pointMode) {
-                if(age_point_field != null) { // age point case
-                    console.log("valuep: " + age_point_field.value);
-                    //check if value is a number
-                    if(isNaN(age_point_field.value)) {
-                        age_point_field.setCustomValidity("ERROR");
-                        hasErrors = true;
-                        var rect = age_point_field.form.getBoundingClientRect();
-                        if (rect['y'] < minY)
-                            minY = rect['y']+window.scrollY;
-                    }
-                    value['age_max'] = value['age_min'];
-                }
-            }
-        }
-
-        // find first subject with error and scroll to it
+        // scroll to first form with error and abort save
         if (hasErrors) {
             $('html, body').animate({ scrollTop: minY - 100 }, 1000);
             return;
@@ -357,7 +321,7 @@ ProjectSubjectsController.prototype = {
                     return Promise.resolve();
                 };
                 promises.push(deleteChanges(uuid, m));
-            }); 
+            });
 
             // updates and new
             SubjectsList.map(function(uuid) {

@@ -8,14 +8,14 @@
 <div id="project-subjects-detail" class="project-subject-detail">
     <div class="row general-table-row general-border-top">
         <div class="col">
-        <form method="post" role="form" id="project-subject-form" class="project-subject-form needs-validation" name="subject" novalidate>
+        <form method="post" role="form" id="project-subject-form_{{uuid}}" class="project-subject-form needs-validation" name="subject" novalidate>
             <div class="form-row project-subject-row align-items-center">
                 <div class="form-group col-md-1">
                   <label><b>Actions:</b></label>
                   <div class="btn-group" role="group" aria-label="Button group">
                     <div class="dropdown">
                         <button type="button" class="btn btn-create btn-primary btn-block input-block-level dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-fw fa-user-alt" aria-hidden="true"></i> 
+                            <i class="fas fa-fw fa-user-alt" aria-hidden="true"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
@@ -82,7 +82,6 @@
                     </label>
 
                     <select class="custom-select ontology-select" name="species" id="species" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option id="" value="" {{#unless value.species}}selected{{/unless}}>null</option>
                       <option id="NCBITAXON:9606" value="Homo sapiens" {{#ifEquals value.species.id "NCBITAXON:9606"}}selected{{/ifEquals}}>Homo sapiens</option>
                       <option id="NCBITAXON:9544" value="Macaca mulatta" {{#ifEquals value.species.id "NCBITAXON:9544"}}selected{{/ifEquals}}>Macaca mulatta</option>
                       <option id="NCBITAXON:10088" value="Mus musculus" {{#ifEquals value.species.id "NCBITAXON:10088"}}selected{{/ifEquals}}>Mus musculus</option>
@@ -169,7 +168,7 @@
                     <input type="text" class="form-control form-control-subject" name="age_max" id="age_max" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
-                        Please enter a valid maximum age number that is less than the minimum age number.
+                        Please enter a valid maximum age number that is greater than the minimum age number.
                     </div>
                 </div>
 
@@ -210,6 +209,9 @@
                       <option id="UO:0000035" value="month" {{#ifEquals value.age_unit.id "UO:0000035"}}selected{{/ifEquals}}>month(s)</option>
                       <option id="UO:0000036" value="year" {{#ifEquals value.age_unit.id "UO:0000036"}}selected{{/ifEquals}}>year(s)</option>
                     </select>
+                    <div class="invalid-feedback">
+                        Please enter a valid age unit.
+                    </div>
                 </div>
 
                 <div class="form-group col-md-3">

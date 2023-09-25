@@ -135,14 +135,43 @@ export var Subject = Agave.MetadataModel.extend({
     },
 
     validate: function(attrs, options) {
+        let errors = [];
+
         // AIRR schema validation
-        //console.log(subjectSchema['definition']);
         let value = this.get('value');
         let valid = subjectSchema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
 
         // TODO: VDJServer additional validation
 
-        return valid;
+        // age validation
+        if ((value['age_min'] == null) && (value['age_max'] != null)) {
+            errors.push({ age_min: 'age_min is null'});
+        }
+        if ((value['age_max'] == null) && (value['age_min'] != null)) {
+            errors.push({ age_max: 'age_max is null'});
+        }
+        if ((value['age_max'] != null) && (value['age_min'] != null)) {
+            if (value['age_min'] > value['age_max']) {
+                errors.push({ field: 'age_min', message: 'age_min is greater than age_max'});
+                errors.push({ field: 'age_max', message: 'age_max is less than age_min'});
+            }
+            if (!value['age_unit']) errors.push({ field: 'age_unit', message: 'missing age unit'});
+        }
+        // special virtual age_point field
+        for (let i = 0; i < errors.length; ++i) {
+            if ((errors[i]['field'] == 'age_min') || (errors[i]['field'] == 'age_min')) {
+                errors.push({ field: 'age_point', message: errors[i]['message']});
+                break;
+            }
+        }
+
+        if (errors.length == 0) return null;
+        else return errors;
     },
 
     // this assumes the sub-objects have already been denormalized from their uuid
