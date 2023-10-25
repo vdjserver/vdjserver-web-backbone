@@ -25,7 +25,7 @@
 //
 
 export default {
-    'timeout': process.env.TEST_TIMEOUT,
+    'timeout': parseInt(process.env.TEST_TIMEOUT),
     'tapis_version': process.env.TAPIS_VERSION,
     'url': process.env.TEST_URL,
     'username': process.env.TEST_USERNAME,
