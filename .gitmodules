@@ -4,3 +4,6 @@
 [submodule "component/airrvisualizationlibrary"]
 	path = component/airrvisualizationlibrary
 	url = https://github.com/ireceptorplus-inesctec/airrvisualizationlibrary
+[submodule "component/test/vdj-tapis-js"]
+	path = component/test/vdj-tapis-js
+	url = https://bitbucket.org/vdjserver/vdj-tapis-js.git
