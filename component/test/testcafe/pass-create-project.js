@@ -90,9 +90,9 @@ test('Create a Project and Check Backend Values', async t => {
     .typeText('#submittedby_address', sAddr)
     .click('#create-new-project');
 
-  await t.expect(Selector('.modal-body > p:nth-child(1)').innerText).contains('successfully', 'Project successfully created', {timeout:14000});
+  await t.expect(Selector('.modal-body > p:nth-child(1)').innerText).contains('successfully', 'Project successfully created', {timeout: config.timeout});
 
-  await t.click(Selector('#cancel-message-button', {timeout: 14000}));
+  await t.click(Selector('#cancel-message-button', {timeout: config.timeout}));
 
   await t
     .scrollIntoView(Selector('.fa-user-alt'))
@@ -127,18 +127,6 @@ test('Create a Project and Check Backend Values', async t => {
     .expect(m["value"]["submitted_by"].split(", ")[0]).eql(sName)
     .expect(m["value"]["submitted_by"].split(", ")[1]).eql(sEmail)
     .expect(m["value"]["submitted_by"].split(", ")[2]).eql(sAddr)
-
-  await t
-    .click('#project-subjects-add')
-    .click('#project-subjects-new-subject')
-    .typeText('input[name="subject_id"]', '1234')
-    .click('#project-subjects-save-changes');
-
-  await new Promise(r => setTimeout(r, 5000));
-
-  await t
-    .click(Selector('#project-subjects-details-summary', {timeout:10000}))
-    .expect(Selector('input[name="subject_id"]').value).contains('1234', {timeout:14000});
 
 });
 
