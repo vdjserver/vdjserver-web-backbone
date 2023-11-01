@@ -155,7 +155,7 @@ HandlebarsUtilities.registerAllHelpers = function() {
     Handlebars.registerHelper("setVar", function(varName, varValue, options) {
       options.data.root[varName] = varValue;
     });
-
+/*
     // Truncating text (350 characters)
     Handlebars.registerHelper('truncate', function(options) {
         if ( options.fn(this).trim().split(" ").length > 30 ) {
@@ -188,5 +188,5 @@ HandlebarsUtilities.registerAllHelpers = function() {
             return shortText;
         }
         return options.fn(this);
-    });
+    }); */
 };
