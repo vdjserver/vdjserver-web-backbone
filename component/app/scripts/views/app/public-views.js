@@ -156,7 +156,7 @@ export default Marionette.View.extend({
             // prepare a new modal with the failure message
             var message = new MessageModel({
                 'header': 'VDJServer Login',
-                'body':   '<p>Login failed...</p>',
+                'body':   '<p id="loginFailed">Login failed...</p>',
                 cancelText: 'Ok'
             });
 
