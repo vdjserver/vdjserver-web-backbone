@@ -29,7 +29,7 @@ import filesize from 'filesize';
 import moment from 'moment';
 
 // AIRR Schema
-import AIRRSchema from 'airr-schema';
+import { airr } from 'airr-js';
 
 export var HandlebarsUtilities = {};
 
@@ -89,8 +89,7 @@ HandlebarsUtilities.registerAllHelpers = function() {
     // dynamically construct the popover text with AIRR schema info
     Handlebars.registerHelper('FieldHelpPopover', function(schema_name, field_name) {
 
-        // TODO: lookup field in schema
-        var schema = AIRRSchema[schema_name];
+        var schema = airr.get_schema(schema_name);
         if (!schema) {
             console.log('Internal ERROR: unknown schema ' + schema_name);
             return;
@@ -111,12 +110,14 @@ HandlebarsUtilities.registerAllHelpers = function() {
             description += '<em>Nullable:</em> Value may be blank.<br>';
         else
             description += '<em>Nullable:</em> Value must be provided.<br>';
-        description += '<em>Description:</em> ' + field['description'] + '<br>';
+        description += '<em>Description:</em> ' + field['description'].replace(/"/g, "'") + '<br>';
         if (field['example']) {
-            if (field['$ref'] == '#/Ontology')
-                description += '<br><em>Example:</em> ' + field['example']['value'];
-            else
-                description += '<br><em>Example:</em> ' + field['example'];
+            if (! Array.isArray(field['example'])) {
+                if (schema.is_ontology(field_name))
+                    description += '<br><em>Example:</em> ' + field['example']['label'].replace(/"/g, "'");
+                else
+                    description += '<br><em>Example:</em> ' + field['example'].replace(/"/g, "'");
+            }
         }
         //console.log(field);
 
@@ -126,8 +127,7 @@ HandlebarsUtilities.registerAllHelpers = function() {
     // dynamically construct the MiAIRR Star with AIRR schema info
     Handlebars.registerHelper('FieldStar', function(schema_name, field_name) {
 
-        // TODO: lookup field in schema
-        var schema = AIRRSchema[schema_name];
+        var schema = airr.get_schema(schema_name);
         if (!schema) {
             console.log('Internal ERROR: unknown schema ' + schema_name);
             return;
@@ -150,43 +150,4 @@ HandlebarsUtilities.registerAllHelpers = function() {
        haystack = Handlebars.escapeExpression(haystack);
        return (haystack.indexOf(needle) > -1) ? options.fn(this) : options.inverse(this);
     });
-
-    // Testing a helper that will set the variable value
-    Handlebars.registerHelper("setVar", function(varName, varValue, options) {
-      options.data.root[varName] = varValue;
-    });
-/*
-    // Truncating text (350 characters)
-    Handlebars.registerHelper('truncate', function(options) {
-        if ( options.fn(this).trim().split(" ").length > 30 ) {
-            var message = options.fn(this);
-            var shortText = $('<p>', {text: message})
-            .html()
-            .trim()
-            .substring(0, 350)
-            .split(" ")
-            .slice(0, -1)
-            .join(" ") + "..."
-
-            return shortText;
-        }
-        return options.fn(this);
-    });
-
-    // Truncating text (75 characters)
-    Handlebars.registerHelper('truncate_75', function(options) {
-        if ( options.fn(this).trim().split(" ").length > 30 ) {
-            var message = options.fn(this);
-            var shortText = $('<p>', {text: message})
-            .html()
-            .trim()
-            .substring(0, 75)
-            .split(" ")
-            .slice(0, -1)
-            .join(" ") + "..."
-
-            return shortText;
-        }
-        return options.fn(this);
-    }); */
 };
