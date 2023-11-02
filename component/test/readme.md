@@ -32,7 +32,11 @@ website and Tapis can be connected.
 docker run --env-file=env --net=host -it vdjserver/vdj-backbone-test chromium /tests/testcafe/check-setup.js
 ```
 
-This will start up a browser within Docker and run the tests. When testing against
+To run a specific test suite, specify the filename. Some test suites require the `--disable-native-automation` flag
+
+```
+docker run --env-file=env --net=host -it vdjserver/vdj-backbone-test --disable-native-automation chromium /tests/testcafe/login.js
+```
 
 ## Remote browser testing using Docker
 
