@@ -58,3 +58,38 @@ docker run -v .:/tests --env-file=env --net=host -it vdjserver/vdj-backbone-test
 
 ## Local testing
 
+It is necessary to install npm and node.js on your local machine to run the tests. On Ubuntu, you would need to run something like the following:
+
+```
+sudo apt install npm nodejs
+```
+
+Next, install TestCafe:
+
+```
+npm i -g testcafe
+```
+
+From the directory this readme is in, copy the default config file (env.default) to a local env file (env), edit the env file, provide test and tapis settings, and source the export_env file:
+
+```
+cp env.default env
+emacs env
+source export_env.sh
+
+```
+
+To check the configuration, navigate to the testcafe directory and run the following command:
+
+
+```
+testcafe chrome check-setup.js
+```
+
+To run the tests for the login screen, run the command that follows. The --disable-native-automation flag allows for the tests to continue if a link opens a new browser window. The chrome option is interchangeable for other browsers and more documentation can be found on the TestCafe site.
+
+```
+testcafe --disable-native-automation "chrome '--window-size=1200,800'" login.js
+```
+
+
