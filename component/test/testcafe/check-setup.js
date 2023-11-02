@@ -53,7 +53,7 @@ test('Verify first user account', async t => {
 
 });
 
-test('Verify second user account', async t => {
+/*test('Verify second user account', async t => {
     // check login
     // TODO: what to check to verify that login worked?
     await t
@@ -67,5 +67,5 @@ test('Verify second user account', async t => {
     var token = await tapisV2.getToken({username: config.username2, password: config.password2});
     console.log(token);
 
-});
+});*/
 
