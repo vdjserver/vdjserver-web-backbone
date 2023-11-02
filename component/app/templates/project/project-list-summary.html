@@ -42,12 +42,6 @@
                     <span class="details">Inclusion/Exclusion Criteria:</span> {{value.inclusion_exclusion_criteria}}
                 </p>
             {{/if}}
-            <!-- <p class="inclusion-full no-display">
-                <span class="details">Inclusion/Exclusion Criteria:</span>
-                {{#truncate_75}}
-                    {{study.value.inclusion_exclusion_criteria}}
-                {{/truncate_75}}
-            </p> -->
         </div>
         <div class="col project-metadata">
             {{#if value.pub_ids}}
@@ -65,9 +59,7 @@
                 {{#if value.grants}}
                     <p class="grants">
                         <span class="details">Grants:</span>
-                        <!-- {{#truncate_75}} -->
                             {{value.grants}}
-                        <!-- {{/truncate_75}} -->
                     </p>
                     <!-- <p class="grants-full no-display">
                         <span class="details">Grants:</span>
@@ -102,21 +94,16 @@
             </div>
         </div>
 
-        <!-- Study Description is truncated by default-->
         {{#if value.study_description}}
             <p class="community-study-desc">
-                {{#truncate}}
-                    {{{value.study_description}}}
-                {{/truncate}}
-                <a class="study-desc-more">Read More</a>
-                <a class="study-desc-collapse no-display">Collapse</a>
+                    {{value.study_description}}
             </p>
 
-            <!-- If "Read More" is clicked, show full study description -->
+            <!-- If "Read More" is clicked, show full study description
             <p class="community-study-desc-full no-display">
                 {{value.study_description}}
                 <a class="study-desc-collapse">Collapse</a>
-            </p>
+            </p> -->
         {{/if}}
     </div>
     <div class="community-summary-stats row">
