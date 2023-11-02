@@ -84,6 +84,23 @@ var StudySummaryView = Marionette.View.extend({
         // serialize nested model data
         data.study = data.study.attributes;
 
+        // truncated versions
+        // if more than 30 words then truncate
+        data.study.truncated_study_description = null;
+        if (data.study.value.study_description)
+            if (data.study.value.study_description.trim().split(" ").length > 30)
+                data.study.truncated_study_description = data.study.value.study_description.trim().substring(0, 350).split(" ").slice(0, -1).join(" ") + "...";
+
+        data.study.truncated_inclusion_exclusion_criteria = null;
+        if (data.study.value.inclusion_exclusion_criteria)
+            if (data.study.value.inclusion_exclusion_criteria.trim().split(" ").length > 30)
+                data.study.truncated_inclusion_exclusion_criteria = data.study.value.inclusion_exclusion_criteria.trim().substring(0, 75).split(" ").slice(0, -1).join(" ") + "...";
+
+        data.study.truncated_grants = null;
+        if (data.study.value.grants)
+            if (data.study.value.grants.trim().split(" ").length > 30)
+                data.study.truncated_grants = data.study.value.grants.trim().substring(0, 75).split(" ").slice(0, -1).join(" ") + "...";
+
         // get unfiltered collections
         var collections = this.controller.getCollections();
         var study_id = this.model.get('id');
