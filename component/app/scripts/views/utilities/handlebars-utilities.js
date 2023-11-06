@@ -116,7 +116,7 @@ HandlebarsUtilities.registerAllHelpers = function() {
                 if (schema.is_ontology(field_name))
                     description += '<br><em>Example:</em> ' + field['example']['label'].replace(/"/g, "'");
                 else
-                    description += '<br><em>Example:</em> ' + field['example'].replace(/"/g, "'");
+                    description += '<br><em>Example:</em> ' + field['example'].toString().replace(/"/g, "'");
             }
         }
         //console.log(field);
