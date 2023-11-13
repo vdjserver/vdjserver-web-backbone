@@ -1,6 +1,6 @@
 //
 // login.js
-// login page test cases
+// Login Page Test Cases
 //
 // VDJServer
 // https://vdjserver.org
