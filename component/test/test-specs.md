@@ -76,32 +76,32 @@ by page and include both positive and negative test cases.
 - click "Publish Project"
 - click "Archive Project" and verify deleted
 - click "Edit Project Metadata"
--- change fields and check against back-end data
--- add user
--- delete user
+ - change fields and check against back-end data
+ - add user
+ - delete user
 
 ## Project Files screen
 
 - click "Sort By"
--- click "File Name"
--- click "Newest"
--- click "Oldest"
--- click "File Size"
+ - click "File Name"
+ - click "Newest"
+ - click "Oldest"
+ - click "File Size"
 - click "Upload Files"
--- click "Upload from your computer"
---- click "Add File(s)"
----- click "Start Upload"
----- click "Cancel Upload"
----- click "Done"
----- edit "Type," "Tags," and "Direction" and check against back-end data
----- click "Delete File"
+ - click "Upload from your computer"
+  - click "Add File(s)"
+   - click "Start Upload"
+   - click "Cancel Upload"
+   - click "Done"
+   - edit "Type," "Tags," and "Direction" and check against back-end data
+   - click "Delete File"
 - click "Pair Read Files"
--- select "Paired-end FASTQ read files"
--- select "FASTA read files and quality score files"
--- enter data in text boxes
+ - select "Paired-end FASTQ read files"
+ - select "FASTA read files and quality score files"
+ - enter data in text boxes
 ? check anything on back-end
--- click "Cancel"
--- click "Perform pairing"
+ - click "Cancel"
+ - click "Perform pairing"
 - click "Revert Files Changes" and check against back-end
 - click "Save Files Changes" and check against back-end
 ? click on file name itself
@@ -110,82 +110,82 @@ by page and include both positive and negative test cases.
 
 - click "Details"
 - click "Sort By"
--- click "Subject ID"
--- click "Sex"
--- click "Age"
+ - click "Subject ID"
+ - click "Sex"
+ - click "Age"
 - click "Import/Export"
--- click "Import Subject Table"
--- click "Export Subject Table"
+ - click "Import Subject Table"
+ - click "Export Subject Table"
 - click "Add Subject"
--- click "New Blank Subject"
---- add data to fields, click "Validate and Save Changes," and check against back-end
---- add data and click "Revert Subject Changes"
+ - click "New Blank Subject"
+  - add data to fields, click "Validate and Save Changes," and check against back-end
+  - add data and click "Revert Subject Changes"
 - click "+" icon next to a Subject
 - click "Edit" next to a Subject
 - click "+" icon next to Add Diagnosis
 - click "Add Diagnosis"
--- check that data is added on the back-end
+ - check that data is added on the back-end
 - click trash bin icon next to "Delete"
 - click "Delete"
--- verify deleted on the back-end
+ - verify deleted on the back-end
 - click sheets of paper icon next to "Duplicate Diagnosis"
--- verify duplicated on the back-end
+ - verify duplicated on the back-end
 - click trash bin icon next to "Delete Diagnosis" and check against back-end
 - click "Delete Diagnosis" and check against back-end
--- click "New Subject from Template NAME"
+ - click "New Subject from Template NAME"
 
 ## Project Repertoires screen
 
 - click "Sort By"
--- click "Repertoire Name"
--- click "Subject ID"
--- click "Sample ID"
--- click "Tissue"
--- click "Disease State"
--- click "Cell Subset"
+ - click "Repertoire Name"
+ - click "Subject ID"
+ - click "Sample ID"
+ - click "Tissue"
+ - click "Disease State"
+ - click "Cell Subset"
 - click "Import/Export"
--- click "Import AIRR Repertoire Metadata"
--- click "Export AIRR Repertoire Metadata"
+ - click "Import AIRR Repertoire Metadata"
+ - click "Export AIRR Repertoire Metadata"
 - click "Templates"
--- click "Show Templates"
--- click "New Blank Template"
--- click "Apply NAME Template to samples"
+ - click "Show Templates"
+ - click "New Blank Template"
+ - click "Apply NAME Template to samples"
 - click "+" icon next to Add Repertoire
 - click "Add Repertoire"
--- click "New Blank Repertoire"
---- add data and click "Revert Repertoire Changes" and check against back-end
---- add data and click "Save Repertoire Changes" and check against back-end
--- click "Edit"
---- make changes click "Revert Repertoire Changes" and check against back-end
---- make changes click "Save Repertoire Changes" and check against back-end
--- click "New Sample from Template NAME"
--- click "Delete" and check against back-end
+ - click "New Blank Repertoire"
+  - add data and click "Revert Repertoire Changes" and check against back-end
+  - add data and click "Save Repertoire Changes" and check against back-end
+ - click "Edit"
+  - make changes click "Revert Repertoire Changes" and check against back-end
+  - make changes click "Save Repertoire Changes" and check against back-end
+ - click "New Sample from Template NAME"
+ - click "Delete" and check against back-end
 - click person icon next to "Subject ID"
 
 ## Project Repertoire Groups screen
 
 - click "Create a Repertoire Group"
--- add data to fields and click "Save"
--- add data to fields and click save icon
---- check data against back-end
+ - add data to fields and click "Save"
+ - add data to fields and click save icon
+  - check data against back-end
 
 ## Project Analyses screen
 
 - click "Sort By"
--- click "File Name"
--- click "Newest"
--- click "Oldest"
--- click "File Size"
+ - click "File Name"
+ - click "Newest"
+ - click "Oldest"
+ - click "File Size"
 - click "Templates"
--- click "Show Templates"
--- click "New Blank Template"
--- click "Create Analyses from NAME Template"
+ - click "Show Templates"
+ - click "New Blank Template"
+ - click "Create Analyses from NAME Template"
 - click "Create Analysis"
 - click "+" icon next to "Create Analysis"
--- click "New TCR Workflow"
--- click "New IG Workflow"
--- click "New 10x Genomics Workflow"
--- click "New Comparative Analysis"
+ - click "New TCR Workflow"
+ - click "New IG Workflow"
+ - click "New 10x Genomics Workflow"
+ - click "New Comparative Analysis"
 ? check data against back-end
 
 ?? Community Data
