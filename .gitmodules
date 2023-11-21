@@ -7,3 +7,6 @@
 [submodule "component/test/vdj-tapis-js"]
 	path = component/test/vdj-tapis-js
 	url = https://bitbucket.org/vdjserver/vdj-tapis-js.git
+[submodule "component/vdjserver-schema"]
+	path = component/vdjserver-schema
+	url = https://bitbucket.org/vdjserver/vdjserver-schema.git
