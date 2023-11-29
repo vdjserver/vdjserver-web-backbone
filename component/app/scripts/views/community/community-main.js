@@ -105,6 +105,18 @@ var CommunityStatisticsView = Marionette.View.extend({
     }
 });
 
+// Community Buttons View
+import button_template from 'Templates/community/community-buttons.html';
+var CommunityButtonsView = Marionette.View.extend({
+    template: Handlebars.compile(button_template),
+
+    initialize: function(parameters) {
+        if (parameters && parameters.controller) {
+            this.controller = parameters.controller;
+        }
+    },
+});
+
 // Community Charts View
 import community_charts_template from 'Templates/community/community-charts.html';
 var CommunityChartsView = Marionette.View.extend({
@@ -278,6 +290,9 @@ export default Marionette.View.extend({
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
         App.AppController.navController.showToolBar(this.statsView);
         this.statsView.updateStats(studyList);
+
+        this.buttonsView = new CommunityButtonsView({controller: this.controller});
+        App.AppController.navController.showButtonsBar(this.buttonsView);
 
         this.chartsView = new CommunityChartsView ({model: this.model, controller: this.controller});
         this.showChildView('chartsRegion', this.chartsView);

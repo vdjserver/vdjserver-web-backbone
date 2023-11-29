@@ -122,6 +122,21 @@ Community Statistics
     display: inline;
 }
 
+.stats-headers {
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+.stats-col-top {
+    background-color: $vdj-darkblue;
+    border-radius: 15px 15px 0 0 ;
+}
+
+.stats-col-bottom {
+    background-color: $vdj-darkblue;
+    border-radius: 0 0 15px 15px;
+}
+
 .badge-stats {
     font-weight: 500;
     font-size: 1.10em;
@@ -130,6 +145,19 @@ Community Statistics
 
 .btn-download {
     float: right;
+}
+
+/* ----------------------------------------------------------
+Community Buttons
+------------------------------------------------------------*/
+#navbar-button-region {
+    margin: auto;
+    width: 90%;
+}
+
+.community-buttons-top {
+    margin: auto;
+    margin-top: 2%;
 }
 
 /* ----------------------------------------------------------

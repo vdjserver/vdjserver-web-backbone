@@ -92,6 +92,7 @@ export default Marionette.View.extend({
         messageRegion: '#navbar-message-region',
         filterRegion: '#navbar-filter-region',
         toolRegion: '#navbar-tool-region',
+        buttonRegion: '#navbar-button-region',
         footerRegion: '#navbar-footer-region'
     },
 
@@ -150,6 +151,16 @@ export default Marionette.View.extend({
         this.showFooter();
     },
 
+    showButtonsBar(view) {
+        this.showChildView('buttonRegion', view);
+        this.showFooter();
+    },
+
+    emptyButtonsBar() {
+        this.getRegion('buttonRegion').empty();
+        this.showFooter();
+    },
+
     showFooter() {
         // If any toolbar being shown, show footer
         if (this.getChildView('messageRegion')) {
@@ -161,6 +172,10 @@ export default Marionette.View.extend({
             return;
         }
         if (this.getChildView('toolRegion')) {
+            this.showChildView('footerRegion', new NavigationFooterView());
+            return;
+        }
+        if (this.getChildView('buttonRegion')) {
             this.showChildView('footerRegion', new NavigationFooterView());
             return;
         }
