@@ -1,0 +1,43 @@
+<div class="row general-button-bar align-items-center community-buttons-top">
+    <div class="col-md-12">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" id="community-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort By
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="community-sort-select" name="study.study_title">
+                    {{#ifEquals current_sort "study.study_title"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Study Title
+                </button>
+                <button class="dropdown-item" type="button" id="community-sort-select" name="newest">
+                    {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Newest
+                </button>
+                <button class="dropdown-item" type="button" id="community-sort-select" name="oldest">
+                    {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Oldest
+                </button>
+                <button class="dropdown-item" type="button" id="community-sort-select" name="num_repertoires">
+                    {{#ifEquals current_sort "num_repertoires"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Number of Repertoires
+                </button>
+                <button class="dropdown-item" type="button">
+                    {{#ifEquals current_sort "repository"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    ADC Repository
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item disabled" type="button">
+                    Add Custom Sort...
+                </button>
+              </div>
+            </div>
+        </div>
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-edit chart-action" id="create-group">Create a Group <i class="fas fa-plus"></i></button>
+        </div>
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-edit chart-action" id="add-chart">Add Chart <i class="fas fa-plus"></i></button>
+        </div>
+    </div>
+</div>
