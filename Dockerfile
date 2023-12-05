@@ -1,5 +1,5 @@
 # Base Image
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 MAINTAINER VDJServer <vdjserver@utsouthwestern.edu>
 
@@ -21,11 +21,11 @@ RUN apt-get update && apt-get install -y \
     wget \
     xz-utils \
     bzip2 \
-    libpng-dev \
-    python
+    libpng-dev
 
 # node
-ENV NODE_VER v14.21.3
+ENV NODE_VER v18.17.1
+#ENV NODE_VER v14.21.3
 RUN wget https://nodejs.org/dist/$NODE_VER/node-$NODE_VER-linux-x64.tar.xz
 RUN tar xf node-$NODE_VER-linux-x64.tar.xz
 RUN cp -rf /node-$NODE_VER-linux-x64/bin/* /usr/bin
@@ -57,8 +57,13 @@ RUN cd /var/www/html/vdjserver-v2-web-backbone/airrvisualizationlibrary && npm i
 RUN cd /var/www/html/vdjserver-v2-web-backbone/airrvisualizationlibrary && npm run build:dev
 
 # build airr-js
-COPY ./component/airr-standards/ /var/www/html/vdjserver-v2-web-backbone/airr-standards
-RUN cd /var/www/html/vdjserver-v2-web-backbone/airr-standards/lang/js && npm install --unsafe-perm
+#COPY ./component/airr-standards/ /var/www/html/vdjserver-v2-web-backbone/airr-standards
+#RUN cd /var/www/html/vdjserver-v2-web-backbone/airr-standards/lang/js && npm install --unsafe-perm
+
+# build vdjserver-schema and airr-js from source
+COPY ./component/vdjserver-schema/ /var/www/html/vdjserver-v2-web-backbone/vdjserver-schema
+RUN cd /var/www/html/vdjserver-v2-web-backbone/vdjserver-schema/airr-standards/lang/js && npm install --unsafe-perm
+RUN cd /var/www/html/vdjserver-v2-web-backbone/vdjserver-schema && npm install --unsafe-perm
 
 # Install npm dependencies (optimized for cache)
 COPY ./component/package.json /var/www/html/vdjserver-v2-web-backbone/
