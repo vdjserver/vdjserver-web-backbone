@@ -114,6 +114,7 @@ export default Marionette.View.extend({
     showNavigation() {
         this.emptyFilterBar();
         this.emptyToolBar();
+        this.emptyButtonsBar();
         this.showChildView('navigationRegion', new NavigationBarView());
         this.showFooter();
     },
@@ -200,7 +201,7 @@ export default Marionette.View.extend({
         } else {
             this.getRegion('filterRegion').$el.hide();
             this.getRegion('toolRegion').$el.hide();
-            this.emptyFooter();
+            //this.emptyFooter();
 
             $("#navbar-filter-icon").removeClass("nav-button-active");
             $("#navbar-filter-icon").addClass("nav-button-inactive");

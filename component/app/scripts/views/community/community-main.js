@@ -114,6 +114,18 @@ var CommunityButtonsView = Marionette.View.extend({
             this.controller = parameters.controller;
         }
     },
+
+    events: {
+        // sort results list
+        'click #community-sort-select': function(e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['studyList']['sort_by'];
+            if (e.target.name != current_sort)
+                this.controller.applySort(e.target.name);
+        }
+    },
+
 });
 
 // Community Charts View
