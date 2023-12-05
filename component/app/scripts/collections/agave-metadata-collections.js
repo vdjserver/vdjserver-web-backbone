@@ -29,14 +29,10 @@
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
 
-import { Repertoire, Subject, Diagnosis, SampleProcessing, DataProcessing } from 'Scripts/models/agave-metadata';
+import { Repertoire, Subject, SampleProcessing, DataProcessing } from 'Scripts/models/agave-metadata';
 
 import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
 import { FileTransfers } from 'Scripts/models/mixins/file-transfer-mixins';
-
-// AIRR Schema
-import AIRRSchema from 'airr-schema';
-import repertoire_template from 'airr-repertoire-template';
 
 export var RepertoireCollection = Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, FileTransfers, {
@@ -293,27 +289,6 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
                 }
             }
             return hours;
-        },
-    })
-);
-
-
-export var DiagnosisCollection = Agave.MetadataCollection.extend(
-    _.extend({}, Comparators.reverseChronologicalCreatedTime, FileTransfers, {
-        model: Diagnosis,
-        initialize: function(parameters) {
-            Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
-
-            if (parameters && parameters.projectUuid) {
-                this.projectUuid = parameters.projectUuid;
-            }
-        },
-        url: function() {
-            return '/meta/v2/data?q='
-                   + encodeURIComponent('{"name":"diagnosis","associationIds":"' + this.projectUuid + '"}')
-                   + '&limit=' + this.limit
-                   + '&offset=' + this.offset
-                   ;
         },
     })
 );

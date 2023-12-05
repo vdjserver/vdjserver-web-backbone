@@ -30,8 +30,8 @@
 import { Agave } from 'Scripts/backbone/backbone-agave';
 
 // AIRR Schema
-import AIRRSchema from 'airr-schema';
-import repertoire_template from 'airr-repertoire-template';
+import { airr } from 'airr-js';
+import { vdj_schema } from 'vdjserver-schema';
 
 //
 // VDJServer ADC Repository

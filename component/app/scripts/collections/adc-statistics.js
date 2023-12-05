@@ -31,7 +31,7 @@ import Backbone from 'backbone';
 import { ADC } from 'Scripts/backbone/backbone-adc';
 
 import Project from 'Scripts/models/agave-project';
-import { Subject, Diagnosis, SampleProcessing, Repertoire } from 'Scripts/models/agave-metadata';
+import { Subject, SampleProcessing, Repertoire } from 'Scripts/models/agave-metadata';
 
 export var RearrangementCounts = ADC.Collection.extend({
     model: ADC.Model,

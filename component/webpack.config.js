@@ -210,7 +210,10 @@ module.exports = function(env, argv) {
 
                 // AIRR Schema
                 'airr-schema': path.resolve(__dirname,'node_modules') + '/airr-js/airr-schema-openapi3-deref.yaml',
-                'airr-repertoire-template': path.resolve(__dirname,'app') + '/scripts/vendor/blank.airr.json'
+                'airr-repertoire-template': path.resolve(__dirname,'app') + '/scripts/vendor/blank.airr.json',
+
+                // VDJServer Schema
+                'vdj-schema': path.resolve(__dirname,'node_modules') + '/vdjserver-schema/vdjserver-schema-deref.yaml',
             },
             extensions: ['.js'],
         },

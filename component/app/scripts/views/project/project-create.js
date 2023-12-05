@@ -32,9 +32,6 @@ import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
 import OntologySearchView from 'Scripts/views/utilities/ontology-search-view';
 
-// AIRR Schema
-import AIRRSchema from 'airr-schema';
-
 // project creation form
 import create_template from 'Templates/project/project-create.html';
 var CreateView = Marionette.View.extend({

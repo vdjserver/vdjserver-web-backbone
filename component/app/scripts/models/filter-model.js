@@ -28,7 +28,10 @@
 //
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
-import AIRRSchema from 'airr-schema';
+
+// Schemas
+import { airr } from 'airr-js';
+import { vdj_schema } from 'vdjserver-schema';
 
 export default Agave.MetadataModel.extend({
     filter_type: null,
@@ -91,6 +94,7 @@ export default Agave.MetadataModel.extend({
     // 2. values from the data
     // 3. no values
     constructValues: function(collection) {
+        var spec = airr.get_specification();
         // for each filter field
         for (let i in this.base_filters) {
             // enum from schema
@@ -100,10 +104,10 @@ export default Agave.MetadataModel.extend({
                 if ((!object) || (!property)) {
                     console.error('Invalid schema object for (' + this.base_filters[i]['title'] + ') in EnvironmentConfig filters.');
                 } else {
-                    if (AIRRSchema[object]['properties'][property]['enum'])
-                        this.base_filters[i]['values'] = AIRRSchema[object]['properties'][property]['enum'];
-                    else if (AIRRSchema[object]['properties'][property]['items'])
-                        this.base_filters[i]['values'] = AIRRSchema[object]['properties'][property]['items']['enum'];
+                    if (spec[object]['properties'][property]['enum'])
+                        this.base_filters[i]['values'] = spec[object]['properties'][property]['enum'];
+                    else if (spec[object]['properties'][property]['items'])
+                        this.base_filters[i]['values'] = spec[object]['properties'][property]['items']['enum'];
                 }
             }
 

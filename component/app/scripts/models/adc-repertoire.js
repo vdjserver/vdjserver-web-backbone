@@ -30,27 +30,20 @@
 import { ADC } from 'Scripts/backbone/backbone-adc';
 
 // AIRR Schema
-import AIRRSchema from 'airr-schema';
-import repertoire_template from 'airr-repertoire-template';
 import { airr } from 'airr-js';
-//import parser from 'json-schema-parser';
 
 // AIRR Repertoire model
 //
 // This comes back from an ADC query in denormalized form.
 //
+var repertoireSchema = null;
 export var ADCRepertoire = ADC.Model.extend({
     initialize: function(parameters) {
         ADC.Model.prototype.initialize.apply(this, [parameters]);
 
         // Use AIRR schema Repertoire object as basis
-        //this.airr_schema = AIRRSchema['Repertoire'];
-        this.airr_schema = airr.Schema['specification']['Repertoire'];
-        //console.log(this.airr_schema);
-        //this.test = new airr.SchemaDefinition('Repertoire');
-        //console.log('Repertoire:', this.test);
-        //this.test2 = this.test.template();
-        //console.log('Repertoire:', this.test2);
+        if (! repertoireSchema) repertoireSchema = new airr.SchemaDefinition('Repertoire');
+        this.schema = repertoireSchema;
     },
     url: function() {
         return this.apiHost + ADC.Repositories()[this.repository]['adc_path'] + '/repertoire/' + this.get('repertoire_id');

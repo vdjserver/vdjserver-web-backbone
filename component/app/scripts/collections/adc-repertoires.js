@@ -32,7 +32,7 @@ import { ADC } from 'Scripts/backbone/backbone-adc';
 import { ADCRepertoire, ADCStudy } from 'Scripts/models/adc-repertoire';
 
 import Project from 'Scripts/models/agave-project';
-import { Subject, Diagnosis, SampleProcessing, Repertoire } from 'Scripts/models/agave-metadata';
+import { Subject, SampleProcessing, Repertoire } from 'Scripts/models/agave-metadata';
 
 export var ADCRepertoireCollection = ADC.Collection.extend({
     model: ADCRepertoire,

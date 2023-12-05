@@ -28,7 +28,6 @@
 //
 
 import { Agave } from 'Scripts/backbone/backbone-agave';
-import AIRRSchema from 'airr-schema';
 
 import FilterQueryView from 'Scripts/views/utilities/filter-query-view';
 import FilterModel from 'Scripts/models/filter-model';

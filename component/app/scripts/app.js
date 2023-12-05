@@ -49,7 +49,8 @@ import CommunityController from 'Scripts/views/community/community-controller';
 import AdminController from 'Scripts/views/admin/admin-controller';
 
 // AIRR Schema
-import AIRRSchema from 'airr-schema';
+import { airr } from 'airr-js';
+import { vdj_schema } from 'vdjserver-schema';
 
 // custom region to handle a bootstrap modal view
 var ModalRegion = Marionette.Region.extend({
@@ -97,9 +98,6 @@ var ApplicationController = Marionette.View.extend({
 
         // controllers
         this.clearControllers();
-
-        // just a test to show schema is available
-        console.log(AIRRSchema['Repertoire']);
 
         // create navigation bar
         this.navController = new NavigationController();
@@ -371,8 +369,12 @@ var ApplicationController = Marionette.View.extend({
 export default Marionette.Application.extend({
   region: '#app',
 
-  initialize: function(options) {
+  initialize: async function(options) {
     console.log('Initialize');
+
+    // load schemas
+    console.log('Loaded AIRR Schema version ' + airr.get_info()['version']);
+    console.log('Loaded VDJServer Schema version ' + vdj_schema.get_info()['version']);
 
     // setup Agave
     this.Agave = new Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});

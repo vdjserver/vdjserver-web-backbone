@@ -134,7 +134,7 @@ var ProjectSettingsView = Marionette.View.extend({
             edit_mode: this.edit_mode,
 
             // pass as object
-            airr_schema: this.model.airr_schema,
+            //schema: this.model.schema,
 
             // study type
             study_type_id: study_type_id,

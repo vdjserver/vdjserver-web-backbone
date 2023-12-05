@@ -31,22 +31,23 @@ import { Agave } from 'Scripts/backbone/backbone-agave';
 import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-file';
 
 // AIRR Schema
-import AIRRSchema from 'airr-schema';
-import repertoire_template from 'airr-repertoire-template';
+import { airr } from 'airr-js';
+import { vdj_schema } from 'vdjserver-schema';
 
+var studySchema = null;
 export default Agave.MetadataModel.extend({
     defaults: function() {
 
-        // Use AIRR schema Study object as basis
-        this.airr_schema = AIRRSchema['Study'];
+        // VDJServer schema Study object as basis
+        if (! studySchema) studySchema = new vdj_schema.SchemaDefinition('Study');
+        this.schema = studySchema;
+        var blankEntry = studySchema.template();
 
-        // make a deep copy of study object from the template
-        var value = JSON.parse(JSON.stringify(repertoire_template['study']));
-        value['study_type'] = null;
-        //console.log(value);
+        // TODO: what is this?
+        //value['study_type'] = null;
 
         // add VDJServer specific fields
-        value['showArchivedJobs'] = false;
+        //value['showArchivedJobs'] = false;
 
         return _.extend(
             {},
@@ -54,9 +55,15 @@ export default Agave.MetadataModel.extend({
             {
                 name: 'private_project',
                 owner: '',
-                value: value
+                value: blankEntry
             }
         );
+    },
+    initialize: function(parameters) {
+        Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
+
+        if (! studySchema) studySchema = new vdj_schema.SchemaDefinition('Study');
+        this.schema = studySchema;
     },
     url: function() {
         return '/meta/v2/data/' + this.get('uuid');
@@ -129,6 +136,25 @@ export default Agave.MetadataModel.extend({
         return jqxhr;
     },
 
+    generateVisualization: async function(name, repertoire_id, repertoire_group_id, processing_stage) {
+        var schema = new vdj_schema.SchemaDefinition('VisualizationRequest');
+        var doc = schema.template();
+        doc['visualization']['name'] = name;
+        doc['visualization']['repertoire_id'] = repertoire_id;
+        doc['visualization']['repertoire_group_id'] = repertoire_group_id;
+        doc['visualization']['processing_stage'] = processing_stage;
+
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify(doc),
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/visualize',
+        });
+
+        return jqxhr;
+    },
+
     // archiving is a soft delete
     archiveProject: function() {
         var jqxhr = $.ajax({
@@ -152,7 +178,7 @@ export default Agave.MetadataModel.extend({
         return jqxhr;
     },
 
-    // archiving is a hard delete
+    // purging is a hard delete
     purgeProject: function() {
         var jqxhr = $.ajax({
             contentType: 'application/json',
@@ -301,126 +327,3 @@ export default Agave.MetadataModel.extend({
     },
 
 });
-
-/*
-define(
-    [
-        'backbone',
-    ],
-function(
-    Backbone
-) {
-
-    'use strict';
-
-    var Project = {};
-
-    Project = Backbone.Agave.MetadataModel.extend({
-        defaults: function() {
-            return _.extend(
-                {},
-                Backbone.Agave.MetadataModel.prototype.defaults,
-                {
-                    name: 'project',
-                    owner: '',
-                    value: {
-                        'name':  '',
-                        'project_title': '',
-                        'description': '',
-                        'project_type': '',
-                        'inclusion_exclusion_criteria': '',
-                        'grant_agency': '',
-                        'grants': '',
-                        'pi_name': '',
-                        'pi_institution': '',
-                        'pi_email': '',
-                        'contact_name': '',
-                        'contact_institution': '',
-                        'contact_email': '',
-                        'biomaterial_provider': '',
-                        'collected_by': '',
-                        'uploaded_by': '',
-                        'publications': '',
-                        'pub_ids': '',
-                        'ncbi_bioproject': '',
-                        'showArchivedJobs': false
-                    }
-                }
-            );
-        },
-        url: function() {
-            return '/meta/v2/data/' + this.get('uuid');
-        },
-        sync: function(method, model, options) {
-
-            if (this.get('uuid') === '') {
-                options.apiHost = EnvironmentConfig.vdjApi.hostname;
-                options.url = '/projects';
-                options.authType = 'basic';
-
-                var value = this.get('value');
-                var projectName = value.name;
-                var username = Backbone.Agave.instance.token().get('username');
-
-                this.clear();
-                this.set({
-                    username: username,
-                    projectName: projectName
-                });
-            }
-
-            return Backbone.Agave.PutOverrideSync(method, this, options);
-        },
-        setAttributesFromFormData: function(formData) {
-            this.set('value', formData);
-        },
-
-        publishProject: function() {
-            var jqxhr = $.ajax({
-                headers: Backbone.Agave.basicAuthHeader(),
-                type: 'PUT',
-                url: EnvironmentConfig.vdjApi.hostname
-                    + '/projects/' + this.get('uuid') + '/publish'
-            });
-
-            return jqxhr;
-        },
-
-        unpublishProject: function() {
-            var jqxhr = $.ajax({
-                headers: Backbone.Agave.basicAuthHeader(),
-                type: 'PUT',
-                url: EnvironmentConfig.vdjApi.hostname
-                    + '/projects/' + this.get('uuid') + '/unpublish'
-            });
-
-            return jqxhr;
-        },
-
-        addUserToProject: function(username) {
-
-            var jqxhr = $.ajax({
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    projectUuid: this.get('uuid'),
-                    username: username
-                }),
-                headers: Backbone.Agave.basicAuthHeader(),
-                type: 'POST',
-                url: EnvironmentConfig.vdjApi.hostname + '/permissions/username',
-            });
-
-            return jqxhr;
-        },
-
-        // don't actually delete, just rename metadata item
-        deleteProject: function() {
-            this.set('name', 'deletedProject');
-            return this.save();
-        },
-    });
-
-    Backbone.Agave.Model.Project = Project;
-    return Project;
-});
-*/

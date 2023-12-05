@@ -68,6 +68,9 @@ function CommunityController() {
     // active filters
     this.filterController = new FilterController(this, "adc_study", true);
     this.filterController.showFilter();
+
+    // active visualizations
+    this.visualizationController = null;
 }
 
 CommunityController.prototype = {

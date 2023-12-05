@@ -28,7 +28,7 @@
 //
 
 import Backbone from 'backbone';
-import AIRRSchema from 'airr-schema';
+import { airr } from 'airr-js';
 
 export default Backbone.Model.extend({
     ols_api: 'https://www.ebi.ac.uk/ols/api/search',
@@ -40,7 +40,7 @@ export default Backbone.Model.extend({
 
     initialize: function(parameters) {
         if (parameters && parameters.schema) {
-            this.schema = AIRRSchema[parameters.schema];
+            this.schema = new airr.SchemaDefinition(parameters.schema);
         }
         if (parameters && parameters.field) {
             this.field = parameters.field;
@@ -63,13 +63,15 @@ export default Backbone.Model.extend({
 
         // get CURIE resolution info
         if (this.top_node) {
+            var cmap = airr.get_curie_map();
+            var iprov = airr.get_iri_providers();
             var f = this.top_node['id'].split(':');
-            if (AIRRSchema['CURIEMap'][f[0]]) {
-                var p = AIRRSchema['CURIEMap'][f[0]]['default']['provider'];
-                var m = AIRRSchema['CURIEMap'][f[0]]['default']['map'];
+            if (cmap[f[0]]) {
+                var p = cmap[f[0]]['default']['provider'];
+                var m = cmap[f[0]]['default']['map'];
                 if (p && m) {
-                    this.ontology = AIRRSchema['InformationProvider']['parameter'][f[0]][p]['ontology_id'];
-                    this.top_node_iri = AIRRSchema['CURIEMap'][f[0]]['map'][m]['iri_prefix'] + f[1]
+                    this.ontology = iprov['parameter'][f[0]][p]['ontology_id'];
+                    this.top_node_iri = cmap[f[0]]['map'][m]['iri_prefix'] + f[1]
                 }
             }
         }

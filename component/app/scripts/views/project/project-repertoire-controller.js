@@ -30,8 +30,8 @@ import Handlebars from 'handlebars';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
 import LoadingView from 'Scripts/views/utilities/loading-view';
-import { Repertoire, Subject, Diagnosis } from 'Scripts/models/agave-metadata';
-import { RepertoireCollection, SubjectCollection, DiagnosisCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
+import { Repertoire, Subject } from 'Scripts/models/agave-metadata';
+import { RepertoireCollection, SubjectCollection, SampleCollection } from 'Scripts/collections/agave-metadata-collections';
 import MetadataImportModal from 'Scripts/views/project/project-import-metadata';
 
 // Repertoire Controller: manages any views associated with viewing a repertoire

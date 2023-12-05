@@ -31,7 +31,6 @@
 import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 
-import AIRRSchema from 'airr-schema';
 import ADCInfo from 'Scripts/models/adc-info';
 import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
 
