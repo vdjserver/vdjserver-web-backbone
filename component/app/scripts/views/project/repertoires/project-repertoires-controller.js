@@ -32,8 +32,12 @@ import Handlebars from 'handlebars';
 
 import Project from 'Scripts/models/agave-project';
 import ProjectRepertoiresView from 'Scripts/views/project/repertoires/project-repertoires-main';
+
+import MessageModel from 'Scripts/models/message';
+import ModalView from 'Scripts/views/utilities/modal-view';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import FilterController from 'Scripts/views/utilities/filter-controller';
+import MetadataImportModal from 'Scripts/views/project/project-import-metadata';
 
 // Project repertoires controller
 //
@@ -117,6 +121,96 @@ ProjectRepertoiresController.prototype = {
         this.filterController.showFilter();
     },
 
+    //
+    // Series of modals for metadata import
+    //
+
+    // kick off the first screen
+    showMetadataImport: function() {
+        // TODO: check if any repertoire/subject/samples/etc changes, do not allow user to import
+
+        this.importView = new MetadataImportModal({model: this.model, controller: this});
+        App.AppController.startModal(this.importView, this, this.onShownImportModal, this.onHiddenImportModal);
+        $('#modal-message').modal('show');
+    },
+
+    onShownImportModal: function(context) {
+        console.log('import: Show the modal');
+    },
+
+    onHiddenImportModal: function(context) {
+        console.log('import: Hide the modal');
+        console.log(context.importView.file);
+        console.log(context.importView.operation);
+
+        if (context.importView.file) {
+            var message = new MessageModel({
+              'header': 'Import AIRR Repertoire Metadata',
+              'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we import...</p>'
+            });
+
+            // the app controller manages the modal region
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, context.onShownModal, context.onHiddenModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onShownModal(context) {
+        // do the import
+        context.model.importMetadataFromFile(context.importView.file, context.importView.operation)
+            .done(function() {
+                context.modalState = 'pass';
+                $('#modal-message').modal('hide');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+                $('#modal-message').modal('hide');
+
+                var message = new MessageModel({
+                    'header': 'Import AIRR Repertoire Metadata',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Metadata import failed!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+    },
+
+    onHiddenModal(context) {
+        //console.log('create: Hide the modal');
+        if (context.modalState == 'pass') {
+            // display a success modal
+            var message = new MessageModel({
+                'header': 'Import AIRR Repertoire Metadata',
+                'body': '<p>Metadata successfully imported!</p>',
+                cancelText: 'Ok'
+            });
+
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, null, context.onHiddenSuccessModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onHiddenSuccessModal(context) {
+        // refresh
+        App.router.navigate('project/' + context.model.get('uuid') + '/repertoire', {trigger: true});
+    },
+
+    showMetadataExport: function() {
+        // TODO: check if any repertoire/subject/samples/etc changes, do not allow user to export?
+        // TODO: do we show a modal during the export?
+        this.model.exportMetadataToDisk();
+
+        //this.importView = new MetadataImportModal({model: this.model, controller: this});
+        //App.AppController.startModal(this.importView, this, this.onShownImportModal, this.onHiddenImportModal);
+        //$('#modal-message').modal('show');
+    },
 };
 export default ProjectRepertoiresController;
 

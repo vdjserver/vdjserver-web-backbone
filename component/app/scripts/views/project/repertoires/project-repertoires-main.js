@@ -55,7 +55,20 @@ var RepertoiresButtonView = Marionette.View.extend({
 
     events: {
         'click #project-repertoires-view-mode' : function(e) { this.controller.toggleViewMode() },
-    }
+        'click #project-repertoires-import': 'importMetadata',
+        'click #project-repertoires-export': 'exportMetadata',
+    },
+
+    importMetadata: function(e) {
+        e.preventDefault();
+        this.controller.showMetadataImport();
+    },
+
+    exportMetadata: function(e) {
+        console.log('exportMetadata');
+        e.preventDefault();
+        this.controller.showMetadataExport();
+    },
 });
 
 // this manages project repertoires layout
@@ -78,7 +91,7 @@ var RepertoiresView = Marionette.View.extend({
             var current_sort = colls['repertoireList']['sort_by'];
             if (e.target.name != current_sort) {
                 this.controller.applySort(e.target.name);
-                this.updateHeader(); 
+                this.updateHeader();
             }
         }
     },
