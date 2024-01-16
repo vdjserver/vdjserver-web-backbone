@@ -38,12 +38,12 @@ import CommunityListView from 'Scripts/views/community/community-list';
 import LoadingView from 'Scripts/views/utilities/loading-adc-view';
 
 import PieChart from 'Scripts/views/charts/pie';
+import CytoscapeView from 'Scripts/views/charts/cytoscape-graph';
 
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view-large';
 import ModalChartView from 'Scripts/views/utilities/modal-chart-view';
 //import AddChartView from 'Scripts/views/community/add-chart';
-
 
 // Community Stats View
 import community_stats_template from 'Templates/community/community-stats.html';
@@ -77,6 +77,7 @@ var CommunityStatisticsView = Marionette.View.extend({
                 if (statistics['num_rearrangements']) num_rearrangements += statistics['num_rearrangements'];
             }
         }
+        // this puts in the commas
         num_rearrangements = new Intl.NumberFormat().format(num_rearrangements);
 
 
@@ -135,7 +136,6 @@ var CommunityChartsView = Marionette.View.extend({
 
     regions: {
         chartRegion: '#chart-1-region',
-        chart2Region: '#chart-2-region',
         chart3Region: '#chart-3-region'
     },
 
@@ -144,28 +144,9 @@ var CommunityChartsView = Marionette.View.extend({
             // our controller
             if (parameters.controller) this.controller = parameters.controller;
         }
-
+        //this.view = new CytoscapeView({controller: this.controller});
+        //this.showChildView('chart5Region', this.view);
     },
-
-    // templateContext() {
-    //     if (!this.controller) return {};
-    //
-    //     var colls = this.controller.getCollections();
-    //     var num_repos = colls['repositoryInfo'].length;
-    //     var num_studies = colls['studyList'].length;
-    //     var current_sort = colls['studyList']['sort_by'];
-    //     var num_reps = 0;
-    //     for (var i in colls['repertoireCollection'])
-    //         num_reps += colls['repertoireCollection'][i].length;
-    //
-    //
-    //     return {
-    //         current_sort: current_sort,
-    //         num_repos: num_repos,
-    //         num_studies: num_studies,
-    //         num_reps: num_reps
-    //     }
-    // },
 
     onAttach() {
         if (this.view) this.view.showChart();
@@ -180,6 +161,7 @@ var CommunityChartsView = Marionette.View.extend({
         properties.setId('chart-2-region').setSort(true).setData(example_stats).setTitle(' ');
         let chart = window.airrvisualization.createChart(properties);
         chart.plot(); */
+
     },
 
     updateCharts(studyList) {

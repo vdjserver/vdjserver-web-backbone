@@ -31,6 +31,7 @@
         "bootstrap-multiselect": "^0.9.13",
         "chai": "^4.2.0",
         "chance": "^0.7.3",
+        "cytoscape": "^3.27.0",
         "datatables": "^1.10.8",
         "detect.js": "^2.2.2",
         "file-saver": "^1.2.0",

@@ -54,6 +54,9 @@ require('highcharts/modules/data')(Highcharts);
 // D3
 import d3 from 'd3';
 
+// Cytoscape
+import cytoscape from 'cytoscape';
+
 //import avl from 'airrvisualizationlibrary';
 
 document.addEventListener('DOMContentLoaded', () => {

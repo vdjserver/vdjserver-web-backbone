@@ -196,6 +196,23 @@ Community Charts
     cursor: pointer;
 }
 
+.inline-chart {
+    width: 500px;
+    height: 500px;
+    border: 2px dashed $vdj-medgray;
+    background: $vdj-medlightgray;
+    margin: 0% 2%;
+    transition: 0.3s;
+
+    span {
+        font-size: 2em;
+        text-align: center;
+        color: $vdj-darkblue;
+        margin-top: 25%;
+        display: block;
+    }
+}
+
 .chart-actions {
     margin: 1em 3em 1em 3em;
 }
