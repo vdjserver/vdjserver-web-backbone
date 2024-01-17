@@ -85,8 +85,10 @@ var CommunityStatisticsView = Marionette.View.extend({
             current_sort: current_sort,
             num_repos: num_repos,
             num_studies: num_studies,
-            num_reps: num_reps,
-            num_rearrangements: num_rearrangements
+            num_repertoires: num_reps,
+            num_rearrangements: num_rearrangements,
+            num_clones: 'XXX',
+            num_receptors: 'XXX'
         }
     },
 
