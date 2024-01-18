@@ -66,15 +66,6 @@ var NavigationBarView = Marionette.View.extend({
     },
 });
 
-// This is the toolbar footer
-import navbar_footer from 'Templates/app/navigation-footer.html';
-var NavigationFooterView = Marionette.View.extend({
-    template: Handlebars.compile(navbar_footer),
-    initialize(options) {
-    }
-
-});
-
 // Navigation bar controller
 //
 // This manages the navigation bar
@@ -92,13 +83,13 @@ export default Marionette.View.extend({
         messageRegion: '#navbar-message-region',
         filterRegion: '#navbar-filter-region',
         toolRegion: '#navbar-tool-region',
-        buttonRegion: '#navbar-button-region',
-        footerRegion: '#navbar-footer-region'
+        buttonRegion: '#navbar-button-region'
     },
 
     events: {
         'click #logout': 'logout',
         'click #navbar-filter-icon': 'toggleFilterBar',
+        'click #navbar-stats-icon': 'toggleStatisticsBar',
     },
 
     initialize(options) {
@@ -116,17 +107,14 @@ export default Marionette.View.extend({
         this.emptyToolBar();
         this.emptyButtonsBar();
         this.showChildView('navigationRegion', new NavigationBarView());
-        this.showFooter();
     },
 
     showMessageBar(view) {
         this.showChildView('messageRegion', view);
-        this.showFooter();
     },
 
     emptyMessageBar() {
         this.getRegion('messageRegion').empty();
-        this.showFooter();
     },
 
     showFilterBar(view) {
@@ -134,58 +122,26 @@ export default Marionette.View.extend({
         this.showChildView('filterRegion', view);
         $("#navbar-filter-icon").removeClass("nav-button-inactive");
         $("#navbar-filter-icon").addClass("nav-button-active");
-        this.showFooter();
     },
 
     emptyFilterBar() {
         this.getRegion('filterRegion').empty();
-        this.showFooter();
     },
 
     showToolBar(view) {
         this.showChildView('toolRegion', view);
-        this.showFooter();
     },
 
     emptyToolBar() {
         this.getRegion('toolRegion').empty();
-        this.showFooter();
     },
 
     showButtonsBar(view) {
         this.showChildView('buttonRegion', view);
-        this.showFooter();
     },
 
     emptyButtonsBar() {
         this.getRegion('buttonRegion').empty();
-        this.showFooter();
-    },
-
-    showFooter() {
-        // If any toolbar being shown, show footer
-        if (this.getChildView('messageRegion')) {
-            this.showChildView('footerRegion', new NavigationFooterView());
-            return;
-        }
-        if (this.getChildView('filterRegion')) {
-            this.showChildView('footerRegion', new NavigationFooterView());
-            return;
-        }
-        if (this.getChildView('toolRegion')) {
-            this.showChildView('footerRegion', new NavigationFooterView());
-            return;
-        }
-        if (this.getChildView('buttonRegion')) {
-            this.showChildView('footerRegion', new NavigationFooterView());
-            return;
-        }
-        // otherwise empty
-        this.emptyFooter();
-    },
-
-    emptyFooter() {
-        this.getRegion('footerRegion').empty();
     },
 
     setFilterBarStatus(view, status) {
@@ -194,14 +150,12 @@ export default Marionette.View.extend({
         if (this.navbar_filter) {
             this.getRegion('filterRegion').$el.show();
             this.getRegion('toolRegion').$el.show();
-            this.showFooter();
 
             $("#navbar-filter-icon").removeClass("nav-button-inactive");
             $("#navbar-filter-icon").addClass("nav-button-active");
         } else {
             this.getRegion('filterRegion').$el.hide();
             this.getRegion('toolRegion').$el.hide();
-            //this.emptyFooter();
 
             $("#navbar-filter-icon").removeClass("nav-button-active");
             $("#navbar-filter-icon").addClass("nav-button-inactive");
