@@ -163,58 +163,72 @@ CommunityController.prototype = {
                 return that.studyCache.fetch();
             })
             .then(function() {
-                // load statistics
-                that.rearrangementCounts = {};
-                promises = [];
-                var thecnt = 0;
-                for (var r in repos) {
-                    // which repositories support stats?
-                    if (! repos[r]['stats_path']) {
-                        thecnt += 1;
-                        continue;
+                try {
+                    // load statistics
+                    that.rearrangementCounts = {};
+                    promises = [];
+                    var thecnt = 0;
+                    for (var r in repos) {
+                        // which repositories support stats?
+                        if (! repos[r]['stats_path']) {
+                            thecnt += 1;
+                            continue;
+                        }
+                        let reps = that.repertoireCollection[r];
+                        var coll = new RearrangementCounts(null, { repertoires: reps });
+                        that.rearrangementCounts[r] = coll;
+                        const p = coll.fetch().then(res => {
+                            //promises.splice(promises.indexOf(p), 1);
+                            thecnt += 1;
+                            // update loading screen with running total
+                            that.projectView.showLoading(total_reps, Object.keys(repos).length, Object.keys(repos).length, thecnt);
+                            return res;
+                        });
+                        promises.push(p);
                     }
-                    let reps = that.repertoireCollection[r];
-                    var coll = new RearrangementCounts(null, { repertoires: reps });
-                    that.rearrangementCounts[r] = coll;
-                    const p = coll.fetch().then(res => {
-                        //promises.splice(promises.indexOf(p), 1);
-                        thecnt += 1;
-                        // update loading screen with running total
-                        that.projectView.showLoading(total_reps, Object.keys(repos).length, Object.keys(repos).length, thecnt);
-                        return res;
-                    });
-                    promises.push(p);
-                }
 
-                return Promise.allSettled(promises);
+                    return Promise.allSettled(promises);
+                } catch (e) {
+                    // mainly for catching coding errors
+                    console.error(e);
+                    console.error(e.stack);
+                    throw e;
+                }
             })
             .then(function() {
-                console.log(that.projectList);
-                console.log(that.studyCache);
-                console.log(that.rearrangementCounts);
+                try {
+                    console.log(that.projectList);
+                    console.log(that.studyCache);
+                    console.log(that.rearrangementCounts);
 
-                that.studies = new ADCStudyCollection();
-                for (var r in repos) {
-                    console.log(that.repertoireCollection[r]);
-                    that.studies.normalize(that.repertoireCollection[r]);
-                }
-                that.studies.attachCacheEntries(that.studyCache);
-                that.studies.attachCountStatistics(that.rearrangementCounts);
-                console.log(that.studies);
+                    that.studies = new ADCStudyCollection();
+                    for (var r in repos) {
+                        console.log(that.repertoireCollection[r]);
+                        that.studies.normalize(that.repertoireCollection[r]);
+                    }
+                    that.studies.attachCacheEntries(that.studyCache);
+                    that.studies.attachCountStatistics(that.rearrangementCounts);
+                    console.log(that.studies);
 
-                // construct filter values
-                that.filterController.constructValues(that.studies);
+                    // construct filter values
+                    that.filterController.constructValues(that.studies);
 
-                // have the view display them
-                if (projectUuid) {
-                    // filter on specific VDJServer uuid if provided
-                    console.log(projectUuid);
-                    var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
-                    App.router.navigate('/community', {trigger: false});
-                    that.filterController.applyFilter(filters);
-                } else {
-                    that.projectView.showResultsList(that.studies);
-                    that.filterController.showFilter();
+                    // have the view display them
+                    if (projectUuid) {
+                        // filter on specific VDJServer uuid if provided
+                        console.log(projectUuid);
+                        var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
+                        App.router.navigate('/community', {trigger: false});
+                        that.filterController.applyFilter(filters);
+                    } else {
+                        that.projectView.showResultsList(that.studies);
+                        that.filterController.showFilter();
+                    }
+                } catch (e) {
+                    // mainly for catching coding errors
+                    console.error(e);
+                    console.error(e.stack);
+                    throw e;
                 }
             })
             .catch(function(error) {
@@ -280,6 +294,13 @@ CommunityController.prototype = {
         } else {
             this.projectView.updateSummary(this.studies);
         }
+    },
+
+    shouldToggleStatisticsBar: function() {
+        return true;
+    },
+
+    didToggleStatisticsBar: function(status) {
     },
 
     // showAddChart() {

@@ -82,8 +82,7 @@ FilterController.prototype = {
 
     showFilter() {
         this.mainView = new FilterQueryView({controller: this, model: this.filter_model, filters: this.filters});
-        App.AppController.navController.setController(this);
-        App.AppController.navController.setFilterBarStatus(this.mainView, this.show_filter);
+        App.AppController.navController.setFilterBar(this.mainView, this, this.show_filter);
         if (this.show_filter) this.mainView.setFocus();
     },
 

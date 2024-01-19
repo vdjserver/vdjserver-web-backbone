@@ -283,7 +283,7 @@ export default Marionette.View.extend({
         // console.log("studyList " + JSON.stringify(studyList));
 
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
-        App.AppController.navController.showToolBar(this.statsView);
+        App.AppController.navController.setStatisticsBar(this.statsView, this.controller, true);
         this.statsView.updateStats(studyList);
 
         this.buttonsView = new CommunityButtonsView({controller: this.controller});
@@ -303,7 +303,7 @@ export default Marionette.View.extend({
 
     updateSummary(studyList) {
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
-        App.AppController.navController.showToolBar(this.statsView);
+        App.AppController.navController.setStatisticsBar(this.statsView, this.controller, true);
     },
 
     newFilterModal(e) {

@@ -762,8 +762,7 @@ SingleProjectController.prototype = {
         this.page = 'overview';
         App.router.navigate('project/' + this.model.get('uuid'), {trigger: false});
         // no filters
-        App.AppController.navController.setController(this);
-        App.AppController.navController.setFilterBarStatus(null, false);
+        App.AppController.navController.setFilterBar(null, this, false);
         this.projectView.updateSummary();
         this.projectView.showProjectOverview(this.model);
     },

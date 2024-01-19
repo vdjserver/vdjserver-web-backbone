@@ -87,10 +87,6 @@ var ApplicationController = Marionette.View.extend({
         // show and hide of modal
         'shown.bs.modal': 'onShownModal',
         'hidden.bs.modal': 'onHiddenModal',
-
-        // show and hide of filter and stats toolbars
-        'show-filter-toolbar': 'showFilterToolbar',
-        'show-stats-toolbar': 'showStatsToolbar',
     },
 
     initialize: function(options) {

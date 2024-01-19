@@ -77,12 +77,13 @@ export default Marionette.View.extend({
     // one region for the navigation bar
     // one region for the announcement/message bar
     // one region for the filter bar
-    // one region for the tool bar
+    // one region for the stats bar
+    // one region for the button bar
     regions: {
         navigationRegion: '#navbar-region',
         messageRegion: '#navbar-message-region',
         filterRegion: '#navbar-filter-region',
-        toolRegion: '#navbar-tool-region',
+        statsRegion: '#navbar-stats-region',
         buttonRegion: '#navbar-button-region'
     },
 
@@ -90,24 +91,31 @@ export default Marionette.View.extend({
         'click #logout': 'logout',
         'click #navbar-filter-icon': 'toggleFilterBar',
         'click #navbar-stats-icon': 'toggleStatisticsBar',
+        'click #navbar-charts-icon': 'toggleCharts',
     },
 
     initialize(options) {
         console.log('Initialize');
-        this.controller = null;
-        this.navbar_filter = true; //navbar filter is open by default
+        this.message_controller = null;
+        this.filter_controller = null;
+        this.filter_show = true;
+        this.stats_controler = null;
+        this.stats_show = true;
+        this.button_controler = null;
+        this.button_show = true;
     },
 
-    setController: function(controller) {
-        this.controller = controller;
-    },
-
+    // base display with just the top nav bar
     showNavigation() {
         this.emptyFilterBar();
-        this.emptyToolBar();
+        this.emptyStatisticsBar();
         this.emptyButtonsBar();
         this.showChildView('navigationRegion', new NavigationBarView());
     },
+
+    //
+    // message bar
+    //
 
     showMessageBar(view) {
         this.showChildView('messageRegion', view);
@@ -117,24 +125,99 @@ export default Marionette.View.extend({
         this.getRegion('messageRegion').empty();
     },
 
-    showFilterBar(view) {
-        // console.log(view);
-        this.showChildView('filterRegion', view);
-        $("#navbar-filter-icon").removeClass("nav-button-inactive");
-        $("#navbar-filter-icon").addClass("nav-button-active");
+    //
+    // filter bar
+    //
+
+    setFilterBar(view, controller, status) {
+        this.filter_controller = controller;
+        if (view) this.showChildView('filterRegion', view);
+        this.setFilterBarStatus(status);
     },
 
     emptyFilterBar() {
         this.getRegion('filterRegion').empty();
+        this.filter_controller = null;
+        this.setFilterBarStatus(false);
     },
 
-    showToolBar(view) {
-        this.showChildView('toolRegion', view);
+    setFilterBarStatus(status) {
+        this.filter_show = status;
+        if (this.filter_show) {
+            if (this.getRegion('filterRegion').hasView())
+                this.getRegion('filterRegion').$el.show();
+
+            $("#navbar-filter-icon").removeClass("nav-button-inactive");
+            $("#navbar-filter-icon").addClass("nav-button-active");
+        } else {
+            if (this.getRegion('filterRegion').hasView())
+                this.getRegion('filterRegion').$el.hide();
+
+            $("#navbar-filter-icon").removeClass("nav-button-active");
+            $("#navbar-filter-icon").addClass("nav-button-inactive");
+        }
     },
 
-    emptyToolBar() {
-        this.getRegion('toolRegion').empty();
+    toggleFilterBar(e) {
+        // toggle only if controller says yes
+        e.preventDefault();
+        if (this.filter_controller) {
+            let status = this.filter_controller.shouldToggleFilterBar();
+            if (status) {
+                this.setFilterBarStatus(!this.filter_show);
+                this.filter_controller.didToggleFilterBar(this.filter_show);
+            }
+        }
     },
+
+    //
+    // statistics bar
+    //
+
+    setStatisticsBar(view, controller, status) {
+        this.stats_controller = controller;
+        if (view) this.showChildView('statsRegion', view);
+        this.setStatisticsBarStatus(status);
+    },
+
+    emptyStatisticsBar() {
+        this.getRegion('statsRegion').empty();
+        this.stats_controller = null;
+        this.setStatisticsBarStatus(false);
+    },
+
+    setStatisticsBarStatus(status) {
+        this.stats_show = status;
+        if (this.stats_show) {
+            if (this.getRegion('statsRegion').hasView())
+                this.getRegion('statsRegion').$el.show();
+
+            $("#navbar-stats-icon").removeClass("nav-button-inactive");
+            $("#navbar-stats-icon").addClass("nav-button-active");
+        } else {
+            if (this.getRegion('statsRegion').hasView())
+                this.getRegion('statsRegion').$el.hide();
+
+            $("#navbar-stats-icon").removeClass("nav-button-active");
+            $("#navbar-stats-icon").addClass("nav-button-inactive");
+        }
+    },
+
+    toggleStatisticsBar(e) {
+        // toggle only if controller says yes
+        e.preventDefault();
+        if (this.stats_controller) {
+            let status = this.stats_controller.shouldToggleStatisticsBar();
+            if (status) {
+                this.setStatisticsBarStatus(!this.stats_show);
+                this.stats_controller.didToggleStatisticsBar(this.stats_show);
+            }
+        }
+    },
+
+    //
+    // button bar
+    //
 
     showButtonsBar(view) {
         this.showChildView('buttonRegion', view);
@@ -144,25 +227,8 @@ export default Marionette.View.extend({
         this.getRegion('buttonRegion').empty();
     },
 
-    setFilterBarStatus(view, status) {
-        this.navbar_filter = status;
-        if (view) this.showChildView('filterRegion', view);
-        if (this.navbar_filter) {
-            this.getRegion('filterRegion').$el.show();
-            this.getRegion('toolRegion').$el.show();
 
-            $("#navbar-filter-icon").removeClass("nav-button-inactive");
-            $("#navbar-filter-icon").addClass("nav-button-active");
-        } else {
-            this.getRegion('filterRegion').$el.hide();
-            this.getRegion('toolRegion').$el.hide();
-
-            $("#navbar-filter-icon").removeClass("nav-button-active");
-            $("#navbar-filter-icon").addClass("nav-button-inactive");
-        }
-    },
-
-    toggleFilterBar(e) {
+    toggleCharts(e) {
         // toggle only if controller says yes
         e.preventDefault();
         if (this.controller) {

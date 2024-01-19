@@ -22,23 +22,24 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                <!--
                 <li class="nav-item">
-                    <button type="button" class="btn btn-sm nav-button">
-                        <a class="nav-link" href=""><i id=nav-stats" class="fas fa-calculator"></i></a>
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button type="button" class="btn btn-sm nav-button">
-                        <a class="nav-link" href=""><i id=nav-charts" class="fas fa-chart-area"></i></a>
-                    </button>
-                </li>
-                -->
-                <li class="nav-item">
-                    <button type="button" class="btn btn-sm nav-button nav-button-inactive" data-bypass=true id="navbar-filter-icon">
+                    <button type="button" class="btn btn-sm nav-button nav-button-inactive" data-bypass=true id="navbar-filter-icon" title="Toggle Search Filters Display">
                         <a class="nav-link" href="" data-bypass=true><i class="fas fa-search"></i></a>
                     </button>
                 </li>
+
+                <li class="nav-item">
+                    <button type="button" class="btn btn-sm nav-button nav-button-inactive" data-bypass=true id="navbar-stats-icon" title="Toggle Statistics Display">
+                        <a class="nav-link" href="" data-bypass=true><i class="fas fa-calculator"></i></a>
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button type="button" class="btn btn-sm nav-button nav-button-inactive" data-bypass=true id="navbar-charts-icon" title="Toggle Charts Display">
+                        <a class="nav-link" href="" data-bypass=true><i class="fas fa-chart-bar"></i></a>
+                    </button>
+                </li>
+
                 {{#if active_token}}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
