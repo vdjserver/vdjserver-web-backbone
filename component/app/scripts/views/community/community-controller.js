@@ -69,6 +69,9 @@ function CommunityController() {
     this.filterController = new FilterController(this, "adc_study", true);
     this.filterController.showFilter();
 
+    // statistics
+    this.show_statistics = true;
+
     // active visualizations
     this.visualizationController = null;
 }
@@ -301,6 +304,11 @@ CommunityController.prototype = {
     },
 
     didToggleStatisticsBar: function(status) {
+        this.show_statistics = status;
+    },
+
+    showStatistics: function() {
+        return this.show_statistics;
     },
 
     // showAddChart() {

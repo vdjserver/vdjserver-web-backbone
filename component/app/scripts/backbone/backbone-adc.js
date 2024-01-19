@@ -165,6 +165,14 @@ ADC.Collection = Backbone.Collection.extend({
         return values;
     },
 
+    // override default clone so we can copy custom attributes
+    clone: function() {
+        var d = Backbone.Collection.prototype.clone.apply(this);
+        d['apiHost'] = this['apiHost'];
+        d['repository'] = this['repository'];
+        return d;
+    },
+
     // apply filters to generate a new collection
     filterCollection(filters) {
         var filtered = this.clone();

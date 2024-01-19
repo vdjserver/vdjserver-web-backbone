@@ -69,11 +69,14 @@ export default Marionette.View.extend({
     },
 
     events: {
-        // perform search when user hits enter in full text search box
-        'search #filter-query-text-search': function(e) {
-            console.log('search');
+        // jquery does not support the search input field
+        // so have to handle the scenario where the X is pressed or field is cleared
+        'input #filter-query-text-search': function(e) {
+            if (e.target.value.length != 0) return;
+            console.log('full text search clear');
             e.preventDefault();
             this.controller.applyFilter(this.extractFilters());
+            $('#filter-query-text-search').focus();
         },
         // handle keypress too because some browsers want to submit form with Enter
         'keypress #filter-query-text-search': function(e) {
