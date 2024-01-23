@@ -63,7 +63,6 @@ var CommunityStatisticsView = Marionette.View.extend({
         var colls = this.controller.getCollections();
         var num_repos = colls['repositoryInfo'].length;
         var num_studies = colls['studyList'].length;
-        var current_sort = colls['studyList']['sort_by'];
         var num_reps = 0;
         for (var i in colls['repertoireCollection'])
             num_reps += colls['repertoireCollection'][i].length;
@@ -82,7 +81,6 @@ var CommunityStatisticsView = Marionette.View.extend({
 
 
         return {
-            current_sort: current_sort,
             num_repos: num_repos,
             num_studies: num_studies,
             num_repertoires: num_reps,
@@ -93,14 +91,6 @@ var CommunityStatisticsView = Marionette.View.extend({
     },
 
     events: {
-        // sort results list
-        'click #community-sort-select': function(e) {
-            // check it is a new sort
-            var colls = this.controller.getCollections();
-            var current_sort = colls['studyList']['sort_by'];
-            if (e.target.name != current_sort)
-                this.controller.applySort(e.target.name);
-        }
     },
 
     updateStats(studyList) {
@@ -115,6 +105,17 @@ var CommunityButtonsView = Marionette.View.extend({
     initialize: function(parameters) {
         if (parameters && parameters.controller) {
             this.controller = parameters.controller;
+        }
+    },
+
+    templateContext() {
+        if (!this.controller) return {};
+
+        var colls = this.controller.getCollections();
+        var current_sort = colls['studyList']['sort_by'];
+
+        return {
+            current_sort: current_sort
         }
     },
 
@@ -302,8 +303,13 @@ export default Marionette.View.extend({
     },
 
     updateSummary(studyList) {
+        // update stats
         this.statsView = new CommunityStatisticsView ({collection: studyList, controller: this.controller});
         App.AppController.navController.setStatisticsBar(this.statsView, this.controller, this.controller.showStatistics());
+
+        // update buttons
+        this.buttonsView = new CommunityButtonsView({controller: this.controller});
+        App.AppController.navController.showButtonsBar(this.buttonsView);
     },
 
     newFilterModal(e) {
