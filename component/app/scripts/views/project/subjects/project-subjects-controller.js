@@ -96,6 +96,11 @@ ProjectSubjectsController.prototype = {
             case 'summary': this.subjects_view_mode = 'detail'; break;
             case 'detail': this.subjects_view_mode = 'summary'; break;
         }
+        var coll = this.getSubjectsList();
+        for (let i = 0; i < coll.length; ++i) {
+            let m = coll.at(i);
+            if (m.view_mode != 'edit') m.view_mode = this.subjects_view_mode;
+        }
         this.showProjectSubjectsList();
     },
 
@@ -152,6 +157,18 @@ ProjectSubjectsController.prototype = {
         this.flagSubjectsEdits();
     },
 
+    duplicateSubject: function(e, model) {
+        e.preventDefault();
+        var clonedList = this.getSubjectsList();
+        let i = clonedList.findIndex(model);
+        let newSubject = model.clone();
+        newSubject.set('uuid', newSubject.cid);
+        newSubject.view_mode = 'edit';
+        clonedList.add(newSubject, {at:i});
+        $('#subject_id_'+newSubject.cid).focus();
+        this.flagSubjectsEdits();
+    },
+
     duplicateDiagnosis: function(e, model) {
         e.preventDefault();
 
@@ -177,6 +194,8 @@ ProjectSubjectsController.prototype = {
         model.view_mode = 'edit';
         this.flagSubjectsEdits();
         this.showProjectSubjectsList();
+
+        // TODO: fix id
         $('#dropdownOntology0').focus();
     },
 

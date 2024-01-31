@@ -12,22 +12,31 @@
             <div class="form-row project-subject-row align-items-center">
                 <div class="form-group col-md-1">
                   <label><b>Actions:</b></label>
-<!-- ADD COPY SUBJECT UUID -->
                   <div class="btn-group" role="group" aria-label="Button group">
                     <div class="dropdown">
                         <button type="button" class="btn btn-create btn-primary btn-block input-block-level dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-fw fa-user-alt" aria-hidden="true"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-show-summary" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Subject Summary
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-copy-uuid">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
-                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Subject
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-duplicate">
+                                <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Subject
                             </button>
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-add-diagnosis">
                                 <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Diagnosis
                             </button>
                             <div class="dropdown-divider" width="10%"></div>
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-delete">
-                                <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete
+                                <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Subject
                             </button>
                         </div>
                     </div>

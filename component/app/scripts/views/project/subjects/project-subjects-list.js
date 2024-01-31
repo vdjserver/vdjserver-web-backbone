@@ -51,12 +51,22 @@ var SubjectSummaryView = Marionette.View.extend({
     },
 
     events: {
+        'click #project-subject-show-details': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'detail';
+            this.controller.showProjectSubjectsList();
+        },
+        'click #project-subject-copy-uuid': function(e) {
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        },
         'click #project-subject-edit': function(e) {
             e.preventDefault();
             this.model.view_mode = 'edit';
             this.controller.flagSubjectsEdits();
             this.controller.showProjectSubjectsList();
         },
+        'click #project-subject-duplicate': function(e) { this.controller.duplicateSubject(e, this.model); },
         'click #project-subject-add-diagnosis': function(e) { this.controller.addDiagnosis(e, this.model); },
         'click #project-subject-duplicate-diagnosis': function(e) { this.controller.duplicateDiagnosis(e, this.model); },
         'click #project-subject-delete-diagnosis': function(e) { this.controller.deleteDiagnosis(e, this.model); },
@@ -114,17 +124,27 @@ var SubjectDetailView = Marionette.View.extend({
     },
 
     events: {
+        'change .form-control-subject': 'updateField',
+        'change .value-select': 'updateDropDown',
+        'change .ontology-select': 'updateOntology',
+        'change .form-control-diagnosis': 'updateFieldDiagnosis',
+
+        'click #project-subject-show-summary': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'summary';
+            this.controller.showProjectSubjectsList();
+        },
+        'click #project-subject-copy-uuid': function(e) {
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        },
         'click #project-subject-edit': function(e) {
             e.preventDefault();
             this.model.view_mode = 'edit';
             this.controller.flagSubjectsEdits();
             this.controller.showProjectSubjectsList();
         },
-        'change .form-control-subject': 'updateField',
-        'change .value-select': 'updateDropDown',
-        'change .ontology-select': 'updateOntology',
-        'change .form-control-diagnosis': 'updateFieldDiagnosis',
-
+        'click #project-subject-duplicate': function(e) { this.controller.duplicateSubject(e, this.model); },
         'click #project-subject-add-diagnosis': function(e) { this.controller.addDiagnosis(e, this.model); },
         'click #project-subject-detail-duplicate-diagnosis': function(e) { this.controller.duplicateDiagnosis(e, this.model); },
         'click #project-subject-detail-delete-diagnosis': function(e) { this.controller.deleteDiagnosis(e, this.model); },
@@ -210,7 +230,7 @@ var SubjectContainerView = Marionette.View.extend({
         // save state in model
         // if editing, leave in edit
         // get default view mode from controller
-        if (this.model.view_mode != 'edit')
+        if (! this.model.view_mode)
             this.model.view_mode = this.controller.getSubjectsViewMode();
 
         this.showSubjectView();
