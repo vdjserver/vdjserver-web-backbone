@@ -379,8 +379,10 @@ export var Repertoire = Agave.MetadataModel.extend({
                 case 'study':
                     return value['study'].get('value')[paths[1]];
                 case 'subject':
+                    if (! value['subject']) return null;
                     return value['subject'].get('value')[paths[1]];
                 case 'diagnosis':
+                    if (! value['subject']) return null;
                     var subject = value['subject'].get('value');
                     var diagnosis = subject['diagnosis'];
                     if (! diagnosis) return null;
