@@ -184,64 +184,6 @@ var ProjectSummaryView = Marionette.View.extend({
 
 });
 
-// Steps through the metadata entry process
-import entry_steps_template from 'Templates/project/repertoires/create-repertoire-steps.html';
-var CreateRepertoireStepsView = Marionette.View.extend({
-    template: Handlebars.compile(entry_steps_template),
-
-    initialize: function(parameters) {
-        // initial active step
-        this.active_step = 'repertoire';
-        if (parameters) {
-            // our controller
-            if (parameters.controller) this.controller = parameters.controller;
-            if (parameters.active_step) this.active_step = parameters.active_step;
-        }
-    },
-
-    templateContext: function() {
-        return {
-            active_step: this.active_step
-        };
-    },
-});
-
-// Create New Repertoire view
-import create_template from 'Templates/project/repertoires/create-repertoire.html';
-var CreateRepertoireView = Marionette.View.extend({
-    template: Handlebars.compile(create_template)
-});
-
-// Add Subject to Repertoire View
-import addSubject_template from 'Templates/project/repertoires/add-subject.html';
-var AddSubjectView = Marionette.View.extend({
-    template: Handlebars.compile(addSubject_template)
-});
-
-// Add Diagnosis to Repertoire View
-import addDiagnosis_template from 'Templates/project/repertoires/add-diagnosis.html';
-var AddDiagnosisView = Marionette.View.extend({
-    template: Handlebars.compile(addDiagnosis_template)
-});
-
-// Add Sample to Repertoire View
-import addSample_template from 'Templates/project/repertoires/add-sample.html';
-var AddSampleView = Marionette.View.extend({
-    template: Handlebars.compile(addSample_template)
-});
-
-// Add Cell Processing to Repertoire View
-import addCell_template from 'Templates/project/repertoires/add-cell.html';
-var AddCellView = Marionette.View.extend({
-    template: Handlebars.compile(addCell_template)
-});
-
-// Add Nucleic Acid to Repertoire View
-import addNucleic_template from 'Templates/project/repertoires/add-nucleic.html';
-var AddNucleicView = Marionette.View.extend({
-    template: Handlebars.compile(addNucleic_template)
-});
-
 // Subjects view
 import SubjectsController from 'Scripts/views/project/subjects/project-subjects-controller';
 
@@ -270,7 +212,6 @@ var SingleProjectView = Marionette.View.extend({
     // one region for the project detail
     regions: {
         summaryRegion: '#project-summary',
-        stepsRegion: '#create-repertoire-steps',
         detailRegion: '#project-detail'
     },
 
@@ -287,115 +228,6 @@ var SingleProjectView = Marionette.View.extend({
         this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
         App.AppController.navController.setStatisticsBar(this.summaryView, this.controller, true);
         //this.showChildView('summaryRegion', this.summaryView);
-    },
-
-    events: {
-        //
-        // Overview page specific events
-        //
-
-        // setting event for Overview page
-        'click #overview-tab': function() {
-            this.controller.showProjectOverview();
-        },
-
-        'click #save-edit-project': function(e) {
-            // update summary in case project title changed
-            this.updateSummary();
-        },
-
-        //
-        // Subjects page specific events
-        //
-
-        // setting event for Subjects page
-        'click #subjects-tab': function() {
-            this.controller.showProjectSubjects();
-        },
-
-        //
-        // Samples page specific events
-        //
-
-        // setting event for Samples page
-        'click #samples-tab': function() {
-            this.controller.showProjectSamples();
-        },
-
-        //
-        // Repertoires page specific events
-        //
-
-        // setting event for Repertoires page
-        'click #repertoires-tab': function() {
-            this.controller.showProjectRepertoires();
-        },
-
-        //
-        // Events for step-by-step walkthrough for repertoire metadata entry
-        // The controller manages the step progression
-        //
-        // this starts the walkthrough
-        'click #create-rep': function() {
-            this.controller.startCreateRepertoireSteps();
-        },
-
-        'click .add-repertoire': function() {
-            this.controller.startCreateRepertoireSteps();
-        },
-
-        'click .add-subject': function() {
-            this.controller.addSubjectStep();
-        },
-
-        'click .add-diagnosis': function() {
-            this.controller.addDiagnosisStep();
-        },
-
-        'click .add-sample': function() {
-            this.controller.addSampleStep();
-        },
-
-        'click .add-cell': function() {
-            this.controller.addCellProcessingStep();
-        },
-
-        'click .add-nucleic': function() {
-            this.controller.addNucleicProcessingStep();
-        },
-
-        // this finishes the walkthrough
-        'click #finish-create-rep': function() {
-            // transition back to repertoire list
-        },
-
-        //
-        // Groups page specific events
-        //
-
-        // setting event for Groups page
-        'click #groups-tab': function() {
-            this.controller.showProjectGroups();
-        },
-
-        //
-        // Files page specific events
-        //
-
-        // setting event for Files page
-        'click #files-tab': function() {
-            this.controller.showProjectFiles();
-        },
-
-        //
-        // Analyses page specific events
-        //
-
-        // setting event for Analyses page
-        'click #analyses-tab': function() {
-            this.controller.showProjectAnalyses();
-        },
-
     },
 
     // update summary view with new counts and active tab
@@ -416,14 +248,12 @@ var SingleProjectView = Marionette.View.extend({
     //
     showProjectOverview: function(project)
     {
-        this.getRegion('stepsRegion').empty();
         this.detailView = new ProjectOverView({model: project, controller: this.controller});
         this.showChildView('detailRegion', this.detailView);
     },
 
     showProjectSubjects: function(theController)
     {
-        this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', theController.getView());
 
         // tell repertoire controller to display the subjects list
@@ -432,7 +262,6 @@ var SingleProjectView = Marionette.View.extend({
 
     showProjectSamples: function(theController)
     {
-        this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', theController.getView());
 
         // tell repertoire controller to display the samples list
@@ -441,7 +270,6 @@ var SingleProjectView = Marionette.View.extend({
 
     showProjectRepertoires: function(repertoireController)
     {
-        this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', repertoireController.getView());
 
         // tell repertoire controller to display the repertoire list
@@ -450,7 +278,6 @@ var SingleProjectView = Marionette.View.extend({
 
     showProjectGroups: function(projectGroupsController)
     {
-        this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', projectGroupsController.getView());
 
         // tell controller to display its data
@@ -459,7 +286,6 @@ var SingleProjectView = Marionette.View.extend({
 
     showProjectFiles: function(projectFilesController)
     {
-        this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', projectFilesController.getView());
 
         // tell controller to display its data
@@ -468,65 +294,10 @@ var SingleProjectView = Marionette.View.extend({
 
     showProjectAnalyses: function(projectAnalysesController)
     {
-        this.getRegion('stepsRegion').empty();
         this.showChildView('detailRegion', projectAnalysesController.getView());
 
         // tell controller to display its data
         projectAnalysesController.showProjectAnalysesList();
-    },
-
-    //
-    // Step-by-step walkthrough of repertoire metadata entry
-    // Note the controller
-    //
-    showCreateRepertoire: function()
-    {
-        // add the entry steps progression view
-        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'repertoire'});
-        this.showChildView('stepsRegion', this.stepsView);
-
-        this.detailView = new CreateRepertoireView({model: this.model});
-        this.showChildView('detailRegion', this.detailView);
-    },
-
-    showAddSubject: function() {
-        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'subject'});
-        this.showChildView('stepsRegion', this.stepsView);
-
-        this.detailView = new AddSubjectView({model: this.model});
-        this.showChildView('detailRegion', this.detailView);
-    },
-
-    showAddDiagnosis: function() {
-        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'diagnosis'});
-        this.showChildView('stepsRegion', this.stepsView);
-
-        this.detailView = new AddDiagnosisView({model: this.model});
-        this.showChildView('detailRegion', this.detailView);
-    },
-
-    showAddSample: function() {
-        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'sample'});
-        this.showChildView('stepsRegion', this.stepsView);
-
-        this.detailView = new AddSampleView({model: this.model});
-        this.showChildView('detailRegion', this.detailView);
-    },
-
-    showAddCell: function() {
-        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'cell'});
-        this.showChildView('stepsRegion', this.stepsView);
-
-        this.detailView = new AddCellView({model: this.model});
-        this.showChildView('detailRegion', this.detailView);
-    },
-
-    showAddNucleic: function() {
-        this.stepsView = new CreateRepertoireStepsView({controller: this.controller, active_step: 'nucleic'});
-        this.showChildView('stepsRegion', this.stepsView);
-
-        this.detailView = new AddNucleicView({model: this.model});
-        this.showChildView('detailRegion', this.detailView);
     },
 
 });
@@ -978,37 +749,5 @@ SingleProjectController.prototype = {
         }
     },
 
-    //
-    // Step-by-step walkthrough for repertoire metadata entry
-    //
-    startCreateRepertoireSteps: function() {
-        App.router.navigate('project/' + this.model.get('uuid') + '/create', {trigger: false});
-        this.projectView.showCreateRepertoire();
-    },
-
-    addSubjectStep: function() {
-        App.router.navigate('project/' + this.model.get('uuid') + '/create/subject', {trigger: false});
-        this.projectView.showAddSubject();
-    },
-
-    addDiagnosisStep: function() {
-        App.router.navigate('project/' + this.model.get('uuid') + '/create/subject/diagnosis', {trigger: false});
-        this.projectView.showAddDiagnosis();
-    },
-
-    addSampleStep: function() {
-        App.router.navigate('project/' + this.model.get('uuid') + '/create/sample', {trigger: false});
-        this.projectView.showAddSample();
-    },
-
-    addCellProcessingStep: function() {
-        App.router.navigate('project/' + this.model.get('uuid') + '/create/sample/cell', {trigger: false});
-        this.projectView.showAddCell();
-    },
-
-    addNucleicProcessingStep: function() {
-        App.router.navigate('project/' + this.model.get('uuid') + '/create/sample/nucleic', {trigger: false});
-        this.projectView.showAddNucleic();
-    },
 };
 export default SingleProjectController;
