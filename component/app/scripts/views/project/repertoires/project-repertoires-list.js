@@ -71,7 +71,50 @@ import detail_template from 'Templates/project/repertoires/project-repertoires-d
 var RepertoireDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 
+    regions: {
+        sampleRegionDetail: '#project-sample-list-detail'
+    },
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+
+        if (this.model) {
+            var collections = this.controller.getCollections();
+            var value = this.model.get('value');
+            this.showChildView('sampleRegionDetail', new SamplesListView({collection: value['sample'], controller: this.controller}));
+        }
+    },
+
+    templateContext() {
+        //console.log(this.model);
+        var collections = this.controller.getCollections();
+        var value = this.model.get('value');
+        var subject = value['subject'];
+        var subject_value = subject.get('value');
+        var sample = value['sample'];
+        var sample_value = sample.get('value');
+
+        return {
+            subject: subject_value,
+            species_display: subject.getSpeciesDisplay(),
+            age_display: subject.getAgeDisplay(),
+            sample: sample_value
+        }
+    },
+
     events: {
+    },
+
+    onAttach() {
+        // setup popovers and tooltips
+        $('[data-toggle="popover"]').popover({
+            animation: true, //fade, boolean
+            placement: 'top',
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
     },
 
 });
@@ -97,7 +140,6 @@ var RepertoireContainerView = Marionette.View.extend({
         // get default view mode from controller
         if (this.model.view_mode != 'edit')
             this.model.view_mode = this.controller.getViewMode();
-
         this.showSubjectView();
     },
 
@@ -106,7 +148,11 @@ var RepertoireContainerView = Marionette.View.extend({
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':
+console.log("DETAIL");
+                this.showChildView('containerRegion', new RepertoireDetailView({controller: this.controller, model: this.model}));
+                break;
             case 'edit':
+console.log("EDIT");
                 this.showChildView('containerRegion', new RepertoireDetailView({controller: this.controller, model: this.model}));
                 break;
             case 'summary':
