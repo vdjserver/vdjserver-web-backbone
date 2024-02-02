@@ -115,10 +115,11 @@ ProjectSubjectsController.prototype = {
         this.showProjectSubjectsList();
     },
 
-    applySort(sort_by) {
+    applySort: function(sort_by) {
         var subjs = this.getSubjectsList();
         subjs.sort_by = sort_by;
         subjs.sort();
+        this.mainView.updateHeader();
     },
 
     // show project subjects
@@ -218,6 +219,14 @@ ProjectSubjectsController.prototype = {
         this.mainView.updateHeader();
     },
 
+    importSubjectTable: function(e) {
+    },
+
+    exportSubjectTable: function(e) {
+        console.log('exportSubjectTable');
+        this.model.exportTableToDisk('subject');
+    },
+
     revertSubjectsChanges: function() {
         // throw away changes by re-cloning
         this.has_edits = false;
@@ -313,7 +322,7 @@ ProjectSubjectsController.prototype = {
     },
 
     // file changes are sent to server after the modal is shown
-    onShownSaveModal(context) {
+    onShownSaveModal: function(context) {
         console.log('save: Show the modal');
 
         // use modal state variable to decide
@@ -399,7 +408,7 @@ ProjectSubjectsController.prototype = {
         }
     },
 
-    onHiddenSaveModal(context) {
+    onHiddenSaveModal: function(context) {
         console.log('save: Hide the modal');
         if (context.modalState == 'pass') {
             // changes all saved

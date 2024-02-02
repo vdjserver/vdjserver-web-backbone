@@ -178,7 +178,19 @@ var FilesUploadView = Marionette.View.extend(
             'click #add-upload-files': 'selectFiles',
             'click #delete-upload-file': 'deleteFile',
             'change #file-upload-from-computer-dialog': 'changeSelectedFiles',
-            // start/cancel/done buttons are trapped by parent view
+
+            'click #cancel-upload-button': function(e) {
+                e.preventDefault();
+                this.controller.cancelUpload();
+            },
+            'click #start-upload-button': function(e) {
+                e.preventDefault();
+                this.controller.startUpload();
+            },
+            'click #done-upload-button': function(e) {
+                e.preventDefault();
+                this.controller.doneUpload();
+            },
         },
 
         // show file dialog

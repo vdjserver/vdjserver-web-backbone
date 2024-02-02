@@ -1,8 +1,9 @@
-<div class="row project-buttons">
-    <div class="col">
+<div class="row general-button-bar">
+    <div class="col-md-7">
+
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle project-buttons-margin-right" type="button" id="project-repertoires-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" id="project-repertoires-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Sort By
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -32,7 +33,7 @@
 
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle project-buttons-margin-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Import/Export
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -47,17 +48,17 @@
         </div>
 
         <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-create" id="add-new-repertoire"><i class="fa fa-plus" aria-hidden="true"></i>Add Repertoire</button>
+            <button type="button" class="btn btn-create general-buttons-margin-right" id="add-new-repertoire"><i class="fa fa-plus" aria-hidden="true"></i>Add Repertoire</button>
         </div>
     </div>
 
-    <div class="col-md-6 project-buttons-right">
+    <div class="col-md-5 general-buttons-right">
         <div class="btn-group" role="group" aria-label="Button group">
             <button type="button" class="btn btn-cancel" id="project-repertoires-revert-changes" {{#unless hasEdits}}disabled{{/unless}}>Revert Repertoire Changes</button>
         </div>
 
         <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-save project-buttons-margin-left" id="project-repertoires-save-changes" {{#unless hasEdits}}disabled{{/unless}}>Save Repertoire Changes</button>
+            <button type="button" class="btn btn-save general-buttons-margin-left" id="project-repertoires-save-changes" {{#unless hasEdits}}disabled{{/unless}}>Save Repertoire Changes</button>
         </div>
     </div>
 </div>

@@ -1,6 +1,6 @@
 //
-// project-analyses.js
-// Project analyses management
+// project-groups-main.js
+// Project repertoire group management
 //
 // VDJServer Analysis Portal
 // Web Interface
@@ -29,13 +29,13 @@ import Marionette from 'backbone.marionette';
 import Handlebars from 'handlebars';
 import Bootstrap from 'bootstrap';
 import Project from 'Scripts/models/agave-project';
-import ProjectAnalysesListView from 'Scripts/views/project/analyses/project-analyses-list';
+import ProjectGroupsListView from 'Scripts/views/project/groups/project-groups-list';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
 
-// Project Analyses Page
-import template from 'Templates/project/analyses/project-analyses-buttons.html';
-var ProjectAnalysesButtonView = Marionette.View.extend({
+// Project Groups Page
+import template from 'Templates/project/groups/project-groups-buttons.html';
+var ProjectGroupsButtonView = Marionette.View.extend({
     template: Handlebars.compile(template),
 
     initialize: function(parameters) {
@@ -56,18 +56,18 @@ var ProjectAnalysesButtonView = Marionette.View.extend({
 });
 
 
-// this manages project analyses layout
-// shows all the analyses in a list
+// this manages project groups layout
+// shows all the groups in a list
 // content display is handled by sub views
-var ProjectAnalysesView = Marionette.View.extend({
-    template: Handlebars.compile('<div id="project-analyses-buttons"></div><div id="project-analyses-list"></div>'),
+var ProjectGroupsView = Marionette.View.extend({
+    template: Handlebars.compile('<div id="project-groups-buttons"></div><div id="project-groups-list"></div>'),
 
     // one region for any header content
-    // one region for the analyses collection
+    // one region for the groups collection
     regions: {
-        //headerRegion: '#project-analyses-header',
-        buttonRegion: '#project-analyses-buttons',
-        listRegion: '#project-analyses-list'
+        //headerRegion: '#project-groups-header',
+        buttonRegion: '#project-groups-buttons',
+        listRegion: '#project-groups-list'
     },
 
     initialize: function(parameters) {
@@ -78,7 +78,7 @@ var ProjectAnalysesView = Marionette.View.extend({
 
     events: {
         // sort files list
-        'click #project-analyses-sort-select': function(e) {
+        'click #project-groups-sort-select': function(e) {
             // check it is a new sort
             //var files = this.controller.getPairedList();
             //var current_sort = files['sort_by'];
@@ -90,16 +90,16 @@ var ProjectAnalysesView = Marionette.View.extend({
     },
 
     updateHeader: function() {
-        this.buttonsView = new ProjectAnalysesButtonView({controller: this.controller});
+        this.buttonsView = new ProjectGroupsButtonView({controller: this.controller});
         App.AppController.navController.showButtonsBar(this.buttonsView);
     },
 
-    showProjectAnalysesList: function(analysesList) {
+    showProjectGroupsList: function(groupsList) {
         this.updateHeader();
-        //this.showChildView('buttonRegion', new ProjectAnalysesButtonView({controller: this.controller}));
-        this.showChildView('listRegion', new ProjectAnalysesListView({collection: analysesList, controller: this.controller}));
+        //this.showChildView('buttonRegion', new ProjectGroupsButtonView({controller: this.controller}));
+        this.showChildView('listRegion', new ProjectGroupsListView({collection: groupsList, controller: this.controller}));
     },
 
 });
 
-export default ProjectAnalysesView;
+export default ProjectGroupsView;
