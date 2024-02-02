@@ -56,12 +56,19 @@ var RepertoireSummaryView = Marionette.View.extend({
         var collections = this.controller.getCollections();
         var value = this.model.get('value');
         var subject = value['subject'];
-        var subject_value = subject.get('value');
+        var subject_value = null;
+        var species_display = null;
+        var age_display = null;
+        if (subject) {
+            subject_value = subject.get('value');
+            species_display = subject.getSpeciesDisplay();
+            age_display = subject.getAgeDisplay();
+        }
 
         return {
             subject: subject_value,
-            species_display: subject.getSpeciesDisplay(),
-            age_display: subject.getAgeDisplay()
+            species_display: species_display,
+            age_display: age_display
         }
     },
 

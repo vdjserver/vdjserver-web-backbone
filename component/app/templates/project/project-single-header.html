@@ -1,5 +1,7 @@
+<div class="navbar-tool" id="single-project-summary">
+
             <h1>{{value.study_title}}</h1>
-            <div class="row summary-buttons">
+            <div class="row">
                 {{#each card_tabs}}
                 <div class="card col-md card-link {{#if this.active}}card-active{{/if}}" id="{{this.card_id}}">
                   <div class="card-body nav-link">
@@ -10,3 +12,6 @@
                   </div>
                 </div>
                 {{/each}}
+            </div>
+
+</div>

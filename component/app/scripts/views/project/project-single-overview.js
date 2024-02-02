@@ -38,8 +38,74 @@ import TenantUsers from 'Scripts/collections/agave-tenant-users';
 import OntologySearchView from 'Scripts/views/utilities/ontology-search-view';
 
 
+// Project overview buttons
+import button_template from 'Templates/project/overview/project-single-buttons.html';
+var ProjectButtonView = Marionette.View.extend({
+    template: Handlebars.compile(button_template),
+
+    initialize: function(parameters) {
+        if (parameters && parameters.controller) {
+            this.controller = parameters.controller;
+        }
+    },
+
+    templateContext() {
+        var edit_mode = this.controller.edit_mode;
+
+        var archive_mode = false;
+        if (this.model.get('name') == 'archive_project') {
+            archive_mode = true;
+            edit_mode = false;
+        }
+        var publish_mode = false;
+        if (this.model.get('name') == 'public_project') {
+            publish_mode = false;
+        }
+
+        return {
+            // archive mode disables editing
+            archive_mode: archive_mode,
+            publish_mode: publish_mode,
+            // if edit mode is true, then fields should be editable
+            edit_mode: edit_mode,
+        }
+    },
+
+    events: {
+        'click #edit-project': function() {
+            this.controller.showProject(true);
+        },
+
+        'click #save-edit-project': function(e) {
+            this.controller.saveEditProject(e);
+        },
+
+        'click #revert-edit-changes': function() {
+            this.controller.revertEditChanges();
+            this.controller.showProject(false);
+        },
+
+        'click #archive-project': function() {
+            this.controller.archiveProject();
+        },
+
+        'click #unarchive-project': function() {
+            this.controller.unarchiveProject();
+        },
+
+        'click #publish-project': function() {
+            this.controller.publishProject();
+        },
+
+        'click #unpublish-project': function() {
+            this.controller.unpublishProject();
+        },
+    },
+
+});
+
 // Edit Project
-import overview_template from 'Templates/project/project-single-overview.html';
+import overview_template from 'Templates/project/overview/project-single-overview.html';
 var ProjectSettingsView = Marionette.View.extend({
     template: Handlebars.compile(overview_template),
 
@@ -519,8 +585,12 @@ var ProjectOverView = Marionette.View.extend({
             if (parameters.controller) this.controller = parameters.controller;
         }
 
+        // show in read-only mode by default
+        this.edit_mode = false;
+
         var view = new ProjectSettingsView({controller: this.controller, model: this.model});
         this.showChildView('overviewRegion', view);
+        this.updateHeader();
 
         this.showChildView('usersRegion', new LoadingUsersView({}));
 
@@ -530,39 +600,9 @@ var ProjectOverView = Marionette.View.extend({
         });
     },
 
-    events: {
-        //
-        // Overview page specific events
-        //
-
-        'click #edit-project': function() {
-            this.showProject(true);
-        },
-
-        'click #save-edit-project': function(e) {
-            this.saveEditProject(e);
-        },
-
-        'click #revert-edit-changes': function() {
-            this.revertEditChanges();
-            this.showProject(false);
-        },
-
-        'click #archive-project': function() {
-            this.archiveProject();
-        },
-
-        'click #unarchive-project': function() {
-            this.unarchiveProject();
-        },
-
-        'click #publish-project': function() {
-            this.publishProject();
-        },
-
-        'click #unpublish-project': function() {
-            this.unpublishProject();
-        },
+    updateHeader: function() {
+        this.buttonsView = new ProjectButtonView({controller: this, model: this.model});
+        App.AppController.navController.showButtonsBar(this.buttonsView);
     },
 
     updateUserList() {
@@ -572,8 +612,10 @@ var ProjectOverView = Marionette.View.extend({
 
     showProject(edit_mode) {
         console.log("edit page view");
+        this.edit_mode = edit_mode;
         var view = new ProjectSettingsView({controller: this.controller, model: this.model, edit_mode: edit_mode});
         this.showChildView('overviewRegion', view);
+        this.updateHeader();
     },
 
     //

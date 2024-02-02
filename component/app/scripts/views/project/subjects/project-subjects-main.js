@@ -68,6 +68,46 @@ var SubjectsButtonView = Marionette.View.extend({
         }
     },
 
+    events: {
+        'click #project-subjects-details-summary' : function(e) {
+            e.preventDefault();
+            this.controller.toggleSubjectsViewMode();
+        },
+
+        'click #project-subjects-import': function(e) {
+            e.preventDefault();
+            this.controller.importSubjectTable();
+        },
+        'click #project-subjects-export': function(e) {
+            e.preventDefault();
+            this.controller.exportSubjectTable();
+        },
+
+        'click #project-subjects-new-subject': function(e) {
+            e.preventDefault();
+            this.controller.addSubject(e);
+        },
+
+        'click #project-subjects-save-changes': function(e) {
+            e.preventDefault();
+            this.controller.saveSubjectsChanges(e);
+        },
+        'click #project-subjects-revert-changes': function(e) {
+            e.preventDefault();
+            this.controller.revertSubjectsChanges();
+        },
+        'click #project-subjects-sort-select': function(e) {
+            // check it is a new sort
+            var colls = this.controller.getCollections();
+            var current_sort = colls['subjectList']['sort_by'];
+            colls['subjectList']['sort_by'] = e.target.name;
+            if (e.target.name != current_sort) {
+                this.controller.applySort(e.target.name);
+                //this.updateHeader();
+            }
+        },
+    },
+
 });
 
 
@@ -85,34 +125,6 @@ var SubjectsView = Marionette.View.extend({
         listRegion: '#project-subjects-list'
     },
 
-    events: {
-        'click #project-subjects-details-summary' : function(e) { this.controller.toggleSubjectsViewMode() },
-
-        'click #project-subjects-import': 'importSubjectTable',
-        'click #project-subjects-export': 'exportSubjectTable',
-
-        'click #project-subjects-new-subject': function(e) { this.controller.addSubject(e); },
-
-        'click #project-subjects-save-changes': function(e) {
-            e.preventDefault();
-            this.controller.saveSubjectsChanges(e);
-        },
-        'click #project-subjects-revert-changes': function(e) {
-            e.preventDefault();
-            this.controller.revertSubjectsChanges();
-        },
-        'click #project-subjects-sort-select': function(e) {
-            // check it is a new sort
-            var colls = this.controller.getCollections();
-            var current_sort = colls['subjectList']['sort_by'];
-            colls['subjectList']['sort_by'] = e.target.name;
-            if (e.target.name != current_sort) {
-                this.controller.applySort(e.target.name);
-                this.updateHeader(); 
-            }
-        },
-    },
-
     initialize(parameters) {
         // our controller
         if (parameters && parameters.controller)
@@ -123,8 +135,8 @@ var SubjectsView = Marionette.View.extend({
         var editMode = false;
         if(this.controller.getSubjectsViewMode() == 'edit') {
             this.editMode = true;
-        } else { 
-            this.editMode = false; 
+        } else {
+            this.editMode = false;
         }
 
         var colls = this.controller.getCollections();
@@ -137,22 +149,17 @@ var SubjectsView = Marionette.View.extend({
     },
 
     updateHeader: function() {
-        this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
+        this.buttonsView = new SubjectsButtonView({controller: this.controller});
+        App.AppController.navController.showButtonsBar(this.buttonsView);
+        //this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
     },
 
     showProjectSubjectsList(subjectList) {
-        this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
+        this.buttonsView = new SubjectsButtonView({controller: this.controller});
+        App.AppController.navController.showButtonsBar(this.buttonsView);
+
+        //this.showChildView('buttonRegion', new SubjectsButtonView({controller: this.controller}));
         this.showChildView('listRegion', new SubjectsListView({collection: subjectList, controller: this.controller}));
-    },
-
-    importSubjectTable: function(e) {
-        e.preventDefault();
-    },
-
-    exportSubjectTable: function(e) {
-        console.log('exportSubjectTable');
-        e.preventDefault();
-        this.model.exportTableToDisk('subject');
     },
 
 });

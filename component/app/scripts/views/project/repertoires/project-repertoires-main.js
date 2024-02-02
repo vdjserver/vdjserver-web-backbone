@@ -105,11 +105,14 @@ var RepertoiresView = Marionette.View.extend({
     },
 
     updateHeader: function() {
-        this.showChildView('buttonRegion', new RepertoiresButtonView({controller: this.controller}));
+        this.buttonsView = new RepertoiresButtonView({controller: this.controller});
+        App.AppController.navController.showButtonsBar(this.buttonsView);
+        //this.showChildView('buttonRegion', new RepertoiresButtonView({controller: this.controller}));
     },
 
     showProjectRepertoiresList(repertoireList) {
-        this.showChildView('buttonRegion', new RepertoiresButtonView({controller: this.controller}));
+        this.updateHeader();
+        //this.showChildView('buttonRegion', new RepertoiresButtonView({controller: this.controller}));
         this.showChildView('listRegion', new RepertoiresListView({collection: repertoireList, controller: this.controller}));
     },
 

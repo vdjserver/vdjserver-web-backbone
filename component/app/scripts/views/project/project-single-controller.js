@@ -112,17 +112,6 @@ var ProjectSummaryView = Marionette.View.extend({
         else card['active'] = false;
         card_tabs.push(card);
 
-/*        card = {};
-        card['card_id'] = 'samples-tab';
-        card['text'] = 'Samples';
-        card['icon'] = 'fas fa-user-alt';
-        if (collections.sampleList) {
-            card['text'] =  collections.sampleList.length + ' Samples';
-        }
-        if (this.controller.page == 'sample') card['active'] = true;
-        else card['active'] = false;
-        card_tabs.push(card); */
-
         card = {};
         card['card_id'] = 'repertoires-tab';
         card['text'] = 'Repertoires';
@@ -159,19 +148,40 @@ var ProjectSummaryView = Marionette.View.extend({
         return {
             card_tabs: card_tabs
         };
-    }
-});
+    },
 
-// Repertoire Groups Page
-import groups_template from 'Templates/project/groups/groups.html';
-var GroupsView = Marionette.View.extend({
-    template: Handlebars.compile(groups_template)
-});
+    events: {
+        // traverse to Overview page
+        'click #overview-tab': function() {
+            this.controller.showProjectOverview();
+        },
 
-// Add Repertoires Groups to Repertoire View
-import addRepGroup_template from 'Templates/project/groups/add-rep-groups.html';
-var AddRepGroupView = Marionette.View.extend({
-    template: Handlebars.compile(addRepGroup_template)
+        // traverse to Files page
+        'click #files-tab': function() {
+            this.controller.showProjectFiles();
+        },
+
+        // traverse to Subjects page
+        'click #subjects-tab': function() {
+            this.controller.showProjectSubjects();
+        },
+
+        // traverse to Repertoires page
+        'click #repertoires-tab': function() {
+            this.controller.showProjectRepertoires();
+        },
+
+        // traverse to Groups page
+        'click #groups-tab': function() {
+            this.controller.showProjectGroups();
+        },
+
+        // traverse to Analyses page
+        'click #analyses-tab': function() {
+            this.controller.showProjectAnalyses();
+        },
+    },
+
 });
 
 // Steps through the metadata entry process
@@ -244,6 +254,9 @@ import RepertoireController from 'Scripts/views/project/repertoires/project-repe
 // Files view
 import ProjectFilesController from 'Scripts/views/project/files/project-files-controller';
 
+// Groups view
+import ProjectGroupsController from 'Scripts/views/project/groups/project-groups-controller';
+
 // Analyses view
 import ProjectAnalysesController from 'Scripts/views/project/analyses/project-analyses-controller';
 
@@ -272,7 +285,8 @@ var SingleProjectView = Marionette.View.extend({
         // show project summary
         // detail region will be decided by controller
         this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
-        this.showChildView('summaryRegion', this.summaryView);
+        App.AppController.navController.setStatisticsBar(this.summaryView, this.controller, true);
+        //this.showChildView('summaryRegion', this.summaryView);
     },
 
     events: {
@@ -364,12 +378,6 @@ var SingleProjectView = Marionette.View.extend({
             this.controller.showProjectGroups();
         },
 
-        'click #create-rep-group': function() {
-            App.router.navigate('project/' +
-            this.model.get('uuid') + '/group/create', {trigger: false});
-            this.showAddRepGroup();
-        },
-
         //
         // Files page specific events
         //
@@ -393,7 +401,9 @@ var SingleProjectView = Marionette.View.extend({
     // update summary view with new counts and active tab
     updateSummary: function() {
         this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
-        this.showChildView('summaryRegion', this.summaryView);
+        App.AppController.navController.setStatisticsBar(this.summaryView, this.controller, this.controller.showStatistics());
+        //this.summaryView = new ProjectSummaryView({controller: this.controller, model: this.model});
+        //this.showChildView('summaryRegion', this.summaryView);
     },
 
     // show a loading view, used while fetching the data
@@ -438,11 +448,13 @@ var SingleProjectView = Marionette.View.extend({
         repertoireController.showProjectRepertoiresList();
     },
 
-    showProjectGroups: function(project)
+    showProjectGroups: function(projectGroupsController)
     {
         this.getRegion('stepsRegion').empty();
-        this.detailView = new GroupsView({model: project});
-        this.showChildView('detailRegion', this.detailView);
+        this.showChildView('detailRegion', projectGroupsController.getView());
+
+        // tell controller to display its data
+        projectGroupsController.showProjectGroupsList();
     },
 
     showProjectFiles: function(projectFilesController)
@@ -517,11 +529,6 @@ var SingleProjectView = Marionette.View.extend({
         this.showChildView('detailRegion', this.detailView);
     },
 
-    showAddRepGroup: function() {
-        this.detailView = new AddRepGroupView({model: this.model});
-        this.showChildView('detailRegion', this.detailView);
-    },
-
 });
 
 //
@@ -544,6 +551,9 @@ function SingleProjectController(project, page) {
     this.analysisList = null;
     this.projectUserList = null;
     this.allUsersList = null;
+
+    // statistics/summary
+    this.show_statistics = true;
 
     // the project view
     this.projectView = new SingleProjectView({controller: this, model: this.model});
@@ -599,7 +609,7 @@ SingleProjectController.prototype = {
             repertoireList: this.repertoireList,
             subjectList: this.subjectList,
             sampleList: this.sampleList,
-            repertoireGroupList: this.groupList,
+            groupList: this.groupList,
             fileList: this.fileList,
             analysisList: this.analysisList,
             projectJobs: this.projectJobs,
@@ -673,6 +683,8 @@ SingleProjectController.prototype = {
     },
 
     lazyLoadGroups: function() {
+        // TODO
+        return Promise.resolve();
     },
 
     lazyLoadFiles: function() {
@@ -777,6 +789,18 @@ SingleProjectController.prototype = {
         return;
     },
 
+    shouldToggleStatisticsBar: function() {
+        return true;
+    },
+
+    didToggleStatisticsBar: function(status) {
+        this.show_statistics = status;
+    },
+
+    showStatistics: function() {
+        return this.show_statistics;
+    },
+
     showProjectSubjects: function() {
         this.page = 'subject';
         App.router.navigate('project/' + this.model.get('uuid') + '/subject', {trigger: false});
@@ -870,7 +894,30 @@ SingleProjectController.prototype = {
         this.page = 'group';
         App.router.navigate('project/' + this.model.get('uuid') + '/group', {trigger: false});
         this.projectView.updateSummary();
-        this.projectView.showProjectGroups(this.model);
+        var that = this;
+        if (! this.groupList) {
+            // it should be lazy loading
+
+            // show loading while we fetch
+            that.projectView.showLoading();
+
+            // wait on the lazy load
+            this.groupListPromise.then(function() {
+                    // have the view display them
+                    that.projectView.updateSummary();
+                    if (! that.groupController) that.groupController = new ProjectGroupsController(that);
+                    that.projectView.showProjectGroups(that.groupController);
+                })
+                .catch(function(error) {
+//                .fail(function(error) {
+                    console.log(error);
+                });
+        } else {
+            // tell repertoire controller to display the repertoire list
+            that.projectView.updateSummary();
+            if (! that.groupController) that.groupController = new ProjectGroupsController(that);
+            that.projectView.showProjectGroups(that.groupController);
+        }
     },
 
     showProjectFiles: function() {

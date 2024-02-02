@@ -38,6 +38,7 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
 import FilterController from 'Scripts/views/utilities/filter-controller';
+import ProjectPairFileView from 'Scripts/views/project/files/project-files-pairing';
 
 import { File, ProjectFile, ProjectFileMetadata } from 'Scripts/models/agave-file';
 import { ProjectFileQuery } from 'Scripts/collections/agave-files';
@@ -254,13 +255,53 @@ ProjectFilesController.prototype = {
         this.showProjectFilesList();
     },
 
-    applySort(sort_by) {
+    applySort: function(sort_by) {
         var files = this.getPairedList();
         files.sort_by = sort_by;
         files.sort();
+        this.mainView.updateHeader();
     },
 
-    applyPairing(pair_results) {
+    //
+    // Read file pairing
+    //
+    showPairFiles: function(e) {
+        // display pair files modal
+        // the app controller manages the modal region
+        var files = this.getProjectFilesList().getUnpairedCollection();
+        this.pairFileView = new ProjectPairFileView({ controller: this.controller, files: files });
+        App.AppController.startModal(this.pairFileView, this, null, this.onHiddenFilePairingModal);
+        $('#modal-message').modal('show');
+    },
+
+    onHiddenFilePairingModal: function(context) {
+        // were files paired?
+        if (context.pairFileView.pair_results) {
+            let body = '<p>' + context.pairFileView.pair_results.matched + ' files were matched.</p>';
+            body += '<p>' + context.pairFileView.pair_results.paired + ' files were paired together.</p>';
+            // prepare a new modal with the results
+            var message = new MessageModel({
+                'header': 'Pair Read Files Results',
+                'body':   body,
+                cancelText: 'Cancel',
+                confirmText: 'Ok'
+            });
+
+            context.pairFileResultsView = new ModalView({model: message});
+            App.AppController.startModal(context.pairFileResultsView, context, null, context.onHiddenFilePairingResultsModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onHiddenFilePairingResultsModal: function(context) {
+        let m = context.pairFileResultsView.model;
+        if (m.get('status') == 'confirm') {
+            // apply the pairing, controller will update the display
+            context.applyPairing(context.pairFileView.pair_results);
+        }
+    },
+
+    applyPairing: function(pair_results) {
         if (!pair_results) return;
         if (pair_results['pairs'].length == 0) return;
         for (let i = 0; i < pair_results['pairs'].length; ++i) {
@@ -296,6 +337,34 @@ ProjectFilesController.prototype = {
         this.flagFileEdits();
         this.showProjectFilesList();
     },
+
+    //
+    // File uploading
+    //
+    uploadFileFromComputer: function(e) {
+        if (! this.uploadFiles) {
+            this.uploadFiles = new Backbone.Collection();
+        }
+        this.mainView.showUploadFiles();
+    },
+
+    cancelUpload: function(e) {
+        // TODO: if upload is running then cancel
+        //this.models.forEach(function(model) {
+        //    model.trigger(ProjectFile.CANCEL_UPLOAD);
+        //});
+
+        this.cleanUpload();
+        this.mainView.clearUploadFiles();
+    },
+
+    doneUpload: function(e) {
+        // call controller to cleanup after upload
+        this.controller.cleanUpload();
+        // update UI
+        this.mainView.clearUploadFiles();
+    },
+
 
     // set all upload variables to initial state
     cleanUpload: function() {

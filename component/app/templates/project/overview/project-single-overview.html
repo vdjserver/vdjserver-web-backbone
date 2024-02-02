@@ -1,37 +1,5 @@
         <form method="POST" role="form" id="editProject-form" class="needs-validation" name="editProject" novalidate>
             <div class="row">
-                <div class="project-metadata col-md-12">
-                    {{#unless edit_mode}}
-                        <button type="button" class="btn btn-edit float-md-right" id="edit-project" {{#if archive_mode}}disabled{{/if}}>
-                            Edit Project Metadata
-                        </button>
-                    {{/unless}}
-
-                    {{#if edit_mode}}
-                        <input type="button" class="btn btn-save float-md-right" id="save-edit-project" value="Save Project">
-                    {{/if}}
-
-                    {{#if edit_mode}}
-                        <input type="reset" class="btn btn-cancel float-md-right" id="revert-edit-changes" value="Revert Changes">
-                    {{/if}}
-
-                    {{#unless edit_mode}}
-                        {{#if archive_mode}}
-                        <button type="button" class="btn btn-delete float-md-right" id="unarchive-project">Unarchive Project</button>
-                        {{else}}
-                        <button type="button" class="btn btn-delete float-md-right" id="archive-project">Archive Project</button>
-                        {{/if}}
-                    {{/unless}}
-
-                    {{#unless edit_mode}}
-                        <button type="button" class="btn btn-create float-md-right" id="publish-project" {{#if archive_mode}}disabled{{/if}}>Publish Project</button>
-                    {{/unless}}
-                    <!-- <button type="button" class="btn btn-info float-md-right" id="playground">
-                        Handlebar Playground
-                    </button> -->
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-md-6 overview-summary">
                     {{#if edit_mode}}
                         <h3>Project Title</h3>
