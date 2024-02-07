@@ -6,7 +6,7 @@
                 <div class="btn-group" role="group" aria-label="Button group">
                     <div class="dropdown">
                         <button type="button" class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-repertoires-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-user-alt fa-fw" aria-hidden="true"></i>
+                            <i class="fas fa-vial fa-fw" aria-hidden="true"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                             <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoires-show-details">
@@ -39,21 +39,8 @@
             </div>
         </div>
 
-
         <div class="row general-table-internal-row align-items-center">
             <div class="col-md-3">
-                <div class="btn-group" role="group" aria-label="Button group">
-                    <div class="dropdown">
-                        <button class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" type="button" id="project-repertoire-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-fw fa-diagnoses" aria-hidden="true"></i>
-                        </button>
-                       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                            <button class="dropdown-item" type="button" id="project-repertoire-subject-dropdown-list" name="duplicate_{{@index}}">
-                                <i class="fa fa-copy fa-fw image-vdj-darkblue"></i> Subject ID
-                            </button>
-                       </div>
-                    </div>
-                </div>
                 <b>Subject ID:</b> {{subject.subject_id}}
             </div>
             <div class="col-md-3">
