@@ -1,64 +1,60 @@
-<div id="project-samples-summary" class="row general-table-row">
-    <div class="col">
-        <div class="row align-items-center">
-            <div class="col-md-3">
-                <div class="btn-group" role="group" aria-label="Button group">
-                    <div class="dropdown">
-                      <button class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" type="button" id="project-samples-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-vial" aria-hidden="true"></i>
-                      </button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button class="dropdown-item" type="button" id="project-samples-new-sample" name="new">
-                            New Blank Sample
-                        </button>
-                        <button class="dropdown-item" type="button" id="project-samples-duplicate-sample" name="duplicate">
-                            Duplicate Sample
-                        </button>
-                        <div class="dropdown-divider" width="10%"></div>
-                        <button class="dropdown-item" type="button" id="project-samples-attach-sample" name="attach">
-                            Attach Existing Sample
-                        </button>
-                        <div class="dropdown-divider" width="10%"></div>
-                        <button class="dropdown-item" type="button" id="project-samples-delete-sample" name="delete">
-                            Delete Sample
-                        </button>
-                      </div>
-                    </div>
+<div id="project-samples-summary" class="row general-table-internal-row align-items-center">
+    <div class="col-md-3">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+                <button class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" type="button" id="project-samples-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-fw fa-vial" aria-hidden="true"></i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <button class="dropdown-item" type="button" id="project-samples-new-sample" name="new">
+                        New Blank Sample
+                    </button>
+                    <button class="dropdown-item" type="button" id="project-samples-duplicate-sample" name="duplicate">
+                        Duplicate Sample
+                    </button>
+                    <div class="dropdown-divider" width="10%"></div>
+                    <button class="dropdown-item" type="button" id="project-samples-attach-sample" name="attach">
+                        Attach Existing Sample
+                    </button>
+                    <div class="dropdown-divider" width="10%"></div>
+                    <button class="dropdown-item" type="button" id="project-samples-delete-sample" name="delete">
+                        Delete Sample
+                    </button>
                 </div>
+            </div> <!--end dropdown div-->
+        </div> <!--end button group-->
 
-                <b>Sample ID:</b> {{value.sample_id}}
-            </div>
-            <div class="col-md-3">
-                <b>Tissue:</b>
-                {{#if value.tissue.id}}
-                    {{value.tissue.label}} ({{value.tissue.id}})
-                {{/if}}
-            </div>
-            <div class="col-md-3">
-                <b>Disease State:</b> {{value.disease_state_sample}}
-            </div>
-        </div>
+        <b>Sample ID:</b> {{value.sample_id}}
+    </div>
+    <div class="col-md-3">
+        <b>Tissue:</b>
+        {{#if value.tissue.id}}
+            {{value.tissue.label}} ({{value.tissue.id}})
+        {{/if}}
+    </div>
+    <div class="col-md-6">
+        <b>Disease State:</b> {{value.disease_state_sample}}
+    </div>
+</div>
 
-        <div class="row general-table-internal-row align-items-center">
-            <div class="col-md-2">
-                <b>Single Cell:</b> {{value.single_cell}}
-            </div>
-            <div class="col-md-3">
-                <b>Cell Subset:</b>
-                {{#if value.cell_subset.id}}
-                    {{value.cell_subset.label}} ({{value.cell_subset.id}})
-                {{/if}}
-            </div>
-            <div class="col-md-2">
-                <b>Template:</b> {{value.template_class}}
-            </div>
-            <div class="col-md-2">
-                <b>Target Loci: </b>
-                {{#each target_loci}}
-                    <a class="badge badge-pill badge-locus align-text-top">{{this}}</a>
-                {{/each}}
-            </div>
-        </div>
+<div class="row general-table-internal-row align-items-center">
+    <div class="col-md-3">
+        <b>Single Cell:</b> {{value.single_cell}}
+    </div>
+    <div class="col-md-3">
+        <b>Cell Subset:</b>
+        {{#if value.cell_subset.id}}
+            {{value.cell_subset.label}} ({{value.cell_subset.id}})
+        {{/if}}
+    </div>
+    <div class="col-md-3">
+        <b>Template:</b> {{value.template_class}}
+    </div>
+    <div class="col-md-3">
+        <b>Target Loci: </b>
+        {{#each target_loci}}
+            <a class="badge badge-pill badge-locus align-text-top">{{this}}</a>
+        {{/each}}
     </div>
 </div>
 

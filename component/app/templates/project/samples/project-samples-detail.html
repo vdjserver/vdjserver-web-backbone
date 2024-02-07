@@ -1,175 +1,708 @@
 <!--
 - Subview for the repertoire expanded view with sample info
 -->
-<!-- <p>Sample/Cell/Nucleic Edit Mode: {{edit_mode}}</p> -->
-<div class="col-md-1">
-    &nbsp;
+
+<div id="project-repertoires-detail-summary" class="row general-table-row general-border-top align-items-center">
+    <div class="col">
+
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-repertoires-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user-alt fa-fw" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoires-show-details">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Repertoire Details
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoires-copy-uuid">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-edit">
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Repertoire
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-duplicate">
+                                <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Repertoire
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-add-diagnosis">
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Repertoire
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-delete">
+                                <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Repertoire
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <b>Repertoire Name:</b> {{value.repertoire_name}}
+            </div>
+            <div class="col-md-6">
+                <b>Repertoire Description:</b> {{value.repertoire_description}}
+            </div>
+        </div>
+
+        <div class="row general-table-internal-row align-items-center">
+            <div class="col-md-3">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" type="button" id="project-repertoire-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-fw fa-diagnoses" aria-hidden="true"></i>
+                        </button>
+                       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button class="dropdown-item" type="button" id="project-repertoire-subject-dropdown-list" name="duplicate_{{@index}}">
+                                <i class="fa fa-copy fa-fw image-vdj-darkblue"></i> Copy Subject ID
+                            </button>
+                       </div>
+                    </div>
+                </div>
+                <b>Subject ID:</b> {{subject.subject_id}}
+            </div>
+            <div class="col-md-3">
+                <b>Sex/Species:</b> {{subject.sex}}/{{species_display}}
+            </div>
+            <div class="col-md-3">
+                <b>Race/Ethnicity:</b> {{subject.race}}/{{subject.ethnicity}}
+            </div>
+            <div class="col-md-3">
+                <b>Age:</b> {{age_display}}
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="col-md-11">
-    <!-- <h2>This is the expanded Sample view</h2> -->
-    <!--<div id="sample_accordion">-->
-    <div id="project-sample-list-detail">
-        <div class="card repertoire-details-card">
-            <div class="card-header" id="subject_heading">
-                <h5 class="mb-0">
-                    <button class="btn">
-                      <span class="details-title">Sample Metadata</span>
-                    </button>
-                  </h5>
-            </div>
-                <div class="card-body">
-                    <form method="post" role="form" id="editSample-form" class="needs-validation" name="sample" novalidate>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="sample_id">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "Sample" "sample_id"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "Sample" "sample_id"}}}
-                                    Sample ID:
-                                </label>
-                                <input type="text" class="form-control" name="sample_idlibrary_generation_method" id="sample_idlibrary_generation_method" placeholder="" value="{{value.sample_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Sample ID.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="sample_type">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "Sample" "sample_type"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "Sample" "sample_type"}}}
-                                    Sample Type:
-                                </label>
-                                <input type="text" class="form-control" name="sample_type" id="sample_type" placeholder="" value="{{value.sample_type}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Sample Type.
-                                </div>
-                            </div>
+<div id="project-sample-list-detail" class="project-sample-list-detail">
+    <div class="row general-table-row">
+        <div class="col">
+        <form method="post" role="form" id="edit-sample-form {{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
+            <div class="form-row project-repertoire-row align-items-center">
+                <div class="form-group col-md-1">
+                  <label><b>Sample:</b></label>
+                  <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-create btn-primary btn-block input-block-level dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-sample-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-fw fa-user-alt" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-show-summary" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Subject Summary
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-copy-uuid">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-edit" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Sample
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-duplicate">
+                                <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Sample
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-add-diagnosis">
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Sample
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-delete">
+                                <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Sample
+                            </button>
+                        </div>
+                    </div>
+                  </div>
+                </div>
 
-                            <!-- Ontology -->
-                            <div class="col-md-4">
-                                <label for="tissue">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "Sample" "tissue"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "Sample" "tissue"}}}
-                                    Tissue:
-                                </label>
-                                <input type="text" class="form-control" name="tissue" id="tissue" placeholder="" value="{{value.tissue}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Tissue.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="anatomic_site">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "Sample" "anatomic_site"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "Sample" "anatomic_site"}}}
-                                    Anatomic Site:
-                                </label>
-                                <input type="text" class="form-control" name="anatomic_site" id="anatomic_site" placeholder="" value="{{value.anatomic_site}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Anatomic Site.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="disease_state_sample">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "Sample" "disease_state_sample"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "Sample" "disease_state_sample"}}}
-                                    Disease State Sample:
-                                </label>
-                                <input type="text" class="form-control" name="disease_state_sample" id="disease_state_sample" placeholder="" value="{{value.disease_state_sample}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Disease State Sample.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="collection_time_point_relative">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "Sample" "collection_time_point_relative"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "Sample" "collection_time_point_relative"}}}
-                                    Collection Time Point Relative:
-                                </label>
-                                <input type="text" class="form-control" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" value="{{value.collection_time_point_relative}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Collection Time Point Relative.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="collection_time_point_relative_unit">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "Sample" "collection_time_point_relative_unit"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "Sample" "collection_time_point_relative_unit"}}}
-                                    Collection Time Point Relative Unit:
-                                </label>
-                                <input type="text" class="form-control" name="collection_time_point_relative_unit" id="collection_time_point_relative_unit" placeholder="" value="{{value.collection_time_point_relative_unit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Collection Time Point Relative Unit.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="collection_time_point_reference">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "Sample" "collection_time_point_reference"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "Sample" "collection_time_point_reference"}}}
-                                    Collection Time Point Reference:
-                                </label>
-                                <input type="text" class="form-control" name="collection_time_point_reference" id="collection_time_point_reference" placeholder="" value="{{value.collection_time_point_reference}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Collection Time Point Reference.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="biomaterial_provider">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "Sample" "biomaterial_provider"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "Sample" "biomaterial_provider"}}}
-                                    Biomaterial Provider:
-                                </label>
-                                <input type="text" class="form-control" name="biomaterial_provider" id="biomaterial_provider" placeholder="" value="{{value.biomaterial_provider}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Biomaterial Provider.
-                                </div>
-                            </div>
-                        </div>
+                <div class="form-group col-md-2">
+                    <label for="sample_id">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Sample" "sample_id"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Sample" "sample_id"}}}
+                        Sample ID:
+                    </label>
+                    <input type="text" class="form-control" name="sample_idlibrary_generation_method" id="sample_idlibrary_generation_method" placeholder="" value="{{value.sample_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sample ID.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="sample_type">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Sample" "sample_type"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Sample" "sample_type"}}}
+                        Sample Type:
+                    </label>
+                    <input type="text" class="form-control" name="sample_type" id="sample_type" placeholder="" value="{{value.sample_type}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sample Type.
+                    </div>
+                </div>
 
-                        <div class="footer-actions">
-                            {{#ifEquals edit_mode "advanced"}}
-                            <button type="button" class="btn btn-primary" id="saveEditSample"><i class="fa fa-save"></i> Save</button>
-                            {{/ifEquals}}
-                        </div>
-                    </form>
+                <!-- Ontology -->
+                <div class="form-group col-md-2">
+                    <label for="tissue">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Sample" "tissue"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Sample" "tissue"}}}
+                        Tissue:
+                    </label>
+                    <input type="text" class="form-control" name="tissue" id="tissue" placeholder="" value="{{value.tissue}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Tissue.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="anatomic_site">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Sample" "anatomic_site"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Sample" "anatomic_site"}}}
+                        Anatomic Site:
+                    </label>
+                    <input type="text" class="form-control" name="anatomic_site" id="anatomic_site" placeholder="" value="{{value.anatomic_site}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Anatomic Site.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="disease_state_sample">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Sample" "disease_state_sample"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Sample" "disease_state_sample"}}}
+                        Disease State Sample:
+                    </label>
+                    <input type="text" class="form-control" name="disease_state_sample" id="disease_state_sample" placeholder="" value="{{value.disease_state_sample}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Disease State Sample.
+                    </div>
                 </div>
             </div>
+            <div class="form-row project-repertoire-row">
+                <div class="form-group col-md-3">
+                    <label for="collection_time_point_relative">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Sample" "collection_time_point_relative"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Sample" "collection_time_point_relative"}}}
+                        Collection Time Point Relative:
+                    </label>
+                    <input type="text" class="form-control" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" value="{{value.collection_time_point_relative}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Collection Time Point Relative.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="collection_time_point_relative_unit">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Sample" "collection_time_point_relative_unit"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Sample" "collection_time_point_relative_unit"}}}
+                        Collection Time Point Relative Unit:
+                    </label>
+                    <input type="text" class="form-control" name="collection_time_point_relative_unit" id="collection_time_point_relative_unit" placeholder="" value="{{value.collection_time_point_relative_unit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Collection Time Point Relative Unit.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="collection_time_point_reference">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Sample" "collection_time_point_reference"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Sample" "collection_time_point_reference"}}}
+                        Collection Time Point Reference:
+                    </label>
+                    <input type="text" class="form-control" name="collection_time_point_reference" id="collection_time_point_reference" placeholder="" value="{{value.collection_time_point_reference}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Collection Time Point Reference.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="biomaterial_provider">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Sample" "biomaterial_provider"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Sample" "biomaterial_provider"}}}
+                        Biomaterial Provider:
+                    </label>
+                    <input type="text" class="form-control" name="biomaterial_provider" id="biomaterial_provider" placeholder="" value="{{value.biomaterial_provider}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Biomaterial Provider.
+                    </div>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+<div id="project-sample-list-detail" class="project-sample-list-detail">
+    <div class="row general-table-row align-items-center">
+        <div class="col">
+        <form method="post" role="form" id="edit-cell-processing-form {{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
+            <div class="form-row project-repertoire-row align-items-center">
+                  <!--<label><b>Cell Processing:</b></label>-->
+                <div class="form-group col-md-2">
+                    <label for="tissue_processing">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "tissue_processing"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "tissue_processing"}}}
+                        Tissue Processing:
+                    </label>
+                    <input type="text" class="form-control" name="tissue_processing" id="tissue_processing" placeholder="" value="{{value.tissue_processing}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Tissue Processing.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="cell_subset">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "cell_subset"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "cell_subset"}}}
+                        Cell Subset:
+                    </label>
+                    <input type="text" class="form-control" name="cell_subset" id="cell_subset" placeholder="" value="{{value.cell_subset}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Cell Subset.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="cell_phenotype">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "cell_phenotype"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "cell_phenotype"}}}
+                        Cell Phenotype:
+                    </label>
+                    <input type="text" class="form-control" name="cell_phenotype" id="cell_phenotype" placeholder="" value="{{value.cell_phenotype}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Cell Phenotype.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="single_cell">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "single_cell"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "single_cell"}}}
+                        Single Cell:
+                    </label>
+                    <input type="text" class="form-control" name="single_cell" id="single_cell" placeholder="" value="{{value.single_cell}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Single Cell.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="cell_number">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "cell_number"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "cell_number"}}}
+                        Cell Number:
+                    </label>
+                    <input type="text" class="form-control" name="cell_number" id="cell_number" placeholder="" value="{{value.cell_number}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Cell Number.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for"cells_per_reaction">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "cells_per_reaction"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "cells_per_reaction"}}}
+                        Cells Per Reaction:
+                    </label>
+                    <input type="text" class="form-control" name="cells_per_reaction" id="cells_per_reaction" placeholder="" value="{{value.cells_per_reaction}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Cells Per Reaction.
+                    </div>
+                </div>
+            </div>
+            <div class="form-row project-repertoire-row">
+                <div class="form-group col-md-2">
+                    <label for="cell_storage">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "cell_storage"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "cell_storage"}}}
+                        Cell Storage:
+                    </label>
+                    <input type="text" class="form-control" name="cell_storage" id="cell_storage" placeholder="" value="{{value.cell_storage}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Cell Storage.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="cell_quality">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "cell_quality"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "cell_quality"}}}
+                        Cell Quality:
+                    </label>
+                    <input type="text" class="form-control" name="cell_quality" id="cell_quality" placeholder="" value="{{value.cell_quality}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Cell Quality.
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="cell_isolation">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "cell_isolation"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "cell_isolation"}}}
+                        Cell Isolation:
+                    </label>
+                    <input type="text" class="form-control" name="cell_isolation" id="cell_isolation" placeholder="" value="{{value.cell_isolation}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Cell Isolation.
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="cell_processing_protocol">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "cell_processing_protocol"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "cell_processing_protocol"}}}
+                        Cell Processing Protocol:
+                    </label>
+                    <input type="text" class="form-control" name="cell_processing_protocol" id="cell_processing_protocol" placeholder="" value="{{value.cell_processing_protocol}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Cell Processing Protocol.
+                    </div>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+<div id="project-sample-list-detail" class="project-sample-list-detail">
+    <div class="row general-table-row align-items-center">
+        <div class="col">
+        <form method="post" role="form" id="edit-nucleic-form {{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
+            <div class="form-row project-repertoire-row align-items-center">
+                  <!--<label><b>Nucleic Acid:</b></label>-->
+                <div class="form-group col-md-3">
+                    <label for="template_class">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "NucleicAcidProcessing" "template_class"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "NucleicAcidProcessing" "template_class"}}}
+                        Template Class:
+                    </label>
+                    <input type="text" class="form-control" name="template_class" id="template_class" placeholder="" value="{{value.template_class}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Template Class.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="template_quality">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "NucleicAcidProcessing" "template_quality"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "NucleicAcidProcessing" "template_quality"}}}
+                        Template Quality:
+                    </label>
+                    <input type="text" class="form-control" name="template_quality" id="template_quality" placeholder="" value="{{value.template_quality}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Template Quality.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="template_amount">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "NucleicAcidProcessing" "template_amount"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "NucleicAcidProcessing" "template_amount"}}}
+                        Template Amount:
+                    </label>
+                    <input type="text" class="form-control" name="template_amount" id="template_amount" placeholder="" value="{{value.template_amount}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Template Amount.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="template_amount_unit">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "NucleicAcidProcessing" "template_amount_unit"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "NucleicAcidProcessing" "template_amount_unit"}}}
+                        Template Amount Unit:
+                    </label>
+                    <input type="text" class="form-control" name="template_amount_unit" id="template_amount_unit" placeholder="" value="{{value.template_amount_unit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Template Amount Unit.
+                    </div>
+                </div>
+            </div>
+            <div class="form-row project-repertoire-row">
+                <div class="form-group col-md-3">
+                    <label for="library_generation_method">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "NucleicAcidProcessing" "library_generation_method"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "NucleicAcidProcessing" "library_generation_method"}}}
+                        Library Generation Method:
+                    </label>
+                    <input type="text" class="form-control" name="library_generation_method" id="library_generation_method" placeholder="" value="{{value.library_generation_method}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Library Generation Method.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="library_generation_protocol">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "NucleicAcidProcessing" "library_generation_protocol"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "NucleicAcidProcessing" "library_generation_protocol"}}}
+                        Library Generation Protocol:
+                    </label>
+                    <input type="text" class="form-control" name="library_generation_protocol" id="library_generation_protocol" placeholder="" value="{{value.library_generation_protocol}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Library Generation Protocol.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="library_generation_kit_version">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "NucleicAcidProcessing" "library_generation_kit_version"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "NucleicAcidProcessing" "library_generation_kit_version"}}}
+                        Library Generation Kit Version:
+                    </label>
+                    <input type="text" class="form-control" name="library_generation_kit_version" id="library_generation_kit_version" placeholder="" value="{{value.library_generation_kit_version}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Library Generation Kit Version.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="complete_sequences">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "NucleicAcidProcessing" "complete_sequences"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "NucleicAcidProcessing" "complete_sequences"}}}
+                        Complete Sequences:
+                    </label>
+                    <input type="text" class="form-control" name="complete_sequences" id="complete_sequences" placeholder="" value="{{value.complete_sequences}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter valid Complete Sequences.
+                    </div>
+                </div>
+            </div>
+            <div class="form-row project-repertoire-row">
+                <div class="form-group col-md-2">
+                    <label for="physical_linkage">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "NucleicAcidProcessing" "physical_linkage"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "NucleicAcidProcessing" "physical_linkage"}}}
+                        Physical Linkage:
+                    </label>
+                    <input type="text" class="form-control" name="physical_linkage" id="physical_linkage" placeholder="" value="{{value.physical_linkage}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Physical Linkage.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="pcr_target_locus">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "PCRTarget" "pcr_target_locus"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "PCRTarget" "pcr_target_locus"}}}
+                        PCR Target Locus:
+                    </label>
+                    <input type="text" class="form-control" name="pcr_target_locus" id="pcr_target_locus" placeholder="" value="{{value.pcr_target_locus}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid PCR Target Locus.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="forward_pcr_primer_target_location">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "PCRTarget" "forward_pcr_primer_target_location"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "PCRTarget" "forward_pcr_primer_target_location"}}}
+                        Forward PCR Primer Target Location:
+                    </label>
+                    <input type="text" class="form-control" name="forward_pcr_primer_target_location" id="forward_pcr_primer_target_location" placeholder="" value="{{value.forward_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Forward PCR Primer Target Location.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="reverse_pcr_primer_target_location">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "PCRTarget" "reverse_pcr_primer_target_location"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "PCRTarget" "reverse_pcr_primer_target_location"}}}
+                        Reverse PCR Primer Target Location:
+                    </label>
+                    <input type="text" class="form-control" name="reverse_pcr_primer_target_location" id="reverse_pcr_primer_target_location" placeholder="" value="{{value.reverse_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Reverse PCR Primer Target Location.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="sequencing_run_id">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_run_id"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_run_id"}}}
+                        Sequencing Run ID:
+                    </label>
+                    <input type="text" class="form-control" name="sequencing_run_id" id="sequencing_run_id" placeholder="" value="{{value.sequencing_run_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sequencing Run ID.
+                    </div>
+                </div>
+            </div>
+            <div class="form-row project-repertoire-row">
+                <div class="form-group col-md-3">
+                    <label for="total_reads_passing_qc_filter">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "total_reads_passing_qc_filter"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "total_reads_passing_qc_filter"}}}
+                        Total Reads Passing QC Filter:
+                    </label>
+                    <input type="text" class="form-control" name="total_reads_passing_qc_filter" id="total_reads_passing_qc_filter" placeholder="" value="{{value.total_reads_passing_qc_filter}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Total Reads Passing QC Filter.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="sequencing_platform">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_platform"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_platform"}}}
+                        Sequencing Platform:
+                    </label>
+                    <input type="text" class="form-control" name="sequencing_platform" id="sequencing_platform" placeholder="" value="{{value.sequencing_platform}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sequencing Platform.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="sequencing_facility">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_facility"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_facility"}}}
+                        Sequencing Facility:
+                    </label>
+                    <input type="text" class="form-control" name="sequencing_facility" id="sequencing_facility" placeholder="" value="{{value.sequencing_facility}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sequencing Facility.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="sequencing_run_date">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_run_date"}}}
+                                    </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_run_date"}}}
+                        Sequencing Run Date:
+                    </label>
+                    <input type="text" class="form-control" name="sequencing_run_date" id="sequencing_run_date" placeholder="" value="{{value.sequencing_run_date}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sequencing Run Date.
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="sequencing_kit">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_kit"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_kit"}}}
+                        Sequencing Kit:
+                    </label>
+                    <input type="text" class="form-control" name="sequencing_kit" id="sequencing_kit" placeholder="" value="{{value.sequencing_kit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sequencing Kit.
+                    </div>
+                </div>
+            </div>
+        </form>
         </div>
     </div>
 </div>
@@ -178,506 +711,3 @@
     &nbsp;
 </div>
 
-<div class="col-md-11">
-    <!-- <h2>This is the expanded Cell Processing view</h2> -->
-    <!--<div id="cell_accordion">-->
-    <div id="project-sample-list-detail">
-        <div class="card repertoire-details-card">
-            <div class="card-header" id="cell_heading">
-                <h5 class="mb-0">
-                    <button class="btn">
-                      <span class="details-title">Cell Processing Metadata</span>
-                    </button>
-                  </h5>
-            </div>
-                <div class="card-body">
-                    <form method="post" role="form" id="editCell-form" class="needs-validation" name="editCell" novalidate>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="tissue_processing">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "CellProcessing" "tissue_processing"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "CellProcessing" "tissue_processing"}}}
-                                    Tissue Processing:
-                                </label>
-                                <input type="text" class="form-control" name="tissue_processing" id="tissue_processing" placeholder="" value="{{value.tissue_processing}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Tissue Processing.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="cell_subset">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "CellProcessing" "cell_subset"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "CellProcessing" "cell_subset"}}}
-                                    Cell Subset:
-                                </label>
-                                <input type="text" class="form-control" name="cell_subset" id="cell_subset" placeholder="" value="{{value.cell_subset}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Cell Subset.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="cell_phenotype">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "CellProcessing" "cell_phenotype"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "CellProcessing" "cell_phenotype"}}}
-                                    Cell Phenotype:
-                                </label>
-                                <input type="text" class="form-control" name="cell_phenotype" id="cell_phenotype" placeholder="" value="{{value.cell_phenotype}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Cell Phenotype.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="single_cell">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "CellProcessing" "single_cell"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "CellProcessing" "single_cell"}}}
-                                    Single Cell:
-                                </label>
-                                <input type="text" class="form-control" name="single_cell" id="single_cell" placeholder="" value="{{value.single_cell}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Single Cell.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="cell_number">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "CellProcessing" "cell_number"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "CellProcessing" "cell_number"}}}
-                                    Cell Number:
-                                </label>
-                                <input type="text" class="form-control" name="cell_number" id="cell_number" placeholder="" value="{{value.cell_number}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Cell Number.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for"cells_per_reaction">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "CellProcessing" "cells_per_reaction"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "CellProcessing" "cells_per_reaction"}}}
-                                    Cells Per Reaction:
-                                </label>
-                                <input type="text" class="form-control" name="cells_per_reaction" id="cells_per_reaction" placeholder="" value="{{value.cells_per_reaction}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Cells Per Reaction.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="cell_storage">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "CellProcessing" "cell_storage"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "CellProcessing" "cell_storage"}}}
-                                    Cell Storage:
-                                </label>
-                                <input type="text" class="form-control" name="cell_storage" id="cell_storage" placeholder="" value="{{value.cell_storage}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Cell Storage.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="cell_quality">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "CellProcessing" "cell_quality"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "CellProcessing" "cell_quality"}}}
-                                    Cell Quality:
-                                </label>
-                                <input type="text" class="form-control" name="cell_quality" id="cell_quality" placeholder="" value="{{value.cell_quality}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Cell Quality.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="cell_isolation">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "CellProcessing" "cell_isolation"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "CellProcessing" "cell_isolation"}}}
-                                    Cell Isolation:
-                                </label>
-                                <input type="text" class="form-control" name="cell_isolation" id="cell_isolation" placeholder="" value="{{value.cell_isolation}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Cell Isolation.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="cell_processing_protocol">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "CellProcessing" "cell_processing_protocol"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "CellProcessing" "cell_processing_protocol"}}}
-                                    Cell Processing Protocol:
-                                </label>
-                                <input type="text" class="form-control" name="cell_processing_protocol" id="cell_processing_protocol" placeholder="" value="{{value.cell_processing_protocol}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Cell Processing Protocol.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="footer-actions">
-                            {{#ifEquals edit_mode "advanced"}}
-                            <button type="button" class="btn btn-primary" id="saveEditCell"><i class="fa fa-save"></i> Save</button>
-                            {{/ifEquals}}
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="col-md-1">
-    &nbsp;
-</div>
-
-<div class="col-md-11">
-    <!-- <h2>This is the expanded Nucleic Acid view</h2> -->
-    <!--<div id="nucleic_accordion">-->
-    <div id="project-sample-list-detail">
-        <div class="card repertoire-details-card">
-            <div class="card-header" id="nucleic_heading">
-                <h5 class="mb-0">
-                    <button class="btn">
-                      <span class="details-title">Nucleic Acid Metadata</span>
-                    </button>
-                  </h5>
-            </div>
-                <div class="card-body">
-                    <form method="post" role="form" id="editNucleic-form" class="needs-validation" name="editNucleic" novalidate>
-                        <!-- Ontology -->
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="template_class">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "NucleicAcidProcessing" "template_class"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "NucleicAcidProcessing" "template_class"}}}
-                                    Template Class:
-                                </label>
-                                <input type="text" class="form-control" name="template_class" id="template_class" placeholder="" value="{{value.template_class}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Template Class.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="template_quality">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "NucleicAcidProcessing" "template_quality"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "NucleicAcidProcessing" "template_quality"}}}
-                                    Template Quality:
-                                </label>
-                                <input type="text" class="form-control" name="template_quality" id="template_quality" placeholder="" value="{{value.template_quality}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Template Quality.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="template_amount">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "NucleicAcidProcessing" "template_amount"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "NucleicAcidProcessing" "template_amount"}}}
-                                    Template Amount:
-                                </label>
-                                <input type="text" class="form-control" name="template_amount" id="template_amount" placeholder="" value="{{value.template_amount}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Template Amount.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="template_amount_unit">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "NucleicAcidProcessing" "template_amount_unit"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "NucleicAcidProcessing" "template_amount_unit"}}}
-                                    Template Amount Unit:
-                                </label>
-                                <input type="text" class="form-control" name="template_amount_unit" id="template_amount_unit" placeholder="" value="{{value.template_amount_unit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Template Amount Unit.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="library_generation_method">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "NucleicAcidProcessing" "library_generation_method"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "NucleicAcidProcessing" "library_generation_method"}}}
-                                    Library Generation Method:
-                                </label>
-                                <input type="text" class="form-control" name="library_generation_method" id="library_generation_method" placeholder="" value="{{value.library_generation_method}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Library Generation Method.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="library_generation_protocol">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "NucleicAcidProcessing" "library_generation_protocol"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "NucleicAcidProcessing" "library_generation_protocol"}}}
-                                    Library Generation Protocol:
-                                </label>
-                                <input type="text" class="form-control" name="library_generation_protocol" id="library_generation_protocol" placeholder="" value="{{value.library_generation_protocol}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Library Generation Protocol.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="library_generation_kit_version">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "NucleicAcidProcessing" "library_generation_kit_version"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "NucleicAcidProcessing" "library_generation_kit_version"}}}
-                                    Library Generation Kit Version:
-                                </label>
-                                <input type="text" class="form-control" name="library_generation_kit_version" id="library_generation_kit_version" placeholder="" value="{{value.library_generation_kit_version}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Library Generation Kit Version.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="complete_sequences">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "NucleicAcidProcessing" "complete_sequences"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "NucleicAcidProcessing" "complete_sequences"}}}
-                                    Complete Sequences:
-                                </label>
-                                <input type="text" class="form-control" name="complete_sequences" id="complete_sequences" placeholder="" value="{{value.complete_sequences}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter valid Complete Sequences.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="physical_linkage">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "NucleicAcidProcessing" "physical_linkage"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "NucleicAcidProcessing" "physical_linkage"}}}
-                                    Physical Linkage:
-                                </label>
-                                <input type="text" class="form-control" name="physical_linkage" id="physical_linkage" placeholder="" value="{{value.physical_linkage}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Physical Linkage.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="pcr_target_locus">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "PCRTarget" "pcr_target_locus"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "PCRTarget" "pcr_target_locus"}}}
-                                    PCR Target Locus:
-                                </label>
-                                <input type="text" class="form-control" name="pcr_target_locus" id="pcr_target_locus" placeholder="" value="{{value.pcr_target_locus}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid PCR Target Locus.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="forward_pcr_primer_target_location">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "PCRTarget" "forward_pcr_primer_target_location"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "PCRTarget" "forward_pcr_primer_target_location"}}}
-                                    Forward PCR Primer Target Location:
-                                </label>
-                                <input type="text" class="form-control" name="forward_pcr_primer_target_location" id="forward_pcr_primer_target_location" placeholder="" value="{{value.forward_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Forward PCR Primer Target Location.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="reverse_pcr_primer_target_location">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "PCRTarget" "reverse_pcr_primer_target_location"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "PCRTarget" "reverse_pcr_primer_target_location"}}}
-                                    Reverse PCR Primer Target Location:
-                                </label>
-                                <input type="text" class="form-control" name="reverse_pcr_primer_target_location" id="reverse_pcr_primer_target_location" placeholder="" value="{{value.reverse_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Reverse PCR Primer Target Location.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="sequencing_run_id">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "SequencingRun" "sequencing_run_id"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "SequencingRun" "sequencing_run_id"}}}
-                                    Sequencing Run ID:
-                                </label>
-                                <input type="text" class="form-control" name="sequencing_run_id" id="sequencing_run_id" placeholder="" value="{{value.sequencing_run_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Sequencing Run ID.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="total_reads_passing_qc_filter">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "SequencingRun" "total_reads_passing_qc_filter"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "SequencingRun" "total_reads_passing_qc_filter"}}}
-                                    Total Reads Passing QC Filter:
-                                </label>
-                                <input type="text" class="form-control" name="total_reads_passing_qc_filter" id="total_reads_passing_qc_filter" placeholder="" value="{{value.total_reads_passing_qc_filter}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Total Reads Passing QC Filter.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="sequencing_platform">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "SequencingRun" "sequencing_platform"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "SequencingRun" "sequencing_platform"}}}
-                                    Sequencing Platform:
-                                </label>
-                                <input type="text" class="form-control" name="sequencing_platform" id="sequencing_platform" placeholder="" value="{{value.sequencing_platform}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Sequencing Platform.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="sequencing_facility">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "SequencingRun" "sequencing_facility"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "SequencingRun" "sequencing_facility"}}}
-                                    Sequencing Facility:
-                                </label>
-                                <input type="text" class="form-control" name="sequencing_facility" id="sequencing_facility" placeholder="" value="{{value.sequencing_facility}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Sequencing Facility.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label for="sequencing_run_date">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "SequencingRun" "sequencing_run_date"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "SequencingRun" "sequencing_run_date"}}}
-                                    Sequencing Run Date:
-                                </label>
-                                <input type="text" class="form-control" name="sequencing_run_date" id="sequencing_run_date" placeholder="" value="{{value.sequencing_run_date}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Sequencing Run Date.
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="sequencing_kit">
-                                    <span>
-                                        <!-- Tooltip -->
-                                    {{{FieldStar "SequencingRun" "sequencing_kit"}}}
-                                    </span>
-                                    <!-- Popover -->
-                                    {{{FieldHelpPopover "SequencingRun" "sequencing_kit"}}}
-                                    Sequencing Kit:
-                                </label>
-                                <input type="text" class="form-control" name="sequencing_kit" id="sequencing_kit" placeholder="" value="{{value.sequencing_kit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                                <div class="invalid-feedback">
-                                    Please enter a valid Sequencing Kit.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                        <div class="footer-actions">
-                            {{#ifEquals edit_mode "advanced"}}
-                            <button type="button" class="btn btn-primary" id="saveEditCell"><i class="fa fa-save"></i> Save</button>
-                            {{/ifEquals}}
-                        </div>
-                    </form>
-                </div>
-            <!--</div>-->
-        </div>
-    </div>
-</div>

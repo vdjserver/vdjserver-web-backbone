@@ -1,44 +1,68 @@
-<div id="project-repertoires-summary" class="row general-table-row general-border-top">
+<div id="project-repertoires-summary" class="row general-table-row general-border-top align-items-center">
     <div class="col">
+
         <div class="row align-items-center">
-            <div class="col-md-8">
-                <label for="repertoire_name"><b>Name:</b></label>
-                {{#unless edit_mode}}
-                    &nbsp; {{value.repertoire_name}}
-                {{/unless}}
-
-                {{#if edit_mode}}
-                    <input type="text" name="repertoire_name" id="repertoire_name" class="form-control" placeholder="{{value.repertoire_name}}" value="{{value.repertoire_name}}" readonly>
-                {{/if}}
+            <div class="col-md-6">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-repertoires-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user-alt fa-fw" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoires-show-details">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Repertoire Details
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoires-copy-uuid">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-edit">
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Repertoire
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-duplicate">
+                                <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Repertoire
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-add-diagnosis">
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Repertoire
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-delete">
+                                <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Repertoire
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <b>Repertoire Name:</b> {{value.repertoire_name}}
             </div>
-
-            <div class="col-md-4 general-buttons-right">
-                <div class="btn-group" role="group" aria-label="Button group">
-                    <button type="button" class="btn btn-edit general-buttons-margin-left" name="{{uuid}}" id="project-repertoire-edit">Edit</button>
-                </div>
-
-                <div class="btn-group" role="group" aria-label="Button group">
-                    <button type="button" class="btn btn-delete general-buttons-margin-left" name="{{uuid}}" id="project-repertoire-delete">
-                        <i class="fa fa-trash" aria-hidden="true"></i> Delete
-                    </button>
-                </div>
+            <div class="col-md-6">
+                <b>Repertoire Description:</b> {{value.repertoire_description}}
             </div>
         </div>
 
+
         <div class="row general-table-internal-row align-items-center">
-            <div class="col-md-2">
-                <button type="button" class="btn btn-outline-dark btn-sm" data-bypass=true id="project-repertoire-subject-uuid" title="Copy subject uuid to clipboard">
-                    <i class="fas fa-user-alt"></i>
-                </button>
+            <div class="col-md-3">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" type="button" id="project-repertoire-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-fw fa-diagnoses" aria-hidden="true"></i>
+                        </button>
+                       <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button class="dropdown-item" type="button" id="project-repertoire-subject-dropdown-list" name="duplicate_{{@index}}">
+                                <i class="fa fa-copy fa-fw image-vdj-darkblue"></i> Subject ID
+                            </button>
+                       </div>
+                    </div>
+                </div>
                 <b>Subject ID:</b> {{subject.subject_id}}
             </div>
             <div class="col-md-3">
                 <b>Sex/Species:</b> {{subject.sex}}/{{species_display}}
             </div>
             <div class="col-md-3">
-                <b>Race/Ethnicity:</b> {{subject.race}} {{subject.ethnicity}}
+                <b>Race/Ethnicity:</b> {{subject.race}}/{{subject.ethnicity}}
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <b>Age:</b> {{age_display}}
             </div>
         </div>
