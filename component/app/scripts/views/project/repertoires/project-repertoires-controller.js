@@ -49,9 +49,10 @@ function ProjectRepertoiresController(controller) {
     this.model = this.controller.model;
 
     // default to summary views
-    this.view_mode = 'summary';
+    this.repertoires_view_mode = 'summary';
     // edits
     this.has_edits = false;
+    this.resetCollections();
 
     this.mainView = new ProjectRepertoiresView({model: this.model, controller: this});
 
@@ -78,15 +79,36 @@ ProjectRepertoiresController.prototype = {
         return this.controller.getCollections();
     },
 
+    resetCollections() {
+        this.repertoireList = this.controller.repertoireList.getClonedCollection(); //create the cloned collection
+    },
+
+    revertRepertoiresChanges: function() {
+        // throw away changes by re-cloning
+        this.has_edits = false;
+        this.resetCollections();
+        this.showProjectRepertoiresList();
+    },
+
     getViewMode() {
-        return this.view_mode;
+        return this.repertoires_view_mode;
+    },
+
+    getRepertoireList() {
+        var coll = this.controller.getCollections();
+        return coll.repertoireList;
     },
 
     toggleViewMode() {
         // summary -> detail -> summary
-        switch(this.view_mode) {
-            case 'summary': this.view_mode = 'detail'; break;
-            case 'detail': this.view_mode = 'summary'; break;
+        switch(this.repertoires_view_mode) {
+            case 'summary': this.repertoires_view_mode = 'detail'; break;
+            case 'detail': this.repertoires_view_mode = 'summary'; break;
+        }
+        var coll = this.getRepertoireList();
+        for (let i = 0; i < coll.length; ++i) {
+            let m = coll.at(i);
+            if (m.view_mode != 'edit') m.view_mode = this.repertoires_view_mode;
         }
         // redisplay list
         this.showProjectRepertoiresList();
@@ -119,6 +141,13 @@ ProjectRepertoiresController.prototype = {
         else
             this.mainView.showProjectRepertoiresList(collections.repertoireList);
         this.filterController.showFilter();
+    },
+
+    flagRepertoiresEdits: function() {
+        // we keep flag just for file changes
+        this.has_edits = true;
+        // update header
+        this.mainView.updateHeader();
     },
 
     //

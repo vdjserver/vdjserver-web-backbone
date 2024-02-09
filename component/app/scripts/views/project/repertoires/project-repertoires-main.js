@@ -47,17 +47,38 @@ var RepertoiresButtonView = Marionette.View.extend({
         var colls = this.controller.getCollections();
         var current_sort = colls['repertoireList']['sort_by'];
 
+        var detailsMode = false;
+        if(this.controller.getViewMode() == 'detail' || this.controller.getViewMode() == 'edit') {
+            this.detailsMode = true;
+        } else { this.detailsMode = false; }
+
+        var editMode = false;
+        if(this.controller.getViewMode() == 'edit') {
+            this.editMode = true;
+        } else { this.editMode = false; }
+
+        var colls = this.controller.getCollections();
+        var current_sort = colls['subjectList']['sort_by'];
+
         return {
             current_sort: current_sort,
-            view_mode: this.controller.getViewMode()
+            view_mode: this.controller.getViewMode(),
+            detailsMode: this.detailsMode,
+            editMode: this.editMode,
+            has_edits: this.controller.has_edits
         }
     },
 
     events: {
-        'click #project-repertoires-details-summary' : function(e) { console.log("Details Toggle"); this.controller.toggleViewMode(); },
+        'click #project-repertoires-details-summary' : function(e) { this.controller.toggleViewMode(); },
         'click #project-repertoires-view-mode' : function(e) { this.controller.toggleViewMode() },
         'click #project-repertoires-import': 'importMetadata',
         'click #project-repertoires-export': 'exportMetadata',
+        'click #project-repertoires-revert-changes': function(e) {
+            e.preventDefault();
+            this.controller.revertRepertoiresChanges();
+        },
+
     },
 
     importMetadata: function(e) {
@@ -101,6 +122,23 @@ var RepertoiresView = Marionette.View.extend({
         // our controller
         if (parameters && parameters.controller) {
             this.controller = parameters.controller;
+        }
+    },
+
+    templateContext() {
+        var editMode = false;
+        if(this.controller.getViewMode() == 'edit') {
+            this.editMode = true;
+        } else {
+            this.editMode = false;
+        }
+
+        var colls = this.controller.getCollections();
+        var current_sort = colls['subjectList']['sort_by'];
+
+        return {
+            editMode: this.editMode,
+            current_sort: current_sort,
         }
     },
 

@@ -43,8 +43,28 @@ var SamplesButtonView = Marionette.View.extend({
     },
 
     templateContext() {
+        var colls = this.controller.getCollections();
+        var current_sort = colls['repertoireList']['sort_by'];
+
+        var detailsMode = false;
+        if(this.controller.getViewMode() == 'detail' || this.controller.getViewMode() == 'edit') {
+            this.detailsMode = true;
+        } else { this.detailsMode = false; }
+
+        var editMode = false;
+        if(this.controller.getViewMode() == 'edit') {
+            this.editMode = true;
+        } else { this.editMode = false; }
+
+        var colls = this.controller.getCollections();
+        var current_sort = colls['subjectList']['sort_by'];
+
         return {
-            view_mode: this.controller.getViewMode()
+            current_sort: current_sort,
+            view_mode: this.controller.getViewMode(),
+            detailsMode: this.detailsMode,
+            editMode: this.editMode,
+            has_edits: this.controller.has_edits
         }
     },
 
@@ -79,6 +99,23 @@ var SamplesView = Marionette.View.extend({
     showProjectSamplesList(sampleList) {
         this.showChildView('buttonRegion', new SamplesButtonView({controller: this.controller}));
         this.showChildView('listRegion', new SamplesListView({collection: sampleList, controller: this.controller}));
+    },
+
+    templateContext() {
+        var editMode = false;
+        if(this.controller.getViewMode() == 'edit') {
+            this.editMode = true;
+        } else {
+            this.editMode = false;
+        }
+
+        var colls = this.controller.getCollections();
+        var current_sort = colls['subjectList']['sort_by'];
+
+        return {
+            editMode: this.editMode,
+            current_sort: current_sort,
+        }
     },
 
 });

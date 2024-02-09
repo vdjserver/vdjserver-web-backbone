@@ -92,10 +92,12 @@ ProjectSubjectsController.prototype = {
     },
 
     toggleSubjectsViewMode() {
+console.log("Toggle: " + this.view_mode);
         switch(this.subjects_view_mode) {
             case 'summary': this.subjects_view_mode = 'detail'; break;
             case 'detail': this.subjects_view_mode = 'summary'; break;
         }
+console.log("Toggled: " + this.view_mode);
         var coll = this.getSubjectsList();
         for (let i = 0; i < coll.length; ++i) {
             let m = coll.at(i);

@@ -64,13 +64,31 @@ var RepertoireSummaryView = Marionette.View.extend({
             species_display = subject.getSpeciesDisplay();
             age_display = subject.getAgeDisplay();
         }
+        var editMode = false;
+
 
         return {
             subject: subject_value,
             species_display: species_display,
-            age_display: age_display
+            age_display: age_display,
+            view_mode: this.model.view_mode
         }
     },
+
+    events: {
+        'click #project-repertoires-show-details': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'detail';
+            this.controller.showProjectRepertoiresList();
+        },
+        'click #project-repertoire-edit': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'edit';
+            this.controller.flagRepertoiresEdits();
+            this.controller.showProjectRepertoiresList();
+        },
+
+    }
 
 });
 
@@ -95,7 +113,8 @@ var RepertoireDetailView = Marionette.View.extend({
     },
 
     templateContext() {
-        //console.log(this.model);
+        var editMode = false;
+    console.log(this.model);
         var collections = this.controller.getCollections();
         var value = this.model.get('value');
         var subject = value['subject'];
@@ -114,11 +133,19 @@ var RepertoireDetailView = Marionette.View.extend({
             subject: subject_value,
             species_display: species_display,
             age_display: age_display,
-            sample: sample_value
+            sample: sample_value,
+            view_mode: this.model.view_mode
         }
     },
 
     events: {
+        'click #project-repertoire-edit': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'edit';
+            this.controller.flagSubjectsEdits();
+            this.controller.showProjectSubjectsList();
+        },
+
     },
 
     onAttach() {
@@ -162,11 +189,9 @@ var RepertoireContainerView = Marionette.View.extend({
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':
-console.log("DETAIL");
-                this.showChildView('containerRegion', new RepertoireDetailView({controller: this.controller, model: this.model}));
-                break;
+                //this.showChildView('containerRegion', new RepertoireDetailView({controller: this.controller, model: this.model}));
+                //break;
             case 'edit':
-console.log("EDIT");
                 this.showChildView('containerRegion', new RepertoireDetailView({controller: this.controller, model: this.model}));
                 break;
             case 'summary':

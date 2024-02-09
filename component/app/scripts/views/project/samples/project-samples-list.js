@@ -34,6 +34,7 @@ var SampleSummaryView = Marionette.View.extend({
     template: Handlebars.compile(summary_template),
 
     templateContext() {
+        var editMode = false;
         //console.log(this.model);
         var value = this.model.get('value');
         let target_loci = [];
@@ -41,7 +42,8 @@ var SampleSummaryView = Marionette.View.extend({
             target_loci.push(value['pcr_target'][i]['pcr_target_locus']);
 
         return {
-            target_loci: target_loci
+            target_loci: target_loci,
+            view_mode: this.model.view_mode
         }
     },
 
@@ -53,6 +55,15 @@ var SampleDetailView = Marionette.View.extend({
 
   events: {
   },
+
+  templateContext() {
+      var editMode = false;
+
+      return {
+          view_mode: this.model.view_mode,
+      }
+  },
+
 
 });
 
@@ -76,6 +87,7 @@ var SampleContainerView = Marionette.View.extend({
         // if editing, leave in edit
         // get default view mode from controller
         if (this.model.view_mode != 'edit')
+        //if (! this.model.view_mode)
             this.model.view_mode = this.controller.getViewMode();
 
         this.showSubjectView();
