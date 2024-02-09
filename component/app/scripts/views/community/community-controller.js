@@ -35,6 +35,7 @@ import Handlebars from 'handlebars';
 import { ADC } from 'Scripts/backbone/backbone-adc';
 import ADCInfo from 'Scripts/models/adc-info';
 import { ADCRepertoireCollection, ADCStudyCollection } from 'Scripts/collections/adc-repertoires';
+import { ADCRearrangementCollection } from 'Scripts/collections/adc-rearrangements';
 import { StudyCacheCollection, RepertoireCacheCollection } from 'Scripts/collections/adc-cache-collections';
 import { RearrangementCounts } from 'Scripts/collections/adc-statistics';
 
@@ -43,6 +44,7 @@ import ProjectList from 'Scripts/collections/agave-public-projects';
 import CommunityMainView from 'Scripts/views/community/community-main';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 // import AddChartView from 'Scripts/views/community/add-chart';
+import LoadingQueryView from 'Scripts/views/utilities/loading-adc-query-view';
 
 import FilterController from 'Scripts/views/utilities/filter-controller';
 
@@ -66,7 +68,7 @@ function CommunityController() {
     this.rearrangementCounts = null;
 
     // active filters
-    this.filterController = new FilterController(this, "adc_study", true);
+    this.filterController = new FilterController(this, "adc_study", true, "adc_rearrangement");
     this.filterController.showFilter();
 
     // statistics
@@ -264,11 +266,70 @@ CommunityController.prototype = {
         }
     },
 
-    applyFilter(filters) {
+    doQuery: function(coll) {
+        return new Promise((resolve, reject) => {
+            coll.fetch()
+                .then(function(data) { resolve(data); })
+                .fail(function(error) { reject(error); });
+            });
+    },
+
+    queryRearrangements: async function(queryStudies, secondary_filters) {
+        var total = queryStudies.length;
+
+        var promises = [];
+        var thecnt = 0;
+
+        // show a loading view
+        var view = new LoadingQueryView({queried_studies: thecnt, total_studies: total});
+        App.AppController.navController.showMessageBar(view);
+
+        // generate query for each study
+        // TODO: we should do these in parallel for each repository
+        // but in serial for one repository to not overload the server
+        for (let i = 0; i < queryStudies.length; ++i) {
+            var s = queryStudies.at(i);
+            var repertoires = s.get('repertoires');
+            var r = new ADCRearrangementCollection(null, {repository: s['repository'], repertoires: repertoires});
+            r.addFilters(secondary_filters);
+
+            var res = await this.doQuery(r)
+                .catch(function(error) {
+                    console.log('error from query: ' + JSON.stringify(error));
+                    //return Promise.resolve();
+                });
+
+            // did it return any results?
+            //console.log(res);
+            if (res && res['Facet'] && (res['Facet'].length > 0)) {
+                var c = new ADCRepertoireCollection(null, {repository: s.repository});
+                for (let j = 0; j < res['Facet'].length; ++j) {
+                    c.add(repertoires.get(res['Facet'][j]['repertoire_id']));
+                }
+                this.filteredStudies.normalize(c);
+            }
+
+            thecnt += 1;
+            // update loading screen with running total
+            App.AppController.navController.showMessageBar(new LoadingQueryView({queried_studies: thecnt, total_studies: total}));
+        }
+        this.filteredStudies.attachCountStatistics(this.rearrangementCounts);
+
+        this.filteredStudies.sort_by = this.studies.sort_by;
+        this.filteredStudies.sort();
+
+        App.AppController.navController.emptyMessageBar();
+        this.projectView.showResultsList(this.filteredStudies);
+    },
+
+    applyFilter: function(filters, secondary_filters) {
+        console.log('first', filters);
+        console.log('secondary', secondary_filters);
+        // we apply the first filters first as we can do that locally
         if (filters) {
             this.filteredStudies = new ADCStudyCollection();
             this.filteredRepertoires = {};
-            for (var i = 0; i < this.repositoryInfo.length; ++i) {
+            for (let i = 0; i < this.repositoryInfo.length; ++i) {
                 var repo = this.repositoryInfo.at(i);
                 var r = repo.get('id');
                 this.filteredRepertoires[r] = this.repertoireCollection[r].filterCollection(filters);
@@ -279,12 +340,27 @@ CommunityController.prototype = {
             this.filteredStudies.sort_by = this.studies.sort_by;
             this.filteredStudies.sort();
 
-            this.projectView.showResultsList(this.filteredStudies);
+            //this.projectView.showResultsList(this.filteredStudies);
         } else {
             this.filteredStudies = null;
             this.filteredRepertoires = null;
-            this.projectView.showResultsList(this.studies);
+            //this.projectView.showResultsList(this.studies);
         }
+
+        // the secondary filters require a query on rearrangements
+        if (secondary_filters) {
+            var queryStudies = this.studies;
+            if (this.filteredStudies) queryStudies = this.filteredStudies;
+
+            // start with empty result and studies will be added as the queries finish
+            if (queryStudies.length > 0) {
+                this.filteredStudies = new ADCStudyCollection();
+                this.queryRearrangements(queryStudies, secondary_filters);
+            }
+        }
+
+        if (this.filteredStudies) this.projectView.showResultsList(this.filteredStudies);
+        else this.projectView.showResultsList(this.studies);
     },
 
     applySort(sort_by) {

@@ -55,91 +55,6 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
         return;
     },
 
-/*
-    // apply filters to generate a new collection
-    filterCollection(filters) {
-        var filtered = new ADCRepertoireCollection(null, {repository: this['repository']});
-
-        var fts_fields = [];
-        if (filters['full_text_search']) fts_fields = filters['full_text_search'].toLowerCase().split(/\s+/);
-
-        for (var i = 0; i < this.length; ++i) {
-            var valid = true;
-            var model = this.at(i);
-
-            // apply full text search
-            if (!model.get('full_text')) {
-                var text = model.generateFullText(model['attributes']);
-                model.set('full_text', text.toLowerCase());
-            }
-            for (var j = 0; j < fts_fields.length; ++j) {
-                var result = model.get('full_text').indexOf(fts_fields[j]);
-                if (result < 0) {
-                    valid = false;
-                    break;
-                }
-            }
-
-            // apply individual filters
-            for (var j = 0; j < filters['filters'].length; ++j) {
-                var f = filters['filters'][j];
-                var value = model.getValueForField(f['field']);
-                // handle ontologies versus regular values
-                if (f['object']) {
-                    if (f['object'] == 'null' && value == null) continue;
-                    if (value == null) { valid = false; break; }
-                    if (Array.isArray(value)) {
-                        // if array then value only needs to be found once
-                        let found = false;
-                        for (let k = 0; k < value.length; ++k) {
-                            if (value[k]['id'] == f['object']) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            valid = false;
-                            break;
-                        }
-                    } else {
-                        if (value['id'] != f['object']) {
-                            valid = false;
-                            break;
-                        }
-                    }
-                } else {
-                    // if filter value is null, skip
-                    if (f['value'] == null) continue;
-
-                    if (f['value'] == 'null' && value == null) continue;
-                    if (value == null) { valid = false; break; }
-                    if (Array.isArray(value)) {
-                        // if array then value only needs to be found once
-                        let found = false;
-                        for (let k = 0; k < value.length; ++k) {
-                            if (value[k] == f['value']) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            valid = false;
-                            break;
-                        }
-                    } else {
-                        if (value != f['value']) {
-                            valid = false;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (valid) filtered.add(model);
-        }
-
-        return filtered;
-    } */
 });
 
 export var ADCStudyCollection = ADC.Collection.extend({
@@ -164,10 +79,9 @@ export var ADCStudyCollection = ADC.Collection.extend({
             // TODO: blank study_id?
             var study = this.get(model.get('study')['study_id']);
             if (! study) {
-                study = new ADCStudy();
+                study = new ADCStudy({repository: model['repository']});
                 study.set('id', model.get('study')['study_id']);
                 study.set('study', new Project({value: model.get('study')}));
-                this.add(study);
 
                 study.set('repository', []);
                 study.set('repos', new Backbone.Model());
@@ -175,6 +89,7 @@ export var ADCStudyCollection = ADC.Collection.extend({
                 study.set('subjects', new Backbone.Collection());
                 study.set('samples', new Backbone.Collection());
                 study.set('data_processings', new Backbone.Collection());
+                this.add(study);
             }
 
             // same study in multiple repositories?

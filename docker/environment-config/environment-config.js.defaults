@@ -213,8 +213,18 @@ var EnvironmentConfig = {
             { 'title': "Disease Diagnosis", 'field': "diagnosis.disease_diagnosis", 'data': true},
             { 'title': "Sample ID", 'field': "sample.sample_id"}
         ],
-        'adc_rearrangement': {
-        },
+        'adc_rearrangement': [
+            { 'title': "Junction AA Length", 'field': "junction_aa_length"},
+            { 'title': "V Family/Subgroup", 'field': "v_subgroup"},
+            { 'title': "V Gene", 'field': "v_gene"},
+            { 'title': "V Allele", 'field': "v_call"},
+            { 'title': "D Gene", 'field': "d_gene"},
+            { 'title': "D Allele", 'field': "d_call"},
+            { 'title': "J Gene", 'field': "j_gene"},
+            { 'title': "J Allele", 'field': "j_call"},
+            { 'title': "C Gene", 'field': "c_gene"},
+            { 'title': "C Allele", 'field': "c_call"}
+        ],
         'vdjserver_file': [
             { 'title': "File Name", 'field': "name"},
             { 'title': "File Type", 'field': "fileType", 'data': true},
@@ -235,12 +245,7 @@ var EnvironmentConfig = {
             { 'title': "Sample ID", 'field': "sample.sample_id"}
         ],
         'airr_repertoire_group': [
-            { 'title': "Repertoire Name", 'field': "repertoire_name"},
-            { 'title': "Subject ID", 'field': "subject.subject_id"},
-            { 'title': "Subject Species", 'field': "subject.species", 'data': true},
-            { 'title': "Subject Sex", 'field': "subject.sex", 'schema': { 'object': 'Subject', 'property': 'sex' }},
-            { 'title': "Disease Diagnosis", 'field': "diagnosis.disease_diagnosis", 'data': true},
-            { 'title': "Sample ID", 'field': "sample.sample_id"}
+            { 'title': "Repertoire Group Name", 'field': "repertoire_group_name"}
         ],
         'vdjserver_analysis': [
             { 'title': "File Name", 'field': "subject.subject_id"},
