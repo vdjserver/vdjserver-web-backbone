@@ -368,6 +368,24 @@ export var Repertoire = Agave.MetadataModel.extend({
         return Agave.PutOverrideSync(method, this, options);
     },
 
+    // repertoire contains sub-models and sub-collections so need handle it specially
+    deepClone: function() {
+        let m = Agave.MetadataModel.prototype.deepClone.apply(this, []);
+
+        let value = this.get('value');
+        let mv = m.get('value');
+
+        // clone the sample collection
+        mv['sample'] = value['sample'].getClonedCollection();
+
+        // point to same study and subject
+        mv['study'] = value['study'];
+        mv['subject'] = value['subject'];
+
+        m.set('value', mv);
+        return m;
+    },
+
     // this is not generic but customized for our objects
     // this assumes the sub-objects have already been denormalized from their uuid
     getValuesForField(field) {
