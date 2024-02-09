@@ -45,7 +45,6 @@ var RepertoireSummaryView = Marionette.View.extend({
             this.controller = parameters.controller;
 
         if (this.model) {
-            var collections = this.controller.getCollections();
             var value = this.model.get('value');
             this.showChildView('sampleRegion', new SamplesListView({collection: value['sample'], controller: this.controller}));
         }
@@ -53,7 +52,6 @@ var RepertoireSummaryView = Marionette.View.extend({
 
     templateContext() {
         //console.log(this.model);
-        var collections = this.controller.getCollections();
         var value = this.model.get('value');
         var subject = value['subject'];
         var subject_value = null;
@@ -84,6 +82,12 @@ var RepertoireSummaryView = Marionette.View.extend({
         'click #project-repertoire-edit': function(e) {
             e.preventDefault();
             this.model.view_mode = 'edit';
+            // propagate edit mode down to the individual sample models
+            var value = this.model.get('value');
+            if (value['sample']) {
+                for (let i = 0; i < value['sample'].length; ++i)
+                    value['sample'].at(i).view_mode = 'edit';
+            }
             this.controller.flagRepertoiresEdits();
             this.controller.showProjectRepertoiresList();
         },
@@ -141,6 +145,12 @@ var RepertoireDetailView = Marionette.View.extend({
         'click #project-repertoire-edit': function(e) {
             e.preventDefault();
             this.model.view_mode = 'edit';
+            // propagate edit mode down to the individual sample models
+            var value = this.model.get('value');
+            if (value['sample']) {
+                for (let i = 0; i < value['sample'].length; ++i)
+                    value['sample'].at(i).view_mode = 'edit';
+            }
             this.controller.flagRepertoiresEdits();
             this.controller.showProjectRepertoiresList();
         },
