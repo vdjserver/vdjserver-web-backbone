@@ -87,7 +87,6 @@ var RepertoireSummaryView = Marionette.View.extend({
             this.controller.flagRepertoiresEdits();
             this.controller.showProjectRepertoiresList();
         },
-
     }
 
 });
@@ -142,8 +141,8 @@ var RepertoireDetailView = Marionette.View.extend({
         'click #project-repertoire-edit': function(e) {
             e.preventDefault();
             this.model.view_mode = 'edit';
-            this.controller.flagSubjectsEdits();
-            this.controller.showProjectSubjectsList();
+            this.controller.flagRepertoiresEdits();
+            this.controller.showProjectRepertoiresList();
         },
 
     },
