@@ -37,8 +37,8 @@ import { FileTransfers } from 'Scripts/models/mixins/file-transfer-mixins';
 export var RepertoireCollection = Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, FileTransfers, {
         model: Repertoire,
-        initialize: function(parameters) {
-            Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+        initialize: function(models, parameters) {
+            Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
 
             this.sort_by = 'repertoire_name';
             this.comparator = this.collectionSortBy;
@@ -194,8 +194,8 @@ export var RepertoireCollection = Agave.MetadataCollection.extend(
 export var SubjectCollection = Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, FileTransfers, {
         model: Subject,
-        initialize: function(parameters) {
-            Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+        initialize: function(models, parameters) {
+            Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
 
             this.sort_by = 'subjectid';
             this.comparator = this.collectionSortBy;
@@ -296,8 +296,8 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
 export var SampleCollection = Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, FileTransfers, {
         model: SampleProcessing,
-        initialize: function(parameters) {
-            Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+        initialize: function(models, parameters) {
+            Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
 
             if (parameters && parameters.projectUuid) {
                 this.projectUuid = parameters.projectUuid;
@@ -315,8 +315,8 @@ export var SampleCollection = Agave.MetadataCollection.extend(
 
 export var DataProcessingCollection = Agave.MetadataCollection.extend({
     model: DataProcessing,
-    initialize: function(parameters) {
-        Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+    initialize: function(models, parameters) {
+        Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
 
         if (parameters && parameters.projectUuid) {
             this.projectUuid = parameters.projectUuid;

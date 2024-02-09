@@ -31,9 +31,9 @@ import { Agave } from 'Scripts/backbone/backbone-agave';
 import Permission from 'Scripts/models/agave-permission';
 
 export default Agave.Collection.extend({
-    initialize: function(parameters) {
+    initialize: function(models, parameters) {
 
-        Agave.Collection.prototype.initialize.apply(this, [parameters]);
+        Agave.Collection.prototype.initialize.apply(this, [models, parameters]);
 
         if (parameters && parameters.uuid) {
             this.uuid = parameters.uuid;

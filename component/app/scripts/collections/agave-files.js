@@ -34,8 +34,8 @@ import { File, ProjectFileMetadata } from 'Scripts/models/agave-file';
 export var FilesCollection = Agave.Collection.extend({
     model: File,
     comparator: 'name',
-    initialize: function(parameters) {
-        Agave.Collection.prototype.initialize.apply(this, [parameters]);
+    initialize: function(models, parameters) {
+        Agave.Collection.prototype.initialize.apply(this, [models, parameters]);
 
         this.relativeUrl = '';
 
@@ -71,8 +71,8 @@ export var FilesCollection = Agave.Collection.extend({
 export var ProjectFilesCollection = Agave.MetadataCollection.extend({
     model: ProjectFileMetadata,
 
-    initialize: function(parameters) {
-        Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+    initialize: function(models, parameters) {
+        Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
 
         if (parameters && parameters.projectUuid) {
             this.projectUuid = parameters.projectUuid;
@@ -374,8 +374,8 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
 export var ProjectFileQuery = Agave.MetadataCollection.extend({
     model: ProjectFileMetadata,
 
-    initialize: function(parameters) {
-        Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+    initialize: function(models, parameters) {
+        Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
 
         if (parameters) {
             if (parameters.projectUuid) this.projectUuid = parameters.projectUuid;

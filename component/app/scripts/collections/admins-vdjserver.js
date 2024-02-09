@@ -36,8 +36,8 @@ import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
 export var ProjectLoadCollection = Agave.Collection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, {
         model: ProjectLoad,
-        initialize: function(parameters) {
-            Agave.Collection.prototype.initialize.apply(this, [parameters]);
+        initialize: function(models, parameters) {
+            Agave.Collection.prototype.initialize.apply(this, [models, parameters]);
 
             //if (parameters && parameters.projectUuid) {
             if (parameters) {
@@ -104,9 +104,9 @@ export var ProjectLoadCollection = Agave.Collection.extend(
 export var RearrangementLoadCollection = Agave.Collection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, {
         model: ProjectLoad,
-        initialize: function(parameters) {
+        initialize: function(models, parameters) {
             //Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
-            Agave.Collection.prototype.initialize.apply(this, [parameters]);
+            Agave.Collection.prototype.initialize.apply(this, [models, parameters]);
 
             if (parameters && parameters.projectUuid) {
                 this.projectUuid = parameters.projectUuid;

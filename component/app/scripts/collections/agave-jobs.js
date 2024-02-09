@@ -63,9 +63,9 @@ export var Jobs = Agave.Collection.extend({
 
 export var ProjectJobs = Agave.MetadataCollection.extend({
     model: ProjectJob,
-    initialize: function(parameters) {
+    initialize: function(models, parameters) {
 
-        Agave.MetadataCollection.prototype.initialize.apply(this, [parameters]);
+        Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
 
         if (parameters && parameters.projectUuid) {
             this.projectUuid = parameters.projectUuid;

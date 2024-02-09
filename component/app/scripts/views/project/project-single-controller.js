@@ -405,9 +405,9 @@ SingleProjectController.prototype = {
     //
     lazyLoadRepertoires: function() {
         var that = this;
-        var repList = new RepertoireCollection({projectUuid: that.model.get('uuid')});
-        var subjectList = new SubjectCollection({projectUuid: that.model.get('uuid')});
-        var sampleList = new SampleCollection({projectUuid: that.model.get('uuid')});
+        var repList = new RepertoireCollection(null, {projectUuid: that.model.get('uuid')});
+        var subjectList = new SubjectCollection(null, {projectUuid: that.model.get('uuid')});
+        var sampleList = new SampleCollection(null, {projectUuid: that.model.get('uuid')});
 
         // fetch the repertoires
         return repList.fetch()
@@ -432,7 +432,7 @@ SingleProjectController.prototype = {
                     var value = model.get('value');
                     var subject = that.subjectList.get(value['subject']['vdjserver_uuid']);
                     value['subject'] = subject;
-                    var samples = new Backbone.Collection();
+                    var samples = new SampleCollection(null, {projectUuid: that.model.get('uuid')});
                     for (let s in value['sample']) {
                         samples.add(that.sampleList.get(value['sample'][s]['vdjserver_uuid']));
                     }
@@ -460,7 +460,7 @@ SingleProjectController.prototype = {
 
     lazyLoadFiles: function() {
         var that = this;
-        var fileList = new ProjectFilesCollection({projectUuid: that.model.get('uuid')});
+        var fileList = new ProjectFilesCollection(null, {projectUuid: that.model.get('uuid')});
 
         // fetch the files
         return fileList.fetch()
@@ -495,7 +495,7 @@ SingleProjectController.prototype = {
     lazyLoadAnalyses: function() {
         var that = this;
         //var dataProcessings = new
-        var projectJobs = new ProjectJobs({projectUuid: this.model.get('uuid')});
+        var projectJobs = new ProjectJobs(null, {projectUuid: this.model.get('uuid')});
 
         // fetch the jobs
         return projectJobs.fetch()
@@ -516,7 +516,7 @@ SingleProjectController.prototype = {
 
     lazyLoadUsers: function() {
         var that = this;
-        var userList = new Permissions({uuid: that.model.get('uuid')});
+        var userList = new Permissions(null, {uuid: that.model.get('uuid')});
         var allUsers = new TenantUsers();
 
         // TODO: this design will need to be changed to support multiple identity providers

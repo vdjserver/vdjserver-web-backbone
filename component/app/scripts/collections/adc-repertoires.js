@@ -60,7 +60,8 @@ export var ADCRepertoireCollection = ADC.Collection.extend({
 export var ADCStudyCollection = ADC.Collection.extend({
     model: ADCStudy,
 
-    initialize(parameters) {
+    initialize(models, parameters) {
+        ADC.Collection.prototype.initialize.apply(this, [models, parameters]);
         this.sort_by = 'newest';
         this.comparator = this.collectionSortBy;
     },

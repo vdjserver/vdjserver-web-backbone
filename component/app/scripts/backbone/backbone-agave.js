@@ -216,7 +216,8 @@ Agave.Model = Backbone.Model.extend({
 
 // Agave extension of default Backbone.Collection that uses Agave sync
 Agave.Collection = Backbone.Collection.extend({
-    initialize: function(parameters) {
+    initialize: function(models, parameters) {
+        Backbone.Collection.prototype.initialize.apply(this, [models, parameters]);
         this.retrySyncEngine = Agave.sync;
         this.retrySyncLimit = 3;
         this.communityMode = false;
@@ -242,8 +243,8 @@ Agave.Collection = Backbone.Collection.extend({
 
 // Paginated version of Agave.Collection
 Agave.PaginatedCollection = Agave.Collection.extend({
-    initialize: function(parameters) {
-        Agave.Collection.prototype.initialize.apply(this, [parameters]);
+    initialize: function(models, parameters) {
+        Agave.Collection.prototype.initialize.apply(this, [models, parameters]);
 
         this.offset = 0;
         this.limit = 100;
