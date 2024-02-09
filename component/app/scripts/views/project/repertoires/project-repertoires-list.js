@@ -188,8 +188,6 @@ var RepertoireContainerView = Marionette.View.extend({
         // Choose which view class to render
         switch (this.model.view_mode) {
             case 'detail':
-                //this.showChildView('containerRegion', new RepertoireDetailView({controller: this.controller, model: this.model}));
-                //break;
             case 'edit':
                 this.showChildView('containerRegion', new RepertoireDetailView({controller: this.controller, model: this.model}));
                 break;

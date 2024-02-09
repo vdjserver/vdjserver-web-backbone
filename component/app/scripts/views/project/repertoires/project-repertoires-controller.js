@@ -58,9 +58,8 @@ function ProjectRepertoiresController(controller) {
 
     // filters
     this.filteredRepertoires = null;
-    var collections = this.controller.getCollections();
     this.filterController = new FilterController(this, "airr_repertoire");
-    this.filterController.constructValues(collections.repertoireList);
+    this.filterController.constructValues(this.repertoireList);
     this.filterController.showFilter();
 }
 
@@ -95,8 +94,11 @@ ProjectRepertoiresController.prototype = {
     },
 
     getRepertoireList() {
-        var coll = this.controller.getCollections();
-        return coll.repertoireList;
+        return this.repertoireList;
+    },
+
+    getOriginalRepertoireList() {
+        return this.controller.repertoireList;
     },
 
     toggleViewMode() {
@@ -116,10 +118,9 @@ ProjectRepertoiresController.prototype = {
 
     applyFilter(filters) {
         if (filters) {
-            var collections = this.controller.getCollections();
-            this.filteredRepertoires = collections.repertoireList.filterCollection(filters);
+            this.filteredRepertoires = this.repertoireList.filterCollection(filters);
 
-            this.filteredRepertoires.sort_by = collections.repertoireList.sort_by;
+            this.filteredRepertoires.sort_by = this.repertoireList.sort_by;
             this.filteredRepertoires.sort();
         } else this.filteredRepertoires = null;
 
@@ -127,19 +128,18 @@ ProjectRepertoiresController.prototype = {
     },
 
     applySort(sort_by) {
-        var colls = this.controller.getCollections();
-        colls['repertoireList']['sort_by'] = sort_by;
-        colls['repertoireList'].sort();
+        var coll = this.getRepertoireList();
+        coll['sort_by'] = sort_by;
+        coll.sort();
+        this.mainView.updateHeader();
     },
 
     // show project repertoires
     showProjectRepertoiresList() {
-        var collections = this.controller.getCollections();
-
         if (this.filteredRepertoires)
             this.mainView.showProjectRepertoiresList(this.filteredRepertoires);
         else
-            this.mainView.showProjectRepertoiresList(collections.repertoireList);
+            this.mainView.showProjectRepertoiresList(this.repertoireList);
         this.filterController.showFilter();
     },
 
