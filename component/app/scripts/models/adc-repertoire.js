@@ -38,6 +38,8 @@ import { airr } from 'airr-js';
 //
 var repertoireSchema = null;
 export var ADCRepertoire = ADC.Model.extend({
+    idAttribute: 'repertoire_id',
+
     initialize: function(parameters) {
         ADC.Model.prototype.initialize.apply(this, [parameters]);
 
