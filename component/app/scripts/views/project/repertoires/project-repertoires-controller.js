@@ -39,6 +39,9 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import FilterController from 'Scripts/views/utilities/filter-controller';
 import MetadataImportModal from 'Scripts/views/project/project-import-metadata';
 
+import { Repertoire } from 'Scripts/models/agave-metadata';
+import { airr } from 'airr-js';
+
 // Project repertoires controller
 //
 function ProjectRepertoiresController(controller) {
@@ -80,6 +83,7 @@ ProjectRepertoiresController.prototype = {
 
     resetCollections() {
         this.repertoireList = this.controller.repertoireList.getClonedCollection(); //create the cloned collection
+        this.newRepertoireList = [];
     },
 
     revertRepertoiresChanges: function() {
@@ -87,6 +91,37 @@ ProjectRepertoiresController.prototype = {
         this.has_edits = false;
         this.resetCollections();
         this.showProjectRepertoiresList();
+    },
+
+    duplicateRepertoire: function(e, model) {
+        e.preventDefault();
+        var clonedList = this.getRepertoireList();
+        let i = clonedList.findIndex(model);
+        let newRepertoire = model.clone();
+        newRepertoire.set('uuid', newRepertoire.cid);
+        newRepertoire.view_mode = 'edit';
+        clonedList.add(newRepertoire, {at:i});
+        $('#repertoire_name'+newRepertoire.cid).focus();
+        this.flagRepertoiresEdits();
+    },
+
+    addRepertoire: function(e) {
+      var clonedList = this.getRepertoireList();
+      var newRepertoire = new Repertoire({projectUuid: this.controller.model.get('uuid')});
+      newRepertoire.set('uuid', newRepertoire.cid);
+      this.newRepertoireList.push(newRepertoire.cid);
+      newRepertoire.view_mode = 'edit';
+      clonedList.add(newRepertoire, {at:0});
+      $('#repertoire_name'+newRepertoire.cid).focus();
+      this.flagRepertoiresEdits();
+    },
+
+    deleteRepertoire: function(e, model) {
+        e.preventDefault();
+        var clonedList = this.getRepertoireList();
+        let value = model.get('value');
+        clonedList.remove(model.id);
+        this.flagRepertoiresEdits();
     },
 
     getViewMode() {

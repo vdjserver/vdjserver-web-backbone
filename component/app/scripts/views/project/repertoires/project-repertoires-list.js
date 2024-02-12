@@ -74,12 +74,16 @@ var RepertoireSummaryView = Marionette.View.extend({
     },
 
     events: {
-        'click #project-repertoires-show-details': function(e) {
+        'click #project-repertoire-show-details': function(e) {
             e.preventDefault();
             this.model.view_mode = 'detail';
             this.controller.showProjectRepertoiresList();
         },
-        'click #project-repertoire-edit': function(e) {
+        'click #project-repertoire-copy-uuid': function(e) {
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        },
+        'click #project-repertoire-edit-repertoire': function(e) {
             e.preventDefault();
             this.model.view_mode = 'edit';
             // propagate edit mode down to the individual sample models
@@ -91,6 +95,9 @@ var RepertoireSummaryView = Marionette.View.extend({
             this.controller.flagRepertoiresEdits();
             this.controller.showProjectRepertoiresList();
         },
+        'click #project-repertoire-add-repertoire': function(e) { this.controller.addRepertoire(e, this.model); },
+        'click #project-repertoire-duplicate-repertoire': function(e) { this.controller.duplicateRepertoire(e, this.model); },
+        'click #project-repertoire-delete-repertoire': function(e) { this.controller.deleteRepertoire(e, this.model); },
     }
 
 });
@@ -117,7 +124,7 @@ var RepertoireDetailView = Marionette.View.extend({
 
     templateContext() {
         var editMode = false;
-    console.log(this.model);
+    //console.log(this.model);
         var collections = this.controller.getCollections();
         var value = this.model.get('value');
         var subject = value['subject'];
@@ -142,7 +149,17 @@ var RepertoireDetailView = Marionette.View.extend({
     },
 
     events: {
-        'click #project-repertoire-edit': function(e) {
+        'change .form-control-repertoire': 'updateField',
+        'click #project-repertoire-show-summary': function(e) {
+            e.preventDefault();
+            this.model.view_mode = 'summary';
+            this.controller.showProjectRepertoiresList();
+        },
+        'click #project-repertoire-copy-uuid': function(e) {
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        },
+        'click #project-repertoire-edit-repertoire': function(e) {
             e.preventDefault();
             this.model.view_mode = 'edit';
             // propagate edit mode down to the individual sample models
@@ -154,7 +171,9 @@ var RepertoireDetailView = Marionette.View.extend({
             this.controller.flagRepertoiresEdits();
             this.controller.showProjectRepertoiresList();
         },
-
+        'click #project-repertoire-add-repertoire': function(e) { this.controller.addRepertoire(e, this.model); },
+        'click #project-repertoire-duplicate-repertoire': function(e) { this.controller.duplicateRepertoire(e, this.model); },
+        'click #project-repertoire-delete-repertoire': function(e) { this.controller.deleteRepertoire(e, this.model); },
     },
 
     onAttach() {
@@ -165,6 +184,10 @@ var RepertoireDetailView = Marionette.View.extend({
         });
 
         $('[data-toggle="tooltip"]').tooltip();
+    },
+
+    updateField: function(e) {
+        this.model.updateField(e.target.name, e.target.value);
     },
 
 });
