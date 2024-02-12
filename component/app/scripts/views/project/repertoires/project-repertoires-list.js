@@ -211,7 +211,8 @@ var RepertoireContainerView = Marionette.View.extend({
         // save state in model
         // if editing, leave in edit
         // get default view mode from controller
-        if (this.model.view_mode != 'edit')
+        //if (this.model.view_mode != 'edit')
+        if (! this.model.view_mode)
             this.model.view_mode = this.controller.getViewMode();
         this.showSubjectView();
     },
