@@ -39,12 +39,14 @@ var diagnosisSchema = null;
 export var Subject = Agave.MetadataModel.extend({
     defaults: function() {
         // Use AIRR schema Subject object as basis
-        if (! subjectSchema) subjectSchema = new airr.SchemaDefinition('Subject');
+        if (! subjectSchema) subjectSchema = new vdj_schema.SchemaDefinition('Subject');
         if (! diagnosisSchema) diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
         this.schema = subjectSchema;
         this.diagnosis_schema = diagnosisSchema;
         // make a deep copy from the template
         var blankEntry = subjectSchema.template();
+        // TODO: no genotype support
+        blankEntry['genotype'] = null;
 
         return _.extend(
             {},
@@ -64,7 +66,7 @@ export var Subject = Agave.MetadataModel.extend({
             this.set('associationIds', [ parameters.projectUuid ]);
         }
 
-        if (! subjectSchema) subjectSchema = new airr.SchemaDefinition('Subject');
+        if (! subjectSchema) subjectSchema = new vdj_schema.SchemaDefinition('Subject');
         if (! diagnosisSchema) diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
         this.schema = subjectSchema;
         this.diagnosis_schema = diagnosisSchema;
