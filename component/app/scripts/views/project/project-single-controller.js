@@ -431,13 +431,12 @@ SingleProjectController.prototype = {
                     var model = that.repertoireList.at(j);
                     var value = model.get('value');
                     var subject = that.subjectList.get(value['subject']['vdjserver_uuid']);
-                    value['subject'] = subject;
+                    model.setSubject(subject);
                     var samples = new SampleCollection(null, {projectUuid: that.model.get('uuid')});
                     for (let s in value['sample']) {
                         samples.add(that.sampleList.get(value['sample'][s]['vdjserver_uuid']));
                     }
-                    value['sample'] = samples;
-                    model.set('value', value);
+                    model.setSample(samples);
                 }
 
                 // update the project summary

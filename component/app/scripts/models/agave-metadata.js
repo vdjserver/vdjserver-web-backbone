@@ -336,10 +336,15 @@ export var DataProcessing = Agave.MetadataModel.extend({
 var repertoireSchema = null;
 export var Repertoire = Agave.MetadataModel.extend({
     defaults: function() {
-        // TODO: this is wrong schema/template to use, we want the normal-form version
-        if (! repertoireSchema) repertoireSchema = new airr.SchemaDefinition('Repertoire');
+        // this is the normal-form version
+        if (! repertoireSchema) repertoireSchema = new vdj_schema.SchemaDefinition('Repertoire');
         this.schema = repertoireSchema;
         var blankEntry = repertoireSchema.template();
+
+        // additional variables for models and collections for ease of GUI
+        this.subject = null;
+        this.sample = null;
+        this.data_processing = null;
 
         return _.extend(
             {},
@@ -354,13 +359,25 @@ export var Repertoire = Agave.MetadataModel.extend({
     initialize: function(parameters) {
         Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
 
-        if (parameters && parameters.projectUuid) {
-            this.projectUuid = parameters.projectUuid;
-            this.set('associationIds', [ parameters.projectUuid ]);
+        if (parameters) {
+            if (parameters.projectUuid) {
+                let value = this.get('value');
+                this.projectUuid = parameters.projectUuid;
+                this.set('associationIds', [ parameters.projectUuid ]);
+                value['study']['vdjserver_uuid'] = parameters.projectUuid;
+                this.set('value', value);
+            }
+            if (parameters.subject) {
+                this.setSubject(parameters.subject);
+            }
+            if (parameters.sample) {
+                this.setSample(parameters.sample);
+            }
         }
+        if (! this.get('uuid')) this.set('uuid', this.cid);
 
-        // TODO: this is wrong schema to use, we want the normal-form version
-        if (! repertoireSchema) repertoireSchema = new airr.SchemaDefinition('Repertoire');
+        // this is the normal-form version
+        if (! repertoireSchema) repertoireSchema = new vdj_schema.SchemaDefinition('Repertoire');
         this.schema = repertoireSchema;
     },
     url: function() {
@@ -375,17 +392,41 @@ export var Repertoire = Agave.MetadataModel.extend({
         let m = Agave.MetadataModel.prototype.deepClone.apply(this, []);
 
         let value = this.get('value');
-        let mv = m.get('value');
-
-        // clone the sample collection
-        mv['sample'] = value['sample'].getClonedCollection();
 
         // point to same study and subject
+        let mv = m.get('value');
         mv['study'] = value['study'];
-        mv['subject'] = value['subject'];
-
         m.set('value', mv);
+        m.setSubject(this.subject);
+
+        // clone the sample collection
+        let samples = this.sample.getClonedCollection();
+        m.setSample(samples);
+
         return m;
+    },
+
+    setSubject: function(subject) {
+        let value = this.get('value');
+        this.subject = subject;
+        if (subject) value['subject']['vdjserver_uuid'] = this.subject.get('uuid');
+        else value['subject']['vdjserver_uuid'] = null;
+        this.set('value', value);
+    },
+
+    setSample: function(sample) {
+        if (!sample) return;
+        let value = this.get('value');
+        this.sample = sample;
+        if (this.sample.length > 0) {
+            value['sample'] = [];
+            for (let i = 0; i < this.sample.length; ++i) {
+                value['sample'].push({ vdjserver_uuid: this.sample.at(i).get('uuid') });
+            }
+        } else {
+            value['sample'] = [{ vdjserver_uuid: null }];
+        }
+        this.set('value', value);
     },
 
     // this is not generic but customized for our objects
@@ -396,15 +437,13 @@ export var Repertoire = Agave.MetadataModel.extend({
         if (paths.length == 1) return value[paths[0]];
         else {
             switch(paths[0]) {
-                case 'study':
-                    return value['study'].get('value')[paths[1]];
                 case 'subject':
-                    if (! value['subject']) return null;
-                    return value['subject'].get('value')[paths[1]];
+                    if (! this.subject) return null;
+                    return this.subject.get('value')[paths[1]];
                 case 'diagnosis':
-                    if (! value['subject']) return null;
-                    var subject = value['subject'].get('value');
-                    var diagnosis = subject['diagnosis'];
+                    if (! this.subject) return null;
+                    var sv = this.subject.get('value');
+                    var diagnosis = sv['diagnosis'];
                     if (! diagnosis) return null;
                     if (diagnosis.length == 0) return null;
                     var values = [];

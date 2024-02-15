@@ -45,15 +45,15 @@ var RepertoireSummaryView = Marionette.View.extend({
             this.controller = parameters.controller;
 
         if (this.model) {
-            var value = this.model.get('value');
-            this.showChildView('sampleRegion', new SamplesListView({collection: value['sample'], controller: this.controller}));
+            if (this.model.sample)
+                this.showChildView('sampleRegion', new SamplesListView({collection: this.model.sample, controller: this.controller}));
         }
     },
 
     templateContext() {
         //console.log(this.model);
-        var value = this.model.get('value');
-        var subject = value['subject'];
+        //var value = this.model.get('value');
+        var subject = this.model.subject;
         var subject_value = null;
         var species_display = null;
         var age_display = null;
@@ -76,13 +76,17 @@ var RepertoireSummaryView = Marionette.View.extend({
     events: {
         'click #project-repertoire-show-details': function(e) {
             e.preventDefault();
-            this.model.view_mode = 'detail';
-            var samples = this.model.get('value')['sample'];
-            for (let i = 0; i < samples.length; ++i) {
-                let s = samples.at(i);
-                s.view_mode = 'detail';
+            if (this.model.view_mode != 'edit') {
+                this.model.view_mode = 'detail';
+                let samples = this.model.sample;
+                if (samples) {
+                    for (let i = 0; i < samples.length; ++i) {
+                        let s = samples.at(i);
+                        s.view_mode = 'summary';
+                    }
+                }
+                this.controller.showProjectRepertoiresList();
             }
-            this.controller.showProjectRepertoiresList();
         },
         'click #project-repertoire-copy-uuid': function(e) {
             var text = this.model.get('uuid');
@@ -92,10 +96,12 @@ var RepertoireSummaryView = Marionette.View.extend({
             e.preventDefault();
             this.model.view_mode = 'edit';
             // propagate edit mode down to the individual sample models
-            var value = this.model.get('value');
-            if (value['sample']) {
-                for (let i = 0; i < value['sample'].length; ++i)
-                    value['sample'].at(i).view_mode = 'edit';
+            let samples = this.model.sample;
+            if (samples) {
+                for (let i = 0; i < samples.length; ++i) {
+                    let s = samples.at(i);
+                    s.view_mode = 'edit';
+                }
             }
             this.controller.flagRepertoiresEdits();
             this.controller.showProjectRepertoiresList();
@@ -121,9 +127,8 @@ var RepertoireDetailView = Marionette.View.extend({
             this.controller = parameters.controller;
 
         if (this.model) {
-            var collections = this.controller.getCollections();
-            var value = this.model.get('value');
-            this.showChildView('sampleRegionDetail', new SamplesListView({collection: value['sample'], controller: this.controller}));
+            if (this.model.sample)
+                this.showChildView('sampleRegionDetail', new SamplesListView({collection: this.model.sample, controller: this.controller}));
         }
     },
 
@@ -132,7 +137,7 @@ var RepertoireDetailView = Marionette.View.extend({
     //console.log(this.model);
         var collections = this.controller.getCollections();
         var value = this.model.get('value');
-        var subject = value['subject'];
+        var subject = this.model.subject;
         var subject_value = null;
         var species_display = null;
         var age_display = null;
@@ -141,14 +146,11 @@ var RepertoireDetailView = Marionette.View.extend({
             species_display = subject.getSpeciesDisplay();
             age_display = subject.getAgeDisplay();
         }
-        var sample = value['sample'];
-        var sample_value = sample.get('value');
 
         return {
             subject: subject_value,
             species_display: species_display,
             age_display: age_display,
-            sample: sample_value,
             view_mode: this.model.view_mode
         }
     },
@@ -157,13 +159,17 @@ var RepertoireDetailView = Marionette.View.extend({
         'change .form-control-repertoire': 'updateField',
         'click #project-repertoire-show-summary': function(e) {
             e.preventDefault();
-            this.model.view_mode = 'summary';
-            var samples = this.model.get('value')['sample'];
-            for (let i = 0; i < samples.length; ++i) {
-                let s = samples.at(i);
-                s.view_mode = 'summary';
+            if (this.model.view_mode != 'edit') {
+                this.model.view_mode = 'summary';
+                let samples = this.model.sample;
+                if (samples) {
+                    for (let i = 0; i < samples.length; ++i) {
+                        let s = samples.at(i);
+                        s.view_mode = 'summary';
+                    }
+                }
+                this.controller.showProjectRepertoiresList();
             }
-            this.controller.showProjectRepertoiresList();
         },
         'click #project-repertoire-copy-uuid': function(e) {
             var text = this.model.get('uuid');
@@ -173,10 +179,12 @@ var RepertoireDetailView = Marionette.View.extend({
             e.preventDefault();
             this.model.view_mode = 'edit';
             // propagate edit mode down to the individual sample models
-            var value = this.model.get('value');
-            if (value['sample']) {
-                for (let i = 0; i < value['sample'].length; ++i)
-                    value['sample'].at(i).view_mode = 'edit';
+            let samples = this.model.sample;
+            if (samples) {
+                for (let i = 0; i < samples.length; ++i) {
+                    let s = samples.at(i);
+                    s.view_mode = 'edit';
+                }
             }
             this.controller.flagRepertoiresEdits();
             this.controller.showProjectRepertoiresList();

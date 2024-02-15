@@ -39,8 +39,8 @@ import LoadingView from 'Scripts/views/utilities/loading-view';
 import FilterController from 'Scripts/views/utilities/filter-controller';
 import MetadataImportModal from 'Scripts/views/project/project-import-metadata';
 
-import { Repertoire } from 'Scripts/models/agave-metadata';
-import { airr } from 'airr-js';
+import { Repertoire, SampleProcessing } from 'Scripts/models/agave-metadata';
+import { SampleCollection, DataProcessingCollection } from 'Scripts/collections/agave-metadata-collections';
 
 // Project repertoires controller
 //
@@ -83,7 +83,6 @@ ProjectRepertoiresController.prototype = {
 
     resetCollections() {
         this.repertoireList = this.controller.repertoireList.getClonedCollection(); //create the cloned collection
-        this.newRepertoireList = [];
     },
 
     revertRepertoiresChanges: function() {
@@ -106,14 +105,15 @@ ProjectRepertoiresController.prototype = {
     },
 
     addRepertoire: function(e) {
-      var clonedList = this.getRepertoireList();
-      var newRepertoire = new Repertoire({projectUuid: this.controller.model.get('uuid')});
-      newRepertoire.set('uuid', newRepertoire.cid);
-      this.newRepertoireList.push(newRepertoire.cid);
-      newRepertoire.view_mode = 'edit';
-      clonedList.add(newRepertoire, {at:0});
-      $('#repertoire_name'+newRepertoire.cid).focus();
-      this.flagRepertoiresEdits();
+        var clonedList = this.getRepertoireList();
+        var samples = new SampleCollection(null, {projectUuid: this.controller.model.get('uuid')});
+        var sample = new SampleProcessing({projectUuid: this.controller.model.get('uuid')});
+        samples.add(sample);
+        sample.view_mode = 'edit';
+        var newRepertoire = new Repertoire({projectUuid: this.controller.model.get('uuid'), sample: samples});
+        newRepertoire.view_mode = 'edit';
+        clonedList.add(newRepertoire, {at:0});
+        this.flagRepertoiresEdits();
     },
 
     deleteRepertoire: function(e, model) {
@@ -146,10 +146,12 @@ ProjectRepertoiresController.prototype = {
         for (let i = 0; i < coll.length; ++i) {
             let m = coll.at(i);
             if (m.view_mode != 'edit') m.view_mode = this.repertoires_view_mode;
-            var samples = m.get('value')['sample'];
-            for (let j = 0; j < samples.length; ++j) {
-                let s = samples.at(j);
-                if (s.view_mode != 'edit') s.view_mode = this.repertoires_view_mode;
+            let samples = m.sample;
+            if (samples) {
+                for (let i = 0; i < samples.length; ++i) {
+                    let s = samples.at(i);
+                    if (s.view_mode != 'edit') s.view_mode = this.repertoires_view_mode;
+                }
             }
         }
         // redisplay list
