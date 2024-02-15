@@ -146,6 +146,11 @@ ProjectRepertoiresController.prototype = {
         for (let i = 0; i < coll.length; ++i) {
             let m = coll.at(i);
             if (m.view_mode != 'edit') m.view_mode = this.repertoires_view_mode;
+            var samples = m.get('value')['sample'];
+            for (let j = 0; j < samples.length; ++j) {
+                let s = samples.at(j);
+                if (s.view_mode != 'edit') s.view_mode = this.repertoires_view_mode;
+            }
         }
         // redisplay list
         this.showProjectRepertoiresList();

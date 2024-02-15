@@ -77,6 +77,11 @@ var RepertoireSummaryView = Marionette.View.extend({
         'click #project-repertoire-show-details': function(e) {
             e.preventDefault();
             this.model.view_mode = 'detail';
+            var samples = this.model.get('value')['sample'];
+            for (let i = 0; i < samples.length; ++i) {
+                let s = samples.at(i);
+                s.view_mode = 'detail';
+            }
             this.controller.showProjectRepertoiresList();
         },
         'click #project-repertoire-copy-uuid': function(e) {
@@ -153,6 +158,11 @@ var RepertoireDetailView = Marionette.View.extend({
         'click #project-repertoire-show-summary': function(e) {
             e.preventDefault();
             this.model.view_mode = 'summary';
+            var samples = this.model.get('value')['sample'];
+            for (let i = 0; i < samples.length; ++i) {
+                let s = samples.at(i);
+                s.view_mode = 'summary';
+            }
             this.controller.showProjectRepertoiresList();
         },
         'click #project-repertoire-copy-uuid': function(e) {
