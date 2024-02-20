@@ -227,6 +227,21 @@
                     </div>
                 </div>
                 <div class="form-group col-md-2">
+                    <label for="cell_species">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "CellProcessing" "cell_species"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "CellProcessing" "cell_species"}}}
+                        Cell Species:
+                    </label>
+                    <input type="text" class="form-control form-control-repertoire" name="cell_species" id="cell_species" placeholder="" value="{{value.cell_species}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Cell Species.
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
                     <label for="single_cell">
                         <span>
                             <!-- Tooltip -->
@@ -236,10 +251,10 @@
                         {{{FieldHelpPopover "CellProcessing" "single_cell"}}}
                         Single Cell:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="single_cell" id="single_cell" placeholder="" value="{{value.single_cell}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter a valid Single Cell.
-                    </div>
+                    <select class="custom-select value-select-repertoire" name="single_cell" id="single_cell" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option value="true" {{#if value.single_cell}}selected{{/if}}>True</option>
+                      <option value="false"{{#unless value.single_cell}}selected{{/unless}}>False</option>
+                    </select>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="cell_number">
@@ -256,6 +271,8 @@
                         Please enter a valid Cell Number.
                     </div>
                 </div>
+            </div>
+            <div class="form-row project-repertoire-row">
                 <div class="form-group col-md-2">
                     <label for"cells_per_reaction">
                         <span>
@@ -271,8 +288,6 @@
                         Please enter a valid Cells Per Reaction.
                     </div>
                 </div>
-            </div>
-            <div class="form-row project-repertoire-row">
                 <div class="form-group col-md-2">
                     <label for="cell_storage">
                         <span>
@@ -283,10 +298,10 @@
                         {{{FieldHelpPopover "CellProcessing" "cell_storage"}}}
                         Cell Storage:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="cell_storage" id="cell_storage" placeholder="" value="{{value.cell_storage}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter a valid Cell Storage.
-                    </div>
+                    <select class="custom-select value-select-repertoire" name="cell_storage" id="cell_storage" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option value="true" {{#if value.cell_storage}}selected{{/if}}>True</option>
+                      <option value="false"{{#unless value.cell_storage}}selected{{/unless}}>False</option>
+                    </select>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="cell_quality">
@@ -303,7 +318,7 @@
                         Please enter a valid Cell Quality.
                     </div>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="cell_isolation">
                         <span>
                             <!-- Tooltip -->
@@ -318,7 +333,7 @@
                         Please enter a valid Cell Isolation.
                     </div>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label for="cell_processing_protocol">
                         <span>
                             <!-- Tooltip -->
