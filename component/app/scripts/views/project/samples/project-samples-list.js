@@ -58,9 +58,20 @@ var SampleDetailView = Marionette.View.extend({
 
   templateContext() {
       var editMode = false;
+      var template_class = this.model.schema.spec('template_class');
+      var library_generation_method = this.model.schema.spec('library_generation_method');
+      var complete_sequences = this.model.schema.spec('complete_sequences');
+      var physical_linkage = this.model.schema.spec('physical_linkage');
+      //var pcr_target_locus = this.model.schema.spec('pcr_target_locus');
+
 
       return {
           view_mode: this.model.view_mode,
+          template_class_enum: template_class.enum,
+          library_generation_method_enum: library_generation_method.enum,
+          complete_sequences_enum: complete_sequences.enum,
+          physical_linkage_enum: physical_linkage.enum,
+          //pcr_target_locus_enum: pcr_target_locus.enum
       }
   },
 
