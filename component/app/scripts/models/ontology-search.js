@@ -31,7 +31,7 @@ import Backbone from 'backbone';
 import { airr } from 'airr-js';
 
 export default Backbone.Model.extend({
-    ols_api: 'https://www.ebi.ac.uk/ols/api/search',
+    ols_api: 'https://www.ebi.ac.uk/ols4/api/search',
     ontology: null,
     query: '',
     top_node: null,
