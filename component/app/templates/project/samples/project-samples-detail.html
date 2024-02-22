@@ -72,7 +72,15 @@
                         {{{FieldHelpPopover "Sample" "tissue"}}}
                         Tissue:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="tissue" id="tissue" placeholder="" value="{{value.tissue}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    {{#ifEquals view_mode "edit"}}
+                    <div id="tissue-region-{{this.uuid}}"></div>
+                    {{else}}
+                        {{#if this.tissue.id}}
+                        <input type="text" class="form-control form-control-repertoire form-control-tissue" name="tissue" id="tissue_{{this.uuid}}" value="{{this.tissue.label}} ({{this.tissue.id}})" readonly>
+                        {{else}}
+                        <input type="text" class="form-control form-control-repertoire form-control-tissue" name="tissue" id="tissue_{{this.uuid}}" value="" readonly>
+                        {{/if}}
+                    {{/ifEquals}}
                     <div class="invalid-feedback">
                         Please enter a valid Tissue.
                     </div>
@@ -109,7 +117,7 @@
                 </div>
             </div>
             <div class="form-row project-repertoire-row">
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="collection_time_point_relative">
                         <span>
                             <!-- Tooltip -->
@@ -124,7 +132,7 @@
                         Please enter a valid Collection Time Point Relative.
                     </div>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2">
                     <label for="collection_time_point_relative_unit">
                         <span>
                             <!-- Tooltip -->
@@ -134,10 +142,14 @@
                         {{{FieldHelpPopover "Sample" "collection_time_point_relative_unit"}}}
                         Unit:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="collection_time_point_relative_unit" id="collection_time_point_relative_unit" placeholder="" value="{{value.collection_time_point_relative_unit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter a valid Collection Time Point Relative Unit.
-                    </div>
+                   <select class="custom-select ontology-select-repertoire" name="collection_time_point_relative_unit" id="collection_time_point_relative_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option id="" value="" {{#unless value.age_unit}}selected{{/unless}}>null</option>
+                      <option id="UO:0000032" value="hour" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000032"}}selected{{/ifEquals}}>hour(s)</option>
+                      <option id="UO:0000033" value="day" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000033"}}selected{{/ifEquals}}>day(s)</option>
+                      <option id="UO:0000034" value="week" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000034"}}selected{{/ifEquals}}>week(s)</option>
+                      <option id="UO:0000035" value="month" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000035"}}selected{{/ifEquals}}>month(s)</option>
+                      <option id="UO:0000036" value="year" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000036"}}selected{{/ifEquals}}>year(s)</option>
+                    </select>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="collection_time_point_reference">
@@ -154,6 +166,22 @@
                         Please enter a valid Collection Time Point Reference.
                     </div>
                 </div>
+<!-- TODO - commented out because it isn't in the current schema -->
+                <!--<div class="form-group col-md-2">
+                    <label for="collection_location">
+                        <span>>-->
+                            <!-- Tooltip -->
+                        <!--{{{FieldStar "Sample" "collection_location"}}}-->
+                        <!--</span>-->
+                        <!-- Popover -->
+                        <!--{{{FieldHelpPopover "Sample" "collection_location"}}}-->
+                        <!--Location:
+                    </label>
+                    <input type="text" class="form-control form-control-repertoire" name="collection_location" id="collection_location" placeholder="" value="{{value.collection_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Collection Location.
+                    </div>
+                </div>-->
                 <div class="form-group col-md-3">
                     <label for="biomaterial_provider">
                         <span>
@@ -206,7 +234,15 @@
                         {{{FieldHelpPopover "CellProcessing" "cell_subset"}}}
                         Cell Subset:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="cell_subset" id="cell_subset" placeholder="" value="{{value.cell_subset}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    {{#ifEquals view_mode "edit"}}
+                    <div id="cell-subset-region-{{this.uuid}}"></div>
+                    {{else}}
+                        {{#if this.tissue.id}}
+                        <input type="text" class="form-control form-control-repertoire form-control-cell-subset" name="cell_subset" id="cell_subset_{{this.uuid}}" value="{{this.cell_subset.label}} ({{this.cell_subset.id}})" readonly>
+                        {{else}}
+                        <input type="text" class="form-control form-control-repertoire form-control-cell-subset" name="cell_subset" id="cell_subset_{{this.uuid}}" value="" readonly>
+                        {{/if}}
+                    {{/ifEquals}}
                     <div class="invalid-feedback">
                         Please enter a valid Cell Subset.
                     </div>
@@ -236,7 +272,15 @@
                         {{{FieldHelpPopover "CellProcessing" "cell_species"}}}
                         Cell Species:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="cell_species" id="cell_species" placeholder="" value="{{value.cell_species}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    {{#ifEquals view_mode "edit"}}
+                    <div id="cell-species-region-{{this.uuid}}"></div>
+                    {{else}}
+                        {{#if this.cell_species.id}}
+                        <input type="text" class="form-control form-control-repertoire form-control-cell-species" name="cell_species" id="cell_species_{{this.uuid}}" value="{{this.cell_species.label}} ({{this.cell_species.id}})" readonly>
+                        {{else}}
+                        <input type="text" class="form-control form-control-repertoire form-control-cell-species" name="cell_species" id="cell_species_{{this.uuid}}" value="" readonly>
+                        {{/if}}
+                    {{/ifEquals}}
                     <div class="invalid-feedback">
                         Please enter a valid Cell Species.
                     </div>
@@ -416,10 +460,15 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "template_amount_unit"}}}
                         Template Amount Unit:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="template_amount_unit" id="template_amount_unit" placeholder="" value="{{value.template_amount_unit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter a valid Template Amount Unit.
-                    </div>
+                    <select class="custom-select ontology-select-repertoire" name="template_amount_unit" id="template_amount_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                      <option id="" value="" {{#unless value.template_amount_unit}}selected{{/unless}}>null</option>
+                      <option id="UO:0000025" value="picogram" {{#ifEquals value.template_amount_unit.id "UO:0000025"}}selected{{/ifEquals}}>picogram(s)</option>
+                      <option id="UO:0000024" value="nanogram" {{#ifEquals value.template_amount_unit.id "UO:0000024"}}selected{{/ifEquals}}>nanogram(s)</option>
+                      <option id="UO:0000023" value="microgram" {{#ifEquals value.template_amount_unit.id "UO:0000023"}}selected{{/ifEquals}}>microgram(s)</option>
+                      <option id="UO:0000022" value="milligram" {{#ifEquals value.template_amount_unit.id "UO:0000022"}}selected{{/ifEquals}}>milligram(s)</option>
+                      <option id="UO:0000021" value="gram" {{#ifEquals value.template_amount_unit.id "UO:0000021"}}selected{{/ifEquals}}>gram(s)</option>
+                      <option id="UO:0000009" value="kilogram" {{#ifEquals value.template_amount_unit.id "UO:0000009"}}selected{{/ifEquals}}>kilogram(s)</option>
+                    </select>
                 </div>
             </div>
             <div class="form-row project-repertoire-row">
