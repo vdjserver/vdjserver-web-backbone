@@ -82,7 +82,7 @@ var RepertoireSummaryView = Marionette.View.extend({
                 if (samples) {
                     for (let i = 0; i < samples.length; ++i) {
                         let s = samples.at(i);
-                        s.view_mode = 'summary';
+                        s.view_mode = 'detail';
                     }
                 }
                 this.controller.showProjectRepertoiresList();
