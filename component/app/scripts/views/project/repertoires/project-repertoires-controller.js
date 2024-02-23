@@ -92,6 +92,104 @@ ProjectRepertoiresController.prototype = {
         this.showProjectRepertoiresList();
     },
 
+    saveRepertoiresChanges: function(e) {
+        console.log('Clicked Save');
+
+        // clear errors
+        let hasErrors = false;
+        $('.needs-validation').removeClass('was-validated');
+        let fields = $('.is-invalid');
+        for (let i = 0; i < fields.length; ++i) fields[i].setCustomValidity('');
+        fields.removeClass('is-invalid');
+
+        // model validation
+        var minY = Number.MAX_VALUE;
+        for (let i = 0; i < this.repertoireList.length; ++i) {
+            // only validate models that have been changed or are new
+            let model = this.repertoireList.at(i);
+            let origModel = this.getOriginalRepertoiresList().get(model.get('uuid'));
+            var changed = null;
+            if (origModel) {
+                changed = model.changedAttributes(origModel.attributes);
+            } else changed = true;
+
+            if (changed) {
+                let valid = model.isValid();
+                if (!valid) {
+                    hasErrors = true;
+                    let form = document.getElementById("project-sample-form_" + model.get('uuid'));
+                    var rect = form[i].getBoundingClientRect();
+                    if (rect['y'] < minY) minY = rect['y'] + window.scrollY;
+                    form = $(form);
+                    for (let j = 0; j < model.validationError.length; ++j) {
+                        let e = model.validationError[j];
+                        let f = form.find('#' + e['field']);
+                        if (f) {
+                            f[0].setCustomValidity(e['message']);
+                            f.addClass('is-invalid');
+                        }
+                    }
+                }
+            }
+        }
+
+        // Validation across multiple models
+        // invalidate any duplicate sample IDs
+        var samplesList;
+        for (let i = 0; i < coll.length; ++i) {
+            let m = coll.at(i);
+            let samples = m.sample;
+            if (samples) {
+                for (let i = 0; i < samples.length; ++i) {
+                    let s = samples.at(i);
+                    samplesList.add(s); 
+                }
+            }
+            var duplicates = samplesList.checkDuplicates();
+            for (let i = 0; i < duplicates.length; ++i) {
+                var model = duplicates.at(i);
+                var field = document.getElementById("sample_id_" + model.get('uuid'));
+                if (field) {
+                    field.setCustomValidity("ERROR");
+                    $(field).addClass('is-invalid');
+                    hasErrors = true;
+                    var rect = field.form.getBoundingClientRect();
+                    if (rect['y'] < minY)
+                        minY = rect['y']+window.scrollY;
+                }
+            } 
+        }
+
+        // form validation
+        $('.needs-validation').addClass('was-validated');
+        var form = document.getElementsByClassName('needs-validation');
+        for (let i = 0; i < form.length; ++i)
+            if (form[i].checkValidity() === false) {
+                hasErrors = true;
+                var rect = form[i].getBoundingClientRect();
+                if (rect['y'] < minY)
+                    minY = rect['y']+window.scrollY;
+            }
+
+        // scroll to first form with error and abort save
+        if (hasErrors) {
+            $('html, body').animate({ scrollTop: minY - 100 }, 1000);
+            return;
+        }
+
+        // display a modal while the data is being saved
+        this.modalState = 'save';
+        var message = new MessageModel({
+          'header': 'Project Repertoires',
+          'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Saving Project Repertoires Changes</p>'
+        });
+
+        // the app controller manages the modal region
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
+        $('#modal-message').modal('show');
+    },
+
     duplicateRepertoire: function(e, model) {
         e.preventDefault();
         var clonedList = this.getRepertoireList();

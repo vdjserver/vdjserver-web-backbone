@@ -77,6 +77,10 @@ var RepertoiresButtonView = Marionette.View.extend({
             e.preventDefault();
             this.controller.addRepertoire(e);
         },
+        'click #project-repertoires-save-changes': function(e) {
+            e.preventDefault();
+            this.controller.saveRepertoiresChanges(e);
+        },
         'click #project-repertoires-revert-changes': function(e) {
             e.preventDefault();
             this.controller.revertRepertoiresChanges();

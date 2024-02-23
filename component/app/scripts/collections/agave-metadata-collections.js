@@ -310,6 +310,24 @@ export var SampleCollection = Agave.MetadataCollection.extend(
                    + '&offset=' + this.offset
                    ;
         },
+        checkDuplicates() {
+            var duplicates = this.clone();
+            duplicates.reset();
+            for (let i = 0; i < this.length; ++i) {
+                var modeli = this.at(i);
+                var valuei = modeli.get('value');
+                for (let j = i+1; j < this.length; ++j) {
+                    var modelj = this.at(j);
+                    var valuej = modelj.get('value');
+                    if (valuei['subject_id'] == valuej['subject_id']) {
+                        duplicates.add(modeli);
+                        duplicates.add(modelj);
+                    }
+                }
+            }
+            return duplicates;
+        },
+
     })
 );
 

@@ -387,6 +387,28 @@ export var Repertoire = Agave.MetadataModel.extend({
         return Agave.PutOverrideSync(method, this, options);
     },
 
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = repertoireSchema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+
+        // TODO: VDJServer additional validation
+        // add integer check for cell_number, cells_per_reaction, total_reads_passing_qc_filter
+        // verify HTML checks for number work for collection_time_point_relative and template_amount
+        // add checks for fields that cannot be blank
+
+        if (errors.length == 0) return null;
+        else return errors;
+    },
+
+
     // repertoire contains sub-models and sub-collections so need handle it specially
     deepClone: function() {
         let m = Agave.MetadataModel.prototype.deepClone.apply(this, []);

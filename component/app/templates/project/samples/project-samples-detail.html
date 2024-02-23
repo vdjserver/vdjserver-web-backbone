@@ -5,7 +5,7 @@
 <div id="project-sample-list-detail" class="project-sample-list-detail">
     <div class="row general-table-row">
         <div class="col">
-        <form method="post" role="form" id="edit-sample-form {{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
+        <form method="post" role="form" id="project-sample-form_{{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
             <div class="form-row project-repertoire-row align-items-center">
                 <div class="form-group col-md-1">
                   <label><b>Sample:</b></label>
@@ -127,9 +127,9 @@
                         {{{FieldHelpPopover "Sample" "collection_time_point_relative"}}}
                         Collection Time Point Relative:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" value="{{value.collection_time_point_relative}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="number" class="form-control form-control-repertoire" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" value="{{value.collection_time_point_relative}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
-                        Please enter a valid Collection Time Point Relative.
+                        Please enter a valid Collection Time Point Relative number.
                     </div>
                 </div>
                 <div class="form-group col-md-2">
@@ -445,9 +445,9 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "template_amount"}}}
                         Template Amount:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="template_amount" id="template_amount" placeholder="" value="{{value.template_amount}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="number" class="form-control form-control-repertoire" name="template_amount" id="template_amount" placeholder="" value="{{value.template_amount}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
-                        Please enter a valid Template Amount.
+                        Please enter a valid Template Amount number.
                     </div>
                 </div>
                 <div class="form-group col-md-3">
