@@ -55,9 +55,9 @@ var SampleDetailView = Marionette.View.extend({
     template: Handlebars.compile(detail_template),
 
     events: {
-        'change .form-control-repertorie': 'updateField',
-        'change .ontology-select-repertoire': 'updateOntology',
-        'change .value-select-repertoire': 'updateField',
+        'change .form-control-sample': 'updateField',
+        'change .ontology-select-sample': 'updateOntology',
+        'change .value-select-sample': 'updateField',
     },
 
     regions: {

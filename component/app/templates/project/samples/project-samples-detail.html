@@ -6,7 +6,7 @@
     <div class="row general-table-row">
         <div class="col">
         <form method="post" role="form" id="project-sample-form_{{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
-            <div class="form-row project-repertoire-row align-items-center">
+            <div class="form-row align-items-center">
                 <div class="form-group col-md-1">
                   <label><b>Sample:</b></label>
                   <div class="btn-group" role="group" aria-label="Button group">
@@ -40,7 +40,7 @@
                         {{{FieldHelpPopover "Sample" "sample_id"}}}
                         Sample ID:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="sample_id" id="sample_id" placeholder="" value="{{value.sample_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sample_id" id="sample_id" placeholder="" value="{{value.sample_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Sample ID.
                     </div>
@@ -55,7 +55,7 @@
                         {{{FieldHelpPopover "Sample" "sample_type"}}}
                         Sample Type:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="sample_type" id="sample_type" placeholder="" value="{{value.sample_type}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sample_type" id="sample_type" placeholder="" value="{{value.sample_type}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Sample Type.
                     </div>
@@ -76,9 +76,9 @@
                     <div id="tissue-region-{{this.uuid}}"></div>
                     {{else}}
                         {{#if this.tissue.id}}
-                        <input type="text" class="form-control form-control-repertoire form-control-tissue" name="tissue" id="tissue_{{this.uuid}}" value="{{this.tissue.label}} ({{this.tissue.id}})" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-tissue" name="tissue" id="tissue_{{this.uuid}}" value="{{this.tissue.label}} ({{this.tissue.id}})" readonly>
                         {{else}}
-                        <input type="text" class="form-control form-control-repertoire form-control-tissue" name="tissue" id="tissue_{{this.uuid}}" value="" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-tissue" name="tissue" id="tissue_{{this.uuid}}" value="" readonly>
                         {{/if}}
                     {{/ifEquals}}
                     <div class="invalid-feedback">
@@ -95,7 +95,7 @@
                         {{{FieldHelpPopover "Sample" "anatomic_site"}}}
                         Anatomic Site:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="anatomic_site" id="anatomic_site" placeholder="" value="{{value.anatomic_site}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="anatomic_site" id="anatomic_site" placeholder="" value="{{value.anatomic_site}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Anatomic Site.
                     </div>
@@ -110,13 +110,13 @@
                         {{{FieldHelpPopover "Sample" "disease_state_sample"}}}
                         Disease State Sample:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="disease_state_sample" id="disease_state_sample" placeholder="" value="{{value.disease_state_sample}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="disease_state_sample" id="disease_state_sample" placeholder="" value="{{value.disease_state_sample}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Disease State Sample.
                     </div>
                 </div>
             </div>
-            <div class="form-row project-repertoire-row">
+            <div class="form-row">
                 <div class="form-group col-md-2">
                     <label for="collection_time_point_relative">
                         <span>
@@ -127,7 +127,7 @@
                         {{{FieldHelpPopover "Sample" "collection_time_point_relative"}}}
                         Collection Time Point Relative:
                     </label>
-                    <input type="number" class="form-control form-control-repertoire" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" value="{{value.collection_time_point_relative}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="number" class="form-control form-control-sample" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" value="{{value.collection_time_point_relative}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Collection Time Point Relative number.
                     </div>
@@ -142,7 +142,7 @@
                         {{{FieldHelpPopover "Sample" "collection_time_point_relative_unit"}}}
                         Unit:
                     </label>
-                   <select class="custom-select ontology-select-repertoire" name="collection_time_point_relative_unit" id="collection_time_point_relative_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                   <select class="custom-select ontology-select-sample" name="collection_time_point_relative_unit" id="collection_time_point_relative_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option id="" value="" {{#unless value.age_unit}}selected{{/unless}}>null</option>
                       <option id="UO:0000032" value="hour" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000032"}}selected{{/ifEquals}}>hour(s)</option>
                       <option id="UO:0000033" value="day" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000033"}}selected{{/ifEquals}}>day(s)</option>
@@ -161,7 +161,7 @@
                         {{{FieldHelpPopover "Sample" "collection_time_point_reference"}}}
                         Reference:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="collection_time_point_reference" id="collection_time_point_reference" placeholder="" value="{{value.collection_time_point_reference}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="collection_time_point_reference" id="collection_time_point_reference" placeholder="" value="{{value.collection_time_point_reference}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Collection Time Point Reference.
                     </div>
@@ -177,7 +177,7 @@
                         <!--{{{FieldHelpPopover "Sample" "collection_location"}}}-->
                         <!--Location:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="collection_location" id="collection_location" placeholder="" value="{{value.collection_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="collection_location" id="collection_location" placeholder="" value="{{value.collection_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Collection Location.
                     </div>
@@ -192,7 +192,7 @@
                         {{{FieldHelpPopover "Sample" "biomaterial_provider"}}}
                         Biomaterial Provider:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="biomaterial_provider" id="biomaterial_provider" placeholder="" value="{{value.biomaterial_provider}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="biomaterial_provider" id="biomaterial_provider" placeholder="" value="{{value.biomaterial_provider}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Biomaterial Provider.
                     </div>
@@ -207,7 +207,7 @@
     <div class="row general-table-row align-items-center">
         <div class="col">
         <form method="post" role="form" id="edit-cell-processing-form {{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
-            <div class="form-row project-repertoire-row align-items-center">
+            <div class="form-row align-items-center">
                   <!--<label><b>Cell Processing:</b></label>-->
                 <div class="form-group col-md-2">
                     <label for="tissue_processing">
@@ -219,7 +219,7 @@
                         {{{FieldHelpPopover "CellProcessing" "tissue_processing"}}}
                         Tissue Processing:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="tissue_processing" id="tissue_processing" placeholder="" value="{{value.tissue_processing}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="tissue_processing" id="tissue_processing" placeholder="" value="{{value.tissue_processing}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Tissue Processing.
                     </div>
@@ -238,9 +238,9 @@
                     <div id="cell-subset-region-{{this.uuid}}"></div>
                     {{else}}
                         {{#if this.tissue.id}}
-                        <input type="text" class="form-control form-control-repertoire form-control-cell-subset" name="cell_subset" id="cell_subset_{{this.uuid}}" value="{{this.cell_subset.label}} ({{this.cell_subset.id}})" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-cell-subset" name="cell_subset" id="cell_subset_{{this.uuid}}" value="{{this.cell_subset.label}} ({{this.cell_subset.id}})" readonly>
                         {{else}}
-                        <input type="text" class="form-control form-control-repertoire form-control-cell-subset" name="cell_subset" id="cell_subset_{{this.uuid}}" value="" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-cell-subset" name="cell_subset" id="cell_subset_{{this.uuid}}" value="" readonly>
                         {{/if}}
                     {{/ifEquals}}
                     <div class="invalid-feedback">
@@ -257,7 +257,7 @@
                         {{{FieldHelpPopover "CellProcessing" "cell_phenotype"}}}
                         Cell Phenotype:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="cell_phenotype" id="cell_phenotype" placeholder="" value="{{value.cell_phenotype}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="cell_phenotype" id="cell_phenotype" placeholder="" value="{{value.cell_phenotype}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Cell Phenotype.
                     </div>
@@ -276,9 +276,9 @@
                     <div id="cell-species-region-{{this.uuid}}"></div>
                     {{else}}
                         {{#if this.cell_species.id}}
-                        <input type="text" class="form-control form-control-repertoire form-control-cell-species" name="cell_species" id="cell_species_{{this.uuid}}" value="{{this.cell_species.label}} ({{this.cell_species.id}})" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-cell-species" name="cell_species" id="cell_species_{{this.uuid}}" value="{{this.cell_species.label}} ({{this.cell_species.id}})" readonly>
                         {{else}}
-                        <input type="text" class="form-control form-control-repertoire form-control-cell-species" name="cell_species" id="cell_species_{{this.uuid}}" value="" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-cell-species" name="cell_species" id="cell_species_{{this.uuid}}" value="" readonly>
                         {{/if}}
                     {{/ifEquals}}
                     <div class="invalid-feedback">
@@ -295,7 +295,7 @@
                         {{{FieldHelpPopover "CellProcessing" "single_cell"}}}
                         Single Cell:
                     </label>
-                    <select class="custom-select value-select-repertoire" name="single_cell" id="single_cell" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select-sample" name="single_cell" id="single_cell" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="true" {{#if value.single_cell}}selected{{/if}}>True</option>
                       <option value="false"{{#unless value.single_cell}}selected{{/unless}}>False</option>
                     </select>
@@ -310,13 +310,13 @@
                         {{{FieldHelpPopover "CellProcessing" "cell_number"}}}
                         Cell Number:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="cell_number" id="cell_number" placeholder="" value="{{value.cell_number}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="cell_number" id="cell_number" placeholder="" value="{{value.cell_number}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Cell Number.
                     </div>
                 </div>
             </div>
-            <div class="form-row project-repertoire-row">
+            <div class="form-row">
                 <div class="form-group col-md-2">
                     <label for"cells_per_reaction">
                         <span>
@@ -327,7 +327,7 @@
                         {{{FieldHelpPopover "CellProcessing" "cells_per_reaction"}}}
                         Cells Per Reaction:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="cells_per_reaction" id="cells_per_reaction" placeholder="" value="{{value.cells_per_reaction}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="cells_per_reaction" id="cells_per_reaction" placeholder="" value="{{value.cells_per_reaction}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Cells Per Reaction.
                     </div>
@@ -342,7 +342,7 @@
                         {{{FieldHelpPopover "CellProcessing" "cell_storage"}}}
                         Cell Storage:
                     </label>
-                    <select class="custom-select value-select-repertoire" name="cell_storage" id="cell_storage" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select-sample" name="cell_storage" id="cell_storage" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="true" {{#if value.cell_storage}}selected{{/if}}>True</option>
                       <option value="false"{{#unless value.cell_storage}}selected{{/unless}}>False</option>
                     </select>
@@ -357,7 +357,7 @@
                         {{{FieldHelpPopover "CellProcessing" "cell_quality"}}}
                         Cell Quality:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="cell_quality" id="cell_quality" placeholder="" value="{{value.cell_quality}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="cell_quality" id="cell_quality" placeholder="" value="{{value.cell_quality}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Cell Quality.
                     </div>
@@ -372,7 +372,7 @@
                         {{{FieldHelpPopover "CellProcessing" "cell_isolation"}}}
                         Cell Isolation:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="cell_isolation" id="cell_isolation" placeholder="" value="{{value.cell_isolation}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="cell_isolation" id="cell_isolation" placeholder="" value="{{value.cell_isolation}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Cell Isolation.
                     </div>
@@ -387,7 +387,7 @@
                         {{{FieldHelpPopover "CellProcessing" "cell_processing_protocol"}}}
                         Cell Processing Protocol:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="cell_processing_protocol" id="cell_processing_protocol" placeholder="" value="{{value.cell_processing_protocol}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="cell_processing_protocol" id="cell_processing_protocol" placeholder="" value="{{value.cell_processing_protocol}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Cell Processing Protocol.
                     </div>
@@ -402,7 +402,7 @@
     <div class="row general-table-row align-items-center">
         <div class="col">
         <form method="post" role="form" id="edit-nucleic-form {{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
-            <div class="form-row project-repertoire-row align-items-center">
+            <div class="form-row align-items-center">
                   <!--<label><b>Nucleic Acid:</b></label>-->
                 <div class="form-group col-md-3">
                     <label for="template_class">
@@ -414,7 +414,7 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "template_class"}}}
                         Template Class:
                     </label>
-                    <select class="custom-select value-select-repertoire" name="template_class" id="template_class" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select-sample" name="template_class" id="template_class" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each template_class_enum}}
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.template_class}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
@@ -430,7 +430,7 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "template_quality"}}}
                         Template Quality:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="template_quality" id="template_quality" placeholder="" value="{{value.template_quality}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="template_quality" id="template_quality" placeholder="" value="{{value.template_quality}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Template Quality.
                     </div>
@@ -445,7 +445,7 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "template_amount"}}}
                         Template Amount:
                     </label>
-                    <input type="number" class="form-control form-control-repertoire" name="template_amount" id="template_amount" placeholder="" value="{{value.template_amount}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="number" class="form-control form-control-sample" name="template_amount" id="template_amount" placeholder="" value="{{value.template_amount}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Template Amount number.
                     </div>
@@ -460,7 +460,7 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "template_amount_unit"}}}
                         Template Amount Unit:
                     </label>
-                    <select class="custom-select ontology-select-repertoire" name="template_amount_unit" id="template_amount_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select ontology-select-sample" name="template_amount_unit" id="template_amount_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option id="" value="" {{#unless value.template_amount_unit}}selected{{/unless}}>null</option>
                       <option id="UO:0000025" value="picogram" {{#ifEquals value.template_amount_unit.id "UO:0000025"}}selected{{/ifEquals}}>picogram(s)</option>
                       <option id="UO:0000024" value="nanogram" {{#ifEquals value.template_amount_unit.id "UO:0000024"}}selected{{/ifEquals}}>nanogram(s)</option>
@@ -471,7 +471,7 @@
                     </select>
                 </div>
             </div>
-            <div class="form-row project-repertoire-row">
+            <div class="form-row project-sample-row">
                 <div class="form-group col-md-3">
                     <label for="library_generation_method">
                         <span>
@@ -482,7 +482,7 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "library_generation_method"}}}
                         Library Generation Method:
                     </label>
-                    <select class="custom-select value-select-repertoire" name="library_generation_method" id="library_generation_method" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select-sample" name="library_generation_method" id="library_generation_method" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each library_generation_method_enum}}
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.library_generation_method}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
@@ -498,7 +498,7 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "library_generation_protocol"}}}
                         Library Generation Protocol:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="library_generation_protocol" id="library_generation_protocol" placeholder="" value="{{value.library_generation_protocol}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="library_generation_protocol" id="library_generation_protocol" placeholder="" value="{{value.library_generation_protocol}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Library Generation Protocol.
                     </div>
@@ -513,7 +513,7 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "library_generation_kit_version"}}}
                         Library Generation Kit Version:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="library_generation_kit_version" id="library_generation_kit_version" placeholder="" value="{{value.library_generation_kit_version}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="library_generation_kit_version" id="library_generation_kit_version" placeholder="" value="{{value.library_generation_kit_version}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Library Generation Kit Version.
                     </div>
@@ -528,14 +528,14 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "complete_sequences"}}}
                         Complete Sequences:
                     </label>
-                    <select class="custom-select value-select-repertoire" name="complete_sequences" id="complete_sequences" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select-sample" name="complete_sequences" id="complete_sequences" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each complete_sequences_enum}}
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.complete_sequences}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
                     </select>
                 </div>
             </div>
-            <div class="form-row project-repertoire-row">
+            <div class="form-row">
                 <div class="form-group col-md-2">
                     <label for="physical_linkage">
                         <span>
@@ -546,7 +546,7 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "physical_linkage"}}}
                         Physical Linkage:
                     </label>
-                    <select class="custom-select value-select-repertoire" name="physical_linkage" id="physical_linkage" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select-sample" name="physical_linkage" id="physical_linkage" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each physical_linkage_enum}}
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.physical_linkage}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
@@ -562,7 +562,7 @@
                         {{{FieldHelpPopover "PCRTarget" "pcr_target_locus"}}}
                         PCR Target Locus:
                     </label>
-                    <select class="custom-select value-select-repertoire" name="pcr_target_locus" id="pcr_target_locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select-sample" name="pcr_target_locus" id="pcr_target_locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each pcr_target_locus_enum}}
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target_locus}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
@@ -578,7 +578,7 @@
                         {{{FieldHelpPopover "PCRTarget" "forward_pcr_primer_target_location"}}}
                         Forward PCR Primer Target Location:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="forward_pcr_primer_target_location" id="forward_pcr_primer_target_location" placeholder="" value="{{value.forward_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="forward_pcr_primer_target_location" id="forward_pcr_primer_target_location" placeholder="" value="{{value.forward_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Forward PCR Primer Target Location.
                     </div>
@@ -593,7 +593,7 @@
                         {{{FieldHelpPopover "PCRTarget" "reverse_pcr_primer_target_location"}}}
                         Reverse PCR Primer Target Location:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="reverse_pcr_primer_target_location" id="reverse_pcr_primer_target_location" placeholder="" value="{{value.reverse_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="reverse_pcr_primer_target_location" id="reverse_pcr_primer_target_location" placeholder="" value="{{value.reverse_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Reverse PCR Primer Target Location.
                     </div>
@@ -608,13 +608,13 @@
                         {{{FieldHelpPopover "SequencingRun" "sequencing_run_id"}}}
                         Sequencing Run ID:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="sequencing_run_id" id="sequencing_run_id" placeholder="" value="{{value.sequencing_run_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_run_id" id="sequencing_run_id" placeholder="" value="{{value.sequencing_run_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Sequencing Run ID.
                     </div>
                 </div>
             </div>
-            <div class="form-row project-repertoire-row">
+            <div class="form-row">
                 <div class="form-group col-md-2">
                     <label for="total_reads_passing_qc_filter">
                         <span>
@@ -625,7 +625,7 @@
                         {{{FieldHelpPopover "SequencingRun" "total_reads_passing_qc_filter"}}}
                         Total Reads Passing QC Filter:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="total_reads_passing_qc_filter" id="total_reads_passing_qc_filter" placeholder="" value="{{value.total_reads_passing_qc_filter}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="total_reads_passing_qc_filter" id="total_reads_passing_qc_filter" placeholder="" value="{{value.total_reads_passing_qc_filter}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Total Reads Passing QC Filter.
                     </div>
@@ -640,7 +640,7 @@
                         {{{FieldHelpPopover "SequencingRun" "sequencing_platform"}}}
                         Sequencing Platform:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="sequencing_platform" id="sequencing_platform" placeholder="" value="{{value.sequencing_platform}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_platform" id="sequencing_platform" placeholder="" value="{{value.sequencing_platform}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Sequencing Platform.
                     </div>
@@ -655,7 +655,7 @@
                         {{{FieldHelpPopover "SequencingRun" "sequencing_facility"}}}
                         Sequencing Facility:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="sequencing_facility" id="sequencing_facility" placeholder="" value="{{value.sequencing_facility}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_facility" id="sequencing_facility" placeholder="" value="{{value.sequencing_facility}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Sequencing Facility.
                     </div>
@@ -670,7 +670,7 @@
                         {{{FieldHelpPopover "SequencingRun" "sequencing_run_date"}}}
                         Sequencing Run Date:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="sequencing_run_date" id="sequencing_run_date" placeholder="" value="{{value.sequencing_run_date}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_run_date" id="sequencing_run_date" placeholder="" value="{{value.sequencing_run_date}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Sequencing Run Date.
                     </div>
@@ -685,7 +685,7 @@
                         {{{FieldHelpPopover "SequencingRun" "sequencing_kit"}}}
                         Sequencing Kit:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="sequencing_kit" id="sequencing_kit" placeholder="" value="{{value.sequencing_kit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_kit" id="sequencing_kit" placeholder="" value="{{value.sequencing_kit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Sequencing Kit.
                     </div>
@@ -700,7 +700,7 @@
                         {{{FieldHelpPopover "SequencingRun" "sequencing_files"}}}
                         Sequencing Files:
                     </label>
-                    <input type="text" class="form-control form-control-repertoire" name="sequencing_files" id="sequencing_files" placeholder="" value="{{value.sequencing_files}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_files" id="sequencing_files" placeholder="" value="{{value.sequencing_files}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter valid Sequencing Files.
                     </div>
