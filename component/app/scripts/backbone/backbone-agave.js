@@ -415,6 +415,10 @@ Agave.MetadataModel = Agave.Model.extend({
 
         // cast to appropriate type from schema before setting
         let type = this.schema.type(name);
+        if (!type) {
+            console.log('Internal error: trying to update field (' + name + ') which is not in schema!');
+            return;
+        }
         if (type == 'boolean') {
             if (newval == null) value[name] = null;
             if (newval == "true") value[name] = true;
