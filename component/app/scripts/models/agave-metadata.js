@@ -408,6 +408,33 @@ export var Repertoire = Agave.MetadataModel.extend({
         else return errors;
     },
 
+    // is model different from given model
+    hasChangedFromModel: function(origModel) {
+        // normal backbone hasChanged() will only check the model attributes
+        // and not check any submodels.
+        var changed = this.changedAttributes(origModel.attributes);
+        if (changed) return true;
+
+        // subject, should not be null
+        if ((!this.subject) || (!origModel.subject)) return true;
+        changed = this.subject.changedAttributes(origModel.subject.attributes);
+        if (changed) return true;
+
+        // samples, should not be null or empty
+        if ((!this.sample) || (!origModel.sample)) return true;
+        if ((this.sample.length == 0) || (origModel.sample.length == 0)) return true;
+        if (this.sample.length != origModel.sample.length) return true;
+        for (let i = 0; i < this.sample.length; ++i) {
+            var s = this.sample.at(i);
+            var os = origModel.sample.get(s.get('uuid'));
+            if (!os) return true;
+            changed = s.changedAttributes(os.attributes);
+            if (changed) return true;
+        }
+
+        // made it this far then everything is the same
+        return false;
+    },
 
     // repertoire contains sub-models and sub-collections so need handle it specially
     deepClone: function() {
