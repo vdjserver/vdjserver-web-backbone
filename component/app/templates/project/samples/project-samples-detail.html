@@ -125,7 +125,7 @@
                         </span>
                         <!-- Popover -->
                         {{{FieldHelpPopover "Sample" "collection_time_point_relative"}}}
-                        Collection Time Point Relative:
+                        Collection Time:
                     </label>
                     <input type="number" class="form-control form-control-sample" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" value="{{value.collection_time_point_relative}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
@@ -576,7 +576,7 @@
                         </span>
                         <!-- Popover -->
                         {{{FieldHelpPopover "PCRTarget" "forward_pcr_primer_target_location"}}}
-                        Forward PCR Primer Target Location:
+                        Forward Target Location:
                     </label>
                     <input type="text" class="form-control form-control-sample" name="forward_pcr_primer_target_location" id="forward_pcr_primer_target_location" placeholder="" value="{{value.forward_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
@@ -591,7 +591,7 @@
                         </span>
                         <!-- Popover -->
                         {{{FieldHelpPopover "PCRTarget" "reverse_pcr_primer_target_location"}}}
-                        Reverse PCR Primer Target Location:
+                        Reverse Target Location:
                     </label>
                     <input type="text" class="form-control form-control-sample" name="reverse_pcr_primer_target_location" id="reverse_pcr_primer_target_location" placeholder="" value="{{value.reverse_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
@@ -606,7 +606,7 @@
                         </span>
                         <!-- Popover -->
                         {{{FieldHelpPopover "SequencingRun" "sequencing_run_id"}}}
-                        Sequencing Run ID:
+                        Sequencing ID:
                     </label>
                     <input type="text" class="form-control form-control-sample" name="sequencing_run_id" id="sequencing_run_id" placeholder="" value="{{value.sequencing_run_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
@@ -615,22 +615,7 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-2">
-                    <label for="total_reads_passing_qc_filter">
-                        <span>
-                            <!-- Tooltip -->
-                        {{{FieldStar "SequencingRun" "total_reads_passing_qc_filter"}}}
-                        </span>
-                        <!-- Popover -->
-                        {{{FieldHelpPopover "SequencingRun" "total_reads_passing_qc_filter"}}}
-                        Total Reads Passing QC Filter:
-                    </label>
-                    <input type="text" class="form-control form-control-sample" name="total_reads_passing_qc_filter" id="total_reads_passing_qc_filter" placeholder="" value="{{value.total_reads_passing_qc_filter}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter a valid Total Reads Passing QC Filter.
-                    </div>
-                </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-3">
                     <label for="sequencing_platform">
                         <span>
                             <!-- Tooltip -->
@@ -645,7 +630,7 @@
                         Please enter a valid Sequencing Platform.
                     </div>
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-3">
                     <label for="sequencing_facility">
                         <span>
                             <!-- Tooltip -->
@@ -668,7 +653,7 @@
                                     </span>
                         <!-- Popover -->
                         {{{FieldHelpPopover "SequencingRun" "sequencing_run_date"}}}
-                        Sequencing Run Date:
+                        Sequencing Date:
                     </label>
                     <input type="text" class="form-control form-control-sample" name="sequencing_run_date" id="sequencing_run_date" placeholder="" value="{{value.sequencing_run_date}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
