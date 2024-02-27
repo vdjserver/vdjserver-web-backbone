@@ -1,5 +1,5 @@
 <div class="row general-button-bar">
-    <div class="col">
+    <div class="col-md-7">
         <div class="btn-group " role="group" aria-label="Button group">
             <button type="button" class="btn btn-primary general-buttons-margin-right" id="project-repertoires-details-summary">
                 {{#if detailsMode}}Summary{{/if}}
@@ -9,7 +9,7 @@
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
               <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" id="project-repertoires-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Sort By
+                Sort
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 <button class="dropdown-item" type="button" id="project-repertoires-sort-select" name="repertoire_name">
@@ -108,13 +108,13 @@
         </div>
     </div>
 
-    <div class="general-buttons-right">
+    <div class="col-md-5 general-buttons-right">
         <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-cancel general-buttons-margin-right" id="project-repertoires-revert-changes" {{#unless has_edits}}disabled{{/unless}}>Revert Changes</button>
+            <button type="button" class="btn btn-cancel general-buttons-margin-left" id="project-repertoires-revert-changes" {{#unless has_edits}}disabled{{/unless}}>Revert Changes</button>
         </div>
 
         <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-save general-buttons-margin-right" id="project-repertoires-save-changes" {{#unless has_edits}}disabled{{/unless}}>Validate and Save Changes</button>
+            <button type="button" class="btn btn-save general-buttons-margin-left" id="project-repertoires-save-changes" {{#unless has_edits}}disabled{{/unless}}>Validate/Save Changes</button>
         </div>
     </div>
 </div>
