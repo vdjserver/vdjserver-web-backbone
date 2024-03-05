@@ -1,0 +1,9 @@
+    <div class="row community-data-table-footer">
+        <div class="col community-data-table-caption">
+            Showing {{firstPageRecord}}-{{lastPageRecord}} of {{num_repertoires}} repertoires
+        </div>
+        <div class="col-md-4 project-buttons-right">
+           <button type="button" class="btn btn-pagination" id="pagination-previous-page" {{#if firstPage}}disabled{{/if}}>Previous Page</button>
+           <button type="button" class="btn btn-pagination project-buttons-margin-left" id="pagination-next-page" {{#if lastPage}}disabled{{/if}}>Next Page</button>
+        </div>
+    </div>
