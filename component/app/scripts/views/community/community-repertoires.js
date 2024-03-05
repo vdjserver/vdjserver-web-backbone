@@ -184,7 +184,10 @@ var RepertoireTable = Marionette.View.extend({
     },
 
     getNumRepertoires() {
-        return this.model.get('repos').get('vdjserver').get('repertoires').length;
+        var repos = this.model.get('repos');
+        var repository = repos.get(this.repository_id);
+        var objects = repository.get('repertoires');
+        return objects.length;
     },
 
     updatePageRecords() {
