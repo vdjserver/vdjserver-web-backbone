@@ -150,6 +150,15 @@ var SubjectsView = Marionette.View.extend({
         this.showChildView('tableRegion', this.dataView);
     },
 
+    templateContext() {
+        var num_subjects = 0;
+        num_subjects = this.model.get('repos').get('vdjserver').get('subjects').length;
+
+        return {
+            num_subjects: num_subjects
+        }
+    },
+
     constructPages() {
         var repos = this.model.get('repos');
         var repository = repos.get(this.repository_id);
