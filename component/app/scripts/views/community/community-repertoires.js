@@ -80,9 +80,9 @@ var RepertoireListView = Marionette.CollectionView.extend({
     // childViewContainer: 'tbody'
 });
 
-import repertoire_page_template from 'Templates/community/community-repertoire-paging.html';
+import repertoires_page_template from 'Templates/community/community-repertoires-paging.html';
 var RepertoirePageView = Marionette.View.extend({
-    template: Handlebars.compile(repertoire_page_template),
+    template: Handlebars.compile(repertoires_page_template),
 
     initialize: function(parameters) {
         // our controller
@@ -91,7 +91,7 @@ var RepertoirePageView = Marionette.View.extend({
         if (parameters && parameters.repository_id)
             this.repository_id = parameters.repository_id;
 
-        this.num_repertoires = parameters.num_repertoires;
+        this.numRepertoires = parameters.numRepertoires;
         this.firstPageRecord = parameters.firstPageRecord;
         this.lastPageRecord = parameters.lastPageRecord;
         this.firstPage = parameters.firstPage;
@@ -100,7 +100,7 @@ var RepertoirePageView = Marionette.View.extend({
 
     templateContext() {
         return {
-            num_repertoires: this.num_repertoires,
+            numRepertoires: this.numRepertoires,
             firstPageRecord: this.firstPageRecord,
             lastPageRecord: this.lastPageRecord,
             firstPage: this.firstPage,
@@ -135,35 +135,36 @@ var RepertoireTable = Marionette.View.extend({
         this.pageQty = 10;
         this.currentPage = 0;
 
-        this.num_repertoires = this.getNumRepertoires();
+        this.numRepertoires = this.getNumRepertoires();
         this.firstPageRecord = (this.currentPage * this.pageQty) + 1;
-        this.lastPageRecord = Math.min(this.num_repertoires, this.pageQty * (this.currentPage + 1));
-        this.total_pages = Math.ceil(this.num_repertoires/this.pageQty);
+        this.lastPageRecord = Math.min(this.numRepertoires, this.pageQty * (this.currentPage + 1));
+        this.totalPages = Math.ceil(this.numRepertoires/this.pageQty);
         if(this.currentPage == 0) this.firstPage = true; else this.firstPage = false;
-        if(this.currentPage == (this.total_pages - 1)) this.lastPage = true; else this.lastPage = false;
+        if(this.currentPage == (this.totalPages - 1)) this.lastPage = true; else this.lastPage = false;
 
         var repos = this.model.get('repos');
         var repository = repos.get(this.repository_id);
         var objects = repository.get('repertoires');
         this.paginatedObjects = objects.clone();
+
         this.constructPages();
         this.dataView = new RepertoireListView({ collection: this.paginatedObjects });
         this.showChildView('tableRegion', this.dataView);
-        this.pageView = new RepertoirePageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, num_repertoires: this.num_repertoires, firstPage: this.firstPage, lastPage: this.lastPage });
+        this.pageView = new RepertoirePageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numRepertoires: this.numRepertoires, firstPage: this.firstPage, lastPage: this.lastPage });
         this.showChildView('pageRegion', this.pageView);
     },
 
     templateContext() {
-        var num_repertoires = this.getNumRepertoires();
+        var numRepertoires = this.getNumRepertoires();
         var firstPageRecord = this.currentPage + 1;
-        var lastPageRecord = Math.min(num_repertoires, this.pageQty * (this.currentPage + 1));
-        var total_pages = Math.ceil(num_repertoires/this.pageQty);
+        var lastPageRecord = Math.min(numRepertoires, this.pageQty * (this.currentPage + 1));
+        var totalPages = Math.ceil(numRepertoires/this.pageQty);
         var lastPage = false;
         var firstPage = true;
         this.updatePageRecords();
 
         return {
-            num_repertoires: num_repertoires,
+            numRepertoires: numRepertoires,
             firstPageRecord : firstPageRecord,
             lastPageRecord : lastPageRecord
         }
@@ -193,9 +194,9 @@ var RepertoireTable = Marionette.View.extend({
     updatePageRecords() {
         this.firstPageRecord = (this.currentPage * this.pageQty) + 1;
         this.lastPageRecord = Math.min(this.getNumRepertoires(), this.pageQty * (this.currentPage + 1));
-        this.total_pages = Math.ceil(this.getNumRepertoires()/this.pageQty);
+        this.totalPages = Math.ceil(this.getNumRepertoires()/this.pageQty);
         if(this.currentPage == 0) this.firstPage = true; else this.firstPage = false;
-        if(this.currentPage == (this.total_pages - 1)) this.lastPage = true; else this.lastPage = false;
+        if(this.currentPage == (this.totalPages - 1)) this.lastPage = true; else this.lastPage = false;
     },
 
     previousPage() {
@@ -203,7 +204,7 @@ var RepertoireTable = Marionette.View.extend({
         if (this.currentPage < 0) this.currentPage = 0;
         this.paginatedObjects.reset(this.pages[this.currentPage]);
         this.updatePageRecords();
-        this.pageView = new RepertoirePageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, num_repertoires: this.num_repertoires, firstPage: this.firstPage, lastPage: this.lastPage });
+        this.pageView = new RepertoirePageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numRepertoires: this.numRepertoires, firstPage: this.firstPage, lastPage: this.lastPage });
         this.showChildView('pageRegion', this.pageView);
     },
 
@@ -212,7 +213,7 @@ var RepertoireTable = Marionette.View.extend({
         if (this.currentPage >= this.pages.length) this.currentPage = this.pages.length - 1;
         this.paginatedObjects.reset(this.pages[this.currentPage]);
         this.updatePageRecords();
-        this.pageView = new RepertoirePageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, num_repertoires: this.num_repertoires, firstPage: this.firstPage, lastPage: this.lastPage });
+        this.pageView = new RepertoirePageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numRepertoires: this.numRepertoires, firstPage: this.firstPage, lastPage: this.lastPage });
         this.showChildView('pageRegion', this.pageView);
     },
 
@@ -227,7 +228,7 @@ var RepertoireTable = Marionette.View.extend({
         this.dataView = new RepertoireListView({ collection: this.paginatedObjects });
         this.showChildView('tableRegion', this.dataView);
         this.updatePageRecords();
-        this.pageView = new RepertoirePageView({ collection: this.paginatedObjects, firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, num_repertoires: this.num_repertoires, firstPage: this.firstPage, lastPage: this.lastPage });
+        this.pageView = new RepertoirePageView({ collection: this.paginatedObjects, firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numRepertoires: this.numRepertoires, firstPage: this.firstPage, lastPage: this.lastPage });
         this.showChildView('pageRegion', this.pageView);
     },
 

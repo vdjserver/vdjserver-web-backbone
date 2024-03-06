@@ -109,7 +109,7 @@ var SubjectRowView = Marionette.View.extend({
 });
 
 import subject_table_template from 'Templates/community/subject-table.html';
-var SubjectsListView = Marionette.CollectionView.extend({
+var SubjectListView = Marionette.CollectionView.extend({
     //tagName: 'table',
     //className: 'table table-condensed table-bordered',
     template: Handlebars.compile(subject_table_template),
@@ -117,12 +117,42 @@ var SubjectsListView = Marionette.CollectionView.extend({
     // childViewContainer: 'tbody'
 });
 
+import subjects_page_template from 'Templates/community/community-subjects-paging.html';
+var SubjectPageView = Marionette.View.extend({
+    template: Handlebars.compile(subjects_page_template),
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+        if (parameters && parameters.repository_id)
+            this.repository_id = parameters.repository_id;
+
+        this.numSubjects = parameters.numSubjects;
+        this.firstPageRecord = parameters.firstPageRecord;
+        this.lastPageRecord = parameters.lastPageRecord;
+        this.firstPage = parameters.firstPage;
+        this.lastPage = parameters.lastPage;
+    },
+
+    templateContext() {
+        return {
+            numSubjects: this.numSubjects,
+            firstPageRecord: this.firstPageRecord,
+            lastPageRecord: this.lastPageRecord,
+            firstPage: this.firstPage,
+            lastPage: this.lastPage
+        }
+    },
+});
+
 import subjects_template from 'Templates/community/community-subjects.html';
-var SubjectsView = Marionette.View.extend({
+var SubjectTable = Marionette.View.extend({
     template: Handlebars.compile(subjects_template),
     // one region for contents
     regions: {
-        tableRegion: '#community-subjects-table'
+        tableRegion: '#community-subjects-table',
+        pageRegion: '#community-subjects-paging'
     },
     events:  {
         'click #pagination-previous-page': 'previousPage',
@@ -140,22 +170,39 @@ var SubjectsView = Marionette.View.extend({
         this.pageQty = 10;
         this.currentPage = 0;
 
+        this.numSubjects = this.getNumSubjects();
+        this.firstPageRecord = (this.currentPage * this.pageQty) + 1;
+        this.lastPageRecord = Math.min(this.numSubjects, this.pageQty * (this.currentPage + 1));
+        this.totalPages = Math.ceil(this.numSubjects/this.pageQty);
+        if(this.currentPage == 0) this.firstPage = true; else this.firstPage = false;
+        if(this.currentPage == (this.totalPages - 1)) this.lastPage = true; else this.lastPage = false;
+
         var repos = this.model.get('repos');
         var repository = repos.get(this.repository_id);
-        var objects = repository.get('repertoires');
+        var objects = repository.get('subjects');
         this.paginatedObjects = objects.clone();
 
         this.constructPages();
-        this.dataView = new SubjectsListView({ collection: this.paginatedObjects });
+        this.dataView = new SubjectListView({ collection: this.paginatedObjects });
         this.showChildView('tableRegion', this.dataView);
+        this.pageView = new SubjectPageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numSubjects: this.numSubjects, firstPage: this.firstPage, lastPage: this.lastPage });
+        this.showChildView('pageRegion', this.pageView);
+
     },
 
     templateContext() {
-        var num_subjects = 0;
-        num_subjects = this.model.get('repos').get('vdjserver').get('subjects').length;
+        var numSubjects = this.getNumSubjects();
+        var firstPageRecord = this.currentPage + 1;
+        var lastPageRecord = Math.min(numSubjects, this.pageQty * (this.currentPage + 1));
+        var totalPages = Math.ceil(numSubjects/this.pageQty);
+        var lastPage = false;
+        var firstPage = true;
+        this.updatePageRecords();
 
         return {
-            num_subjects: num_subjects
+            numSubjects: numSubjects,
+            firstPageRecord : firstPageRecord,
+            lastPageRecord : lastPageRecord
         }
     },
 
@@ -173,26 +220,53 @@ var SubjectsView = Marionette.View.extend({
         this.paginatedObjects.reset(this.pages[this.currentPage]);
     },
 
+    getNumSubjects() {
+        var repos = this.model.get('repos');
+        var repository = repos.get(this.repository_id);
+        var objects = repository.get('subjects');
+        return objects.length;
+    },
+
+    updatePageRecords() {
+        this.firstPageRecord = (this.currentPage * this.pageQty) + 1;
+        this.lastPageRecord = Math.min(this.getNumSubjects(), this.pageQty * (this.currentPage + 1));
+        this.totalPages = Math.ceil(this.getNumSubjects()/this.pageQty);
+        if(this.currentPage == 0) this.firstPage = true; else this.firstPage = false;
+        if(this.currentPage == (this.totalPages - 1)) this.lastPage = true; else this.lastPage = false;
+    },
+
     previousPage() {
         --this.currentPage;
         if (this.currentPage < 0) this.currentPage = 0;
         this.paginatedObjects.reset(this.pages[this.currentPage]);
+        this.updatePageRecords();
+        this.pageView = new SubjectPageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numSubjects: this.numSubjects, firstPage: this.firstPage, lastPage: this.lastPage });
+        this.showChildView('pageRegion', this.pageView);
     },
 
     nextPage() {
         ++this.currentPage;
         if (this.currentPage >= this.pages.length) this.currentPage = this.pages.length - 1;
         this.paginatedObjects.reset(this.pages[this.currentPage]);
+        this.updatePageRecords();
+        this.pageView = new SubjectPageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numSubjects: this.numSubjects, firstPage: this.firstPage, lastPage: this.lastPage });
+        this.showChildView('pageRegion', this.pageView);
     },
 
     pageSize(e) {
         var x = this.pageQty * this.currentPage;
-        this.pageQty = Number(e.target.value);
+
+        if(e.target.value != "All") this.pageQty = Number(e.target.value);
+        else this.pageQty = this.getNumSubjects();
+
         this.currentPage = Math.floor(x / this.pageQty);
         this.constructPages();
-        this.dataView = new SubjectsListView({ collection: this.paginatedObjects });
+        this.dataView = new SubjectListView({ collection: this.paginatedObjects });
         this.showChildView('tableRegion', this.dataView);
+        this.updatePageRecords();
+        this.pageView = new SubjectPageView({ collection: this.paginatedObjects, firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numSubjects: this.numSubjects, firstPage: this.firstPage, lastPage: this.lastPage });
+        this.showChildView('pageRegion', this.pageView);
     },
 });
 
-export default SubjectsView;
+export default SubjectTable;
