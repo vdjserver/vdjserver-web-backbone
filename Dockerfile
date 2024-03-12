@@ -40,6 +40,7 @@ RUN npm install -g \
 
 # Install sass dependencies
 RUN gem install sass -v 3.4.25
+RUN gem install ffi -f
 RUN gem install compass
 
 RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-backbone
