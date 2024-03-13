@@ -214,6 +214,46 @@ export var Subject = Agave.MetadataModel.extend({
         }
     },
 
+    getDiagnosesDisplay: function() {
+        var diagnoses = [];
+        var value = this.get('value');
+        var str = "";
+        for(let i=0; i<value.diagnosis.length; i++) {
+            str = "";
+            if(value.diagnosis[i].disease_diagnosis.label != null) {
+                str = value.diagnosis[i].disease_diagnosis.label;
+                if(value.diagnosis[i].disease_diagnosis.id != null)
+                    str = str + " " +  value.diagnosis[i].disease_diagnosis.id;
+            } else if(value.diagnosis[i].disease_diagnosis.id != null)
+                str = value.diagnosis[i].disease_diagnosis.id;
+
+            if(value.diagnosis[i].study_group_description != null)
+                if(str.length > 0) str = str + " (" + value.diagnosis[i].study_group_description + ")";
+                else str = "(" + value.diagnosis[i].study_group_description + ")";
+
+            diagnoses.push(str);
+        }
+        var strFormatted = "";
+        var first = true;
+        var diagnoses2 = [];
+        diagnoses2 = this.removeDuplicates(diagnoses);
+        for(let j=0; j<diagnoses2.length; j++) {
+            if(first) {
+                if(diagnoses2[j].length > 0) {
+                    strFormatted = strFormatted + diagnoses2[j];
+                    first = false;
+                }
+            } else if(diagnoses2[j].length > 0) {
+                strFormatted = strFormatted + ", " + diagnoses2[j];
+            }
+        }
+        return strFormatted;
+    },
+
+    removeDuplicates(arr) {
+        return [...new Set(arr)];
+    },
+
     getAgeDisplay: function() {
         var text = '';
         // TODO: check schema version

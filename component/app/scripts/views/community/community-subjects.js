@@ -106,6 +106,18 @@ var SubjectRowView = Marionette.View.extend({
     regions: {
         detailRegion: '#subject-details'
     },
+
+/*initialize() {
+var value = this.model.get('value');
+console.log("length: " + value.diagnosis.length);
+}, */
+
+    templateContext() {
+        return {
+            diagnoses: this.model.getDiagnosesDisplay()
+        }
+    },
+
 });
 
 import subject_table_template from 'Templates/community/subject-table.html';
