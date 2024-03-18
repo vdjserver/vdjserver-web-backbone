@@ -110,7 +110,8 @@ HandlebarsUtilities.registerAllHelpers = function() {
             description += '<em>Nullable:</em> Value may be blank.<br>';
         else
             description += '<em>Nullable:</em> Value must be provided.<br>';
-        description += '<em>Description:</em> ' + field['description'].replace(/"/g, "'") + '<br>';
+        if (field['description']) description += '<em>Description:</em> ' + field['description'].replace(/"/g, "'") + '<br>';
+        else description += '<em>Description:</em> description missing<br>';
         if (field['example']) {
             if (! Array.isArray(field['example'])) {
                 if (schema.is_ontology(field_name))
