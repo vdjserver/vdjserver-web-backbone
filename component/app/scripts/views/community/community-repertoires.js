@@ -47,6 +47,35 @@ var RepertoireRowView = Marionette.View.extend({
     'click .tissue': 'showRepDetails',
   },
 
+  templateContext() {
+      var sample = this.model.get('sample');
+      var sampleIdSet = new Set();
+      var tissueSet = new Set();
+      var diseaseSet = new Set();
+      var cellSet = new Set();
+      for(let i=0; i<sample.length; i++) {
+         if(sample[i].sample_id != null)
+             sampleIdSet.add(sample[i].sample_id);
+         if(sample[i].tissue.id != null)
+             tissueSet.add(sample[i].tissue.id);
+         if(sample[i].disease_state_sample != null)
+             diseaseSet.add(sample[i].disease_state_sample);
+         if(sample[i].cell_subset.id != null)
+             cellSet.add(sample[i].disease_state_sample);
+      }
+      var sampleIdFormatted = Array.from(sampleIdSet.values()).join(", ");
+      var tissueFormatted = Array.from(tissueSet.values()).join(", ");
+      var diseaseFormatted = Array.from(diseaseSet.values()).join(", ");
+      var cellFormatted = Array.from(cellSet.values()).join(", ");
+
+      return {
+          sample_id: sampleIdFormatted,
+          tissue: tissueFormatted,
+          disease_state_sample: diseaseFormatted,
+          cell_subset: cellFormatted
+      }
+  },
+
   showRepDetails(detail_view) {
       $(event.target).toggleClass("selected-details");
 

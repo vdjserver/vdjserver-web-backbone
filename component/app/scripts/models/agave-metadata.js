@@ -215,7 +215,7 @@ export var Subject = Agave.MetadataModel.extend({
     },
 
     getDiagnosesDisplay: function() {
-        var diagnoses = [];
+        var diagnosesSet = new Set();
         var value = this.get('value');
         var str = "";
         for(let i=0; i<value.diagnosis.length; i++) {
@@ -231,27 +231,10 @@ export var Subject = Agave.MetadataModel.extend({
                 if(str.length > 0) str = str + " (" + value.diagnosis[i].study_group_description + ")";
                 else str = "(" + value.diagnosis[i].study_group_description + ")";
 
-            diagnoses.push(str);
+            diagnosesSet.add(str);
         }
-        var strFormatted = "";
-        var first = true;
-        var diagnoses2 = [];
-        diagnoses2 = this.removeDuplicates(diagnoses);
-        for(let j=0; j<diagnoses2.length; j++) {
-            if(first) {
-                if(diagnoses2[j].length > 0) {
-                    strFormatted = strFormatted + diagnoses2[j];
-                    first = false;
-                }
-            } else if(diagnoses2[j].length > 0) {
-                strFormatted = strFormatted + ", " + diagnoses2[j];
-            }
-        }
-        return strFormatted;
-    },
-
-    removeDuplicates(arr) {
-        return [...new Set(arr)];
+        var setFormatted = Array.from(diagnosesSet.values()).join(", ");
+        return setFormatted;
     },
 
     getAgeDisplay: function() {
@@ -317,6 +300,7 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         if (! sampleProcessingSchema) sampleProcessingSchema = new airr.SchemaDefinition('SampleProcessing');
         this.schema = sampleProcessingSchema;
     },
+
     url: function() {
         return '/meta/v2/data/' + this.get('uuid');
     },
