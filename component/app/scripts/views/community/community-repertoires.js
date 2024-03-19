@@ -61,7 +61,7 @@ var RepertoireRowView = Marionette.View.extend({
          if(sample[i].disease_state_sample != null)
              diseaseSet.add(sample[i].disease_state_sample);
          if(sample[i].cell_subset.id != null)
-             cellSet.add(sample[i].disease_state_sample);
+             cellSet.add(sample[i].cell_subset.id);
       }
       var sampleIdFormatted = Array.from(sampleIdSet.values()).join(", ");
       var tissueFormatted = Array.from(tissueSet.values()).join(", ");
