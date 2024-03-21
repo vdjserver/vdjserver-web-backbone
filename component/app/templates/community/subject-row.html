@@ -1,20 +1,19 @@
             <div class="row community-data-table-row">
-                <div class="col-md-2">
+                <div class="col-md-2 text-truncate" title="{{value.subject_id}}">
                     {{value.subject_id}}
                 </div>
-                <div class="col-md-2">
-                    {{value.sex}} / {{species_display}}
+                <div class="col-md-2 text-truncate" title="{{sex_species}}">
+                    {{sex_species}}
                 </div>
-                <div class="col-md-2">
-                    {{value.race}} / {{value.ethnicity}}
+                <div class="col-md-2 text-truncate" title="{{race_ethnicity}}">
+                    {{race_ethnicity}}
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-1 text-truncate" title="{{age_display}}">
                     {{age_display}}
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 text-truncate" title="{{diagnoses}}">
                     {{diagnoses}}
                 </div>
-                <!-- <div>Diagnosis Data</div> -->
             </div>
 
             <!-- Details attach after each subject row -->

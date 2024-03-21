@@ -108,7 +108,28 @@ var SubjectRowView = Marionette.View.extend({
     },
 
     templateContext() {
+        var value = this.model.get('value');
+
+        var sex = value['sex'];
+        var species = this.model.getSpeciesDisplay();
+        var race = value['race'];
+        var ethnicity = value['ethnicity'];
+
+        var sex_species = "";
+        var race_ethnicity = "";
+
+        if(sex == null && species != null) sex_species = species
+        else if(species == null && sex != null) sex_species = sex
+        else if(sex != null && species != null) sex_species = sex + "/" + species
+
+        if(race == null && ethnicity != null) race_ethnicity = ethnicity
+        else if(ethnicity == null && race != null) race_ethnicity = race
+        else if(race != null && ethnicity != null) race_ethnicity = race + "/" + ethnicity
+
         return {
+            age_display: this.model.getAgeDisplay(),
+            sex_species: sex_species,
+            race_ethnicity: race_ethnicity,
             diagnoses: this.model.getDiagnosesDisplay()
         }
     },
