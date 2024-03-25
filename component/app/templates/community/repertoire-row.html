@@ -1,6 +1,9 @@
             <div class="row community-data-table-row">
                 <div class="col-md-2 text-truncate" title="{{repertoire.value.repertoire_name}}">
-                    {{repertoire.value.repertoire_name}}
+                    <button type="button" class="btn btn-sm btn-create px-1 py-0" name="{{repertoire_id}}" id="community-repertoire-copy-id" title="Copy Repertoire ID to Clipboard">
+                        <i class="fa fa-fw fa-clipboard" aria-hidden="true"></i>
+                    </button>
+                    {{repertoire_name}}
                 </div>
                 <div class="col-md-2 text-truncate" title="{{subject.subject_id}}">
                     {{subject.subject_id}}

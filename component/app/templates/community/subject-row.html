@@ -1,5 +1,8 @@
             <div class="row community-data-table-row">
                 <div class="col-md-2 text-truncate" title="{{value.subject_id}}">
+                    <button type="button" class="btn btn-sm btn-create px-1 py-0" name="{{uuid}}" id="community-subject-copy-uuid" title="Copy Subject UUID to Clipboard">
+                        <i class="fa fa-fw fa-clipboard" aria-hidden="true"></i>
+                    </button>
                     {{value.subject_id}}
                 </div>
                 <div class="col-md-2 text-truncate" title="{{sex_species}}">
@@ -8,10 +11,10 @@
                 <div class="col-md-2 text-truncate" title="{{race_ethnicity}}">
                     {{race_ethnicity}}
                 </div>
-                <div class="col-md-1 text-truncate" title="{{age_display}}">
+                <div class="col-md-2 text-truncate" title="{{age_display}}">
                     {{age_display}}
                 </div>
-                <div class="col-md-5 text-truncate" title="{{diagnoses}}">
+                <div class="col-md-4 text-truncate" title="{{diagnoses}}">
                     {{diagnoses}}
                 </div>
             </div>

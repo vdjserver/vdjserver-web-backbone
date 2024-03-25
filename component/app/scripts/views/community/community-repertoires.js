@@ -41,10 +41,14 @@ var RepertoireRowView = Marionette.View.extend({
   // },
 
   events:  {
-    'click .subject': 'showRepDetails',
-    'click .sample': 'showRepDetails',
-    'click .cell': 'showRepDetails',
-    'click .tissue': 'showRepDetails',
+      'click .subject': 'showRepDetails',
+      'click .sample': 'showRepDetails',
+      'click .cell': 'showRepDetails',
+      'click .tissue': 'showRepDetails',
+      'click #community-repertoire-copy-id': function(e) {
+          var text = this.model.get('repertoire_id');
+          if (text) navigator.clipboard.writeText(text);
+      },
   },
 
   templateContext() {

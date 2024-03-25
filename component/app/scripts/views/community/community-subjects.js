@@ -107,6 +107,13 @@ var SubjectRowView = Marionette.View.extend({
         detailRegion: '#subject-details'
     },
 
+    events:  {
+        'click #community-subject-copy-uuid': function(e) {
+            var text = this.model.get('uuid');
+            if (text) navigator.clipboard.writeText(text);
+        },
+    },
+
     templateContext() {
         var value = this.model.get('value');
 
