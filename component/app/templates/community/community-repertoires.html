@@ -1,19 +1,30 @@
 <div class="community-data-table">
-    <form class="row community-data-table-actions">
-        <div class="input-group offset-md-8 col-md-4">
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="pagination-page-size">Rows per Page:</label>
-            </div>
-            <select class="custom-select custom-select-webkit-fix" id="pagination-page-size">
-              <option>1</option>
-              <option>5</option>
-              <option selected>10</option>
-              <option>20</option>
-              <option>50</option>
-              <option>100</option>
-              <option>All</option>
+    <div class="row community-data-table-actions align-items-center">
+
+      <div class="offset-md-5 col-md-7 general-buttons-right">
+
+        <div class="btn-group btn-group-sm" role="group" aria-label="Button group">
+            <span class="d-flex align-items-center" for="pagination-page-size">Rows per Page:&nbsp</span>
+            <select class="custom-select custom-select-webkit-fix custom-select-sm w-auto" id="pagination-page-size">
+                <option>1</option>
+                <option>5</option>
+                <option selected>10</option>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+                <option>All</option>
             </select>
-        </form>
+        </div>
+
+        <div class="btn-group btn-group-sm" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-pagination general-buttons-margin-left" id="pagination-previous-page" {{#if firstPage}}disabled{{/if}}>Previous Page</button>
+        </div>
+
+        <div class="btn-group btn-group-sm" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-pagination general-buttons-margin-left" id="pagination-next-page" {{#if lastPage}}disabled{{/if}}>Next Page</button>
+        </div>
+      </div>
+
     </div>
 
     <div id="community-repertoires-table"></div>
@@ -21,3 +32,4 @@
     <div id="community-repertoires-paging"></div>
 
 </div>
+

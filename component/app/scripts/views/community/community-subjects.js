@@ -156,6 +156,11 @@ import subjects_page_template from 'Templates/community/community-subjects-pagin
 var SubjectPageView = Marionette.View.extend({
     template: Handlebars.compile(subjects_page_template),
 
+    events:  {
+        'click #pagination-previous-page': 'previousPage',
+        'click #pagination-next-page': 'nextPage'
+    },
+
     initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
@@ -189,11 +194,13 @@ var SubjectTable = Marionette.View.extend({
         tableRegion: '#community-subjects-table',
         pageRegion: '#community-subjects-paging'
     },
+
     events:  {
         'click #pagination-previous-page': 'previousPage',
         'click #pagination-next-page': 'nextPage',
         'change #pagination-page-size': 'pageSize',
     },
+
     initialize: function(parameters) {
         // our controller
         if (parameters && parameters.controller)
@@ -237,7 +244,9 @@ var SubjectTable = Marionette.View.extend({
         return {
             numSubjects: numSubjects,
             firstPageRecord : firstPageRecord,
-            lastPageRecord : lastPageRecord
+            lastPageRecord : lastPageRecord,
+            firstPage: firstPage,
+            lastPage: lastPage
         }
     },
 
