@@ -1,10 +1,38 @@
-        <div class="community-repertoires-table">
-            <div class="row community-data-table-header">
-              <div class="sort asc col-md-2"><b>Name</b></div>
-              <div class="sort no-sort col-md-2"><b>Subject ID</b></div>
-              <div class="sort no-sort col-md-2"><b>Sample ID</b></div>
-              <div class="sort no-sort col-md-2"><b>Tissue</b></div>
-              <div class="sort no-sort col-md-2"><b>Disease State</b></div>
-	      <div class="sort no-sort col-md-2"><b>Cell Subset</b></div>
+    <div class="row community-data-table-actions align-items-center">
+
+        <div class="offset-md-5 col-md-7 general-buttons-right">
+
+            <div class="btn-group btn-group-sm" role="group" aria-label="Button group">
+                <span class="d-flex align-items-center" for="pagination-page-size">Rows per Page:&nbsp</span>
+                <select class="custom-select custom-select-webkit-fix custom-select-sm w-auto" id="pagination-page-size">
+                    <option {{#ifEquals pageQtyDisplay 1}}selected{{/ifEquals}}>1</option>
+                    <option {{#ifEquals pageQtyDisplay 5}}selected{{/ifEquals}}>5</option>
+                    <option {{#ifEquals pageQtyDisplay 10}}selected{{/ifEquals}}>10</option>
+                    <option {{#ifEquals pageQtyDisplay 20}}selected{{/ifEquals}}>20</option>
+                    <option {{#ifEquals pageQtyDisplay 50}}selected{{/ifEquals}}>50</option>
+                    <option {{#ifEquals pageQtyDisplay 100}}selected{{/ifEquals}}>100</option>
+                    <option {{#ifEquals pageQtyDisplay "All"}}selected{{/ifEquals}}>All</option>
+                </select>
+            </div>
+
+            <div class="btn-group btn-group-sm" role="group" aria-label="Button group">
+                <button type="button" class="btn btn-pagination general-buttons-margin-left" id="pagination-previous-page" {{#if firstPage}}disabled{{/if}}>Previous Page</button>
+            </div>
+
+            <div class="btn-group btn-group-sm" role="group" aria-label="Button group">
+                <button type="button" class="btn btn-pagination general-buttons-margin-left" id="pagination-next-page" {{#if lastPage}}disabled{{/if}}>Next Page</button>
             </div>
         </div>
+
+    </div>
+
+    <div class="community-repertoires-table">
+        <div class="row community-data-table-header">
+            <div class="sort asc col-md-2"><b>Name</b></div>
+            <div class="sort no-sort col-md-2"><b>Subject ID</b></div>
+            <div class="sort no-sort col-md-2"><b>Sample ID</b></div>
+            <div class="sort no-sort col-md-2"><b>Tissue</b></div>
+            <div class="sort no-sort col-md-2"><b>Disease State</b></div>
+            <div class="sort no-sort col-md-2"><b>Cell Subset</b></div>
+        </div>
+    </div>

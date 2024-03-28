@@ -150,16 +150,32 @@ var SubjectListView = Marionette.CollectionView.extend({
     template: Handlebars.compile(subject_table_template),
     childView: SubjectRowView,
     // childViewContainer: 'tbody'
+
+    initialize: function(parameters) {
+        // our controller
+        if (parameters && parameters.controller)
+            this.controller = parameters.controller;
+        if (parameters && parameters.repository_id)
+            this.repository_id = parameters.repository_id;
+
+        this.firstPage = parameters.firstPage;
+        this.lastPage = parameters.lastPage;
+        this.pageQtyDisplay = parameters.pageQtyDisplay;
+    },
+
+    templateContext() {
+        return {
+            firstPage: this.firstPage,
+            lastPage: this.lastPage,
+            pageQtyDisplay: this.pageQtyDisplay
+        }
+    },
+
 });
 
 import subjects_page_template from 'Templates/community/community-subjects-paging.html';
 var SubjectPageView = Marionette.View.extend({
     template: Handlebars.compile(subjects_page_template),
-
-    events:  {
-        'click #pagination-previous-page': 'previousPage',
-        'click #pagination-next-page': 'nextPage'
-    },
 
     initialize: function(parameters) {
         // our controller
@@ -210,6 +226,7 @@ var SubjectTable = Marionette.View.extend({
 
         // pagination of data table
         this.pageQty = 10;
+        this.pageQtyDisplay = 10;
         this.currentPage = 0;
 
         this.numSubjects = this.getNumSubjects();
@@ -225,11 +242,10 @@ var SubjectTable = Marionette.View.extend({
         this.paginatedObjects = objects.clone();
 
         this.constructPages();
-        this.dataView = new SubjectListView({ collection: this.paginatedObjects });
+        this.dataView = new SubjectListView({ collection: this.paginatedObjects, firstPage: this.firstPage, lastPage: this.lastPage, pageQty: this.pageQty, pageQtyDisplay: this.pageQtyDisplay });
         this.showChildView('tableRegion', this.dataView);
         this.pageView = new SubjectPageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numSubjects: this.numSubjects, firstPage: this.firstPage, lastPage: this.lastPage });
         this.showChildView('pageRegion', this.pageView);
-
     },
 
     templateContext() {
@@ -239,15 +255,9 @@ var SubjectTable = Marionette.View.extend({
         var totalPages = Math.ceil(numSubjects/this.pageQty);
         var lastPage = false;
         var firstPage = true;
+        var pageQty = 10;
+        var pageQtyDisplay = 10;
         this.updatePageRecords();
-
-        return {
-            numSubjects: numSubjects,
-            firstPageRecord : firstPageRecord,
-            lastPageRecord : lastPageRecord,
-            firstPage: firstPage,
-            lastPage: lastPage
-        }
     },
 
     constructPages() {
@@ -284,6 +294,8 @@ var SubjectTable = Marionette.View.extend({
         if (this.currentPage < 0) this.currentPage = 0;
         this.paginatedObjects.reset(this.pages[this.currentPage]);
         this.updatePageRecords();
+        this.dataView = new SubjectListView({ collection: this.paginatedObjects, firstPage: this.firstPage, lastPage: this.lastPage, pageQty: this.pageQty, pageQtyDisplay: this.pageQtyDisplay });
+        this.showChildView('tableRegion', this.dataView);
         this.pageView = new SubjectPageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numSubjects: this.numSubjects, firstPage: this.firstPage, lastPage: this.lastPage });
         this.showChildView('pageRegion', this.pageView);
     },
@@ -293,6 +305,8 @@ var SubjectTable = Marionette.View.extend({
         if (this.currentPage >= this.pages.length) this.currentPage = this.pages.length - 1;
         this.paginatedObjects.reset(this.pages[this.currentPage]);
         this.updatePageRecords();
+        this.dataView = new SubjectListView({ collection: this.paginatedObjects, firstPage: this.firstPage, lastPage: this.lastPage, pageQty: this.pageQty, pageQtyDisplay: this.pageQtyDisplay });
+        this.showChildView('tableRegion', this.dataView);
         this.pageView = new SubjectPageView({ firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numSubjects: this.numSubjects, firstPage: this.firstPage, lastPage: this.lastPage });
         this.showChildView('pageRegion', this.pageView);
     },
@@ -300,14 +314,19 @@ var SubjectTable = Marionette.View.extend({
     pageSize(e) {
         var x = this.pageQty * this.currentPage;
 
-        if(e.target.value != "All") this.pageQty = Number(e.target.value);
-        else this.pageQty = this.getNumSubjects();
+        if(e.target.value != "All") {
+            this.pageQty = Number(e.target.value);
+            this.pageQtyDisplay = Number(e.target.value);
+        } else {
+            this.pageQty = this.getNumSubjects();
+            this.pageQtyDisplay = e.target.value;
+        }
 
         this.currentPage = Math.floor(x / this.pageQty);
         this.constructPages();
-        this.dataView = new SubjectListView({ collection: this.paginatedObjects });
-        this.showChildView('tableRegion', this.dataView);
         this.updatePageRecords();
+        this.dataView = new SubjectListView({ collection: this.paginatedObjects, firstPage: this.firstPage, lastPage: this.lastPage, pageQty: this.pageQty, pageQtyDisplay: this.pageQtyDisplay });
+        this.showChildView('tableRegion', this.dataView);
         this.pageView = new SubjectPageView({ collection: this.paginatedObjects, firstPageRecord: this.firstPageRecord, lastPageRecord: this.lastPageRecord, numSubjects: this.numSubjects, firstPage: this.firstPage, lastPage: this.lastPage });
         this.showChildView('pageRegion', this.pageView);
     },
