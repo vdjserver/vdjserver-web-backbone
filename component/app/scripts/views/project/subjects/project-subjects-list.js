@@ -116,10 +116,21 @@ var SubjectDetailView = Marionette.View.extend({
         if (value['age_max'] == value['age_min']) pointMode = true;
         var sex = this.model.schema.spec('sex');
 
+        var collections = this.controller.getCollections();
+        if (collections.subjectList) {
+            var subject_ids = [""];
+            for(let i=0; i<collections.subjectList.length; i++) {
+                let subj = collections.subjectList.at(i);
+                let value2 = subj.get('value');
+                if(value2.subject_id != value['subject_id']) subject_ids.push(value2.subject_id);
+            }
+        }
+
         return {
             view_mode: this.model.view_mode,
             pointMode: pointMode,
             sex_enum: sex.enum,
+            subject_ids: subject_ids
         }
     },
 
@@ -187,7 +198,14 @@ var SubjectDetailView = Marionette.View.extend({
             }
             return;
         }
-
+        if (e.target.name == 'linked_subjects') {
+            if (e.target.value == "") {
+                this.model.updateField('linked_subjects', null);
+            } else {
+                this.model.updateField('linked_subjects', e.target.value);
+            }
+            return;
+        }
         // update field
         this.model.updateField(e.target.name, e.target.value);
     },

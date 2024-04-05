@@ -147,16 +147,27 @@ var RepertoireDetailView = Marionette.View.extend({
             age_display = subject.getAgeDisplay();
         }
 
+        if (collections.subjectList) {
+            var subject_ids = [""];
+            for(let i=0; i<collections.subjectList.length; i++) {
+                let subj = collections.subjectList.at(i);
+                let value2 = subj.get('value');
+                if(value2.subject_id != value['subject_id']) subject_ids.push(value2.subject_id);
+            }
+        }
+
         return {
             subject: subject_value,
             species_display: species_display,
             age_display: age_display,
-            view_mode: this.model.view_mode
+            view_mode: this.model.view_mode,
+            subject_ids: subject_ids
         }
     },
 
     events: {
         'change .form-control-repertoire': 'updateField',
+        //'change .value-select': 'updateDropDown',
         'click #project-repertoire-show-summary': function(e) {
             e.preventDefault();
             if (this.model.view_mode != 'edit') {
@@ -205,6 +216,18 @@ var RepertoireDetailView = Marionette.View.extend({
     },
 
     updateField: function(e) {
+        this.model.updateField(e.target.name, e.target.value);
+    },
+
+    updateDropDown: function(e) {
+        if (e.target.name == 'subject_id') {
+            if (e.target.value == "") {
+                this.model.updateField('subject_id', null);
+            } else {
+                this.model.updateField('subject_id', e.target.value);
+            }
+            return;
+        }
         this.model.updateField(e.target.name, e.target.value);
     },
 

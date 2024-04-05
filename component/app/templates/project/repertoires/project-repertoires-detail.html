@@ -68,8 +68,13 @@
         </form>
 
         <div class="row general-table-internal-row align-items-center">
-            <div class="col-md-3">
-                <b>Subject ID:</b> {{subject.subject_id}}
+            <div class="btn-group col-md-3">
+                <span class="d-flex align-items-center" for="repertoires-subject-id"><b>Subject ID:&nbsp</b></span>
+                <select class="custom-select value-select w-auto" name="subject_id" id="subject_id" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    {{#each subject_ids}}
+                    <option id="{{this}}" value="{{this}}" {{#ifEquals this ../subject.subject_id}}selected{{/ifEquals}}>{{this}}</option>
+                    {{/each}}
+                </select>
             </div>
             <div class="col-md-3">
                 <b>Sex/Species:</b> {{subject.sex}}/{{species_display}}

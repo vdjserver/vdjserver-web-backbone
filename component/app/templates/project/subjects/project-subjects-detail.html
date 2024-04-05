@@ -54,7 +54,6 @@
                         Subject ID:
                     </label>
                     <input type="text" class="form-control form-control-subject" name="subject_id" id="subject_id_{{uuid}}" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationBlankID" required>
-
                     <div id="validationBlankID" class="invalid-feedback">
                         Please enter a non-blank, unique Subject ID.
                     </div>
@@ -297,7 +296,11 @@
                         {{{FieldHelpPopover "Subject" "linked_subjects"}}}
                         Linked Subject:
                     </label>
-                    <input type="text" class="form-control form-control-subject" name="linked_subjects" id="linked_subjects" placeholder="" value="{{value.linked_subjects}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <select class="custom-select value-select" name="linked_subjects" id="linked_subjects" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                        {{#each subject_ids}}
+                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.linked_subjects}}selected{{/ifEquals}}>{{this}}</option>
+                        {{/each}}
+                    </select>
                     <div class="invalid-feedback">
                         Please enter a valid Linked Subject.
                     </div>
