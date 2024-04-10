@@ -564,7 +564,7 @@
                     </label>
                     <select class="custom-select value-select-sample" name="pcr_target_locus" id="pcr_target_locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each pcr_target_locus_enum}}
-                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target_locus}}selected{{/ifEquals}}>{{this}}</option>
+                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
                     </select>
                 </div>
