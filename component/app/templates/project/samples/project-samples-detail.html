@@ -40,9 +40,9 @@
                         {{{FieldHelpPopover "Sample" "sample_id"}}}
                         Sample ID:
                     </label>
-                    <input type="text" class="form-control form-control-sample" name="sample_id" id="sample_id" placeholder="" value="{{value.sample_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sample_id" id="sample_id" placeholder="" value="{{value.sample_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} required>
                     <div class="invalid-feedback">
-                        Please enter a valid Sample ID.
+                        Please enter a non-blank Sample ID.
                     </div>
                 </div>
                 <div class="form-group col-md-2">
