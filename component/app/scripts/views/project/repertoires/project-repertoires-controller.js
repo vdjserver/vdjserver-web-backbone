@@ -223,21 +223,33 @@ ProjectRepertoiresController.prototype = {
             } else changed = true;
 
             if (changed) {
+                // TODO: need to handle if the repertoire is currently being edited but is invalid, switch to edit
+
+                // validate the repertoire
                 let valid = model.isValid();
                 if (!valid) {
                     hasErrors = true;
-                    let form = document.getElementById("project-sample-form_" + model.get('uuid'));
+                    let form = document.getElementById("edit-repertoire-form " + model.get('uuid'));
                     var rect = form[i].getBoundingClientRect();
                     if (rect['y'] < minY) minY = rect['y'] + window.scrollY;
                     form = $(form);
                     for (let j = 0; j < model.validationError.length; ++j) {
                         let e = model.validationError[j];
                         let f = form.find('#' + e['field']);
-                        if (f) {
+                        if (f.length > 0) {
                             f[0].setCustomValidity(e['message']);
                             f.addClass('is-invalid');
                         }
                     }
+                }
+                // validate the samples
+                if (model.sample) {
+                    for (let j = 0; j < model.sample.length; ++j) {
+                        let s = model.sample.at(j);
+                        valid = s.isValid();
+                        if (!valid) hasErrors = true;
+                    }
+                    // TODO: scroll to sample?
                 }
             }
         }
@@ -286,6 +298,7 @@ ProjectRepertoiresController.prototype = {
         // scroll to first form with error and abort save
         if (hasErrors) {
             $('html, body').animate({ scrollTop: minY - 100 }, 1000);
+            console.log('validation errors');
             return;
         }
 
