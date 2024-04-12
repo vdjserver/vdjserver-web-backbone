@@ -154,7 +154,7 @@ ProjectRepertoiresController.prototype = {
     },
 
     //
-    // add, duplicate, delete repertoire
+    // add, duplicate, delete repertoire and sample
     //
 
     duplicateRepertoire: function(e, model) {
@@ -165,7 +165,7 @@ ProjectRepertoiresController.prototype = {
         newRepertoire.set('uuid', newRepertoire.cid);
         newRepertoire.view_mode = 'edit';
         clonedList.add(newRepertoire, {at:i});
-        $('#repertoire_name'+newRepertoire.cid).focus();
+        $('#repertoire_name_'+newRepertoire.cid).focus();
         this.flagRepertoiresEdits();
     },
 
@@ -173,19 +173,53 @@ ProjectRepertoiresController.prototype = {
         var clonedList = this.getRepertoireList();
         var samples = new SampleCollection(null, {projectUuid: this.controller.model.get('uuid')});
         var sample = new SampleProcessing({projectUuid: this.controller.model.get('uuid')});
+        sample.set('uuid', sample.cid);
         samples.add(sample);
         sample.view_mode = 'edit';
         var newRepertoire = new Repertoire({projectUuid: this.controller.model.get('uuid'), sample: samples});
         newRepertoire.view_mode = 'edit';
         clonedList.add(newRepertoire, {at:0});
+        $('#repertoire_name_'+newRepertoire.cid).focus();
         this.flagRepertoiresEdits();
     },
 
     deleteRepertoire: function(e, model) {
         e.preventDefault();
         var clonedList = this.getRepertoireList();
-        let value = model.get('value');
         clonedList.remove(model.id);
+        this.flagRepertoiresEdits();
+    },
+
+    duplicateSample: function(e, model) {
+        e.preventDefault();
+        var sampleUuid = e.target.name;
+        var clonedList = model.sample; //sample list
+        let i = clonedList.get(sampleUuid);
+        let j = clonedList.findIndex(i);
+        let newSample = model.sample.at(j).clone();
+        newSample.set('uuid', newSample.cid);
+        newSample.view_mode = 'edit';
+        clonedList.add(newSample, {at:j});
+        $('#sample_id_'+newSample.cid).focus();
+    },
+
+    addSample: function(e, model) {
+        e.preventDefault();
+        var sampleList = model.sample;
+        var newSample = new SampleProcessing({projectUuid: this.controller.model.get('uuid')});
+        newSample.set('uuid', newSample.cid);
+        model.view_mode = 'edit';
+        newSample.view_mode = 'edit';
+        sampleList.add(newSample, {at:0});
+        $('#sample_id_'+newSample.cid).focus();
+        this.flagRepertoiresEdits();
+    },
+
+    deleteSample: function(e, model) {
+        e.preventDefault();
+        var sampleUuid = e.target.name;
+        var clonedList = model.sample;
+        clonedList.remove(clonedList.get(sampleUuid));
         this.flagRepertoiresEdits();
     },
 

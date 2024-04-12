@@ -15,14 +15,11 @@
                             <i class="fas fa-fw fa-stream" aria-hidden="true"></i>
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-duplicate">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-duplicate-sample">
                                 <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Sample
                             </button>
-                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-add-diagnosis">
-                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Sample
-                            </button>
                             <div class="dropdown-divider" width="10%"></div>
-                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-delete">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-delete-sample">
                                 <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Sample
                             </button>
                         </div>
@@ -40,7 +37,7 @@
                         {{{FieldHelpPopover "Sample" "sample_id"}}}
                         Sample ID:
                     </label>
-                    <input type="text" class="form-control form-control-sample" name="sample_id" id="sample_id" placeholder="" value="{{value.sample_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} required>
+                    <input type="text" class="form-control form-control-sample" name="sample_id" id="sample_id_{{uuid}}" placeholder="" value="{{value.sample_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} required>
                     <div class="invalid-feedback">
                         Please enter a non-blank Sample ID.
                     </div>

@@ -106,9 +106,11 @@ var RepertoireSummaryView = Marionette.View.extend({
             this.controller.flagRepertoiresEdits();
             this.controller.showProjectRepertoiresList();
         },
-        'click #project-repertoire-add-repertoire': function(e) { this.controller.addRepertoire(e, this.model); },
         'click #project-repertoire-duplicate-repertoire': function(e) { this.controller.duplicateRepertoire(e, this.model); },
         'click #project-repertoire-delete-repertoire': function(e) { this.controller.deleteRepertoire(e, this.model); },
+        'click #project-sample-add-sample': function(e) { this.controller.addSample(e, this.model); },
+        'click #project-sample-duplicate-sample': function(e) { this.controller.duplicateSample(e, this.model); },
+        'click #project-sample-delete-sample': function(e) { this.controller.deleteSample(e, this.model); },
     }
 
 });
@@ -200,9 +202,11 @@ var RepertoireDetailView = Marionette.View.extend({
             this.controller.flagRepertoiresEdits();
             this.controller.showProjectRepertoiresList();
         },
-        'click #project-repertoire-add-repertoire': function(e) { this.controller.addRepertoire(e, this.model); },
         'click #project-repertoire-duplicate-repertoire': function(e) { this.controller.duplicateRepertoire(e, this.model); },
         'click #project-repertoire-delete-repertoire': function(e) { this.controller.deleteRepertoire(e, this.model); },
+        'click #project-sample-add-sample': function(e) { this.controller.addSample(e, this.model); },
+        'click #project-sample-duplicate-sample': function(e) { this.controller.duplicateSample(e, this.model); },
+        'click #project-sample-delete-sample': function(e) { this.controller.deleteSample(e, this.model); },
     },
 
     onAttach() {
