@@ -178,6 +178,7 @@ ProjectSubjectsController.prototype = {
         let dupl = JSON.parse(JSON.stringify(value['diagnosis'][index]));
         value['diagnosis'].splice(index,0,dupl);
         model.set('value', value);
+        model.view_mode = 'edit';
         this.flagSubjectsEdits();
         this.showProjectSubjectsList();
     },

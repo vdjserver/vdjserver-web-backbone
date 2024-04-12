@@ -6,19 +6,12 @@
                     <i class="fa fa-fw fa-stream" aria-hidden="true"></i>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <button class="dropdown-item" type="button" id="project-samples-new-sample" name="new">
-                        New Blank Sample
-                    </button>
-                    <button class="dropdown-item" type="button" id="project-samples-duplicate-sample" name="duplicate">
-                        Duplicate Sample
+                    <button class="dropdown-item" type="button" name="{{uuid}}" id="project-sample-duplicate-sample" name="duplicate">
+                        <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Sample
                     </button>
                     <div class="dropdown-divider" width="10%"></div>
-                    <button class="dropdown-item" type="button" id="project-samples-attach-sample" name="attach">
-                        Attach Existing Sample
-                    </button>
-                    <div class="dropdown-divider" width="10%"></div>
-                    <button class="dropdown-item" type="button" id="project-samples-delete-sample" name="delete">
-                        Delete Sample
+                    <button class="dropdown-item" type="button" name="{{uuid}}" id="project-sample-delete-sample" name="delete">
+                        <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Sample
                     </button>
                 </div>
             </div> <!--end dropdown div-->
