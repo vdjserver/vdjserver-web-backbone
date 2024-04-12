@@ -153,7 +153,6 @@ ProjectSubjectsController.prototype = {
     deleteSubject: function(e, model) {
         e.preventDefault();
         var clonedList = this.getSubjectsList();
-        let value = model.get('value');
         clonedList.remove(model.id);
         this.flagSubjectsEdits();
     },
