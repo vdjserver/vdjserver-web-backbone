@@ -187,9 +187,6 @@ var ProjectSummaryView = Marionette.View.extend({
 // Subjects view
 import SubjectsController from 'Scripts/views/project/subjects/project-subjects-controller';
 
-// Samples view
-import SamplesController from 'Scripts/views/project/samples/project-samples-controller';
-
 // Repertoire view
 import RepertoireController from 'Scripts/views/project/repertoires/project-repertoires-controller';
 
@@ -314,7 +311,6 @@ function SingleProjectController(project, page) {
     this.repertoireList = null;
     this.subjectsController = null;
     this.subjectList = null;
-    this.samplesController = null;
     this.sampleList = null;
     this.groupList = null;
     this.projectFilesController = null;
@@ -598,36 +594,6 @@ SingleProjectController.prototype = {
             that.projectView.updateSummary();
             if (! that.subjectsController) that.subjectsController = new SubjectsController(that);
             that.projectView.showProjectSubjects(that.subjectsController);
-        }
-    },
-
-    showProjectSamples: function() {
-        this.page = 'sample';
-        App.router.navigate('project/' + this.model.get('uuid') + '/sample', {trigger: false});
-
-        var that = this;
-        if (! this.repertoireList) {
-            // it should be lazy loading
-            // subjects/samples loaded with the repertoires
-
-            // show loading while we fetch
-            that.projectView.showLoading();
-
-            // wait on the lazy load
-            this.repertoireListPromise.then(function() {
-                    // have the view display them
-                    that.projectView.updateSummary();
-                    if (! that.samplesController) that.samplesController = new SamplesController(that);
-                    that.projectView.showProjectSamples(that.samplesController);
-                })
-                .fail(function(error) {
-                    console.log(error);
-                });
-        } else {
-            // tell controller to display the lists
-            that.projectView.updateSummary();
-            if (! that.samplesController) that.samplesController = new SamplesController(that);
-            that.projectView.showProjectSamples(that.samplesController);
         }
     },
 
