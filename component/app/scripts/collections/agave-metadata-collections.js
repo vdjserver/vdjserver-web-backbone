@@ -319,7 +319,7 @@ export var SampleCollection = Agave.MetadataCollection.extend(
                 for (let j = i+1; j < this.length; ++j) {
                     var modelj = this.at(j);
                     var valuej = modelj.get('value');
-                    if (valuei['subject_id'] == valuej['subject_id']) {
+                    if (valuei['sample_id'] == valuej['sample_id']) {
                         duplicates.add(modeli);
                         duplicates.add(modelj);
                     }

@@ -83,6 +83,12 @@ ProjectRepertoiresController.prototype = {
 
     resetCollections() {
         this.repertoireList = this.controller.repertoireList.getClonedCollection(); //create the cloned collection
+        this.sampleList = new SampleCollection(null, {projectUuid: this.model.get('uuid')});
+        // gather the cloned samples
+        for (let i = 0; i < this.repertoireList.length; ++i) {
+            let m = this.repertoireList.at(i);
+            this.sampleList.add(m.sample);
+        }
     },
 
     getViewMode() {
@@ -95,6 +101,14 @@ ProjectRepertoiresController.prototype = {
 
     getOriginalRepertoireList() {
         return this.controller.repertoireList;
+    },
+
+    getSampleList() {
+        return this.sampleList;
+    },
+
+    getOriginalSampleList() {
+        return this.controller.sampleList;
     },
 
     toggleViewMode() {
@@ -161,7 +175,7 @@ ProjectRepertoiresController.prototype = {
         e.preventDefault();
         var clonedList = this.getRepertoireList();
         let i = clonedList.findIndex(model);
-        let newRepertoire = model.clone();
+        let newRepertoire = model.deepClone();
         newRepertoire.set('uuid', newRepertoire.cid);
         newRepertoire.view_mode = 'edit';
         clonedList.add(newRepertoire, {at:i});
@@ -196,7 +210,7 @@ ProjectRepertoiresController.prototype = {
         var clonedList = model.sample; //sample list
         let i = clonedList.get(sampleUuid);
         let j = clonedList.findIndex(i);
-        let newSample = model.sample.at(j).clone();
+        let newSample = model.sample.at(j).deepClone();
         newSample.set('uuid', newSample.cid);
         newSample.view_mode = 'edit';
         model.view_mode = 'edit';
@@ -204,7 +218,7 @@ ProjectRepertoiresController.prototype = {
         $('#sample_id_'+newSample.cid).focus();
         this.flagRepertoiresEdits();
         for (let i = 0; i < clonedList.length; i++) {
-            let s = clonedList.at(i); 
+            let s = clonedList.at(i);
             if (s.view_mode != 'edit') s.view_mode = 'edit';
         }
         this.showProjectRepertoiresList();
@@ -259,7 +273,7 @@ ProjectRepertoiresController.prototype = {
         fields.removeClass('is-invalid');
 
         // model validation
-        var minY = Number.MAX_VALUE;
+        let minY = Number.MAX_VALUE;
         for (let i = 0; i < this.repertoireList.length; ++i) {
             // only validate models that have been changed or are new
             let model = this.repertoireList.at(i);
@@ -278,9 +292,10 @@ ProjectRepertoiresController.prototype = {
                 let valid = model.isValid();
                 if (!valid) {
                     hasErrors = true;
+                    console.log(model.validationError);
                     let form = document.getElementById("edit-repertoire-form " + model.get('uuid'));
-                    var rect = form[i].getBoundingClientRect();
-                    if (rect['y'] < minY) minY = rect['y'] + window.scrollY;
+                    let rect = form[i].getBoundingClientRect();
+                    if (rect['y'] < minY) minY = rect['y'];
                     form = $(form);
                     for (let j = 0; j < model.validationError.length; ++j) {
                         let e = model.validationError[j];
@@ -291,12 +306,31 @@ ProjectRepertoiresController.prototype = {
                         }
                     }
                 }
+
                 // validate the samples
                 if (model.sample) {
+                    // invalidate any duplicate sample IDs
+                    let duplicates = model.sample.checkDuplicates();
+                    for (let i = 0; i < duplicates.length; ++i) {
+                        let s = duplicates.at(i);
+                        let field = document.getElementById("sample_id_" + s.get('uuid'));
+                        if (field) {
+                            field.setCustomValidity("ERROR");
+                            $(field).addClass('is-invalid');
+                            hasErrors = true;
+                            let rect = field.form.getBoundingClientRect();
+                            if (rect['y'] < minY)
+                                minY = rect['y'];
+                        }
+                    }
+
                     for (let j = 0; j < model.sample.length; ++j) {
                         let s = model.sample.at(j);
                         valid = s.isValid();
-                        if (!valid) hasErrors = true;
+                        if (!valid) {
+                            hasErrors = true;
+                            console.log(s.validationError);
+                        }
                     }
                     // TODO: scroll to sample?
                 }
@@ -341,12 +375,13 @@ ProjectRepertoiresController.prototype = {
                 hasErrors = true;
                 var rect = form[i].getBoundingClientRect();
                 if (rect['y'] < minY)
-                    minY = rect['y']+window.scrollY;
+                    minY = rect['y'];
             }
 
         // scroll to first form with error and abort save
         if (hasErrors) {
-            $('html, body').animate({ scrollTop: minY - 100 }, 1000);
+            let r = App.AppController.navController.getNavigationRect();
+            $('html, body').animate({ scrollTop: window.scrollY + minY - r['height'] - 100 }, 1000);
             console.log('validation errors');
             return;
         }

@@ -275,7 +275,7 @@ var sampleProcessingSchema = null;
 export var SampleProcessing = Agave.MetadataModel.extend({
     defaults: function() {
         // Use AIRR schema Subject object as basis
-        if (! sampleProcessingSchema) sampleProcessingSchema = new airr.SchemaDefinition('SampleProcessing');
+        if (! sampleProcessingSchema) sampleProcessingSchema = new vdj_schema.SchemaDefinition('SampleProcessing');
         this.schema = sampleProcessingSchema;
         var blankEntry = sampleProcessingSchema.template();
 
@@ -297,7 +297,7 @@ export var SampleProcessing = Agave.MetadataModel.extend({
             this.set('associationIds', [ parameters.projectUuid ]);
         }
 
-        if (! sampleProcessingSchema) sampleProcessingSchema = new airr.SchemaDefinition('SampleProcessing');
+        if (! sampleProcessingSchema) sampleProcessingSchema = new vdj_schema.SchemaDefinition('SampleProcessing');
         this.schema = sampleProcessingSchema;
     },
 
@@ -307,6 +307,32 @@ export var SampleProcessing = Agave.MetadataModel.extend({
     sync: function(method, model, options) {
         return Agave.PutOverrideSync(method, this, options);
     },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = sampleProcessingSchema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+
+        // TODO: VDJServer additional validation
+
+        // sample ID cannot be null or blank
+        if (!value['sample_id']) errors.push({ field: 'sample_id', message: 'Sample ID cannot be blank'});
+        else if (value['sample_id'].trim().length == 0) errors.push({ field: 'sample_id', message: 'Sample ID cannot be blank'});
+
+        // add integer check for cell_number, cells_per_reaction, total_reads_passing_qc_filter
+        // verify HTML checks for number work for collection_time_point_relative and template_amount
+        // add checks for fields that cannot be blank
+
+        if (errors.length == 0) return null;
+        else return errors;
+    },
 });
 
 // DataProcessing model based upon AIRR Data Processing
@@ -315,7 +341,7 @@ var dataProcessingSchema = null;
 export var DataProcessing = Agave.MetadataModel.extend({
     defaults: function() {
         // Use AIRR schema Subject object as basis
-        if (! dataProcessingSchema) dataProcessingSchema = new airr.SchemaDefinition('DataProcessing');
+        if (! dataProcessingSchema) dataProcessingSchema = new vdj_schema.SchemaDefinition('DataProcessing');
         this.schema = dataProcessingSchema;
         var blankEntry = dataProcessingSchema.template();
 
@@ -337,7 +363,7 @@ export var DataProcessing = Agave.MetadataModel.extend({
             this.set('associationIds', [ parameters.projectUuid ]);
         }
 
-        if (! dataProcessingSchema) dataProcessingSchema = new airr.SchemaDefinition('DataProcessing');
+        if (! dataProcessingSchema) dataProcessingSchema = new vdj_schema.SchemaDefinition('DataProcessing');
         this.schema = dataProcessingSchema;
     },
     url: function() {
@@ -424,6 +450,22 @@ export var Repertoire = Agave.MetadataModel.extend({
         }
 
         // TODO: VDJServer additional validation
+
+        // repertoire needs at least one sample
+        // TODO: not sure what field to highlight
+        if ((!this.sample) || (this.sample.length == 0))
+            errors.push({ field: 'sample', message: 'Repertoire requires at least one sample' });
+
+        // repertoire needs a subject assigned
+        if (!this.subject)
+            errors.push({ field: 'subject_id', message: 'Repertoire requires a subject'});
+
+        // all samples within a repertoire should have unique ID
+        if (this.sample) {
+            let dups = this.sample.checkDuplicates();
+            if (dups.length > 0) errors.push({ field: 'sample_id', message: 'Samples within repertoire must have unique IDs'});
+        }
+
         // add integer check for cell_number, cells_per_reaction, total_reads_passing_qc_filter
         // verify HTML checks for number work for collection_time_point_relative and template_amount
         // add checks for fields that cannot be blank
