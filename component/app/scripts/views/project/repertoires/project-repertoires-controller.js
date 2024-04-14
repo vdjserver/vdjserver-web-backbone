@@ -250,6 +250,8 @@ ProjectRepertoiresController.prototype = {
         for (let i = 0; i < this.repertoireList.length; ++i) {
             // only validate models that have been changed or are new
             let model = this.repertoireList.at(i);
+            // skip those which haven't been edited
+            if (model.view_mode != 'edit') continue;
             let origModel = this.getOriginalRepertoireList().get(model.get('uuid'));
             var changed = null;
             if (origModel) {
