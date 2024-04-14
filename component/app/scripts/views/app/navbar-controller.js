@@ -113,6 +113,11 @@ export default Marionette.View.extend({
         this.showChildView('navigationRegion', new NavigationBarView());
     },
 
+    getNavigationRect() {
+        let f = document.getElementById("navigation");
+        return f.getBoundingClientRect();
+    },
+
     //
     // message bar
     //

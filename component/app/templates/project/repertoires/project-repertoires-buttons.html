@@ -69,7 +69,7 @@
 
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
-              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-repertoires-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-repertoires-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
                 Templates
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -93,15 +93,18 @@
         <div class="btn-group" role="group" aria-label="Button group">
             <div class="dropdown">
               <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-repertoires-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Add Repertoire
+                Add Repertoire
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 <button class="dropdown-item" type="button" id="project-repertoires-add-repertoire" name="name">
-                    New Blank Repertoire
+                    <i class="fa fa-plus" aria-hidden="true"></i>&nbsp; New Blank Repertoire
+                </button>
+                <button class="dropdown-item" type="button" id="project-repertoires-create-files" name="name" disabled>
+                    Create Repertoires from Files
                 </button>
                 <div class="dropdown-divider"></div>
                 <button class="dropdown-item" type="button" id="project-repertoires-" name="newest" disabled>
-                    New Sample from Template NAME
+                    New Repertoire from Template NAME
                 </button>
               </div>
             </div>
