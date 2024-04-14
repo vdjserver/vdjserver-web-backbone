@@ -199,8 +199,15 @@ ProjectRepertoiresController.prototype = {
         let newSample = model.sample.at(j).clone();
         newSample.set('uuid', newSample.cid);
         newSample.view_mode = 'edit';
+        model.view_mode = 'edit';
         clonedList.add(newSample, {at:j});
         $('#sample_id_'+newSample.cid).focus();
+        this.flagRepertoiresEdits();
+        for (let i = 0; i < clonedList.length; i++) {
+            let s = clonedList.at(i); 
+            if (s.view_mode != 'edit') s.view_mode = 'edit';
+        }
+        this.showProjectRepertoiresList();
     },
 
     addSample: function(e, model) {
@@ -213,6 +220,11 @@ ProjectRepertoiresController.prototype = {
         sampleList.add(newSample, {at:0});
         $('#sample_id_'+newSample.cid).focus();
         this.flagRepertoiresEdits();
+        for (let i = 0; i < sampleList.length; i++) {
+            let s = sampleList.at(i);
+            if (s.view_mode != 'edit') s.view_mode = 'edit';
+        }
+        this.showProjectRepertoiresList();
     },
 
     deleteSample: function(e, model) {
@@ -221,6 +233,7 @@ ProjectRepertoiresController.prototype = {
         var clonedList = model.sample;
         clonedList.remove(clonedList.get(sampleUuid));
         this.flagRepertoiresEdits();
+        this.showProjectRepertoiresList();
     },
 
     //
