@@ -682,7 +682,11 @@
                         {{{FieldHelpPopover "SequencingRun" "sequencing_files"}}}
                         Sequencing Files:
                     </label>
-                    <input type="text" class="form-control form-control-sample" name="sequencing_files" id="sequencing_files" placeholder="" value="{{value.sequencing_files}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <select class="custom-select value-select-sample" name="sequencing_files" id="sequencing_files" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                        {{#each sequencing_files_formatted}}
+                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sequencing_files_todo}}selected{{/ifEquals}}>{{this}}</option>
+                        {{/each}}
+                    </select>
                     <div class="invalid-feedback">
                         Please enter valid Sequencing Files.
                     </div>

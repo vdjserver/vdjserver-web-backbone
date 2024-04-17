@@ -305,8 +305,45 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
         }
     },
 
-    // we keep just the fasta file or forward read file for each pair
+    //TODO add FASTA
+    getSequencingFiles: function () {
+        let sequencingFiles = this.clone();
+        sequencingFiles.reset();
+        sequencingFiles.add(this.getPairedCollection().models);
+        sequencingFiles.add(this.getAIRRTSVCollection().models);
+        return sequencingFiles;
+    },
+
     getPairedCollection: function() {
+        let pairedCollection = this.clone();
+        pairedCollection.reset();
+        for (let j = 0; j < this.models.length; j++) {
+            let model = this.at([j]);
+            let value = model.get('value');
+            if (value['qualityScoreMetadataUuid']) {
+                // fasta file of fasta/qual pair
+                pairedCollection.add(model);
+                continue;
+            }
+            if (value['readMetadataUuid']) {
+                // qual file of fasta/qual pair
+                continue;
+            }
+            if (value['pairedReadMetadataUuid']) {
+                if (value['readDirection'] == 'F') {
+                    // forward read file of paired-end reads
+                    pairedCollection.add(model);
+                }
+                continue;
+            }
+        }
+        return pairedCollection;
+    },
+
+
+    // we keep just the fasta file or forward read file for each pair
+    getFilesWithCollapsedPairs: function() {
+    //getPairedCollection: function() {
         let pairedCollection = this.clone();
         pairedCollection.reset();
         for (let j = 0; j < this.models.length; j++) {
@@ -342,6 +379,18 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
             if (! model.isPaired()) unpairedCollection.add(model);
         }
         return unpairedCollection;
+    },
+
+    getAIRRTSVCollection: function() {
+        var AirrTsvModels = _.filter(this.models, function(model) {
+            return model.getFileType() === File.fileTypeCodes.FILE_TYPE_AIRR_TSV;
+        });
+
+        var newCollection = this.clone();
+        newCollection.reset();
+        newCollection.add(AirrTsvModels);
+
+        return newCollection;
     },
 
     getTSVCollection: function() {

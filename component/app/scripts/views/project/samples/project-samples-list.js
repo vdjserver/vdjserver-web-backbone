@@ -119,13 +119,43 @@ var SampleDetailView = Marionette.View.extend({
         var physical_linkage = this.model.schema.spec('physical_linkage');
         var pcr_target = this.model.schema.spec('pcr_target');
 
+        var coll = this.controller.getCollections();
+        var sequencing_files = coll.fileList.getSequencingFiles();
+        var sequencing_files_formatted = [];
+        var temp_name = "";
+
+        //populate array to contain the formatted options for the drop-down menu
+        for(let i=0; i<sequencing_files.length; i++) {
+            var file = sequencing_files.at(i);
+            var value = file.get('value');
+            temp_name += value['name'];
+
+            //get paired file's name if paired
+            if(value['fileType'] == 2) {
+                var pairUuid = value['pairedReadMetadataUuid'];
+
+                //find the name in the whole file list
+                for(let j=0; j<coll.fileList.length; j++) {
+                    let model = coll.fileList.at([j]);
+                    let val = model.get('value');
+                    if(model.get('uuid') == pairUuid) {
+                        temp_name += " / ";
+                        temp_name += val['name'];
+                    }
+                }
+            }
+            sequencing_files_formatted.push(temp_name);
+            temp_name = "";
+        }
+
         return {
             view_mode: this.model.view_mode,
             template_class_enum: template_class.enum,
             library_generation_method_enum: library_generation_method.enum,
             complete_sequences_enum: complete_sequences.enum,
             physical_linkage_enum: physical_linkage.enum,
-            pcr_target_locus_enum: pcr_target.items.properties.pcr_target_locus.enum
+            pcr_target_locus_enum: pcr_target.items.properties.pcr_target_locus.enum,
+            sequencing_files_formatted: sequencing_files_formatted
         }
     },
 

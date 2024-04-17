@@ -80,7 +80,7 @@ ProjectFilesController.prototype = {
     resetCollections() {
         // these collections should always point to the same models
         this.fileList = this.controller.fileList.getClonedCollection();
-        this.pairedList = this.fileList.getPairedCollection();
+        this.pairedList = this.fileList.getFilesWithCollapsedPairs()
     },
     getPairedList: function() {
         return this.pairedList;
