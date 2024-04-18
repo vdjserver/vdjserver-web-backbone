@@ -136,7 +136,6 @@ var RepertoireDetailView = Marionette.View.extend({
 
     templateContext() {
         var editMode = false;
-    //console.log(this.model);
         var collections = this.controller.getCollections();
         var value = this.model.get('value');
         var subject = this.model.subject;

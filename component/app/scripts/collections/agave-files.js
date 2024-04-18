@@ -306,7 +306,7 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
     },
 
     //TODO add FASTA
-    getSequencingFiles: function () {
+    getSequencingFiles: function() {
         let sequencingFiles = this.clone();
         sequencingFiles.reset();
         sequencingFiles.add(this.getPairedCollection().models);

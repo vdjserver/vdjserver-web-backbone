@@ -309,7 +309,35 @@ export var SampleProcessing = Agave.MetadataModel.extend({
     },
 
     updateSequencingFiles: function(file, file_pair) {
-        console.log('updateSequencingFiles: to be implemented');
+        let value = this.get('value');
+
+        if(file) {
+            let fValue = file.get('value');
+            value['sequencing_files']['filename'] = fValue['name'];
+            value['sequencing_files']['file_type'] =  file.getAIRRFileType();
+            value['sequencing_files']['read_length'] = fValue['length'];
+            if(fValue['readDirection'] == "F") value['sequencing_files']['read_direction'] = "forward";
+            else if(fValue['readDirection'] == "R") value['sequencing_files']['read_direction'] = "reverse";
+            else if(fValue['readDirection'] == "M") value['sequencing_files']['read_direction'] = "mixed";
+            else value['sequencing_files']['read_direction'] = null;
+            if(!file_pair) {
+                value['sequencing_files']['paired_filename'] = null;
+                value['sequencing_files']['paired_read_direction'] = null;
+                value['sequencing_files']['paired_read_length'] = null;
+            }
+        }
+        if(file_pair) {
+            let fpValue = file_pair.get('value');
+                value['sequencing_files']['paired_filename'] = fpValue['name'];;
+                value['sequencing_files']['paired_read_direction'] = fpValue['readDirection'];
+                value['sequencing_files']['paired_read_length'] = fpValue['length'];
+        }
+        if(!file) {
+            value['sequencing_files']['filename'] = null;
+            value['sequencing_files']['file_type'] =  file_pair.getAIRRFileType();
+            value['sequencing_files']['read_length'] = null;
+            value['sequencing_files']['read_direction'] = null;
+        }
     },
 
     validate: function(attrs, options) {

@@ -651,6 +651,20 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
             return fileExtension;
         },
 
+        getAIRRFileType: function() {
+            var value = this.get('value');
+            var types = ["fasta","fastq",null]; 
+
+            //paired with a quality score
+            if(value['qualityScoreMetadataUuid'] != null) return types[0];
+            //paired, no quality score
+            else if(value['pairedReadMetadataUuid'] != null) return types[1];
+            //if not paired, then fasta
+            else if(value['name']) return types[0];
+            //null file
+            else return types[2];
+        },
+
         getFileType: function() {
             var value = this.get('value');
 
