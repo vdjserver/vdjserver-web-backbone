@@ -58,6 +58,7 @@ var SampleDetailView = Marionette.View.extend({
         'change .form-control-sample': 'updateField',
         'change .ontology-select-sample': 'updateOntology',
         'change .value-select-sample': 'updateField',
+        'change .value-select-sequencing-files': 'updateSequencingFiles',
     },
 
     regions: {
@@ -122,30 +123,25 @@ var SampleDetailView = Marionette.View.extend({
         var coll = this.controller.getCollections();
         var sequencing_files = coll.fileList.getSequencingFiles();
         var sequencing_files_formatted = [];
-        var temp_name = "";
 
         //populate array to contain the formatted options for the drop-down menu
         for(let i=0; i<sequencing_files.length; i++) {
+            let obj = {};
             var file = sequencing_files.at(i);
             var value = file.get('value');
-            temp_name += value['name'];
+            obj['name'] = value['name'];
+            obj['uuid'] = file.get('uuid');
+            sequencing_files_formatted.push(obj);
 
             //get paired file's name if paired
-            if(value['fileType'] == 2) {
-                var pairUuid = value['pairedReadMetadataUuid'];
-
-                //find the name in the whole file list
-                for(let j=0; j<coll.fileList.length; j++) {
-                    let model = coll.fileList.at([j]);
+            if (file.isPaired()) {
+                let pairUuid = file.getPairUuid();
+                let model = coll.fileList.get(pairUuid);
+                if (model) {
                     let val = model.get('value');
-                    if(model.get('uuid') == pairUuid) {
-                        temp_name += " / ";
-                        temp_name += val['name'];
-                    }
+                    obj['name'] = obj['name'] + ' / ' + val['name'];
                 }
             }
-            sequencing_files_formatted.push(temp_name);
-            temp_name = "";
         }
 
         return {
@@ -167,9 +163,23 @@ var SampleDetailView = Marionette.View.extend({
         this.model.updateField(e.target.name, { id: e.target.selectedOptions[0]['id'], label: e.target.value });
     },
 
-    selectField(context, value) {
-        let index = this.dropdown_id.split("_").slice(-1);
-        //context.model.updateTissueField(index, 'tissue', value);
+    updateSequencingFiles: function(e) {
+        console.log('updateSequencingFiles');
+        let fileID = e.target.selectedOptions[0]['id'];
+        if (fileID.length == 0) {
+            // null
+            this.model.updateSequencingFiles();
+        } else {
+            let coll = this.controller.getCollections();
+            let file = coll.fileList.get(fileID);
+            if (file.isPaired()) {
+                let pairUuid = file.getPairUuid();
+                let fp = coll.fileList.get(pairUuid);
+                this.model.updateSequencingFiles(file, fp);
+            } else {
+                this.model.updateSequencingFiles(file);
+            }
+        }
     },
 
 });

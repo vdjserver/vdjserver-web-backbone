@@ -308,6 +308,10 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         return Agave.PutOverrideSync(method, this, options);
     },
 
+    updateSequencingFiles: function(file, file_pair) {
+        console.log('updateSequencingFiles: to be implemented');
+    },
+
     validate: function(attrs, options) {
         let errors = [];
 

@@ -665,6 +665,14 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend(
             return false;
         },
 
+        getPairUuid: function() {
+            let value = this.get('value');
+            if (value['pairedReadMetadataUuid']) return value['pairedReadMetadataUuid'];
+            if (value['qualityScoreMetadataUuid']) return value['qualityScoreMetadataUuid'];
+            if (value['readMetadataUuid']) return value['readMetadataUuid'];
+            return null;
+        },
+
         // this assumes the sub-objects have already been denormalized from their uuid
         getValuesForField(field) {
             var value = this.get('value');
