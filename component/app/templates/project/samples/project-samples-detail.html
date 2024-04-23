@@ -148,7 +148,7 @@
                       <option id="UO:0000036" value="year" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000036"}}selected{{/ifEquals}}>year(s)</option>
                     </select>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="collection_time_point_reference">
                         <span>
                             <!-- Tooltip -->
@@ -163,23 +163,7 @@
                         Please enter a valid Collection Time Point Reference.
                     </div>
                 </div>
-<!-- TODO - commented out because it isn't in the current schema -->
-                <!--<div class="form-group col-md-2">
-                    <label for="collection_location">
-                        <span>>-->
-                            <!-- Tooltip -->
-                        <!--{{{FieldStar "Sample" "collection_location"}}}-->
-                        <!--</span>-->
-                        <!-- Popover -->
-                        <!--{{{FieldHelpPopover "Sample" "collection_location"}}}-->
-                        <!--Location:
-                    </label>
-                    <input type="text" class="form-control form-control-sample" name="collection_location" id="collection_location" placeholder="" value="{{value.collection_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter a valid Collection Location.
-                    </div>
-                </div>-->
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="biomaterial_provider">
                         <span>
                             <!-- Tooltip -->
@@ -192,6 +176,114 @@
                     <input type="text" class="form-control form-control-sample" name="biomaterial_provider" id="biomaterial_provider" placeholder="" value="{{value.biomaterial_provider}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Biomaterial Provider.
+                    </div>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+<div id="project-sample-list-detail" class="project-sample-list-detail">
+    <div class="row general-table-row align-items-center">
+        <div class="col">
+        <form method="post" role="form" id="edit-cell-processing-form {{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-4">
+                    <label for="sequencing_run_id">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_run_id"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_run_id"}}}
+                        Sequencing Run ID:
+                    </label>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_run_id" id="sequencing_run_id" placeholder="" value="{{value.sequencing_run_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sequencing Run ID.
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sequencing_platform">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_platform"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_platform"}}}
+                        Sequencing Platform:
+                    </label>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_platform" id="sequencing_platform" placeholder="" value="{{value.sequencing_platform}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sequencing Platform.
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sequencing_facility">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_facility"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_facility"}}}
+                        Sequencing Facility:
+                    </label>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_facility" id="sequencing_facility" placeholder="" value="{{value.sequencing_facility}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sequencing Facility.
+                    </div>
+                </div>
+            </div>
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-4">
+                    <label for="sequencing_run_date">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_run_date"}}}
+                                    </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_run_date"}}}
+                        Sequencing Date:
+                    </label>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_run_date" id="sequencing_run_date" placeholder="" value="{{value.sequencing_run_date}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sequencing Run Date.
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sequencing_kit">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_kit"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_kit"}}}
+                        Sequencing Kit:
+                    </label>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_kit" id="sequencing_kit" placeholder="" value="{{value.sequencing_kit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Sequencing Kit.
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="sequencing_files">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "SequencingRun" "sequencing_files"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "SequencingRun" "sequencing_files"}}}
+                        Sequencing Files:
+                    </label>
+                    <select class="custom-select value-select-sequencing-files" name="sequencing_files" id="sequencing_files" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                        {{#each sequencing_files_formatted}}
+                            <option id="{{this.uuid}}" value="{{this.name}}" {{#ifEquals this.name ../value.sequencing_files.filename}}selected{{/ifEquals}}>{{this.name}}</option>
+                        {{/each}}
+                            <option id="" value="" {{#ifEquals value.sequencing_files.filename null}}selected{{/ifEquals}}>null</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please enter valid Sequencing Files.
                     </div>
                 </div>
             </div>
@@ -295,6 +387,7 @@
                     <select class="custom-select value-select-sample" name="single_cell" id="single_cell" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="true" {{#if value.single_cell}}selected{{/if}}>True</option>
                       <option value="false"{{#unless value.single_cell}}selected{{/unless}}>False</option>
+                      <option value="" {{#ifEquals value.single_cell null}}selected{{/ifEquals}}>null</option>
                     </select>
                 </div>
                 <div class="form-group col-md-2">
@@ -342,6 +435,7 @@
                     <select class="custom-select value-select-sample" name="cell_storage" id="cell_storage" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="true" {{#if value.cell_storage}}selected{{/if}}>True</option>
                       <option value="false"{{#unless value.cell_storage}}selected{{/unless}}>False</option>
+                      <option value="" {{#ifEquals value.cell_storage null}}selected{{/ifEquals}}>null</option>
                     </select>
                 </div>
                 <div class="form-group col-md-2">
@@ -561,7 +655,12 @@
                     </label>
                     <select class="custom-select value-select-sample" name="pcr_target_locus" id="pcr_target_locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each pcr_target_locus_enum}}
-                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>{{this}}</option>
+                            {{#if this}}
+                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>{{this}}</option>
+                            {{/if}}
+                            {{#ifEquals this null}}
+                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>null</option>
+                            {{/ifEquals}}
                         {{/each}}
                     </select>
                 </div>
@@ -596,100 +695,18 @@
                     </div>
                 </div>
                 <div class="form-group col-md-2">
-                    <label for="sequencing_run_id">
+                    <label for="sequencing_data_id">
                         <span>
                             <!-- Tooltip -->
-                        {{{FieldStar "SequencingRun" "sequencing_run_id"}}}
+                        {{{FieldStar "SequencingData" "sequencing_data_id"}}}
                         </span>
                         <!-- Popover -->
-                        {{{FieldHelpPopover "SequencingRun" "sequencing_run_id"}}}
-                        Sequencing ID:
+                        {{{FieldHelpPopover "SequencingData" "sequencing_data_id"}}}
+                        Seq. Data ID:
                     </label>
-                    <input type="text" class="form-control form-control-sample" name="sequencing_run_id" id="sequencing_run_id" placeholder="" value="{{value.sequencing_run_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_data_id" id="sequencing_data_id" placeholder="" value="{{value.sequencing_data_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
-                        Please enter a valid Sequencing Run ID.
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-3">
-                    <label for="sequencing_platform">
-                        <span>
-                            <!-- Tooltip -->
-                        {{{FieldStar "SequencingRun" "sequencing_platform"}}}
-                        </span>
-                        <!-- Popover -->
-                        {{{FieldHelpPopover "SequencingRun" "sequencing_platform"}}}
-                        Sequencing Platform:
-                    </label>
-                    <input type="text" class="form-control form-control-sample" name="sequencing_platform" id="sequencing_platform" placeholder="" value="{{value.sequencing_platform}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter a valid Sequencing Platform.
-                    </div>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="sequencing_facility">
-                        <span>
-                            <!-- Tooltip -->
-                        {{{FieldStar "SequencingRun" "sequencing_facility"}}}
-                        </span>
-                        <!-- Popover -->
-                        {{{FieldHelpPopover "SequencingRun" "sequencing_facility"}}}
-                        Sequencing Facility:
-                    </label>
-                    <input type="text" class="form-control form-control-sample" name="sequencing_facility" id="sequencing_facility" placeholder="" value="{{value.sequencing_facility}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter a valid Sequencing Facility.
-                    </div>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="sequencing_run_date">
-                        <span>
-                            <!-- Tooltip -->
-                        {{{FieldStar "SequencingRun" "sequencing_run_date"}}}
-                                    </span>
-                        <!-- Popover -->
-                        {{{FieldHelpPopover "SequencingRun" "sequencing_run_date"}}}
-                        Sequencing Date:
-                    </label>
-                    <input type="text" class="form-control form-control-sample" name="sequencing_run_date" id="sequencing_run_date" placeholder="" value="{{value.sequencing_run_date}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter a valid Sequencing Run Date.
-                    </div>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="sequencing_kit">
-                        <span>
-                            <!-- Tooltip -->
-                        {{{FieldStar "SequencingRun" "sequencing_kit"}}}
-                        </span>
-                        <!-- Popover -->
-                        {{{FieldHelpPopover "SequencingRun" "sequencing_kit"}}}
-                        Sequencing Kit:
-                    </label>
-                    <input type="text" class="form-control form-control-sample" name="sequencing_kit" id="sequencing_kit" placeholder="" value="{{value.sequencing_kit}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
-                    <div class="invalid-feedback">
-                        Please enter a valid Sequencing Kit.
-                    </div>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="sequencing_files">
-                        <span>
-                            <!-- Tooltip -->
-                        {{{FieldStar "SequencingRun" "sequencing_files"}}}
-                        </span>
-                        <!-- Popover -->
-                        {{{FieldHelpPopover "SequencingRun" "sequencing_files"}}}
-                        Sequencing Files:
-                    </label>
-                    <select class="custom-select value-select-sequencing-files" name="sequencing_files" id="sequencing_files" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                        <option id="" value="" {{#unless value.sequencing_files_todo}}selected{{/unless}}>null</option>
-                        {{#each sequencing_files_formatted}}
-                        <option id="{{this.uuid}}" value="{{this.name}}" {{#ifEquals this ../value.sequencing_files_todo}}selected{{/ifEquals}}>{{this.name}}</option>
-                        {{/each}}
-                    </select>
-                    <div class="invalid-feedback">
-                        Please enter valid Sequencing Files.
+                        Please enter a valid Sequencing Data ID.
                     </div>
                 </div>
             </div>

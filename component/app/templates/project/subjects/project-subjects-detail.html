@@ -123,7 +123,12 @@
 
                     <select class="custom-select value-select" name="sex" id="sex" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each sex_enum}}
-                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sex}}selected{{/ifEquals}}>{{this}}</option>
+                            {{#if this}}
+                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../../value.sex}}selected{{/ifEquals}}>{{this}}</option>
+                            {{/if}}
+                            {{#ifEquals this null}}
+                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../../value.sex}}selected{{/ifEquals}}>null</option>
+                            {{/ifEquals}}
                         {{/each}}
                     </select>
                 </div>
@@ -298,7 +303,12 @@
                     </label>
                     <select class="custom-select value-select" name="linked_subjects" id="linked_subjects" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each subject_ids}}
-                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.linked_subjects}}selected{{/ifEquals}}>{{this}}</option>
+{{#if this}}
+                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../../value.linked_subjects}}selected{{/ifEquals}}>{{this}}</option>
+{{/if}}
+{{#ifEquals this null}}
+                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../../value.linked_subjects}}selected{{/ifEquals}}>null</option>
+{{/ifEquals}}
                         {{/each}}
                     </select>
                     <div class="invalid-feedback">

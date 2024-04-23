@@ -125,7 +125,7 @@ var SubjectDetailView = Marionette.View.extend({
                 if(value2.subject_id != value['subject_id']) subject_ids.push(value2.subject_id);
             }
         }
-
+        subject_ids.push(null);
         return {
             view_mode: this.model.view_mode,
             pointMode: pointMode,
