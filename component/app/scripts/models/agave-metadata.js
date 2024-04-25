@@ -351,6 +351,36 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         if (!value['sample_id']) errors.push({ field: 'sample_id', message: 'Sample ID cannot be blank'});
         else if (value['sample_id'].trim().length == 0) errors.push({ field: 'sample_id', message: 'Sample ID cannot be blank'});
 
+        // a Repertoire must have either sequencing_data_id or a sequencing_file, and not both
+        var sample = this.get('value');
+        let s = sample['sequencing_files'];
+        if(s.sequencing_data_id == null && s.filename == null)
+            errors.push({ field: 'sequencing_files', message: 'Select either a sequencing file or a sequencing run ID.'});
+        else if(s.sequencing_data_id != null && s.filename != null)
+            errors.push({ field: 'sequencing_files', message: 'Cannot select both a sequencing file and a sequencing run ID.'});
+
+        // collection_time_point_relative and collection_time_point_relative_unit must either both be defined or both be null
+        let ctpr = sample['collection_time_point_relative'];
+        let ctpru = sample['collection_time_point_relative_unit'].id;
+
+        if(ctpr != null && ctpru == null )
+            errors.push({ field: 'collection_time_point_relative_unit', message: 'Unit cannot be null if Collection Time is defined.'});
+        else if (ctpr == null && ctpru != null)
+            errors.push({ field: 'collection_time_point_relative', message: 'Collection Time cannot be null if Unit is defined.'});
+
+        // template_amount and template_amount_unit must either both be defined or both be null
+        let ta = sample['template_amount'];
+        let tau = sample['template_amount_unit'].id;
+
+        if(ta && !tau)
+            errors.push({ field: 'template_amount_unit', message: 'Unit cannot be null if Template Amount is defined.'});
+        else if (!ta && tau)
+            errors.push({ field: 'template_amount', message: 'Template Amount cannot be null if Unit is defined.'});
+
+        // prc_target_locus cannot be null
+        let pcr = sample['pcr_target'][0].pcr_target_locus;
+        if(!pcr) errors.push({ field: 'pcr_target_locus', message: 'PCR Target Locus cannot be null.'});
+
         // add integer check for cell_number, cells_per_reaction, total_reads_passing_qc_filter
         // verify HTML checks for number work for collection_time_point_relative and template_amount
         // add checks for fields that cannot be blank
@@ -480,6 +510,23 @@ export var Repertoire = Agave.MetadataModel.extend({
         // TODO: not sure what field to highlight
         if ((!this.sample) || (this.sample.length == 0))
             errors.push({ field: 'sample', message: 'Repertoire requires at least one sample' });
+
+        // a Repertoire must have a Subject
+        if(value['subject'].vdjserver_uuid == null) errors.push({ field: 'subject', message: 'Subject ID must be defined'});
+
+        // a Repertoire must have either sequencing_data_id or a sequencing_file, and not both
+        var samples = this.get('sample');
+        var samp = samples.at(0);
+        if(samples.length > 0) {
+            for(let i=0; i<samples.length; i++) {
+                let val = samp.get('value');
+                let s = val['sequencing_files'];
+                if(s.sequencing_data_id == null && s.filename == null)
+                     errors.push({ field: 'sequencing_files', message: 'Select either a sequencing file or a sequencing run ID.'});
+                else if(s.sequencing_data_id != null && s.filename != null)
+                    errors.push({ field: 'sequencing_files', message: 'Cannot select both a sequencing file and a sequencing run ID.'});
+            }
+        }
 
         // repertoire needs a subject assigned
         if (!this.subject)

@@ -171,6 +171,14 @@ ProjectRepertoiresController.prototype = {
     // add, duplicate, delete repertoire and sample
     //
 
+    updateSubject: function(e, model) {
+        e.preventDefault();
+        var uuid = e.target.value;
+        var colls = this.controller.getCollections();
+        var subjs = colls['subjectList'];
+        model.setSubject(subjs.get(uuid));
+    },
+
     duplicateRepertoire: function(e, model) {
         e.preventDefault();
         var clonedList = this.getRepertoireList();
@@ -294,7 +302,7 @@ ProjectRepertoiresController.prototype = {
                     hasErrors = true;
                     console.log(model.validationError);
                     let form = document.getElementById("edit-repertoire-form " + model.get('uuid'));
-                    let rect = form[i].getBoundingClientRect();
+                    let rect = form.getBoundingClientRect();
                     if (rect['y'] < minY) minY = rect['y'];
                     form = $(form);
                     for (let j = 0; j < model.validationError.length; ++j) {
@@ -311,8 +319,8 @@ ProjectRepertoiresController.prototype = {
                 if (model.sample) {
                     // invalidate any duplicate sample IDs
                     let duplicates = model.sample.checkDuplicates();
-                    for (let i = 0; i < duplicates.length; ++i) {
-                        let s = duplicates.at(i);
+                    for (let j = 0; j < duplicates.length; ++j) {
+                        let s = duplicates.at(j);
                         let field = document.getElementById("sample_id_" + s.get('uuid'));
                         if (field) {
                             field.setCustomValidity("ERROR");
@@ -324,12 +332,25 @@ ProjectRepertoiresController.prototype = {
                         }
                     }
 
-                    for (let j = 0; j < model.sample.length; ++j) {
-                        let s = model.sample.at(j);
+                    for (let k = 0; k < model.sample.length; ++k) {
+                        let s = model.sample.at(k);
                         valid = s.isValid();
                         if (!valid) {
                             hasErrors = true;
                             console.log(s.validationError);
+                    let form = document.getElementById("project-sample-form_" + s.get('uuid'));
+                    let rect = form.getBoundingClientRect();
+                    if (rect['y'] < minY) minY = rect['y'];
+                    form = $(form);
+                    for (let l = 0; l < s.validationError.length; ++l) {
+                        let e = s.validationError[l];
+                        let f = form.find('#' + e['field']);
+                        if (f.length > 0) {
+                            f[0].setCustomValidity(e['message']);
+                            f.addClass('is-invalid');
+                        }
+                    }
+
                         }
                     }
                     // TODO: scroll to sample?

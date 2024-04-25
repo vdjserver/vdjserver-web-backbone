@@ -260,9 +260,12 @@ ProjectSubjectsController.prototype = {
                 if (!valid) {
                     hasErrors = true;
                     let form = document.getElementById("project-subject-form_" + model.get('uuid'));
-                    var rect = form[i].getBoundingClientRect();
+console.log("uuid: " + model.get('uuid'));
+console.log("form4 : " + form);
+                    var rect = form.getBoundingClientRect();
                     if (rect['y'] < minY) minY = rect['y'] + window.scrollY;
                     form = $(form);
+console.log("form3 : " + JSON.stringify(form));
                     for (let j = 0; j < model.validationError.length; ++j) {
                         let e = model.validationError[j];
                         let f = form.find('#' + e['field']);

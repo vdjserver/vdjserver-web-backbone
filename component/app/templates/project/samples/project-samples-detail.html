@@ -72,10 +72,10 @@
                     {{#ifEquals view_mode "edit"}}
                     <div id="tissue-region-{{this.uuid}}"></div>
                     {{else}}
-                        {{#if this.tissue.id}}
-                        <input type="text" class="form-control form-control-sample form-control-tissue" name="tissue" id="tissue_{{this.uuid}}" value="{{this.tissue.label}} ({{this.tissue.id}})" readonly>
+                        {{#if value.tissue.id}}
+                        <input type="text" class="form-control form-control-sample form-control-tissue" name="tissue" id="tissue_{{value.uuid}}" value="{{value.tissue.label}} ({{value.tissue.id}})" readonly>
                         {{else}}
-                        <input type="text" class="form-control form-control-sample form-control-tissue" name="tissue" id="tissue_{{this.uuid}}" value="" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-tissue" name="tissue" id="tissue_{{value.uuid}}" value="" readonly>
                         {{/if}}
                     {{/ifEquals}}
                     <div class="invalid-feedback">
@@ -147,6 +147,9 @@
                       <option id="UO:0000035" value="month" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000035"}}selected{{/ifEquals}}>month(s)</option>
                       <option id="UO:0000036" value="year" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000036"}}selected{{/ifEquals}}>year(s)</option>
                     </select>
+                    <div class="invalid-feedback">
+                        Please enter a Collection Time Unit.
+                    </div>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="collection_time_point_reference">
@@ -179,15 +182,6 @@
                     </div>
                 </div>
             </div>
-        </form>
-        </div>
-    </div>
-</div>
-
-<div id="project-sample-list-detail" class="project-sample-list-detail">
-    <div class="row general-table-row align-items-center">
-        <div class="col">
-        <form method="post" role="form" id="edit-cell-processing-form {{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
             <div class="form-row align-items-center">
                 <div class="form-group col-md-4">
                     <label for="sequencing_run_id">
@@ -283,19 +277,10 @@
                             <option id="" value="" {{#ifEquals value.sequencing_files.filename null}}selected{{/ifEquals}}>null</option>
                     </select>
                     <div class="invalid-feedback">
-                        Please enter valid Sequencing Files.
+                        Please enter Seq. Files or Seq. Data ID, not both.
                     </div>
                 </div>
             </div>
-        </form>
-        </div>
-    </div>
-</div>
-
-<div id="project-sample-list-detail" class="project-sample-list-detail">
-    <div class="row general-table-row align-items-center">
-        <div class="col">
-        <form method="post" role="form" id="edit-cell-processing-form {{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
             <div class="form-row align-items-center">
                   <!--<label><b>Cell Processing:</b></label>-->
                 <div class="form-group col-md-2">
@@ -326,10 +311,10 @@
                     {{#ifEquals view_mode "edit"}}
                     <div id="cell-subset-region-{{this.uuid}}"></div>
                     {{else}}
-                        {{#if this.tissue.id}}
-                        <input type="text" class="form-control form-control-sample form-control-cell-subset" name="cell_subset" id="cell_subset_{{this.uuid}}" value="{{this.cell_subset.label}} ({{this.cell_subset.id}})" readonly>
+                        {{#if value.tissue.id}}
+                        <input type="text" class="form-control form-control-sample form-control-cell-subset" name="cell_subset" id="cell_subset_{{value.uuid}}" value="{{value.cell_subset.label}} ({{value.cell_subset.id}})" readonly>
                         {{else}}
-                        <input type="text" class="form-control form-control-sample form-control-cell-subset" name="cell_subset" id="cell_subset_{{this.uuid}}" value="" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-cell-subset" name="cell_subset" id="cell_subset_{{value.uuid}}" value="" readonly>
                         {{/if}}
                     {{/ifEquals}}
                     <div class="invalid-feedback">
@@ -364,10 +349,10 @@
                     {{#ifEquals view_mode "edit"}}
                     <div id="cell-species-region-{{this.uuid}}"></div>
                     {{else}}
-                        {{#if this.cell_species.id}}
-                        <input type="text" class="form-control form-control-sample form-control-cell-species" name="cell_species" id="cell_species_{{this.uuid}}" value="{{this.cell_species.label}} ({{this.cell_species.id}})" readonly>
+                        {{#if value.cell_species.id}}
+                        <input type="text" class="form-control form-control-sample form-control-cell-species" name="cell_species" id="cell_species_{{value.uuid}}" value="{{value.cell_species.label}} ({{value.cell_species.id}})" readonly>
                         {{else}}
-                        <input type="text" class="form-control form-control-sample form-control-cell-species" name="cell_species" id="cell_species_{{this.uuid}}" value="" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-cell-species" name="cell_species" id="cell_species_{{value.uuid}}" value="" readonly>
                         {{/if}}
                     {{/ifEquals}}
                     <div class="invalid-feedback">
@@ -484,15 +469,6 @@
                     </div>
                 </div>
             </div>
-        </form>
-        </div>
-    </div>
-</div>
-
-<div id="project-sample-list-detail" class="project-sample-list-detail">
-    <div class="row general-table-row align-items-center">
-        <div class="col">
-        <form method="post" role="form" id="edit-nucleic-form {{uuid}}" class="project-sample-form needs-validation" name="sample" novalidate>
             <div class="form-row align-items-center">
                   <!--<label><b>Nucleic Acid:</b></label>-->
                 <div class="form-group col-md-3">
@@ -510,6 +486,9 @@
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.template_class}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
                     </select>
+                    <div class="invalid-feedback">
+                        Please select a Template Class.
+                    </div>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="template_quality">
@@ -560,6 +539,9 @@
                       <option id="UO:0000021" value="gram" {{#ifEquals value.template_amount_unit.id "UO:0000021"}}selected{{/ifEquals}}>gram(s)</option>
                       <option id="UO:0000009" value="kilogram" {{#ifEquals value.template_amount_unit.id "UO:0000009"}}selected{{/ifEquals}}>kilogram(s)</option>
                     </select>
+                    <div class="invalid-feedback">
+                        Please enter a Template Amount Unit.
+                    </div>
                 </div>
             </div>
             <div class="form-row project-sample-row">
@@ -578,6 +560,9 @@
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.library_generation_method}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
                     </select>
+                    <div class="invalid-feedback">
+                        Please select a Library Generation Method.
+                    </div>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="library_generation_protocol">
@@ -624,6 +609,9 @@
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.complete_sequences}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
                     </select>
+                    <div class="invalid-feedback">
+                        Please select Complete Sequences.
+                    </div>
                 </div>
             </div>
             <div class="form-row">
@@ -642,6 +630,9 @@
                         <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.physical_linkage}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
                     </select>
+                    <div class="invalid-feedback">
+                        Please select a Physical Linkage.
+                    </div>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="pcr_target_locus">
@@ -653,7 +644,7 @@
                         {{{FieldHelpPopover "PCRTarget" "pcr_target_locus"}}}
                         PCR Target Locus:
                     </label>
-                    <select class="custom-select value-select-sample" name="pcr_target_locus" id="pcr_target_locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    <select class="custom-select value-select-sample-pcr" name="pcr_target_locus" id="pcr_target_locus" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each pcr_target_locus_enum}}
                             {{#if this}}
                                 <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>{{this}}</option>
@@ -663,6 +654,9 @@
                             {{/ifEquals}}
                         {{/each}}
                     </select>
+                    <div class="invalid-feedback">
+                        Please select a non-null PCR Target Locus.
+                    </div>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="forward_pcr_primer_target_location">
@@ -704,9 +698,9 @@
                         {{{FieldHelpPopover "SequencingData" "sequencing_data_id"}}}
                         Seq. Data ID:
                     </label>
-                    <input type="text" class="form-control form-control-sample" name="sequencing_data_id" id="sequencing_data_id" placeholder="" value="{{value.sequencing_data_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample-sdi" name="sequencing_data_id" id="sequencing_data_id" placeholder="" value="{{value.sequencing_data_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
-                        Please enter a valid Sequencing Data ID.
+                        Please enter Seq. Data ID or Seq. Files, not both.
                     </div>
                 </div>
             </div>
