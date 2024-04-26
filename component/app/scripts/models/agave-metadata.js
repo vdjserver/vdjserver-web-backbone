@@ -308,6 +308,22 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         return Agave.PutOverrideSync(method, this, options);
     },
 
+    updatePCR: function(new_value) {
+        let value = this.get('value');
+        let pcr = value['pcr_target'][0];
+        if(new_value != null) pcr.pcr_target_locus = new_value;
+        else pcr.pcr_target_locus = null;
+        this.set('value', value);
+    },
+
+    updateSequencingDataId: function(new_value) {
+        let value = this.get('value');
+        let s = value['sequencing_files'];
+        if(new_value.length == 0) s.sequencing_data_id = null;
+        else s.sequencing_data_id = new_value;
+        this.set('value', value);
+    },
+
     updateSequencingFiles: function(file, file_pair) {
         let value = this.get('value');
 
@@ -331,6 +347,7 @@ export var SampleProcessing = Agave.MetadataModel.extend({
                 value['sequencing_files']['paired_read_direction'] = file_pair.getAIRRReadDirection();
             }
         }
+        this.set('value', value);
     },
 
     validate: function(attrs, options) {
@@ -513,20 +530,6 @@ export var Repertoire = Agave.MetadataModel.extend({
 
         // a Repertoire must have a Subject
         if(value['subject'].vdjserver_uuid == null) errors.push({ field: 'subject', message: 'Subject ID must be defined'});
-
-        // a Repertoire must have either sequencing_data_id or a sequencing_file, and not both
-        var samples = this.get('sample');
-        var samp = samples.at(0);
-        if(samples.length > 0) {
-            for(let i=0; i<samples.length; i++) {
-                let val = samp.get('value');
-                let s = val['sequencing_files'];
-                if(s.sequencing_data_id == null && s.filename == null)
-                     errors.push({ field: 'sequencing_files', message: 'Select either a sequencing file or a sequencing run ID.'});
-                else if(s.sequencing_data_id != null && s.filename != null)
-                    errors.push({ field: 'sequencing_files', message: 'Cannot select both a sequencing file and a sequencing run ID.'});
-            }
-        }
 
         // repertoire needs a subject assigned
         if (!this.subject)

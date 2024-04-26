@@ -166,16 +166,11 @@ var SampleDetailView = Marionette.View.extend({
     },
 
     updatePCR: function(e) {
-        let value = this.model.get('value');
-        let pcr = value['pcr_target'][0];
-        if(e.target.value != null) pcr.pcr_target_locus = e.target.value;
+        this.model.updatePCR(e.target.value)
     },
 
     updateSequencingDataId: function(e) {
-        let value = this.model.get('value');
-        let s = value['sequencing_files'];
-        if(e.target.value.length == 0) s.sequencing_data_id = null;
-        else s.sequencing_data_id = e.target.value;
+        this.model.updateSequencingDataId(e.target.value);
     },
 
     updateSequencingFiles: function(e) {
