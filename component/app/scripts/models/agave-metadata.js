@@ -377,8 +377,8 @@ export var SampleProcessing = Agave.MetadataModel.extend({
             errors.push({ field: 'sequencing_files', message: 'Cannot select both a sequencing file and a sequencing run ID.'});
 
         // collection_time_point_relative and collection_time_point_relative_unit must either both be defined or both be null
-        let ctpr = sample['collection_time_point_relative'];
-        let ctpru = sample['collection_time_point_relative_unit'].id;
+        var ctpr = sample['collection_time_point_relative'];
+        if(sample['collection_time_point_relative_unit']) { var ctpru = sample['collection_time_point_relative_unit'].id; }
 
         if(ctpr != null && ctpru == null )
             errors.push({ field: 'collection_time_point_relative_unit', message: 'Unit cannot be null if Collection Time is defined.'});
@@ -386,8 +386,8 @@ export var SampleProcessing = Agave.MetadataModel.extend({
             errors.push({ field: 'collection_time_point_relative', message: 'Collection Time cannot be null if Unit is defined.'});
 
         // template_amount and template_amount_unit must either both be defined or both be null
-        let ta = sample['template_amount'];
-        let tau = sample['template_amount_unit'].id;
+        var ta = sample['template_amount'];
+        if(sample['template_amount_unit']) { var tau = sample['template_amount_unit'].id; }
 
         if(ta && !tau)
             errors.push({ field: 'template_amount_unit', message: 'Unit cannot be null if Template Amount is defined.'});
