@@ -557,20 +557,21 @@ export var Repertoire = Agave.MetadataModel.extend({
         if (changed) return true;
 
         // subject, should not be null
+        // do not check content of subject, just if uuid has changed
         if ((!this.subject) || (!origModel.subject)) return true;
-        changed = this.subject.changedAttributes(origModel.subject.attributes);
-        if (changed) return true;
+        let s = this.subject.get('uuid');
+        let os = origModel.subject.get('uuid');
+        if (s != os) return true;
 
         // samples, should not be null or empty
         if ((!this.sample) || (!origModel.sample)) return true;
         if ((this.sample.length == 0) || (origModel.sample.length == 0)) return true;
         if (this.sample.length != origModel.sample.length) return true;
+        // do not check content of samples, just if uuids have changed
         for (let i = 0; i < this.sample.length; ++i) {
-            var s = this.sample.at(i);
-            var os = origModel.sample.get(s.get('uuid'));
+            let s = this.sample.at(i);
+            let os = origModel.sample.get(s.get('uuid'));
             if (!os) return true;
-            changed = s.changedAttributes(os.attributes);
-            if (changed) return true;
         }
 
         // made it this far then everything is the same
