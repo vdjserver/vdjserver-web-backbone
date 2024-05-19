@@ -44,10 +44,14 @@ export var FilesCollection = Agave.Collection.extend({
         }
     },
     url: function() {
-        return '/files/v2/listings/system'
-            + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
+        return '/v3/files/ops/'
+            + EnvironmentConfig.agave.systems.storage.corral.hostname
             + this.relativeUrl
             ;
+/*        return '/files/v2/listings/system'
+            + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
+            + this.relativeUrl
+            ; */
     },
     parse: function(response) {
         if (response.result) {
@@ -84,8 +88,10 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
         //if (parameters && parameters.includeJobFiles) this.includeJobFiles = true;
     },
 
+    apiHost: EnvironmentConfig.vdjApi.hostname,
     url: function() {
-        if (this.includeJobFiles) {
+        return '/project/' + this.projectUuid + '/metadata/name/project_file';
+/*        if (this.includeJobFiles) {
             return '/meta/v2/data?q='
                    + encodeURIComponent('{'
                        + '"name": { $in: ["projectFile", "projectJobFile"] },'
@@ -105,7 +111,7 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
                    + '&limit=' + this.limit
                    + '&offset=' + this.offset
                    ;
-        }
+        } */
     },
 
     checkForDuplicateFilename: function(filename) {
@@ -433,7 +439,8 @@ export var ProjectFileQuery = Agave.MetadataCollection.extend({
     },
 
     url: function() {
-        return '/meta/v2/data?q='
+        return '/project/' + this.projectUuid + '/file/name/' + encodeURIComponent(this.name);
+/*        return '/meta/v2/data?q='
                + encodeURIComponent('{'
                    + '"name": "projectFile",'
                    + '"value.projectUuid":"' + this.projectUuid + '",'
@@ -442,7 +449,7 @@ export var ProjectFileQuery = Agave.MetadataCollection.extend({
                + '}')
                + '&limit=' + this.limit
                + '&offset=' + this.offset
-               ;
+               ; */
     },
 
 });

@@ -71,15 +71,17 @@ export var ProjectJobs = Agave.MetadataCollection.extend({
             this.projectUuid = parameters.projectUuid;
         }
     },
+    apiHost: EnvironmentConfig.vdjApi.hostname,
     url: function() {
-        return '/meta/v2/data?q='
+        return '/project/' + this.projectUuid + '/metadata/name/projectJob';
+/*        return '/meta/v2/data?q='
             + encodeURIComponent('{'
                 + '"name":"projectJob",'
                 + '"value.projectUuid":"' + this.projectUuid + '"'
             + '}')
             + '&limit=' + this.limit
             + '&offset=' + this.offset
-            ;
+            ; */
     },
     linkToJobs: function(jobList) {
         for (var i = 0; i < this.length; ++i) {

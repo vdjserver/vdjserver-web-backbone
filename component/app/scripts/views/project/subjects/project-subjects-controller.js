@@ -368,9 +368,6 @@ ProjectSubjectsController.prototype = {
                     await m.save().fail(function(error) { msg = error; });
                     if (msg) return Promise.reject(msg);
 
-                    await m.syncMetadataPermissionsWithProjectPermissions(context.model.get('uuid')).catch(function(error) { msg = error; });
-                    if (msg) return Promise.reject(msg);
-
                     return Promise.resolve();
                 };
 

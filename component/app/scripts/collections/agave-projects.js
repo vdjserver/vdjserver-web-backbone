@@ -34,12 +34,14 @@ import { Comparators } from 'Scripts/collections/mixins/comparators-mixin';
 export default Agave.MetadataCollection.extend(
     _.extend({}, Comparators.reverseChronologicalCreatedTime, {
         model: Project,
+        apiHost: EnvironmentConfig.vdjApi.hostname,
         url: function() {
-            return '/meta/v2/data?q='
+            return '/project/metadata';
+/*            return '/meta/v2/data?q='
                    + encodeURIComponent('{"name":"private_project"}')
                    + '&limit=' + this.limit
                    + '&offset=' + this.offset
-                   ;
+                   ; */
         },
     })
 );

@@ -66,13 +66,15 @@ export default Agave.MetadataModel.extend({
         this.schema = studySchema;
     },
     url: function() {
-        return '/meta/v2/data/' + this.get('uuid');
+        return '/project/' + this.get('uuid') + '/metadata/uuid/' + this.get('uuid');
     },
     sync: function(method, model, options) {
+        // if uuid is the cid then blank it
+        if (this.get('uuid') == this.cid) this.set('uuid', '');
 
         // if uuid is not set, then we are creating a new project
-        if (this.get('uuid') === '') {
-            options.apiHost = EnvironmentConfig.vdjApi.hostname;
+        var uuid = this.get('uuid');
+        if (!uuid || uuid == '') {
             options.url = '/project';
             options.authType = 'oauth';
 

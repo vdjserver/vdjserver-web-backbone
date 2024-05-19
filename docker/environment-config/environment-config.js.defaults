@@ -6,12 +6,12 @@ var EnvironmentConfig = {
         'maintenance': false,
         'maintenanceMessage': '',
         'hostname': 'https://vdjserver.org',
-        'internal': 'https://vdj-agave-api.tacc.utexas.edu',
+        'internal': 'https://vdjserver.tapis.io',
         'serviceAccountUsername': 'vdj',
         'systems': {
             'storage': {
                 'corral': {
-                    'hostname': 'data.vdjserver.org',
+                    'hostname': 'data-storage.vdjserver.org',
                 },
             },
             'execution': {

@@ -195,9 +195,6 @@ ProjectFilesController.prototype = {
                     await m.save().fail(function(error) { msg = error; });
                     if (msg) return Promise.reject(msg);
 
-                    await m.syncMetadataPermissionsWithProjectPermissions(context.model.get('uuid')).catch(function(error) { msg = error; });
-                    if (msg) return Promise.reject(msg);
-
                     return Promise.resolve();
                 };
 
@@ -359,8 +356,8 @@ ProjectFilesController.prototype = {
     },
 
     doneUpload: function(e) {
-        // call controller to cleanup after upload
-        this.controller.cleanUpload();
+        // cleanup after upload
+        this.cleanUpload();
         // update UI
         this.mainView.clearUploadFiles();
     },
@@ -496,13 +493,13 @@ ProjectFilesController.prototype = {
 
                 // staging complete when its the same size as the uploaded file
                 let uploadFile = file['uploadFile'];
-                if (file.get('length') >= uploadFile.get('length')) {
+                if (file.get('size') >= uploadFile.get('length')) {
                     uploadFile.set('uploadStatus', 'attach');
                     completedFiles.push(file);
                     //controller.completeFiles += 1;
                 }
-                uploadFile.set('stageProgress', file.get('length'));
-                console.log(file.get('length'), uploadFile.get('length'));
+                uploadFile.set('stageProgress', file.get('size'));
+                console.log(file.get('size'), uploadFile.get('length'));
 
                 // Sum current model progress placeholders
                 controller.progressLength = 0;
@@ -558,7 +555,7 @@ ProjectFilesController.prototype = {
             for (let i = 0; i < controller.attachFiles.length; ++i) {
                 let file = controller.attachFiles.at(i);
                 let uploadFile = file['uploadFile'];
-                let query = new ProjectFileQuery({projectUuid: uploadFile.get('projectUuid'), name: uploadFile.get('name')});
+                let query = new ProjectFileQuery(null, {projectUuid: uploadFile.get('projectUuid'), name: uploadFile.get('name')});
                 await query.fetch()
                     .fail(function(error) {
                         console.log(error);

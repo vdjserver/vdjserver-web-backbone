@@ -28,8 +28,9 @@
 //
 
 import Backbone from 'backbone';
-import RetrySync from 'backbone-retry-sync';
+//import RetrySync from 'backbone-retry-sync';
 import moment from 'moment';
+import { vdj_schema } from 'vdjserver-schema';
 
 // The core agave object
 export var Agave = function(options) {
@@ -79,15 +80,15 @@ Agave.ajax = function(config) {
         ;
 };
 
-Agave.basicAuthHeader = function() {
-    return {
-        'Authorization': 'Basic ' + btoa(Agave.instance.token().get('username') + ':' + Agave.instance.token().get('access_token')),
-    };
-};
-
 Agave.oauthHeader = function() {
     return {
         'Authorization': 'Bearer ' + Agave.instance.token().get('access_token'),
+    };
+};
+
+Agave.jwtHeader = function() {
+    return {
+        'X-Tapis-Token': Agave.instance.token().get('access_token'),
     };
 };
 
@@ -119,8 +120,8 @@ Agave.sync = function(method, model, options) {
                 if (authType === 'oauth') {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
                 }
-                else {
-                    xhr.setRequestHeader('Authorization', 'Basic ' + btoa(agaveToken.get('username') + ':' + agaveToken.get('access_token')));
+                if (authType === 'jwt') {
+                    xhr.setRequestHeader('X-Tapis-Token', agaveToken.get('access_token'));
                 }
             }
         };
@@ -187,8 +188,8 @@ Agave.PutOverrideSync = function(method, model, options) {
 // Agave extension of default Backbone.Model that uses Agave sync
 Agave.Model = Backbone.Model.extend({
     initialize: function(parameters) {
-        this.retrySyncEngine = Agave.sync;
-        this.retrySyncLimit = 3;
+        Backbone.Model.prototype.initialize.apply(this, [parameters]);
+
         this.communityMode = false;
         if (parameters && parameters.communityMode) {
             this.communityMode = parameters.communityMode;
@@ -198,9 +199,9 @@ Agave.Model = Backbone.Model.extend({
             this.requiresAuth = false;
         }
     },
-    apiHost: EnvironmentConfig.agave.hostname,
+    apiHost: EnvironmentConfig.vdjApi.hostname,
     authType: 'oauth',
-    sync: Backbone.RetrySync,
+    sync: Agave.sync,
     requiresAuth: true,
     parse: function(response) {
         if (response.result) {
@@ -218,8 +219,8 @@ Agave.Model = Backbone.Model.extend({
 Agave.Collection = Backbone.Collection.extend({
     initialize: function(models, parameters) {
         Backbone.Collection.prototype.initialize.apply(this, [models, parameters]);
-        this.retrySyncEngine = Agave.sync;
-        this.retrySyncLimit = 3;
+        //this.retrySyncEngine = Agave.sync;
+        //this.retrySyncLimit = 1;
         this.communityMode = false;
         if (parameters && parameters.communityMode) {
             this.communityMode = parameters.communityMode;
@@ -229,9 +230,11 @@ Agave.Collection = Backbone.Collection.extend({
             this.requiresAuth = false;
         }
     },
-    apiHost: EnvironmentConfig.agave.hostname,
+    //apiHost: EnvironmentConfig.agave.hostname,
+    apiHost: EnvironmentConfig.vdjApi.hostname,
     authType: 'oauth',
-    sync: Backbone.RetrySync,
+    //sync: Backbone.RetrySync,
+    sync: Agave.sync,
     requiresAuth: true,
     parse: function(response) {
         if (response.result) {
@@ -247,7 +250,7 @@ Agave.PaginatedCollection = Agave.Collection.extend({
         Agave.Collection.prototype.initialize.apply(this, [models, parameters]);
 
         this.offset = 0;
-        this.limit = 100;
+        this.limit = 1000;
     },
     /*
         Fetch data in multiple smaller sets instead of one giant collection.
@@ -257,7 +260,8 @@ Agave.PaginatedCollection = Agave.Collection.extend({
         scale project and project file metadata requests. It could also be
         updated for lazy loading and/or user invoked pagination.
     */
-    sync: Backbone.RetrySync,
+    //sync: Backbone.RetrySync,
+    sync: Agave.sync,
 
     fetch: function() {
         var that = this;
@@ -282,7 +286,14 @@ Agave.PaginatedCollection = Agave.Collection.extend({
                     that.offset += response.length;
 
                     models = models.concat(that.reset(response));
-                    offsetFetch();
+
+                    // BUG: doing this because of bug with Tapis list_profiles
+                    //if (response.length < that.limit) {
+                    //    that.offset = 0;
+                    //    that.reset(models);
+                    //    deferred.resolve();
+                    //} else
+                        offsetFetch();
                 }
                 // The most recent fetch had 0 objects, so we're done now
                 // Put the collection in the correct state and exit the promise
@@ -304,20 +315,27 @@ Agave.PaginatedCollection = Agave.Collection.extend({
     },
 });
 
-// Agave extension of default Backbone.Model that uses Agave sync
 // Specifically for data that stored in the Tapis (Agave) metadata service
+var metamodelSchema = null;
 Agave.MetadataModel = Agave.Model.extend({
     idAttribute: 'uuid',
-    defaults: {
-        uuid: '',
-        name: '',
-        value: {},
-        created: '',
-        lastUpdated: '',
+    defaults: function() {
+        // Use VDJServer schema TapisMetaObject object as basis
+        if (! metamodelSchema) metamodelSchema = new vdj_schema.SchemaDefinition('TapisMetaObject');
+        this.schema = metamodelSchema;
+        // make a deep copy from the template
+        var blankEntry = metamodelSchema.template();
+
+        return blankEntry;
     },
     initialize: function(parameters) {
-        this.retrySyncEngine = Agave.PutOverrideSync;
-        this.retrySyncLimit = 3;
+        Agave.Model.prototype.initialize.apply(this, [parameters]);
+
+        if (parameters && parameters.projectUuid) {
+            this.projectUuid = parameters.projectUuid;
+            this.set('associationIds', [ parameters.projectUuid ]);
+        }
+
         if (parameters && parameters.communityMode) {
             this.communityMode = parameters.communityMode;
         }
@@ -326,12 +344,20 @@ Agave.MetadataModel = Agave.Model.extend({
             this.requiresAuth = false;
         }
     },
-    sync: Backbone.RetrySync,
-    getSaveUrl: function() {
-        return '/meta/v2/data/' + this.get('uuid');
+    sync: function(method, model, options) {
+        // if uuid is the cid then blank it
+        if (this.get('uuid') == this.cid) this.set('uuid', '');
+
+        // if uuid is not set, then we are creating a new object
+        if (this.get('uuid') === '') {
+            options.url = '/project/' + this.projectUuid + '/metadata/name/' + this.get('name');
+            options.authType = 'oauth';
+        }
+
+        return Agave.PutOverrideSync(method, this, options);
     },
-    getCreateUrl: function() {
-        return '/meta/v2/data';
+    url: function() {
+        return '/project/' + this.projectUuid + '/metadata/uuid/' + this.get('uuid');
     },
     parse: function(response) {
 
@@ -359,32 +385,6 @@ Agave.MetadataModel = Agave.Model.extend({
         let vdj = this.get('x-vdjserver');
         if (vdj) m.set('x-vdjserver', JSON.parse(JSON.stringify(vdj)));
         return m;
-    },
-
-    syncMetadataPermissionsWithProjectPermissions: function(projectUuid) {
-        let value = this.get('value');
-
-        let obj = {
-            project_uuid: projectUuid,
-            metadata_uuid: this.get('uuid')
-        };
-
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                headers: Agave.oauthHeader(),
-                url: EnvironmentConfig.vdjApi.hostname + '/permission/metadata',
-                type: 'POST',
-                data: JSON.stringify(obj),
-                processData: false,
-                contentType: 'application/json',
-                success: function (data) {
-                    resolve(data)
-                },
-                error: function (error) {
-                    reject(error)
-                },
-            })
-        });
     },
 
     updateField: function(name, new_value) {
@@ -524,13 +524,31 @@ Agave.MetadataModel = Agave.Model.extend({
 // Agave extension of default Backbone.Model that uses Agave sync
 // Specifically for data stored with the Tapis (Agave) metadata API
 // This uses the paginated collection so all records can be retrieved
-Agave.MetadataCollection = Agave.PaginatedCollection.extend({
-    sync: Backbone.RetrySync,
+//Agave.MetadataCollection = Agave.PaginatedCollection.extend({
+Agave.MetadataCollection = Agave.Collection.extend({
+    initialize: function(models, parameters) {
+        Agave.Collection.prototype.initialize.apply(this, [models, parameters]);
+
+        if (parameters && parameters.projectUuid) {
+            this.projectUuid = parameters.projectUuid;
+        }
+    },
+    apiHost: EnvironmentConfig.vdjApi.hostname,
+
+    //sync: Backbone.RetrySync,
+    sync: Agave.sync,
     getSaveUrl: function() {
         return '/meta/v2/data/' + this.get('uuid');
     },
     parse: function(response) {
         if (response.status === 'success' && response.result) {
+            // assign project uuid to objects
+            if (this.projectUuid)
+                for (let i = 0; i < response.result.length; ++i) {
+                    let obj = response.result[i];
+                    if (obj['associationIds'] && obj['associationIds'].includes(this.projectUuid))
+                        obj.projectUuid = this.projectUuid;
+                }
             return response.result;
         }
         return response;
@@ -699,7 +717,7 @@ Agave.JobModel = Agave.Model.extend({
         this.inputParameterName = 'files';
 
         //this.retrySyncEngine = Agave.PutOverrideSync;
-        this.retrySyncLimit = 3;
+        //this.retrySyncLimit = 1;
     },
     apiHost: EnvironmentConfig.vdjApi.hostname,
     url: function() {
@@ -1005,12 +1023,13 @@ Agave.JobHistory = Agave.Model.extend({
             this.jobUuid = parameters.jobUuid;
         }
 
-        this.retrySyncEngine = Agave.sync;
-        this.retrySyncLimit = 3;
+        //this.retrySyncEngine = Agave.sync;
+        //this.retrySyncLimit = 1;
     },
-    apiHost: EnvironmentConfig.agave.hostname,
+    //apiHost: EnvironmentConfig.agave.hostname,
     authType: 'oauth',
-    sync: Backbone.RetrySync,
+    //sync: Backbone.RetrySync,
+    sync: Agave.sync,
     requiresAuth: true,
     url: function() {
         return '/jobs/v2/' + this.jobUuid + '/history';
@@ -1087,8 +1106,8 @@ Auth.Token = Agave.Model.extend({
 
             this.isFetched = true;
 
-            response.result.expires = response.result['expires_in'] + (Date.now() / 1000);
-            return response.result;
+            response.result['access_token']['expires'] = response.result['access_token']['expires_in'] + (Date.now() / 1000);
+            return response.result['access_token'];
         }
 
         return;

@@ -65,7 +65,11 @@ var FilesUploadDetailView = Marionette.View.extend({
         if (uploadStatus == 'upload') uploadStatusText = 'Uploading';
         if (uploadStatus == 'stage') uploadStatusText = 'Staging';
         if (uploadStatus == 'attach') uploadStatusText = 'Attaching';
-        if (uploadStatus == 'complete') uploadStatusText = 'Complete';
+        let isComplete = false;
+        if (uploadStatus == 'complete') {
+            uploadStatusText = 'Complete';
+            isComplete = true;
+        }
         let hasError = false;
         if (uploadStatus == 'error') {
             uploadStatusText = 'ERROR';
@@ -77,6 +81,7 @@ var FilesUploadDetailView = Marionette.View.extend({
             pctComplete: pctComplete,
             uploadStatusText: uploadStatusText,
             hasError: hasError,
+            isComplete: isComplete,
             fileTypeName: File.getFileTypeById(this.model.get('type')),
             fileTypes: File.getFileTypes(),
             fileTypeNames: File.getFileTypeNames(),

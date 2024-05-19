@@ -38,16 +38,9 @@ import { Agave } from 'Scripts/backbone/backbone-agave';
 
 export var TenantUser = Agave.Model.extend({
     defaults: {
-        create_time: '',
-        email:       '',
-        first_name:  '',
-        full_name:   '',
-        last_name:   '',
-        mobile_phone: '',
-        phone:  '',
-        status: '',
-        uid: 0,
         username: '',
+        email:       '',
+        name:  ''
     },
     idAttribute: 'username'
 });
@@ -70,7 +63,10 @@ export var UserProfile = Agave.MetadataModel.extend({
             }
         );
     },
+    apiHost: EnvironmentConfig.vdjApi.hostname,
     url: function() {
+        return '/user/profile/' + Agave.instance.token().get('username');
+        /*
         return '/meta/v2/data?q='
                + encodeURIComponent(
                    '{'
@@ -79,6 +75,6 @@ export var UserProfile = Agave.MetadataModel.extend({
                  + '}'
                )
                + '&limit=5000'
-               ;
+               ; */
     }
 });
