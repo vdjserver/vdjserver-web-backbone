@@ -161,7 +161,7 @@ ProjectSubjectsController.prototype = {
         e.preventDefault();
         var clonedList = this.getSubjectsList();
         let i = clonedList.findIndex(model);
-        let newSubject = model.clone();
+        let newSubject = model.deepClone();
         newSubject.set('uuid', newSubject.cid);
         newSubject.view_mode = 'edit';
         clonedList.add(newSubject, {at:i});
@@ -260,12 +260,9 @@ ProjectSubjectsController.prototype = {
                 if (!valid) {
                     hasErrors = true;
                     let form = document.getElementById("project-subject-form_" + model.get('uuid'));
-console.log("uuid: " + model.get('uuid'));
-console.log("form4 : " + form);
                     var rect = form.getBoundingClientRect();
                     if (rect['y'] < minY) minY = rect['y'] + window.scrollY;
                     form = $(form);
-console.log("form3 : " + JSON.stringify(form));
                     for (let j = 0; j < model.validationError.length; ++j) {
                         let e = model.validationError[j];
                         let f = form.find('#' + e['field']);

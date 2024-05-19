@@ -149,6 +149,12 @@ export var Subject = Agave.MetadataModel.extend({
 
         // TODO: VDJServer additional validation
 
+        // blank subject_id is not allowed
+        let subject_id = "subject_id_" + this.cid;
+        if ((value['subject_id'] == null)) {
+            errors.push({ field: subject_id, message: 'Subject ID is blank'});
+        }
+
         // age validation
         if ((value['age_min'] == null) && (value['age_max'] != null)) {
             errors.push({ field: 'age_min', message: 'age_min is null'});
@@ -161,8 +167,15 @@ export var Subject = Agave.MetadataModel.extend({
                 errors.push({ field: 'age_min', message: 'age_min is greater than age_max'});
                 errors.push({ field: 'age_max', message: 'age_max is less than age_min'});
             }
-            if (!value['age_unit']) errors.push({ field: 'age_unit', message: 'missing age unit'});
+            if (value['age_min'] < 0) {
+                errors.push({ field: 'age_min', message: 'age_min is less than zero'});
+            }
+            if (value['age_max'] < 0) {
+                errors.push({ field: 'age_max', message: 'age_max is less than zero'});
+            }
+            //if (!value['age_unit']) errors.push({ field: 'age_unit', message: 'missing age unit'});
         }
+
         // special virtual age_point field
         for (let i = 0; i < errors.length; ++i) {
             if ((errors[i]['field'] == 'age_min') || (errors[i]['field'] == 'age_min')) {

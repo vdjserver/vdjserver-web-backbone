@@ -53,7 +53,7 @@
                         {{{FieldHelpPopover "Subject" "subject_id"}}}
                         Subject ID:
                     </label>
-                    <input type="text" class="form-control form-control-subject" name="subject_id" id="subject_id_{{uuid}}" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationBlankID" required>
+                    <input type="text" class="form-control form-control-subject" name="subject_id" id="subject_id_{{uuid}}" value="{{value.subject_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} aria-describedby="validationBlankID">
                     <div id="validationBlankID" class="invalid-feedback">
                         Please enter a non-blank, unique Subject ID.
                     </div>
@@ -71,8 +71,8 @@
                     </label>
 
                     <select class="custom-select value-select" name="synthetic" id="synthetic" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="true" {{#if value.synthetic}}selected{{/if}}>True</option>
-                      <option value="false"{{#unless value.synthetic}}selected{{/unless}}>False</option>
+                      <option value="True" {{#ifEquals value.synthetic "True"}}selected{{/ifEquals}}>True</option>
+                      <option value="False"{{#ifEquals value.synthetic "False"}}selected{{/ifEquals}}>False</option>
                     </select>
                 </div>
 

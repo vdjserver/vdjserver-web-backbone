@@ -4,7 +4,7 @@ Test Specifications
 This provides the set of test cases that should be performed. They are organized
 by page and include both positive and negative test cases.
 
-## Login screen
+## Login screen (DONE: login.js)
 
 - valid username and password
 - blank username
@@ -26,14 +26,14 @@ by page and include both positive and negative test cases.
 - click "Email" link
 - click "Create Account" link
 
-## Logout
+## Logout (DONE: logout.js)
 
 - valid logout on icon click
 - valid logout on "Logout" click
 
 ## Verify account screen
 
-? verification code
+- handle verification code
 
 ## Feedback screen
 
@@ -41,13 +41,13 @@ by page and include both positive and negative test cases.
 - valid data in feedback but no email
 - valid email but no feedback
 - valid feedback but email not an email address
-? recaptcha
+- handle recaptcha
 
 ## Forgot password screen
 
 - valid username
 - invalid username
-? password reset codes
+- handle password reset codes
 
 ## User Profile screen
 
@@ -106,7 +106,7 @@ by page and include both positive and negative test cases.
 - click "Save Files Changes" and check against back-end
 ? click on file name itself
 
-## Project Subjects screen
+## Project Subjects screen (projectSubjects.js)
 
 - click "Details"
 - click "Sort By"
