@@ -1,3 +1,4 @@
+/*
 define(['app'], function(App) {
 
     'use strict';
@@ -25,3 +26,4 @@ define(['app'], function(App) {
     App.Models.Error = Error;
     return Error;
 });
+*/

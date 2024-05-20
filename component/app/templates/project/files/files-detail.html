@@ -1,0 +1,136 @@
+
+{{#if quality}}
+<div class="row general-table-row general-border-top">
+    <div class="col-md-11">
+        <div class="row align-items-center">
+            <div class="col-md-3 text-data">
+                <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{read.name}}</a>
+            </div>
+            <div class="col-md-2 text-data">{{FormatDateTime read.lastUpdated}}</div>
+            <div class="col-md-2 text-data">{{GetHumanReadableFileSize read.size}}</div>
+            <div class="col-md-2 text-data">{{read.fileTypeName}}</div>
+            <div class="col-md-2">
+                <input
+                    class="form-control"
+                    type="text"
+                    id="project-file-tags"
+                    value="{{GetTagDisplay read.publicAttributes}}">
+            </div>
+            <div class="col-md-1 text-data"></div>
+        </div>
+        <div class="row general-table-internal-row align-items-center">
+            <div class="col-md-3 text-data">
+                <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{quality.name}}</a>
+            </div>
+            <div class="col-md-2 text-data">{{FormatDateTime quality.lastUpdated}}</div>
+            <div class="col-md-2 text-data">{{GetHumanReadableFileSize quality.size}}</div>
+            <div class="col-md-2 text-data">{{quality.fileTypeName}}</div>
+            <div class="col-md-2">
+                <input
+                    class="form-control"
+                    type="text"
+                    id="project-file-tags"
+                    value="{{GetTagDisplay quality.publicAttributes}}">
+            </div>
+            <div class="col-md-1 text-data"></div>
+        </div>
+    </div>
+    <div class="col-md-1 general-buttons-right project-files-split-button">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <button type="button" class="btn btn-delete" title="Delete file" id="project-file-delete">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+    </div>
+</div>
+{{else}}
+    {{#if forward}}
+    <div class="row general-table-row general-border-top">
+        <div class="col-md-11">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-data">
+                    <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{forward.name}}</a>
+                </div>
+                <div class="col-md-2 text-data">{{FormatDateTime forward.lastUpdated}}</div>
+                <div class="col-md-2 text-data">{{GetHumanReadableFileSize forward.size}}</div>
+                <div class="col-md-2 text-data">{{forward.fileTypeName}}</div>
+                <div class="col-md-2">
+                    <input
+                        class="form-control"
+                        type="text"
+                        id="project-file-tags"
+                        value="{{GetTagDisplay forward.publicAttributes}}">
+                </div>
+                <div class="col-md-1 text-data">Forward</div>
+            </div>
+            <div class="row general-table-internal-row align-items-center">
+                <div class="col-md-3 text-data">
+                    <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{reverse.name}}</a>
+                </div>
+                <div class="col-md-2 text-data">{{FormatDateTime reverse.lastUpdated}}</div>
+                <div class="col-md-2 text-data">{{GetHumanReadableFileSize reverse.size}}</div>
+                <div class="col-md-2 text-data">{{reverse.fileTypeName}}</div>
+                <div class="col-md-2">
+                    <input
+                        class="form-control"
+                        type="text"
+                        id="project-file-tags"
+                        value="{{GetTagDisplay reverse.publicAttributes}}">
+                </div>
+                <div class="col-md-1 text-data">Reverse</div>
+            </div>
+        </div>
+        <div class="col-md-1 general-buttons-right project-files-split-button">
+            <div class="btn-group" role="group" aria-label="Button group">
+                <button type="button" class="btn btn-delete" title="Delete file" id="project-file-delete">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    {{else}}
+    <div class="row general-table-row general-border-top" draggable="true">
+        <div class="col-md-11">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-data">
+                    <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{value.name}}</a>
+                </div>
+                <div class="col-md-2 text-data">{{FormatDateTime lastUpdated}}</div>
+                <div class="col-md-2 text-data">{{GetHumanReadableFileSize value.size}}</div>
+                <div class="col-md-2">
+                    <select class="form-control" id="project-file-type">
+                        {{#each fileTypes}}
+                            <option {{#ifEquals this ../value.fileType}}selected{{/ifEquals}} value="{{this}}">
+                                {{#with (lookup ../fileTypeNames @index)}} {{this}} {{/with}}
+                            </option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input
+                        class="form-control"
+                        type="text"
+                        id="project-file-tags"
+                        value="{{GetTagDisplay value.publicAttributes}}">
+                </div>
+                <div class="col-md-1">
+                    <select class="form-control" id="project-file-read-direction">
+                        <option></option>
+                        {{#each readDirections}}
+                            <option {{#ifEquals this ../value.readDirection}}selected{{/ifEquals}}>{{this}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1 general-buttons-right">
+            <div class="btn-group" role="group" aria-label="Button group">
+                <button type="button" class="btn btn-delete" title="Delete file" id="project-file-delete">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+{{/if}}
+

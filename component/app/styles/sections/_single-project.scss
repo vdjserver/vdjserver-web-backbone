@@ -1,0 +1,435 @@
+//
+// _single-project.scss
+// Custom styles for project pages
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2022 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+
+
+.project-summary {
+    margin-top: 2%;
+
+    h1 {
+        margin-bottom: 2%;
+        font-size: 2.25rem;
+        font-weight: 400;
+    }
+}
+
+.project-metadata {
+    margin-bottom: 3%;
+    float: right;
+
+    .btn {
+        margin: 0% 1%;
+    }
+}
+
+button.project-changes-action {
+    margin-left: 2em;
+}
+
+.project-buttons {
+    margin-bottom: 2%;
+}
+
+.project-buttons-right {
+    text-align: right;
+}
+
+.project-buttons-margin-left {
+    margin-left: 2em;
+}
+
+.project-buttons-margin-right {
+    margin-right: 2em;
+}
+
+.project-buttons-margin-bottom {
+    margin-bottom: 1em;
+}
+
+.underline-on-hover:hover {
+    text-decoration: underline;
+}
+
+.details {
+    font-weight: bold;
+}
+
+.card {
+    margin: 1%;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.card-active {
+    background: $vdj-lightgray;
+}
+
+.card-link:hover {
+        background: $vdj-lightgray;
+        cursor: pointer;
+}
+
+.card-body {
+    text-align: center;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.card-image {
+    margin-bottom: 0.5rem;
+}
+
+.card-title {
+    margin-bottom: 0rem;
+}
+
+/* ----------------------------------------------------------
+Project Overview
+----------------------------------------------------------*/
+
+.overview-summary {
+    border-right: 1px solid rgba(225, 225, 225, 0.45);
+    padding-right: 5%;
+}
+
+#study-type-dropdown {
+    padding: 1em;
+}
+
+#study-type-dropdown.dropdown-menu.show {
+    will-change: unset !important;
+    -webkit-transform: none !important;
+    transform: none !important;
+}
+
+.overview-details {
+    padding-left: 5%;
+    font-size: 1em;
+
+    input, textarea, select {
+        margin-top: 1%;
+        margin-bottom: 5%;
+    }
+}
+
+.overview-summary-details {
+    input, textarea, select {
+        margin-bottom: 5%;
+    }
+}
+
+.overview-footer {
+    margin: 3% 0%;
+}
+
+/* ----------------------------------------------------------
+Project Subjects/Samples
+----------------------------------------------------------*/
+
+.project-subjects-list {
+    margin-bottom: 2%;
+    border: 2px solid $vdj-medgray;
+    font-size: 0.9em;
+
+    .project-subject-header {
+        margin: 0% 0% 0% 0%;
+        border-bottom: 1.5px solid $vdj-darkgray;
+    }
+
+    .project-subject-buttons {
+        margin: 0% 0% 0% 0%;
+        padding: 1% 1% 1% 1%;
+    }
+
+    .project-subject-changes-buttons {
+        text-align: right;
+    }
+
+    .project-subject-summary {
+        margin: 0% 0% 0% 0%;
+        padding: 1% 1% 1% 1%;
+        border-top: 1.5px solid $vdj-darkgray;
+    }
+
+    .project-subject-summary:hover {
+        background: $vdj-lightgray;
+        cursor: pointer;
+    }
+
+    .project-subject-detail {
+        margin: 0% 0% 0% 0%;
+        padding: 1% 1% 1% 1%;
+        border-top: 1.5px solid $vdj-darkgray;
+    }
+
+    .project-subject-form {
+        margin-bottom: 0%;
+    }
+
+    .project-subject-row {
+        margin: 0% 0% 0% 0%;
+    }
+}
+
+.project-samples-list {
+    margin-bottom: 2%;
+    border: 2px solid $vdj-medgray;
+    font-size: 0.9em;
+
+    .project-samples-header {
+        border-bottom: 1.5px solid $vdj-darkgray;
+        margin: 0% 0% 0% 0%;
+    }
+
+    .project-samples-buttons {
+        padding: 1% 1% 1% 1%;
+        border-bottom: 1.5px solid $vdj-darkgray;
+        margin: 0% 0% 0% 0%;
+    }
+}
+
+/* ----------------------------------------------------------
+Project Repertoires
+----------------------------------------------------------*/
+
+.project-repertoire-buttons {
+    margin: 0% 0% 0% 0%;
+    padding: 1% 1% 1% 1%;
+}
+
+.hide {
+    visibility: hidden;
+}
+
+.no-display {
+    display: none;
+}
+
+.collapse-arrow {
+    margin-right: 0.25em;
+}
+
+.collapse {
+    -moz-transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    transition: all .5s linear;
+}
+
+//.show {
+    //-moz-transition: all .5s linear;
+    //-webkit-transition: all .5s linear;
+    //transition: all .5s linear;
+//}
+
+#details {
+    -moz-transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    transition: all .5s linear;
+    // margin-left: 5%;
+}
+
+.rotate {
+    -moz-transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    transition: all .5s linear;
+}
+
+.rotate.down {
+    -moz-transform:rotate(180deg);
+    -webkit-transform:rotate(180deg);
+    transform:rotate(180deg);
+}
+
+.repertoire-actions {
+    float: right;
+}
+
+#repertoire-summary-header, #repertoire-expand-header {
+    padding-top: 2%;
+}
+
+#repertoire-summary-sample, #repertoire-exapnd-header {
+    padding-bottom: 2%;
+}
+
+ #repertoire-summary-statistics, #repertoire-expand-statistics {
+    padding-bottom: 3%;
+}
+
+.statistics-number, .statistics-name {
+    display: block;
+}
+
+#repertoire-summary-header,
+#repertoire-summary-sample,
+#repertoire-summary-statistics,
+#repertoire-summary-subject,
+#repertoire-expand-header,
+#repertoire-expand-subject,
+#repertoire-expand-sample,
+#repertoire-expand-file,
+#repertoire-expand-statistics
+ {
+
+    margin-bottom: 0 !important;
+
+    label {
+        font-weight: 500;
+    }
+}
+
+.rep-form-group {
+    margin-bottom: 0 !important;
+}
+
+.form-inline input {
+    margin-left: 2%;
+}
+
+/* ----------------------------------------------------------
+Edit Repertoire
+----------------------------------------------------------*/
+#editSubject-form, #editSample-form, #editDiagnosis-form, #editCell-form, #editNucleic-form {
+    text-align: left;
+
+    > div {
+        margin-bottom: 1%;
+    }
+}
+
+/* ----------------------------------------------------------
+Progress Steps
+----------------------------------------------------------*/
+.selected-step {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 2%;
+}
+
+/* ----------------------------------------------------------
+Delete a Project
+----------------------------------------------------------*/
+.delete-warning {
+    color: $vdj-orange;
+}
+
+/* ----------------------------------------------------------
+User Management
+----------------------------------------------------------*/
+#add-project-user {
+        margin-bottom: 3%;
+}
+
+.user-row:hover {
+    background: $vdj-lightgray;
+    cursor: pointer;
+}
+
+.subtitle {
+    font-size: 0.85em;
+    color: $vdj-darkgray;
+    font-weight: 500;
+}
+
+.btn-create {
+    color: #FFFFFF !important;
+}
+
+.btn-copy {
+    color: #FFFFFF;
+}
+
+.user-name-email {
+    input {
+        margin-bottom: 0.75em;
+    }
+}
+
+/* ----------------------------------------------------------
+Repertoires
+------------------------------------------------------------*/
+.rep-details-button {
+    width: 100%;
+    position: relative;
+    text-align: left;
+}
+
+.rep-details-button[aria-expanded="false"]:after {
+    font-family: "Font Awesome 5 Free";
+    content: "\f057";
+    float: right;
+}
+
+.rep-details-button[aria-expanded="true"]:after {
+    font-family: "Font Awesome 5 Free";
+    content: "\f078";
+    float: right;
+}
+
+.age-range {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.age_unit {
+    margin-left: 8.5%;
+}
+
+.age_event {
+    margin-left: 8%
+}
+
+#saveEditSubject, #saveEditDiagnosis, #saveEditSample, #saveEditCell, #saveEditCell {
+    float: right;
+    margin-bottom: 3%;
+}
+
+#repertoire-container {
+    margin-top: 3%;
+    padding: 2%;
+    border: 3px solid #e1e1e1;
+}
+
+.selected-repertoire {
+    background: rgba(127, 168, 189, 0.1);
+}
+
+/* ----------------------------------------------------------
+Files
+------------------------------------------------------------*/
+
+.project-files-split-button {
+    padding-top: 1.5%;
+}
+
+.files-upload-form {
+    margin-bottom: 2%;
+    border: 2px solid $vdj-medgray;
+    padding: 2%;
+}
+
+.files-upload-header {
+    margin-top: 1%;
+}
+

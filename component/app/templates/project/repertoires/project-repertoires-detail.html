@@ -1,0 +1,96 @@
+<div id="project-repertoires-detail-summary" class="row general-table-row general-border-top align-items-center">
+    <div class="col">
+        <form method="post" role="form" id="edit-repertoire-form {{uuid}}" class="project-repertoire-form needs-validation" name="repertoire" novalidate>
+            <div class="form-row align-items-center">
+                <div class="form-group col-md-1">
+                  <label><b>Actions:</b></label>
+                  <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-create dropdown-toggle" name="{{uuid}}" id="project-repertoires-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-vial fa-fw" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-show-summary" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Repertoire Summary
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-copy-uuid">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-edit-repertoire" {{#ifEquals view_mode "edit"}}disabled{{/ifEquals}}>
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Repertoire
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-duplicate-repertoire">
+                                <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Repertoire
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-add-sample">
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Sample
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-sample-attach-sample" disabled>
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Attach Existing Sample
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-repertoire-delete-repertoire">
+                                <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Repertoire
+                            </button>
+                        </div>
+                    </div><!--end dropdown-->
+                  </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="repertoire_name">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Repertoire" "repertoire_name"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Repertoire" "repertoire_name"}}}
+                        Repertoire Name:
+                    </label>
+                    <input type="text" class="form-control form-control-repertoire" name="repertoire_name" id="repertoire_name_{{uuid}}" placeholder="" value="{{value.repertoire_name}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Repertoire Name.
+                    </div>
+                </div>
+                <div class="form-group col-md-8">
+                    <label for="repertoire_description">
+                        <span>
+                            <!-- Tooltip -->
+                        {{{FieldStar "Repertoire" "repertoire_description"}}}
+                        </span>
+                        <!-- Popover -->
+                        {{{FieldHelpPopover "Repertoire" "repertoire_description"}}}
+                        Repertoire Description:
+                    </label>
+                    <input type="text" class="form-control form-control-repertoire" name="repertoire_description" id="repertoire_description" placeholder="" value="{{value.repertoire_description}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <div class="invalid-feedback">
+                        Please enter a valid Repertoire Description.
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="row general-table-internal-row align-items-center">
+            <div class="btn-group col-md-3">
+                <span class="d-flex align-items-center" for="repertoires-subject-id"><b>Subject ID:&nbsp</b></span>
+                <select class="custom-select value-select w-auto" name="subject_id" id="subject_id" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+                    {{#each subject_ids}}
+                    <option id="{{this}}" value="{{this}}" {{#ifEquals this ../subject.subject_id}}selected{{/ifEquals}}>{{this}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <b>Sex/Species:</b> {{subject.sex}}/{{species_display}}
+            </div>
+            <div class="col-md-3">
+                <b>Race/Ethnicity:</b> {{subject.race}}/{{subject.ethnicity}}
+            </div>
+            <div class="col-md-3">
+                <b>Age:</b> {{age_display}}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="project-sample-list-detail">

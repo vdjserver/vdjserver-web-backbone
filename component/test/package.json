@@ -1,0 +1,14 @@
+{
+  "name": "vdj-backbone-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "testCase1.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vdj-tapis-js": "file:vdj-tapis-js"
+  }
+}

@@ -1,3 +1,4 @@
+/*
 define(['app'], function(App) {
     'use strict';
 
@@ -69,3 +70,4 @@ define(['app'], function(App) {
     App.Views.Util = Util;
     return Util;
 });
+*/

@@ -1,3 +1,4 @@
+/*
 define([
     'app',
 ], function(App) {
@@ -22,3 +23,4 @@ define([
     App.Utilities.SerializationTools = SerializationTools;
     return SerializationTools;
 });
+*/

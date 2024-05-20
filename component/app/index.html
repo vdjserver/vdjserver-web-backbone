@@ -6,40 +6,21 @@
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="description" content="">
+        <base href="/">
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-        <link rel="stylesheet" href="/styles/main.css">
+        <link rel="stylesheet" href="dist/main.css">
 
         <title>VDJServer</title>
-        <base href="/"/>
+
+        <!-- Environment Config -->
+        <script src="scripts/config/environment-config.js"></script>
 
     </head>
     <body>
-        <header id="header" class="top"></header>
-        <main id="main"></main>
+        <div id="app" class="container-fluid p-0"></div>
 
-        <!-- Google Analytics -->
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-P6ZRTPTSRS"></script>
-        <script>
-         window.dataLayer = window.dataLayer || [];
-         function gtag(){dataLayer.push(arguments);}
-         gtag('js', new Date());
-
-         gtag('config', 'G-P6ZRTPTSRS');
-        </script>
-        <!-- End Google Analytics -->
-
-        <!-- Google Recaptcha -->
-            <script src='https://www.google.com/recaptcha/api.js' async defer></script>
-        <!-- End Google Recaptcha-->
-
-        <script src="scripts/config/environment-config.js"></script>
-        <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="zoflo1ivbcsk8fp"></script>
-
-        <!-- build:js scripts/requirejs-main.js -->
-            <script data-main="/scripts/requirejs-config" src="/bower_components/requirejs/require.js"></script>
-        <!-- endbuild -->
-
-</body>
+    <!-- Loading Scripts last for performance -->
+    <script src="dist/main.js"></script>
+    </body>
 </html>

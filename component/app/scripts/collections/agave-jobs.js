@@ -1,3 +1,104 @@
+
+'use strict';
+
+//
+// agave-job.js
+// Job models
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2022 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+
+import { Agave } from 'Scripts/backbone/backbone-agave';
+import { Job, ProjectJob } from 'Scripts/models/agave-job';
+import moment from 'moment';
+
+export var Jobs = Agave.Collection.extend({
+    model: Job,
+
+    // TODO: we really want submission time
+    // Sort by reverse date order
+    comparator: function(modelA, modelB) {
+        // pending/queued/running etc on top
+        if (modelA.get('status') !== 'FINISHED' && modelA.get('status') !== 'FAILED') return -1;
+        if (!modelA.get('submitTime')) return -1;
+        if (modelA.get('submitTime').length == 0) return -1;
+
+        var modelAEndDate = moment(modelA.get('submitTime'));
+        var modelBEndDate = moment(modelB.get('submitTime'));
+
+        if (modelAEndDate > modelBEndDate) {
+            return -1;
+        }
+        else if (modelBEndDate > modelAEndDate) {
+            return 1;
+        }
+
+        // Equal
+        return 0;
+    },
+    url: function() {
+        // TODO: better filter?
+        return '/jobs/v2/?filter=*&archivePath.like=/projects/' + this.projectUuid + '*';
+    },
+});
+
+export var ProjectJobs = Agave.MetadataCollection.extend({
+    model: ProjectJob,
+    initialize: function(models, parameters) {
+
+        Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
+
+        if (parameters && parameters.projectUuid) {
+            this.projectUuid = parameters.projectUuid;
+        }
+    },
+    apiHost: EnvironmentConfig.vdjApi.hostname,
+    url: function() {
+        return '/project/' + this.projectUuid + '/metadata/name/projectJob';
+/*        return '/meta/v2/data?q='
+            + encodeURIComponent('{'
+                + '"name":"projectJob",'
+                + '"value.projectUuid":"' + this.projectUuid + '"'
+            + '}')
+            + '&limit=' + this.limit
+            + '&offset=' + this.offset
+            ; */
+    },
+    linkToJobs: function(jobList) {
+        for (var i = 0; i < this.length; ++i) {
+            var m = this.at(i);
+            var value = m.get('value');
+            var job = jobList.get(value.jobUuid);
+            if (job) {
+                job.set('metadataLink', m.get('uuid'));
+                job.initDisplayName();
+                if (value.displayName) job.set('displayName', value.displayName);
+                job.set('isArchived', false);
+            }
+        }
+    },
+});
+
+/*
 define([
     'backbone',
     'moment',
@@ -104,15 +205,6 @@ define([
                     + '&limit=' + this.limit
                     + '&offset=' + this.offset
                     ;
-        /*
-            return '/jobs'
-                   + '/v2'
-                   + '/' + this.jobId
-                   + '/outputs'
-                   + '/listings'
-                   + '?limit=' + this.limit
-                   + '&offset=' + this.offset
-                   ; */
         },
         getProcessMetadataFile: function() {
             for (var j = 0; j < this.models.length; j++) {
@@ -324,6 +416,7 @@ define([
             return newCollection;
         },
     });
+*/
 /*
     Jobs.ProjectDataFiles = Jobs.OutputFiles.extend({
         initialize: function(parameters) {
@@ -361,6 +454,7 @@ define([
         },
     });
 */
+/*
     Jobs.Listings = Backbone.Agave.MetadataCollection.extend(
         _.extend({}, ComparatorsMixin.reverseChronologicalCreatedTime, {
             model: Backbone.Agave.Model.Job.Listing,
@@ -688,3 +782,4 @@ define([
     Backbone.Agave.Collection.Jobs = Jobs;
     return Jobs;
 });
+*/

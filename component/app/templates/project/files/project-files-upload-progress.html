@@ -1,0 +1,80 @@
+{{#if isUploading}}
+    <div class="row">
+        <div class="col">
+            <h3> {{completeFiles}} of {{totalFiles}} File(s) Uploaded</h3>
+        </div>
+
+        {{#if uploadFinished}}
+        <div class="col-md-6 general-buttons-right">
+            <div class="btn-group">
+                <button id="done-upload-button" class="btn btn-success general-buttons-margin-left">
+                    Done
+                </button>
+            </div>
+        </div>
+        {{else}}
+        <div class="col-md-6 general-buttons-right">
+            <div class="btn-group">
+                <button id="cancel-upload-button" class="btn btn-cancel general-buttons-margin-left">
+                    Cancel Upload
+                </button>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+
+    <div class="row files-upload-header align-items-center">
+        <div class="col-sm-1">
+            <label class="control-label">Progress</label>
+        </div>
+        <div class="col-sm-11">
+            <div class="progress">
+                <div class="progress-bar progress-striped active" style="width: {{pctComplete}}%" aria-valuenow="{{pctComplete}}" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
+    </div>
+{{else}}
+    <div class="row">
+        <div class="col">
+            <div class="btn-group">
+                <button id="add-upload-files" class="btn btn-add">Add File(s)</button>
+            </div>
+            <div class="btn-group">
+                <input
+                    id="file-upload-from-computer-dialog"
+                    class="hide no-display"
+                    name="files[]"
+                    type="file"
+                    multiple
+                />
+            </div>
+        </div>
+
+        <div class="col-md-6 general-buttons-right">
+            <div class="btn-group">
+                <button id="start-upload-button" class="btn btn-upload" {{#if disableStart}}disabled{{/if}}>
+                    Start Upload
+                </button>
+            </div>
+
+            <div class="btn-group">
+                <button id="cancel-upload-button" class="btn btn-cancel general-buttons-margin-left">
+                    Cancel Upload
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row files-upload-header align-items-center">
+        <div class="col-sm-1">
+            <label class="control-label">Progress</label>
+        </div>
+        <div class="col-sm-11">
+            <div class="progress">
+                <div class="progress-bar progress-striped active" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
+    </div>
+{{/if}}

@@ -1,0 +1,163 @@
+<div class="home-view">
+<div class="container">
+
+    {{#if maintenance}}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                ALERT: {{maintenanceMessage}}
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+    <div class="row header">
+        <div class="col-md-6">
+            <div class="home-science-image">
+                <img src="../images/illustration-final.png">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="welcome-box">
+                <form class="signup form-horizontal">
+                    <h2 id="login">Welcome!</h2>
+                    <p>
+                        VDJServer is a free, scalable resource for performing immune repertoire analysis and sharing data.
+                        VDJServer <a href="community" id="community-link">Community Data Portal</a> is part of the <a target="_blank" href="https://docs.airr-community.org/en/stable/api/adc.html" id="AIRRDC-link">AIRR Data Commons</a>.
+                        Manage, analyze, and archive your data through our web resource.
+                        <a href="mailto:vdjserver@utsouthwestern.edu?subject=Share my data in VDJServer">Email</a> or <a href="feedback" id="sendFeedback-link">Send Feedback</a> for more details.
+                    </p>
+
+                    {{#if maintenance}}
+                    <div class="form-group">
+                        <div class="alert alert-danger">
+                        Login is disabled.
+                        </div>
+                    </div>
+                    {{/if}}
+
+                    <div class="form-group col-md-7">
+                        <input autofocus class="form-control" type="text" placeholder="USERNAME" name="username" id="username" {{#if maintenance}}disabled{{/if}}>
+                    </div>
+
+                    <div class="form-group col-md-7">
+                        <input class="form-control" type="password" placeholder="PASSWORD" name="password" id="password" {{#if maintenance}}disabled{{/if}}>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-7">
+                            <input type="submit" class="btn btn-primary login-button" id="home-login" value="Login" {{#if maintenance}}disabled{{/if}}>
+                        </div>
+                    </div>
+		    <div class="row">
+                        <div class="col-md-7">
+                            <button class="btn btn-create btn-small" href="/account" id="create-account" {{#if maintenance}}disabled{{/if}}>Create Account</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7">
+                        {{#if maintenance}}
+                        {{else}}
+                            <a class="forgot-password" href="password-reset" id="forgotPassword-link">Forgot password?</a>
+                        {{/if}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-7">
+                        {{#if maintenance}}
+                        {{else}}
+                            <a class="forgot-password" href="account/pending" id="verifyAccount-link">Verify account?</a>
+                        {{/if}}
+                        </div>
+                    </div>
+                            <!-- <input type="submit" value="LOGIN" id="home-login" class="login-button" {{#if maintenance}}disabled{{/if}}> -->
+                            <!-- <div class="col-md-6 login-button-column text-center">
+                                {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
+                            </div> -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="row">
+        <div class="col-md-12">
+           <div class="large-info-box uploads">
+              <div class="community text-center">
+                 <h2>News & Announcements</h2>
+              </div>
+                    <h4 class="text-center"> September 13, 2019 - <a target="_blank" href="http://wiki.vdjserver.org/vdjserver/index.php/VDJServer_Release_Announcements">Announcing VDJServer Release 1.1.2</a></h4>
+                    <p>
+                    </p>
+                <div class="col-md-12 text-center">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/DgqKP-L75CM" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="home-card card">
+                <h2>Upload</h2>
+                <p>
+                    <img src="../images/Upload.png" />
+                </p>
+
+                <p>
+                    Manage and archive your data leveraging our mirrored, secure, high performance datastore.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="home-card card">
+                <h2>Analyze</h2>
+                <p>
+                    <img src="../images/Analyze.png" />
+                </p>
+                <p>
+                    Use the latest software running on powerful supercomputers to crunch data at any scale.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="home-card card">
+                <h2>Publish</h2>
+                <p>
+                    <img src="../images/Publish.png" />
+                </p>
+                <p>
+                    Create permanent URLs to your data, analysis pipelines, and results to support journal publications.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="home-card card">
+                <h2>Share</h2>
+                <p>
+                    <img src="../images/Share.png" />
+                </p>
+                <p>
+                    Collaborate privately with individuals or contribute your data publicly to the scientific community.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+           <div class="large-info-box uploads">
+
+                <div class="about-vdjserver">
+                     <h4>About VDJServer:</h4>
+                    <p>
+                    VDJServer was established with funding from the National Institute of Allergy and Infectious Diseases (#1R01A1097403).
+                    VDJServer is a partner in the iReceptor+ Consortium (<a target="_blank" href="https://www.ireceptor-plus.com" id="iReceptorPlus-link">https://www.ireceptor-plus.com</a>) with current support from the European Union’s Horizon 2020 Research and Innovation Program (#825821).
+                    High-Performance compute and data resources are provided by The Texas Advanced Computing Center (<a target="_blank" href="https://tacc.utexas.edu" id="TACC-link">TACC</a>) at The University of Texas at Austin.
+                   </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

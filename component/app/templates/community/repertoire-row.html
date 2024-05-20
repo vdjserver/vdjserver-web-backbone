@@ -1,0 +1,25 @@
+            <div class="row community-data-table-row align-items-center">
+                <div class="col-md-2 text-truncate" title="{{repertoire.value.repertoire_name}}">
+                    <button type="button" class="btn btn-sm btn-create px-1 py-0 my-1" name="{{repertoire_id}}" id="community-repertoire-copy-id" title="Copy Repertoire ID to Clipboard">
+                        <i class="fa fa-fw fa-clipboard" aria-hidden="true"></i>
+                    </button>
+                    {{repertoire_name}}
+                </div>
+                <div class="col-md-2 text-truncate" title="{{subject.subject_id}}">
+                    {{subject.subject_id}}
+                </div>
+                <div class="col-md-2 text-truncate" title="{{sample_id}}">
+                    {{sample_id}}
+                </div>
+                <div class="col-md-2 text-truncate" title="{{tissue_label}} ({{tissue_id}})">
+                    {{tissue_label}}
+                </div>
+                <div class="col-md-2 text-truncate" title="{{disease_state_sample}}">
+                    {{disease_state_sample}}
+                </div>
+                <div class="col-md-2 text-truncate" title="{{cell_subset_label}} ({{cell_subset_id}})">
+                    {{cell_subset_label}}
+                </div>
+            </div>
+
+            <!-- Details attach after each repertoire row -->

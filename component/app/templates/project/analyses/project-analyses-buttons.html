@@ -1,0 +1,80 @@
+<div class="row general-button-bar">
+    <div class="col">
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle general-buttons-margin-right" type="button" id="project-analyses-sort-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort By
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="name">
+                    {{#ifEquals current_sort "name"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    File Name
+                </button>
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="newest">
+                    {{#ifEquals current_sort "newest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Newest
+                </button>
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="oldest">
+                    {{#ifEquals current_sort "oldest"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    Oldest
+                </button>
+                <button class="dropdown-item" type="button" id="project-analyses-sort-select" name="size">
+                    {{#ifEquals current_sort "size"}}<span class="fas fa-check"></span>{{/ifEquals}}
+                    File Size
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item disabled" type="button">
+                    Add Custom Sort...
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-analyses-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Templates
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-analyses-show-templates" name="name">
+                    Show Templates
+                </button>
+                <button class="dropdown-item" type="button" id="project-analyses-hide-templates" name="name" hidden>
+                    Hide Templates
+                </button>
+                <button class="dropdown-item" type="button" id="project-analyses-new-template" name="name">
+                    New Blank Template
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" type="button" id="project-analyses-template-name" name="newest">
+                    Create Analyses from NAME Template
+                </button>
+              </div>
+            </div>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+            <div class="dropdown">
+              <button class="btn btn-create dropdown-toggle general-buttons-margin-right" type="button" id="project-analyses-add" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-plus" aria-hidden="true"></i> Create Analysis
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item" type="button" id="project-analyses-new-tcr" name="name">
+                    New TCR Workflow
+                </button>
+                <button class="dropdown-item" type="button" id="project-analyses-new-ig" name="name">
+                    New IG Workflow
+                </button>
+                <button class="dropdown-item" type="button" id="project-analyses-new-10x" name="name">
+                    New 10x Genomics Workflow
+                </button>
+                <div class="dropdown-divider" width="10%">custom</div>
+                <button class="dropdown-item" type="button" id="project-analyses-comparative" name="newest">
+                    New Comparative Analysis
+                </button>
+              </div>
+            </div>
+        </div>
+    </div>
+
+</div>

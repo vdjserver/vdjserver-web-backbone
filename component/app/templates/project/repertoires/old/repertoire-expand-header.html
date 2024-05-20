@@ -1,0 +1,44 @@
+<!--
+- Subview for the repertoire expanded view
+-->
+<!-- <p>Header Edit Mode: {{edit_mode}}</p> -->
+    <!-- Expand/contract button -->
+    <div class="col-md-1" id="rep-name">
+        <a class="fa fa-chevron-up rotate down" data-toggle="collapse" aria-expanded="false" aria-controls="details" id="hide-details"></a>
+        <!-- {{#ifEquals copy_mode true}}
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="copy-repertoire">
+        </div>
+        {{/ifEquals}} -->
+  </div>
+    </div>
+
+    <div class="form-group col-md-4 form-inline">
+        <label for="repertoire_name" class="control-label">Name: </label>
+        {{#ifEquals edit_mode "advanced"}}
+            <input type="text" class="form-control" name="repertoire_name" id="repertoire_name" placeholder="Repertoire Name" value="{{value.repertoire_name}}">
+            {{else}}
+                {{value.repertoire_name}}
+        {{/ifEquals}}
+    </div>
+
+    <div class="form-group col-md-5 form-inline">
+        <label for="repertoire_uuid" class="control-label">UUID: &nbsp;</label>
+        {{#ifEquals edit_mode "advanced"}}
+        <input type="text" class="form-control" name="repertoire_uuid" id="repertoire_uuid" value="{{uuid}}">
+        {{else}}
+            {{uuid}}
+        {{/ifEquals}}
+    </div>
+
+    <!-- Repertoire Description -->
+    <div class="col-md-2">
+        <div class="repertoire-actions">
+            {{#ifEquals edit_mode "advanced"}}
+                <button type="button" class="btn btn-success" id="save-advanced-repertoire">Save</button>
+            {{else}}
+                <button type="button" class="btn btn-edit show" id="advanced-edit">Edit</button>
+                <!-- <button type="button" class="btn btn-copy" id="copy-repertoire">Copy</button> -->
+            {{/ifEquals}}
+        </div>
+    </div>

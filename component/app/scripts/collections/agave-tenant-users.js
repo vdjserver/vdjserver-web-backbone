@@ -1,17 +1,41 @@
-define(['backbone'], function(Backbone) {
 
-    'use strict';
+'use strict';
 
-    var TenantUsers = {};
+//
+// tenant-users.js
+// Backbone collection for Tapis user accounts
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2020 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
 
-    TenantUsers = Backbone.Agave.Collection.extend({
-        model: Backbone.Agave.Model.TenantUser,
-        comparator: 'username',
-        url: function() {
-            return '/profiles/v2/';
-        },
-    });
+import { Agave } from 'Scripts/backbone/backbone-agave';
+import { TenantUser } from 'Scripts/models/agave-tenant-user';
 
-    Backbone.Agave.Collection.TenantUsers = TenantUsers;
-    return TenantUsers;
+export default Agave.PaginatedCollection.extend({
+    model: TenantUser,
+    comparator: 'username',
+    apiHost: EnvironmentConfig.agave.internal,
+    authType: 'jwt',
+    url: function() {
+        return '/v3/oauth2/profiles?limit=' + this.limit + '&offset=' + this.offset;
+    },
 });

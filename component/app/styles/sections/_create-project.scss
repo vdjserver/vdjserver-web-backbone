@@ -1,0 +1,45 @@
+/*****************************************************
+_create-project.scss - Create a Project Page
+*****************************************************/
+
+.required {
+    color: $vdj-orange;
+    font-weight: bold;
+}
+
+.create-form-text {
+    margin: 3% 0%;
+}
+
+#project-form {
+    margin: 0 auto;
+    width: 80%;
+    border: 1.75px solid $vdj-medgray;
+    padding: 2em;
+}
+
+.projectInfo, .collectorInfo, .account-profile-form {
+    border-bottom: 1.5px solid rgba($vdj-green, 0.5);
+    padding: 0.5em 0em;
+}
+
+h2.form-section {
+    padding: 0.5em 0em;
+}
+
+#cancel-project {
+    margin-right: 3%;
+}
+
+.actions {
+    width: 50%;
+    margin-bottom: 0.75%;
+}
+
+.btn-success {
+    color: $text-white;
+}
+
+.btn-light {
+    color: $text-white;
+}

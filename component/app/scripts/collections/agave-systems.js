@@ -35,6 +35,7 @@ define(['backbone'], function(Backbone) {
 
                 var systemConfig = EnvironmentConfig.agave.systems.execution[key];
                 var system = that.get(systemConfig.hostname);
+                if (!system) return false;
 
                 if (systemConfig.type === 'large' && system.get('status') === 'UP') {
                     return true;

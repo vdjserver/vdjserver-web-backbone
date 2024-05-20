@@ -1,0 +1,298 @@
+<h3 class="community-badges">
+    <!-- Need to add conditionals depending on project type -->
+    <!-- We could also put the logos here instead of text -->
+    {{#if is_vdjserver}}
+    <a class="badge badge-pill badge-vdjserver community-project-type">
+        <img src="./dist/images/vdjserver-logo.png" class="vdjserver" alt="VDJServer">VDJServer
+    </a>
+    {{/if}}
+
+    {{#each repo_titles}}
+        {{#ifEquals this.name "sciReptor"}}
+            <a class="badge badge-pill badge-adc community-project-type">
+                <img src="./dist/images/scireptor_logo.png" class="scireptor" alt="sciReptor">
+            </a>
+        {{else}}
+            {{#ifEquals this.name "IPA"}}
+                <a class="badge badge-pill badge-adc community-project-type">
+                    <img src="./dist/images/ireceptor-logo.png" class="ireceptor" alt="i-Receptor Plus">
+                    {{this.name}}
+                </a>
+            {{else}}
+                <!-- generic AIRR logo -->
+                <a class="badge badge-pill badge-adc community-project-type">
+                    <img src="./dist/images/AIRR_logo-only.png" class="airr" alt="AIRR Repository">
+                    {{this.name}}
+                </a>
+            {{/ifEquals}}
+        {{/ifEquals}}
+    {{/each}}
+
+    {{#if is_10x_genomics}}
+    <a class="badge badge-pill badge-10x community-project-type">
+        <img src="./dist/images/10x_Logo_Vertical_Full-Color_Digital.png" class="genomics10x" alt="10X Genomics"></a>
+    {{/if}}
+</h3>
+<div class="community-project-header">
+    <div class="row">
+        <div class="col-md-9">
+            <h2 class="community-project-title"><a href="#">{{study.value.study_title}}</a></h2>
+        </div>
+
+        {{#if has_one_download_cache}}
+            <div class="col-md-3 text-right">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <a download class="btn btn-download" href="{{download_url}}"><i class="fas fa-download" aria-hidden="true"></i> Download Study ({{download_file_size}})</a>
+                    <button type="button" class="btn btn-download" id="clipboard-copy-url" data-toggle="tooltip" data-placement="top" title="Copy download URL to clipboard" ><i class="fas fa-clipboard" download_url="{{download_url}}"></i></button>
+                </div>
+            </div>
+        {{/if}}
+        {{#if has_multiple_download_cache}}
+            <div class="col-md-3 text-right">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button class="btn btn-download dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Download Study
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {{#each download_files}}
+                        <a class="dropdown-item" href="{{this.url}}">Study File {{@index}} ({{this.file_size}})</a>
+                        {{/each}}
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-download" id="clipboard-copy-url" data-toggle="tooltip" data-placement="top" title="Copy download URLs to clipboard" ><i class="fas fa-clipboard" download_url="{{download_url}}"></i></button>
+                </div>
+            </div>
+        {{/if}}
+    </div>
+
+    <div class="row">
+        <div class="col-md-10">
+            <!-- Badges for study type -->
+            <h4 class="community-badges">
+                {{#if contains_ig}}
+                    <a class="badge badge-pill badge-locus">IG</a>
+                {{/if}}
+                {{#if contains_tr}}
+                    <a class="badge badge-pill badge-locus">TCR</a>
+                {{/if}}
+                {{#if contains_single_cell}}
+                    <a class="badge badge-pill badge-cell">Single Cell</a>
+                {{/if}}
+                {{#if contains_paired_chain}}
+                    <a class="badge badge-pill badge-cell">Paired Chain</a>
+                {{/if}}
+            </h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col community-metadata">
+            {{#if study.value.vdjserver_uuid}}
+                <p>
+                    <span class="details">VDJServer UUID:</span> {{study.value.vdjserver_uuid}}
+                </p>
+            {{/if}}
+
+            {{#if study.value.study_id}}
+                <p>
+                    <span class="details">Study ID:</span> {{study.value.study_id}}
+                </p>
+            {{/if}}
+
+            {{#if study.value.study_type.label}}
+                <p>
+                    <span class="details">Study Type:</span> {{study.value.study_type.label}}
+                </p>
+            {{/if}}
+            {{#if study.value.inclusion_exclusion_criteria}}
+                <p class="inclusion">
+                    <span class="details">Inclusion/Exclusion Criteria:</span>
+                    {{#if study.truncated_inclusion_exclusion_criteria}}
+                        {{study.truncated_inclusion_exclusion_criteria}}
+                    {{else}}
+                        {{study.value.inclusion_exclusion_criteria}}
+                    {{/if}}
+                </p>
+                <p class="inclusion-full no-display">
+                    <span class="details">Inclusion/Exclusion Criteria:</span>
+                    {{study.value.inclusion_exclusion_criteria}}
+                </p>
+            {{/if}}
+            <!-- {{#if study.value.keywords_study}}
+                <p><span class="details">Study Keywords:</span> {{study.value.keywords_study}}</p>
+            {{/if}} -->
+        </div>
+        <div class="col community-metadata">
+            {{#if publish_date}}
+                <p>
+                    <span class="details">Publish Date:</span> {{publish_date}}
+                </p>
+            {{/if}}
+            {{#if update_date}}
+                <p>
+                    <span class="details">Update Date:</span> {{update_date}}
+                </p>
+            {{/if}}
+            {{#if study.value.pub_ids}}
+                <p>
+                    <span class="details">Publication(s):</span>
+                    {{#each pub_list}}
+                        <a href="{{this.url}}" target="_blank">{{{this.name}}}</a>
+                    {{/each}}
+                </p>
+            {{/if}}
+            {{#if study.value.grants}}
+                <p class="grants">
+                    <span class="details">Grants:</span>
+                    {{#if study.truncated_grants}}
+                        {{study.truncated_grants}}
+                    {{else}}
+                        {{study.value.grants}}
+                    {{/if}}
+                </p>
+                <p class="grants-full no-display">
+                    <span class="details">Grants:</span>
+                    {{study.value.grants}}
+                </p>
+            {{/if}}
+        </div>
+        <div class="col community-metadata">
+            {{#if study.value.lab_name}}
+                <p>
+                    <span class="details">PI:</span> {{study.value.lab_name}}
+                </p>
+            {{/if}}
+            {{#if study.value.lab_address}}
+                <p>
+                    <span class="details">Lab Address:</span> {{study.value.lab_address}}
+                </p>
+            {{/if}}
+            {{#if study.value.collected_by}}
+                <p>
+                    <span class="details">Data Collector:</span> {{study.value.collected_by}}
+                </p>
+            {{/if}}
+            {{#if study.value.submitted_by}}
+                <p>
+                    <span class="details">Data Submitter:</span> {{study.value.submitted_by}}
+                </p>
+            {{/if}}
+        </div>
+    </div>
+
+    <!-- Study Description is truncated by default-->
+    <p class="community-study-desc">
+        <span class="details">Description:</span>
+        {{#if study.truncated_study_description}}
+            {{study.truncated_study_description}}
+            <a class="study-desc-more">Read More</a>
+            <a class="study-desc-collapse no-display">Collapse</a>
+        {{else}}
+            {{study.value.study_description}}
+        {{/if}}
+    </p>
+
+    <!-- If "Read More" is clicked, show full study description -->
+    <p class="community-study-desc-full no-display">
+        <span class="details">Description:</span>
+        {{study.value.study_description}}
+        <a class="study-desc-collapse">Collapse</a>
+    </p>
+</div>
+
+{{#if is_vdjserver}}
+<div class="community-summary-stats row">
+    <div class="community-button col">
+        VDJServer
+    </div>
+    <div class="community-button col">
+        <a class="community-repertoires col" id="vdjserver">
+            {{#ifEquals vdjserver_counts.num_repertoires vdjserver_counts.full_num_repertoires}}
+                {{vdjserver_counts.full_num_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{else}}
+                {{vdjserver_counts.num_repertoires}} of {{vdjserver_counts.full_num_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{/ifEquals}}
+        </a>
+    </div>
+    <div class="community-button col">
+        <a class="community-subjects col" id="vdjserver">
+            {{#ifEquals vdjserver_counts.num_subjects vdjserver_counts.full_num_subjects}}
+                {{vdjserver_counts.full_num_subjects}} Subjects <i class="fas fa-users"></i>
+            {{else}}
+                {{vdjserver_counts.num_subjects}} of {{vdjserver_counts.full_num_subjects}} Subjects <i class="fas fa-users"></i>
+            {{/ifEquals}}
+        </a>
+    </div>
+    <div class="community-button col">
+        <a class="community-clones col" id="vdjserver">
+            XXX,XXX Clones <i class="fas fa-sitemap"></i>
+        </a>
+    </div>
+    <div class="community-button col-4">
+        <a class="community-rearrangements" id="vdjserver">
+           {{vdjserver_counts.num_rearrangements}} Rearrangements <i class="fas fa-stream"></i>
+        </a>
+    </div>
+</div>
+
+<!-- data table views -->
+<div class="community-repertoires-metadata vdjserver-community-table no-display" id="vdjserver-community-repertoires-table">
+</div>
+<div class="community-subjects-metadata vdjserver-community-table no-display" id="vdjserver-community-subjects-table">
+</div>
+<div class="community-clones-metadata vdjserver-community-table no-display" id="vdjserver-community-clones-table">
+    <h1>Community Clones Data</h1>
+</div>
+<div class="community-rearrangements-metadata vdjserver-community-table no-display" id="vdjserver-community-rearrangements-table">
+    <h1>Community Rearrangements Data</h1>
+</div>
+{{/if}}
+
+{{#each repo_titles}}
+<div class="community-summary-stats row">
+    <div class="community-button col">
+        {{this.name}}
+    </div>
+    <div class="community-button col">
+        <a class="community-repertoires col" id="{{this.id}}">
+            {{#ifEquals this.num_repertoires this.full_num_repertoires}}
+                {{this.full_num_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{else}}
+                {{this.num_repertoires}} of {{this.full_num_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            {{/ifEquals}}
+        </a>
+    </div>
+    <div class="community-button col">
+        <a class="community-subjects col" id="{{this.id}}">
+            {{#ifEquals this.num_subjects this.full_num_subjects}}
+                {{this.full_num_subjects}} Subjects <i class="fas fa-users"></i>
+            {{else}}
+                {{this.num_subjects}} of {{this.full_num_subjects}} Subjects <i class="fas fa-users"></i>
+            {{/ifEquals}}
+        </a>
+    </div>
+    <div class="community-button col">
+        <a class="community-clones col" id="{{this.id}}">
+            XXX,XXX Clones <i class="fas fa-sitemap"></i>
+        </a>
+    </div>
+    <div class="community-button col-4">
+        <a class="community-rearrangements" id="{{this.id}}">
+            {{this.num_rearrangements}} Rearrangements <i class="fas fa-stream"></i>
+        </a>
+    </div>
+</div>
+<div class="community-repertoires-metadata {{this.id}}-community-table no-display" id="{{this.id}}-community-repertoires-table">
+</div>
+<div class="community-subjects-metadata {{this.id}}-community-table no-display" id="{{this.id}}-community-subjects-table">
+</div>
+<div class="community-clones-metadata {{this.id}}-community-table no-display" id="{{this.id}}-community-clones-table">
+    <h1>Community Clones Data</h1>
+    <div id="{{this.id}}-community-clones"></div>
+</div>
+<div class="community-rearrangements-metadata {{this.id}}-community-table no-display" id="{{this.id}}-community-rearrangements-table">
+    <h1>Community Rearrangements Data</h1>
+    <div id="{{this.id}}-community-rearrangements"></div>
+</div>
+{{/each}}

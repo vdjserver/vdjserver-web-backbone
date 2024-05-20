@@ -1,24 +1,74 @@
-// colors
-$red: #993333;
-$darkGray: #919191;
+/*****************************************************
+_colors.scss - Custom Colors
+*****************************************************/
 
-$vdjLogoGreen: #558a74;
+/* import only the necessary Bootstrap files */
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
 
-//$projectMenuLightColor: #63c3d9;
+$vdj-green: #689A87;
+$vdj-lightgreen: #71B87D;
+$vdj-red: #D93C39;
+$vdj-orange: #CC6B4C;
+// rgba(204, 107, 76)
+$vdj-lightorange: #F6835E;
+$vdj-yellow: #EAE386;
+$vdj-darkgray: #6C757D;
+$vdj-medgray: #B8C0C7;
+$vdj-medlightgray: #E1E1E1;
+$vdj-lightgray: #F1F1F1;
+$vdj-darkblue: #4E95B8;
+$vdj-blue: #7FA8BD;
+$vdj-link: #61B8E4;
 
-// Dark blue
-$projectMenuLightColor: #184450;
+/* ----------------------------------------------------------
+Bootstrap Color Overrides
+https://getbootstrap.com/docs/4.0/getting-started/theming/
+------------------------------------------------------------*/
+$theme-colors: (
+    'report': $vdj-red,
+    'delete': $vdj-red,
+    'success': $vdj-lightgreen,
+    'save': $vdj-lightgreen,
+    'search': $vdj-blue,
+    'new': $vdj-darkblue,
+    'add': $vdj-darkblue,
+    'create': $vdj-darkblue,
+    'apply': $vdj-darkblue,
+    'upload': $vdj-lightgreen,
+    'edit': $vdj-yellow,
+    'copy': $vdj-lightorange,
+    'info': $vdj-darkblue,
+    'primary': $vdj-green,
+    'light': $vdj-medgray,
+    'cancel': $vdj-medgray,
+    'back': $vdj-medlightgray,
+    'download': $vdj-lightgreen,
+    'darkgray': $vdj-darkgray,
+    'pagination': $vdj-darkblue,
 
-// Green
-//$projectMenuLightColor: #699886;
-$projectMenuTextColor: #ffffff;
+    /* ----------------------------------------------------------
+    Study Badges
+    ------------------------------------------------------------*/
+    'locus': $vdj-green,
+    'cell': $vdj-lightorange,
+    'stats': $vdj-darkblue,
+    'vdjserver': $vdj-orange,
+    '10x': $vdj-darkblue,
+    'adc': $vdj-darkgray,
+);
 
-$projectSubmenuColor: #f3f3f3;
-$projectSubmenuTextColor: #484848;
-$projectFileListingsAlternateColor: #f2f2f2;
-$projectNavbarBorderColor: #6e3a34;
-$projectNavbarButtonColor: #7d362f;
+/* ----------------------------------------------------------
+Elements
+------------------------------------------------------------*/
+$vdj-border: #E1E1E1;
+$text-white: #FFFFFF;
+// $text-danger: #FFFFFF;
+$text-info: #6C757D;
+$text-light: #FFFFFF;
+$text-success: #FFFFFF;
+$text-save: #FFFFFF;
+// $text-download: #FFFFFF;
 
-$boxShadowColor: #767676;
-
-$projectListBorderColor: #575757;
+/* finally, import Bootstrap to set the changes! */
+@import "~bootstrap/scss/bootstrap";

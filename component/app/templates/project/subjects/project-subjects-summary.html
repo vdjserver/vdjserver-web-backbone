@@ -1,0 +1,79 @@
+<div id="project-subjects-summary" class="row general-table-row general-border-top align-items-center">
+    <div class="col">
+
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" name="{{uuid}}" id="project-subject-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user-alt fa-fw" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-show-details">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Subject Details
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-copy-uuid">
+                                <i class="fas fa-info-circle fa-fw image-vdj-green" aria-hidden="true"></i> Copy UUID to Clipboard
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-edit">
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Edit Subject
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-duplicate">
+                                <i class="fa fa-copy fa-fw image-vdj-darkblue" aria-hidden="true"></i> Duplicate Subject
+                            </button>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-add-diagnosis">
+                                <i class="fa fa-plus fa-fw image-vdj-darkblue" aria-hidden="true"></i> Add Diagnosis
+                            </button>
+                            <div class="dropdown-divider" width="10%"></div>
+                            <button type="button" class="dropdown-item" name="{{uuid}}" id="project-subject-delete">
+                                <i class="fa fa-trash fa-fw image-vdj-red" aria-hidden="true"></i> Delete Subject
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <b>Subject ID:</b> {{value.subject_id}}
+            </div>
+            <div class="col-md-3">
+                <b>Sex/Species:</b> {{value.sex}}/{{species_display}}
+            </div>
+            <div class="col-md-3">
+                <b>Race/Ethnicity:</b> {{value.race}}/{{value.ethnicity}}
+            </div>
+            <div class="col-md-2">
+                <b>Age:</b> {{age_display}}
+            </div>
+        </div>
+
+        {{#each value.diagnosis}}
+        <div id="project-subjects-summary" class="row general-table-internal-row align-items-center">
+            <div class="col-md-7">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <div class="dropdown">
+                        <button class="btn btn-create btn-sm dropdown-toggle general-buttons-margin-right" type="button" id="project-subject-diagnosis-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-fw fa-diagnoses" aria-hidden="true"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                            <button class="dropdown-item" type="button" id="project-subject-duplicate-diagnosis" name="duplicate_{{@index}}">
+                                <i class="fa fa-copy fa-fw image-vdj-darkblue"></i> Duplicate Diagnosis
+                            </button>
+                        <div class="dropdown-divider" width="10%"></div>
+                            <button class="dropdown-item" type="button" id="project-subject-delete-diagnosis" name="delete_{{@index}}">
+                                <i class="fa fa-trash fa-fw image-vdj-red"></i> Delete Diagnosis
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <b>Study Group Description:</b> {{this.study_group_description}}
+            </div>
+            <div class="col-md-5">
+                <b>Disease Diagnosis:</b>
+                {{#if this.disease_diagnosis.id}}
+                    {{this.disease_diagnosis.label}} ({{this.disease_diagnosis.id}})
+                {{/if}}
+            </div>
+        </div>
+        {{/each}}
+
+    </div>
+</div>

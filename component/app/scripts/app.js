@@ -1,155 +1,435 @@
-define([
-    'handlebars',
-    'backbone',
-    'layoutmanager',
-], function(
-    Handlebars
-) {
+//
+// app.js
+// Main Application object
+//
+// VDJServer Analysis Portal
+// Web Interface
+// https://vdjserver.org
+//
+// Copyright (C) 2020 The University of Texas Southwestern Medical Center
+//
+// Author: Scott Christley <scott.christley@utsouthwestern.edu>
+// Author: Olivia Dorsey <olivia.dorsey@utsouthwestern.edu>
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
 
-    'use strict';
+import Backbone from 'backbone';
+import Marionette from 'backbone.marionette';
+import Handlebars from 'handlebars';
+import { HandlebarsUtilities } from 'Scripts/views/utilities/handlebars-utilities';
+import { Agave } from 'Scripts/backbone/backbone-agave';
+import Router from 'Scripts/routers/router';
 
-    var App = {
-        root: '/',
-        templatePrefix: 'templates/',
-        init: function() {
-            var JST = window.JST = window.JST || {};
+import { UserProfile } from 'Scripts/models/agave-tenant-user';
 
-            // Configure LayoutManager with Backbone Boilerplate defaults.
-            Backbone.Layout.configure({
-                // Allow LayoutManager to augment Backbone.View.prototype.
-                manage: true,
+import PublicView from 'Scripts/views/app/public-views';
+import CreateAccountView from 'Scripts/views/account/create-account';
+import ForgotPasswordView from 'Scripts/views/account/password-reset';
+import VerificationPendingView from 'Scripts/views/account/verification-pending';
+import UserProfileView from 'Scripts/views/account/account-profile';
+import ChangePasswordView from 'Scripts/views/account/change-password';
+import PublicFeedbackView from 'Scripts/views/feedback/feedback-public';
+import UserFeedbackView from 'Scripts/views/feedback/feedback-user';
 
-                prefix: App.templatePrefix,
+import NavigationController from 'Scripts/views/app/navbar-controller';
+import ProjectController from 'Scripts/views/project/project-controller';
+import CommunityController from 'Scripts/views/community/community-controller';
+import AdminController from 'Scripts/views/admin/admin-controller';
 
-                fetchTemplate: function(path) {
+// AIRR Schema
+import { airr } from 'airr-js';
+import { vdj_schema } from 'vdjserver-schema';
 
-                    // Concatenate the file extension.
-                    path = path + '.html';
+// custom region to handle a bootstrap modal view
+var ModalRegion = Marionette.Region.extend({
+    constructor: function() {
+        Marionette.Region.prototype.constructor.apply(this, arguments);
+    },
+});
 
-                    // If cached, use the compiled template.
-                    if (JST[path]) {
-                        return JST[path];
-                    }
+// the bootstrap modal view
+import modal_template from 'Templates/util/modal-message-confirm.html';
+var ModalMessageConfirm = Marionette.View.extend({
+    template: Handlebars.compile(modal_template),
+    region: '#modal'
+});
 
-                    // Put fetch into `async-mode`.
-                    var done = this.async();
+// Controller and view for the main regions for the application.
+var ApplicationController = Marionette.View.extend({
+    template: Handlebars.compile('<div id="navigation" class="navigation"></div><div id="main" class="p-0"></div><div id="modal"></div>'),
 
-                    // Seek out the template asynchronously.
-                    $.get(App.root + path, function(contents) {
-                        done(JST[path] = Handlebars.compile(contents));
-                    });
+    // three regions:
+    // one for the navigation bar
+    // another for the main content
+    // global modal region
+    regions: {
+        navigationRegion: '#navigation',
+        mainRegion: '#main',
+        modalRegion: {
+            el: '#modal',
+            regionClass: ModalRegion
+        }
+    },
 
-                },
-                renderTemplate: function(tmpl, context) {
-                    return tmpl(context);
-                }
+    events: {
+        // show and hide of modal
+        'shown.bs.modal': 'onShownModal',
+        'hidden.bs.modal': 'onHiddenModal',
+    },
+
+    initialize: function(options) {
+        console.log('Initialize');
+
+        // controllers
+        this.clearControllers();
+
+        // create navigation bar
+        this.navController = new NavigationController();
+        this.showChildView('navigationRegion', this.navController);
+    },
+
+    clearControllers: function() {
+        // we do not clear the navController because we need it to show login link
+        this.projectController = null;
+        this.communityController = null;
+        this.adminController = null;
+
+        // user profile available to whole app
+        this.userProfile = null;
+    },
+
+    showHomePage: function() {
+        console.log('showHomePage');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show public view
+        var view = new PublicView();
+        this.showChildView('mainRegion', view);
+    },
+
+    showCreateAccountPage: function() {
+        console.log('showCreateAccountPage');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show create account view
+        var view = new CreateAccountView();
+        this.showChildView('mainRegion', view);
+    },
+
+    showForgotPasswordPage: function(reset_code) {
+        console.log('showForgotPasswordPage');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show create account view
+        var view = new ForgotPasswordView({reset_code: reset_code});
+        this.showChildView('mainRegion', view);
+    },
+
+    showVerificationPendingPage: function(verify_code) {
+        console.log('showVerificationPendingPage');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show verify account view
+        var view = new VerificationPendingView({verify_code: verify_code});
+        this.showChildView('mainRegion', view);
+    },
+
+    showPublicFeedbackPage: function() {
+        console.log('showPublicFeedbackPage');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show public feedback view
+        var view = new PublicFeedbackView();
+        this.showChildView('mainRegion', view);
+    },
+
+    showUserFeedbackPage: function() {
+        console.log('showUserFeedbackPage');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show public feedback view
+        var view = new UserFeedbackView();
+        this.showChildView('mainRegion', view);
+    },
+
+    // This should be called after user login so that the user
+    // profile and settings are available, returns a promise
+    loadUserProfile: async function() {
+        var that = this;
+        if (this.userProfile)
+            return new Promise(function(resolve, reject) {
+                resolve(that.userProfile);
             });
 
-            // setup agave
-            App.Agave = new Backbone.Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
-
-            if (EnvironmentConfig.debug.console) {
-                console.log('token is: ' + JSON.stringify(App.Agave.token()));
-            }
-
-            App.listenTo(
-                App.Agave.token(),
-                'change',
-                function() {
-                    // Necessary for browser refresh...
-                    window.localStorage.setItem('Agave.Token', JSON.stringify(App.Agave.token().toJSON()));
-                }
-            );
-
-            App.listenTo(
-                App.Agave.token(),
-                'destroy',
-                function() {
-                    App.Agave.token().clear();
-                    window.localStorage.removeItem('Agave.Token');
-                    App.router.navigate('', {'trigger': true});
-                }
-            );
-
-            // initialize router, views, data and layouts
-            App.Layouts.main = new App.Views.Layouts.MainLayout();
-            App.Layouts.sidebar = new App.Views.Layouts.SidebarLayout();
-            App.Layouts.content = new App.Views.Layouts.ContentLayout();
-
-            App.router = new App.Routers.DefaultRouter();
-            App.router.navigate('');
-
-            App.Datastore = {};
-            App.Datastore.Collection = {};
-            App.Datastore.Model = {};
-            App.Datastore.Notifications = new App.Collections.Notifications();
-        },
-        setMessage: function(message, timeout) {
-
-            timeout = timeout || 5000;
-
-            (function(msg, t) {
-                var m = $(msg).appendTo('.alerts');
-                setTimeout(function() {
-                    m.fadeOut(function() {
-                        m.remove();
-                    });
-                }, t);
-            })(message, timeout);
-
-            return this;
-        },
-        setStandardErrorMessage: function(message) {
-
-            message = '<div class="alert-error">' + message + '</div>';
-
-            return App.setMessage(message);
-        },
-        clearMessage: function() {
-            $('.alerts').empty();
-            return this;
-        },
-        start: function() {
-            App.init();
-            App.Instances.WebsocketManager = new App.Utilities.WebsocketManager();
-
-            Backbone.history.start({pushState: true, root: App.root});
-
-            $(document).on('click', 'a[href]:not([data-bypass])', function(evt) {
-                var href = {
-                    prop: $(this).prop('href'),
-                    attr: $(this).attr('href')
-                };
-
-                var root = location.protocol + '//' + location.host + App.root;
-
-                if (href.prop.slice(0, root.length) === root) {
-                    evt.preventDefault();
-                    Backbone.history.navigate(href.attr, true);
-                }
+        var profile = new UserProfile();
+        await profile.fetch()
+            .then(function() {
+                // now propagate loaded data to project
+                that.userProfile = profile;
+                return that.userProfile;
+            })
+            .fail(function(error) {
+                console.log(error);
             });
-        },
-        // Properties
-        Collections: {},
-        Instances: {},
-        Layouts: {},
-        Mixins: {},
-        Models:  {},
-        Routers: {},
-        Utilities: {
-            Vdjpipe: {},
-        },
-        Views: {
-            Generic: {},
-            HandlebarsHelpers: {},
-            Helpers: {},
-        },
-        Websockets: {},
-    };
 
-    return _.extend(
-        App,
-        {},
-        Backbone.Events
+        await App.Agave.token().checkAdmin(this.userProfile)
+            .catch(function(error) {
+                console.log(error);
+            });
+
+        // new navigation bar
+        this.navController = new NavigationController();
+        this.showChildView('navigationRegion', this.navController);
+        this.navController.showNavigation();
+    },
+
+    showUserProfilePage: function(edit_mode) {
+        console.log('showUserProfilePage');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show user profile view
+        var view = new UserProfileView({ model: this.userProfile, controller: this, edit_mode: edit_mode });
+        this.showChildView('mainRegion', view);
+    },
+
+    showChangePasswordPage: function(edit_mode) {
+        console.log('showChangePasswordPage');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show change password view
+        var view = new ChangePasswordView({ model: this.userProfile, controller: this, edit_mode: edit_mode });
+        this.showChildView('mainRegion', view);
+    },
+
+    reloadProjectList: function() {
+        // remove the project controller so all the project data is reloaded
+        this.projectController = null;
+        App.router.navigate('/project', {'trigger': true});
+    },
+
+    showProjectList: function() {
+        console.log('showProjectList');
+
+        // create project controller if needed
+        if (! this.projectController) {
+          this.projectController = new ProjectController();
+        }
+        this.showChildView('mainRegion', this.projectController.getView());
+
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // tell project controller to display the project list page
+        this.projectController.showProjectList();
+    },
+
+    showProjectPage: function(projectUuid, page) {
+        console.log('showProjectPage');
+
+        // create "project" controller if needed
+        if (! this.projectController) {
+          this.projectController = new ProjectController();
+        }
+        this.showChildView('mainRegion', this.projectController.getView());
+
+        // tell "navigation" controller to display the nav bar
+        this.navController.showNavigation();
+
+        // tell "project" controller to display the project page
+        this.projectController.showProjectPage(projectUuid, page);
+    },
+
+    showCommunityPage: function(projectUuid) {
+        console.log('showCommunityPage');
+
+        // create community controller if needed
+        if (! this.communityController) {
+          this.communityController = new CommunityController();
+        }
+        this.showChildView('mainRegion', this.communityController.getView());
+
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // tell controller to display the project list page
+        this.communityController.showProjectList(projectUuid);
+    },
+
+    showAddChart: function() {
+        console.log('showAddCommChart from app.js');
+        // create community controller if needed
+        if (! this.communityController) {
+          this.communityController = new CommunityController();
+        }
+        this.showChildView('mainRegion', this.communityController.getView());
+
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // tell controller to display the add a chart page
+        this.communityController.showAddChart();
+    },
+
+    showCreatePage: function() {
+        console.log('showCreatePage');
+
+        // create project controller if needed
+        if (! this.projectController) {
+          this.projectController = new ProjectController();
+        }
+        this.showChildView('mainRegion', this.projectController.getView());
+
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // tell project controller to display the create project page
+        this.projectController.showCreatePage();
+    },
+
+    // Administration pages
+    showAdminPage: function(page) {
+        console.log('showAdminMain');
+
+        if (! this.adminController) {
+            this.adminController = new AdminController();
+        }
+
+        this.showChildView('mainRegion', this.adminController.getView());
+
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // tell project controller to display the create project page
+        this.adminController.showAdminPage(page);
+    },
+
+    // Using repertoire controller to display information about a specific repertoire
+    // showRepPage() {
+    //     console.log('showRepPage');
+    //
+    // },
+
+    // A single modal region is used for the whole application
+    // This mainly attaches the view to the region
+    // View creation and logic resides in the particular subview
+    // The subview performs the show and hide of the modal
+    // The show and hide events are captured and routed to given functions
+    startModal: function(modalView, modalContext, onShowFunction, onHideFunction) {
+        console.log('showModal');
+
+        this.modalContext = modalContext;
+        this.onShowFunction = onShowFunction;
+        this.onHideFunction = onHideFunction;
+
+        this.showChildView('modalRegion', modalView);
+    },
+
+    emptyModal: function() {
+        if (this.getChildView('modalRegion')) this.getChildView('modalRegion').empty();
+    },
+
+    onShownModal: function() {
+        console.log('App: Show the modal');
+        if (this.onShowFunction) this.onShowFunction(this.modalContext);
+    },
+
+    onHiddenModal: function() {
+        console.log('App: Hide the modal');
+        if (this.onHideFunction) this.onHideFunction(this.modalContext);
+    },
+
+});
+
+
+// The main application
+export default Marionette.Application.extend({
+  region: '#app',
+
+  initialize: async function(options) {
+    console.log('Initialize');
+
+    // load schemas
+    console.log('Loaded AIRR Schema version ' + airr.get_info()['version']);
+    console.log('Loaded VDJServer Schema version ' + vdj_schema.get_info()['version']);
+
+    // setup Agave
+    this.Agave = new Agave({token: JSON.parse(window.localStorage.getItem('Agave.Token'))});
+
+    // Handlebars is global so register all helpers once for the whole app
+    HandlebarsUtilities.registerAllHelpers();
+
+    // setup application controller
+    this.AppController = new ApplicationController();
+    this.showView(this.AppController);
+
+    // setup router
+    this.router = new Router();
+
+    // token is saved into browser local storage
+    // if users does a page refresh, retrieve it versus require a new login
+    this.listenTo(
+        this.Agave.token(),
+        'change',
+        function() {
+            // Necessary for browser refresh...
+            window.localStorage.setItem('Agave.Token', JSON.stringify(App.Agave.token().toJSON()));
+        }
     );
+
+    // remove token from browser local storage if it is invalid
+    this.listenTo(
+        this.Agave.token(),
+        'destroy',
+        function() {
+            App.Agave.token().clear();
+            window.localStorage.removeItem('Agave.Token');
+            App.router.navigate('', {'trigger': true});
+        }
+    );
+  },
+
+  onStart: function() {
+    console.log('onStart');
+
+    // start up backbone router
+    Backbone.history.start({pushState: true});
+
+    // this is to trap clicks on hrefs and route them through Backbone's router
+    $(document).on('click', 'a[href]:not([data-bypass])', function(evt) {
+        var href = {
+            prop: $(this).prop('href'),
+            attr: $(this).attr('href')
+        };
+
+        var root = location.protocol + '//' + location.host;
+
+        if (href.prop.slice(0, root.length) === root) {
+            evt.preventDefault();
+            Backbone.history.navigate(href.attr, true);
+        }
+    });
+
+
+  },
+
 });

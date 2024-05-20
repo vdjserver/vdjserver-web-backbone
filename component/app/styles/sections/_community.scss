@@ -1,3 +1,632 @@
+/*****************************************************
+Community Projects Page
+*****************************************************/
+
 .dataTables_wrapper .dataTables_filter {
     display: none;
+}
+
+.community-container {
+    margin: 0% 3%;
+}
+
+.community-download {
+    margin-bottom: 10%;
+}
+
+.btn-download {
+    float: right;
+}
+
+.community-statistics {
+    padding: 0.5% 2% 0% 2%;
+    //margin: 1% 0% 0.5% 0%;
+}
+
+.no-display {
+    display: none;
+}
+
+.custom-select-webkit-fix {
+    -webkit-appearance: none;
+}
+
+/* ----------------------------------------------------------
+Loading
+------------------------------------------------------------*/
+.loading-airr-data {
+    text-align: center;
+}
+
+.loading-content {
+    font-size: 2em;
+    text-align: center;
+
+//    p:nth-child(3) {
+//        color: $vdj-medgray;
+//        font-size: 0.75em;
+//    }
+}
+
+.loading-display {
+    color: $vdj-medgray;
+    font-size: 0.75em;
+}
+
+/* ----------------------------------------------------------
+Community Statistics
+------------------------------------------------------------*/
+#community-query-stats {
+  //   background: #FFFFFF;
+  //   top: 0;
+  //   z-index: 999;
+  //   padding: 2% 2% 0.5% 2%;
+  //   -webkit-transition: position 2s ease-out;
+  // -moz-transition: position 2s ease-out;
+  // -o-transition: position 2s ease-out;
+  // transition: position 2s ease-out;
+}
+
+@include media-breakpoint-up(md) {
+    .hideFilter {
+        top: -20% !important;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .hideFilter {
+        top: -17% !important;
+    }
+}
+
+@include media-breakpoint-up(xl) {
+    .hideFilter {
+        top: -26% !important;
+    }
+}
+
+@media (min-width: 1367px) {
+    .hideFilter {
+        top: -20% !important;
+    }
+
+    .add-chart span {
+        margin-top: 15%;
+    }
+}
+
+//.query-stats-border {
+//    border-bottom: 1px solid $vdj-darkgray;
+//    -webkit-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
+//    -moz-box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
+//    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.3);
+//}
+
+.results-stats {
+    text-align: right;
+}
+
+.results-sort {
+    margin-top: 5px;
+}
+
+.stats {
+    margin-right: 1%;
+    display: inline;
+    font-size: 2em;
+    font-weight: 500;
+    color: $vdj-darkgray;
+}
+
+.stats-badges {
+    display: inline;
+}
+
+.stats-headers {
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+.stats-col-top {
+    background-color: $vdj-darkblue;
+    border-radius: 15px 15px 0 0 ;
+}
+
+.stats-col-bottom {
+    background-color: $vdj-darkblue;
+    border-radius: 0 0 15px 15px;
+}
+
+.badge-stats {
+    font-weight: 500;
+    font-size: 1.10em;
+    padding: 1.5%;
+}
+
+.btn-download {
+    float: right;
+}
+
+/* ----------------------------------------------------------
+Community Buttons
+------------------------------------------------------------*/
+//#navbar-button-region {
+//    margin: auto;
+//    width: 90%;
+//}
+
+.community-buttons-top {
+    margin: auto;
+    margin-top: 2%;
+}
+
+/* ----------------------------------------------------------
+Community Charts
+------------------------------------------------------------*/
+#community-charts-display {
+    margin: 0em 3em;
+    border: 2px solid rgba(184, 192, 199, 0.38);
+    border-radius: 3px;
+    padding: 2em;
+    background: $vdj-lightgray;
+
+    .highcharts-container {
+        background: $vdj-lightgray;
+        height: 225px;
+    }
+}
+
+.add-chart {
+    border: 2px dashed $vdj-medgray;
+    background: $vdj-medlightgray;
+    margin: 0% 2%;
+    transition: 0.3s;
+
+    span {
+        font-size: 2em;
+        text-align: center;
+        color: $vdj-darkblue;
+        margin-top: 25%;
+        display: block;
+    }
+}
+
+.add-chart:hover {
+    background: #FFFFFF;
+    cursor: pointer;
+}
+
+.inline-chart {
+    width: 500px;
+    height: 500px;
+    border: 2px dashed $vdj-medgray;
+    background: $vdj-medlightgray;
+    margin: 0% 2%;
+    transition: 0.3s;
+
+    span {
+        font-size: 2em;
+        text-align: center;
+        color: $vdj-darkblue;
+        margin-top: 25%;
+        display: block;
+    }
+}
+
+.chart-actions {
+    margin: 1em 3em 1em 3em;
+}
+
+button.chart-action {
+    margin-left: 2em;
+}
+
+/* ----------------------------------------------------------
+Community Charts - Add a Chart Modal
+------------------------------------------------------------*/
+.add-chart-module, .add-vars-module {
+    background: $vdj-lightgray;
+    margin-bottom: 3%;
+}
+
+.add-chart-steps {
+    margin-top: 3%;
+    margin-bottom: 3%;
+
+    .chart-step, .chart-step-active {
+        background: $vdj-blue;
+        color: #FFFFFF;
+        position: relative;
+        padding-left: 40px;
+        padding-right: 40px;
+        margin-left: 1%;
+    }
+
+    .chart-step-inactive {
+        background: #b2cbd7;
+    }
+
+    .chart-step-active:hover {
+        background: $vdj-blue;
+    }
+
+    .chart-step:before,
+    .chart-step:after{
+        content:"";
+        position: absolute;
+        top: 4px;
+        width: 27px;
+        height: 27px;
+        background: inherit;
+        border: inherit;
+        border-left-color: transparent;
+        border-bottom-color: transparent;
+        border-radius: 0px 4px 0px 0px;
+        -webkit-border-radius: 0px 4px 0px 0px;
+        -moz-border-radius: 0px 4px 0px 0px;
+    }
+    .chart-step:before,
+    .chart-step:after {
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+    }
+
+    .chart-step:before
+     {
+        left: -16px;
+        background: #FFFFFF;
+    }
+    .chart-step:after {
+        right: -13px;
+        z-index: 1;
+    }
+}
+
+.chart-types {
+    height: 100%;
+
+    div {
+        background: $vdj-darkgray;
+        padding: 13%;
+        border-bottom: 1px solid $vdj-medgray;
+        font-size: 1.5em;
+        opacity: 0.5;
+        transition: 0.3s;
+        color: #FFFFFF;
+    }
+
+    div:hover, div.active {
+        // background: $vdj-medlightgray;
+        opacity: 1;
+    }
+}
+
+.chart-options {
+    margin: 3%;
+
+    div {
+        border: 1px solid $vdj-medgray;
+        padding: 5%;
+        margin-left: 2%;
+        background: #FFFFFF;
+        transition: 0.3s;
+    }
+
+    div:hover {
+        opacity: 0.5;
+    }
+}
+
+.add-vars-module {
+    // padding: 2%;
+
+    form {
+        background: $vdj-darkgray;
+        color: #FFFFFF;
+        width: 60%;
+        height: 100%;
+        padding: 3% !important;
+        margin-bottom: 0%;
+    }
+
+    .edit-preview-chart {
+        padding: 2%;
+
+        div {
+            background: #FFFFFF;
+            padding: 2%;
+            height: 100%;
+        }
+    }
+}
+
+.add-chart-section {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.add-chart-subsection {
+    font-size: 1.25em;
+    margin-right: 5%;
+}
+
+.add-vars input[type="text"] {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid $vdj-medlightgray;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-radius: 0;
+  color: #FFFFFF;
+  transition: 0.3s;
+  opacity: 0.5
+}
+
+.add-vars input[type="text"]:focus, {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-bottom: 3px solid #FFFFFF;
+  opacity: 1;
+}
+
+/* ----------------------------------------------------------
+Community Results & Projects
+------------------------------------------------------------*/
+// #community-results::before {
+//     content: "Results";
+//     margin-top: 2%;
+//     font-size: 1.5em;
+// }
+
+.community-badges {
+    a:first-of-type {
+        margin-right: 2%;
+    }
+}
+
+.community-project-type {
+    border-radius: 0;
+    float: right;
+    margin-top: -1.5%;
+    margin-left: 1%;
+    padding: 0.75%;
+    padding-right: 20px;
+
+    .airr {
+        height: 30px;
+    }
+
+    .vdjserver {
+        height: 30px;
+        margin-right: 5%;
+    }
+
+    .scireptor {
+        height: 30px;
+    }
+
+    .ireceptor {
+        height: 30px;
+    }
+
+    .genomics10x {
+        height: 30px;
+        margin-right: 5%;
+        padding-left: 10px;
+    }
+}
+
+#community-results {
+    margin: auto;
+    width: 90%;
+}
+
+.community-project {
+    margin: 4% auto;
+    border: 1px solid $vdj-medgray;
+    font-size: 0.9em;
+
+    .community-project-header, .project-header {
+        padding: 2% 2% 0% 2%;
+
+        h2 {
+            font-size: 1.5rem;
+        }
+
+        .community-badges {
+            margin-bottom: 1%;
+        }
+    }
+
+    .community-summary-stats {
+        border-top: 1.5px solid $vdj-darkgray;
+        border-bottom: 1.5px solid $vdj-darkgray;
+        margin: 0.5% 0% 0% 0%;
+        text-align: center;
+        font-weight: bold;
+
+        a {
+            color: #000000;
+        }
+
+        a:hover {
+            color: $vdj-link;
+        }
+    }
+
+    a.study-desc-more, a.study-desc-collapse {
+        font-weight: bold;
+    }
+}
+
+.community-button {
+    padding: 1% 0%;
+    background: $vdj-lightgray;
+    border-right: 0.5px solid $vdj-darkgray;
+}
+
+.community-button:hover {
+    background: rgba(241, 241, 241, 0.45);
+    transition: 0.3s;
+    color: $vdj-link;
+}
+
+.selected {
+    background: rgba(241, 241, 241, 0.45);
+}
+
+.community-button:nth-child(5) {
+    border: 0;
+}
+
+.community-repository {
+    padding: 0.5% 0%;
+    background: $vdj-lightgray;
+    border-right: 0.5px solid $vdj-darkgray;
+}
+
+/* ----------------------------------------------------------
+Community Project Metadata
+------------------------------------------------------------*/
+.community-metadata, .project-metadata {
+    margin-bottom: 1rem;
+
+    p {
+        margin-bottom: 0.15rem;
+    }
+}
+
+/* ----------------------------------------------------------
+Community Project Data Tables
+------------------------------------------------------------*/
+
+.community-data-table {
+    padding: 2%;
+}
+
+.community-data-table-actions {
+    padding-bottom: 1%;
+}
+
+.community-data-table-header {
+    border-bottom: 1px solid $vdj-medgray;
+}
+
+.community-data-table-row {
+    border-bottom: 1px solid $vdj-medgray;
+}
+
+.community-data-table-row:hover {
+    background: $vdj-lightgray;
+}
+
+.community-data-table-footer {
+    padding-top: 1%
+}
+
+.community-data-table-caption {
+        font-style: italic;
+        color: $vdj-blue;
+}
+
+.active-tab {
+    color: $vdj-link !important;
+}
+
+/*
+.table-actions {
+    float: right;
+    margin-bottom: 1%;
+}
+
+.sort:after {
+    font-family: 'Font Awesome 5 Free';
+    content: "\f0de";
+    cursor:pointer;
+    color: $vdj-darkgray;
+}
+
+.asc:after {
+    font-family: 'Font Awesome 5 Free';
+    content: "\f0de"; // caret-up
+    cursor: pointer;
+    color: $vdj-link;
+}
+
+.desc:after {
+    font-family: 'Font Awesome 5 Free';
+    content: "\f0d7"; // caret-down
+    cursor: pointer;
+    color: $vdj-link;
+}
+
+
+.sort:hover:after {
+    color: $vdj-link;
+}
+
+.subject-rows {
+    margin-left: 1em;
+}
+
+tr.subject-row:hover {
+    background: $vdj-lightgray;
+}
+
+tr.subject-row > td:hover {
+    color: $vdj-link;
+    font-weight: 500;
+}
+
+.repertoire-rows {
+    margin-left: 1em;
+}
+
+tr.repertoire-row:hover {
+    background: $vdj-lightgray;
+}
+
+tr.repertoire-row > td:hover {
+    color: $vdj-link;
+    font-weight: 500;
+}
+
+td.selected-details {
+    color: $vdj-link;
+    font-weight: 500;
+}
+
+td.rep-details {
+    padding: 3em;
+}
+*/
+
+/* ----------------------------------------------------------
+Community Repertoires Table Caption & Pagination
+------------------------------------------------------------*/
+/*
+.table-footer {
+    .table-caption {
+        font-style: italic;
+        color: $vdj-blue;
+    }
+
+    .pagination {
+        color: $vdj-blue;
+        //margin-bottom: 3%;
+    }
+}
+*/
+/* ----------------------------------------------------------
+Community Repertoires Detail Tables
+------------------------------------------------------------*/
+// #repertoire-details {
+//     display: none;
+// }
+
+#community-study-data-table td {
+    cursor: pointer;
 }

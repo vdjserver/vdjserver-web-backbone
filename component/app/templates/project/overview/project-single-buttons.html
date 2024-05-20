@@ -1,0 +1,38 @@
+<div class="row general-button-bar">
+    <div class="col-md-7">
+    </div>
+
+    <div class="col-md-5 general-buttons-right">
+        <div class="btn-group" role="group" aria-label="Button group">
+        {{#if edit_mode}}
+            <input type="button" class="btn btn-save" id="save-edit-project" value="Save Project">
+        {{else}}
+            <button type="button" class="btn btn-edit" id="edit-project" {{#if archive_mode}}disabled{{/if}}>
+                Edit Project Metadata
+            </button>
+        {{/if}}
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+        {{#if edit_mode}}
+            <input type="reset" class="btn btn-cancel general-buttons-margin-left" id="revert-edit-changes" value="Revert Changes">
+        {{/if}}
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+        {{#unless edit_mode}}
+            {{#if archive_mode}}
+            <button type="button" class="btn btn-delete general-buttons-margin-left" id="unarchive-project">Unarchive Project</button>
+            {{else}}
+            <button type="button" class="btn btn-delete general-buttons-margin-left" id="archive-project">Archive Project</button>
+            {{/if}}
+        {{/unless}}
+        </div>
+
+        <div class="btn-group" role="group" aria-label="Button group">
+        {{#unless edit_mode}}
+            <button type="button" class="btn btn-create general-buttons-margin-left" id="publish-project" {{#if archive_mode}}disabled{{/if}}>Publish Project</button>
+        {{/unless}}
+        </div>
+    </div>
+</div>

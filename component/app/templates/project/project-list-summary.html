@@ -1,0 +1,130 @@
+<!-- <a href="/project/{{uuid}}">{{value.study_title}}</a>
+{{value.study_description}}
+{{created}}
+{{value.study_type}} -->
+
+<div class="project-header">
+    <h2 class="project-title"><a href="/project/{{uuid}}">{{value.study_title}}</a></h2>
+
+    <!-- Badges for study type -->
+    <!-- <h4 class="community-badges">
+        {{#if contains_ig}}
+            <a class="badge badge-pill badge-locus">IG</a>
+        {{/if}}
+        {{#if contains_tr}}
+            <a class="badge badge-pill badge-locus">TCR</a>
+        {{/if}}
+        {{#if contains_single_cell}}
+            <a class="badge badge-pill badge-cell">Single Cell</a>
+        {{/if}}
+        {{#if contains_paired_chain}}
+            <a class="badge badge-pill badge-cell">Paired Chain</a>
+        {{/if}}
+    </h4> -->
+
+    <div class="row">
+        <div class="col project-metadata">
+            {{#if value.study_id}}
+                <p>
+                    <span class="details">Study ID:</span> {{value.study_id}}
+                </p>
+            {{/if}}
+
+            {{#if value.study_type.label}}
+                <p>
+                    <span class="details">Study Type:</span>
+                    {{value.study_type}}
+                </p>
+            {{/if}}
+
+            {{#if value.inclusion_exclusion_criteria}}
+                <p class="inclusion">
+                    <span class="details">Inclusion/Exclusion Criteria:</span> {{value.inclusion_exclusion_criteria}}
+                </p>
+            {{/if}}
+        </div>
+        <div class="col project-metadata">
+            {{#if value.pub_ids}}
+                <p>
+                    <span class="details">Publication(s):</span>
+                    <!-- What is the URL format for the pub IDs?
+                    - Research Gate: {{study.value.pub_ids}}
+                    - PubMed: https://pubmed.ncbi.nlm.nih.gov/{{pub_id}}
+                    -->
+                    <a href="{{study.value.pub_ids}}">
+                        {{value.pub_ids}}
+                    </a>
+                </p>
+            {{/if}}
+                {{#if value.grants}}
+                    <p class="grants">
+                        <span class="details">Grants:</span>
+                            {{value.grants}}
+                    </p>
+                    <!-- <p class="grants-full no-display">
+                        <span class="details">Grants:</span>
+                        {{study.value.grants}}
+                    </p>-->
+                {{/if}}
+            </div>
+            <div class="col community-metadata">
+                {{#if value.lab_address}}
+                    <p>
+                        <span class="details">Lab Address:</span> {{value.lab_address}}
+                    </p>
+                {{/if}}
+                {{#if value.collected_by}}
+                    <p>
+                        <span class="details">Data Collector:</span> {{value.collected_by}}
+                    </p>
+                {{/if}}
+                {{#if value.submitted_by}}
+                    <p>
+                        <span class="details">Data Submitter:</span> {{value.submitted_by}}
+                    </p>
+                {{/if}}
+                {{#if value.lab_name}}
+                    <p>
+                        <span class="details">PI:</span> {{value.lab_name}}
+                    </p>
+                {{/if}}
+                    <p>
+                        <span class="details">Date Created:</span>  {{created}}
+                    </p>
+            </div>
+        </div>
+
+        {{#if value.study_description}}
+            <p class="community-study-desc">
+                    {{value.study_description}}
+            </p>
+
+            <!-- If "Read More" is clicked, show full study description
+            <p class="community-study-desc-full no-display">
+                {{value.study_description}}
+                <a class="study-desc-collapse">Collapse</a>
+            </p> -->
+        {{/if}}
+    </div>
+    <div class="community-summary-stats row">
+        <div class="community-button col">
+            <a class="community-repertoires col">
+                {{num_repertoires}} of ### {{num_total_repertoires}} Repertoires <i class="fas fa-vial"></i>
+            </a>
+        </div>
+        <div class="community-button col">
+            <a class="community-subjects col">
+                {{num_subjects}} of # Subjects <i class="fas fa-users"></i>
+            </a>
+        </div>
+        <div class="community-button col">
+            <a class="community-clones col">
+                XXX,XXX of ###,### Clones <i class="fas fa-sitemap"></i>
+            </a>
+        </div>
+        <div class="community-button col-4">
+            <a class="community-rearrangements">
+                XXX,XXX,XXX of ###,###,### Rearrangements <i class="fas fa-stream"></i>
+            </a>
+        </div>
+    </div>
