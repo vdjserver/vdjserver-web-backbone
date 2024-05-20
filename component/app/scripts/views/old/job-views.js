@@ -1138,44 +1138,52 @@ define([
                       if (that.processMetadata.groups) {
                           // gather list of output files
                           var outputFiles = [];
+                          var logFile = null;
                           for (var group in that.processMetadata.groups) {
                               for (var gtype in that.processMetadata.groups[group]) {
                                   if (that.processMetadata.groups[group][gtype].type == 'output')
                                       outputFiles.push(that.processMetadata.groups[group][gtype].files);
+                                  if (that.processMetadata.groups[group][gtype].type == 'log')
+                                      logFile = that.processMetadata.groups[group][gtype].files;
                               }
                           }
 
                           // get VDJML and summary files from output list
-                          that.VDJMLFiles = that.selectedFileListings.clone();
-                          that.VDJMLFiles.reset();
-                          that.SummaryFiles = that.selectedFileListings.clone();
-                          that.SummaryFiles.reset();
+                          that.AIRRFiles = that.selectedFileListings.clone();
+                          that.AIRRFiles.reset();
                           that.ChangeOFiles = that.selectedFileListings.clone();
                           that.ChangeOFiles.reset();
                           for (var i = 0; i < outputFiles.length; ++i) {
-                              if (that.processMetadata.files[outputFiles[i]].vdjml) {
-                                  that.VDJMLFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].vdjml.value));
+                              if (that.processMetadata.files[outputFiles[i]].airr) {
+                                  that.AIRRFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].airr.value));
                               }
-                              if (that.processMetadata.files[outputFiles[i]].summary) {
-                                  that.SummaryFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].summary.value));
+                              if (that.processMetadata.files[outputFiles[i]]['airr-makedb']) {
+                                  that.ChangeOFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]]['airr-makedb'].value));
                               }
-                              if (that.processMetadata.files[outputFiles[i]].changeo) {
-                                  that.ChangeOFiles.add(that.collection.getFileByName(that.processMetadata.files[outputFiles[i]].changeo.value));
-                              }
+                          }
+                          var archiveOutput = that.selectedFileListings.clone();
+                          archiveOutput.reset();
+                          if (that.processMetadata.files[logFile].output_archive) {
+                            archiveOutput.add(that.collection.getFileByName(that.processMetadata.files[logFile].output_archive.value));
                           }
 
                           //var job = new Backbone.Agave.Model.Job.RepCalc();
 
-                          var fileSize = that.VDJMLFiles.getTotalFileSize();
-                          fileSize += that.ChangeOFiles.getTotalFileSize();
-                          fileSize += that.SummaryFiles.getTotalFileSize();
+                          var fileSize = 0;
+                          var zipfile = that.collection.getFileByName(repcalcForm['job-selected'] + '.zip');
+                          if (zipfile) {
+                            var value = zipfile.get('value');
+                            fileSize += value['length'];
+                          }
+                          //fileSize += that.AIRRFiles.getTotalFileSize();
+                          //fileSize += that.ChangeOFiles.getTotalFileSize();
                           that.job.set('totalFileSize', fileSize);
 
                           that.job.prepareJob(
                               repcalcForm,
-                              that.VDJMLFiles,
-                              that.SummaryFiles,
+                              that.AIRRFiles,
                               that.ChangeOFiles,
+                              archiveOutput,
                               that.allFiles,
                               that.projectModel.get('uuid')
                           );
