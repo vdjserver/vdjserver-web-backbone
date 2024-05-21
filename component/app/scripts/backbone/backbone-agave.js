@@ -288,11 +288,11 @@ Agave.PaginatedCollection = Agave.Collection.extend({
                     models = models.concat(that.reset(response));
 
                     // BUG: doing this because of bug with Tapis list_profiles
-                    //if (response.length < that.limit) {
-                    //    that.offset = 0;
-                    //    that.reset(models);
-                    //    deferred.resolve();
-                    //} else
+                    if (response.length < that.limit) {
+                        that.offset = 0;
+                        that.reset(models);
+                        deferred.resolve();
+                    } else
                         offsetFetch();
                 }
                 // The most recent fetch had 0 objects, so we're done now

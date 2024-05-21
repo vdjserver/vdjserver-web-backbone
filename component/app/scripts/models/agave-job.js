@@ -393,7 +393,7 @@ export var ProcessMetadata = Agave.MetadataModel.extend({
                   jqxhr = this.downloadPublicFileByPostit(value.projectUuid, this.get('uuid'));
                 } else {
                   var value = this.get('value');
-                  var url = EnvironmentConfig.agave.internal
+                  var url = EnvironmentConfig.agave.hostname
                            + '/jobs'
                            + '/v2'
                            + '/' + value.jobUuid
@@ -594,7 +594,7 @@ export var ProcessMetadata = Agave.MetadataModel.extend({
                     {},
                     Backbone.Agave.JobModel.prototype.defaults,
                     {
-                        appId: EnvironmentConfig.agave.systems.execution.ls6.apps.igBlast,
+                        appId: EnvironmentConfig.agave.systems.execution.ls5.apps.igBlast,
                         appName: 'igBlast',
                         inputs: {
                         },
@@ -678,7 +678,7 @@ export var ProcessMetadata = Agave.MetadataModel.extend({
                     {},
                     Backbone.Agave.JobModel.prototype.defaults,
                     {
-                        appId: EnvironmentConfig.agave.systems.execution.ls6.apps.RepCalc,
+                        appId: EnvironmentConfig.agave.systems.execution.ls5.apps.RepCalc,
                         appName: 'RepCalc',
                         inputs: {
                             vdjml: '',
@@ -694,9 +694,9 @@ export var ProcessMetadata = Agave.MetadataModel.extend({
 
                 //this.inputParameterName = 'query';
             },
-            prepareJob: function(formData, AIRRFileMetadatas, ChangeOFileMetadatas, outputArchive, allFileMetadatas, projectUuid) {
+            prepareJob: function(formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas, projectUuid) {
 
-                var parameters = this._serializeFormData(projectUuid, formData, AIRRFileMetadatas, ChangeOFileMetadatas, outputArchive, allFileMetadatas);
+                var parameters = this._serializeFormData(projectUuid, formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas);
                 parameters['Creator'] = Backbone.Agave.instance.token().get('username');
 
                 this.set('name', formData['job-name']);
@@ -706,17 +706,14 @@ export var ProcessMetadata = Agave.MetadataModel.extend({
                 this.set('parameters', parameters);
             },
             // Private Methods
-            _serializeFormData: function(projectUuid, formData, AIRRFileMetadatas, ChangeOFileMetadatas, outputArchive, allFileMetadatas) {
+            _serializeFormData: function(projectUuid, formData, VDJMLFileMetadatas, SummaryFileMetadatas, ChangeOFileMetadatas, allFileMetadatas) {
                 var parameters = {};
                 var list = [];
                 var secondaryInputs = {};
                 var inputFiles = {};
 
                 // arbitrary max for repcalc, 3 * 10 = 30
-                inputFiles['JobFiles'] = this._getProjectJobPaths(projectUuid, outputArchive);
-                console.log(inputFiles['JobFiles']);
-
-/*                var useSecondary = false;
+                var useSecondary = false;
                 if (VDJMLFileMetadatas.length > 10) useSecondary = true;
 
                 var metaList = [];
@@ -753,7 +750,6 @@ export var ProcessMetadata = Agave.MetadataModel.extend({
                     // currently no project files and just one job
                     //inputFiles['ProjectDirectory'] = this._getProjectFilesPath(projectUuid);
                     inputFiles['JobFiles'] = this._getProjectJobPaths(projectUuid, VDJMLFileMetadatas);
-                    console.log(inputFiles['JobFiles']);
                     parameters['SecondaryInputsFlag'] = true;
                     this.set('secondaryInputs', secondaryInputs);
                 } else {
@@ -889,7 +885,7 @@ export var ProcessMetadata = Agave.MetadataModel.extend({
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: EnvironmentConfig.agave.systems.execution.ls6.apps.vdjPipe,
+                    appId: EnvironmentConfig.agave.systems.execution.ls5.apps.vdjPipe,
                     appName: 'vdjPipe',
                 }
             );
@@ -1075,7 +1071,7 @@ export var ProcessMetadata = Agave.MetadataModel.extend({
                 {},
                 Backbone.Agave.JobModel.prototype.defaults,
                 {
-                    appId: EnvironmentConfig.agave.systems.execution.ls6.apps.presto,
+                    appId: EnvironmentConfig.agave.systems.execution.ls5.apps.presto,
                     appName: 'presto',
                     inputs: {
                         query: '',
