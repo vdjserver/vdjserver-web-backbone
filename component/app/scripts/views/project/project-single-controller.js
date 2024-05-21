@@ -444,6 +444,12 @@ SingleProjectController.prototype = {
             });
     },
 
+    replaceRepertoireList: function(newReps, newSamples) {
+        this.repertoireList = newReps;
+        this.sampleList = newSamples;
+    },
+
+
     // refreshes with the latest data from the server
     reloadRepertoireList: function(newList) {
         this.repertoireListPromise = this.lazyLoadRepertoires();

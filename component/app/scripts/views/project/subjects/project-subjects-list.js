@@ -118,13 +118,14 @@ var SubjectDetailView = Marionette.View.extend({
 
         var collections = this.controller.getCollections();
         if (collections.subjectList) {
-            var subject_ids = [""];
+            var subject_ids = [];
             for(let i=0; i<collections.subjectList.length; i++) {
                 let subj = collections.subjectList.at(i);
                 let value2 = subj.get('value');
                 if(value2.subject_id != value['subject_id']) subject_ids.push(value2.subject_id);
             }
         }
+        subject_ids.push(null);
 
         return {
             view_mode: this.model.view_mode,

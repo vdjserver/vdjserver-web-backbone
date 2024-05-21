@@ -68,7 +68,7 @@ function ProjectRepertoiresController(controller) {
 
 ProjectRepertoiresController.prototype = {
     // return the main view, create it if necessary
-    getView() {
+    getView: function() {
         if (!this.mainView)
             this.mainView = new ProjectRepertoiresView({model: this.model, controller: this});
         else if (this.mainView.isDestroyed())
@@ -77,41 +77,44 @@ ProjectRepertoiresController.prototype = {
     },
 
     // access data held by upper level controller
-    getCollections() {
+    getCollections: function() {
         return this.controller.getCollections();
     },
 
-    resetCollections() {
+    resetCollections: function() {
         this.repertoireList = this.controller.repertoireList.getClonedCollection(); //create the cloned collection
         this.sampleList = new SampleCollection(null, {projectUuid: this.model.get('uuid')});
         // gather the cloned samples
         for (let i = 0; i < this.repertoireList.length; ++i) {
             let m = this.repertoireList.at(i);
-            this.sampleList.add(m.sample);
+            for (let j = 0; j < m.sample.length; ++j) {
+                let s = m.sample.at(j);
+                this.sampleList.add(s);
+            }
         }
     },
 
-    getViewMode() {
+    getViewMode: function() {
         return this.repertoires_view_mode;
     },
 
-    getRepertoireList() {
+    getRepertoireList: function() {
         return this.repertoireList;
     },
 
-    getOriginalRepertoireList() {
+    getOriginalRepertoireList: function() {
         return this.controller.repertoireList;
     },
 
-    getSampleList() {
+    getSampleList: function() {
         return this.sampleList;
     },
 
-    getOriginalSampleList() {
+    getOriginalSampleList: function() {
         return this.controller.sampleList;
     },
 
-    toggleViewMode() {
+    toggleViewMode: function() {
         // summary -> detail -> summary
         switch(this.repertoires_view_mode) {
             case 'summary': this.repertoires_view_mode = 'detail'; break;
@@ -133,7 +136,7 @@ ProjectRepertoiresController.prototype = {
         this.showProjectRepertoiresList();
     },
 
-    applyFilter(filters) {
+    applyFilter: function(filters) {
         if (filters) {
             this.filteredRepertoires = this.repertoireList.filterCollection(filters);
 
@@ -144,7 +147,7 @@ ProjectRepertoiresController.prototype = {
         this.showProjectRepertoiresList();
     },
 
-    applySort(sort_by) {
+    applySort: function(sort_by) {
         var coll = this.getRepertoireList();
         coll['sort_by'] = sort_by;
         coll.sort();
@@ -152,7 +155,7 @@ ProjectRepertoiresController.prototype = {
     },
 
     // show project repertoires
-    showProjectRepertoiresList() {
+    showProjectRepertoiresList: function() {
         if (this.filteredRepertoires)
             this.mainView.showProjectRepertoiresList(this.filteredRepertoires);
         else
@@ -170,6 +173,14 @@ ProjectRepertoiresController.prototype = {
     //
     // add, duplicate, delete repertoire and sample
     //
+
+    updateSubject: function(e, model) {
+        e.preventDefault();
+        var uuid = e.target.value;
+        var colls = this.controller.getCollections();
+        var subjs = colls['subjectList'];
+        model.setSubject(subjs.get(uuid));
+    },
 
     duplicateRepertoire: function(e, model) {
         e.preventDefault();
@@ -277,7 +288,7 @@ ProjectRepertoiresController.prototype = {
         for (let i = 0; i < this.repertoireList.length; ++i) {
             // only validate models that have been changed or are new
             let model = this.repertoireList.at(i);
-            // skip those which haven't been edited
+            // skip those which are not been edited
             if (model.view_mode != 'edit') continue;
             let origModel = this.getOriginalRepertoireList().get(model.get('uuid'));
             var changed = null;
@@ -286,15 +297,13 @@ ProjectRepertoiresController.prototype = {
             } else changed = true;
 
             if (changed) {
-                // TODO: need to handle if the repertoire is currently being edited but is invalid, switch to edit
-
                 // validate the repertoire
                 let valid = model.isValid();
                 if (!valid) {
                     hasErrors = true;
                     console.log(model.validationError);
                     let form = document.getElementById("edit-repertoire-form " + model.get('uuid'));
-                    let rect = form[i].getBoundingClientRect();
+                    let rect = form.getBoundingClientRect();
                     if (rect['y'] < minY) minY = rect['y'];
                     form = $(form);
                     for (let j = 0; j < model.validationError.length; ++j) {
@@ -306,66 +315,50 @@ ProjectRepertoiresController.prototype = {
                         }
                     }
                 }
+            }
 
-                // validate the samples
-                if (model.sample) {
-                    // invalidate any duplicate sample IDs
-                    let duplicates = model.sample.checkDuplicates();
-                    for (let i = 0; i < duplicates.length; ++i) {
-                        let s = duplicates.at(i);
-                        let field = document.getElementById("sample_id_" + s.get('uuid'));
-                        if (field) {
-                            field.setCustomValidity("ERROR");
-                            $(field).addClass('is-invalid');
-                            hasErrors = true;
-                            let rect = field.form.getBoundingClientRect();
-                            if (rect['y'] < minY)
-                                minY = rect['y'];
+            // validate the samples
+            if (model.sample) {
+                // invalidate any duplicate sample IDs within same repertoire
+                let duplicates = model.sample.checkDuplicates();
+                for (let j = 0; j < duplicates.length; ++j) {
+                    let s = duplicates.at(j);
+                    let field = document.getElementById("sample_id_" + s.get('uuid'));
+                    if (field) {
+                        field.setCustomValidity("ERROR");
+                        $(field).addClass('is-invalid');
+                        hasErrors = true;
+                        let rect = field.form.getBoundingClientRect();
+                        if (rect['y'] < minY)
+                            minY = rect['y'];
+                    }
+                }
+
+                // validate each sample
+                for (let k = 0; k < model.sample.length; ++k) {
+                    let s = model.sample.at(k);
+                    let valid = s.isValid();
+                    if (!valid) {
+                        hasErrors = true;
+                        console.log(s.validationError);
+                        let form = document.getElementById("project-sample-form_" + s.get('uuid'));
+                        let rect = form.getBoundingClientRect();
+                        if (rect['y'] < minY) minY = rect['y'];
+                        form = $(form);
+                        for (let l = 0; l < s.validationError.length; ++l) {
+                            let e = s.validationError[l];
+                            let f = form.find('#' + e['field']);
+                            if (f.length > 0) {
+                                f[0].setCustomValidity(e['message']);
+                                f.addClass('is-invalid');
+                            }
                         }
                     }
-
-                    for (let j = 0; j < model.sample.length; ++j) {
-                        let s = model.sample.at(j);
-                        valid = s.isValid();
-                        if (!valid) {
-                            hasErrors = true;
-                            console.log(s.validationError);
-                        }
-                    }
-                    // TODO: scroll to sample?
                 }
             }
         }
 
-        /* TODO: identical sample IDs must have equivalent sample object
-
-        // Validation across multiple models
-        // invalidate any duplicate sample IDs
-        var samplesList;
-        var coll = [];
-        for (let i = 0; i < coll.length; ++i) {
-            let m = coll.at(i);
-            let samples = m.sample;
-            if (samples) {
-                for (let i = 0; i < samples.length; ++i) {
-                    let s = samples.at(i);
-                    samplesList.add(s);
-                }
-            }
-            var duplicates = samplesList.checkDuplicates();
-            for (let i = 0; i < duplicates.length; ++i) {
-                var model = duplicates.at(i);
-                var field = document.getElementById("sample_id_" + model.get('uuid'));
-                if (field) {
-                    field.setCustomValidity("ERROR");
-                    $(field).addClass('is-invalid');
-                    hasErrors = true;
-                    var rect = field.form.getBoundingClientRect();
-                    if (rect['y'] < minY)
-                        minY = rect['y']+window.scrollY;
-                }
-            }
-        } */
+        /* TODO: identical sample IDs must have equivalent sample object */
 
         // form validation
         $('.needs-validation').addClass('was-validated');
@@ -386,8 +379,7 @@ ProjectRepertoiresController.prototype = {
             return;
         }
 
-        console.log('save disabled');
-        /* TODO: save disabled
+        //console.log('save disabled');
 
         // display a modal while the data is being saved
         this.modalState = 'save';
@@ -399,7 +391,176 @@ ProjectRepertoiresController.prototype = {
         // the app controller manages the modal region
         var view = new ModalView({model: message});
         App.AppController.startModal(view, this, this.onShownSaveModal, this.onHiddenSaveModal);
-        $('#modal-message').modal('show'); */
+        $('#modal-message').modal('show');
+    },
+
+    //
+    // Series of modals for repertoire save
+    //
+
+    // file changes are sent to server after the modal is shown
+    onShownSaveModal: function(context) {
+        console.log('save: Show the modal');
+
+        // use modal state variable to decide
+        console.log(context.modalState);
+        if (context.modalState == 'save') {
+            // handle samples first
+            // the changed collection/models
+            let SampleList = context.getSampleList();
+            let originalSampleList = context.getOriginalSampleList();
+
+            // see if any are deleted
+            let deletedModels = originalSampleList.getMissingModels(SampleList);
+
+            // Set up promises
+            let promises = [];
+
+            // TODO: if sample is not referenced by any repertoire, delete it
+
+            // deletions
+            deletedModels.map(function(uuid) {
+                var m = originalSampleList.get(uuid);
+                var deleteChanges = async function(uuid, m) {
+                    var msg = null;
+                    await m.destroy().fail(function(error) { msg = error; });
+                    if (msg) return Promise.reject(msg);
+
+                    return Promise.resolve();
+                };
+                promises.push(deleteChanges(uuid, m));
+            });
+
+            // updates and new
+            SampleList.map(function(uuid) {
+                let m = SampleList.get(uuid);
+                let origModel = originalSampleList.get(m.get('uuid'));
+                var changed = null;
+                if (origModel) {
+                    changed = m.changedAttributes(origModel.attributes);
+                } else changed = true;
+
+                var saveSample = async function(s) {
+                    // clear uuid for new entries so they get created
+                    if (s.get('uuid') == s.cid) s.set('uuid', '');
+
+                    var msg = null;
+                    await s.save().fail(function(error) { msg = error; });
+                    if (msg) return Promise.reject(msg);
+
+                    await s.syncMetadataPermissionsWithProjectPermissions(context.model.get('uuid')).catch(function(error) { msg = error; });
+                    if (msg) return Promise.reject(msg);
+
+                    return Promise.resolve();
+                };
+
+                if (changed) {
+                    promises[promises.length] = saveSample(m);
+                }
+            });
+
+            // Execute promises
+            Promise.all(promises)
+                .then(function() {
+                    // with the samples saved, set them on the repertoire
+                    // and save the repertoires
+                    let RepertoireList = context.getRepertoireList();
+                    let originalRepertoireList = context.getOriginalRepertoireList();
+
+                    // see if any are deleted
+                    let deletedModels = originalRepertoireList.getMissingModels(RepertoireList);
+
+                    // Set up promises
+                    let rep_promises = [];
+
+                    // deletions
+                    deletedModels.map(function(uuid) {
+                        var m = originalRepertoireList.get(uuid);
+                        var deleteChanges = async function(uuid, m) {
+                            var msg = null;
+                            await m.destroy().fail(function(error) { msg = error; });
+                            if (msg) return Promise.reject(msg);
+
+                            return Promise.resolve();
+                        };
+                        rep_promises.push(deleteChanges(uuid, m));
+                    });
+
+                    for (let i = 0; i < RepertoireList.length; ++i) {
+                        // only validate models that have been changed or are new
+                        let m = RepertoireList.at(i);
+                        // skip those which are not been edited
+                        if (m.view_mode != 'edit') continue;
+                        let origModel = originalRepertoireList.get(m.get('uuid'));
+                        let changed = null;
+                        if (origModel) {
+                            changed = m.hasChangedFromModel(origModel);
+                        } else changed = true;
+
+                        let saveChanges = async function(m) {
+                            // clear uuid for new entries so they get created
+                            if (m.get('uuid') == m.cid) m.set('uuid', '');
+
+                            var msg = null;
+                            await m.save().fail(function(error) { msg = error; });
+                            if (msg) return Promise.reject(msg);
+
+                            await m.syncMetadataPermissionsWithProjectPermissions(context.model.get('uuid')).catch(function(error) { msg = error; });
+                            if (msg) return Promise.reject(msg);
+
+                            return Promise.resolve();
+                        };
+
+                        if (changed) {
+                            // force the uuids to be updated
+                            m.setSample(m.sample);
+                            rep_promises[rep_promises.length] = saveChanges(m);
+                        }
+                    }
+
+                    // Execute promises
+                    return Promise.all(rep_promises);
+                })
+                .then(function() {
+                    context.modalState = 'pass';
+                    $('#modal-message').modal('hide');
+                })
+                .catch(function(error) {
+                    console.log(error);
+
+                    // save failed so show error modal
+                    context.modalState = 'fail';
+                    $('#modal-message').modal('hide');
+
+                    // prepare a new modal with the failure message
+                    var message = new MessageModel({
+                        'header': 'Project Repertoires',
+                        'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Saving Project Repertoires Changes failed!</div>',
+                        cancelText: 'Ok',
+                        serverError: error
+                    });
+
+                    var view = new ModalView({model: message});
+                    App.AppController.startModal(view, null, null, null);
+                    $('#modal-message').modal('show');
+                });
+        } else if (context.modalState == 'fail') {
+            // TODO: we should do something here?
+            console.log('fail');
+        }
+    },
+
+    onHiddenSaveModal: function(context) {
+        console.log('save: Hide the modal');
+        if (context.modalState == 'pass') {
+            // changes all saved
+            context.has_edits = false;
+            context.controller.replaceRepertoireList(context.repertoireList, context.sampleList);
+            context.resetCollections();
+            context.showProjectRepertoiresList();
+        } else if (context.modalState == 'fail') {
+            // failure modal will automatically hide when user clicks OK
+        }
     },
 
     //

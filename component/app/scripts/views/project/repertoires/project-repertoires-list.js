@@ -149,13 +149,19 @@ var RepertoireDetailView = Marionette.View.extend({
         }
 
         if (collections.subjectList) {
-            var subject_ids = [""];
+            var subject_ids = [];
             for(let i=0; i<collections.subjectList.length; i++) {
                 let subj = collections.subjectList.at(i);
                 let value2 = subj.get('value');
-                if(value2.subject_id != value['subject_id']) subject_ids.push(value2.subject_id);
+                if(value2.subject_id != value['subject_id']) {
+                    let subject_display = {};
+                    subject_display['id'] = value2.subject_id;
+                    subject_display['uuid'] = subj.get('uuid');
+                    subject_ids.push(subject_display);
+                }
             }
         }
+        subject_ids.push(null);
 
         return {
             subject: subject_value,
@@ -168,6 +174,7 @@ var RepertoireDetailView = Marionette.View.extend({
 
     events: {
         'change .form-control-repertoire': 'updateField',
+        'change .form-control-repertoire-subject': function(e) { this.controller.updateSubject(e, this.model); },
         //'change .value-select': 'updateDropDown',
         'click #project-repertoire-show-summary': function(e) {
             e.preventDefault();
@@ -205,7 +212,7 @@ var RepertoireDetailView = Marionette.View.extend({
         'click #project-repertoire-delete-repertoire': function(e) { this.controller.deleteRepertoire(e, this.model); },
         'click #project-sample-add-sample': function(e) { this.controller.addSample(e, this.model); },
         'click #project-sample-duplicate-sample': function(e) { this.controller.duplicateSample(e, this.model); },
-        'click #project-sample-delete-sample': function(e) { this.controller.deleteSample(e, this.model); },
+        'click #project-sample-delete-sample': function(e) { this.controller.deleteSample(e, this.model); }
     },
 
     onAttach() {
