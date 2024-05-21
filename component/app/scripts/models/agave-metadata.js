@@ -138,6 +138,12 @@ export var Subject = Agave.MetadataModel.extend({
 
         // TODO: VDJServer additional validation
 
+        // blank subject_id is not allowed
+        let subject_id = "subject_id_" + this.cid;
+        if ((value['subject_id'] == null)) {
+            errors.push({ field: subject_id, message: 'Subject ID is blank'});
+        }
+
         // age validation
         if ((value['age_min'] == null) && (value['age_max'] != null)) {
             errors.push({ field: 'age_min', message: 'age_min is null'});
@@ -150,8 +156,15 @@ export var Subject = Agave.MetadataModel.extend({
                 errors.push({ field: 'age_min', message: 'age_min is greater than age_max'});
                 errors.push({ field: 'age_max', message: 'age_max is less than age_min'});
             }
-            if (!value['age_unit']) errors.push({ field: 'age_unit', message: 'missing age unit'});
+            if (value['age_min'] < 0) {
+                errors.push({ field: 'age_min', message: 'age_min is less than zero'});
+            }
+            if (value['age_max'] < 0) {
+                errors.push({ field: 'age_max', message: 'age_max is less than zero'});
+            }
+            //if (!value['age_unit']) errors.push({ field: 'age_unit', message: 'missing age unit'});
         }
+
         // special virtual age_point field
         for (let i = 0; i < errors.length; ++i) {
             if ((errors[i]['field'] == 'age_min') || (errors[i]['field'] == 'age_min')) {
@@ -285,6 +298,22 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         this.schema = sampleProcessingSchema;
     },
 
+    updatePCR: function(new_value) {
+        let value = this.get('value');
+        let pcr = value['pcr_target'][0];
+        if(new_value != null) pcr.pcr_target_locus = new_value;
+        else pcr.pcr_target_locus = null;
+        this.set('value', value);
+    },
+
+    updateSequencingDataId: function(new_value) {
+        let value = this.get('value');
+        let s = value['sequencing_files'];
+        if(new_value.length == 0) s.sequencing_data_id = null;
+        else s.sequencing_data_id = new_value;
+        this.set('value', value);
+    },
+
     updateSequencingFiles: function(file, file_pair) {
         let value = this.get('value');
 
@@ -308,6 +337,7 @@ export var SampleProcessing = Agave.MetadataModel.extend({
                 value['sequencing_files']['paired_read_direction'] = file_pair.getAIRRReadDirection();
             }
         }
+        this.set('value', value);
     },
 
     validate: function(attrs, options) {
@@ -327,6 +357,36 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         // sample ID cannot be null or blank
         if (!value['sample_id']) errors.push({ field: 'sample_id', message: 'Sample ID cannot be blank'});
         else if (value['sample_id'].trim().length == 0) errors.push({ field: 'sample_id', message: 'Sample ID cannot be blank'});
+
+        // a Repertoire must have either sequencing_data_id or a sequencing_file, and not both
+        var sample = this.get('value');
+        let s = sample['sequencing_files'];
+        if(s.sequencing_data_id == null && s.filename == null)
+            errors.push({ field: 'sequencing_files', message: 'Select either a sequencing file or a sequencing run ID.'});
+        else if(s.sequencing_data_id != null && s.filename != null)
+            errors.push({ field: 'sequencing_files', message: 'Cannot select both a sequencing file and a sequencing run ID.'});
+
+        // collection_time_point_relative and collection_time_point_relative_unit must either both be defined or both be null
+        var ctpr = sample['collection_time_point_relative'];
+        if(sample['collection_time_point_relative_unit']) { var ctpru = sample['collection_time_point_relative_unit'].id; }
+
+        if(ctpr != null && ctpru == null )
+            errors.push({ field: 'collection_time_point_relative_unit', message: 'Unit cannot be null if Collection Time is defined.'});
+        else if (ctpr == null && ctpru != null)
+            errors.push({ field: 'collection_time_point_relative', message: 'Collection Time cannot be null if Unit is defined.'});
+
+        // template_amount and template_amount_unit must either both be defined or both be null
+        var ta = sample['template_amount'];
+        if(sample['template_amount_unit']) { var tau = sample['template_amount_unit'].id; }
+
+        if(ta && !tau)
+            errors.push({ field: 'template_amount_unit', message: 'Unit cannot be null if Template Amount is defined.'});
+        else if (!ta && tau)
+            errors.push({ field: 'template_amount', message: 'Template Amount cannot be null if Unit is defined.'});
+
+        // prc_target_locus cannot be null
+        let pcr = sample['pcr_target'][0].pcr_target_locus;
+        if(!pcr) errors.push({ field: 'pcr_target_locus', message: 'PCR Target Locus cannot be null.'});
 
         // add integer check for cell_number, cells_per_reaction, total_reads_passing_qc_filter
         // verify HTML checks for number work for collection_time_point_relative and template_amount
@@ -441,6 +501,9 @@ export var Repertoire = Agave.MetadataModel.extend({
         if ((!this.sample) || (this.sample.length == 0))
             errors.push({ field: 'sample', message: 'Repertoire requires at least one sample' });
 
+        // a Repertoire must have a Subject
+        if(value['subject'].vdjserver_uuid == null) errors.push({ field: 'subject', message: 'Subject ID must be defined'});
+
         // repertoire needs a subject assigned
         if (!this.subject)
             errors.push({ field: 'subject_id', message: 'Repertoire requires a subject'});
@@ -467,20 +530,21 @@ export var Repertoire = Agave.MetadataModel.extend({
         if (changed) return true;
 
         // subject, should not be null
+        // do not check content of subject, just if uuid has changed
         if ((!this.subject) || (!origModel.subject)) return true;
-        changed = this.subject.changedAttributes(origModel.subject.attributes);
-        if (changed) return true;
+        let s = this.subject.get('uuid');
+        let os = origModel.subject.get('uuid');
+        if (s != os) return true;
 
         // samples, should not be null or empty
         if ((!this.sample) || (!origModel.sample)) return true;
         if ((this.sample.length == 0) || (origModel.sample.length == 0)) return true;
         if (this.sample.length != origModel.sample.length) return true;
+        // do not check content of samples, just if uuids have changed
         for (let i = 0; i < this.sample.length; ++i) {
-            var s = this.sample.at(i);
-            var os = origModel.sample.get(s.get('uuid'));
+            let s = this.sample.at(i);
+            let os = origModel.sample.get(s.get('uuid'));
             if (!os) return true;
-            changed = s.changedAttributes(os.attributes);
-            if (changed) return true;
         }
 
         // made it this far then everything is the same

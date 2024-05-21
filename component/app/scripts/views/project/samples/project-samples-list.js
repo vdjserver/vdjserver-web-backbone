@@ -58,7 +58,9 @@ var SampleDetailView = Marionette.View.extend({
         'change .form-control-sample': 'updateField',
         'change .ontology-select-sample': 'updateOntology',
         'change .value-select-sample': 'updateField',
+        'change .value-select-sample-pcr': 'updatePCR',
         'change .value-select-sequencing-files': 'updateSequencingFiles',
+        'change .form-control-sample-sdi' : 'updateSequencingDataId'
     },
 
     regions: {
@@ -161,6 +163,14 @@ var SampleDetailView = Marionette.View.extend({
 
     updateOntology: function(e) {
         this.model.updateField(e.target.name, { id: e.target.selectedOptions[0]['id'], label: e.target.value });
+    },
+
+    updatePCR: function(e) {
+        this.model.updatePCR(e.target.value)
+    },
+
+    updateSequencingDataId: function(e) {
+        this.model.updateSequencingDataId(e.target.value);
     },
 
     updateSequencingFiles: function(e) {
