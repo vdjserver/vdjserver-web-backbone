@@ -161,7 +161,7 @@ ProjectSubjectsController.prototype = {
         e.preventDefault();
         var clonedList = this.getSubjectsList();
         let i = clonedList.findIndex(model);
-        let newSubject = model.deepClone();
+        let newSubject = model.clone();
         newSubject.set('uuid', newSubject.cid);
         newSubject.view_mode = 'edit';
         clonedList.add(newSubject, {at:i});
@@ -260,7 +260,7 @@ ProjectSubjectsController.prototype = {
                 if (!valid) {
                     hasErrors = true;
                     let form = document.getElementById("project-subject-form_" + model.get('uuid'));
-                    var rect = form.getBoundingClientRect();
+                    var rect = form[i].getBoundingClientRect();
                     if (rect['y'] < minY) minY = rect['y'] + window.scrollY;
                     form = $(form);
                     for (let j = 0; j < model.validationError.length; ++j) {
@@ -366,9 +366,6 @@ ProjectSubjectsController.prototype = {
 
                     var msg = null;
                     await m.save().fail(function(error) { msg = error; });
-                    if (msg) return Promise.reject(msg);
-
-                    await m.syncMetadataPermissionsWithProjectPermissions(context.model.get('uuid')).catch(function(error) { msg = error; });
                     if (msg) return Promise.reject(msg);
 
                     return Promise.resolve();
