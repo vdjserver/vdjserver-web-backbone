@@ -68,16 +68,21 @@
                     </div>
                 </div>
             </div>
-        </form>
 
-        <div class="row general-table-internal-row align-items-center">
-            <div class="btn-group col-md-3">
-                <span class="d-flex align-items-center" for="repertoires-subject-id"><b>Subject ID:&nbsp</b></span>
-                <select class="custom-select value-select w-auto" name="subject_id" id="subject_id" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
+          <div class="form-row general-table-internal-row align-items-center">
+            <div class="form-group col-md-4">
+              <label for="subject_id">
+                <!--<div class="d-flex align-items-center" for="repertoires-subject-id"><b>Subject ID:&nbsp</b></div>-->
+                <b>Subject ID:&nbsp</b>
+              </label>
+                <select class="form-control-repertoire-subject custom-select value-select" name="subject" id="subject" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                     {{#each subject_ids}}
-                    <option id="{{this}}" value="{{this}}" {{#ifEquals this ../subject.subject_id}}selected{{/ifEquals}}>{{this}}</option>
+                    <option id="{{this.uuid}}" value="{{this.uuid}}" {{#ifEquals this.id ../subject.subject_id}}selected{{/ifEquals}}>{{this.id}}</option>
                     {{/each}}
                 </select>
+                <div class="invalid-feedback">
+                    Please select a Subject ID.
+                </div>
             </div>
             <div class="col-md-3">
                 <b>Sex/Species:</b> {{subject.sex}}/{{species_display}}
@@ -85,10 +90,11 @@
             <div class="col-md-3">
                 <b>Race/Ethnicity:</b> {{subject.race}}/{{subject.ethnicity}}
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <b>Age:</b> {{age_display}}
             </div>
-        </div>
+          </div>
+        </form>
     </div>
 </div>
 
