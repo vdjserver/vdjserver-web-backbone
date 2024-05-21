@@ -34,349 +34,289 @@ import Chance from 'chance';
 import { FileTransfers } from 'Scripts/models/mixins/file-transfer-mixins';
 import moment from 'moment';
 
-var FilePlaceholderMixin = {};
-
-FilePlaceholderMixin.getNameGuid = function(name) {
-
-    // Remove url params from name - otherwise it'll be hard to match it up with websocket messages later on
-    if (name.indexOf('?') !== -1) {
-        name = name.split('?')[0];
-    }
-
-    var nameGuid = _string.slugify(name);
-    return nameGuid;
-};
-
-FilePlaceholderMixin.cleanName = function(name) {
-
-    // Replace symbols that could cause problems on file systems
-    var allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.",
-        regex = new RegExp('.', 'g');
-
-    name = name.replace(regex, function(c) {
-      var index = allowed.indexOf(c);
-      if (index >= 0) return c;
-      else return '_';
-    });
-
-    return name;
-};
+// AIRR Schema
+import { airr } from 'airr-js';
+import { vdj_schema } from 'vdjserver-schema';
 
 // A raw file within the Tapis Files API
-export var File = Agave.Model.extend(
-    _.extend({}, FilePlaceholderMixin,
-        {
-            // Public methods
-            idAttribute: 'path',
-            defaults: {
-                fileReference: '',
-                format: '',
-                lastModified: '',
-                length: 0,
-                name: '',
-                path: '',
-                permissions: '',
-                projectUuid: '',
-                system: '',
-                type: '',
-                _links: {},
-            },
-            initialize: function(parameters) {
-                Agave.Model.prototype.initialize.apply(this, [parameters]);
+// this is used for uploading files
+export var File = Agave.Model.extend({
+    // Public methods
+    idAttribute: 'path',
+    defaults: {
+        type: '',
+        url: '',
+        lastModified: '',
+        size: 0,
+        name: '',
+        path: ''
+    },
+    initialize: function(parameters) {
+        Agave.Model.prototype.initialize.apply(this, [parameters]);
 
-                this.relativeUrl = '';
+        this.relativeUrl = '';
 
-                if (_.isObject(parameters) && parameters.hasOwnProperty('relativeUrl')) {
-                    this.relativeUrl = parameters.relativeUrl;
+        if (_.isObject(parameters) && parameters.hasOwnProperty('relativeUrl')) {
+            this.relativeUrl = parameters.relativeUrl;
+        }
+    },
+    apiHost: EnvironmentConfig.agave.internal,
+    authType: 'jwt',
+    url: function() {
+        return '/v3/files/ops/'
+            + EnvironmentConfig.agave.systems.storage.corral.hostname
+            + this.relativeUrl
+        ;
+    },
+    sync: function(method, model, options) {
+
+        switch (method) {
+            case 'read':
+            case 'delete':
+                return Agave.sync(method, model, options);
+                //break;
+
+            // file uploading
+            case 'create':
+            case 'update':
+                if (model.get('name')) {
+                    model.set('name', File.cleanName(model.get('name')));
                 }
 
-                this.uniqueIdentifier = this.generateUniqueIdentifier();
-            },
-            generateUniqueIdentifier: function() {
-                var chance = new Chance();
+                var url = model.apiHost + (options.url || _.result(model, 'url'));
 
-                return chance.guid();
-            },
-            url: function() {
-                return '/files/v2/listings/system'
-                    + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
-                    + this.relativeUrl
-                ;
-            }, /*
-            applyUploadAttributes: function(formData) {
-                this.set('vdjFileType', formData['file-type-' + this.get('formElementGuid')]);
-
-                if (formData.hasOwnProperty('read-direction-' + this.get('formElementGuid'))) {
-                    this.set('readDirection', formData['read-direction-' + this.get('formElementGuid')]);
-                }
-
-                if (formData.hasOwnProperty('tags-' + this.get('formElementGuid'))) {
-                    this.set('tags', formData['tags-' + this.get('formElementGuid')]);
-                }
-            }, */
-            sync: function(method, model, options) {
+                var formData = new FormData();
+                formData.append('file', model.get('fileReference'));
 
                 var that = this;
 
-                switch (method) {
-                    case 'read':
-                    case 'delete':
-                        return Agave.sync(method, model, options);
-                        //break;
+                var request = Agave.ajax({
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-Tapis-Token', Agave.instance.token().get('access_token'));
+                    },
+                    xhr: function() {
 
-                    case 'create':
-                    case 'update':
-                        var url = model.apiHost + (options.url || _.result(model, 'url'));
+                        var xhr = $.ajaxSettings.xhr();
 
-                        var formData = new FormData();
-                        formData.append('fileToUpload', model.get('fileReference'));
-                        if (model.get('name')) {
-                            model.set('name', this.cleanName(model.get('name')));
-                            formData.append('fileName', model.get('name'));
-                        }
-
-                        var that = this;
-
-                        var request = Agave.ajax({
-                            beforeSend: function(xhr) {
-                                xhr.setRequestHeader('Authorization', 'Bearer ' + Agave.instance.token().get('access_token'));
-                            },
-                            xhr: function() {
-
-                                var xhr = $.ajaxSettings.xhr();
-
-                                if (typeof xhr.upload == 'object') {
-                                    xhr.upload.addEventListener('progress', function(evt) {
-                                        if (evt.lengthComputable) {
-                                            that.trigger(File.UPLOAD_PROGRESS, evt.loaded);
-                                        }
-
-                                    }, false);
+                        if (typeof xhr.upload == 'object') {
+                            xhr.upload.addEventListener('progress', function(evt) {
+                                if (evt.lengthComputable) {
+                                    that.trigger(File.UPLOAD_PROGRESS, evt.loaded);
                                 }
 
-                                that.listenTo(that, File.CANCEL_UPLOAD, function() {
-                                    xhr.abort();
-                                });
+                            }, false);
+                        }
 
-                                return xhr;
-                            },
-                            url: url,
-                            type: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                        })
-                        .then(function(response) {
-                            that.set('uuid', response.result.uuid);
-                            that.set('path', '/' + response.result.path);
-                        })
-                        ;
+                        that.listenTo(that, File.CANCEL_UPLOAD, function() {
+                            xhr.abort();
+                        });
 
-                        return request;
-
-                    default:
-                        break;
-                }
-
-            },
-            notifyApiUploadComplete: function() {
-
-                var obj = {
-                    path: this.get('name'),
-                    type: this.get('type').toString(),
-                    readDirection: '',
-                    tags: ''
-                };
-
-                if (_.isString(this.get('readDirection'))) {
-                    obj['readDirection'] = this.get('readDirection');
-                }
-
-                if (_.isString(this.get('tags'))) {
-                    obj['tags'] = this.get('tags');
-                }
-
-                var that = this;
-                return new Promise((resolve, reject) => {
-                    $.ajax({
-                        headers: Agave.oauthHeader(),
-                        url: EnvironmentConfig.vdjApi.hostname
-                                + '/project/'
-                                + this.get('projectUuid')
-                                + '/file'
-                                + '/import'
-                                ,
-                        type: 'POST',
-                        data: JSON.stringify(obj),
-                        processData: false,
-                        contentType: 'application/json',
-                        success: function (data) {
-                            resolve(data)
-                        },
-                        error: function (error) {
-                            reject(error)
-                        },
-                    })
-                });
-            },
-            getFileStagedNotificationData: function() {
-
-                var nameGuid = this.getNameGuid(this.get('name'));
-
-                return {
-                    'value': {
-                        'name': this.get('name'),
+                        return xhr;
                     },
-                    'projectUuid': this.get('projectUuid'),
-                    'uuid': nameGuid,
-                };
-            },
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                })
+                .then(function(response) {
+                    console.log(response);
+                    //that.set('uuid', response.result.uuid);
+                    that.set('path', '/projects/' + that.get('projectUuid')
+                        + '/files/' + that.get('name'));
+                });
+
+                return request;
+
+            default:
+                break;
         }
-    ),
-    {
-        //
-        // class (global) variables and functions
-        //
 
-        CANCEL_UPLOAD: 'cancelUpload',
-        UPLOAD_PROGRESS: 'uploadProgress',
-        STAGE_PROGRESS: 'stageProgress',
+    },
+    notifyApiUploadComplete: function() {
 
-        // These should not be used directly for display, instead use the
-        // getFileTypes() and getFileTypeNames() functions which provide
-        // the types in a specific order for display
-        fileTypeCodes: {
-            FILE_TYPE_UNSPECIFIED: 0,
-            FILE_TYPE_PRIMER: 1,
-            FILE_TYPE_READ: 2,
-            //FILE_TYPE_BARCODE_COMBO: 3, // deprecated
-            FILE_TYPE_BARCODE: 4,
-            FILE_TYPE_QUALITY: 5,
-            FILE_TYPE_TSV: 6,
-            FILE_TYPE_CSV: 7,
-            FILE_TYPE_VDJML: 8,
-            FILE_TYPE_AIRR_TSV: 9,
-            FILE_TYPE_AIRR_JSON: 10,
-        },
+        var obj = {
+            path: this.get('name'),
+            fileType: this.get('type'),
+            readDirection: '',
+            tags: ''
+        };
 
-        // index should map to codes
-        fileTypeNames: [
-            'Unspecified',
-            'Primer Sequences',
-            'Read-Level Data',
-            'Barcode Combinations', // deprecated
-            'Barcode Sequences',
-            'Quality Scores',
-            'TAB-separated Values',
-            'Comma-separated Values',
-            'VDJML',
-            'AIRR Rearrangement TSV',
-            'AIRR JSON',
-        ],
+        if (_.isString(this.get('readDirection'))) {
+            obj['readDirection'] = this.get('readDirection');
+        }
 
-        getFileTypeById: function(fileTypeId) {
-            if (fileTypeId === undefined) return File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_UNSPECIFIED];
-            if (File.fileTypeNames[fileTypeId] === undefined) return File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_UNSPECIFIED];
-            return File.fileTypeNames[fileTypeId];
-        },
+        if (_.isString(this.get('tags'))) {
+            obj['tags'] = this.get('tags');
+        }
 
-        getFileTypes: function() {
-            // put them in a specific order for display
-            return [
-                File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
-                File.fileTypeCodes.FILE_TYPE_READ,
-                File.fileTypeCodes.FILE_TYPE_BARCODE,
-                File.fileTypeCodes.FILE_TYPE_PRIMER,
-                File.fileTypeCodes.FILE_TYPE_QUALITY,
-                File.fileTypeCodes.FILE_TYPE_AIRR_TSV,
-                File.fileTypeCodes.FILE_TYPE_AIRR_JSON,
-                File.fileTypeCodes.FILE_TYPE_TSV,
-                File.fileTypeCodes.FILE_TYPE_CSV,
-                File.fileTypeCodes.FILE_TYPE_VDJML
-            ];
-        },
+        var that = this;
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname
+                        + '/project/'
+                        + this.get('projectUuid')
+                        + '/file'
+                        + '/import'
+                        ,
+                type: 'POST',
+                data: JSON.stringify(obj),
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            })
+        });
+    },
+},
+{
+    //
+    // class (global) variables and functions
+    //
 
-        getNamesForFileTypes: function(fileTypeIds) {
-            var fileTypeNames = [];
+    CANCEL_UPLOAD: 'cancelUpload',
+    UPLOAD_PROGRESS: 'uploadProgress',
+    STAGE_PROGRESS: 'stageProgress',
 
-            for (var i = 0; i < fileTypeIds.length; ++i) {
-                fileTypeNames.push(this.getFileTypeById(fileTypeIds[i]));
+    // These should not be used directly for display, instead use the
+    // getFileTypes() and getFileTypeNames() functions which provide
+    // the types in a specific order for display
+    fileTypeCodes: {
+        FILE_TYPE_UNSPECIFIED: 0,
+        FILE_TYPE_PRIMER: 1,
+        FILE_TYPE_READ: 2,
+        //FILE_TYPE_BARCODE_COMBO: 3, // deprecated
+        FILE_TYPE_BARCODE: 4,
+        FILE_TYPE_QUALITY: 5,
+        FILE_TYPE_TSV: 6,
+        FILE_TYPE_CSV: 7,
+        FILE_TYPE_VDJML: 8,
+        FILE_TYPE_AIRR_TSV: 9,
+        FILE_TYPE_AIRR_JSON: 10,
+    },
+
+    // index should map to codes
+    fileTypeNames: [
+        'Unspecified',
+        'Primer Sequences',
+        'Read-Level Data',
+        'Barcode Combinations', // deprecated
+        'Barcode Sequences',
+        'Quality Scores',
+        'TAB-separated Values',
+        'Comma-separated Values',
+        'VDJML',
+        'AIRR Rearrangement TSV',
+        'AIRR JSON',
+    ],
+
+    getFileTypeById: function(fileTypeId) {
+        if (fileTypeId === undefined) return File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_UNSPECIFIED];
+        if (File.fileTypeNames[fileTypeId] === undefined) return File.fileTypeNames[File.fileTypeCodes.FILE_TYPE_UNSPECIFIED];
+        return File.fileTypeNames[fileTypeId];
+    },
+
+    getFileTypes: function() {
+        // put them in a specific order for display
+        return [
+            File.fileTypeCodes.FILE_TYPE_UNSPECIFIED,
+            File.fileTypeCodes.FILE_TYPE_READ,
+            File.fileTypeCodes.FILE_TYPE_BARCODE,
+            File.fileTypeCodes.FILE_TYPE_PRIMER,
+            File.fileTypeCodes.FILE_TYPE_QUALITY,
+            File.fileTypeCodes.FILE_TYPE_AIRR_TSV,
+            File.fileTypeCodes.FILE_TYPE_AIRR_JSON,
+            File.fileTypeCodes.FILE_TYPE_TSV,
+            File.fileTypeCodes.FILE_TYPE_CSV,
+            File.fileTypeCodes.FILE_TYPE_VDJML
+        ];
+    },
+
+    getNamesForFileTypes: function(fileTypeIds) {
+        var fileTypeNames = [];
+
+        for (var i = 0; i < fileTypeIds.length; ++i) {
+            fileTypeNames.push(this.getFileTypeById(fileTypeIds[i]));
+        }
+
+        return fileTypeNames;
+    },
+
+    getFileTypeNames: function() {
+        return this.getNamesForFileTypes(this.getFileTypes());
+    },
+
+    cleanName: function(name) {
+        // Replace symbols that could cause problems on file systems
+        var allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.",
+            regex = new RegExp('.', 'g');
+
+        name = name.replace(regex, function(c) {
+          var index = allowed.indexOf(c);
+          if (index >= 0) return c;
+          else return '_';
+        });
+
+        return name;
+    },
+
+    guessTypeFromName: function(name) {
+        var guessType = File.fileTypeCodes.FILE_TYPE_UNSPECIFIED;
+        var components = name.split('.');
+        if (components.length > 1) {
+            var idx = components.length - 1;
+            if ((components[idx] == 'gz') ||
+                (components[idx] == 'zip') ||
+                (components[idx] == 'bz2')) --idx;
+            if (components[idx] == 'fasta') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+            if (components[idx] == 'fastq') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+            if (components[idx] == 'fna') guessType = File.fileTypeCodes.FILE_TYPE_READ;
+            if (components[idx] == 'qual') guessType = File.fileTypeCodes.FILE_TYPE_QUALITY;
+            if (components[idx] == 'tsv') {
+                if (components[idx-1] && components[idx-1] == 'airr')
+                    guessType = File.fileTypeCodes.FILE_TYPE_AIRR_TSV;
+                else
+                    guessType = File.fileTypeCodes.FILE_TYPE_TSV;
             }
+            if (components[idx] == 'csv') guessType = File.fileTypeCodes.FILE_TYPE_CSV;
+            if (components[idx] == 'vdjml') guessType = File.fileTypeCodes.FILE_TYPE_VDJML;
+        }
 
-            return fileTypeNames;
-        },
+        if (components.length > 2) {
+            var idx1 = components.length - 1;
+            var idx2 = components.length - 2;
+            if ((components[idx1] == 'tsv') && (components[idx2] == 'airr')) guessType = File.fileTypeCodes.FILE_TYPE_AIRR_TSV;
+        }
 
-        getFileTypeNames: function() {
-            return this.getNamesForFileTypes(this.getFileTypes());
-        },
+        return guessType;
+    },
 
-        cleanName: function(name) {
-            // Replace symbols that could cause problems on file systems
-            var allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.",
-                regex = new RegExp('.', 'g');
+    getReadDirections: function() {
+        return [
+            'F',
+            'R',
+            'FR',
+        ];
+    },
 
-            name = name.replace(regex, function(c) {
-              var index = allowed.indexOf(c);
-              if (index >= 0) return c;
-              else return '_';
-            });
-
-            return name;
-        },
-
-        guessTypeFromName: function(name) {
-            var guessType = File.fileTypeCodes.FILE_TYPE_UNSPECIFIED;
-            var components = name.split('.');
-            if (components.length > 1) {
-                var idx = components.length - 1;
-                if ((components[idx] == 'gz') ||
-                    (components[idx] == 'zip') ||
-                    (components[idx] == 'bz2')) --idx;
-                if (components[idx] == 'fasta') guessType = File.fileTypeCodes.FILE_TYPE_READ;
-                if (components[idx] == 'fastq') guessType = File.fileTypeCodes.FILE_TYPE_READ;
-                if (components[idx] == 'fna') guessType = File.fileTypeCodes.FILE_TYPE_READ;
-                if (components[idx] == 'qual') guessType = File.fileTypeCodes.FILE_TYPE_QUALITY;
-                if (components[idx] == 'tsv') {
-                    if (components[idx-1] && components[idx-1] == 'airr')
-                        guessType = File.fileTypeCodes.FILE_TYPE_AIRR_TSV;
-                    else
-                        guessType = File.fileTypeCodes.FILE_TYPE_TSV;
-                }
-                if (components[idx] == 'csv') guessType = File.fileTypeCodes.FILE_TYPE_CSV;
-                if (components[idx] == 'vdjml') guessType = File.fileTypeCodes.FILE_TYPE_VDJML;
-            }
-
-            if (components.length > 2) {
-                var idx1 = components.length - 1;
-                var idx2 = components.length - 2;
-                if ((components[idx1] == 'tsv') && (components[idx2] == 'airr')) guessType = File.fileTypeCodes.FILE_TYPE_AIRR_TSV;
-            }
-
-            return guessType;
-        },
-
-        getReadDirections: function() {
-            return [
-                'F',
-                'R',
-                'FR',
-            ];
-        },
-
-        doesFileTypeIdHaveReadDirection: function(fileTypeId) {
-            var hasReadDirection = false;
-            switch (fileTypeId) {
-                case File.fileTypeCodes.FILE_TYPE_READ:
-                    hasReadDirection = true;
-                    break;
-                default:
-                    // code
-                    break;
-            }
-            return hasReadDirection;
-        },
-    }
-);
+    doesFileTypeIdHaveReadDirection: function(fileTypeId) {
+        var hasReadDirection = false;
+        switch (fileTypeId) {
+            case File.fileTypeCodes.FILE_TYPE_READ:
+                hasReadDirection = true;
+                break;
+            default:
+                // code
+                break;
+        }
+        return hasReadDirection;
+    },
+});
 
 export var ProjectFile = File.extend(
     _.extend({}, FileTransfers, {
@@ -423,11 +363,17 @@ export var ProjectFile = File.extend(
 
         // Public methods
         url: function() {
-            return '/files/v2/media/system'
+            return '/v3/files/ops/'
+                + EnvironmentConfig.agave.systems.storage.corral.hostname
+                + '//projects'
+                + '/' + this.get('projectUuid')
+                + '/files/'
+                + this.get('name');
+/*            return '/files/v2/media/system'
                    + '/' + EnvironmentConfig.agave.systems.storage.corral.hostname
                    + '//projects'
                    + '/' + this.get('projectUuid')
-                   + '/files/';
+                   + '/files/'; */
         },
         // TODO: merge this with agave-job model downloadFileToCache()
         downloadFileToMemory: function() {
@@ -564,185 +510,158 @@ export var ProjectFile = File.extend(
 );
 
 // metadata entry for project file
-export var ProjectFileMetadata = Agave.MetadataModel.extend(
-    _.extend({}, FilePlaceholderMixin, {
-        // Public Methods
-        defaults: function() {
-            return _.extend(
-                {},
-                Agave.MetadataModel.prototype.defaults,
-                {
-                    name: 'projectFile',
-                    owner: '',
-                    value: {
-                        'projectUuid': '',
-                        'fileType': '',
-                        'isDeleted': false,
-                        'isPlaceholder': false,
-                    },
-                }
-            );
-        },
-        url: function() {
-            return '/meta/v2/data/' + this.get('uuid');
-        },
+var projectFileSchema = null;
+export var ProjectFileMetadata = Agave.MetadataModel.extend({
+    defaults: function() {
 
-        softDelete: function() {
-            var value = this.get('value');
-            value.isDeleted = true;
+        // VDJServer schema Study object as basis
+        if (! projectFileSchema) projectFileSchema = new vdj_schema.SchemaDefinition('ProjectFile');
+        this.schema = projectFileSchema;
+        var blankEntry = projectFileSchema.template();
 
-            this.set('value', value);
-
-            return this.save();
-        },
-
-        updateTags: function(tags) {
-            var value = this.get('value');
-            var tagArray = this._formatTagsForSave(tags);
-            value['publicAttributes']['tags'] = tagArray;
-            this.set('value', value);
-        },
-
-        getFilePath: function() {
-
-            var value = this.get('value');
-            var filePath = '';
-
-            if (this.get('name') === 'projectFile') {
-
-                filePath = '/projects'
-                         + '/' + value['projectUuid']
-                         + '/files'
-                         + '/' + encodeURIComponent(value['name'])
-                         ;
+        return _.extend(
+            {},
+            Agave.MetadataModel.prototype.defaults,
+            {
+                name: 'project_file',
+                value: blankEntry
             }
-            else if (this.get('name') === 'projectJobFile') {
+        );
+    },
 
-                filePath = '/projects'
-                         + '/' + value['projectUuid']
-                         + '/analyses'
-                         + '/' + value['relativeArchivePath']
-                         + '/' + encodeURIComponent(value['name'])
-                         ;
-            }
+    softDelete: function() {
+        var value = this.get('value');
+        value.isDeleted = true;
 
-            return filePath;
-        },
+        this.set('value', value);
 
-        getFileModel: function() {
-            var value = this.get('value');
+        return this.save();
+    },
 
-            var fileModel = new ProjectFile({
-                path: this.getFilePath(),
-                projectUuid: value['projectUuid'],
-                jobUuid: value['jobUuid'],
-                name: value['name'],
-                fileUuid: this.get('uuid'),
-            });
+    updateTags: function(tags) {
+        var value = this.get('value');
+        var tagArray = this._formatTagsForSave(tags);
+        value['publicAttributes']['tags'] = tagArray;
+        this.set('value', value);
+    },
 
-            return fileModel;
-        },
+    getFilePath: function() {
 
-        getFileExtension: function() {
-            var value = this.get('value');
+        var value = this.get('value');
+        var filePath = '';
 
-            var fileExtension = value['name'].split('.').pop();
+        if (this.get('name') === 'projectFile') {
 
-            return fileExtension;
-        },
+            filePath = '/projects'
+                     + '/' + value['projectUuid']
+                     + '/files'
+                     + '/' + encodeURIComponent(value['name'])
+                     ;
+        }
+        else if (this.get('name') === 'projectJobFile') {
 
-        getAIRRFileType: function() {
-            var value = this.get('value');
-            var types = ["fasta","fastq",null];
+            filePath = '/projects'
+                     + '/' + value['projectUuid']
+                     + '/analyses'
+                     + '/' + value['relativeArchivePath']
+                     + '/' + encodeURIComponent(value['name'])
+                     ;
+        }
 
-            //paired with a quality score
-            if(value['qualityScoreMetadataUuid'] != null) return types[0];
-            //paired, no quality score
-            else if(value['pairedReadMetadataUuid'] != null) return types[1];
-            //if not paired, then fasta
-            else if(value['name']) return types[0];
-            //null file
-            else return types[2];
-        },
+        return filePath;
+    },
 
-        getAIRRReadDirection: function() {
-            var value = this.get('value');
+    getFileModel: function() {
+        var value = this.get('value');
 
-            if (value['readDirection'] == 'F') return 'forward';
-            if (value['readDirection'] == 'R') return 'reverse';
-            if (value['readDirection'] == 'FR') return 'mixed';
-            return null;
-        },
+        var fileModel = new ProjectFile({
+            path: this.getFilePath(),
+            projectUuid: value['projectUuid'],
+            jobUuid: value['jobUuid'],
+            name: value['name'],
+            fileUuid: this.get('uuid'),
+        });
 
-        getFileType: function() {
-            var value = this.get('value');
+        return fileModel;
+    },
 
-            return value['fileType'];
-        },
+    getFileExtension: function() {
+        var value = this.get('value');
 
-        isPaired: function() {
-            let value = this.get('value');
-            if (value['pairedReadMetadataUuid']) return true;
-            if (value['qualityScoreMetadataUuid']) return true;
-            if (value['readMetadataUuid']) return true;
-            return false;
-        },
+        var fileExtension = value['name'].split('.').pop();
 
-        getPairUuid: function() {
-            let value = this.get('value');
-            if (value['pairedReadMetadataUuid']) return value['pairedReadMetadataUuid'];
-            if (value['qualityScoreMetadataUuid']) return value['qualityScoreMetadataUuid'];
-            if (value['readMetadataUuid']) return value['readMetadataUuid'];
-            return null;
-        },
+        return fileExtension;
+    },
 
-        // this assumes the sub-objects have already been denormalized from their uuid
-        getValuesForField(field) {
-            var value = this.get('value');
-            var paths = field.split('.');
-            switch (paths[0]) {
-                case 'fileType':
-                    return File.getFileTypeById(value[paths[0]]);
-                default:
-                    return value[paths[0]];
-            }
-        },
+    getAIRRFileType: function() {
+        var value = this.get('value');
+        var types = ["fasta","fastq",null];
 
-        // Private Methods
-        _formatTagsForSave: function(tagString) {
+        //paired with a quality score
+        if(value['qualityScoreMetadataUuid'] != null) return types[0];
+        //paired, no quality score
+        else if(value['pairedReadMetadataUuid'] != null) return types[1];
+        //if not paired, then fasta
+        else if(value['name']) return types[0];
+        //null file
+        else return types[2];
+    },
 
-            var tagArray = [];
+    getAIRRReadDirection: function() {
+        var value = this.get('value');
 
-            if (tagString) {
-                tagArray = $.map(tagString.split(','), $.trim);
-            }
+        if (value['readDirection'] == 'F') return 'forward';
+        if (value['readDirection'] == 'R') return 'reverse';
+        if (value['readDirection'] == 'FR') return 'mixed';
+        return null;
+    },
 
-            return tagArray;
-        },
-    }),
-    {
+    getFileType: function() {
+        var value = this.get('value');
 
+        return value['fileType'];
+    },
 
-        isFileTypeIdQualAssociable: function(fileTypeId) {
-            var isQualAssociable = false;
+    isPaired: function() {
+        let value = this.get('value');
+        if (value['pairedReadMetadataUuid']) return true;
+        if (value['qualityScoreMetadataUuid']) return true;
+        if (value['readMetadataUuid']) return true;
+        return false;
+    },
 
-            switch (fileTypeId) {
-                case File.fileTypeCodes.FILE_TYPE_READ:
-                case File.fileTypeCodes.FILE_TYPE_QUALITY:
-                    isQualAssociable = true;
-                    break;
+    getPairUuid: function() {
+        let value = this.get('value');
+        if (value['pairedReadMetadataUuid']) return value['pairedReadMetadataUuid'];
+        if (value['qualityScoreMetadataUuid']) return value['qualityScoreMetadataUuid'];
+        if (value['readMetadataUuid']) return value['readMetadataUuid'];
+        return null;
+    },
 
-                default:
-                    // code
-                    break;
-            }
+    // this assumes the sub-objects have already been denormalized from their uuid
+    getValuesForField(field) {
+        var value = this.get('value');
+        var paths = field.split('.');
+        switch (paths[0]) {
+            case 'fileType':
+                return File.getFileTypeById(value[paths[0]]);
+            default:
+                return value[paths[0]];
+        }
+    },
 
-            return isQualAssociable;
-        },
+    // Private Methods
+    _formatTagsForSave: function(tagString) {
 
+        var tagArray = [];
 
-    }
-);
+        if (tagString) {
+            tagArray = $.map(tagString.split(','), $.trim);
+        }
+
+        return tagArray;
+    },
+});
 
 
 /*
@@ -1112,7 +1031,7 @@ function(
                 if (App.Routers.communityMode) {
                   jqxhr = this.downloadPublicFileByPostit(this.get('projectUuid'), this.get('fileUuid'));
                 } else {
-                  var url = EnvironmentConfig.agave.hostname
+                  var url = EnvironmentConfig.agave.internal
                           + '/files'
                           + '/v2'
                           + '/media'
@@ -1125,7 +1044,7 @@ function(
 
                   if (this.has('jobUuid') && this.get('jobUuid').length > 0) {
 
-                      url = EnvironmentConfig.agave.hostname
+                      url = EnvironmentConfig.agave.internal
                           + '/jobs'
                           + '/v2'
                           + '/' + this.get('jobUuid')

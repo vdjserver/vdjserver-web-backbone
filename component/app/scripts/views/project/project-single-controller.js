@@ -39,6 +39,7 @@ import { RepertoireCollection, SubjectCollection, SampleCollection, DataProcessi
 import { FilesCollection, ProjectFilesCollection } from 'Scripts/collections/agave-files';
 import { ProjectJobs } from 'Scripts/collections/agave-jobs';
 import Permissions from 'Scripts/collections/agave-permissions';
+import Permission from 'Scripts/models/agave-permission';
 import TenantUsers from 'Scripts/collections/agave-tenant-users';
 
 // main subviews
@@ -520,15 +521,14 @@ SingleProjectController.prototype = {
         var userList = new Permissions(null, {uuid: that.model.get('uuid')});
         var allUsers = new TenantUsers();
 
-        // TODO: this design will need to be changed to support multiple identity providers
-        return userList.fetch()
-            .then(function() {
-                // remove service account from list
-                userList.remove(EnvironmentConfig.agave.serviceAccountUsername);
+        var perms = this.model.get('permission');
+        for (let i = 0; i < perms.length; ++i) {
+            var p = new Permission(perms[i]);
+            userList.add(p);
+        }
 
-                // TODO: fetch all the users
-                return allUsers.fetch();
-            })
+        // TODO: this design will need to be changed to support multiple identity providers
+        return allUsers.fetch()
             .then(function() {
                 // now propagate loaded data to project
                 that.projectUserList = userList;

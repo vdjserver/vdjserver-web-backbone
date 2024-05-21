@@ -684,6 +684,65 @@ define([
                         that.studyMetadata = JSON.parse(tmpFileData);
                     } catch (error) {
                         // TODO
+                        console.log(error);
+                    }
+                })
+                .then(function() {
+                    var smFile = that.collection.getAIRRDataFile();
+                    if (smFile) return smFile.downloadFileToCache();
+                    else return null;
+                })
+                .then(function(tmpFileData) {
+                    if (!tmpFileData) return;
+                    try {
+                        that.AIRRData = JSON.parse(tmpFileData);
+                        console.log(that.AIRRData);
+                    } catch (error) {
+                        // TODO
+                        console.log(error);
+                    }
+                })
+                .then(function() {
+                    var smFile = that.collection.getGermlineDatabaseFile();
+                    if (smFile) return smFile.downloadFileToCache();
+                    else return null;
+                })
+                .then(function(tmpFileData) {
+                    if (!tmpFileData) return;
+                    try {
+                        that.GermlineDB = JSON.parse(tmpFileData);
+                        console.log(that.GermlineDB);
+
+                        // TODO: this should be put in airr-js but hacking for now
+
+                        // some useful functions
+                        that.GermlineDB.getGene = function(allele_description) {
+                            return allele_description['locus'] + allele_description['sequence_type'] + allele_description['gene_designation'];
+                        };
+                        that.GermlineDB.getSubgroup = function(allele_description) {
+                            if (allele_description['subgroup_designation'])
+                                return allele_description['locus'] + allele_description['sequence_type'] + allele_description['subgroup_designation'];
+                            else
+                                return allele_description['locus'] + allele_description['sequence_type'] + allele_description['gene_designation'];
+                        };
+
+                        // create some auxiliary data structures to make lookups easier
+                        that.GermlineDB['germline_sets'] = {}
+                        that.GermlineDB['allele_descriptions'] = {}
+                        that.GermlineDB['gene_to_subgroup'] = {}
+                        for (var i = 0; i < that.GermlineDB['GermlineSet'].length; ++i) {
+                            var germline_set_id = that.GermlineDB['GermlineSet'][i]['germline_set_id'];
+                            that.GermlineDB['germline_sets'][germline_set_id] = that.GermlineDB['GermlineSet'][i]
+                            for (var j = 0; j < that.GermlineDB['GermlineSet'][i]['allele_descriptions'].length; ++j) {
+                                var adesc = that.GermlineDB['GermlineSet'][i]['allele_descriptions'][j];
+                                that.GermlineDB['allele_descriptions'][adesc['label']] = adesc;
+                                that.GermlineDB['gene_to_subgroup'][that.GermlineDB.getGene(adesc)] = that.GermlineDB.getSubgroup(adesc);
+                            }
+                        }
+
+                    } catch (error) {
+                        // TODO
+                        console.log(error);
                     }
                 })
                 .done(function() {
@@ -1348,6 +1407,7 @@ define([
 
             // access data from superview instead of reloading
             this.selectAnalyses = parameters.selectAnalyses;
+            this.germlineDB = this.selectAnalyses.GermlineDB;
 
             this.chartHeight = 360;
             this.isValid = false;
@@ -1358,6 +1418,7 @@ define([
 
             // should have study metadata
             var sm = this.selectAnalyses.studyMetadata;
+            var airr_meta = this.selectAnalyses.AIRRData;
 
             this.fileList = [];
             this.sampleList = [];
@@ -1374,17 +1435,30 @@ define([
                 if (pm.groups[group]['diversity_curve']) diversityCurve = true;
                 if (pm.groups[group]['selection_pressure']) selectionPressure = true;
 
-                if (pm.groups[group]['type'] == 'file') {
+                if (airr_meta) {
                     var name = null;
-                    if (sm) {
-                        for (var i = 0; i < pm.groups[group]['files'].length; ++i) {
-                            var key = pm.groups[group]['files'][i];
-                            var fileKey = pm['files'][key]['vdjml']['value'];
-                            name = sm['fileMetadata'][fileKey]['value']['name'];
+                    for (var i = 0; i < airr_meta['Repertoire'].length; ++i) {
+                        //var rep_id = airr_meta['Repertoire'][i]['repertoire_id'];
+                        var rep_id = airr_meta['Repertoire'][i]['repertoire_id'].replace(/\./g, '_');
+                        if (group == rep_id) {
+                            name = airr_meta['Repertoire'][i]['repertoire_id'];
+                            break;
                         }
                     }
-                    if (!name) name = group;
-                    this.fileList.push({ id: group, name: name});
+                    if (name) this.sampleList.push({ id: group, name: name});
+                } else {
+                    if (pm.groups[group]['type'] == 'file') {
+                        var name = null;
+                        if (sm) {
+                            for (var i = 0; i < pm.groups[group]['files'].length; ++i) {
+                                var key = pm.groups[group]['files'][i];
+                                var fileKey = pm['files'][key]['vdjml']['value'];
+                                name = sm['fileMetadata'][fileKey]['value']['name'];
+                            }
+                        }
+                        if (!name) name = group;
+                        this.fileList.push({ id: group, name: name});
+                    }
                 }
                 if (pm.groups[group]['type'] == 'sample') {
                     var name = null;
@@ -1534,7 +1608,7 @@ define([
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.jobProcessMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.jobProcessMetadata, that.selectAnalyses.GermlineDB, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1565,7 +1639,7 @@ define([
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.jobProcessMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.jobProcessMetadata, that.selectAnalyses.GermlineDB, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1596,7 +1670,7 @@ define([
                                     .then(function() {
                                         var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
                                         chart.hideLoading();
-                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.jobProcessMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                                        return chartId['chart'] = chartView.generateChart(that.selectAnalyses.jobProcessMetadata, that.selectAnalyses.GermlineDB, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
                                     })
                                 }
                             }
@@ -1740,7 +1814,7 @@ define([
                 var fileHandle;
                 var chartGroups = [].concat(chartId['files'], chartId['samples'], chartId['sampleGroups']);
 
-                chartId['chart'] = chartId['view'].generateChart(that.selectAnalyses.jobProcessMetadata, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
+                chartId['chart'] = chartId['view'].generateChart(that.selectAnalyses.jobProcessMetadata, that.selectAnalyses.GermlineDB, chartGroups, that.chartGroupNames, chartId['cachedGroups'], classSelector);
 
                 // Scroll down to chart
                 $('html, body').animate({
@@ -2535,7 +2609,7 @@ define([
             for (var i = 0; i < chartId['samples'].length; ++i) {
                 var g = chartId['samples'][i];
                 var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['counts']['value'];
+                if (group) filenames[g] = files[group['files']]['igblast_makedb_allele_clone-v_call']['value'];
             }
 
             for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
@@ -2547,7 +2621,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, germlineDB, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
@@ -2557,10 +2631,11 @@ define([
             var categoryOrder = [ 'IGHV', 'IGHD', 'IGHJ', 'IGKV', 'IGKJ', 'IGLV', 'IGLJ',
                                   'TRBV', 'TRBD', 'TRBJ', 'TRAV', 'TRAJ', 'TRGV', 'TRGJ', 'TRDV', 'TRDD', 'TRDJ'];
 
-            for (var i = 0; i < chartGroups.length; ++i) {
-                var group = chartGroups[i];
+            for (var g = 0; g < chartGroups.length; ++g) {
+                var group = chartGroups[g];
                 var text = cachedGroups[group];
-                var distribution = JSON.parse(text);
+                var geneUsageData = d3.tsv.parse(text);
+//                var distribution = JSON.parse(text);
                 var groupType = processMetadata.groups[group]['type'];
 
                 var groupName = group;
@@ -2574,7 +2649,8 @@ define([
 
                 // build series
                 var series = {
-                  id: group + '.' + distribution.label,
+//                  id: group + '.' + distribution.label,
+                  id: group,
                   name: groupName,
                   data: new Array()
                 };
@@ -2582,16 +2658,17 @@ define([
                 // we want the categories in a specific order
                 for (var cidx = 0; cidx < categoryOrder.length; ++cidx) {
                     var category = categoryOrder[cidx];
-                    for (var idx = 0; idx < distribution.children.length; ++idx) {
-                        var gene = distribution.children[idx];
-                        if (gene.label == category) {
+                    for (var j = 0; j < geneUsageData.length; j++) {
+                        if (geneUsageData[j]['level'] != 'subgroup') continue;
+                        if (geneUsageData[j]['mode'] != 'proportion') continue;
+                        if (geneUsageData[j]['productive'] != 'TRUE') continue;
+                        if (geneUsageData[j]['gene'].search(category) >= 0) {
                             series.data.push({
                               id: 'parent',
-                              name: gene.label,
-                              y: gene.absolute,
-                              drilldown: group + '.' + gene.label
+                              name: geneUsageData[j]['gene'],
+                              y: parseFloat(geneUsageData[j]['duplicate_count']),
+                              drilldown: group + '.' + geneUsageData[j]['gene']
                             });
-                            break;
                         }
                     }
                 }
@@ -2616,7 +2693,57 @@ define([
                 }
 
                 // drilldown level 1
-                _.each(distribution.children, function(gene){
+                for (var i = 0; i < series.data.length; ++i) {
+                    var data = [];
+                    var obj = series.data[i];
+                    for (var j = 0; j < geneUsageData.length; j++) {
+                        if (geneUsageData[j]['level'] != 'gene') continue;
+                        if (geneUsageData[j]['mode'] != 'proportion') continue;
+                        if (geneUsageData[j]['productive'] != 'TRUE') continue;
+                        if (germlineDB['gene_to_subgroup'][geneUsageData[j]['gene']] == obj['name']) {
+                            data.push({
+                              id: 'child',
+                              name: geneUsageData[j]['gene'],
+                              y: parseFloat(geneUsageData[j]['duplicate_count']),
+                              drilldown: group + '.' + geneUsageData[j]['gene']
+                            });
+                        }
+                    }
+                    drilldown.series.push({
+                        id: group + '.' + obj.name,
+                        name: groupName,
+                        data: data
+                    });
+                }
+
+                // drilldown level 2
+                for (var i = 0; i < series.data.length; ++i) {
+                    for (var k in germlineDB['gene_to_subgroup']) {
+                        var obj = germlineDB['gene_to_subgroup'][k];
+                        if (obj != series.data[i].name) continue;
+                        var data = [];
+                        for (var j = 0; j < geneUsageData.length; j++) {
+                            if (geneUsageData[j]['level'] != 'allele') continue;
+                            if (geneUsageData[j]['mode'] != 'proportion') continue;
+                            if (geneUsageData[j]['productive'] != 'TRUE') continue;
+                            if (germlineDB.getGene(germlineDB['allele_descriptions'][geneUsageData[j]['gene']]) == k) {
+                                data.push({
+                                  id: 'grandchild',
+                                  name: geneUsageData[j]['gene'],
+                                  y: parseFloat(geneUsageData[j]['duplicate_count']),
+                                  drilldown: group + '.' + geneUsageData[j]['gene']
+                                });
+                            }
+                        }
+                        drilldown.series.push({
+                            id: group + '.' + k,
+                            name: groupName,
+                            data: data
+                        });
+                    }
+                }
+
+/*                _.each(distribution.children, function(gene){
                   var data = [];
                   var errorData = [];
                   _.each(gene.children, function(geneChild){
@@ -2647,12 +2774,12 @@ define([
                       };
                       //myData.push(errorSeries);
 
-                      /*drilldown.series.push({
-                        linkedTo: group + '.' + gene.label,
-                        type: 'errorbar',
-                        name: groupName + ' error',
-                        data: errorData
-                      }); */
+                      //drilldown.series.push({
+                        //linkedTo: group + '.' + gene.label,
+                        //type: 'errorbar',
+                        //name: groupName + ' error',
+                        //data: errorData
+                      //});
                   }
                 });
 
@@ -2674,7 +2801,7 @@ define([
                       data: data
                     });
                   });
-                });
+                }); */
             }
 
             Highcharts.setOptions({
@@ -2794,7 +2921,7 @@ define([
             for (var i = 0; i < chartId['samples'].length; ++i) {
                 var g = chartId['samples'][i];
                 var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['counts']['value'];
+                if (group) filenames[g] = files[group['files']]['igblast_makedb_allele_clone-v_call']['value'];
             }
 
             for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
@@ -2806,7 +2933,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, germlineDB, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
@@ -2816,10 +2943,11 @@ define([
             var categoryOrder = [ 'IGHV', 'IGHD', 'IGHJ', 'IGKV', 'IGKJ', 'IGLV', 'IGLJ',
                                   'TRBV', 'TRBD', 'TRBJ', 'TRAV', 'TRAJ', 'TRGV', 'TRGJ', 'TRDV', 'TRDD', 'TRDJ'];
 
-            for (var i = 0; i < chartGroups.length; ++i) {
-                var group = chartGroups[i];
+            for (var g = 0; g < chartGroups.length; ++g) {
+                var group = chartGroups[g];
                 var text = cachedGroups[group];
-                var distribution = JSON.parse(text);
+//                var distribution = JSON.parse(text);
+                var geneUsageData = d3.tsv.parse(text);
 
                 var groupName = group;
                 for (var j = 0; j < chartGroupNames.length; ++j) {
@@ -2832,7 +2960,8 @@ define([
 
                 // build series
                 var series = {
-                  id: group + '.' + distribution.label,
+//                  id: group + '.' + distribution.label,
+                  id: group,
                   name: groupName,
                   data: new Array()
                 };
@@ -2840,22 +2969,75 @@ define([
                 // we want the categories in a specific order
                 for (var cidx = 0; cidx < categoryOrder.length; ++cidx) {
                     var category = categoryOrder[cidx];
-                    for (var idx = 0; idx < distribution.children.length; ++idx) {
-                        var gene = distribution.children[idx];
-                        if (gene.label == category) {
+                    for (var j = 0; j < geneUsageData.length; j++) {
+                        if (geneUsageData[j]['level'] != 'subgroup') continue;
+                        if (geneUsageData[j]['mode'] != 'proportion') continue;
+                        if (geneUsageData[j]['productive'] != 'TRUE') continue;
+                        if (geneUsageData[j]['gene'].search(category) >= 0) {
                             series.data.push({
                               id: 'parent',
-                              name: gene.label,
-                              y: gene.absolute > 0 ? 100 : 0.0,
-                              drilldown: group + '.' + gene.label
+                              name: geneUsageData[j]['gene'],
+                              y: parseFloat(geneUsageData[j]['duplicate_frequency']),
+                              drilldown: group + '.' + geneUsageData[j]['gene']
                             });
-                            break;
                         }
                     }
                 }
 
+                myData.push(series);
+
                 // drilldown level 1
-                _.each(distribution.children, function(gene){
+                for (var i = 0; i < series.data.length; ++i) {
+                    var data = [];
+                    var obj = series.data[i];
+                    for (var j = 0; j < geneUsageData.length; j++) {
+                        if (geneUsageData[j]['level'] != 'gene') continue;
+                        if (geneUsageData[j]['mode'] != 'proportion') continue;
+                        if (geneUsageData[j]['productive'] != 'TRUE') continue;
+                        if (germlineDB['gene_to_subgroup'][geneUsageData[j]['gene']] == obj['name']) {
+                            data.push({
+                              id: 'child',
+                              name: geneUsageData[j]['gene'],
+                              y: parseFloat(geneUsageData[j]['duplicate_frequency']),
+                              drilldown: group + '.' + geneUsageData[j]['gene']
+                            });
+                        }
+                    }
+                    drilldown.series.push({
+                        id: group + '.' + obj.name,
+                        name: groupName,
+                        data: data
+                    });
+                }
+
+                // drilldown level 2
+                for (var i = 0; i < series.data.length; ++i) {
+                    for (var k in germlineDB['gene_to_subgroup']) {
+                        var obj = germlineDB['gene_to_subgroup'][k];
+                        if (obj != series.data[i].name) continue;
+                        var data = [];
+                        for (var j = 0; j < geneUsageData.length; j++) {
+                            if (geneUsageData[j]['level'] != 'allele') continue;
+                            if (geneUsageData[j]['mode'] != 'proportion') continue;
+                            if (geneUsageData[j]['productive'] != 'TRUE') continue;
+                            if (germlineDB.getGene(germlineDB['allele_descriptions'][geneUsageData[j]['gene']]) == k) {
+                                data.push({
+                                  id: 'grandchild',
+                                  name: geneUsageData[j]['gene'],
+                                  y: parseFloat(geneUsageData[j]['duplicate_frequency']),
+                                  drilldown: group + '.' + geneUsageData[j]['gene']
+                                });
+                            }
+                        }
+                        drilldown.series.push({
+                            id: group + '.' + k,
+                            name: groupName,
+                            data: data
+                        });
+                    }
+                }
+
+/*                _.each(distribution.children, function(gene){
                   var data = [];
                   _.each(gene.children, function(geneChild){
                     data.push({
@@ -2891,9 +3073,8 @@ define([
                       data: data
                     });
                   });
-                });
+                }); */
 
-                myData.push(series);
             }
 
             var chart = new Highcharts.Chart({
@@ -2991,7 +3172,7 @@ define([
             for (var i = 0; i < chartId['samples'].length; ++i) {
                 var g = chartId['samples'][i];
                 var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['aa']['value'];
+                if (group) filenames[g] = files[group['files']]['igblast_makedb_allele_clone-junction_aa_length']['value'];
             }
 
             for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
@@ -3003,7 +3184,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, germlineDB, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
@@ -3125,7 +3306,7 @@ define([
             for (var i = 0; i < chartId['samples'].length; ++i) {
                 var g = chartId['samples'][i];
                 var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['nucleotide']['value'];
+                if (group) filenames[g] = files[group['files']]['igblast_makedb_allele_clone-junction_nucleotide_length']['value'];
             }
 
             for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
@@ -3137,7 +3318,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, germlineDB, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
@@ -3259,7 +3440,7 @@ define([
             for (var i = 0; i < chartId['samples'].length; ++i) {
                 var g = chartId['samples'][i];
                 var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['clonal_abundance']['value'];
+                if (group) filenames[g] = files[group['files']]['igblast_makedb_allele_clone-clonal_abundance']['value'];
             }
 
             for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
@@ -3277,7 +3458,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, germlineDB, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
@@ -3306,8 +3487,8 @@ define([
                 };
 
                 for (var j = 0; j < data.length; j++) {
-                    var clone = data[j]['RANK'];
-                    var dataPoint = parseFloat(data[j]['P']) * 100.0;
+                    var clone = data[j]['rank'];
+                    var dataPoint = parseFloat(data[j]['p']) * 100.0;
                     if (dataPoint < 0.01) continue;
 
                     series.data.push([parseInt(clone), dataPoint]);
@@ -3326,11 +3507,11 @@ define([
                 };
 
                 for (var j = 0; j < data.length; j++) {
-                    var clone = data[j]['RANK'];
-                    var dataPoint = parseFloat(data[j]['P']) * 100.0;
+                    var clone = data[j]['rank'];
+                    var dataPoint = parseFloat(data[j]['p']) * 100.0;
                     if (dataPoint < 0.01) continue;
-                    var lower = parseFloat(data[j]['LOWER']) * 100.0;
-                    var upper = parseFloat(data[j]['UPPER']) * 100.0;
+                    var lower = parseFloat(data[j]['lower']) * 100.0;
+                    var upper = parseFloat(data[j]['upper']) * 100.0;
 
                     series.data.push([parseInt(clone), lower, upper]);
                 }
@@ -3416,7 +3597,7 @@ define([
             for (var i = 0; i < chartId['samples'].length; ++i) {
                 var g = chartId['samples'][i];
                 var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['clonal_abundance']['value'];
+                if (group) filenames[g] = files[group['files']]['igblast_makedb_allele_clone-clonal_abundance']['value'];
             }
 
             for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
@@ -3434,7 +3615,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, germlineDB, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
@@ -3464,8 +3645,8 @@ define([
 
                 var cumulative = 0.0;
                 for (var j = 0; j < data.length; j++) {
-                    var clone = data[j]['RANK'];
-                    var dataPoint = parseFloat(data[j]['P']) * 100.0;
+                    var clone = data[j]['rank'];
+                    var dataPoint = parseFloat(data[j]['p']) * 100.0;
                     if (dataPoint < 0.01) continue;
                     cumulative += dataPoint;
 
@@ -3486,14 +3667,14 @@ define([
 
                 var cumulative = 0.0;
                 for (var j = 0; j < data.length; j++) {
-                    var clone = data[j]['RANK'];
-                    var dataPoint = parseFloat(data[j]['P']) * 100.0;
+                    var clone = data[j]['rank'];
+                    var dataPoint = parseFloat(data[j]['p']) * 100.0;
                     if (dataPoint < 0.01) continue;
                     cumulative += dataPoint;
 
-                    var lower = parseFloat(data[j]['LOWER']) * 100.0;
+                    var lower = parseFloat(data[j]['lower']) * 100.0;
                     lower = lower - dataPoint + cumulative;
-                    var upper = parseFloat(data[j]['UPPER']) * 100.0;
+                    var upper = parseFloat(data[j]['upper']) * 100.0;
                     upper = upper - dataPoint + cumulative;
 
                     series.data.push([parseInt(clone), lower, upper]);
@@ -3580,7 +3761,7 @@ define([
             for (var i = 0; i < chartId['samples'].length; ++i) {
                 var g = chartId['samples'][i];
                 var group = groups[g][chartId.type];
-                if (group) filenames[g] = files[group['files']]['diversity_curve']['value'];
+                if (group) filenames[g] = files[group['files']]['igblast_makedb_allele_clone-diversity_curve']['value'];
             }
 
             for (var i = 0; i < chartId['sampleGroups'].length; ++i) {
@@ -3598,7 +3779,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, germlineDB, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];
@@ -3627,9 +3808,9 @@ define([
                 };
 
                 for (var j = 0; j < data.length; j++) {
-                    var x = parseFloat(data[j]['Q']);
+                    var x = parseFloat(data[j]['q']);
                     if (x == 0) x = 0.01;
-                    var y = parseFloat(data[j]['D']);
+                    var y = parseFloat(data[j]['d']);
 
                     series.data.push([x, y]);
                 }
@@ -3647,11 +3828,11 @@ define([
                 };
 
                 for (var j = 0; j < data.length; j++) {
-                    var x = parseFloat(data[j]['Q']);
+                    var x = parseFloat(data[j]['q']);
                     if (x == 0) x = 0.01;
 
-                    var lower = parseFloat(data[j]['D_LOWER']);
-                    var upper = parseFloat(data[j]['D_UPPER']);
+                    var lower = parseFloat(data[j]['d_lower']);
+                    var upper = parseFloat(data[j]['d_upper']);
 
                     series.data.push([x, lower, upper]);
                 }
@@ -3749,7 +3930,7 @@ define([
             return filenames;
         },
 
-        generateChart: function(jobProcessMetadata, chartGroups, chartGroupNames, cachedGroups, classSelector) {
+        generateChart: function(jobProcessMetadata, germlineDB, chartGroups, chartGroupNames, cachedGroups, classSelector) {
 
             var processMetadata = jobProcessMetadata.get('value');
             var myData = [];

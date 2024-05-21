@@ -61,21 +61,10 @@ export var Subject = Agave.MetadataModel.extend({
     initialize: function(parameters) {
         Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
 
-        if (parameters && parameters.projectUuid) {
-            this.projectUuid = parameters.projectUuid;
-            this.set('associationIds', [ parameters.projectUuid ]);
-        }
-
         if (! subjectSchema) subjectSchema = new vdj_schema.SchemaDefinition('Subject');
         if (! diagnosisSchema) diagnosisSchema = new airr.SchemaDefinition('Diagnosis');
         this.schema = subjectSchema;
         this.diagnosis_schema = diagnosisSchema;
-    },
-    url: function() {
-        return '/meta/v2/data/' + this.get('uuid');
-    },
-    sync: function(method, model, options) {
-        return Agave.PutOverrideSync(method, this, options);
     },
 
     updateField: function(name, new_value) {
@@ -305,20 +294,8 @@ export var SampleProcessing = Agave.MetadataModel.extend({
     initialize: function(parameters) {
         Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
 
-        if (parameters && parameters.projectUuid) {
-            this.projectUuid = parameters.projectUuid;
-            this.set('associationIds', [ parameters.projectUuid ]);
-        }
-
         if (! sampleProcessingSchema) sampleProcessingSchema = new vdj_schema.SchemaDefinition('SampleProcessing');
         this.schema = sampleProcessingSchema;
-    },
-
-    url: function() {
-        return '/meta/v2/data/' + this.get('uuid');
-    },
-    sync: function(method, model, options) {
-        return Agave.PutOverrideSync(method, this, options);
     },
 
     updatePCR: function(new_value) {
@@ -443,19 +420,8 @@ export var DataProcessing = Agave.MetadataModel.extend({
     initialize: function(parameters) {
         Agave.MetadataModel.prototype.initialize.apply(this, [parameters]);
 
-        if (parameters && parameters.projectUuid) {
-            this.projectUuid = parameters.projectUuid;
-            this.set('associationIds', [ parameters.projectUuid ]);
-        }
-
         if (! dataProcessingSchema) dataProcessingSchema = new vdj_schema.SchemaDefinition('DataProcessing');
         this.schema = dataProcessingSchema;
-    },
-    url: function() {
-        return '/meta/v2/data/' + this.get('uuid');
-    },
-    sync: function(method, model, options) {
-        return Agave.PutOverrideSync(method, this, options);
     },
 });
 
@@ -514,12 +480,6 @@ export var Repertoire = Agave.MetadataModel.extend({
         // this is the normal-form version
         if (! repertoireSchema) repertoireSchema = new vdj_schema.SchemaDefinition('Repertoire');
         this.schema = repertoireSchema;
-    },
-    url: function() {
-        return '/meta/v2/data/' + this.get('uuid');
-    },
-    sync: function(method, model, options) {
-        return Agave.PutOverrideSync(method, this, options);
     },
 
     validate: function(attrs, options) {

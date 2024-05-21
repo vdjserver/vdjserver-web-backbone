@@ -11,7 +11,7 @@
     </div>
     <div class="col-md-4">
         <div class="progress">
-            <div class="progress-bar progress-striped active {{#if hasError}}bg-danger{{/if}}" style="width: {{pctComplete}}%" aria-valuenow="{{pctComplete}}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar progress-striped active {{#if hasError}}bg-danger{{/if}} {{#if isComplete}}bg-success{{/if}}" style="width: {{pctComplete}}%" aria-valuenow="{{pctComplete}}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
     </div>
     <div class="col-md-1">

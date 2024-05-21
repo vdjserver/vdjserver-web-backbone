@@ -42,17 +42,14 @@ export var RepertoireCollection = Agave.MetadataCollection.extend(
 
             this.sort_by = 'repertoire_name';
             this.comparator = this.collectionSortBy;
-
-            if (parameters && parameters.projectUuid) {
-                this.projectUuid = parameters.projectUuid;
-            }
         },
         url: function() {
-            return '/meta/v2/data?q='
+            return '/project/' + this.projectUuid + '/metadata/name/repertoire';
+/*            return '/meta/v2/data?q='
                    + encodeURIComponent('{"name":"repertoire","associationIds":"' + this.projectUuid + '"}')
                    + '&limit=' + this.limit
                    + '&offset=' + this.offset
-                   ;
+                   ; */
         },
 
         collectionSortBy(modela, modelb) {
@@ -199,17 +196,14 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
 
             this.sort_by = 'subjectid';
             this.comparator = this.collectionSortBy;
-
-            if (parameters && parameters.projectUuid) {
-                this.projectUuid = parameters.projectUuid;
-            }
         },
         url: function() {
-            return '/meta/v2/data?q='
+            return '/project/' + this.projectUuid + '/metadata/name/subject';
+/*            return '/meta/v2/data?q='
                    + encodeURIComponent('{"name":"subject","associationIds":"' + this.projectUuid + '"}')
                    + '&limit=' + this.limit
                    + '&offset=' + this.offset
-                   ;
+                   ; */
         },
 
         checkDuplicates() {
@@ -298,17 +292,14 @@ export var SampleCollection = Agave.MetadataCollection.extend(
         model: SampleProcessing,
         initialize: function(models, parameters) {
             Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
-
-            if (parameters && parameters.projectUuid) {
-                this.projectUuid = parameters.projectUuid;
-            }
         },
         url: function() {
-            return '/meta/v2/data?q='
+            return '/project/' + this.projectUuid + '/metadata/name/sample_processing';
+/*            return '/meta/v2/data?q='
                    + encodeURIComponent('{"name":"sample_processing","associationIds":"' + this.projectUuid + '"}')
                    + '&limit=' + this.limit
                    + '&offset=' + this.offset
-                   ;
+                   ; */
         },
         checkDuplicates() {
             var duplicates = this.clone();
@@ -335,17 +326,14 @@ export var DataProcessingCollection = Agave.MetadataCollection.extend({
     model: DataProcessing,
     initialize: function(models, parameters) {
         Agave.MetadataCollection.prototype.initialize.apply(this, [models, parameters]);
-
-        if (parameters && parameters.projectUuid) {
-            this.projectUuid = parameters.projectUuid;
-        }
     },
     url: function() {
-        return '/meta/v2/data?q='
+        return '/project/' + this.projectUuid + '/metadata/name/data_processing';
+/*        return '/meta/v2/data?q='
                + encodeURIComponent('{"name":"data_processing","associationIds":"' + this.projectUuid + '"}')
                + '&limit=' + this.limit
                + '&offset=' + this.offset
-               ;
+               ; */
     },
 });
 
