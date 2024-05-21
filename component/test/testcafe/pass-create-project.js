@@ -103,12 +103,28 @@ test('Create a Project and Check Backend Values', async t => {
 
   const uuid = url.split("/")[4];
   console.log("uuid: " + uuid);
-  var token = await tapisV2.getToken({username: config.username, password: config.password});
+  var token = await tapisIO.getToken({username: config.username, password: config.password});
   console.log(token);
 
-  var m = await tapisV2.getProjectMetadata(token.access_token, uuid);
-  console.log(m);
-  console.log(m["value"]["study_id"]);
+  if (config.tapis_version == 2)
+      var m = await tapisV2.getProjectMetadata(token.access_token, uuid);
+  else {
+    var requestSettings = {
+        url: config.url + 'api/v2/project/' + uuid + '/metadata/uuid/' + uuid,
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var m = await tapisV3.sendRequest(requestSettings);
+    console.log(JSON.stringify(m, null, 2));
+    await t.expect(m['status']).eql("success")
+        .expect(m['result'].length).eql(1);
+    m = m['result'][0];
+  }
+  //console.log(m["value"]["study_id"]);
 
   await t
     .expect(m["value"]["study_id"]).eql(studyId)

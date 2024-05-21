@@ -57,7 +57,7 @@ fixture('Project Subjects Page Test Cases')
   const cName = "Joe";
   const cEmail = "joe@email.com";
   const cAddr = Math.floor(Math.random()*100) + " N. Main St";
-  
+
   const sName = "Jim";
   const sEmail = "jim@email.com";
   const sAddr = "13 W. Main St";
@@ -77,7 +77,7 @@ fixture('Project Subjects Page Test Cases')
     .typeText('#grants', grants)
     .click('#'+keywords[0])
     .click('#'+keywords[1])
-    .click(studyTypeSelect) 
+    .click(studyTypeSelect)
     .click('a[name="NCIT:C16084"]')
     .typeText('#publications', pubs)
     .typeText('#lab_name', labName)
@@ -105,13 +105,30 @@ fixture('Project Subjects Page Test Cases')
 
   uuid = url.split("/")[4];
   console.log("uuid: " + uuid);
-  var token = await tapisV2.getToken({username: config.username, password: config.password});
+  var token = await tapisIO.getToken({username: config.username, password: config.password});
   console.log(token);
 
-  var m = await tapisV2.getProjectMetadata(token.access_token, uuid);
-  console.log(m);
-  console.log(m["value"]["study_id"]);
-  console.log(m["value"]["study_title"]);
+  if (config.tapis_version == 2)
+      var m = await tapisV2.getProjectMetadata(token.access_token, uuid);
+  else {
+    var requestSettings = {
+        url: config.url + 'api/v2/project/' + uuid + '/metadata/uuid/' + uuid,
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var m = await tapisV3.sendRequest(requestSettings);
+    console.log(JSON.stringify(m, null, 2));
+    await t.expect(m['status']).eql("success")
+        .expect(m['result'].length).eql(1);
+    m = m['result'][0];
+  }
+//  console.log(m);
+//  console.log(m["value"]["study_id"]);
+//  console.log(m["value"]["study_title"]);
 
   await t
     .expect(m["value"]["study_id"]).eql(studyId)
@@ -244,15 +261,33 @@ console.log("UUID: " + uuid);
 
   uuid = url.split("/")[4];
   console.log("uuid: " + uuid);
-  var token = await tapisV2.getToken({username: config.username, password: config.password});
+  var token = await tapisIO.getToken({username: config.username, password: config.password});
   console.log(token);
 
 //ADD COPY SUBJECT UUID TO THE HTML
-  var m = await tapisV2.getMetadataForType(token.access_token, uuid, 'subject');
+  if (config.tapis_version == 2)
+      var m = await tapisV2.getMetadataForType(token.access_token, uuid, 'subject');
+  else {
+    var requestSettings = {
+        url: config.url + 'api/v2/project/' + uuid + '/metadata/name/subject',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var m = await tapisV3.sendRequest(requestSettings);
+    console.log(JSON.stringify(m, null, 2));
+    await t.expect(m['status']).eql("success")
+        .expect(m['result'].length).eql(1);
+    m = m['result'];
+  }
+
   //var m = await tapisV2.getMetadata(uuid);
   //var m = await tapisV2.getProjectMetadata(token.access_token, uuid);
   //var m = await tapisV2.getAllProjectAssociatedMetadata(token.access_token, uuid);
-  console.log(m);
+//  console.log(m);
   console.log(m[0]["value"]);
   console.log(m[0]["value"]["diagnosis"][0]["disease_length"]);
 
@@ -273,6 +308,6 @@ console.log("UUID: " + uuid);
   const immunogen = 'Immunogen';
   const intervention = 'Intervention';
   const medicalHistory = 'Medical History';
- 
+
  });
 

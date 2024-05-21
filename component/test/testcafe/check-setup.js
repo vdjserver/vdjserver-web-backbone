@@ -48,7 +48,7 @@ test('Verify first user account', async t => {
     // check logout
 
     // check getting token
-    var token = await tapisV2.getToken({username: config.username, password: config.password});
+    var token = await tapisIO.getToken({username: config.username, password: config.password});
     console.log(token);
 
 });
