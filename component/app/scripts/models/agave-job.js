@@ -760,7 +760,7 @@ export var ProcessMetadata = Agave.MetadataModel.extend({
                     inputFiles['VDJMLFiles'] = this._getTranslatedFilePaths(VDJMLFileMetadatas);
                     inputFiles['SummaryFiles'] = this._getTranslatedFilePaths(SummaryFileMetadatas);
                     inputFiles['ChangeOFiles'] = this._getTranslatedFilePaths(ChangeOFileMetadatas);
-                } */
+                }
                 this.set('inputs', inputFiles);
 
                 parameters['JobSelected'] = formData['job-selected'];
