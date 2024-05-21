@@ -33,7 +33,7 @@ import moment from 'moment';
 export var ADC = { };
 
 ADC.Repositories = function() {
-    return EnvironmentConfig.adc;
+    return JSON.parse(JSON.stringify(EnvironmentConfig.adc));
 };
 
 // Extension of default Backbone.Model for ADC
