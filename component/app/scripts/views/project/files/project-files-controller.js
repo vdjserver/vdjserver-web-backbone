@@ -100,6 +100,13 @@ ProjectFilesController.prototype = {
         this.pairedList.add(m);
     },
 
+    deleteFile: function(e, model) {
+        e.preventDefault();
+        this.fileList.remove(model);
+        this.pairedList.remove(model);
+        this.flagFileEdits();
+    },
+
     applyFilter(filters) {
         if (filters) {
             this.filteredFiles = this.pairedList.filterCollection(filters);
@@ -131,7 +138,8 @@ ProjectFilesController.prototype = {
         // we keep flag just for file changes
         this.hasEdits = true;
         // update header
-        this.mainView.updateHeader();
+        // we handle this a bit differently because we don't have an edit mode
+        this.mainView.enableChangesButtons(this.hasEdits);
     },
 
     hasFileEdits: function() {
@@ -170,13 +178,17 @@ ProjectFilesController.prototype = {
             var promises = [];
 
             // deletions
-            /* file deletes are special
             deletedModels.map(function(uuid) {
-                var m = context.originalFileList.get(uuid);
-                promises[promises.length] = function() {
-                    return m.destroy();
-                }
-            }); */
+                var m = originalFileList.get(uuid);
+                var deleteChanges = async function(uuid, m) {
+                    var msg = null;
+                    await m.destroy().fail(function(error) { msg = error; });
+                    if (msg) return Promise.reject(msg);
+
+                    return Promise.resolve();
+                };
+                promises.push(deleteChanges(uuid, m));
+            });
 
             // updates and new
             fileList.map(function(uuid) {
@@ -329,6 +341,36 @@ ProjectFilesController.prototype = {
                 // only the read in the pair list
                 this.pairedList.remove(qm);
             }
+        }
+        // update display
+        this.flagFileEdits();
+        this.showProjectFilesList();
+    },
+
+    unpairFile: function(pair) {
+        if (!pair) return;
+        let m = this.fileList.get(pair);
+        if (!m) return;
+        let mv = m.get('value');
+        if (mv['pairedReadMetadataUuid']) {
+            let m2 = this.fileList.get(mv['pairedReadMetadataUuid']);
+            if (!m2) return;
+            let mv2 = m2.get('value');
+            mv['pairedReadMetadataUuid'] = null;
+            m.set('value', mv);
+            mv2['pairedReadMetadataUuid'] = null;
+            m2.set('value', mv2);
+            this.pairedList.add(m2);
+        }
+        if (mv['qualityScoreMetadataUuid']) {
+            let m2 = this.fileList.get(mv['qualityScoreMetadataUuid']);
+            if (!m2) return;
+            let mv2 = m2.get('value');
+            mv['qualityScoreMetadataUuid'] = null;
+            m.set('value', mv);
+            mv2['readMetadataUuid'] = null;
+            m2.set('value', mv2);
+            this.pairedList.add(m2);
         }
         // update display
         this.flagFileEdits();
