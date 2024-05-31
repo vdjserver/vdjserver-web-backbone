@@ -34,10 +34,12 @@ var tapisV3 = require('vdj-tapis-js/tapisV3');
 var tapisIO = null;
 var projectUuid = "";
 //var projectUuid = "2070357305688068591-242ac118-0001-012";
+var projectUuid = "5139818080333393425-242ac118-0001-012";
 var projectUuidUrl = "project/";
 projectUuidUrl += projectUuid;
 var subjectUuid = "";
 //var subjectUuid = "7817106628923289105-242ac118-0001-012";
+var subjectUuid = "2867479733038673425-242ac118-0001-012";
 if (config.tapis_version == 2) tapisIO = tapisV2;
 if (config.tapis_version == 3) tapisIO = tapisV3;
 
@@ -96,7 +98,9 @@ var subjectId = 'Subject ID 970299';
   const intervention2 = 'Intervention2';
   const medicalHistory2 = 'Medical History2';
 
- test('Create a Project and Check Back-end Values', async t => {
+  const diseaseLength3 = 'Disease Length3';
+
+ /*test('Create a Project and Check Back-end Values', async t => {
   const studyId = "Test Study ID";
   //append a random number less than 1,000,000 to studyTitle
   const studyTitle = "Test Study Title_" + Math.floor(Math.random()*1000000);
@@ -307,9 +311,76 @@ console.log("Subject UUID: " + subjectUuid);
     .expect(m["value"]["diagnosis"][0]["immunogen"]).eql(immunogen2)
     .expect(m["value"]["diagnosis"][0]["intervention"]).eql(intervention2)
     .expect(m["value"]["diagnosis"][0]["medical_history"]).eql(medicalHistory2)
+ });*/
+
+ test('Duplicate a Diagnosis for the previously created Subject and check against the Back-end', async t => {
+  await login(t,config.username,config.password,'CLICK','#home-login');
+
+  await new Promise(r => setTimeout(r, 5000));
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await new Promise(r => setTimeout(r, 10000));
+
+  await t
+    .scrollIntoView(Selector('#subjects-tab'))
+    .click(Selector('#subjects-tab', {timeout:config.timeout}));
+  await t
+    .click(Selector('#project-subject-diagnosis-dropdown', {timeout:config.timeout}))
+    .click(Selector('#project-subject-duplicate-diagnosis', {timeout:config.timeout}).withAttribute('name','duplicate_0'))
+    .typeText('#disease_length_0',diseaseLength3,{replace: true})
+
+  await t.click(Selector('#project-subjects-save-changes', {timeout:config.timeout}));
+
+  await new Promise(r => setTimeout(r, 5000));
+
+  var token = await tapisV2.getToken({username: config.username, password: config.password});
+
+  var m = await tapisV2.getProjectMetadata(token.access_token, subjectUuid);
+
+  //check Diagnosis values
+  await t
+    //.expect(m[0]["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()).contains(diseaseDiagnosis.toLowerCase())
+    .expect(m["value"]["diagnosis"][1]["disease_diagnosis"].label.toLowerCase()).eql(m["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase())
+    .expect(m["value"]["diagnosis"][1]["disease_length"]).notEql(m["value"]["diagnosis"][0]["disease_length"])
+    .expect(m["value"]["diagnosis"][0]["disease_length"]).eql(diseaseLength3)
+    .expect(m["value"]["diagnosis"][1]["disease_stage"]).eql(m["value"]["diagnosis"][0]["disease_stage"])
+    .expect(m["value"]["diagnosis"][1]["study_group_description"]).eql(m["value"]["diagnosis"][0]["study_group_description"])
+    .expect(m["value"]["diagnosis"][1]["prior_therapies"]).eql(m["value"]["diagnosis"][0]["prior_therapies"])
+    .expect(m["value"]["diagnosis"][1]["immunogen"]).eql(m["value"]["diagnosis"][0]["immunogen"])
+    .expect(m["value"]["diagnosis"][1]["intervention"]).eql(m["value"]["diagnosis"][0]["intervention"])
+    .expect(m["value"]["diagnosis"][1]["medical_history"]).eql(m["value"]["diagnosis"][0]["medical_history"])
  });
 
-test('View existing Subject in Summary and Details view mode and confirm the correct values are shown', async t => {
+ test('Delete the newest Diagnosis for the previously created Subject and check against the Back-end', async t => {
+  await login(t,config.username,config.password,'CLICK','#home-login');
+
+  await new Promise(r => setTimeout(r, 5000));
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await new Promise(r => setTimeout(r, 10000));
+
+  await t
+    .scrollIntoView(Selector('#subjects-tab'))
+    .click(Selector('#subjects-tab', {timeout:config.timeout}));
+
+  await t
+    .click(Selector('#project-subject-diagnosis-dropdown', {timeout:config.timeout}))
+    .click(Selector('#project-subject-delete-diagnosis', {timeout:config.timeout}).withAttribute('name','delete_0'))
+
+  await t.click(Selector('#project-subjects-save-changes', {timeout:config.timeout}));
+
+  await new Promise(r => setTimeout(r, 5000));
+
+  var token = await tapisV2.getToken({username: config.username, password: config.password});
+
+  var m = await tapisV2.getProjectMetadata(token.access_token, subjectUuid);
+
+  //check Diagnosis values
+  await t
+    .expect(m["value"]["diagnosis"].length).eql(2)
+ });
+
+ test('View existing Subject in Summary and Details view mode and confirm the correct values are shown', async t => {
   //Summary view selectors
   const subjectIdText = Selector('div').withText(subjectId).exists;
   const sexSpeciesText = Selector('div').withText(sex + '/' + species).exists;
@@ -382,6 +453,77 @@ test('View existing Subject in Summary and Details view mode and confirm the cor
     .expect(ethnicityText.value).eql(ethnicity)
     //.expect(linkedSubjectSelect.value).match(linkSubject)
     .expect(linkTypeSelect.value).eql(linkType)
+ });
+
+test('Duplicate the newest Subject and add a unique Subject ID, for the previously created Project', async t => {
+  await login(t,config.username,config.password,'CLICK','#home-login');
+
+  await new Promise(r => setTimeout(r, 5000));
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await new Promise(r => setTimeout(r, 10000));
+
+  await t
+    .scrollIntoView(Selector('#subjects-tab'))
+    .click(Selector('#subjects-tab', {timeout:config.timeout}));
+
+  await t
+    .click(Selector('#project-subject-dropdown', {timeout:config.timeout}).withAttribute('name',subjectUuid))
+    .click(Selector('#project-subject-duplicate', {timeout:config.timeout}).withAttribute('name',subjectUuid))
+    .typeText('input[name="subject_id"]', subjectId+'-2', {replace: true})
+
+  await t.click(Selector('#project-subjects-save-changes', {timeout:config.timeout}));
+
+  await new Promise(r => setTimeout(r, 5000));
+
+  var token = await tapisV2.getToken({username: config.username, password: config.password});
+
+  var m = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'subject');
+  var subjectUuid2 = m[0]["uuid"];
+  m = await tapisV2.getProjectMetadata(token.access_token, subjectUuid);
+  var m2 = await tapisV2.getProjectMetadata(token.access_token, subjectUuid2);
+
+console.log(m);
+  //check Back-end values
+  await t
+    //subject
+    .expect(m["value"]["subject_id"]).notEql(m2["value"]["subject_id"])
+    .expect(m["value"]["subject_id"]).eql(subjectId)
+    .expect(m2["value"]["subject_id"]).eql(subjectId+'-2')
+    .expect(m["value"]["synthetic"]).eql(m2["value"]["synthetic"])
+    .expect(m["value"]["species"].label).eql(m2["value"]["species"].label)
+    .expect(m["value"]["sex"]).eql(m2["value"]["sex"])
+    .expect(m["value"]["age_min"]).eql(m2["value"]["age_min"])
+    .expect(m["value"]["age_max"]).eql(m2["value"]["age_max"])
+    .expect(m["value"]["age_unit"]).eql(m2["value"]["age_unit"].label)
+    .expect(m["value"]["age_event"]).eql(m2["value"]["age_event"])
+    .expect(m["value"]["ancestry_population"]).eql(m2["value"]["ancestry_population"])
+    .expect(m["value"]["ethnicity"]).eql(m2["value"]["ethnicity"])
+    .expect(m["value"]["race"]).eql(m2["value"]["race"])
+    .expect(m["value"]["strain_name"]).eql(m2["value"]["strain_name"])
+    //.expect(m["value"]["linked_subjects"]).eql(m2["value"]["linked_subjects"])
+    .expect(m["value"]["link_type"]).eql(m2["value"]["link_type"])
+
+    //diagnosis 0
+    .expect(m["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()).eql(m2["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase())
+    .expect(m["value"]["diagnosis"][0]["disease_length"]).eql(m2["value"]["diagnosis"][0]["disease_length"])
+    .expect(m["value"]["diagnosis"][0]["disease_stage"]).eql(m2["value"]["diagnosis"][0]["disease_stage"])
+    .expect(m["value"]["diagnosis"][0]["study_group_description"]).eql(m2["value"]["diagnosis"][0]["study_group_description"])
+    .expect(m["value"]["diagnosis"][0]["prior_therapies"]).eql(m2["value"]["diagnosis"][0]["prior_therapies"])
+    .expect(m["value"]["diagnosis"][0]["immunogen"]).eql(m2["value"]["diagnosis"][0]["immunogen"])
+    .expect(m["value"]["diagnosis"][0]["intervention"]).eql(m2["value"]["diagnosis"][0]["intervention"])
+    .expect(m["value"]["diagnosis"][0]["medical_history"]).eql(m2["value"]["diagnosis"][0]["medical_history"])
+
+    //diagnosis 1
+    .expect(m["value"]["diagnosis"][1]["disease_diagnosis"].label.toLowerCase()).eql(m2["value"]["diagnosis"][1]["disease_diagnosis"].label.toLowerCase())
+    .expect(m["value"]["diagnosis"][1]["disease_length"]).eql(m2["value"]["diagnosis"][1]["disease_length"])
+    .expect(m["value"]["diagnosis"][1]["disease_stage"]).eql(m2["value"]["diagnosis"][1]["disease_stage"])
+    .expect(m["value"]["diagnosis"][1]["study_group_description"]).eql(m2["value"]["diagnosis"][1]["study_group_description"])
+    .expect(m["value"]["diagnosis"][1]["prior_therapies"]).eql(m2["value"]["diagnosis"][1]["prior_therapies"])
+    .expect(m["value"]["diagnosis"][1]["immunogen"]).eql(m2["value"]["diagnosis"][1]["immunogen"])
+    .expect(m["value"]["diagnosis"][1]["intervention"]).eql(m2["value"]["diagnosis"][1]["intervention"])
+    .expect(m["value"]["diagnosis"][1]["medical_history"]).eql(m2["value"]["diagnosis"][1]["medical_history"])
+
  });
 
 test('Add a new Subject with a non-unique Subject ID for the previously created Project', async t => {
