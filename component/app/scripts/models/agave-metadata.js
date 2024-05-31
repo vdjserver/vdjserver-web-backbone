@@ -162,8 +162,13 @@ export var Subject = Agave.MetadataModel.extend({
             if (value['age_max'] < 0) {
                 errors.push({ field: 'age_max', message: 'age_max is less than zero'});
             }
-            //if (!value['age_unit']) errors.push({ field: 'age_unit', message: 'missing age unit'});
+            //age unit cannot be null if there are age_min and age_max values
+            if (value['age_unit'].label == null) errors.push({ field: 'age_unit', message: 'missing age unit'});
         }
+
+        //age unit cannot be defined if there are no age_min and age_max values
+        if (value['age_unit'].label != null && (value['age_max'] == null) || (value['age_min'] == null))
+            errors.push({ field: 'age_unit', message: 'age unit cannot be defined if age is not'});
 
         // special virtual age_point field
         for (let i = 0; i < errors.length; ++i) {

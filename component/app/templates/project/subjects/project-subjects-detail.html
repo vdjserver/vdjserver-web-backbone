@@ -71,8 +71,8 @@
                     </label>
 
                     <select class="custom-select value-select" name="synthetic" id="synthetic" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="True" {{#ifEquals value.synthetic "True"}}selected{{/ifEquals}}>True</option>
-                      <option value="False"{{#ifEquals value.synthetic "False"}}selected{{/ifEquals}}>False</option>
+                      <option value="true" {{#ifEquals value.synthetic true}}selected{{/ifEquals}}>True</option>
+                      <option value="false"{{#ifEquals value.synthetic false}}selected{{/ifEquals}}>False</option>
                     </select>
                 </div>
 
@@ -124,10 +124,10 @@
                     <select class="custom-select value-select" name="sex" id="sex" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each sex_enum}}
                             {{#if this}}
-                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../../value.sex}}selected{{/ifEquals}}>{{this}}</option>
+                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sex}}selected{{/ifEquals}}>{{this}}</option>
                             {{/if}}
                             {{#ifEquals this null}}
-                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../../value.sex}}selected{{/ifEquals}}>null</option>
+                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sex}}selected{{/ifEquals}}>null</option>
                             {{/ifEquals}}
                         {{/each}}
                     </select>
@@ -303,13 +303,9 @@
                     </label>
                     <select class="custom-select value-select" name="linked_subjects" id="linked_subjects" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                         {{#each subject_ids}}
-{{#if this}}
-                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../../value.linked_subjects}}selected{{/ifEquals}}>{{this}}</option>
-{{/if}}
-{{#ifEquals this null}}
-                        <option id="{{this}}" value="{{this}}" {{#ifEquals this ../../value.linked_subjects}}selected{{/ifEquals}}>null</option>
-{{/ifEquals}}
+                            <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.linked_subjects}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
+                        <option {{#unless value.linked_subjects}}selected{{/unless}}>null</option>
                     </select>
                     <div class="invalid-feedback">
                         Please enter a valid Linked Subject.
