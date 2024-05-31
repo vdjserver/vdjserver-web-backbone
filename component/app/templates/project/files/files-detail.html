@@ -1,4 +1,4 @@
-
+<!-- FASTA/QUAL pairs-->
 {{#if quality}}
 <div class="row general-table-row general-border-top">
     <div class="col-md-11">
@@ -10,13 +10,9 @@
             <div class="col-md-2 text-data">{{GetHumanReadableFileSize read.size}}</div>
             <div class="col-md-2 text-data">{{read.fileTypeName}}</div>
             <div class="col-md-2">
-                <input
-                    class="form-control"
-                    type="text"
-                    id="project-file-tags"
-                    value="{{GetTagDisplay read.publicAttributes}}">
+                <input class="form-control form-control-file" type="text" name="tags" id="project-file-read-tags" value="{{read.tags}}">
             </div>
-            <div class="col-md-1 text-data"></div>
+            <div class="col-md-1 text-data">Read</div>
         </div>
         <div class="row general-table-internal-row align-items-center">
             <div class="col-md-3 text-data">
@@ -26,24 +22,21 @@
             <div class="col-md-2 text-data">{{GetHumanReadableFileSize quality.size}}</div>
             <div class="col-md-2 text-data">{{quality.fileTypeName}}</div>
             <div class="col-md-2">
-                <input
-                    class="form-control"
-                    type="text"
-                    id="project-file-tags"
-                    value="{{GetTagDisplay quality.publicAttributes}}">
+                <input class="form-control form-control-file" type="text" name="tags" id="project-file-quality-tags" value="{{quality.tags}}">
             </div>
-            <div class="col-md-1 text-data"></div>
+            <div class="col-md-1 text-data">Quality</div>
         </div>
     </div>
     <div class="col-md-1 general-buttons-right project-files-split-button">
         <div class="btn-group" role="group" aria-label="Button group">
-            <button type="button" class="btn btn-delete" title="Delete file" id="project-file-delete">
+            <button type="button" class="btn btn-delete" title="Unpair files" id="project-file-unpair">
                 <i class="fa fa-times"></i>
             </button>
         </div>
     </div>
 </div>
 {{else}}
+    <!-- FASTQ pairs-->
     {{#if forward}}
     <div class="row general-table-row general-border-top">
         <div class="col-md-11">
@@ -55,11 +48,7 @@
                 <div class="col-md-2 text-data">{{GetHumanReadableFileSize forward.size}}</div>
                 <div class="col-md-2 text-data">{{forward.fileTypeName}}</div>
                 <div class="col-md-2">
-                    <input
-                        class="form-control"
-                        type="text"
-                        id="project-file-tags"
-                        value="{{GetTagDisplay forward.publicAttributes}}">
+                    <input class="form-control form-control-file" type="text" name="tags" id="project-file-forward-tags" value="{{forward.tags}}">
                 </div>
                 <div class="col-md-1 text-data">Forward</div>
             </div>
@@ -71,24 +60,21 @@
                 <div class="col-md-2 text-data">{{GetHumanReadableFileSize reverse.size}}</div>
                 <div class="col-md-2 text-data">{{reverse.fileTypeName}}</div>
                 <div class="col-md-2">
-                    <input
-                        class="form-control"
-                        type="text"
-                        id="project-file-tags"
-                        value="{{GetTagDisplay reverse.publicAttributes}}">
+                    <input class="form-control form-control-file" type="text" name="tags" id="project-file-reverse-tags" value="{{reverse.tags}}">
                 </div>
                 <div class="col-md-1 text-data">Reverse</div>
             </div>
         </div>
         <div class="col-md-1 general-buttons-right project-files-split-button">
             <div class="btn-group" role="group" aria-label="Button group">
-                <button type="button" class="btn btn-delete" title="Delete file" id="project-file-delete">
+                <button type="button" class="btn btn-delete" title="Unpair files" id="project-file-unpair">
                     <i class="fa fa-times"></i>
                 </button>
             </div>
         </div>
     </div>
     {{else}}
+    <!-- non paired files -->
     <div class="row general-table-row general-border-top" draggable="true">
         <div class="col-md-11">
             <div class="row align-items-center">
@@ -98,7 +84,7 @@
                 <div class="col-md-2 text-data">{{FormatDateTime lastUpdated}}</div>
                 <div class="col-md-2 text-data">{{GetHumanReadableFileSize value.size}}</div>
                 <div class="col-md-2">
-                    <select class="form-control" id="project-file-type">
+                    <select class="form-control value-select" name="fileType" id="project-file-type">
                         {{#each fileTypes}}
                             <option {{#ifEquals this ../value.fileType}}selected{{/ifEquals}} value="{{this}}">
                                 {{#with (lookup ../fileTypeNames @index)}} {{this}} {{/with}}
@@ -107,14 +93,10 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <input
-                        class="form-control"
-                        type="text"
-                        id="project-file-tags"
-                        value="{{GetTagDisplay value.publicAttributes}}">
+                    <input class="form-control form-control-file" type="text" name="tags" id="project-file-tags" value="{{value.tags}}">
                 </div>
                 <div class="col-md-1">
-                    <select class="form-control" id="project-file-read-direction">
+                    <select class="form-control value-select" name="readDirection" id="project-file-read-direction">
                         <option></option>
                         {{#each readDirections}}
                             <option {{#ifEquals this ../value.readDirection}}selected{{/ifEquals}}>{{this}}</option>

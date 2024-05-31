@@ -38,12 +38,15 @@ fixture('Check Setup')
     .page(config.url);
 
 test('Verify first user account', async t => {
+    console.log('Using Tapis version ', config.tapis_version);
+
     // check login
     // TODO: what to check to verify that login worked?
     await t
         .typeText('#username', config.username)
         .typeText('#password', config.password)
         .click('#home-login');
+    await t.expect(Selector('#loginSuccessful').innerText).contains('Welcome to your "My Projects"', {timeout:config.timeout});
 
     // check logout
 
