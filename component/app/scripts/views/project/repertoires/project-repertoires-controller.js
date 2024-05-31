@@ -448,9 +448,6 @@ ProjectRepertoiresController.prototype = {
                     await s.save().fail(function(error) { msg = error; });
                     if (msg) return Promise.reject(msg);
 
-                    await s.syncMetadataPermissionsWithProjectPermissions(context.model.get('uuid')).catch(function(error) { msg = error; });
-                    if (msg) return Promise.reject(msg);
-
                     return Promise.resolve();
                 };
 
@@ -503,9 +500,6 @@ ProjectRepertoiresController.prototype = {
 
                             var msg = null;
                             await m.save().fail(function(error) { msg = error; });
-                            if (msg) return Promise.reject(msg);
-
-                            await m.syncMetadataPermissionsWithProjectPermissions(context.model.get('uuid')).catch(function(error) { msg = error; });
                             if (msg) return Promise.reject(msg);
 
                             return Promise.resolve();

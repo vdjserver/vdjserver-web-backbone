@@ -41,9 +41,10 @@ var ProjectFileDetailView = Marionette.View.extend({
     },
 
     events: {
-        'change #project-file-type': 'updateFileType',
-        'change #project-file-read-direction': 'updateReadDirection',
-        'change #project-file-tags': 'updateFileTags',
+        'change .form-control-file': 'updateField',
+        'change .value-select': 'updateDropDown',
+        'click #project-file-delete': 'deleteFile',
+        'click #project-file-unpair': 'unpairFile',
         'click #project-file-download': 'downloadFile',
     },
 
@@ -84,37 +85,45 @@ var ProjectFileDetailView = Marionette.View.extend({
         };
     },
 
-    updateFileType: function(e) {
-        // let controller know something is being changed
+    updateField: function(e) {
         this.controller.flagFileEdits(true);
-        // update the model
         let value = this.model.get('value');
-        value['fileType'] = parseInt(e.currentTarget.value);
-        this.model.set('value', value);
+        switch (e.target.id) {
+            case 'project-file-reverse-tags': {
+                let fileList = this.controller.getProjectFilesList();
+                let m = fileList.get(value['pairedReadMetadataUuid']);
+                m.updateField(e.target.name, e.target.value);
+                break;
+            }
+            case 'project-file-quality-tags': {
+                let fileList = this.controller.getProjectFilesList();
+                let m = fileList.get(value['qualityScoreMetadataUuid']);
+                m.updateField(e.target.name, e.target.value);
+                break;
+            }
+            default:
+                this.model.updateField(e.target.name, e.target.value);
+        }
     },
 
-    updateReadDirection: function(e) {
-        // let controller know something is being changed
+    updateDropDown: function(e) {
         this.controller.flagFileEdits(true);
-        // update the model
-        let value = this.model.get('value');
-        value['readDirection'] = e.target.value;
-        this.model.set('value', value);
+        this.model.updateField(e.target.name, e.target.value);
     },
 
-    updateFileTags: function(e) {
-        // let controller know something is being changed
-        this.controller.flagFileEdits(true);
-        // update the model
-        this.model.updateTags(e.target.value);
+    deleteFile: function(e) {
+        this.controller.deleteFile(e, this.model);
+    },
+
+    unpairFile: function(e) {
+        e.preventDefault();
+        this.controller.unpairFile(this.model);
     },
 
     downloadFile: function(e) {
         e.preventDefault();
 
-        var fileModel = this.model.getFileModel();
-
-        fileModel.downloadFileToDisk()
+        this.model.downloadFileToDisk()
             .fail(function(error) {
                 // TODO: handle error
                 console.log(error);

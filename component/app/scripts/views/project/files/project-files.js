@@ -91,6 +91,11 @@ var ProjectFilesHeaderView = Marionette.View.extend({
         },
     },
 
+    enableChangesButtons: function(state) {
+        $('#project-files-revert-changes').prop('disabled', !state);
+        $('#project-files-save-changes').prop('disabled', !state);
+    }
+
 });
 
 
@@ -135,6 +140,10 @@ var ProjectFilesView = Marionette.View.extend({
         this.buttonsView = new ProjectFilesHeaderView({controller: this.controller});
         App.AppController.navController.showButtonsBar(this.buttonsView);
     },
+
+    enableChangesButtons: function(state) {
+        this.buttonsView.enableChangesButtons(state);
+    }
 
 });
 

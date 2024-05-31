@@ -31,9 +31,7 @@ import { Agave } from 'Scripts/backbone/backbone-agave';
 
 export var FileTransfers = {};
 
-FileTransfers.downloadUrlByPostit = function(url) {
-
-    url += '?force=true';
+FileTransfers.downloadUrlByPostit = function(project_uuid, url) {
 
     var jqxhr = Agave.ajax({
         headers: _.extend(
@@ -43,24 +41,19 @@ FileTransfers.downloadUrlByPostit = function(url) {
                 'Content-Type': 'application/json',
             }
         ),
-        type:    'POST',
-        url:     EnvironmentConfig.agave.hostname
-                    + '/postits'
-                    + '/v2'
-                    ,
+        type: 'POST',
+        url: EnvironmentConfig.vdjApi.hostname + '/project/' + project_uuid + '/file/postit',
         data: JSON.stringify({
-            'url': url,
-            'method': 'GET',
-            'maxUses': 1,
-            'lifetime': 3600,
-            'noauth': false,
+            'path': url,
+            'allowedUses': 1,
+            'validSeconds': 3600
         }),
     })
     .then(function(response) {
 
-        var targetUrl = response.result._links.self.href;
+        var targetUrl = response.result.redeemUrl;
         // rewrite URL to go through proxy
-        targetUrl = targetUrl.replace(EnvironmentConfig.agave.internal, EnvironmentConfig.agave.hostname);
+        //targetUrl = targetUrl.replace(EnvironmentConfig.agave.internal, EnvironmentConfig.agave.hostname);
 
         return targetUrl;
     })
