@@ -7,6 +7,7 @@ export TEST_USERNAME
 export TEST_PASSWORD
 export TEST_USERNAME2
 export TEST_PASSWORD2
+export TEST_API
 
 # These are Tapis settings
 export TAPIS_VERSION
