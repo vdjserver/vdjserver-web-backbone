@@ -33,9 +33,10 @@ docker run --env-file=env --net=host -it vdjserver/vdj-backbone-test chromium /t
 ```
 
 To run a specific test suite, specify the filename. Some test suites require the `--disable-native-automation` flag
+and specify the `--window-size` for the browser as it effects the controls visible during the test run.
 
 ```
-docker run --env-file=env --net=host -it vdjserver/vdj-backbone-test --disable-native-automation chromium /tests/testcafe/login.js
+docker run --env-file=env --net=host -it vdjserver/vdj-backbone-test --disable-native-automation chromium '--window-size=1200,800' /tests/testcafe/login.js
 ```
 
 ## Remote browser testing using Docker
