@@ -162,13 +162,13 @@ export var Subject = Agave.MetadataModel.extend({
             if (value['age_max'] < 0) {
                 errors.push({ field: 'age_max', message: 'age_max is less than zero'});
             }
-            //age unit cannot be null if there are age_min and age_max values
-            if (value['age_unit'].label == null) errors.push({ field: 'age_unit', message: 'missing age unit'});
+            // age unit cannot be null if there are age_min and age_max values
+            if (value['age_unit'] == null) errors.push({ field: 'age_unit', message: 'missing age unit'});
+            else if (value['age_unit']['id'] == null) errors.push({ field: 'age_unit', message: 'missing age unit'});
+        } else {
+            // age unit cannot be defined if there are no age_min and age_max values
+            if (value['age_unit'] != null && value['age_unit']['id'] != null) errors.push({ field: 'age_unit', message: 'age unit cannot be defined if age is not'});
         }
-
-        //age unit cannot be defined if there are no age_min and age_max values
-        if (value['age_unit'].label != null && (value['age_max'] == null) || (value['age_min'] == null))
-            errors.push({ field: 'age_unit', message: 'age unit cannot be defined if age is not'});
 
         // special virtual age_point field
         for (let i = 0; i < errors.length; ++i) {
@@ -480,7 +480,6 @@ export var Repertoire = Agave.MetadataModel.extend({
                 this.setSample(parameters.sample);
             }
         }
-        if (! this.get('uuid')) this.set('uuid', this.cid);
 
         // this is the normal-form version
         if (! repertoireSchema) repertoireSchema = new vdj_schema.SchemaDefinition('Repertoire');
@@ -570,6 +569,25 @@ export var Repertoire = Agave.MetadataModel.extend({
 
         // clone the sample collection
         let samples = this.sample.getClonedCollection();
+        m.setSample(samples);
+
+        return m;
+    },
+
+    // repertoire contains sub-models and sub-collections so need handle it specially
+    deepDuplicate: function() {
+        let m = Agave.MetadataModel.prototype.deepDuplicate.apply(this, []);
+
+        let value = this.get('value');
+
+        // point to same study and subject
+        let mv = m.get('value');
+        mv['study'] = value['study'];
+        m.set('value', mv);
+        m.setSubject(this.subject);
+
+        // duplicate the sample collection
+        let samples = this.sample.getDuplicatedCollection();
         m.setSample(samples);
 
         return m;

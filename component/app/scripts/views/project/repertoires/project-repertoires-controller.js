@@ -184,81 +184,131 @@ ProjectRepertoiresController.prototype = {
 
     duplicateRepertoire: function(e, model) {
         e.preventDefault();
+        // duplicate repertoire
         var clonedList = this.getRepertoireList();
         let i = clonedList.findIndex(model);
-        let newRepertoire = model.deepClone();
-        newRepertoire.set('uuid', newRepertoire.cid);
+        let newRepertoire = model.deepDuplicate();
+        // duplicated samples
+        for (let i = 0; i < newRepertoire.sample.length; i++) {
+            let s = newRepertoire.sample.at(i);
+            this.getSampleList().add(s);
+        }
+
+        // edit and set focus
         newRepertoire.view_mode = 'edit';
+        for (let i = 0; i < newRepertoire.sample.length; i++) {
+            let s = newRepertoire.sample.at(i);
+            if (s.view_mode != 'edit') s.view_mode = 'edit';
+        }
+
         clonedList.add(newRepertoire, {at:i});
         $('#repertoire_name_'+newRepertoire.cid).focus();
         this.flagRepertoiresEdits();
     },
 
     addRepertoire: function(e) {
-        var clonedList = this.getRepertoireList();
+        // create initial blank sample and sample collection to add to repertoire
         var samples = new SampleCollection(null, {projectUuid: this.controller.model.get('uuid')});
         var sample = new SampleProcessing({projectUuid: this.controller.model.get('uuid')});
-        sample.set('uuid', sample.cid);
         samples.add(sample);
+        this.getSampleList().add(sample);
         sample.view_mode = 'edit';
+
+        // create new blank repertoire
+        var clonedList = this.getRepertoireList();
         var newRepertoire = new Repertoire({projectUuid: this.controller.model.get('uuid'), sample: samples});
         newRepertoire.view_mode = 'edit';
+
         clonedList.add(newRepertoire, {at:0});
+        //this.showProjectRepertoiresList();
         $('#repertoire_name_'+newRepertoire.cid).focus();
         this.flagRepertoiresEdits();
-    },
+   },
 
     deleteRepertoire: function(e, model) {
         e.preventDefault();
         var clonedList = this.getRepertoireList();
         clonedList.remove(model.id);
+        // remove samples if necessary
+        // check if referenced by other repertoires
+        var samples = model.sample;
+        for (let i = 0; i < samples.length; ++i) {
+            let s = samples.at(i);
+            var found = false;
+            for (let j = 0; j < clonedList.length; ++j) {
+                let m = clonedList.at(j);
+                if (m.get(s.get('uuid'))) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) this.getSampleList().remove(s);
+        }
         this.flagRepertoiresEdits();
     },
 
     duplicateSample: function(e, model) {
+        // model is repertoire
         e.preventDefault();
-        var sampleUuid = e.target.name;
-        var clonedList = model.sample; //sample list
-        let i = clonedList.get(sampleUuid);
-        let j = clonedList.findIndex(i);
-        let newSample = model.sample.at(j).deepClone();
-        newSample.set('uuid', newSample.cid);
-        newSample.view_mode = 'edit';
+        // deep clone sample
+        let sampleUuid = e.target.name;
+        let sample = model.sample.get(sampleUuid);
+        let newSample = sample.deepDuplicate();
+        this.getSampleList().add(newSample)
+
+        // add to repertoire
+        let j = model.sample.findIndex(sample);
+        model.sample.add(newSample, {at:j});
+        model.setSample(model.sample);
+
+        // change to edit mode
         model.view_mode = 'edit';
-        clonedList.add(newSample, {at:j});
-        $('#sample_id_'+newSample.cid).focus();
-        this.flagRepertoiresEdits();
-        for (let i = 0; i < clonedList.length; i++) {
-            let s = clonedList.at(i);
+        for (let i = 0; i < model.sample.length; i++) {
+            let s = model.sample.at(i);
             if (s.view_mode != 'edit') s.view_mode = 'edit';
         }
+
+        // redisplay and focus on new sample
+        this.flagRepertoiresEdits();
         this.showProjectRepertoiresList();
+        $('#sample_id_'+newSample.cid).focus();
     },
 
     addSample: function(e, model) {
         e.preventDefault();
-        var sampleList = model.sample;
+        // create blank sample
         var newSample = new SampleProcessing({projectUuid: this.controller.model.get('uuid')});
-        newSample.set('uuid', newSample.cid);
-        model.view_mode = 'edit';
-        newSample.view_mode = 'edit';
+        this.getSampleList().add(newSample)
+
+        // add to repertoire
+        var sampleList = model.sample;
         sampleList.add(newSample, {at:0});
-        $('#sample_id_'+newSample.cid).focus();
-        this.flagRepertoiresEdits();
+        model.setSample(sampleList);
+
+        // change to edit mode
+        model.view_mode = 'edit';
         for (let i = 0; i < sampleList.length; i++) {
             let s = sampleList.at(i);
             if (s.view_mode != 'edit') s.view_mode = 'edit';
         }
+
+        // redisplay and focus on new sample
+        this.flagRepertoiresEdits();
         this.showProjectRepertoiresList();
+        $('#sample_id_'+newSample.cid).focus();
     },
 
     deleteSample: function(e, model) {
         e.preventDefault();
         var sampleUuid = e.target.name;
-        var clonedList = model.sample;
-        clonedList.remove(clonedList.get(sampleUuid));
+        var sampleList = model.sample;
+        var sample = sampleList.get(sampleUuid);
+        sampleList.remove(sample);
+        model.setSample(sampleList);
+        this.getSampleList().remove(sample);
+
         this.flagRepertoiresEdits();
-        this.showProjectRepertoiresList();
+//        this.showProjectRepertoiresList();
     },
 
     //
@@ -416,7 +466,7 @@ ProjectRepertoiresController.prototype = {
             // Set up promises
             let promises = [];
 
-            // TODO: if sample is not referenced by any repertoire, delete it
+            // TODO: if sample is not referenced by any repertoire, delete it?
 
             // deletions
             deletedModels.map(function(uuid) {
@@ -442,7 +492,7 @@ ProjectRepertoiresController.prototype = {
 
                 var saveSample = async function(s) {
                     // clear uuid for new entries so they get created
-                    if (s.get('uuid') == s.cid) s.set('uuid', '');
+                    //if (s.get('uuid') == s.cid) s.set('uuid', '');
 
                     var msg = null;
                     await s.save().fail(function(error) { msg = error; });
@@ -496,7 +546,7 @@ ProjectRepertoiresController.prototype = {
 
                         let saveChanges = async function(m) {
                             // clear uuid for new entries so they get created
-                            if (m.get('uuid') == m.cid) m.set('uuid', '');
+                            //if (m.get('uuid') == m.cid) m.set('uuid', '');
 
                             var msg = null;
                             await m.save().fail(function(error) { msg = error; });
@@ -641,7 +691,22 @@ ProjectRepertoiresController.prototype = {
     showMetadataExport: function() {
         // TODO: check if any repertoire/subject/samples/etc changes, do not allow user to export?
         // TODO: do we show a modal during the export?
-        this.model.exportMetadataToDisk();
+        this.model.exportMetadataToDisk()
+            .catch(function(error) {
+                console.log(error);
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Export AIRR Metadata',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Exporting of AIRR Metadata failed!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
 
         //this.importView = new MetadataImportModal({model: this.model, controller: this});
         //App.AppController.startModal(this.importView, this, this.onShownImportModal, this.onHiddenImportModal);

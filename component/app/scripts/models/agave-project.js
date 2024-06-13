@@ -211,6 +211,27 @@ export default Agave.MetadataModel.extend({
     exportMetadataToDisk: function() {
         var that = this;
 
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/export',
+                type: 'GET',
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            }).then(function(res) {
+                console.log(res);
+                var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: { path: 'deleted/' + res['result']['file']}});
+                return pf.downloadFileToDisk();
+            });
+        });
+
+/*
         // export to temporary file
         var jqxhr = $.ajax({
             contentType: 'application/json',
@@ -223,7 +244,23 @@ export default Agave.MetadataModel.extend({
             console.log(res);
             var pf = new ProjectFile({path: '/projects/' + that.get('uuid') + '/deleted/' + res['result']['file']});
             return pf.downloadFileToDisk();
+        }); */
+    },
+
+    importTableFromFile: function(table, project_file, operation) {
+        var value = project_file.get('value');
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify({
+                filename: value['name'],
+                operation: operation
+            }),
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/import/table/' + table,
         });
+
+        return jqxhr;
     },
 
     exportTableToDisk: function(table) {
@@ -234,12 +271,12 @@ export default Agave.MetadataModel.extend({
             contentType: 'application/json',
             headers: Agave.oauthHeader(),
             type: 'GET',
-            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/' + table + '/export',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/export/table/' + table,
         });
 
         return jqxhr.then(function(res) {
             console.log(res);
-            var pf = new ProjectFile({path: '/projects/' + that.get('uuid') + '/deleted/' + res['result']['file']});
+            var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: {path: 'deleted/' + res['result']['file']}});
             return pf.downloadFileToDisk();
         });
     },
