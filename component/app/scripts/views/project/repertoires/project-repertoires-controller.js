@@ -38,6 +38,7 @@ import ModalView from 'Scripts/views/utilities/modal-view';
 import LoadingView from 'Scripts/views/utilities/loading-view';
 import FilterController from 'Scripts/views/utilities/filter-controller';
 import MetadataImportModal from 'Scripts/views/project/project-import-metadata';
+import SampleImportModal from 'Scripts/views/project/project-import-samples';
 
 import { Repertoire, SampleProcessing } from 'Scripts/models/agave-metadata';
 import { SampleCollection, DataProcessingCollection } from 'Scripts/collections/agave-metadata-collections';
@@ -711,6 +712,102 @@ ProjectRepertoiresController.prototype = {
         //this.importView = new MetadataImportModal({model: this.model, controller: this});
         //App.AppController.startModal(this.importView, this, this.onShownImportModal, this.onHiddenImportModal);
         //$('#modal-message').modal('show');
+    },
+
+    importSampleTable: function() {
+        this.importView = new SampleImportModal({model: this.model, controller: this});
+        App.AppController.startModal(this.importView, this, this.onShownSampleImportModal, this.onHiddenSampleImportModal);
+        $('#modal-message').modal('show');
+    },
+
+    onShownSampleImportModal: function(context) {
+        console.log('import: Show the modal');
+    },
+
+    onHiddenSampleImportModal: function(context) {
+        console.log('import: Hide the modal');
+        console.log(context.importView.file);
+        console.log(context.importView.operation);
+
+        if (context.importView.file) {
+            var message = new MessageModel({
+              'header': 'Import Sample Processing Table',
+              'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we validate and import...</p>'
+                + '<p>This can take 5-10 minutes per 100 rows.</p>'
+            });
+
+            // the app controller manages the modal region
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, context.onShownSampleModal, context.onHiddenSampleModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onShownSampleModal(context) {
+        // do the import
+        context.model.importTableFromFile('sample_processing', context.importView.file, context.importView.operation)
+            .done(function() {
+                context.modalState = 'pass';
+                $('#modal-message').modal('hide');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+                $('#modal-message').modal('hide');
+
+                var message = new MessageModel({
+                    'header': 'Import Sample Processing Table',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Import failed!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+    },
+
+    onHiddenSampleModal(context) {
+        //console.log('create: Hide the modal');
+        if (context.modalState == 'pass') {
+            // display a success modal
+            var message = new MessageModel({
+                'header': 'Import Sample Processing Table',
+                'body': '<p>Successfully imported!</p>',
+                cancelText: 'Ok'
+            });
+
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, null, context.onHiddenSanpleSuccessModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onHiddenSanpleSuccessModal(context) {
+        // refresh project
+        App.AppController.showProjectPage(context.model.get('uuid'), 'repertoire');
+    },
+
+    exportSampleTable: function() {
+        // TODO: check if any repertoire/subject/samples/etc changes, do not allow user to export?
+        // TODO: do we show a modal during the export?
+        this.model.exportTableToDisk('sample_processing')
+            .catch(function(error) {
+                console.log(error);
+
+                // prepare a new modal with the failure message
+                var message = new MessageModel({
+                    'header': 'Export Sample Processing Table',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Exporting of Sample Processing Table failed!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
     },
 };
 export default ProjectRepertoiresController;
