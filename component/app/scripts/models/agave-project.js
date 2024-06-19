@@ -281,6 +281,31 @@ export default Agave.MetadataModel.extend({
         });
     },
 
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = studySchema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+
+        // TODO: VDJServer additional validation
+
+        // Study Title must have a non-blank value
+        let study_title = "study_title";
+        if (((value['study_title'].trim()).length == 0)) {
+            console.log("null");
+            errors.push({ field: study_title, message: 'Study Title is blank'});
+        }
+
+        if (errors.length == 0) return null;
+        else return errors;
+    },
+
     //
     // Publishing and ADC Repository
     //
