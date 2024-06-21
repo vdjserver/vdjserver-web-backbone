@@ -80,6 +80,7 @@ export default Agave.MetadataModel.extend({
 
             // we send just the project info when creating
             // the response will be the Tapis metadata object
+            options.validate = false;
             var value = this.get('value');
             this.clear();
             this.set({ project: value });

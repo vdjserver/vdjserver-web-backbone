@@ -120,28 +120,6 @@ export default Marionette.View.extend({
         //console.log('create-view: createNewProject');
         e.preventDefault();
 
-        // trigger validation
-        $('.needs-validation').addClass('was-validated');
-
-        // Fetch the form
-        var form = document.getElementsByClassName('needs-validation');
-        //console.log(form);
-
-        // only a single validation form
-        if (form[0].checkValidity() === false) {
-            //console.log("form validation worked");
-
-            // scroll and focus to first invalid element
-            var errorElements = $(form).find(".form-control:invalid");
-            $('html, body').animate({
-                scrollTop: $(errorElements[0]).focus().offset().top - 50
-            }, 1000);
-
-            return;
-        }
-
-        // form passes validation
-
         // pull data out of form and put into model
         var data = Syphon.serialize(this);
 
@@ -149,22 +127,67 @@ export default Marionette.View.extend({
         if (this.model.selected_study_type)
             data['study_type'] = this.model.selected_study_type;
 
+        // clear errors
+        let hasErrors = false;
+        $('.needs-validation').removeClass('was-validated');
+        let fields = $('.is-invalid');
+        for (let i = 0; i < fields.length; ++i) fields[i].setCustomValidity('');
+        fields.removeClass('is-invalid');
+
         // concatenate collector info
-        var fields = [];
-        if (data['collectedby_name'].length > 0) fields.push(data['collectedby_name']);
-        if (data['collectedby_email'].length > 0) fields.push(data['collectedby_email']);
-        if (data['collectedby_address'].length > 0) fields.push(data['collectedby_address']);
-        data['collected_by'] = fields.join(', ');
+        var fields2 = [];
+        if (data['collectedby_name'].length > 0) fields2.push(data['collectedby_name']);
+        if (data['collectedby_email'].length > 0) fields2.push(data['collectedby_email']);
+        if (data['collectedby_address'].length > 0) fields2.push(data['collectedby_address']);
+        data['collected_by'] = fields2.join(', ');
 
         // concatenate submitter info
-        fields = [];
-        if (data['submittedby_name'].length > 0) fields.push(data['submittedby_name']);
-        if (data['submittedby_email'].length > 0) fields.push(data['submittedby_email']);
-        if (data['submittedby_address'].length > 0) fields.push(data['submittedby_address']);
-        data['submitted_by'] = fields.join(', ');
+        fields2 = [];
+        if (data['submittedby_name'].length > 0) fields2.push(data['submittedby_name']);
+        if (data['submittedby_email'].length > 0) fields2.push(data['submittedby_email']);
+        if (data['submittedby_address'].length > 0) fields2.push(data['submittedby_address']);
+        data['submitted_by'] = fields2.join(', ');
 
         this.model.setAttributesFromData(data);
         //console.log(this.model);
+
+        // model validation
+        var minY = Number.MAX_VALUE;
+        let valid = this.model.isValid();
+        if (!valid) {
+            hasErrors = true;
+            let form = document.getElementById("project-form");
+            var rect = form.getBoundingClientRect();
+            if (rect['y'] < minY) minY = rect['y'] + window.scrollY;
+            form = $(form);
+            for (let j = 0; j < this.model.validationError.length; ++j) {
+                let e = this.model.validationError[j];
+                let f = form.find('#' + e['field']);
+                if (f) {
+                    f[0].setCustomValidity(e['message']);
+                    f.addClass('is-invalid');
+                }
+            }
+        }
+
+        // form validation
+        $('.needs-validation').addClass('was-validated');
+        var form = document.getElementsByClassName('needs-validation');
+        for (let i = 0; i < form.length; ++i)
+            if (form[i].checkValidity() === false) {
+                hasErrors = true;
+                var rect = form[i].getBoundingClientRect();
+                if (rect['y'] < minY)
+                    minY = rect['y'];
+            }
+
+        // scroll to first form with error and abort save
+        if (hasErrors) {
+            let r = App.AppController.navController.getNavigationRect();
+            $('html, body').animate({ scrollTop: window.scrollY + minY - r['height'] - 100 }, 1000);
+            console.log('validation errors');
+            return;
+        }
 
         // display a modal while the project is being created
         this.modalState = 'create';
