@@ -3,7 +3,10 @@
                 <div class="col-md-6 overview-summary">
                     {{#if edit_mode}}
                         <h3>Project Title</h3>
-                        <input type="text" class="form-control" name="study_title" id="study_title" value="{{value.study_title}}" required>
+                        <input type="text" class="form-control" name="study_title" id="study_title" value="{{value.study_title}}">
+                    <div class="invalid-feedback">
+                        Please enter a non-blank Project/Study Title.
+                    </div>
                     {{/if}}
                     <h3>Project Summary</h3>
                     {{#unless edit_mode}}
@@ -62,9 +65,6 @@
                             {{/if}}
                             {{#if contains_tr}}
                                 <a class="badge badge-pill badge-locus">TCR</a>
-                            {{/if}}
-                            {{#if contains_single_cell}}
-                                <a class="badge badge-pill badge-cell">Single Cell</a>
                             {{/if}}
                             {{#if contains_paired_chain}}
                                 <a class="badge badge-pill badge-cell">Paired Chain</a>

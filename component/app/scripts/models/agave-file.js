@@ -670,7 +670,7 @@ export var ProjectFileMetadata = Agave.MetadataModel.extend({
         .then(function(targetUrl) {
 
             var link = document.createElement('a');
-            link.setAttribute('download', null);
+            //link.setAttribute('download', null);
             link.setAttribute('data-bypass', 'true');
             link.setAttribute('href', targetUrl + '?download=true');
             link.style.display = 'none';

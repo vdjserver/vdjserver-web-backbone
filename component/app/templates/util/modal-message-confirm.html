@@ -7,10 +7,6 @@
             </div>
             <div class="modal-body">
                 {{{body}}}
-                {{#if serverError}}
-                    <p>Send this information to the VDJServer Administrator with the Send Error Feedback button below.</p>
-                    <code>{{{serverErrorBody}}}</code>
-                {{/if}}
             </div>
             <div class="modal-footer">
                 {{#if cancelText}}
@@ -21,6 +17,12 @@
                 {{/if}}
                 {{#if serverError}}
                     <button type="button" id="server-error" class="btn btn-report" data-dismiss="modal">Send Error Feedback</button>
+                {{/if}}
+            </div>
+            <div class="modal-footer">
+                {{#if serverError}}
+                    <p>Send this information to the VDJServer Administrator with the Send Error Feedback button.</p>
+                    <code>{{{serverErrorBody}}}</code>
                 {{/if}}
             </div>
         </div><!-- /.modal-content -->

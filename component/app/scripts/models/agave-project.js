@@ -80,6 +80,7 @@ export default Agave.MetadataModel.extend({
 
             // we send just the project info when creating
             // the response will be the Tapis metadata object
+            options.validate = false;
             var value = this.get('value');
             this.clear();
             this.set({ project: value });
@@ -107,35 +108,43 @@ export default Agave.MetadataModel.extend({
     },
 
     addUserToProject: function(username) {
-
-        var jqxhr = $.ajax({
-            contentType: 'application/json',
-            data: JSON.stringify({
-                project_uuid: this.get('uuid'),
-                username: username
-            }),
-            headers: Agave.oauthHeader(),
-            type: 'POST',
-            url: EnvironmentConfig.vdjApi.hostname + '/permission/user',
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username
+                }),
+                headers: Agave.oauthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/user',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            });
         });
-
-        return jqxhr;
     },
 
     deleteUserFromProject: function(username) {
-
-        var jqxhr = $.ajax({
-            contentType: 'application/json',
-            data: JSON.stringify({
-                project_uuid: this.get('uuid'),
-                username: username
-            }),
-            headers: Agave.oauthHeader(),
-            type: 'DELETE',
-            url: EnvironmentConfig.vdjApi.hostname + '/permission/user',
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username
+                }),
+                headers: Agave.oauthHeader(),
+                type: 'DELETE',
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/user',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            });
         });
-
-        return jqxhr;
     },
 
     generateVisualization: async function(name, repertoire_id, repertoire_group_id, processing_stage) {
@@ -211,6 +220,27 @@ export default Agave.MetadataModel.extend({
     exportMetadataToDisk: function() {
         var that = this;
 
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                headers: Agave.oauthHeader(),
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/export',
+                type: 'GET',
+                processData: false,
+                contentType: 'application/json',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            }).then(function(res) {
+                console.log(res);
+                var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: { path: 'deleted/' + res['result']['file']}});
+                return pf.downloadFileToDisk();
+            });
+        });
+
+/*
         // export to temporary file
         var jqxhr = $.ajax({
             contentType: 'application/json',
@@ -223,7 +253,23 @@ export default Agave.MetadataModel.extend({
             console.log(res);
             var pf = new ProjectFile({path: '/projects/' + that.get('uuid') + '/deleted/' + res['result']['file']});
             return pf.downloadFileToDisk();
+        }); */
+    },
+
+    importTableFromFile: function(table, project_file, operation) {
+        var value = project_file.get('value');
+        var jqxhr = $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify({
+                filename: value['name'],
+                operation: operation
+            }),
+            headers: Agave.oauthHeader(),
+            type: 'POST',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/import/table/' + table,
         });
+
+        return jqxhr;
     },
 
     exportTableToDisk: function(table) {
@@ -234,14 +280,39 @@ export default Agave.MetadataModel.extend({
             contentType: 'application/json',
             headers: Agave.oauthHeader(),
             type: 'GET',
-            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/' + table + '/export',
+            url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/metadata/export/table/' + table,
         });
 
         return jqxhr.then(function(res) {
             console.log(res);
-            var pf = new ProjectFile({path: '/projects/' + that.get('uuid') + '/deleted/' + res['result']['file']});
+            var pf = new ProjectFileMetadata({projectUuid: that.get('uuid'), value: {path: 'deleted/' + res['result']['file']}});
             return pf.downloadFileToDisk();
         });
+    },
+
+    validate: function(attrs, options) {
+        let errors = [];
+
+        // AIRR schema validation
+        let value = this.get('value');
+        let valid = studySchema.validate_object(value);
+        if (valid) {
+            for (let i = 0; i < valid.length; ++i) {
+                errors.push({ field: valid[i]['instancePath'].replace('/',''), message: valid[i]['message'], schema: valid[i]});
+            }
+        }
+
+        // TODO: VDJServer additional validation
+
+        // Study Title must have a non-blank value
+        let study_title = "study_title";
+        if (((value['study_title'].trim()).length == 0)) {
+            console.log("null");
+            errors.push({ field: study_title, message: 'Study Title is blank'});
+        }
+
+        if (errors.length == 0) return null;
+        else return errors;
     },
 
     //

@@ -37,6 +37,7 @@ import Syphon from 'backbone.syphon';
 import MessageModel from 'Scripts/models/message';
 import ModalView from 'Scripts/views/utilities/modal-view';
 import FilterController from 'Scripts/views/utilities/filter-controller';
+import SubjectImportModal from 'Scripts/views/project/project-import-subjects';
 
 import { Subject } from 'Scripts/models/agave-metadata';
 import { airr } from 'airr-js';
@@ -161,8 +162,8 @@ ProjectSubjectsController.prototype = {
         e.preventDefault();
         var clonedList = this.getSubjectsList();
         let i = clonedList.findIndex(model);
-        let newSubject = model.deepClone();
-        newSubject.set('uuid', newSubject.cid);
+        let newSubject = model.deepDuplicate();
+        //newSubject.set('uuid', newSubject.cid);
         newSubject.view_mode = 'edit';
         clonedList.add(newSubject, {at:i});
         $('#subject_id_'+newSubject.cid).focus();
@@ -217,9 +218,6 @@ ProjectSubjectsController.prototype = {
         this.has_edits = true;
         // update header
         this.mainView.updateHeader();
-    },
-
-    importSubjectTable: function(e) {
     },
 
     exportSubjectTable: function(e) {
@@ -416,6 +414,84 @@ ProjectSubjectsController.prototype = {
         } else if (context.modalState == 'fail') {
             // failure modal will automatically hide when user clicks OK
         }
+    },
+
+    //
+    // Series of modals for metadata import
+    //
+
+    importSubjectTable: function() {
+        this.importView = new SubjectImportModal({model: this.model, controller: this});
+        App.AppController.startModal(this.importView, this, this.onShownImportModal, this.onHiddenImportModal);
+        $('#modal-message').modal('show');
+    },
+
+    onShownImportModal: function(context) {
+        console.log('import: Show the modal');
+    },
+
+    onHiddenImportModal: function(context) {
+        console.log('import: Hide the modal');
+        console.log(context.importView.file);
+        console.log(context.importView.operation);
+
+        if (context.importView.file) {
+            var message = new MessageModel({
+              'header': 'Import Subject Table',
+              'body':   '<p><i class="fa fa-spinner fa-spin fa-2x"></i> Please wait while we import...</p>'
+            });
+
+            // the app controller manages the modal region
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, context.onShownSubjectModal, context.onHiddenSubjectModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onShownSubjectModal(context) {
+        // do the import
+        context.model.importTableFromFile('subject', context.importView.file, context.importView.operation)
+            .done(function() {
+                context.modalState = 'pass';
+                $('#modal-message').modal('hide');
+            })
+            .fail(function(error) {
+                // save failed so show error modal
+                context.modalState = 'fail';
+                $('#modal-message').modal('hide');
+
+                var message = new MessageModel({
+                    'header': 'Import Subject Table',
+                    'body':   '<div class="alert alert-danger"><i class="fa fa-times"></i> Import failed!</div>',
+                    cancelText: 'Ok',
+                    serverError: error
+                });
+
+                var view = new ModalView({model: message});
+                App.AppController.startModal(view, null, null, null);
+                $('#modal-message').modal('show');
+            });
+    },
+
+    onHiddenSubjectModal(context) {
+        //console.log('create: Hide the modal');
+        if (context.modalState == 'pass') {
+            // display a success modal
+            var message = new MessageModel({
+                'header': 'Import Subject Table',
+                'body': '<p>Successfully imported!</p>',
+                cancelText: 'Ok'
+            });
+
+            var view = new ModalView({model: message});
+            App.AppController.startModal(view, context, null, context.onHiddenSubjectSuccessModal);
+            $('#modal-message').modal('show');
+        }
+    },
+
+    onHiddenSubjectSuccessModal(context) {
+        // refresh project
+        App.AppController.showProjectPage(context.model.get('uuid'), 'subject');
     },
 
 };

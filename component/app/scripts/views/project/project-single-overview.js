@@ -173,15 +173,12 @@ var ProjectSettingsView = Marionette.View.extend({
         // keyword badges
         var contains_ig = false;
         var contains_tr = false;
-        var contains_single_cell = false;
         var contains_paired_chain = false;
         if (value.keywords_study) {
             if (value.keywords_study.indexOf("contains_ig") >= 0)
                 contains_ig = true;
             if (value.keywords_study.indexOf("contains_tr") >= 0)
                 contains_tr = true;
-            if (value.keywords_study.indexOf("contains_single_cell") >= 0)
-                contains_single_cell = true;
             if (value.keywords_study.indexOf("contains_paired_chain") >= 0)
                 contains_paired_chain = true;
         }
@@ -208,17 +205,15 @@ var ProjectSettingsView = Marionette.View.extend({
 
             contains_ig: contains_ig,
             contains_tr: contains_tr,
-            contains_single_cell: contains_single_cell,
             contains_paired_chain: contains_paired_chain,
             is_10x_genomics: is_10x_genomics,
 
             // label array
-            keywords_enum: [ 'contains_ig', 'contains_tr', 'contains_single_cell', 'contains_paired_chain' ],
+            keywords_enum: [ 'contains_ig', 'contains_tr', 'contains_paired_chain' ],
             keywords_array: [ 'Ig', 'TCR', 'Single Cell', 'Paired Chain'],
 
             // label object
             keywords_object: {
-                'contains_single_cell': 'Single Cell',
                 'contains_ig': 'Ig',
                 'contains_paired_chain': 'Paired Chain',
                 'contains_tr': 'TCR',
@@ -425,7 +420,7 @@ var ProjectUsersView = Marionette.View.extend({
                 App.AppController.startModal(view, context, null, context.onHiddenAddUserSuccessModal);
                 $('#modal-message').modal('show');
             })
-            .fail(function(error) {
+            .catch(function(error) {
                 // save failed so show error modal
                 context.modalState = 'fail';
 
@@ -531,7 +526,7 @@ var ProjectUsersView = Marionette.View.extend({
                 App.AppController.startModal(view, context, null, context.onHiddenDeleteUserSuccessModal);
                 $('#modal-message').modal('show');
             })
-            .fail(function(error) {
+            .catch(function(error) {
                 // save failed so show error modal
                 context.modalState = 'fail';
 
@@ -635,9 +630,57 @@ var ProjectOverView = Marionette.View.extend({
         if (this.model.selected_study_type) {
             data['study_type'] = this.model.selected_study_type;
         }
-        this.model.setAttributesFromData(data);
+        var clonedOriginalModel = this.model.deepClone();
+        clonedOriginalModel.setAttributesFromData(data);
         console.log(this.model);
-        console.log("this is the data that is submitted: " + data);
+        console.log("this is the data that is submitted: " + JSON.stringify(data));
+
+        // clear errors
+        let hasErrors = false;
+        $('.needs-validation').removeClass('was-validated');
+        let fields = $('.is-invalid');
+        for (let i = 0; i < fields.length; ++i) fields[i].setCustomValidity('');
+        fields.removeClass('is-invalid');
+
+        // model validation
+        var minY = Number.MAX_VALUE;
+        let valid = clonedOriginalModel.isValid();
+        if (!valid) {
+            hasErrors = true;
+            let form = document.getElementById("editProject-form");
+            var rect = form.getBoundingClientRect();
+            if (rect['y'] < minY) minY = rect['y'] + window.scrollY;
+            form = $(form);
+            for (let j = 0; j < clonedOriginalModel.validationError.length; ++j) {
+                let e = clonedOriginalModel.validationError[j];
+                let f = form.find('#' + e['field']);
+                if (f) {
+                    f[0].setCustomValidity(e['message']);
+                    f.addClass('is-invalid');
+                }
+            }
+        }
+
+        // form validation
+        $('.needs-validation').addClass('was-validated');
+        var form = document.getElementsByClassName('needs-validation');
+        for (let i = 0; i < form.length; ++i)
+            if (form[i].checkValidity() === false) {
+                hasErrors = true;
+                var rect = form[i].getBoundingClientRect();
+                if (rect['y'] < minY)
+                    minY = rect['y'];
+            }
+
+        // scroll to first form with error and abort save
+        if (hasErrors) {
+            let r = App.AppController.navController.getNavigationRect();
+            $('html, body').animate({ scrollTop: window.scrollY + minY - r['height'] - 100 }, 1000);
+            console.log('validation errors');
+            return;
+        }
+
+        this.model.setAttributesFromData(data);
 
         // display a modal while the project is being saved
         this.modalState = 'save';

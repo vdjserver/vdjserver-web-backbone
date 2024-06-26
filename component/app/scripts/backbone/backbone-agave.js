@@ -343,15 +343,18 @@ Agave.MetadataModel = Agave.Model.extend({
             this.apiHost = EnvironmentConfig.vdjGuest.hostname;
             this.requiresAuth = false;
         }
+        if (! this.get('uuid')) this.set('uuid', this.cid);
     },
     sync: function(method, model, options) {
         // if uuid is the cid then blank it
         if (this.get('uuid') == this.cid) this.set('uuid', '');
 
         // if uuid is not set, then we are creating a new object
-        if (this.get('uuid') === '') {
-            options.url = '/project/' + this.projectUuid + '/metadata/name/' + this.get('name');
-            options.authType = 'oauth';
+        if ((method == 'update') || (method == 'create')) {
+            if (this.get('uuid') === '') {
+                options.url = '/project/' + this.projectUuid + '/metadata/name/' + this.get('name');
+                options.authType = 'oauth';
+            }
         }
 
         return Agave.PutOverrideSync(method, this, options);
@@ -377,13 +380,29 @@ Agave.MetadataModel = Agave.Model.extend({
     },
 
     deepClone: function() {
+        // this keeps the same uuid and other attributes
+        // but deep copies the value in case of sub objects
         let m = this.clone();
-        // deep copy of value
         let value = this.get('value');
         m.set('value', JSON.parse(JSON.stringify(value)));
-        // local attributes that do not get saved to server
-        let vdj = this.get('x-vdjserver');
-        if (vdj) m.set('x-vdjserver', JSON.parse(JSON.stringify(vdj)));
+        return m;
+    },
+
+    deepDuplicate: function() {
+        // this is a new object
+        // with a deep copy of the value and other core attributes
+        let m = this.clone();
+        let value = this.get('value');
+        // clear and set the core attributes
+        // deep copy of value
+        m.clear();
+        m.set('name', this.get('name'));
+        m.set('value', JSON.parse(JSON.stringify(value)));
+        m.set('uuid', m.cid);
+        if (this.projectUuid) {
+            m.projectUuid = this.projectUuid;
+            m.set('associationIds', [ this.projectUuid ]);
+        }
         return m;
     },
 
@@ -563,6 +582,21 @@ Agave.MetadataCollection = Agave.Collection.extend({
         for (var i = 0; i < this.length; i++) {
             var model = this.at(i);
             var m = model.deepClone();
+            newCollection.add(m);
+        }
+
+        return newCollection;
+    },
+
+    // duplicate both the collection and the models within
+    getDuplicatedCollection: function() {
+
+        var newCollection = this.clone();
+        newCollection.reset();
+
+        for (var i = 0; i < this.length; i++) {
+            var model = this.at(i);
+            var m = model.deepDuplicate();
             newCollection.add(m);
         }
 

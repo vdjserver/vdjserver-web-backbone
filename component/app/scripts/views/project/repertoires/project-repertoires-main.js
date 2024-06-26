@@ -85,6 +85,8 @@ var RepertoiresButtonView = Marionette.View.extend({
             e.preventDefault();
             this.controller.revertRepertoiresChanges();
         },
+        'click #project-samples-import': 'importSampleTable',
+        'click #project-samples-export': 'exportSampleTable',
 
     },
 
@@ -97,6 +99,16 @@ var RepertoiresButtonView = Marionette.View.extend({
         console.log('exportMetadata');
         e.preventDefault();
         this.controller.showMetadataExport();
+    },
+
+    importSampleTable: function(e) {
+        e.preventDefault();
+        this.controller.importSampleTable();
+    },
+
+    exportSampleTable: function(e) {
+        e.preventDefault();
+        this.controller.exportSampleTable();
     },
 });
 

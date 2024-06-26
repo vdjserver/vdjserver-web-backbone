@@ -31,5 +31,6 @@ export default {
     'username': process.env.TEST_USERNAME,
     'password': process.env.TEST_PASSWORD,
     'username2': process.env.TEST_USERNAME2,
-    'password2': process.env.TEST_PASSWORD2
+    'password2': process.env.TEST_PASSWORD2,
+    'api': process.env.TEST_API
 };
