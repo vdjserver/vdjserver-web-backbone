@@ -108,35 +108,43 @@ export default Agave.MetadataModel.extend({
     },
 
     addUserToProject: function(username) {
-
-        var jqxhr = $.ajax({
-            contentType: 'application/json',
-            data: JSON.stringify({
-                project_uuid: this.get('uuid'),
-                username: username
-            }),
-            headers: Agave.oauthHeader(),
-            type: 'POST',
-            url: EnvironmentConfig.vdjApi.hostname + '/permission/user',
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username
+                }),
+                headers: Agave.oauthHeader(),
+                type: 'POST',
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/user',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            });
         });
-
-        return jqxhr;
     },
 
     deleteUserFromProject: function(username) {
-
-        var jqxhr = $.ajax({
-            contentType: 'application/json',
-            data: JSON.stringify({
-                project_uuid: this.get('uuid'),
-                username: username
-            }),
-            headers: Agave.oauthHeader(),
-            type: 'DELETE',
-            url: EnvironmentConfig.vdjApi.hostname + '/permission/user',
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username
+                }),
+                headers: Agave.oauthHeader(),
+                type: 'DELETE',
+                url: EnvironmentConfig.vdjApi.hostname + '/project/' + this.get('uuid') + '/user',
+                success: function (data) {
+                    resolve(data)
+                },
+                error: function (error) {
+                    reject(error)
+                },
+            });
         });
-
-        return jqxhr;
     },
 
     generateVisualization: async function(name, repertoire_id, repertoire_group_id, processing_stage) {

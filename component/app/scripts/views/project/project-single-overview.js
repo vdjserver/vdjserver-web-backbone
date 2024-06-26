@@ -420,7 +420,7 @@ var ProjectUsersView = Marionette.View.extend({
                 App.AppController.startModal(view, context, null, context.onHiddenAddUserSuccessModal);
                 $('#modal-message').modal('show');
             })
-            .fail(function(error) {
+            .catch(function(error) {
                 // save failed so show error modal
                 context.modalState = 'fail';
 
@@ -526,7 +526,7 @@ var ProjectUsersView = Marionette.View.extend({
                 App.AppController.startModal(view, context, null, context.onHiddenDeleteUserSuccessModal);
                 $('#modal-message').modal('show');
             })
-            .fail(function(error) {
+            .catch(function(error) {
                 // save failed so show error modal
                 context.modalState = 'fail';
 
