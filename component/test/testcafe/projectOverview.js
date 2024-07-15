@@ -1,5 +1,5 @@
 //
-// projectSubjects.js
+// projectOverview.js
 // Project Pages Test Cases
 //
 // VDJServer
@@ -78,7 +78,7 @@ fixture('Project Pages Test Cases')
   const sAddr2 = "13 W. Main St2";
   const subBy = sName2 + ", " + sEmail2 + ", " + sAddr2;
   
-  const userName = "apitest";
+  const userName = "vdj-test2";
 
   //General Selectors
   const createProjectSelect = Selector('#create-project', {timeout:config.timeout});
@@ -200,6 +200,11 @@ fixture('Project Pages Test Cases')
   await new Promise(r => setTimeout(r, 10000));
   
   await t.click(Selector('#confirm-message-button', {timeout:config.timeout}));
+  await t.click(Selector('#cancel-message-button', {timeout:config.timeout}));
+
+  await t.eval(() => location.reload(true));
+
+  await new Promise(r => setTimeout(r, 10000));
 
   //check back-end TODO
   var token = await tapisIO.getToken({username: config.username, password: config.password});
@@ -233,6 +238,11 @@ fixture('Project Pages Test Cases')
   //delete user
   await t
     .click(deleteUserButtonSelect.withAttribute('name',userName))
+
+  await t.click(Selector('#confirm-message-button', {timeout:config.timeout}));
+  await t.click(Selector('#cancel-message-button', {timeout:config.timeout}));
+
+  await new Promise(r => setTimeout(r, 10000));
     
   //check back-end TODO
   token = await tapisIO.getToken({username: config.username, password: config.password});
@@ -327,6 +337,7 @@ fixture('Project Pages Test Cases')
     .expect(m["value"]["submitted_by"].split(", ")[2]).eql(sAddr2)
  });
 
+//TODO- Delete is not implemented on the back-end, yet
  test('Delete the Project and Check Back-end Values', async t => {
   await login(t,config.username,config.password,'CLICK','#home-login');
 

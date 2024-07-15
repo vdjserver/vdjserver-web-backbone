@@ -73,9 +73,9 @@
                     <div id="tissue-region-{{this.uuid}}"></div>
                     {{else}}
                         {{#if value.tissue.id}}
-                        <input type="text" class="form-control form-control-sample form-control-tissue" name="tissue" id="tissue_{{value.uuid}}" value="{{value.tissue.label}} ({{value.tissue.id}})" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-tissue" name="tissue" id="tissue_{{uuid}}" value="{{value.tissue.label}} ({{value.tissue.id}})" readonly>
                         {{else}}
-                        <input type="text" class="form-control form-control-sample form-control-tissue" name="tissue" id="tissue_{{value.uuid}}" value="" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-tissue" name="tissue" id="tissue_{{uuid}}" value="" readonly>
                         {{/if}}
                     {{/ifEquals}}
                     <div class="invalid-feedback">
@@ -240,9 +240,9 @@
                         {{{FieldHelpPopover "SequencingRun" "sequencing_run_date"}}}
                         Sequencing Date:
                     </label>
-                    <input type="text" class="form-control form-control-sample" name="sequencing_run_date" id="sequencing_run_date" placeholder="" value="{{value.sequencing_run_date}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="sequencing_run_date" id="sequencing_run_date" placeholder="YYYY-MM-DD" value="{{value.sequencing_run_date}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
-                        Please enter a valid Sequencing Run Date.
+                        Please enter a valid Sequencing Run Date (YYYY-MM-DD).
                     </div>
                 </div>
                 <div class="form-group col-md-4">
@@ -274,7 +274,8 @@
                         {{#each sequencing_files_formatted}}
                             <option id="{{this.uuid}}" value="{{this.name}}" {{#ifEquals this.name ../value.sequencing_files.filename}}selected{{/ifEquals}}>{{this.name}}</option>
                         {{/each}}
-                            <option id="" value="" {{#ifEquals value.sequencing_files.filename null}}selected{{/ifEquals}}>null</option>
+                        <option {{#unless value.sequencing_files.filename}}selected{{/unless}}>null</option>
+
                     </select>
                     <div class="invalid-feedback">
                         Please enter Seq. Files or Seq. Data ID, not both.
@@ -312,9 +313,9 @@
                     <div id="cell-subset-region-{{this.uuid}}"></div>
                     {{else}}
                         {{#if value.tissue.id}}
-                        <input type="text" class="form-control form-control-sample form-control-cell-subset" name="cell_subset" id="cell_subset_{{value.uuid}}" value="{{value.cell_subset.label}} ({{value.cell_subset.id}})" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-cell-subset" name="cell_subset" id="cell_subset_{{uuid}}" value="{{value.cell_subset.label}} ({{value.cell_subset.id}})" readonly>
                         {{else}}
-                        <input type="text" class="form-control form-control-sample form-control-cell-subset" name="cell_subset" id="cell_subset_{{value.uuid}}" value="" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-cell-subset" name="cell_subset" id="cell_subset_{{uuid}}" value="" readonly>
                         {{/if}}
                     {{/ifEquals}}
                     <div class="invalid-feedback">
@@ -350,9 +351,9 @@
                     <div id="cell-species-region-{{this.uuid}}"></div>
                     {{else}}
                         {{#if value.cell_species.id}}
-                        <input type="text" class="form-control form-control-sample form-control-cell-species" name="cell_species" id="cell_species_{{value.uuid}}" value="{{value.cell_species.label}} ({{value.cell_species.id}})" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-cell-species" name="cell_species" id="cell_species_{{uuid}}" value="{{value.cell_species.label}} ({{value.cell_species.id}})" readonly>
                         {{else}}
-                        <input type="text" class="form-control form-control-sample form-control-cell-species" name="cell_species" id="cell_species_{{value.uuid}}" value="" readonly>
+                        <input type="text" class="form-control form-control-sample form-control-cell-species" name="cell_species" id="cell_species_{{uuid}}" value="" readonly>
                         {{/if}}
                     {{/ifEquals}}
                     <div class="invalid-feedback">
@@ -648,10 +649,9 @@
                         {{#each pcr_target_locus_enum}}
                             {{#if this}}
                                 <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>{{this}}</option>
+                            {{else}}
+                                <option {{#ifEquals null ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>null</option>
                             {{/if}}
-                            {{#ifEquals this null}}
-                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>null</option>
-                            {{/ifEquals}}
                         {{/each}}
                     </select>
                     <div class="invalid-feedback">
@@ -668,7 +668,7 @@
                         {{{FieldHelpPopover "PCRTarget" "forward_pcr_primer_target_location"}}}
                         Forward Target Location:
                     </label>
-                    <input type="text" class="form-control form-control-sample" name="forward_pcr_primer_target_location" id="forward_pcr_primer_target_location" placeholder="" value="{{value.forward_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control value-select-sample-pcr" name="forward_pcr_primer_target_location" id="forward_pcr_primer_target_location" placeholder="" value="{{value.pcr_target.0.forward_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Forward PCR Primer Target Location.
                     </div>
@@ -683,7 +683,7 @@
                         {{{FieldHelpPopover "PCRTarget" "reverse_pcr_primer_target_location"}}}
                         Reverse Target Location:
                     </label>
-                    <input type="text" class="form-control form-control-sample" name="reverse_pcr_primer_target_location" id="reverse_pcr_primer_target_location" placeholder="" value="{{value.reverse_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control value-select-sample-pcr" name="reverse_pcr_primer_target_location" id="reverse_pcr_primer_target_location" placeholder="" value="{{value.pcr_target.0.reverse_pcr_primer_target_location}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Reverse PCR Primer Target Location.
                     </div>
@@ -698,7 +698,7 @@
                         {{{FieldHelpPopover "SequencingData" "sequencing_data_id"}}}
                         Seq. Data ID:
                     </label>
-                    <input type="text" class="form-control form-control-sample-sdi" name="sequencing_data_id" id="sequencing_data_id" placeholder="" value="{{value.sequencing_data_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample-sdi" name="sequencing_data_id" id="sequencing_data_id" placeholder="" value="{{value.sequencing_files.sequencing_data_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter Seq. Data ID or Seq. Files, not both.
                     </div>

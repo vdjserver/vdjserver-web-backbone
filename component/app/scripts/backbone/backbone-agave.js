@@ -445,6 +445,12 @@ Agave.MetadataModel = Agave.Model.extend({
             this.set('value', value);
             return;
         }
+        if (type == 'integer') {
+            if (newval) newval = parseInt(newval);
+            value[name] = newval;
+            this.set('value', value);
+            return;
+        }
         if (type == 'number') {
             if (newval) newval = parseFloat(newval);
             value[name] = newval;

@@ -303,11 +303,11 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         this.schema = sampleProcessingSchema;
     },
 
-    updatePCR: function(new_value) {
+    updatePCR: function(name, new_value) {
         let value = this.get('value');
         let pcr = value['pcr_target'][0];
-        if(new_value != null) pcr.pcr_target_locus = new_value;
-        else pcr.pcr_target_locus = null;
+        if(new_value != null ) { console.log("1"); pcr[name] = new_value; }
+        if(new_value == null && name == "pcr_target_locus") { console.log("2"); pcr.pcr_target_locus = null; }
         this.set('value', value);
     },
 
