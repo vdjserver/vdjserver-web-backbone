@@ -237,6 +237,11 @@ export var SubjectCollection = Agave.MetadataCollection.extend(
                 case 'sex': {
                     let sub_a = modela.get('value').sex;
                     let sub_b = modelb.get('value').sex;
+
+                    // nulls always at the back of the line
+                    if (!sub_a && !sub_b) return 0;
+                    if (!sub_a) return 1;
+                    if (!sub_b) return -1;
                     if(sub_a>sub_b) return 1;
                     if(sub_a<sub_b) return -1;
                     return 0;
