@@ -140,12 +140,12 @@
                         Unit:
                     </label>
                    <select class="custom-select ontology-select-sample" name="collection_time_point_relative_unit" id="collection_time_point_relative_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option id="" value="" {{#unless value.age_unit}}selected{{/unless}}>null</option>
                       <option id="UO:0000032" value="hour" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000032"}}selected{{/ifEquals}}>hour(s)</option>
                       <option id="UO:0000033" value="day" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000033"}}selected{{/ifEquals}}>day(s)</option>
                       <option id="UO:0000034" value="week" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000034"}}selected{{/ifEquals}}>week(s)</option>
                       <option id="UO:0000035" value="month" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000035"}}selected{{/ifEquals}}>month(s)</option>
                       <option id="UO:0000036" value="year" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000036"}}selected{{/ifEquals}}>year(s)</option>
+                      <option id="" value="" {{#unless value.collection_time_point_relative_unit.id}}selected{{/unless}}>null</option>
                     </select>
                     <div class="invalid-feedback">
                         Please enter a Collection Time Unit.
@@ -371,9 +371,9 @@
                         Single Cell:
                     </label>
                     <select class="custom-select value-select-sample" name="single_cell" id="single_cell" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="true" {{#if value.single_cell}}selected{{/if}}>True</option>
-                      <option value="false"{{#unless value.single_cell}}selected{{/unless}}>False</option>
-                      <option value="" {{#ifEquals value.single_cell null}}selected{{/ifEquals}}>null</option>
+                      <option value="true" {{#if (ifTrue value.single_cell)}}selected{{/if}}>True</option>
+                      <option value="false"{{#if (ifFalse value.single_cell)}}selected{{/if}}>False</option>
+                      <option value="" {{#if (ifNull value.single_cell)}}selected{{/if}}>null</option>
                     </select>
                 </div>
                 <div class="form-group col-md-2">
@@ -419,9 +419,9 @@
                         Cell Storage:
                     </label>
                     <select class="custom-select value-select-sample" name="cell_storage" id="cell_storage" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="true" {{#if value.cell_storage}}selected{{/if}}>True</option>
-                      <option value="false"{{#unless value.cell_storage}}selected{{/unless}}>False</option>
-                      <option value="" {{#ifEquals value.cell_storage null}}selected{{/ifEquals}}>null</option>
+                      <option value="true" {{#if (ifTrue value.cell_storage)}}selected{{/if}}>True</option>
+                      <option value="false"{{#if (ifFalse value.cell_storage)}}selected{{/if}}>False</option>
+                      <option value="" {{#if (ifNull value.cell_storage)}}selected{{/if}}>null</option>
                     </select>
                 </div>
                 <div class="form-group col-md-2">
@@ -532,13 +532,13 @@
                         Template Amount Unit:
                     </label>
                     <select class="custom-select ontology-select-sample" name="template_amount_unit" id="template_amount_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option id="" value="" {{#unless value.template_amount_unit}}selected{{/unless}}>null</option>
                       <option id="UO:0000025" value="picogram" {{#ifEquals value.template_amount_unit.id "UO:0000025"}}selected{{/ifEquals}}>picogram(s)</option>
                       <option id="UO:0000024" value="nanogram" {{#ifEquals value.template_amount_unit.id "UO:0000024"}}selected{{/ifEquals}}>nanogram(s)</option>
                       <option id="UO:0000023" value="microgram" {{#ifEquals value.template_amount_unit.id "UO:0000023"}}selected{{/ifEquals}}>microgram(s)</option>
                       <option id="UO:0000022" value="milligram" {{#ifEquals value.template_amount_unit.id "UO:0000022"}}selected{{/ifEquals}}>milligram(s)</option>
                       <option id="UO:0000021" value="gram" {{#ifEquals value.template_amount_unit.id "UO:0000021"}}selected{{/ifEquals}}>gram(s)</option>
                       <option id="UO:0000009" value="kilogram" {{#ifEquals value.template_amount_unit.id "UO:0000009"}}selected{{/ifEquals}}>kilogram(s)</option>
+                      <option id="" value="" {{#unless value.template_amount_unit.id}}selected{{/unless}}>null</option>
                     </select>
                     <div class="invalid-feedback">
                         Please enter a Template Amount Unit.
@@ -650,7 +650,7 @@
                             {{#if this}}
                                 <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>{{this}}</option>
                             {{else}}
-                                <option {{#ifEquals null ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>null</option>
+                                <option {{#unless ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>null</option>
                             {{/if}}
                         {{/each}}
                     </select>
