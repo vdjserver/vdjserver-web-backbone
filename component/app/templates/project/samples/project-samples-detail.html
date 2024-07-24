@@ -650,7 +650,7 @@
                             {{#if this}}
                                 <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>{{this}}</option>
                             {{else}}
-                                <option {{#unless ../value.pcr_target.0.pcr_target_locus}}selected{{/ifEquals}}>null</option>
+                                <option {{#unless ../value.pcr_target.0.pcr_target_locus}}selected{{/unless}}>null</option>
                             {{/if}}
                         {{/each}}
                     </select>
