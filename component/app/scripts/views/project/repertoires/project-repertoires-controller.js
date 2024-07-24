@@ -308,8 +308,15 @@ ProjectRepertoiresController.prototype = {
         model.setSample(sampleList);
         this.getSampleList().remove(sample);
 
+        // change to edit mode
+        model.view_mode = 'edit';
+        for (let i = 0; i < sampleList.length; i++) {
+            let s = sampleList.at(i);
+            if (s.view_mode != 'edit') s.view_mode = 'edit';
+        }
+
         this.flagRepertoiresEdits();
-//        this.showProjectRepertoiresList();
+        this.showProjectRepertoiresList();
     },
 
     //
