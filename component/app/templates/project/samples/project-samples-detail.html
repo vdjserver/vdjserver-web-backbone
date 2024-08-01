@@ -39,7 +39,7 @@
                     </label>
                     <input type="text" class="form-control form-control-sample" name="sample_id" id="sample_id_{{uuid}}" placeholder="" value="{{value.sample_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}} required>
                     <div class="invalid-feedback">
-                        Enter a unique, non-blank ID.
+                        Please enter a unique, non-blank ID.
                     </div>
                 </div>
                 <div class="form-group col-md-2">
@@ -124,7 +124,7 @@
                         {{{FieldHelpPopover "Sample" "collection_time_point_relative"}}}
                         Collection Time:
                     </label>
-                    <input type="number" class="form-control form-control-sample" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" value="{{value.collection_time_point_relative}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="collection_time_point_relative" id="collection_time_point_relative" placeholder="" value="{{value.collection_time_point_relative}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
                         Please enter a valid Collection Time Point Relative number.
                     </div>
@@ -145,10 +145,10 @@
                       <option id="UO:0000034" value="week" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000034"}}selected{{/ifEquals}}>week(s)</option>
                       <option id="UO:0000035" value="month" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000035"}}selected{{/ifEquals}}>month(s)</option>
                       <option id="UO:0000036" value="year" {{#ifEquals value.collection_time_point_relative_unit.id "UO:0000036"}}selected{{/ifEquals}}>year(s)</option>
-                      <option id="" value="" {{#unless value.collection_time_point_relative_unit.id}}selected{{/unless}}>null</option>
+                      <option id="" {{#unless value.collection_time_point_relative_unit.id}}selected{{/unless}}>null</option>
                     </select>
                     <div class="invalid-feedback">
-                        Please enter a Collection Time Unit.
+                        Please enter a Collection Time Point Relative Unit.
                     </div>
                 </div>
                 <div class="form-group col-md-4">
@@ -275,10 +275,9 @@
                             <option id="{{this.uuid}}" value="{{this.name}}" {{#ifEquals this.name ../value.sequencing_files.filename}}selected{{/ifEquals}}>{{this.name}}</option>
                         {{/each}}
                         <option {{#unless value.sequencing_files.filename}}selected{{/unless}}>null</option>
-
                     </select>
                     <div class="invalid-feedback">
-                        Please enter Seq. Files or Seq. Data ID, not both.
+                        Please enter Seq. Files or a non-blank Seq. Data ID, not both.
                     </div>
                 </div>
             </div>
@@ -373,8 +372,11 @@
                     <select class="custom-select value-select-sample" name="single_cell" id="single_cell" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="true" {{#if (ifTrue value.single_cell)}}selected{{/if}}>True</option>
                       <option value="false"{{#if (ifFalse value.single_cell)}}selected{{/if}}>False</option>
-                      <option value="" {{#if (ifNull value.single_cell)}}selected{{/if}}>null</option>
+                      <option {{#if (ifNull value.single_cell)}}selected{{/if}}>null</option>
                     </select>
+                    <div class="invalid-feedback">
+                        Please enter a valid Single Cell value.
+                    </div>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="cell_number">
@@ -386,9 +388,9 @@
                         {{{FieldHelpPopover "CellProcessing" "cell_number"}}}
                         Cell Number:
                     </label>
-                    <input type="text" class="form-control form-control-sample" name="cell_number" id="cell_number" placeholder="" value="{{value.cell_number}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="number" min="0" step="1" class="form-control form-control-sample" name="cell_number" id="cell_number" placeholder="" value="{{value.cell_number}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
-                        Please enter a valid Cell Number.
+                        Please enter a valid Cell Number integer ≥ 0.
                     </div>
                 </div>
             </div>
@@ -403,9 +405,9 @@
                         {{{FieldHelpPopover "CellProcessing" "cells_per_reaction"}}}
                         Cells Per Reaction:
                     </label>
-                    <input type="text" class="form-control form-control-sample" name="cells_per_reaction" id="cells_per_reaction" placeholder="" value="{{value.cells_per_reaction}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="number" min="0" step="1" class="form-control form-control-sample" name="cells_per_reaction" id="cells_per_reaction" placeholder="" value="{{value.cells_per_reaction}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
-                        Please enter a valid Cells Per Reaction.
+                        Please enter a valid Cells Per Reaction integer ≥ 0.
                     </div>
                 </div>
                 <div class="form-group col-md-2">
@@ -423,6 +425,9 @@
                       <option value="false"{{#if (ifFalse value.cell_storage)}}selected{{/if}}>False</option>
                       <option value="" {{#if (ifNull value.cell_storage)}}selected{{/if}}>null</option>
                     </select>
+                    <div class="invalid-feedback">
+                        Please enter a valid Cell Storage value.
+                    </div>
                 </div>
                 <div class="form-group col-md-2">
                     <label for="cell_quality">
@@ -516,9 +521,9 @@
                         {{{FieldHelpPopover "NucleicAcidProcessing" "template_amount"}}}
                         Template Amount:
                     </label>
-                    <input type="number" class="form-control form-control-sample" name="template_amount" id="template_amount" placeholder="" value="{{value.template_amount}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
+                    <input type="text" class="form-control form-control-sample" name="template_amount" id="template_amount" placeholder="" value="{{value.template_amount}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
-                        Please enter a valid Template Amount number.
+                        Please enter a valid Template Amount number ≥ 0.
                     </div>
                 </div>
                 <div class="form-group col-md-3">
@@ -538,7 +543,7 @@
                       <option id="UO:0000022" value="milligram" {{#ifEquals value.template_amount_unit.id "UO:0000022"}}selected{{/ifEquals}}>milligram(s)</option>
                       <option id="UO:0000021" value="gram" {{#ifEquals value.template_amount_unit.id "UO:0000021"}}selected{{/ifEquals}}>gram(s)</option>
                       <option id="UO:0000009" value="kilogram" {{#ifEquals value.template_amount_unit.id "UO:0000009"}}selected{{/ifEquals}}>kilogram(s)</option>
-                      <option id="" value="" {{#unless value.template_amount_unit.id}}selected{{/unless}}>null</option>
+                      <option id="" {{#unless value.template_amount_unit.id}}selected{{/unless}}>null</option>
                     </select>
                     <div class="invalid-feedback">
                         Please enter a Template Amount Unit.
@@ -700,7 +705,7 @@
                     </label>
                     <input type="text" class="form-control form-control-sample-sdi" name="sequencing_data_id" id="sequencing_data_id" placeholder="" value="{{value.sequencing_files.sequencing_data_id}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
                     <div class="invalid-feedback">
-                        Please enter Seq. Data ID or Seq. Files, not both.
+                        Please enter Seq. Files or a non-blank Seq. Data ID, not both.
                     </div>
                 </div>
             </div>

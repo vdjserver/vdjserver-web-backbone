@@ -9,7 +9,7 @@
 //
 // Author: Ryan Kennedy
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
-// Date: June 2024
+// Date: June-July 2024
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
@@ -48,9 +48,9 @@ var dSampleUuid="";
 fixture('Project Repertoires Page Test Cases')
   .page(config.url);
 
-//append a random number less than 1,000,000 to subjectId
-var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
-console.log("\nSubject ID " + subjectId);
+  //append a random number less than 1,000,000 to subjectId
+  var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
+  console.log("\nSubject ID: " + subjectId);
 
   //Project Values
   const studyId = "Test Study ID";
@@ -102,13 +102,12 @@ console.log("\nSubject ID " + subjectId);
   const repertoireSubjectId = "null";
 
   //Sample Values
-  //const sampleId = "Sample ID_" + Math.floor(Math.random()*1000000);
-  var sampleId = "Sample ID_251173";
+  const sampleId = "Sample ID_" + Math.floor(Math.random()*1000000);
   const sampleType = "Sample Type";
   const tissue = "epithalamus";
   const anatomicSite = "Anatomic Site";
   const diseaseStateSample = "Disease State Sample";
-  const collectionTime = "1234"; //TODO NUMBER
+  const collectionTime = "1234";
   const collectionTimePointRelativeUnit = "day";
   const collectionTimeReference = "Collection Time Reference";
   const biomaterialProvider = "Biomaterial Provider";
@@ -147,10 +146,9 @@ console.log("\nSubject ID " + subjectId);
   const createProjectSelect = Selector('#create-project', {timeout:config.timeout});
   const subjectsTabSelect = Selector('#subjects-tab', {timeout:config.timeout});
   const repertoiresTabSelect = Selector('#repertoires-tab', {timeout:config.timeout});
+  const filesTabSelect = Selector('#files-tab', {timeout:config.timeout});
   const detailsSummarySubjectSelect = Selector('#project-subjects-details-summary', {timeout:config.timeout});
   const detailsSummaryRepertoireSelect = Selector('#project-repertoires-details-summary', {timeout:config.timeout});
-//TODO show summary drop-down (also in Subjects)
-//attach existing sample?
   const sortRepertoireDropdownSelect = Selector('#project-repertoires-sort-button', {timeout:config.timeout});
   const sortRepertoireDropdownOptionSelect = Selector('#project-repertoires-sort-select', {timeout:config.timeout});
   const newSubjectSelect = Selector('#project-subjects-new-subject', {timeout:config.timeout});
@@ -263,6 +261,12 @@ console.log("\nSubject ID " + subjectId);
   const reverseTargetLocationSelect = Selector('#reverse_pcr_primer_target_location');
   const sequencingDataIdSelect = Selector('#sequencing_data_id');
 
+  //Files Selectors
+  const uploadFilesSelect = Selector('#project-files-upload');
+  const uploadFilesComputerSelect = Selector('#project-files-upload-computer');
+  const addFilesSelect = Selector('#add-upload-files');
+  const addStartUploadSelect = Selector('#start-upload-button');
+  const doneUploadSelect = Selector('#done-upload-button');
 
  test('Create a Project and Check Back-end Values', async t => {
   await login(t,config.username,config.password,'CLICK','#home-login');
@@ -305,7 +309,7 @@ console.log("\nSubject ID " + subjectId);
 
   projectUuid = url.split("/")[4];
   projectUuidUrl += projectUuid;
-console.log("Project UUID: " + projectUuid);
+  console.log("Project UUID: " + projectUuid);
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -321,7 +325,6 @@ console.log("Project UUID: " + projectUuid);
         }
     };
     var m = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'][0];
@@ -356,7 +359,7 @@ console.log("Project UUID: " + projectUuid);
   await t.navigateTo('./'+projectUuidUrl);
   await new Promise(r => setTimeout(r, 10000));
   const url = await getPageUrl();
-console.log("URL: " + url);
+  console.log("URL: " + url);
 
   await new Promise(r => setTimeout(r, 10000));
 
@@ -417,14 +420,13 @@ console.log("URL: " + url);
         }
     };
     var m = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'];
   }
 
   subjectUuid = m[0]["uuid"];
-console.log("Subject UUID: " + subjectUuid);
+  console.log("Subject UUID: " + subjectUuid);
 
   //check Subject values
   await t
@@ -476,7 +478,7 @@ console.log("Subject UUID: " + subjectUuid);
 
   var sampleCid = await sampleIdSelect.getAttribute('id');
   sampleCid = sampleCid.split('_')[2];
-console.log("Sample CID: " + sampleCid);
+  console.log("Sample CID: " + sampleCid);
 
   const tissueSelect = Selector('#tissue_'+sampleCid);
   const tissueOption = tissueSelect.find('option');
@@ -576,17 +578,16 @@ console.log("Sample CID: " + sampleCid);
         }
     };
     var r = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(r['status']).eql("success")
         .expect(r['result'].length).eql(1);
     r = r['result'];
   }
 
   repertoireUuid = r[0]["uuid"];
-console.log("Repertoire UUID: " + repertoireUuid);
+  console.log("Repertoire UUID: " + repertoireUuid);
 
   sampleUuid = r[0]["value"]["sample"][0]["vdjserver_uuid"];
-console.log("Sample UUID: " + sampleUuid);
+  console.log("Sample UUID: " + sampleUuid);
 
   if (config.tapis_version == 2) {
     var s = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
@@ -601,7 +602,6 @@ console.log("Sample UUID: " + sampleUuid);
         }
     };
     var s = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(s['status']).eql("success")
         .expect(s['result'].length).eql(1);
     s = s['result'];
@@ -720,7 +720,7 @@ console.log("Sample UUID: " + sampleUuid);
   await t
     .expect(repertoireNameSelect.value).eql(repertoireName)
     .expect(repertoireDescriptionSelect.value).eql(repertoireDescription)
-    .expect(subjectIdSelect.innerText).eql(subjectId)
+    .expect(subjectIdText).ok()
     .expect(sexSpeciesText).ok()
     .expect(raceEthnicityText).ok()
     .expect(ageText).ok()
@@ -765,7 +765,7 @@ console.log("Sample UUID: " + sampleUuid);
     .expect(sequencingDataIdSelect.value).eql(sequencingDataId)
  });
 
- test('Duplicate the Repertoire, change select values, and confirm back-end changes.', async t => {
+ test('Duplicate the Repertoire, change select values, and confirm Back-end changes.', async t => {
   await login(t,config.username,config.password,'CLICK','#home-login');
 
   await new Promise(r => setTimeout(r, 5000));
@@ -783,7 +783,7 @@ console.log("Sample UUID: " + sampleUuid);
 
   var sampleCid = await sampleIdSelect.getAttribute('id');
   sampleCid = sampleCid.split('_')[2];
-console.log("Duplicate Sample CID: " + sampleCid);
+  console.log("Duplicate Sample CID: " + sampleCid);
   var duplicateSampleIdSelect = Selector('#sample_id_' + sampleCid);
   const cellSubsetSelect = Selector('#cell_subset_'+sampleCid);
   const cellSubsetOption = cellSubsetSelect.find('option');
@@ -817,6 +817,7 @@ console.log("Duplicate Sample CID: " + sampleCid);
 
   await new Promise(r => setTimeout(r, 10000));
 
+  //Determine the UUIDs for the new Repertoire and new Sample
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
     var r = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'repertoire');
@@ -831,7 +832,6 @@ console.log("Duplicate Sample CID: " + sampleCid);
         }
     };
     var r = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(r['status']).eql("success")
         .expect(r['result'].length).eql(2);
     r = r['result'];
@@ -849,7 +849,7 @@ console.log("Duplicate Sample CID: " + sampleCid);
   }
 
   dSampleUuid = dRepertoireValue["sample"][0]["vdjserver_uuid"];
-console.log("Duplicate Sample UUID: " + dSampleUuid);
+  console.log("Duplicate Sample UUID: " + dSampleUuid);
 
   if (config.tapis_version == 2) {
     var s = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
@@ -864,7 +864,6 @@ console.log("Duplicate Sample UUID: " + dSampleUuid);
         }
     };
     var s = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(s['status']).eql("success")
         .expect(s['result'].length).eql(1);
     s = s['result'];
@@ -876,7 +875,6 @@ console.log("Duplicate Sample UUID: " + dSampleUuid);
   await t
     .expect(dRepertoireValue["repertoire_name"]).eql(repertoireName+'-2')
     .expect(dSampleValue["sample_id"]).eql(sampleId+'-2')
-
  });
 
  test('Delete the duplicated Repertoire and confirm the correct one was deleted on the Back-end', async t => {
@@ -912,7 +910,6 @@ console.log("Duplicate Sample UUID: " + dSampleUuid);
         }
     };
     var r = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(r['status']).eql("success")
         .expect(r['result'].length).eql(1);
     r = r['result'][0];
@@ -921,9 +918,6 @@ console.log("Duplicate Sample UUID: " + dSampleUuid);
   //confirm the remaining Repertoire is the correct one
   await t
     .expect(r["uuid"]).eql(repertoireUuid)
-
-  //confirm the correct Repertoire was deleted
-
  });
 
  test('Duplicate a Sample for the original Repertoire, change select values, and check against the Back-end', async t => {
@@ -983,7 +977,6 @@ console.log("Duplicate Sample UUID: " + dSampleUuid);
         }
     };
     var m = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'][0];
@@ -1009,7 +1002,6 @@ console.log("Duplicate Sample UUID: " + dSampleUuid);
         }
     };
     var s = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(s['status']).eql("success")
         .expect(s['result'].length).eql(1);
     s = s['result'];
@@ -1071,7 +1063,6 @@ console.log("Duplicate Sample UUID: " + dSampleUuid);
     .click(repertoiresTabSelect)
 
   await t
-    //.click(sampleDropdownSelect.withText(sampleId+'-duplicate'))
     .click(sampleDropdownSelect)
     .click(sampleDropdownDeleteSelect.withAttribute('name',dSampleUuid))
 
@@ -1079,7 +1070,7 @@ console.log("Duplicate Sample UUID: " + dSampleUuid);
 
   await new Promise(r => setTimeout(r, 10000));
 
-  //confirm there is just 1 Sample
+  //confirm there is just 1 Sample in the Samples Object
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
     var sp = await tapisV2.getProjectMetadata(token.access_token, subjectUuid);
@@ -1094,7 +1085,6 @@ console.log("Duplicate Sample UUID: " + dSampleUuid);
         }
     };
     var sp = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(sp['status']).eql("success")
         .expect(sp['result'].length).eql(1);
     sp = sp['result'][0];
@@ -1103,6 +1093,549 @@ console.log("Duplicate Sample UUID: " + dSampleUuid);
   //confirm the remaining Sample is the correct one
   await t
     .expect(sp["uuid"]).eql(sampleUuid)
+
+  //confirm the reference to the Sample was removed from the Repertoire Object and the correct one remains
+  token = await tapisIO.getToken({username: config.username, password: config.password});
+  if (config.tapis_version == 2) {
+    var r = await tapisV2.getProjectMetadata(token.access_token, repertoireUuid);
+  } else {
+    var requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/repertoire',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var r = await tapisV3.sendRequest(requestSettings);
+    await t.expect(r['status']).eql("success")
+        .expect(r['result'].length).eql(1);
+    r = r['result'][0];
+  }
+
+  //confirm the remaining Sample is the correct one
+  await t
+    .expect(r["value"]["sample"][0]["vdjserver_uuid"]).eql(sampleUuid)
+ });
+
+ test('Attempt to create a new Repertoire (with a Sample) that has various erroneous fields for the previously created Project, save with permissible values, and check against the Back-end', async t => {
+  const subjectIdNull = 'null';
+  const sampleIdBlank = '  ';
+  const sampleIdTabbed = ' \t\t\t';
+  const sampleIdDuplicate = sampleId;
+  const sampleIdNew = sampleId + '-new'; //pass
+  const singleCellNull = 'null'; //pass
+  const cellStorageNull = 'null'; //pass
+  const pcrTargetLocusNull = 'null';
+  const pcrTargetLocusNew = 'IGL'; //pass
+  const collectionTimePointRelativeString = 'Collection Time Point Relative';
+  const collectionTimePointRelativeZero= '0'; //pass
+  const collectionTimePointRelativeNew= '-1234'; //pass
+  const collectionTimePointRelativeBlank= ' ';
+  const collectionTimePointRelativeUnitNew= 'hour'; //pass
+  const templateAmountNegative = '-1';
+  const templateAmountString = 'Template Amount';
+  const templateAmountBlank = ' ';
+  const templateAmountNew = '0'; //pass
+  const templateAmountUnitNull = ' ';
+  const templateAmountUnitNew = 'microgram'; //pass
+  const cellNumberNegative = '-5';
+  const cellNumberFloat = '2.5';
+  const cellNumberNew = '0'; //pass
+  const cellsPerReactionNegative = '-4';
+  const cellsPerReactionFloat = '20.5';
+  const cellsPerReactionNew = '0'; //pass
+  const sequencingDateBad = '2-22-2022';
+  const sequencingDateNew = '2022-02-22'; //pass
+  const sequencingDataIdNew = "null";
+
+  await login(t,config.username,config.password,'CLICK','#home-login');
+
+  await new Promise(r => setTimeout(r, 5000));
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await new Promise(r => setTimeout(r, 10000));
+
+  await t
+    .scrollIntoView(repertoiresTabSelect)
+    .click(repertoiresTabSelect)
+
+  await t
+    .click(newRepertoireSelect)
+    .click(newRepertoireAddSelect)
+
+  //Check for null Subject ID
+  await t
+    .click(subjectIdSelect)
+    .click(subjectIdOption.withText(subjectIdNull))
+
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+
+  var errorMessage = Selector('div').withText('Please select a Subject ID.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a blank Sample ID is not allowed
+  await t
+    .click(subjectIdSelect)
+    .click(subjectIdOption.withText(subjectId))
+    .typeText(sampleIdSelect,sampleIdBlank, {replace: true})
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a unique, non-blank ID.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that tabbed Sample ID is not allowed
+    await t
+    .typeText(sampleIdSelect,sampleIdTabbed, {replace: true})
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a unique, non-blank ID.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a null Single Cell is allowed
+  await t
+    .typeText(sampleIdSelect,sampleIdNew, {replace: true})
+    .click(singleCellSelect)
+    .click(singleCellOption.withText(singleCellNull))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Single Cell value.').filterVisible().exists;
+  await t.expect(errorMessage).notOk()
+
+  //Check that a null Cell Storage is allowed
+  await t
+    .click(cellStorageSelect)
+    .click(cellStorageOption.withText(cellStorageNull))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Cell Storage value.').filterVisible().exists;
+  await t.expect(errorMessage).notOk()
+
+  //Check that a null PCR Target Locus is not allowed
+  await t
+    .click(pcrTargetLocusSelect)
+    .click(pcrTargetLocusOption.withText(pcrTargetLocusNull))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please select a non-null PCR Target Locus.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a string Collection Time Point Relative is not allowed
+  await t
+    .typeText(collectionTimeSelect,collectionTimePointRelativeString, {replace: true})
+    .click(pcrTargetLocusSelect)
+    .click(pcrTargetLocusOption.withAttribute('value',pcrTargetLocusNew))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Collection Time Point Relative number.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a negative Collection Time Point Relative with a valid unit is allowed
+  await t
+    .typeText(collectionTimeSelect,collectionTimePointRelativeNew, {replace: true})
+    .click(collectionTimePointRelativeUnitSelect)
+    .click(collectionTimePointRelativeUnitOption.withAttribute('value',collectionTimePointRelativeUnitNew))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Collection Time Point Relative number.').filterVisible().exists;
+  await t.expect(errorMessage).notOk()
+
+  //Check that negative Collection Time Point Relative without a valid unit is not allowed
+  await t
+    .click(collectionTimePointRelativeUnitSelect)
+    .click(collectionTimePointRelativeUnitOption.withText('null'))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a Collection Time Point Relative Unit.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a 0 Collection Time Point Relative with a valid unit is not allowed
+  await t
+    .typeText(collectionTimeSelect,collectionTimePointRelativeZero, {replace: true})
+    .click(collectionTimePointRelativeUnitSelect)
+    .click(collectionTimePointRelativeUnitOption.withAttribute('value',collectionTimePointRelativeUnitNew))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Collection Time Point Relative number.').filterVisible().exists;
+  await t.expect(errorMessage).notOk()
+
+  //Check that a blank Collection Time Point Relative with a valid unit is not allowed
+  await t
+    .typeText(collectionTimeSelect,collectionTimePointRelativeBlank, {replace: true})
+    .click(collectionTimePointRelativeUnitSelect)
+    .click(collectionTimePointRelativeUnitOption.withAttribute('value',collectionTimePointRelativeUnitNew))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Collection Time Point Relative number.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a string Template Amount is not allowed
+  await t
+    .typeText(collectionTimeSelect,collectionTimePointRelativeNew, {replace: true})
+    .click(collectionTimePointRelativeUnitSelect)
+    .click(collectionTimePointRelativeUnitOption.withAttribute('value',collectionTimePointRelativeUnitNew))
+    .typeText(templateAmountSelect,templateAmountString, {replace: true})
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Template Amount number ≥ 0.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a negative Template Amount is not allowed
+  await t
+    .typeText(templateAmountSelect,templateAmountNegative, {replace: true})
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Template Amount number ≥ 0.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a string Template Amount with a valid unit is not allowed
+  await t
+    .typeText(templateAmountSelect,templateAmountString, {replace: true})
+    .click(templateAmountUnitSelect)
+    .click(templateAmountUnitOption.withAttribute('value',templateAmountUnitNew))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Template Amount number ≥ 0.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a blank Template Amount with a valid unit is not allowed
+  await t
+    .typeText(templateAmountSelect,templateAmountBlank, {replace: true})
+    .click(templateAmountUnitSelect)
+    .click(templateAmountUnitOption.withAttribute('value',templateAmountUnitNew))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Template Amount number ≥ 0.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a 0 Template Amount with a null unit is not allowed
+  await t
+    .typeText(templateAmountSelect,templateAmountNew, {replace: true})
+    .click(templateAmountUnitSelect)
+    .click(templateAmountUnitOption.withText('null'))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a Template Amount Unit.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a 0 Template Amount with a valid unit is allowed
+  await t
+    .typeText(templateAmountSelect,templateAmountNew, {replace: true})
+    .click(templateAmountUnitSelect)
+    .click(templateAmountUnitOption.withAttribute('value',templateAmountUnitNew))
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a Template Amount Unit.').filterVisible().exists;
+  await t.expect(errorMessage).notOk()
+
+  //Check that a negative Cell Number is not allowed
+  await t
+    .typeText(cellNumberSelect,cellNumberNegative, {replace: true})
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Cell Number integer ≥ 0.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a float Cell Number is not allowed
+  await t
+    .typeText(cellNumberSelect,cellNumberFloat, {replace: true})
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Cell Number integer ≥ 0.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a negative Cells Per Reaction is not allowed
+  await t
+    .typeText(cellNumberSelect,cellNumberNew, {replace: true})
+    .typeText(cellsPerReactionSelect,cellsPerReactionNegative, {replace: true})
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Cells Per Reaction integer ≥ 0.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a float Cells Per Reaction is not allowed
+  await t
+    .typeText(cellsPerReactionSelect,cellsPerReactionFloat, {replace: true})
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Cells Per Reaction integer ≥ 0.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a badly formatted Sequencing Date is not allowed
+  await t
+    .typeText(cellsPerReactionSelect,cellsPerReactionNew, {replace: true})
+    .typeText(sequencingDateSelect,sequencingDateBad, {replace: true})
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Sequencing Run Date (YYYY-MM-DD).').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a correctly formatted Sequencing Date is allowed
+  await t
+    .typeText(sequencingDateSelect,sequencingDateNew, {replace: true})
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a valid Sequencing Run Date (YYYY-MM-DD).').filterVisible().exists;
+  await t.expect(errorMessage).notOk()
+
+  //Save the Repertoire and Sample with valid values
+  await t
+    .typeText(sequencingDataIdSelect,sequencingDataIdNew, {replace: true})
+
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+
+  await t
+    .click(detailsSummaryRepertoireSelect);
+
+  await new Promise(r => setTimeout(r, 10000));
+
+  //Check Back-end values; first determine the UUID values for the new Repertoire and Sample objects
+  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  if (config.tapis_version == 2) {
+    var r = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'repertoire');
+  } else {
+    var requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/repertoire',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var r = await tapisV3.sendRequest(requestSettings);
+    await t.expect(r['status']).eql("success")
+        .expect(r['result'].length).eql(2);
+    r = r['result'];
+  }
+
+  var newRepertoireUuid = "";
+  var newSampleUuid = "";
+  var newRepertoireValue; 
+  if(r[0]["uuid"] == repertoireUuid) {
+    newRepertoireUuid = r[1]["uuid"];
+    newRepertoireValue = r[1]["value"];
+  } else {
+    newRepertoireUuid = r[0]["uuid"];
+    newRepertoireValue = r[0]["value"];
+  }
+
+  newSampleUuid = newRepertoireValue["sample"][0]["vdjserver_uuid"];
+  console.log("New Sample UUID: " + newSampleUuid);
+
+  if (config.tapis_version == 2) {
+    var s = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
+  } else {
+    var requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + newSampleUuid,
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var s = await tapisV3.sendRequest(requestSettings);
+    await t.expect(s['status']).eql("success")
+        .expect(s['result'].length).eql(1);
+    s = s['result'];
+  }
+
+  var newSampleValue = s[0]["value"];
+  var repertoireSubjectUuidReference = newRepertoireValue["subject"]["vdjserver_uuid"];
+  //console.log("Repertoire Subject Uuid Reference: " + repertoireSubjectUuidReference);
+
+  if (config.tapis_version == 2) {
+    var subj = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
+  } else {
+    var requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + repertoireSubjectUuidReference,
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var subj = await tapisV3.sendRequest(requestSettings);
+    await t.expect(subj['status']).eql("success")
+        .expect(subj['result'].length).eql(1);
+    subj = subj['result'];
+  }
+
+  var subjectValue = subj[0]['value'];
+
+  //check Back-end values
+  await t
+    .expect(subjectValue["subject_id"]).eql(subjectId)
+    .expect(newSampleValue["sample_id"]).eql(sampleIdNew)
+    .expect(newSampleValue["single_cell"] == null).ok()
+    .expect(newSampleValue["cell_storage"] == null).ok()
+    .expect(newSampleValue["pcr_target"][0]["pcr_target_locus"]).eql(pcrTargetLocusNew)
+    .expect(newSampleValue["collection_time_point_relative"]).eql(parseFloat(collectionTimePointRelativeNew))
+    .expect(newSampleValue["collection_time_point_relative_unit"].label).eql(collectionTimePointRelativeUnitNew)
+    .expect(newSampleValue["template_amount"]).eql(parseFloat(templateAmountNew))
+    .expect(newSampleValue["template_amount_unit"].label).eql(templateAmountUnitNew)
+    .expect(newSampleValue["cell_number"]).eql(parseInt(cellNumberNew))
+    .expect(newSampleValue["cells_per_reaction"]).eql(parseInt(cellsPerReactionNew))
+    .expect(newSampleValue["sequencing_data_id"] == null).ok()
+
+  //Duplicate a Repertoire and attempt to save with a duplicate Sample ID
+  await t
+   .click(Selector('#navbar-stats-icon'))
+   .click(Selector('#project-sample-dropdown').withAttribute('name',newSampleUuid))
+   .click(sampleDropdownDuplicateSelect.withAttribute('name',newSampleUuid))
+
+  await new Promise(r => setTimeout(r, 5000));
+
+  await t.expect(sampleIdSelect.count).eql(3);
+  var ids = [];
+  var numIds = await sampleIdSelect.count;
+  for(let i=0; i<numIds; i++) ids.push(await sampleIdSelect.nth(i).getAttribute('id'));
+  var cids = [];
+  for(let i=0; i<ids.length; i++) {
+    if(!(ids[i].includes(sampleUuid)) && !(ids[i].includes(newSampleUuid))) {
+      cids.push(ids[i].split('_')[2]);  //there should only be one
+    }
+  }
+
+  await t
+    .typeText(sampleIdSelect.withAttribute('id',"sample_id_"+cids[0]),sampleId+'-new', {replace: true})
+
+  await t.click(saveRepertoireChangesSelect);
+
+  await new Promise(r => setTimeout(r, 5000));
+  var errorMessage = Selector('div').withText('Please enter a unique, non-blank ID.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Ensure the error disappears when the Sample ID is unique
+  await t
+    .typeText(sampleIdSelect.withAttribute('id',"sample_id_"+cids[0]),sampleId+'-unique', {replace: true})
+
+  await t.click(saveRepertoireChangesSelect);
+
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter a unique, non-blank ID.').filterVisible().exists;
+  await t.expect(errorMessage).notOk()
+ });
+
+ test('Upload a File to test the Sequencing Files and Sequencing Data ID fields', async t => {
+  const repertoireNameFiles = repertoireName + '-files';
+  const subjectIdNull = "null";
+  const subjectIdFiles = 'null';
+  const sampleIdFiles = sampleId + '-files';
+  const pcrTargetLocusFiles = 'TRG';
+  const sequencingDataIdFilesBlank = '   ';
+  const sequencingDataIdFiles = sequencingDataId + '-files';
+  const sequencingFilesFilesNull = "null";
+  var sequencingFilesFiles = "";
+
+  await login(t,config.username,config.password,'CLICK','#home-login');
+
+  await new Promise(r => setTimeout(r, 5000));
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await new Promise(r => setTimeout(r, 10000));
+
+  await t
+    .scrollIntoView(filesTabSelect)
+    .click(filesTabSelect)
+    .click(uploadFilesSelect)
+    .click(uploadFilesComputerSelect)
+
+  await t
+    .setFilesToUpload('#file-upload-from-computer-dialog', ['./uploads/VectorBase-64_Aaquasalis_ESTs.fasta'])
+    .click(addStartUploadSelect)
+
+  await new Promise(r => setTimeout(r, 15000)); //pause for upload
+
+  await t
+    .click(doneUploadSelect)
+
+  //Get the UUID associated with the uploaded File
+  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  if (config.tapis_version == 2) {
+    var m = await tapisV2.getProjectMetadata(token.access_token, projectUuid);
+  } else {
+    var requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/project_file',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var m = await tapisV3.sendRequest(requestSettings);
+    await t.expect(m['status']).eql("success")
+        .expect(m['result'].length).eql(1);
+    m = m['result'][0];
+  }
+  var fileUuid = m['uuid'];
+  console.log("File UUID: " + fileUuid);
+
+  sequencingFilesFiles = fileUuid;
+
+  await t
+    .scrollIntoView(repertoiresTabSelect)
+    .click(repertoiresTabSelect)
+
+  await t
+    .click(newRepertoireSelect)
+    .click(newRepertoireAddSelect)
+
+  //Check that valid values for both Sequencing Files and Sequencing Data ID are not allowed concurrently
+  await t
+    .typeText(repertoireNameSelect, repertoireName, {replace: true})
+    .click(subjectIdSelect)
+    .click(subjectIdOption.withText(subjectIdNull))
+    .typeText(sampleIdSelect,sampleIdFiles, {replace: true})
+    .click(sequencingFilesSelect)
+    .click(sequencingFilesOption.withAttribute('id',sequencingFilesFiles))
+    .click(pcrTargetLocusSelect)
+    .click(pcrTargetLocusOption.withText(pcrTargetLocusFiles))
+    .typeText(sequencingDataIdSelect, sequencingDataIdFiles, {replace: true})
+
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  var errorMessage = Selector('div').withText('Please enter Seq. Files or a non-blank Seq. Data ID, not both.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that null for Sequencing Files and a blank Sequencing Data ID is not allowed
+  await t
+    .click(sequencingFilesSelect)
+    .click(sequencingFilesOption.withText(sequencingFilesFilesNull))
+    .typeText(sequencingDataIdSelect, sequencingDataIdFilesBlank, {replace: true})
+
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter Seq. Files or a non-blank Seq. Data ID, not both.').filterVisible().exists;
+  await t.expect(errorMessage).ok()
+
+  //Check that a valid Sequencing Files and a blank Sequencing Data ID is allowed
+  await t
+    .click(sequencingFilesSelect)
+    .click(sequencingFilesOption.withAttribute('id',sequencingFilesFiles))
+    .typeText(sequencingDataIdSelect, sequencingDataIdFilesBlank, {replace: true})
+
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter Seq. Files or a non-blank Seq. Data ID, not both.').filterVisible().exists;
+  await t.expect(errorMessage).notOk()
+
+  //Check that null for Sequencing Files and a valid non-blank Sequencing Data ID is allowed
+  await t
+    .click(sequencingFilesSelect)
+    .click(sequencingFilesOption.withText(sequencingFilesFilesNull))
+    .typeText(sequencingDataIdSelect, sequencingDataIdFiles, {replace: true})
+
+  await t.click(saveRepertoireChangesSelect);
+  await new Promise(r => setTimeout(r, 5000));
+  errorMessage = Selector('div').withText('Please enter Seq. Files or a non-blank Seq. Data ID, not both.').filterVisible().exists;
+  await t.expect(errorMessage).notOk()
  });
 
 //method is either ENTERKEY or CLICK

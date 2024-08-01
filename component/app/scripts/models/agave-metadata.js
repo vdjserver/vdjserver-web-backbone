@@ -156,12 +156,6 @@ export var Subject = Agave.MetadataModel.extend({
                 errors.push({ field: 'age_min', message: 'age_min is greater than age_max'});
                 errors.push({ field: 'age_max', message: 'age_max is less than age_min'});
             }
-            if (value['age_min'] < 0) {
-                errors.push({ field: 'age_min', message: 'age_min is less than zero'});
-            }
-            if (value['age_max'] < 0) {
-                errors.push({ field: 'age_max', message: 'age_max is less than zero'});
-            }
             // age unit cannot be null if there are age_min and age_max values
             if (value['age_unit'] == null) errors.push({ field: 'age_unit', message: 'missing age unit'});
             else if (value['age_unit']['id'] == null) errors.push({ field: 'age_unit', message: 'missing age unit'});
@@ -314,6 +308,7 @@ export var SampleProcessing = Agave.MetadataModel.extend({
     updateSequencingDataId: function(new_value) {
         let value = this.get('value');
         let s = value['sequencing_files'];
+        new_value = new_value.trim();
         if(new_value.length == 0) s.sequencing_data_id = null;
         else s.sequencing_data_id = new_value;
         this.set('value', value);
@@ -360,8 +355,8 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         // TODO: VDJServer additional validation
 
         // sample ID cannot be null or blank
-        if (!value['sample_id']) errors.push({ field: 'sample_id', message: 'Sample ID cannot be blank'});
-        else if (value['sample_id'].trim().length == 0) errors.push({ field: 'sample_id', message: 'Sample ID cannot be blank'});
+        let sample_id = "sample_id_" + this.cid;
+        if (value['sample_id'] == null) { errors.push({ field: sample_id, message: 'Sample ID cannot be blank'}); }
 
         // a Repertoire must have either sequencing_data_id or a sequencing_file, and not both
         var sample = this.get('value');
@@ -384,17 +379,15 @@ export var SampleProcessing = Agave.MetadataModel.extend({
         var ta = sample['template_amount'];
         if(sample['template_amount_unit']) { var tau = sample['template_amount_unit'].id; }
 
-        if(ta && !tau)
+        if(ta != null && tau == null)
             errors.push({ field: 'template_amount_unit', message: 'Unit cannot be null if Template Amount is defined.'});
-        else if (!ta && tau)
+        else if (ta == null && tau != null)
             errors.push({ field: 'template_amount', message: 'Template Amount cannot be null if Unit is defined.'});
 
         // prc_target_locus cannot be null
         let pcr = sample['pcr_target'][0].pcr_target_locus;
         if(!pcr) errors.push({ field: 'pcr_target_locus', message: 'PCR Target Locus cannot be null.'});
 
-        // add integer check for cell_number, cells_per_reaction, total_reads_passing_qc_filter
-        // verify HTML checks for number work for collection_time_point_relative and template_amount
         // add checks for fields that cannot be blank
 
         if (errors.length == 0) return null;
