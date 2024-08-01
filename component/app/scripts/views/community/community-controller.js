@@ -161,7 +161,9 @@ CommunityController.prototype = {
             })
             .then(function() {
                 // load VDJServer public projects
-                return that.projectList.fetch();
+                // TODO: skip for now
+                //return that.projectList.fetch();
+                return;
             })
             .then(function() {
                 // load ADC download study cache entries
