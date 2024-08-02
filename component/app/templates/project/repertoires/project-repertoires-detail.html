@@ -79,6 +79,7 @@
                     {{#each subject_ids}}
                     <option id="{{this.uuid}}" value="{{this.uuid}}" {{#ifEquals this.id ../subject.subject_id}}selected{{/ifEquals}}>{{this.id}}</option>
                     {{/each}}
+                    <option {{#unless subject.subject_id}}selected{{/unless}}>null</option>
                 </select>
                 <div class="invalid-feedback">
                     Please select a Subject ID.

@@ -90,7 +90,7 @@ var SampleDetailView = Marionette.View.extend({
 
             var view_tissue = new OntologySearchView({schema: 'Sample', field: 'tissue',
                 null_label: null_label_tissue, button_label: button_label_tissue, field_label: 'Tissue',
-                context: this, selectFunction: this.updateField, dropdown_id: 'tissue_'+uuid});
+                context: this, selectFunction: this.updateTissueOntology, dropdown_id: 'tissue_'+uuid});
             let regionName_tissue = "tissueRegion" + uuid;
             let regionID_tissue = "#tissue-region-" + uuid;
             this.addRegion(regionName_tissue, regionID_tissue);
@@ -98,7 +98,7 @@ var SampleDetailView = Marionette.View.extend({
 
             var view_cell_subset = new OntologySearchView({schema: 'CellProcessing', field: 'cell_subset',
                 null_label: null_label_cell_subset, button_label: button_label_cell_subset, field_label: 'Cell Subset',
-                context: this, selectFunction: this.updateField, dropdown_id: 'cell_subset_'+uuid});
+                context: this, selectFunction: this.updateCellSubsetOntology, dropdown_id: 'cell_subset_'+uuid});
             let regionName_cell_subset = "cellSubsetRegion" + uuid;
             let regionID_cell_subset = "#cell-subset-region-" + uuid;
             this.addRegion(regionName_cell_subset, regionID_cell_subset);
@@ -106,7 +106,7 @@ var SampleDetailView = Marionette.View.extend({
 
             var view_cell_species = new OntologySearchView({schema: 'CellProcessing', field: 'cell_species',
                 null_label: null_label_cell_species, button_label: button_label_cell_species, field_label: 'Cell Species',
-                context: this, selectFunction: this.updateField, dropdown_id: 'cell_species_'+uuid});
+                context: this, selectFunction: this.updateCellSpeciesOntology, dropdown_id: 'cell_species_'+uuid});
             let regionName_cell_species = "cellSpeciesRegion" + uuid;
             let regionID_cell_species = "#cell-species-region-" + uuid;
             this.addRegion(regionName_cell_species, regionID_cell_species);
@@ -165,8 +165,20 @@ var SampleDetailView = Marionette.View.extend({
         this.model.updateField(e.target.name, { id: e.target.selectedOptions[0]['id'], label: e.target.value });
     },
 
+    updateTissueOntology: function(context, value) {
+        context.model.updateField('tissue', value);
+    },
+
+    updateCellSubsetOntology: function(context, value) {
+        context.model.updateField('cell_subset', value);
+    },
+
+    updateCellSpeciesOntology: function(context, value) {
+        context.model.updateField('cell_species', value);
+    },
+
     updatePCR: function(e) {
-        this.model.updatePCR(e.target.value)
+        this.model.updatePCR(e.target.name, e.target.value)
     },
 
     updateSequencingDataId: function(e) {

@@ -161,7 +161,7 @@ var RepertoireDetailView = Marionette.View.extend({
                 }
             }
         }
-        subject_ids.push(null);
+        //subject_ids.push(null);
 
         return {
             subject: subject_value,

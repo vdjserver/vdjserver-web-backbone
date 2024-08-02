@@ -60,6 +60,33 @@ HandlebarsUtilities.registerAllHelpers = function() {
         return options.inverse(this);
     });
 
+    // if value is true
+    Handlebars.registerHelper('ifTrue', function(v1) {
+        if (v1 === true) {
+            return true;
+        }
+        return false;
+    });
+
+    // if value is false
+    Handlebars.registerHelper('ifFalse', function(v1) {
+        if (v1 === false) {
+            return true;
+        }
+        return false;
+    });
+
+    // if value is null or undefined
+    Handlebars.registerHelper('ifNull', function(v1) {
+        if (v1 === null) {
+            return true;
+        }
+        if (v1 === undefined) {
+            return true;
+        }
+        return false;
+    });
+
     Handlebars.registerHelper('GetHumanReadableFileSize', function(data) {
         if (data) {
             return filesize(data, {base: 10});

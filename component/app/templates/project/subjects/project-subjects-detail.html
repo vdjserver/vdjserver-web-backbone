@@ -71,8 +71,9 @@
                     </label>
 
                     <select class="custom-select value-select" name="synthetic" id="synthetic" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option value="true" {{#ifEquals value.synthetic true}}selected{{/ifEquals}}>True</option>
-                      <option value="false"{{#ifEquals value.synthetic false}}selected{{/ifEquals}}>False</option>
+                      <option value="true" {{#if (ifTrue value.synthetic)}}selected{{/if}}>True</option>
+                      <option value="false"{{#if (ifFalse value.synthetic)}}selected{{/if}}>False</option>
+                      <option value="" {{#if (ifNull value.synthetic)}}selected{{/if}}>null</option>
                     </select>
                 </div>
 
@@ -91,6 +92,7 @@
                       <option id="NCBITAXON:9606" value="Homo sapiens" {{#ifEquals value.species.id "NCBITAXON:9606"}}selected{{/ifEquals}}>Homo sapiens</option>
                       <option id="NCBITAXON:9544" value="Macaca mulatta" {{#ifEquals value.species.id "NCBITAXON:9544"}}selected{{/ifEquals}}>Macaca mulatta</option>
                       <option id="NCBITAXON:10088" value="Mus musculus" {{#ifEquals value.species.id "NCBITAXON:10088"}}selected{{/ifEquals}}>Mus musculus</option>
+                      <option id="" value="" {{#unless value.species.id}}selected{{/unless}}>null</option>
                     </select>
                 </div>
 
@@ -125,10 +127,9 @@
                         {{#each sex_enum}}
                             {{#if this}}
                                 <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sex}}selected{{/ifEquals}}>{{this}}</option>
+                            {{else}}
+                                <option id="{{this}}" value="{{this}}" {{#unless ../value.sex}}selected{{/unless}}>null</option>
                             {{/if}}
-                            {{#ifEquals this null}}
-                                <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sex}}selected{{/ifEquals}}>null</option>
-                            {{/ifEquals}}
                         {{/each}}
                     </select>
                 </div>
@@ -161,7 +162,7 @@
                     <input type="text" class="form-control form-control-subject" name="age_min" id="age_min" value="{{value.age_min}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
-                        Please enter a valid minimum age number.
+                        Please enter a valid minimum age number ≥ 0.
                     </div>
                 </div>
 
@@ -197,7 +198,7 @@
                     <input type="text" class="form-control form-control-subject" name="age_point" id="age_point" value="{{value.age_max}}" {{#ifEquals view_mode "detail"}}readonly{{/ifEquals}}>
 
                     <div class="invalid-feedback">
-                        Please enter a valid age number.
+                        Please enter a valid age number ≥ 0.
                     </div>
                 </div>
 
@@ -213,12 +214,12 @@
                     </label>
 
                     <select class="custom-select ontology-select" name="age_unit" id="age_unit" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
-                      <option id="" value="" {{#unless value.age_unit}}selected{{/unless}}>null</option>
                       <option id="UO:0000032" value="hour" {{#ifEquals value.age_unit.id "UO:0000032"}}selected{{/ifEquals}}>hour(s)</option>
                       <option id="UO:0000033" value="day" {{#ifEquals value.age_unit.id "UO:0000033"}}selected{{/ifEquals}}>day(s)</option>
                       <option id="UO:0000034" value="week" {{#ifEquals value.age_unit.id "UO:0000034"}}selected{{/ifEquals}}>week(s)</option>
                       <option id="UO:0000035" value="month" {{#ifEquals value.age_unit.id "UO:0000035"}}selected{{/ifEquals}}>month(s)</option>
                       <option id="UO:0000036" value="year" {{#ifEquals value.age_unit.id "UO:0000036"}}selected{{/ifEquals}}>year(s)</option>
+                      <option id="" value="" {{#unless value.age_unit.id}}selected{{/unless}}>null</option>
                     </select>
                     <div class="invalid-feedback">
                         Please enter a valid age unit.

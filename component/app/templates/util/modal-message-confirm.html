@@ -19,12 +19,12 @@
                     <button type="button" id="server-error" class="btn btn-report" data-dismiss="modal">Send Error Feedback</button>
                 {{/if}}
             </div>
+            {{#if serverError}}
             <div class="modal-footer">
-                {{#if serverError}}
                     <p>Send this information to the VDJServer Administrator with the Send Error Feedback button.</p>
                     <code>{{{serverErrorBody}}}</code>
-                {{/if}}
             </div>
+            {{/if}}
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
