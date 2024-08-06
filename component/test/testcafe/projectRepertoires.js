@@ -494,6 +494,9 @@ fixture('Project Repertoires Page Test Cases')
 
   const ontologySelectSelect = Selector('#ontology-search-input');
 
+  //Expect the created Subject to exist in the Subject ID drop-down
+  await t.expect(subjectIdOption.withAttribute('value',subjectUuid).exists).ok()
+
   await t
     .typeText(repertoireNameSelect, repertoireName)
     .typeText(repertoireDescriptionSelect, repertoireDescription)
@@ -504,6 +507,7 @@ fixture('Project Repertoires Page Test Cases')
     .click(tissueSelect)
     .typeText(ontologySelectSelect.nth(0),tissue)
     .click(tissueOptionSelect.withText(tissue))
+    .click(Selector('#navbar-stats-icon'))
     .typeText(anatomicSiteSelect,anatomicSite)
     .typeText(diseaseStateSampleSelect,diseaseStateSample)
     .typeText(collectionTimeSelect,collectionTime)
@@ -798,6 +802,7 @@ fixture('Project Repertoires Page Test Cases')
   const reverseTargetLocationD = reverseTargetLocation + "-2"; 
 
   await t
+    .click(Selector('#navbar-stats-icon'))
     .typeText(repertoireNameSelect, repertoireNameD, {replace: true})
     .typeText(duplicateSampleIdSelect, sampleIdD, {replace:true})
     .click(cellSubsetSelect)
@@ -1365,6 +1370,7 @@ fixture('Project Repertoires Page Test Cases')
 
   //Check that a badly formatted Sequencing Date is not allowed
   await t
+    .click(Selector('#navbar-stats-icon'))
     .typeText(cellsPerReactionSelect,cellsPerReactionNew, {replace: true})
     .typeText(sequencingDateSelect,sequencingDateBad, {replace: true})
   await t.click(saveRepertoireChangesSelect);

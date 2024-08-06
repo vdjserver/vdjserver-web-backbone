@@ -1038,7 +1038,7 @@ console.log("\nSubject ID " + subjectId);
 
   await new Promise(r => setTimeout(r, 5000));
 
-  const errorMessage = Selector('div').withText('Please enter a valid age number.').exists;
+  const errorMessage = Selector('div').withText('Please enter a valid age number ≥ 0.').exists;
 
   await t
     .expect(errorMessage).ok()
@@ -1070,7 +1070,7 @@ console.log("\nSubject ID " + subjectId);
 
   await new Promise(r => setTimeout(r, 5000));
 
-  const errorMessage1 = Selector('div').withText('Please enter a valid age number.').exists;
+  const errorMessage1 = Selector('div').withText('Please enter a valid minimum age number ≥ 0.').exists;
   const errorMessage2 = Selector('div').withText('Please enter a valid maximum age number that is greater than the minimum age number.').exists;
 
   await t
@@ -1105,7 +1105,7 @@ console.log("\nSubject ID " + subjectId);
 
   await new Promise(r => setTimeout(r, 5000));
 
-  const errorMessage1 = Selector('div').withText('Please enter a valid age number.').exists;
+  const errorMessage1 = Selector('div').withText('Please enter a valid minimum age number ≥ 0.').exists;
   const errorMessage2 = Selector('div').withText('Please enter a valid maximum age number that is greater than the minimum age number.').exists;
 
   await t
