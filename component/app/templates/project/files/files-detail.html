@@ -1,6 +1,7 @@
 <!-- FASTA/QUAL pairs-->
-{{#if quality}}
-<div class="row general-table-row general-border-top">
+<form method="post" role="form" id="project-files-form_{{uuid}}" class="project-files-form" name="files">
+ {{#if quality}}
+ <div class="row general-table-row general-border-top">
     <div class="col-md-11">
         <div class="row align-items-center">
             <div class="col-md-3 text-data">
@@ -34,8 +35,8 @@
             </button>
         </div>
     </div>
-</div>
-{{else}}
+ </div>
+ {{else}}
     <!-- FASTQ pairs-->
     {{#if forward}}
     <div class="row general-table-row general-border-top">
@@ -101,6 +102,7 @@
                         {{#each readDirections}}
                             <option {{#ifEquals this ../value.readDirection}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
+                        <option {{#unless value.readDirection}}selected{{/unless}}>null</option>
                     </select>
                 </div>
             </div>
@@ -114,5 +116,5 @@
         </div>
     </div>
     {{/if}}
-{{/if}}
-
+ {{/if}}
+</form>
