@@ -37,6 +37,26 @@
                     </div>
                     {{/if}}
 
+                    <hr>
+
+                    <div class="form-group">
+                        <a class="btn btn-primary login-button" id="external-login" href="{{login_url}}" {{#if maintenance}}disabled{{/if}}>Login with GitHub, Google, ORCID, others</a>
+                    </div>
+
+                    <div class="form-group">
+                        Redirects to another webpage for authentication.
+                    </div>
+                </form>
+
+                    <hr>
+
+                <form class="signup form-horizontal">
+                    <div class="form-group">
+                        <div class="alert alert-danger">
+                        NOTICE: VDJServer usernames are deprecated. Please migrate to an external identify provider like Google, ORCID, GitHub, etc., with the link above.
+                        </div>
+                    </div>
+
                     <div class="form-group col-md-7">
                         <input autofocus class="form-control" type="text" placeholder="USERNAME" name="username" id="username" {{#if maintenance}}disabled{{/if}}>
                     </div>
@@ -45,38 +65,12 @@
                         <input class="form-control" type="password" placeholder="PASSWORD" name="password" id="password" {{#if maintenance}}disabled{{/if}}>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-7">
-                            <input type="submit" class="btn btn-primary login-button" id="home-login" value="Login" {{#if maintenance}}disabled{{/if}}>
+                    <div class="form-group col-md-7">
+                        <div class="row">
+                            <input type="submit" class="btn btn-primary login-button" id="home-login" value="Login with VDJServer username" {{#if maintenance}}disabled{{/if}}>
                         </div>
                     </div>
-		    <div class="row">
-                        <div class="col-md-7">
-                            <button class="btn btn-create btn-small" href="/account" id="create-account" {{#if maintenance}}disabled{{/if}}>Create Account</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7">
-                        {{#if maintenance}}
-                        {{else}}
-                            <a class="forgot-password" href="password-reset" id="forgotPassword-link">Forgot password?</a>
-                        {{/if}}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-7">
-                        {{#if maintenance}}
-                        {{else}}
-                            <a class="forgot-password" href="account/pending" id="verifyAccount-link">Verify account?</a>
-                        {{/if}}
-                        </div>
-                    </div>
-                            <!-- <input type="submit" value="LOGIN" id="home-login" class="login-button" {{#if maintenance}}disabled{{/if}}> -->
-                            <!-- <div class="col-md-6 login-button-column text-center">
-                                {{#if maintenance}}{{else}}<a class="forgot-password-button" href="password-reset">Forgot password?</a>{{/if}}
-                            </div> -->
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -153,7 +147,7 @@
                      <h4>About VDJServer:</h4>
                     <p>
                     VDJServer was established with funding from the National Institute of Allergy and Infectious Diseases (#1R01A1097403).
-                    VDJServer is a partner in the iReceptor+ Consortium (<a target="_blank" href="https://www.ireceptor-plus.com" id="iReceptorPlus-link">https://www.ireceptor-plus.com</a>) with current support from the European Union’s Horizon 2020 Research and Innovation Program (#825821).
+                    VDJServer received funding from the European Union’s Horizon 2020 Research and Innovation Program (#825821), and is currently funded by NIAID under U24AI177622.
                     High-Performance compute and data resources are provided by The Texas Advanced Computing Center (<a target="_blank" href="https://tacc.utexas.edu" id="TACC-link">TACC</a>) at The University of Texas at Austin.
                    </p>
                 </div>

@@ -69,6 +69,7 @@ export default Backbone.Router.extend({
     routes: {
         '':                                 'index',
         'auth/logout':                      'authLogout',
+        'oauth2/callback?*querystring':      'oauthLogin',
 
         // public user account pages
         'account':                          'createAccount',
@@ -180,6 +181,35 @@ export default Backbone.Router.extend({
             trigger: true
         });
     }, */
+
+    //
+    // OAuth 3rd party authentication
+    //
+
+    oauthLogin: function(queryString) {
+        console.log('oauthLogin route');
+        console.log(queryString);
+        if (queryString) {
+            let code = null;
+            // look for code
+            let params = queryString.split('&');
+            for (let i in params) {
+                let keys = params[i].split('=');
+                if (keys.length == 2 && keys[0] == 'code') {
+                    code = keys[1];
+                    break;
+                }
+            }
+            if (!code) App.router.navigate('/', { trigger: true });
+            else {
+                App.Agave.token().clear();
+                App.Agave.token({ token_type: "oauth2", code: code, client_id: EnvironmentConfig.vdjApi.clientID});
+                App.AppController.handleOAuthLogin();
+            }
+        } else {
+            App.router.navigate('/', { trigger: true });
+        }
+    },
 
     //
     // Public account pages

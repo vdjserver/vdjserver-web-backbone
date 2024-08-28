@@ -82,13 +82,13 @@ Agave.ajax = function(config) {
 
 Agave.oauthHeader = function() {
     return {
-        'Authorization': 'Bearer ' + Agave.instance.token().get('access_token'),
+        'Authorization': 'Bearer ' + Agave.instance.token().get('access_token')['access_token'],
     };
 };
 
 Agave.jwtHeader = function() {
     return {
-        'X-Tapis-Token': Agave.instance.token().get('access_token'),
+        'X-Tapis-Token': Agave.instance.token().get('access_token')['access_token'],
     };
 };
 
@@ -118,10 +118,10 @@ Agave.sync = function(method, model, options) {
 
             if (_.has(xhr, 'setRequestHeader')) {
                 if (authType === 'oauth') {
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token'));
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + agaveToken.get('access_token')['access_token']);
                 }
                 if (authType === 'jwt') {
-                    xhr.setRequestHeader('X-Tapis-Token', agaveToken.get('access_token'));
+                    xhr.setRequestHeader('X-Tapis-Token', agaveToken.get('access_token')['access_token']);
                 }
             }
         };
@@ -1095,6 +1095,9 @@ Auth.Token = Agave.Model.extend({
     idAttribute: 'refresh_token',
     defaults: {
         'token_type': null,
+        'code': null,
+        'client_id': null,
+        'username': null,
         'expires_in': 0,
         'expires':    0,
         'refresh_token': null,
@@ -1104,39 +1107,45 @@ Auth.Token = Agave.Model.extend({
     url: '/token',
     sync: function(method, model, options) {
 
-        var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
+        if (this.get('token_type') == 'oauth2') {
+            options.url = EnvironmentConfig.vdjApi.hostname + '/oauth2/token';
 
-        // Credentials for Basic Authentication
-        // Use credentials provided in options first; otherwise used current session creds.
-        var username = options.username || (agaveToken ? agaveToken.get('username') : '');
-        var password;
+            return Backbone.sync(method, model, options);
+        } else {
+            var agaveToken = options.agaveToken || model.agaveToken || Agave.instance.token();
 
-        switch (method) {
+            // Credentials for Basic Authentication
+            // Use credentials provided in options first; otherwise used current session creds.
+            var username = options.username || (agaveToken ? agaveToken.get('username') : '');
+            var password;
 
-            case 'create':
-                options.type = 'POST';
-                password = encodeURIComponent(options.password);
-                break;
+            switch (method) {
 
-            case 'update':
-                options.type = 'PUT';
-                password = agaveToken.get('refresh_token');
-                break;
+                case 'create':
+                    options.type = 'POST';
+                    password = encodeURIComponent(options.password);
+                    break;
 
-            case 'delete':
-                return false;
+                case 'update':
+                    options.type = 'PUT';
+                    password = agaveToken.get('refresh_token');
+                    break;
+
+                case 'delete':
+                    return false;
+            }
+
+            options.url = EnvironmentConfig.vdjApi.hostname + '/token';
+
+//            options.headers = {
+//                'Authorization': 'Basic ' + btoa(username + ':' + password),
+//            };
+
+            // Prevent backbone from adding the password to the url
+            delete options.password;
+
+            return Backbone.sync(method, model, options);
         }
-
-        options.url = EnvironmentConfig.vdjApi.hostname + '/token',
-
-        options.headers = {
-            'Authorization': 'Basic ' + btoa(username + ':' + password),
-        };
-
-        // Prevent backbone from adding the password to the url
-        delete options.password;
-
-        return Backbone.sync(method, model, options);
     },
     parse: function(response) {
 
@@ -1147,14 +1156,19 @@ Auth.Token = Agave.Model.extend({
             this.isFetched = true;
 
             response.result['access_token']['expires'] = response.result['access_token']['expires_in'] + (Date.now() / 1000);
-            return response.result['access_token'];
+            if (response.result['refresh_token'])
+                response.result['refresh_token']['expires'] = response.result['refresh_token']['expires_in'] + (Date.now() / 1000);
+            return response.result;
         }
 
         return;
     },
     isActive: function() {
 
-        var expires = this.get('expires');
+        var access_token = this.get('access_token');
+        if (!access_token) return false;
+
+        var expires = access_token['expires'];
         var hasError = false;
 
         if (!expires) {

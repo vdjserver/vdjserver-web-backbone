@@ -519,7 +519,7 @@ SingleProjectController.prototype = {
     lazyLoadUsers: function() {
         var that = this;
         var userList = new Permissions(null, {uuid: that.model.get('uuid')});
-        var allUsers = new TenantUsers();
+        var allUsers = new TenantUsers(null, {});
 
         var perms = this.model.get('permission');
         for (let i = 0; i < perms.length; ++i) {
@@ -528,15 +528,16 @@ SingleProjectController.prototype = {
         }
 
         // TODO: this design will need to be changed to support multiple identity providers
-        return allUsers.fetch()
-            .then(function() {
+//        return allUsers.fetch()
+//            .then(function() {
                 // now propagate loaded data to project
                 that.projectUserList = userList;
                 that.allUsersList = allUsers;
-            })
-            .fail(function(error) {
-                console.log(error);
-            });
+//            })
+//            .fail(function(error) {
+//                console.log(error);
+//            });
+        return Promise.resolve();
     },
 
     //
