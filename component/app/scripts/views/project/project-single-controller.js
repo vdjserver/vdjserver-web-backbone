@@ -522,8 +522,8 @@ SingleProjectController.prototype = {
         var allUsers = new TenantUsers();
 
         var perms = this.model.get('permission');
-        for (let i = 0; i < perms.length; ++i) {
-            var p = new Permission(perms[i]);
+        for (let i in perms) {
+            var p = new Permission({ username: i, permission: perms[i] });
             userList.add(p);
         }
 
