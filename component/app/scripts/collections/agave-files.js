@@ -143,8 +143,8 @@ export var ProjectFilesCollection = Agave.MetadataCollection.extend({
             case 'size': {
                 let ma = modela.get('value');
                 let mb = modelb.get('value');
-                if (ma.length > mb.length) return -1;
-                if (ma.length < mb.length) return 1;
+                if (ma.size > mb.size) return -1;
+                if (ma.size < mb.size) return 1;
                 return 0;
             }
             case 'newest': {

@@ -1,14 +1,15 @@
 <!-- FASTA/QUAL pairs-->
-{{#if quality}}
-<div class="row general-table-row general-border-top">
+<form method="post" role="form" id="project-files-form_{{uuid}}" class="project-files-form" name="files">
+ {{#if quality}}
+ <div class="row general-table-row general-border-top">
     <div class="col-md-11">
         <div class="row align-items-center">
             <div class="col-md-3 text-data">
                 <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{read.name}}</a>
             </div>
-            <div class="col-md-2 text-data">{{FormatDateTime read.lastUpdated}}</div>
+            <div class="col-md-2 text-data">{{FormatDateTime read_extra.lastUpdated}}</div>
             <div class="col-md-2 text-data">{{GetHumanReadableFileSize read.size}}</div>
-            <div class="col-md-2 text-data">{{read.fileTypeName}}</div>
+            <div class="col-md-2 text-data">{{read_extra.fileTypeName}}</div>
             <div class="col-md-2">
                 <input class="form-control form-control-file" type="text" name="tags" id="project-file-read-tags" value="{{read.tags}}">
             </div>
@@ -18,9 +19,9 @@
             <div class="col-md-3 text-data">
                 <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{quality.name}}</a>
             </div>
-            <div class="col-md-2 text-data">{{FormatDateTime quality.lastUpdated}}</div>
+            <div class="col-md-2 text-data">{{FormatDateTime quality_extra.lastUpdated}}</div>
             <div class="col-md-2 text-data">{{GetHumanReadableFileSize quality.size}}</div>
-            <div class="col-md-2 text-data">{{quality.fileTypeName}}</div>
+            <div class="col-md-2 text-data">{{quality_extra.fileTypeName}}</div>
             <div class="col-md-2">
                 <input class="form-control form-control-file" type="text" name="tags" id="project-file-quality-tags" value="{{quality.tags}}">
             </div>
@@ -34,8 +35,8 @@
             </button>
         </div>
     </div>
-</div>
-{{else}}
+ </div>
+ {{else}}
     <!-- FASTQ pairs-->
     {{#if forward}}
     <div class="row general-table-row general-border-top">
@@ -44,9 +45,9 @@
                 <div class="col-md-3 text-data">
                     <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{forward.name}}</a>
                 </div>
-                <div class="col-md-2 text-data">{{FormatDateTime forward.lastUpdated}}</div>
+                <div class="col-md-2 text-data">{{FormatDateTime forward_extra.lastUpdated}}</div>
                 <div class="col-md-2 text-data">{{GetHumanReadableFileSize forward.size}}</div>
-                <div class="col-md-2 text-data">{{forward.fileTypeName}}</div>
+                <div class="col-md-2 text-data">{{forward_extra.fileTypeName}}</div>
                 <div class="col-md-2">
                     <input class="form-control form-control-file" type="text" name="tags" id="project-file-forward-tags" value="{{forward.tags}}">
                 </div>
@@ -56,9 +57,9 @@
                 <div class="col-md-3 text-data">
                     <a data-bypass="true" href="" class="underline-on-hover" id="project-file-download">{{reverse.name}}</a>
                 </div>
-                <div class="col-md-2 text-data">{{FormatDateTime reverse.lastUpdated}}</div>
+                <div class="col-md-2 text-data">{{FormatDateTime reverse_extra.lastUpdated}}</div>
                 <div class="col-md-2 text-data">{{GetHumanReadableFileSize reverse.size}}</div>
-                <div class="col-md-2 text-data">{{reverse.fileTypeName}}</div>
+                <div class="col-md-2 text-data">{{reverse_extra.fileTypeName}}</div>
                 <div class="col-md-2">
                     <input class="form-control form-control-file" type="text" name="tags" id="project-file-reverse-tags" value="{{reverse.tags}}">
                 </div>
@@ -101,6 +102,7 @@
                         {{#each readDirections}}
                             <option {{#ifEquals this ../value.readDirection}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
+                        <option {{#unless value.readDirection}}selected{{/unless}}>null</option>
                     </select>
                 </div>
             </div>
@@ -114,5 +116,5 @@
         </div>
     </div>
     {{/if}}
-{{/if}}
-
+ {{/if}}
+</form>

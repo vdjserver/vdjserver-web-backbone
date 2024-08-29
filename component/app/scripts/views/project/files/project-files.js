@@ -52,7 +52,8 @@ var ProjectFilesHeaderView = Marionette.View.extend({
         var current_sort = files['sort_by'];
         return {
             current_sort: current_sort,
-            hasEdits: this.controller.hasFileEdits()
+            hasEdits: this.controller.hasFileEdits(),
+            uploadStarted: this.controller.hasUploadStarted()
         }
     },
 
@@ -64,13 +65,13 @@ var ProjectFilesHeaderView = Marionette.View.extend({
             var current_sort = files['sort_by'];
             if (e.target.name != current_sort) {
                 this.controller.applySort(e.target.name);
-                this.updateHeader();
             }
         },
 
         // file uploading
         'click #project-files-upload-computer': function(e) {
             e.preventDefault();
+            $('html, body').animate({ scrollTop: 0 }, 1000); //scroll to the top
             this.controller.uploadFileFromComputer();
         },
 
@@ -94,6 +95,10 @@ var ProjectFilesHeaderView = Marionette.View.extend({
     enableChangesButtons: function(state) {
         $('#project-files-revert-changes').prop('disabled', !state);
         $('#project-files-save-changes').prop('disabled', !state);
+    },
+
+    enableUploadButton: function(state) {
+        $('#project-files-upload').prop('disabled', !state);
     }
 
 });
@@ -143,6 +148,10 @@ var ProjectFilesView = Marionette.View.extend({
 
     enableChangesButtons: function(state) {
         this.buttonsView.enableChangesButtons(state);
+    },
+
+    enableUploadButton: function(state) {
+        this.buttonsView.enableUploadButton(state);
     }
 
 });

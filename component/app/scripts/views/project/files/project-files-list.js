@@ -51,37 +51,45 @@ var ProjectFileDetailView = Marionette.View.extend({
     templateContext() {
         let value = this.model.get('value');
         let forward = null;
+        let forward_extra = {};
         let reverse = null;
+        let reverse_extra = {};
         if (value['pairedReadMetadataUuid']) {
             forward = this.model.get('value');
-            forward['lastUpdated'] = this.model.get('lastUpdated');
-            forward['fileTypeName'] = File.getFileTypeById(forward['fileType']);
+            forward_extra['lastUpdated'] = this.model.get('lastUpdated');
+            forward_extra['fileTypeName'] = File.getFileTypeById(forward['fileType']);
             let fileList = this.controller.getProjectFilesList();
             let m = fileList.get(value['pairedReadMetadataUuid']);
             reverse = m.get('value');
-            reverse['lastUpdated'] = m.get('lastUpdated');
-            reverse['fileTypeName'] = File.getFileTypeById(reverse['fileType']);
+            reverse_extra['lastUpdated'] = m.get('lastUpdated');
+            reverse_extra['fileTypeName'] = File.getFileTypeById(reverse['fileType']);
         }
         let quality = null;
+        let quality_extra = {};
         let read = null;
+        let read_extra = {};
         if (value['qualityScoreMetadataUuid']) {
             read = this.model.get('value');
-            read['lastUpdated'] = this.model.get('lastUpdated');
-            read['fileTypeName'] = File.getFileTypeById(read['fileType']);
+            read_extra['lastUpdated'] = this.model.get('lastUpdated');
+            read_extra['fileTypeName'] = File.getFileTypeById(read['fileType']);
             let fileList = this.controller.getProjectFilesList();
             let m = fileList.get(value['qualityScoreMetadataUuid']);
             quality = m.get('value');
-            quality['lastUpdated'] = m.get('lastUpdated');
-            quality['fileTypeName'] = File.getFileTypeById(quality['fileType']);
+            quality_extra['lastUpdated'] = m.get('lastUpdated');
+            quality_extra['fileTypeName'] = File.getFileTypeById(quality['fileType']);
         }
         return {
             fileTypes: File.getFileTypes(),
             fileTypeNames: File.getFileTypeNames(),
             readDirections: File.getReadDirections(),
             forward: forward,
+            forward_extra: forward_extra,
             reverse: reverse,
+            reverse_extra: reverse_extra,
             quality: quality,
-            read: read
+            quality_extra: quality_extra,
+            read: read,
+            read_extra: read_extra
         };
     },
 

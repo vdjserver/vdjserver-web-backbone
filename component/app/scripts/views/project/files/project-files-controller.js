@@ -53,6 +53,7 @@ function ProjectFilesController(controller) {
     this.model = this.controller.model;
     // clone collection for holding edits
     this.hasEdits = false;
+    this.uploadStarted = false;
     this.resetCollections();
 
     // file uploading
@@ -142,8 +143,17 @@ ProjectFilesController.prototype = {
         this.mainView.enableChangesButtons(this.hasEdits);
     },
 
+    flagUploadStarted: function() {
+        this.uploadStarted = true;
+        this.mainView.enableUploadButton(this.uploadStarted);
+    },
+
     hasFileEdits: function() {
         return this.hasEdits;
+    },
+
+    hasUploadStarted: function () {
+        return this.uploadStarted;
     },
 
     saveFileChanges: function() {
@@ -384,6 +394,8 @@ ProjectFilesController.prototype = {
         if (! this.uploadFiles) {
             this.uploadFiles = new Backbone.Collection();
         }
+        this.flagUploadStarted();
+        this.mainView.updateHeader();
         this.mainView.showUploadFiles();
     },
 
@@ -394,6 +406,8 @@ ProjectFilesController.prototype = {
         //});
 
         this.cleanUpload();
+        this.uploadStarted = false;
+        this.mainView.updateHeader();
         this.mainView.clearUploadFiles();
     },
 
@@ -401,6 +415,8 @@ ProjectFilesController.prototype = {
         // cleanup after upload
         this.cleanUpload();
         // update UI
+        this.uploadStarted = false;
+        this.mainView.updateHeader();
         this.mainView.clearUploadFiles();
     },
 
