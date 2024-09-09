@@ -266,6 +266,7 @@ var EnvironmentConfig = {
     },
     'vdjApi': {
         'hostname': 'https://vdjserver.org/api/v2',
+        'clientID': 'localhost8080'
     },
     'vdjGuest': {
         'hostname': 'https://vdjserver.org/guest',

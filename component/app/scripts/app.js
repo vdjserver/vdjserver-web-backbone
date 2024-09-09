@@ -120,6 +120,17 @@ var ApplicationController = Marionette.View.extend({
         this.showChildView('mainRegion', view);
     },
 
+    handleOAuthLogin: function() {
+        console.log('handleOAuthLogin');
+        // tell navigation controller to display the nav bar
+        this.navController.showNavigation();
+
+        // show public view
+        var view = new PublicView();
+        this.showChildView('mainRegion', view);
+        view.oauthLogin();
+    },
+
     showCreateAccountPage: function() {
         console.log('showCreateAccountPage');
         // tell navigation controller to display the nav bar
