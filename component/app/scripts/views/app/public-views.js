@@ -47,14 +47,20 @@ export default Marionette.View.extend({
             maintenanceMessage = "VDJServer is currently undergoing maintenance."
         }
 
+        let login_url = EnvironmentConfig.agave.internal + '/v3/oauth2/authorize?client_id='
+            + EnvironmentConfig.vdjApi.clientID + '&redirect_uri=' + EnvironmentConfig.agave.hostname + '/oauth2/callback'
+            + '&response_type=code';
+
         return {
             maintenance: EnvironmentConfig.agave.maintenance,
-            maintenanceMessage: maintenanceMessage
+            maintenanceMessage: maintenanceMessage,
+            login_url: login_url
         }
     },
 
     events: {
         'click #home-login': 'login',
+//        'click #external-login': 'oauthLogin',
         'click #create-account': 'createAccount',
     },
 
@@ -63,6 +69,23 @@ export default Marionette.View.extend({
         e.preventDefault();
 
         App.router.navigate('account', {'trigger': true});
+    },
+
+    // handle OAuth login event
+    oauthLogin: function() {
+
+        // when login button is pressed, display an authenticating modal message
+        // we cannot perform the actual login here because the modal has not
+        // been shown to the user yet, wait for onShowModal()
+        this.loginState = 'login';
+        var message = new MessageModel({
+          'header': 'VDJServer Login',
+          'body':   '<p>Please wait while we authenticate you...</p>'
+        });
+
+        var view = new ModalView({model: message});
+        App.AppController.startModal(view, this, this.onShownOAuthModal, this.onHiddenModal);
+        $('#modal-message').modal('show');
     },
 
     // handle login event
@@ -136,6 +159,49 @@ export default Marionette.View.extend({
                     // clear token and form password
                     App.Agave.token().clear();
                     $('#password').val('');
+
+                    console.log("login fail");
+                });
+        } else if (this.loginState == 'fail') {
+          // if login failed, then we are showing the fail modal
+        }
+    },
+
+    // send code to the server to retrieve token
+    // after the modal has been shown
+    onShownOAuthModal(context) {
+        console.log('login: Show the modal');
+
+        //var that = context;
+
+        // if login state then an authenticating modal view was just shown
+        // go perform the login
+        console.log(context.loginState);
+        if (context.loginState == 'login') {
+
+            // send login request to server
+            App.Agave.token().save()
+                .then(function() {
+                    context.loginState = 'pass';
+                    // clear code
+                    App.Agave.token().set('code','');
+
+                    // load the user profile
+                    return App.AppController.loadUserProfile();
+                })
+                .then(function() {
+                    // wait until modal is hidden before routing
+                    $('#modal-message').modal('hide');
+                    console.log("login pass");
+                })
+                .fail(function(error) {
+                    // login failed so change state, hide the current modal
+                    console.log(error);
+                    context.loginState = 'fail';
+                    $('#modal-message').modal('hide');
+
+                    // clear token and form password
+                    App.Agave.token().clear();
 
                     console.log("login fail");
                 });

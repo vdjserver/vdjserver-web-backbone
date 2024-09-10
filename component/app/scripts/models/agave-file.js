@@ -92,7 +92,7 @@ export var File = Agave.Model.extend({
 
                 var request = Agave.ajax({
                     beforeSend: function(xhr) {
-                        xhr.setRequestHeader('X-Tapis-Token', Agave.instance.token().get('access_token'));
+                        xhr.setRequestHeader('X-Tapis-Token', Agave.instance.token().get('access_token')['access_token']);
                     },
                     xhr: function() {
 
@@ -410,7 +410,7 @@ export var ProjectFile = File.extend(
             return Backbone.Agave.ajax({
                 url: path,
                 headers: {
-                    'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token'),
+                    'Authorization': 'Bearer ' + Backbone.Agave.instance.token().get('access_token')['access_token'],
                 },
             });
         },
