@@ -73,8 +73,10 @@
                     <select class="custom-select value-select" name="synthetic" id="synthetic" {{#ifEquals view_mode "detail"}}disabled{{/ifEquals}}>
                       <option value="true" {{#if (ifTrue value.synthetic)}}selected{{/if}}>True</option>
                       <option value="false"{{#if (ifFalse value.synthetic)}}selected{{/if}}>False</option>
-                      <option value="" {{#if (ifNull value.synthetic)}}selected{{/if}}>null</option>
                     </select>
+                    <div class="invalid-feedback">
+                        Please select a non-null Synthetic.
+                    </div>
                 </div>
 
                 <div class="form-group col-md-2">
@@ -92,8 +94,11 @@
                       <option id="NCBITAXON:9606" value="Homo sapiens" {{#ifEquals value.species.id "NCBITAXON:9606"}}selected{{/ifEquals}}>Homo sapiens</option>
                       <option id="NCBITAXON:9544" value="Macaca mulatta" {{#ifEquals value.species.id "NCBITAXON:9544"}}selected{{/ifEquals}}>Macaca mulatta</option>
                       <option id="NCBITAXON:10088" value="Mus musculus" {{#ifEquals value.species.id "NCBITAXON:10088"}}selected{{/ifEquals}}>Mus musculus</option>
-                      <option id="" value="" {{#unless value.species.id}}selected{{/unless}}>null</option>
+                      <option value="" {{#if (ifNull value.species.id)}}selected{{/if}}>null</option>
                     </select>
+                    <div class="invalid-feedback">
+                        Please select a non-null Species.
+                    </div>
                 </div>
 
                 <div class="form-group col-md-2">
@@ -128,7 +133,7 @@
                             {{#if this}}
                                 <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.sex}}selected{{/ifEquals}}>{{this}}</option>
                             {{else}}
-                                <option id="{{this}}" value="{{this}}" {{#unless ../value.sex}}selected{{/unless}}>null</option>
+                                <option id="" value=""  {{#unless ../value.sex}}selected{{/unless}}>null</option>
                             {{/if}}
                         {{/each}}
                     </select>
