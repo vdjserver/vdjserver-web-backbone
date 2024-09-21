@@ -33,9 +33,9 @@ import { StudyCache, RepertoireCache } from 'Scripts/models/adc-cache';
 export var StudyCacheCollection = Backbone.Collection.extend({
     model: StudyCache,
     comparator: 'study_id',
-    apiHost: EnvironmentConfig.vdjApi.hostname,
+    apiHost: EnvironmentConfig.adc.vdjserver.hostname + EnvironmentConfig.adc.vdjserver.adc_path,
     url: function() {
-        return this.apiHost + '/adc/cache/study';
+        return this.apiHost + '/admin/adc/cache/study';
     },
     parse: function(response) {
         if (response.result) {
