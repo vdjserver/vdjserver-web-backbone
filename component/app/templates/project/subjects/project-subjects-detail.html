@@ -311,7 +311,7 @@
                         {{#each subject_ids}}
                             <option id="{{this}}" value="{{this}}" {{#ifEquals this ../value.linked_subjects}}selected{{/ifEquals}}>{{this}}</option>
                         {{/each}}
-                        <option {{#unless value.linked_subjects}}selected{{/unless}}>null</option>
+                        <option id="" value="" {{#unless value.linked_subjects}}selected{{/unless}}>null</option>
                     </select>
                     <div class="invalid-feedback">
                         Please enter a valid Linked Subject.
