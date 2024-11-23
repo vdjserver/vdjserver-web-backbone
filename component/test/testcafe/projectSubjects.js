@@ -5,11 +5,11 @@
 // VDJServer
 // https://vdjserver.org
 //
-// Copyright (C) 2023 The University of Texas Southwestern Medical Center
+// Copyright (C) 2024 The University of Texas Southwestern Medical Center
 //
-// Author: Ryan Kennedy
+// Author: Ryan C. Kennedy
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
-// Date: May 2024
+// Date: May - November 2024
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
@@ -44,14 +44,17 @@ var subjectUuid2 = "";
 fixture('Project Subjects Page Test Cases')
   .page(config.url);
 
-//append a random number less than 1,000,000 to subjectId
+  const loginButtonId = '#home-login';
+
+//Append a random number less than 1,000,000 to subjectId
 var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
-console.log("\nSubject ID " + subjectId);
+//console.log("\nSubject ID " + subjectId);
 
   //Project Values
   const studyId = "Test Study ID";
-  //append a random number less than 1,000,000 to studyTitle
+  //Append a random number less than 1,000,000 to studyTitle
   const studyTitle = "Test Study Title_" + Math.floor(Math.random()*1000000);
+  const studyType = "NCIT:C16084";
   const studyDesc = "Test Study Description";
   const incExcCriteria = "Criteria";
   const grants = "1234";
@@ -65,8 +68,12 @@ console.log("\nSubject ID " + subjectId);
   const sName = "Jim";
   const sEmail = "jim@email.com";
   const sAddr = "13 W. Main St";
+  const projectSuccessfullyCreatedMessage = "Project successfully created!";
 
   //Subject Values
+  const projectSubjectFormId = '#project-subject-form_';
+  const projectSubjectDropdownId = '#project-subject-dropdown';
+  const linkedSubjectsId = '#linked_subjects';
   const synthetic = "true";
   const species = 'Macaca mulatta';
   const species2 = 'Homo sapiens';
@@ -82,8 +89,10 @@ console.log("\nSubject ID " + subjectId);
   const ethnicity = 'ethnicity';
   const linkedSubjects = 'null';
   const linkType = 'linkType';
+  const speciesValidationMessage = "Please select a non-null Species.";
 
   //Diagnosis Values
+  const diagnosisOntologyId = '#ontology-search-input';
   const diseaseDiagnosis = 'malaria';
   const diseaseLength = 'Disease Length';
   const diseaseStage = 'Disease Stage';
@@ -104,28 +113,48 @@ console.log("\nSubject ID " + subjectId);
   const diseaseLength3 = 'Disease Length3';
 
   //General Selectors
-  const createProjectSelect = Selector('#create-project', {timeout:config.timeout});
-  const subjectsTabSelect = Selector('#subjects-tab', {timeout:config.timeout});
-  const detailsSummarySelect = Selector('#project-subjects-details-summary', {timeout:config.timeout});
-  const sortDropdownSelect = Selector('#project-subjects-sort-button', {timeout:config.timeout});
-  const sortDropdownOptionSelect = Selector('#project-subjects-sort-select', {timeout:config.timeout});
-  const newSubjectSelect = Selector('#project-subjects-new-subject', {timeout:config.timeout});
-  const revertChangesSelect = Selector('#project-subjects-revert-changes', {timeout:config.timeout});
-  const saveChangesSelect = Selector('#project-subjects-save-changes', {timeout:config.timeout});
-  const subjectsDropdownSelect = Selector('#project-subject-dropdown', {timeout:config.timeout});
-  const subjectsDropdownEditSelect = Selector('#project-subject-edit', {timeout:config.timeout});
-  const subjectsDropdownDuplicateSelect = Selector('#project-subject-duplicate', {timeout:config.timeout});
-  const subjectsDropdownDeleteSelect = Selector('#project-subject-delete', {timeout:config.timeout});
-  const subjectsDropdownAddDiagnosisSelect = Selector('#project-subject-add-diagnosis', {timeout:config.timeout});
-  const diagnosisDropdownSelect = Selector('#project-subject-diagnosis-dropdown', {timeout:config.timeout});
-  const diagnosisDropdownDuplicateSelect = Selector('#project-subject-duplicate-diagnosis', {timeout:config.timeout});
-  const diagnosisDropdownDeleteSelect = Selector('#project-subject-delete-diagnosis', {timeout:config.timeout});
+  const createProjectSelect = Selector('#create-project');
+  const subjectsTabSelect = Selector('#subjects-tab');
+  const detailsSummarySelect = Selector('#project-subjects-details-summary');
+  const sortDropdownSelect = Selector('#project-subjects-sort-button');
+  const sortDropdownOptionSelect = Selector('#project-subjects-sort-select');
+  const newSubjectSelect = Selector('#project-subjects-new-subject');
+  const revertChangesSelect = Selector('#project-subjects-revert-changes');
+  const saveChangesSelect = Selector('#project-subjects-save-changes');
+  const subjectsDropdownSelect = Selector('#project-subject-dropdown');
+  const subjectsDropdownEditSelect = Selector('#project-subject-edit');
+  const subjectsDropdownDuplicateSelect = Selector('#project-subject-duplicate');
+  const subjectsDropdownDeleteSelect = Selector('#project-subject-delete');
+  const subjectsDropdownAddDiagnosisSelect = Selector('#project-subject-add-diagnosis');
+  const diagnosisDropdownSelect = Selector('#project-subject-diagnosis-dropdown');
+  const diagnosisDropdownDuplicateSelect = Selector('#project-subject-duplicate-diagnosis');
+  const diagnosisDropdownDeleteSelect = Selector('#project-subject-delete-diagnosis');
 
   //Project Field Selectors
+  const studyIdSelect = Selector('#NCBI');
+  const studyTitleSelect = Selector('#study_title');
+  const descriptionSelect = Selector('#description');
+  const criteriaSelect = Selector('#criteria');
+  const grantsSelect = Selector('#grants');
   const studyTypeSelect = Selector('#dropdownOntology');
-  const studyTypeOption = studyTypeSelect.find('option');
+  const ontologySelectSelect = Selector('#ontology-select');
+  const publicationsSelect = Selector('#publications');
+  const labNameSelect = Selector('#lab_name');
+  const labAddressSelect = Selector('#lab_address');
+  const collectedByNameSelect = Selector('#collectedby_name');
+  const collectedByEmailSelect = Selector('#collectedby_email');
+  const collectedByAddressSelect = Selector('#collectedby_address');
+  const submittedByNameSelect = Selector('#submittedby_name');
+  const submittedByEmailSelect = Selector('#submittedby_email');
+  const submittedByAddressSelect = Selector('#submittedby_address');
+  const createNewProjectSelect = Selector('#create-new-project');
+  const projectModalDialogSelect = Selector('.modal-dialog');
+  const projectModalBodyClass = '.modal-body';
+  const projectModalCancelButtonSelect = Selector('#cancel-message-button');
 
   //Subject Field Selectors
+  const projectSubjectFormSelect = Selector('.project-subject-form');
+  const subjectIdBaseId = '#subject_id_';
   const syntheticSelect = Selector('#synthetic');
   const syntheticOption = syntheticSelect.find('option');
   const speciesSelect = Selector('#species');
@@ -137,6 +166,7 @@ console.log("\nSubject ID " + subjectId);
   const ageTypeOption = ageTypeSelect.find('option');
   const ageMinSelect = Selector('#age_min');
   const ageMaxSelect = Selector('#age_max');
+  const agePointSelect = Selector('#age_point');
   const ageUnitSelect = Selector('#age_unit');
   const ageUnitOption = ageUnitSelect.find('option');
   const ageEventSelect = Selector('#age_event');
@@ -146,11 +176,15 @@ console.log("\nSubject ID " + subjectId);
   const linkedSubjectsSelect = Selector("#linked_subjects");
   const linkedSubjectsOption = linkedSubjectsSelect.find('option');
   const linkTypeSelect = Selector('#link_type');
+  const invalidFeedbackSelect = Selector('.invalid-feedback');
 
   //Diagnosis Field Selectors
+  const diseaseDiagnosisRegion1Select = Selector('#disease-diagnosis-region-1')
+  const diagnosisOntologySelectSelect = Selector('#ontology-search-input');
   const diseaseDiagnosisSelect = Selector('#diagnosisOntology_0');
   const diseaseDiagnosisOption = diseaseDiagnosisSelect.find('option');
   const diseaseDiagnosisOptionSelect = Selector('#ontology-select');
+  const diseaseDiagnosis2Select = Selector('#diagnosisOntology_1');
 
   const diseaseLengthSelect = Selector('#disease_length_0');
   const diseaseStageSelect = Selector('#disease_stage_0');
@@ -160,56 +194,57 @@ console.log("\nSubject ID " + subjectId);
   const interventionSelect = Selector('#intervention_0');
   const medicalHistorySelect = Selector('#medical_history_0');
 
-  const diseaseLengthSelect2 = Selector('#disease_length_1');
-  const diseaseStageSelect2 = Selector('#disease_stage_1');
-  const studyGroupDescriptionSelect2 = Selector('#study_group_description_1');
-  const priorTherapiesSelect2 = Selector('#prior_therapies_1');
-  const immunogenSelect2 = Selector('#immunogen_1');
-  const interventionSelect2 = Selector('#intervention_1');
-  const medicalHistorySelect2 = Selector('#medical_history_1');
+  const diseaseLength2Select = Selector('#disease_length_1');
+  const diseaseStage2Select = Selector('#disease_stage_1');
+  const studyGroupDescription2Select = Selector('#study_group_description_1');
+  const priorTherapies2Select = Selector('#prior_therapies_1');
+  const immunogen2Select = Selector('#immunogen_1');
+  const intervention2Select = Selector('#intervention_1');
+  const medicalHistory2Select = Selector('#medical_history_1');
+
+  const diseaseDiagnosisDetailsText = Selector('#disease_diagnosis_0');
+  const diseaseDiagnosisDetailsText2 = Selector('#disease_diagnosis_1');
 
  test('Create a Project and Check Back-end Values', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
-
-  await t.click(createProjectSelect);
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
   await t
-    .typeText('#NCBI', studyId)
-    .typeText('#study_title', studyTitle)
-    .typeText('#description', studyDesc)
-    .typeText('#criteria', incExcCriteria)
-    .typeText('#grants', grants)
+    .click(createProjectSelect)
+    .typeText(studyIdSelect, studyId)
+    .typeText(studyTitleSelect, studyTitle)
+    .typeText(descriptionSelect, studyDesc)
+    .typeText(criteriaSelect, incExcCriteria)
+    .typeText(grantsSelect, grants)
     .click('#'+keywords[0])
     .click('#'+keywords[1])
-    .click(studyTypeSelect) 
-    .click('a[name="NCIT:C16084"]')
-    .typeText('#publications', pubs)
-    .typeText('#lab_name', labName)
-    .typeText('#lab_address', labAddr)
-    .typeText('#collectedby_name', cName)
-    .typeText('#collectedby_email', cEmail)
-    .typeText('#collectedby_address', cAddr)
-    .typeText('#submittedby_name', sName)
-    .typeText('#submittedby_email', sEmail)
-    .typeText('#submittedby_address', sAddr)
-    .click('#create-new-project');
+    .click(studyTypeSelect)
+    .click(Selector(ontologySelectSelect.withAttribute('name',studyType)))
+    .typeText(publicationsSelect, pubs)
+    .typeText(labNameSelect, labName)
+    .typeText(labAddressSelect, labAddr)
+    .typeText(collectedByNameSelect, cName)
+    .typeText(collectedByEmailSelect, cEmail)
+    .typeText(collectedByAddressSelect, cAddr)
+    .typeText(submittedByNameSelect, sName)
+    .typeText(submittedByEmailSelect, sEmail)
+    .typeText(submittedByAddressSelect, sAddr)
+    .click(createNewProjectSelect)
 
-  await t.expect(Selector('.modal-body > p:nth-child(1)').innerText).contains('successfully', 'Project successfully created', {timeout:config.timeout});
+  await t.expect(projectModalDialogSelect.find(projectModalBodyClass).withExactText(projectSuccessfullyCreatedMessage).exists).ok()
+  await t.click(projectModalCancelButtonSelect);
 
-  await t.click(Selector('#cancel-message-button', {timeout:config.timeout}));
-
-  await new Promise(r => setTimeout(r, 14000));
-
-  await t
-    .scrollIntoView(subjectsTabSelect)
-    .click(subjectsTabSelect)
+  await t.click(subjectsTabSelect);
 
   const getPageUrl = ClientFunction(() => window.location.href);
-  const url = await getPageUrl();
+  var url = await getPageUrl();
 
   projectUuid = url.split("/")[4];
   projectUuidUrl += projectUuid;
-  console.log("Project UUID: " + projectUuid);
+  //console.log("Project UUID: " + projectUuid);
+
+  await t.navigateTo('./'+projectUuidUrl);
+  url = await getPageUrl();
+  console.log("URL: " + url);
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -239,7 +274,7 @@ console.log("\nSubject ID " + subjectId);
     .expect(m["value"]["grants"]).eql(grants)
     .expect(m["value"]["keywords_study"][0]).eql(keywords[0])
     .expect(m["value"]["keywords_study"][1]).eql(keywords[1])
-    .expect(m["value"]["study_type"]["id"]).eql("NCIT:C16084")
+    .expect(m["value"]["study_type"]["id"]).eql(studyType)
     .expect(m["value"]["pub_ids"]).eql(pubs)
     .expect(m["value"]["lab_name"]).eql(labName)
     .expect(m["value"]["lab_address"]).eql(labAddr)
@@ -252,60 +287,54 @@ console.log("\nSubject ID " + subjectId);
  });
 
  test('Add a Subject (with Diagnosis) to the previously created Project and Check Back-end Values', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   const getPageUrl = ClientFunction(() => window.location.href);
 
   await t.navigateTo('./'+projectUuidUrl);
-  await new Promise(r => setTimeout(r, 10000));
   const url = await getPageUrl();
-  console.log("URL: " + url);
-
-  await new Promise(r => setTimeout(r, 10000));
 
   await t
-    .scrollIntoView(subjectsTabSelect)
     .click(subjectsTabSelect)
-  await t
     .click(newSubjectSelect)
-    .typeText('input[name="subject_id"]', subjectId)
+
+  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+
+  await t
+    .typeText(subjectIdBaseId + subjectCid, subjectId)
     .click(syntheticSelect)
     .click(syntheticOption.withAttribute('value',synthetic))
     .click(speciesSelect)
-    .click(speciesOption.withText(species))
-    .typeText('#strain_name', strain)
+    .click(speciesOption.withExactText(species))
+    .typeText(strainSelect, strain)
     .click(sexSelect)
-    .click(sexOption.withText(sex))
+    .click(sexOption.withExactText(sex))
     .click(ageTypeSelect)
-    .click(ageTypeOption.withText(ageType))
-    .typeText('#age_min',ageMin)
-    .typeText('#age_max',ageMax)
+    .click(ageTypeOption.withExactText(ageType))
+    .typeText(ageMinSelect,ageMin)
+    .typeText(ageMaxSelect,ageMax)
     .click(ageUnitSelect)
     .click(ageUnitOption.withAttribute('value',ageUnit))
-    .typeText('#age_event',ageEvent)
-    .typeText('#race',race)
-    .typeText('#ancestry_population',ancestryPopulation)
-    .typeText('#ethnicity',ethnicity)
+    .typeText(ageEventSelect,ageEvent)
+    .typeText(raceSelect,race)
+    .typeText(ancestryPopulationSelect,ancestryPopulation)
+    .typeText(ethnicitySelect,ethnicity)
     .click(linkedSubjectsSelect)
-    .click(linkedSubjectsOption.withText(linkedSubjects))
-    .typeText('#link_type',linkType)
+    .click(linkedSubjectsOption.withExactText(linkedSubjects))
+    .typeText(linkTypeSelect,linkType)
     .click(diseaseDiagnosisSelect)
-    .typeText('#ontology-search-input',diseaseDiagnosis)
-    .click(diseaseDiagnosisOptionSelect.withText(diseaseDiagnosis))
-    .typeText('#disease_length_0',diseaseLength)
-    .typeText('#disease_stage_0',diseaseStage)
-    .typeText('#study_group_description_0',studyGroupDescription)
-    .typeText('#prior_therapies_0',priorTherapies)
-    .typeText('#immunogen_0',immunogen)
-    .typeText('#intervention_0',intervention)
-    .typeText('#medical_history_0',medicalHistory);
-
-  await t.click(saveChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-
-  await t
-    .click(detailsSummarySelect);
+    .typeText(diagnosisOntologySelectSelect,diseaseDiagnosis)
+    .click(diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosis))
+    .typeText(diseaseLengthSelect,diseaseLength)
+    .typeText(diseaseStageSelect,diseaseStage)
+    .typeText(studyGroupDescriptionSelect,studyGroupDescription)
+    .typeText(priorTherapiesSelect,priorTherapies)
+    .typeText(immunogenSelect,immunogen)
+    .typeText(interventionSelect,intervention)
+    .typeText(medicalHistorySelect,medicalHistory)
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
+    .click(detailsSummarySelect)
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -321,19 +350,18 @@ console.log("\nSubject ID " + subjectId);
         }
     };
     var m = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'];
   }
 
   subjectUuid = m[0]["uuid"];
-  console.log("Subject UUID: " + subjectUuid);
+  //console.log("Subject UUID: " + subjectUuid);
 
-  //check Subject values
+  //Check Subject values
   await t
     .expect(m[0]["value"]["subject_id"]).eql(subjectId)
-    .expect(m[0]["value"]["synthetic"]).ok() //expect m to be truthy
+    .expect(m[0]["value"]["synthetic"]).ok() //Expect m to be truthy
     .expect(m[0]["value"]["species"].label).eql(species)
     .expect(m[0]["value"]["sex"]).eql(sex)
     .expect(m[0]["value"]["age_min"]).eql(parseFloat(ageMin))
@@ -349,7 +377,7 @@ console.log("\nSubject ID " + subjectId);
   if(linkedSubjects == 'null') await t.expect(m[0]["value"]["linked_subjects"] == null).ok()
   else await t.expect(m[0]["value"]["linked_subjects"] == linkedSubjects).ok()
 
-  //check Diagnosis values
+  //Check Diagnosis values
   await t
     .expect(m[0]["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()).contains(diseaseDiagnosis.toLowerCase())
     .expect(m[0]["value"]["diagnosis"][0]["disease_length"]).eql(diseaseLength)
@@ -359,37 +387,53 @@ console.log("\nSubject ID " + subjectId);
     .expect(m[0]["value"]["diagnosis"][0]["immunogen"]).eql(immunogen)
     .expect(m[0]["value"]["diagnosis"][0]["intervention"]).eql(intervention)
     .expect(m[0]["value"]["diagnosis"][0]["medical_history"]).eql(medicalHistory)
+ });
 
+ test('Confirm adding a Subject with a null Species is not allowed', async t => {
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
+
+  const getPageUrl = ClientFunction(() => window.location.href);
+
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await t
+    .click(subjectsTabSelect)
+    .click(newSubjectSelect)
+
+  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+
+  await t
+    .typeText(subjectIdBaseId + subjectCid, subjectId + "nullSpecies")
+    .click(speciesSelect)
+    .click(speciesOption.withExactText("null"))
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
+
+  var errorMessage = invalidFeedbackSelect.withExactText(speciesValidationMessage).filterVisible().exists;
+  await t.expect(errorMessage).ok()
  });
 
  test('Add another Diagnosis to the previously created Subject and check against the Back-end', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
   await t
-    .scrollIntoView(subjectsTabSelect)
     .click(subjectsTabSelect)
-  await t
     .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
     .click(subjectsDropdownAddDiagnosisSelect)
     .click(diseaseDiagnosisSelect)
-    .typeText('#ontology-search-input',diseaseDiagnosis2)
-    .click(diseaseDiagnosisOptionSelect.withText(diseaseDiagnosis2))
-    .typeText('#disease_length_0',diseaseLength2)
-    .typeText('#disease_stage_0',diseaseStage2)
-    .typeText('#study_group_description_0',studyGroupDescription2)
-    .typeText('#prior_therapies_0',priorTherapies2)
-    .typeText('#immunogen_0',immunogen2)
-    .typeText('#intervention_0',intervention2)
-    .typeText('#medical_history_0',medicalHistory2);
-
-  await t.click(saveChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
+    .typeText(diagnosisOntologySelectSelect,diseaseDiagnosis2)
+    .click(diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosis2))
+    .typeText(diseaseLengthSelect,diseaseLength2)
+    .typeText(diseaseStageSelect,diseaseStage2)
+    .typeText(studyGroupDescriptionSelect,studyGroupDescription2)
+    .typeText(priorTherapiesSelect,priorTherapies2)
+    .typeText(immunogenSelect,immunogen2)
+    .typeText(interventionSelect,intervention2)
+    .typeText(medicalHistorySelect,medicalHistory2)
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -405,19 +449,18 @@ console.log("\nSubject ID " + subjectId);
         }
     };
     var m = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'][0];
   }
 
-  //find the back-end index of the duplicated Diagnosis
+  //Find the Back-end index of the duplicated Diagnosis
   var dIndex;
   if(m["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()==diseaseDiagnosis2.toLowerCase())
     dIndex = 0;
   else dIndex = 1;
 
-  //check Diagnosis values
+  //Check Diagnosis values
   await t
     .expect(m["value"]["diagnosis"][dIndex]["disease_diagnosis"].label.toLowerCase()).eql(diseaseDiagnosis2.toLowerCase())
     .expect(m["value"]["diagnosis"][dIndex]["disease_length"]).eql(diseaseLength2)
@@ -429,25 +472,18 @@ console.log("\nSubject ID " + subjectId);
     .expect(m["value"]["diagnosis"][dIndex]["medical_history"]).eql(medicalHistory2)
  });
 
- test('Duplicate a Diagnosis for the previously created Subject and check against the Back-end', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+ test('Duplicate a Diagnosis for the previously created Subject, change disease length, and check against the Back-end', async t => {
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
   await t
-    .scrollIntoView(subjectsTabSelect)
     .click(subjectsTabSelect)
-  await t
     .click(diagnosisDropdownSelect)
     .click(diagnosisDropdownDuplicateSelect.withAttribute('name','duplicate_0'))
-    .typeText('#disease_length_0',diseaseLength3,{replace: true})
-
-  await t.click(saveChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
+    .typeText(diseaseLengthSelect,diseaseLength3,{replace: true})
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -463,13 +499,12 @@ console.log("\nSubject ID " + subjectId);
         }
     };
     var m = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'][0];
   }
 
-  //determine the back-end index of the Diagnosis in question and its duplicate
+  //Determine the Back-end index of the Diagnosis in question and its duplicate
   var d1Index, d2Index;
   if(m["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()==diseaseDiagnosis.toLowerCase()) {
     d1Index = 1;
@@ -482,7 +517,7 @@ console.log("\nSubject ID " + subjectId);
     d2Index = 1;
   }
 
-  //check Diagnosis values
+  //Check Diagnosis values
   await t
     .expect(m["value"]["diagnosis"][d2Index]["disease_diagnosis"].label.toLowerCase()).eql(m["value"]["diagnosis"][d1Index]["disease_diagnosis"].label.toLowerCase())
     .expect(m["value"]["diagnosis"][d2Index]["disease_length"]).notEql(m["value"]["diagnosis"][d1Index]["disease_length"])
@@ -496,24 +531,16 @@ console.log("\nSubject ID " + subjectId);
  });
 
  test('Delete the newest Diagnosis for the previously created Subject and check against the Back-end', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
   await t
-    .scrollIntoView(subjectsTabSelect)
     .click(subjectsTabSelect)
-
-  await t
     .click(diagnosisDropdownSelect)
     .click(diagnosisDropdownDeleteSelect.withAttribute('name','delete_0'))
-
-  await t.click(saveChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -529,40 +556,47 @@ console.log("\nSubject ID " + subjectId);
         }
     };
     var m = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'][0];
   }
 
-  //confirm only 2 Diagnoses are stored in the back-end
+  //Confirm only 2 Diagnoses are stored in the Back-end
   await t
     .expect(m["value"]["diagnosis"].length).eql(2)
  });
 
- test('Duplicate the newest Subject and add a unique Subject ID, save, and then delete the Subject', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+ test('Duplicate the newest Subject and add a unique Subject ID, confirm the duplicate is correct on the Back-end, confirm the Linked Subjects drop-down populates correctly, save, and then delete the Subject', async t => {
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
-  await t
-    .scrollIntoView(subjectsTabSelect)
-    .click(subjectsTabSelect)
+  await t.click(subjectsTabSelect);
 
   //Duplicate the newest Subject
   await t
     .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
     .click(subjectsDropdownDuplicateSelect.withAttribute('name',subjectUuid))
-    .typeText('input[name="subject_id"]', subjectId+'-D', {replace: true})
+
+  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+
+  await t
+    .typeText(subjectIdBaseId + subjectCid, subjectId+'-D', {replace: true})
     .click(linkedSubjectsSelect)
-    .click(linkedSubjectsOption.withText(linkedSubjects))
+    .click(linkedSubjectsOption.withExactText(linkedSubjects))
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
-  await t.click(saveChangesSelect);
+  //Reload the page so the dynamic drop-downs update
+  await t.eval(() => location.reload(true));
 
-  await new Promise(r => setTimeout(r, 5000));
+  //Expect 2 options now
+  await t
+    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
+    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
+    .expect(linkedSubjectsOption.count).eql(2)
+    .expect((Selector(projectSubjectFormId+subjectUuid).find(linkedSubjectsId)).find('option').withExactText(subjectId+'-D').exists).ok()
+    .expect((Selector(projectSubjectFormId+subjectUuid).find(linkedSubjectsId)).find('option').withExactText('null').exists).ok()
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -578,31 +612,71 @@ console.log("\nSubject ID " + subjectId);
         }
     };
     var m = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(2);
     m = m['result'];
   }
 
-  //confirm 2 Subjects are stored in the back-end
+  //Confirm 2 Subjects are stored in the Back-end
   await t
     .expect(m.length).eql(2);
 
-  //get UUID for the newly duplicated Subject
+  //Get the UUID for the newly duplicated Subject
   var subjectUuidD ="";
   if(m[0]["uuid"] != subjectUuid) subjectUuidD = m[0]["uuid"];
   else subjectUuidD = m[1]["uuid"];
-  console.log("Subject-D UUID: " + subjectUuidD);
+  //console.log("Subject-D UUID: " + subjectUuidD);
 
+  //Subject ID values should differ
+  if(m[0]["uuid"] == subjectUuid && m[1]["uuid"] == subjectUuidD) {
+    await t.expect(m[0]["value"]["subject_id"]).eql(subjectId)
+    await t.expect(m[1]["value"]["subject_id"]).eql(subjectId+'-D')
+  } else if(m[1]["uuid"] == subjectUuid && m[0]["uuid"] == subjectUuidD) {
+    await t.expect(m[1]["value"]["subject_id"]).eql(subjectId)
+    await t.expect(m[0]["value"]["subject_id"]).eql(subjectId+'-D')
+  }
 
-  //delete the newly duplicated Subject and save
+  //Check that the duplicated Subject values match
+  await t
+    .expect(m[0]["value"]["synthetic"]).eql(m[1]["value"]["synthetic"])
+    .expect(m[0]["value"]["species"].label).eql(m[1]["value"]["species"].label)
+    .expect(m[0]["value"]["sex"]).eql(m[1]["value"]["sex"])
+    .expect(m[0]["value"]["age_min"]).eql(m[1]["value"]["age_min"])
+    .expect(m[0]["value"]["age_max"]).eql(m[1]["value"]["age_max"])
+    .expect(m[0]["value"]["age_unit"].label).eql(m[1]["value"]["age_unit"].label)
+    .expect(m[0]["value"]["age_event"]).eql(m[1]["value"]["age_event"])
+    .expect(m[0]["value"]["ancestry_population"]).eql(m[1]["value"]["ancestry_population"])
+    .expect(m[0]["value"]["ethnicity"]).eql(m[1]["value"]["ethnicity"])
+    .expect(m[0]["value"]["race"]).eql(m[1]["value"]["race"])
+    .expect(m[0]["value"]["strain_name"]).eql(m[1]["value"]["strain_name"])
+    .expect(m[0]["value"]["linked_subjects"]).eql(m[1]["value"]["linked_subjects"])
+    .expect(m[0]["value"]["link_type"]).eql(m[1]["value"]["link_type"])
+    
+  //Check that the duplicated Diagnosis values match
+  await t
+    .expect(m[0]["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()).eql(m[1]["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase())
+    .expect(m[0]["value"]["diagnosis"][0]["disease_length"]).eql(m[1]["value"]["diagnosis"][0]["disease_length"])
+    .expect(m[0]["value"]["diagnosis"][0]["disease_stage"]).eql(m[1]["value"]["diagnosis"][0]["disease_stage"])
+    .expect(m[0]["value"]["diagnosis"][0]["study_group_description"]).eql(m[1]["value"]["diagnosis"][0]["study_group_description"])
+    .expect(m[0]["value"]["diagnosis"][0]["prior_therapies"]).eql(m[1]["value"]["diagnosis"][0]["prior_therapies"])
+    .expect(m[0]["value"]["diagnosis"][0]["immunogen"]).eql(m[1]["value"]["diagnosis"][0]["immunogen"])
+    .expect(m[0]["value"]["diagnosis"][0]["intervention"]).eql(m[1]["value"]["diagnosis"][0]["intervention"])
+    .expect(m[0]["value"]["diagnosis"][0]["medical_history"]).eql(m[1]["value"]["diagnosis"][0]["medical_history"])
+    .expect(m[0]["value"]["diagnosis"][1]["disease_diagnosis"].label.toLowerCase()).eql(m[1]["value"]["diagnosis"][1]["disease_diagnosis"].label.toLowerCase())
+    .expect(m[0]["value"]["diagnosis"][1]["disease_length"]).eql(m[1]["value"]["diagnosis"][1]["disease_length"])
+    .expect(m[0]["value"]["diagnosis"][1]["disease_stage"]).eql(m[1]["value"]["diagnosis"][1]["disease_stage"])
+    .expect(m[0]["value"]["diagnosis"][1]["study_group_description"]).eql(m[1]["value"]["diagnosis"][1]["study_group_description"])
+    .expect(m[0]["value"]["diagnosis"][1]["prior_therapies"]).eql(m[1]["value"]["diagnosis"][1]["prior_therapies"])
+    .expect(m[0]["value"]["diagnosis"][1]["immunogen"]).eql(m[1]["value"]["diagnosis"][1]["immunogen"])
+    .expect(m[0]["value"]["diagnosis"][1]["intervention"]).eql(m[1]["value"]["diagnosis"][1]["intervention"])
+    .expect(m[0]["value"]["diagnosis"][1]["medical_history"]).eql(m[1]["value"]["diagnosis"][1]["medical_history"])
+
+  //Delete the newly duplicated Subject and Save
   await t
     .click(subjectsDropdownSelect.withAttribute('name',subjectUuidD))
     .click(subjectsDropdownDeleteSelect.withAttribute('name',subjectUuidD))
-
-  await t.click(saveChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
   token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -618,57 +692,96 @@ console.log("\nSubject ID " + subjectId);
         }
     };
     m = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'];
   }
 
-  //confirm only 1 Subject is stored in the back-end
+  //Confirm only 1 Subject is stored in the Back-end
   await t
     .expect(m.length).eql(1);
  });
 
- test('View existing Subject in Summary and Details view mode and confirm the correct values are shown', async t => {
-  //Summary view selectors
-  const subjectIdText = Selector('div').withText(subjectId).exists;
-  const sexSpeciesText = Selector('div').withText(sex + '/' + species).exists;
-  const raceEthnicityText = Selector('div').withText(race + '/'+ ethnicity).exists;
-  const ageText = Selector('div').withText(ageMin + '-' + ageMax + ' ' + ageUnit).exists;
-  const studyGroupDescriptionText = Selector('div').withText(studyGroupDescription).exists;
-  const studyGroupDescriptionText2 = Selector('div').withText(studyGroupDescription2).exists;
-  const studyGroupDescriptionDetailsText = Selector('#study_group_description_0');
-  const studyGroupDescriptionDetailsText2 = Selector('#study_group_description_1');
-  const diseaseDiagnosisText = Selector('div').withText(diseaseDiagnosis.toLowerCase()).exists;
-  const diseaseDiagnosisText2 = Selector('div').withText(diseaseDiagnosis2.toLowerCase()).exists;
-  const diseaseDiagnosisDetailsText = Selector('#disease_diagnosis_0');
-  const diseaseDiagnosisDetailsText2 = Selector('#disease_diagnosis_1');
-
-  //Details view selectors
-  const subjectIdDetailsText = Selector('input[name="subject_id"]');
-  //Regular expression code for additional flexibility 
-  //const syntheticRegExp = new RegExp(synthetic, "i"); 
-
-  await login(t,config.username,config.password,'CLICK','#home-login');
-  await new Promise(r => setTimeout(r, 5000));
+ test('Confirm \'Revert Changes\' and \'Save Changes\' buttons are disabled/enabled correctly', async t => {
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
   await t.navigateTo('./'+projectUuidUrl);
-  await new Promise(r => setTimeout(r, 10000));
 
+  await t.click(subjectsTabSelect)
+
+  //Expect the buttons to be unavailable when no changes have been made
+  await t.expect(revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).ok()
+  await t.expect(saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).ok()
+
+  //Duplicate the newest Subject and check buttons; edit a field and check buttons
   await t
-    .scrollIntoView(subjectsTabSelect)
-    .click(subjectsTabSelect)
+    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
+    .click(subjectsDropdownDuplicateSelect.withAttribute('name',subjectUuid))
+    .expect(revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).notOk()
+    .expect(saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).notOk()
+    .click(revertChangesSelect)
+    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
+    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
+    .typeText(strainSelect, 'StrainCheck',  {replace: true})
+    .pressKey('tab') //Change focus
+    .expect(revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).notOk()
+    .expect(saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).notOk()
+    .click(revertChangesSelect)
 
-  await new Promise(r => setTimeout(r, 5000));
+  //Ensure the buttons are disabled after a Save
+  await t
+    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
+    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
+    .typeText(ancestryPopulationSelect, 'AncestryPopulationCheck',  {replace: true})
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
+    .expect(revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).ok()
+    .expect(saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).ok()
+    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
+    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
+    .typeText(ancestryPopulationSelect, ancestryPopulation, {replace: true})
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
+ });
 
+ test('View existing Subject in Summary and Details view mode and confirm the correct values are shown', async t => {
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
+
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await t.click(subjectsTabSelect);
+
+  //Summary view selectors
+  const subjectIdTextUntrimmed = await Selector('div').withExactText("Subject ID: " + subjectId).innerText;
+  const sexSpeciesTextUntrimmed = await Selector('div').withExactText("Sex/Species: " + sex + '/' + species).innerText;
+  const raceEthnicityTextUntrimmed = await Selector('div').withExactText("Race/Ethnicity: " + race + '/'+ ethnicity).innerText;
+  const ageTextUntrimmed = await Selector('div').withExactText("Age: " + ageMin + '-' + ageMax + ' ' + ageUnit + "(s)").innerText;
+  const studyGroupDescriptionTextUntrimmed = await Selector('div').withExactText("Study Group Description: " + studyGroupDescription).innerText;
+  const studyGroupDescriptionText2Untrimmed = await Selector('div').withExactText("Study Group Description: " + studyGroupDescription2).innerText;
+
+  const diseaseDiagnosisText = Selector('div').withText(diseaseDiagnosis.toLowerCase()).exists; //We don't know the exact DOID
+  const diseaseDiagnosisText2 = Selector('div').withText(diseaseDiagnosis2.toLowerCase()).exists;
+
+  const subjectIdTextTrimmed = await subjectIdTextUntrimmed.toString().trim();
+  const sexSpeciesTextTrimmed = await sexSpeciesTextUntrimmed.toString().trim();
+  const raceEthnicityTextTrimmed = await raceEthnicityTextUntrimmed.toString().trim();
+  const ageTextTrimmed = await ageTextUntrimmed.toString().trim();
+  const studyGroupDescriptionTextTrimmed = await studyGroupDescriptionTextUntrimmed.toString().trim();
+  const studyGroupDescriptionText2Trimmed = await studyGroupDescriptionText2Untrimmed.toString().trim();
+
+  //Details view selectors
+  const subjectIdDetailsText = Selector(subjectIdBaseId + subjectUuid);
+  //Regular expression code for additional flexibility 
+  //const syntheticRegExp = new RegExp(synthetic, "i"); 
+  
   //Summary view checks
   await t
-    .expect(subjectIdText).ok()
-    .expect(sexSpeciesText).ok()
-    .expect(raceEthnicityText).ok()
-    .expect(ageText).ok()
-    .expect(studyGroupDescriptionText).ok()
-    .expect(studyGroupDescriptionText2).ok()
+    .expect(subjectIdTextTrimmed).eql("Subject ID: " + subjectId)
+    .expect(sexSpeciesTextTrimmed).eql("Sex/Species: " + sex + '/' + species)
+    .expect(raceEthnicityTextTrimmed).eql("Race/Ethnicity: " + race + '/'+ ethnicity)
+    .expect(ageTextTrimmed).eql("Age: " + ageMin + '-' + ageMax + ' ' + ageUnit + "(s)")
+    .expect(studyGroupDescriptionTextTrimmed).eql("Study Group Description: " + studyGroupDescription)
+    .expect(studyGroupDescriptionText2Trimmed).eql("Study Group Description: " + studyGroupDescription2)
     .expect(diseaseDiagnosisText).ok()
     .expect(diseaseDiagnosisText2).ok()
 
@@ -691,29 +804,38 @@ console.log("\nSubject ID " + subjectId);
     .expect(raceSelect.value).eql(race)
     .expect(ancestryPopulationSelect.value).eql(ancestryPopulation)
     .expect(ethnicitySelect.value).eql(ethnicity)
-    .expect(linkedSubjectsSelect.value).eql(linkedSubjects)
     .expect(linkTypeSelect.value).eql(linkType)
 
-    .expect(diseaseDiagnosisDetailsText.getAttribute('value')).contains(diseaseDiagnosis2)
+    .expect(diseaseDiagnosisDetailsText.getAttribute('value')).contains(diseaseDiagnosis2) //Again, we don't have the DOID
     .expect(diseaseLengthSelect.value).eql(diseaseLength2)
     .expect(diseaseStageSelect.value).eql(diseaseStage2)
-    .expect(studyGroupDescriptionDetailsText.getAttribute('value')).eql(studyGroupDescription2)
+    .expect(studyGroupDescriptionSelect.getAttribute('value')).eql(studyGroupDescription2)
     .expect(priorTherapiesSelect.value).eql(priorTherapies2)
     .expect(immunogenSelect.value).eql(immunogen2)
     .expect(interventionSelect.value).eql(intervention2)
     .expect(medicalHistorySelect.value).eql(medicalHistory2)
 
     .expect(diseaseDiagnosisDetailsText2.getAttribute('value')).contains(diseaseDiagnosis)
-    .expect(diseaseLengthSelect2.value).eql(diseaseLength)
-    .expect(diseaseStageSelect2.value).eql(diseaseStage)
-    .expect(studyGroupDescriptionDetailsText2.getAttribute('value')).eql(studyGroupDescription)
-    .expect(priorTherapiesSelect2.value).eql(priorTherapies)
-    .expect(immunogenSelect2.value).eql(immunogen)
-    .expect(interventionSelect2.value).eql(intervention)
-    .expect(medicalHistorySelect2.value).eql(medicalHistory)
+    .expect(diseaseLength2Select.value).eql(diseaseLength)
+    .expect(diseaseStage2Select.value).eql(diseaseStage)
+    .expect(studyGroupDescription2Select.getAttribute('value')).eql(studyGroupDescription)
+    .expect(priorTherapies2Select.value).eql(priorTherapies)
+    .expect(immunogen2Select.value).eql(immunogen)
+    .expect(intervention2Select.value).eql(intervention)
+    .expect(medicalHistory2Select.value).eql(medicalHistory)
+
+  //Special handling for when linkedSubjects == "null"
+  if(linkedSubjects == 'null') await t.expect(linkedSubjectsSelect.value).eql('')
+  else await t.expect(linkedSubjectsSelect.value == linkedSubjects).ok()
  });
 
  test('View existing Subject in Summary view mode, edit, revert, and confirm the correct values are still shown', async t => {
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
+
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await t.click(subjectsTabSelect);
+
   //Temporary Values
   const subjectIdR = "Subject ID R";
   const syntheticR = "false";
@@ -725,83 +847,65 @@ console.log("\nSubject ID " + subjectId);
   const raceR = 'raceR';
   const ethnicityR = 'ethnicityR';
   const studyGroupDescriptionR = 'Study Group DescriptionR';
-  const diseaseDiagnosisSelect = Selector('#diagnosisOntology_0');
-  const diseaseDiagnosisOption = diseaseDiagnosisSelect.find('option');
-  const diseaseDiagnosisOptionSelect = Selector('#ontology-select');
   const diseaseDiagnosisR = 'tuberculosis';
-  const diseaseDiagnosisSelect2 = Selector('#diagnosisOntology_1');
   const diseaseDiagnosis2R = 'cholera';
 
-  //Summary view selectors with original values
-  const subjectIdText = Selector('div').withText(subjectId).exists;
-  const sexSpeciesText = Selector('div').withText(sex + '/' + species).exists;
-  const raceEthnicityText = Selector('div').withText(race + '/'+ ethnicity).exists;
-  const ageText = Selector('div').withText(ageMin + '-' + ageMax + ' ' + ageUnit).exists;
-  const studyGroupDescriptionText = Selector('div').withText(studyGroupDescription).exists;
-  const studyGroupDescriptionText2 = Selector('div').withText(studyGroupDescription2).exists;
-  const diseaseDiagnosisText = Selector('div').withText(diseaseDiagnosis.toLowerCase()).exists;
+  //Summary view selectors
+  const subjectIdTextUntrimmed = await Selector('div').withExactText("Subject ID: " + subjectId).innerText;
+  const sexSpeciesTextUntrimmed = await Selector('div').withExactText("Sex/Species: " + sex + '/' + species).innerText;
+  const raceEthnicityTextUntrimmed = await Selector('div').withExactText("Race/Ethnicity: " + race + '/'+ ethnicity).innerText;
+  const ageTextUntrimmed = await Selector('div').withExactText("Age: " + ageMin + '-' + ageMax + ' ' + ageUnit + "(s)").innerText;
+  const studyGroupDescriptionTextUntrimmed = await Selector('div').withExactText("Study Group Description: " + studyGroupDescription).innerText;
+  const studyGroupDescriptionText2Untrimmed = await Selector('div').withExactText("Study Group Description: " + studyGroupDescription2).innerText;
+  const diseaseDiagnosisText = Selector('div').withText(diseaseDiagnosis.toLowerCase()).exists; //We don't know the exact DOID
   const diseaseDiagnosisText2 = Selector('div').withText(diseaseDiagnosis2.toLowerCase()).exists;
 
+  const subjectIdTextTrimmed = await subjectIdTextUntrimmed.toString().trim();
+  const sexSpeciesTextTrimmed = await sexSpeciesTextUntrimmed.toString().trim();
+  const raceEthnicityTextTrimmed = await raceEthnicityTextUntrimmed.toString().trim();
+  const ageTextTrimmed = await ageTextUntrimmed.toString().trim();
+  const studyGroupDescriptionTextTrimmed = await studyGroupDescriptionTextUntrimmed.toString().trim();
+  const studyGroupDescriptionText2Trimmed = await studyGroupDescriptionText2Untrimmed.toString().trim();
+
   //Details view selectors
-  const subjectIdDetailsText = Selector('input[name="subject_id"]');
-  const ageMinSelect = Selector('#age_min');
-  const ageMaxSelect = Selector('#age_max');
-  const raceSelect = Selector('#race');
-  const ethnicitySelect = Selector('#ethnicity');
-  const studyGroupDescriptionDetailsText = Selector('#study_group_description_0');
-  const studyGroupDescriptionDetailsText2 = Selector('#study_group_description_1');
-  const diseaseDiagnosisDetailsText = Selector('#disease_diagnosis_0');
-  const diseaseDiagnosisDetailsText2 = Selector('#disease_diagnosis_1');
+  const subjectIdDetailsText = Selector(subjectIdBaseId + subjectUuid);
 
-  await login(t,config.username,config.password,'CLICK','#home-login');
-  await new Promise(r => setTimeout(r, 5000));
-
-  await t.navigateTo('./'+projectUuidUrl);
-  await new Promise(r => setTimeout(r, 10000));
-
-  await t
-    .scrollIntoView(subjectsTabSelect)
-    .click(subjectsTabSelect)
-
-  //update values but do not save
+  //Edit values but do not Save
   await t
     .click(subjectsDropdownSelect)
     .click(subjectsDropdownEditSelect)
-    .typeText('input[name="subject_id"]', subjectIdR,{replace: true})
+    .typeText(subjectIdBaseId + subjectUuid, subjectIdR, {replace: true})
     .click(syntheticSelect)
     .click(syntheticOption.withAttribute('value',syntheticR))
     .click(speciesSelect)
-    .click(speciesOption.withText(speciesR))
+    .click(speciesOption.withExactText(speciesR))
     .click(sexSelect)
-    .click(sexOption.withText(sexR))
+    .click(sexOption.withExactText(sexR))
     .click(ageTypeSelect)
-    .click(ageTypeOption.withText(ageTypeR))
-    .typeText('#age_point',ageMinR,{replace: true})
+    .click(ageTypeOption.withExactText(ageTypeR))
+    .typeText(agePointSelect,ageMinR,{replace: true})
     .click(ageUnitSelect)
     .click(ageUnitOption.withAttribute('value',ageUnitR))
-    .typeText('#race',raceR,{replace: true})
-    .typeText('#ethnicity',ethnicityR,{replace: true})
+    .typeText(raceSelect,raceR,{replace: true})
+    .typeText(ethnicitySelect,ethnicityR,{replace: true})
     .click(diseaseDiagnosisSelect)
-    .typeText('#ontology-search-input',diseaseDiagnosisR,{replace: true})
-    .click(diseaseDiagnosisOptionSelect.withText(diseaseDiagnosisR))
-    .click(diseaseDiagnosisSelect2)
-    .typeText(Selector('#disease-diagnosis-region-1').find('#ontology-search-input'),diseaseDiagnosis2R,{replace: true})
-    .click(diseaseDiagnosisOptionSelect.withText(diseaseDiagnosis2R))
+    .typeText(diagnosisOntologySelectSelect,diseaseDiagnosisR,{replace: true})
+    .click(diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosisR))
+    .click(diseaseDiagnosis2Select)
+    .typeText(diseaseDiagnosisRegion1Select.find(diagnosisOntologyId),diseaseDiagnosis2R,{replace: true})
+    .click(diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosis2R))
 
-  await t.click(revertChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
+  await t
+    .click(revertChangesSelect)
 
   //Summary view checks
   await t
-    .expect(subjectIdText).ok()
-    .expect(sexSpeciesText).ok()
-    .expect(raceEthnicityText).ok()
-    .expect(ageText).ok()
-    .expect(studyGroupDescriptionText).ok()
-    .expect(studyGroupDescriptionText2).ok()
-    .expect(diseaseDiagnosisText).ok()
-    .expect(studyGroupDescriptionText).ok()
-    .expect(studyGroupDescriptionText2).ok()
+    .expect(subjectIdTextTrimmed).eql("Subject ID: " + subjectId)
+    .expect(sexSpeciesTextTrimmed).eql("Sex/Species: " + sex + '/' + species)
+    .expect(raceEthnicityTextTrimmed).eql("Race/Ethnicity: " + race + '/'+ ethnicity)
+    .expect(ageTextTrimmed).eql("Age: " + ageMin + '-' + ageMax + ' ' + ageUnit + "(s)")
+    .expect(studyGroupDescriptionTextTrimmed).eql("Study Group Description: " + studyGroupDescription)
+    .expect(studyGroupDescriptionText2Trimmed).eql("Study Group Description: " + studyGroupDescription2)
     .expect(diseaseDiagnosisText).ok()
     .expect(diseaseDiagnosisText2).ok()
 
@@ -811,42 +915,62 @@ console.log("\nSubject ID " + subjectId);
   //Details view checks
   await t
     .expect(subjectIdDetailsText.value).eql(subjectId)
+    .expect(syntheticSelect.value).eql(synthetic)
     .expect(speciesSelect.value).eql(species)
+    .expect(strainSelect.value).eql(strain)
     .expect(sexSelect.value).eql(sex)
     .expect(ageTypeSelect.value).eql(ageType)
     .expect(ageMinSelect.value).eql(ageMin)
     .expect(ageMaxSelect.value).eql(ageMax)
     .expect(ageUnitSelect.value).eql(ageUnit)
+    .expect(ageEventSelect.value).eql(ageEvent)
     .expect(raceSelect.value).eql(race)
+    .expect(ancestryPopulationSelect.value).eql(ancestryPopulation)
     .expect(ethnicitySelect.value).eql(ethnicity)
-    .expect(studyGroupDescriptionDetailsText.getAttribute('value')).eql(studyGroupDescription2)
-    .expect(studyGroupDescriptionDetailsText2.getAttribute('value')).eql(studyGroupDescription)
-    .expect(diseaseDiagnosisDetailsText.getAttribute('value')).contains(diseaseDiagnosis2)
+    .expect(linkTypeSelect.value).eql(linkType)
+
+    .expect(diseaseDiagnosisDetailsText.getAttribute('value')).contains(diseaseDiagnosis2) //Again, we don't have the DOID
+    .expect(diseaseLengthSelect.value).eql(diseaseLength2)
+    .expect(diseaseStageSelect.value).eql(diseaseStage2)
+    .expect(studyGroupDescriptionSelect.getAttribute('value')).eql(studyGroupDescription2)
+    .expect(priorTherapiesSelect.value).eql(priorTherapies2)
+    .expect(immunogenSelect.value).eql(immunogen2)
+    .expect(interventionSelect.value).eql(intervention2)
+    .expect(medicalHistorySelect.value).eql(medicalHistory2)
+
     .expect(diseaseDiagnosisDetailsText2.getAttribute('value')).contains(diseaseDiagnosis)
+    .expect(diseaseLength2Select.value).eql(diseaseLength)
+    .expect(diseaseStage2Select.value).eql(diseaseStage)
+    .expect(studyGroupDescription2Select.getAttribute('value')).eql(studyGroupDescription)
+    .expect(priorTherapies2Select.value).eql(priorTherapies)
+    .expect(immunogen2Select.value).eql(immunogen)
+    .expect(intervention2Select.value).eql(intervention)
+    .expect(medicalHistory2Select.value).eql(medicalHistory)
+
+  //Special handling for when linkedSubjects == "null"
+  if(linkedSubjects == 'null') await t.expect(linkedSubjectsSelect.value).eql('')
+  else await t.expect(linkedSubjectsSelect.value == linkedSubjects).ok()
  });
 
  test('Duplicate the newest Subject and add a unique Subject ID and change the linked Subject value, for the previously created Project', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
-  await t
-    .scrollIntoView(subjectsTabSelect)
-    .click(subjectsTabSelect)
+  await t.click(subjectsTabSelect);
 
   await t
     .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
     .click(subjectsDropdownDuplicateSelect.withAttribute('name',subjectUuid))
-    .typeText('input[name="subject_id"]', subjectId+'-2', {replace: true})
+
+  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+
+  await t
+    .typeText(subjectIdBaseId + subjectCid, subjectId+'-2', {replace: true})
     .click(linkedSubjectsSelect)
-    .click(linkedSubjectsOption.withText(linkedSubjects))
-
-  await t.click(saveChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
+    .click(linkedSubjectsOption.withExactText(linkedSubjects))
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -864,11 +988,10 @@ console.log("\nSubject ID " + subjectId);
         }
     };
     var m = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(2);
 
-    //determine which record holds the new Subject
+    //Determine which record holds the new Subject
     if(m['result'][0]['uuid'] == subjectUuid) {
       m = m['result'][1];
       subjectUuid2 = m["uuid"];
@@ -887,12 +1010,11 @@ console.log("\nSubject ID " + subjectId);
         }
     };
     m = await tapisV3.sendRequest(requestSettings2);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'][0];
   }
-  console.log("Subject2 UUID: " + subjectUuid2);
+  //console.log("Subject2 UUID: " + subjectUuid2);
 
   if (config.tapis_version == 2) {
     var m2 = await tapisV2.getProjectMetadata(token.access_token, subjectUuid2);
@@ -907,13 +1029,12 @@ console.log("\nSubject ID " + subjectId);
         }
     };
     var m2 = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(m, null, 2));
     await t.expect(m2['status']).eql("success")
         .expect(m2['result'].length).eql(1);
     m2 = m2['result'][0];
   }
 
-  //check Back-end values
+  //Check the Back-end values
   await t
     //subject
     .expect(m["value"]["subject_id"]).notEql(m2["value"]["subject_id"])
@@ -930,8 +1051,6 @@ console.log("\nSubject ID " + subjectId);
     .expect(m["value"]["ethnicity"]).eql(m2["value"]["ethnicity"])
     .expect(m["value"]["race"]).eql(m2["value"]["race"])
     .expect(m["value"]["strain_name"]).eql(m2["value"]["strain_name"])
-    //.expect(m["value"]["linked_subjects"] == null).ok()
-    //.expect(m["value"]["linked_subjects"] == linkedSubjects).ok()
     .expect(m["value"]["link_type"]).eql(m2["value"]["link_type"])
 
   if(linkedSubjects == 'null') await t.expect(m["value"]["linked_subjects"] == null).ok()
@@ -960,55 +1079,46 @@ console.log("\nSubject ID " + subjectId);
  });
 
  test('Add a new Subject with a non-unique Subject ID for the previously created Project', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
   await t
-    .scrollIntoView(subjectsTabSelect)
     .click(subjectsTabSelect)
-  await t
     .click(newSubjectSelect)
-    .typeText('input[name="subject_id"]', subjectId)
 
-  await t.click(saveChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
-
-  const errorMessage = Selector('div').withText('Please enter a non-blank, unique Subject ID.').exists;
-
-  //const errorYes = Selector('.is-invalid').exists; //good
+  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
 
   await t
-    //.expect(errorYes).ok() //good
+    .typeText(subjectIdBaseId + subjectCid, subjectId)
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
+
+  const errorMessage = Selector('div').withExactText('Please enter a non-blank, unique Subject ID.').exists;
+
+  await t
     .expect(errorMessage).ok() 
  });
 
  test('Add a new Subject with a blank Subject ID for the previously created Project', async t => {
   const blankSubjectId = '  ';
 
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
   await t
-    .scrollIntoView(subjectsTabSelect)
     .click(subjectsTabSelect)
-  await t
     .click(newSubjectSelect)
-    .typeText('input[name="subject_id"]', blankSubjectId)
 
-  await t.click(saveChangesSelect);
+  var blankSubjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
 
-  await new Promise(r => setTimeout(r, 5000));
+  await t
+    .typeText(subjectIdBaseId + blankSubjectCid, blankSubjectId)
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
-  const errorMessage = Selector('div').withText('Please enter a non-blank, unique Subject ID.').exists;
+  const errorMessage = Selector('div').withExactText('Please enter a non-blank, unique Subject ID.').exists;
 
   await t
     .expect(errorMessage).ok()
@@ -1018,27 +1128,21 @@ console.log("\nSubject ID " + subjectId);
   const ageType = 'point';
   const ageMin = '-3';
 
-  await login(t,config.username,config.password,'CLICK','#home-login');
-  await new Promise(r => setTimeout(r, 5000));
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
   await t.navigateTo('./'+projectUuidUrl);
-  await new Promise(r => setTimeout(r, 10000));
 
   await t
-    .scrollIntoView(subjectsTabSelect)
     .click(subjectsTabSelect)
-  await t
-    .click(subjectsDropdownSelect)
-    .click(subjectsDropdownEditSelect)
+    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
+    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
     .click(ageTypeSelect)
-    .click(ageTypeOption.withText(ageType))
-    .typeText('#age_point',ageMin,{ replace: true })
+    .click(ageTypeOption.withExactText(ageType))
+    .typeText(agePointSelect,ageMin,{ replace: true })
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
-  await t.click(saveChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
-
-  const errorMessage = Selector('div').withText('Please enter a valid age number ≥ 0.').exists;
+  const errorMessage = Selector('div').withExactText('Please enter a valid age number ≥ 0.').exists;
 
   await t
     .expect(errorMessage).ok()
@@ -1049,29 +1153,23 @@ console.log("\nSubject ID " + subjectId);
   const ageMin = '1';
   const ageMax = '-3';
 
-  await login(t,config.username,config.password,'CLICK','#home-login');
-  await new Promise(r => setTimeout(r, 5000));
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
   await t.navigateTo('./'+projectUuidUrl);
-  await new Promise(r => setTimeout(r, 10000));
 
   await t
-    .scrollIntoView(subjectsTabSelect)
     .click(subjectsTabSelect)
-  await t
-    .click(subjectsDropdownSelect)
-    .click(subjectsDropdownEditSelect)
+    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
+    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
     .click(ageTypeSelect)
-    .click(ageTypeOption.withText(ageType))
-    .typeText('#age_min',ageMin,{ replace: true })
-    .typeText('#age_max',ageMax,{ replace: true })
+    .click(ageTypeOption.withExactText(ageType))
+    .typeText(ageMinSelect,ageMin,{ replace: true })
+    .typeText(ageMaxSelect,ageMax,{ replace: true })
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
-  await t.click(saveChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
-
-  const errorMessage1 = Selector('div').withText('Please enter a valid minimum age number ≥ 0.').exists;
-  const errorMessage2 = Selector('div').withText('Please enter a valid maximum age number that is greater than the minimum age number.').exists;
+  const errorMessage1 = Selector('div').withExactText('Please enter a valid minimum age number ≥ 0.').exists;
+  const errorMessage2 = Selector('div').withExactText('Please enter a valid maximum age number that is greater than the minimum age number.').exists;
 
   await t
     .expect(errorMessage1).ok()
@@ -1083,30 +1181,24 @@ console.log("\nSubject ID " + subjectId);
   const ageMin = '8';
   const ageMax = '4';
 
-  await login(t,config.username,config.password,'CLICK','#home-login');
-  await new Promise(r => setTimeout(r, 5000));
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
   await t.navigateTo('./'+projectUuidUrl);
-  await new Promise(r => setTimeout(r, 10000));
+
+  await t.click(subjectsTabSelect);
 
   await t
-    .scrollIntoView(subjectsTabSelect)
-    .click(subjectsTabSelect)
-
-  await t
-    .click(subjectsDropdownSelect)
-    .click(subjectsDropdownEditSelect)
+    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
+    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
     .click(ageTypeSelect)
-    .click(ageTypeOption.withText(ageType))
-    .typeText('#age_min',ageMin,{ replace: true })
-    .typeText('#age_max',ageMax,{ replace: true })
+    .click(ageTypeOption.withExactText(ageType))
+    .typeText(ageMinSelect,ageMin,{ replace: true })
+    .typeText(ageMaxSelect,ageMax,{ replace: true })
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
-  await t.click(saveChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
-
-  const errorMessage1 = Selector('div').withText('Please enter a valid minimum age number ≥ 0.').exists;
-  const errorMessage2 = Selector('div').withText('Please enter a valid maximum age number that is greater than the minimum age number.').exists;
+  const errorMessage1 = Selector('div').withExactText('Please enter a valid minimum age number ≥ 0.').exists;
+  const errorMessage2 = Selector('div').withExactText('Please enter a valid maximum age number that is greater than the minimum age number.').exists;
 
   await t
     .expect(errorMessage1).ok()
@@ -1128,55 +1220,52 @@ console.log("\nSubject ID " + subjectId);
   const ageUnit2 = "hour";
   const ageUnit3 = "month";
 
-  await login(t,config.username,config.password,'CLICK','#home-login');
-  await new Promise(r => setTimeout(r, 5000));
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
   await t.navigateTo('./'+projectUuidUrl);
-  await new Promise(r => setTimeout(r, 10000));
 
-  await t
-    .scrollIntoView(subjectsTabSelect)
-    .click(subjectsTabSelect)
+  await t.click(subjectsTabSelect);
 
-  await new Promise(r => setTimeout(r, 5000));
-
-  //update values for Subject 2
+  //Update values for Subject 2
   await t
     .click(subjectsDropdownSelect.withAttribute('name',subjectUuid2))
     .click(subjectsDropdownEditSelect.withAttribute('name', subjectUuid2))
-    .typeText('input[name="subject_id"]', subjectId2, {replace:true})
+    .typeText(subjectIdBaseId + subjectUuid2, subjectId2, {replace:true})
     .click(sexSelect)
-    .click(sexOption.withText(sex2))
+    .click(sexOption.withExactText(sex2))
     .click(ageTypeSelect)
-    .click(ageTypeOption.withText(ageType2))
-    .typeText('#age_min',ageMin2,{ replace: true })
-    .typeText('#age_max',ageMax2,{ replace: true })
+    .click(ageTypeOption.withExactText(ageType2))
+    .typeText(ageMinSelect,ageMin2,{ replace: true })
+    .typeText(ageMaxSelect,ageMax2,{ replace: true })
     .click(ageUnitSelect)
     .click(ageUnitOption.withAttribute('value',ageUnit2))
-
-  await t.click(saveChangesSelect);
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
   //Add the third Subject
   await t
     .click(newSubjectSelect)
-    .typeText('input[name="subject_id"]', subjectId3, {replace:true})
-    .click(sexSelect)
-    .click(sexOption.withText(sex3))
-    .click(ageTypeSelect)
-    .click(ageTypeOption.withText(ageType3))
-    .typeText('#age_point',ageMin3,{ replace: true })
-    .click(ageUnitSelect)
+
+  var subject3Cid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+  var subject3Form = Selector(projectSubjectFormId + subject3Cid);
+
+  await t
+    .typeText(subjectIdBaseId + subject3Cid, subjectId3, {replace:true})
+    .click(subject3Form.find('#' + await speciesSelect.getAttribute('id')))
+    .click(speciesOption.withExactText(species2))
+    .click(subject3Form.find('#' + await sexSelect.getAttribute('id')))
+    .click(sexOption.withExactText(sex3))
+    .click(subject3Form.find('#' + await ageTypeSelect.getAttribute('id')))
+    .click(ageTypeOption.withExactText(ageType3))
+    .typeText(subject3Form.find('#' + await agePointSelect.getAttribute('id')),ageMin3,{ replace: true })
+    .click(subject3Form.find('#' + await ageUnitSelect.getAttribute('id')))
     .click(ageUnitOption.withAttribute('value',ageUnit3))
-
-  await new Promise(r => setTimeout(r, 5000));
-
-  await t.click(saveChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
+    .click(saveChangesSelect)
+    .wait(config.save_timeout)
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
 
-  //get all subjects
+  //Get all the Subjects
   if (config.tapis_version == 2) {
     var subjects = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'subject');
   } else {
@@ -1190,13 +1279,12 @@ console.log("\nSubject ID " + subjectId);
         }
     };
     var subjects = await tapisV3.sendRequest(requestSettings);
-    //console.log(JSON.stringify(subjects, null, 2));
     await t.expect(subjects['status']).eql("success")
         .expect(subjects['result'].length).eql(3);
     subjects = subjects['result'];
   }
 
-  //find uuid values for the subjects based on their subject id
+  //Find the uuid values for the Subjects based on their Subject ID
   var uuid1 = "";
   var uuid2 = "";
   var uuid3 = "";
@@ -1213,49 +1301,49 @@ console.log("\nSubject ID " + subjectId);
   else if(subjects[2]['value']['subject_id'] == subjectId2) uuid2 = subjects[2]['uuid'];
   else if(subjects[2]['value']['subject_id'] == subjectId3) uuid3 = subjects[2]['uuid'];
 
-  //sort by subject id
+  //Sort by Subject ID
   await t
     .click(sortDropdownSelect)
     .click(sortDropdownOptionSelect.withAttribute('name','subjectid'))
 
-  //get elements in sorted order
+  //Get the elements in the sorted order
   var subj1 = await subjectsDropdownSelect.nth(0).getAttribute('name');
   var subj2 = await subjectsDropdownSelect.nth(1).getAttribute('name');
   var subj3 = await subjectsDropdownSelect.nth(2).getAttribute('name');
 
-  //confirm sorted order matches expected order
+  //Confirm the sorted order matches the expected order
   await t
     .expect(subj1).eql(uuid1)
     .expect(subj2).eql(uuid3)
     .expect(subj3).eql(uuid2)
 
-  //sort by sex
+  //Sort by Sex
   await t
     .click(sortDropdownSelect)
     .click(sortDropdownOptionSelect.withAttribute('name','sex'))
 
-  //get elements in sorted order
+  //Get the elements in the sorted order
   subj1 = await subjectsDropdownSelect.nth(0).getAttribute('name');
   subj2 = await subjectsDropdownSelect.nth(1).getAttribute('name');
   subj3 = await subjectsDropdownSelect.nth(2).getAttribute('name');
 
-  //confirm sorted order matches expected order
+  //Confirm the sorted order matches the expected order
   await t
     .expect(subj1).eql(uuid2)
     .expect(subj2).eql(uuid3)
     .expect(subj3).eql(uuid1)
 
-  //sort by age
+  //Sort by Age
   await t
     .click(sortDropdownSelect)
     .click(sortDropdownOptionSelect.withAttribute('name','age'))
 
-  //get elements in sorted order
+  //Get the elements in the sorted order
   subj1 = await subjectsDropdownSelect.nth(0).getAttribute('name');
   subj2 = await subjectsDropdownSelect.nth(1).getAttribute('name');
   subj3 = await subjectsDropdownSelect.nth(2).getAttribute('name');
 
-  //confirm sorted order matches expected order
+  //Confirm the sorted order matches the expected order
   await t
     .expect(subj1).eql(uuid2)
     .expect(subj2).eql(uuid1)
@@ -1267,9 +1355,7 @@ console.log("\nSubject ID " + subjectId);
 async function login(t,username,password,method,clickItem) {
     if(username!='') await t.typeText('#username', username);
     if(password!='') await t.typeText('#password', password);
-        if(method == "ENTERKEY") {
-            await t.pressKey('enter');
-        } else if(method == 'CLICK') {
-            await t.click(Selector(clickItem, {timeout: config.timeout}));
-        }
+        if(method == "ENTERKEY") await t.pressKey('enter');
+        else if(method == 'CLICK') await t.click(Selector(clickItem));
+        await t.wait(config.login_timeout);  //Wait to complete the login process
 }

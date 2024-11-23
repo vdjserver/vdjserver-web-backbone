@@ -8,6 +8,7 @@
 // Copyright (C) 2023 The University of Texas Southwestern Medical Center
 //
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
+// Author: Ryan C. Kennedy
 // Date: Oct 25, 2023
 //
 // This program is free software: you can redistribute it and/or modify
@@ -25,7 +26,11 @@
 //
 
 export default {
+    'login_timeout': parseInt(process.env.TEST_LOGIN_TIMEOUT),
     'timeout': parseInt(process.env.TEST_TIMEOUT),
+    'save_timeout': parseInt(process.env.TEST_SAVE_TIMEOUT),
+    'upload_wait': parseInt(process.env.TEST_UPLOAD_WAIT),
+    'short_upload_wait': parseInt(process.env.TEST_SHORT_UPLOAD_WAIT),
     'tapis_version': process.env.TAPIS_VERSION,
     'url': process.env.TEST_URL,
     'username': process.env.TEST_USERNAME,

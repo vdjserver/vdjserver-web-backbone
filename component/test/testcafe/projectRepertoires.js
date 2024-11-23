@@ -5,11 +5,11 @@
 // VDJServer
 // https://vdjserver.org
 //
-// Copyright (C) 2023 The University of Texas Southwestern Medical Center
+// Copyright (C) 2024 The University of Texas Southwestern Medical Center
 //
-// Author: Ryan Kennedy
+// Author: Ryan C. Kennedy
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
-// Date: June-July 2024
+// Date: June - November 2024
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as published
@@ -39,7 +39,6 @@ var projectUuid = "";
 var projectUuidUrl = "project/";
 projectUuidUrl += projectUuid;
 var subjectUuid = "";
-var subjectUuid2 = "";
 var repertoireUuid = "";
 var dRepertoireUuid = "";
 var sampleUuid = "";
@@ -48,14 +47,17 @@ var dSampleUuid="";
 fixture('Project Repertoires Page Test Cases')
   .page(config.url);
 
-  //append a random number less than 1,000,000 to subjectId
+  const loginButtonId = '#home-login';
+
+  //Append a random number less than 1,000,000 to subjectId
   var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
-  console.log("\nSubject ID: " + subjectId);
+  //console.log("\nSubject ID: " + subjectId);
 
   //Project Values
   const studyId = "Test Study ID";
-  //append a random number less than 1,000,000 to studyTitle
+  //Append a random number less than 1,000,000 to studyTitle
   const studyTitle = "Test Study Title_" + Math.floor(Math.random()*1000000);
+  const studyType = "NCIT:C16084";
   const studyDesc = "Test Study Description";
   const incExcCriteria = "Criteria";
   const grants = "1234";
@@ -69,8 +71,10 @@ fixture('Project Repertoires Page Test Cases')
   const sName = "Jim";
   const sEmail = "jim@email.com";
   const sAddr = "13 W. Main St";
+  const projectSuccessfullyCreatedMessage = "Project successfully created!";
 
   //Subject Values
+  const projectSubjectDropdownId = '#project-subject-dropdown';
   const synthetic = "true";
   const species = 'Macaca mulatta';
   const strain = 'abcde'
@@ -79,6 +83,7 @@ fixture('Project Repertoires Page Test Cases')
   const ageMin = '3';
   const ageMax = '9';
   const ageUnit = 'day';
+  const ageUnitDisplay = 'day(s)';
   const ageEvent = 'event';
   const race = 'race';
   const ancestryPopulation = 'ancestry';
@@ -87,6 +92,7 @@ fixture('Project Repertoires Page Test Cases')
   const linkType = 'linkType';
 
   //Diagnosis Values
+  const diagnosisOntologyId = '#ontology-search-input';
   const diseaseDiagnosis = 'malaria';
   const diseaseLength = 'Disease Length';
   const diseaseStage = 'Disease Stage';
@@ -97,11 +103,36 @@ fixture('Project Repertoires Page Test Cases')
   const medicalHistory = 'Medical History';
 
   //Repertoire Values
+  const repertoireFormIdBase = "#edit-repertoire-form_";
   const repertoireName = "Repertoire Name";
   const repertoireDescription = "Repertoire Description";
+  const repertoireDescriptionId = "#repertoire_description";
   const repertoireSubjectId = "null";
+  const tissueIdBaseId = "#tissue_";
+  const repertoireDropdownId = "#project-repertoires-dropdown";
+  const subjectBaseId = "#subject";
+  const sexSpeciesDetailsId =  "#sex_species_details";
+  const raceEthnicityDetailsId = "#race_ethnicity_details";
+  const ageDetailsId = "#age_details";
+  const subjectIdValidationMessage = "Please select a Subject ID.";
+  const sampleIdValidationMessage = "Please enter a unique, non-blank ID.";
+  const singleCellValidationMessage = "Please enter a valid Single Cell value.";
+  const cellStorageValidationMessage = "Please enter a valid Cell Storage value.";
+  const pcrTargetLocusValidationMessage = "Please select a non-null PCR Target Locus.";
+  const collectionTimeValidationMessage = "Please enter a valid Collection Time Point Relative number.";
+  const collectionTimePointRelativeUnitValidationMessage = "Please enter a Collection Time Point Relative Unit.";
+  const templateAmountValidationMessage = "Please enter a valid Template Amount number ≥ 0.";
+  const templateAmountUnitValidationMessage = "Please enter a Template Amount Unit.";
+  const cellNumberValidationMessage = "Please enter a valid Cell Number integer ≥ 0.";
+  const cellsPerReactionValidationMessage = "Please enter a valid Cells Per Reaction integer ≥ 0.";
+  const sequencingRunDateValidationMessage = "Please enter a valid Sequencing Run Date (YYYY-MM-DD).";
+  const sequencingFilesDataIdValidationMessage = "Please enter Seq. Files or a non-blank Seq. Data ID, not both.";
 
   //Sample Values
+  const sampleDropdownId = "#project-sample-dropdown";
+  const tissueId = "#tissue_";
+  const cellSubsetId = "#cell_subset_";
+  const cellSpeciesId = "#cell_species_";
   const sampleId = "Sample ID_" + Math.floor(Math.random()*1000000);
   const sampleType = "Sample Type";
   const tissue = "epithalamus";
@@ -142,36 +173,63 @@ fixture('Project Repertoires Page Test Cases')
   const reverseTargetLocation = "Reverse Target Location";
   const sequencingDataId = "Sequencing Data ID";
 
+  //Files Values
+  const filesPath = "./uploads/";
+  const FastaSequencesFile = "VectorBase-64_Aaquasalis_ESTs.fasta";
+
   //General Selectors
-  const createProjectSelect = Selector('#create-project', {timeout:config.timeout});
-  const subjectsTabSelect = Selector('#subjects-tab', {timeout:config.timeout});
-  const repertoiresTabSelect = Selector('#repertoires-tab', {timeout:config.timeout});
-  const filesTabSelect = Selector('#files-tab', {timeout:config.timeout});
-  const detailsSummarySubjectSelect = Selector('#project-subjects-details-summary', {timeout:config.timeout});
-  const detailsSummaryRepertoireSelect = Selector('#project-repertoires-details-summary', {timeout:config.timeout});
-  const sortRepertoireDropdownSelect = Selector('#project-repertoires-sort-button', {timeout:config.timeout});
-  const sortRepertoireDropdownOptionSelect = Selector('#project-repertoires-sort-select', {timeout:config.timeout});
-  const newSubjectSelect = Selector('#project-subjects-new-subject', {timeout:config.timeout});
-  const saveSubjectChangesSelect = Selector('#project-subjects-save-changes', {timeout:config.timeout});
-  const newRepertoireSelect = Selector('#project-repertoires-add', {timeout:config.timeout});
-  const newRepertoireAddSelect = Selector('#project-repertoires-add-repertoire', {timeout:config.timeout});
-  const revertRepertoireChangesSelect = Selector('#project-repertoires-revert-changes', {timeout:config.timeout});
-  const saveRepertoireChangesSelect = Selector('#project-repertoires-save-changes', {timeout:config.timeout});
-  const repertoireDropdownSelect = Selector('#project-repertoires-dropdown', {timeout:config.timeout});
-  const repertoireDropdownDetailsSummarySelect = Selector('#project-repertoire-show-summary', {timeout:config.timeout});
-  const repertoireDropdownEditSelect = Selector('#project-repertoire-edit-repertoire', {timeout:config.timeout});
-  const repertoireDropdownDuplicateSelect = Selector('#project-repertoire-duplicate-repertoire', {timeout:config.timeout});
-  const repertoireDropdownDeleteSelect = Selector('#project-repertoire-delete-repertoire', {timeout:config.timeout});
-  const repertoireDropdownAddSampleSelect = Selector('#project-sample-add-sample', {timeout:config.timeout});
-  const sampleDropdownSelect = Selector('#project-samples-add', {timeout:config.timeout});
-  const sampleDropdownDuplicateSelect = Selector('#project-sample-duplicate-sample', {timeout:config.timeout});
-  const sampleDropdownDeleteSelect = Selector('#project-sample-delete-sample', {timeout:config.timeout});
+  const navbarStatsIconSelect = Selector('#navbar-stats-icon');
+  const createProjectSelect = Selector('#create-project');
+  const subjectsTabSelect = Selector('#subjects-tab');
+  const repertoiresTabSelect = Selector('#repertoires-tab');
+  const filesTabSelect = Selector('#files-tab');
+  const detailsSummarySubjectSelect = Selector('#project-subjects-details-summary');
+  const detailsSummaryRepertoireSelect = Selector('#project-repertoires-details-summary');
+  const sortRepertoireDropdownSelect = Selector('#project-repertoires-sort-button');
+  const sortRepertoireDropdownOptionSelect = Selector('#project-repertoires-sort-select');
+  const newSubjectSelect = Selector('#project-subjects-new-subject');
+  const saveSubjectChangesSelect = Selector('#project-subjects-save-changes');
+  const newRepertoireSelect = Selector('#project-repertoires-add');
+  const newRepertoireAddSelect = Selector('#project-repertoires-add-repertoire');
+  const revertRepertoireChangesSelect = Selector('#project-repertoires-revert-changes');
+  const saveRepertoireChangesSelect = Selector('#project-repertoires-save-changes');
+  const repertoireDropdownSelect = Selector(repertoireDropdownId);
+  const repertoireDropdownDetailsSummarySelect = Selector('#project-repertoire-show-summary');
+  const repertoireDropdownEditSelect = Selector('#project-repertoire-edit-repertoire');
+  const repertoireDropdownDuplicateSelect = Selector('#project-repertoire-duplicate-repertoire');
+  const repertoireDropdownDeleteSelect = Selector('#project-repertoire-delete-repertoire');
+  const repertoireDropdownAddSampleSelect = Selector('#project-sample-add-sample');
+  const sampleDropdownSelect = Selector(sampleDropdownId);
+  const sampleAddDropdownSelect = Selector('#project-samples-add');
+  const sampleDropdownDuplicateSelect = Selector('#project-sample-duplicate-sample');
+  const sampleDropdownDeleteSelect = Selector('#project-sample-delete-sample');
+  const ontologyInputSelect = Selector('#ontology-search-input');
 
   //Project Field Selectors
+  const studyIdSelect = Selector('#NCBI');
+  const studyTitleSelect = Selector('#study_title');
+  const descriptionSelect = Selector('#description');
+  const criteriaSelect = Selector('#criteria');
+  const grantsSelect = Selector('#grants');
   const studyTypeSelect = Selector('#dropdownOntology');
-  const studyTypeOption = studyTypeSelect.find('option');
+  const ontologySelectSelect = Selector('#ontology-select');
+  const publicationsSelect = Selector('#publications');
+  const labNameSelect = Selector('#lab_name');
+  const labAddressSelect = Selector('#lab_address');
+  const collectedByNameSelect = Selector('#collectedby_name');
+  const collectedByEmailSelect = Selector('#collectedby_email');
+  const collectedByAddressSelect = Selector('#collectedby_address');
+  const submittedByNameSelect = Selector('#submittedby_name');
+  const submittedByEmailSelect = Selector('#submittedby_email');
+  const submittedByAddressSelect = Selector('#submittedby_address');
+  const createNewProjectSelect = Selector('#create-new-project');
+  const projectModalDialogSelect = Selector('.modal-dialog');
+  const projectModalBodyClass = '.modal-body';
+  const projectModalCancelButtonSelect = Selector('#cancel-message-button');
 
   //Subject Field Selectors
+  const projectSubjectFormSelect = Selector('.project-subject-form');
+  const subjectIdBaseId = '#subject_id_';
   const syntheticSelect = Selector('#synthetic');
   const syntheticOption = syntheticSelect.find('option');
   const speciesSelect = Selector('#species');
@@ -183,6 +241,7 @@ fixture('Project Repertoires Page Test Cases')
   const ageTypeOption = ageTypeSelect.find('option');
   const ageMinSelect = Selector('#age_min');
   const ageMaxSelect = Selector('#age_max');
+  const agePointSelect = Selector('#age_point');
   const ageUnitSelect = Selector('#age_unit');
   const ageUnitOption = ageUnitSelect.find('option');
   const ageEventSelect = Selector('#age_event');
@@ -197,7 +256,6 @@ fixture('Project Repertoires Page Test Cases')
   const diseaseDiagnosisSelect = Selector('#diagnosisOntology_0');
   const diseaseDiagnosisOption = diseaseDiagnosisSelect.find('option');
   const diseaseDiagnosisOptionSelect = Selector('#ontology-select');
-
   const diseaseLengthSelect = Selector('#disease_length_0');
   const diseaseStageSelect = Selector('#disease_stage_0');
   const studyGroupDescriptionSelect = Selector('#study_group_description_0');
@@ -207,14 +265,19 @@ fixture('Project Repertoires Page Test Cases')
   const medicalHistorySelect = Selector('#medical_history_0');
 
   //Repertoire Field Selectors
-  const repertoireNameSelect = Selector('input[name="repertoire_name"]');
+  const repertoireNameBaseId = '#repertoire_name_';
   const repertoireDescriptionSelect = Selector('#repertoire_description');
   const subjectIdSelect = Selector('#subject');
   const subjectIdOption = subjectIdSelect.find('option');
+  const sampleFormSelect = Selector('.project-sample-form');
+  const repertoireFormSelect = Selector('.project-repertoire-form');
+  const invalidFeedbackSelect = Selector('.invalid-feedback');
 
   //Sample Field Selectors
-  const sampleIdSelect = Selector('input[name="sample_id"]');
+  const sampleIdBaseId = "#sample_id_";
+  const sampleIdSelect = Selector('input').withAttribute("name","sample_id");
   const sampleTypeSelect = Selector('#sample_type');
+  const cellSubsetBaseId = "#cell_subset_";
   const anatomicSiteSelect = Selector('#anatomic_site');
   const diseaseStateSampleSelect = Selector('#disease_state_sample');
   const collectionTimeSelect = Selector('#collection_time_point_relative');
@@ -264,52 +327,51 @@ fixture('Project Repertoires Page Test Cases')
   //Files Selectors
   const uploadFilesSelect = Selector('#project-files-upload');
   const uploadFilesComputerSelect = Selector('#project-files-upload-computer');
+  const uploadFilesComputerDialogSelect = Selector('#file-upload-from-computer-dialog');
   const addFilesSelect = Selector('#add-upload-files');
   const addStartUploadSelect = Selector('#start-upload-button');
   const doneUploadSelect = Selector('#done-upload-button');
 
  test('Create a Project and Check Back-end Values', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
-
-  await t.click(createProjectSelect);
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
   await t
-    .typeText('#NCBI', studyId)
-    .typeText('#study_title', studyTitle)
-    .typeText('#description', studyDesc)
-    .typeText('#criteria', incExcCriteria)
-    .typeText('#grants', grants)
+    .click(createProjectSelect)
+    .typeText(studyIdSelect, studyId)
+    .typeText(studyTitleSelect, studyTitle)
+    .typeText(descriptionSelect, studyDesc)
+    .typeText(criteriaSelect, incExcCriteria)
+    .typeText(grantsSelect, grants)
     .click('#'+keywords[0])
     .click('#'+keywords[1])
-    .click(studyTypeSelect) 
-    .click('a[name="NCIT:C16084"]')
-    .typeText('#publications', pubs)
-    .typeText('#lab_name', labName)
-    .typeText('#lab_address', labAddr)
-    .typeText('#collectedby_name', cName)
-    .typeText('#collectedby_email', cEmail)
-    .typeText('#collectedby_address', cAddr)
-    .typeText('#submittedby_name', sName)
-    .typeText('#submittedby_email', sEmail)
-    .typeText('#submittedby_address', sAddr)
-    .click('#create-new-project');
+    .click(studyTypeSelect)
+    .click(Selector(ontologySelectSelect.withAttribute('name',studyType)))
+    .typeText(publicationsSelect, pubs)
+    .typeText(labNameSelect, labName)
+    .typeText(labAddressSelect, labAddr)
+    .typeText(collectedByNameSelect, cName)
+    .typeText(collectedByEmailSelect, cEmail)
+    .typeText(collectedByAddressSelect, cAddr)
+    .typeText(submittedByNameSelect, sName)
+    .typeText(submittedByEmailSelect, sEmail)
+    .typeText(submittedByAddressSelect, sAddr)
+    .click(createNewProjectSelect)
 
-  await t.expect(Selector('.modal-body > p:nth-child(1)').innerText).contains('successfully', 'Project successfully created', {timeout:config.timeout});
+  await t.expect(projectModalDialogSelect.find(projectModalBodyClass).withExactText(projectSuccessfullyCreatedMessage).exists).ok()
+  await t.click(projectModalCancelButtonSelect);
 
-  await t.click(Selector('#cancel-message-button', {timeout:config.timeout}));
-
-  await new Promise(r => setTimeout(r, 14000));
-
-  await t
-    .scrollIntoView(subjectsTabSelect)
-    .click(subjectsTabSelect)
+  await t.click(subjectsTabSelect);
 
   const getPageUrl = ClientFunction(() => window.location.href);
-  const url = await getPageUrl();
+  var url = await getPageUrl();
 
   projectUuid = url.split("/")[4];
   projectUuidUrl += projectUuid;
-  console.log("Project UUID: " + projectUuid);
+  //console.log("Project UUID: " + projectUuid);
+
+  await t.navigateTo('./'+projectUuidUrl);
+  url = await getPageUrl();
+  console.log("URL: " + url);
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -338,7 +400,7 @@ fixture('Project Repertoires Page Test Cases')
     .expect(m["value"]["grants"]).eql(grants)
     .expect(m["value"]["keywords_study"][0]).eql(keywords[0])
     .expect(m["value"]["keywords_study"][1]).eql(keywords[1])
-    .expect(m["value"]["study_type"]["id"]).eql("NCIT:C16084")
+    .expect(m["value"]["study_type"]["id"]).eql(studyType)
     .expect(m["value"]["pub_ids"]).eql(pubs)
     .expect(m["value"]["lab_name"]).eql(labName)
     .expect(m["value"]["lab_address"]).eql(labAddr)
@@ -351,59 +413,53 @@ fixture('Project Repertoires Page Test Cases')
  });
 
  test('Add a Subject (with Diagnosis) to the previously created Project and Check Back-end Values', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   const getPageUrl = ClientFunction(() => window.location.href);
 
   await t.navigateTo('./'+projectUuidUrl);
-  await new Promise(r => setTimeout(r, 10000));
   const url = await getPageUrl();
-  console.log("URL: " + url);
-
-  await new Promise(r => setTimeout(r, 10000));
 
   await t
-    .scrollIntoView(subjectsTabSelect)
     .click(subjectsTabSelect)
-  await t
     .click(newSubjectSelect)
-    .typeText('input[name="subject_id"]', subjectId)
+
+  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+
+  await t
+    .typeText(subjectIdBaseId + subjectCid, subjectId)
     .click(syntheticSelect)
     .click(syntheticOption.withAttribute('value',synthetic))
     .click(speciesSelect)
-    .click(speciesOption.withText(species))
-    .typeText('#strain_name', strain)
+    .click(speciesOption.withExactText(species))
+    .typeText(strainSelect, strain)
     .click(sexSelect)
-    .click(sexOption.withText(sex))
+    .click(sexOption.withExactText(sex))
     .click(ageTypeSelect)
-    .click(ageTypeOption.withText(ageType))
-    .typeText('#age_min',ageMin)
-    .typeText('#age_max',ageMax)
+    .click(ageTypeOption.withExactText(ageType))
+    .typeText(ageMinSelect,ageMin)
+    .typeText(ageMaxSelect,ageMax)
     .click(ageUnitSelect)
     .click(ageUnitOption.withAttribute('value',ageUnit))
-    .typeText('#age_event',ageEvent)
-    .typeText('#race',race)
-    .typeText('#ancestry_population',ancestryPopulation)
-    .typeText('#ethnicity',ethnicity)
+    .typeText(ageEventSelect,ageEvent)
+    .typeText(raceSelect,race)
+    .typeText(ancestryPopulationSelect,ancestryPopulation)
+    .typeText(ethnicitySelect,ethnicity)
     .click(linkedSubjectsSelect)
-    .click(linkedSubjectsOption.withText(linkedSubjects))
-    .typeText('#link_type',linkType)
+    .click(linkedSubjectsOption.withExactText(linkedSubjects))
+    .typeText(linkTypeSelect,linkType)
     .click(diseaseDiagnosisSelect)
-    .typeText('#ontology-search-input',diseaseDiagnosis)
-    .click(diseaseDiagnosisOptionSelect.withText(diseaseDiagnosis))
-    .typeText('#disease_length_0',diseaseLength)
-    .typeText('#disease_stage_0',diseaseStage)
-    .typeText('#study_group_description_0',studyGroupDescription)
-    .typeText('#prior_therapies_0',priorTherapies)
-    .typeText('#immunogen_0',immunogen)
-    .typeText('#intervention_0',intervention)
-    .typeText('#medical_history_0',medicalHistory);
-
-  await t.click(saveSubjectChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-
-  await t
+    .typeText(ontologyInputSelect,diseaseDiagnosis)
+    .click(diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosis))
+    .typeText(diseaseLengthSelect,diseaseLength)
+    .typeText(diseaseStageSelect,diseaseStage)
+    .typeText(studyGroupDescriptionSelect,studyGroupDescription)
+    .typeText(priorTherapiesSelect,priorTherapies)
+    .typeText(immunogenSelect,immunogen)
+    .typeText(interventionSelect,intervention)
+    .typeText(medicalHistorySelect,medicalHistory)
+    .click(saveSubjectChangesSelect)
+    .wait(config.save_timeout)
     .click(detailsSummarySubjectSelect);
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
@@ -426,12 +482,12 @@ fixture('Project Repertoires Page Test Cases')
   }
 
   subjectUuid = m[0]["uuid"];
-  console.log("Subject UUID: " + subjectUuid);
+  //console.log("Subject UUID: " + subjectUuid);
 
-  //check Subject values
+  //Check Subject values
   await t
     .expect(m[0]["value"]["subject_id"]).eql(subjectId)
-    .expect(m[0]["value"]["synthetic"]).ok() //expect m to be truthy
+    .expect(m[0]["value"]["synthetic"]).ok() //Expect m to be truthy
     .expect(m[0]["value"]["species"].label).eql(species)
     .expect(m[0]["value"]["sex"]).eql(sex)
     .expect(m[0]["value"]["age_min"]).eql(parseFloat(ageMin))
@@ -447,7 +503,7 @@ fixture('Project Repertoires Page Test Cases')
   if(linkedSubjects == 'null') await t.expect(m[0]["value"]["linked_subjects"] == null).ok()
   else await t.expect(m[0]["value"]["linked_subjects"] == linkedSubjects).ok()
 
-  //check Diagnosis values
+  //Check Diagnosis values
   await t
     .expect(m[0]["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()).contains(diseaseDiagnosis.toLowerCase())
     .expect(m[0]["value"]["diagnosis"][0]["disease_length"]).eql(diseaseLength)
@@ -460,54 +516,46 @@ fixture('Project Repertoires Page Test Cases')
  });
 
  test('Add a Repertoire (with Sample) to the previously created Project and Check Back-end Values', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   const getPageUrl = ClientFunction(() => window.location.href);
 
   await t.navigateTo('./'+projectUuidUrl);
-  await new Promise(r => setTimeout(r, 10000));
 
   await t
-    .scrollIntoView(repertoiresTabSelect)
     .click(repertoiresTabSelect)
-
-  await t
     .click(newRepertoireSelect)
     .click(newRepertoireAddSelect)
 
-  var sampleCid = await sampleIdSelect.getAttribute('id');
-  sampleCid = sampleCid.split('_')[2];
-  console.log("Sample CID: " + sampleCid);
+  var repertoireCid = await repertoireFormSelect.find(repertoireDropdownId).getAttribute('name');
+  var sampleCid = await sampleFormSelect.find(sampleDropdownId).getAttribute('name');
 
-  const tissueSelect = Selector('#tissue_'+sampleCid);
+  const tissueSelect = Selector(tissueId+sampleCid);
   const tissueOption = tissueSelect.find('option');
-  const tissueOptionSelect = Selector('#ontology-select');
 
-  const cellSubsetSelect = Selector('#cell_subset_'+sampleCid);
+  const cellSubsetSelect = Selector(cellSubsetId+sampleCid);
   const cellSubsetOption = cellSubsetSelect.find('option');
-  const cellSubsetOptionSelect = Selector('#ontology-select');
 
-  const cellSpeciesSelect = Selector('#cell_species_'+sampleCid);
+  const cellSpeciesSelect = Selector(cellSpeciesId+sampleCid);
   const cellSpeciesOption = cellSpeciesSelect.find('option');
-  const cellSpeciesOptionSelect = Selector('#ontology-select');
 
-  const ontologySelectSelect = Selector('#ontology-search-input');
 
   //Expect the created Subject to exist in the Subject ID drop-down
-  await t.expect(subjectIdOption.withAttribute('value',subjectUuid).exists).ok()
+  await t
+    .expect(subjectIdOption.count).eql(2)
+    .expect(subjectIdOption.withAttribute('value',subjectUuid).exists).ok()
 
   await t
-    .typeText(repertoireNameSelect, repertoireName)
+    .typeText(repertoireNameBaseId+repertoireCid, repertoireName)
     .typeText(repertoireDescriptionSelect, repertoireDescription)
     .click(subjectIdSelect)
     .click(subjectIdOption.withAttribute('value',subjectUuid))
-    .typeText(sampleIdSelect,sampleId)
+    .typeText(Selector(sampleIdBaseId + sampleCid),sampleId)
     .typeText(sampleTypeSelect,sampleType)
     .click(tissueSelect)
-    .typeText(ontologySelectSelect.nth(0),tissue)
-    .click(tissueOptionSelect.withText(tissue))
-    .click(Selector('#navbar-stats-icon'))
+    .typeText(ontologyInputSelect.nth(0),tissue)
+    .click(ontologySelectSelect.withExactText(tissue))
+    .click(navbarStatsIconSelect)
     .typeText(anatomicSiteSelect,anatomicSite)
     .typeText(diseaseStateSampleSelect,diseaseStateSample)
     .typeText(collectionTimeSelect,collectionTime)
@@ -521,16 +569,15 @@ fixture('Project Repertoires Page Test Cases')
     .click(collectionTimePointRelativeUnitSelect)
     .click(collectionTimePointRelativeUnitOption.withAttribute('value',collectionTimePointRelativeUnit))
     .click(sequencingFilesSelect)
-    .click(sequencingFilesOption.withText(sequencingFiles))
+    .click(sequencingFilesOption.withExactText(sequencingFiles))
     .typeText(tissueProcessingSelect,tissueProcessing)
-    .scrollIntoView(templateQualitySelect)
     .click(cellSubsetSelect)
-    .typeText(ontologySelectSelect.nth(1),cellSubset)
-    .click(cellSubsetOptionSelect.withText(cellSubset))
+    .typeText(ontologyInputSelect.nth(1),cellSubset)
+    .click(ontologySelectSelect.withExactText(cellSubset))
     .typeText(cellPhenotypeSelect,cellPhenotype)
     .click(cellSpeciesSelect)
-    .typeText(ontologySelectSelect.nth(2),cellSpecies)
-    .click(cellSpeciesOptionSelect.withText(cellSpecies))
+    .typeText(ontologyInputSelect.nth(2),cellSpecies)
+    .click(ontologySelectSelect.withExactText(cellSpecies))
     .click(singleCellSelect)
     .click(singleCellOption.withAttribute('value',singleCell))
     .typeText(cellNumberSelect,cellNumber)
@@ -559,14 +606,9 @@ fixture('Project Repertoires Page Test Cases')
     .typeText(forwardTargetLocationSelect,forwardTargetLocation)
     .typeText(reverseTargetLocationSelect,reverseTargetLocation)
     .typeText(sequencingDataIdSelect,sequencingDataId)
-
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-
-  await t
-    .click(detailsSummaryRepertoireSelect);
-
-  await new Promise(r => setTimeout(r, 10000));
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
+    .click(detailsSummaryRepertoireSelect)
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -588,10 +630,10 @@ fixture('Project Repertoires Page Test Cases')
   }
 
   repertoireUuid = r[0]["uuid"];
-  console.log("Repertoire UUID: " + repertoireUuid);
+  //console.log("Repertoire UUID: " + repertoireUuid);
 
   sampleUuid = r[0]["value"]["sample"][0]["vdjserver_uuid"];
-  console.log("Sample UUID: " + sampleUuid);
+  //console.log("Sample UUID: " + sampleUuid);
 
   if (config.tapis_version == 2) {
     var s = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
@@ -614,7 +656,7 @@ fixture('Project Repertoires Page Test Cases')
   var rValue = r[0]["value"];
   var sValue = s[0]["value"];
 
-  //check Repertoire values
+  //Check Repertoire values
   await t
     .expect(rValue["repertoire_name"]).eql(repertoireName)
     .expect(rValue["repertoire_description"]).eql(repertoireDescription)
@@ -657,80 +699,89 @@ fixture('Project Repertoires Page Test Cases')
     .expect(sValue["pcr_target"][0]["reverse_pcr_primer_target_location"]).eql(reverseTargetLocation)
 
   if(sequencingFiles == 'null') await t.expect(sValue["sequencing_files"]["filename"] == null).ok()
-  else await t.expect(sValue["sequencingFiles"]["filename"] == sequencingFiles).ok()
+  else await t.expect(sValue["sequencing_files"]["filename"] == sequencingFiles).ok()
  });
 
  test('View existing Repertoire in Summary and Details view mode and confirm the correct values are shown', async t => {
-  const tissueSelect = Selector('#tissue_' + sampleUuid);
-  const cellSubsetSelect = Selector('#cell_subset_' + sampleUuid);
-  const cellSpeciesSelect = Selector('#cell_species_' + sampleUuid);
-
-  //Summary view selectors
-  const repertoireNameText = Selector('div').withText(repertoireName).exists;
-  const repertoireDescriptionText = Selector('div').withText(repertoireDescription).exists;
-  const subjectIdText = Selector('div').withText(subjectId).exists;
-  const sexSpeciesText = Selector('div').withText(sex + '/' + species).exists;
-  const raceEthnicityText = Selector('div').withText(race + '/'+ ethnicity).exists;
-  const ageText = Selector('div').withText(ageMin + '-' + ageMax + ' ' + ageUnit).exists;
-  
-  const sampleIdText = Selector('div').withText(sampleId).exists;
-  const tissueText = Selector('div').withText(tissue.toLowerCase()).exists;
-  const diseaseStateText = Selector('div').withText(diseaseStateSample).exists;
-  const singleCellText = Selector('div').withText(singleCell).exists;
-  const cellSubsetText = Selector('div').withText(cellSubset).exists;
-  const templateText = Selector('div').withText(templateClass).exists;
-  const targetLociText = Selector('div').withText(pcrTargetLocus).exists;
-
-  //Details view selectors
-  const repertoireNameDetailsText = Selector('#repertoire_name_' + repertoireUuid).withText(repertoireName).exists;
-  const repertoireDescriptionDetailsText = Selector('#repertoire_description').withText(repertoireDescription).exists;
-  const subjectIdDetailsText = Selector('#subject').withText(subjectId).exists;
-  const sampleIdDetailsText = Selector('#sample_id_' + sampleUuid).withText(sampleId).exists;
-
-  await login(t,config.username,config.password,'CLICK','#home-login');
-  await new Promise(r => setTimeout(r, 5000));
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
   await t.navigateTo('./'+projectUuidUrl);
-  await new Promise(r => setTimeout(r, 10000));
 
-  await t
-    .scrollIntoView(repertoiresTabSelect)
-    .click(repertoiresTabSelect)
+  await t.click(repertoiresTabSelect);
 
-  await new Promise(r => setTimeout(r, 5000));
+  //Summary view selectors
+  const repertoireNameTextUntrimmed = await Selector('div').withExactText("Repertoire Name: " + repertoireName).innerText;
+  const repertoireDescriptionTextUntrimmed = await Selector('div').withExactText("Repertoire Description: " + repertoireDescription).innerText;
+  const subjectIdTextUntrimmed = await Selector('div').withExactText("Subject ID: " + subjectId).innerText;
+  const sexSpeciesTextUntrimmed = await Selector('div').withExactText("Sex/Species: " + sex + '/' + species).innerText;
+  const raceEthnicityTextUntrimmed = await Selector('div').withExactText("Race/Ethnicity: " + race + '/'+ ethnicity).innerText;
+  const ageTextUntrimmed = await Selector('div').withExactText("Age: " + ageMin + '-' + ageMax + ' ' + ageUnit + "(s)").innerText;
+  const sampleIdTextUntrimmed = await Selector('div').withExactText("Sample ID: " + sampleId).innerText;
+  const tissueText = Selector('div').withText(tissue.toLowerCase()).exists; //We don't know the exact Ontology
+  const diseaseStateSampleTextUntrimmed = await Selector('div').withExactText("Disease State: " + diseaseStateSample).innerText;
+  const singleCellTextUntrimmed = await Selector('div').withExactText("Single Cell: " + singleCell).innerText;
+  const cellSubsetText = Selector('div').withText(cellSubset).exists; //We don't know exact the Ontology
+  const templateTextUntrimmed = await Selector('div').withExactText("Template: " + templateClass).innerText;
+  const targetLociTextUntrimmed = await Selector('div').withExactText("Target Loci: " + pcrTargetLocus).innerText;
+
+  const repertoireNameTextTrimmed = await repertoireNameTextUntrimmed.toString().trim();
+  const repertoireDescriptionTextTrimmed = await repertoireDescriptionTextUntrimmed.toString().trim();
+  const subjectIdTextTrimmed = await subjectIdTextUntrimmed.toString().trim();
+  const sexSpeciesTextTrimmed = await sexSpeciesTextUntrimmed.toString().trim();
+  const raceEthnicityTextTrimmed = await raceEthnicityTextUntrimmed.toString().trim();
+  const ageTextTrimmed = await ageTextUntrimmed.toString().trim();
+  const sampleIdTextTrimmed = await sampleIdTextUntrimmed.toString().trim();
+  const diseaseStateSampleTextTrimmed = await diseaseStateSampleTextUntrimmed.toString().trim();
+  const singleCellTextTrimmed = await singleCellTextUntrimmed.toString().trim();
+  const templateTextTrimmed = await templateTextUntrimmed.toString().trim();
+  const targetLociTextTrimmed = await targetLociTextUntrimmed.toString().trim();
+
+  //Details view selectors
+  const repertoireNameDetailsSelect = Selector(repertoireNameBaseId + repertoireUuid);
+  const subjectIdDetailsSelect = Selector(repertoireFormIdBase + repertoireUuid).find(subjectBaseId);
+  const subjectIdDetailsOption = subjectIdDetailsSelect.find('option').withAttribute('selected');
+  const sexSpeciesDetailsText = Selector(repertoireFormIdBase + repertoireUuid).find(sexSpeciesDetailsId).withAttribute('value',sex + '/' + species).exists;
+  const raceEthnicityDetailsText = Selector(repertoireFormIdBase + repertoireUuid).find(raceEthnicityDetailsId).withAttribute('value',race + '/'+ ethnicity).exists;
+  const ageDetailsText = Selector(repertoireFormIdBase + repertoireUuid).find(ageDetailsId).withAttribute('value',ageMin + '-' + ageMax + ' ' + ageUnitDisplay).exists;
+  const sampleIdDetailsSelect = Selector(sampleIdBaseId + sampleUuid);
+  const tissueSelect = Selector(tissueId + sampleUuid);
+  const cellSubsetSelect = Selector(cellSubsetId + sampleUuid);
+  const cellSpeciesSelect = Selector(cellSpeciesId + sampleUuid);
 
   //Summary view checks
   await t
-    .expect(repertoireNameText).ok()
-    .expect(repertoireDescriptionText).ok()
-    .expect(subjectIdText).ok()
-    .expect(sexSpeciesText).ok()
-    .expect(raceEthnicityText).ok()
-    .expect(ageText).ok()
-    .expect(sampleIdText).ok()
+    .expect(repertoireNameTextTrimmed).eql("Repertoire Name: " + repertoireName)
+    .expect(repertoireDescriptionTextTrimmed).eql("Repertoire Description: " + repertoireDescription)
+    .expect(subjectIdTextTrimmed).eql("Subject ID: " + subjectId)
+    .expect(sexSpeciesTextTrimmed).eql("Sex/Species: " + sex + '/' + species)
+    .expect(raceEthnicityTextTrimmed).eql("Race/Ethnicity: " + race + '/'+ ethnicity)
+    .expect(ageTextTrimmed).eql("Age: " + ageMin + '-' + ageMax + ' ' + ageUnit + "(s)")
+    .expect(sampleIdTextTrimmed).eql("Sample ID: " + sampleId)
     .expect(tissueText).ok()
-    .expect(diseaseStateText).ok()
-    .expect(singleCellText).ok()
+    .expect(diseaseStateSampleTextTrimmed).eql("Disease State: " + diseaseStateSample)
+    .expect(singleCellTextTrimmed).eql("Single Cell: " + singleCell)
     .expect(cellSubsetText).ok()
-    .expect(templateText).ok()
-    .expect(targetLociText).ok()
+    .expect(templateTextTrimmed).eql("Template: " + templateClass)
+    .expect(targetLociTextTrimmed).eql("Target Loci: " + pcrTargetLocus)
 
   await t
-    .click(detailsSummaryRepertoireSelect);
+    .click(detailsSummaryRepertoireSelect)
 
-  await new Promise(r => setTimeout(r, 5000));
+  const subjectIdDetailsText = await subjectIdDetailsOption.innerText;
 
   //Details view checks
   await t
-    .expect(repertoireNameSelect.value).eql(repertoireName)
+    .expect(Selector(repertoireNameBaseId+repertoireUuid).value).eql(repertoireName)
     .expect(repertoireDescriptionSelect.value).eql(repertoireDescription)
-    .expect(subjectIdText).ok()
-    .expect(sexSpeciesText).ok()
-    .expect(raceEthnicityText).ok()
-    .expect(ageText).ok()
-    .expect(sampleIdSelect.value).eql(sampleId)
+
+    .expect(subjectIdDetailsText.toString()).eql(subjectId)
+    .expect(sexSpeciesDetailsText).ok()
+    .expect(raceEthnicityDetailsText).ok()
+    .expect(ageDetailsText).ok()
+
+    .expect(sampleIdDetailsSelect.value).eql(sampleId)
     .expect(sampleTypeSelect.value).eql(sampleType)
-    .expect(tissueSelect.getAttribute('value')).contains(tissue)
+    .expect(tissueSelect.getAttribute('value')).contains(tissue) //We don't know the exact ontology
     .expect(anatomicSiteSelect.value).eql(anatomicSite)
     .expect(diseaseStateSampleSelect.value).eql(diseaseStateSample)
     .expect(collectionTimeSelect.value).eql(collectionTime)
@@ -744,9 +795,9 @@ fixture('Project Repertoires Page Test Cases')
     .expect(sequencingKitSelect.value).eql(sequencingKit)
     .expect(sequencingFilesSelect.value).eql(sequencingFiles)
     .expect(tissueProcessingSelect.value).eql(tissueProcessing)
-    .expect(cellSubsetSelect.getAttribute('value')).contains(cellSubset)
+    .expect(cellSubsetSelect.getAttribute('value')).contains(cellSubset) //We don't know the exact ontology
     .expect(cellPhenotypeSelect.value).eql(cellPhenotype)
-    .expect(cellSpeciesSelect.getAttribute('value')).contains(cellSpecies)
+    .expect(cellSpeciesSelect.getAttribute('value')).contains(cellSpecies) //We don't know the exact ontology
     .expect(singleCellSelect.value).eql(singleCell)
     .expect(cellNumberSelect.value).eql(cellNumber)
     .expect(cellsPerReactionSelect.value).eql(cellsPerReaction)
@@ -769,30 +820,249 @@ fixture('Project Repertoires Page Test Cases')
     .expect(sequencingDataIdSelect.value).eql(sequencingDataId)
  });
 
- test('Duplicate the Repertoire, change select values, and confirm Back-end changes.', async t => {
+ test('View existing Repertoire in Summary view mode, edit, revert, and confirm the correct values are still shown', async t => {
   await login(t,config.username,config.password,'CLICK','#home-login');
 
-  await new Promise(r => setTimeout(r, 5000));
-  await t.navigateTo('./'+projectUuidUrl);
-
-  await new Promise(r => setTimeout(r, 10000));
-
   await t
-    .scrollIntoView(repertoiresTabSelect)
+    .navigateTo('./'+projectUuidUrl)
     .click(repertoiresTabSelect)
 
+  //Temporary Values and Selectors
+  const repertoireNameR = "Repertoire Name R";
+  const repertoireDescriptionR = "Repertoire Description R";
+  const sampleIdR = 'Sample ID R';
+  const tissueR = "hair of scalp";
+  const tissueSelect = Selector(tissueIdBaseId + sampleUuid);
+  const tissueOption = tissueSelect.find('option');
+
+  const repertoireNameTextUntrimmed = await Selector('div').withExactText("Repertoire Name: " + repertoireName).innerText;
+  const repertoireDescriptionTextUntrimmed = await Selector('div').withExactText("Repertoire Description: " + repertoireDescription).innerText;
+  const sampleIdTextUntrimmed = await Selector('div').withExactText("Sample ID: " + sampleId).innerText;
+  const tissueText = Selector('div').withText(tissue.toLowerCase()).exists; //We don't know the exact Ontology
+
+  const repertoireNameTextTrimmed = await repertoireNameTextUntrimmed.toString().trim();
+  const repertoireDescriptionTextTrimmed = await repertoireDescriptionTextUntrimmed.toString().trim();
+  const sampleIdTextTrimmed = await sampleIdTextUntrimmed.toString().trim();
+
+  //Details view selectors
+  const repertoireNameDetailsSelect = Selector(repertoireFormIdBase + repertoireUuid);
+  const sampleIdDetailsSelect = Selector(sampleIdBaseId + sampleUuid);
+
+  //Edit values but do not Save
   await t
+    .click(repertoireDropdownSelect)
+    .click(repertoireDropdownEditSelect)
+
+  const repertoireDescriptionSelectSelect = await Selector(repertoireFormIdBase + repertoireUuid).find(repertoireDescriptionId);
+
+  await t
+    .typeText(repertoireNameBaseId + repertoireUuid, repertoireNameR, {replace: true})
+    .typeText(Selector(repertoireFormIdBase + repertoireUuid).find(repertoireDescriptionId), repertoireDescriptionR, {replace: true})
+    .typeText(sampleIdBaseId + sampleUuid, sampleIdR, {replace: true})
+    .click(tissueSelect)
+    .typeText(ontologyInputSelect.nth(0),tissueR, {replace:true})
+    .click(ontologySelectSelect.withExactText(tissueR))
+
+  await t
+    .click(revertRepertoireChangesSelect)
+
+  //Summary view checks
+  await t
+    .expect(repertoireNameTextTrimmed).eql("Repertoire Name: " + repertoireName)
+    .expect(repertoireDescriptionTextTrimmed).eql("Repertoire Description: " + repertoireDescription)
+    .expect(sampleIdTextTrimmed).eql("Sample ID: " + sampleId)
+    .expect(tissueText).ok()
+
+  await t
+    .click(detailsSummaryRepertoireSelect)
+
+  //Details view checks
+  await t
+    .expect(Selector(repertoireNameBaseId+repertoireUuid).value).eql(repertoireName)
+    .expect(repertoireDescriptionSelect.value).eql(repertoireDescription)
+    .expect(sampleIdDetailsSelect.value).eql(sampleId)
+    .expect(tissueSelect.getAttribute('value')).contains(tissue) //We don't know the exact ontology
+ });
+
+ test('Duplicate the Repertoire, confirm Back-end changes, and then delete the duplicated Repertoire', async t => {
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
+
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await t
+    .click(repertoiresTabSelect)
+    .click(repertoireDropdownSelect.withAttribute('name',repertoireUuid))
+    .click(repertoireDropdownDuplicateSelect.withAttribute('name',repertoireUuid))
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
+    .click(detailsSummaryRepertoireSelect)
+
+  //Determine the UUIDs for the new Repertoire and new Sample
+  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  if (config.tapis_version == 2) {
+    var r = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'repertoire');
+  } else {
+    var requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/repertoire',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var r = await tapisV3.sendRequest(requestSettings);
+    await t.expect(r['status']).eql("success")
+        .expect(r['result'].length).eql(2);
+    r = r['result'];
+  }
+
+  dRepertoireUuid = "";
+  var dSampleUuid = "";
+  var dRepertoireValue;
+  var repertoireValue;
+  if(r[0]["uuid"] == repertoireUuid) {
+    dRepertoireUuid = r[1]["uuid"];
+    dRepertoireValue = r[1]["value"];
+    repertoireValue = r[0]["value"];
+  } else {
+    dRepertoireUuid = r[0]["uuid"];
+    dRepertoireValue = r[0]["value"];
+    repertoireValue = r[1]["value"];
+  }
+
+  dSampleUuid = dRepertoireValue["sample"][0]["vdjserver_uuid"];
+
+  if (config.tapis_version == 2) {
+    var s = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
+  } else {
+    var requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + dSampleUuid,
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var s = await tapisV3.sendRequest(requestSettings);
+    await t.expect(s['status']).eql("success")
+        .expect(s['result'].length).eql(1);
+    s = s['result'];
+  }
+
+  var dSampleValue = s[0]["value"];
+
+  if (config.tapis_version == 2) {
+    var s2 = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
+  } else {
+    var requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + sampleUuid,
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var s2 = await tapisV3.sendRequest(requestSettings);
+    await t.expect(s2['status']).eql("success")
+        .expect(s2['result'].length).eql(1);
+    s2 = s2['result'];
+  }
+
+  var sampleValue = s2[0]["value"];
+
+  if (config.tapis_version == 2) {
+    var subject = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'subject');
+  } else {
+    var requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/subject',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var subject = await tapisV3.sendRequest(requestSettings);
+    await t.expect(subject['status']).eql("success")
+        .expect(subject['result'].length).eql(1);
+    subject = subject['result'];
+  }
+
+  var subjectValue = subject[0]["value"];
+
+  //Check the Back-end values
+  await t
+    .expect(repertoireValue["repertoire_name"]).eql(dRepertoireValue["repertoire_name"])
+    .expect(repertoireValue["repertoire_description"]).eql(dRepertoireValue["repertoire_description"])
+
+    .expect(sampleValue["sample_id"]).eql(dSampleValue["sample_id"])
+    .expect(sampleValue["sample_type"]).eql(dSampleValue["sample_type"])
+    .expect(sampleValue["tissue"].label).eql(dSampleValue["tissue"].label)
+    .expect(sampleValue["anatomic_site"]).eql(dSampleValue["anatomic_site"])
+    .expect(sampleValue["disease_state_sample"]).eql(dSampleValue["disease_state_sample"])
+    .expect(sampleValue["collection_time_point_relative"]).eql(dSampleValue["collection_time_point_relative"])
+    .expect(sampleValue["collection_time_point_relative_unit"].label).eql(dSampleValue["collection_time_point_relative_unit"].label)
+    .expect(sampleValue["collection_time_point_reference"]).eql(dSampleValue["collection_time_point_reference"])
+    .expect(sampleValue["biomaterial_provider"]).eql(dSampleValue["biomaterial_provider"])
+    .expect(sampleValue["sequencing_run_id"]).eql(dSampleValue["sequencing_run_id"])
+    .expect(sampleValue["sequencing_platform"]).eql(dSampleValue["sequencing_platform"])
+    .expect(sampleValue["sequencing_facility"]).eql(dSampleValue["sequencing_facility"])
+    .expect(sampleValue["sequencing_run_date"]).eql(dSampleValue["sequencing_run_date"])
+    .expect(sampleValue["sequencing_kit"]).eql(dSampleValue["sequencing_kit"])
+    .expect(sampleValue["sequencing_files"]["filename"]).eql(dSampleValue["sequencing_files"]["filename"])
+    .expect(sampleValue["tissue_processing"]).eql(dSampleValue["tissue_processing"])
+    .expect(sampleValue["cell_subset"].label).eql(dSampleValue["cell_subset"].label)
+    .expect(sampleValue["cell_phenotype"]).eql(dSampleValue["cell_phenotype"])
+    .expect(sampleValue["cell_species"].label).eql(dSampleValue["cell_species"].label)
+    .expect(sampleValue["single_cell"]).eql(dSampleValue["single_cell"])
+    .expect(sampleValue["cell_number"]).eql(dSampleValue["cell_number"])
+    .expect(sampleValue["cells_per_reaction"]).eql(dSampleValue["cells_per_reaction"])
+    .expect(sampleValue["cell_storage"]).eql(dSampleValue["cell_storage"])
+    .expect(sampleValue["cell_quality"]).eql(dSampleValue["cell_quality"])
+    .expect(sampleValue["cell_isolation"]).eql(dSampleValue["cell_isolation"])
+    .expect(sampleValue["cell_processing_protocol"]).eql(dSampleValue["cell_processing_protocol"])
+    .expect(sampleValue["template_class"]).eql(dSampleValue["template_class"])
+    .expect(sampleValue["template_quality"]).eql(dSampleValue["template_quality"])
+    .expect(sampleValue["template_amount"]).eql(dSampleValue["template_amount"])
+    .expect(sampleValue["template_amount_unit"].label).eql(dSampleValue["template_amount_unit"].label)
+    .expect(sampleValue["library_generation_method"]).eql(dSampleValue["library_generation_method"])
+    .expect(sampleValue["library_generation_protocol"]).eql(dSampleValue["library_generation_protocol"])
+    .expect(sampleValue["library_generation_kit_version"]).eql(dSampleValue["library_generation_kit_version"])
+    .expect(sampleValue["complete_sequences"]).eql(dSampleValue["complete_sequences"])
+    .expect(sampleValue["physical_linkage"]).eql(dSampleValue["physical_linkage"])
+    .expect(sampleValue["pcr_target"][0]["pcr_target_locus"]).eql(dSampleValue["pcr_target"][0]["pcr_target_locus"])
+    .expect(sampleValue["pcr_target"][0]["forward_pcr_primer_target_location"]).eql(dSampleValue["pcr_target"][0]["forward_pcr_primer_target_location"])
+    .expect(sampleValue["pcr_target"][0]["reverse_pcr_primer_target_location"]).eql(dSampleValue["pcr_target"][0]["reverse_pcr_primer_target_location"])
+    .expect(sampleValue["sequencing_data_id"]).eql(dSampleValue["sequencing_data_id"])
+
+  //Delete the duplicated Repertoire
+  await t
+    .click(repertoiresTabSelect)
+    .click(repertoireDropdownSelect.withAttribute('name',dRepertoireUuid))
+    .click(repertoireDropdownDeleteSelect.withAttribute('name',dRepertoireUuid))
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
+ });
+
+ test('Duplicate the Repertoire, change select values, and confirm Back-end changes', async t => {
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
+
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await t
+    .click(repertoiresTabSelect)
     .click(repertoireDropdownSelect.withAttribute('name',repertoireUuid))
     .click(repertoireDropdownDuplicateSelect.withAttribute('name',repertoireUuid))
 
-  var sampleCid = await sampleIdSelect.getAttribute('id');
-  sampleCid = sampleCid.split('_')[2];
-  console.log("Duplicate Sample CID: " + sampleCid);
-  var duplicateSampleIdSelect = Selector('#sample_id_' + sampleCid);
-  const cellSubsetSelect = Selector('#cell_subset_'+sampleCid);
+  var sampleCid = await sampleFormSelect.find(sampleDropdownId).getAttribute('name');
+
+  //console.log("Duplicate Sample CID: " + sampleCid);
+  var duplicateSampleIdSelect = Selector(sampleIdBaseId + sampleCid);
+  const cellSubsetSelect = Selector(cellSubsetBaseId + sampleCid);
   const cellSubsetOption = cellSubsetSelect.find('option');
-  const cellSubsetOptionSelect = Selector('#ontology-select');
-  const ontologySelectSelect = Selector('#ontology-search-input');
   
   const repertoireNameD = repertoireName + '-2';
   const sampleIdD = sampleId + '-2';
@@ -801,26 +1071,23 @@ fixture('Project Repertoires Page Test Cases')
   const libraryGenerationMethodD = "RT(RHP)+PCR";
   const reverseTargetLocationD = reverseTargetLocation + "-2"; 
 
+  var repertoireDCid = await repertoireFormSelect.find(repertoireDropdownId).getAttribute('name');
+
   await t
-    .click(Selector('#navbar-stats-icon'))
-    .typeText(repertoireNameSelect, repertoireNameD, {replace: true})
+    .click(navbarStatsIconSelect)
+    .typeText(repertoireNameBaseId+repertoireDCid, repertoireNameD, {replace: true})
     .typeText(duplicateSampleIdSelect, sampleIdD, {replace:true})
     .click(cellSubsetSelect)
-    .typeText(ontologySelectSelect.nth(1),cellSubsetD, {replace:true})
-    .click(cellSubsetOptionSelect.withText(cellSubsetD))
+    .typeText(ontologyInputSelect.nth(1),cellSubsetD, {replace:true})
+    .click(ontologySelectSelect.withExactText(cellSubsetD))
     .click(singleCellSelect)
     .click(singleCellOption.withAttribute('value',singleCellD))
     .click(libraryGenerationMethodSelect)
     .click(libraryGenerationMethodOption.withAttribute('value',libraryGenerationMethodD))
     .typeText(reverseTargetLocationSelect,reverseTargetLocationD, {replace:true})
-
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-
-  await t
-    .click(detailsSummaryRepertoireSelect);
-
-  await new Promise(r => setTimeout(r, 10000));
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
+    .click(detailsSummaryRepertoireSelect)
 
   //Determine the UUIDs for the new Repertoire and new Sample
   var token = await tapisIO.getToken({username: config.username, password: config.password});
@@ -854,7 +1121,7 @@ fixture('Project Repertoires Page Test Cases')
   }
 
   dSampleUuid = dRepertoireValue["sample"][0]["vdjserver_uuid"];
-  console.log("Duplicate Sample UUID: " + dSampleUuid);
+  //console.log("Duplicate Sample UUID: " + dSampleUuid);
 
   if (config.tapis_version == 2) {
     var s = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
@@ -876,30 +1143,23 @@ fixture('Project Repertoires Page Test Cases')
 
   var dSampleValue = s[0]["value"];
   
-  //check Back-end values
+  //Check the Back-end values
   await t
     .expect(dRepertoireValue["repertoire_name"]).eql(repertoireName+'-2')
     .expect(dSampleValue["sample_id"]).eql(sampleId+'-2')
  });
 
  test('Delete the duplicated Repertoire and confirm the correct one was deleted on the Back-end', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
   await t
-    .scrollIntoView(repertoiresTabSelect)
     .click(repertoiresTabSelect)
-
-  await t
     .click(repertoireDropdownSelect.withAttribute('name',dRepertoireUuid))
     .click(repertoireDropdownDeleteSelect.withAttribute('name',dRepertoireUuid))
-
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 10000));
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -920,53 +1180,42 @@ fixture('Project Repertoires Page Test Cases')
     r = r['result'][0];
   }
 
-  //confirm the remaining Repertoire is the correct one
+  //Confirm the remaining Repertoire is the correct one
   await t
     .expect(r["uuid"]).eql(repertoireUuid)
  });
 
  test('Duplicate a Sample for the original Repertoire, change select values, and check against the Back-end', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
   await t
-    .scrollIntoView(repertoiresTabSelect)
     .click(repertoiresTabSelect)
-
-  await t
-    .click(sampleDropdownSelect)
+    .click(sampleAddDropdownSelect)
     .click(sampleDropdownDuplicateSelect.withAttribute('name',sampleUuid))
-    .typeText(sampleIdSelect,sampleId + "-duplicate",{replace: true})
 
-  var dSampleCid = await sampleIdSelect.getAttribute('id');
-  dSampleCid = dSampleCid.split('_')[2];
-  const tissueSelect = Selector('#tissue_'+dSampleCid);
+  var sampleCid = await sampleFormSelect.find(sampleDropdownId).getAttribute('name');
+
+  await t.typeText(Selector(sampleIdBaseId + sampleCid),sampleId + "-duplicate",{replace: true})
+  const tissueSelect = Selector(tissueId+sampleCid);
   const tissueOption = tissueSelect.find('option');
-  const tissueOptionSelect = Selector('#ontology-select');
-  const ontologySelectSelect = Selector('#ontology-search-input');
 
   const tissueD = "hair of scalp";
   const singleCellD = "false";
   const pcrTargetLocusD = "TRG";
-  const pcrTargetLocusSelect = Selector('#pcr_target_locus');
   const pcrTargetLocusOption = pcrTargetLocusSelect.find('option');
 
   await t
     .click(tissueSelect)
-    .typeText(ontologySelectSelect.nth(0),tissueD, {replace:true})
-    .click(tissueOptionSelect.withText(tissueD))
+    .typeText(ontologyInputSelect.nth(0),tissueD, {replace:true})
+    .click(ontologySelectSelect.withExactText(tissueD))
     .click(singleCellSelect)
     .click(singleCellOption.withAttribute('value',singleCellD))
     .click(pcrTargetLocusSelect)
     .click(pcrTargetLocusOption.withAttribute('value',pcrTargetLocusD))
-
-  await t.click(saveRepertoireChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
 
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
@@ -987,13 +1236,13 @@ fixture('Project Repertoires Page Test Cases')
     m = m['result'][0];
   }
 
-  //determine the UUID of the duplicate Sample
+  //Determine the UUID of the duplicate Sample
   if(m["value"]["sample"][0]["vdjserver_uuid"] == sampleUuid)
     dSampleUuid = m["value"]["sample"][1]["vdjserver_uuid"];
   else
     dSampleUuid = m["value"]["sample"][0]["vdjserver_uuid"];
 
-  //get the value for the duplicate Sample
+  //Get the value for the duplicate Sample
   if (config.tapis_version == 2) {
     var s = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
   } else {
@@ -1014,7 +1263,7 @@ fixture('Project Repertoires Page Test Cases')
 
   var dSampleValue = s[0]["value"];
 
-  //check Sample values
+  //Check Sample values
   await t
     .expect(dSampleValue["sample_id"]).eql(sampleId + "-duplicate")
     .expect(dSampleValue["sample_type"]).eql(sampleType)
@@ -1056,26 +1305,19 @@ fixture('Project Repertoires Page Test Cases')
  });
 
  test('Delete the duplicated Sample and confirm the correct one was deleted on the Back-end', async t => {
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
+  await t.click(repertoiresTabSelect);
 
   await t
-    .scrollIntoView(repertoiresTabSelect)
-    .click(repertoiresTabSelect)
-
-  await t
-    .click(sampleDropdownSelect)
+    .click(sampleAddDropdownSelect)
     .click(sampleDropdownDeleteSelect.withAttribute('name',dSampleUuid))
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
 
-  await t.click(saveRepertoireChangesSelect);
-
-  await new Promise(r => setTimeout(r, 10000));
-
-  //confirm there is just 1 Sample in the Samples Object
+  //Confirm there is just 1 Sample in the Samples Object
   var token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
     var sp = await tapisV2.getProjectMetadata(token.access_token, subjectUuid);
@@ -1095,11 +1337,11 @@ fixture('Project Repertoires Page Test Cases')
     sp = sp['result'][0];
   }
 
-  //confirm the remaining Sample is the correct one
+  //Confirm the remaining Sample is the correct one
   await t
     .expect(sp["uuid"]).eql(sampleUuid)
 
-  //confirm the reference to the Sample was removed from the Repertoire Object and the correct one remains
+  //Confirm the reference to the Sample was removed from the Repertoire Object and the correct one remains
   token = await tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
     var r = await tapisV2.getProjectMetadata(token.access_token, repertoireUuid);
@@ -1119,9 +1361,51 @@ fixture('Project Repertoires Page Test Cases')
     r = r['result'][0];
   }
 
-  //confirm the remaining Sample is the correct one
+  //Confirm the remaining Sample is the correct one
   await t
     .expect(r["value"]["sample"][0]["vdjserver_uuid"]).eql(sampleUuid)
+ });
+
+ test('Confirm \'Revert Changes\' and \'Save Changes\' buttons are disabled/enabled correctly', async t => {
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
+
+  await t.navigateTo('./'+projectUuidUrl);
+
+  await t.click(repertoiresTabSelect);
+
+  //Expect the buttons to be unavailable when no changes have been made
+  await t.expect(revertRepertoireChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).ok()
+  await t.expect(saveRepertoireChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).ok()
+
+  //Edit a Repertoire and check buttons; edit a field and check buttons
+  await t
+    .click(repertoireDropdownSelect.withAttribute('name',repertoireUuid))
+    .click(repertoireDropdownEditSelect.withAttribute('name',repertoireUuid))
+    .expect(revertRepertoireChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).notOk()
+    .expect(saveRepertoireChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).notOk()
+    .click(revertRepertoireChangesSelect)
+    .click(repertoireDropdownSelect)
+    .click(repertoireDropdownEditSelect)
+    .typeText(repertoireDescriptionSelect, 'RepertoireDescriptionCheck', {replace: true})
+    .pressKey('tab') //Change focus
+    .expect(revertRepertoireChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).notOk()
+    .expect(saveRepertoireChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).notOk()
+    .click(revertRepertoireChangesSelect)
+
+  //Ensure buttons are disabled after a Save
+  await t
+    .click(repertoireDropdownSelect.withAttribute('name',repertoireUuid))
+    .click(repertoireDropdownEditSelect.withAttribute('name',repertoireUuid))
+    .typeText(anatomicSiteSelect, 'AnatomicSiteCheck',  {replace: true})
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
+    .expect(revertRepertoireChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).ok()
+    .expect(saveRepertoireChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).ok()
+    .click(repertoireDropdownSelect.withAttribute('name',repertoireUuid))
+    .click(repertoireDropdownEditSelect.withAttribute('name',repertoireUuid))
+    .typeText(anatomicSiteSelect, anatomicSite, {replace: true})
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
  });
 
  test('Attempt to create a new Repertoire (with a Sample) that has various erroneous fields for the previously created Project, save with permissible values, and check against the Back-end', async t => {
@@ -1155,76 +1439,66 @@ fixture('Project Repertoires Page Test Cases')
   const sequencingDateNew = '2022-02-22'; //pass
   const sequencingDataIdNew = "null";
 
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
   await t
-    .scrollIntoView(repertoiresTabSelect)
     .click(repertoiresTabSelect)
-
-  await t
     .click(newRepertoireSelect)
     .click(newRepertoireAddSelect)
 
-  //Check for null Subject ID
+  var subjectCid = await repertoireFormSelect.find(repertoireDropdownId).getAttribute('name');
+  var sampleCid = await sampleFormSelect.find(sampleDropdownId).getAttribute('name');
+
+  //Check that a null Subject ID is not allowed
   await t
     .click(subjectIdSelect)
-    .click(subjectIdOption.withText(subjectIdNull))
+    .click(subjectIdOption.withExactText(subjectIdNull))
+    .click(saveRepertoireChangesSelect)
 
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-
-  var errorMessage = Selector('div').withText('Please select a Subject ID.').filterVisible().exists;
+  var errorMessage = invalidFeedbackSelect.withExactText(subjectIdValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a blank Sample ID is not allowed
   await t
     .click(subjectIdSelect)
-    .click(subjectIdOption.withText(subjectId))
-    .typeText(sampleIdSelect,sampleIdBlank, {replace: true})
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a unique, non-blank ID.').filterVisible().exists;
+    .click(subjectIdOption.withExactText(subjectId))
+    .typeText(Selector(sampleIdBaseId + sampleCid),sampleIdBlank, {replace: true})
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(sampleIdValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that tabbed Sample ID is not allowed
     await t
-    .typeText(sampleIdSelect,sampleIdTabbed, {replace: true})
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a unique, non-blank ID.').filterVisible().exists;
+    .typeText(Selector(sampleIdBaseId + sampleCid),sampleIdTabbed, {replace: true})
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(sampleIdValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a null Single Cell is allowed
   await t
-    .typeText(sampleIdSelect,sampleIdNew, {replace: true})
+    .typeText(Selector(sampleIdBaseId + sampleCid),sampleIdNew, {replace: true})
     .click(singleCellSelect)
-    .click(singleCellOption.withText(singleCellNull))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Single Cell value.').filterVisible().exists;
+    .click(singleCellOption.withExactText(singleCellNull))
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(singleCellValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).notOk()
 
   //Check that a null Cell Storage is allowed
   await t
     .click(cellStorageSelect)
-    .click(cellStorageOption.withText(cellStorageNull))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Cell Storage value.').filterVisible().exists;
+    .click(cellStorageOption.withExactText(cellStorageNull))
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(cellStorageValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).notOk()
 
   //Check that a null PCR Target Locus is not allowed
   await t
     .click(pcrTargetLocusSelect)
-    .click(pcrTargetLocusOption.withText(pcrTargetLocusNull))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please select a non-null PCR Target Locus.').filterVisible().exists;
+    .click(pcrTargetLocusOption.withExactText(pcrTargetLocusNull))
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(pcrTargetLocusValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a string Collection Time Point Relative is not allowed
@@ -1232,9 +1506,8 @@ fixture('Project Repertoires Page Test Cases')
     .typeText(collectionTimeSelect,collectionTimePointRelativeString, {replace: true})
     .click(pcrTargetLocusSelect)
     .click(pcrTargetLocusOption.withAttribute('value',pcrTargetLocusNew))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Collection Time Point Relative number.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(collectionTimeValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a negative Collection Time Point Relative with a valid unit is allowed
@@ -1242,18 +1515,16 @@ fixture('Project Repertoires Page Test Cases')
     .typeText(collectionTimeSelect,collectionTimePointRelativeNew, {replace: true})
     .click(collectionTimePointRelativeUnitSelect)
     .click(collectionTimePointRelativeUnitOption.withAttribute('value',collectionTimePointRelativeUnitNew))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Collection Time Point Relative number.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(collectionTimeValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).notOk()
 
   //Check that negative Collection Time Point Relative without a valid unit is not allowed
   await t
     .click(collectionTimePointRelativeUnitSelect)
-    .click(collectionTimePointRelativeUnitOption.withText('null'))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a Collection Time Point Relative Unit.').filterVisible().exists;
+    .click(collectionTimePointRelativeUnitOption.withExactText('null'))
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(collectionTimePointRelativeUnitValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a 0 Collection Time Point Relative with a valid unit is not allowed
@@ -1261,9 +1532,8 @@ fixture('Project Repertoires Page Test Cases')
     .typeText(collectionTimeSelect,collectionTimePointRelativeZero, {replace: true})
     .click(collectionTimePointRelativeUnitSelect)
     .click(collectionTimePointRelativeUnitOption.withAttribute('value',collectionTimePointRelativeUnitNew))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Collection Time Point Relative number.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(collectionTimeValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).notOk()
 
   //Check that a blank Collection Time Point Relative with a valid unit is not allowed
@@ -1271,9 +1541,8 @@ fixture('Project Repertoires Page Test Cases')
     .typeText(collectionTimeSelect,collectionTimePointRelativeBlank, {replace: true})
     .click(collectionTimePointRelativeUnitSelect)
     .click(collectionTimePointRelativeUnitOption.withAttribute('value',collectionTimePointRelativeUnitNew))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Collection Time Point Relative number.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(collectionTimeValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a string Template Amount is not allowed
@@ -1282,17 +1551,15 @@ fixture('Project Repertoires Page Test Cases')
     .click(collectionTimePointRelativeUnitSelect)
     .click(collectionTimePointRelativeUnitOption.withAttribute('value',collectionTimePointRelativeUnitNew))
     .typeText(templateAmountSelect,templateAmountString, {replace: true})
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Template Amount number ≥ 0.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(templateAmountValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a negative Template Amount is not allowed
   await t
     .typeText(templateAmountSelect,templateAmountNegative, {replace: true})
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Template Amount number ≥ 0.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(templateAmountValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a string Template Amount with a valid unit is not allowed
@@ -1300,9 +1567,8 @@ fixture('Project Repertoires Page Test Cases')
     .typeText(templateAmountSelect,templateAmountString, {replace: true})
     .click(templateAmountUnitSelect)
     .click(templateAmountUnitOption.withAttribute('value',templateAmountUnitNew))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Template Amount number ≥ 0.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(templateAmountValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a blank Template Amount with a valid unit is not allowed
@@ -1310,19 +1576,17 @@ fixture('Project Repertoires Page Test Cases')
     .typeText(templateAmountSelect,templateAmountBlank, {replace: true})
     .click(templateAmountUnitSelect)
     .click(templateAmountUnitOption.withAttribute('value',templateAmountUnitNew))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Template Amount number ≥ 0.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(templateAmountValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a 0 Template Amount with a null unit is not allowed
   await t
     .typeText(templateAmountSelect,templateAmountNew, {replace: true})
     .click(templateAmountUnitSelect)
-    .click(templateAmountUnitOption.withText('null'))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a Template Amount Unit.').filterVisible().exists;
+    .click(templateAmountUnitOption.withExactText('null'))
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(templateAmountUnitValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a 0 Template Amount with a valid unit is allowed
@@ -1330,73 +1594,61 @@ fixture('Project Repertoires Page Test Cases')
     .typeText(templateAmountSelect,templateAmountNew, {replace: true})
     .click(templateAmountUnitSelect)
     .click(templateAmountUnitOption.withAttribute('value',templateAmountUnitNew))
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a Template Amount Unit.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(templateAmountUnitValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).notOk()
 
   //Check that a negative Cell Number is not allowed
   await t
     .typeText(cellNumberSelect,cellNumberNegative, {replace: true})
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Cell Number integer ≥ 0.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(cellNumberValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a float Cell Number is not allowed
   await t
     .typeText(cellNumberSelect,cellNumberFloat, {replace: true})
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Cell Number integer ≥ 0.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(cellNumberValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a negative Cells Per Reaction is not allowed
   await t
     .typeText(cellNumberSelect,cellNumberNew, {replace: true})
     .typeText(cellsPerReactionSelect,cellsPerReactionNegative, {replace: true})
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Cells Per Reaction integer ≥ 0.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(cellsPerReactionValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a float Cells Per Reaction is not allowed
   await t
     .typeText(cellsPerReactionSelect,cellsPerReactionFloat, {replace: true})
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Cells Per Reaction integer ≥ 0.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(cellsPerReactionValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a badly formatted Sequencing Date is not allowed
   await t
-    .click(Selector('#navbar-stats-icon'))
+    .click(navbarStatsIconSelect)
     .typeText(cellsPerReactionSelect,cellsPerReactionNew, {replace: true})
     .typeText(sequencingDateSelect,sequencingDateBad, {replace: true})
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Sequencing Run Date (YYYY-MM-DD).').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(sequencingRunDateValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that a correctly formatted Sequencing Date is allowed
   await t
     .typeText(sequencingDateSelect,sequencingDateNew, {replace: true})
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a valid Sequencing Run Date (YYYY-MM-DD).').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+  errorMessage = invalidFeedbackSelect.withExactText(sequencingRunDateValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).notOk()
 
   //Save the Repertoire and Sample with valid values
   await t
     .typeText(sequencingDataIdSelect,sequencingDataIdNew, {replace: true})
-
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-
-  await t
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
     .click(detailsSummaryRepertoireSelect);
-
-  await new Promise(r => setTimeout(r, 10000));
 
   //Check Back-end values; first determine the UUID values for the new Repertoire and Sample objects
   var token = await tapisIO.getToken({username: config.username, password: config.password});
@@ -1430,7 +1682,7 @@ fixture('Project Repertoires Page Test Cases')
   }
 
   newSampleUuid = newRepertoireValue["sample"][0]["vdjserver_uuid"];
-  console.log("New Sample UUID: " + newSampleUuid);
+  //console.log("New Sample UUID: " + newSampleUuid);
 
   if (config.tapis_version == 2) {
     var s = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
@@ -1452,7 +1704,6 @@ fixture('Project Repertoires Page Test Cases')
 
   var newSampleValue = s[0]["value"];
   var repertoireSubjectUuidReference = newRepertoireValue["subject"]["vdjserver_uuid"];
-  //console.log("Repertoire Subject Uuid Reference: " + repertoireSubjectUuidReference);
 
   if (config.tapis_version == 2) {
     var subj = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
@@ -1474,7 +1725,7 @@ fixture('Project Repertoires Page Test Cases')
 
   var subjectValue = subj[0]['value'];
 
-  //check Back-end values
+  //Check the Back-end values
   await t
     .expect(subjectValue["subject_id"]).eql(subjectId)
     .expect(newSampleValue["sample_id"]).eql(sampleIdNew)
@@ -1489,42 +1740,41 @@ fixture('Project Repertoires Page Test Cases')
     .expect(newSampleValue["cells_per_reaction"]).eql(parseInt(cellsPerReactionNew))
     .expect(newSampleValue["sequencing_data_id"] == null).ok()
 
-  //Duplicate a Repertoire and attempt to save with a duplicate Sample ID
+  //Duplicate a Repertoire and attempt to Save with a duplicate Sample ID
   await t
-   .click(Selector('#navbar-stats-icon'))
-   .click(Selector('#project-sample-dropdown').withAttribute('name',newSampleUuid))
-   .click(sampleDropdownDuplicateSelect.withAttribute('name',newSampleUuid))
+    .click(navbarStatsIconSelect)
+    .click(sampleDropdownSelect.withAttribute('name',newSampleUuid))
+    .click(sampleDropdownDuplicateSelect.withAttribute('name',newSampleUuid))
 
-  await new Promise(r => setTimeout(r, 5000));
+  var sampleCid2;
 
-  await t.expect(sampleIdSelect.count).eql(3);
+  //Expect 3 Samples
+  await t.expect(sampleIdSelect.count).eql(3)
+
   var ids = [];
   var numIds = await sampleIdSelect.count;
   for(let i=0; i<numIds; i++) ids.push(await sampleIdSelect.nth(i).getAttribute('id'));
   var cids = [];
   for(let i=0; i<ids.length; i++) {
     if(!(ids[i].includes(sampleUuid)) && !(ids[i].includes(newSampleUuid))) {
-      cids.push(ids[i].split('_')[2]);  //there should only be one
+      cids.push(ids[i].split('_')[2]);
     }
   }
+  sampleCid2 = cids[0];
 
   await t
-    .typeText(sampleIdSelect.withAttribute('id',"sample_id_"+cids[0]),sampleId+'-new', {replace: true})
+    .typeText(Selector(sampleIdBaseId + sampleCid2),sampleId+'-new', {replace: true})
+    .click(saveRepertoireChangesSelect)
 
-  await t.click(saveRepertoireChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
-  var errorMessage = Selector('div').withText('Please enter a unique, non-blank ID.').filterVisible().exists;
+  var errorMessage = invalidFeedbackSelect.withExactText(sampleIdValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
-  //Ensure the error disappears when the Sample ID is unique
+  //Ensure the error disappears when the Sample ID is unique and successfully Save
   await t
-    .typeText(sampleIdSelect.withAttribute('id',"sample_id_"+cids[0]),sampleId+'-unique', {replace: true})
-
-  await t.click(saveRepertoireChangesSelect);
-
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter a unique, non-blank ID.').filterVisible().exists;
+    .typeText(Selector(sampleIdBaseId + sampleCid2),sampleId+'-unique', {replace: true})
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
+  errorMessage = invalidFeedbackSelect.withExactText(sampleIdValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).notOk()
  });
 
@@ -1539,24 +1789,18 @@ fixture('Project Repertoires Page Test Cases')
   const sequencingFilesFilesNull = "null";
   var sequencingFilesFiles = "";
 
-  await login(t,config.username,config.password,'CLICK','#home-login');
+  await login(t,config.username,config.password,'CLICK',loginButtonId);
 
-  await new Promise(r => setTimeout(r, 5000));
   await t.navigateTo('./'+projectUuidUrl);
 
-  await new Promise(r => setTimeout(r, 10000));
-
   await t
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
     .click(uploadFilesSelect)
     .click(uploadFilesComputerSelect)
 
   await t
-    .setFilesToUpload('#file-upload-from-computer-dialog', ['./uploads/VectorBase-64_Aaquasalis_ESTs.fasta'])
+    .setFilesToUpload(uploadFilesComputerDialogSelect, [filesPath + FastaSequencesFile])
     .click(addStartUploadSelect)
-
-  await new Promise(r => setTimeout(r, 15000)); //pause for upload
 
   await t
     .click(doneUploadSelect)
@@ -1581,67 +1825,122 @@ fixture('Project Repertoires Page Test Cases')
     m = m['result'][0];
   }
   var fileUuid = m['uuid'];
-  console.log("File UUID: " + fileUuid);
+  //console.log("File UUID: " + fileUuid);
 
   sequencingFilesFiles = fileUuid;
 
-  await t
-    .scrollIntoView(repertoiresTabSelect)
-    .click(repertoiresTabSelect)
+  await t.click(repertoiresTabSelect);
 
   await t
     .click(newRepertoireSelect)
     .click(newRepertoireAddSelect)
 
+  //Expect 2 options in the Sequencing Files drop-down
+  await t.expect(sequencingFilesOption.count).eql(2)
+
+  var repertoireCid = await repertoireFormSelect.find(repertoireDropdownId).getAttribute('name');
+  var sampleCid = await sampleFormSelect.find(sampleDropdownId).getAttribute('name');
+
   //Check that valid values for both Sequencing Files and Sequencing Data ID are not allowed concurrently
   await t
-    .typeText(repertoireNameSelect, repertoireName, {replace: true})
+    .typeText(repertoireNameBaseId+repertoireCid, repertoireNameFiles, {replace: true})
     .click(subjectIdSelect)
-    .click(subjectIdOption.withText(subjectIdNull))
-    .typeText(sampleIdSelect,sampleIdFiles, {replace: true})
+    .click(subjectIdOption.withExactText(subjectIdNull))
+    .typeText(Selector(sampleIdBaseId + sampleCid),sampleIdFiles, {replace: true})
     .click(sequencingFilesSelect)
     .click(sequencingFilesOption.withAttribute('id',sequencingFilesFiles))
     .click(pcrTargetLocusSelect)
-    .click(pcrTargetLocusOption.withText(pcrTargetLocusFiles))
+    .click(pcrTargetLocusOption.withExactText(pcrTargetLocusFiles))
     .typeText(sequencingDataIdSelect, sequencingDataIdFiles, {replace: true})
-
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  var errorMessage = Selector('div').withText('Please enter Seq. Files or a non-blank Seq. Data ID, not both.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout) //need to account for the automatic scroll to the top
+  var errorMessage = invalidFeedbackSelect.withExactText(sequencingFilesDataIdValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   //Check that null for Sequencing Files and a blank Sequencing Data ID is not allowed
   await t
+    .click(navbarStatsIconSelect)
     .click(sequencingFilesSelect)
-    .click(sequencingFilesOption.withText(sequencingFilesFilesNull))
+    .click(sequencingFilesOption.withExactText(sequencingFilesFilesNull))
     .typeText(sequencingDataIdSelect, sequencingDataIdFilesBlank, {replace: true})
-
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter Seq. Files or a non-blank Seq. Data ID, not both.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout) //needed to account for the automatic scroll to the top
+  errorMessage = invalidFeedbackSelect.withExactText(sequencingFilesDataIdValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
-
-  //Check that a valid Sequencing Files and a blank Sequencing Data ID is allowed
-  await t
-    .click(sequencingFilesSelect)
-    .click(sequencingFilesOption.withAttribute('id',sequencingFilesFiles))
-    .typeText(sequencingDataIdSelect, sequencingDataIdFilesBlank, {replace: true})
-
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter Seq. Files or a non-blank Seq. Data ID, not both.').filterVisible().exists;
-  await t.expect(errorMessage).notOk()
 
   //Check that null for Sequencing Files and a valid non-blank Sequencing Data ID is allowed
   await t
     .click(sequencingFilesSelect)
-    .click(sequencingFilesOption.withText(sequencingFilesFilesNull))
+    .click(sequencingFilesOption.withExactText(sequencingFilesFilesNull))
     .typeText(sequencingDataIdSelect, sequencingDataIdFiles, {replace: true})
-
-  await t.click(saveRepertoireChangesSelect);
-  await new Promise(r => setTimeout(r, 5000));
-  errorMessage = Selector('div').withText('Please enter Seq. Files or a non-blank Seq. Data ID, not both.').filterVisible().exists;
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout) //needed to account for the automatic scroll to the top
+  errorMessage = invalidFeedbackSelect.withExactText(sequencingFilesDataIdValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).notOk()
+
+  //Check that a valid Sequencing Files and a blank Sequencing Data ID is allowed and successfully Save
+  await t
+    .click(sequencingFilesSelect)
+    .click(sequencingFilesOption.withAttribute('id',sequencingFilesFiles))
+    .typeText(sequencingDataIdSelect, sequencingDataIdFilesBlank, {replace: true})
+    .click(saveRepertoireChangesSelect)
+    .click(subjectIdSelect)
+    .click(subjectIdOption.withAttribute('value',subjectUuid))
+    .click(saveRepertoireChangesSelect)
+    .wait(config.save_timeout)
+  errorMessage = invalidFeedbackSelect.withExactText(sequencingFilesDataIdValidationMessage).filterVisible().exists;
+  await t.expect(errorMessage).notOk()
+
+  //Check Sequencing Files on the Back-end
+  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  if (config.tapis_version == 2) {
+    var r = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'repertoire');
+  } else {
+    requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/repertoire',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var r = await tapisV3.sendRequest(requestSettings);
+    await t.expect(r['status']).eql("success")
+        .expect(r['result'].length).eql(3);
+    r = r['result'];
+  }
+
+  var repertoireUuidFiles = "";
+  var sampleUuidFiles = "";
+  for(let index = 0; index < 3; index++)
+    if(r[index]["value"]["repertoire_name"] == repertoireNameFiles) {
+      repertoireUuidFiles = r[index]["uuid"];
+      sampleUuidFiles = r[index]["value"]["sample"][0]["vdjserver_uuid"]
+    }
+
+  if (config.tapis_version == 2) {
+    var s = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'sample');
+  } else {
+    requestSettings = {
+        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + sampleUuidFiles,
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token['access_token']['access_token']
+        }
+    };
+    var s = await tapisV3.sendRequest(requestSettings);
+    await t.expect(s['status']).eql("success")
+        .expect(s['result'].length).eql(1);
+    s = s['result'];
+  }
+
+  var sValue = s[0]["value"];
+
+  if(sequencingFilesFiles == 'null') await t.expect(sValue["sequencing_files"]["filename"] == null).ok()
+  else await t.expect(sValue["sequencing_files"]["filename"]).eql(FastaSequencesFile)
  });
 
 //method is either ENTERKEY or CLICK
@@ -1649,9 +1948,7 @@ fixture('Project Repertoires Page Test Cases')
 async function login(t,username,password,method,clickItem) {
     if(username!='') await t.typeText('#username', username);
     if(password!='') await t.typeText('#password', password);
-        if(method == "ENTERKEY") {
-            await t.pressKey('enter');
-        } else if(method == 'CLICK') {
-            await t.click(Selector(clickItem, {timeout: config.timeout}));
-        }
+        if(method == "ENTERKEY") await t.pressKey('enter');
+        else if(method == 'CLICK') await t.click(Selector(clickItem));
+        await t.wait(config.login_timeout);  //Wait to complete the login process
 }
