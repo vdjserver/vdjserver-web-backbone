@@ -67,10 +67,11 @@ fixture('Project Files Page Test Cases')
   const sName = "Jim";
   const sEmail = "jim@email.com";
   const sAddr = "13 W. Main St";
-  const projectSuccessfullyCreatedMessage = "Project successfully created!";
+  const projectSuccessfullyCreatedString = "Project successfully created!";
 
   //Subject Values
   const projectSubjectDropdownId = '#project-subject-dropdown';
+  const species = 'Macaca mulatta';
 
   //File Values
   const projectFilesFormBase = '#project-files-form_';
@@ -88,6 +89,7 @@ fixture('Project Files Page Test Cases')
   const projectFileReadQualityRadioOptionFor = 'select-read-quality-files';
   const pairedString1 = '2 files were matched.'; 
   const pairedString2 = '2 files were paired together.';
+  const duplicateFilesRemovedString = 'Duplicate files have been removed: ';
 
   const filesPath = "./uploads/";
   const FastqPairedEndForwardFile = "ERR346600_1.fastq";
@@ -322,12 +324,10 @@ fixture('Project Files Page Test Cases')
     .typeText(submittedByAddressSelect, sAddr)
     .click(createProjectSelect)
 
-  await t.expect(projectModalDialogSelect.find(projectModalBodyClass).withExactText(projectSuccessfullyCreatedMessage).exists).ok();
+  await t.expect(projectModalDialogSelect.find(projectModalBodyClass).withExactText(projectSuccessfullyCreatedString).exists).ok();
   await t.click(projectModalCancelButtonSelect);
 
-  await t
-    .scrollIntoView(subjectsTabSelect)
-    .click(subjectsTabSelect)
+  await t.click(subjectsTabSelect)
 
   const getPageUrl = ClientFunction(() => window.location.href);
   var url = await getPageUrl();
@@ -384,7 +384,6 @@ fixture('Project Files Page Test Cases')
 
   await t
     .navigateTo('./'+projectUuidUrl)
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
     .click(uploadFilesSelect)
     .click(uploadFilesComputerSelect)
@@ -489,7 +488,6 @@ fixture('Project Files Page Test Cases')
   //Set file types
   await t
     .click(navbarStatsIconSelect)
-    .scrollIntoView(AirrTsvFileSelect)
     .click(AirrTsvFileSelect)
     .click(AirrTsvFileOption.withExactText(AirrTsvFileValue))
     .click(PrimerSequencesForwardFileSelect)
@@ -612,7 +610,6 @@ fixture('Project Files Page Test Cases')
 
   await t
     .navigateTo('./'+projectUuidUrl)
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
 
   //Expect the Upload Files button to be available
@@ -677,7 +674,6 @@ fixture('Project Files Page Test Cases')
 
   await t
     .navigateTo('./'+projectUuidUrl)
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
 
   //Expect the buttons to be unavailable when no changes have been made
@@ -716,7 +712,6 @@ fixture('Project Files Page Test Cases')
 
   await t
     .navigateTo('./'+projectUuidUrl)
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
     .click(uploadFilesSelect)
     .click(uploadFilesComputerSelect)
@@ -728,7 +723,7 @@ fixture('Project Files Page Test Cases')
     .setFilesToUpload(uploadFilesComputerDialogSelect, [filesPath + FastaSequencesRenamedDuplicateFile]) //Should upload
     .setFilesToUpload(uploadFilesComputerDialogSelect, [filesPath + FastaSequencesDuplicateFile]) //Should not upload
 
-  var errorMessage = Selector('div').withExactText('Duplicate files have been removed: ' + FastaSequencesDuplicateFile).filterVisible().exists;
+  var errorMessage = Selector('div').withExactText(duplicateFilesRemovedString + FastaSequencesDuplicateFile).filterVisible().exists;
   await t.expect(errorMessage).ok()
 
   await t
@@ -821,16 +816,13 @@ fixture('Project Files Page Test Cases')
   var FastqPairedEndReverseFileTagsText = "         ";
 
   await t
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
-    .scroll(FastqPairedEndForwardFileTagsSelect,'center')
     .typeText(FastqPairedEndForwardFileTagsSelect, FastqPairedEndForwardFileTagsText, {replace: true})
     .typeText(FastqPairedEndReverseFileTagsSelect, FastqPairedEndReverseFileTagsText, {replace: true})
     .click(PrimerSequencesForwardFileSelect)
     .click(PrimerSequencesForwardFileOption.withExactText(PrimerSequencesForwardFileValue))
     .click(PrimerSequencesReverseFileSelect)
     .click(PrimerSequencesReverseFileOption.withExactText(PrimerSequencesReverseFileValue))
-    .scrollBy(0,-200)
     .click(BarcodeSequencesFileSelect)
     .click(BarcodeSequencesFileOption.withExactText(BarcodeSequencesFileValue))
     .click(saveFilesChangesSelect)
@@ -888,7 +880,6 @@ fixture('Project Files Page Test Cases')
   PrimerSequencesForwardFileValue = "null"; 
 
   await t
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
     .click(navbarStatsIconSelect)
     .scroll(PrimerSequencesReverseFileSelect,'center')
@@ -1093,7 +1084,6 @@ fixture('Project Files Page Test Cases')
 
   await t
     .navigateTo('./'+projectUuidUrl)
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
 
   //Pair Read Files
@@ -1160,7 +1150,6 @@ fixture('Project Files Page Test Cases')
 
   await t
     .navigateTo('./'+projectUuidUrl)
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
 
   const PairedEndFastqForwardSelect = Selector(projectFilesFormBase + FastqPairedEndForwardFileUuid);
@@ -1223,7 +1212,6 @@ fixture('Project Files Page Test Cases')
 
   await t
     .navigateTo('./'+projectUuidUrl)
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
 
   //Get timestamps for each file
@@ -1304,7 +1292,6 @@ fixture('Project Files Page Test Cases')
 
   //Sort by newest
   await t
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
     .click(sortDropdownSelect)
     .click(sortDropdownOptionSelect.withAttribute('name','newest'))
@@ -1367,19 +1354,17 @@ fixture('Project Files Page Test Cases')
   const url = await getPageUrl();
 
   await t
-    .scrollIntoView(subjectsTabSelect)
     .click(subjectsTabSelect)
-
-  await t.click(newSubjectSelect)
+    .click(newSubjectSelect)
 
   var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
 
-  await t.typeText(subjectIdBaseId + subjectCid, "Subject ID", {replace:true})
-
   await t
+    .typeText(subjectIdBaseId + subjectCid, "Subject ID", {replace:true})
+    .click(speciesSelect)
+    .click(speciesOption.withExactText(species))
     .click(saveSubjectChangesSelect)
     .wait(config.save_timeout)
-    .scrollIntoView(repertoiresTabSelect)
     .click(repertoiresTabSelect)
     .click(newRepertoireSelect)
     .click(newRepertoireAddSelect)
@@ -1400,7 +1385,6 @@ fixture('Project Files Page Test Cases')
 
   await t
     .navigateTo('./'+projectUuidUrl)
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
 
   var FastqPairedEndForwardValue, FastqPairedEndReverseValue;
@@ -1499,7 +1483,6 @@ fixture('Project Files Page Test Cases')
 
   await t
     .navigateTo('./'+projectUuidUrl)
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
 
   //Get timestamps for each file
@@ -1560,7 +1543,6 @@ fixture('Project Files Page Test Cases')
 
   //Sort by newest
   await t
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
     .click(sortDropdownSelect)
     .click(sortDropdownOptionSelect.withAttribute('name','newest'))
@@ -1601,10 +1583,7 @@ fixture('Project Files Page Test Cases')
   const url = await getPageUrl();
 
   await t
-    .scrollIntoView(repertoiresTabSelect)
     .click(repertoiresTabSelect)
-
-  await t
     .click(newRepertoireSelect)
     .click(newRepertoireAddSelect)
 
@@ -1625,7 +1604,6 @@ fixture('Project Files Page Test Cases')
   const FastaSequencesFileSelect = Selector(projectFilesFormBase + FastaSequencesFileUuid).find(projectFileDeleteId);
 
   await t
-    .scrollIntoView(filesTabSelect)
     .click(filesTabSelect)
     .click(FastaSequencesFileSelect)
     .click(saveFilesChangesSelect)
@@ -1667,5 +1645,6 @@ async function login(t,username,password,method,clickItem) {
     if(password!='') await t.typeText(passwordSelect, password);
         if(method == "ENTERKEY") await t.pressKey('enter');
         else if(method == 'CLICK') await t.click(Selector(clickItem));
+        await t
         await t.wait(config.login_timeout);  //Wait to complete the login process
 }
