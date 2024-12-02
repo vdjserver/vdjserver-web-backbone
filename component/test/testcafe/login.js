@@ -29,78 +29,64 @@ import config from '../test-config';
 import { Selector } from 'testcafe';
 import { ClientFunction } from 'testcafe';
 
+const { Login } = require('./pages');
+const login = new Login();
+
 fixture('Login Page Test Cases')
     .page(config.url);
 
- const loginSelect = Selector("#login");
- const loginSuccessfulSelect = Selector("#loginSuccessful");
- const loginFailedSelect = Selector("#loginFailed");
- const emailSelector = Selector('a[href="mailto:vdjserver@utsouthwestern.edu?subject=Share my data in VDJServer"]');
-
- const loginButtonId = "#home-login";
- const loginSuccessfulString = "Welcome to your \"My Projects\" home page. Here, you'll find a listing of all of your projects.";
- const loginFailedString = "Login failed...";
- const loginString = "Welcome!";
- const emailString = "Email";
- const communityDataPortalLinkId = "#community-link";
- const airrDataCommonsLinkId = "#AIRRDC-link";
- const sendFeedbackLinkId = "#sendFeedback-link";
- const taccLinkId = "#TACC-link";
- const adcUrl = "https://docs.airr-community.org/en/stable/api/adc.html";
- const taccUrl = "https://tacc.utexas.edu";
-
  test('Check valid username and password', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
-  await t.expect(loginSuccessfulSelect.withExactText(loginSuccessfulString).exists).ok();
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
+  await t.expect(login.loginSuccessfulSelect.withExactText(login.loginSuccessfulString).exists).ok();
  });
 
  test('Check blank username', async t => {
-  await login(t,'',config.password,'CLICK',loginButtonId);
-  await t.expect(loginSelect.withExactText(loginString).exists).ok();
+  await login.login(t,'',config.password,'CLICK',login.loginButtonId);
+  await t.expect(login.loginSelect.withExactText(login.loginString).exists).ok();
  });
 
  test('Check blank password', async t => {
-  await login(t,config.username,'','CLICK',loginButtonId);
-  await t.expect(loginSelect.withExactText(loginString).exists).ok();
+  await login.login(t,config.username,'','CLICK',login.loginButtonId);
+  await t.expect(login.loginSelect.withExactText(login.loginString).exists).ok();
  });
 
  test('Check valid username but invalid password', async t => {
-  await login(t,config.username,config.password+Math.floor(Math.random()*100000),'CLICK',loginButtonId);
-  await t.expect(loginFailedSelect.withExactText(loginFailedString).exists).ok();
+  await login.login(t,config.username,config.password+Math.floor(Math.random()*100000),'CLICK',login.loginButtonId);
+  await t.expect(login.loginFailedSelect.withExactText(login.loginFailedString).exists).ok();
  });
 
  test('Check invalid username', async t => {
-  await login(t,config.username+Math.floor(Math.random()*100000),config.password,'CLICK',loginButtonId);
-  await t.expect(loginFailedSelect.withExactText(loginFailedString).exists).ok();
+  await login.login(t,config.username+Math.floor(Math.random()*100000),config.password,'CLICK',login.loginButtonId);
+  await t.expect(login.loginFailedSelect.withExactText(login.loginFailedString).exists).ok();
  });
 
  test('Check username with only spaces', async t => {
-  await login(t,'        ',config.password,'CLICK',loginButtonId);
-  await t.expect(loginFailedSelect.withExactText(loginFailedString).exists).ok();
+  await login.login(t,'        ',config.password,'CLICK',login.loginButtonId);
+  await t.expect(login.loginFailedSelect.withExactText(login.loginFailedString).exists).ok();
  });
 
  test('Check password with only spaces', async t => {
-  await login(t,config.username,'        ','CLICK',loginButtonId);
-  await t.expect(loginFailedSelect.withExactText(loginFailedString).exists).ok();
+  await login.login(t,config.username,'        ','CLICK',login.loginButtonId);
+  await t.expect(login.loginFailedSelect.withExactText(login.loginFailedString).exists).ok();
  });
 
  test('Check valid username and password with ENTER key to submit', async t => {
-  await login(t,config.username,config.password,'ENTERKEY');
-  await t.expect(loginSuccessfulSelect.withExactText(loginSuccessfulString).exists).ok();
+  await login.login(t,config.username,config.password,'ENTERKEY');
+  await t.expect(login.loginSuccessfulSelect.withExactText(login.loginSuccessfulString).exists).ok();
  });
 
  /*test('Click "Forgot password?"', async t => {
-  await login(t,'','','CLICK','#forgotPassword-link');
+  await login.login(t,'','','CLICK','#forgotPassword-link');
   await t.expect(Selector('#forgotPassword').innerText).contains('Forgot your password?');
  });*/
 
  /*test('Click "Verify account?"', async t => {
-  await login(t,'','','CLICK','#verifyAccount-link');
+  await login.login(t,'','','CLICK','#verifyAccount-link');
   await t.expect(Selector('#verifyAccount').innerText).contains('Verify your new VDJServer account');
  });*/
 
  test('Click "Community Data Portal"', async t => {
-  await t.click(communityDataPortalLinkId);
+  await t.click(login.communityDataPortalLinkId);
   const getPageUrl = ClientFunction(() => window.location.href);
   const url = await getPageUrl();
   const subUrl = url.split("/");
@@ -108,15 +94,15 @@ fixture('Login Page Test Cases')
  });
 
  test('Click "AIRR Data Commons"', async t => {
-  await t.expect(Selector(airrDataCommonsLinkId).getAttribute('href')).eql(adcUrl);
-  await t.click(airrDataCommonsLinkId);
+  await t.expect(Selector(login.airrDataCommonsLinkId).getAttribute('href')).eql(login.adcUrl);
+  await t.click(login.airrDataCommonsLinkId);
   /*const getPageUrl = ClientFunction(() => window.location.href);
   const url = await getPageUrl();
-  await t.expect(url).eql(adcUrl);*/
+  await t.expect(url).eql(login.adcUrl);*/
  });
 
  test('Click "Send Feedback"', async t => {
-  await t.click(sendFeedbackLinkId);
+  await t.click(login.sendFeedbackLinkId);
   const getPageUrl = ClientFunction(() => window.location.href);
   const url = await getPageUrl();
   const subUrl = url.split("/");
@@ -124,7 +110,7 @@ fixture('Login Page Test Cases')
  });
 
  /*test('Click "https://www.ireceptor-plus.com/"', async t => {
-  //await login(t,'','','CLICK','#iReceptorPlus-link');
+  //await login.login(t,'','','CLICK','#iReceptorPlus-link');
   await t.click('#iReceptorPlus-link');
   const getPageUrl = ClientFunction(() => window.location.href);
   const url = await getPageUrl();
@@ -132,29 +118,20 @@ fixture('Login Page Test Cases')
  });*/
 
  test('Click "TACC"', async t => {
-  await t.expect(Selector(taccLinkId).getAttribute('href')).eql(taccUrl);
-  await t.click(taccLinkId);
+  //await t.expect(click(taccLinkId)).ok();
+  await t.expect(Selector(login.taccLinkId).getAttribute('href')).eql(login.taccUrl);
+  await t.click(login.taccLinkId);
   /*const getPageUrl = ClientFunction(() => window.location.href);
   const url = await getPageUrl();
-  await t.expect(url).eql(taccUrl);*/
+  await t.expect(url).eql(login.taccUrl);*/
  });
 
  test('Click "Email"', async t => {
-  await t.expect(Selector(emailSelector).exists).ok();
-  await t.expect(Selector(emailSelector).withExactText(emailString).exists).ok();
+  await t.expect(Selector(login.emailSelector).exists).ok();
+  await t.expect(Selector(login.emailSelector).withExactText(login.emailString).exists).ok();
  });
 
  /*test('Click "Create Account"', async t => {
-  await login(t,'','','CLICK','#create-account');
+  await login.login(t,'','','CLICK','#create-account');
   await t.expect(Selector('#createAccount').innerText).contains('Create a new VDJServer account.');
  });*/
-
-//method is either ENTERKEY or CLICK
-//clickItem is the id of the item (optional)
-async function login(t,username,password,method,clickItem) {
-    if(username!='') await t.typeText('#username', username);
-    if(password!='') await t.typeText('#password', password);
-        if(method == "ENTERKEY") await t.pressKey('enter');
-        else if(method == 'CLICK') await t.click(Selector(clickItem));
-        await t.wait(config.login_timeout);  //Wait to complete the login process
-}

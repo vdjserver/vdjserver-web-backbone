@@ -5,7 +5,7 @@
 // VDJServer
 // https://vdjserver.org
 //
-// Copyright (C) 2024 The University of Texas Southwestern Medical Center
+// Copyright (C) 2023 The University of Texas Southwestern Medical Center
 //
 // Author: Ryan C. Kennedy
 // Author: Scott Christley <scott.christley@utsouthwestern.edu>
@@ -29,229 +29,62 @@ import config from '../test-config';
 import { Selector } from 'testcafe';
 import { ClientFunction } from 'testcafe';
 
-var tapisV2 = require('vdj-tapis-js/tapis');
-var tapisV3 = require('vdj-tapis-js/tapisV3');
-var tapisIO = null;
-if (config.tapis_version == 2) tapisIO = tapisV2;
-if (config.tapis_version == 3) tapisIO = tapisV3;
-
-var projectUuid = "";
-var projectUuidUrl = "project/";
-projectUuidUrl += projectUuid;
-var subjectUuid = "";
-var subjectUuid2 = "";
+const { General, Login, Project, Subject } = require('./pages');
+const general = new General();
+const login = new Login();
+const project = new Project();
+const subject = new Subject();
 
 fixture('Project Subjects Page Test Cases')
   .page(config.url);
 
-  const loginButtonId = '#home-login';
-
-//Append a random number less than 1,000,000 to subjectId
-var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
-//console.log("\nSubject ID " + subjectId);
-
-  //Project Values
-  const studyId = "Test Study ID";
-  //Append a random number less than 1,000,000 to studyTitle
-  const studyTitle = "Test Study Title_" + Math.floor(Math.random()*1000000);
-  const studyType = "NCIT:C16084";
-  const studyDesc = "Test Study Description";
-  const incExcCriteria = "Criteria";
-  const grants = "1234";
-  const keywords = ["contains_tr","contains_paired_chain"];
-  const pubs = "1;2;3;4";
-  const labName = "UTSW";
-  const labAddr = "11 S. Main St";
-  const cName = "Joe";
-  const cEmail = "joe@email.com";
-  const cAddr = Math.floor(Math.random()*100) + " N. Main St";
-  const sName = "Jim";
-  const sEmail = "jim@email.com";
-  const sAddr = "13 W. Main St";
-  const projectSuccessfullyCreatedMessage = "Project successfully created!";
-
-  //Subject Values
-  const projectSubjectFormId = '#project-subject-form_';
-  const projectSubjectDropdownId = '#project-subject-dropdown';
-  const linkedSubjectsId = '#linked_subjects';
-  const synthetic = "true";
-  const species = 'Macaca mulatta';
-  const species2 = 'Homo sapiens';
-  const strain = 'abcde'
-  const sex = 'pooled';
-  const ageType = 'range';
-  const ageMin = '3';
-  const ageMax = '9';
-  const ageUnit = 'day';
-  const ageEvent = 'event';
-  const race = 'race';
-  const ancestryPopulation = 'ancestry';
-  const ethnicity = 'ethnicity';
-  const linkedSubjects = 'null';
-  const linkType = 'linkType';
-  const speciesValidationMessage = "Please select a non-null Species.";
-
-  //Diagnosis Values
-  const diagnosisOntologyId = '#ontology-search-input';
-  const diseaseDiagnosis = 'malaria';
-  const diseaseLength = 'Disease Length';
-  const diseaseStage = 'Disease Stage';
-  const studyGroupDescription = 'Study Group Description';
-  const priorTherapies = 'Prior Therapies';
-  const immunogen = 'Immunogen';
-  const intervention = 'Intervention';
-  const medicalHistory = 'Medical History';
-
-  const diseaseDiagnosis2 = 'influenza';
-  const diseaseLength2 = 'Disease Length2';
-  const diseaseStage2 = 'Disease Stage' + Math.floor(Math.random()*1000000);
-  const studyGroupDescription2 = 'Study Group Description2';
-  const priorTherapies2 = 'Prior Therapies2';
-  const immunogen2 = 'Immunogen2';
-  const intervention2 = 'Intervention2';
-  const medicalHistory2 = 'Medical History2';
-  const diseaseLength3 = 'Disease Length3';
-
-  //General Selectors
-  const createProjectSelect = Selector('#create-project');
-  const subjectsTabSelect = Selector('#subjects-tab');
-  const detailsSummarySelect = Selector('#project-subjects-details-summary');
-  const sortDropdownSelect = Selector('#project-subjects-sort-button');
-  const sortDropdownOptionSelect = Selector('#project-subjects-sort-select');
-  const newSubjectSelect = Selector('#project-subjects-new-subject');
-  const revertChangesSelect = Selector('#project-subjects-revert-changes');
-  const saveChangesSelect = Selector('#project-subjects-save-changes');
-  const subjectsDropdownSelect = Selector('#project-subject-dropdown');
-  const subjectsDropdownEditSelect = Selector('#project-subject-edit');
-  const subjectsDropdownDuplicateSelect = Selector('#project-subject-duplicate');
-  const subjectsDropdownDeleteSelect = Selector('#project-subject-delete');
-  const subjectsDropdownAddDiagnosisSelect = Selector('#project-subject-add-diagnosis');
-  const diagnosisDropdownSelect = Selector('#project-subject-diagnosis-dropdown');
-  const diagnosisDropdownDuplicateSelect = Selector('#project-subject-duplicate-diagnosis');
-  const diagnosisDropdownDeleteSelect = Selector('#project-subject-delete-diagnosis');
-
-  //Project Field Selectors
-  const studyIdSelect = Selector('#NCBI');
-  const studyTitleSelect = Selector('#study_title');
-  const descriptionSelect = Selector('#description');
-  const criteriaSelect = Selector('#criteria');
-  const grantsSelect = Selector('#grants');
-  const studyTypeSelect = Selector('#dropdownOntology');
-  const ontologySelectSelect = Selector('#ontology-select');
-  const publicationsSelect = Selector('#publications');
-  const labNameSelect = Selector('#lab_name');
-  const labAddressSelect = Selector('#lab_address');
-  const collectedByNameSelect = Selector('#collectedby_name');
-  const collectedByEmailSelect = Selector('#collectedby_email');
-  const collectedByAddressSelect = Selector('#collectedby_address');
-  const submittedByNameSelect = Selector('#submittedby_name');
-  const submittedByEmailSelect = Selector('#submittedby_email');
-  const submittedByAddressSelect = Selector('#submittedby_address');
-  const createNewProjectSelect = Selector('#create-new-project');
-  const projectModalDialogSelect = Selector('.modal-dialog');
-  const projectModalBodyClass = '.modal-body';
-  const projectModalCancelButtonSelect = Selector('#cancel-message-button');
-
-  //Subject Field Selectors
-  const projectSubjectFormSelect = Selector('.project-subject-form');
-  const subjectIdBaseId = '#subject_id_';
-  const syntheticSelect = Selector('#synthetic');
-  const syntheticOption = syntheticSelect.find('option');
-  const speciesSelect = Selector('#species');
-  const speciesOption = speciesSelect.find('option');
-  const strainSelect = Selector('#strain_name');
-  const sexSelect = Selector('#sex');
-  const sexOption = sexSelect.find('option');
-  const ageTypeSelect = Selector('#age_type');
-  const ageTypeOption = ageTypeSelect.find('option');
-  const ageMinSelect = Selector('#age_min');
-  const ageMaxSelect = Selector('#age_max');
-  const agePointSelect = Selector('#age_point');
-  const ageUnitSelect = Selector('#age_unit');
-  const ageUnitOption = ageUnitSelect.find('option');
-  const ageEventSelect = Selector('#age_event');
-  const raceSelect = Selector('#race');
-  const ancestryPopulationSelect = Selector('#ancestry_population');
-  const ethnicitySelect = Selector('#ethnicity');
-  const linkedSubjectsSelect = Selector("#linked_subjects");
-  const linkedSubjectsOption = linkedSubjectsSelect.find('option');
-  const linkTypeSelect = Selector('#link_type');
-  const invalidFeedbackSelect = Selector('.invalid-feedback');
-
-  //Diagnosis Field Selectors
-  const diseaseDiagnosisRegion1Select = Selector('#disease-diagnosis-region-1')
-  const diagnosisOntologySelectSelect = Selector('#ontology-search-input');
-  const diseaseDiagnosisSelect = Selector('#diagnosisOntology_0');
-  const diseaseDiagnosisOption = diseaseDiagnosisSelect.find('option');
-  const diseaseDiagnosisOptionSelect = Selector('#ontology-select');
-  const diseaseDiagnosis2Select = Selector('#diagnosisOntology_1');
-
-  const diseaseLengthSelect = Selector('#disease_length_0');
-  const diseaseStageSelect = Selector('#disease_stage_0');
-  const studyGroupDescriptionSelect = Selector('#study_group_description_0');
-  const priorTherapiesSelect = Selector('#prior_therapies_0');
-  const immunogenSelect = Selector('#immunogen_0');
-  const interventionSelect = Selector('#intervention_0');
-  const medicalHistorySelect = Selector('#medical_history_0');
-
-  const diseaseLength2Select = Selector('#disease_length_1');
-  const diseaseStage2Select = Selector('#disease_stage_1');
-  const studyGroupDescription2Select = Selector('#study_group_description_1');
-  const priorTherapies2Select = Selector('#prior_therapies_1');
-  const immunogen2Select = Selector('#immunogen_1');
-  const intervention2Select = Selector('#intervention_1');
-  const medicalHistory2Select = Selector('#medical_history_1');
-
-  const diseaseDiagnosisDetailsText = Selector('#disease_diagnosis_0');
-  const diseaseDiagnosisDetailsText2 = Selector('#disease_diagnosis_1');
-
  test('Create a Project and Check Back-end Values', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
   await t
-    .click(createProjectSelect)
-    .typeText(studyIdSelect, studyId)
-    .typeText(studyTitleSelect, studyTitle)
-    .typeText(descriptionSelect, studyDesc)
-    .typeText(criteriaSelect, incExcCriteria)
-    .typeText(grantsSelect, grants)
-    .click('#'+keywords[0])
-    .click('#'+keywords[1])
-    .click(studyTypeSelect)
-    .click(Selector(ontologySelectSelect.withAttribute('name',studyType)))
-    .typeText(publicationsSelect, pubs)
-    .typeText(labNameSelect, labName)
-    .typeText(labAddressSelect, labAddr)
-    .typeText(collectedByNameSelect, cName)
-    .typeText(collectedByEmailSelect, cEmail)
-    .typeText(collectedByAddressSelect, cAddr)
-    .typeText(submittedByNameSelect, sName)
-    .typeText(submittedByEmailSelect, sEmail)
-    .typeText(submittedByAddressSelect, sAddr)
-    .click(createNewProjectSelect)
+    .click(general.createProjectSelect)
+    .typeText(project.studyIdSelect, project.studyId)
+    .typeText(project.studyTitleSelect, project.studyTitle)
+    .typeText(project.descriptionSelect, project.studyDescription)
+    .typeText(project.criteriaSelect, project.inclusionExclusionCriteria)
+    .typeText(project.grantsSelect, project.grants)
+    .click('#'+project.keywords[0])
+    .click('#'+project.keywords[1])
+    .click(project.studyTypeSelect)
+    .click(Selector(general.ontologySelectSelect.withAttribute('name',project.studyType)))
+    .typeText(project.publicationsSelect, project.publications)
+    .typeText(project.labNameSelect, project.labName)
+    .typeText(project.labAddressSelect, project.labAddress)
+    .typeText(project.collectedByNameSelect, project.cName)
+    .typeText(project.collectedByEmailSelect, project.cEmail)
+    .typeText(project.collectedByAddressSelect, project.cAddress)
+    .typeText(project.submittedByNameSelect, project.sName)
+    .typeText(project.submittedByEmailSelect, project.sEmail)
+    .typeText(project.submittedByAddressSelect, project.sAddress)
+    .click(project.createNewProjectSelect)
 
-  await t.expect(projectModalDialogSelect.find(projectModalBodyClass).withExactText(projectSuccessfullyCreatedMessage).exists).ok()
-  await t.click(projectModalCancelButtonSelect);
+  await t
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(project.successfullyCreatedString).exists).ok()
+    .click(project.modalCancelButtonSelect)
 
-  await t.click(subjectsTabSelect);
+  await t.click(general.subjectsTabSelect);
 
   const getPageUrl = ClientFunction(() => window.location.href);
   var url = await getPageUrl();
+  general.projectUuid = url.split("/")[4];
+  general.projectUuidUrl += general.projectUuid;
+  //console.log("Project UUID: " + general.projectUuid);
 
-  projectUuid = url.split("/")[4];
-  projectUuidUrl += projectUuid;
-  //console.log("Project UUID: " + projectUuid);
-
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
   url = await getPageUrl();
   console.log("URL: " + url);
 
-  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
-    var m = await tapisV2.getProjectMetadata(token.access_token, projectUuid);
+    var m = await general.tapisV2.getProjectMetadata(token.access_token, general.projectUuid);
   } else {
     var requestSettings = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + projectUuid,
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.projectUuid,
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -259,7 +92,7 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    var m = await tapisV3.sendRequest(requestSettings);
+    var m = await general.tapisV3.sendRequest(requestSettings);
     //console.log(JSON.stringify(m, null, 2));
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
@@ -267,81 +100,81 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
   }
 
   await t
-    .expect(m["value"]["study_id"]).eql(studyId)
-    .expect(m["value"]["study_title"]).eql(studyTitle)
-    .expect(m["value"]["study_description"]).eql(studyDesc)
-    .expect(m["value"]["inclusion_exclusion_criteria"]).eql(incExcCriteria)
-    .expect(m["value"]["grants"]).eql(grants)
-    .expect(m["value"]["keywords_study"][0]).eql(keywords[0])
-    .expect(m["value"]["keywords_study"][1]).eql(keywords[1])
-    .expect(m["value"]["study_type"]["id"]).eql(studyType)
-    .expect(m["value"]["pub_ids"]).eql(pubs)
-    .expect(m["value"]["lab_name"]).eql(labName)
-    .expect(m["value"]["lab_address"]).eql(labAddr)
-    .expect(m["value"]["collected_by"].split(", ")[0]).eql(cName)
-    .expect(m["value"]["collected_by"].split(", ")[1]).eql(cEmail)
-    .expect(m["value"]["collected_by"].split(", ")[2]).eql(cAddr)
-    .expect(m["value"]["submitted_by"].split(", ")[0]).eql(sName)
-    .expect(m["value"]["submitted_by"].split(", ")[1]).eql(sEmail)
-    .expect(m["value"]["submitted_by"].split(", ")[2]).eql(sAddr)
+    .expect(m["value"]["study_id"]).eql(project.studyId)
+    .expect(m["value"]["study_title"]).eql(project.studyTitle)
+    .expect(m["value"]["study_description"]).eql(project.studyDescription)
+    .expect(m["value"]["inclusion_exclusion_criteria"]).eql(project.inclusionExclusionCriteria)
+    .expect(m["value"]["grants"]).eql(project.grants)
+    .expect(m["value"]["keywords_study"][0]).eql(project.keywords[0])
+    .expect(m["value"]["keywords_study"][1]).eql(project.keywords[1])
+    .expect(m["value"]["study_type"]["id"]).eql(project.studyType)
+    .expect(m["value"]["pub_ids"]).eql(project.publications)
+    .expect(m["value"]["lab_name"]).eql(project.labName)
+    .expect(m["value"]["lab_address"]).eql(project.labAddress)
+    .expect(m["value"]["collected_by"].split(", ")[0]).eql(project.cName)
+    .expect(m["value"]["collected_by"].split(", ")[1]).eql(project.cEmail)
+    .expect(m["value"]["collected_by"].split(", ")[2]).eql(project.cAddress)
+    .expect(m["value"]["submitted_by"].split(", ")[0]).eql(project.sName)
+    .expect(m["value"]["submitted_by"].split(", ")[1]).eql(project.sEmail)
+    .expect(m["value"]["submitted_by"].split(", ")[2]).eql(project.sAddress)
  });
 
  test('Add a Subject (with Diagnosis) to the previously created Project and Check Back-end Values', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
   const getPageUrl = ClientFunction(() => window.location.href);
 
-  await t.navigateTo('./'+projectUuidUrl);
-  const url = await getPageUrl();
+  await t.navigateTo('./'+general.projectUuidUrl);
 
   await t
-    .click(subjectsTabSelect)
-    .click(newSubjectSelect)
+    .click(general.subjectsTabSelect)
+    .click(subject.newSubjectSelect)
 
-  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+  var subjectCid = await subject.projectSubjectFormSelect.find(subject.projectSubjectDropdownId).getAttribute('name');
 
   await t
-    .typeText(subjectIdBaseId + subjectCid, subjectId)
-    .click(syntheticSelect)
-    .click(syntheticOption.withAttribute('value',synthetic))
-    .click(speciesSelect)
-    .click(speciesOption.withExactText(species))
-    .typeText(strainSelect, strain)
-    .click(sexSelect)
-    .click(sexOption.withExactText(sex))
-    .click(ageTypeSelect)
-    .click(ageTypeOption.withExactText(ageType))
-    .typeText(ageMinSelect,ageMin)
-    .typeText(ageMaxSelect,ageMax)
-    .click(ageUnitSelect)
-    .click(ageUnitOption.withAttribute('value',ageUnit))
-    .typeText(ageEventSelect,ageEvent)
-    .typeText(raceSelect,race)
-    .typeText(ancestryPopulationSelect,ancestryPopulation)
-    .typeText(ethnicitySelect,ethnicity)
-    .click(linkedSubjectsSelect)
-    .click(linkedSubjectsOption.withExactText(linkedSubjects))
-    .typeText(linkTypeSelect,linkType)
-    .click(diseaseDiagnosisSelect)
-    .typeText(diagnosisOntologySelectSelect,diseaseDiagnosis)
-    .click(diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosis))
-    .typeText(diseaseLengthSelect,diseaseLength)
-    .typeText(diseaseStageSelect,diseaseStage)
-    .typeText(studyGroupDescriptionSelect,studyGroupDescription)
-    .typeText(priorTherapiesSelect,priorTherapies)
-    .typeText(immunogenSelect,immunogen)
-    .typeText(interventionSelect,intervention)
-    .typeText(medicalHistorySelect,medicalHistory)
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
-    .click(detailsSummarySelect)
+    .typeText(subject.subjectIdBaseId + subjectCid, subject.subjectId)
+    .click(subject.syntheticSelect)
+    .click(subject.syntheticOption.withAttribute('value',subject.synthetic))
+    .click(subject.speciesSelect)
+    .click(subject.speciesOption.withExactText(subject.species))
+    .typeText(subject.strainSelect, subject.strain)
+    .click(subject.sexSelect)
+    .click(subject.sexOption.withExactText(subject.sex))
+    .click(subject.ageTypeSelect)
+    .click(subject.ageTypeOption.withExactText(subject.ageType))
+    .typeText(subject.ageMinSelect,subject.ageMin)
+    .typeText(subject.ageMaxSelect,subject.ageMax)
+    .click(subject.ageUnitSelect)
+    .click(subject.ageUnitOption.withAttribute('value',subject.ageUnit))
+    .typeText(subject.ageEventSelect,subject.ageEvent)
+    .typeText(subject.raceSelect,subject.race)
+    .typeText(subject.ancestryPopulationSelect,subject.ancestryPopulation)
+    .typeText(subject.ethnicitySelect,subject.ethnicity)
+    .click(subject.linkedSubjectsSelect)
+    .click(subject.linkedSubjectsOption.withExactText(subject.linkedSubjects))
+    .typeText(subject.linkTypeSelect,subject.linkType)
+    .click(subject.diseaseDiagnosisSelect)
+    .typeText(general.ontologyInputSelect,subject.diseaseDiagnosis)
+    .click(subject.diseaseDiagnosisOptionSelect.withExactText(subject.diseaseDiagnosis))
+    .typeText(subject.diseaseLengthSelect,subject.diseaseLength)
+    .typeText(subject.diseaseStageSelect,subject.diseaseStage)
+    .typeText(subject.studyGroupDescriptionSelect,subject.studyGroupDescription)
+    .typeText(subject.priorTherapiesSelect,subject.priorTherapies)
+    .typeText(subject.immunogenSelect,subject.immunogen)
+    .typeText(subject.interventionSelect,subject.intervention)
+    .typeText(subject.medicalHistorySelect,subject.medicalHistory)
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
+    .click(subject.detailsSummarySelect)
 
-  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
-    var m = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'subject');
+    var m = await general.tapisV2.getMetadataForType(token.access_token, general.projectUuid, 'subject');
   } else {
     var requestSettings = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/subject',
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/name/subject',
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -349,98 +182,101 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    var m = await tapisV3.sendRequest(requestSettings);
+    var m = await general.tapisV3.sendRequest(requestSettings);
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'];
   }
 
-  subjectUuid = m[0]["uuid"];
-  //console.log("Subject UUID: " + subjectUuid);
+  general.subjectUuid = m[0]["uuid"];
+  //console.log("Subject UUID: " + general.subjectUuid);
 
   //Check Subject values
   await t
-    .expect(m[0]["value"]["subject_id"]).eql(subjectId)
+    .expect(m[0]["value"]["subject_id"]).eql(subject.subjectId)
     .expect(m[0]["value"]["synthetic"]).ok() //Expect m to be truthy
-    .expect(m[0]["value"]["species"].label).eql(species)
-    .expect(m[0]["value"]["sex"]).eql(sex)
-    .expect(m[0]["value"]["age_min"]).eql(parseFloat(ageMin))
-    .expect(m[0]["value"]["age_max"]).eql(parseFloat(ageMax))
-    .expect(m[0]["value"]["age_unit"].label).eql(ageUnit)
-    .expect(m[0]["value"]["age_event"]).eql(ageEvent)
-    .expect(m[0]["value"]["ancestry_population"]).eql(ancestryPopulation)
-    .expect(m[0]["value"]["ethnicity"]).eql(ethnicity)
-    .expect(m[0]["value"]["race"]).eql(race)
-    .expect(m[0]["value"]["strain_name"]).eql(strain)
-    .expect(m[0]["value"]["link_type"]).eql(linkType)
+    .expect(m[0]["value"]["species"].label).eql(subject.species)
+    .expect(m[0]["value"]["sex"]).eql(subject.sex)
+    .expect(m[0]["value"]["age_min"]).eql(parseFloat(subject.ageMin))
+    .expect(m[0]["value"]["age_max"]).eql(parseFloat(subject.ageMax))
+    .expect(m[0]["value"]["age_unit"].label).eql(subject.ageUnit)
+    .expect(m[0]["value"]["age_event"]).eql(subject.ageEvent)
+    .expect(m[0]["value"]["ancestry_population"]).eql(subject.ancestryPopulation)
+    .expect(m[0]["value"]["ethnicity"]).eql(subject.ethnicity)
+    .expect(m[0]["value"]["race"]).eql(subject.race)
+    .expect(m[0]["value"]["strain_name"]).eql(subject.strain)
+    .expect(m[0]["value"]["link_type"]).eql(subject.linkType)
 
-  if(linkedSubjects == 'null') await t.expect(m[0]["value"]["linked_subjects"] == null).ok()
-  else await t.expect(m[0]["value"]["linked_subjects"] == linkedSubjects).ok()
+  if(subject.linkedSubjects == 'null') await t.expect(m[0]["value"]["linked_subjects"] == null).ok()
+  else await t.expect(m[0]["value"]["linked_subjects"] == subject.linkedSubjects).ok()
 
   //Check Diagnosis values
   await t
-    .expect(m[0]["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()).contains(diseaseDiagnosis.toLowerCase())
-    .expect(m[0]["value"]["diagnosis"][0]["disease_length"]).eql(diseaseLength)
-    .expect(m[0]["value"]["diagnosis"][0]["disease_stage"]).eql(diseaseStage)
-    .expect(m[0]["value"]["diagnosis"][0]["study_group_description"]).eql(studyGroupDescription)
-    .expect(m[0]["value"]["diagnosis"][0]["prior_therapies"]).eql(priorTherapies)
-    .expect(m[0]["value"]["diagnosis"][0]["immunogen"]).eql(immunogen)
-    .expect(m[0]["value"]["diagnosis"][0]["intervention"]).eql(intervention)
-    .expect(m[0]["value"]["diagnosis"][0]["medical_history"]).eql(medicalHistory)
+    .expect(m[0]["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()).contains(subject.diseaseDiagnosis.toLowerCase())
+    .expect(m[0]["value"]["diagnosis"][0]["disease_length"]).eql(subject.diseaseLength)
+    .expect(m[0]["value"]["diagnosis"][0]["disease_stage"]).eql(subject.diseaseStage)
+    .expect(m[0]["value"]["diagnosis"][0]["study_group_description"]).eql(subject.studyGroupDescription)
+    .expect(m[0]["value"]["diagnosis"][0]["prior_therapies"]).eql(subject.priorTherapies)
+    .expect(m[0]["value"]["diagnosis"][0]["immunogen"]).eql(subject.immunogen)
+    .expect(m[0]["value"]["diagnosis"][0]["intervention"]).eql(subject.intervention)
+    .expect(m[0]["value"]["diagnosis"][0]["medical_history"]).eql(subject.medicalHistory)
  });
 
  test('Confirm adding a Subject with a null Species is not allowed', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
   const getPageUrl = ClientFunction(() => window.location.href);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
   await t
-    .click(subjectsTabSelect)
-    .click(newSubjectSelect)
+    .click(general.subjectsTabSelect)
+    .click(subject.newSubjectSelect)
 
-  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+  var subjectCid = await subject.projectSubjectFormSelect.find(subject.projectSubjectDropdownId).getAttribute('name');
 
   await t
-    .typeText(subjectIdBaseId + subjectCid, subjectId + "nullSpecies")
-    .click(speciesSelect)
-    .click(speciesOption.withExactText("null"))
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .typeText(subject.subjectIdBaseId + subjectCid, subject.subjectId + "nullSpecies")
+    .click(subject.speciesSelect)
+    .click(subject.speciesOption.withExactText("null"))
+    .click(subject.saveChangesSelect)
+    //.expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    //.expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
+    .wait(config.timeout)
 
-  var errorMessage = invalidFeedbackSelect.withExactText(speciesValidationMessage).filterVisible().exists;
+  var errorMessage = general.invalidFeedbackSelect.withExactText(subject.speciesValidationMessage).filterVisible().exists;
   await t.expect(errorMessage).ok()
  });
 
  test('Add another Diagnosis to the previously created Subject and check against the Back-end', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
   await t
-    .click(subjectsTabSelect)
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownAddDiagnosisSelect)
-    .click(diseaseDiagnosisSelect)
-    .typeText(diagnosisOntologySelectSelect,diseaseDiagnosis2)
-    .click(diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosis2))
-    .typeText(diseaseLengthSelect,diseaseLength2)
-    .typeText(diseaseStageSelect,diseaseStage2)
-    .typeText(studyGroupDescriptionSelect,studyGroupDescription2)
-    .typeText(priorTherapiesSelect,priorTherapies2)
-    .typeText(immunogenSelect,immunogen2)
-    .typeText(interventionSelect,intervention2)
-    .typeText(medicalHistorySelect,medicalHistory2)
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(general.subjectsTabSelect)
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownAddDiagnosisSelect)
+    .click(subject.diseaseDiagnosisSelect)
+    .typeText(general.ontologyInputSelect,subject.diseaseDiagnosis2)
+    .click(subject.diseaseDiagnosisOptionSelect.withExactText(subject.diseaseDiagnosis2))
+    .typeText(subject.diseaseLengthSelect,subject.diseaseLength2)
+    .typeText(subject.diseaseStageSelect,subject.diseaseStage2)
+    .typeText(subject.studyGroupDescriptionSelect,subject.studyGroupDescription2)
+    .typeText(subject.priorTherapiesSelect,subject.priorTherapies2)
+    .typeText(subject.immunogenSelect,subject.immunogen2)
+    .typeText(subject.interventionSelect,subject.intervention2)
+    .typeText(subject.medicalHistorySelect,subject.medicalHistory2)
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
-    var m = await tapisV2.getProjectMetadata(token.access_token, subjectUuid);
+    var m = await general.tapisV2.getProjectMetadata(token.access_token, general.subjectUuid);
   } else {
     var requestSettings = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + subjectUuid,
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.subjectUuid,
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -448,7 +284,7 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    var m = await tapisV3.sendRequest(requestSettings);
+    var m = await general.tapisV3.sendRequest(requestSettings);
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'][0];
@@ -456,41 +292,42 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
 
   //Find the Back-end index of the duplicated Diagnosis
   var dIndex;
-  if(m["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()==diseaseDiagnosis2.toLowerCase())
+  if(m["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()==subject.diseaseDiagnosis2.toLowerCase())
     dIndex = 0;
   else dIndex = 1;
 
   //Check Diagnosis values
   await t
-    .expect(m["value"]["diagnosis"][dIndex]["disease_diagnosis"].label.toLowerCase()).eql(diseaseDiagnosis2.toLowerCase())
-    .expect(m["value"]["diagnosis"][dIndex]["disease_length"]).eql(diseaseLength2)
-    .expect(m["value"]["diagnosis"][dIndex]["disease_stage"]).eql(diseaseStage2)
-    .expect(m["value"]["diagnosis"][dIndex]["study_group_description"]).eql(studyGroupDescription2)
-    .expect(m["value"]["diagnosis"][dIndex]["prior_therapies"]).eql(priorTherapies2)
-    .expect(m["value"]["diagnosis"][dIndex]["immunogen"]).eql(immunogen2)
-    .expect(m["value"]["diagnosis"][dIndex]["intervention"]).eql(intervention2)
-    .expect(m["value"]["diagnosis"][dIndex]["medical_history"]).eql(medicalHistory2)
+    .expect(m["value"]["diagnosis"][dIndex]["disease_diagnosis"].label.toLowerCase()).eql(subject.diseaseDiagnosis2.toLowerCase())
+    .expect(m["value"]["diagnosis"][dIndex]["disease_length"]).eql(subject.diseaseLength2)
+    .expect(m["value"]["diagnosis"][dIndex]["disease_stage"]).eql(subject.diseaseStage2)
+    .expect(m["value"]["diagnosis"][dIndex]["study_group_description"]).eql(subject.studyGroupDescription2)
+    .expect(m["value"]["diagnosis"][dIndex]["prior_therapies"]).eql(subject.priorTherapies2)
+    .expect(m["value"]["diagnosis"][dIndex]["immunogen"]).eql(subject.immunogen2)
+    .expect(m["value"]["diagnosis"][dIndex]["intervention"]).eql(subject.intervention2)
+    .expect(m["value"]["diagnosis"][dIndex]["medical_history"]).eql(subject.medicalHistory2)
  });
 
  test('Duplicate a Diagnosis for the previously created Subject, change disease length, and check against the Back-end', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
   await t
-    .click(subjectsTabSelect)
-    .click(diagnosisDropdownSelect)
-    .click(diagnosisDropdownDuplicateSelect.withAttribute('name','duplicate_0'))
-    .typeText(diseaseLengthSelect,diseaseLength3,{replace: true})
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(general.subjectsTabSelect)
+    .click(subject.diagnosisDropdownSelect)
+    .click(subject.diagnosisDropdownDuplicateSelect.withAttribute('name','duplicate_0'))
+    .typeText(subject.diseaseLengthSelect,subject.diseaseLength3,{replace: true})
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
-    var m = await tapisV2.getProjectMetadata(token.access_token, subjectUuid);
+    var m = await general.tapisV2.getProjectMetadata(token.access_token, general.subjectUuid);
   } else {
     var requestSettings = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + subjectUuid,
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.subjectUuid,
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -498,7 +335,7 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    var m = await tapisV3.sendRequest(requestSettings);
+    var m = await general.tapisV3.sendRequest(requestSettings);
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'][0];
@@ -506,10 +343,10 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
 
   //Determine the Back-end index of the Diagnosis in question and its duplicate
   var d1Index, d2Index;
-  if(m["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()==diseaseDiagnosis.toLowerCase()) {
+  if(m["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()==subject.diseaseDiagnosis.toLowerCase()) {
     d1Index = 1;
     d2Index = 2;
-  } else if(m["value"]["diagnosis"][1]["disease_diagnosis"].label.toLowerCase()==diseaseDiagnosis.toLowerCase()) {
+  } else if(m["value"]["diagnosis"][1]["disease_diagnosis"].label.toLowerCase()==subject.diseaseDiagnosis.toLowerCase()) {
     d1Index = 0;
     d2Index = 2;
   } else {
@@ -521,7 +358,7 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
   await t
     .expect(m["value"]["diagnosis"][d2Index]["disease_diagnosis"].label.toLowerCase()).eql(m["value"]["diagnosis"][d1Index]["disease_diagnosis"].label.toLowerCase())
     .expect(m["value"]["diagnosis"][d2Index]["disease_length"]).notEql(m["value"]["diagnosis"][d1Index]["disease_length"])
-    .expect(m["value"]["diagnosis"][d1Index]["disease_length"]).eql(diseaseLength3)
+    .expect(m["value"]["diagnosis"][d1Index]["disease_length"]).eql(subject.diseaseLength3)
     .expect(m["value"]["diagnosis"][d2Index]["disease_stage"]).eql(m["value"]["diagnosis"][d1Index]["disease_stage"])
     .expect(m["value"]["diagnosis"][d2Index]["study_group_description"]).eql(m["value"]["diagnosis"][d1Index]["study_group_description"])
     .expect(m["value"]["diagnosis"][d2Index]["prior_therapies"]).eql(m["value"]["diagnosis"][d1Index]["prior_therapies"])
@@ -531,23 +368,24 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
  });
 
  test('Delete the newest Diagnosis for the previously created Subject and check against the Back-end', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
   await t
-    .click(subjectsTabSelect)
-    .click(diagnosisDropdownSelect)
-    .click(diagnosisDropdownDeleteSelect.withAttribute('name','delete_0'))
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(general.subjectsTabSelect)
+    .click(subject.diagnosisDropdownSelect)
+    .click(subject.diagnosisDropdownDeleteSelect.withAttribute('name','delete_0'))
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
-    var m = await tapisV2.getProjectMetadata(token.access_token, subjectUuid);
+    var m = await general.tapisV2.getProjectMetadata(token.access_token, general.subjectUuid);
   } else {
     var requestSettings = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + subjectUuid,
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.subjectUuid,
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -555,7 +393,7 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    var m = await tapisV3.sendRequest(requestSettings);
+    var m = await general.tapisV3.sendRequest(requestSettings);
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'][0];
@@ -567,43 +405,44 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
  });
 
  test('Duplicate the newest Subject and add a unique Subject ID, confirm the duplicate is correct on the Back-end, confirm the Linked Subjects drop-down populates correctly, save, and then delete the Subject', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
-  await t.click(subjectsTabSelect);
+  await t.click(general.subjectsTabSelect);
 
   //Duplicate the newest Subject
   await t
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownDuplicateSelect.withAttribute('name',subjectUuid))
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownDuplicateSelect.withAttribute('name',general.subjectUuid))
 
-  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+  var subjectCid = await subject.projectSubjectFormSelect.find(subject.projectSubjectDropdownId).getAttribute('name');
 
   await t
-    .typeText(subjectIdBaseId + subjectCid, subjectId+'-D', {replace: true})
-    .click(linkedSubjectsSelect)
-    .click(linkedSubjectsOption.withExactText(linkedSubjects))
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .typeText(subject.subjectIdBaseId + subjectCid, subject.subjectId+'-D', {replace: true})
+    .click(subject.linkedSubjectsSelect)
+    .click(subject.linkedSubjectsOption.withExactText(subject.linkedSubjects))
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
   //Reload the page so the dynamic drop-downs update
   await t.eval(() => location.reload(true));
 
   //Expect 2 options now
   await t
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
-    .expect(linkedSubjectsOption.count).eql(2)
-    .expect((Selector(projectSubjectFormId+subjectUuid).find(linkedSubjectsId)).find('option').withExactText(subjectId+'-D').exists).ok()
-    .expect((Selector(projectSubjectFormId+subjectUuid).find(linkedSubjectsId)).find('option').withExactText('null').exists).ok()
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownEditSelect.withAttribute('name',general.subjectUuid))
+    .expect(subject.linkedSubjectsOption.count).eql(2)
+    .expect((Selector(subject.projectSubjectFormIdBase+general.subjectUuid).find(subject.linkedSubjectsId)).find('option').withExactText(subject.subjectId+'-D').exists).ok()
+    .expect((Selector(subject.projectSubjectFormIdBase+general.subjectUuid).find(subject.linkedSubjectsId)).find('option').withExactText('null').exists).ok()
 
-  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
-    var m = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'subject');
+    var m = await general.tapisV2.getMetadataForType(token.access_token, general.projectUuid, 'subject');
   } else {
     var requestSettings = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/subject',
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/name/subject',
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -611,7 +450,7 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    var m = await tapisV3.sendRequest(requestSettings);
+    var m = await general.tapisV3.sendRequest(requestSettings);
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(2);
     m = m['result'];
@@ -623,17 +462,17 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
 
   //Get the UUID for the newly duplicated Subject
   var subjectUuidD ="";
-  if(m[0]["uuid"] != subjectUuid) subjectUuidD = m[0]["uuid"];
+  if(m[0]["uuid"] != general.subjectUuid) subjectUuidD = m[0]["uuid"];
   else subjectUuidD = m[1]["uuid"];
   //console.log("Subject-D UUID: " + subjectUuidD);
 
   //Subject ID values should differ
-  if(m[0]["uuid"] == subjectUuid && m[1]["uuid"] == subjectUuidD) {
-    await t.expect(m[0]["value"]["subject_id"]).eql(subjectId)
-    await t.expect(m[1]["value"]["subject_id"]).eql(subjectId+'-D')
-  } else if(m[1]["uuid"] == subjectUuid && m[0]["uuid"] == subjectUuidD) {
-    await t.expect(m[1]["value"]["subject_id"]).eql(subjectId)
-    await t.expect(m[0]["value"]["subject_id"]).eql(subjectId+'-D')
+  if(m[0]["uuid"] == general.subjectUuid && m[1]["uuid"] == subjectUuidD) {
+    await t.expect(m[0]["value"]["subject_id"]).eql(subject.subjectId)
+    await t.expect(m[1]["value"]["subject_id"]).eql(subject.subjectId+'-D')
+  } else if(m[1]["uuid"] == general.subjectUuid && m[0]["uuid"] == subjectUuidD) {
+    await t.expect(m[1]["value"]["subject_id"]).eql(subject.subjectId)
+    await t.expect(m[0]["value"]["subject_id"]).eql(subject.subjectId+'-D')
   }
 
   //Check that the duplicated Subject values match
@@ -673,17 +512,18 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
 
   //Delete the newly duplicated Subject and Save
   await t
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuidD))
-    .click(subjectsDropdownDeleteSelect.withAttribute('name',subjectUuidD))
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(subject.subjectsDropdownSelect.withAttribute('name',subjectUuidD))
+    .click(subject.subjectsDropdownDeleteSelect.withAttribute('name',subjectUuidD))
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  token = await tapisIO.getToken({username: config.username, password: config.password});
+  token = await general.tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
-    m = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'subject');
+    m = await general.tapisV2.getMetadataForType(token.access_token, general.projectUuid, 'subject');
   } else {
     var requestSettings = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/subject',
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/name/subject',
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -691,7 +531,7 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    m = await tapisV3.sendRequest(requestSettings);
+    m = await general.tapisV3.sendRequest(requestSettings);
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'];
@@ -703,64 +543,66 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
  });
 
  test('Confirm \'Revert Changes\' and \'Save Changes\' buttons are disabled/enabled correctly', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
-  await t.click(subjectsTabSelect)
+  await t.click(general.subjectsTabSelect);
 
   //Expect the buttons to be unavailable when no changes have been made
-  await t.expect(revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).ok()
-  await t.expect(saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).ok()
+  await t.expect(subject.revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).ok()
+  await t.expect(subject.saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).ok()
 
   //Duplicate the newest Subject and check buttons; edit a field and check buttons
   await t
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownDuplicateSelect.withAttribute('name',subjectUuid))
-    .expect(revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).notOk()
-    .expect(saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).notOk()
-    .click(revertChangesSelect)
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
-    .typeText(strainSelect, 'StrainCheck',  {replace: true})
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownDuplicateSelect.withAttribute('name',general.subjectUuid))
+    .expect(subject.revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).notOk()
+    .expect(subject.saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).notOk()
+    .click(subject.revertChangesSelect)
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownEditSelect.withAttribute('name',general.subjectUuid))
+    .typeText(subject.strainSelect, 'StrainCheck',  {replace: true})
     .pressKey('tab') //Change focus
-    .expect(revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).notOk()
-    .expect(saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).notOk()
-    .click(revertChangesSelect)
+    .expect(subject.revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).notOk()
+    .expect(subject.saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).notOk()
+    .click(subject.revertChangesSelect)
 
   //Ensure the buttons are disabled after a Save
   await t
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
-    .typeText(ancestryPopulationSelect, 'AncestryPopulationCheck',  {replace: true})
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
-    .expect(revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).ok()
-    .expect(saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).ok()
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
-    .typeText(ancestryPopulationSelect, ancestryPopulation, {replace: true})
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownEditSelect.withAttribute('name',general.subjectUuid))
+    .typeText(subject.ancestryPopulationSelect, 'AncestryPopulationCheck',  {replace: true})
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
+    .expect(subject.revertChangesSelect.withExactText('Revert Changes').hasAttribute('disabled')).ok()
+    .expect(subject.saveChangesSelect.withExactText('Validate/Save Changes').hasAttribute('disabled')).ok()
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownEditSelect.withAttribute('name',general.subjectUuid))
+    .typeText(subject.ancestryPopulationSelect, subject.ancestryPopulation, {replace: true})
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
  });
 
  test('View existing Subject in Summary and Details view mode and confirm the correct values are shown', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
-  await t.click(subjectsTabSelect);
+  await t.click(general.subjectsTabSelect);
 
   //Summary view selectors
-  const subjectIdTextUntrimmed = await Selector('div').withExactText("Subject ID: " + subjectId).innerText;
-  const sexSpeciesTextUntrimmed = await Selector('div').withExactText("Sex/Species: " + sex + '/' + species).innerText;
-  const raceEthnicityTextUntrimmed = await Selector('div').withExactText("Race/Ethnicity: " + race + '/'+ ethnicity).innerText;
-  const ageTextUntrimmed = await Selector('div').withExactText("Age: " + ageMin + '-' + ageMax + ' ' + ageUnit + "(s)").innerText;
-  const studyGroupDescriptionTextUntrimmed = await Selector('div').withExactText("Study Group Description: " + studyGroupDescription).innerText;
-  const studyGroupDescriptionText2Untrimmed = await Selector('div').withExactText("Study Group Description: " + studyGroupDescription2).innerText;
+  const subjectIdTextUntrimmed = await Selector('div').withExactText("Subject ID: " + subject.subjectId).innerText;
+  const sexSpeciesTextUntrimmed = await Selector('div').withExactText("Sex/Species: " + subject.sex + '/' + subject.species).innerText;
+  const raceEthnicityTextUntrimmed = await Selector('div').withExactText("Race/Ethnicity: " + subject.race + '/'+ subject.ethnicity).innerText;
+  const ageTextUntrimmed = await Selector('div').withExactText("Age: " + subject.ageMin + '-' + subject.ageMax + ' ' + subject.ageUnit + "(s)").innerText;
+  const studyGroupDescriptionTextUntrimmed = await Selector('div').withExactText("Study Group Description: " + subject.studyGroupDescription).innerText;
+  const studyGroupDescriptionText2Untrimmed = await Selector('div').withExactText("Study Group Description: " + subject.studyGroupDescription2).innerText;
 
-  const diseaseDiagnosisText = Selector('div').withText(diseaseDiagnosis.toLowerCase()).exists; //We don't know the exact DOID
-  const diseaseDiagnosisText2 = Selector('div').withText(diseaseDiagnosis2.toLowerCase()).exists;
+  const diseaseDiagnosisText = Selector('div').withText(subject.diseaseDiagnosis.toLowerCase()).exists; //We don't know the exact DOID
+  const diseaseDiagnosisText2 = Selector('div').withText(subject.diseaseDiagnosis2.toLowerCase()).exists;
 
   const subjectIdTextTrimmed = await subjectIdTextUntrimmed.toString().trim();
   const sexSpeciesTextTrimmed = await sexSpeciesTextUntrimmed.toString().trim();
@@ -770,71 +612,71 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
   const studyGroupDescriptionText2Trimmed = await studyGroupDescriptionText2Untrimmed.toString().trim();
 
   //Details view selectors
-  const subjectIdDetailsText = Selector(subjectIdBaseId + subjectUuid);
+  const subjectIdDetailsText = Selector(subject.subjectIdBaseId + general.subjectUuid);
   //Regular expression code for additional flexibility 
-  //const syntheticRegExp = new RegExp(synthetic, "i"); 
+  //const syntheticRegExp = new RegExp(subject.synthetic, "i"); 
   
   //Summary view checks
   await t
-    .expect(subjectIdTextTrimmed).eql("Subject ID: " + subjectId)
-    .expect(sexSpeciesTextTrimmed).eql("Sex/Species: " + sex + '/' + species)
-    .expect(raceEthnicityTextTrimmed).eql("Race/Ethnicity: " + race + '/'+ ethnicity)
-    .expect(ageTextTrimmed).eql("Age: " + ageMin + '-' + ageMax + ' ' + ageUnit + "(s)")
-    .expect(studyGroupDescriptionTextTrimmed).eql("Study Group Description: " + studyGroupDescription)
-    .expect(studyGroupDescriptionText2Trimmed).eql("Study Group Description: " + studyGroupDescription2)
+    .expect(subjectIdTextTrimmed).eql("Subject ID: " + subject.subjectId)
+    .expect(sexSpeciesTextTrimmed).eql("Sex/Species: " + subject.sex + '/' + subject.species)
+    .expect(raceEthnicityTextTrimmed).eql("Race/Ethnicity: " + subject.race + '/'+ subject.ethnicity)
+    .expect(ageTextTrimmed).eql("Age: " + subject.ageMin + '-' + subject.ageMax + ' ' + subject.ageUnit + "(s)")
+    .expect(studyGroupDescriptionTextTrimmed).eql("Study Group Description: " + subject.studyGroupDescription)
+    .expect(studyGroupDescriptionText2Trimmed).eql("Study Group Description: " + subject.studyGroupDescription2)
     .expect(diseaseDiagnosisText).ok()
     .expect(diseaseDiagnosisText2).ok()
 
   await t
-    .click(detailsSummarySelect);
+    .click(subject.detailsSummarySelect);
 
   //Details view checks
   await t
-    .expect(subjectIdDetailsText.value).eql(subjectId)
-    //.expect(syntheticSelect.value).match(syntheticRegExp)
-    .expect(syntheticSelect.value).eql(synthetic)
-    .expect(speciesSelect.value).eql(species)
-    .expect(strainSelect.value).eql(strain)
-    .expect(sexSelect.value).eql(sex)
-    .expect(ageTypeSelect.value).eql(ageType)
-    .expect(ageMinSelect.value).eql(ageMin)
-    .expect(ageMaxSelect.value).eql(ageMax)
-    .expect(ageUnitSelect.value).eql(ageUnit)
-    .expect(ageEventSelect.value).eql(ageEvent)
-    .expect(raceSelect.value).eql(race)
-    .expect(ancestryPopulationSelect.value).eql(ancestryPopulation)
-    .expect(ethnicitySelect.value).eql(ethnicity)
-    .expect(linkTypeSelect.value).eql(linkType)
+    .expect(subjectIdDetailsText.value).eql(subject.subjectId)
+    //.expect(subject.syntheticSelect.value).match(syntheticRegExp)
+    .expect(subject.syntheticSelect.value).eql(subject.synthetic)
+    .expect(subject.speciesSelect.value).eql(subject.species)
+    .expect(subject.strainSelect.value).eql(subject.strain)
+    .expect(subject.sexSelect.value).eql(subject.sex)
+    .expect(subject.ageTypeSelect.value).eql(subject.ageType)
+    .expect(subject.ageMinSelect.value).eql(subject.ageMin)
+    .expect(subject.ageMaxSelect.value).eql(subject.ageMax)
+    .expect(subject.ageUnitSelect.value).eql(subject.ageUnit)
+    .expect(subject.ageEventSelect.value).eql(subject.ageEvent)
+    .expect(subject.raceSelect.value).eql(subject.race)
+    .expect(subject.ancestryPopulationSelect.value).eql(subject.ancestryPopulation)
+    .expect(subject.ethnicitySelect.value).eql(subject.ethnicity)
+    .expect(subject.linkTypeSelect.value).eql(subject.linkType)
 
-    .expect(diseaseDiagnosisDetailsText.getAttribute('value')).contains(diseaseDiagnosis2) //Again, we don't have the DOID
-    .expect(diseaseLengthSelect.value).eql(diseaseLength2)
-    .expect(diseaseStageSelect.value).eql(diseaseStage2)
-    .expect(studyGroupDescriptionSelect.getAttribute('value')).eql(studyGroupDescription2)
-    .expect(priorTherapiesSelect.value).eql(priorTherapies2)
-    .expect(immunogenSelect.value).eql(immunogen2)
-    .expect(interventionSelect.value).eql(intervention2)
-    .expect(medicalHistorySelect.value).eql(medicalHistory2)
+    .expect(subject.diseaseDiagnosisDetailsText.getAttribute('value')).contains(subject.diseaseDiagnosis2) //Again, we don't have the DOID
+    .expect(subject.diseaseLengthSelect.value).eql(subject.diseaseLength2)
+    .expect(subject.diseaseStageSelect.value).eql(subject.diseaseStage2)
+    .expect(subject.studyGroupDescriptionSelect.getAttribute('value')).eql(subject.studyGroupDescription2)
+    .expect(subject.priorTherapiesSelect.value).eql(subject.priorTherapies2)
+    .expect(subject.immunogenSelect.value).eql(subject.immunogen2)
+    .expect(subject.interventionSelect.value).eql(subject.intervention2)
+    .expect(subject.medicalHistorySelect.value).eql(subject.medicalHistory2)
 
-    .expect(diseaseDiagnosisDetailsText2.getAttribute('value')).contains(diseaseDiagnosis)
-    .expect(diseaseLength2Select.value).eql(diseaseLength)
-    .expect(diseaseStage2Select.value).eql(diseaseStage)
-    .expect(studyGroupDescription2Select.getAttribute('value')).eql(studyGroupDescription)
-    .expect(priorTherapies2Select.value).eql(priorTherapies)
-    .expect(immunogen2Select.value).eql(immunogen)
-    .expect(intervention2Select.value).eql(intervention)
-    .expect(medicalHistory2Select.value).eql(medicalHistory)
+    .expect(subject.diseaseDiagnosisDetailsText2.getAttribute('value')).contains(subject.diseaseDiagnosis)
+    .expect(subject.diseaseLength2Select.value).eql(subject.diseaseLength)
+    .expect(subject.diseaseStage2Select.value).eql(subject.diseaseStage)
+    .expect(subject.studyGroupDescription2Select.getAttribute('value')).eql(subject.studyGroupDescription)
+    .expect(subject.priorTherapies2Select.value).eql(subject.priorTherapies)
+    .expect(subject.immunogen2Select.value).eql(subject.immunogen)
+    .expect(subject.intervention2Select.value).eql(subject.intervention)
+    .expect(subject.medicalHistory2Select.value).eql(subject.medicalHistory)
 
-  //Special handling for when linkedSubjects == "null"
-  if(linkedSubjects == 'null') await t.expect(linkedSubjectsSelect.value).eql('')
-  else await t.expect(linkedSubjectsSelect.value == linkedSubjects).ok()
+  //Special handling for when subject.linkedSubjects == "null"
+  if(subject.linkedSubjects == 'null') await t.expect(subject.linkedSubjectsSelect.value).eql('')
+  else await t.expect(subject.linkedSubjectsSelect.value == subject.linkedSubjects).ok()
  });
 
  test('View existing Subject in Summary view mode, edit, revert, and confirm the correct values are still shown', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
-  await t.click(subjectsTabSelect);
+  await t.click(general.subjectsTabSelect);
 
   //Temporary Values
   const subjectIdR = "Subject ID R";
@@ -851,14 +693,14 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
   const diseaseDiagnosis2R = 'cholera';
 
   //Summary view selectors
-  const subjectIdTextUntrimmed = await Selector('div').withExactText("Subject ID: " + subjectId).innerText;
-  const sexSpeciesTextUntrimmed = await Selector('div').withExactText("Sex/Species: " + sex + '/' + species).innerText;
-  const raceEthnicityTextUntrimmed = await Selector('div').withExactText("Race/Ethnicity: " + race + '/'+ ethnicity).innerText;
-  const ageTextUntrimmed = await Selector('div').withExactText("Age: " + ageMin + '-' + ageMax + ' ' + ageUnit + "(s)").innerText;
-  const studyGroupDescriptionTextUntrimmed = await Selector('div').withExactText("Study Group Description: " + studyGroupDescription).innerText;
-  const studyGroupDescriptionText2Untrimmed = await Selector('div').withExactText("Study Group Description: " + studyGroupDescription2).innerText;
-  const diseaseDiagnosisText = Selector('div').withText(diseaseDiagnosis.toLowerCase()).exists; //We don't know the exact DOID
-  const diseaseDiagnosisText2 = Selector('div').withText(diseaseDiagnosis2.toLowerCase()).exists;
+  const subjectIdTextUntrimmed = await Selector('div').withExactText("Subject ID: " + subject.subjectId).innerText;
+  const sexSpeciesTextUntrimmed = await Selector('div').withExactText("Sex/Species: " + subject.sex + '/' + subject.species).innerText;
+  const raceEthnicityTextUntrimmed = await Selector('div').withExactText("Race/Ethnicity: " + subject.race + '/'+ subject.ethnicity).innerText;
+  const ageTextUntrimmed = await Selector('div').withExactText("Age: " + subject.ageMin + '-' + subject.ageMax + ' ' + subject.ageUnit + "(s)").innerText;
+  const studyGroupDescriptionTextUntrimmed = await Selector('div').withExactText("Study Group Description: " + subject.studyGroupDescription).innerText;
+  const studyGroupDescriptionText2Untrimmed = await Selector('div').withExactText("Study Group Description: " + subject.studyGroupDescription2).innerText;
+  const diseaseDiagnosisText = Selector('div').withText(subject.diseaseDiagnosis.toLowerCase()).exists; //We don't know the exact DOID
+  const diseaseDiagnosisText2 = Selector('div').withText(subject.diseaseDiagnosis2.toLowerCase()).exists;
 
   const subjectIdTextTrimmed = await subjectIdTextUntrimmed.toString().trim();
   const sexSpeciesTextTrimmed = await sexSpeciesTextUntrimmed.toString().trim();
@@ -868,118 +710,118 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
   const studyGroupDescriptionText2Trimmed = await studyGroupDescriptionText2Untrimmed.toString().trim();
 
   //Details view selectors
-  const subjectIdDetailsText = Selector(subjectIdBaseId + subjectUuid);
+  const subjectIdDetailsText = Selector(subject.subjectIdBaseId + general.subjectUuid);
 
   //Edit values but do not Save
   await t
-    .click(subjectsDropdownSelect)
-    .click(subjectsDropdownEditSelect)
-    .typeText(subjectIdBaseId + subjectUuid, subjectIdR, {replace: true})
-    .click(syntheticSelect)
-    .click(syntheticOption.withAttribute('value',syntheticR))
-    .click(speciesSelect)
-    .click(speciesOption.withExactText(speciesR))
-    .click(sexSelect)
-    .click(sexOption.withExactText(sexR))
-    .click(ageTypeSelect)
-    .click(ageTypeOption.withExactText(ageTypeR))
-    .typeText(agePointSelect,ageMinR,{replace: true})
-    .click(ageUnitSelect)
-    .click(ageUnitOption.withAttribute('value',ageUnitR))
-    .typeText(raceSelect,raceR,{replace: true})
-    .typeText(ethnicitySelect,ethnicityR,{replace: true})
-    .click(diseaseDiagnosisSelect)
-    .typeText(diagnosisOntologySelectSelect,diseaseDiagnosisR,{replace: true})
-    .click(diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosisR))
-    .click(diseaseDiagnosis2Select)
-    .typeText(diseaseDiagnosisRegion1Select.find(diagnosisOntologyId),diseaseDiagnosis2R,{replace: true})
-    .click(diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosis2R))
+    .click(subject.subjectsDropdownSelect)
+    .click(subject.subjectsDropdownEditSelect)
+    .typeText(subject.subjectIdBaseId + general.subjectUuid, subjectIdR, {replace: true})
+    .click(subject.syntheticSelect)
+    .click(subject.syntheticOption.withAttribute('value',syntheticR))
+    .click(subject.speciesSelect)
+    .click(subject.speciesOption.withExactText(speciesR))
+    .click(subject.sexSelect)
+    .click(subject.sexOption.withExactText(sexR))
+    .click(subject.ageTypeSelect)
+    .click(subject.ageTypeOption.withExactText(ageTypeR))
+    .typeText(subject.agePointSelect,ageMinR,{replace: true})
+    .click(subject.ageUnitSelect)
+    .click(subject.ageUnitOption.withAttribute('value',ageUnitR))
+    .typeText(subject.raceSelect,raceR,{replace: true})
+    .typeText(subject.ethnicitySelect,ethnicityR,{replace: true})
+    .click(subject.diseaseDiagnosisSelect)
+    .typeText(general.ontologyInputSelect,diseaseDiagnosisR,{replace: true})
+    .click(subject.diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosisR))
+    .click(subject.diseaseDiagnosis2Select)
+    .typeText(subject.diseaseDiagnosisRegion1Select.find(subject.diagnosisOntologyId),diseaseDiagnosis2R,{replace: true})
+    .click(subject.diseaseDiagnosisOptionSelect.withExactText(diseaseDiagnosis2R))
 
-  await t
-    .click(revertChangesSelect)
+  await t.click(subject.revertChangesSelect);
 
   //Summary view checks
   await t
-    .expect(subjectIdTextTrimmed).eql("Subject ID: " + subjectId)
-    .expect(sexSpeciesTextTrimmed).eql("Sex/Species: " + sex + '/' + species)
-    .expect(raceEthnicityTextTrimmed).eql("Race/Ethnicity: " + race + '/'+ ethnicity)
-    .expect(ageTextTrimmed).eql("Age: " + ageMin + '-' + ageMax + ' ' + ageUnit + "(s)")
-    .expect(studyGroupDescriptionTextTrimmed).eql("Study Group Description: " + studyGroupDescription)
-    .expect(studyGroupDescriptionText2Trimmed).eql("Study Group Description: " + studyGroupDescription2)
+    .expect(subjectIdTextTrimmed).eql("Subject ID: " + subject.subjectId)
+    .expect(sexSpeciesTextTrimmed).eql("Sex/Species: " + subject.sex + '/' + subject.species)
+    .expect(raceEthnicityTextTrimmed).eql("Race/Ethnicity: " + subject.race + '/'+ subject.ethnicity)
+    .expect(ageTextTrimmed).eql("Age: " + subject.ageMin + '-' + subject.ageMax + ' ' + subject.ageUnit + "(s)")
+    .expect(studyGroupDescriptionTextTrimmed).eql("Study Group Description: " + subject.studyGroupDescription)
+    .expect(studyGroupDescriptionText2Trimmed).eql("Study Group Description: " + subject.studyGroupDescription2)
     .expect(diseaseDiagnosisText).ok()
     .expect(diseaseDiagnosisText2).ok()
 
   await t
-    .click(detailsSummarySelect);
+    .click(subject.detailsSummarySelect);
 
   //Details view checks
   await t
-    .expect(subjectIdDetailsText.value).eql(subjectId)
-    .expect(syntheticSelect.value).eql(synthetic)
-    .expect(speciesSelect.value).eql(species)
-    .expect(strainSelect.value).eql(strain)
-    .expect(sexSelect.value).eql(sex)
-    .expect(ageTypeSelect.value).eql(ageType)
-    .expect(ageMinSelect.value).eql(ageMin)
-    .expect(ageMaxSelect.value).eql(ageMax)
-    .expect(ageUnitSelect.value).eql(ageUnit)
-    .expect(ageEventSelect.value).eql(ageEvent)
-    .expect(raceSelect.value).eql(race)
-    .expect(ancestryPopulationSelect.value).eql(ancestryPopulation)
-    .expect(ethnicitySelect.value).eql(ethnicity)
-    .expect(linkTypeSelect.value).eql(linkType)
+    .expect(subjectIdDetailsText.value).eql(subject.subjectId)
+    .expect(subject.syntheticSelect.value).eql(subject.synthetic)
+    .expect(subject.speciesSelect.value).eql(subject.species)
+    .expect(subject.strainSelect.value).eql(subject.strain)
+    .expect(subject.sexSelect.value).eql(subject.sex)
+    .expect(subject.ageTypeSelect.value).eql(subject.ageType)
+    .expect(subject.ageMinSelect.value).eql(subject.ageMin)
+    .expect(subject.ageMaxSelect.value).eql(subject.ageMax)
+    .expect(subject.ageUnitSelect.value).eql(subject.ageUnit)
+    .expect(subject.ageEventSelect.value).eql(subject.ageEvent)
+    .expect(subject.raceSelect.value).eql(subject.race)
+    .expect(subject.ancestryPopulationSelect.value).eql(subject.ancestryPopulation)
+    .expect(subject.ethnicitySelect.value).eql(subject.ethnicity)
+    .expect(subject.linkTypeSelect.value).eql(subject.linkType)
 
-    .expect(diseaseDiagnosisDetailsText.getAttribute('value')).contains(diseaseDiagnosis2) //Again, we don't have the DOID
-    .expect(diseaseLengthSelect.value).eql(diseaseLength2)
-    .expect(diseaseStageSelect.value).eql(diseaseStage2)
-    .expect(studyGroupDescriptionSelect.getAttribute('value')).eql(studyGroupDescription2)
-    .expect(priorTherapiesSelect.value).eql(priorTherapies2)
-    .expect(immunogenSelect.value).eql(immunogen2)
-    .expect(interventionSelect.value).eql(intervention2)
-    .expect(medicalHistorySelect.value).eql(medicalHistory2)
+    .expect(subject.diseaseDiagnosisDetailsText.getAttribute('value')).contains(subject.diseaseDiagnosis2) //Again, we don't have the DOID
+    .expect(subject.diseaseLengthSelect.value).eql(subject.diseaseLength2)
+    .expect(subject.diseaseStageSelect.value).eql(subject.diseaseStage2)
+    .expect(subject.studyGroupDescriptionSelect.getAttribute('value')).eql(subject.studyGroupDescription2)
+    .expect(subject.priorTherapiesSelect.value).eql(subject.priorTherapies2)
+    .expect(subject.immunogenSelect.value).eql(subject.immunogen2)
+    .expect(subject.interventionSelect.value).eql(subject.intervention2)
+    .expect(subject.medicalHistorySelect.value).eql(subject.medicalHistory2)
 
-    .expect(diseaseDiagnosisDetailsText2.getAttribute('value')).contains(diseaseDiagnosis)
-    .expect(diseaseLength2Select.value).eql(diseaseLength)
-    .expect(diseaseStage2Select.value).eql(diseaseStage)
-    .expect(studyGroupDescription2Select.getAttribute('value')).eql(studyGroupDescription)
-    .expect(priorTherapies2Select.value).eql(priorTherapies)
-    .expect(immunogen2Select.value).eql(immunogen)
-    .expect(intervention2Select.value).eql(intervention)
-    .expect(medicalHistory2Select.value).eql(medicalHistory)
+    .expect(subject.diseaseDiagnosisDetailsText2.getAttribute('value')).contains(subject.diseaseDiagnosis)
+    .expect(subject.diseaseLength2Select.value).eql(subject.diseaseLength)
+    .expect(subject.diseaseStage2Select.value).eql(subject.diseaseStage)
+    .expect(subject.studyGroupDescription2Select.getAttribute('value')).eql(subject.studyGroupDescription)
+    .expect(subject.priorTherapies2Select.value).eql(subject.priorTherapies)
+    .expect(subject.immunogen2Select.value).eql(subject.immunogen)
+    .expect(subject.intervention2Select.value).eql(subject.intervention)
+    .expect(subject.medicalHistory2Select.value).eql(subject.medicalHistory)
 
-  //Special handling for when linkedSubjects == "null"
-  if(linkedSubjects == 'null') await t.expect(linkedSubjectsSelect.value).eql('')
-  else await t.expect(linkedSubjectsSelect.value == linkedSubjects).ok()
+  //Special handling for when subject.linkedSubjects == "null"
+  if(subject.linkedSubjects == 'null') await t.expect(subject.linkedSubjectsSelect.value).eql('')
+  else await t.expect(subject.linkedSubjectsSelect.value == subject.linkedSubjects).ok()
  });
 
  test('Duplicate the newest Subject and add a unique Subject ID and change the linked Subject value, for the previously created Project', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
-  await t.click(subjectsTabSelect);
-
-  await t
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownDuplicateSelect.withAttribute('name',subjectUuid))
-
-  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+  await t.click(general.subjectsTabSelect);
 
   await t
-    .typeText(subjectIdBaseId + subjectCid, subjectId+'-2', {replace: true})
-    .click(linkedSubjectsSelect)
-    .click(linkedSubjectsOption.withExactText(linkedSubjects))
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownDuplicateSelect.withAttribute('name',general.subjectUuid))
 
-  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  var subjectCid = await subject.projectSubjectFormSelect.find(subject.projectSubjectDropdownId).getAttribute('name');
+
+  await t
+    .typeText(subject.subjectIdBaseId + subjectCid, subject.subjectId+'-2', {replace: true})
+    .click(subject.linkedSubjectsSelect)
+    .click(subject.linkedSubjectsOption.withExactText(subject.linkedSubjects))
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
+
+  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
   if (config.tapis_version == 2) {
-    var m = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'subject');
-    subjectUuid2 = m[0]["uuid"];
-    m = await tapisV2.getProjectMetadata(token.access_token, subjectUuid);
+    var m = await general.tapisV2.getMetadataForType(token.access_token, general.projectUuid, 'subject');
+    general.subjectUuid2 = m[0]["uuid"];
+    m = await general.tapisV2.getProjectMetadata(token.access_token, general.subjectUuid);
   } else {
     var requestSettings = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/subject',
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/name/subject',
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -987,21 +829,21 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    var m = await tapisV3.sendRequest(requestSettings);
+    var m = await general.tapisV3.sendRequest(requestSettings);
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(2);
 
     //Determine which record holds the new Subject
-    if(m['result'][0]['uuid'] == subjectUuid) {
+    if(m['result'][0]['uuid'] == general.subjectUuid) {
       m = m['result'][1];
-      subjectUuid2 = m["uuid"];
+      general.subjectUuid2 = m["uuid"];
     } else {
       m = m['result'][0];
-      subjectUuid2 = m["uuid"];
+      general.subjectUuid2 = m["uuid"];
     }
 
     var requestSettings2 = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + subjectUuid,
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.subjectUuid,
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -1009,18 +851,18 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    m = await tapisV3.sendRequest(requestSettings2);
+    m = await general.tapisV3.sendRequest(requestSettings2);
     await t.expect(m['status']).eql("success")
         .expect(m['result'].length).eql(1);
     m = m['result'][0];
   }
-  //console.log("Subject2 UUID: " + subjectUuid2);
+  //console.log("Subject2 UUID: " + general.subjectUuid2);
 
   if (config.tapis_version == 2) {
-    var m2 = await tapisV2.getProjectMetadata(token.access_token, subjectUuid2);
+    var m2 = await general.tapisV2.getProjectMetadata(token.access_token, general.subjectUuid2);
   } else {
     var requestSettings = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/uuid/' + subjectUuid2,
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/uuid/' + general.subjectUuid2,
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -1028,7 +870,7 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    var m2 = await tapisV3.sendRequest(requestSettings);
+    var m2 = await general.tapisV3.sendRequest(requestSettings);
     await t.expect(m2['status']).eql("success")
         .expect(m2['result'].length).eql(1);
     m2 = m2['result'][0];
@@ -1038,8 +880,8 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
   await t
     //subject
     .expect(m["value"]["subject_id"]).notEql(m2["value"]["subject_id"])
-    .expect(m["value"]["subject_id"]).eql(subjectId)
-    .expect(m2["value"]["subject_id"]).eql(subjectId+'-2')
+    .expect(m["value"]["subject_id"]).eql(subject.subjectId)
+    .expect(m2["value"]["subject_id"]).eql(subject.subjectId+'-2')
     .expect(m["value"]["synthetic"]).eql(m2["value"]["synthetic"])
     .expect(m["value"]["species"].label).eql(m2["value"]["species"].label)
     .expect(m["value"]["sex"]).eql(m2["value"]["sex"])
@@ -1053,8 +895,8 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
     .expect(m["value"]["strain_name"]).eql(m2["value"]["strain_name"])
     .expect(m["value"]["link_type"]).eql(m2["value"]["link_type"])
 
-  if(linkedSubjects == 'null') await t.expect(m["value"]["linked_subjects"] == null).ok()
-  else await t.expect(m["value"]["linked_subjects"] == linkedSubjects).ok()
+  if(subject.linkedSubjects == 'null') await t.expect(m["value"]["linked_subjects"] == null).ok()
+  else await t.expect(m["value"]["linked_subjects"] == subject.linkedSubjects).ok()
 
     //diagnosis 0
     .expect(m["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase()).eql(m2["value"]["diagnosis"][0]["disease_diagnosis"].label.toLowerCase())
@@ -1079,20 +921,19 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
  });
 
  test('Add a new Subject with a non-unique Subject ID for the previously created Project', async t => {
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
-
-  await t
-    .click(subjectsTabSelect)
-    .click(newSubjectSelect)
-
-  var subjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+  await t.navigateTo('./'+general.projectUuidUrl);
 
   await t
-    .typeText(subjectIdBaseId + subjectCid, subjectId)
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(general.subjectsTabSelect)
+    .click(subject.newSubjectSelect)
+
+  var subjectCid = await subject.projectSubjectFormSelect.find(subject.projectSubjectDropdownId).getAttribute('name');
+
+  await t
+    .typeText(subject.subjectIdBaseId + subjectCid, subject.subjectId)
+    .click(subject.saveChangesSelect)
 
   const errorMessage = Selector('div').withExactText('Please enter a non-blank, unique Subject ID.').exists;
 
@@ -1103,20 +944,19 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
  test('Add a new Subject with a blank Subject ID for the previously created Project', async t => {
   const blankSubjectId = '  ';
 
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
-
-  await t
-    .click(subjectsTabSelect)
-    .click(newSubjectSelect)
-
-  var blankSubjectCid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
+  await t.navigateTo('./'+general.projectUuidUrl);
 
   await t
-    .typeText(subjectIdBaseId + blankSubjectCid, blankSubjectId)
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(general.subjectsTabSelect)
+    .click(subject.newSubjectSelect)
+
+  var blankSubjectCid = await subject.projectSubjectFormSelect.find(subject.projectSubjectDropdownId).getAttribute('name');
+
+  await t
+    .typeText(subject.subjectIdBaseId + blankSubjectCid, blankSubjectId)
+    .click(subject.saveChangesSelect)
 
   const errorMessage = Selector('div').withExactText('Please enter a non-blank, unique Subject ID.').exists;
 
@@ -1128,19 +968,18 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
   const ageType = 'point';
   const ageMin = '-3';
 
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
   await t
-    .click(subjectsTabSelect)
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
-    .click(ageTypeSelect)
-    .click(ageTypeOption.withExactText(ageType))
-    .typeText(agePointSelect,ageMin,{ replace: true })
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(general.subjectsTabSelect)
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownEditSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.ageTypeSelect)
+    .click(subject.ageTypeOption.withExactText(ageType))
+    .typeText(subject.agePointSelect,ageMin,{ replace: true })
+    .click(subject.saveChangesSelect)
 
   const errorMessage = Selector('div').withExactText('Please enter a valid age number ≥ 0.').exists;
 
@@ -1153,20 +992,19 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
   const ageMin = '1';
   const ageMax = '-3';
 
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
   await t
-    .click(subjectsTabSelect)
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
-    .click(ageTypeSelect)
-    .click(ageTypeOption.withExactText(ageType))
-    .typeText(ageMinSelect,ageMin,{ replace: true })
-    .typeText(ageMaxSelect,ageMax,{ replace: true })
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(general.subjectsTabSelect)
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownEditSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.ageTypeSelect)
+    .click(subject.ageTypeOption.withExactText(ageType))
+    .typeText(subject.ageMinSelect,ageMin,{ replace: true })
+    .typeText(subject.ageMaxSelect,ageMax,{ replace: true })
+    .click(subject.saveChangesSelect)
 
   const errorMessage1 = Selector('div').withExactText('Please enter a valid minimum age number ≥ 0.').exists;
   const errorMessage2 = Selector('div').withExactText('Please enter a valid maximum age number that is greater than the minimum age number.').exists;
@@ -1181,21 +1019,20 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
   const ageMin = '8';
   const ageMax = '4';
 
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
-  await t.click(subjectsTabSelect);
+  await t.click(general.subjectsTabSelect);
 
   await t
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid))
-    .click(subjectsDropdownEditSelect.withAttribute('name',subjectUuid))
-    .click(ageTypeSelect)
-    .click(ageTypeOption.withExactText(ageType))
-    .typeText(ageMinSelect,ageMin,{ replace: true })
-    .typeText(ageMaxSelect,ageMax,{ replace: true })
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.subjectsDropdownEditSelect.withAttribute('name',general.subjectUuid))
+    .click(subject.ageTypeSelect)
+    .click(subject.ageTypeOption.withExactText(ageType))
+    .typeText(subject.ageMinSelect,ageMin,{ replace: true })
+    .typeText(subject.ageMaxSelect,ageMax,{ replace: true })
+    .click(subject.saveChangesSelect)
 
   const errorMessage1 = Selector('div').withExactText('Please enter a valid minimum age number ≥ 0.').exists;
   const errorMessage2 = Selector('div').withExactText('Please enter a valid maximum age number that is greater than the minimum age number.').exists;
@@ -1206,8 +1043,8 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
  });
 
  test('Change Subject 2\'s age and sex values, add a third Subject, and check Sort options', async t => {
-  const subjectId2 = 'Z ' + subjectId;
-  const subjectId3 = 'V ' + subjectId;
+  const subjectId2 = 'Z ' + subject.subjectId;
+  const subjectId3 = 'V ' + subject.subjectId;
 
   const sex2 = 'female';
   const sex3 = 'hermaphrodite';
@@ -1220,57 +1057,59 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
   const ageUnit2 = "hour";
   const ageUnit3 = "month";
 
-  await login(t,config.username,config.password,'CLICK',loginButtonId);
+  await login.login(t,config.username,config.password,'CLICK',login.loginButtonId);
 
-  await t.navigateTo('./'+projectUuidUrl);
+  await t.navigateTo('./'+general.projectUuidUrl);
 
-  await t.click(subjectsTabSelect);
+  await t.click(general.subjectsTabSelect);
 
   //Update values for Subject 2
   await t
-    .click(subjectsDropdownSelect.withAttribute('name',subjectUuid2))
-    .click(subjectsDropdownEditSelect.withAttribute('name', subjectUuid2))
-    .typeText(subjectIdBaseId + subjectUuid2, subjectId2, {replace:true})
-    .click(sexSelect)
-    .click(sexOption.withExactText(sex2))
-    .click(ageTypeSelect)
-    .click(ageTypeOption.withExactText(ageType2))
-    .typeText(ageMinSelect,ageMin2,{ replace: true })
-    .typeText(ageMaxSelect,ageMax2,{ replace: true })
-    .click(ageUnitSelect)
-    .click(ageUnitOption.withAttribute('value',ageUnit2))
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .click(subject.subjectsDropdownSelect.withAttribute('name',general.subjectUuid2))
+    .click(subject.subjectsDropdownEditSelect.withAttribute('name',general.subjectUuid2))
+    .typeText(subject.subjectIdBaseId + general.subjectUuid2, subjectId2, {replace:true})
+    .click(subject.sexSelect)
+    .click(subject.sexOption.withExactText(sex2))
+    .click(subject.ageTypeSelect)
+    .click(subject.ageTypeOption.withExactText(ageType2))
+    .typeText(subject.ageMinSelect,ageMin2,{ replace: true })
+    .typeText(subject.ageMaxSelect,ageMax2,{ replace: true })
+    .click(subject.ageUnitSelect)
+    .click(subject.ageUnitOption.withAttribute('value',ageUnit2))
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
   //Add the third Subject
   await t
-    .click(newSubjectSelect)
+    .click(subject.newSubjectSelect)
 
-  var subject3Cid = await projectSubjectFormSelect.find(projectSubjectDropdownId).getAttribute('name');
-  var subject3Form = Selector(projectSubjectFormId + subject3Cid);
+  var subject3Cid = await subject.projectSubjectFormSelect.find(subject.projectSubjectDropdownId).getAttribute('name');
+  var subject3Form = Selector(subject.projectSubjectFormIdBase + subject3Cid);
 
   await t
-    .typeText(subjectIdBaseId + subject3Cid, subjectId3, {replace:true})
-    .click(subject3Form.find('#' + await speciesSelect.getAttribute('id')))
-    .click(speciesOption.withExactText(species2))
-    .click(subject3Form.find('#' + await sexSelect.getAttribute('id')))
-    .click(sexOption.withExactText(sex3))
-    .click(subject3Form.find('#' + await ageTypeSelect.getAttribute('id')))
-    .click(ageTypeOption.withExactText(ageType3))
-    .typeText(subject3Form.find('#' + await agePointSelect.getAttribute('id')),ageMin3,{ replace: true })
-    .click(subject3Form.find('#' + await ageUnitSelect.getAttribute('id')))
-    .click(ageUnitOption.withAttribute('value',ageUnit3))
-    .click(saveChangesSelect)
-    .wait(config.save_timeout)
+    .typeText(subject.subjectIdBaseId + subject3Cid, subjectId3, {replace:true})
+    .click(subject3Form.find('#' + await subject.speciesSelect.getAttribute('id')))
+    .click(subject.speciesOption.withExactText(subject.species2))
+    .click(subject3Form.find('#' + await subject.sexSelect.getAttribute('id')))
+    .click(subject.sexOption.withExactText(sex3))
+    .click(subject3Form.find('#' + await subject.ageTypeSelect.getAttribute('id')))
+    .click(subject.ageTypeOption.withExactText(ageType3))
+    .typeText(subject3Form.find('#' + await subject.agePointSelect.getAttribute('id')),ageMin3,{ replace: true })
+    .click(subject3Form.find('#' + await subject.ageUnitSelect.getAttribute('id')))
+    .click(subject.ageUnitOption.withAttribute('value',ageUnit3))
+    .click(subject.saveChangesSelect)
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).ok()
+    .expect(project.modalDialogSelect.find(project.modalBodyClass).withExactText(subject.saveString).filterVisible().exists).notOk()
 
-  var token = await tapisIO.getToken({username: config.username, password: config.password});
+  var token = await general.tapisIO.getToken({username: config.username, password: config.password});
 
   //Get all the Subjects
   if (config.tapis_version == 2) {
-    var subjects = await tapisV2.getMetadataForType(token.access_token, projectUuid, 'subject');
+    var subjects = await general.tapisV2.getMetadataForType(token.access_token, general.projectUuid, 'subject');
   } else {
     var requestSettings = {
-        url: config.api + 'api/v2/project/' + projectUuid + '/metadata/name/subject',
+        url: config.api + 'api/v2/project/' + general.projectUuid + '/metadata/name/subject',
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -1278,38 +1117,38 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
             'Authorization': 'Bearer ' + token['access_token']['access_token']
         }
     };
-    var subjects = await tapisV3.sendRequest(requestSettings);
+    var subjects = await general.tapisV3.sendRequest(requestSettings);
     await t.expect(subjects['status']).eql("success")
         .expect(subjects['result'].length).eql(3);
     subjects = subjects['result'];
   }
 
-  //Find the uuid values for the Subjects based on their Subject ID
+  //Find the uuid values for the subjects based on their Subject ID
   var uuid1 = "";
   var uuid2 = "";
   var uuid3 = "";
 
-  if(subjects[0]['value']['subject_id'] == subjectId) uuid1 = subjects[0]['uuid'];
+  if(subjects[0]['value']['subject_id'] == subject.subjectId) uuid1 = subjects[0]['uuid'];
   else if(subjects[0]['value']['subject_id'] == subjectId2) uuid2 = subjects[0]['uuid'];
   else if(subjects[0]['value']['subject_id'] == subjectId3) uuid3 = subjects[0]['uuid'];
 
-  if(subjects[1]['value']['subject_id'] == subjectId) uuid1 = subjects[1]['uuid'];
+  if(subjects[1]['value']['subject_id'] == subject.subjectId) uuid1 = subjects[1]['uuid'];
   else if(subjects[1]['value']['subject_id'] == subjectId2) uuid2 = subjects[1]['uuid'];
   else if(subjects[1]['value']['subject_id'] == subjectId3) uuid3 = subjects[1]['uuid'];
 
-  if(subjects[2]['value']['subject_id'] == subjectId) uuid1 = subjects[2]['uuid'];
+  if(subjects[2]['value']['subject_id'] == subject.subjectId) uuid1 = subjects[2]['uuid'];
   else if(subjects[2]['value']['subject_id'] == subjectId2) uuid2 = subjects[2]['uuid'];
   else if(subjects[2]['value']['subject_id'] == subjectId3) uuid3 = subjects[2]['uuid'];
 
   //Sort by Subject ID
   await t
-    .click(sortDropdownSelect)
-    .click(sortDropdownOptionSelect.withAttribute('name','subjectid'))
+    .click(subject.sortDropdownSelect)
+    .click(subject.sortDropdownOptionSelect.withAttribute('name','subjectid'))
 
   //Get the elements in the sorted order
-  var subj1 = await subjectsDropdownSelect.nth(0).getAttribute('name');
-  var subj2 = await subjectsDropdownSelect.nth(1).getAttribute('name');
-  var subj3 = await subjectsDropdownSelect.nth(2).getAttribute('name');
+  var subj1 = await subject.subjectsDropdownSelect.nth(0).getAttribute('name');
+  var subj2 = await subject.subjectsDropdownSelect.nth(1).getAttribute('name');
+  var subj3 = await subject.subjectsDropdownSelect.nth(2).getAttribute('name');
 
   //Confirm the sorted order matches the expected order
   await t
@@ -1319,13 +1158,13 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
 
   //Sort by Sex
   await t
-    .click(sortDropdownSelect)
-    .click(sortDropdownOptionSelect.withAttribute('name','sex'))
+    .click(subject.sortDropdownSelect)
+    .click(subject.sortDropdownOptionSelect.withAttribute('name','sex'))
 
   //Get the elements in the sorted order
-  subj1 = await subjectsDropdownSelect.nth(0).getAttribute('name');
-  subj2 = await subjectsDropdownSelect.nth(1).getAttribute('name');
-  subj3 = await subjectsDropdownSelect.nth(2).getAttribute('name');
+  subj1 = await subject.subjectsDropdownSelect.nth(0).getAttribute('name');
+  subj2 = await subject.subjectsDropdownSelect.nth(1).getAttribute('name');
+  subj3 = await subject.subjectsDropdownSelect.nth(2).getAttribute('name');
 
   //Confirm the sorted order matches the expected order
   await t
@@ -1335,13 +1174,13 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
 
   //Sort by Age
   await t
-    .click(sortDropdownSelect)
-    .click(sortDropdownOptionSelect.withAttribute('name','age'))
+    .click(subject.sortDropdownSelect)
+    .click(subject.sortDropdownOptionSelect.withAttribute('name','age'))
 
   //Get the elements in the sorted order
-  subj1 = await subjectsDropdownSelect.nth(0).getAttribute('name');
-  subj2 = await subjectsDropdownSelect.nth(1).getAttribute('name');
-  subj3 = await subjectsDropdownSelect.nth(2).getAttribute('name');
+  subj1 = await subject.subjectsDropdownSelect.nth(0).getAttribute('name');
+  subj2 = await subject.subjectsDropdownSelect.nth(1).getAttribute('name');
+  subj3 = await subject.subjectsDropdownSelect.nth(2).getAttribute('name');
 
   //Confirm the sorted order matches the expected order
   await t
@@ -1349,13 +1188,3 @@ var subjectId = 'Subject ID ' + Math.floor(Math.random()*1000000);
     .expect(subj2).eql(uuid1)
     .expect(subj3).eql(uuid3)
  });
-
-//method is either ENTERKEY or CLICK
-//clickItem is the id of the item (optional)
-async function login(t,username,password,method,clickItem) {
-    if(username!='') await t.typeText('#username', username);
-    if(password!='') await t.typeText('#password', password);
-        if(method == "ENTERKEY") await t.pressKey('enter');
-        else if(method == 'CLICK') await t.click(Selector(clickItem));
-        await t.wait(config.login_timeout);  //Wait to complete the login process
-}

@@ -1,11 +1,7 @@
 source ./env
 
 # These are test settings
-export TEST_LOGIN_TIMEOUT
 export TEST_TIMEOUT
-export TEST_SAVE_TIMEOUT
-export TEST_UPLOAD_WAIT
-export TEST_SHORT_UPLOAD_WAIT
 export TEST_URL
 export TEST_USERNAME
 export TEST_PASSWORD
