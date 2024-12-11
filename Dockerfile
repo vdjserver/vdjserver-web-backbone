@@ -36,17 +36,19 @@ RUN cp -rf /node-v8.10.0-linux-x64/share/* /usr/share
 
 RUN npm install -g \
     bower \
-    grunt-cli
+    grunt-cli@v1.4.3
 
 # Install sass dependencies
 RUN gem install sass -v 3.4.25
 RUN gem install ffi -f
-RUN gem install compass
+RUN gem install rb-inotify -v 0.10.1
+RUN gem install compass -v 1.0.3
 
 RUN mkdir /var/www && mkdir /var/www/html && mkdir /var/www/html/vdjserver-backbone
 
 # Install npm dependencies (optimized for cache)
 COPY ./component/package.json /var/www/html/vdjserver-backbone/
+COPY ./component/package-lock.json /var/www/html/vdjserver-backbone/
 RUN cd /var/www/html/vdjserver-backbone && npm install
 
 # Install bower dependencies
