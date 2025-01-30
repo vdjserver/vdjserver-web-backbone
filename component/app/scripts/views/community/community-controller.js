@@ -89,7 +89,7 @@ CommunityController.prototype = {
     },
 
     // show community data portal studies
-    showProjectList(projectUuid) {
+    showProjectList(queryString) {
         if (! this.studies) {
             this.repositoires = new Backbone.Collection();
             var repos = ADC.Repositories();
@@ -221,12 +221,18 @@ CommunityController.prototype = {
                     that.filterController.constructValues(that.studies);
 
                     // have the view display them
-                    if (projectUuid) {
+                    if (queryString) {
                         // filter on specific VDJServer uuid if provided
-                        console.log(projectUuid);
-                        var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
+                        console.log(queryString);
+                        var filters = that.filterController.queryStringToFilter(queryString);
                         App.router.navigate('/community', {trigger: false});
                         that.filterController.applyFilter(filters);
+                    // if (projectUuid) {
+                    //     // filter on specific VDJServer uuid if provided
+                    //     console.log(projectUuid);
+                    //     var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
+                    //     App.router.navigate('/community', {trigger: false});
+                    //     that.filterController.applyFilter(filters);
                     } else {
                         that.projectView.showResultsList(that.studies);
                         that.filterController.showFilter();
@@ -244,12 +250,18 @@ CommunityController.prototype = {
         } else {
             // projects already loaded
             // have the view display them
-            if (projectUuid) {
+            if (queryString) {
                 // filter on specific VDJServer uuid if provided
-                console.log(projectUuid);
-                var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
+                console.log(queryString);
+                var filters = that.filterController.queryStringToFilter(queryString);
                 App.router.navigate('/community', {trigger: false});
-                this.filterController.applyFilter(filters);
+                that.filterController.applyFilter(filters, false);
+            // if (projectUuid) {
+            //     // filter on specific VDJServer uuid if provided
+            //     console.log(projectUuid);
+            //     var filters = {filters: [{field: "study.vdjserver_uuid", value: projectUuid, title: "VDJServer UUID"}]};
+            //     App.router.navigate('/community', {trigger: false});
+            //     this.filterController.applyFilter(filters);
             } else {
                 this.projectView.showResultsList(this.studies);
                 this.filterController.showFilter();

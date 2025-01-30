@@ -32,6 +32,8 @@ import { Agave } from 'Scripts/backbone/backbone-agave';
 import FilterQueryView from 'Scripts/views/utilities/filter-query-view';
 import FilterModel from 'Scripts/models/filter-model';
 
+const querystring = require("querystring");
+
 function FilterController(controller, filter_type, show_filter, secondary_filter) {
     this.controller = controller;
 
@@ -73,6 +75,19 @@ function FilterController(controller, filter_type, show_filter, secondary_filter
 }
 
 FilterController.prototype = {
+    //querystring to filter
+    queryStringToFilter: function(queryString) {
+        var params = querystring.parse(queryString);
+        console.log(params);
+        
+        if(params.study_id) {
+            var filters = {filters: [{field: "study.study_id", value: params.study_id, title: "Study ID"}]};
+            console.log('Study ID passed, study_id='+params.study_id);
+        }
+
+        return filters;
+    },
+
     // construct filter values from data/schema
     constructValues: function(collection) {
         this.filter_model.constructValues(collection);

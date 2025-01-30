@@ -27,6 +27,7 @@
 
 'use strict';
 import Backbone from 'backbone';
+// const communityController = new CommunityController();
 
 // Private Methods
 var _redirectToLogin = function() {
@@ -63,6 +64,29 @@ var _routeWithTokenRefreshCheck = function(destinationRoute) {
     }
 };
 
+// https://stackoverflow.com/questions/11671400/navigate-route-with-querystring
+// function parseQueryString (queryString){
+//     var params = {};
+//     if(queryString){
+//         _.each(
+//             _.map(decodeURI(queryString).split(/&/g),function(el,i){
+//                 var aux = el.split('='), o = {};
+//                 if(aux.length >= 1){
+//                     var val = undefined;
+//                     if(aux.length == 2)
+//                         val = aux[1];
+//                     o[aux[0]] = val;
+//                 }
+//                 return o;
+//             }),
+//             function(o){
+//                 _.extend(params,o);
+//             }
+//         );
+//     }
+//     return params;
+// }   
+
 export default Backbone.Router.extend({
 
     // order of routes matter as the first one that matches is used
@@ -94,7 +118,10 @@ export default Backbone.Router.extend({
         'project/:id/analysis':             'projectAnalysis',
         'community':                        'communityPage',
         'community/':                       'communityPage',
-        'community(/:uuid)':                'communityPage',
+        // 'community(/:uuid)':                'communityPage',
+        // 'community/?:filter=:param':        'communityFilter',
+        // 'community/study_id/:study_id':    'communityFilterStudyID',
+        'community?*queryString':           'communityPage',
         //'community/addchart':               'addCommChart',
         //'project/:id/repertoire/create':           'createRepertoire',
         //'project/:id/repertoire/create/subject': 'addSubject',
@@ -331,11 +358,37 @@ export default Backbone.Router.extend({
     },
 
     // Community Studies
-    communityPage: function(projectUuid) {
+    communityPage: function(queryString) {
         console.log('communityPage route');
+        App.AppController.showCommunityPage(queryString);
 
-        App.AppController.showCommunityPage(projectUuid);
+        // var params = querystring.parse(queryString);
+        // console.log(params);
+        
+
+        // if(params.study_id) {
+        //     //study_id was passed
+        //     var filters = {filters: [{field: "study.study_id", value: params.study_id, title: "Study ID"}]};
+        //     console.log('Study ID passed, study_id='+params.study_id);
+            
+        // }
+        // if(params.projectUUID) {
+        //     console.log('Project UUID passed, projectUUID='+params.projectUUID);
+            
+        //     // App.AppController.showCommunityPage(params.projectUUID);
+        // } 
+        // if(!params.study_id && !params.projectUUID) {
+        //     console.log('Empty/Invalid filter (not study_ID, projectUUID)');
+        //     App.AppController.showCommunityPage();
+        // }
     },
+    // communityPage: function(projectUuid) {
+    //     console.log('communityPage route');
+
+    //     App.AppController.showCommunityPage(projectUuid);
+    // },
+
+    // Community Filter
 
     // Create Community Chart Page
     addCommChart: function() {
