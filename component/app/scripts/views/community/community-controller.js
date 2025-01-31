@@ -226,7 +226,7 @@ CommunityController.prototype = {
                         console.log(queryString);
                         var filters = that.filterController.queryStringToFilter(queryString);
                         App.router.navigate('/community', {trigger: false});
-                        that.filterController.applyFilter(filters);
+                        that.filterController.applyFilter(filters, { filters: [] });
                     // if (projectUuid) {
                     //     // filter on specific VDJServer uuid if provided
                     //     console.log(projectUuid);
@@ -255,7 +255,7 @@ CommunityController.prototype = {
                 console.log(queryString);
                 var filters = that.filterController.queryStringToFilter(queryString);
                 App.router.navigate('/community', {trigger: false});
-                that.filterController.applyFilter(filters, false);
+                that.filterController.applyFilter(filters, { filters: [] });
             // if (projectUuid) {
             //     // filter on specific VDJServer uuid if provided
             //     console.log(projectUuid);
